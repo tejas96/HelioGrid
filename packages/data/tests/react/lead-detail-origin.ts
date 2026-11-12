@@ -157,6 +157,8 @@ function edited(body: Record<string, unknown>): LeadDetail {
   for (const [field, value] of Object.entries(body)) {
     if (field === 'monthlyBill') {
       lead.lead.monthlyBill = value === null ? null : { amount: String(value), tier: 'assumed' };
+    } else if (field === 'name' || field === 'city') {
+      Object.assign(lead.lead, { [field]: value });
     } else if (field in lead.qualify) Object.assign(lead.qualify, { [field]: value });
   }
   return lead;

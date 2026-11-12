@@ -2,7 +2,6 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { BoardRow, ProjectBoardView } from '@heliogrid/domain';
 import { type RefObject, useId, useRef, useState } from 'react';
 import { type FocusAfter, useFocusAfter } from '../../primitives/FocusAfter';
-import { Pressable } from '../../primitives/Pressable';
 import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
@@ -14,34 +13,6 @@ import { ProjectBoardNoMatch } from './ProjectBoardNoMatch';
 import './ProjectBoardTable.css';
 
 type DeskProps = ProjectBoardProps & { view: ProjectBoardView };
-
-/**
- * The stages as a rail of stops across the wide board: each stop's count, its name and its longest
- * stay — the handed-over stop its last 30 days. A stop with none is quiet; the chosen one is the
- * accent wash, and pressing it again shows every stage.
- */
-export function ProjectBoardRail({ view, words, onChooseStage }: DeskProps) {
-  return (
-    <fieldset className="hg-project-board-rail" aria-label={words.stagesName}>
-      {view.stops.map((stop) => (
-        <Pressable
-          key={stop.stage}
-          className="hg-project-board-stop"
-          accessibilityState={{ selected: stop.chosen }}
-          onPress={() => onChooseStage(stop.chosen ? null : stop.stage)}
-        >
-          <span className="hg-project-board-stop-count" data-zero={stop.count === 0 || undefined}>
-            {stop.count}
-          </span>
-          <span className="hg-project-board-stop-name">{words.stage(stop.stage)}</span>
-          <span className="hg-project-board-stop-line">
-            {stop.count === 0 ? words.noneNow : (words.stopLine(stop) ?? words.noneNow)}
-          </span>
-        </Pressable>
-      ))}
-    </fieldset>
-  );
-}
 
 /**
  * Every live project — or the chosen stage's — under its heading and count, as OneOhm's table:
@@ -65,7 +36,9 @@ export function ProjectBoardDesk(props: DeskProps & { missed: boolean; searchFie
           <span className="hg-project-board-count">{rows.length}</span>
         </h2>
         {view.chosen === null ? (
-          <span className="hg-project-board-quiet">{words.byStage}</span>
+          <span className="hg-project-board-quiet">
+            {view.sort === 'longest' ? words.byStage : props.top.order[view.sort]}
+          </span>
         ) : (
           <ClearStage
             label={words.clearStage}

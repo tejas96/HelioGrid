@@ -124,3 +124,50 @@
   font-weight: var(--fw-semibold);
   color: var(--on-panel);
 }
+
+/* The narrow hero: the deal and where it came from as one quiet line beside the stage chip. */
+.hg-lead-hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--sp-2);
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+.hg-lead-hero-fact + .hg-lead-hero-fact::before {
+  content: "·";
+  margin-inline-end: var(--sp-2);
+}
+
+/* The owner at the narrow hero's foot, over a hairline: face, name, and the act that changes it. */
+.hg-lead-hero-owner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--hairline);
+}
+
+.hg-lead-hero-owner-none {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--sp-8);
+  height: var(--sp-8);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-pill);
+}
+
+.hg-lead-hero-owner-name {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--on-panel-muted);
+}

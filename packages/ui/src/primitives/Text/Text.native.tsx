@@ -201,6 +201,7 @@ export function Text({
   lang,
   live,
   oneLine,
+  twoLines,
   bold,
   fixedSize,
   style,
@@ -225,8 +226,8 @@ export function Text({
       accessibilityLanguage={lang}
       accessibilityLiveRegion={live === true ? 'assertive' : 'none'}
       allowFontScaling={fixedSize !== true}
-      numberOfLines={oneLine === true ? 1 : undefined}
-      ellipsizeMode={oneLine === true ? 'tail' : undefined}
+      numberOfLines={oneLine === true ? 1 : twoLines === true ? 2 : undefined}
+      ellipsizeMode={oneLine === true || twoLines === true ? 'tail' : undefined}
     >
       {drawRuns(children, variant, tracked)}
     </RNText>

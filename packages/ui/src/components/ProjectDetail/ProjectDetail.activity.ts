@@ -1,15 +1,6 @@
-import type { ProjectDetail as ProjectDetailFacts, TranslatedText } from '@heliogrid/contracts';
-import type { MarketFormat } from '../../utils/format';
+import type { ProjectDetail as ProjectDetailFacts } from '@heliogrid/contracts';
+import type { ActivityEntry } from '../ActivityStream/ActivityStream.types';
 import type { ProjectDetailWords, ProjectEventKind } from './ProjectDetail.types';
-
-/** One line of the project's activity: what happened, who or what did it, and its day. */
-export interface ProjectEvent {
-  readonly key: string;
-  readonly title: TranslatedText;
-  /** Who or what did it, or why the wait began. */
-  readonly line: TranslatedText | null;
-  readonly on: string;
-}
 
 /** The activity the page shows — the latest few, newest first; nothing edits after the fact. */
 export const EVENTS_SHOWN = 3;
@@ -27,53 +18,53 @@ function kindOf(move: Move, chain: readonly string[]): ProjectEventKind {
   return chainOrder(move.to, chain) < chainOrder(move.from, chain) ? 'movedBack' : 'moved';
 }
 
-/** Who or what made a move, said as the journey says it. */
-function lineOf(
-  move: Move,
-  kind: ProjectEventKind,
-  words: ProjectDetailWords,
-): TranslatedText | null {
-  // The title says HelioGrid moved it; the line says what proved it.
-  if (move.cause === 'proof') return words.proofName(move.proof);
-  if (move.movedBy === null) return null;
-  return kind === 'started' ? words.byMarkWon(move.movedBy.name) : words.movedBy(move.movedBy.name);
+/**
+ * What a move adds beyond who made it: the proof that moved it by itself. The person who moved it is
+ * the entry's actor line, as on every timeline entry, so it is never said twice.
+ */
+function detailOf(move: Move, words: ProjectDetailWords): ActivityEntry['detail'] {
+  return move.cause === 'proof' ? words.proofName(move.proof) : undefined;
 }
 
 /**
- * The project's latest activity (the picked design's card): its moves — started, moved, moved by
- * HelioGrid, moved back, undone — and the wait it opened, newest first, each with its day.
+ * The project's latest activity as entries of the product's one timeline (`M08-17`, `M02-35`): its
+ * moves — started, moved, moved by HelioGrid, moved back, undone — and the wait it opened, newest
+ * first, each with its actor, drawn by the same entry the lead's timeline draws.
  */
 export function projectEventsOf(
   project: ProjectDetailFacts,
   words: ProjectDetailWords,
-  format: MarketFormat,
   chain: readonly string[],
-): readonly ProjectEvent[] {
-  const moves = project.journey.map((move, index): ProjectEvent & { readonly at: string } => {
+): ActivityEntry[] {
+  const moves = project.journey.map((move, index): ActivityEntry => {
     const kind = kindOf(move, chain);
+    const by = move.movedBy;
     return {
-      key: `move-${index}`,
-      title: words.event(kind, move.to),
-      line: lineOf(move, kind, words),
-      on: format.date(move.enteredOn),
+      id: `move-${index}`,
+      kind: 'project_moved',
       at: move.movedAt,
+      actorClass: move.cause === 'proof' || by === null ? 'system' : 'person',
+      ...(by === null || move.cause === 'proof' ? {} : { actor: by.name }),
+      summary: words.event(kind, move.to),
+      ...(detailOf(move, words) === undefined ? {} : { detail: detailOf(move, words) }),
     };
   });
   const { wait } = project;
-  const opened =
+  const opened: ActivityEntry[] =
     wait === null
       ? []
       : [
           {
-            key: 'wait',
-            title: words.event('wait', wait.party),
-            line: words.reason(wait.reason),
-            on: format.date(wait.startedOn),
+            id: 'wait',
+            kind: 'project_wait',
             at: wait.openedAt,
+            actorClass: 'person',
+            actor: wait.openedBy.name,
+            summary: words.event('wait', wait.party),
+            detail: words.reason(wait.reason),
           },
         ];
   return [...moves, ...opened]
-    .sort((a, b) => b.at.localeCompare(a.at))
-    .slice(0, EVENTS_SHOWN)
-    .map(({ at: _at, ...event }) => event);
+    .sort((a, b) => String(b.at).localeCompare(String(a.at)))
+    .slice(0, EVENTS_SHOWN);
 }

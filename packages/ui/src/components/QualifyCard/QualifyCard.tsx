@@ -1,7 +1,10 @@
 import { QUALIFY_QUESTIONS } from '@heliogrid/domain';
+import { useState } from 'react';
+import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { Card } from '../Card';
+import { FoldHead } from '../FoldHead';
 import type { QualifyCardProps, QualifyMarkAct } from './QualifyCard.types';
 import { QualifyQuestion } from './QualifyQuestion';
 
@@ -16,34 +19,59 @@ export function QualifyCard({
   onAnswer,
   onRetry,
   markQualified,
+  foldable,
   words,
 }: QualifyCardProps) {
-  return (
-    <Card className="hg-qualify">
-      <div className="hg-qualify-head">
-        <span className="hg-qualify-title">{words.title}</span>
-        <span className="hg-qualify-count">{words.count(answered, QUALIFY_QUESTIONS.length)}</span>
-        <span className="hg-qualify-dots" aria-hidden="true">
-          {questions.map((each) => (
-            <span
-              key={each.question}
-              className="hg-qualify-dot"
-              data-on={each.saved === null ? undefined : 'true'}
-              data-failed={each.save?.status === 'failed' ? 'true' : undefined}
-            />
-          ))}
-        </span>
-      </div>
-      {questions.map((view) => (
-        <QualifyQuestion
-          key={view.question}
-          view={view}
-          onAnswer={onAnswer}
-          onRetry={onRetry}
-          words={words}
+  const [opened, setOpen] = useState(!foldable);
+  /* A save that came back undone opens the card, folded or not: its Try again is inside. */
+  const failed =
+    questions.some((each) => each.save?.status === 'failed') ||
+    (markQualified !== null && markQualified.failure !== null);
+  const open = opened || failed;
+  const count = words.count(answered, QUALIFY_QUESTIONS.length);
+  const dots = (
+    <span className="hg-qualify-dots" aria-hidden="true">
+      {questions.map((each) => (
+        <span
+          key={each.question}
+          className="hg-qualify-dot"
+          data-on={each.saved === null ? undefined : 'true'}
+          data-failed={each.save?.status === 'failed' ? 'true' : undefined}
         />
       ))}
-      {markQualified === null ? null : <MarkQualified act={markQualified} words={words} />}
+    </span>
+  );
+  return (
+    <Card className="hg-qualify">
+      {foldable ? (
+        <FoldHead
+          title={words.title}
+          meta={count}
+          aside={dots}
+          open={open}
+          onToggle={() => setOpen(!opened)}
+        />
+      ) : (
+        <div className="hg-qualify-head">
+          <Text variant="h3">{words.title}</Text>
+          <Text variant="caption" color="secondary">
+            {count}
+          </Text>
+          {dots}
+        </div>
+      )}
+      {open
+        ? questions.map((view) => (
+            <QualifyQuestion
+              key={view.question}
+              view={view}
+              onAnswer={onAnswer}
+              onRetry={onRetry}
+              words={words}
+            />
+          ))
+        : null}
+      {open && markQualified !== null ? <MarkQualified act={markQualified} words={words} /> : null}
     </Card>
   );
 }

@@ -27,4 +27,9 @@ export interface StatusMarkProps {
    * row whose dot sits in another cell). The words always stay.
    */
   mark?: boolean;
+  /**
+   * The glyph and word in the tone's ink with no wash behind them — a quiet line that already
+   * sits on a card (a lead's stage on its list card). The mark and the words always stay.
+   */
+  bare?: boolean;
 }

@@ -31,6 +31,7 @@ export function Input({
   label,
   labelSpokenOnly = false,
   value,
+  maxLength,
   onChange,
   placeholder,
   type = 'text',
@@ -104,6 +105,7 @@ export function Input({
           placeholder={placeholder}
           disabled={disabled}
           value={shown}
+          maxLength={maxLength}
           onChange={(event) => change(event.target.value)}
           onFocus={() => setFocus(true)}
           onBlur={leave}

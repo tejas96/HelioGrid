@@ -1,8 +1,7 @@
 import { useProjectBoardScreen } from '@heliogrid/data/react';
-import { projectBoardWords } from '@heliogrid/i18n';
+import { projectBoardTopWords, projectBoardWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
-  boardSummaryOf,
   type FocusHandle,
   LargeTitle,
   ProjectBoard,
@@ -38,18 +37,12 @@ function ProjectsBoardPage() {
   const words = projectBoardWords(t, format.pack, locale);
   const open = (projectId: string, ask: 'earlyProof' | null) =>
     navigation.navigate('ProjectDetail', ask === null ? { projectId } : { projectId, ask });
-  const summary = boardSummaryOf(screen.read);
   return (
     <ProjectBoard
       {...projectBoardActsOf(screen, open)}
-      head={
-        <LargeTitle
-          title={words.title}
-          titleRef={title}
-          summary={summary === null ? undefined : words.summary(summary)}
-        />
-      }
+      head={<LargeTitle title={words.title} titleRef={title} />}
       words={words}
+      top={projectBoardTopWords(t)}
       openId={null}
       focusAfter={title}
     />

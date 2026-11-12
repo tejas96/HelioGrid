@@ -116,8 +116,10 @@
 .hg-stage-meter,
 /* The catalog's price editor docked beside the list on desktop (`PriceEditorDock`, apps/web). */
 .hg-catalog-dock,
-/* One card holding a list's rows (`CardRows`): the catalog's narrow list, the Team list. */
-.hg-card-rows,
+/* One card holding a list's rows (`CardRows`): the catalog's narrow list, the Team list — or, in
+   the separate form, each row its own card (the list pages on the phone). */
+.hg-card-rows[data-form="joined"],
+.hg-card-rows[data-form="separate"] > .hg-card-row,
 .hg-dt-total-block,
 /* The billing home's two record rows (`SCR-M12-02`, `Payment reminders` and `Plan history`). */
 .hg-list-row.hg-billing-record,

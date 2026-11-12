@@ -1,11 +1,12 @@
-/* LeadListRow — one lead of the Leads list (`SCR-M02-03`): a row of a `CardRows` card, whose frame,
-   hairline and open target are that card's. The body lays out the face, the words and the end. */
+/* LeadListRow — one lead of the Leads list (`SCR-M02-03`), its own card in the separate form of
+   `CardRows`, whose frame and open target are the card's. The body lays out the face, the words
+   and the end. */
 
 .hg-card-row-body.hg-lead-list-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--sp-3);
-  padding-block: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
 }
 
 .hg-lead-list-row-main {
@@ -16,28 +17,54 @@
   min-width: 0;
 }
 
+/* A lead with no name yet: a dashed ring around the phone, where a face would be. */
+.hg-lead-list-row-noname {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-pill);
+}
+
+/* A long name keeps two lines and ends with an ellipsis: the card stays a card, not a paragraph. */
 .hg-lead-list-row-name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+/* A lead with no name yet is its number, in the face numbers take (`F7-09`). */
+.hg-lead-list-row-phone {
+  font-family: var(--font-mono);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
   color: var(--text-primary);
-  overflow-wrap: break-word;
+  white-space: nowrap;
 }
 
 .hg-lead-list-row-sub {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-1) var(--sp-2);
+  gap: var(--sp-1) var(--sp-3);
   min-width: 0;
   font-size: var(--fs-body-sm);
   line-height: var(--lh-body-sm);
   color: var(--text-secondary);
-  overflow-wrap: break-word;
 }
 
-.hg-lead-list-row-next {
-  display: flex;
+.hg-lead-list-row-city {
+  overflow-wrap: anywhere;
 }
 
 .hg-lead-list-row-end {
@@ -46,14 +73,15 @@
   flex-direction: column;
   align-items: flex-end;
   gap: var(--sp-2);
-  max-width: 40%;
+  max-width: 45%;
 }
 
-/* Money in a list is Geist Mono (`CLAUDE.md` §9); its tier stands once, on the column's head. */
+/* Money in a list is Geist Mono (`CLAUDE.md` §9); its tier stands once, on the list's head. */
 .hg-lead-list-row-money {
   font-family: var(--font-mono);
   font-size: var(--fs-body-sm);
   line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
   white-space: nowrap;

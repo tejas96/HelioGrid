@@ -149,10 +149,10 @@
 .hg-project-detail-row-end {
   display: flex;
   flex: 0 1 auto;
-  flex-wrap: wrap;
+  flex-direction: column;
   width: max-content;
-  align-items: center;
-  justify-content: flex-end;
+  align-items: flex-end;
+  justify-content: center;
   gap: var(--sp-1) var(--sp-2);
   max-width: 55%;
 }
@@ -246,4 +246,9 @@
   color: var(--text-primary);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+/* The activity's entries sit in from the card's edge, in line with its head, as on the phone. */
+.hg-project-detail-stream {
+  padding: 0 var(--sp-3) var(--sp-2);
 }

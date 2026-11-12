@@ -13,9 +13,21 @@ interface WebStatusMarkProps extends StatusMarkProps {
  * Status as label + mark, never colour alone (F7-12, docs/engineering/17 §4). A component that tints
  * a state without composing this primitive is a defect.
  */
-export function StatusMark({ tone, label, mark = true, className, style }: WebStatusMarkProps) {
+export function StatusMark({
+  tone,
+  label,
+  mark = true,
+  bare = false,
+  className,
+  style,
+}: WebStatusMarkProps) {
   return (
-    <span className={classNames('hg-status-mark', className)} data-tone={tone} style={style}>
+    <span
+      className={classNames('hg-status-mark', className)}
+      data-tone={tone}
+      data-bare={bare ? 'true' : undefined}
+      style={style}
+    >
       {mark ? (
         <span className="hg-status-mark-glyph" aria-hidden="true">
           {STATUS_GLYPH[tone]}

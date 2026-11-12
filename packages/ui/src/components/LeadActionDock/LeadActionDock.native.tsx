@@ -1,29 +1,19 @@
-import type { LeadDetailAction } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { Linking, StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { PendingAction } from '../PendingAction/PendingAction.native';
-import type { LeadActionDockProps, LeadDockAct } from './LeadActionDock.types';
-
-/** Each act's glyph — the same four the web half draws. */
-const GLYPH: Record<Exclude<LeadDetailAction, 'call'>, ShellGlyphName> = {
-  message: 'chat',
-  log: 'pencil',
-  visit: 'calendar',
-  design: 'grid',
-};
-
-/** The round act's visual size: big enough for a thumb outdoors, the 44 target owned by Pressable. */
-const ROUND = 52;
+import { DOCK_ACTION_GLYPH } from './LeadActionDock.glyphs';
+import { DOCK_ROUND } from './LeadActionDock.logic';
+import type { LeadActionDockProps, LeadDockAct, LeadDockCall } from './LeadActionDock.types';
 
 /**
- * The lead's five actions on the phone (`M02-32`): Call the biggest — the dialler opens on its
- * number, never for one that may not be called — the four round acts in thumb reach, and under them
- * the state acts the lead's standing offers; junk, the referral and merge are the hero's ⋯.
+ * The lead's five actions on the phone (`M02-32`). The `dock` draws them as one row of equal
+ * circles, Call the one ocean circle — the dialler opens on its number, never for one that may not
+ * be called — and a closed lead's Reopen in their place; the `grid` stands Call across and the four
+ * as pills two by two. Under them the state acts this layout keeps; the rest are the record menu's.
  */
 export function LeadActionDock({
   layout,
@@ -32,47 +22,14 @@ export function LeadActionDock({
   acts,
   stateActs,
   standing,
+  closed,
 }: LeadActionDockProps) {
   const waiting = standing?.kind === 'waiting';
-  const callButton =
-    call.kind === 'dial' ? (
-      <Button
-        variant="primary"
-        size="lg"
-        icon={<ShellGlyph name="phone" size="md" tone="inverse" />}
-        fullWidth={layout === 'grid'}
-        onClick={() => {
-          void Linking.openURL(`tel:${call.phoneE164}`).catch(() => undefined);
-        }}
-      >
-        {callLabel}
-      </Button>
-    ) : (
-      <Button
-        variant="primary"
-        size="lg"
-        icon={<ShellGlyph name="phone" size="md" tone="inverse" />}
-        fullWidth={layout === 'grid'}
-        disabled
-        disabledReason={call.reason}
-      >
-        {callLabel}
-      </Button>
-    );
   return (
     <View style={styles.dock}>
-      {layout === 'dock' ? (
-        <View style={styles.row}>
-          <View style={styles.call}>{callButton}</View>
-          <View style={styles.rounds}>
-            {acts.map((act) => (
-              <RoundAct key={act.action} act={act} />
-            ))}
-          </View>
-        </View>
-      ) : (
+      {layout === 'grid' ? (
         <View style={styles.grid}>
-          {callButton}
+          <CallPill call={call} label={callLabel} />
           <View style={styles.pairs}>
             {acts.map((act) => (
               <View key={act.action} style={styles.half}>
@@ -80,7 +37,9 @@ export function LeadActionDock({
                   variant="secondary"
                   size="md"
                   fullWidth
-                  icon={<ShellGlyph name={GLYPH[act.action]} size="sm" tone="primary" />}
+                  icon={
+                    <ShellGlyph name={DOCK_ACTION_GLYPH[act.action]} size="sm" tone="primary" />
+                  }
                   disabled={act.disabledReason !== null}
                   {...(act.disabledReason === null ? {} : { disabledReason: act.disabledReason })}
                   onClick={act.onPress}
@@ -91,21 +50,31 @@ export function LeadActionDock({
             ))}
           </View>
         </View>
+      ) : closed ? null : (
+        <View style={styles.rounds}>
+          <CallRound call={call} label={callLabel} />
+          {acts.map((act) => (
+            <RoundAct key={act.action} act={act} />
+          ))}
+        </View>
       )}
-      <View style={styles.stateActs}>
-        {stateActs.map((each) => (
-          <Button
-            key={each.act}
-            variant="secondary"
-            size="sm"
-            disabled={waiting}
-            loading={waiting && standing?.act === each.act}
-            onClick={each.onPress}
-          >
-            {each.label}
-          </Button>
-        ))}
-      </View>
+      {stateActs.length === 0 ? null : (
+        <View style={styles.stateActs}>
+          {stateActs.map((each) => (
+            <Button
+              key={each.act}
+              variant="secondary"
+              size={layout === 'dock' ? 'md' : 'sm'}
+              fullWidth={layout === 'dock'}
+              disabled={waiting}
+              loading={waiting && standing?.act === each.act}
+              onClick={each.onPress}
+            >
+              {each.label}
+            </Button>
+          ))}
+        </View>
+      )}
       {standing === null ? null : standing.kind === 'waiting' ? (
         <PendingAction label={standing.line} />
       ) : (
@@ -115,48 +84,104 @@ export function LeadActionDock({
   );
 }
 
-/** One of the four round acts: a circle with its glyph, its short word under it. */
-function RoundAct({ act }: { act: LeadDockAct }) {
+/** The grid's Call: the ocean pill across the column, or off with why. */
+function CallPill({
+  call,
+  label,
+}: {
+  call: LeadDockCall;
+  label: LeadActionDockProps['callLabel'];
+}) {
+  const glyph = <ShellGlyph name={DOCK_ACTION_GLYPH.call} size="md" tone="inverse" />;
+  return call.kind === 'dial' ? (
+    <Button variant="primary" size="lg" icon={glyph} fullWidth onClick={() => dial(call.phoneE164)}>
+      {label}
+    </Button>
+  ) : (
+    <Button
+      variant="primary"
+      size="lg"
+      icon={glyph}
+      fullWidth
+      disabled
+      disabledReason={call.reason}
+    >
+      {label}
+    </Button>
+  );
+}
+
+/** The dock's first circle: Call in ocean, the dialler on its number, or off with why. */
+function CallRound({
+  call,
+  label,
+}: {
+  call: LeadDockCall;
+  label: LeadActionDockProps['callLabel'];
+}) {
   return (
     <View style={styles.round}>
-      <IconButton
-        size={ROUND}
-        label={act.label}
-        disabled={act.disabledReason !== null}
-        {...(act.disabledReason === null ? {} : { disabledReason: act.disabledReason })}
-        onClick={act.onPress}
-      >
-        <ShellGlyph name={GLYPH[act.action]} size="md" tone="primary" />
-      </IconButton>
-      <View importantForAccessibility="no-hide-descendants" accessibilityElementsHidden>
-        <Text variant="caption" color="secondary" align="center">
-          {act.short}
-        </Text>
+      <View style={styles.circle}>
+        <IconButton
+          size={DOCK_ROUND}
+          variant="dark"
+          label={label}
+          disabled={call.kind === 'blocked'}
+          {...(call.kind === 'blocked'
+            ? { disabledReason: call.reason }
+            : { href: `tel:${call.phoneE164}` })}
+        >
+          <ShellGlyph name={DOCK_ACTION_GLYPH.call} size="md" tone="inverse" />
+        </IconButton>
       </View>
+      <RoundWord word={label} />
     </View>
   );
 }
 
+/** One of the four circles beside Call: its glyph, its short word under it. */
+function RoundAct({ act }: { act: LeadDockAct }) {
+  return (
+    <View style={styles.round}>
+      <View style={styles.circle}>
+        <IconButton
+          size={DOCK_ROUND}
+          label={act.label}
+          disabled={act.disabledReason !== null}
+          {...(act.disabledReason === null ? {} : { disabledReason: act.disabledReason })}
+          onClick={act.onPress}
+        >
+          <ShellGlyph name={DOCK_ACTION_GLYPH[act.action]} size="md" tone="primary" />
+        </IconButton>
+      </View>
+      <RoundWord word={act.short} />
+    </View>
+  );
+}
+
+/** The word under a circle is for the eye; the circle itself speaks the act. */
+function RoundWord({ word }: { word: LeadDockAct['short'] }) {
+  return (
+    <View importantForAccessibility="no-hide-descendants" accessibilityElementsHidden>
+      <Text variant="caption" color="secondary" align="center">
+        {word}
+      </Text>
+    </View>
+  );
+}
+
+function dial(phoneE164: string) {
+  void Linking.openURL(`tel:${phoneE164}`).catch(() => undefined);
+}
+
 const styles = StyleSheet.create({
   dock: { gap: theme.spacing['sp-3'] },
-  /* Call and the four rounds share one row while their words fit it, inside the page's gutter;
-     when they do not, the rounds move under Call as one row of their own. Each round is as wide as
-     its word: squeezed to a share of the row, "Message" broke inside itself. */
-  row: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    gap: theme.spacing['sp-2'],
-  },
-  call: { flexGrow: 1, flexShrink: 0, justifyContent: 'center', minHeight: ROUND },
-  rounds: {
-    flexGrow: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: theme.spacing['sp-2'],
-  },
-  round: { minWidth: ROUND, alignItems: 'center', gap: theme.spacing['sp-1'] },
+  /* Five equal cells: each circle centred over its word, the word wrapping inside its own cell. */
+  rounds: { flexDirection: 'row', gap: theme.spacing['sp-2'] },
+  round: { flex: 1, minWidth: 0, alignItems: 'center', gap: theme.spacing['sp-1'] },
+  /* The circle's own box, centred over its word: a circle off with a reason sits in the reason's
+     bubble anchor, which starts at the left of whatever holds it. */
+  circle: { alignItems: 'center' },
   grid: { gap: theme.spacing['sp-2'] },
   pairs: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing['sp-2'] },
   half: { flexGrow: 1, flexBasis: '45%' },

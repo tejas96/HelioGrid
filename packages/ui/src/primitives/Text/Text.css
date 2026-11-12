@@ -170,6 +170,16 @@
   text-overflow: ellipsis;
 }
 
+/* A record's own name a title keeps to two lines (`twoLines`, `LargeTitle`'s `nameTitle`) — never
+   translated copy. Any element may carry the mark, so a heading clamps by this one rule. */
+[data-two-lines="true"] {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
 .hg-text[data-bold="true"] {
   font-weight: var(--fw-bold);
 }

@@ -2,6 +2,13 @@
    above them and the title row with its facts and acts. The project, its checklist, its steps, its
    sheets and its handover are `packages/ui`'s. */
 
+.hg-project-page-trail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
 .hg-project-page-trail {
   display: flex;
   flex-wrap: wrap;

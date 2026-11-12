@@ -1,7 +1,9 @@
 import { PROJECT_STAGE_CHAIN } from '@heliogrid/domain';
+import { StreamEntries } from '../ActivityStream/ActivityStreamEntries';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { Card } from '../Card';
+import { leadActivityKinds } from '../LeadTimeline/LeadTimeline.logic';
 import { useFormat } from '../MarketProvider';
 import { Timeline } from '../Timeline';
 import { projectEventsOf } from './ProjectDetail.activity';
@@ -63,27 +65,24 @@ export function ProjectDeal({ project, words }: ProjectDetailProps) {
   );
 }
 
-/** The latest of what happened on the project, newest first — nothing edits after the fact. */
+/**
+ * The latest of what happened on the project, newest first — the product's one timeline
+ * (`M08-17`), each entry drawn as the lead's timeline draws it.
+ */
 export function ProjectActivity({ project, words }: ProjectDetailProps) {
-  const format = useFormat();
-  const events = projectEventsOf(project, words, format, PROJECT_STAGE_CHAIN);
   return (
     <section aria-label={words.activity}>
       <Card density="functional" className="hg-project-detail-card">
         <CardHead title={words.activity} aside={words.activityNote} />
-        <ul className="hg-project-detail-rows">
-          {events.map((event) => (
-            <li key={event.key} className="hg-project-detail-row" data-plain="true">
-              <span className="hg-project-detail-row-main">
-                <span className="hg-project-detail-row-name">{event.title}</span>
-                {event.line === null ? null : (
-                  <span className="hg-project-detail-row-sub">{event.line}</span>
-                )}
-              </span>
-              <span className="hg-project-detail-quiet hg-project-detail-nowrap">{event.on}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="hg-project-detail-stream">
+          <StreamEntries
+            entries={projectEventsOf(project, words, PROJECT_STAGE_CHAIN)}
+            kinds={leadActivityKinds(words.activityKind)}
+            words={words.stream}
+            density="functional"
+            {...words.streamFrame}
+          />
+        </div>
       </Card>
     </section>
   );

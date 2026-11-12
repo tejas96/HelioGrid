@@ -1,32 +1,50 @@
 import type { ReactNode } from 'react';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import type { HeroPanelMenu } from '../HeroPanel/HeroPanel.types';
+import { STATE_ACT_GLYPH } from '../LeadActionDock/LeadActionDock.glyphs';
 import type { MenuItem } from '../Menu/Menu.types';
-import type { LeadHeroProps, LeadRecordAct } from './LeadHero.types';
+import type { LeadHeroWords, LeadRecordAct, LeadRecordActPress } from './LeadHero.types';
 
 /** The record menu's order; `Menu` itself puts junk, a destructive row, last behind a gap. */
-const LEAD_RECORD_ACTS: readonly LeadRecordAct[] = ['mark-won', 'add-referral', 'merge', 'junk'];
+const LEAD_RECORD_ACTS: readonly LeadRecordAct[] = [
+  'snooze',
+  'disqualify',
+  'mark-won',
+  'add-referral',
+  'merge',
+  'junk',
+];
 
 /** Each safe act's glyph; junk draws the menu's own trash, as every destructive row does. */
 const RECORD_ACT_GLYPH: Record<Exclude<LeadRecordAct, 'junk'>, ShellGlyphName> = {
+  snooze: STATE_ACT_GLYPH.snooze,
+  disqualify: STATE_ACT_GLYPH.disqualify,
   'mark-won': 'circle-check',
   'add-referral': 'person-plus',
   merge: 'layers',
 };
 
 /**
- * The hero's corner menu: the offered acts in order, each safe one with its glyph — drawn by the
- * caller's platform — and junk as the destructive row. No act offered draws no menu.
+ * The record menu — the page's ⋯ in its top bar or way-back row: the offered acts in order, each
+ * safe one with its glyph — drawn by the caller's platform — and junk as the destructive row. No act
+ * offered draws no menu.
  */
 export function leadRecordMenuOf(
   {
     recordActs,
     recordActsOff,
     words,
-  }: Pick<LeadHeroProps, 'recordActs' | 'recordActsOff' | 'words'>,
+  }: {
+    readonly recordActs: readonly LeadRecordActPress[];
+    /** Off while a state act is out, as the dock's state acts are. */
+    readonly recordActsOff: boolean;
+    readonly words: LeadHeroWords;
+  },
   glyph: (name: ShellGlyphName) => ReactNode,
 ): HeroPanelMenu | undefined {
   const label: Record<LeadRecordAct, MenuItem['label']> = {
+    snooze: words.recordActs.snooze,
+    disqualify: words.recordActs.disqualify,
     'mark-won': words.recordActs.markWon,
     'add-referral': words.recordActs.addReferral,
     merge: words.recordActs.merge,

@@ -17,7 +17,19 @@ export interface HeroPanelProps {
   readonly name?: TranslatedText;
   /** The ⋯ in the top-right corner: the acts on the whole thing the hero is about. */
   readonly menu?: HeroPanelMenu;
+  /**
+   * The pencil in the top-right corner, before any ⋯: edits what the hero is about — a lead's name
+   * and city. A pencil is the one glyph everyone reads as "change this", so it stands alone, named
+   * for the screen reader by `label`.
+   */
+  readonly edit?: HeroPanelEdit;
   readonly children: ReactNode;
+}
+
+/** The corner pencil: its spoken name — "Edit details" — and what it opens. */
+export interface HeroPanelEdit {
+  readonly label: TranslatedText;
+  readonly onPress: () => void;
 }
 
 /**

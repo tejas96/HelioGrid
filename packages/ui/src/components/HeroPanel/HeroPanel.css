@@ -114,12 +114,19 @@
   top: var(--sp-3);
   right: var(--sp-3);
   z-index: 1;
+  display: flex;
+  gap: var(--sp-2);
 }
 
-.hg-hero[data-menu="true"] > .hg-hero-glass + * {
+.hg-hero[data-menu="1"] > .hg-hero-glass + * {
   padding-inline-end: var(--sp-12);
 }
 
+.hg-hero[data-menu="2"] > .hg-hero-glass + * {
+  padding-inline-end: calc(var(--sp-12) * 2 + var(--sp-2));
+}
+
+.hg-hero-menu .hg-icon-button,
 .hg-hero-menu .hg-menu-overflow {
   background: var(--glass);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -129,6 +136,7 @@
   transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
+.hg-hero-menu .hg-icon-button:hover,
 .hg-hero-menu .hg-menu-overflow:hover,
 .hg-hero-menu .hg-menu-overflow[data-open="true"] {
   box-shadow: 0 0 0 1px var(--line-strong);

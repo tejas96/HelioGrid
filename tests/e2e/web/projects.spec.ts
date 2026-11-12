@@ -1,4 +1,4 @@
-import { createTranslator, projectBoardWords } from '@heliogrid/i18n';
+import { createTranslator, projectBoardTopWords, projectBoardWords } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { OWNER_NAME } from '../support/door';
@@ -19,14 +19,16 @@ import { PACK } from '../support/project-facts';
  * `/projects` (`SCR-M08-01`): the project manager or the owner between calls, come to see what needs
  * them and where every job stands. A new company has no project, so the board teaches the one way a
  * project starts — a lead marked won. Once one is won, its project stands under Won with its days
- * figure, today, and nothing asks the owner anything yet. Wide, the stages are a rail across the top
- * and the projects OneOhm's table; narrow, one stage pill and a card of rows per stage. The search
- * finds a project by its number, a stage chosen shows only its own, a long stage holds its oldest
- * rows behind *Show more*, and the handed-over stop counts the last 30 days. The leads are won
+ * figure, today, and nothing asks the owner anything yet. The list top every list page shares heads
+ * it — the summary, the search with the order and the manager filter, a chip per stage with a
+ * project — over OneOhm's table wide and a card per project narrow. The search finds a project by
+ * its number, a stage chip shows only its own, a long stage holds its oldest rows behind *Show
+ * more*, and the handed-over chip counts the last 30 days. The leads are won
  * through the api here, as the lead page's sheet sends it; `projects-[id].spec.ts` drives that sheet.
  */
 const en = await createTranslator('en');
 const BOARD = projectBoardWords(en.t, PACK, 'en');
+const TOP = projectBoardTopWords(en.t);
 
 /** The customer a second project is sold to, kept apart from the first by name. */
 const SECOND = { name: 'Meera Kulkarni', city: 'Pune' } as const;
@@ -47,8 +49,15 @@ async function boardWithProject(page: Page): Promise<StartedProject> {
   return started;
 }
 
-/** Wide, the rail of stops; narrow, the stage sheet's options — each a stage with its count. */
-const railOf = (page: Page) => page.getByRole('group', { name: BOARD.stagesName, exact: true });
+/** The stage chips under the search, wide and narrow alike — each a stage with its count. */
+const chipOf = (page: Page, stage: string) =>
+  page
+    .getByRole('tablist', { name: TOP.stages, exact: true })
+    .getByRole('tab')
+    .filter({ hasText: stage });
+
+/** The board's search field, named for what it does. */
+const searchOf = (page: Page) => page.getByRole('searchbox', { name: BOARD.search.open });
 
 test('a new company’s board has no project yet and teaches that Mark won starts one', async ({
   page,
@@ -59,7 +68,7 @@ test('a new company’s board has no project yet and teaches that Mark won start
   await expect(page.getByText(BOARD.emptyTitle, { exact: true })).toBeVisible();
   await expect(page.getByText(BOARD.emptyBody, { exact: true })).toBeVisible();
   /* Nothing to search yet: the search waits for a board with projects on it. */
-  await expect(page.getByRole('searchbox', { name: BOARD.search.placeholder })).toHaveCount(0);
+  await expect(searchOf(page)).toHaveCount(0);
   await expectNoSidewaysScroll(page);
   await expectNoSeriousViolations(page);
 });
@@ -79,20 +88,15 @@ test('the won lead’s project stands under Won, today, and nothing needs the ow
     expectedInstallOn: project.expectedInstallOn,
   };
 
-  /* The title's line and the day's hero say the same: one live project, and all clear. */
-  await expect(
-    page.getByText(BOARD.summary({ live: 1, todo: 0, waiting: 0, allClear: true }), {
-      exact: true,
-    }),
-  ).toBeVisible();
-  await expect(page.getByText(BOARD.allClearTitle, { exact: true })).toBeVisible();
-  await expect(page.getByText(BOARD.allClearBody(1), { exact: true })).toBeVisible();
+  /* The summary counts one live project, nothing to do and nothing waited on: all clear. */
+  const summary = page.getByRole('region', { name: TOP.name, exact: true });
+  await expect(summary.getByText(TOP.liveSpoken(1), { exact: true })).toBeAttached();
+  await expect(summary.getByText(BOARD.allClearTitle, { exact: true })).toBeVisible();
+  /* The Won chip counts it; a stage with no project draws no chip. */
+  await expect(chipOf(page, won)).toContainText('1');
+  await expect(chipOf(page, BOARD.stage('material_ordered'))).toHaveCount(0);
 
   if (isWide(page)) {
-    /* The rail's Won stop counts it, and its line is the longest stay there. */
-    const stop = railOf(page).getByRole('button').filter({ hasText: won });
-    await expect(stop).toContainText('1');
-    await expect(stop).toContainText(BOARD.stopLine({ longestDays: 0, recent: false }) ?? '');
     /* A line of OneOhm's table: its stage, the days it stood there and the install it promises. */
     const line = page.getByRole('row').filter({ hasText: CUSTOMER.name });
     await expect(line.getByRole('cell', { name: won, exact: true })).toBeVisible();
@@ -129,12 +133,10 @@ test('the search finds a project by its number, and says so when it finds none',
 }) => {
   await ownerWithCompany(page, en);
   const { number } = await boardWithProject(page);
-  if (!isWide(page)) {
-    /* Narrow, the search waits behind its glyph beside the title. */
-    await page.getByRole('button', { name: BOARD.search.open, exact: true }).click();
-  }
-  const search = page.getByRole('searchbox', { name: BOARD.search.placeholder });
+  /* The search stands under the summary in both rooms, its hint naming what it finds. */
+  const search = searchOf(page);
   await expect(search).toBeVisible();
+  await expect(search).toHaveAttribute('placeholder', BOARD.search.placeholder);
 
   await search.fill(number);
   await expect(openOf(page, CUSTOMER.name)).toHaveCount(1);
@@ -159,42 +161,25 @@ test('the search finds a project by its number, and says so when it finds none',
   await expect(openOf(page, CUSTOMER.name)).toHaveCount(1);
 });
 
-test('a stage chosen shows only its own projects, and says when it has none', async ({ page }) => {
+test('a stage chip shows only its own projects, and All brings every stage back', async ({
+  page,
+}) => {
   await ownerWithCompany(page, en);
-  await boardWithProject(page);
-  const ordered = BOARD.stage('material_ordered');
+  await markWonThroughApi(page, await captureLead(page));
+  const closed = await markWonThroughApi(page, await captureLead(page, SECOND));
+  await handOverThroughApi(page, closed.projectId);
+  await openBoard(page);
+  const won = BOARD.stage('won');
 
-  if (isWide(page)) {
-    await railOf(page).getByRole('button').filter({ hasText: ordered }).click();
-    await expect(page.getByRole('heading', { level: 2, name: ordered })).toBeVisible();
-    await expect(
-      page.getByText(BOARD.noneInStage('material_ordered')).filter({ visible: true }),
-    ).toBeVisible();
-    await expect(openOf(page, CUSTOMER.name)).toHaveCount(0);
+  await chipOf(page, won).click();
+  await expect(chipOf(page, won)).toHaveAttribute('aria-selected', 'true');
+  await expect(
+    page.getByRole('heading', { level: isWide(page) ? 2 : 3, name: won }).filter({ visible: true }),
+  ).toBeVisible();
+  await expect(openOf(page, CUSTOMER.name)).toHaveCount(1);
 
-    await page.getByRole('button', { name: BOARD.clearStage, exact: true }).click();
-    await expect(
-      page.getByRole('heading', { level: 2, name: BOARD.allLiveProjects }),
-    ).toBeVisible();
-  } else {
-    /* Narrow, one pill names the stage shown and opens every stage as a sheet. */
-    await page.getByRole('button', { name: BOARD.allStages, exact: true }).click();
-    const sheet = page.getByRole('dialog', { name: BOARD.showStage });
-    await expect(sheet.getByText(BOARD.showStageLine)).toBeVisible();
-    await sheet.getByRole('radio', { name: ordered }).click();
-    await expect(sheet).toBeHidden();
-    await expect(page.getByRole('heading', { level: 3, name: ordered })).toBeVisible();
-    await expect(
-      page.getByText(BOARD.noneInStage('material_ordered')).filter({ visible: true }),
-    ).toBeVisible();
-    await expect(openOf(page, CUSTOMER.name)).toHaveCount(0);
-
-    await page.getByRole('button', { name: ordered, exact: true }).click();
-    await page
-      .getByRole('dialog', { name: BOARD.showStage })
-      .getByRole('radio', { name: BOARD.allStages })
-      .click();
-  }
+  await chipOf(page, TOP.all).first().click();
+  await expect(chipOf(page, won)).toHaveAttribute('aria-selected', 'false');
   await expect(openOf(page, CUSTOMER.name)).toHaveCount(1);
 });
 
@@ -220,7 +205,7 @@ test('a stage’s card holds its newest rows behind Show more', async ({ page })
   await expect(group.getByRole('button', { name: opens }).nth(4)).toBeFocused();
 });
 
-test('a project handed over leaves the live stages, and its stop counts the last 30 days', async ({
+test('a project handed over leaves the live stages, and its chip counts the last 30 days', async ({
   page,
 }) => {
   await ownerWithCompany(page, en);
@@ -229,29 +214,21 @@ test('a project handed over leaves the live stages, and its stop counts the last
   await handOverThroughApi(page, closed.projectId);
   await openBoard(page);
   const handedOver = BOARD.stage('handed_over');
-  const recent = BOARD.stopLine({ longestDays: null, recent: true }) ?? '';
 
   /* Live, only the project still moving. */
   await expect(openOf(page, CUSTOMER.name)).toHaveCount(1);
   await expect(openOf(page, SECOND.name)).toHaveCount(0);
 
-  if (isWide(page)) {
-    const stop = railOf(page).getByRole('button').filter({ hasText: handedOver });
-    await expect(stop).toContainText('1');
-    await expect(stop).toContainText(recent);
-    await stop.click();
-    await expect(page.getByRole('heading', { level: 2, name: handedOver })).toBeVisible();
-  } else {
-    await page.getByRole('button', { name: BOARD.allStages, exact: true }).click();
-    const option = page
-      .getByRole('dialog', { name: BOARD.showStage })
-      .getByRole('radio', { name: handedOver });
-    await expect(option).toContainText(recent);
-    await expect(option).toContainText('1');
-    await option.click();
-    await expect(page.getByRole('heading', { level: 3, name: handedOver })).toBeVisible();
-  }
-  /* Chosen, the stop lists the project it counts, and the live one steps aside. */
+  /* The handed-over chip counts the project handed over in the last 30 days. */
+  const chip = chipOf(page, handedOver);
+  await expect(chip).toContainText('1');
+  await chip.click();
+  await expect(
+    page
+      .getByRole('heading', { level: isWide(page) ? 2 : 3, name: handedOver })
+      .filter({ visible: true }),
+  ).toBeVisible();
+  /* Chosen, the chip lists the project it counts, and the live one steps aside. */
   await expect(openOf(page, SECOND.name)).toHaveCount(1);
   await expect(openOf(page, CUSTOMER.name)).toHaveCount(0);
   await expectNoSeriousViolations(page);

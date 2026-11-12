@@ -19,6 +19,10 @@ import { timeFieldWords } from './time-field';
 type T = Translator['t'];
 
 const SHEETS = {
+  detailsTitle: /*i18n*/ { id: 'Edit details' },
+  detailsLine: /*i18n*/ { id: 'The name and city, as the customer gives them.' },
+  detailsSend: /*i18n*/ { id: 'Save' },
+  city: /*i18n*/ { id: 'City' },
   logTitle: LEAD_DETAIL.logActivity,
   logLine: /*i18n*/ { id: 'What happened, while it is fresh. It goes on the timeline.' },
   logCall: /*i18n*/ { id: 'Log call' },
@@ -196,6 +200,13 @@ export function leadActSheetWords(t: T, copyAct: 'copy' | 'share') {
       stage: (stage: LeadStage) => t(LEAD_STAGE_WORD[stage]),
       lastContactLabel: t(SHEETS.lastContactLabel),
       merge: t(SHEETS.merge),
+    },
+    details: {
+      title: t(SHEETS.detailsTitle),
+      line: t(SHEETS.detailsLine),
+      send: t(SHEETS.detailsSend),
+      name: t(SHEETS.name),
+      city: t(SHEETS.city),
     },
   };
 }

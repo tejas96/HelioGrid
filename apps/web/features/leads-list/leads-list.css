@@ -23,13 +23,6 @@
   gap: var(--sp-2);
 }
 
-.hg-leads-list-stage {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  min-width: 0;
-}
-
 /* The lead's face beside its name, as the phone's row and the Team table draw a person. */
 .hg-leads-list-person {
   display: flex;
@@ -41,11 +34,12 @@
 .hg-leads-list-lead {
   display: flex;
   flex-direction: column;
+  gap: var(--sp-0-5);
   min-width: 0;
 }
 
 .hg-leads-list-lead-name {
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-semibold);
   color: var(--text-primary);
   overflow-wrap: break-word;
 }

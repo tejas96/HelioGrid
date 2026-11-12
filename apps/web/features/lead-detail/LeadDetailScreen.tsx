@@ -9,6 +9,7 @@ import {
   leadDetailPageWords,
   leadDetailSheetWords,
   leadTitleWords,
+  leadWorkCardsWords,
   markWonWords,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
@@ -18,12 +19,14 @@ import {
   LeadAssignPicker,
   LeadDetailSheet,
   LeadDetailStates,
+  LeadRecordMenu,
   MarkWonSheet,
   markWonSheetOf,
   ShellGlyph,
   useFormat,
   useOwnWidth,
 } from '@heliogrid/ui';
+import type { ReactNode } from 'react';
 import {
   type LeadCardProps,
   LeadContactsAndSections,
@@ -44,7 +47,8 @@ import './lead-detail.css';
  */
 export function LeadDetailScreen({ leadId }: { leadId: string }) {
   const t = useTranslate();
-  const screen = useLeadDetailScreen(leadId, useFormat().pack.timeZone);
+  const format = useFormat();
+  const screen = useLeadDetailScreen(leadId, format.pack.timeZone);
   const moves = useLeadDetailMoves(screen.files);
   const [room, width] = useOwnWidth<HTMLDivElement>();
   const columns = width !== null && width >= LEAD_DETAIL_COLUMNS_FROM;
@@ -56,7 +60,22 @@ export function LeadDetailScreen({ leadId }: { leadId: string }) {
       className="hg-shell-page hg-focus-target hg-lead-detail"
       data-columns={columns ? 'true' : undefined}
     >
-      <BackToLeads moves={moves} />
+      <BackToLeads
+        moves={moves}
+        menu={
+          read.kind === 'ready' ? (
+            <LeadRecordMenu
+              screen={screen}
+              lead={read.value.lead}
+              view={read.value.view}
+              onAddReferral={moves.addReferral}
+              onMerge={moves.merge}
+              onMarkWon={screen.won.open}
+              words={leadWorkCardsWords(t, read.value.lead, read.value.view, format.date)}
+            />
+          ) : null
+        }
+      />
       {read.kind === 'ready' ? (
         <LeadDetailReady
           screen={screen}
@@ -77,8 +96,11 @@ export function LeadDetailScreen({ leadId }: { leadId: string }) {
   );
 }
 
-/** The way back to the list, above the page — the desktop's crumb and the phone width's back. */
-function BackToLeads({ moves }: { moves: LeadDetailMoves }) {
+/**
+ * The way back to the list, above the page — the desktop's crumb and the phone width's back — and
+ * the record menu at its other end on every width, where a project's page holds its own.
+ */
+function BackToLeads({ moves, menu }: { moves: LeadDetailMoves; menu: ReactNode }) {
   const t = useTranslate();
   return (
     <div className="hg-lead-detail-back">
@@ -90,6 +112,7 @@ function BackToLeads({ moves }: { moves: LeadDetailMoves }) {
       >
         {destinationLabel(t, 'leads')}
       </Button>
+      {menu}
     </div>
   );
 }
@@ -130,7 +153,7 @@ function LeadDetailReady({
     });
     return (
       <div className="hg-lead-detail-column">
-        <LargeTitle title={heading.title} summary={heading.summary} />
+        <LargeTitle title={heading.title} summary={heading.summary} nameTitle />
         <LeadWork {...card} columns={false} />
         <LeadContactsAndSections {...card} first="contacts" />
         {overlays}

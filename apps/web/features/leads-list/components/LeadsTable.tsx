@@ -16,7 +16,8 @@ import {
   listedBillOrderOf,
   listedLeadOf,
   NamedGap,
-  StageTrack,
+  ShellGlyph,
+  StatusMark,
   useFormat,
 } from '@heliogrid/ui';
 
@@ -67,13 +68,25 @@ export function LeadsTable({
       width: '27%',
       render: ({ lead }) => (
         <span className="hg-leads-list-person">
-          <Avatar name={lead.name ?? undefined} size={theme.spacing['sp-8']} />
+          {lead.name === null ? (
+            <Avatar size={theme.spacing['sp-10']} glyph={<ShellGlyph name="phone" size="sm" />} />
+          ) : (
+            <Avatar name={lead.name} size={theme.spacing['sp-10']} />
+          )}
           <span className="hg-leads-list-lead">
-            <span className="hg-leads-list-lead-name">
-              {lead.name ?? <NamedGap gap={words.row.noName} scale="cell" />}
-            </span>
+            {lead.name === null ? (
+              <span className="hg-leads-list-lead-name hg-leads-list-mono">
+                {format.phone(lead.phoneE164)}
+              </span>
+            ) : (
+              <span className="hg-leads-list-lead-name">{lead.name}</span>
+            )}
             <span className="hg-leads-list-lead-sub">
-              <span className="hg-leads-list-mono">{format.phone(lead.phoneE164)}</span>
+              {lead.name === null ? (
+                <NamedGap gap={words.row.noName} scale="cell" />
+              ) : (
+                <span className="hg-leads-list-mono">{format.phone(lead.phoneE164)}</span>
+              )}
               {lead.city ?? <NamedGap gap={words.row.noCity} scale="cell" />}
             </span>
           </span>
@@ -84,12 +97,7 @@ export function LeadsTable({
       key: 'stage',
       label: words.columns.stage,
       width: '13%',
-      render: ({ lead }) => (
-        <span className="hg-leads-list-stage">
-          <StageTrack stage={lead.stage} size="sm" words={words.row.track} />
-          {words.row.stage(lead.stage)}
-        </span>
-      ),
+      render: ({ lead }) => <StatusMark tone="accent" label={words.row.stage(lead.stage)} />,
     },
     {
       key: 'source',
@@ -116,7 +124,14 @@ export function LeadsTable({
       label: words.columns.owner,
       width: '13%',
       render: ({ lead }) =>
-        lead.owner === null ? <NamedGap gap={words.row.noOwner} scale="cell" /> : lead.owner.name,
+        lead.owner === null ? (
+          <NamedGap gap={words.row.noOwner} scale="cell" />
+        ) : (
+          <span className="hg-leads-list-person">
+            <Avatar name={lead.owner.name} size={theme.spacing['sp-6']} />
+            {lead.owner.name}
+          </span>
+        ),
     },
     {
       key: 'next',

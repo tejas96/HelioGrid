@@ -1,6 +1,5 @@
 import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Avatar } from '../Avatar';
 import { Button } from '../Button';
 import { HeroPanel } from '../HeroPanel';
@@ -9,7 +8,6 @@ import { LeadStateBadge } from '../LeadStateBadge';
 import { NamedGap } from '../NamedGap';
 import { ProvenanceTier } from '../Provenance';
 import { StageTrack } from '../StageTrack';
-import { leadRecordMenuOf } from './LeadHero.logic';
 import type { LeadHeroIdentity, LeadHeroProps } from './LeadHero.types';
 
 /**
@@ -18,22 +16,27 @@ import type { LeadHeroIdentity, LeadHeroProps } from './LeadHero.types';
  * the value or its named gap, and the eight-step track with where the lead goes next.
  */
 export function LeadHero({
+  form,
   identity,
   stage,
   source,
   lifecycleState,
+  onEditDetails,
   onOwner,
   ownerName,
   value,
   project,
-  recordActs,
-  recordActsOff,
   words,
 }: LeadHeroProps) {
+  const narrow = form === 'narrow';
   return (
-    <HeroPanel menu={leadRecordMenuOf({ recordActs, recordActsOff, words }, recordGlyph)}>
+    <HeroPanel edit={{ label: words.editDetails, onPress: onEditDetails }}>
       {identity === null ? null : <Identity identity={identity} words={words} />}
-      <Chips source={source} onOwner={onOwner} ownerName={ownerName} words={words} />
+      {narrow ? (
+        <QuietFacts words={words} />
+      ) : (
+        <Chips source={source} onOwner={onOwner} ownerName={ownerName} words={words} />
+      )}
       {words.state === null && words.tries === null ? null : (
         <div className="hg-lead-hero-chips">
           {lifecycleState === null || words.state === null ? null : (
@@ -50,7 +53,44 @@ export function LeadHero({
           {words.nextLine === null ? null : <span>{words.nextLine}</span>}
         </div>
       </div>
+      {narrow ? <OwnerRow onOwner={onOwner} ownerName={ownerName} words={words} /> : null}
     </HeroPanel>
+  );
+}
+
+/** The narrow hero's facts: the stage its one chip, the deal and where it came from one quiet line. */
+function QuietFacts({ words }: Pick<LeadHeroProps, 'words'>) {
+  return (
+    <div className="hg-lead-hero-chips">
+      <StatusMark tone="accent" label={words.stage} />
+      <p className="hg-lead-hero-facts">
+        {words.segment === null ? null : <span className="hg-lead-hero-fact">{words.segment}</span>}
+        <span className="hg-lead-hero-fact">{words.cameFrom ?? words.source}</span>
+      </p>
+    </div>
+  );
+}
+
+/** Who has the lead, at the narrow hero's foot: their face and name, and the act that changes it. */
+function OwnerRow({
+  onOwner,
+  ownerName,
+  words,
+}: Pick<LeadHeroProps, 'onOwner' | 'ownerName' | 'words'>) {
+  return (
+    <div className="hg-lead-hero-owner">
+      {ownerName === null ? (
+        <span className="hg-lead-hero-owner-none" aria-hidden="true">
+          <ShellGlyph name="person-plus" size="sm" tone="secondary" />
+        </span>
+      ) : (
+        <Avatar name={ownerName} size={32} />
+      )}
+      <span className="hg-lead-hero-owner-name">{words.owner}</span>
+      <Button variant="secondary" size="md" spokenName={words.ownerSpoken} onClick={onOwner}>
+        {words.ownerAct}
+      </Button>
+    </div>
   );
 }
 
@@ -153,5 +193,3 @@ function Value({ value, project, words }: Pick<LeadHeroProps, 'value' | 'project
     </div>
   );
 }
-
-const recordGlyph = (name: ShellGlyphName) => <ShellGlyph name={name} size="sm" tone="secondary" />;

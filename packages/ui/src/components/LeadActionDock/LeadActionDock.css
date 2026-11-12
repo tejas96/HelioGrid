@@ -1,7 +1,6 @@
-/* LeadActionDock — the lead's five actions (`M02-32`). Call is the ocean pill, the biggest target;
-   the dock (phone) puts the four others beside it as circles with their word under, in thumb
-   reach — or under it as their own row when the words do not fit beside it; the grid (desktop)
-   stands them two by two under a full-width Call. */
+/* LeadActionDock — the lead's five actions (`M02-32`). The dock (phone, narrow web) draws them as
+   one row of equal circles with their word under, Call the one ocean circle; the grid (wide web)
+   stands the four two by two under a full-width Call. */
 
 .hg-lead-dock {
   display: flex;
@@ -21,38 +20,22 @@
   gap: var(--sp-3);
 }
 
-.hg-lead-dock[data-layout="dock"] .hg-lead-dock-acts {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: var(--sp-2);
-}
-
-/* The four rounds as one group: beside Call while they fit, else their own row under it, spread
-   across the column. Each is as wide as its word, which never breaks inside itself. */
+/* The dock: Call and the four others as one row of equal cells, each circle centred over its
+   short word; the word wraps inside its own cell, never pushing a neighbour. */
 .hg-lead-dock-rounds {
-  display: flex;
-  flex: 1 0 auto;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--sp-2);
 }
 
-/* Call is the tallest target on the lead. */
+/* Call is the tallest target on the wide page. */
 .hg-lead-dock .hg-lead-dock-call {
   height: var(--sp-12);
 }
 
-/* Call takes what the four circles leave, and never shrinks below its own words. */
-.hg-lead-dock[data-layout="dock"] .hg-lead-dock-call {
-  flex: 1 1 auto;
-  min-width: max-content;
-  width: auto;
-}
-
 .hg-lead-dock-round {
   display: flex;
-  flex: 0 0 auto;
+  min-width: 0;
   flex-direction: column;
   align-items: center;
   gap: var(--sp-1);
@@ -64,6 +47,7 @@
   line-height: var(--lh-caption);
   color: var(--text-secondary);
   text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .hg-lead-dock-states {

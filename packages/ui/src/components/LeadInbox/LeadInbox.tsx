@@ -119,7 +119,7 @@ function UpNext(props: LeadInboxProps) {
       {layout === 'stage' ? (
         <div className="hg-lead-inbox-grid">{tiles}</div>
       ) : (
-        <CardRows>{tiles}</CardRows>
+        <CardRows form="joined">{tiles}</CardRows>
       )}
       {view.unread > 0 ? (
         <Button

@@ -128,7 +128,7 @@ function Rows({ rows, words, onOpen }: LeadsListProps & { rows: LeadsListRows })
           <ProvenanceTier tier="assumed" />
         </View>
       </View>
-      <CardRows>
+      <CardRows form="separate">
         {rows.map((row, index) => (
           <LeadListRow
             key={row.lead.id}

@@ -20,6 +20,8 @@ import type {
   LeadCallBackWords,
   LeadContactDraft,
   LeadContactWords,
+  LeadDetailsDraft,
+  LeadDetailsWords,
   LeadDisqualifyWords,
   LeadJunkWords,
   LeadLogDraft,
@@ -42,7 +44,8 @@ export type LeadSheetAct =
   | { readonly kind: 'snooze'; readonly wakeOn: ISODate }
   | { readonly kind: 'disqualify'; readonly reason: DisqualifyReason }
   | { readonly kind: 'junk' }
-  | { readonly kind: 'callBack'; readonly date: ISODate; readonly time: string };
+  | { readonly kind: 'callBack'; readonly date: ISODate; readonly time: string }
+  | ({ readonly kind: 'details' } & Partial<LeadDetailsDraft>);
 
 /** What the sheet reads and sends on the lead's screen; `useLeadDetailScreen` satisfies it. */
 export interface LeadDetailSheetScreen {
@@ -96,6 +99,7 @@ export interface LeadActFormWords {
   readonly message: LeadMessageWords;
   readonly template: Readonly<Record<CrmMessageTemplateKey, TranslatedText>>;
   readonly contact: LeadContactWords;
+  readonly details: LeadDetailsWords;
 }
 
 /** Every word the sheet says, built in `@heliogrid/i18n` (`leadDetailSheetWords`). */

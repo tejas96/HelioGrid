@@ -5,7 +5,6 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
-import { Button } from '../Button/Button.native';
 import { Badge } from '../Chip/Chip.native';
 import { HeroPanel } from '../HeroPanel/HeroPanel.native';
 import { roleBadges } from './ProfilePreferences.logic';
@@ -16,8 +15,8 @@ const AVATAR = 72;
 
 /**
  * The person at the top of their own page, as the page's one solar-glass hero: the avatar, the
- * name in the display face, *Edit name*, then their roles as chips on the row that opens the role
- * card.
+ * name in the display face, the hero's pencil in its corner to edit the name, then their roles as
+ * chips on the row that opens the role card.
  */
 export function ProfileHero({
   words,
@@ -27,17 +26,12 @@ export function ProfileHero({
   onRole,
 }: Pick<ProfilePreferencesProps, 'words' | 'name' | 'photo' | 'onEditName' | 'onRole'>) {
   return (
-    <HeroPanel label={words.account}>
+    <HeroPanel label={words.account} edit={{ label: words.editName, onPress: onEditName }}>
       <View style={styles.who}>
         <Avatar name={name} src={photo} size={AVATAR} />
         <View style={styles.name}>
           <Text variant="h1">{name}</Text>
         </View>
-      </View>
-      <View style={styles.edit}>
-        <Button variant="secondary" size="sm" onClick={onEditName}>
-          {words.editName}
-        </Button>
       </View>
       <Pressable onPress={onRole} style={styles.roles}>
         <Text variant="body" bold>
@@ -59,7 +53,6 @@ export function ProfileHero({
 const styles = StyleSheet.create({
   who: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-4'] },
   name: { flex: 1, minWidth: 0 },
-  edit: { flexDirection: 'row', marginTop: theme.spacing['sp-3'] },
   roles: {
     flexDirection: 'row',
     alignItems: 'center',

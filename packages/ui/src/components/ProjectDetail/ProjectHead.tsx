@@ -1,7 +1,7 @@
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Avatar } from '../Avatar';
-import { Button } from '../Button';
+import { IconButton } from '../IconButton';
 import { Menu } from '../Menu';
 import { firstNameOf, installFactOf, projectMenuOf } from './ProjectDetail.logic';
 import type { ProjectHeadProps } from './ProjectDetail.parts.types';
@@ -25,23 +25,30 @@ export function ProjectFacts({ project, words }: Pick<ProjectHeadProps, 'project
 }
 
 /**
- * The acts beside the project's title (the picked desktop): *Call* the customer by their first name,
- * and the ⋯ of acts on the whole project — drawn only for a reader who moves stages, on a live one.
+ * The page's acts: on a phone *Call*, which opens the dial pad, and the ⋯; on the wide web the ⋯
+ * alone — a desk has no dial pad, and the Deal card shows the number. The ⋯ is drawn only for a
+ * reader who moves stages, on a live project.
  */
 export function ProjectHeadActs(props: ProjectHeadProps) {
-  const { project, words, onCall, sending } = props;
+  const { form, project, words, onCall, sending } = props;
   const items = projectMenuOf(props, menuGlyph);
   const name = project.customer.name ?? project.number;
+  const phone = <ShellGlyph name="phone" size="md" tone="primary" />;
   return (
     <span className="hg-project-detail-head-acts">
-      <Button
-        variant="secondary"
-        icon={<ShellGlyph name="phone" size="md" tone="primary" />}
-        onClick={onCall}
-      >
-        {words.call(firstNameOf(name))}
-      </Button>
-      {items === null ? null : <Menu label={words.menu} items={items} disabled={sending} />}
+      {form === 'bar' ? (
+        <IconButton label={words.call(name)} onClick={onCall}>
+          {phone}
+        </IconButton>
+      ) : null}
+      {items === null ? null : (
+        <Menu
+          label={words.menu}
+          items={items}
+          disabled={sending}
+          triggerLook={form === 'bar' ? 'surface' : undefined}
+        />
+      )}
     </span>
   );
 }

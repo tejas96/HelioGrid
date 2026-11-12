@@ -66,5 +66,11 @@ export interface LeadContactsCardProps {
   readonly language: LeadCallingFact<string | null> & { readonly options: readonly SelectOption[] };
   /** A save here that came back undone — a calling fact or a primary — said in the card. */
   readonly failure: TranslatedText | null;
+  /**
+   * The narrow page's card: it opens folded to its head and the primary person, so Call stays one
+   * tap away and the page's top stays short; the head opens the rest — the other people, do not
+   * call and the language. The wide page's is open.
+   */
+  readonly foldable: boolean;
   readonly words: LeadContactsCardWords;
 }

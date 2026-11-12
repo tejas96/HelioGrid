@@ -1,46 +1,83 @@
 import { leadValueShownOf } from '@heliogrid/domain';
+import type { ReactNode } from 'react';
 import type { MarketFormat } from '../../utils/format';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { HeroPanelMenu } from '../HeroPanel/HeroPanel.types';
 import {
   type LeadDockPresses,
   type LeadDockQuickStanding,
   leadDockOf,
 } from '../LeadActionDock/LeadActionDock.logic';
 import type { LeadActionDockProps } from '../LeadActionDock/LeadActionDock.types';
+import { leadRecordMenuOf } from '../LeadHero/LeadHero.logic';
 import type { LeadHeroProps, LeadRecordActPress } from '../LeadHero/LeadHero.types';
 import type { QualifyCardProps } from '../QualifyCard/QualifyCard.types';
-import type { LeadWorkCardsProps } from './LeadWorkCards.types';
+import type { LeadRecordMenuProps, LeadWorkCardsProps } from './LeadWorkCards.types';
+
+/** The state acts the record menu holds, out of the action row on every layout. */
+const MENU_STATE_ACTS = ['snooze', 'disqualify'] as const;
 
 /**
- * The hero: the record's stage, source, state, owner and value, on the desktop also its identity,
- * and the record menu — Mark won where the deal may close, a referral always, merge to who may,
- * junk where the standing offers it.
+ * The record menu's acts: snooze and disqualify where the standing offers them,
+ * then Mark won where the deal may close, a referral always, merge to who may, junk where the
+ * standing offers it.
  */
-export function leadHeroOf(
-  {
-    screen,
-    lead,
-    view,
-    identity,
-    onAddReferral,
-    onMerge,
-    onMarkWon,
-    onOpenProject,
-    words,
-  }: LeadWorkCardsProps,
-  format: MarketFormat,
-): LeadHeroProps {
-  const { lead: summary } = lead;
-  const recordActs: LeadRecordActPress[] = [
+export function leadRecordActsOf({
+  screen,
+  lead,
+  view,
+  onAddReferral,
+  onMerge,
+  onMarkWon,
+}: Pick<
+  LeadWorkCardsProps,
+  'screen' | 'lead' | 'view' | 'onAddReferral' | 'onMerge' | 'onMarkWon'
+>): LeadRecordActPress[] {
+  const offered = view.acts.stateActs;
+  const states: LeadRecordActPress[] = MENU_STATE_ACTS.filter((act) => offered.includes(act)).map(
+    (act) => ({ act, onPress: () => screen.acts.open({ kind: act }) }),
+  );
+  return [
+    ...states,
     ...(screen.canWin && view.acts.markWon
       ? [{ act: 'mark-won' as const, onPress: onMarkWon }]
       : []),
-    { act: 'add-referral', onPress: () => onAddReferral(summary.id) },
+    { act: 'add-referral', onPress: () => onAddReferral(lead.lead.id) },
+    ...(screen.canMerge
+      ? [{ act: 'merge' as const, onPress: () => onMerge(lead.customer.id) }]
+      : []),
+    ...(offered.includes('junk')
+      ? [{ act: 'junk' as const, onPress: () => screen.acts.open({ kind: 'junk' }) }]
+      : []),
   ];
-  if (screen.canMerge) recordActs.push({ act: 'merge', onPress: () => onMerge(lead.customer.id) });
-  if (view.acts.stateActs.includes('junk')) {
-    recordActs.push({ act: 'junk', onPress: () => screen.acts.open({ kind: 'junk' }) });
-  }
+}
+
+/** The narrow page's record menu, drawn in its top bar: its acts in order, or none to draw. */
+export function leadPageMenuOf(
+  props: LeadRecordMenuProps,
+  glyph: (name: ShellGlyphName) => ReactNode,
+): HeroPanelMenu | undefined {
+  const { screen, words } = props;
+  return leadRecordMenuOf(
+    {
+      recordActs: leadRecordActsOf(props),
+      recordActsOff: screen.acts.quickStanding?.kind === 'waiting',
+      words: words.hero,
+    },
+    glyph,
+  );
+}
+
+/**
+ * The hero: the record's stage, source, state, owner and value, on the wide page also its identity
+ * and the record menu in its corner; the narrow page draws that menu in its top bar.
+ */
+export function leadHeroOf(props: LeadWorkCardsProps, format: MarketFormat): LeadHeroProps {
+  const { screen, lead, identity, layout, onOpenProject, words } = props;
+  const { lead: summary } = lead;
   return {
+    form: layout === 'dock' ? 'narrow' : 'wide',
+    onEditDetails: () => screen.acts.open({ kind: 'details' }),
     identity: identity
       ? { name: summary.name, phone: format.phone(summary.phoneE164), city: summary.city }
       : null,
@@ -51,13 +88,15 @@ export function leadHeroOf(
     ownerName: summary.owner?.name ?? null,
     value: leadValueShownOf(summary.value, format.pack),
     project: screen.canOpenProject ? projectOfLead(lead, onOpenProject) : null,
-    recordActs,
-    recordActsOff: screen.acts.quickStanding?.kind === 'waiting',
     words: words.hero,
   };
 }
 
-/** The five actions and the state acts; a sheet-less act (wake, reopen) says where it stands. */
+/**
+ * The five actions and the state acts; a sheet-less act (wake, reopen) says where it stands. Only
+ * wake and reopen stay under the actions: snooze and disqualify are the record menu's, so the
+ * action row holds the day's work alone.
+ */
 export function leadWorkDockOf({
   screen,
   view,
@@ -79,11 +118,21 @@ export function leadWorkDockOf({
       else acts.open({ kind: act });
     },
   };
-  return { layout, ...leadDockOf(view, words.dock, presses, quick) };
+  const dock = leadDockOf(view, words.dock, presses, quick);
+  return {
+    layout,
+    ...dock,
+    stateActs: dock.stateActs.filter((each) => !MENU_STATE_ACTS.some((act) => act === each.act)),
+  };
 }
 
 /** The six questions inline (`M02-39`), and Mark qualified where the stage offers it. */
-export function leadQualifyOf({ screen, view, words }: LeadWorkCardsProps): QualifyCardProps {
+export function leadQualifyOf({
+  screen,
+  view,
+  layout,
+  words,
+}: LeadWorkCardsProps): QualifyCardProps {
   const { qualify } = screen;
   const mark = qualify.markQualified;
   return {
@@ -98,6 +147,7 @@ export function leadQualifyOf({ screen, view, words }: LeadWorkCardsProps): Qual
           failure: mark.failure === null ? null : words.failure(mark.failure),
         }
       : null,
+    foldable: layout === 'dock',
     words: words.qualify,
   };
 }

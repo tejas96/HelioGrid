@@ -22,6 +22,11 @@ export interface DetailRowAct {
   readonly spoken: TranslatedText | null;
   readonly variant: ButtonVariant;
   readonly glyph: ShellGlyphName | null;
+  /**
+   * The glyph alone says the act — a card's add — so it is drawn as a round icon that speaks
+   * `spoken` (`ui-adherence.md`); a row's own act keeps its word.
+   */
+  readonly iconOnly: boolean;
   readonly loading: boolean;
   readonly onPress: () => void;
 }
@@ -63,7 +68,7 @@ export function plainAct(
   label: TranslatedText,
   variant: ButtonVariant,
 ): Omit<DetailRowAct, 'onPress'> {
-  return { key, label, spoken: null, variant, glyph: null, loading: false };
+  return { key, label, spoken: null, variant, glyph: null, iconOnly: false, loading: false };
 }
 
 /** The line under a checklist row: who uploaded it when, why it is not needed, what it moves. */
@@ -134,6 +139,7 @@ function documentActsOf(
         spoken: words.uploadRow(row),
         variant: 'secondary',
         glyph: 'upload',
+        iconOnly: false,
         loading: samePlace(uploading, place),
         onPress: idle(() => onUpload(place)),
       },

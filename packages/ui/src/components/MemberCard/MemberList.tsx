@@ -62,7 +62,7 @@ export function MemberList({
   }
   const list = records ?? (
     <section aria-label={words.label}>
-      <CardRows>
+      <CardRows form="joined">
         {view.rows.map((row, index) => (
           <MemberRow
             key={row.id}

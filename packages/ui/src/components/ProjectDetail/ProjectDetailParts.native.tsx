@@ -11,6 +11,7 @@ import { Button } from '../Button/Button.native';
 import { Card } from '../Card/Card.native';
 import { FileLink as NamedFileLink } from '../FileLink/FileLink.native';
 import { HueTile } from '../HueTile/HueTile.native';
+import { IconButton } from '../IconButton/IconButton.native';
 import { Switch } from '../Switch/Switch.native';
 import type { ProjectBlock } from './ProjectDetail.blocks';
 import type { DetailRow, DetailRowAct } from './ProjectDetail.rows';
@@ -177,21 +178,18 @@ function Row({
         )}
         <FileLinks files={row.files} onOpen={onOpenFile} />
         <NotSent shown={row.notSent} words={words.notSent} onRetry={row.acts[0]?.onPress ?? null} />
-        {row.acts.slice(1).map((act) => (
-          <View key={act.key} style={styles.under}>
-            <RowAct act={act} focusAfter={focus} />
-          </View>
-        ))}
       </View>
       <RowEnd row={row} focus={focus} />
     </View>
   );
 }
 
-/** A row's end: its state, a quiet caption, its first act or its switch; a second act sits under. */
+/**
+ * A row's end: its state, a quiet caption, its acts or its switch — Upload, and the quiet *Not
+ * needed* under it, as the picked design stacks them, so neither sits off the name's line.
+ */
 function RowEnd({ row, focus }: { row: DetailRow; focus: FocusAfter }) {
-  const { mark, caption, show } = row;
-  const acts = row.acts.slice(0, 1);
+  const { mark, caption, show, acts } = row;
   if (mark === null && caption === null && acts.length === 0 && show === null) return null;
   return (
     <View style={styles.end}>
@@ -215,8 +213,15 @@ function RowEnd({ row, focus }: { row: DetailRow; focus: FocusAfter }) {
  */
 export function RowAct({ act, focusAfter }: { act: DetailRowAct; focusAfter: FocusAfter }) {
   const leaving = useFocusAfter(focusAfter);
-  const { label, spoken, variant, glyph, loading, onPress } = act;
+  const { label, spoken, variant, glyph, iconOnly, loading, onPress } = act;
   const icon = glyph === null ? null : <ShellGlyph name={glyph} size="sm" tone="primary" />;
+  if (iconOnly) {
+    return (
+      <IconButton label={spoken ?? label} disabled={loading} onClick={leaving(onPress)}>
+        {icon}
+      </IconButton>
+    );
+  }
   return (
     <Button
       variant={variant}
@@ -265,7 +270,6 @@ const styles = StyleSheet.create({
   rule: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors['line-soft'] },
   busy: { opacity: 0.6 },
   main: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
-  under: { flexDirection: 'row' },
   /* The mark over the act, never beside it: side by side they took half the row, and a Hindi
      row's name wrapped to three lines in what was left. */
   end: {

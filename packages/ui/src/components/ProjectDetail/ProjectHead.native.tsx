@@ -36,13 +36,17 @@ export function ProjectFacts({ project, words }: Pick<ProjectHeadProps, 'project
  * project — drawn only for a reader who moves stages, on a live one.
  */
 export function ProjectHeadActs(props: ProjectHeadProps) {
-  const { project, words, onCall, sending } = props;
+  const { form, project, words, onCall, sending } = props;
   const items = projectMenuOf(props, menuGlyph);
+  const name = project.customer.name ?? project.number;
+  const phone = <ShellGlyph name="phone" size="md" tone="primary" />;
   return (
     <View style={styles.acts}>
-      <IconButton label={words.call(project.customer.name ?? project.number)} onClick={onCall}>
-        <ShellGlyph name="phone" size="md" tone="primary" />
-      </IconButton>
+      {form === 'bar' ? (
+        <IconButton label={words.call(name)} onClick={onCall}>
+          {phone}
+        </IconButton>
+      ) : null}
       {items === null ? null : (
         <Menu label={words.menu} items={items} disabled={sending} triggerLook="surface" />
       )}

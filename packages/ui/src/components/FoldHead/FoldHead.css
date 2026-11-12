@@ -1,0 +1,42 @@
+/* FoldHead — a card's head as its one toggle. Full width, the 44 floor, the chevron last; it turns
+   over the motion tokens, and only by transform. */
+
+.hg-fold-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  text-align: start;
+  font: inherit;
+  cursor: pointer;
+}
+
+.hg-fold-head:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+.hg-fold-head-aside {
+  display: flex;
+  margin-inline-start: auto;
+}
+
+.hg-fold-head-chevron {
+  display: flex;
+  margin-inline-start: auto;
+  transition: transform var(--dur-standard) var(--ease-standard);
+}
+
+.hg-fold-head-aside + .hg-fold-head-chevron {
+  margin-inline-start: 0;
+}
+
+.hg-fold-head-chevron[data-open="true"] {
+  transform: rotate(180deg);
+}

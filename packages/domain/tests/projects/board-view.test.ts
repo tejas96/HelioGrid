@@ -40,7 +40,14 @@ const facts = (live: readonly BoardCard[]): BoardFacts => ({
   live,
 });
 
-const all: BoardChoice = { stage: null, searched: '', canAct: true, handedOver: null };
+const all: BoardChoice = {
+  stage: null,
+  searched: '',
+  canAct: true,
+  handedOver: null,
+  sort: 'longest',
+  manager: null,
+};
 
 describe('projectBoardViewOf — search', () => {
   const board = facts([
@@ -103,5 +110,49 @@ describe('handedOverSince — the stop looks back 30 company days', () => {
     ['2026-01-15', '2025-12-16'],
   ] as const)('from %s: %s', (today, since) => {
     expect(handedOverSince(today)).toBe(since);
+  });
+});
+
+describe('projectBoardViewOf — the order and one manager', () => {
+  const board = facts([
+    card('0001', { enteredOn: '2026-11-01', expectedInstallOn: '2026-11-20' }),
+    card('0002', { enteredOn: '2026-11-10', expectedInstallOn: null }),
+    card('0003', {
+      enteredOn: '2026-11-05',
+      expectedInstallOn: '2026-11-15',
+      manager: { userId: 'm2', name: 'Arjun' },
+    }),
+    card('0004', { enteredOn: '2026-11-05', expectedInstallOn: '2026-11-15' }),
+  ]);
+  const ids = (view: ReturnType<typeof projectBoardViewOf>) =>
+    view.groups.flatMap((group) => group.rows.map((row) => row.card.id));
+
+  it.each([
+    ['longest', ['0001', '0003', '0004', '0002']],
+    ['install', ['0003', '0004', '0001', '0002']],
+  ] as const)('orders %s first, a tie by id', (sort, order) => {
+    expect(ids(projectBoardViewOf(board, { ...all, sort }))).toEqual(order);
+  });
+
+  it('keeps the stage’s longest days whatever the order', () => {
+    const view = projectBoardViewOf(board, { ...all, sort: 'install' });
+    expect(view.groups[0]?.longestDays).toBe(10);
+  });
+
+  it.each([
+    [null, ['0001', '0003', '0004', '0002']],
+    ['m2', ['0003']],
+    ['nobody', []],
+  ] as const)('shows manager %s’s projects', (manager, shown) => {
+    expect(ids(projectBoardViewOf(board, { ...all, manager }))).toEqual(shown);
+  });
+
+  it('names every manager A to Z with their count, and the hero counts the whole board', () => {
+    const view = projectBoardViewOf(board, { ...all, manager: 'm2' });
+    expect(view.managers).toEqual([
+      { userId: 'm2', name: 'Arjun', count: 1 },
+      { userId: 'm1', name: 'Priya', count: 3 },
+    ]);
+    expect(view.liveCount).toBe(4);
   });
 });

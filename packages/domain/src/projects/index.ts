@@ -1,4 +1,12 @@
 export {
+  type BoardManager,
+  boardManagersOf,
+  boardRowsOrdered,
+  PROJECT_BOARD_FIRST_SORT,
+  PROJECT_BOARD_SORTS,
+  type ProjectBoardSort,
+} from './board-order';
+export {
   type BoardCard,
   type BoardChoice,
   type BoardFacts,

@@ -20,14 +20,10 @@
   gap: var(--sp-2);
 }
 
+/* The title takes the row; its look is the one card title (`Text` h3). */
 .hg-lead-contacts-title {
-  font-family: var(--font-sans);
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--tr-overline);
-  line-height: var(--lh-overline);
-  text-transform: uppercase;
-  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
 }
 
 .hg-lead-contact {
@@ -91,4 +87,10 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--sp-24) * 2)), 1fr));
   gap: var(--tile-gap);
+}
+
+/* The narrow page's head: the fold toggle takes the row, the add act stays its sibling. */
+.hg-lead-contacts-fold {
+  flex: 1;
+  min-width: 0;
 }

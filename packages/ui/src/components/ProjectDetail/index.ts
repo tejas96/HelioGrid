@@ -10,6 +10,7 @@ export {
   projectPageActsOf,
   projectStepsActsOf,
 } from './ProjectDetail.acts';
+export { WIDE_FROM as PROJECT_WIDE_FROM } from './ProjectDetail.logic';
 export type {
   ProjectHeadProps,
   ProjectHeadWords,

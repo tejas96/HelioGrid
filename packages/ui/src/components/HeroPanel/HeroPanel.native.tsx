@@ -17,8 +17,10 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
 import { BrandGradientDefs } from '../../utils/brand-gradient.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import { IconButton } from '../IconButton/IconButton.native';
 import { Menu } from '../Menu/Menu.native';
-import type { HeroPanelMenu, HeroPanelProps } from './HeroPanel.types';
+import type { HeroPanelEdit, HeroPanelMenu, HeroPanelProps } from './HeroPanel.types';
 
 const CELL = 44;
 
@@ -145,7 +147,8 @@ function Sweep({ id, size }: { id: string; size: Size }) {
   );
 }
 
-export function HeroPanel({ label, labelAside, name, menu, children }: HeroPanelProps) {
+export function HeroPanel({ label, labelAside, name, menu, edit, children }: HeroPanelProps) {
+  const corner = (menu === undefined ? 0 : 1) + (edit === undefined ? 0 : 1);
   const id = `hg-hero-${useId().replaceAll(':', '')}`;
   const [size, setSize] = useState<Size | null>(null);
   const measure = (event: LayoutChangeEvent) => {
@@ -170,7 +173,7 @@ export function HeroPanel({ label, labelAside, name, menu, children }: HeroPanel
           <Rect width={size.width} height={2} fill={`url(#${id}-line)`} />
         </Svg>
       )}
-      <Rows reserveCorner={menu !== undefined}>
+      <Rows corner={corner}>
         {label === undefined && labelAside === undefined ? null : (
           <View style={styles.head}>
             {label === undefined ? null : (
@@ -183,33 +186,52 @@ export function HeroPanel({ label, labelAside, name, menu, children }: HeroPanel
         )}
         {children}
       </Rows>
-      {menu === undefined ? null : <CornerMenu menu={menu} />}
+      {corner === 0 ? null : <Corner menu={menu} edit={edit} />}
     </View>
   );
 }
 
-/** The hero's rows; the first leaves the corner ⋯ its room, so nothing runs under it. */
-function Rows({ reserveCorner, children }: { reserveCorner: boolean; children: ReactNode }) {
+/** The hero's rows; the first leaves the corner's controls their room, so nothing runs under them. */
+function Rows({ corner, children }: { corner: number; children: ReactNode }) {
   const [first, ...rest] = Children.toArray(children);
-  if (!reserveCorner || first === undefined) return <>{children}</>;
+  if (corner === 0 || first === undefined) return <>{children}</>;
   return (
     <>
-      <View style={styles.reserve}>{first}</View>
+      <View style={corner === 1 ? styles.reserve : styles.reserveTwo}>{first}</View>
       {rest}
     </>
   );
 }
 
-/** The corner ⋯: the chips' glass and hairline, so it reads as a control on the glass. */
-function CornerMenu({ menu }: { menu: HeroPanelMenu }) {
+/**
+ * The corner: the pencil, then the ⋯ — each in the chips' glass and hairline, so they read as
+ * controls on the glass.
+ */
+function Corner({
+  menu,
+  edit,
+}: {
+  menu: HeroPanelMenu | undefined;
+  edit: HeroPanelEdit | undefined;
+}) {
   const { controlFill } = useGround();
+  const glass = [styles.control, { backgroundColor: controlFill }];
   return (
-    <Menu
-      label={menu.label}
-      items={menu.items}
-      disabled={menu.disabled ?? false}
-      style={[styles.menu, { backgroundColor: controlFill }]}
-    />
+    <View style={styles.corner}>
+      {edit === undefined ? null : (
+        <IconButton label={edit.label} onClick={edit.onPress} style={glass}>
+          <ShellGlyph name="pencil" size="sm" tone="primary" />
+        </IconButton>
+      )}
+      {menu === undefined ? null : (
+        <Menu
+          label={menu.label}
+          items={menu.items}
+          disabled={menu.disabled ?? false}
+          style={glass}
+        />
+      )}
+    </View>
   );
 }
 
@@ -233,10 +255,15 @@ const styles = StyleSheet.create({
   },
   label: { color: colors['on-panel-muted'] },
   reserve: { paddingRight: theme.spacing['sp-12'] },
-  menu: {
+  reserveTwo: { paddingRight: theme.spacing['sp-12'] * 2 + theme.spacing['sp-2'] },
+  corner: {
     position: 'absolute',
     top: theme.spacing['sp-3'],
     right: theme.spacing['sp-3'],
+    flexDirection: 'row',
+    gap: theme.spacing['sp-2'],
+  },
+  control: {
     borderRadius: theme.radius['r-pill'],
     borderWidth: 1,
     borderColor: colors['line-soft'],

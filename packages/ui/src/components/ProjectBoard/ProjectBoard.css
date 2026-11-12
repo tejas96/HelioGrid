@@ -1,7 +1,7 @@
 /* ProjectBoard — the board under its large title (`SCR-M08-01`, the picked design). Sized from its
    own room: the wrapper is the container, so a rule on the board itself can ask how wide it is.
-   Narrow, one column as the phone draws it; at 960 px of room, the desk's frame — the title beside
-   the search field, the rail across the top, the day's work beside the table. */
+   Narrow, one column as the phone draws it; at 960 px of room, the desk's frame — the list top
+   across the page, the day's work beside the table. */
 
 .hg-project-board-room {
   container: hg-project-board / inline-size;
@@ -27,26 +27,9 @@
   min-width: 0;
 }
 
-/* The title, and the search beside it: a glyph in the narrow room, the field in the wide one. */
-.hg-project-board-top {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-4);
-}
-
+/* The large title, over the list top. */
 .hg-project-board-title {
-  flex: 1;
   min-width: 0;
-}
-
-.hg-project-board-search-glyph {
-  flex: none;
-  align-self: flex-start;
-}
-
-.hg-project-board-search {
-  flex: none;
-  width: 20rem;
 }
 
 .hg-project-board-columns,
@@ -160,76 +143,6 @@
   color: var(--text-secondary);
 }
 
-/* The hero's two figures: what is the person's to do, and what waits on others. */
-.hg-project-board-figures {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--sp-5);
-}
-
-.hg-project-board-figure {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
-}
-
-.hg-project-board-number {
-  font-family: var(--font-display);
-  font-size: var(--fs-hero-phone);
-  line-height: var(--lh-hero-phone);
-  letter-spacing: var(--tr-hero-phone);
-  font-variant-numeric: tabular-nums;
-  color: var(--on-panel);
-}
-
-.hg-project-board-figure-word {
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
-  font-weight: var(--fw-medium);
-  color: var(--on-panel);
-}
-
-.hg-project-board-figure[data-quiet="true"] .hg-project-board-number,
-.hg-project-board-figure[data-quiet="true"] .hg-project-board-figure-word {
-  color: var(--on-panel-muted);
-}
-
-.hg-project-board-rule {
-  align-self: stretch;
-  width: 1px;
-  margin-block: var(--sp-2);
-  background: var(--line-soft);
-}
-
-.hg-project-board-clear {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-}
-
-.hg-project-board-clear-words {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-0-5);
-  min-width: 0;
-}
-
-.hg-project-board-clear-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--fs-figure);
-  line-height: var(--lh-figure);
-  letter-spacing: var(--tr-figure);
-  color: var(--on-panel);
-}
-
-.hg-project-board-clear-line {
-  margin: 0;
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-body-sm);
-  color: var(--on-panel-muted);
-}
-
 /* A search that found nothing: what was searched, and the way to clear it. */
 .hg-project-board-no-match {
   display: flex;
@@ -246,4 +159,17 @@
   line-height: var(--lh-body);
   color: var(--text-primary);
   overflow-wrap: anywhere;
+}
+
+/* With nothing to do and nothing waited on, the day's-work column holds nothing: the table takes
+   the whole width under the list top instead of a column beside an empty one. */
+@container hg-project-board (width >= 960px) {
+  .hg-project-board-columns:not(:has(.hg-project-board-needs[data-room="wide"] > *)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hg-project-board-columns:not(:has(.hg-project-board-needs[data-room="wide"] > *))
+    > .hg-project-board-work {
+    display: none;
+  }
 }

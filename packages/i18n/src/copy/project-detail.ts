@@ -5,7 +5,10 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ProjectActRefusal } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
+import { ACTIVITY_STREAM, activityStreamWords } from './activity-stream';
+import { actorClassWords } from './actor-class';
 import { shownAsSent } from './assembled';
+import { crmVocabularyWords } from './crm-vocabulary';
 import { projectNextWords } from './project-next';
 import { alreadyMovedWords, projectPageWords } from './project-page';
 import { type PackWord, PROJECT_DAYS, PROJECT_FAILED_MESSAGE } from './projects';
@@ -61,6 +64,7 @@ export const PROJECT_DETAIL = {
   noCrew: /*i18n*/ { id: 'No crew yet — it is picked at Dispatched' },
   otherFiles: /*i18n*/ { id: 'Other files' },
   addFile: /*i18n*/ { id: 'Add' },
+  addFileSpoken: /*i18n*/ { id: 'Add a file' },
   fromLead: /*i18n*/ { id: 'From the lead' },
   addedBy: /*i18n*/ { id: 'Added by {name}' },
   showToCustomer: /*i18n*/ { id: 'Show to customer' },
@@ -198,6 +202,14 @@ export function projectDetailWords(t: T, word: PackWord, day: (date: string) => 
     noCrew: t(PROJECT_DETAIL.noCrew),
     otherFiles: t(PROJECT_DETAIL.otherFiles),
     addFile: t(PROJECT_DETAIL.addFile),
+    addFileSpoken: t(PROJECT_DETAIL.addFileSpoken),
+    stream: activityStreamWords(t, actorClassWords(t)),
+    streamFrame: {
+      todayLabel: t(ACTIVITY_STREAM.today),
+      yesterdayLabel: t(ACTIVITY_STREAM.yesterday),
+      countLabel: t(ACTIVITY_STREAM.countLabel),
+    },
+    activityKind: crmVocabularyWords(t).activityKind,
     fromLead: t(PROJECT_DETAIL.fromLead),
     addedBy: (name: string) => t(PROJECT_DETAIL.addedBy, { name }),
     showToCustomer: t(PROJECT_DETAIL.showToCustomer),

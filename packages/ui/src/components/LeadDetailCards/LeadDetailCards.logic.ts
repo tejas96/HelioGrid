@@ -8,7 +8,7 @@ import type { LeadDetailCardsProps } from './LeadDetailCards.types';
 
 /** The contacts card from the lead's screen: who to reach, the primary, and the calling facts. */
 export function leadContactsCardOf<Failure>(
-  { screen, view, onDial, words }: LeadDetailCardsProps<Failure>,
+  { screen, view, onDial, first, words }: LeadDetailCardsProps<Failure>,
   format: MarketFormat,
 ): LeadContactsCardProps {
   const { acts, contacts } = screen;
@@ -34,6 +34,8 @@ export function leadContactsCardOf<Failure>(
       options: words.languages,
     },
     failure: contacts.cardFailure === null ? null : words.failure(contacts.cardFailure),
+    /* One column is the narrow page: contacts lead there, folded to the primary person. */
+    foldable: first === 'contacts',
     words: words.contacts,
   };
 }

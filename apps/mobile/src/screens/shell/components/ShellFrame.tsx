@@ -47,6 +47,11 @@ export interface ShellFrameProps {
    * change). It sits under the content and above the keyboard; the pill is hidden while it shows.
    */
   foot?: ReactNode;
+  /**
+   * The page draws no billing strip: on a lead, worked on a call, it sat between the bar and the
+   * large title and pushed Call below the fold; the home and the lists carry it.
+   */
+  stripless?: boolean;
   children: ReactNode;
 }
 
@@ -66,6 +71,7 @@ export function ShellFrame({
   lead,
   pad = 'expressive',
   foot,
+  stripless,
   children,
 }: ShellFrameProps) {
   const t = useTranslate();
@@ -89,7 +95,7 @@ export function ShellFrame({
         <PinnedTop band={band} reach={insets.top}>
           {topBar}
           {/* SCR-SHELL-06: pinned under the bar, outside the scroll; Frame 8 (no pill) reads nothing. */}
-          {items.length > 0 ? <ShellBillingStrip /> : null}
+          {items.length > 0 && stripless !== true ? <ShellBillingStrip /> : null}
         </PinnedTop>
         <View style={styles.region}>
           {/* A page with fields keeps the field typed in, its line and the act bar above the keyboard,

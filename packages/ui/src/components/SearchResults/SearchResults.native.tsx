@@ -91,7 +91,7 @@ function SearchResultGroup<Failure>(
           </Pressable>
         )}
       </View>
-      <CardRows>
+      <CardRows form="joined">
         {group.rows.map((row, at) => (
           <SearchResultRow key={row.key} {...props} row={row} first={at === 0} />
         ))}

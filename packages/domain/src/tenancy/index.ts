@@ -60,6 +60,7 @@ export {
   companyProfileSaveOf,
   companyProfileValuesAtRead,
   companyProfileView,
+  PERSON_NAME_CAP,
   registrationsChanged,
 } from './company-profile-draft';
 export type { CompanyProfileLife } from './company-profile-life';

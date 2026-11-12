@@ -1,3 +1,4 @@
+import { QUALIFY_QUESTIONS } from '@heliogrid/domain';
 import {
   type createTranslator,
   leadDetailPageWords,
@@ -13,7 +14,9 @@ import {
  */
 
 /**
- * Call and the four acts' words under the dock's round buttons, the roof question and one answer,
+ * Call and the four acts' words under the dock's round buttons, the folded qualify card's count —
+ * the flow's fresh lead has none answered, and its overline's case differs on Android — the roof
+ * question and one answer,
  * the mark an answer saved shows, the Timeline tab and the way back.
  */
 export function leadDetailFlowWords(
@@ -27,6 +30,7 @@ export function leadDetailFlowWords(
     LOG_SHORT: dock.log.short,
     VISIT_SHORT: dock.visit.short,
     DESIGN_SHORT: dock.design.short,
+    QUALIFY_FOLDED: qualify.count(0, QUALIFY_QUESTIONS.length),
     ROOF: t.t(QUALIFY_QUESTION_LABEL.roofOwnership),
     ROOF_OWNED: qualify.choice('roofOwnership', 'own'),
     ANSWER_SAVED: qualify.saved,

@@ -5,7 +5,7 @@ import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native
 import { Text } from '../../primitives/Text/Text.native';
 import type { LargeTitleProps } from './LargeTitle.types';
 
-export function LargeTitle({ title, summary, titleRef }: LargeTitleProps) {
+export function LargeTitle({ title, summary, titleRef, nameTitle }: LargeTitleProps) {
   const heading = useRef<View>(null);
   useImperativeHandle(titleRef, () => ({
     focus: () => focusScreenReaderOn(() => heading.current),
@@ -13,7 +13,9 @@ export function LargeTitle({ title, summary, titleRef }: LargeTitleProps) {
   return (
     <View style={styles.head}>
       <View ref={heading} accessible accessibilityRole="header">
-        <Text variant="display">{title}</Text>
+        <Text variant="display" twoLines={nameTitle}>
+          {title}
+        </Text>
       </View>
       {summary === undefined ? null : (
         <Text variant="body" color="secondary">

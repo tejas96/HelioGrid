@@ -1,4 +1,4 @@
-import type { ProjectBoardView, Read, TodoRow } from '@heliogrid/domain';
+import type { ProjectBoardSort, ProjectBoardView, Read, TodoRow } from '@heliogrid/domain';
 import type { ProjectBoardProps } from './ProjectBoard.types';
 
 /** The board's screen — `useProjectBoardScreen`, by shape. */
@@ -7,6 +7,8 @@ export interface ProjectBoardScreen {
   readonly choose: (stage: ProjectBoardView['chosen']) => void;
   readonly searched: string;
   readonly search: (text: string) => void;
+  readonly sortBy: (sort: ProjectBoardSort) => void;
+  readonly runBy: (manager: string | null) => void;
   readonly todo: (row: TodoRow) => {
     readonly projectId: string;
     readonly ask: 'earlyProof' | null;
@@ -22,7 +24,7 @@ export function projectBoardActsOf(
   open: (projectId: string, ask: 'earlyProof' | null) => void,
 ): Pick<
   ProjectBoardProps,
-  'read' | 'searched' | 'onSearch' | 'onOpen' | 'onTodo' | 'onChooseStage'
+  'read' | 'searched' | 'onSearch' | 'onOpen' | 'onTodo' | 'onChooseStage' | 'onSortBy' | 'onRunBy'
 > {
   return {
     read: screen.read,
@@ -34,17 +36,7 @@ export function projectBoardActsOf(
       open(answer.projectId, answer.ask);
     },
     onChooseStage: screen.choose,
+    onSortBy: screen.sortBy,
+    onRunBy: screen.runBy,
   };
-}
-
-/** What the large title's line counts once the board is read — the whole board, whatever the search. */
-export function boardSummaryOf(read: Read<ProjectBoardView>): {
-  readonly live: number;
-  readonly todo: number;
-  readonly waiting: number;
-  readonly allClear: boolean;
-} | null {
-  if (read.kind !== 'ready') return null;
-  const { liveCount, todoCount, waitCount, allClear } = read.value;
-  return { live: liveCount, todo: todoCount, waiting: waitCount, allClear };
 }

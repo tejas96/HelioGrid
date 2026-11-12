@@ -29,7 +29,16 @@ export interface ProjectHeadWords {
  * its acts — *Call* the customer and the ⋯ of acts on the whole project, drawn only for a reader who
  * moves stages, on a live project.
  */
+/**
+ * `header` — the wide web's: the ⋯ alone beside the title. A desk has no dial pad to hand a call
+ * to, and the Deal card shows the number. `bar` — the phone's top bar and the narrow web's way-back
+ * row: Call, which opens the dial pad, and the ⋯ as round icons, as every record page's bar draws
+ * its acts.
+ */
+export type ProjectHeadForm = 'header' | 'bar';
+
 export interface ProjectHeadProps {
+  readonly form: ProjectHeadForm;
   readonly project: ProjectDetailFacts;
   readonly view: ProjectDetailView;
   readonly words: ProjectHeadWords;

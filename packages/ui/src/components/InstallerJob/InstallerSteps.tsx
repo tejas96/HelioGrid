@@ -36,7 +36,7 @@ export function InstallerSteps(props: InstallerStepsProps) {
           {words.stepsCount(progress.ticked, progress.total)}
         </span>
       </div>
-      <CardRows>
+      <CardRows form="joined">
         {rows.map((row) => (
           <StepRow key={row.key} row={row} words={words} onOpenFile={props.onOpenFile} />
         ))}

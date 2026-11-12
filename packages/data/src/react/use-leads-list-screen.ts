@@ -1,7 +1,6 @@
 'use client';
 import type { LeadList, LeadListRow, LeadPipeline } from '@heliogrid/contracts';
 import {
-  billSortStepped,
   can,
   LEADS_QUERY_SETTLE_MS,
   type LeadSource,
@@ -63,8 +62,6 @@ export interface LeadsListScreen {
   toggleDormant(): void;
   setSource(source: LeadSource | null): void;
   setSort(sort: LeadsListSort): void;
-  /** The phone's Bill chip: largest first, smallest first, then newest first again. */
-  stepBillSort(): void;
   setQuery(query: string): void;
   /** Every filter off and the widest choice of whose leads; the order stays. */
   clearFilters(): void;
@@ -143,7 +140,6 @@ export function useLeadsListScreen(): LeadsListScreen {
     toggleDormant: () => setFilters((now) => ({ ...now, dormant: !now.dormant })),
     setSource: (source) => change({ source }),
     setSort: (sort) => change({ sort }),
-    stepBillSort: () => setFilters((now) => ({ ...now, sort: billSortStepped(now.sort) })),
     setQuery: (query) => change({ query }),
     clearFilters: () => {
       setWhose(null);

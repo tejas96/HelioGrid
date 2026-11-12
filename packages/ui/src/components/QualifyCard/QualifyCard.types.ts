@@ -55,5 +55,10 @@ export interface QualifyCardProps {
   readonly onRetry: (question: QualifyQuestion) => void;
   /** Null when the lead's stage or state offers no Mark qualified. */
   readonly markQualified: QualifyMarkAct | null;
+  /**
+   * The narrow page's card: it opens folded to its head — the name, the count and the dots — and
+   * the head opens the questions in place, so the page's top stays short. The wide page's is open.
+   */
+  readonly foldable: boolean;
   readonly words: QualifyCardWords;
 }

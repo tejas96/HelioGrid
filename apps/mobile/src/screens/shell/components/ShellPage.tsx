@@ -23,6 +23,15 @@ interface DrillDown {
   titleRef?: Ref<FocusHandle>;
   /** The page's own round acts in the bar, after its search — a project's Call and ⋯. */
   actions?: ReactNode;
+  /** The title is a record's own name, kept to two lines (`LargeTitle`'s `nameTitle`). */
+  nameTitle?: boolean;
+  /** The page draws no billing strip under its bar (`ShellFrame`'s `stripless`). */
+  stripless?: boolean;
+  /**
+   * The bar draws no search: on a record a rep works on a call — a lead — the round acts are its
+   * own, and search waits one tap back on the list.
+   */
+  searchless?: boolean;
 }
 
 /**
@@ -76,7 +85,9 @@ export function ShellPage({
             notificationsLabel={t(SHELL.notifications)}
             title={drillDown.title}
             scrolled={scrolled}
-            onSearchClick={() => navigation.navigate('Search')}
+            onSearchClick={
+              drillDown.searchless === true ? undefined : () => navigation.navigate('Search')
+            }
             actions={drillDown.actions}
             leading={
               <ShellAction
@@ -102,6 +113,7 @@ export function ShellPage({
               title={drillDown.title}
               summary={drillDown.summary}
               titleRef={drillDown.titleRef}
+              nameTitle={drillDown.nameTitle}
             />
             {lead}
           </>
@@ -109,6 +121,7 @@ export function ShellPage({
       }
       pad={pad}
       foot={foot}
+      stripless={drillDown?.stripless === true}
     >
       {children}
       <GrievanceNote open={screen.grievance.isOpen} onClose={screen.grievance.close} />

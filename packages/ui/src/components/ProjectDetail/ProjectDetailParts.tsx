@@ -7,6 +7,7 @@ import { Button } from '../Button';
 import { Card } from '../Card';
 import { FileLink as NamedFileLink } from '../FileLink';
 import { HueTile } from '../HueTile';
+import { IconButton } from '../IconButton';
 import { Switch } from '../Switch';
 import type { ProjectBlock } from './ProjectDetail.blocks';
 import type { DetailRow, DetailRowAct } from './ProjectDetail.rows';
@@ -154,9 +155,6 @@ function Row({
         {row.sub === null ? null : <span className="hg-project-detail-row-sub">{row.sub}</span>}
         <FileLinks files={row.files} onOpen={onOpenFile} />
         <NotSent shown={row.notSent} words={words.notSent} onRetry={row.acts[0]?.onPress ?? null} />
-        {row.acts.slice(1).map((act) => (
-          <RowAct key={act.key} act={act} focusAfter={focus} />
-        ))}
       </span>
       <RowEnd row={row} focus={focus} />
     </li>
@@ -164,12 +162,11 @@ function Row({
 }
 
 /**
- * A row's end: its state as glyph and word, a quiet caption, its first act or its switch. A second,
- * quieter act sits under the row's name, so the name keeps its room on a phone.
+ * A row's end: its state as glyph and word, a quiet caption, its acts or its switch — Upload, and the
+ * quiet *Not needed* under it, as the picked design stacks them and the phone half does.
  */
 function RowEnd({ row, focus }: { row: DetailRow; focus: FocusAfter }) {
-  const { mark, caption, show } = row;
-  const acts = row.acts.slice(0, 1);
+  const { mark, caption, show, acts } = row;
   if (mark === null && caption === null && acts.length === 0 && show === null) return null;
   return (
     <span className="hg-project-detail-row-end">
@@ -190,8 +187,15 @@ function RowEnd({ row, focus }: { row: DetailRow; focus: FocusAfter }) {
  */
 export function RowAct({ act, focusAfter }: { act: DetailRowAct; focusAfter: FocusAfter }) {
   const leaving = useFocusAfter(focusAfter);
-  const { label, spoken, variant, glyph, loading, onPress } = act;
+  const { label, spoken, variant, glyph, iconOnly, loading, onPress } = act;
   const icon = glyph === null ? null : <ShellGlyph name={glyph} size="sm" tone="primary" />;
+  if (iconOnly) {
+    return (
+      <IconButton label={spoken ?? label} disabled={loading} onClick={leaving(onPress)}>
+        {icon}
+      </IconButton>
+    );
+  }
   return (
     <Button
       variant={variant}

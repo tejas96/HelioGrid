@@ -72,6 +72,12 @@ export interface LeadMessageWords {
   readonly handedOn: TranslatedText;
 }
 
+/** The lead's own details (`M02-03`): its name and city, filled on first contact. */
+export interface LeadDetailsWords extends FormWords {
+  readonly name: TranslatedText;
+  readonly city: TranslatedText;
+}
+
 export interface LeadContactWords extends FormWords {
   readonly editTitle: TranslatedText;
   readonly name: TranslatedText;

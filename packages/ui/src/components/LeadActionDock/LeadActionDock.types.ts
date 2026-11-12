@@ -3,9 +3,10 @@ import type { LeadDetailAction, LeadStateAct } from '@heliogrid/domain';
 import type { ActionReasonSentence } from '../ActionReason/ActionReason.types';
 
 /**
- * `dock` — the phone's: Call as the big ocean pill, the other four as round acts with a short word
- * under each, all in thumb reach. `grid` — the desktop's: Call across the column, the four as glass
- * pills two by two.
+ * `dock` — the phone's and the narrow web's: the five acts as one row of equal circles, each with
+ * its short word under it, Call the one ocean circle; the record menu in the top bar holds snooze
+ * and disqualify. `grid` — the wide web's: Call across the column, the four as glass pills two by
+ * two, the state acts under them.
  */
 export type LeadActionDockLayout = 'dock' | 'grid';
 
@@ -52,4 +53,9 @@ export interface LeadActionDockProps {
   readonly stateActs: readonly LeadDockStateAct[];
   /** A state act without a sheet (wake, reopen): out, or back undone with why; null otherwise. */
   readonly standing: LeadDockStateStanding | null;
+  /**
+   * The lead is disqualified or junk: in the `dock` the five acts step aside and Reopen stands
+   * alone, so nobody calls or books a closed lead by mistake. The `grid` keeps its acts.
+   */
+  readonly closed: boolean;
 }

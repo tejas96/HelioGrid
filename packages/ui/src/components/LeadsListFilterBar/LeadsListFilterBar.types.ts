@@ -7,8 +7,10 @@ import type {
   LeadsPipeline,
   LeadsWhose,
 } from '@heliogrid/domain';
+import type { FilterPanelWords } from '../FilterPanel/FilterPanel.types';
+import type { ListRoom } from '../ListTop/ListTop.types';
 import type { SegmentedOption } from '../SegmentedControl/SegmentedControl.types';
-import type { StageMeterForm, StageMeterWords } from '../StageMeter/StageMeter.types';
+import type { StageMeterWords } from '../StageMeter/StageMeter.types';
 
 /** What the bar reads and sets on the list's screen; `useLeadsListScreen` satisfies it. */
 export interface LeadsListFilterBarScreen {
@@ -22,16 +24,8 @@ export interface LeadsListFilterBarScreen {
   pickStage(stage: LeadStage): void;
   toggleDormant(): void;
   setSource(source: LeadSource | null): void;
-  /** The Bill chip: largest first, smallest first, then newest first again. */
-  stepBillSort(): void;
+  setSort(sort: LeadsListSort): void;
   setQuery(query: string): void;
-}
-
-/** One choice of the source menu: any source (`null`), or one source by its word. */
-export interface LeadsListSourceChoice {
-  readonly key: string;
-  readonly label: TranslatedText;
-  readonly source: LeadSource | null;
 }
 
 /** Every word the bar says, built in `@heliogrid/i18n` (`leadsListWords`). */
@@ -45,36 +39,55 @@ export interface LeadsListFilterBarWords {
   readonly search: TranslatedText;
   readonly searchHint: TranslatedText;
   readonly clearSearch: TranslatedText;
-  /** The chips' group name, and the tick's name on a chosen chip. */
-  readonly filters: TranslatedText;
-  readonly selected: TranslatedText;
+}
+
+/** The list top's own words, built in `@heliogrid/i18n` (`leadsListTopWords`). */
+export interface LeadsListTopWords {
+  /** The hero's overline — *Today · Wednesday, 11 Nov*. */
+  readonly today: TranslatedText;
+  readonly name: TranslatedText;
+  readonly open: TranslatedText;
+  readonly openSpoken: (count: number) => TranslatedText;
+  readonly inbox: TranslatedText;
+  readonly inboxSpoken: (count: number) => TranslatedText;
   readonly dormant: TranslatedText;
-  /** The Bill chip's words by the order the list is in. */
-  readonly bill: (sort: LeadsListSort) => TranslatedText;
-  /** The source menu's name, and its trigger's words while no source is chosen. */
+  readonly dormantSpoken: (count: number) => TranslatedText;
+  readonly sortTitle: TranslatedText;
+  readonly sortNamed: (order: TranslatedText) => TranslatedText;
+  readonly newest: TranslatedText;
+  readonly billLargest: TranslatedText;
+  readonly billSmallest: TranslatedText;
+  readonly lastActivity: TranslatedText;
+  readonly close: TranslatedText;
+  readonly stages: TranslatedText;
+  readonly all: TranslatedText;
+  readonly stage: (stage: LeadStage) => TranslatedText;
+  readonly filters: TranslatedText;
+  readonly filtersActive: (count: number) => TranslatedText;
+  readonly panel: FilterPanelWords;
   readonly source: TranslatedText;
+  readonly anySource: TranslatedText;
   readonly sourceWord: (source: LeadSource) => TranslatedText;
-  readonly sourceChoices: readonly LeadsListSourceChoice[];
+  readonly sources: readonly LeadSource[];
+  readonly dormantFilter: TranslatedText;
+  readonly dormantOnly: TranslatedText;
 }
 
 /**
- * **The Leads list's filters** (`SCR-M02-03`, `M02-41`), both platforms: whose leads with the
- * inbox beside them, the pipeline meter whose stages filter, the search and the chips — Dormant
- * with its count, the bill's order, the source. They stay in view while a filter's read is out and
- * when nothing matches, so the way back is never hidden. What it reads and sets is
- * `useLeadsListScreen`'s; the screen supplies the inbox's move.
+ * **The Leads list's top** (`SCR-M02-03`, `M02-41`), both platforms: the shared `ListTop` filled
+ * from the list's screen — the open leads with the inbox and the dormant beside them, whose leads,
+ * the search with the order and the filters (source, dormant), and the stage chips, Won last. It
+ * stays while a filter's read is out and when nothing matches, so the way back is never hidden.
  */
 export interface LeadsListFilterBarProps {
   readonly screen: LeadsListFilterBarScreen;
   /** The pipeline under the chosen owner, as the last read counted it. */
   readonly pipeline: LeadsPipeline;
-  /**
-   * `card`: the phone's head — whose leads, the meter's card, the search, then the chips with the
-   * Bill order. `band`: over the desktop's table — the meter's band, then whose leads beside the
-   * search and the chips; the table's own column orders the bill, so no Bill chip is drawn.
-   */
-  readonly form: StageMeterForm;
-  /** The inbox segment: the morning triage, a screen of its own. */
+  /** How many leads the filters match, the filter sheet's *Show N results*. */
+  readonly matching: number;
+  readonly room: ListRoom;
+  /** The inbox: the morning triage, a screen of its own. */
   readonly onInbox: () => void;
   readonly words: LeadsListFilterBarWords;
+  readonly top: LeadsListTopWords;
 }

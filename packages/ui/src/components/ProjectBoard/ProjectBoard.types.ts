@@ -1,7 +1,15 @@
 import type { ProjectCard, TranslatedText } from '@heliogrid/contracts';
-import type { ProjectBoardView, Read, StageStop, TodoKind, TodoRow } from '@heliogrid/domain';
+import type {
+  ProjectBoardSort,
+  ProjectBoardView,
+  Read,
+  StageStop,
+  TodoKind,
+  TodoRow,
+} from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter';
+import type { FilterPanelWords } from '../FilterPanel/FilterPanel.types';
 
 type LineFacts = Pick<
   ProjectCard,
@@ -11,7 +19,6 @@ type LineFacts = Pick<
 /** The board's words — `@heliogrid/i18n`'s `projectBoardWords`, by shape. */
 export interface ProjectBoardWords {
   readonly today: (date: string) => TranslatedText;
-  readonly toDo: TranslatedText;
   readonly waiting: TranslatedText;
   readonly toDoHeading: TranslatedText;
   readonly waitingHeading: TranslatedText;
@@ -19,12 +26,7 @@ export interface ProjectBoardWords {
   readonly allProjects: TranslatedText;
   readonly allLiveProjects: TranslatedText;
   readonly byStage: TranslatedText;
-  readonly allStages: TranslatedText;
-  readonly showStage: TranslatedText;
-  readonly showStageLine: TranslatedText;
   readonly stopLine: (stop: Pick<StageStop, 'longestDays' | 'recent'>) => TranslatedText | null;
-  readonly longest: (days: number) => TranslatedText;
-  readonly noneNow: TranslatedText;
   readonly noneInStage: (stage: string) => TranslatedText;
   readonly showMore: (count: number) => TranslatedText;
   readonly clearStage: TranslatedText;
@@ -46,7 +48,6 @@ export interface ProjectBoardWords {
   /** The act with the project it acts on, as a screen reader says it. */
   readonly todoActSpoken: (kind: TodoKind, name: string) => TranslatedText;
   readonly allClearTitle: TranslatedText;
-  readonly allClearBody: (live: number) => TranslatedText;
   readonly emptyTitle: TranslatedText;
   readonly emptyBody: TranslatedText;
   readonly failedTitle: TranslatedText;
@@ -69,9 +70,32 @@ export interface ProjectBoardWords {
     readonly noMatch: (text: string) => TranslatedText;
   };
   readonly open: (name: string) => TranslatedText;
-  readonly stagesName: TranslatedText;
   readonly noName: TranslatedText;
   readonly close: TranslatedText;
+}
+
+/** The list top's own words on the board — `@heliogrid/i18n`'s `projectBoardTopWords`, by shape. */
+export interface ProjectBoardTopWords {
+  readonly name: TranslatedText;
+  readonly live: TranslatedText;
+  readonly liveSpoken: (count: number) => TranslatedText;
+  readonly toDo: TranslatedText;
+  readonly toDoSpoken: (count: number) => TranslatedText;
+  readonly waiting: TranslatedText;
+  readonly waitingSpoken: (count: number) => TranslatedText;
+  readonly sortTitle: TranslatedText;
+  readonly sortNamed: (order: TranslatedText) => TranslatedText;
+  readonly order: Readonly<Record<ProjectBoardSort, TranslatedText>>;
+  readonly close: TranslatedText;
+  readonly stages: TranslatedText;
+  readonly all: TranslatedText;
+  readonly filters: TranslatedText;
+  readonly filtersActive: (count: number) => TranslatedText;
+  readonly panel: FilterPanelWords;
+  readonly manager: TranslatedText;
+  readonly anyManager: TranslatedText;
+  /** A manager's name as written, to stand as a filter's choice. */
+  readonly person: (name: string) => TranslatedText;
 }
 
 /**
@@ -88,6 +112,7 @@ export interface ProjectBoardProps {
   readonly head: ReactNode;
   readonly read: Read<ProjectBoardView>;
   readonly words: ProjectBoardWords;
+  readonly top: ProjectBoardTopWords;
   /** What is typed in the search; blank shows every project. */
   readonly searched: string;
   readonly onSearch: (text: string) => void;
@@ -98,6 +123,9 @@ export interface ProjectBoardProps {
    */
   readonly onTodo: (row: TodoRow) => void;
   readonly onChooseStage: (stage: ProjectBoardView['chosen']) => void;
+  readonly onSortBy: (sort: ProjectBoardSort) => void;
+  /** One manager's projects by user id, or everyone's. */
+  readonly onRunBy: (manager: string | null) => void;
   /** The project open beside the board on the desktop, drawn as the chosen row. */
   readonly openId: string | null;
   readonly focusAfter: FocusAfter;

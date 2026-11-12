@@ -3,9 +3,16 @@ import { classNames } from '../../primitives/class-names';
 import type { CardRowOpen, CardRowProps, CardRowsProps } from './CardRows.types';
 import './CardRows.css';
 
-/** The one glass card (Ground's tiles list) that holds a list's rows. It rises once; its rows never arrive one by one. */
-export function CardRows({ children }: CardRowsProps) {
-  return <ul className="hg-card-rows">{children}</ul>;
+/**
+ * The list's rows: one glass card (Ground's tiles list) holding them, or a tile each. It rises once;
+ * its rows never arrive one by one.
+ */
+export function CardRows({ children, form }: CardRowsProps) {
+  return (
+    <ul className="hg-card-rows" data-form={form}>
+      {children}
+    </ul>
+  );
 }
 
 /**

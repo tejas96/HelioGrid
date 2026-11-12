@@ -73,6 +73,7 @@ export function Input({
   label,
   labelSpokenOnly = false,
   value,
+  maxLength,
   onChange,
   placeholder,
   type = 'text',
@@ -136,6 +137,7 @@ export function Input({
           placeholder={placeholder}
           placeholderTextColor={fieldBoxPlaceholder(disabled)}
           value={shown}
+          maxLength={maxLength}
           onChangeText={change}
           onFocus={() => setFocus(true)}
           onBlur={leave}

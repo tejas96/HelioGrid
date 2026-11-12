@@ -1,0 +1,178 @@
+/* The top every list page shares: the hero, whose list, the search row, the chips. */
+.hg-list-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-list-top-tools {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-list-top[data-room="wide"] .hg-list-top-tools {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.hg-list-top-search {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.hg-list-top-search > :not(.hg-list-top-field) {
+  flex-shrink: 0;
+}
+
+.hg-list-top-field {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The order's choices in the narrow sheet: one radio row each. */
+.hg-list-sort {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding-block-end: var(--sp-2);
+}
+
+/* The hero's figures: the main one large, the two that need the person beside it. */
+.hg-list-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.hg-list-summary-figures {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.hg-list-summary-rule {
+  align-self: stretch;
+  width: 1px;
+  background: var(--line-soft);
+}
+
+.hg-list-summary-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-list-summary[data-room="wide"] .hg-list-summary-side {
+  flex-direction: row;
+  gap: var(--sp-6);
+}
+
+.hg-list-summary-figure,
+.hg-list-summary-face {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  min-width: 0;
+  color: var(--on-panel);
+  text-align: start;
+}
+
+.hg-list-summary-figure[data-look="lead"] {
+  flex: 1 1 auto;
+}
+
+.hg-list-summary-figure[data-look="side"],
+.hg-list-summary-face[data-look="side"] {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-min);
+}
+
+/* A figure that narrows the list: the shared pressable, laid out as the figure, its press the
+   pressable's; on while its filter is, as the chosen accent wash a chosen chip takes. */
+.hg-pressable.hg-list-summary-figure {
+  justify-content: flex-start;
+  padding-inline: var(--sp-2);
+  margin-inline: calc(-1 * var(--sp-2));
+  border-radius: var(--r-pill);
+  background: transparent;
+}
+
+.hg-pressable.hg-list-summary-figure[aria-pressed="true"] {
+  background: var(--accent-subtle);
+}
+
+.hg-list-summary-value {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-list-summary-figure[data-look="lead"] .hg-list-summary-value,
+.hg-list-summary-face[data-look="lead"] .hg-list-summary-value {
+  font-size: var(--fs-hero-phone);
+  line-height: var(--lh-hero-phone);
+  letter-spacing: var(--tr-hero-phone);
+}
+
+.hg-list-summary-figure[data-look="side"] .hg-list-summary-value,
+.hg-list-summary-face[data-look="side"] .hg-list-summary-value {
+  font-size: var(--fs-figure);
+  line-height: var(--lh-figure);
+  letter-spacing: var(--tr-figure);
+}
+
+.hg-list-summary-word {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+.hg-list-summary-figure[data-look="lead"] .hg-list-summary-word,
+.hg-list-summary-face[data-look="lead"] .hg-list-summary-word {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-medium);
+  color: var(--on-panel);
+}
+
+.hg-list-summary-note {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+.hg-list-summary-stages {
+  min-width: 0;
+}
+
+/* The stages as one thin bar under the narrow summary: each stage with a lead, its share. */
+.hg-list-stage-bar {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.hg-list-stage-bar-part {
+  flex-basis: 0;
+  height: var(--sp-1);
+  border-radius: var(--r-pill);
+  background: var(--accent);
+}
+
+/* Inside the hero the stages are part of the glass, not a tile on it: the summary is one card. */
+.hg-list-summary-stages .hg-stage-meter {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}

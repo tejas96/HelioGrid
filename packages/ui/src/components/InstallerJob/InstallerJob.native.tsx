@@ -128,7 +128,7 @@ function OtherJobs({ words, others, onChoose }: InstallerOtherJobsProps) {
   return (
     <View style={styles.section}>
       <Text variant="h3">{words.otherJobs}</Text>
-      <CardRows>
+      <CardRows form="joined">
         {others.map((job, index) => (
           <CardRow
             key={job.id}

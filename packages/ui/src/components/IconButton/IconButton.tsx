@@ -30,6 +30,7 @@ export function IconButton({
   reasonOpen,
   pressed,
   onClick,
+  href,
   className,
   style,
 }: WebIconButtonProps) {
@@ -64,6 +65,19 @@ export function IconButton({
     </button>
   );
 
+  if (href !== undefined && !disabled) {
+    return (
+      <a
+        href={href}
+        className={classNames('hg-icon-button', className)}
+        data-variant={variant}
+        style={{ width: size, height: size, ...style }}
+        aria-label={label}
+      >
+        {children}
+      </a>
+    );
+  }
   if (!stated) {
     return circle();
   }

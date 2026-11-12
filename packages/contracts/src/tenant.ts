@@ -1,6 +1,7 @@
 import {
   COMPANY_PROFILE_FIELD_CAP,
   FIRST_RUN_COACH_MARKS,
+  PERSON_NAME_CAP,
   ROLE_CARD_OWNERS_SHOWN,
 } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
@@ -32,7 +33,7 @@ export const companyNameSchema = z
   .min(1)
   .max(COMPANY_PROFILE_FIELD_CAP.companyName);
 export const citySchema = z.string().trim().min(1).max(COMPANY_PROFILE_FIELD_CAP.city);
-export const personNameSchema = z.string().trim().min(1).max(120);
+export const personNameSchema = z.string().trim().min(1).max(PERSON_NAME_CAP);
 
 /** Company signup from a verified OTP (`M01-01`): exactly these three, nothing else. */
 export const createTenantSchema = z.object({

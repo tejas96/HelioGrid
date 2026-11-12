@@ -73,3 +73,8 @@
   box-shadow: none;
   cursor: not-allowed;
 }
+
+/* A circle that is a link (`href`) keeps the circle's look, never a link's underline. */
+a.hg-icon-button {
+  text-decoration: none;
+}

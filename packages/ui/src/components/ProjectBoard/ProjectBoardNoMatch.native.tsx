@@ -15,7 +15,7 @@ export function ProjectBoardNoMatch({
 }: Pick<ProjectBoardProps, 'words' | 'searched' | 'onSearch'> & { searchField: FocusAfter }) {
   const leaving = useFocusAfter(searchField);
   return (
-    <CardRows>
+    <CardRows form="joined">
       <View style={styles.box}>
         <Text variant="body" align="center">
           {words.search.noMatch(searched)}

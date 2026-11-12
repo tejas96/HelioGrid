@@ -62,9 +62,12 @@ export function ProjectPage({ projectId, documents, ask }: ProjectPageRoute) {
         ...title,
         back: words.back,
         onBack: moves.back,
+        stripless: true,
+        searchless: true,
         actions:
           shown === null || documents === 'all' ? undefined : (
             <ProjectHeadActs
+              form="bar"
               project={shown.project}
               view={shown.view}
               words={words}

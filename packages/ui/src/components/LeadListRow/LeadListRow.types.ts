@@ -1,12 +1,13 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { LeadRowNext, LeadSource, LeadStage } from '@heliogrid/domain';
-import type { StageTrackWords } from '../StageTrack/StageTrack.types';
 
 /** A lead as the list shows it, its bill already formatted in the tenant's currency. */
 export interface ListedLead {
   readonly id: string;
-  /** The customer's name as typed — a fact; `null` is drawn as the named gap. */
+  /** The customer's name as typed — a fact; `null` puts the phone in its place. */
   readonly name: string | null;
+  /** The number in the market's grouping — the row's name while the lead has none. */
+  readonly phone: string;
   readonly city: string | null;
   readonly source: LeadSource | (string & {});
   readonly stage: LeadStage;
@@ -30,7 +31,7 @@ export interface LeadNextMarkProps {
 
 /** Every word a listed lead says, built in `@heliogrid/i18n` (`leadsListWords`). */
 export interface LeadListRowWords {
-  /** "No name yet". */
+  /** "No name yet" — the table's lead cell, where the number sits under the gap. */
   noName: TranslatedText;
   /** "No city yet". */
   noCity: TranslatedText;
@@ -40,16 +41,16 @@ export interface LeadListRowWords {
   noOwner: TranslatedText;
   /** A stage's word — "Qualified". */
   stage: (stage: LeadStage) => TranslatedText;
-  track: StageTrackWords;
   /** "Open Priya Sharma", or "Open this lead" with no name. */
   open: (name: string | null) => TranslatedText;
 }
 
 /**
- * **One lead of the Leads list** (`SCR-M02-03`), a row of its `CardRows` card on the phone and in
- * a narrow web column: the face, the name, the source, the stage as track and word, the city,
- * what comes next; at its end the bill in mono — its tier stands once, on the column's head — and
- * the owner. The whole row opens the lead.
+ * **One lead of the Leads list** (`SCR-M02-03`), its own card on the phone and in a narrow web
+ * column (the owner's pick L2): the face, the name — or the number while it has none — then the
+ * source's glyph, the stage and the city in one quiet line; at its end the bill in mono, its tier
+ * standing once on the list's head, what comes next and the owner's face. A fact the lead lacks is
+ * left out, never said as a gap. The whole card opens the lead.
  */
 export interface LeadListRowProps {
   lead: ListedLead;

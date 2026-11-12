@@ -9,11 +9,8 @@ import {
   formatClockAt,
   formatDayMonth,
   isTenantToday,
-  LEAD_SOURCES,
   type LeadRowNext,
-  type LeadSource,
   type LeadStage,
-  type LeadsListSort,
   type LeadsWhose,
   TASK_KINDS,
   type TaskKind,
@@ -23,7 +20,7 @@ import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import { LEAD_STAGE_WORD, TASK_KIND_WORD } from './crm-vocabulary';
 import { LEAD_DETAIL } from './lead-detail';
-import { lastContactWord, leadSourceWord, leadStateLabel, stageTrackWords } from './lead-marks';
+import { lastContactWord, leadSourceWord, leadStateLabel } from './lead-marks';
 
 type T = Translator['t'];
 
@@ -34,10 +31,6 @@ const LIST = {
   failedMessage: /*i18n*/ { id: 'Check your connection, then try again.' },
   retry: /*i18n*/ { id: 'Try again' },
   firstRunSummary: /*i18n*/ { id: 'No leads yet' },
-  summaryOpen: /*i18n*/ { id: '{open, plural, one {# open} other {# open}}' },
-  summaryWaiting: /*i18n*/ {
-    id: '{open, plural, one {# open} other {# open}} · {waiting, plural, one {# waiting in the inbox} other {# waiting in the inbox}}',
-  },
   summaryFiltered: /*i18n*/ {
     id: '{matching, plural, one {# match} other {# matches}} · {filters, plural, one {# filter on} other {# filters on}}',
   },
@@ -54,17 +47,10 @@ const LIST = {
   stageSpoken: /*i18n*/ {
     id: '{count, plural, one {{stage}, # lead} other {{stage}, # leads}}',
   },
-  filters: /*i18n*/ { id: 'Filters' },
-  dormant: /*i18n*/ { id: 'Dormant' },
-  bill: /*i18n*/ { id: 'Bill' },
-  billLargest: /*i18n*/ { id: 'Bill, largest first' },
-  billSmallest: /*i18n*/ { id: 'Bill, smallest first' },
   source: /*i18n*/ { id: 'Source' },
-  anySource: /*i18n*/ { id: 'Any source' },
   search: /*i18n*/ { id: 'Search leads' },
   searchHint: /*i18n*/ { id: 'Name, phone or city' },
   clearSearch: /*i18n*/ { id: 'Clear search' },
-  selected: /*i18n*/ { id: 'Selected' },
   addLead: /*i18n*/ { id: 'Add lead' },
   import: /*i18n*/ { id: 'Import' },
   lead: /*i18n*/ { id: 'Lead' },
@@ -102,22 +88,13 @@ export interface LeadsListClock {
 
 /** What the summary under the title counts. */
 export interface LeadsListSummaryFacts {
-  /** Active and snoozed leads under the chosen owner. */
-  readonly open: number;
-  /** Waiting in the inbox; null where the inbox is not offered or not read yet. */
-  readonly waiting: number | null;
   readonly matching: number;
   readonly filtersOn: number;
 }
 
-/** "46 open · 6 waiting in the inbox", or, with filters on, "3 match · 2 filters on". */
+/** The title's line while filters narrow the list — "3 match · 2 filters on"; the hero counts the rest. */
 export function leadsListSummary(t: T, facts: LeadsListSummaryFacts): TranslatedText {
-  if (facts.filtersOn > 0) {
-    return t(LIST.summaryFiltered, { matching: facts.matching, filters: facts.filtersOn });
-  }
-  return facts.waiting === null || facts.waiting === 0
-    ? t(LIST.summaryOpen, { open: facts.open })
-    : t(LIST.summaryWaiting, { open: facts.open, waiting: facts.waiting });
+  return t(LIST.summaryFiltered, { matching: facts.matching, filters: facts.filtersOn });
 }
 
 /** A task's word: its kind's, a custom task's own, or a kind a newer server learned as sent. */
@@ -193,28 +170,10 @@ export function leadsListWords(t: T, clock: LeadsListClock) {
       stage,
       spoken: (one: LeadStage, count: number) => t(LIST.stageSpoken, { stage: stage(one), count }),
     }),
-    filters: t(LIST.filters),
-    dormant: t(LIST.dormant),
-    /** The Bill chip's words by the order the list is in. */
-    bill: (sort: LeadsListSort) =>
-      sort.key !== 'monthly_bill'
-        ? t(LIST.bill)
-        : t(sort.order === 'desc' ? LIST.billLargest : LIST.billSmallest),
-    source: t(LIST.source),
-    /** The source menu's choices: any source, then each by its word. */
-    sourceChoices: [
-      { key: 'any', label: t(LIST.anySource), source: null },
-      ...LEAD_SOURCES.map((one: LeadSource) => ({
-        key: one,
-        label: leadSourceWord(t, one),
-        source: one,
-      })),
-    ],
     sourceWord: (source: string) => leadSourceWord(t, source),
     search: t(LIST.search),
     searchHint: t(LIST.searchHint),
     clearSearch: t(LIST.clearSearch),
-    selected: t(LIST.selected),
     addLead: t(LIST.addLead),
     import: t(LIST.import),
     columns: {
@@ -232,7 +191,6 @@ export function leadsListWords(t: T, clock: LeadsListClock) {
       noBill: t(LIST.noBill),
       noOwner: t(LEAD_DETAIL.noOwner),
       stage,
-      track: stageTrackWords(t),
       open: (name: string | null) =>
         name === null ? t(LIST.openThis) : t(LIST.openNamed, { name }),
     },

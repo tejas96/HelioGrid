@@ -12,4 +12,9 @@ export interface LargeTitleProps {
   readonly summary?: TranslatedText;
   /** Where a page lands the screen reader after its *Try again*. */
   readonly titleRef?: Ref<FocusHandle>;
+  /**
+   * The title is a record's own name — a fact typed at any length, a lead's — so it keeps to two
+   * lines and the page's work stays in view. A page's translated name never sets it.
+   */
+  readonly nameTitle?: boolean;
 }

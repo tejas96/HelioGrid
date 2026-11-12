@@ -61,6 +61,13 @@ function leadActFormOf(props: LeadDetailSheetProps, sheet: LeadSheetOpen): LeadA
       return messageFormOf(props, sheet.template);
     case 'contact':
       return contactFormOf(props, sheet.contactId);
+    case 'details':
+      return {
+        kind: 'details',
+        start: { name: props.lead.lead.name, city: props.lead.lead.city },
+        words: forms.details,
+        onSend: (changed) => acts.send({ kind: 'details', ...changed }),
+      };
   }
 }
 
