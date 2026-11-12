@@ -73,9 +73,9 @@ jobs:
           # Everything Metro bundles: the app and every package apps/mobile may import
           # (turbo.json boundaries, app-mobile), plus the files that shape the module graph.
           lane mobile_js '^(apps/mobile/|packages/(config|contracts|data|domain|env|forms|i18n|theme|ui)/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|tsconfig\.base\.json$|\.github/workflows/ci\.yml$)'
-          # The web regression suite: what the web and the api serve, every package either imports,
-          # the suite itself, and the files that shape the build.
-          lane e2e_web '^(apps/(web|api)/|packages/|infra/postgres/|tests/e2e/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|tsconfig\.base\.json$|\.github/workflows/ci\.yml$)'
+          # The web regression suite: what the web and the api serve, every package either imports, the
+          # object store it starts from infra/compose.yaml, the suite itself, and the build files.
+          lane e2e_web '^(apps/(web|api)/|packages/|infra/postgres/|infra/compose\.yaml$|infra/temporal/compose\.yaml$|tests/e2e/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|tsconfig\.base\.json$|\.github/workflows/ci\.yml$)'
           # The Android build and the phone flows on it: what the app and the api run (native
           # sources and manifests included), every package either imports, the database roles the
           # api connects as, the phone suite and what it reads, and the build files.
@@ -298,7 +298,20 @@ jobs:
         run: pnpm --filter @heliogrid/api pack:publish
       - name: Install Chromium
         run: pnpm --filter @heliogrid/e2e exec playwright install --with-deps chromium
+      - name: Start the object store and its bucket (infra/compose.yaml)
+        # With no store the api holds files in memory, and a browser cannot upload to it: every
+        # flow that adds a file fails. `run` starts the store it depends on and exits once the
+        # bucket is made.
+        run: docker compose -f infra/compose.yaml run --rm object-store-bucket
       - name: Web flows (tests/e2e/web)
+        # The store's development values, as .env.example writes them.
+        env:
+          OBJECT_STORE_PROVIDER: local
+          OBJECT_STORE_ENDPOINT: http://localhost:9000
+          OBJECT_STORE_REGION: us-east-1
+          OBJECT_STORE_BUCKET: heliogrid-files-local
+          OBJECT_STORE_ACCESS_KEY_ID: heliogrid
+          OBJECT_STORE_SECRET_ACCESS_KEY: heliogrid-local-secret
         run: pnpm --filter @heliogrid/e2e test:web
       - name: Keep the traces, the api's log and the failure screenshots
         if: failure()

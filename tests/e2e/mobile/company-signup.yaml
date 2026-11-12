@@ -17,6 +17,7 @@ appId: com.heliogrid.app
 - pressKey: Enter
 - scrollUntilVisible:
     element: ${CITY_EXAMPLE}
+    centerElement: true
 - tapOn: ${CITY_EXAMPLE}
 - waitForAnimationToEnd
 - inputText: ${CITY_EXAMPLE}
