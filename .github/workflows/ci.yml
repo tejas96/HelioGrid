@@ -411,7 +411,9 @@ jobs:
     needs: changes
     if: needs.changes.outputs.phone_e2e == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 40
+    # A run that builds the APK (about 20 min) and runs every flow (about 20 min, and growing) needs
+    # more than 40: at 40 the lane was cancelled mid-flow with every flow green (PR #403).
+    timeout-minutes: 55
     services:
       postgres: *suite-postgres
     env: *suite-api-env
@@ -449,16 +451,32 @@ jobs:
         # before any flow. Installed here, once, by the SDK manager, and kept by the cache above.
         if: steps.ndk-cache.outputs.cache-hit != 'true'
         run: echo y | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "ndk;27.1.12297006"
+      # A debug APK holds no JavaScript: it is built from the native sources, the packages autolinking
+      # and codegen read, and the theme's resources — so it is kept against exactly those, and a run
+      # that changed none of them skips the 20-minute build. Saved right after the build, not at the
+      # job's end, so a run that fails later still keeps it.
+      - uses: actions/cache/restore@v4
+        id: apk-cache
+        with:
+          path: apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          key: &apk-key apk-debug-${{ hashFiles('apps/mobile/android/**', 'apps/mobile/package.json', 'apps/mobile/app.json', 'apps/mobile/react-native.config.js', 'pnpm-lock.yaml', 'packages/theme/src/**', 'packages/theme/build.ts', 'packages/theme/assets/**') }}
       # The app's colours and fonts are the theme's build output (`packages/theme/dist/android-res`,
       # read by `app/build.gradle`), so the theme is built before Gradle links resources, or
       # `:app:processDebugResources` fails on `color/hg_canvas`.
       - name: Build the theme the APK's resources come from
+        if: steps.apk-cache.outputs.cache-hit != 'true'
         run: pnpm --filter @heliogrid/theme build
       # Before every flow step, so the switch never skips the build: autolinking and codegen read
       # package.json and native sources only, and a debug APK holds no JavaScript.
       - name: Assemble debug APK
+        if: steps.apk-cache.outputs.cache-hit != 'true'
         working-directory: apps/mobile/android
         run: ./gradlew assembleDebug --no-daemon
+      - uses: actions/cache/save@v4
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        with:
+          path: apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          key: *apk-key
       - name: Phone flows OFF
         if: vars.PHONE_E2E == 'off'
         run: echo "::warning::phone flows OFF (PHONE_E2E=off) — they ran nowhere on this change"
