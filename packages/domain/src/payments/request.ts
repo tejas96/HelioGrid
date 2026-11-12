@@ -28,6 +28,24 @@ export function upiRequestUri(request: UpiRequest): string {
   return `upi://pay?${query.join('&')}`;
 }
 
+/** The chat apps a market's pay request can open in, ready to send (`M11-26`'s hand-off). */
+export const REQUEST_CHATS = ['whatsapp'] as const;
+export type RequestChat = (typeof REQUEST_CHATS)[number];
+
+/**
+ * The pay request opened in the customer's own chat with the message already typed — the person
+ * still presses send, so the product claims no delivery (`M11-26`). Null where the market names no
+ * chat app: the person shares or copies it instead.
+ */
+export function chatRequestUri(
+  chat: RequestChat | null,
+  phoneE164: string,
+  message: string,
+): string | null {
+  if (chat === null) return null;
+  return `https://wa.me/${phoneE164.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+}
+
 /** A receipt's number, from the company's own receipt counter: `RCPT-0187`. */
 export function receiptNumberOf(sequence: number): string {
   return `RCPT-${String(sequence).padStart(4, '0')}`;

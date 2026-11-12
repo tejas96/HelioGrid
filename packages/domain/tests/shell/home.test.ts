@@ -5,6 +5,7 @@ import {
   homeFor,
   homesOf,
   showsInstallerJob,
+  showsMoneyDue,
   waitingHomeBlocks,
 } from '../../src/shell/home';
 
@@ -140,5 +141,27 @@ describe('the installer’s job on the home (SCR-M08-05, M08-45)', () => {
   it('draws no waiting block for the installer, whose block is the job itself', () => {
     const home = composedHome(['project_manager', 'installation_team_member']);
     expect(home && waitingHomeBlocks(home)).toEqual(['project_manager']);
+  });
+});
+
+describe('Money due on the home (SCR-M11-01, M11-54)', () => {
+  it.each([
+    { who: 'Finance', held: ['finance'], shows: true },
+    { who: 'the owner', held: ['epc_owner'], shows: true },
+    {
+      who: 'a project manager who also does finance',
+      held: ['project_manager', 'finance'],
+      shows: true,
+    },
+    { who: 'a project manager', held: ['project_manager'], shows: false },
+    { who: 'an installer', held: ['installation_team_member'], shows: false },
+    { who: 'no one', held: [], shows: false },
+  ] as const)('$who → $shows', ({ held, shows }) => {
+    expect(showsMoneyDue(composedHome(held))).toBe(shows);
+  });
+
+  it('draws no waiting block for Finance, whose block is Money due itself', () => {
+    const home = composedHome(['finance']);
+    expect(home && waitingHomeBlocks(home)).toEqual([]);
   });
 });

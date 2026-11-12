@@ -43,6 +43,16 @@ msgid "{amount} GB"
 msgstr "{amount} GB"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:38
+msgid "{amount} left"
+msgstr "{amount} बाकी"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:41
+msgid "{amount} more than this part"
+msgstr "इस हिस्से से {amount} ज़्यादा"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:59
 msgid "{amount} on invoice {number}"
 msgstr "{amount}, चालान {number}"
@@ -53,9 +63,19 @@ msgid "{amount} over-allocated."
 msgstr "{amount} ज़्यादा बाँटा गया।"
 
 #. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:17
+msgid "{amount} to collect. Share the pay request."
+msgstr "{amount} लेने हैं। भुगतान अनुरोध भेजें।"
+
+#. js-lingui-explicit-id
 #: src/copy/allocation.ts:27
 msgid "{amount} unallocated."
 msgstr "{amount} बाँटा नहीं गया।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:102
+msgid "{amount} will no longer be asked for. It never counts as collected, and this cannot be undone."
+msgstr "{amount} अब नहीं माँगे जाएँगे। यह कभी वसूल नहीं गिना जाएगा, और इसे वापस नहीं किया जा सकता।"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-parts.ts:60
@@ -128,6 +148,11 @@ msgid "{code} — digit {position}"
 msgstr "{code} — अंक {position}"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:113
+msgid "{collected} of {total} in"
+msgstr "{total} में से {collected} मिले"
+
+#. js-lingui-explicit-id
 #: src/copy/data-table.ts:36
 msgid "{column}, not sorted"
 msgstr "{column}, क्रम में नहीं"
@@ -180,6 +205,11 @@ msgid "{count, plural, =0 {free} one {# live project} other {# live projects}}"
 msgstr "{count, plural, =0 {खाली} one {# चालू प्रोजेक्ट} other {# चालू प्रोजेक्ट}}"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:117
+msgid "{count, plural, =0 {Nothing waiting} one {# part needs you} other {# parts need you}}"
+msgstr "{count, plural, =0 {कुछ बाकी नहीं} one {# हिस्सा आपका इंतज़ार कर रहा है} other {# हिस्से आपका इंतज़ार कर रहे हैं}}"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:17
 msgid "{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}"
 msgstr "{count, plural, =0 {सूचनाएँ} one {सूचनाएँ, # अपठित} other {सूचनाएँ, # अपठित}}"
@@ -205,7 +235,7 @@ msgid "{count, plural, one {# archived item} other {# archived items}} · in the
 msgstr "{count, plural, one {# आर्काइव किया गया आइटम} other {# आर्काइव किए गए आइटम}} · 'आर्काइव किया गया' फ़िल्टर में"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:113
+#: src/copy/notifications.ts:119
 msgid "{count, plural, one {# ask for a new invite} other {# asks for a new invite}}"
 msgstr "{count, plural, one {नए आमंत्रण का # अनुरोध} other {नए आमंत्रण के # अनुरोध}}"
 
@@ -285,7 +315,7 @@ msgid "{count, plural, one {# h} other {# h}}"
 msgstr "{count, plural, one {# घंटा} other {# घंटे}}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:110
+#: src/copy/notifications.ts:116
 msgid "{count, plural, one {# invite declined} other {# invites declined}}"
 msgstr "{count, plural, one {# आमंत्रण अस्वीकार} other {# आमंत्रण अस्वीकार}}"
 
@@ -320,7 +350,7 @@ msgid "{count, plural, one {# lead landed} other {# leads landed}}"
 msgstr "{count, plural, one {# लीड आई} other {# लीड्स आईं}}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:102
+#: src/copy/notifications.ts:108
 msgid "{count, plural, one {# lead unassigned for a day} other {# leads unassigned for a day}}"
 msgstr "{count, plural, one {# लीड एक दिन से किसी को नहीं सौंपी गई} other {# लीड एक दिन से किसी को नहीं सौंपी गईं}}"
 
@@ -360,7 +390,7 @@ msgid "{count, plural, one {# new enquiry on your leads} other {# new enquiries 
 msgstr "{count, plural, one {आपकी लीड पर # नई पूछताछ} other {आपकी लीड पर # नई पूछताछ}}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:128
+#: src/copy/notifications.ts:134
 msgid "{count, plural, one {# notification} other {# notifications}}"
 msgstr "{count, plural, one {# सूचना} other {# सूचनाएँ}}"
 
@@ -395,9 +425,19 @@ msgid "{count, plural, one {# payment due} other {# payments due}}"
 msgstr "{count, plural, one {# भुगतान बाकी} other {# भुगतान बाकी}}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:116
+#: src/copy/notifications.ts:102
+msgid "{count, plural, one {# payment recorded} other {# payments recorded}}"
+msgstr "{count, plural, one {# भुगतान दर्ज हुआ} other {# भुगतान दर्ज हुए}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:122
 msgid "{count, plural, one {# payment reminder} other {# payment reminders}}"
 msgstr "{count, plural, one {भुगतान का # रिमाइंडर} other {भुगतान के # रिमाइंडर}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:105
+msgid "{count, plural, one {# payment reversed} other {# payments reversed}}"
+msgstr "{count, plural, one {# भुगतान वापस हुआ} other {# भुगतान वापस हुए}}"
 
 #. js-lingui-explicit-id
 #: src/copy/roles-reference.ts:30
@@ -421,7 +461,7 @@ msgid "{count, plural, one {# platform item} other {# platform items}} · nothin
 msgstr "{count, plural, one {# प्लेटफ़ॉर्म आइटम} other {# प्लेटफ़ॉर्म आइटम}} · अभी आपका अपना कुछ नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:123
+#: src/copy/notifications.ts:129
 msgid "{count, plural, one {# product update} other {# product updates}}"
 msgstr "{count, plural, one {# प्रोडक्ट अपडेट} other {# प्रोडक्ट अपडेट}}"
 
@@ -446,7 +486,7 @@ msgid "{count, plural, one {# release} other {# releases}} · newest first"
 msgstr "{count, plural, one {# रिलीज़} other {# रिलीज़}} · सबसे नई पहले"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:107
+#: src/copy/notifications.ts:113
 msgid "{count, plural, one {# request to join} other {# requests to join}}"
 msgstr "{count, plural, one {जुड़ने का # अनुरोध} other {जुड़ने के # अनुरोध}}"
 
@@ -486,7 +526,7 @@ msgid "{count, plural, one {# to do} other {# to do}}"
 msgstr "{count, plural, one {# करना है} other {# करने हैं}}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:119
+#: src/copy/notifications.ts:125
 msgid "{count, plural, one {# trial reminder} other {# trial reminders}}"
 msgstr "{count, plural, one {ट्रायल का # रिमाइंडर} other {ट्रायल के # रिमाइंडर}}"
 
@@ -760,6 +800,11 @@ msgid "{date} · {name}"
 msgstr "{date} · {name}"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:45
+msgid "{date} · recorded by {name}"
+msgstr "{date} · {name} ने दर्ज किया"
+
+#. js-lingui-explicit-id
 #: src/copy/date-set.ts:16
 msgid "{date} added."
 msgstr "{date} जोड़ी गई।"
@@ -814,6 +859,11 @@ msgstr "{days, plural, one {# दिन से शांत} other {# दिन�
 #: src/copy/pricing.ts:61
 msgid "{days} days, no card needed."
 msgstr "{days} दिन, कोई कार्ड नहीं चाहिए।"
+
+#. js-lingui-explicit-id
+#: src/copy/money-due.ts:18
+msgid "{days} late"
+msgstr "{days} देर"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:85
@@ -1072,6 +1122,7 @@ msgstr "{total} में से {from}–{to}"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:73
+#: src/copy/money-due.ts:17
 msgid "{group} · {count}"
 msgstr "{group} · {count}"
 
@@ -1303,6 +1354,11 @@ msgid "{minutes} min {seconds} s"
 msgstr "{minutes} min {seconds} s"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:46
+msgid "{mode} · {reference}"
+msgstr "{mode} · {reference}"
+
+#. js-lingui-explicit-id
 #: src/copy/project-notices.ts:23
 msgid "{mover} cancelled it: {reason}"
 msgstr "{mover} ने इसे रद्द किया: {reason}"
@@ -1346,6 +1402,16 @@ msgstr "{name} · {capacity}"
 #: src/copy/project-page.ts:38
 msgid "{name} · {done} of {total} done"
 msgstr "{name} · {total} में से {done} पूरे"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:19
+msgid "{name} · {number} · {count, plural, one {# part} other {# parts}}"
+msgstr "{name} · {number} · {count, plural, one {# हिस्सा} other {# हिस्से}}"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:66
+msgid "{name} · {part}"
+msgstr "{name} · {part}"
 
 #. js-lingui-explicit-id
 #: src/copy/project-handover.ts:17
@@ -1584,6 +1650,21 @@ msgid "{name}, the customer"
 msgstr "{name}, ग्राहक"
 
 #. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:18
+msgid "{name}: {amount} received"
+msgstr "{name}: {amount} मिले"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:16
+msgid "{name}: {part} is due"
+msgstr "{name}: {part} देय है"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:20
+msgid "{name}: a payment was reversed"
+msgstr "{name}: एक भुगतान वापस किया गया"
+
+#. js-lingui-explicit-id
 #: src/copy/project-sheets.ts:82
 msgid "{name}. Nothing is deleted: its timeline and documents stay. It stops counting as revenue now."
 msgstr "{name}। कुछ भी मिटाया नहीं जाता: इसकी टाइमलाइन और दस्तावेज़ रहते हैं। अब इसे आमदनी में नहीं गिना जाएगा।"
@@ -1602,6 +1683,16 @@ msgstr "{named}। अपने बाक़ी बदलाव सहेजन�
 #: src/copy/paged-document.ts:18
 msgid "{note} · saved, not printed"
 msgstr "{note} · सहेजा गया, प्रिंट नहीं होगा"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-sheet.ts:29
+msgid "{number} · {count, plural, one {# part} other {# parts}}"
+msgstr "{number} · {count, plural, one {# हिस्सा} other {# हिस्से}}"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:122
+msgid "{number} · {part}"
+msgstr "{number} · {part}"
 
 #. js-lingui-explicit-id
 #: src/copy/project-detail.ts:97
@@ -1677,6 +1768,41 @@ msgstr "{total} में से {page}"
 #: src/copy/paged-document.ts:32
 msgid "{paper} · {points}pt · {column}px column · {lines} lines a page"
 msgstr "{paper} · {points}pt · {column}px कॉलम · हर पेज पर {lines} पंक्तियाँ"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:114
+msgid "{part} · {amount} due"
+msgstr "{part} · {amount} देय"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-sheet.ts:22
+msgid "{part} · {amount} left"
+msgstr "{part} · {amount} बाकी"
+
+#. js-lingui-explicit-id
+#: src/copy/projects.ts:90
+msgid "{part} · {amount} to collect"
+msgstr "{part} · {amount} लेने हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:24
+msgid "{part} · {share}%"
+msgstr "{part} · {share}%"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:22
+msgid "{part} · part {position} of {count}"
+msgstr "{part} · {count} में से हिस्सा {position}"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:23
+msgid "{part} · part {position} of {count} · {amount} already in"
+msgstr "{part} · {count} में से हिस्सा {position} · {amount} आ चुके हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:24
+msgid "{part} of your solar project {number} is due: {amount}."
+msgstr "आपके सोलर प्रोजेक्ट {number} का {part} देय है: {amount}।"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:26
@@ -1885,6 +2011,16 @@ msgid "{reason} · since {date}"
 msgstr "{reason} · {date} से"
 
 #. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:19
+msgid "{recorder} recorded it against {part}."
+msgstr "{recorder} ने इसे {part} में दर्ज किया।"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:21
+msgid "{recorder} reversed {amount}: {reason}"
+msgstr "{recorder} ने {amount} वापस किए: {reason}"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-import.ts:86
 msgid "{rejected, plural, one {# row can’t be read and will be listed with why} other {# rows can’t be read and will be listed with why}}"
 msgstr "{rejected, plural, one {# पंक्ति पढ़ी नहीं जा सकती, वह कारण के साथ सूची में आएगी} other {# पंक्तियाँ पढ़ी नहीं जा सकतीं, वे कारण के साथ सूची में आएँगी}}"
@@ -1898,7 +2034,7 @@ msgstr "{role} · {company}"
 #. js-lingui-explicit-id
 #: src/copy/project-next.ts:19
 #: src/copy/project-sheets.ts:87
-#: src/copy/projects.ts:83
+#: src/copy/projects.ts:84
 msgid "{row} came early"
 msgstr "{row} पहले आ गया"
 
@@ -2002,7 +2138,7 @@ msgid "{stage}"
 msgstr "{stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:87
+#: src/copy/projects.ts:88
 msgid "{stage} by hand · {row} missing"
 msgstr "{stage} हाथ से · {row} बाकी"
 
@@ -2412,11 +2548,6 @@ msgid "A named contact"
 msgstr "एक तय संपर्क व्यक्ति"
 
 #. js-lingui-explicit-id
-#: src/copy/on-its-way.ts:99
-msgid "A payment link your customer pays from their phone"
-msgstr "एक भुगतान लिंक, जिससे ग्राहक अपने फ़ोन से भुगतान करे"
-
-#. js-lingui-explicit-id
 #: src/copy/actor-class.ts:10
 msgid "A person"
 msgstr "एक व्यक्ति"
@@ -2472,15 +2603,10 @@ msgid "A referral"
 msgstr "रेफ़रल"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:74
+#: src/copy/api-error.ts:75
 #: src/copy/catalog-editor.ts:56
 msgid "A release already has this name. Choose another name."
 msgstr "इस नाम की रिलीज़ पहले से है। कोई दूसरा नाम चुनें।"
-
-#. js-lingui-explicit-id
-#: src/copy/on-its-way.ts:100
-msgid "A reminder before each stage falls due"
-msgstr "हर चरण की तारीख से पहले एक रिमाइंडर"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:33
@@ -2531,6 +2657,16 @@ msgstr "एक टाइमलाइन में ज़्यादा से �
 #: src/copy/payment-terms.ts:53
 msgid "A tranche carries a share between 0.01% and 100%."
 msgstr "किस्त का हिस्सा 0.01% से 100% के बीच होता है।"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:68
+msgid "A UPI ID reads as name@bank — check it and try again."
+msgstr "UPI ID name@bank जैसा होता है — जाँचें और फिर कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:142
+msgid "A UPI ID reads as name@bank."
+msgstr "UPI ID name@bank जैसा होता है।"
 
 #. js-lingui-explicit-id
 #: src/copy/on-its-way.ts:89
@@ -2644,6 +2780,11 @@ msgid "About your payment method"
 msgstr "आपके भुगतान तरीके के बारे में"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:74
+msgid "Above {limit}, many banks stop one UPI payment. Use bank transfer — the message carries the account and IFSC."
+msgstr "{limit} से ऊपर कई बैंक एक UPI भुगतान रोक देते हैं। बैंक ट्रांसफ़र इस्तेमाल करें — संदेश में खाता और IFSC होते हैं।"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:28
 msgid "AC output (kW)"
 msgstr "AC आउटपुट (kW)"
@@ -2665,6 +2806,7 @@ msgstr "साइट तक पहुँच, दस्तावेज़, भु
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:98
+#: src/copy/payments-screen.ts:80
 #: src/copy/shell.ts:28
 msgid "Account"
 msgstr "खाता"
@@ -2688,6 +2830,11 @@ msgstr "खाता रुकेगा"
 #: src/copy/company-profile.ts:35
 msgid "Account holder"
 msgstr "खाताधारक"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:79
+msgid "Account name"
+msgstr "खाते का नाम"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:36
@@ -2915,6 +3062,16 @@ msgid "Add phase"
 msgstr "चरण जोड़ें"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:90
+msgid "Add photo"
+msgstr "फ़ोटो जोड़ें"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:20
+msgid "Add receipt photo"
+msgstr "रसीद की फ़ोटो जोड़ें"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:89
 msgid "Add role"
 msgstr "भूमिका जोड़ें"
@@ -2935,6 +3092,11 @@ msgid "Add to catalog"
 msgstr "कैटलॉग में जोड़ें"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:78
+msgid "Add your bank details in Settings → Business profile."
+msgstr "सेटिंग्स → बिज़नेस प्रोफ़ाइल में अपने बैंक विवरण जोड़ें।"
+
+#. js-lingui-explicit-id
 #: src/copy/price-book.ts:36
 msgid "Add your first rate"
 msgstr "अपनी पहली दर जोड़ें"
@@ -2943,6 +3105,11 @@ msgstr "अपनी पहली दर जोड़ें"
 #: src/copy/company-logo.ts:18
 msgid "Add your logo"
 msgstr "अपना लोगो जोड़ें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:77
+msgid "Add your UPI ID in Settings → How customers pay you to show a QR."
+msgstr "QR दिखाने के लिए सेटिंग्स → ग्राहक आपको कैसे भुगतान करते हैं में अपना UPI ID जोड़ें।"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:84
@@ -3154,6 +3321,7 @@ msgstr "हमेशा भेजा जाता है, और इसे ब�
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:58
 #: src/copy/invoice-document.ts:30
+#: src/copy/payments-screen.ts:85
 #: src/copy/price-book.ts:29
 msgid "Amount"
 msgstr "राशि"
@@ -3162,6 +3330,11 @@ msgstr "राशि"
 #: src/copy/billing-strip.ts:44
 msgid "Amount due"
 msgstr "बकाया राशि"
+
+#. js-lingui-explicit-id
+#: src/copy/receipt-document.ts:9
+msgid "Amount received"
+msgstr "मिली रकम"
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:57
@@ -3360,6 +3533,11 @@ msgid "As the customer confirmed it on the call."
 msgstr "जैसा ग्राहक ने कॉल पर पक्का किया।"
 
 #. js-lingui-explicit-id
+#: src/copy/projects.ts:96
+msgid "Ask"
+msgstr "माँगें"
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:51
 msgid "Ask {first} to invite you again"
 msgstr "{first} से फिर से आमंत्रित करने को कहें"
@@ -3379,6 +3557,11 @@ msgstr "सवाल पूछें"
 #: src/copy/billing-records.ts:51
 msgid "Ask for a refund"
 msgstr "रिफ़ंड माँगें"
+
+#. js-lingui-explicit-id
+#: src/copy/projects.ts:104
+msgid "Ask for money: {name}"
+msgstr "पैसे माँगें: {name}"
 
 #. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:28
@@ -3596,6 +3779,7 @@ msgstr "बैकग्राउंड में चल रहा काम"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:65
+#: src/copy/payments-screen.ts:81
 msgid "Bank"
 msgstr "बैंक"
 
@@ -3610,6 +3794,16 @@ msgstr "बैंक विवरण"
 #: src/copy/company-profile.ts:33
 msgid "Bank name"
 msgstr "बैंक का नाम"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:68
+msgid "Bank transfer"
+msgstr "बैंक ट्रांसफ़र"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:26
+msgid "Bank transfer: {accountName}, account {accountNumber}, {routingLabel} {routing}, {bankName}."
+msgstr "बैंक ट्रांसफ़र: {accountName}, खाता {accountNumber}, {routingLabel} {routing}, {bankName}।"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:140
@@ -3897,6 +4091,11 @@ msgstr "{name} द्वारा · {crew}"
 #: src/copy/project-page.ts:37
 msgid "by {name} · Mark won"
 msgstr "{name} द्वारा · जीती चिह्नित"
+
+#. js-lingui-explicit-id
+#: src/copy/receipt-document.ts:16
+msgid "By {name}, {date} at {time}"
+msgstr "{name} द्वारा, {date} को {time} बजे"
 
 #. js-lingui-explicit-id
 #: src/copy/projects.ts:39
@@ -4204,6 +4403,11 @@ msgid "Change number"
 msgstr "नंबर बदलें"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:91
+msgid "Change photo"
+msgstr "फ़ोटो बदलें"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-home.ts:43
 msgid "Change plan"
 msgstr "प्लान बदलें"
@@ -4272,9 +4476,19 @@ msgid "Check the SMS, or send a new code."
 msgstr "SMS जाँचें, या नया कोड भेजें।"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:61
+msgid "Check your connection and try again."
+msgstr "अपना कनेक्शन जाँचें और फिर कोशिश करें।"
+
+#. js-lingui-explicit-id
 #: src/copy/leads-list.ts:31
 msgid "Check your connection, then try again."
 msgstr "अपना कनेक्शन जाँचें, फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:88
+msgid "Checked so one payment is never recorded twice"
+msgstr "जाँचा जाता है ताकि एक भुगतान दो बार दर्ज न हो"
 
 #. js-lingui-explicit-id
 #: src/copy/project-handover.ts:59
@@ -4521,6 +4735,21 @@ msgid "Collapse the sidebar"
 msgstr "साइडबार छोटा करें"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:32
+msgid "Collect"
+msgstr "वसूलें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:65
+msgid "Collect {amount}"
+msgstr "{amount} वसूलें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:121
+msgid "Collected this month {amount}"
+msgstr "इस महीने वसूल {amount}"
+
+#. js-lingui-explicit-id
 #: src/copy/settings.ts:50
 msgid "Collections"
 msgstr "वसूली"
@@ -4757,6 +4986,11 @@ msgid "Copy"
 msgstr "कॉपी करें"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:72
+msgid "Copy message"
+msgstr "संदेश कॉपी करें"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:75
 msgid "Copy or share"
 msgstr "कॉपी या शेयर करें"
@@ -4771,6 +5005,11 @@ msgstr "पुष्टि संदेश कॉपी करें"
 #: src/copy/lead-import.ts:39
 msgid "Could not be opened"
 msgstr "खुल नहीं सकी"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:111
+msgid "Could not copy. Select the message and copy it."
+msgstr "कॉपी नहीं हुआ। संदेश चुनकर कॉपी करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/paged-document.ts:20
@@ -5520,6 +5759,11 @@ msgid "Device"
 msgstr "डिवाइस"
 
 #. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:14
+msgid "Did the message go out?"
+msgstr "क्या संदेश चला गया?"
+
+#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:65
 msgid "Difference"
 msgstr "अंतर"
@@ -5548,6 +5792,7 @@ msgstr "हटाएँ और जाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:61
+#: src/copy/payments-sheet.ts:26
 #: src/copy/proposal-template.ts:75
 msgid "Discard changes"
 msgstr "बदलाव हटाएँ"
@@ -5744,8 +5989,14 @@ msgstr "फ़ाइलें यहाँ छोड़ें या चुन�
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:92
+#: src/copy/payments-screen.ts:150
 msgid "Due"
 msgstr "देय"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:29
+msgid "Due {amount}"
+msgstr "देय {amount}"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-parts.ts:105
@@ -5753,9 +6004,29 @@ msgid "Due {day}, {time}"
 msgstr "{day}, {time} तक"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:21
+msgid "Due {days}"
+msgstr "देय · {days}"
+
+#. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:88
 msgid "Due at {stage}"
 msgstr "{stage} पर देय"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:37
+msgid "Due since {date}"
+msgstr "{date} से देय"
+
+#. js-lingui-explicit-id
+#: src/copy/money-due.ts:15
+msgid "Due today"
+msgstr "आज देय"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:36
+msgid "Due when {stage} is reached"
+msgstr "{stage} पहुँचने पर देय"
 
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:62
@@ -5864,6 +6135,11 @@ msgid "Edit {who}"
 msgstr "{who} बदलें"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:137
+msgid "Edit bank details"
+msgstr "बैंक विवरण बदलें"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:79
 msgid "Edit contact"
 msgstr "संपर्क बदलें"
@@ -5878,6 +6154,11 @@ msgstr "विवरण बदलें"
 #: src/copy/profile-preferences.ts:27
 msgid "Edit name"
 msgstr "नाम बदलें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:144
+msgid "Edit UPI"
+msgstr "UPI बदलें"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:40
@@ -6011,6 +6292,11 @@ msgid "Enter the code"
 msgstr "कोड दर्ज करें"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:158
+msgid "Enter the money that arrived. A mistake is undone with Reverse — never a minus amount."
+msgstr "जो पैसा आया वह लिखें। गलती 'वापस करें' से सुधरती है — कभी माइनस रकम से नहीं।"
+
+#. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:14
 msgid "entries"
 msgstr "प्रविष्टियाँ"
@@ -6101,9 +6387,14 @@ msgid "Every panel, inverter and part, by make."
 msgstr "हर पैनल, इन्वर्टर और पुर्ज़ा, ब्रांड के साथ।"
 
 #. js-lingui-explicit-id
-#: src/copy/on-its-way.ts:101
-msgid "Every payment matched to its proposal"
-msgstr "हर भुगतान अपने प्रस्ताव से मिलाया गया"
+#: src/copy/payments-screen.ts:27
+msgid "Every part is paid"
+msgstr "हर हिस्से का भुगतान हो चुका है"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:125
+msgid "Every part that is due is paid."
+msgstr "हर देय हिस्से का भुगतान हो चुका है।"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:57
@@ -6431,6 +6722,7 @@ msgstr "आपके चुने समय पर फ़ॉलो-अप कॉ
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:128
+#: src/copy/receipt-document.ts:10
 msgid "For"
 msgstr "किसके लिए"
 
@@ -6550,6 +6842,11 @@ msgstr "तब से, प्रति वर्ष"
 #: src/copy/branding.ts:46
 msgid "From your Business profile"
 msgstr "आपकी व्यवसाय प्रोफ़ाइल से"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:35
+msgid "from your payment terms"
+msgstr "आपकी भुगतान शर्तों से"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:24
@@ -6941,12 +7238,12 @@ msgid "HelioGrid could not be reached, from your side or ours."
 msgstr "HelioGrid से संपर्क नहीं हो सका, आपकी ओर से या हमारी ओर से।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:88
+#: src/copy/api-error.ts:89
 msgid "HelioGrid could not be reached, from your side or ours. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid तक पहुँचा नहीं जा सका — आपकी ओर से या हमारी ओर से। अगर आप कुछ सेव कर रहे थे, तो दोबारा कोशिश करने से पहले देख लें कि वह सेव हुआ या नहीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:91
+#: src/copy/api-error.ts:92
 msgid "HelioGrid did not answer in time. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid ने समय पर जवाब नहीं दिया। अगर आप कुछ सेव कर रहे थे, तो दोबारा कोशिश करने से पहले देख लें कि वह सेव हुआ या नहीं।"
 
@@ -6966,7 +7263,7 @@ msgid "HelioGrid sends the message to this number — it does not come from your
 msgstr "HelioGrid इस नंबर पर संदेश भेजता है — यह आपके फ़ोन से नहीं जाता।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:94
+#: src/copy/api-error.ts:95
 msgid "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid का जवाब पढ़ा नहीं जा सका। अगर आप कुछ सेव कर रहे थे, तो दोबारा कोशिश करने से पहले देख लें कि वह सेव हुआ या नहीं।"
 
@@ -6989,6 +7286,11 @@ msgstr "HelioGrid के मानक चरण"
 #: src/copy/proposal-template.ts:139
 msgid "HelioGrid's standard terms"
 msgstr "HelioGrid की मानक शर्तें"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:22
+msgid "Hello {customer},"
+msgstr "नमस्ते {customer},"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-messages.ts:36
@@ -7014,6 +7316,11 @@ msgstr "नमस्ते {customer}! आपका सोलर सिस्ट
 #: src/copy/project-page.ts:68
 msgid "Hello {name}!"
 msgstr "नमस्ते {name}!"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:23
+msgid "Hello,"
+msgstr "नमस्ते,"
 
 #. js-lingui-explicit-id
 #: src/copy/home-today.ts:38
@@ -7135,6 +7442,11 @@ msgstr "{name} का शुल्क कैसे लगता है"
 #: src/copy/lead-inbox.ts:72
 msgid "How a lead arrives"
 msgstr "लीड कैसे आती है"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:128
+msgid "How customers pay you"
+msgstr "ग्राहक आपको कैसे भुगतान करते हैं"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:32
@@ -7331,6 +7643,11 @@ msgid "Importing leads is for an owner or a sales manager"
 msgstr "लीड्स इम्पोर्ट करना मालिक या सेल्स मैनेजर का काम है"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:28
+msgid "In {amount}"
+msgstr "मिले {amount}"
+
+#. js-lingui-explicit-id
 #: src/copy/transcript.ts:27
 msgid "In {language}"
 msgstr "{language} में"
@@ -7440,7 +7757,7 @@ msgid "Install by {date}"
 msgstr "{date} तक इंस्टॉल"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:88
+#: src/copy/projects.ts:89
 msgid "Install by {date} has passed · still {stage}"
 msgstr "{date} तक इंस्टॉल की तारीख निकल गई · अब भी {stage}"
 
@@ -7952,6 +8269,11 @@ msgid "Last set by {name}"
 msgstr "आख़िरी बार {name} ने तय की"
 
 #. js-lingui-explicit-id
+#: src/copy/money-due.ts:14
+msgid "Late"
+msgstr "देर से"
+
+#. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:92
 msgid "Later"
 msgstr "बाद में"
@@ -8052,6 +8374,11 @@ msgid "Leave without saving?"
 msgstr "बिना सहेजे जाएँ?"
 
 #. js-lingui-explicit-id
+#: src/copy/receipt-document.ts:19
+msgid "Left"
+msgstr "बाकी"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:118
 #: src/copy/catalog-import.ts:126
 msgid "Left out"
@@ -8076,6 +8403,11 @@ msgstr "लंबाई"
 #: src/copy/catalog-import-fields.ts:17
 msgid "Length (mm)"
 msgstr "लंबाई (mm)"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:11
+msgid "Less than what is left — the rest stays due"
+msgstr "बाकी से कम — शेष देय रहेगा"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:37
@@ -8240,6 +8572,16 @@ msgstr "नक्शा लोड हो रहा है"
 #: src/copy/leads-list.ts:79
 msgid "Loading more leads"
 msgstr "और लीड्स लोड हो रही हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-sheet.ts:24
+msgid "Loading payment settings"
+msgstr "भुगतान सेटिंग्स लोड हो रही हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:62
+msgid "Loading payments"
+msgstr "भुगतान लोड हो रहे हैं"
 
 #. js-lingui-explicit-id
 #: src/copy/projects.ts:55
@@ -8683,6 +9025,11 @@ msgid "Matched automatically — check them"
 msgstr "अपने-आप मिलाए गए — इन्हें जाँच लें"
 
 #. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:10
+msgid "Matches what is left — this part becomes received"
+msgstr "बाकी के बराबर — यह हिस्सा मिला हुआ हो जाएगा"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:62
 msgid "Matching your rows to products we carry"
 msgstr "आपकी पंक्तियों को हमारे प्रोडक्ट से मिला रहे हैं"
@@ -8789,6 +9136,11 @@ msgid "Message copied"
 msgstr "संदेश कॉपी हुआ"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:110
+msgid "Message copied — paste it in WhatsApp or SMS"
+msgstr "संदेश कॉपी हुआ — WhatsApp या SMS में पेस्ट करें"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-timeline.ts:55
 msgid "Message copied · {template}"
 msgstr "संदेश कॉपी हुआ · {template}"
@@ -8871,9 +9223,26 @@ msgid "Model / SKU"
 msgstr "मॉडल / SKU"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:112
 #: src/copy/settings.ts:37
 msgid "Money"
 msgstr "पैसा"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:116
+#: src/copy/projects.ts:80
+msgid "Money due"
+msgstr "देय पैसा"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:126
+msgid "Money due did not load"
+msgstr "देय पैसा लोड नहीं हुआ"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:129
+msgid "Money goes straight to your bank. HelioGrid never holds it."
+msgstr "पैसा सीधे आपके बैंक में जाता है। HelioGrid इसे कभी नहीं रखता।"
 
 #. js-lingui-explicit-id
 #: src/copy/money-summary.ts:10
@@ -8934,9 +9303,24 @@ msgid "More acts on this project"
 msgstr "इस प्रोजेक्ट के और विकल्प"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:53
+msgid "More for {part}"
+msgstr "{part} के लिए और"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:54
+msgid "More for {receipt}"
+msgstr "{receipt} के लिए और"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:43
 msgid "More than one is fine, and roles can change later on Team."
 msgstr "एक से ज़्यादा भी ठीक है, और भूमिकाएँ बाद में टीम पर बदल सकती हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:12
+msgid "More than what is left — the extra shows on this part"
+msgstr "बाकी से ज़्यादा — अतिरिक्त इसी हिस्से पर दिखेगा"
 
 #. js-lingui-explicit-id
 #: src/copy/project-stages.ts:28
@@ -8949,7 +9333,7 @@ msgid "move"
 msgstr "ऊपर-नीचे"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:91
+#: src/copy/projects.ts:93
 msgid "Move"
 msgstr "आगे बढ़ाएँ"
 
@@ -9032,7 +9416,7 @@ msgid "Move undone · back at {stage}"
 msgstr "बदलाव पहले जैसा किया · फिर से {stage} में"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:98
+#: src/copy/projects.ts:101
 msgid "Move: {name}"
 msgstr "आगे बढ़ाएँ: {name}"
 
@@ -9236,6 +9620,11 @@ msgid "Name only"
 msgstr "केवल नाम"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:133
+msgid "Name shown"
+msgstr "दिखने वाला नाम"
+
+#. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:54
 msgid "Name this tranche"
 msgstr "इस किस्त को नाम दें"
@@ -9256,6 +9645,11 @@ msgstr "नाम, फ़ोन या शहर"
 #: src/copy/projects.ts:64
 msgid "Name, place or number"
 msgstr "नाम, जगह या नंबर"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:132
+msgid "name@bank — the one your bank or UPI app shows"
+msgstr "name@bank — जो आपका बैंक या UPI ऐप दिखाता है"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-import.ts:69
@@ -9329,6 +9723,11 @@ msgid "Needs fixing"
 msgstr "ठीक करना है"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:63
+msgid "Needs internet — money is never saved offline."
+msgstr "इंटरनेट चाहिए — पैसा कभी ऑफ़लाइन सेव नहीं होता।"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-home.ts:25
 msgid "Needs the owner"
 msgstr "मालिक की ज़रूरत है"
@@ -9355,18 +9754,23 @@ msgid "New"
 msgstr "नया"
 
 #. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:13
+msgid "New — on no receipt yet"
+msgstr "नया — अभी किसी रसीद पर नहीं"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:15
 msgid "New company on HelioGrid?"
 msgstr "HelioGrid पर नई कंपनी?"
 
 #. js-lingui-explicit-id
 #: src/copy/project-next.ts:58
-#: src/copy/projects.ts:93
+#: src/copy/projects.ts:95
 msgid "New date"
 msgstr "नई तारीख"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:100
+#: src/copy/projects.ts:103
 msgid "New date: {name}"
 msgstr "नई तारीख: {name}"
 
@@ -9567,6 +9971,11 @@ msgid "Next"
 msgstr "आगे"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:30
+msgid "Next {amount}"
+msgstr "अगला {amount}"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-home.ts:60
 msgid "Next bill"
 msgstr "अगला बिल"
@@ -9646,6 +10055,11 @@ msgstr "अभी तक कोई गतिविधि नहीं"
 #: src/copy/crm-vocabulary.ts:131
 msgid "No answer"
 msgstr "फ़ोन नहीं उठाया"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:138
+msgid "No bank details yet"
+msgstr "अभी बैंक विवरण नहीं"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:36
@@ -9924,6 +10338,11 @@ msgstr "अभी किसी को नहीं सौंपी"
 #: src/copy/lead-detail.ts:34
 msgid "No owner yet. Give the lead to someone"
 msgstr "अभी किसी को नहीं सौंपी। लीड किसी को सौंपें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:56
+msgid "No payment schedule"
+msgstr "कोई भुगतान अनुसूची नहीं"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-import-rows.ts:69
@@ -10550,6 +10969,11 @@ msgid "Note along the foot of every page"
 msgstr "हर पेज के नीचे की टिप्पणी"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:70
+msgid "Note on the payment: {note}"
+msgstr "भुगतान पर नोट: {note}"
+
+#. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:18
 msgid "Notes, calls, stage changes and payments all land here as they happen."
 msgstr "नोट, कॉल, चरण के बदलाव और भुगतान — सब कुछ होते ही यहाँ आता है।"
@@ -10656,7 +11080,7 @@ msgid "Nothing in it reaches your catalog."
 msgstr "इसका कुछ भी आपके कैटलॉग में नहीं जाता।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:77
+#: src/copy/api-error.ts:78
 msgid "Nothing in the catalog changed since the last release, so there is nothing to publish."
 msgstr "पिछली रिलीज़ के बाद कैटलॉग में कुछ नहीं बदला, इसलिए प्रकाशित करने को कुछ नहीं है।"
 
@@ -10691,6 +11115,11 @@ msgid "Nothing needs you"
 msgstr "अभी आपकी ज़रूरत नहीं"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:44
+msgid "Nothing received yet"
+msgstr "अभी कुछ नहीं मिला"
+
+#. js-lingui-explicit-id
 #: src/copy/branding.ts:30
 msgid "Nothing set yet · platform defaults in force"
 msgstr "अभी कुछ तय नहीं · प्लैटफ़ॉर्म की डिफ़ॉल्ट सेटिंग लागू"
@@ -10699,6 +11128,16 @@ msgstr "अभी कुछ तय नहीं · प्लैटफ़ॉर�
 #: src/copy/lead-import-rows.ts:49
 msgid "Nothing that landed is rolled back."
 msgstr "जो आ गया, वह वापस नहीं लिया जाता।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:124
+msgid "Nothing to collect"
+msgstr "वसूलने को कुछ नहीं"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:25
+msgid "Nothing to collect now"
+msgstr "अभी वसूलने को कुछ नहीं"
 
 #. js-lingui-explicit-id
 #: src/copy/compare-grid.ts:14
@@ -11013,6 +11452,11 @@ msgid "Only {holder} can see this cycle’s usage."
 msgstr "इस चक्र का उपयोग सिर्फ़ {holder} देख सकते हैं।"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:165
+msgid "Only a payment can be reversed."
+msgstr "सिर्फ़ भुगतान ही वापस किया जा सकता है।"
+
+#. js-lingui-explicit-id
 #: src/copy/list-top.ts:53
 msgid "Only dormant leads"
 msgstr "सिर्फ़ निष्क्रिय लीड्स"
@@ -11031,6 +11475,11 @@ msgstr "सिर्फ़ नए प्रस्तावों की क़�
 #: src/copy/search.ts:52
 msgid "Only records you can open"
 msgstr "सिर्फ़ वे रिकॉर्ड जिन्हें आप खोल सकते हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:143
+msgid "Only the owner changes where money goes."
+msgstr "पैसा कहाँ जाए, यह सिर्फ़ मालिक बदलता है।"
 
 #. js-lingui-explicit-id
 #: src/copy/project-sheets.ts:67
@@ -11075,6 +11524,16 @@ msgstr "पूरे आकार में खोलें"
 #: src/copy/list-top.ts:36
 msgid "open leads"
 msgstr "खुली लीड्स"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:115
+msgid "Open payments"
+msgstr "भुगतान खोलें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:127
+msgid "Open payments for {name}"
+msgstr "{name} के भुगतान खोलें"
 
 #. js-lingui-explicit-id
 #: src/copy/project-sheets.ts:30
@@ -11333,6 +11792,27 @@ msgid "Paid"
 msgstr "भुगतान हुआ"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:83
+msgid "Paid — record it"
+msgstr "भुगतान हुआ — दर्ज करें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:86
+#: src/copy/receipt-document.ts:12
+msgid "Paid by"
+msgstr "भुगतान का तरीका"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:35
+msgid "Paid by {mode} on {date}, reference {reference}."
+msgstr "{date} को {mode} से भुगतान, रेफ़रेंस {reference}।"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:34
+msgid "Paid by {mode} on {date}."
+msgstr "{date} को {mode} से भुगतान।"
+
+#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:93
 msgid "Paid cycle starts"
 msgstr "भुगतान वाला चक्र शुरू"
@@ -11356,6 +11836,11 @@ msgstr "आपके प्रदाता के अपने पेज पर 
 #: src/copy/invoice-document.ts:21
 msgid "Paid period ends"
 msgstr "भुगतान की अवधि समाप्त"
+
+#. js-lingui-explicit-id
+#: src/copy/receipt-document.ts:18
+msgid "Paid so far"
+msgstr "अब तक भुगतान"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:130
@@ -11383,6 +11868,16 @@ msgid "Parked or closed"
 msgstr "रोकी या बंद की गई"
 
 #. js-lingui-explicit-id
+#: src/copy/receipt-document.ts:11
+msgid "Part {position} of {count} · {part}"
+msgstr "{count} में से हिस्सा {position} · {part}"
+
+#. js-lingui-explicit-id
+#: src/copy/money-due.ts:19
+msgid "Part in"
+msgstr "कुछ मिला"
+
+#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:56
 msgid "Part of this cycle"
 msgstr "इस चक्र का हिस्सा"
@@ -11393,9 +11888,25 @@ msgid "Part of this cycle · {left} of {total} days"
 msgstr "इस चक्र का हिस्सा · {total} में से {left} दिन"
 
 #. js-lingui-explicit-id
+#: src/copy/money-due.ts:16
+#: src/copy/payments-screen.ts:151
+msgid "Part received"
+msgstr "हिस्सा मिला"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:108
+msgid "Part waived"
+msgstr "हिस्सा माफ़ किया"
+
+#. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:84
 msgid "Partial"
 msgstr "आंशिक"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:34
+msgid "Parts"
+msgstr "हिस्से"
 
 #. js-lingui-explicit-id
 #: src/copy/project-detail.ts:41
@@ -11489,6 +12000,11 @@ msgid "Pay as you go"
 msgstr "जितना उपयोग, उतना भुगतान"
 
 #. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:25
+msgid "Pay by any UPI app to {upiId} ({payee}). Note: {note}"
+msgstr "किसी भी UPI ऐप से {upiId} ({payee}) को भुगतान करें। नोट: {note}"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:71
 msgid "Pay in Billing to turn them back on."
 msgstr "इन्हें फिर से चालू करने के लिए बिलिंग में भुगतान करें।"
@@ -11570,9 +12086,19 @@ msgid "Payment overdue"
 msgstr "भुगतान बकाया"
 
 #. js-lingui-explicit-id
+#: src/copy/receipt-document.ts:7
+msgid "Payment receipt"
+msgstr "भुगतान रसीद"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-records.ts:44
 msgid "Payment received"
 msgstr "भुगतान मिला"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-sheet.ts:25
+msgid "Payment recorded"
+msgstr "भुगतान दर्ज हुआ"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:46
@@ -11580,9 +12106,24 @@ msgid "Payment reminders"
 msgstr "भुगतान रिमाइंडर"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:107
+msgid "Payment reversed"
+msgstr "भुगतान वापस किया"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:16
+msgid "Payment saved. The photo did not upload."
+msgstr "भुगतान सहेजा गया। फ़ोटो अपलोड नहीं हुई।"
+
+#. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:49
 msgid "Payment schedule"
 msgstr "भुगतान अनुसूची"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-sheet.ts:23
+msgid "Payment settings did not load"
+msgstr "भुगतान सेटिंग्स लोड नहीं हुईं"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:62
@@ -11602,8 +12143,14 @@ msgstr "भुगतान शर्तों में ज़्यादा �
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:72
+#: src/copy/payments-screen.ts:18
 msgid "Payments"
 msgstr "भुगतान"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:60
+msgid "Payments did not load"
+msgstr "भुगतान लोड नहीं हुए"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:66
@@ -11730,6 +12277,11 @@ msgid "Photo {day}, {time}"
 msgstr "फ़ोटो {day}, {time}"
 
 #. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:17
+msgid "Photo added"
+msgstr "फ़ोटो जुड़ गई"
+
+#. js-lingui-explicit-id
 #: src/copy/installer-job.ts:25
 msgid "Photo and tick"
 msgstr "फ़ोटो लें और टिक करें"
@@ -11748,6 +12300,11 @@ msgstr "फ़ोटो नहीं भेजी गई"
 #: src/copy/project-page.ts:41
 msgid "Photo or file"
 msgstr "फ़ोटो या फ़ाइल"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:21
+msgid "Photo uploading"
+msgstr "फ़ोटो अपलोड हो रही है"
 
 #. js-lingui-explicit-id
 #: src/copy/installer-job.ts:29
@@ -11820,6 +12377,11 @@ msgstr "एक आइटम चुनें"
 #: src/copy/invite.ts:40
 msgid "Pick at least one role. Someone invited with no role would sign in to an empty app."
 msgstr "कम से कम एक भूमिका चुनें। बिना भूमिका के आमंत्रित व्यक्ति खाली ऐप में साइन इन करेगा।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:163
+msgid "Pick how it was paid."
+msgstr "चुनें कि भुगतान कैसे हुआ।"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:36
@@ -12314,6 +12876,11 @@ msgid "Project timeline"
 msgstr "प्रोजेक्ट टाइमलाइन"
 
 #. js-lingui-explicit-id
+#: src/copy/receipt-document.ts:17
+msgid "Project total"
+msgstr "प्रोजेक्ट कुल"
+
+#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:58
 msgid "Project visibility scope"
 msgstr "प्रोजेक्ट कितने दिखते हैं"
@@ -12338,7 +12905,7 @@ msgid "Proof came early"
 msgstr "प्रमाण पहले आ गया"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:86
+#: src/copy/projects.ts:87
 msgid "Proof for {stage} came early"
 msgstr "{stage} का सबूत पहले आ गया"
 
@@ -12650,6 +13217,53 @@ msgid "Recalculating"
 msgstr "फिर से गणना हो रही है"
 
 #. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:30
+msgid "Receipt {number} — {company}"
+msgstr "रसीद {number} — {company}"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:19
+msgid "Receipt PDF"
+msgstr "रसीद PDF"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:55
+msgid "Receipt photo"
+msgstr "रसीद की फ़ोटो"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:43
+#: src/copy/payments-screen.ts:152
+msgid "Received"
+msgstr "मिल गया"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:31
+msgid "Received {amount} from {customer} for {part} of project {project}."
+msgstr "प्रोजेक्ट {project} के {part} के लिए {customer} से {amount} मिले।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:39
+msgid "Received {date}"
+msgstr "{date} को मिला"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:31
+msgid "Received {in}, due {due}, still to come {next}"
+msgstr "मिले {in}, देय {due}, आगे आने वाले {next}"
+
+#. js-lingui-explicit-id
+#: src/copy/receipt-document.ts:8
+msgid "Received from {customer} for project {number}"
+msgstr "{customer} से प्रोजेक्ट {number} के लिए मिला"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:89
+#: src/copy/receipt-document.ts:14
+msgid "Received on"
+msgstr "मिलने की तारीख़"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:170
 msgid "Recently changed"
 msgstr "हाल में बदले गए"
@@ -12663,6 +13277,16 @@ msgstr "फिर से बीच में लाएँ — यह ज़ू�
 #: src/copy/data-table.ts:32
 msgid "Reconciles with {label}."
 msgstr "{label} से मेल खाता है।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:33
+msgid "Record"
+msgstr "दर्ज करें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:84
+msgid "Record payment"
+msgstr "भुगतान दर्ज करें"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:61
@@ -12680,8 +13304,28 @@ msgid "Record payments, attach receipts, read any project’s money, and see cat
 msgstr "भुगतान दर्ज करें, रसीदें जोड़ें, किसी भी प्रोजेक्ट का पैसा देखें, और कैटलॉग की कीमतें और मार्जिन देखें"
 
 #. js-lingui-explicit-id
+#: src/copy/receipt-document.ts:15
+msgid "Recorded"
+msgstr "दर्ज"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:106
+msgid "Recorded · {receipt}"
+msgstr "दर्ज हुआ · {receipt}"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:36
+msgid "Recorded by {recorder}."
+msgstr "{recorder} ने दर्ज किया।"
+
+#. js-lingui-explicit-id
 #: src/copy/image.ts:15
 msgid "Ref"
+msgstr "संदर्भ"
+
+#. js-lingui-explicit-id
+#: src/copy/receipt-document.ts:13
+msgid "Reference"
 msgstr "संदर्भ"
 
 #. js-lingui-explicit-id
@@ -12748,9 +13392,15 @@ msgid "Releases"
 msgstr "रिलीज़"
 
 #. js-lingui-explicit-id
+#: src/copy/money-due.ts:20
 #: src/copy/project-page.ts:17
 msgid "Remind"
 msgstr "याद दिलाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/money-due.ts:21
+msgid "Remind {name}"
+msgstr "{name} को याद दिलाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:42
@@ -12790,6 +13440,7 @@ msgstr "कतार में लगी एजेंट कॉल हटाए�
 
 #. js-lingui-explicit-id
 #: src/copy/dropzone.ts:16
+#: src/copy/payments-screen.ts:92
 msgid "Remove photo"
 msgstr "फ़ोटो हटाएँ"
 
@@ -12922,6 +13573,11 @@ msgid "Request sent to your company’s owner"
 msgstr "आपकी कंपनी के मालिक को अनुरोध भेजा गया"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:109
+msgid "Request shared"
+msgstr "अनुरोध भेजा"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:76
 msgid "Request to join"
 msgstr "जुड़ने का अनुरोध करें"
@@ -13049,6 +13705,26 @@ msgstr "फ़ोटो फिर से भेजें: {step}"
 #: src/copy/activity-stream.ts:63
 msgid "Reversal"
 msgstr "वापसी"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:50
+msgid "Reverse"
+msgstr "वापस करें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:97
+msgid "Reverse {amount}"
+msgstr "{amount} वापस करें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:48
+msgid "Reversed"
+msgstr "वापस किया"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:47
+msgid "Reversed: {reason}"
+msgstr "वापस किया: {reason}"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:48
@@ -13301,9 +13977,15 @@ msgstr "नमूना ग्राहक और प्रस्ताव स�
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:24
 #: src/copy/name-and-photo-editor.ts:15
+#: src/copy/payments-screen.ts:141
 #: src/copy/project-sheets.ts:109
 msgid "Save"
 msgstr "सहेजें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:93
+msgid "Save {amount}"
+msgstr "{amount} सेव करें"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:44
@@ -13414,6 +14096,11 @@ msgid "Saved and in force · {name}, {date}"
 msgstr "सहेजा गया और लागू · {name}, {date}"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:94
+msgid "Saved as “recorded by {name}”. A mistake is fixed with Reverse — never deleted."
+msgstr "“{name} ने दर्ज किया” के रूप में सेव होगा। गलती 'वापस करें' से सुधरती है — कभी मिटाई नहीं जाती।"
+
+#. js-lingui-explicit-id
 #: src/copy/dropzone.ts:17
 msgid "Saved on this phone. They upload once there's a connection — nothing captured is lost."
 msgstr "इस फ़ोन पर सेव है। कनेक्शन मिलते ही ये अपलोड हो जाएँगे — लिया गया कुछ भी नहीं खोता।"
@@ -13469,9 +14156,24 @@ msgid "Say why {row} does not apply. It counts as done for handover."
 msgstr "बताएँ कि {row} यहाँ क्यों लागू नहीं है। हैंडओवर के लिए इसे पूरा माना जाएगा।"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:167
+msgid "Say why, so the record explains itself."
+msgstr "वजह बताएँ, ताकि रिकॉर्ड खुद समझाए।"
+
+#. js-lingui-explicit-id
 #: src/copy/project-detail.ts:115
 msgid "Say why."
 msgstr "कारण बताएँ।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:135
+msgid "Scan from your own phone. If it shows {payee}, the ID is right."
+msgstr "अपने फ़ोन से स्कैन करें। अगर {payee} दिखे, तो ID सही है।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:82
+msgid "Scan with any UPI app · the amount is filled in"
+msgstr "किसी भी UPI ऐप से स्कैन करें · रकम भरी हुई है"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:122
@@ -13733,6 +14435,11 @@ msgid "Send it to site"
 msgstr "साइट पर भेजें"
 
 #. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:9
+msgid "Send on WhatsApp"
+msgstr "WhatsApp पर भेजें"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:51
 #: src/copy/role-matrix.ts:49
 msgid "Send proposals to customers"
@@ -13789,6 +14496,11 @@ msgid "Sent proposals keep their branding."
 msgstr "भेजे गए प्रस्ताव अपनी ब्रांडिंग रखते हैं।"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:136
+msgid "Sent with every request, and the only way above {limit}"
+msgstr "हर अनुरोध के साथ भेजा जाता है, और {limit} से ऊपर यही एक रास्ता है"
+
+#. js-lingui-explicit-id
 #: src/copy/invoice-document.ts:27
 msgid "Service code"
 msgstr "सेवा कोड"
@@ -13807,6 +14519,11 @@ msgstr "कैटलॉग सेटिंग्स से तय।"
 #: src/copy/catalog-add-item.ts:74
 msgid "Set by the component picker."
 msgstr "कंपोनेंट पिकर से तय।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:140
+msgid "Set by your market"
+msgstr "आपके बाज़ार से तय"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:75
@@ -13860,6 +14577,7 @@ msgstr "छाया विश्लेषण"
 
 #. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:52
+#: src/copy/payments-screen.ts:71
 msgid "Share"
 msgstr "हिस्सा"
 
@@ -13869,9 +14587,24 @@ msgid "Share of {tranche}"
 msgstr "{tranche} का हिस्सा"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:49
+msgid "Share receipt"
+msgstr "रसीद भेजें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:52
+msgid "Share request"
+msgstr "अनुरोध भेजें"
+
+#. js-lingui-explicit-id
 #: src/copy/project-handover.ts:40
 msgid "Share the message"
 msgstr "संदेश शेयर करें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:42
+msgid "Shared by {name} · {date}"
+msgstr "{name} ने भेजा · {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/paged-document.ts:13
@@ -13924,6 +14657,7 @@ msgstr "सभी दिखाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/filter-panel.ts:12
+#: src/copy/payments-screen.ts:123
 msgid "Show all {count}"
 msgstr "सभी {count} दिखाएँ"
 
@@ -13941,6 +14675,11 @@ msgstr "कम दिखाएँ"
 #: src/copy/chip-group.ts:9
 msgid "Show fewer {noun}"
 msgstr "कम {noun} दिखाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:73
+msgid "Show full screen to the customer"
+msgstr "ग्राहक को पूरी स्क्रीन पर दिखाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:42
@@ -14409,6 +15148,11 @@ msgstr "वर्शन {number} शुरू करें"
 #: src/copy/setup-ready.ts:13
 msgid "Start with a real lead"
 msgstr "एक असली लीड से शुरू करें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-sheet.ts:21
+msgid "Starts as what is left on this part"
+msgstr "इस हिस्से की बाकी रकम से शुरू होता है"
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:49
@@ -14890,6 +15634,11 @@ msgid "Terms and conditions"
 msgstr "नियम और शर्तें"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:134
+msgid "Test it with {amount}"
+msgstr "{amount} से जाँचें"
+
+#. js-lingui-explicit-id
 #: src/copy/project-stages.ts:40
 msgid "Tested and generating"
 msgstr "जाँचा गया और बिजली बन रही है"
@@ -14898,6 +15647,11 @@ msgstr "जाँचा गया और बिजली बन रही है
 #: src/copy/brand-colour-field.ts:24
 msgid "Text can't sit on this colour, so the cover keeps a white header and its headings use a darker shade."
 msgstr "इस रंग पर लिखावट नहीं टिकती, इसलिए कवर सफ़ेद हेडर रखता है और उसके शीर्षक गहरा रंग लेते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:29
+msgid "Thank you — {company}"
+msgstr "धन्यवाद — {company}"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:38
@@ -14935,6 +15689,11 @@ msgid "That did not go through. Try again."
 msgstr "यह नहीं हो सका। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:64
+msgid "That did not save. Try again."
+msgstr "यह सेव नहीं हुआ। फिर कोशिश करें।"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:98
 msgid "That didn't save — the catalog service didn't answer. {still}"
 msgstr "यह सेव नहीं हुआ — कैटलॉग सेवा ने जवाब नहीं दिया। {still}"
@@ -14950,7 +15709,7 @@ msgid "That document is not on this project."
 msgstr "यह दस्तावेज़ इस प्रोजेक्ट में नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:71
+#: src/copy/api-error.ts:72
 msgid "That does not read as a registration of this type. Check it against the format shown."
 msgstr "यह इस प्रकार के पंजीकरण जैसा नहीं दिखता। इसे दिखाए गए प्रारूप से मिलाकर जाँचें।"
 
@@ -15371,6 +16130,11 @@ msgid "The lead was not added. Try again."
 msgstr "लीड नहीं जुड़ी। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:168
+msgid "The money cannot arrive after today."
+msgstr "पैसा आज के बाद की तारीख़ में नहीं आ सकता।"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:23
 msgid "The name and city, as the customer gives them."
 msgstr "नाम और शहर, जैसा ग्राहक बताएँ।"
@@ -15379,6 +16143,11 @@ msgstr "नाम और शहर, जैसा ग्राहक बताए
 #: src/copy/price-book.ts:61
 msgid "the new rate"
 msgstr "नई दर"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:26
+msgid "The next part falls due at {stage}."
+msgstr "अगला हिस्सा {stage} पर देय होगा।"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:41
@@ -15411,6 +16180,11 @@ msgid "The payment service did not answer. Nothing was changed. Try again."
 msgstr "भुगतान सेवा ने जवाब नहीं दिया। कुछ नहीं बदला। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:98
+msgid "The payment stays on the record, with this reversal beside it. The part owes the money again."
+msgstr "भुगतान रिकॉर्ड में रहेगा, उसके साथ यह वापसी भी। हिस्से पर फिर से पैसा बाकी होगा।"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-records.ts:65
 msgid "The PDF could not open. Try again."
 msgstr "PDF नहीं खुल सका। फिर से कोशिश करें।"
@@ -15439,6 +16213,11 @@ msgstr "फ़ोन वाला खाना ख़ाली है।"
 #: src/copy/sign-in.ts:53
 msgid "The phone network turned it away"
 msgstr "फ़ोन नेटवर्क ने उसे लौटा दिया"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-sheet.ts:28
+msgid "The photo did not open. Try again."
+msgstr "फ़ोटो नहीं खुली। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:136
@@ -15551,6 +16330,16 @@ msgid "The proof moved it: {proof}."
 msgstr "प्रमाण से आगे बढ़ा: {proof}।"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-sheet.ts:27
+msgid "The receipt did not load. Try again."
+msgstr "रसीद लोड नहीं हुई। फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:18
+msgid "The receipt PDF is being made. Try again in a moment."
+msgstr "रसीद PDF बन रही है। थोड़ी देर में फिर कोशिश करें।"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-records.ts:63
 msgid "The refund window has closed. Reload to see your plan."
 msgstr "रिफ़ंड की अवधि खत्म हो गई। अपना प्लान देखने के लिए फिर से लोड करें।"
@@ -15646,7 +16435,7 @@ msgid "The terms you write."
 msgstr "आपकी लिखी शर्तें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:68
+#: src/copy/api-error.ts:69
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "किस्तों का योग ठीक 100% होना चाहिए। सेव करने से पहले बची हुई राशि रखें।"
 
@@ -15877,6 +16666,16 @@ msgid "This is a material estimate and a visual model, not a structural check. A
 msgstr "यह सामग्री का अनुमान और एक दृश्य मॉडल है, संरचनात्मक जाँच नहीं। संरचना की पुष्टि किसी इंजीनियर को करनी होगी।"
 
 #. js-lingui-explicit-id
+#: src/copy/payment-messages.ts:37
+msgid "This is a payment receipt, not a tax invoice."
+msgstr "यह भुगतान की रसीद है, टैक्स इनवॉइस नहीं।"
+
+#. js-lingui-explicit-id
+#: src/copy/receipt-document.ts:21
+msgid "This is a payment receipt, not a tax invoice. {company} recorded it from the customer’s payment; no bank confirmed it."
+msgstr "यह भुगतान रसीद है, कर चालान नहीं। {company} ने इसे ग्राहक के भुगतान से दर्ज किया; किसी बैंक ने इसकी पुष्टि नहीं की।"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:161
 msgid "This is paused"
 msgstr "यह रुका है"
@@ -15968,6 +16767,21 @@ msgid "This page does not exist"
 msgstr "यह पेज मौजूद नहीं है"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:166
+msgid "This part is fully paid, so there is nothing to waive."
+msgstr "इस हिस्से का पूरा भुगतान हो चुका है, माफ़ करने को कुछ नहीं।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:161
+msgid "This part was waived, so it takes no more money."
+msgstr "यह हिस्सा माफ़ हो चुका है, इसलिए इसमें और पैसा नहीं लिया जाता।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:164
+msgid "This payment was already reversed."
+msgstr "यह भुगतान पहले ही वापस हो चुका है।"
+
+#. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:96
 msgid "This person"
 msgstr "यही व्यक्ति"
@@ -16002,6 +16816,11 @@ msgstr "यह प्रोजेक्ट बंद है। अब इसम�
 #: src/copy/project-detail.ts:98
 msgid "This project is not yours to see"
 msgstr "यह प्रोजेक्ट आपके देखने के लिए नहीं है"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:57
+msgid "This project was won before your payment terms were set. Set them in Settings → Payment terms for the next one."
+msgstr "यह प्रोजेक्ट आपकी भुगतान शर्तें तय होने से पहले जीता गया था। अगले के लिए सेटिंग्स → भुगतान शर्तें में तय करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/document-defaults.ts:17
@@ -16039,9 +16858,14 @@ msgid "This stage can be skipped"
 msgstr "यह चरण छोड़ा जा सकता है"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:97
+#: src/copy/api-error.ts:98
 msgid "This stopped before HelioGrid answered. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid के जवाब देने से पहले यह रुक गया। अगर आप कुछ सेव कर रहे थे, तो दोबारा कोशिश करने से पहले देख लें कि वह सेव हुआ या नहीं।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:162
+msgid "This UTR is already on {receipt}."
+msgstr "यह UTR पहले से {receipt} पर है।"
 
 #. js-lingui-explicit-id
 #: src/copy/validation.ts:12
@@ -16124,6 +16948,16 @@ msgstr "टिन-शेड और धातु की छत"
 #: src/copy/range-field.ts:10
 msgid "To"
 msgstr "तक"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:120
+msgid "To collect"
+msgstr "वसूलना है"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:20
+msgid "To collect now"
+msgstr "अभी वसूलना है"
 
 #. js-lingui-explicit-id
 #: src/copy/list-top.ts:60
@@ -16492,6 +17326,11 @@ msgid "Up to 120 characters."
 msgstr "अधिकतम 120 अक्षर।"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:149
+msgid "Upcoming"
+msgstr "आगे आने वाला"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-home.ts:31
 msgid "Update"
 msgstr "अपडेट करें"
@@ -16533,10 +17372,30 @@ msgid "Upgrade plan"
 msgstr "प्लान अपग्रेड करें"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:130
+msgid "UPI"
+msgstr "UPI"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:131
+msgid "UPI ID"
+msgstr "UPI ID"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:67
+msgid "UPI QR"
+msgstr "UPI QR"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:69
+msgid "UPI QR for {amount}"
+msgstr "{amount} के लिए UPI QR"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-import.ts:26
 #: src/copy/project-detail.ts:56
 #: src/copy/project-next.ts:16
-#: src/copy/projects.ts:92
+#: src/copy/projects.ts:94
 msgid "Upload"
 msgstr "अपलोड"
 
@@ -16573,7 +17432,7 @@ msgid "Upload them or mark them not needed, then hand over."
 msgstr "इन्हें अपलोड करें या ज़रूरी नहीं चिह्नित करें, फिर सौंपें।"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:99
+#: src/copy/projects.ts:102
 msgid "Upload: {name}"
 msgstr "अपलोड: {name}"
 
@@ -16703,6 +17562,11 @@ msgstr "यूटिलिटी प्लांट को मंज़ूरी
 #: src/copy/document-defaults.ts:50
 msgid "Utility inspection"
 msgstr "बिजली कंपनी का निरीक्षण"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:87
+msgid "UTR or reference"
+msgstr "UTR या रेफ़रेंस"
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:19
@@ -16962,6 +17826,16 @@ msgid "Waiting on someone?"
 msgstr "किसी का इंतज़ार है?"
 
 #. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:51
+msgid "Waive"
+msgstr "माफ़ करें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:101
+msgid "Waive {part}"
+msgstr "{part} माफ़ करें"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:62
 msgid "Waive a payment stage"
 msgstr "भुगतान का एक चरण माफ़ करें"
@@ -16970,6 +17844,16 @@ msgstr "भुगतान का एक चरण माफ़ करें"
 #: src/copy/role-matrix.ts:81
 msgid "Waive a tranche"
 msgstr "किस्त माफ़ करें"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:153
+msgid "Waived"
+msgstr "माफ़ किया"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:40
+msgid "Waived: {reason}"
+msgstr "माफ़ किया: {reason}"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:54
@@ -17010,6 +17894,11 @@ msgstr "पहले {amount}"
 #: src/copy/catalog-words.ts:48
 msgid "Wattage"
 msgstr "वॉटेज"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-screen.ts:139
+msgid "Ways you record"
+msgstr "दर्ज करने के तरीके"
 
 #. js-lingui-explicit-id
 #: src/copy/project-page.ts:57
@@ -17597,6 +18486,7 @@ msgstr "किसकी लीड्स"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-import-rows.ts:27
+#: src/copy/payments-screen.ts:105
 #: src/copy/project-sheets.ts:64
 msgid "Why"
 msgstr "क्यों"
@@ -17790,6 +18680,11 @@ msgstr "साल"
 #: src/copy/catalog-editor.ts:72
 msgid "Yes"
 msgstr "हाँ"
+
+#. js-lingui-explicit-id
+#: src/copy/payment-acts.ts:15
+msgid "Yes, sent"
+msgstr "हाँ, भेज दिया"
 
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:16
@@ -18092,11 +18987,6 @@ msgstr "आपका चालू खाता"
 #: src/copy/payment-terms.ts:46
 msgid "Your customer sees this when you save"
 msgstr "सहेजने पर आपका ग्राहक यह देखता है"
-
-#. js-lingui-explicit-id
-#: src/copy/on-its-way.ts:97
-msgid "Your customers’ payments, stage by stage."
-msgstr "आपके ग्राहकों के भुगतान, चरण दर चरण।"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:89

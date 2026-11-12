@@ -1,27 +1,14 @@
 import {
   type MoneyDue,
   PAYMENT_ACT_REFUSED,
-  type PaymentReceipt,
   type ProjectPayments,
   paymentsContract,
+  type RecordedPayment,
   type RecordPayment,
+  type ReferenceCheck,
 } from '@heliogrid/contracts';
-import {
-  availablePaymentModes,
-  can,
-  formatMoney,
-  localDate,
-  minorUnits,
-  packLabel,
-  paymentModeLabel,
-} from '@heliogrid/domain';
-import { minorUnitsToDecimal, projectNumberOf, receiptNumberOf } from '@heliogrid/domain/server';
-import {
-  createTranslator,
-  paymentRecordedNotice,
-  paymentReversedNotice,
-  receiptMessage,
-} from '@heliogrid/i18n';
+import { availablePaymentModes, can, localDate, type MoneyDueGroup } from '@heliogrid/domain';
+import { createTranslator, paymentRecordedNotice, paymentReversedNotice } from '@heliogrid/i18n';
 import { HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import type { CreationKey } from '../../common/creation-key';
@@ -40,7 +27,8 @@ import { ProjectsPaymentsRepository } from './projects.payments.repository';
 import { ProjectsPaymentsReadRepository } from './projects.payments-read.repository';
 
 /**
- * A project's money (`M11`): the payments screen, Money due, and the four acts. The customer pays
+ * A project's money (`M11`): the payments screen, Money due, the reference check and the four
+ * acts. The customer pays
  * the company straight and a person records it (owner ruling 2026-11-11). Every figure is worked
  * out here, on the server (`F4-04`).
  */
@@ -84,59 +72,20 @@ export class ProjectsPaymentsService {
 
   async moneyDue(
     reader: ProjectReader,
-    page: { readonly page: number; readonly limit: number },
+    page: { readonly page: number; readonly limit: number; readonly group?: MoneyDueGroup },
     now: number,
   ): Promise<MoneyDue> {
     const pack = await this.settings.packOf(reader.tenantId);
     const { timezone } = await this.settings.quietHoursOf(reader.tenantId);
     const today = localDate(now, timezone);
     const owing = await this.reads.owing(reader, monthOf(today));
-    return moneyDueOf(owing, pack, timezone, today, page);
+    const canRemind = can(reader.roles, 'payments.send_request_message');
+    return moneyDueOf(owing, pack, timezone, today, page, canRemind);
   }
 
-  async receipt(
-    reader: ProjectReader,
-    projectId: string,
-    entryId: string,
-  ): Promise<PaymentReceipt> {
-    const [facts, pack, profile] = await Promise.all([
-      this.reads.payments(reader, projectId),
-      this.settings.packOf(reader.tenantId),
-      this.settings.businessProfile(reader.tenantId),
-    ]);
-    const entry = facts?.entries.find((one) => one.id === entryId && one.kind === 'payment');
-    const part = facts?.parts.find((one) => one.id === entry?.partId);
-    if (
-      facts === null ||
-      entry === undefined ||
-      part === undefined ||
-      entry.receiptNumber === null
-    ) {
-      throw new NotFoundException('No such payment.');
-    }
-    const language = languageOfCustomer(facts.head.preferredLanguage);
-    const { t } = await createTranslator(language);
-    const mode = entry.mode === null ? null : paymentModeLabel(pack.formats.vocabulary, entry.mode);
-    const number = receiptNumberOf(entry.receiptNumber);
-    return {
-      receiptNumber: number,
-      language,
-      text: receiptMessage(t, {
-        number,
-        company: profile.companyName ?? '',
-        customer: facts.head.customerName ?? facts.head.phoneE164,
-        project: projectNumberOf(facts.head.number),
-        part: part.label,
-        amount: formatMoney(
-          pack.formats,
-          minorUnitsToDecimal(minorUnits(entry.amountMinor), pack.formats.minorUnitDigits),
-        ),
-        mode: mode === null ? (entry.mode ?? '') : packLabel(mode, language),
-        date: entry.receivedOn ?? '',
-        reference: entry.reference,
-        recorder: entry.recordedBy.name,
-      }),
-    };
+  /** Whether a typed reference is already on a receipt that stands (`M11-38`). */
+  async referenceCheck(reader: ProjectReader, reference: string): Promise<ReferenceCheck> {
+    return { receiptNumber: await this.reads.receiptWithReference(reader.tenantId, reference) };
   }
 
   async record(
@@ -144,7 +93,7 @@ export class ProjectsPaymentsService {
     projectId: string,
     body: RecordPayment,
     actor: { readonly act: Act; readonly name: string; readonly key: CreationKey | null },
-  ): Promise<ProjectPayments> {
+  ): Promise<RecordedPayment> {
     const context = await this.contextOf(reader, actor);
     const pack = await this.settings.packOf(reader.tenantId);
     const modes = availablePaymentModes(pack.paymentRails, false).map((mode) => mode.mode);
@@ -160,7 +109,10 @@ export class ProjectsPaymentsService {
           paymentRecordedNotice(t, { name: project, part, amount, recorder: name }),
         ),
     );
-    return this.answered(reader, projectId, outcome, actor.act);
+    const payments = await this.answered(reader, projectId, outcome, actor.act);
+    const recordedId = 'recorded' in outcome ? outcome.recorded : undefined;
+    if (recordedId === undefined) throw new Error('a recording answered without its payment');
+    return { ...payments, recordedId };
   }
 
   async reverse(

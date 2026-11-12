@@ -12,17 +12,16 @@ import { payToSchema } from '../collections-settings';
 import {
   amountSchema,
   createHeadersSchema,
-  currencyCodeSchema,
   extensibleEnum,
   nonNegativeAmountSchema,
-  paginated,
-  paginationQuerySchema,
   uuidSchema,
 } from '../common';
 import { capturedAtSchema, memberRefSchema } from '../crm/schemas';
 import { errorEnvelopeWithFacts, keyReusedEnvelope, unauthenticatedEnvelope } from '../error';
+import { fileDownloadSchema } from '../file';
 import { calendarDateSchema } from '../tenant-settings';
 import { projectMoneySchema } from './money';
+import { moneyDueQuerySchema, moneyDueSchema } from './money-due';
 import { projectNotFound } from './projects';
 import { projectParamsSchema, projectStageReadSchema } from './schemas';
 
@@ -73,7 +72,7 @@ export const projectPaymentEntrySchema = z.object({
   receivedOn: calendarDateSchema.nullable(),
   /** `RCPT-0187`; a reversal has none. */
   receiptNumber: z.string().nullable(),
-  /** The receipt photo, read through the files route. */
+  /** The receipt photo, stored against the payment once it was saved (`M11-37`). */
   fileId: uuidSchema.nullable(),
   recordedAt: z.string().datetime(),
   recordedBy: memberRefSchema,
@@ -97,6 +96,11 @@ export const payRequestSchema = z.object({
   note: z.string(),
   /** The message in the customer's language, with the amount and how to pay. */
   message: z.object({ language: z.string(), text: z.string() }),
+  /**
+   * The message opened in the customer's chat, to their number, ready to send (`M11-26`); null
+   * where the market names no chat app.
+   */
+  chatUri: z.string().nullable(),
 });
 export type PayRequest = z.infer<typeof payRequestSchema>;
 
@@ -127,6 +131,10 @@ export const projectPaymentsSchema = z.object({
 });
 export type ProjectPayments = z.infer<typeof projectPaymentsSchema>;
 
+/** A recording's answer: the screen as it now stands and the payment it wrote, for its photo. */
+export const recordedPaymentSchema = projectPaymentsSchema.extend({ recordedId: uuidSchema });
+export type RecordedPayment = z.infer<typeof recordedPaymentSchema>;
+
 export const PAYMENT_ACT_REFUSED = 'PAYMENT_ACT_REFUSED' as const;
 export const paymentActRefusedEnvelope = errorEnvelopeWithFacts(
   z.literal(PAYMENT_ACT_REFUSED),
@@ -147,7 +155,6 @@ export const recordPaymentSchema = z
     mode: z.string().min(1).max(40),
     reference: z.string().trim().max(PAYMENT_REFERENCE_LIMIT).nullable(),
     receivedOn: calendarDateSchema,
-    fileId: uuidSchema.nullable(),
     capturedAt: capturedAtSchema,
   })
   .strict();
@@ -172,31 +179,16 @@ export const paymentReceiptSchema = z.object({
 });
 export type PaymentReceipt = z.infer<typeof paymentReceiptSchema>;
 
-/** One part waiting for money, on Money due (`SCR-M11-01`). */
-export const moneyDueRowSchema = z.object({
-  projectId: uuidSchema,
-  number: z.string(),
-  name: z.string().nullable(),
-  partId: uuidSchema,
-  label: z.string(),
-  state: extensibleEnum(TRANCHE_STATES),
-  outstanding: nonNegativeAmountSchema,
-  dueOn: calendarDateSchema,
-});
-export type MoneyDueRow = z.infer<typeof moneyDueRowSchema>;
+/** A payment's receipt PDF (`M11-41`): its link, or null while it is still being made. */
+export const receiptPdfSchema = z.object({ download: fileDownloadSchema.nullable() });
+export type ReceiptPdf = z.infer<typeof receiptPdfSchema>;
 
-/**
- * Money due (`SCR-M11-01`, `M11-54`): every part due and not fully paid, longest waiting first,
- * with the total to collect and what came in this month.
- */
-export const moneyDueSchema = z.object({
-  today: calendarDateSchema,
-  currencyCode: currencyCodeSchema,
-  toCollect: nonNegativeAmountSchema,
-  collectedThisMonth: amountSchema,
-  rows: paginated(moneyDueRowSchema),
+/** Whether a reference is already on a receipt that stands — said while it is typed (`M11-38`). */
+export const referenceCheckQuerySchema = z.object({
+  reference: z.string().trim().min(1).max(PAYMENT_REFERENCE_LIMIT),
 });
-export type MoneyDue = z.infer<typeof moneyDueSchema>;
+export const referenceCheckSchema = z.object({ receiptNumber: z.string().nullable() });
+export type ReferenceCheck = z.infer<typeof referenceCheckSchema>;
 
 const answers = {
   200: projectPaymentsSchema,
@@ -209,7 +201,7 @@ export const paymentsContract = c.router({
   moneyDue: {
     method: 'GET',
     path: '/payments/due',
-    query: paginationQuerySchema,
+    query: moneyDueQuerySchema,
     summary: 'Money due — every part due and unpaid that the reader may see, longest waiting first',
     responses: { 200: moneyDueSchema, 401: unauthenticatedEnvelope },
   },
@@ -228,7 +220,7 @@ export const paymentsContract = c.router({
     body: recordPaymentSchema,
     summary: 'Record money that arrived against a part (`M11-33`); a retry returns the first entry',
     responses: {
-      201: projectPaymentsSchema,
+      201: recordedPaymentSchema,
       401: unauthenticatedEnvelope,
       404: projectNotFound,
       422: z.union([paymentActRefusedEnvelope, keyReusedEnvelope]),
@@ -257,6 +249,21 @@ export const paymentsContract = c.router({
     body: shareRequestSchema,
     summary: 'Note that a person shared this part’s pay request — a tap, never a delivery',
     responses: answers,
+  },
+  receiptPdf: {
+    method: 'GET',
+    path: '/projects/:id/payments/:entryId/receipt-pdf',
+    pathParams: entryParamsSchema,
+    summary:
+      'A payment’s receipt PDF in the customer’s language (`M11-41`): made on first ask, then kept; null while it is made',
+    responses: { 200: receiptPdfSchema, 401: unauthenticatedEnvelope, 404: projectNotFound },
+  },
+  referenceCheck: {
+    method: 'GET',
+    path: '/payments/references',
+    query: referenceCheckQuerySchema,
+    summary: 'Whether a UTR or cheque number is already on a receipt that stands (`M11-38`)',
+    responses: { 200: referenceCheckSchema, 401: unauthenticatedEnvelope },
   },
   receipt: {
     method: 'GET',

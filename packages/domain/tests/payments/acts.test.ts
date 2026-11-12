@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { refusalToRecord, refusalToReverse, refusalToWaive } from '../../src/payments/acts';
+import {
+  amountAgainstLeft,
+  refusalToRecord,
+  refusalToReverse,
+  refusalToWaive,
+} from '../../src/payments/acts';
 
 describe('refusalToRecord — when money that arrived is not recorded', () => {
   const ok = {
@@ -45,5 +50,17 @@ describe('refusalToWaive — terminal, with a reason, while money is owed (M11-4
     ['no reason', 'due', ' ', 'reason_needed'],
   ] as const)('%s', (_, state, reason, refusal) => {
     expect(refusalToWaive(state, reason)).toBe(refusal);
+  });
+});
+
+describe('amountAgainstLeft — what the record sheet says while the amount is typed (M11-36)', () => {
+  it.each([
+    ['exactly what is left', 50_000, '50000.00', 'matches'],
+    ['a paisa under', 49_999.99, '50000.00', 'less'],
+    ['a paisa over', 50_000.01, '50000.00', 'more'],
+    ['nothing typed', null, '50000.00', null],
+    ['zero typed: nothing to say', 0, '50000.00', null],
+  ] as const)('%s', (_, typed, left, said) => {
+    expect(amountAgainstLeft(typed, left, 2)).toBe(said);
   });
 });

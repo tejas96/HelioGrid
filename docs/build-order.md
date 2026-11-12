@@ -44,9 +44,8 @@ Block numbers are stable: other documents cite them, so a block that empties kee
 |---|---|---|---|
 | **0** | **Foundations** | permissions, formats, notifications, honesty | `F-core` (all but `T-FCORE-009` — see below) · `F-platform` (all but `T-FPLAT-074` — see below) |
 | **1** | **Shell + entry & tenant** | sign-in, signup, team, catalog, branding | `M01-onboarding` (all but `T-M01-029` — see below) |
-| **5** | **Payments & collections** | the homeowner's tranches and receipts | `M11-payments-collections` |
 | **6** | **Sales execution + owner home** | My Day, lost, reopen, follow-ups, the owner home | `M07-sales-execution` · `M13-dashboards` |
-| **8** | **Proposals + customer link** | the proposal and the link the homeowner opens | `M06-proposals` · `F5-customer-link` · `F-core` → `T-FCORE-009` · `F-platform` → `T-FPLAT-074` · `M01-onboarding` → `T-M01-029` |
+| **8** | **Proposals + customer link** | the proposal and the link the homeowner opens | `M06-proposals` · `F5-customer-link` · `F-core` → `T-FCORE-009` · `F-platform` → `T-FPLAT-074` · `M01-onboarding` → `T-M01-029` · `M11-payments-collections` |
 
 **The 3D Design Studio is rebuilt from scratch.** Its tasks and its PRD are deleted; its block
 returns, as block 7, with the new studio's tasks. When its tasks are written, one carries

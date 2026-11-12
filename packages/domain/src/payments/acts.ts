@@ -49,3 +49,25 @@ export function refusalToWaive(state: TrancheState, reason: string): PaymentRefu
   if (!hasReason(reason)) return 'reason_needed';
   return null;
 }
+
+/** How a typed amount stands against what the part still owes. */
+export type AmountAgainstLeft = 'matches' | 'less' | 'more';
+
+/**
+ * What the record sheet says while the amount is typed (`M11-36`): it matches what is left, falls
+ * short, or runs over — compared in minor units, so a paisa is never lost to a float. Nothing to
+ * say while nothing positive is typed. A comparison, never a figure: the server works out how the
+ * part stands after the save (`F4-04`).
+ */
+export function amountAgainstLeft(
+  typed: number | null,
+  left: string,
+  digits: number,
+): AmountAgainstLeft | null {
+  if (typed === null || typed <= 0) return null;
+  const scale = 10 ** digits;
+  const typedMinor = Math.round(typed * scale);
+  const leftMinor = Math.round(Number(left) * scale);
+  if (typedMinor === leftMinor) return 'matches';
+  return typedMinor < leftMinor ? 'less' : 'more';
+}

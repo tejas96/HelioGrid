@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { MoneyDue } from '@heliogrid/contracts';
-import { FOUNDER_ROLE } from '@heliogrid/domain';
+import { can, FOUNDER_ROLE } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { skipWithoutDatabase } from '../support/fixture';
@@ -60,12 +60,31 @@ describe.skipIf(skip)('who sees and asks for a project’s money, over HTTP', ()
     expect(after.parts[0]?.lastShared).toMatchObject({ by: { userId: ownerId() } });
   });
 
-  it('Money due lists every unpaid due part, longest waiting first (M11-54)', async () => {
+  it('Money due lists every unpaid due part: late, then due today, then part paid, each longest waiting first (M11-54)', async () => {
     const projectId = await aProject();
+    const partPaid = await aProject();
+    const [first] = (await paymentsOf(owner(), partPaid)).parts;
+    await record(owner(), partPaid, { partId: first?.id, amount: '1000.00' });
     const due = (await finance().call<MoneyDue>('GET', '/payments/due?page=1&limit=100')).body;
-    expect(due.rows.items.some((row) => row.projectId === projectId)).toBe(true);
-    const days = due.rows.items.map((row) => row.dueOn);
-    expect(days).toEqual([...days].sort());
+    const rowOf = (id: string) => due.rows.items.find((row) => row.projectId === id);
+    expect(rowOf(projectId)?.group).toBe('due');
+    expect(rowOf(partPaid)?.group).toBe('part');
+    const order = ['late', 'due', 'part'];
+    const keys = due.rows.items.map((row) => `${order.indexOf(row.group)}:${row.dueOn}`);
+    expect(keys).toEqual([...keys].sort());
+    const { late, due: today, part } = due.groups;
+    expect(late.count + today.count + part.count).toBe(due.rows.totalCount);
+    expect((Number(late.amount) + Number(today.amount) + Number(part.amount)).toFixed(2)).toBe(
+      due.toCollect,
+    );
+    expect(due.canRemind).toBe(can([preset.finance], 'payments.send_request_message'));
+    // One group's rows alone, however many the others hold; the tiles still count every group.
+    const parts = (
+      await finance().call<MoneyDue>('GET', '/payments/due?page=1&limit=100&group=part')
+    ).body;
+    expect(parts.rows.items.every((row) => row.group === 'part')).toBe(true);
+    expect(parts.rows.totalCount).toBe(part.count);
+    expect(parts.groups).toEqual(due.groups);
   });
 
   it('shows the crew no money at all (M11-56)', async () => {
@@ -88,9 +107,18 @@ describe.skipIf(skip)('who sees and asks for a project’s money, over HTTP', ()
       payee: 'Payments EPC',
     });
     expect(saved.status).toBe(HttpStatus.OK);
+    expect(saved.body).toMatchObject({
+      payTo: { upiLimit: '100000.00' },
+      modes: expect.arrayContaining(['upi', 'neft', 'cash']),
+    });
     const small = await paymentsOf(owner(), await aProject('450000.00'));
+    expect(small.payTo.upiLimit).toBe('100000.00');
     expect(small.requests[0]?.upiUri).toContain(`am=${small.requests[0]?.amount}`);
     expect(small.requests[0]?.message.text).toContain('payments.epc@okaxis');
+    // The market's chat opens on the customer's number with the same message typed in (M11-26).
+    const [number, text] = (small.requests[0]?.chatUri ?? '').split('?text=');
+    expect(number).toMatch(/^https:\/\/wa\.me\/91\d{10}$/);
+    expect(decodeURIComponent(text ?? '')).toBe(small.requests[0]?.message.text);
     const large = await paymentsOf(owner(), await aProject('30000000.00'));
     expect(large.requests[0]).toMatchObject({ overUpiLimit: true, upiUri: null });
     const malformed = await owner().call('PUT', '/settings/collections', {
@@ -98,6 +126,15 @@ describe.skipIf(skip)('who sees and asks for a project’s money, over HTTP', ()
       payee: 'Payments EPC',
     });
     expect(malformed.status).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
+    const capitals = await owner().call<{ payTo: { upiId: string } }>(
+      'PUT',
+      '/settings/collections',
+      {
+        upiId: 'Payments.EPC@OkAxis',
+        payee: 'Payments EPC',
+      },
+    );
+    expect(capitals.body.payTo.upiId).toBe('payments.epc@okaxis');
     const byManager = await world.as(here.members.pm).call('GET', '/settings/collections');
     expect(byManager.status).toBe(HttpStatus.FORBIDDEN);
   });

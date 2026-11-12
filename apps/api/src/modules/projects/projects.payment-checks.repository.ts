@@ -1,5 +1,5 @@
 import type { RecordPayment } from '@heliogrid/contracts';
-import { type DbTransaction, file, projectPayment } from '@heliogrid/db';
+import { type DbTransaction, projectPayment } from '@heliogrid/db';
 import {
   localDate,
   type MinorUnits,
@@ -56,12 +56,24 @@ export async function receiptCarrying(
   await tx.execute(
     sql`select pg_advisory_xact_lock(hashtext(${`${locked.tenantId}:payment-reference:${referenceKey}`}))`,
   );
+  return receiptOnReference(tx, locked.tenantId, referenceKey);
+}
+
+/**
+ * The receipt a payment that stands carries this reference on, read without a lock — what the
+ * record sheet says while the reference is typed (`M11-38`); the save checks again under its lock.
+ */
+export async function receiptOnReference(
+  tx: DbTransaction,
+  tenantId: string,
+  referenceKey: string,
+): Promise<string | null> {
   const [found] = await tx
     .select({ receipt: projectPayment.receiptNumber })
     .from(projectPayment)
     .where(
       and(
-        eq(projectPayment.tenantId, locked.tenantId),
+        eq(projectPayment.tenantId, tenantId),
         eq(projectPayment.referenceKey, referenceKey),
         eq(projectPayment.kind, 'payment'),
         sql`not exists (select 1 from project_payment r where r.tenant_id = project_payment.tenant_id and r.reverses_id = project_payment.id)`,
@@ -73,26 +85,6 @@ export async function receiptCarrying(
     : receiptNumberOf(found.receipt);
 }
 
-/** The receipt photo is a file stored against this project. */
-export async function isProjectFile(
-  tx: DbTransaction,
-  locked: LockedProject,
-  fileId: string,
-): Promise<boolean> {
-  const [found] = await tx
-    .select({ id: file.id })
-    .from(file)
-    .where(
-      and(
-        eq(file.tenantId, locked.tenantId),
-        eq(file.id, fileId),
-        eq(file.subjectKind, 'project'),
-        eq(file.subjectRef, locked.projectId),
-      ),
-    );
-  return found !== undefined;
-}
-
 /** A retry of the same recording (`F4-07`): the entry the first send made, or the key's refusal. */
 export async function madeWith(
   tx: DbTransaction,
@@ -100,16 +92,23 @@ export async function madeWith(
   key: CreationKey,
 ): Promise<PaymentActOutcome | null> {
   const [made] = await tx
-    .select({ fingerprint: projectPayment.creationFingerprint })
+    .select({ id: projectPayment.id, fingerprint: projectPayment.creationFingerprint })
     .from(projectPayment)
     .where(and(eq(projectPayment.tenantId, tenantId), eq(projectPayment.creationKey, key.key)));
   if (made === undefined) return null;
-  return made.fingerprint === key.fingerprint ? { outcome: 'replayed' } : { outcome: 'key-reused' };
+  return made.fingerprint === key.fingerprint
+    ? { outcome: 'replayed', recorded: made.id }
+    : { outcome: 'key-reused' };
 }
 
 export type PaymentActOutcome =
-  | { readonly outcome: 'done'; readonly notified: readonly string[] }
-  | { readonly outcome: 'replayed' }
+  | {
+      readonly outcome: 'done';
+      readonly notified: readonly string[];
+      /** The payment a recording wrote, so its photo can be stored against it (`M11-37`). */
+      readonly recorded?: string;
+    }
+  | { readonly outcome: 'replayed'; readonly recorded: string }
   | { readonly outcome: 'key-reused' }
   | {
       readonly outcome: 'refused';
@@ -162,8 +161,5 @@ export async function checkedPayment(
     referenceUsed: used !== null,
   });
   if (refusal !== null) return stop(refused(refusal, used));
-  if (body.fileId !== null && !(await isProjectFile(tx, locked, body.fileId))) {
-    return stop({ outcome: 'not-found' });
-  }
   return { kind: 'go', part, amount, referenceKey };
 }

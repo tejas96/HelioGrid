@@ -38,6 +38,7 @@ import { API, codeSentTo } from './api-log.ts';
 import { customerMergeFlowWords, mergeFromLine } from './customer-merge-flow.ts';
 import { leadDetailFlowWords } from './lead-detail-flow.ts';
 import { leadImportFlowWords } from './lead-import-flow.ts';
+import { paymentsFlowWords } from './payments.ts';
 import { freshMobile } from './phone.ts';
 import { markWonBody } from './project-facts.ts';
 import { projectFlowWords } from './project-flow.ts';
@@ -140,6 +141,7 @@ if (command === 'words') {
     ...leadsListFlowWords(t),
     ...leadImportFlowWords(t),
     ...projectFlowWords(t),
+    ...paymentsFlowWords(t),
     ...usageWords(t),
     /** `SCR-SHELL-06`: a fresh trial's quiet count, the day it starts. */
     TRIAL_CHIP: billingStripWords(t.t).trialDaysLeft(14),
@@ -312,6 +314,7 @@ function settingsRows(t: Awaited<ReturnType<typeof createTranslator>>): Record<s
     'branding',
     'proposal_templates',
     'payment_terms',
+    'collections',
     'catalog',
     'billing',
   ] as const;

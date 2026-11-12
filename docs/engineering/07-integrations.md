@@ -73,7 +73,6 @@ into pure domain functions.
 | SpeechProvider / LanguageModel | Sarvam | AI4Bharat self-host, Chirp (global) | rolled into voice_minutes |
 | ComplianceGate | ours — **non-swappable** | never | no |
 | MessagingPort | ManualCopyAdapter | BYO-WABA (Embedded Signup) | v2: messages_sent |
-| PaymentLinkPort | BYO-Razorpay per tenant | Cashfree, Razorpay Route | no |
 | SubscriptionBillingPort | Razorpay Subscriptions | Stripe (overseas tenants) | n/a (it IS billing) |
 | DocumentRenderPort | Playwright/Chromium | Typst | no (capacity metric) |
 | PushPort | FCM HTTP v1 (+APNs via FCM) | — | no |
@@ -279,33 +278,12 @@ never leaves the codebase). WABA disconnect (tenant revokes) → `unconfigured`,
 **Metering:** v2 `messages_sent{category}` per tenant — cost pass-through is on the
 tenant's own WABA billing; we meter counts for dashboards and fair-use only.
 
-## 8. PaymentLinkPort — BYO-Razorpay per tenant
+## 8. Collections — no port
 
-```ts
-interface PaymentLinkPort {
-  createLink(tenantId: string, req: { amountMinor: number; currency: string; purpose: string;
-    customerRef: string; expiry?: ISODate }): Promise<PortResult<{ url: string; providerRef: string }>>;
-  getStatus(tenantId: string, providerRef: string): Promise<PortResult<PaymentStatus>>;
-  handleWebhook(tenantId: string, payload: unknown, sig: string): PaymentEvent; // idempotent, per-tenant secret
-}
-```
-
-**v1: `RazorpayLinkAdapter`, tenant-scoped credentials.** Each EPC connects its own Razorpay
-account; funds settle customer → EPC's merchant account directly. **The platform never
-touches funds → no RBI Payment Aggregator licence** ([Razorpay Route](https://razorpay.com/route/) documented as the alternate adapter only, if
-aggregation is ever demanded). Webhook verification uses the per-tenant secret; events are
-idempotent on provider event id; tranche state machine lives in `projects` module.
-
-**Later adapters:** `CashfreeLinkAdapter` (also a licensed PA); Route/Easy-Split marketplace
-adapter (explicitly not default — master-merchant KYC burden).
-
-**Failure/degradation:** tenant creds missing/invalid → `unconfigured`; tranche falls back
-to manual-collection mode (record payment by hand — always available, cash is still king in
-EPC). Missed webhook → `getStatus` poll reconciliation whenever a user views the tranche,
-plus a 6-hourly sweep job.
-
-**Metering:** none billable (tenant pays Razorpay directly); link-creation counts tracked
-for adoption dashboards.
+Collecting a project's money needs no integration (owner ruling 2026-11-11): the customer pays
+the company directly — an exact-amount `upi://pay` request built in `domain` from the company's
+UPI ID, or a bank transfer to the business profile's account — and a person records each payment.
+There is no payment gateway, link, webhook or sweep. The section number stays for citations.
 
 ## 9. SubscriptionBillingPort — Razorpay Subscriptions
 

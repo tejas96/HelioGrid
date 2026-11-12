@@ -62,8 +62,13 @@ export function formatMoney(pack: FormatPack, amount: Numberish, options?: Money
   const digits = options?.digits ?? pack.currencyFractionDigits;
   const fractionDigits = { minimumFractionDigits: digits, maximumFractionDigits: digits };
   if (pack.currencySymbol !== null) {
-    const body = new Intl.NumberFormat(pack.locale, fractionDigits).format(Number(amount));
-    return attachSymbol(pack.currencySymbol, body, pack.symbolPosition);
+    const number = new Intl.NumberFormat(pack.locale, fractionDigits);
+    const value = Number(amount);
+    const body = number.format(Math.abs(value));
+    // The sign leads the whole figure — `-₹45,000`, never `₹-45,000` — in the locale's own minus.
+    const signed = number.format(value);
+    const sign = value < 0 ? signed.slice(0, signed.length - body.length) : '';
+    return sign + attachSymbol(pack.currencySymbol, body, pack.symbolPosition);
   }
   return new Intl.NumberFormat(pack.locale, {
     style: 'currency',
@@ -85,7 +90,10 @@ export function formatMinorUnits(pack: FormatPack, amount: MinorUnits): string {
 /** The compact figure with the currency on it — `₹92L`, `₹1.4 Cr` (`F1-46`). */
 export function formatCompactMoney(pack: FormatPack, value: Numberish): string {
   if (!isRenderableNumber(value)) return '';
-  const body = formatCompact(pack, value);
-  if (pack.currencySymbol === null) return body;
-  return attachSymbol(pack.currencySymbol, body, pack.symbolPosition);
+  if (pack.currencySymbol === null) return formatCompact(pack, value);
+  const number = Number(value);
+  const body = formatCompact(pack, Math.abs(number));
+  const signed = formatCompact(pack, number);
+  const sign = number < 0 ? signed.slice(0, signed.length - body.length) : '';
+  return sign + attachSymbol(pack.currencySymbol, body, pack.symbolPosition);
 }

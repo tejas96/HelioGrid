@@ -73,7 +73,6 @@ export class ProjectsPaymentsRepository {
           reference: referenceKey === null ? null : (body.reference?.trim() ?? null),
           referenceKey,
           receivedOn: body.receivedOn,
-          fileId: body.fileId,
           receiptNumber: receipt,
           recordedAt: now,
           recordedBy: act.actorUserId,
@@ -100,7 +99,7 @@ export class ProjectsPaymentsRepository {
         context.words.quietHours,
         act.actorUserId,
       );
-      return { outcome: 'done', notified };
+      return { outcome: 'done', notified, recorded: entry.id };
     });
   }
 

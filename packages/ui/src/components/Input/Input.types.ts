@@ -76,5 +76,19 @@ export interface InputProps {
   id?: string;
 }
 
-/** The keyboard/entry kinds both platforms can honour. */
-export type InputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number';
+/**
+ * The keyboard/entry kinds both platforms can honour. `handle` is an address typed exactly as it
+ * is — a UPI ID (`name@bank`): the `@` keyboard, never capitalised, never corrected.
+ */
+export type InputType =
+  | 'text'
+  | 'email'
+  | 'password'
+  | 'search'
+  | 'tel'
+  | 'url'
+  | 'number'
+  | 'handle';
+
+/** The kinds a device must take exactly as typed: no capital first letter, no autocorrect. */
+export const EXACT_INPUT: ReadonlySet<InputType> = new Set(['email', 'password', 'url', 'handle']);

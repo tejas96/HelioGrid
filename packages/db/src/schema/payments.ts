@@ -17,7 +17,6 @@ import {
 } from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
 import { creationKeyColumns } from './creation-key';
-import { file } from './file';
 import { userAccount } from './identity';
 import { project, projectStage } from './project';
 import { tenant } from './tenant';
@@ -81,8 +80,9 @@ export const projectTranche = pgTable(
 /**
  * The payments ledger (`M11-40`): every payment a person recorded and every reversal of one, never
  * edited and never deleted. A payment carries its mode, the bank's reference and its key (spaces
- * and dashes gone, so one UTR typed two ways is one payment), the day the money arrived, its
- * receipt photo and its receipt number. A reversal is a negative entry pointing at the payment it
+ * and dashes gone, so one UTR typed two ways is one payment), the day the money arrived and its
+ * receipt number. Its receipt photo and its receipt PDF are files stored against it (`M11-37`), so
+ * a slow photo never holds the money back and no entry is ever changed to point at one. A reversal is a negative entry pointing at the payment it
  * takes back, with its reason (`M11-46`) — at most one per payment.
  *
  * Recording carries its retry key, so a retried send finds the entry the first one made (`F4-07`).
@@ -111,7 +111,6 @@ export const projectPayment = pgTable(
     reference: text('reference'),
     referenceKey: text('reference_key'),
     receivedOn: day('received_on'),
-    fileId: uuid('file_id').references(() => file.id),
     receiptNumber: integer('receipt_number'),
     reversesId: uuid('reverses_id').references((): AnyPgColumn => projectPayment.id),
     reason: text('reason'),

@@ -110,6 +110,7 @@ export * from './ports/session';
 export * from './price-book';
 export * from './pricing';
 export * from './projects/money';
+export * from './projects/money-due';
 export * from './projects/payments';
 export * from './projects/project-acts';
 export * from './projects/projects';

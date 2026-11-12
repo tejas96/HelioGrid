@@ -5,6 +5,7 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { useOverlayLayer } from '../Sheet/use-overlay-dismiss';
 import { actOnChoice, MENU_GAP, menuInSafeOrder } from './Menu.logic';
 import type { MenuItem, MenuProps } from './Menu.types';
 import { MenuItemRow } from './MenuItemRow';
@@ -51,6 +52,7 @@ export function Menu({
 }: WebMenuProps) {
   const items = menuInSafeOrder(given);
   const [open, setOpen] = useState(false);
+  useOverlayLayer(open);
   const [active, setActive] = useState(0);
   const [rises, setRises] = useState(false);
   const wrapRef = useRef<HTMLSpanElement>(null);

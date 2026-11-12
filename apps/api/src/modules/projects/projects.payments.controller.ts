@@ -8,6 +8,7 @@ import { actOf } from '../../common/auth/session-context';
 import { creationKeyOf } from '../../common/creation-key';
 import { actorNameOf } from '../crm/crm.public';
 import { projectReaderOf } from './internal/reader';
+import { ProjectsPaymentReceiptService } from './projects.payment-receipt.service';
 import { ProjectsPaymentsService } from './projects.payments.service';
 
 const RECORD = { capability: 'payments.record_payments' } as const;
@@ -22,6 +23,7 @@ export class ProjectsPaymentsController {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(
     @Inject(ProjectsPaymentsService) private readonly payments: ProjectsPaymentsService,
+    @Inject(ProjectsPaymentReceiptService) private readonly receipts: ProjectsPaymentReceiptService,
   ) {}
 
   @TsRestHandler(paymentsContract)
@@ -35,6 +37,8 @@ export class ProjectsPaymentsController {
     moneyDue: 'member',
     payments: 'member',
     receipt: 'member',
+    receiptPdf: 'member',
+    referenceCheck: RECORD,
     record: RECORD,
     reverse: RECORD,
     waive: { capability: 'payments.waive_tranche' },
@@ -54,7 +58,15 @@ export class ProjectsPaymentsController {
       }),
       receipt: async ({ params }) => ({
         status: 200,
-        body: await this.payments.receipt(reader, params.id, params.entryId),
+        body: await this.receipts.text(reader, params.id, params.entryId),
+      }),
+      receiptPdf: async ({ params }) => ({
+        status: 200,
+        body: await this.receipts.pdf(reader, params.id, params.entryId),
+      }),
+      referenceCheck: async ({ query }) => ({
+        status: 200,
+        body: await this.payments.referenceCheck(reader, query.reference),
       }),
       record: async ({ params, body, headers }) => {
         const act = actOf(req);

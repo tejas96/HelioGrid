@@ -51,7 +51,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "log=\"$(git rev-parse --show-toplevel)/.qa/worker.log\"; mkdir -p \"${log%/*}\"; exec > >(tee \"$log\") 2>&1; pnpm infra:token && exec pnpm --filter @heliogrid/worker dev"
+        "log=\"$(git rev-parse --show-toplevel)/.qa/worker.log\"; mkdir -p \"${log%/*}\"; exec > >(tee \"$log\") 2>&1; pnpm infra:token && pnpm --filter @heliogrid/worker build && exec pnpm --filter @heliogrid/worker dev"
       ]
     },
     {

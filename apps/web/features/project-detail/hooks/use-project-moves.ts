@@ -12,6 +12,7 @@ import {
   projectDocumentsPath,
   projectHandoverPath,
   projectPath,
+  projectPaymentsPath,
   projectStepsPath,
   settingsRowPath,
 } from '../../shell';
@@ -36,6 +37,8 @@ export function useProjectMoves(projectId: string, screen: ProjectScreen) {
     documents: () => router.push(projectDocumentsPath(projectId)),
     steps: () => router.push(projectStepsPath(projectId)),
     handover: () => router.push(projectHandoverPath(projectId)),
+    /** The payments page; with a part, its collect sheet opens on arrival. */
+    payments: (collect?: string) => router.push(projectPaymentsPath(projectId, collect)),
     addCrew: () => router.push(settingsRowPath(SETTINGS_SEGMENT.team)),
     pick: (place: FilePlace) => pickProjectFile(screen, place),
     openFile: (file: { readonly fileId: string }) => {
@@ -72,7 +75,7 @@ export type ProjectMoves = ReturnType<typeof useProjectMoves>;
  * a seller reached their project from, else home — a step to a door the person lacks lands on
  * "This page does not exist".
  */
-function wayBackOf(doors: readonly ShellDoor[]): StandingDestination {
+export function wayBackOf(doors: readonly ShellDoor[]): StandingDestination {
   return WAYS_BACK.find((door) => doors.includes(door)) ?? 'home';
 }
 

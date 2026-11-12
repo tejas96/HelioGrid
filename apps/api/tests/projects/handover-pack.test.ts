@@ -1,18 +1,15 @@
 import { randomUUID } from 'node:crypto';
-import { type DeclaredFile, OBJECT_STORE, type ProjectDetail } from '@heliogrid/contracts';
+import { OBJECT_STORE, type ProjectDetail } from '@heliogrid/contracts';
 import { file } from '@heliogrid/db';
 import { FOUNDER_ROLE } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { PDFDocument } from 'pdf-lib';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import {
-  type MemoryObjectStore,
-  sha256Of,
-} from '../../src/modules/file/internal/object-store.memory';
+import type { MemoryObjectStore } from '../../src/modules/file/internal/object-store.memory';
 import { ProjectsPackService } from '../../src/modules/projects/projects.pack.service';
-import { retryKey } from '../crm/support';
 import { skipWithoutDatabase } from '../support/fixture';
+import { aStored } from './stored-file';
 import {
   acted,
   actOn,
@@ -54,36 +51,12 @@ async function aStoredPdf(
 ): Promise<string> {
   const pdf = await PDFDocument.create();
   for (let page = 0; page < pages; page++) pdf.addPage();
-  return aStoredBytes(world, caller, projectId, await pdf.save());
-}
-
-/** These bytes stored for the project as a PDF, through the person's own upload. */
-async function aStoredBytes(
-  world: ProjectsWorld,
-  caller: Caller,
-  projectId: string,
-  bytes: Uint8Array,
-): Promise<string> {
-  const declared = await caller.call<DeclaredFile>(
-    'POST',
-    '/files',
-    {
-      subjectKind: 'project',
-      subjectRef: projectId,
-      contentType: 'application/pdf',
-      byteSize: bytes.length,
-      checksumSha256: sha256Of(bytes),
-    },
-    retryKey(),
-  );
-  if (declared.status !== HttpStatus.CREATED) {
-    throw new Error(`declare: got ${declared.status} ${JSON.stringify(declared.body)}`);
-  }
-  const store = world.http.app.get<MemoryObjectStore>(OBJECT_STORE);
-  if (!store.receive(declared.body.upload?.url ?? '', bytes)) throw new Error('upload refused');
-  const done = await caller.call('POST', `/files/${declared.body.file.id}/complete`);
-  if (done.status !== HttpStatus.OK) throw new Error(`complete: got ${done.status}`);
-  return declared.body.file.id;
+  return aStored(world, caller, {
+    subjectKind: 'project',
+    subjectRef: projectId,
+    contentType: 'application/pdf',
+    bytes: await pdf.save(),
+  });
 }
 
 describe.skipIf(skip)('the handover pack, made as its workflow step makes it', () => {
@@ -124,12 +97,12 @@ describe.skipIf(skip)('the handover pack, made as its workflow step makes it', (
       acted(owner(), projectId, 'files', { fileId, slot, slotKey, name });
     await put(warranty, 'document', 'warranty_documents', 'Warranty.pdf');
     // A damaged file on a done row: the pack is made without it, never stuck on it.
-    const damaged = await aStoredBytes(
-      world,
-      owner(),
-      projectId,
-      new TextEncoder().encode('%PDF-1.4 not a pdf'),
-    );
+    const damaged = await aStored(world, owner(), {
+      subjectKind: 'project',
+      subjectRef: projectId,
+      contentType: 'application/pdf',
+      bytes: new TextEncoder().encode('%PDF-1.4 not a pdf'),
+    });
     await put(damaged, 'document', 'utility_approval', 'Approval.pdf');
     const withOthers = await put(shown, 'other', null, 'Structure drawing.pdf');
     await put(hidden, 'other', null, 'Internal costing.pdf');
@@ -174,12 +147,12 @@ describe.skipIf(skip)('the handover pack, made as its workflow step makes it', (
   it('with no file it can read, no pack is made, and the project says every file was left out', async () => {
     const { projectId } = await aWonProject(owner(), ownerId(), 'commercial');
     await walk(owner(), projectId, TO_COMMISSIONED);
-    const damaged = await aStoredBytes(
-      world,
-      owner(),
-      projectId,
-      new TextEncoder().encode('%PDF-1.4 not a pdf'),
-    );
+    const damaged = await aStored(world, owner(), {
+      subjectKind: 'project',
+      subjectRef: projectId,
+      contentType: 'application/pdf',
+      bytes: new TextEncoder().encode('%PDF-1.4 not a pdf'),
+    });
     await acted(owner(), projectId, 'files', {
       fileId: damaged,
       slot: 'document',

@@ -52,6 +52,33 @@ function trapTab(event: KeyboardEvent, panel: HTMLElement | null): void {
  * MODAL AND NON-MODAL ARE THREE BEHAVIOURS MOVING TOGETHER, not one flag on a backdrop: a trap, a
  * scroll lock and a backdrop. Two of the three live here; the caller drops the third.
  */
+/**
+ * The overlays open now, oldest first. Each listens on the document, where listeners run in the
+ * order they were added, so the one opened first would answer Esc first and close the sheet under
+ * a dialog opened over it: only the top one answers.
+ */
+const openOverlays: symbol[] = [];
+
+/** Puts a layer on top of the open overlays; the answer takes it off again. */
+function enterLayer(me: symbol): () => void {
+  openOverlays.push(me);
+  return () => {
+    const at = openOverlays.indexOf(me);
+    if (at !== -1) openOverlays.splice(at, 1);
+  };
+}
+
+/**
+ * A popover over a sheet — a date picker, a menu, a select's list — is a layer too, while it is
+ * open: the sheet under it then leaves Esc to it, and one Esc closes only the popover.
+ */
+export function useOverlayLayer(open: boolean): void {
+  useEffect(() => {
+    if (!open) return;
+    return enterLayer(Symbol('popover'));
+  }, [open]);
+}
+
 export function useOverlayDismiss({
   open,
   panelRef,
@@ -77,7 +104,10 @@ export function useOverlayDismiss({
     const panel = panelRef.current;
     if (panel !== null && !panel.contains(restore)) panel.focus({ preventScroll: true });
 
+    const me = Symbol('overlay');
+    const leave = enterLayer(me);
     const onKey = (event: KeyboardEvent) => {
+      if (openOverlays.at(-1) !== me) return;
       const onEscape = close.current;
       if (event.key === 'Escape' && canDismiss.current && onEscape !== undefined) {
         event.stopPropagation();
@@ -101,6 +131,7 @@ export function useOverlayDismiss({
 
     return () => {
       document.removeEventListener('keydown', onKey, true);
+      leave();
       if (lock) {
         scroller.style.overflow = previous;
       }

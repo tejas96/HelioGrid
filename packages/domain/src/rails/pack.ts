@@ -1,6 +1,7 @@
 import type { PackLabel } from '../format/languages';
 import type { MinorUnits } from '../money/minor-units';
 import { minorUnits } from '../money/minor-units';
+import type { RequestChat } from '../payments/request';
 
 /**
  * `pack.payment-rails` — how money reaches the platform, and how money reaches a tenant
@@ -152,6 +153,11 @@ export interface PaymentRailsPack {
    * the pay sheet offers no UPI request and leads with bank transfer.
    */
   readonly upiRequestLimit?: MinorUnits | null;
+  /**
+   * The chat app the market's customers are asked to pay in — the pay sheet opens the request
+   * there, to the customer's number. Absent or null, the person shares or copies it.
+   */
+  readonly requestChat?: RequestChat | null;
   /** `F1-18`c — the market's reference implementation per capability. Empty where it has none. */
   readonly adapters: Record<RailCapability, readonly string[]>;
   /** `F1-18`d — the market's payment-data constraint and how the market satisfies it. */
@@ -215,6 +221,7 @@ export const IN_PAYMENT_RAILS: PaymentRailsPack = {
     { mode: 'cash', manual: true },
   ],
   upiRequestLimit: UPI_REQUEST_LIMIT,
+  requestChat: 'whatsapp',
   /**
    * `F1-43` — the v1 reference implementations. Telephony carries two because the IN voice stack
    * is two vendors on one lane: Exotel carries the call and Sarvam the speech. `M07` splits the

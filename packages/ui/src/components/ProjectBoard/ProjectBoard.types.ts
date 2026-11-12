@@ -42,7 +42,15 @@ export interface ProjectBoardWords {
     facts: Pick<
       ProjectCard,
       'stage' | 'earlyProofTo' | 'earlyProofBy' | 'missingProofRow' | 'expectedInstallOn'
-    >,
+    > & {
+      /** The part due and what it still owes, formatted — the money reason's line. */
+      readonly money: {
+        // biome-ignore lint/plugin/copy-prop-type: the company's own part name — a fact
+        readonly part: string;
+        // biome-ignore lint/plugin/copy-prop-type: a figure already formatted — a fact
+        readonly amount: string;
+      } | null;
+    },
   ) => TranslatedText;
   readonly todoAct: (kind: TodoKind) => TranslatedText;
   /** The act with the project it acts on, as a screen reader says it. */

@@ -40,22 +40,11 @@ export function useFilePick(): (target: FilePickTarget, photoOnly?: boolean) => 
         () => undefined,
       );
     };
-    if (Platform.OS === 'ios') {
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          title,
-          options: [...offered.map((choice) => choice.label), words.cancel],
-          cancelButtonIndex: offered.length,
-        },
-        pickFrom,
-      );
-      return;
-    }
-    Alert.alert(
+    askAmong(
       title,
-      undefined,
-      offered.map((choice, index) => ({ text: choice.label, onPress: () => pickFrom(index) })),
-      { cancelable: true },
+      offered.map((choice) => choice.label),
+      words.cancel,
+      pickFrom,
     );
   };
 }
@@ -78,4 +67,28 @@ export function useProjectFilePick(screen: ProjectScreen): (place: FilePlace) =>
       place.slot === 'step',
     );
   };
+}
+
+/** The system's own chooser among a few ways: the action sheet on iOS, an alert on Android. */
+export function askAmong(
+  title: string,
+  labels: readonly string[],
+  cancel: string,
+  onPick: (index: number) => void,
+): void {
+  if (Platform.OS === 'ios') {
+    ActionSheetIOS.showActionSheetWithOptions(
+      { title, options: [...labels, cancel], cancelButtonIndex: labels.length },
+      (index) => {
+        if (index < labels.length) onPick(index);
+      },
+    );
+    return;
+  }
+  Alert.alert(
+    title,
+    undefined,
+    labels.map((text, index) => ({ text, onPress: () => onPick(index) })),
+    { cancelable: true },
+  );
 }

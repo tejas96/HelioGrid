@@ -9,9 +9,11 @@ import type {
   TodoRow,
   WaitGroup,
 } from '@heliogrid/domain';
+import { daysFrom } from '@heliogrid/domain';
 import type { RefObject } from 'react';
 import type { FocusHandle } from '../../primitives/FocusAfter';
 import type { StatusTone } from '../../primitives/StatusMark';
+import type { MarketFormat } from '../../utils/format';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import type {
   ProjectRowItem,
@@ -127,6 +129,18 @@ export interface Held {
   readonly reveal: RefObject<FocusHandle | null>;
 }
 
+/** How long a project's due part has waited (`M11-54`); only the money reason counts days. */
+function dueDaysOf(row: TodoRow, today: string, words: ProjectBoardWords): TranslatedText | null {
+  const due = row.card.money?.duePart ?? null;
+  return row.kind === 'money_due' && due !== null ? words.days(daysFrom(due.dueOn, today)) : null;
+}
+
+/** The part a project's money reason names, with what it still owes formatted. */
+function moneyLineOf(card: TodoRow['card'], format: MarketFormat) {
+  const due = card.money?.duePart ?? null;
+  return due === null ? null : { part: due.label, amount: format.money(due.outstanding) };
+}
+
 /** The first row past the cap takes the focus handle once the rows are in. */
 function revealAt(index: number, cap: number, held: Held) {
   return held.open && index === cap ? held.reveal : undefined;
@@ -138,6 +152,8 @@ export function todoItemsOf(
   cap: number,
   held: Held,
   { words, onOpen, onTodo, openId }: ProjectBoardProps,
+  format: MarketFormat,
+  today: string,
 ): ProjectRowItem[] {
   const { shown, held: count } = cappedOf(rows, cap, held.open);
   const items = shown.map(
@@ -147,10 +163,10 @@ export function todoItemsOf(
       row: {
         first: index === 0,
         name: row.card.name,
-        line: words.todoLine(row.kind, row.card),
+        line: words.todoLine(row.kind, { ...row.card, money: moneyLineOf(row.card, format) }),
         kind: TODO_TILE[row.kind],
         mark: null,
-        days: null,
+        days: dueDaysOf(row, today, words),
         manager: null,
         act: {
           label: words.todoAct(row.kind),

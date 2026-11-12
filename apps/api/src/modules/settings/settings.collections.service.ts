@@ -1,6 +1,6 @@
 import type { CollectionsSettings, CollectionsSettingsWrite, PayTo } from '@heliogrid/contracts';
-import { isUpiId, minorUnits } from '@heliogrid/domain';
-import { upiRequestUri } from '@heliogrid/domain/server';
+import { availablePaymentModes, isUpiId, minorUnits, upiIdOf } from '@heliogrid/domain';
+import { minorUnitsToDecimal, upiRequestUri } from '@heliogrid/domain/server';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { ContractException } from '../../common/errors/contract-exception';
@@ -19,14 +19,23 @@ export class SettingsCollectionsService {
     @Inject(SettingsService) private readonly settings: SettingsService,
   ) {}
 
-  /** Where the customer sends money: the UPI ID, the name a UPI app shows, the bank account. */
+  /**
+   * Where the customer sends money: the UPI ID, the name a UPI app shows, the bank account, and the
+   * market's cap on one UPI request.
+   */
   async payTo(tenantId: string): Promise<PayTo> {
-    const [row, profile] = await Promise.all([
+    return (await this.facts(tenantId)).payTo;
+  }
+
+  private async facts(tenantId: string) {
+    const [row, profile, pack] = await Promise.all([
       this.stored.read(tenantId),
       this.settings.businessProfile(tenantId),
+      this.settings.packOf(tenantId),
     ]);
     const bank = profile.bankDetails;
-    return {
+    const limit = pack.paymentRails.upiRequestLimit ?? null;
+    const payTo: PayTo = {
       upiId: row?.upiId ?? null,
       payee: row?.payeeName ?? profile.companyName ?? '',
       bank:
@@ -38,15 +47,13 @@ export class SettingsCollectionsService {
               accountNumber: bank.accountNumber,
               routing: bank.bankRoutingIdentifier,
             },
+      upiLimit: limit === null ? null : minorUnitsToDecimal(limit, pack.formats.minorUnitDigits),
     };
+    return { payTo, row, pack };
   }
 
   async read(tenantId: string): Promise<CollectionsSettings> {
-    const [payTo, row, pack] = await Promise.all([
-      this.payTo(tenantId),
-      this.stored.read(tenantId),
-      this.settings.packOf(tenantId),
-    ]);
+    const { payTo, row, pack } = await this.facts(tenantId);
     const { currency, minorUnitDigits } = pack.formats;
     return {
       payTo,
@@ -62,6 +69,7 @@ export class SettingsCollectionsService {
               note: 'HelioGrid test',
             }),
       canEdit: true,
+      modes: availablePaymentModes(pack.paymentRails, false).map((mode) => mode.mode),
       lastSaved:
         row === null
           ? null
@@ -74,7 +82,7 @@ export class SettingsCollectionsService {
     body: CollectionsSettingsWrite,
     act: Act,
   ): Promise<CollectionsSettings> {
-    const upiId = body.upiId === null ? null : body.upiId.trim();
+    const upiId = body.upiId === null ? null : upiIdOf(body.upiId);
     if (upiId !== null && !isUpiId(upiId)) {
       throw new ContractException(
         'UPI_ID_MALFORMED',

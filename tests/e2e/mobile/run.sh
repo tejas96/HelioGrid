@@ -52,6 +52,7 @@ flow roles-reference.yaml
 flow branding.yaml
 flow proposal-template.yaml
 flow payment-terms.yaml
+flow collections-settings.yaml
 flow catalog-settings.yaml
 flow billing.yaml
 flow usage.yaml
@@ -73,6 +74,8 @@ project=(-e "PROJECT_ID=$project_id" -e "PROJECT_NAME=Won $owner_national")
 flow "${project[@]}" projects-board.yaml
 flow "${project[@]}" -e "REASON=Signed on paper" project-detail.yaml
 flow "${project[@]}" project-handover.yaml
+# Its payments: the first part due at Won, and Collect with no UPI ID or bank set yet.
+flow "${project[@]}" project-payments.yaml
 # The company's two records for one family merge last: the other flows read them as they stand.
 from_survivor="$(node ../support/mobile-cli.ts merge-from "Lead $owner_national")"
 pair=(-e "SURVIVOR_ID=$survivor_id" -e "LOSER_ID=$loser_id" -e "SURVIVOR_NAME=Lead $owner_national")

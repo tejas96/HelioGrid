@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dueSinceOf, type StageArrival } from '../../src/payments/due';
+import { dueSinceOf, moneyDueGroupOf, type StageArrival } from '../../src/payments/due';
 
 const at = (to: StageArrival['to'], when: number): StageArrival => ({ to, at: when });
 
@@ -42,5 +42,17 @@ describe('dueSinceOf — due when the project reaches the stage (M11-11, ruling 
     ['no history', 'won', [], false, null],
   ] as const)('%s', (_, stage, arrivals, held, since) => {
     expect(dueSinceOf(stage, arrivals, held)).toBe(since);
+  });
+});
+
+describe('moneyDueGroupOf — where a waiting part sits on Money due (M11-54)', () => {
+  it.each([
+    ['fell due today, nothing paid: due', 'due', '2026-11-12', 'due'],
+    ['fell due yesterday: late from the day after it fell due', 'due', '2026-11-11', 'late'],
+    ['fell due a month ago: late', 'due', '2026-10-12', 'late'],
+    ['part paid, today: part received', 'part_received', '2026-11-12', 'part'],
+    ['part paid, long ago: still part received', 'part_received', '2026-10-01', 'part'],
+  ] as const)('%s', (_, state, dueOn, group) => {
+    expect(moneyDueGroupOf(state, dueOn, '2026-11-12')).toBe(group);
   });
 });

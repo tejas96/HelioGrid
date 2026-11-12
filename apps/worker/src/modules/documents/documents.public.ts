@@ -3,6 +3,7 @@ import {
   DOCUMENT_RENDER_QUEUE,
   handoverPackWorkflow,
   invoiceDocumentWorkflow,
+  type paymentReceiptWorkflow,
 } from '@heliogrid/contracts/workflows';
 import type { TemporalWorkerRegistration } from '../../common/temporal/temporal.tokens';
 import * as bundledWorkflows from '../../worker.workflows';
@@ -13,7 +14,8 @@ import * as documentsWorkflows from './documents.workflows';
 type DocumentWorkflowName =
   | typeof invoiceDocumentWorkflow.name
   | typeof creditNoteDocumentWorkflow.name
-  | typeof handoverPackWorkflow.name;
+  | typeof handoverPackWorkflow.name
+  | typeof paymentReceiptWorkflow.name;
 documentsWorkflows satisfies Record<DocumentWorkflowName, unknown>;
 // And the bundle's one entry re-exports it: an area left out there starts, then fails every task.
 bundledWorkflows satisfies Record<DocumentWorkflowName, unknown>;
@@ -23,7 +25,10 @@ export const invoiceDocumentWorkerRegistration: TemporalWorkerRegistration = {
   taskQueue: invoiceDocumentWorkflow.taskQueue,
 };
 
-/** A project's handover pack: its one step runs in the api, beside the project's files. */
+/**
+ * A project's handover pack and a payment's receipt: their steps run in the api, beside the
+ * project's files and ledger, on this one queue.
+ */
 export const handoverPackWorkerRegistration: TemporalWorkerRegistration = {
   taskQueue: handoverPackWorkflow.taskQueue,
 };

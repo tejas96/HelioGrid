@@ -45,6 +45,7 @@ export function ProjectDetail(props: ProjectDetailProps) {
         {said}
         <ProjectHero {...props} />
         <ProjectWait {...props} />
+        {props.money}
         <ProjectJourney {...props} />
         <ProjectDeal {...props} />
         <ProjectDocuments {...props} rows="waiting" />
@@ -63,6 +64,7 @@ export function ProjectDetail(props: ProjectDetailProps) {
       </div>
       <div className="hg-project-detail-column" data-side="true">
         <ProjectWait {...props} />
+        {props.money}
         <ProjectDeal {...props} />
         <ProjectFiles {...props} switches />
         <ProjectActivity {...props} />

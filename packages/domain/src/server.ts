@@ -26,7 +26,7 @@ export {
   sumMinorUnits,
 } from './money/minor-units';
 export { dayRate, partCycleCharge } from './money/part-cycle';
-export { receiptNumberOf, upiRequestUri } from './payments/request';
+export { chatRequestUri, receiptNumberOf, upiRequestUri } from './payments/request';
 export { splitSchedule } from './payments/schedule';
 export { projectMoneyOf, trancheStandingOf } from './payments/standing';
 export { tenMonthYearly } from './pricing/book';

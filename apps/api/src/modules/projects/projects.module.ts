@@ -13,6 +13,9 @@ import { ProjectFileSubjects } from './projects.file-subjects.repository';
 import { ProjectsPackActivityRegistration } from './projects.pack.activities';
 import { ProjectsPackRepository } from './projects.pack.repository';
 import { ProjectsPackService } from './projects.pack.service';
+import { ProjectsPaymentReceiptActivityRegistration } from './projects.payment-receipt.activities';
+import { ProjectsPaymentReceiptRepository } from './projects.payment-receipt.repository';
+import { ProjectsPaymentReceiptService } from './projects.payment-receipt.service';
 import { ProjectsPaymentWordsService } from './projects.payment-words.service';
 import { ProjectsPaymentsController } from './projects.payments.controller';
 import { ProjectsPaymentsRepository } from './projects.payments.repository';
@@ -39,6 +42,9 @@ import { ProjectsWonService } from './projects.won.service';
     ProjectsActsService,
     ProjectsWonService,
     ProjectsPaymentWordsService,
+    ProjectsPaymentReceiptRepository,
+    ProjectsPaymentReceiptService,
+    ProjectsPaymentReceiptActivityRegistration,
     ProjectsPaymentsService,
     ProjectsPaymentsReadRepository,
     ProjectsPaymentsRepository,

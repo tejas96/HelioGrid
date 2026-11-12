@@ -37,6 +37,10 @@ export const projectDocumentsPath = (projectId: string): string =>
 /** A project's install steps, its crew and how the crew gets in (`SCR-M08-04`). */
 export const projectStepsPath = (projectId: string): string => `${projectPath(projectId)}/steps`;
 
+/** A project's payments (`SCR-M11-02`); `collect` opens a part's collect sheet on arrival. */
+export const projectPaymentsPath = (projectId: string, collect?: string): string =>
+  `${projectPath(projectId)}/payments${collect === undefined ? '' : `?collect=${collect}`}`;
+
 /** A project's handover (`SCR-M08-06`). */
 export const projectHandoverPath = (projectId: string): string =>
   `${projectPath(projectId)}/handover`;

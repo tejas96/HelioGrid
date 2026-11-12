@@ -4,6 +4,9 @@ import {
   type PaymentReceipt,
   type ProjectPayments,
   type paymentsContract,
+  type ReceiptPdf,
+  type RecordedPayment,
+  type ReferenceCheck,
 } from '@heliogrid/contracts';
 import type { ClientInferRequest } from '@ts-rest/core';
 import type { ApiClient } from '../client/client';
@@ -39,11 +42,16 @@ export interface PaymentsRepository {
   moneyDue(query: MoneyDueAsk, signal?: AbortSignal): Promise<MoneyDue>;
   payments(projectId: string, signal?: AbortSignal): Promise<ProjectPayments>;
   receipt(projectId: string, entryId: string, signal?: AbortSignal): Promise<PaymentReceipt>;
+  /** The receipt PDF's link: made on the first ask, kept after; null while it is still made. */
+  receiptPdf(projectId: string, entryId: string): Promise<ReceiptPdf>;
+  /** Whether a typed UTR or cheque number is already on a receipt that stands (`M11-38`). */
+  referenceCheck(reference: string, signal?: AbortSignal): Promise<ReferenceCheck>;
   /**
    * Money that arrived. The same body sent again — a second tap after a dropped answer — carries
-   * the same retry key and answers the entry the first made (`F4-07`).
+   * the same retry key and answers the entry the first made (`F4-07`) — and names it, so its photo
+   * is stored against it (`M11-37`).
    */
-  record(projectId: string, body: RecordPaymentBody): Promise<ProjectPayments>;
+  record(projectId: string, body: RecordPaymentBody): Promise<RecordedPayment>;
   reverse(projectId: string, entryId: string, reason: string): Promise<ProjectPayments>;
   waive(projectId: string, partId: string, reason: string): Promise<ProjectPayments>;
   /** The person shared the part's request: a tap, never a delivery (ruling 2026-11-10). */
@@ -78,6 +86,19 @@ async function standingAfter(send: () => Promise<ActAnswer>): Promise<ProjectPay
 export function createPaymentsRepository(api: ApiClient): PaymentsRepository {
   const money = api.payments;
   const creationKeys = createCreationKeys();
+  /*
+   * A retry is the same payment when the person's facts are the same: the moment it was captured
+   * changes on every press, so it never makes a new key — or a lost answer pressed again would
+   * record the money twice.
+   */
+  const retryOf = (id: string, body: RecordPaymentBody) => ({
+    id,
+    partId: body.partId,
+    amount: body.amount,
+    mode: body.mode,
+    reference: body.reference,
+    receivedOn: body.receivedOn,
+  });
   const capturedAt = () => new Date().toISOString();
   return {
     moneyDue: (query, signal) =>
@@ -86,10 +107,17 @@ export function createPaymentsRepository(api: ApiClient): PaymentsRepository {
       bodyAt(() => money.payments({ params: { id }, fetchOptions: { signal } }), 200),
     receipt: (id, entryId, signal) =>
       bodyAt(() => money.receipt({ params: { id, entryId }, fetchOptions: { signal } }), 200),
+    receiptPdf: (id, entryId) => bodyAt(() => money.receiptPdf({ params: { id, entryId } }), 200),
+    referenceCheck: (reference, signal) =>
+      bodyAt(() => money.referenceCheck({ query: { reference }, fetchOptions: { signal } }), 200),
     record: async (id, body) => {
       const answer = await bodyOrRefusalAt(
         () =>
-          money.record({ params: { id }, body, headers: creationKeys.headersFor({ id, ...body }) }),
+          money.record({
+            params: { id },
+            body,
+            headers: creationKeys.headersFor(retryOf(id, body)),
+          }),
         201,
         422,
       );

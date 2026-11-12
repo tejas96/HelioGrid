@@ -1,5 +1,9 @@
 import { randomUUID } from 'node:crypto';
-import { IDEMPOTENCY_KEY_HEADER, type ProjectPayments } from '@heliogrid/contracts';
+import {
+  IDEMPOTENCY_KEY_HEADER,
+  type ProjectPayments,
+  type RecordedPayment,
+} from '@heliogrid/contracts';
 import { HttpStatus } from '@nestjs/common';
 import type { Reply } from '../support/http';
 import { aLead, aWin, type Caller, dayFromToday, markWon, now } from './support';
@@ -40,15 +44,14 @@ export function recordPayment(
   projectId: string,
   body: Record<string, unknown>,
   headers = payKey(),
-): Promise<Reply<ProjectPayments>> {
-  return caller.call<ProjectPayments>(
+): Promise<Reply<RecordedPayment>> {
+  return caller.call<RecordedPayment>(
     'POST',
     `/projects/${projectId}/payments`,
     {
       mode: 'upi',
       reference: null,
       receivedOn: dayFromToday(0),
-      fileId: null,
       capturedAt: now(),
       ...body,
     },

@@ -21,3 +21,14 @@ const UPI_ID = /^[a-zA-Z0-9._-]{2,256}@[a-zA-Z][a-zA-Z0-9]{1,63}$/;
 export function isUpiId(typed: string): boolean {
   return UPI_ID.test(typed.trim());
 }
+
+/** A UPI ID as it is kept: UPI reads `Name@Bank` and `name@bank` as one address, so lower case. */
+export function upiIdOf(typed: string): string {
+  return typed.trim().toLowerCase();
+}
+
+/** What the record sheet says under a typed reference before the save (`M11-38`). */
+export type ReferenceStanding =
+  | { readonly kind: 'unchecked' }
+  | { readonly kind: 'new' }
+  | { readonly kind: 'used'; readonly receiptNumber: string };

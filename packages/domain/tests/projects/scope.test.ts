@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { RolePreset } from '../../src/authz/roles';
+import { can } from '../../src/authz';
+import { ROLE_PRESETS, type RolePreset } from '../../src/authz/roles';
 import { crewJobRank } from '../../src/projects/people';
 import {
   moneyScopeOf,
@@ -71,5 +72,15 @@ describe('moneyScopeOf — no commercial figure reaches the crew (M11-56)', () =
     const scope = (reaches: unknown) =>
       Array.isArray(reaches) ? { kind: 'reaches' as const, reaches } : reaches;
     expect(moneyScopeOf(scope(from) as ProjectScope)).toEqual(scope(to));
+  });
+});
+
+describe('moneyScopeOf — whoever sees a project’s money may share its pay request (M11-53)', () => {
+  /* The Money card offers Share to every reader of its figures: a preset that sees money without
+     the send would be offered an act the server refuses. */
+  it.each(ROLE_PRESETS)('%s', (preset) => {
+    const money = moneyScopeOf(projectScopeOf([preset]));
+    const seesMoney = money.kind === 'all' || money.reaches.length > 0;
+    if (seesMoney) expect(can([preset], 'payments.send_request_message')).toBe(true);
   });
 });

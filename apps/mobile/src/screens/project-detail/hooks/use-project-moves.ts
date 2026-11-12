@@ -26,6 +26,12 @@ export function useProjectMoves(projectId: string, screen: ProjectScreen) {
     documents: () => navigation.navigate('ProjectDocuments', { projectId }),
     steps: () => navigation.navigate('ProjectSteps', { projectId }),
     handover: () => navigation.navigate('ProjectHandover', { projectId }),
+    /** The payments page; with a part, its collect sheet opens on arrival. */
+    payments: (collect?: string) =>
+      navigation.navigate(
+        'ProjectPayments',
+        collect === undefined ? { projectId } : { projectId, collect },
+      ),
     // The dispatch sheet is a modal over the page: it closes before Team opens, or it stays on top
     // of Team and a second tap opens Team again.
     addCrew: () => {

@@ -1,0 +1,147 @@
+/* MoneyDue — Finance's home (design A): the hero's figure, then one list of rows. The glass is
+   `HeroPanel`'s and the rows are `CardRows`'; this file lays out what they hold. */
+
+.hg-money-due {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-money-due-figure-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+
+/* A hero figure is Newsreader with tabular figures, one token — never wrapped (`CLAUDE.md` §9). */
+.hg-money-due-figure {
+  font-family: var(--font-display);
+  font-size: var(--fs-hero-phone);
+  line-height: var(--lh-hero-phone);
+  letter-spacing: var(--tr-hero-phone);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--on-panel);
+}
+
+.hg-money-due-on-panel {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+.hg-money-due-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-money-due-row-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-money-due-row-name {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-money-due-row-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.hg-money-due-row-end {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1);
+}
+
+/* Money in a list is Geist Mono with tabular figures (`CLAUDE.md` §9). */
+.hg-money-due-amount {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.hg-money-due-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+/* A tile is a status wash with its words (`F7-12`): late on the danger pair, due on the accent's,
+   part received on the success pair. Two sit side by side on a phone; a third takes the next row. */
+.hg-money-due-tile {
+  flex: 1 1 calc(var(--sp-8) * 4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-tile);
+}
+
+.hg-money-due-tile-late {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.hg-money-due-tile-due {
+  background: var(--accent-subtle);
+  color: var(--accent-text);
+}
+
+.hg-money-due-tile-part {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.hg-money-due-tile .hg-money-due-amount {
+  color: inherit;
+}
+
+.hg-money-due-tile-label {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  font-weight: var(--fw-medium);
+}
+
+.hg-money-due-groups,
+.hg-money-due-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-money-due-groups {
+  gap: var(--sp-4);
+}
+
+.hg-money-due-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding-inline: var(--sp-1);
+  color: var(--text-secondary);
+}
+
+.hg-money-due-head-label {
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+}

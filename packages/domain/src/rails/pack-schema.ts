@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { packAmount, packLabel } from '../market/stored-values';
+import { REQUEST_CHATS } from '../payments/request';
 import type { BillingCycle, PaymentRailsPack, RailCapability, TierBand } from './pack';
 
 const route = z.discriminatedUnion('collection', [
@@ -32,6 +33,7 @@ export const PAYMENT_RAILS_PACK_SCHEMA: z.ZodType<PaymentRailsPack, z.ZodTypeDef
     >),
     paymentModes: z.array(z.object({ mode: z.string(), manual: z.boolean() })),
     upiRequestLimit: packAmount.nullable().optional(),
+    requestChat: z.enum(REQUEST_CHATS).nullable().optional(),
     adapters: z.object({
       subscription_billing: adapters,
       payment_links: adapters,

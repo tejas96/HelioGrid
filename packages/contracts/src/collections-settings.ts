@@ -1,5 +1,6 @@
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
+import { amountSchema } from './common';
 import { settingsChangedSchema } from './document-templates';
 import { baseError, errorEnvelope } from './error';
 
@@ -17,6 +18,8 @@ export const payToSchema = z.object({
       routing: z.string(),
     })
     .nullable(),
+  /** The market's cap on one UPI request — above it the sheet opens on the bank; null for none. */
+  upiLimit: amountSchema.nullable(),
 });
 export type PayTo = z.infer<typeof payToSchema>;
 
@@ -33,6 +36,8 @@ export const collectionsSettingsSchema = z.object({
   testUri: z.string().nullable(),
   /** Only the owner changes where the money goes. */
   canEdit: z.boolean(),
+  /** The market pack's modes a payment may be recorded as (`M11-35`). */
+  modes: z.array(z.string()),
   lastSaved: settingsChangedSchema.nullable(),
 });
 export type CollectionsSettings = z.infer<typeof collectionsSettingsSchema>;

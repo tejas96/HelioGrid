@@ -16,7 +16,7 @@ import { renderOverride } from '../FieldOverride/FieldOverride.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
 import { useCommitDraft } from './commit-draft';
 import { inputNote, ringTone } from './Input.logic';
-import type { InputDensity, InputProps, InputType } from './Input.types';
+import { EXACT_INPUT, type InputDensity, type InputProps, type InputType } from './Input.types';
 
 interface NativeInputProps extends InputProps {
   style?: StyleProp<ViewStyle>;
@@ -32,6 +32,7 @@ const KEYBOARD: Record<InputType, KeyboardTypeOptions> = {
   tel: 'phone-pad',
   url: 'url',
   number: 'numeric',
+  handle: 'email-address',
 };
 
 const SHELL_HEIGHT: Record<InputDensity, number> = {
@@ -134,6 +135,9 @@ export function Input({
           editable={!disabled}
           keyboardType={KEYBOARD[type]}
           secureTextEntry={type === 'password'}
+          autoCapitalize={EXACT_INPUT.has(type) ? 'none' : undefined}
+          autoCorrect={EXACT_INPUT.has(type) ? false : undefined}
+          spellCheck={EXACT_INPUT.has(type) ? false : undefined}
           placeholder={placeholder}
           placeholderTextColor={fieldBoxPlaceholder(disabled)}
           value={shown}

@@ -8,13 +8,19 @@ import {
   tenant,
   userAccount,
 } from '@heliogrid/db';
-import { type CalendarDate, moneyScopeOf, type ProjectStage } from '@heliogrid/domain';
+import {
+  type CalendarDate,
+  moneyScopeOf,
+  type ProjectStage,
+  referenceKeyOf,
+} from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, isNull, ne, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberNameOf } from '../crm/crm.public';
 import type { ProjectReader } from './internal/reader';
 import { type PartFacts, partFactsOf } from './projects.money.repository';
+import { receiptOnReference } from './projects.payment-checks.repository';
 import { projectScopeWhere } from './projects.scope.repository';
 
 /*
@@ -87,7 +93,15 @@ export async function paymentsHeadOf(
   return row === undefined ? null : { projectId, ...row };
 }
 
-/** The project's ledger, oldest first, each entry with who recorded it. */
+/**
+ * A payment's receipt photo: the first image stored against it (`M11-37`). Its receipt PDF hangs on
+ * the same payment and is not a photo.
+ */
+const photoOf = sql<
+  string | null
+>`(select f.id from file f where f.tenant_id = ${projectPayment.tenantId} and f.subject_kind = 'project_payment' and f.subject_ref = ${projectPayment.id} and f.content_type like 'image/%' and f.uploaded_at is not null order by f.uploaded_at, f.id limit 1)`;
+
+/** The project's ledger, oldest first, each entry with who recorded it and its photo. */
 export async function entriesOf(
   tx: DbTransaction,
   tenantId: string,
@@ -103,7 +117,7 @@ export async function entriesOf(
       reference: projectPayment.reference,
       receivedOn: projectPayment.receivedOn,
       receiptNumber: projectPayment.receiptNumber,
-      fileId: projectPayment.fileId,
+      fileId: photoOf,
       recordedAt: projectPayment.recordedAt,
       recordedBy: projectPayment.recordedBy,
       recorderName: memberNameOf(userAccount),
@@ -124,7 +138,7 @@ export async function entriesOf(
 export interface OwingProject {
   readonly projectId: string;
   readonly number: number;
-  readonly name: string;
+  readonly name: string | null;
   readonly parts: readonly PartFacts[];
 }
 
@@ -145,6 +159,13 @@ export class ProjectsPaymentsReadRepository {
     });
   }
 
+  /** The receipt a typed UTR or cheque number is already on, company-wide (`M11-38`). */
+  receiptWithReference(tenantId: string, reference: string): Promise<string | null> {
+    const key = referenceKeyOf(reference);
+    if (key === null) return Promise.resolve(null);
+    return this.db.withTenantTransaction(tenantId, (tx) => receiptOnReference(tx, tenantId, key));
+  }
+
   /**
    * Every live project whose money the reader may see with a part not waived and not fully paid
    * (`M11-54`), its parts' facts beside it, and what came in on the company's `month` (`YYYY-MM`).
@@ -161,7 +182,7 @@ export class ProjectsPaymentsReadRepository {
         .selectDistinct({
           projectId: project.id,
           number: project.number,
-          name: sql<string>`coalesce(${customer.name}, ${customer.phoneE164})`,
+          name: customer.name,
         })
         .from(projectTranche)
         .innerJoin(

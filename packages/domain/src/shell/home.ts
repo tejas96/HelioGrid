@@ -63,11 +63,24 @@ export function composedHome(
 
 /**
  * The presets whose home block is their module's own part, which the home draws itself instead of
- * a waiting block: the installer's job (`SCR-M08-05`, `M08-45`).
+ * a waiting block: the installer's job (`SCR-M08-05`, `M08-45`) and Finance's money due
+ * (`SCR-M11-01`, `M11-54`).
  */
 export const MODULE_HOME_BLOCKS = [
   'installation_team_member',
+  'finance',
 ] as const satisfies readonly RolePreset[];
+
+/**
+ * Whether the home shows Money due (`SCR-M11-01`): Finance's own home block, and the owner's —
+ * who answers for the money until the owner's dashboard lands (ruling 2026-11-12).
+ */
+export function showsMoneyDue(home: ComposedHome | null): boolean {
+  return (
+    home !== null &&
+    [home.home, ...home.composed].some((preset) => preset === 'finance' || preset === 'epc_owner')
+  );
+}
 
 /** Whether the home in force, or a home composed into it, is the installer's job. */
 export function showsInstallerJob(home: ComposedHome | null): boolean {

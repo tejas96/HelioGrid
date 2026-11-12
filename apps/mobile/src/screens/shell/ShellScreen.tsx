@@ -25,6 +25,7 @@ import { useRef } from 'react';
 import { useWindowDimensions, type View } from 'react-native';
 import { FirstRunMark } from './components/FirstRunMark';
 import { GrievanceNote } from './components/GrievanceNote';
+import { HomeMoneyDue } from './components/HomeMoneyDue';
 import { HomeToday } from './components/HomeToday';
 import { InstallerHome } from './components/InstallerHome';
 import { ShellFrame } from './components/ShellFrame';
@@ -104,6 +105,7 @@ export function ShellScreen() {
               )
             }
           />
+          <HomeMoneyDue />
           <HomeToday today={today} open={openRow} />
           <InstallerHome />
           <HomeBlocks

@@ -6,6 +6,7 @@ import { colors } from '../../primitives/Color/colors';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { useCloseOnBack } from '../../primitives/use-close-on-back.native';
 import { useReducedMotion } from '../../primitives/use-reduced-motion';
 import { OverlayClose } from '../Sheet/OverlayClose.native';
 import { SheetBackdrop } from '../Sheet/SheetBackdrop.native';
@@ -55,6 +56,10 @@ export function Modal({
 }: NativeModalProps) {
   const enter = useRef(new Animated.Value(0)).current;
   const reduced = useReducedMotion();
+  // A Portal layer is no screen: Android's Back closes it first, before the page or sheet under it.
+  useCloseOnBack(open, () => {
+    if (dismissible) onClose?.();
+  });
 
   useEffect(() => {
     if (!open) {

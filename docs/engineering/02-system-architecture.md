@@ -347,7 +347,7 @@ money-never-stale), the one money path, the tenancy model, the ts-rest contract 
 design system. **What swaps per market:** rules data, catalog/price book, tax + subsidy
 models, locale, telephony adapter (Exotel is India; the capability-negotiated telephony port
 family of ADR-0019 is the seam — a new market's provider declares its own capability
-matrix) and payment adapter (`SubscriptionBillingPort`/`PaymentLinkPort`).
+matrix) and payment adapter (`SubscriptionBillingPort`; tenant collections need none — no gateway, owner ruling 2026-11-11).
 
 **Region expansion:** single-region until a paying market demands otherwise — expansion is
 a deployment decision, not an architecture change, because the market boundary already

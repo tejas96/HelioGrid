@@ -10,6 +10,9 @@ import type {
   InvoiceDocumentActivities,
   InvoiceDocumentStepResult,
   invoiceDocumentWorkflow,
+  PaymentReceiptActivities,
+  PaymentReceiptStepResult,
+  paymentReceiptWorkflow,
   WorkflowInput,
 } from '@heliogrid/contracts/workflows';
 import { proxyActivities } from '@temporalio/workflow';
@@ -78,4 +81,24 @@ export async function handoverPack(
   input: WorkflowInput<typeof handoverPackWorkflow>,
 ): Promise<HandoverPackStepResult> {
   return makeHandoverPack({ tenantId: input.tenantId, projectId: input.projectId });
+}
+
+const { paymentReceiptPage, keepPaymentReceipt } = proxyActivities<PaymentReceiptActivities>({
+  // One read or one store write; a step still running after this is stuck.
+  startToCloseTimeout: '1 minute',
+  // A person is waiting for this PDF, but the payment is already saved: an outage only delays it,
+  // and the next ask joins the same run.
+  retry: { initialInterval: '5 seconds', maximumInterval: '5 minutes' },
+});
+
+/** A payment's receipt PDF (`M11-41`): its page, the render, the keep — as an invoice's. */
+export async function paymentReceipt(
+  input: WorkflowInput<typeof paymentReceiptWorkflow>,
+): Promise<PaymentReceiptStepResult> {
+  const payment = { tenantId: input.tenantId, entryId: input.entryId };
+  const page = await paymentReceiptPage(payment);
+  if (page === null) return { fileId: null };
+  if (page.kind === 'kept') return { fileId: page.fileId };
+  const { pdfBase64 } = await renderPdf({ html: page.html });
+  return keepPaymentReceipt({ ...payment, pdfBase64 });
 }

@@ -12,7 +12,7 @@ import { useTypedDraft } from './use-typed-draft';
  * A one-line form on the web: Enter in its field sends it, as its button does — Esc closes the
  * sheet, which `EditorSurface` holds.
  */
-function OneLine({ onSend, children }: { onSend: () => void; children: ReactNode }) {
+export function OneLine({ onSend, children }: { onSend: () => void; children: ReactNode }) {
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSend();

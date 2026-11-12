@@ -1,5 +1,6 @@
 import type { ProjectScreen, ProjectShown } from '@heliogrid/data/react';
 import {
+  moneyCardWords,
   type ProjectDetailCopy,
   projectPackWords,
   projectSheetWords,
@@ -8,6 +9,7 @@ import {
 import { useI18n } from '@heliogrid/i18n/react';
 import {
   type FocusHandle,
+  MoneyCard,
   ProjectActSheet,
   ProjectDetail,
   type ProjectPageRoute,
@@ -43,9 +45,24 @@ export function ProjectDetailBody({
   const hero = useRef<FocusHandle>(null);
   const said = words.said(screen.refusal, screen.failed, screen.lastMove ?? undefined);
   const { page: detail, sheet } = projectBodyOf(screen, shown, route, moves, said, hero);
+  const money = shown.project.money ?? null;
   return (
     <>
-      <ProjectDetail {...detail} words={words} />
+      <ProjectDetail
+        {...detail}
+        money={
+          money === null ? null : (
+            <MoneyCard
+              money={money}
+              today={shown.project.today}
+              words={moneyCardWords(t)}
+              onShare={moves.payments}
+              onOpen={() => moves.payments()}
+            />
+          )
+        }
+        words={words}
+      />
       <ProjectActSheet {...sheet} words={projectSheetWords(t, word, format.date)} />
       <ProjectToast
         screen={screen}

@@ -4,6 +4,7 @@ import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { useFormat } from '../MarketProvider/market-context';
+import { useOverlayLayer } from '../Sheet/use-overlay-dismiss';
 import { Calendar } from './Calendar';
 import { closesPicker } from './calendar-selection';
 import type { DatePickerProps } from './DatePicker.types';
@@ -42,6 +43,7 @@ export function DatePicker({
   const mkt = useFormat();
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
+  useOverlayLayer(open);
 
   useEffect(() => {
     if (!open) {

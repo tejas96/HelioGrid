@@ -4,15 +4,24 @@
  * is the server's (`./server`); a screen renders what the server sent.
  */
 export {
+  type AmountAgainstLeft,
+  amountAgainstLeft,
   type EntryToReverse,
   type PaymentToRecord,
   refusalToRecord,
   refusalToReverse,
   refusalToWaive,
 } from './acts';
-export { dueSinceOf, type StageArrival } from './due';
-export { isUpiId, referenceKeyOf } from './reference';
-export type { UpiRequest } from './request';
+export {
+  dueSinceOf,
+  MONEY_DUE_GROUPS,
+  type MoneyDueGroup,
+  type MoneyDueGroupView,
+  moneyDueGroupOf,
+  type StageArrival,
+} from './due';
+export { isUpiId, type ReferenceStanding, referenceKeyOf, upiIdOf } from './reference';
+export { REQUEST_CHATS, type RequestChat, type UpiRequest } from './request';
 export type { SchedulePart, ScheduleTerm } from './schedule';
 export type { PartMoney, ProjectMoney, TrancheFacts, TrancheStanding } from './standing';
 export {

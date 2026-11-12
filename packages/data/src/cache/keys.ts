@@ -26,8 +26,12 @@ export const queryKeys = {
     /** A project's money (`SCR-M11-02`): under the projects, so a project's change refreshes it. */
     payments: (tenantId: string, projectId: string) =>
       ['projects', tenantId, 'payments', projectId] as const,
-    moneyDue: (tenantId: string, limit: number) =>
-      ['projects', tenantId, 'money-due', limit] as const,
+    /** Money due's page, or one group's rows alone. */
+    moneyDue: (tenantId: string, limit: number, group: string | null = null) =>
+      ['projects', tenantId, 'money-due', limit, group] as const,
+    /** Under the projects, so a payment recorded or reversed asks again. */
+    referenceCheck: (tenantId: string, referenceKey: string) =>
+      ['projects', tenantId, 'reference', referenceKey] as const,
   },
   /** Keyed by the company, so one person's facts are never served under another company. */
   shell: {

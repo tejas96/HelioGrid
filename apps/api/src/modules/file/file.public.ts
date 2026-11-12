@@ -4,7 +4,7 @@
  * (`T-M01-030c`, `M02-18`), then opens it with the one spreadsheet reader; a module never reaches
  * the store or the repository.
  */
-export { type DocumentMade, FileDocumentService } from './file.documents.service';
+export { type DocumentMade, FileDocumentService, pdfBytesOf } from './file.documents.service';
 export { FileModule } from './file.module';
 export { FileService } from './file.service';
 export {

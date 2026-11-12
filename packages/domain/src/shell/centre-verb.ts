@@ -36,6 +36,7 @@ const CENTRE_VERB_BY_HOME = {
   field_technician: null,
   installation_team_member: null,
   hr_admin: null,
+  // Money is written only on a project's payments screen (`M11-52`): no act needs no project.
   finance: null,
   operations: null,
   marketing: null,

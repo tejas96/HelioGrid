@@ -26,7 +26,25 @@ const PHOTO_QUALITY = 0.8;
 export const takePhoto = (name: string): Promise<PickedFile | null> => pickPhoto(true, name);
 export const choosePhoto = (name: string): Promise<PickedFile | null> => pickPhoto(false, name);
 
+/** A receipt photo (`M11-37`), with the address the phone shows it from before it goes up. */
+export async function pickReceiptPhoto(
+  fromCamera: boolean,
+  name: string,
+): Promise<{ readonly file: PickedFile; readonly preview: string } | null> {
+  const picked = await photoOf(fromCamera, name);
+  return picked === null || picked.uri === undefined
+    ? null
+    : { file: picked.file, preview: picked.uri };
+}
+
 async function pickPhoto(fromCamera: boolean, name: string): Promise<PickedFile | null> {
+  return (await photoOf(fromCamera, name))?.file ?? null;
+}
+
+async function photoOf(
+  fromCamera: boolean,
+  name: string,
+): Promise<{ readonly file: PickedFile; readonly uri: string | undefined } | null> {
   const options = {
     mediaType: 'photo',
     includeBase64: true,
@@ -41,9 +59,12 @@ async function pickPhoto(fromCamera: boolean, name: string): Promise<PickedFile 
   if (asset?.base64 === undefined) return null;
   const png = asset.type === 'image/png';
   return {
-    bytes: bytesOfBase64(asset.base64),
-    name: `${name}.${png ? 'png' : 'jpg'}`,
-    contentType: png ? 'image/png' : 'image/jpeg',
+    file: {
+      bytes: bytesOfBase64(asset.base64),
+      name: `${name}.${png ? 'png' : 'jpg'}`,
+      contentType: png ? 'image/png' : 'image/jpeg',
+    },
+    uri: asset.uri,
   };
 }
 

@@ -1,5 +1,6 @@
 import type { ProjectBoardView } from '@heliogrid/domain';
 import { Text } from '../../primitives/Text/Text.native';
+import { useFormat } from '../MarketProvider';
 import { ProjectRowList } from '../ProjectRows/ProjectRows.native';
 import { BOARD_CAPS, todoItemsOf, waitItemsOf } from './ProjectBoard.logic';
 import type { ProjectBoardProps } from './ProjectBoard.types';
@@ -22,6 +23,7 @@ export function ProjectBoardNeeds(props: NeedsProps) {
 function Todo(props: NeedsProps) {
   const { view, words } = props;
   const held = useHeld();
+  const format = useFormat();
   return (
     <ProjectBoardSection
       title={words.toDoHeading}
@@ -31,7 +33,9 @@ function Todo(props: NeedsProps) {
         </Text>
       }
     >
-      <ProjectRowList items={todoItemsOf(view.todo, BOARD_CAPS.narrow.todo, held, props)} />
+      <ProjectRowList
+        items={todoItemsOf(view.todo, BOARD_CAPS.narrow.todo, held, props, format, view.today)}
+      />
     </ProjectBoardSection>
   );
 }

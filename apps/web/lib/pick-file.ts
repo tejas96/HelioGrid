@@ -31,6 +31,24 @@ export function pickProjectFile(screen: ProjectScreen, place: FilePlace): void {
   );
 }
 
+/** A receipt photo (`M11-37`): the browser's chooser for images, shrunk, with a local preview. */
+export function pickReceiptPhoto(
+  onPicked: (photo: { readonly file: PickedFile; readonly preview: string }) => void,
+): void {
+  pickFile(
+    {
+      upload: (file) =>
+        onPicked({
+          file,
+          preview: URL.createObjectURL(new Blob([file.bytes], { type: file.contentType })),
+        }),
+      uploadFailed: false,
+      retryUpload: () => undefined,
+    },
+    FILE_SUBJECT_RULES.project.contentTypes.filter((type) => type.startsWith('image/')),
+  );
+}
+
 /**
  * The web's one file chooser: the pick that did not go up goes again, else the browser's chooser
  * opens for the types the record takes and the chosen file goes up, a photo shrunk first.

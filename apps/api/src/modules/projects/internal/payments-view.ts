@@ -9,6 +9,7 @@ import {
   type UiLanguage,
 } from '@heliogrid/domain';
 import {
+  chatRequestUri,
   minorUnitsToDecimal,
   projectNumberOf,
   receiptNumberOf,
@@ -103,6 +104,24 @@ function requestOf(part: StoodPart, input: PaymentsViewInput, format: MoneyForma
   const overUpiLimit = limit !== null && owed > limit;
   const note = `${projectNumberOf(facts.head.number)} · ${part.facts.label}`;
   const upiId = payTo.upiId !== null && limit !== null && !overUpiLimit ? payTo.upiId : null;
+  const text = payRequestMessage(input.t, {
+    customer: facts.head.customerName,
+    part: part.facts.label,
+    number: projectNumberOf(facts.head.number),
+    amount: formatMoney(pack.formats, amount),
+    company: input.company,
+    upi: upiId === null ? null : { upiId, payee: payTo.payee, note },
+    bank:
+      payTo.bank === null
+        ? null
+        : {
+            accountName: payTo.bank.accountName,
+            accountNumber: payTo.bank.accountNumber,
+            routingLabel: pack.formats.bankRoutingLabel,
+            routing: payTo.bank.routing,
+            bankName: payTo.bank.bankName,
+          },
+  });
   return {
     partId: part.facts.id,
     amount,
@@ -119,26 +138,7 @@ function requestOf(part: StoodPart, input: PaymentsViewInput, format: MoneyForma
           }),
     overUpiLimit,
     note,
-    message: {
-      language: input.language,
-      text: payRequestMessage(input.t, {
-        customer: facts.head.customerName,
-        part: part.facts.label,
-        number: projectNumberOf(facts.head.number),
-        amount: formatMoney(pack.formats, amount),
-        company: input.company,
-        upi: upiId === null ? null : { upiId, payee: payTo.payee, note },
-        bank:
-          payTo.bank === null
-            ? null
-            : {
-                accountName: payTo.bank.accountName,
-                accountNumber: payTo.bank.accountNumber,
-                routingLabel: pack.formats.bankRoutingLabel,
-                routing: payTo.bank.routing,
-                bankName: payTo.bank.bankName,
-              },
-      }),
-    },
+    message: { language: input.language, text },
+    chatUri: chatRequestUri(pack.paymentRails.requestChat ?? null, facts.head.phoneE164, text),
   };
 }

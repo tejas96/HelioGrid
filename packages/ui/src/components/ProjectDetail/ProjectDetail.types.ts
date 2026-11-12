@@ -4,6 +4,7 @@ import type {
   TranslatedText,
 } from '@heliogrid/contracts';
 import type { ActivityKind, NextStep, ProjectDetailView, ProjectFileSlot } from '@heliogrid/domain';
+import type { ReactNode } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import type { ActivityStreamWords } from '../ActivityStream/ActivityStream.types';
 
@@ -138,6 +139,8 @@ export interface ProjectDetailProps {
   readonly words: ProjectDetailWords & ProjectWaitWords;
   /** The project page with the rows still waiting, or the checklist's own screen (`SCR-M08-03`). */
   readonly documents: 'waiting' | 'all';
+  /** The Money card (`MoneyCard`) under the wait, or null where the reader sees no money. */
+  readonly money: ReactNode;
   readonly onNext: (step: NextStep) => void;
   readonly onWait: () => void;
   readonly onWaitOver: () => void;

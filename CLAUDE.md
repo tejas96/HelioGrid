@@ -205,7 +205,10 @@ Digest of the foundations `F1`–`F8`, which are canonical.
 
 - Every money and energy figure a user sees carries a provenance tier: measured / derived /
   estimated / assumed, shown as a small quiet pill. Dates, times, counts, durations and progress carry none; nor do an
-  identifier, a limit the product enforces or a value the company sets in its own settings (`F8-01`).
+  identifier, a limit the product enforces or a value the company sets in its own settings (`F8-01`). Nor does
+  money on the payments surfaces — the payments page and its sheets, a project's Money card, Money
+  due: its figures are the company's own ledger, and the pill only confused its readers (owner
+  ruling).
 - Money never renders stale — a design changed since the proposal was computed reads provisional.
 - One money path: BOM ↔ proposal ↔ tranches ↔ payments reconcile to the currency's minor unit.
 - One market and one currency per tenant; market facts (tax, stages, checklists, rails, phone spec)

@@ -1,0 +1,27 @@
+# Project payments (`SCR-M11-02`): the project the company step started opens its payments at their
+# address. Won from the company's default terms, it has its parts, the first due at Won, so the hero
+# asks for it with Collect and Record. The company has no UPI ID and no bank yet, so Collect opens on
+# UPI saying where to add the ID, with Send on WhatsApp under it, and its bank way says where to add
+# the bank; the sheet closes.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://projects/${PROJECT_ID}/payments
+- extendedWaitUntil:
+    visible: ${TO_COLLECT_NOW}
+    timeout: 15000
+- assertVisible: ${PAYMENTS_TITLE}
+- assertVisible: ${RECORD_ACT}
+- tapOn: ${COLLECT_ACT}
+- extendedWaitUntil:
+    visible: ${NO_UPI}
+    timeout: 15000
+# The India pack opens the request in the customer's WhatsApp, the share sheet beside it.
+- assertVisible: ${SEND_CHAT}
+- tapOn: ${BANK_TAB}
+- assertVisible: ${NO_BANK}
+- tapOn: ${CLOSE}
+- extendedWaitUntil:
+    notVisible: ${NO_BANK}
+    timeout: 15000
+- scrollUntilVisible:
+    element: ${PAYMENT_PARTS}

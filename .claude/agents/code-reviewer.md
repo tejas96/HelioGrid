@@ -24,7 +24,9 @@ cannot. The invariants run later, in the gate.
 
 1. **The goal.** Each `DONE WHEN` line is met by code and by a test that names it, and the code
    does what the plan says — every state (`.claude/rules/ui-adherence.md`, *States, saves and
-   focus*), role and edge it names. Nothing is built that the plan
+   focus*), role and edge it names. A "decision recorded" in the PR that goes against a PRD row's
+   own words (an order, a "never", a "must") is a finding, not a decision; and every control the
+   picked sample draws is built or named in the plan as left out, with its reason. Nothing is built that the plan
    does not need, and a part, dependency or file the plan does not name is searched for in the repo
    (Law 5), and a new file sits where `docs/engineering/architecture.md` §4 places it.
 2. **The bugs.** Read the diff whole, then the code around each change, then the callers of every
