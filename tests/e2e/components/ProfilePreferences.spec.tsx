@@ -101,11 +101,13 @@ test.describe('at 375', () => {
     await expect(card.getByText(W('notSaved'))).toHaveCount(2);
   });
 
-  test('the name row: the saved photo, and Edit name opens the editor', async ({ mount }) => {
+  test('the name row: the saved photo, and the hero’s pencil opens the editor', async ({
+    mount,
+  }) => {
     const card = await mount(<ProfilePreferencesAsHeld reader="en" photo={PHOTO} />);
     const row = card.locator('.hg-profile-hero-who');
     await expect(row.locator('img')).toHaveAttribute('src', PHOTO);
-    const edit = row.getByRole('button', { name: W('editName') });
+    const edit = card.locator('.hg-hero-menu').getByRole('button', { name: W('editName') });
     await expectTouchFloor([edit]);
     await edit.click();
     await expect(card).toHaveAttribute('data-edit-opened', 'true');
@@ -210,16 +212,20 @@ test.describe('at 1536', () => {
     await expectNoSidewaysScroll(page);
   });
 
-  test('d-default: the name row ends with Edit name, beside the saved photo', async ({ mount }) => {
+  test('d-default: the pencil sits in the hero’s top-right corner, over the saved photo’s row', async ({
+    mount,
+  }) => {
     const card = await mount(<ProfilePreferencesAsHeld reader="en" photo={PHOTO} />);
     const row = card.locator('.hg-profile-hero-who');
     await expect(row.locator('img')).toHaveAttribute('src', PHOTO);
-    const edit = row.getByRole('button', { name: W('editName') });
-    const rowBox = await settledBox(row);
+    const hero = card.locator('.hg-hero').first();
+    const edit = hero.locator('.hg-hero-menu').getByRole('button', { name: W('editName') });
+    const heroBox = await settledBox(hero);
     const editBox = await settledBox(edit);
-    expect(rowBox.x + rowBox.width - (editBox.x + editBox.width)).toBeLessThanOrEqual(
-      (await resolvedLength(card.page(), '--sp-6')) + 1,
-    );
+    const corner = (await resolvedLength(card.page(), '--sp-6')) + 1;
+    expect(heroBox.x + heroBox.width - (editBox.x + editBox.width)).toBeLessThanOrEqual(corner);
+    expect(editBox.y - heroBox.y).toBeLessThanOrEqual(corner);
+    expect(editBox.y).toBeLessThan((await settledBox(row)).y);
     await edit.click();
     await expect(card).toHaveAttribute('data-edit-opened', 'true');
   });

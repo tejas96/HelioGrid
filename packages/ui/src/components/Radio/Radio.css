@@ -7,6 +7,7 @@
    and "keyboard reachable with visible focus" is done-means law (ui-adherence). */
 
 .hg-radio {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -25,10 +26,15 @@
 }
 
 .hg-radio-input {
+  /* The input fills the whole 44 target: a 0-size input is "not visible", so a screen reader's
+     touch and a test's click on the control itself never land on it. */
   position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
   opacity: 0;
-  width: 0;
-  height: 0;
+  cursor: inherit;
 }
 
 .hg-radio-box {
