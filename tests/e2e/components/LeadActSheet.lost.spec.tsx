@@ -52,7 +52,7 @@ test('the seventh reason takes the whole row; the others stand two across', asyn
   expect(seventh?.width ?? 0).toBeGreaterThan((first?.width ?? 0) * 1.8);
 });
 
-test('postponed needs its day: each chip names the day it comes back, and the day is sent', async ({
+test('postponed opens on a month: each chip names the day it comes back, and the day is sent', async ({
   mount,
   page,
 }) => {
@@ -61,9 +61,14 @@ test('postponed needs its day: each chip names the day it comes back, and the da
   const sheet = sheetOf(page);
   await reasonOf(page, words.reason.postponed).click();
   const send = sheet.getByRole('button', { name: words.send('postponed') });
-  await expect(send).toBeDisabled();
-
   const spans = sheet.getByRole('radiogroup', { name: words.whenLabel });
+  // A month is picked as Postponed opens, so the sheet sends in one more tap.
+  await expect(spans.getByRole('radio', { name: words.span.month })).toHaveAttribute(
+    'aria-checked',
+    'true',
+  );
+  await expect(send).toBeEnabled();
+
   await expectTouchFloor(
     Object.values(words.span).map((span) => spans.getByRole('radio', { name: span })),
   );

@@ -53,7 +53,7 @@ export function WinLossCard({ view, words, winRate }: DashboardPartProps) {
   );
 }
 
-/** The rate as a ring with its words beside it: the share, the counts it reads, and its name. */
+/** The rate as a ring — the share and the counts it reads — with its name and meaning beside it. */
 function RateRing(props: {
   basisPoints: number;
   won: number;
@@ -72,9 +72,14 @@ function RateRing(props: {
         caption={words.wonLost(props.won, props.lost)}
         spokenName={words.winRate(rate)}
       />
-      <Text variant="body" bold>
-        {words.winRate(rate)}
-      </Text>
+      <span className="hg-owner-rate-words">
+        <Text variant="body" bold>
+          {words.winRateName}
+        </Text>
+        <Text variant="body-sm" color="secondary">
+          {words.winRateMeaning}
+        </Text>
+      </span>
     </div>
   );
 }

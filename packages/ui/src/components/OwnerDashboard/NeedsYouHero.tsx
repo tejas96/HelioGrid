@@ -1,4 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { useState } from 'react';
+import { Text } from '../../primitives/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { HeroPanel } from '../HeroPanel';
@@ -7,13 +9,16 @@ import { useFormat } from '../MarketProvider';
 import type { DashboardPartProps } from './OwnerDashboard.logic';
 import { type NeedItem, needItemsOf, nextNeedAt } from './OwnerDashboard.logic';
 import './NeedsYouHero.css';
+import { useAssignLanding } from './use-assign-landing';
 
 /**
  * What needs you now — the screen's one hero. Where the room is narrow it holds one item at a time
  * with *Next* to the one after; where it is wide every item stands in a row with its own act
  * (`OwnerDashboard.css`, the container's width). Nothing waiting: the hero says so, calmly.
  */
-export function NeedsYouHero({ view, words, needsYou, onNeed }: DashboardPartProps) {
+export function NeedsYouHero(props: DashboardPartProps) {
+  const { view, words, needsYou, onNeed } = props;
+  useAssignLanding(props.assigning, props.assignFailed, props.focusAfter);
   const format = useFormat();
   const items = needItemsOf(view.needsYou, needsYou, words, (amount) => format.money(amount));
   const [chosen, setChosen] = useState(0);
@@ -59,7 +64,11 @@ export function NeedsYouHero({ view, words, needsYou, onNeed }: DashboardPartPro
             key={item.kind}
             item={item}
             current={index === at}
-            onAct={() => onNeed(item.open)}
+            onOpen={onNeed}
+            assigning={props.assigning}
+            failed={
+              props.assignFailed && item.open.kind === 'assign_waiting' ? words.assignFailed : null
+            }
           />
         ))}
       </ul>
@@ -70,12 +79,17 @@ export function NeedsYouHero({ view, words, needsYou, onNeed }: DashboardPartPro
 function NeedCard({
   item,
   current,
-  onAct,
+  onOpen,
+  assigning,
+  failed,
 }: {
   item: NeedItem;
   current: boolean;
-  onAct: () => void;
+  onOpen: (open: NeedItem['open']) => void;
+  assigning: boolean;
+  failed: TranslatedText | null;
 }) {
+  const sending = assigning && item.open.kind === 'assign_waiting';
   return (
     <li className="hg-owner-need" data-current={current ? 'true' : 'false'}>
       <div className="hg-owner-need-head">
@@ -83,12 +97,36 @@ function NeedCard({
         <div className="hg-owner-need-words">
           <span className="hg-owner-need-title">{item.title}</span>
           <span className="hg-owner-on-panel">{item.line}</span>
+          {item.reason === undefined ? null : (
+            <span className="hg-owner-on-panel">{item.reason}</span>
+          )}
         </div>
       </div>
-      <span className="hg-owner-need-act">
-        <Button variant={current ? 'primary' : 'secondary'} size="md" onClick={onAct}>
+      {failed === null ? null : (
+        <Text variant="body-sm" color="danger" live>
+          {failed}
+        </Text>
+      )}
+      <span className="hg-owner-need-act" data-pair={item.other === undefined ? undefined : 'true'}>
+        <Button
+          variant={current ? 'primary' : 'secondary'}
+          size="md"
+          loading={sending}
+          disabled={assigning}
+          onClick={() => onOpen(item.open)}
+        >
           {item.act}
         </Button>
+        {item.other === undefined ? null : (
+          <Button
+            variant="secondary"
+            size="md"
+            disabled={assigning}
+            onClick={() => item.other && onOpen(item.other.open)}
+          >
+            {item.other.act}
+          </Button>
+        )}
       </span>
     </li>
   );

@@ -107,12 +107,14 @@ function NextHero(props: HeroProps & { readonly item: MyDayItem }) {
             <ShellGlyph name="tick" size="md" tone="success" />
           </IconButton>
         </View>
-        {whyFirst === null ? null : (
-          <Text variant="body-sm" color="secondary">
-            {whyFirst}
-          </Text>
-        )}
-        <View style={styles.later}>
+        <View style={styles.foot}>
+          {whyFirst === null ? null : (
+            <View style={styles.why}>
+              <Text variant="body-sm" color="secondary">
+                {whyFirst}
+              </Text>
+            </View>
+          )}
           <View style={styles.flush}>
             <Button
               variant="ghost"
@@ -248,6 +250,18 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors['line-soft'],
   },
-  // A ghost act starts where the hero's content starts: a small pill's own padding pulled back.
-  flush: { marginStart: -theme.spacing['sp-4'] },
+  /* One row, as the sample draws it: why this task leads, and *Move to tomorrow* at the far end. */
+  foot: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    columnGap: theme.spacing['sp-3'],
+    paddingTop: theme.spacing['sp-2'],
+    borderTopWidth: 1,
+    borderTopColor: colors['line-soft'],
+  },
+  why: { flexGrow: 1, flexShrink: 1, flexBasis: theme.spacing['sp-24'], minWidth: 0 },
+  // The ghost act ends where the hero's content ends: a small pill's own padding pulled back.
+  flush: { marginEnd: -theme.spacing['sp-4'] },
 });

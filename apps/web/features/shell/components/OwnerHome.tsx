@@ -31,6 +31,8 @@ export function OwnerHome() {
   const words = ownerDashboardWords(t);
   const onNeed = (open: NeedOpen) => {
     switch (open.kind) {
+      case 'assign_waiting':
+        return board.assignWaiting();
       case 'unassigned':
         return router.push(LEAD_INBOX_PATH);
       case 'payments_late':
@@ -66,6 +68,8 @@ export function OwnerHome() {
         onSetTarget={board.setTarget}
         targetSaving={board.targetSaving}
         targetFailed={board.targetFailed}
+        assigning={board.assigning}
+        assignFailed={board.assignFailed}
         onExport={onExport}
         focusAfter={frame}
       />

@@ -1,6 +1,8 @@
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { amountSchema, currencyCodeSchema, nonNegativeAmountSchema, uuidSchema } from './common';
+import { BULK_ASSIGN_MAX } from './crm/assign';
+import { memberRefSchema } from './crm/schemas';
 import { leadStageSchema, lostReasonSchema } from './crm/vocabulary';
 import { errorEnvelope, unauthenticatedEnvelope } from './error';
 import { calendarDateSchema } from './tenant-settings';
@@ -27,7 +29,14 @@ const attentionLeadSchema = z.object({
  * waiting longest in their stage, and the reader's own overdue tasks (`M13-10`'s edge case).
  */
 export const needsYouSchema = z.object({
-  unassigned: z.object({ count: countSchema, oldestHours: countSchema.nullable() }),
+  unassigned: z.object({
+    count: countSchema,
+    oldestHours: countSchema.nullable(),
+    /** The waiting leads, oldest first, as many as one bulk assign takes — what *Assign to …* gives. */
+    leadIds: z.array(uuidSchema).max(BULK_ASSIGN_MAX),
+    /** Who to give them to: the member who can hold a lead with the fewest open ones (plan gap 17). */
+    suggested: memberRefSchema.extend({ openLeads: countSchema }).nullable(),
+  }),
   paymentsLate: z.object({
     count: countSchema,
     amount: nonNegativeAmountSchema,

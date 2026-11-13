@@ -28,6 +28,10 @@ export interface OwnerDashboardScreen {
   setTarget(amount: string | null): void;
   readonly targetSaving: boolean;
   readonly targetFailed: boolean;
+  /** Gives the waiting leads to the suggested member in one tap (plan gap 17). */
+  assignWaiting(): void;
+  readonly assigning: boolean;
+  readonly assignFailed: boolean;
 }
 
 /**
@@ -51,6 +55,19 @@ export function useOwnerDashboard(): OwnerDashboardScreen {
       repositories.dashboards.setTarget(input),
     { onDone: () => void queryClient.invalidateQueries({ queryKey: key }) },
   );
+  const assign = useAction(
+    (input: { readonly leadIds: readonly string[]; readonly assigneeId: string }) =>
+      repositories.leadAssign.bulkAssign({
+        leadIds: [...input.leadIds],
+        assigneeId: input.assigneeId,
+      }),
+    {
+      onDone: () => {
+        void queryClient.invalidateQueries({ queryKey: key });
+        void queryClient.invalidateQueries({ queryKey: queryKeys.crm.all(tenantId) });
+      },
+    },
+  );
   const value = query.data;
   return {
     shown,
@@ -72,5 +89,12 @@ export function useOwnerDashboard(): OwnerDashboardScreen {
     },
     targetSaving: target.pending,
     targetFailed: target.failure !== null,
+    assignWaiting: () => {
+      const waiting = value?.needsYou.unassigned;
+      if (waiting?.suggested == null || waiting.leadIds.length === 0 || assign.isOut()) return;
+      void assign.run({ leadIds: waiting.leadIds, assigneeId: waiting.suggested.userId });
+    },
+    assigning: assign.pending,
+    assignFailed: assign.failure !== null,
   };
 }

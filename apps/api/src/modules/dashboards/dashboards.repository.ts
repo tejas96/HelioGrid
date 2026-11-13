@@ -23,7 +23,7 @@ export interface DashboardClock {
 
 /** Every stored figure the owner dashboard reads, in minor units — formatting is the service's. */
 export interface OwnerFacts {
-  readonly unassigned: { readonly count: number; readonly oldest: Date | null };
+  readonly unassigned: Awaited<ReturnType<typeof unassignedOf>>;
   readonly blockedOnUs: Awaited<ReturnType<typeof blockedOnUsOf>>;
   readonly waitingLongest: Awaited<ReturnType<typeof waitingLongestOf>>;
   readonly myOverdueTasks: number;
@@ -55,7 +55,7 @@ export class DashboardsRepository {
       const lastMonth = monthBefore(clock.month);
       const windowStart = windowStartOf(clock.now, clock.timeZone);
       return {
-        unassigned: await unassignedOf(tx, tenantId, leads, clock.now),
+        unassigned: await unassignedOf(tx, tenantId, leads, clock.now, actorId),
         blockedOnUs: await blockedOnUsOf(tx, tenantId, projects),
         waitingLongest: await waitingLongestOf(tx, tenantId, leads),
         myOverdueTasks: await myOverdueTasksOf(tx, tenantId, actorId, leads, clock.now),

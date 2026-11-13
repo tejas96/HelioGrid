@@ -127,19 +127,24 @@
 
 .hg-my-day-later {
   display: flex;
-  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-1) var(--sp-3);
   padding-top: var(--sp-2);
   border-top: 1px solid var(--line-soft);
 }
 
-/* A ghost act under the hero starts where the hero's content starts: its own inline padding
-   (a small pill's) is pulled back past the edge. */
+/* The footer is one row, as the sample draws it: why this task leads, and the ghost *Move to
+   tomorrow* at the far end, its own inline padding pulled back so its words end where the hero's
+   content ends. */
 .hg-my-day-later > .hg-button[data-variant="ghost"] {
-  margin-inline-start: calc(-1 * var(--sp-4));
+  margin-inline-end: calc(-1 * var(--sp-4));
 }
 
-/* Why this task leads — one quiet line under the acts. */
+/* Why this task leads — the footer's quiet line, taking the room the move leaves. */
 .hg-my-day-why-first {
+  flex: 1 1 var(--sp-24);
   margin: 0;
   font-size: var(--fs-body-sm);
   line-height: var(--lh-body-sm);

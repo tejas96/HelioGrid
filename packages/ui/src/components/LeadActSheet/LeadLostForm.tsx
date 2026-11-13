@@ -30,10 +30,16 @@ export function LeadLostForm({ form, pending, failure, fields }: FormFrame & { f
   const [picked, setPicked] = useState<ISODate | null>(null);
   const resurfaceOn = resurfaceOnOf(reason, span, picked, postpone);
   const ready = lostReady(reason, resurfaceOn);
+  /* *Postponed* opens on a month, the commonest answer, so it sends in one more tap; any other
+     span is one tap away. */
+  const choose = (next: LostReason) => {
+    setReason(next);
+    if (next === 'postponed' && span === null) setSpan('month');
+  };
   return (
     <>
       <LostHead form={form} />
-      <LostReasons form={form} reason={reason} onChange={setReason} disabled={pending} />
+      <LostReasons form={form} reason={reason} onChange={choose} disabled={pending} />
       {reason === 'postponed' ? (
         <div className="hg-lead-lost-when">
           <ChoiceChips

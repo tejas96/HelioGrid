@@ -77,6 +77,8 @@ export class DashboardsService {
             facts.unassigned.oldest === null
               ? null
               : Math.floor((now - facts.unassigned.oldest.getTime()) / HOUR_MS),
+          leadIds: facts.unassigned.leadIds,
+          suggested: facts.unassigned.suggested,
         },
         paymentsLate: {
           count: due.groups.late.count,

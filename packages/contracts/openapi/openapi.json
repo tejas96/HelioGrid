@@ -113986,11 +113986,43 @@
                               "type": "integer",
                               "minimum": 0,
                               "nullable": true
+                            },
+                            "leadIds": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "maxItems": 100
+                            },
+                            "suggested": {
+                              "type": "object",
+                              "properties": {
+                                "userId": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "openLeads": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                }
+                              },
+                              "required": [
+                                "userId",
+                                "name",
+                                "openLeads"
+                              ],
+                              "nullable": true
                             }
                           },
                           "required": [
                             "count",
-                            "oldestHours"
+                            "oldestHours",
+                            "leadIds",
+                            "suggested"
                           ]
                         },
                         "paymentsLate": {

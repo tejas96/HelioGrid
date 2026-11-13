@@ -45,6 +45,8 @@ export interface MyDayScreen {
   /** Whether this home holds My Day: the sales executive's, or composed into a higher home. */
   readonly shown: boolean;
   readonly read: Exclude<Read<MyDay>, { readonly kind: 'empty' }>;
+  /** The day in counts for the line under the greeting — null until the day is read. */
+  readonly counts: MyDay['counts'] | null;
   /** The one thing to do now (`nextUpOf`), drawn as the hero; absent from its band below. */
   readonly next: MyDayItem | null;
   /** Overdue, today and this week, in that order; a band with nothing in it is left out. */
@@ -173,6 +175,7 @@ export function useMyDay(): MyDayScreen {
   return {
     shown,
     read: recordReadOf(query),
+    counts: shown && day !== undefined ? day.counts : null,
     next,
     bands,
     expand: (band) => setOpen((was) => new Set([...was, band])),

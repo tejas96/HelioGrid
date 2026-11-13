@@ -1,3 +1,4 @@
+import { BULK_ASSIGN_MAX, type MemberRef } from '@heliogrid/contracts';
 import {
   customer,
   type DbTransaction,
@@ -10,10 +11,17 @@ import {
 import {
   type CalendarDate,
   type LeadStage,
+  lightestHolderOf,
   UNASSIGNED_ESCALATES_AFTER_MS,
 } from '@heliogrid/domain';
 import { and, asc, count, eq, isNull, lt, min, type SQL, sql } from 'drizzle-orm';
-import { activeLead, leadCustomerJoin } from '../crm/crm.public';
+import {
+  activeLead,
+  leadAssignersOf,
+  leadCustomerJoin,
+  leadHoldersOf,
+  openLeadCountsOf,
+} from '../crm/crm.public';
 
 /*
  * "What needs you" (`M13-15`) on the caller's transaction: each item a bounded read — a count, an
@@ -22,27 +30,60 @@ import { activeLead, leadCustomerJoin } from '../crm/crm.public';
 
 /**
  * Leads with no owner past a day (`M02-50`'s rule, without its once-only notice mark): how many,
- * and the oldest one's wait in created-at order.
+ * the oldest one's wait, the ids oldest first (as many as one bulk assign takes), and who to give
+ * them to — the member who works leads (holds, never assigns) with the fewest open ones, never the
+ * reader (plan gap 17).
  */
 export async function unassignedOf(
   tx: DbTransaction,
   tenantId: string,
   scope: SQL,
   now: number,
-): Promise<{ count: number; oldest: Date | null }> {
+  readerId: string,
+): Promise<{
+  count: number;
+  oldest: Date | null;
+  leadIds: string[];
+  suggested: (MemberRef & { openLeads: number }) | null;
+}> {
+  const waiting = and(
+    eq(lead.tenantId, tenantId),
+    isNull(lead.ownerUserId),
+    isNull(lead.lifecycleState),
+    lt(lead.createdAt, new Date(now - UNASSIGNED_ESCALATES_AFTER_MS)),
+    scope,
+  );
   const [row] = await tx
     .select({ count: count(), oldest: min(lead.createdAt) })
     .from(lead)
-    .where(
-      and(
-        eq(lead.tenantId, tenantId),
-        isNull(lead.ownerUserId),
-        isNull(lead.lifecycleState),
-        lt(lead.createdAt, new Date(now - UNASSIGNED_ESCALATES_AFTER_MS)),
-        scope,
-      ),
-    );
-  return { count: row?.count ?? 0, oldest: row?.oldest ?? null };
+    .where(waiting);
+  const total = row?.count ?? 0;
+  if (total === 0) return { count: 0, oldest: null, leadIds: [], suggested: null };
+  const ids = await tx
+    .select({ id: lead.id })
+    .from(lead)
+    .where(waiting)
+    .orderBy(asc(lead.createdAt), asc(lead.id))
+    .limit(BULK_ASSIGN_MAX);
+  // The offer goes to someone who works leads, not to a person who hands them out (an owner or a
+  // manager holds few and would always be offered them), and never to the reader.
+  const assigners = new Set(
+    (await leadAssignersOf(tx, tenantId)).map((member) => member.userId).concat(readerId),
+  );
+  const holders = (await leadHoldersOf(tx, tenantId)).filter(
+    (holder) => !assigners.has(holder.userId),
+  );
+  const loads = await openLeadCountsOf(
+    tx,
+    tenantId,
+    holders.map((holder) => holder.userId),
+  );
+  return {
+    count: total,
+    oldest: row?.oldest ?? null,
+    leadIds: ids.map((one) => one.id),
+    suggested: lightestHolderOf(holders, loads),
+  };
 }
 
 /** Projects waiting on the company itself: how many, and the one waiting since longest. */

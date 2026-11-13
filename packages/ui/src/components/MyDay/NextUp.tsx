@@ -92,8 +92,8 @@ function NextHero(props: HeroProps & { readonly item: MyDayItem }) {
           <ShellGlyph name="tick" size="md" tone="success" />
         </IconButton>
       </div>
-      {whyFirst === null ? null : <p className="hg-my-day-why-first">{whyFirst}</p>}
       <div className="hg-my-day-later">
+        {whyFirst === null ? null : <p className="hg-my-day-why-first">{whyFirst}</p>}
         <Button
           variant="ghost"
           size="sm"

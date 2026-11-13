@@ -13,6 +13,11 @@ export interface OwnerDashboardWords {
   /** Each attention item's headline, its count in it where it has one. */
   readonly needTitle: (kind: NeedsYouKind, count: number) => TranslatedText;
   readonly unassignedLine: (hours: number) => TranslatedText;
+  /** The one-tap offer for waiting leads (plan gap 17): its act, its reason, the way to pick instead. */
+  readonly assignTo: (name: string) => TranslatedText;
+  readonly pickSomeone: TranslatedText;
+  readonly fewestOpen: (name: string, count: number) => TranslatedText;
+  readonly assignFailed: TranslatedText;
   readonly lateLine: (amount: string, days: number) => TranslatedText;
   readonly blockedLine: (name: string, days: number) => TranslatedText;
   readonly waitingLine: (name: string | null, stage: LeadStage, days: number) => TranslatedText;
@@ -59,6 +64,9 @@ export interface OwnerDashboardWords {
   readonly winLossTitle: TranslatedText;
   readonly windowDays: (days: number) => TranslatedText;
   readonly winRate: (rate: string) => TranslatedText;
+  /** Beside the ring, which holds the figure: what the figure is, never the figure again. */
+  readonly winRateName: TranslatedText;
+  readonly winRateMeaning: TranslatedText;
   readonly tooFew: (won: number, lost: number) => TranslatedText;
   readonly wonLost: (won: number, lost: number) => TranslatedText;
   readonly lostReason: (reason: LostReason) => TranslatedText;
@@ -74,6 +82,8 @@ export interface OwnerDashboardWords {
 /** Which record an attention item opens. */
 export type NeedOpen =
   | { readonly kind: 'unassigned' }
+  /** Give the waiting leads to the suggested member, in one tap. */
+  | { readonly kind: 'assign_waiting' }
   | { readonly kind: 'payments_late'; readonly projectId: string }
   | { readonly kind: 'blocked_on_us'; readonly projectId: string }
   | { readonly kind: 'waiting_longest'; readonly leadId: string }
@@ -94,6 +104,9 @@ export interface OwnerDashboardProps {
   readonly onSetTarget: (amount: string | null) => void;
   readonly targetSaving: boolean;
   readonly targetFailed: boolean;
+  /** The one-tap assign is out, or did not land. */
+  readonly assigning: boolean;
+  readonly assignFailed: boolean;
   readonly onExport: () => void;
   readonly focusAfter: FocusAfter;
 }

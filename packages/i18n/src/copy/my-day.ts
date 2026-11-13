@@ -48,6 +48,7 @@ const MY_DAY = {
   failedMessage: /*i18n*/ { id: 'Check your connection and try again.' },
   actFailed: /*i18n*/ { id: 'That did not save. Try again.' },
   doneToast: /*i18n*/ { id: 'Done · {name}' },
+  daySummary: /*i18n*/ { id: '{overdue} overdue · {today} today · {done} done' },
   movedToast: /*i18n*/ { id: 'Moved to tomorrow · {name}' },
   calledToast: /*i18n*/ { id: 'Call logged · {name}' },
   undo: /*i18n*/ { id: 'Undo' },
@@ -111,6 +112,20 @@ export interface MyDayToastFact {
 }
 
 /** The toast an act on My Day leaves: a tick or a move with its *Undo*, a logged call without. */
+/** The day in counts, the line under a rep's greeting: "7 overdue · 15 today · 4 done". */
+export function myDaySummary(
+  t: T,
+  counts: { readonly overdue: number; readonly today: number; readonly doneToday: number } | null,
+) {
+  return counts === null
+    ? undefined
+    : t(MY_DAY.daySummary, {
+        overdue: counts.overdue,
+        today: counts.today,
+        done: counts.doneToday,
+      });
+}
+
 export function myDayToastWords(t: T) {
   const done = (name: string) => t(MY_DAY.doneToast, { name });
   const moved = (name: string) => t(MY_DAY.movedToast, { name });

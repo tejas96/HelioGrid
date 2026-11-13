@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { isOpenLead, type LoadLead, type LoadTask, memberLoads } from '../../src/crm/assign-load';
+import {
+  isOpenLead,
+  type LoadLead,
+  type LoadTask,
+  lightestHolderOf,
+  memberLoads,
+} from '../../src/crm/assign-load';
 
 const NOW = Date.parse('2026-11-09T03:00:00Z');
 
@@ -39,5 +45,35 @@ describe('memberLoads — the picker’s open and overdue counts', () => {
       ['anita', { open: 1, overdue: 0 }],
       ['meera', { open: 0, overdue: 0 }],
     ]);
+  });
+});
+
+describe('lightestHolderOf — the one-tap offer goes to the fewest open leads (plan gap 17)', () => {
+  const asha = { userId: 'asha', name: 'Asha' };
+  const ravi = { userId: 'ravi', name: 'Ravi' };
+  it.each([
+    {
+      why: 'the fewest wins',
+      loads: [
+        ['asha', 3],
+        ['ravi', 1],
+      ],
+      offered: { ...ravi, openLeads: 1 },
+    },
+    {
+      why: 'a tie goes to the first given',
+      loads: [
+        ['asha', 2],
+        ['ravi', 2],
+      ],
+      offered: { ...asha, openLeads: 2 },
+    },
+    { why: 'no count reads zero', loads: [['asha', 1]], offered: { ...ravi, openLeads: 0 } },
+  ] as const)('$why', ({ loads, offered }) => {
+    expect(lightestHolderOf([asha, ravi], new Map(loads))).toEqual(offered);
+  });
+
+  it('offers no one when no one can hold a lead', () => {
+    expect(lightestHolderOf([], new Map())).toBeNull();
   });
 });

@@ -28,10 +28,7 @@ export function PipelineCard({ view, words }: DashboardPartProps) {
             </Text>
           </span>
         </div>
-        <DashBars bars={bars} />
-        <div className="hg-owner-won-bar">
-          <DashBars bars={[won]} />
-        </div>
+        <DashBars bars={bars} foot={won} />
         <div className="hg-owner-card-foot">
           {median === null ? null : (
             <span className="hg-owner-median">

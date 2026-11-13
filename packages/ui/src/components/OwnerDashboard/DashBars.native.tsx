@@ -13,12 +13,13 @@ const { stepMs, maxItems } = theme.motion.stagger;
  * A card's count bars on the phone: each row its words, its rail and its count — an 8 px pill, its fill grown once by a scale on the UI thread. The words and the count carry
  * the fact; the rail only shows its size.
  */
-export function DashBars({ bars }: { bars: readonly DashBar[] }) {
+export function DashBars({ bars, foot }: { bars: readonly DashBar[]; foot?: DashBar }) {
+  const rows = foot === undefined ? bars : [...bars, foot];
   const format = useFormat();
   return (
     <View style={styles.bars}>
-      {bars.map((bar, index) => (
-        <View key={bar.key} style={styles.bar}>
+      {rows.map((bar, index) => (
+        <View key={bar.key} style={[styles.bar, bar === foot ? styles.foot : undefined]}>
           <View style={styles.label}>
             <Text variant="body-sm">{bar.label}</Text>
           </View>
@@ -97,4 +98,11 @@ const styles = StyleSheet.create({
   },
   fill: { height: '100%', borderRadius: theme.radius['r-pill'], transformOrigin: 'left center' },
   count: { minWidth: theme.spacing['sp-6'] },
+  /* The foot row (a funnel's won deals) closes the bars below a dashed line. */
+  foot: {
+    paddingTop: theme.spacing['sp-3'],
+    borderTopWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: colors['line-soft'],
+  },
 });

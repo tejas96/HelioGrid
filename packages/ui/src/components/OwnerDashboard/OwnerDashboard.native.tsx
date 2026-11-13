@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
   side: { flexDirection: 'row', gap: theme.spacing['sp-3'] },
   sideWide: { flex: 1, minWidth: 0, gap: theme.spacing['sp-4'] },
   sideCell: { flex: 1, minWidth: 0 },
-  widePipeline: { flex: 1.4, minWidth: 0 },
+  /* The cash row's split, so both rows share one gutter. */
+  widePipeline: { flex: 1.3, minWidth: 0 },
   wideWinLoss: { flex: 1, minWidth: 0 },
 });

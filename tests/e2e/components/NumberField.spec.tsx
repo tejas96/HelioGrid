@@ -47,6 +47,18 @@ test('a figure commits once on blur, and an empty draft on a set field commits n
   await expect(field.getByTestId('commits')).toHaveText('1');
 });
 
+for (const asTyped of [false, true]) {
+  test(`a money figure typed with its grouping commas is the figure typed (${asTyped ? 'as typed' : 'on leave'})`, async ({
+    mount,
+  }) => {
+    const field = await mount(<HeldNumberField label={LABEL} unit="" currency asTyped={asTyped} />);
+    const input = field.getByRole('textbox', { name: LABEL });
+    await input.pressSequentially('1,50,000');
+    await input.blur();
+    await expect(field.getByTestId('held')).toHaveText('150000');
+  });
+}
+
 test('an empty draft on an unset field leaves it unset', async ({ mount }) => {
   const field = await mount(<HeldNumberField label={LABEL} unit={UNIT} />);
   const input = field.getByRole('textbox', { name: LABEL });

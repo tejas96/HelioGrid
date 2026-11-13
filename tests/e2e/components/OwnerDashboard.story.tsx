@@ -17,7 +17,7 @@ const BUSY: Dashboard = {
   month: '2026-11',
   currencyCode: 'INR',
   needsYou: {
-    unassigned: { count: 2, oldestHours: 26 },
+    unassigned: { count: 2, oldestHours: 26, leadIds: [], suggested: null },
     paymentsLate: {
       count: 3,
       amount: '185000.00',
@@ -78,7 +78,7 @@ const QUIET: Dashboard = {
   ...BUSY,
   scope: 'team',
   needsYou: {
-    unassigned: { count: 0, oldestHours: null },
+    unassigned: { count: 0, oldestHours: null, leadIds: [], suggested: null },
     paymentsLate: { count: 0, amount: '0.00', oldestDays: null, oldestProjectId: null },
     blockedOnUs: { count: 0, oldest: null },
     waitingLongest: [],
@@ -91,9 +91,28 @@ const QUIET: Dashboard = {
   won: { ...BUSY.won, median: null },
 };
 
-export type DashboardFrame = 'busy' | 'quiet' | 'no-target' | 'loading' | 'failed';
+export type DashboardFrame = 'busy' | 'quiet' | 'no-target' | 'suggested' | 'loading' | 'failed';
 
-const VIEW: Record<'busy' | 'quiet' | 'no-target', Dashboard> = {
+/** The busy day with someone to offer the waiting leads to (plan gap 17). */
+const SUGGESTED: Dashboard = {
+  ...BUSY,
+  needsYou: {
+    ...BUSY.needsYou,
+    unassigned: {
+      count: 2,
+      oldestHours: 26,
+      leadIds: ['00000000-0000-4000-8000-0000000000a1', '00000000-0000-4000-8000-0000000000a2'],
+      suggested: {
+        userId: '00000000-0000-4000-8000-0000000000b1',
+        name: 'Ravi Kulkarni',
+        openLeads: 3,
+      },
+    },
+  },
+};
+
+const VIEW: Record<'busy' | 'quiet' | 'no-target' | 'suggested', Dashboard> = {
+  suggested: SUGGESTED,
   busy: BUSY,
   quiet: QUIET,
   'no-target': { ...BUSY, target: null },
@@ -167,6 +186,8 @@ export function OwnerDashboardAsRead({
           }}
           targetSaving={saving}
           targetFailed={failed}
+          assigning={false}
+          assignFailed={false}
           onExport={() => setExports((n) => n + 1)}
           focusAfter={focus}
         />

@@ -6,6 +6,7 @@
  * Each writer and reader takes the CALLER's transaction, so what it writes commits with the change
  * that caused it, and names its tenant in every query.
  */
+export { leadAssignersOf, leadHoldersOf, openLeadCountsOf } from './crm.assign-load.repository';
 export { customerRecordOf } from './crm.customer-record.repository';
 export {
   currentLeadOf,

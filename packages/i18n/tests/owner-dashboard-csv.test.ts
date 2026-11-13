@@ -10,7 +10,7 @@ const view: OwnerDashboard = {
   month: '2026-11',
   currencyCode: 'INR',
   needsYou: {
-    unassigned: { count: 2, oldestHours: 26 },
+    unassigned: { count: 2, oldestHours: 26, leadIds: [], suggested: null },
     paymentsLate: {
       count: 3,
       amount: '185000.00',
@@ -92,7 +92,7 @@ describe('ownerDashboardCsv', () => {
         ...view,
         needsYou: {
           ...view.needsYou,
-          unassigned: { count: 0, oldestHours: null },
+          unassigned: { count: 0, oldestHours: null, leadIds: [], suggested: null },
           myOverdueTasks: 0,
           waitingLongest: [],
         },

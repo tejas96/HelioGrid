@@ -13,6 +13,7 @@ import type { HomeHeadProps } from './HomeHead.types';
 export function HomeHead({
   dateLine,
   greeting,
+  summary,
   title,
   switchName,
   switchLabel,
@@ -29,6 +30,11 @@ export function HomeHead({
           {dateLine}
         </Text>
         <Text variant="display">{greeting}</Text>
+        {summary === undefined ? null : (
+          <Text variant="body" color="secondary">
+            {summary}
+          </Text>
+        )}
         <View style={styles.switchRow}>
           <View ref={viewRef(titleAnchor)} collapsable={false} style={styles.titleAnchor}>
             <Menu

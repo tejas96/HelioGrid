@@ -19,6 +19,12 @@
   align-items: center;
 }
 
+/* The foot row (a funnel's won deals) shares the bars' columns, below a dashed line. */
+.hg-owner-bar[data-foot="true"] {
+  padding-block-start: var(--sp-3);
+  border-block-start: 1px dashed var(--line-soft);
+}
+
 .hg-owner-bar-label {
   font-size: var(--fs-body-sm);
   line-height: var(--lh-body-sm);

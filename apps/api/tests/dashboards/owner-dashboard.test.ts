@@ -164,6 +164,18 @@ describe.skipIf(skip)('the owner dashboard, over HTTP against a migrated databas
     });
   });
 
+  it('offers the waiting leads to the member with the fewest open leads, in one tap (plan gap 17)', async () => {
+    const read = await dashboardOf(owner());
+    const { unassigned } = read.needsYou;
+    expect(unassigned.leadIds).toEqual([made.queued]);
+    // The owner and the manager hand leads out, so the offer goes to the one who works them.
+    expect(unassigned.suggested).toEqual({
+      userId: here.people.rep.userId,
+      name: here.people.rep.name,
+      openLeads: 1,
+    });
+  });
+
   it('shows a Sales Manager the team alone: a rep’s lead, loss and deal are not theirs (M13-07)', async () => {
     const read = await dashboardOf(manager());
     expect(read).toMatchObject({

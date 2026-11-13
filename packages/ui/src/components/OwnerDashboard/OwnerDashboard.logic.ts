@@ -17,6 +17,10 @@ export interface NeedItem {
   readonly line: TranslatedText;
   readonly act: TranslatedText;
   readonly open: NeedOpen;
+  /** Why the act offers who it offers — the one-tap assign's suggestion. */
+  readonly reason?: TranslatedText;
+  /** A second way, beside the act: pick someone else. */
+  readonly other?: { readonly act: TranslatedText; readonly open: NeedOpen };
 }
 
 /** Each kind's mark: glyph and tint together, never the tint alone (`F7-12`). */
@@ -55,13 +59,10 @@ function detailOf(
   needs: Needs,
   words: OwnerDashboardWords,
   money: (amount: string) => string,
-): { readonly line: TranslatedText; readonly open: NeedOpen } | null {
+): (Pick<NeedItem, 'line' | 'open'> & Partial<Pick<NeedItem, 'act' | 'reason' | 'other'>>) | null {
   switch (kind) {
     case 'unassigned':
-      return {
-        line: words.unassignedLine(needs.unassigned.oldestHours ?? 0),
-        open: { kind },
-      };
+      return unassignedDetailOf(needs.unassigned, words);
     case 'payments_late': {
       const late = needs.paymentsLate;
       if (late.oldestProjectId === null) return null;
@@ -89,6 +90,28 @@ function detailOf(
     case 'my_overdue_tasks':
       return { line: words.myTasksLine, open: { kind } };
   }
+}
+
+/**
+ * Leads waiting for an owner: with someone to suggest, the act gives them all to that member in one
+ * tap and says why, and *Pick someone* opens the queue instead (plan gap 17); with no one, the act
+ * opens the queue.
+ */
+function unassignedDetailOf(
+  waiting: Needs['unassigned'],
+  words: OwnerDashboardWords,
+): Pick<NeedItem, 'line' | 'open'> & Partial<Pick<NeedItem, 'act' | 'reason' | 'other'>> {
+  const line = words.unassignedLine(waiting.oldestHours ?? 0);
+  const { suggested } = waiting;
+  if (suggested === null || waiting.leadIds.length === 0)
+    return { line, open: { kind: 'unassigned' } };
+  return {
+    line,
+    act: words.assignTo(suggested.name),
+    open: { kind: 'assign_waiting' },
+    reason: words.fewestOpen(suggested.name, suggested.openLeads),
+    other: { act: words.pickSomeone, open: { kind: 'unassigned' } },
+  };
 }
 
 /** The attention items in the order the caller decided (`needsYouKindsOf`), each ready to draw. */

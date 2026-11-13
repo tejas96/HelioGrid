@@ -149,6 +149,9 @@ const styles = StyleSheet.create({
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
     backgroundColor: colors.surface,
     borderRadius: theme.radius['r-md'],
+    /* A shadow is lost on a dark ground, so the hairline keeps the menu's edge in every mode. */
+    borderWidth: 1,
+    borderColor: colors['line-soft'],
     ...theme.elevation.e4,
   },
   /* A gap, never a rule: this system separates by luminance and space, not by lines. */

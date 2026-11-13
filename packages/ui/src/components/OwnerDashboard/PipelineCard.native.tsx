@@ -1,6 +1,5 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { Card } from '../Card/Card.native';
 import { useFormat } from '../MarketProvider';
@@ -31,10 +30,7 @@ export function PipelineCard({ view, words }: DashboardPartProps) {
             {words.openLeads(open)}
           </Text>
         </View>
-        <DashBars bars={bars} />
-        <View style={styles.won}>
-          <DashBars bars={[won]} />
-        </View>
+        <DashBars bars={bars} foot={won} />
         <View style={styles.foot}>
           {median === null ? null : (
             <View style={styles.median}>
@@ -61,13 +57,6 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
     justifyContent: 'space-between',
     gap: theme.spacing['sp-2'],
-  },
-  /* This month's won deals close the funnel below a dashed line, as the web draws them. */
-  won: {
-    paddingTop: theme.spacing['sp-3'],
-    borderTopWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: colors['line-soft'],
   },
   foot: { gap: theme.spacing['sp-1'] },
   median: {

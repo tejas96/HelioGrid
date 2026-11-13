@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { Animated, Easing, type LayoutChangeEvent, StyleSheet, View } from 'react-native';
@@ -10,6 +11,7 @@ import { HueTile } from '../HueTile/HueTile.native';
 import { useFormat } from '../MarketProvider';
 import type { DashboardPartProps } from './OwnerDashboard.logic';
 import { type NeedItem, needItemsOf, nextNeedAt } from './OwnerDashboard.logic';
+import { useAssignLanding } from './use-assign-landing';
 
 /** The room at which every item stands in a row — the web's `@container (min-width: 720px)`. */
 const ROW_ROOM = 720;
@@ -19,7 +21,13 @@ const ROW_ROOM = 720;
  * one after, or, on a tablet's wide room, every item in a row with its own act. Nothing waiting:
  * the hero says so, calmly.
  */
-export function NeedsYouHero({ view, words, needsYou, onNeed }: DashboardPartProps) {
+export function NeedsYouHero(props: DashboardPartProps) {
+  const { view, words, needsYou, onNeed } = props;
+  useAssignLanding(props.assigning, props.assignFailed, props.focusAfter);
+  const sending = {
+    assigning: props.assigning,
+    failed: props.assignFailed ? words.assignFailed : null,
+  };
   const format = useFormat();
   const items = needItemsOf(view.needsYou, needsYou, words, (amount) => format.money(amount));
   const [chosen, setChosen] = useState(0);
@@ -68,13 +76,13 @@ export function NeedsYouHero({ view, words, needsYou, onNeed }: DashboardPartPro
           <View style={styles.row}>
             {items.map((item, index) => (
               <View key={item.kind} style={styles.pane}>
-                <NeedCard item={item} primary={index === 0} onAct={() => onNeed(item.open)} />
+                <NeedCard item={item} primary={index === 0} onOpen={onNeed} {...sending} />
               </View>
             ))}
           </View>
         ) : current === undefined ? null : (
           <Arriving key={current.kind}>
-            <NeedCard item={current} primary onAct={() => onNeed(current.open)} />
+            <NeedCard item={current} primary onOpen={onNeed} {...sending} />
           </Arriving>
         )}
       </HeroPanel>
@@ -85,12 +93,17 @@ export function NeedsYouHero({ view, words, needsYou, onNeed }: DashboardPartPro
 function NeedCard({
   item,
   primary,
-  onAct,
+  onOpen,
+  assigning,
+  failed,
 }: {
   item: NeedItem;
   primary: boolean;
-  onAct: () => void;
+  onOpen: (open: NeedItem['open']) => void;
+  assigning: boolean;
+  failed: TranslatedText | null;
 }) {
+  const offers = item.open.kind === 'assign_waiting';
   return (
     <View style={styles.need}>
       <View style={styles.head}>
@@ -100,11 +113,45 @@ function NeedCard({
           <Text variant="body-sm" color="secondary">
             {item.line}
           </Text>
+          {item.reason === undefined ? null : (
+            <Text variant="body-sm" color="secondary">
+              {item.reason}
+            </Text>
+          )}
         </View>
       </View>
-      <Button variant={primary ? 'primary' : 'secondary'} size="md" fullWidth onClick={onAct}>
-        {item.act}
-      </Button>
+      {offers && failed !== null ? (
+        <Text variant="body-sm" color="danger" live>
+          {failed}
+        </Text>
+      ) : null}
+      <View style={styles.acts}>
+        <View style={styles.act}>
+          <Button
+            variant={primary ? 'primary' : 'secondary'}
+            size="md"
+            fullWidth
+            loading={offers && assigning}
+            disabled={assigning}
+            onClick={() => onOpen(item.open)}
+          >
+            {item.act}
+          </Button>
+        </View>
+        {item.other === undefined ? null : (
+          <View style={styles.act}>
+            <Button
+              variant="secondary"
+              size="md"
+              fullWidth
+              disabled={assigning}
+              onClick={() => item.other && onOpen(item.other.open)}
+            >
+              {item.other.act}
+            </Button>
+          </View>
+        )}
+      </View>
     </View>
   );
 }
@@ -139,6 +186,9 @@ function Arriving({ children }: { children: ReactNode }) {
 }
 
 const styles = StyleSheet.create({
+  /* The one-tap act and *Pick someone* share the row, as two equal pills. */
+  acts: { flexDirection: 'row', gap: theme.spacing['sp-2'] },
+  act: { flex: 1, flexBasis: 0, minWidth: 0 },
   nav: {
     flexDirection: 'row',
     alignItems: 'center',

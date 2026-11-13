@@ -36,7 +36,8 @@ export function dueRowOf(row: MoneyDueRow, due: MoneyDue, props: MoneyDueProps) 
   const name = row.name ?? row.number;
   return {
     name,
-    line: words.dueRowLine(row.number, row.label),
+    // A project with no customer name is titled by its number, so its line says the part alone.
+    line: row.name === null ? row.label : words.dueRowLine(row.number, row.label),
     mark: rowMarkOf(row, due.today, words),
     open: { name: words.open(name), onOpen: () => props.onOpen(row.projectId) },
     remind:

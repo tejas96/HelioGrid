@@ -1,5 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormat } from '../MarketProvider/market-context';
 import { commitDraft, displayNumber, nudgeValue, restingMoney } from './NumberField.logic';
 import type {
@@ -63,10 +63,14 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
   const [correction, setCorrection] = useState<TranslatedText | null>(null);
   const [refusal, setRefusal] = useState<TranslatedText | null>(null);
   const [focus, setFocus] = useState(false);
+  /* Read in the effect below: a field focused as it mounts (`focusRequest`) is focused before that
+     effect first runs, and the render's own `focus` is still false there, so the resting money text
+     ("30,00,000") would overwrite the plain draft the person is typing into. */
+  const focused = useRef(false);
 
   const restingText = resting(value);
   useEffect(() => {
-    if (!focus) setDraft(restingText);
+    if (!focus && !focused.current) setDraft(restingText);
   }, [restingText, focus]);
 
   const clearNotes = () => {
@@ -129,11 +133,13 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
     focus,
     setDraft: type,
     onFocus: () => {
+      focused.current = true;
       setFocus(true);
       clearNotes();
       setDraft(displayNumber(value));
     },
     onBlur: () => {
+      focused.current = false;
       setFocus(false);
       commit();
     },

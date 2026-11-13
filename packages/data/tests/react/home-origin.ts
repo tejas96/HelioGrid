@@ -112,7 +112,16 @@ export function aDashboard(): OwnerDashboard {
     month: '2026-11',
     currencyCode: 'INR',
     needsYou: {
-      unassigned: { count: 2, oldestHours: 26 },
+      unassigned: {
+        count: 2,
+        oldestHours: 26,
+        leadIds: ['01a70000-0000-7000-8000-0000000000a1', '01a70000-0000-7000-8000-0000000000a2'],
+        suggested: {
+          userId: '01a70000-0000-7000-8000-0000000000b1',
+          name: 'Ravi Kulkarni',
+          openLeads: 3,
+        },
+      },
       paymentsLate: { count: 0, amount: '0.00', oldestDays: null, oldestProjectId: null },
       blockedOnUs: { count: 1, oldest: { projectId: id(900), name: 'Deshmukh', days: 6 } },
       waitingLongest: [],
@@ -204,6 +213,19 @@ function taskAfter(path: string, status: 'open' | 'done') {
   return { ...item?.task, status, doneAt: status === 'done' ? NOW : null };
 }
 
+/** What a write answers when its test queued nothing else; `null` for a route this origin lacks. */
+function writeAnswerOf(method: string, path: string): Answer | null {
+  if (method === 'PUT' && path === '/dashboards/target') {
+    return { status: 200, body: { target: { amount: '3000000.00' } } };
+  }
+  if (method === 'POST' && path === '/leads/assign') return { status: 200, body: { results: [] } };
+  if (path.startsWith('/tasks/')) {
+    return { status: 200, body: taskAfter(path, path.endsWith('/done') ? 'done' : 'open') };
+  }
+  if (method === 'POST' && path.endsWith('/calls')) return { status: 201, body: priya() };
+  return null;
+}
+
 const served = listeningOrigin((req, res) => {
   const url = new URL(req.url ?? '/', 'http://origin');
   const path = url.pathname;
@@ -214,16 +236,8 @@ const served = listeningOrigin((req, res) => {
   if (req.method === 'GET' && path === '/dashboards/owner') {
     return send(res, req, 200, origin.dashboard);
   }
-  if (req.method === 'PUT' && path === '/dashboards/target') {
-    return void answerWrite(req, res, { status: 200, body: { target: { amount: '3000000.00' } } });
-  }
-  if (path.startsWith('/tasks/')) {
-    const status = path.endsWith('/done') ? 'done' : 'open';
-    return void answerWrite(req, res, { status: 200, body: taskAfter(path, status) });
-  }
-  if (req.method === 'POST' && path.endsWith('/calls')) {
-    return void answerWrite(req, res, { status: 201, body: priya() });
-  }
+  const success = writeAnswerOf(req.method ?? '', path);
+  if (success !== null) return void answerWrite(req, res, success);
   send(res, req, 404, refusal('NOT_FOUND'));
 });
 

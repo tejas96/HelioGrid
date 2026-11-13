@@ -22,6 +22,11 @@ export function leadHoldersOf(
   return activeMembersHolding(tx, tenantId, 'crm.add_edit_leads', onlyUserId);
 }
 
+/** The company's members who hand leads out — active and holding `crm.assign_leads`. */
+export function leadAssignersOf(tx: DbTransaction, tenantId: string): Promise<MemberRef[]> {
+  return activeMembersHolding(tx, tenantId, 'crm.assign_leads');
+}
+
 /**
  * Each member's open leads (domain's `isOpenLead`): their owned leads counted by stage and state on
  * the `(tenant, owner, state, stage)` index, and the groups domain calls open added up.

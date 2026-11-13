@@ -1,5 +1,5 @@
 export type { LoadLead, LoadTask, MemberLoad } from './assign-load';
-export { isOpenLead, memberLoads } from './assign-load';
+export { isOpenLead, lightestHolderOf, memberLoads } from './assign-load';
 export {
   CRM_WAKE_TIME,
   calendarMonthsAfter,

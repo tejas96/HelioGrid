@@ -74,7 +74,10 @@ function RateRing(props: {
       />
       <View style={styles.rateWords}>
         <Text variant="body" bold>
-          {words.winRate(rate)}
+          {words.winRateName}
+        </Text>
+        <Text variant="body-sm" color="secondary">
+          {words.winRateMeaning}
         </Text>
       </View>
     </View>
@@ -91,5 +94,5 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
   },
   rate: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-4'] },
-  rateWords: { flex: 1, minWidth: 0 },
+  rateWords: { flex: 1, minWidth: 0, gap: theme.spacing['sp-1'] },
 });

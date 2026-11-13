@@ -36,10 +36,16 @@ export function LeadLostForm({ form, frame }: { form: LostForm; frame: LeadFormF
   const [picked, setPicked] = useState<ISODate | null>(null);
   const resurfaceOn = resurfaceOnOf(reason, span, picked, postpone);
   const ready = lostReady(reason, resurfaceOn);
+  /* *Postponed* opens on a month, the commonest answer, so it sends in one more tap; any other
+     span is one tap away. */
+  const choose = (next: LostReason) => {
+    setReason(next);
+    if (next === 'postponed' && span === null) setSpan('month');
+  };
   return (
     <View style={styles.form}>
       <LostHead form={form} />
-      <LostReasons form={form} reason={reason} onChange={setReason} disabled={frame.pending} />
+      <LostReasons form={form} reason={reason} onChange={choose} disabled={frame.pending} />
       {reason === 'postponed' ? (
         <View style={styles.form}>
           <LeadChoiceChips

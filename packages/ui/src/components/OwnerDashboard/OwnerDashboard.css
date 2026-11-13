@@ -64,12 +64,6 @@
   margin-block: calc(-1 * var(--sp-2));
 }
 
-/* This month's won deals close the funnel below a dashed line. */
-.hg-owner-won-bar {
-  padding-block-start: var(--sp-3);
-  border-block-start: 1px dashed var(--line-soft);
-}
-
 .hg-owner-figure-block {
   display: flex;
   flex-direction: column;
@@ -164,6 +158,14 @@
   gap: var(--sp-4);
 }
 
+.hg-owner-rate-words {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
 /* ── the room ─────────────────────────────────────────────────────────────────────────── */
 
 .hg-owner-money-row,
@@ -214,8 +216,9 @@
     gap: var(--sp-4);
   }
 
+  /* The same split as the cash row above, so both rows share one gutter. */
   .hg-owner-pipeline {
-    flex: 1.4 1 0;
+    flex: 1.3 1 0;
   }
 
   .hg-owner-winloss {

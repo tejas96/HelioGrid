@@ -68,4 +68,30 @@ describe('owner dashboard', () => {
     act(() => view.result.current.setTarget(null));
     await waitFor(() => expect(view.result.current.targetFailed).toBe(true));
   });
+
+  it('one tap gives the waiting leads to the suggested member, then the dashboard reads again', async () => {
+    origin.roles = [OWNER];
+    const view = mountedOver(() => useOwnerDashboard());
+    await waitFor(() => expect(view.result.current.read.kind).toBe('ready'));
+    act(() => view.result.current.assignWaiting());
+    await waitFor(() => expect(readsOf('/dashboards/owner').length).toBeGreaterThan(1));
+    expect(writesTo('/leads/assign').map((write) => write.body)).toEqual([
+      {
+        leadIds: ['01a70000-0000-7000-8000-0000000000a1', '01a70000-0000-7000-8000-0000000000a2'],
+        assigneeId: '01a70000-0000-7000-8000-0000000000b1',
+      },
+    ]);
+  });
+
+  it('a refused assign says so', async () => {
+    origin.roles = [OWNER];
+    const view = mountedOver(() => useOwnerDashboard());
+    await waitFor(() => expect(view.result.current.read.kind).toBe('ready'));
+    answerNext('assign', {
+      status: 422,
+      body: { error: { code: 'ASSIGNEE_UNAVAILABLE', message: 'left the company' } },
+    });
+    act(() => view.result.current.assignWaiting());
+    await waitFor(() => expect(view.result.current.assignFailed).toBe(true));
+  });
 });

@@ -32,10 +32,27 @@ test.describe('at 375', () => {
     const move = hero.getByRole('button', { name: words.moveToTomorrow });
     await expect(move).toBeVisible();
     await expect(hero.getByText(words.whyFirstLate)).toBeVisible();
-    // Move to tomorrow's glyph starts where Call's pill starts: the hero's content edge.
-    const callBox = await settledBox(hero.getByRole('button', { name: words.call }));
-    const moveGlyph = await settledBox(move.locator('svg'));
-    expect(Math.abs((moveGlyph?.x ?? 0) - (callBox?.x ?? 0))).toBeLessThanOrEqual(2);
+    // One footer row, as the sample draws it: why-first beside Move to tomorrow, whose words end
+    // where the Done circle ends — the hero's content edge.
+    const why = await settledBox(hero.getByText(words.whyFirstLate));
+    const moveBox = await settledBox(move);
+    expect(
+      Math.abs(
+        (why?.y ?? 0) + (why?.height ?? 0) / 2 - ((moveBox?.y ?? 0) + (moveBox?.height ?? 0) / 2),
+      ),
+    ).toBeLessThanOrEqual(4);
+    const doneBox = await settledBox(
+      hero.getByRole('button', { name: words.doneName(name(NEXT)) }),
+    );
+    // The words' own right edge, not the button's: the small pill's padding sits past the edge.
+    const wordsRight = await move.evaluate((button) => {
+      const range = document.createRange();
+      range.selectNodeContents(button);
+      return Math.max(...[...range.getClientRects()].map((rect) => rect.right));
+    });
+    expect(Math.abs(wordsRight - ((doneBox?.x ?? 0) + (doneBox?.width ?? 0)))).toBeLessThanOrEqual(
+      2,
+    );
 
     await expectTouchFloor(await day.getByRole('button').all());
     await expectNoSeriousViolations(page);

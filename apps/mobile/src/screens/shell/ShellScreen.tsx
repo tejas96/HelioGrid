@@ -1,4 +1,4 @@
-import { useHomeToday, useShellScreen } from '@heliogrid/data/react';
+import { useHomeToday, useMyDay, useShellScreen } from '@heliogrid/data/react';
 import { SETTINGS_SEGMENT, type SettingsRow } from '@heliogrid/domain';
 import {
   accessRemovedWords,
@@ -7,6 +7,7 @@ import {
   homeBlocksWords,
   homeGreeting,
   homeHeadWords,
+  myDaySummary,
   todayLine,
   verbLabel,
 } from '@heliogrid/i18n';
@@ -50,6 +51,7 @@ export function ShellScreen() {
   const { width } = useWindowDimensions();
   const screen = useShellScreen();
   const today = useHomeToday();
+  const myDayCounts = useMyDay().counts;
   const navigation = useNavigation();
   const { shell, grievance, connection } = screen;
   const titleRef = useRef<View>(null);
@@ -87,6 +89,7 @@ export function ShellScreen() {
             {...head}
             dateLine={todayLine(t, format.date(new Date()))}
             greeting={homeGreeting(t, today.dayPart, today.personName)}
+            summary={myDaySummary(t, myDayCounts)}
             entries={head.entries.map((entry) => ({
               ...entry,
               key: entry.preset,

@@ -91,6 +91,13 @@
   flex-direction: column;
 }
 
+/* The one-tap act and *Pick someone* share the row, as two equal pills. */
+.hg-owner-need-act[data-pair="true"] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-2);
+}
+
 /* Wide: every item in a row of frosted panes on the glass, each with its own act; one at a time
    and *Next* are the narrow room's answer, so they step aside. */
 @container (min-width: 720px) {

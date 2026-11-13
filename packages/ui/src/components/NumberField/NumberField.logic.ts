@@ -81,11 +81,23 @@ function correctionFor(
   return kind === 'min' ? input.words.roundedUp(shown) : input.words.capped(shown);
 }
 
+/**
+ * The figure a draft holds — the whole draft or nothing (`NaN`): grouping a person typed or kept
+ * from the resting money text ("1,50,000", a space, a no-break space) is dropped first, and then
+ * every character must be part of the number. `parseFloat` read "30,00,0000" as 30 and saved a
+ * figure never typed. The editing draft is always a plain `.`-decimal number, so a comma is never
+ * a decimal mark here.
+ */
+export function draftFigureOf(draft: string): number {
+  const plain = draft.replace(/[,\s\u00a0\u202f]/g, '');
+  return plain === '' ? Number.NaN : Number(plain);
+}
+
 /** The whole of blur/Enter, as a decision the platform half only has to render. */
 export function commitDraft(input: NumberCommitInput): NumberCommit {
   const { draft, min, max, precision, outOfRange } = input;
-  const n = Number.parseFloat(draft);
-  if (draft.trim() === '' || Number.isNaN(n)) return { kind: 'restore' };
+  const n = draftFigureOf(draft);
+  if (draft.trim() === '' || !Number.isFinite(n)) return { kind: 'restore' };
 
   const below = min !== undefined && n < min;
   const above = max !== undefined && n > max;
@@ -125,8 +137,8 @@ export function nudgeValue(opts: {
   precision?: number;
 }): number {
   const { draft, value, direction, step, min, max, precision } = opts;
-  const base = Number.parseFloat(draft);
-  let v = (Number.isNaN(base) ? (value ?? 0) : base) + direction * step;
+  const base = draftFigureOf(draft);
+  let v = (Number.isFinite(base) ? base : (value ?? 0)) + direction * step;
   if (min !== undefined) v = Math.max(min, v);
   if (max !== undefined) v = Math.min(max, v);
   if (precision !== undefined) v = Number(v.toFixed(precision));

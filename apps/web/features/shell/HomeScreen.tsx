@@ -12,6 +12,7 @@ import {
   homeGlanceWords,
   homeGreeting,
   homeHeadWords,
+  myDaySummary,
   readinessStepWords,
   readinessWords,
   todayLine,
@@ -52,7 +53,9 @@ export function HomeScreen() {
   const shell = useShell();
   const today = useHomeToday();
   const ownerShown = useOwnerDashboard().shown;
-  const myDayShown = useMyDay().shown;
+  const myDay = useMyDay();
+  const myDayShown = myDay.shown;
+  const myDayCounts = myDay.counts;
   const moneyDueShown = useMoneyDue().shown;
   const router = useRouter();
   const page = useRef<HTMLDivElement>(null);
@@ -83,6 +86,7 @@ export function HomeScreen() {
         {...head}
         dateLine={todayLine(t, format.date(new Date()))}
         greeting={homeGreeting(t, today.dayPart, today.personName)}
+        summary={myDaySummary(t, myDayCounts)}
         entries={head.entries.map((entry) => ({
           ...entry,
           key: entry.preset,
