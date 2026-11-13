@@ -97,6 +97,7 @@ if (command === 'words') {
     READY_TITLE: SETUP_READY.title,
     FIRST_LEAD: SETUP_READY.leadAct,
     MORE: destinationLabel(t.t, 'more'),
+    HOME: destinationLabel(t.t, 'home'),
     PLACEHOLDER: SHELL.comingLater,
     SETTINGS_TITLE: settingsWords(t.t).title,
     BACK_TO_SETTINGS: backToSettings(t.t),

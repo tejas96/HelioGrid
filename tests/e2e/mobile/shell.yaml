@@ -10,6 +10,8 @@ appId: com.heliogrid.app
     visible: ${TRIAL_CHIP}
     timeout: 15000
 # The owner's home is the owner dashboard (`SCR-M13-01`): its forecast says it starts with proposals.
+# Setup's last door opened Leads, so the flow goes Home first.
+- tapOn: ${HOME}
 - scrollUntilVisible:
     element: ${FORECAST_GAP}
     direction: DOWN
