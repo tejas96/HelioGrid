@@ -1,5 +1,5 @@
 import type { OwnerDashboard, TranslatedText } from '@heliogrid/contracts';
-import type { LeadStage, LostReason, NeedsYouKind } from '@heliogrid/domain';
+import type { LostReason, NeedsYouKind } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import type { HueTileProps } from '../HueTile/HueTile.types';
@@ -82,7 +82,7 @@ function detailOf(
       const [first] = needs.waitingLongest;
       if (first === undefined) return null;
       return {
-        line: words.waitingLine(first.name ?? '', first.stage, first.days),
+        line: words.waitingLine(first.name, first.stage, first.days),
         open: { kind, leadId: first.leadId },
       };
     }
@@ -152,43 +152,61 @@ export interface DashBar {
   readonly label: TranslatedText;
   readonly count: number;
   readonly share: number;
-  readonly tone: 'accent' | 'danger' | 'neutral';
+  readonly tone: 'accent' | 'danger' | 'neutral' | 'success';
+  /** How deep the fill reads, 0 to 1: a stage further down the funnel reads deeper. */
+  readonly depth: number;
 }
 
 function shareAgainst(count: number, longest: number): number {
   return longest === 0 ? 0 : count / longest;
 }
 
-/** The pipeline's bars, stage by stage in the funnel's order, and how many leads are open. */
+/**
+ * The pipeline's bars, stage by stage in the funnel's order, each reading deeper than the stage
+ * before; how many leads are open; and the funnel's end, this month's won deals, on a bar of its own.
+ */
 export function pipelineBarsOf(
-  pipeline: OwnerDashboard['pipeline'],
-  stageWord: (stage: LeadStage) => TranslatedText,
-): { readonly bars: readonly DashBar[]; readonly open: number } {
-  const longest = Math.max(0, ...pipeline.map((row) => row.count));
+  view: Pick<OwnerDashboard, 'pipeline' | 'won'>,
+  words: Pick<OwnerDashboardWords, 'stage' | 'wonSoFar'>,
+): { readonly bars: readonly DashBar[]; readonly open: number; readonly won: DashBar } {
+  const { pipeline } = view;
+  const wonCount = view.won.thisMonth.count;
+  const longest = Math.max(0, wonCount, ...pipeline.map((row) => row.count));
+  const lastStep = Math.max(1, pipeline.length - 1);
   return {
     open: pipeline.reduce((sum, row) => sum + row.count, 0),
-    bars: pipeline.map((row) => ({
+    bars: pipeline.map((row, index) => ({
       key: row.stage,
-      label: stageWord(row.stage),
+      label: words.stage(row.stage),
       count: row.count,
       share: shareAgainst(row.count, longest),
       tone: 'accent',
+      depth: index / lastStep,
     })),
+    won: {
+      key: 'won',
+      label: words.wonSoFar,
+      count: wonCount,
+      share: shareAgainst(wonCount, longest),
+      tone: 'success',
+      depth: 1,
+    },
   };
 }
 
-/** Why deals were lost, the commonest first: its bar the danger tone, the rest neutral. */
+/** Why deals were lost, the commonest first: the commonest bars (all of them on a tie) the danger tone, the rest neutral. */
 export function lostBarsOf(
   reasons: OwnerDashboard['winLoss']['lostReasons'],
   reasonWord: (reason: LostReason) => TranslatedText,
 ): readonly DashBar[] {
   const sorted = [...reasons].filter((row) => row.count > 0).sort((a, b) => b.count - a.count);
   const longest = sorted[0]?.count ?? 0;
-  return sorted.map((row, index) => ({
+  return sorted.map((row) => ({
     key: row.reason,
     label: reasonWord(row.reason),
     count: row.count,
     share: shareAgainst(row.count, longest),
-    tone: index === 0 ? 'danger' : 'neutral',
+    tone: row.count === longest ? 'danger' : 'neutral',
+    depth: 1,
   }));
 }

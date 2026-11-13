@@ -1,3 +1,4 @@
+import type { KeyboardEvent } from 'react';
 import { closingPress, type FocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text';
 import { Button } from '../Button';
@@ -14,8 +15,26 @@ export function TargetEditor(props: TargetEditorProps & { readonly focusAfter: F
   const { words, saving } = props;
   const draft = useTargetDraft(props);
   const leave = closingPress(props.focusAfter);
+  /* The amount field keeps Enter for its own commit, so the key is read here: Enter in the field
+     saves as *Save* does, and Esc leaves as *Cancel* does. `dialog`: an Enter reloads nothing. */
+  const keys = (event: KeyboardEvent<HTMLFormElement>) => {
+    if (saving) return;
+    if (event.key === 'Enter' && event.target instanceof HTMLInputElement) {
+      event.preventDefault();
+      if (draft.draft !== '') draft.save();
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      leave(props.onCancel)?.();
+    }
+  };
   return (
-    <div className="hg-owner-target-editor">
+    <form
+      className="hg-owner-target-editor"
+      method="dialog"
+      noValidate
+      onKeyDown={keys}
+      onSubmit={(event) => event.preventDefault()}
+    >
       <NumberField
         label={words.targetLabel}
         words={words.numberField}
@@ -56,6 +75,6 @@ export function TargetEditor(props: TargetEditorProps & { readonly focusAfter: F
           </Button>
         </span>
       )}
-    </div>
+    </form>
   );
 }

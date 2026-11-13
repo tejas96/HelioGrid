@@ -1,5 +1,5 @@
-/* DashBars — a card's count bars: the progress rail's 6 px pill, its fill grown once by
-   transform (`ProgressBar.css`), each row its words and its count. */
+/* DashBars — a card's count bars: an 8 px pill, its fill grown once by transform, each row its
+   words and its count; a fill's depth deepens it down a funnel. */
 
 .hg-owner-bars {
   display: grid;
@@ -27,7 +27,7 @@
 }
 
 .hg-owner-bar-rail {
-  height: 6px;
+  height: var(--sp-2);
   border-radius: var(--r-pill);
   background: var(--canvas-sunken);
   box-shadow: var(--track-edge);
@@ -39,6 +39,8 @@
   height: 100%;
   border-radius: var(--r-pill);
   background: var(--accent);
+  /* A stage further down the funnel reads deeper; the words and the count carry the fact. */
+  opacity: calc(0.45 + 0.55 * var(--hg-owner-bar-depth, 1));
   transform-origin: left center;
   transform: scaleX(var(--hg-owner-bar-share, 0));
   animation: hg-owner-bar-in var(--dur-data) var(--ease-enter) backwards;
@@ -51,6 +53,10 @@
 
 .hg-owner-bar-fill[data-tone="danger"] {
   background: var(--danger);
+}
+
+.hg-owner-bar-fill[data-tone="success"] {
+  background: var(--success);
 }
 
 .hg-owner-bar-fill[data-tone="neutral"] {

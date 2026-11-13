@@ -6,7 +6,7 @@ import type { OwnerDashboard } from '@heliogrid/contracts';
 import { csvText, LEAD_STAGES, type WinRate } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { LEAD_STAGE_WORD, LOST_REASON_WORD } from './crm-vocabulary';
-import { NEEDS_YOU_TITLE, OWNER_DASHBOARD } from './owner-dashboard';
+import { NEEDS_YOU_TITLE, OWNER_DASHBOARD, waitingLineOf } from './owner-dashboard';
 import { PROVENANCE_TIER_WORD } from './provenance';
 
 type T = Translator['t'];
@@ -72,11 +72,7 @@ export function ownerDashboardCsv(
       need,
       t(NEEDS_YOU_TITLE.waiting_longest),
       '',
-      t(OWNER_DASHBOARD.waitingLine, {
-        name: lead.name ?? '',
-        stage: t(LEAD_STAGE_WORD[lead.stage]),
-        days: lead.days,
-      }),
+      waitingLineOf(t, lead.name, lead.stage, lead.days),
     ]),
     ...(needs.myOverdueTasks === 0
       ? []

@@ -19,8 +19,8 @@ import { ForecastTile, WonCard } from './WonCard.native';
 /** The room at which the cards stand side by side — the web's `@container (min-width: 720px)`. */
 const SIDE_BY_SIDE = 720;
 
-/** The room under which won and the forecast stack — the web's `@container (max-width: 359px)`. */
-const PAIRED = 360;
+/** The room under which won and the forecast stack — the web's `@container (max-width: 439px)`. */
+const PAIRED = 440;
 
 /**
  * The owner dashboard on the phone (`SCR-M13-01`, sample B · Focus): what needs you now as the
@@ -48,7 +48,7 @@ export function OwnerDashboard(props: OwnerDashboardProps) {
   }
   const part: DashboardPartProps = { ...props, view: read.value };
   const wide = room >= SIDE_BY_SIDE;
-  // Under 360 the two tiles are too tight side by side, and the open target editor takes the won
+  // Under 440 the two tiles are too tight side by side, and the open target editor takes the won
   // card's whole row: the forecast moves below it.
   const stacked = !wide && (room < PAIRED || target.editing);
   return (

@@ -8,11 +8,12 @@ import { pipelineBarsOf } from './OwnerDashboard.logic';
 
 /**
  * The pipeline by stage (`M13-14`): open leads counted stage by stage — counts only, since a stage
- * has no value until proposals price it — then the middle won deal when there are won deals to read.
+ * has no value until proposals price it — closed by this month's won deals on a bar of their own,
+ * then the middle won deal when there are won deals to read.
  */
 export function PipelineCard({ view, words }: DashboardPartProps) {
   const format = useFormat();
-  const { bars, open } = pipelineBarsOf(view.pipeline, words.stage);
+  const { bars, open, won } = pipelineBarsOf(view, words);
   const median = view.won.median;
   return (
     <Card className="hg-owner-card">
@@ -28,6 +29,9 @@ export function PipelineCard({ view, words }: DashboardPartProps) {
           </span>
         </div>
         <DashBars bars={bars} />
+        <div className="hg-owner-won-bar">
+          <DashBars bars={[won]} />
+        </div>
         <div className="hg-owner-card-foot">
           {median === null ? null : (
             <span className="hg-owner-median">

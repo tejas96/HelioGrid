@@ -15,7 +15,7 @@ export interface OwnerDashboardWords {
   readonly unassignedLine: (hours: number) => TranslatedText;
   readonly lateLine: (amount: string, days: number) => TranslatedText;
   readonly blockedLine: (name: string, days: number) => TranslatedText;
-  readonly waitingLine: (name: string, stage: LeadStage, days: number) => TranslatedText;
+  readonly waitingLine: (name: string | null, stage: LeadStage, days: number) => TranslatedText;
   readonly myTasksLine: TranslatedText;
   /** The act each item opens: Assign, Open, Review, Open My Day. */
   readonly needAct: (kind: NeedsYouKind) => TranslatedText;

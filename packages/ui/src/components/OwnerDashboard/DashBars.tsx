@@ -4,11 +4,11 @@ import type { DashBar } from './OwnerDashboard.logic';
 import './DashBars.css';
 
 /** A bar's length rides in as a custom property, so the drawing stays in the stylesheet. */
-type BarVars = CSSProperties & Record<'--hg-owner-bar-share' | '--i', string>;
+type BarVars = CSSProperties &
+  Record<'--hg-owner-bar-share' | '--hg-owner-bar-depth' | '--i', string>;
 
 /**
- * A card's count bars: each row its words, its rail and its count — the rail the progress bar's
- * 6 px pill, its fill grown once by transform, the rows one after another. The words and the count
+ * A card's count bars: each row its words, its rail and its count — the rail an 8 px pill, its fill grown once by transform, the rows one after another. The words and the count
  * carry the fact; the rail only shows its size.
  */
 export function DashBars({ bars }: { bars: readonly DashBar[] }) {
@@ -18,6 +18,7 @@ export function DashBars({ bars }: { bars: readonly DashBar[] }) {
       {bars.map((bar, index) => {
         const vars: BarVars = {
           '--hg-owner-bar-share': String(bar.share),
+          '--hg-owner-bar-depth': String(bar.depth),
           '--i': String(Math.min(index, 8)),
         };
         return (

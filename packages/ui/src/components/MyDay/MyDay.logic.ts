@@ -104,11 +104,20 @@ export function isClear(props: Pick<MyDayProps, 'next' | 'asking' | 'bands'>): b
   );
 }
 
-/** Why the hero's task leads, under its acts: the latest when overdue, the soonest today. */
-export function whyFirstOf(item: MyDayItem, words: MyDayWords): TranslatedText | null {
+/**
+ * Why the hero's task leads, under its acts: the most days late when it is days late; a task late
+ * only since earlier today leads as the soonest due today, so the line never claims days it lacks.
+ */
+export function whyFirstOf(
+  item: MyDayItem,
+  day: Pick<MyDay, 'timeZone'>,
+  words: MyDayWords,
+): TranslatedText | null {
   switch (item.band) {
     case 'overdue':
-      return words.whyFirstLate;
+      return daysLateOf(Date.parse(item.task.dueAt), Date.now(), day.timeZone) > 0
+        ? words.whyFirstLate
+        : words.whyFirstToday;
     case 'today':
       return words.whyFirstToday;
     case 'week':

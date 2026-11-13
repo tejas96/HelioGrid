@@ -145,4 +145,21 @@ describe('ownerDashboardCsv', () => {
     );
     expect(csv).toContain('"Kavita Joshi · in Survey since today"');
   });
+
+  it('a waiting lead with no name yet says so, never a bare dot', async () => {
+    const { t } = await createTranslator('en');
+    const lead = {
+      leadId: '01a70000-0000-7000-8000-000000000001',
+      name: null,
+      stage: 'new',
+      days: 1,
+    } as const;
+    const csv = ownerDashboardCsv(
+      t,
+      { ...view, needsYou: { ...view.needsYou, waitingLongest: [lead] } },
+      winRateOf(1, 2),
+      format,
+    );
+    expect(csv).toContain('"No name yet · 1 day in New"');
+  });
 });

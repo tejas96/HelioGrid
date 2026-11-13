@@ -163,7 +163,7 @@ test('the target is edited in place across the row, saves its decimal and clears
   mount,
   page,
 }) => {
-  // 480: the room where won and the forecast stand side by side (under 360 they stack).
+  // 480: the room where won and the forecast stand side by side (under 440 of room they stack).
   await at(page, 480);
   const board = await mount(<OwnerDashboardAsRead frame="busy" />);
   const won = page.getByRole('region', { name: words.wonSoFar });

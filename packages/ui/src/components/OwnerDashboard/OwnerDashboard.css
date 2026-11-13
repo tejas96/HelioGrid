@@ -31,9 +31,11 @@
   gap: var(--sp-2);
 }
 
+/* The export is a medium ghost: its own inline padding is pulled back so its icon starts where the
+   dashboard's content starts. */
 .hg-owner-export {
   align-self: flex-start;
-  margin-inline-start: calc(-1 * var(--sp-3));
+  margin-inline-start: calc(-1 * var(--sp-5));
 }
 
 /* ── the cards ────────────────────────────────────────────────────────────────────────── */
@@ -60,6 +62,12 @@
 
 .hg-owner-card-corner {
   margin-block: calc(-1 * var(--sp-2));
+}
+
+/* This month's won deals close the funnel below a dashed line. */
+.hg-owner-won-bar {
+  padding-block-start: var(--sp-3);
+  border-block-start: 1px dashed var(--line-soft);
 }
 
 .hg-owner-figure-block {
@@ -176,8 +184,9 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
-/* Two money tiles side by side are too tight under 360: they stack. */
-@container (max-width: 359px) {
+/* Two money tiles side by side are too tight under 440 — every phone, the largest included, once
+   the page's sides are taken: they stack. */
+@container (max-width: 439px) {
   .hg-owner-side {
     grid-template-columns: minmax(0, 1fr);
   }

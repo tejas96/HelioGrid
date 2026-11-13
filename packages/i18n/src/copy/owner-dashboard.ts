@@ -1,6 +1,7 @@
 import type { LeadStage, LostReason, NeedsYouKind } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { LEAD_STAGE_WORD, LOST_REASON_WORD } from './crm-vocabulary';
+import { LEAD_DETAIL } from './lead-detail';
 import { numberFieldWords } from './number-field';
 import { SHELL } from './shell';
 
@@ -118,8 +119,8 @@ export function ownerDashboardWords(t: T) {
     unassignedLine: (hours: number) => t(OWNER_DASHBOARD.unassignedLine, { hours }),
     lateLine: (amount: string, days: number) => t(OWNER_DASHBOARD.lateLine, { amount, days }),
     blockedLine: (name: string, days: number) => t(OWNER_DASHBOARD.blockedLine, { name, days }),
-    waitingLine: (name: string, stage: LeadStage, days: number) =>
-      t(OWNER_DASHBOARD.waitingLine, { name, stage: t(LEAD_STAGE_WORD[stage]), days }),
+    waitingLine: (name: string | null, stage: LeadStage, days: number) =>
+      waitingLineOf(t, name, stage, days),
     myTasksLine: t(OWNER_DASHBOARD.myTasksLine),
     needAct: (kind: NeedsYouKind) => t(NEED_ACT[kind]),
     nextNeed: t(OWNER_DASHBOARD.nextNeed),
@@ -168,4 +169,13 @@ export function ownerDashboardWords(t: T) {
     failedMessage: t(OWNER_DASHBOARD.failedMessage),
     retry: t(SHELL.tryAgain),
   };
+}
+
+/** A waiting lead's line; a lead with no name yet says so, as its own page does. */
+export function waitingLineOf(t: T, name: string | null, stage: LeadStage, days: number) {
+  return t(OWNER_DASHBOARD.waitingLine, {
+    name: name ?? t(LEAD_DETAIL.noName),
+    stage: t(LEAD_STAGE_WORD[stage]),
+    days,
+  });
 }

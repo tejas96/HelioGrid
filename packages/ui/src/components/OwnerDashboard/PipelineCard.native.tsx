@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { Card } from '../Card/Card.native';
 import { useFormat } from '../MarketProvider';
@@ -9,11 +10,12 @@ import { type DashboardPartProps, pipelineBarsOf } from './OwnerDashboard.logic'
 
 /**
  * The pipeline by stage on the phone (`M13-14`): open leads counted stage by stage — counts only,
- * until proposals price them — then the middle won deal when there are won deals to read.
+ * until proposals price them — closed by this month's won deals on a bar of their own, then the
+ * middle won deal when there are won deals to read.
  */
 export function PipelineCard({ view, words }: DashboardPartProps) {
   const format = useFormat();
-  const { bars, open } = pipelineBarsOf(view.pipeline, words.stage);
+  const { bars, open, won } = pipelineBarsOf(view, words);
   const median = view.won.median;
   return (
     <Card>
@@ -30,6 +32,9 @@ export function PipelineCard({ view, words }: DashboardPartProps) {
           </Text>
         </View>
         <DashBars bars={bars} />
+        <View style={styles.won}>
+          <DashBars bars={[won]} />
+        </View>
         <View style={styles.foot}>
           {median === null ? null : (
             <View style={styles.median}>
@@ -56,6 +61,13 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
     justifyContent: 'space-between',
     gap: theme.spacing['sp-2'],
+  },
+  /* This month's won deals close the funnel below a dashed line, as the web draws them. */
+  won: {
+    paddingTop: theme.spacing['sp-3'],
+    borderTopWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: colors['line-soft'],
   },
   foot: { gap: theme.spacing['sp-1'] },
   median: {

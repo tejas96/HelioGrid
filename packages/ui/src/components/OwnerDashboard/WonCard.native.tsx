@@ -42,8 +42,10 @@ export function WonCard(
         collapsable={false}
       >
         <View style={styles.head}>
-          <Text variant="h3">{words.wonSoFar}</Text>
-          <ProvenanceTier tier="derived" />
+          <View style={styles.title}>
+            <Text variant="h3">{words.wonSoFar}</Text>
+            <ProvenanceTier tier="derived" />
+          </View>
           {editable && view.target !== null ? (
             <View style={styles.corner}>
               <IconButton label={words.editTarget} onClick={target.open}>
@@ -114,13 +116,18 @@ export function ForecastTile({ words }: { words: OwnerDashboardWords }) {
 
 const styles = StyleSheet.create({
   body: { gap: theme.spacing['sp-4'] },
-  head: {
+  /* The pencil stays on the title's row however narrow the card: the title and its tier wrap
+     beside it instead. */
+  head: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
+  title: {
+    flex: 1,
+    minWidth: 0,
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
   },
-  corner: { marginStart: 'auto', marginVertical: -theme.spacing['sp-2'] },
+  corner: { marginVertical: -theme.spacing['sp-2'] },
   figure: { gap: theme.spacing['sp-1'] },
   target: { gap: theme.spacing['sp-2'] },
   set: { alignSelf: 'flex-start', marginStart: -theme.spacing['sp-3'] },

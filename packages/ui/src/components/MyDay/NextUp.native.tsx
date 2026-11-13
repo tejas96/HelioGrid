@@ -39,7 +39,7 @@ function NextHero(props: HeroProps & { readonly item: MyDayItem }) {
   const act = leadActOf(item, props);
   const why = words.why(item);
   const bill = item.lead.monthlyBill;
-  const whyFirst = whyFirstOf(item, words);
+  const whyFirst = whyFirstOf(item, day, words);
   return (
     <HeroPanel
       label={words.nextUp}
