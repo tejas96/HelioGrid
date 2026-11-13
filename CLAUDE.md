@@ -165,6 +165,11 @@ only through the `clean-dev-ports` launch configuration, never by port or proces
 - The approved design canvas — not in the repo: <https://claude.ai/artifact/AhGc2c1KLPE8L1q8z8d4cP>
   (Dashboard, CRM and Onboarding, desktop and phone). It shows the language; a module it draws
   that is not built yet is not built from it.
+- The approved proposal design — not in the repo: <https://claude.ai/artifact/75zfrELePy6UND3K7fe3uL>
+  (block 8: the lead's proposals, the builder, the document, share, the customer link, Won, the
+  forecast and Proposal defaults — phone and desktop, light and dark). It is a working prototype
+  on `packages/ui`, and its source and pictures are published with it under `source/`. A screen it
+  draws is built to match it.
 - `.ops/` (git-ignored) — the owner's private record of external accounts and each environment's
   values; a console change updates it the same day.
 

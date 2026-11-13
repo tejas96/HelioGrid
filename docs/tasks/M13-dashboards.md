@@ -62,6 +62,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **Status:** planned
 **PRD rows:** M13-03
 **Design:** as T-M13-001 — the shipped owner home gains its pipeline value, its forecast and one attention item
+**Drawn:** stop *Forecast*.
 **Why:** the owner sees what the open proposals are worth and what is likely to close — labelled a projection, never added to won — and which sent proposals nobody has opened, so the rep calls today.
 **Depends on:** T-M06-025
 **Requirements (verbatim):**
@@ -74,9 +75,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **Settle before the build:**
 - Stage likelihood — ruled (owner ruling 2026-11-13): per-stage likelihood is market-pack data (a `MarketPack` key with IN's values), never a tenant setting or a constant in this module.
 - Demo rows — ruled (owner ruling 2026-11-13): the read model excludes rows marked as demo; while the demo seed (T-M01-029) is parked there are none, and the exclusion is proven when it lands.
-
-
-
+- The forecast card (M13-03) — ruled: the figure with its tier, the count of open proposals behind it, one bar split by stage, a row per stage with its count, its total and its likelihood, and the line *Expected, not promised. It is never added to Won.*; a row opens the proposals list (owner ruling 2026-11-13, approved design).
 
 ### T-M13-011 · Trial-to-paid conversion reporting
 

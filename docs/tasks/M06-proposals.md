@@ -19,10 +19,19 @@ below add them there.
 `T-M06-021`, both parked until the studio's block; every other task proves itself on proposals
 built without a design.
 
-**The design bar (owner, 2026-11-13).** The builder, the document and the preview are far simpler
-and richer than Reslink's: one clear job per step, the customer understands the document in
+**The design (owner approved 2026-11-13).** The builder, the document and the preview are far
+simpler and richer than Reslink's: one clear job per step, the customer understands the document in
 seconds, nothing prints a placeholder or a figure without its unit, and every warning says what to
-do. Each screen's look is picked from three samples in its task (`CLAUDE.md` §3).
+do. The look of every screen in this file is the approved proposal design (`CLAUDE.md` §6) — a
+working prototype on `packages/ui`, phone and desktop, light and dark — so no further sample is
+drawn (`CLAUDE.md` §3: the pick is made). A screen is built to match it at 390 px and 1440 px: the
+same parts, order, sizes, spacing, words and motion; a difference is fixed, or named in the plan
+with its reason. Each task's **Drawn** line names where the design shows it — a stop of its journey
+row, or a name in its *Every small screen and case* index. A part the design uses that
+`packages/ui` already holds is reused or extended on its one contract (Law 5, Law 7); a part it adds
+is lifted into `packages/ui` once and shared by the builder, the document, the customer link and
+Proposal defaults — never a second copy. Hindi and Marathi are catalog words added at build; they
+are not drawn.
 
 Every row in the bucket is dispositioned exactly once in the **Disposition index** at the end of
 this file: to a task, to `LAW`, or to a `realized-by` pointer.
@@ -36,6 +45,7 @@ this file: to a task, to `LAW`, or to a `realized-by` pointer.
 **Status:** planned
 **PRD rows:** M06-02 (P0), M06-05 (P0), M06-19 (P0)
 **DESIGN:** SCR-M06-01
+**Drawn:** stops *Lead* (its five states: no proposal, a draft, one proposal, two proposals, lead is lost) and *Start*; sheets *New customer* and *Copy for another lead*.
 **Why:** a rep starts a proposal from the lead, from the proposals list with a new customer, or from an old proposal, in seconds — and every proposal still hangs on one lead, so nothing is typed twice.
 **Depends on:** T-M06-032
 
@@ -59,6 +69,9 @@ the proposals section's real count — the section reads `0` today
 - A duplicate number on a lead the person cannot see (M06-05, M02-08) — ruled: the sheet offers only log-enquiry and tell-the-owner, says the proposal is the owner's to make, and creates no proposal (owner ruling 2026-11-13, final review).
 - Several drafts per lead (M06-25) — ruled: a lead holds at most one open draft; Create proposal resumes it, and a new proposal starts only from Duplicate or after the draft is generated or discarded (owner ruling 2026-11-13, final review).
 - Quick mode's edges (M06-18, M06-19) — ruled: the rep can switch Quick back on before Generate and the hidden steps keep their values; Duplicate copies the flag; the draft chip's n/11 counts every step, hidden ones included, as complete when their default is in place (owner ruling 2026-11-13, final review).
+- The entry sheet (M06-05, M06-19) — ruled: two option cards, *Quick · 4 steps* and *Full · 11 steps*, then *or start from* with the person's recent proposals as *Same as {customer}*. Quick is picked first on a residential lead and Full on any other; one tap changes it, and no setting holds that default (owner ruling 2026-11-13, approved design).
+- The proposals section on Lead Detail (M06-02, M06-05) — ruled: it draws one of five states — none (the empty scene and *Create proposal*), a draft (the n/11 ring and *Continue*), one proposal (number, version, status), two proposals (the warning and *Withdraw* on each, `T-M06-031`), and a closed lead (*Reopen lead*, no create) (owner ruling 2026-11-13, approved design).
+- New proposal on the list (M06-05) — ruled: the sheet *Who is it for?* asks the mobile number first; a number that is already a lead the person reaches shows that lead and *Use {name}*, so no second lead is made; on a phone City and the Home / Business switch each take their own row (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -67,6 +80,7 @@ the proposals section's real count — the section reads `0` today
 **Status:** planned
 **PRD rows:** M06-18 (P0), M06-21 (P0), M06-22 (P0), M06-24 (P0)
 **DESIGN:** SCR-M06-02
+**Drawn:** stop *Build*; sheets *All steps* and *See the customer's page*.
 **Why:** the rep can work in any order on a phone in a hurry — no step ever blocks another, and Quick mode shows only the four steps a home job needs.
 **Depends on:** T-M06-032
 
@@ -81,6 +95,9 @@ the proposals section's real count — the section reads `0` today
 **Settle before the build:**
 - What Quick mode hides at Generate (M06-18) — ruled: Generate's summary lists each company fact that will be left out (bank details, logo, tax registration) and who can add it, so a hidden step never surprises the customer (owner ruling 2026-11-13, final review).
 - The longest titles at 375 px (M06-24) — ruled: the compressed rail truncates a long Hindi or Marathi title with an ellipsis and the full-title sheet shows it whole; checked with the longest `mr` title (owner ruling 2026-11-13, final review).
+- The builder's frame (M06-21, M06-24) — ruled: a focus screen with no app sidebar and no bottom bar. Phone: close, the `n of 11 · {title}` capsule that opens *All steps*, and the preview eye; one segment under it per step; a floating dock with Back and *Next · {next step}*, which reads *Generate proposal* on the last step. Desktop: close and the draft's save state at the left, the Quick switch and Generate at the right; under them one labelled rail of every step; then the page the customer gets on a stage at the left, and the step's controls in one card at the right with Back, the payable and Next in its foot (owner ruling 2026-11-13, approved design).
+- A step's standing (M06-21, M06-22) — ruled: done, default (filled from the company's defaults) or to do, each a mark and a word on the rail and in *All steps*, never colour alone; a to-do step tints its segment on the phone (owner ruling 2026-11-13, approved design).
+- What a step shows first (M06-24) — ruled: on a phone, steps 3, 4, 5 and 7 open with one solar-glass hero holding the block the customer will read, and step 1 with a peek of the cover; steps 2, 6, 9 and 10 draw no second preview, because the control is the thing printed; on desktop the stage shows the document page instead (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -89,6 +106,7 @@ the proposals section's real count — the section reads `0` today
 **Status:** planned
 **PRD rows:** M06-06 (P0), M06-07 (P0)
 **DESIGN:** SCR-M06-03
+**Drawn:** *Build* → step 1.
 **Why:** the company's identity is asked once at signup and never again; the rep only confirms it.
 **Depends on:** T-M06-032
 
@@ -103,6 +121,11 @@ re-implements the validation.
 - Given the Proposal Type modal, when OPEX/PPA is chosen, then only the rendered document and the projection honesty label differ downstream — builder steps, checks, versioning and share are identical (M06-06).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle before the build:**
+- Proposal type (M06-06) — ruled: two option cards on step 1 itself, *{customer} owns the system* and *{customer} pays for power*, in place of a sheet after the step (two answers need no extra screen); nothing else about the type changes (owner ruling 2026-11-13, approved design).
+- Cover picture (M06-07) — ruled: step 1 shows the company's cover pictures as a strip; the proposal starts on the company's default (`T-M01-030`), the person may pick another for this proposal, and the choice is frozen with the version (owner ruling 2026-11-13, approved design).
+- Company facts (M06-07) — ruled: read-only rows with a lock and one line naming who can change them; no field for them is drawn in the builder (owner ruling 2026-11-13, approved design).
+
 ---
 
 ### T-M06-004 · Builder Step 2 — Achievements
@@ -110,6 +133,7 @@ re-implements the validation.
 **Status:** planned
 **PRD rows:** M06-08 (P0)
 **DESIGN:** SCR-M06-04
+**Drawn:** *Build* → step 2.
 **Why:** the company's track record sells the job; it is typed once as numbers and reused on every proposal.
 **Depends on:** T-M06-032
 
@@ -121,6 +145,7 @@ re-implements the validation.
 
 **Settle before the build:**
 - A rep's edit of the achievements (M06-08) — ruled: it stays on this proposal; only a holder of `F2.M01.manage-tenant-settings` saves it to the company's cover, as with the terms (owner ruling 2026-11-13, final review).
+- The inputs (M06-08) — ruled: the three figures the customer reads are the fields — tap a figure to change it; no second form is drawn under them (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -130,6 +155,7 @@ re-implements the validation.
 **Owed by `T-FPLAT-029` (`F8-23`):** the EMI tenure is the projection's `horizonYears`, and this step refuses a tenure that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
 **PRD rows:** M06-09 (P0), M06-30 (P0), M06-35 (P0), M06-37 (P0), M06-38 (P0), M06-40 (P0)
 **DESIGN:** SCR-M06-05
+**Drawn:** *Build* → step 3; cases *No GST number* and *Off-grid, no battery*.
 **Why:** the price the customer will see is built here, live, in the tenant's currency — the full amount the company collects, the subsidy shown beside it, the margin visible only to the owner.
 **Depends on:** T-M06-032, T-M06-024
 
@@ -160,6 +186,9 @@ The payable equation is `resolvePayable` / `payableStandsUp` in
 - The margin's basis (M06-37) — ruled: margin = the pre-tax amount the customer pays − our cost, and our cost covers everything the payable covers, battery included; tax never counts as margin (owner ruling 2026-11-13, final review).
 - A slow network (M06-35, `F8-12`) — ruled: while the server recomputes, the payable card shows that it is updating and never shows the old payable beside new inputs as current (owner ruling 2026-11-13, final review).
 - The incentive claimed switch (M06-38) — ruled: it sits beside the incentive amount, on by default only when the pack offers the incentive for the segment and the system type; off-grid is not offered in IN (owner ruling 2026-11-13, final review).
+- The step's parts (M06-09, M06-35) — ruled: the payable as the hero, with its tax line, the incentive and the net cost as two tiles, and the margin row for holders of `F2.M01.manage-catalog`; then the size as − and + in 0.5 kW steps with 2, 3, 5 and 10 kW chips and a typed value; the system type as a three-way switch; the price as one large field marked as including tax; then rows that open in place — Discount, the incentive switch, Site supply, Yearly maintenance, EMI example, Our cost (owner ruling 2026-11-13, approved design).
+- The price per kW (M06-09) — ruled: the payable ÷ the capacity, shown to the person building as a check on a typed price, never printed and never stored; the price itself stays typed, and no company rate per kW exists in V1 (owner ruling 2026-11-13).
+- The line under the size (M06-09) — ruled: it reads the picked panel's count and watt-peak once step 8 holds a panel, and is absent before; the design's roof-area figure is not built, because no fact stands behind it.
 
 ---
 
@@ -168,6 +197,7 @@ The payable equation is `resolvePayable` / `payableStandsUp` in
 **Status:** planned
 **PRD rows:** M06-10 (P0)
 **DESIGN:** SCR-M06-06
+**Drawn:** *Build* → step 4; cases *PVGIS is down* and *Size changed*.
 **Why:** the customer sees a believable month-by-month generation for their own district, honestly labelled as an estimate, without the rep doing any maths.
 **Depends on:** T-M06-033
 
@@ -177,6 +207,10 @@ The payable equation is `resolvePayable` / `payableStandsUp` in
 - Given step 4 or 5, when ✦ AI Auto-fill runs, then every filled figure is labelled `estimated`, the chart tabs render, and ↺ restores the AI values after manual edits (M06-10, M06-11).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle before the build:**
+- Auto-fill (M06-10) — ruled: it runs by itself when the step first opens with a location and a capacity, and a *Filled for you* line names the source and offers Reset; a press is needed only to restore the values after an edit (owner ruling 2026-11-13, approved design).
+- The step's parts (M06-10) — ruled: the yearly figure, its source line and the twelve-month bars with the best month marked as the hero; then the efficiency field and one folded row for the month figures (owner ruling 2026-11-13, approved design).
+
 ---
 
 ### T-M06-007 · Builder Step 5 — Financial Data
@@ -185,6 +219,7 @@ The payable equation is `resolvePayable` / `payableStandsUp` in
 **Owed by `T-FPLAT-029` (`F8-23`):** the lifetime horizon is the projection's `horizonYears`, and this step refuses a horizon that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
 **PRD rows:** M06-11 (P0)
 **DESIGN:** SCR-M06-07
+**Drawn:** *Build* → step 5.
 **Why:** savings and payback are what the homeowner decides on; they come filled from the energy estimate and the net cost after subsidy.
 **Depends on:** T-M06-033
 
@@ -194,6 +229,9 @@ The payable equation is `resolvePayable` / `payableStandsUp` in
 - Given an IN proposal of ₹1,75,000 cost, ₹15,575 tax, a ₹78,000 incentive and no discount, when the card, the document and the tranche schedule render, then the payable is ₹1,90,575, the tranches sum to ₹1,90,575, and the incentive and a net cost after incentive of ₹1,12,575 show beside it as information (M06-35).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle before the build:**
+- The step's parts (M06-11) — ruled: the monthly saving as the hero, the bill today beside the bill with solar as two bars, the savings line with the net-cost line and the mark where they cross, three figures (payback, lifetime saving, yearly saving) and the projection line; then the monthly bill, the tariff and one folded row for the assumptions (owner ruling 2026-11-13, approved design).
+
 ---
 
 ### T-M06-008 · Builder Step 6 — Project Timeline
@@ -201,6 +239,7 @@ The payable equation is `resolvePayable` / `payableStandsUp` in
 **Status:** planned
 **PRD rows:** M06-12 (P0)
 **DESIGN:** SCR-M06-08
+**Drawn:** *Build* → step 6; sheet *Edit a timeline step*.
 **Why:** the customer knows what happens and when; the company's own timeline fills it, or HelioGrid's default when none is set.
 **Depends on:** T-M06-032
 
@@ -210,6 +249,9 @@ The payable equation is `resolvePayable` / `payableStandsUp` in
 - Given step 6, when phases are reordered, added, deleted or reset, then the tenant's timeline template is the reset target (M06-12; `M01-52`).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle before the build:**
+- The controls (M06-12) — ruled: each phase a row with move up, move down and remove at the touch floor, and no drag; a tap on the row opens one sheet for its name, its sentence and its duration, each with its character count; then *Add a step* and *Reset to company timeline* (owner ruling 2026-11-13, approved design).
+
 ---
 
 ### T-M06-009 · Builder Step 7 — Payment Terms
@@ -217,6 +259,7 @@ The payable equation is `resolvePayable` / `payableStandsUp` in
 **Status:** planned
 **PRD rows:** M06-13 (P0)
 **DESIGN:** SCR-M06-09
+**Drawn:** *Build* → step 7.
 **Why:** the split the customer agrees to here becomes the project's collection schedule at Won, row for row — nobody types it again.
 **Depends on:** T-M06-032
 
@@ -234,6 +277,7 @@ with the `AllocationMeter` component; no second 100 % check is written.
 - The stage each tranche falls due on (M06-13, M11-09) — ruled: every row carries its due stage, copied from the tranche template line it came from; a row added here picks its stage from the market pack's chain stages (`project_tranche.due_on_stage` is NOT NULL, and M11-09 makes these rows the project's schedule unchanged).
 - Which stages a new row may fall due on (M06-13) — ruled: only the stages this segment's projects visit, so a commercial proposal never offers the incentive-claim stage it skips (owner ruling 2026-11-13, final review).
 - Amounts that do not divide evenly (M06-13, M11-08) — ruled: step 7 shows amounts from `splitSchedule` (`packages/domain/src/payments/schedule.ts`), the last row absorbing the remainder, so the builder and Won agree to the paisa (owner ruling 2026-11-13, final review).
+- The controls (M06-13) — ruled: the company's named plans as chips; each part a row with − and + in steps of 5 and a typed value; the split bar and each part's amount follow at once; *Add a part*, *Reset*, and a line that says the change is for this proposal only (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -242,6 +286,7 @@ with the `AllocationMeter` component; no second 100 % check is written.
 **Status:** planned
 **PRD rows:** M06-14 (P0), M06-27 (P0), M06-28 (P0), M06-29 (P0)
 **DESIGN:** SCR-M06-10
+**Drawn:** *Build* → step 8; sheets *Pick a part*, *Edit a part* and *Add a new part*.
 **Why:** the customer reads which brands they get and for how long they are covered; the rep taps saved parts instead of typing them on every proposal.
 **Depends on:** T-M06-032, T-M06-034
 
@@ -264,6 +309,8 @@ proposal drafts naming the item, replacing `OPEN_DRAFTS_BEFORE_THE_STUDIO`.
 **Settle before the build:**
 - The edit sheet's type lists against the catalog's (M06-29) — ruled: `PANEL_TECHNOLOGIES` gains `mono` and `thin_film`, and `BATTERY_CHEMISTRIES` gains `custom` with its free text, each enrolled with enum parity in the same change (Law 12); one vocabulary, never a second list on the proposal line.
 - What an edit-sheet change writes (M06-29) — ruled: the proposal's own component line; the catalog item never changes (M06-31 freezes lines with their version, and a catalog edit belongs to the catalog screen).
+- The step's parts (M06-27, M06-28) — ruled: a ring that counts the parts picked, then one tile per category — an empty one drawn in the danger tint with its mark and *Pick a brand*; the picker a sheet with search, a tick per brand, the certification mark, and the three-brand limit said in words (owner ruling 2026-11-13, approved design).
+- Edit and add (M06-28, M06-29) — ruled: each picked brand offers *Edit what prints for {brand}*, a sheet with the brand locked; *Add a new {part}* is a sheet that saves the part and picks it in place, with the spreadsheet row only for holders of `F2.M01.manage-catalog` (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -272,6 +319,7 @@ proposal drafts naming the item, replacing `OPEN_DRAFTS_BEFORE_THE_STUDIO`.
 **Status:** planned
 **PRD rows:** M06-15 (P0)
 **DESIGN:** SCR-M06-11
+**Drawn:** *Build* → step 9.
 **Why:** the company's terms, or HelioGrid's default with its 30-day validity, protect every proposal without the rep writing a word.
 **Depends on:** T-M06-032
 
@@ -282,6 +330,9 @@ proposal drafts naming the item, replacing `OPEN_DRAFTS_BEFORE_THE_STUDIO`.
 - Given a person without `F2.M01.manage-tenant-settings` at step 9, when the step renders, then "Save as template" is absent and their edit stays on this proposal (M06-15).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle before the build:**
+- The editor (M06-15) — ruled: one row of text tools (bold, italic, heading, list, numbered list) joined to the text box, with the character count and the page estimate above it; under it *Save as company default* for a holder of `F2.M01.manage-tenant-settings`, or the line that the change stays on this proposal (owner ruling 2026-11-13, approved design).
+
 ---
 
 ### T-M06-012 · Builder Step 10 — Client Details
@@ -289,6 +340,7 @@ proposal drafts naming the item, replacing `OPEN_DRAFTS_BEFORE_THE_STUDIO`.
 **Status:** planned
 **PRD rows:** M06-16 (P0)
 **DESIGN:** SCR-M06-12
+**Drawn:** *Build* → step 10.
 **Why:** the customer's name, phone and address come from the lead; an address typed once is kept on the lead for the studio and the project.
 **Depends on:** T-M06-032
 
@@ -303,6 +355,7 @@ proposal drafts naming the item, replacing `OPEN_DRAFTS_BEFORE_THE_STUDIO`.
 **Settle before the build:**
 - When the number exists (M06-16, M06-44, M06-42) — ruled: it is assigned at the first successful Generate, with v1; before that step 10 reads "assigned when you generate" (drafts carry no version, and a number burned by an abandoned draft would leave gaps the customer can see).
 - Where the site address lives (M06-16) — ruled: the lead gains one site address with its state and district (`T-M06-032`'s migration); a visit booking that confirms an address writes it there, step 10 and step 3 read it, and a typed one saves there — one place, never a second copy (owner ruling 2026-11-13, final review).
+- The step's parts (M06-16) — ruled: a client card with the name and phone, locked and marked *From the lead*; the site address as the one field; then two read-only facts — the proposal number, which reads *Comes when you generate* until it exists, and the document's language (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -311,6 +364,7 @@ proposal drafts naming the item, replacing `OPEN_DRAFTS_BEFORE_THE_STUDIO`.
 **Status:** planned
 **PRD rows:** M06-17 (P0)
 **DESIGN:** SCR-M06-13
+**Drawn:** *Build* → step 11.
 **Why:** the customer pays the right account: only the owner can enter the company's bank details, once, and every later proposal carries them.
 **Depends on:** T-M06-032
 
@@ -328,6 +382,7 @@ The fact's prompt state rides the shipped route `PUT /onboarding/prompt-points/:
 **Settle before the build:**
 - The Add 3D Design closing sheet while no studio exists (M06-17) — ruled: not shown; it returns with the studio's hand-off (`T-M06-021`) — a doorway to nothing is a dead end.
 - When company facts are read (M06-17) — ruled: bank details, logo, address, phone, email and tax registration are read live from the business profile until Generate and frozen only into the version, so an owner's new bank account reaches every open draft and never an already-sent version; template content (terms, timeline, tranches) is copied at fill as M06-18 says (owner ruling 2026-11-13, final review).
+- The step's parts (M06-17) — ruled: the bank block as the customer reads it, one switch to print it or not, then the fields for a holder of `F2.M01.manage-tenant-settings`, or one line naming who can add them (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -358,6 +413,7 @@ the specification.
 **Status:** planned
 **PRD rows:** M06-50 (P0)
 **DESIGN:** SCR-M06-15
+**Drawn:** sheet *See the customer's page* (phone); the stage beside every step (desktop); stop *Document*.
 **Why:** the rep sees exactly what the homeowner will see — clean, visual and in the customer's language — before anything goes out.
 **Depends on:** T-M06-017, T-F5-009
 
@@ -368,6 +424,9 @@ they are the specification.
 - Given a generated version, when preview renders, then it is pixel-for-content identical to what the customer's rendering will show, in the customer's language (M06-50).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle before the build:**
+- One renderer (M06-50) — ruled: the preview, the stage, the document and the customer link draw the same page parts over the same values, so the preview cannot differ from what is sent (owner ruling 2026-11-13, approved design).
+
 ---
 
 ### T-M06-016 · Proposal Versions — v1 vs v2, what changed and why
@@ -375,6 +434,7 @@ they are the specification.
 **Status:** planned
 **PRD rows:** M06-42 (P0)
 **DESIGN:** SCR-M06-16
+**Drawn:** stop *Versions*; sheet *Put a version in force*.
 **Why:** when a customer asks for changes, the rep and the owner see what moved between versions and why, and v1 stays as it was sent.
 **Depends on:** T-M06-025a
 
@@ -385,6 +445,9 @@ they are the specification.
 - Given a generated version, when any input later changes, then the version's snapshot and money block are byte-identical to generation time and a change note exists (M06-42).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle before the build:**
+- The screen's parts (M06-42) — ruled: the change note first, in the words the person wrote; then only the facts that moved, each as old value → new value, and one line for the pages that did not change; then a row per version with its state, and Share or View (owner ruling 2026-11-13, approved design).
+
 ---
 
 ### T-M06-017 · Proposal Document — the rendered commercial document and its honesty obligations
@@ -393,6 +456,7 @@ they are the specification.
 **Owed by `T-FPLAT-029` (`F8-20`, `F8-22`, `F8-23`; `F8-24`, a law):** the basis line is `basisLineOf({ designed, roofTier })` from `@heliogrid/domain`, printed through `@heliogrid/i18n`'s `BASIS_LINE_WORD` — never a second rule or a second copy of the words; every figure is the `QualifiedAmount` the screen and the link read, projections included with their assumptions, never recomputed for the page.
 **PRD rows:** M06-04 (P0), M06-51 (P0), F3-15 (P0)
 **DESIGN:** SCR-M06-17
+**Drawn:** stop *Document*; *Defaults* → *Pages* shows all nine pages at once.
 **Why:** the document is what wins or loses the job — a homeowner understands it in seconds: one hero figure, pictures over tables, every number with its unit and honest label, no placeholder ever printed.
 **Depends on:** T-M06-024, T-M06-025a
 
@@ -420,6 +484,9 @@ achievements, bank-details and timeline bands this document prints.
 **Settle before the build:**
 - What a V1 document states as its basis when no survey exists behind it (M06-51; `F8-20`, `F8-22`) — ruled: the basis is derived at Generate from the design's roof-capture provenance tier and frozen into the version's honesty labels — no design keeps `F8-20`'s indicative line; a design whose roof tier is not `measured` renders `F8-22`'s remote line verbatim; a `measured` roof, M04's V2 path, carries no basis line; and no field is added to the design (`F8-21` reduces roof capture to exactly two flows, so the tier already names the flow, and a stored basis would be a second copy of it).
 - The document's language (M06-50, `F3-06`) — ruled: the customer's preferred language, and the company's default language when the customer has none (owner ruling 2026-11-13, final review).
+- The pages (M06-04, M06-51) — ruled, in order: Cover (the cover picture edge to edge, the company's mark and name, the number and date, the customer's name, one line for the system, three figures on glass — the price, the yearly generation and the payback — and who prepared it with its validity) · About us (the company's words, three pictures, the track record) · Your system (a picture band and the parts) · Generation · Savings (a full-colour page) · Price and payment (the price, the payment plan, the EMI example when it is on, and *Included in this price*) · Timeline · Terms · Bank details (the account and a closing picture with the customer's name and the contact). The cover, the price page and the terms always print; the others follow the company's pages setting (`T-M01-030`) (owner ruling 2026-11-13, approved design).
+- *Included in this price* (M06-04) — ruled: each line is a slot template over the version's own facts — its components, its timeline phases and its maintenance plan — and a line whose fact is absent is left out (`T-M06-029`) (owner ruling 2026-11-13, approved design).
+- Pictures (M06-51) — ruled: the document's pictures are decoration and carry no fact; they come from one platform set in one style, published with the approved design, and words on a picture sit on a shade that keeps WCAG AA (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -428,6 +495,7 @@ achievements, bank-details and timeline bands this document prints.
 **Status:** planned
 **PRD rows:** M06-53 (P0), M06-54 (P0), M06-57 (P0)
 **DESIGN:** SCR-M06-18
+**Drawn:** stop *Track*; sheets *Share sheet*, *First send, no GST number* and *Thank-you message*.
 **Owed by `T-FPLAT-028` (`F8-17`, `F8-18`):** the stale state reads from the version's `Freshness` (`freshnessOf`, `packages/domain`), shown on the detail before any share act with its corrective action; the share, send and issue acts are blocked while `issueBlockedBy` names a reason or `payableStandsUp` is false, and the stated reason is the one returned. Its freshness comes from this output's own stored pins, never pins built at the call site.
 **Owed by `T-M01-005` (`M01-24`, `M01-29`; owner ruling 2026-10-12):** the prompt at the first send. *Given a skipped company profile, when the first proposal is about to be sent, then the prompt to complete it fires there, inline (M01-24, M01-29).* → proof: QA (web and phone) skip the profile step, build a proposal to its send: `SCR-M01-05`'s tax part opens in `EditorSurface` over the proposal (board frames `m-prompt`, `d-prompt`), *Add it and send* saves the registration and *Send without it* leaves the default in place; the fact's state goes through `PUT /onboarding/prompt-points/company_profile` (fired, then completed or declined). The field set is `T-M01-005`'s shared component; this task mounts it and adds the client call. Only a holder of `F2.M01.manage-tenant-settings` is offered *Add it*; anyone else sees who can add it (M06-17).
 **Why:** one tap shares on WhatsApp with the words already written; the rep then sees when the customer opened it, and nothing claims a delivery the product cannot see.
@@ -451,6 +519,8 @@ connected-channel clauses of `M06-53` and `M06-57` wait for the channel connecti
 
 **Settle before the build:**
 - What marks a proposal shared in V1 (M06-53, `F5-20`) — ruled: the first Share on WhatsApp or Copy link is the mark-shared act and mints the link for the lead's primary contact; a re-share reuses that link, never minting a second; Download PDF alone shares nothing (owner ruling 2026-11-13, final review).
+- The screen's parts (M06-53, M06-54) — ruled: a hero with the status, one sentence that says what happened, the one next act for that status — Share, Share again, Call, Make version 2, Confirm won, Open the project — and the cover; under it four steps on a line, Generated → Shared → Opened → Answered, each with its time, and the line that only opens are shown; then rows for the open proposal task, the version, the links and the document (owner ruling 2026-11-13, approved design).
+- The share sheet (M06-53, M06-57) — ruled: the composed words as a message bubble, *Share on WhatsApp* as the main act, *Copy link* and *Get PDF* under it, and a line that the person picks the chat and sends; after the act a toast says the proposal is marked shared and names the follow-up's date (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -459,6 +529,7 @@ connected-channel clauses of `M06-53` and `M06-57` wait for the channel connecti
 **Status:** planned
 **PRD rows:** M06-48 (P0)
 **DESIGN:** SCR-M06-19
+**Drawn:** stop *List*; sheets *New customer* and *Copy for another lead*.
 **Owed by `T-FPLAT-028` (`F8-18`, a law):** each row's stale state reads from its version's `Freshness` (`freshnessOf`, `packages/domain`) and is shown on the row with its corrective action, never only by a colour. Its freshness comes from this output's own stored pins, never pins built at the call site.
 **Why:** "same as the Sharma proposal, new customer, 6 kW" takes under a minute from the list; every proposal's state reads at a glance as glyph, word and tint.
 **Depends on:** T-M06-025a
@@ -470,6 +541,10 @@ are the specification.
 - Given an existing proposal, when Duplicate is invoked onto another lead, then every step arrives pre-filled including all components, client details come from the new lead, and a fresh server number is assigned at Generate (M06-48).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle before the build:**
+- The screen's parts (M06-48) — ruled: filter chips with their counts; on a phone one card per proposal, on desktop a table set on the page with a line under the header and each row and no card behind it; each row shows the customer, the number, the system, the price, the status as a mark and a word, and one line for the latest event (owner ruling 2026-11-13, approved design).
+- Duplicate (M06-48) — ruled: the row's copy act opens a lead picker — search, the person's recent leads and *A new customer* — and the builder opens on the lead picked (owner ruling 2026-11-13, approved design).
+
 ---
 
 ### T-M06-020 · Deal Link Manager — the tenant-side link surface on the deal
@@ -477,6 +552,7 @@ are the specification.
 **Status:** planned
 **PRD rows:** F5-30 (P0) (`docs/prd/foundations/F5-customer-link.md` — F5's row; the screen is drawn by M06 and is not part of this bucket's disposition index)
 **DESIGN:** SCR-M06-20
+**Drawn:** stop *Links*; sheet *New link*.
 **Why:** the rep sees each named link, who opened it and when, while the customer's page shows none of it.
 **Depends on:** T-F5-007
 
@@ -489,6 +565,7 @@ they are the specification.
 
 **Settle before the build:**
 - The link manager's acts (`F5-30`) — ruled: it mints a named link for another contact, labels, re-mints and revokes, each under `customer_link.mint_customer_link` / `revoke_customer_link`; after Won the project's manager is the named person, so this task adds the project manager to those two capability rows (F2 row and matrix in one change) — a customer who loses their phone mid-install is served by the person they deal with (owner ruling 2026-11-13, final review).
+- The screen's parts (`F5-30`) — ruled: one card per link with its label, its contact, its state and its last open; each live link offers Copy, a new address (re-mint) and Turn off (revoke), and Turn off asks once and then stops the link at once; a line says the customer's page shows none of this (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -608,6 +685,7 @@ description — with no price, count or stock; written under the catalog-add gra
 **Owed by `T-FPLAT-029` (`F8-21`):** Generate is refused while any figure's tier fails `tierFitsBasis(basis, tier)` from `@heliogrid/domain` — a no-design document holding a `derived` or `measured` figure — and the refusal names the figure; the gate never weakens the tier to pass.
 **PRD rows:** M06-20 (P0), M06-23 (P0), M06-36 (P0), M06-37 (P0)
 **Design:** as T-M06-002
+**Drawn:** stop *Check*; stop *Ready*.
 **Why:** every mistake shows up once, at Generate, as a list the rep taps through — and the three size warnings stop a 3 kW proposal going out with 3.47 kW of panels and a 5 kW inverter.
 **Depends on:** T-M06-024, T-M06-025a
 
@@ -634,6 +712,8 @@ size checks' tolerance and inverter band are market-pack facts added here (Law 1
 **Settle before the build:**
 - Which components a certification scheme binds (M06-23(f), `F1-34`) — ruled: each required scheme names the component categories it applies to, a market-pack fact (IN: DCR → panel, Law 12), and every listed brand of those categories is checked; `unmetSubsidySchemes` reads that scope (owner ruling 2026-11-13, final review).
 - What a person without `F2.M01.manage-catalog` sees when the price is below cost (M06-37) — ruled: "below the company's cost", with no figure, so the loss never reveals our cost; holders see the amount (owner ruling 2026-11-13, final review).
+- The gate's surface (M06-23, M06-36) — ruled: a sheet over the builder. Blocked: the title counts what to fix, each failure a row that opens its step, and the main button goes to the first one — never a dead Generate. Warnings sit under them as *Then check*, each with both figures. Clear: the cover, the customer, the size, the payable, the page count, the language and the version, then Generate, which shows a thin travelling line while it runs (owner ruling 2026-11-13, approved design).
+- After Generate (M06-20) — ruled: one screen where the cover lands with the number and the version, *See it and share* as the main act and *Download PDF* beside it (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -642,6 +722,7 @@ size checks' tolerance and inverter band are market-pack facts added here (Law 1
 **Status:** planned
 **PRD rows:** M06-25 (P0)
 **Design:** none — the draft behaviour behind every step
+**Drawn:** the *State* switch (*Not saved*, *Changed elsewhere*, *Offline*); case *Lead moved away*.
 **Why:** a rep who loses signal on a roof loses nothing; the draft waits on the lead.
 **Depends on:** T-M06-032
 
@@ -661,6 +742,7 @@ the resume path behind it.
 **Settle before the build:**
 - Draft writes (M06-25, `F8-36`) — ruled: each field write carries the draft's revision and a stale one is refused; nothing is queued offline — an offline phone shows the no-connection state and keeps what was typed on screen (owner ruling 2026-11-13, final review).
 - A lead that moves away mid-draft (M06-25) — ruled: the next commit answers "This lead moved to {person}" instead of a bare refusal, and the draft stays with the lead for its new owner (owner ruling 2026-11-13, final review).
+- What the person sees (M06-25) — ruled: a quiet *Saved* tick beside the step's title and on the field just left; a refused commit keeps the typed value with its line under the field; the offline state is said once under the title (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -701,6 +783,7 @@ Who receives the incentive is a new market-pack fact (`MarketPack`, Law 12; IN: 
 **Status:** planned
 **PRD rows:** M06-43 (P0), M06-44 (P0), M06-45 (P0), M07-62 (P0), M08-50 (P0), M11-09 (P0), M11-14 (P0), F5-46 (P0), F6-22 (P0)
 **Design:** none — the record's life behind the list, the detail and the link
+**Drawn:** sheets *Mark won*, *Mark won, newer version unanswered*, *Mark won, no accepted proposal* and *Put a version in force*.
 **Owed by `T-FPLAT-028` (`F8-14`, `F8-15`):** a version pins what it was computed from as `InputPins` (`packages/domain`) — the design fingerprint, the catalog release, the tenant price-book version, the pack pin with the keys read, and the engine versions — at generation, in its migration; once shared, its figures qualify as a record (`freshness: null`) and keep their standing, and its pins are never updated. Its freshness comes from this output's own stored pins, never pins built at the call site.
 **Why:** the lead, the proposal and the project move by themselves as the customer answers, and Won uses the price and the payment plan the customer accepted — nobody types the deal twice.
 **Depends on:** T-M06-032, T-M06-024
@@ -748,6 +831,8 @@ act appends a timeline entry (`M02-35`).
 - Parking on a won lead (M07-62, M02-51) — ruled: Mark won clears snoozed and dormant, so the daily sweep never wakes a won lead (owner ruling 2026-11-13, final review).
 - Two leads for one customer (M06-58) — ruled: Lead Detail and Mark won name the sibling lead's live proposal, so one customer is never won twice unseen (owner ruling 2026-11-13, final review).
 - A share or Negotiate on a lead already at or past the target stage (M06-45) — ruled: `advanceStage`'s `stage_reached` is success and the act completes; a share on a closed lead is refused with Reopen offered (owner ruling 2026-11-13, final review).
+- Mark won's sheet (M07-62) — ruled: the acceptance as its proof line (who, when, which link), the final value as a locked figure marked as coming from the accepted proposal, then the payment plan row for row; with no usable acceptance the proof line says why, the value is a field and the plan is the company's default (owner ruling 2026-11-13, approved design).
+- Put in force (M08-50, M11-14) — ruled: a sheet that shows the new total, what is already paid and stays, what is left, and the new plan for what is left, before the person confirms that the customer agreed (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -803,6 +888,7 @@ words are platform copy (`M06-53`).
 **Status:** planned
 **PRD rows:** M06-26 (P0)
 **Design:** none — a server-side checkpoint
+**Drawn:** case *Plan limit at Generate*.
 **Why:** editing, sharing and reading proposals never stop over billing; only creating a new one meets the plan's limit.
 **Depends on:** T-M06-032
 
@@ -819,6 +905,7 @@ its entry in the shipped `RouteBillingMap` and nothing else in the proposal flow
 **Settle before the build:**
 - When a proposal counts against the plan (M06-26) — ruled: at its first successful Generate, not at draft creation, so an abandoned draft never uses up the limit; a duplicate counts the same way (owner ruling 2026-11-13, final review).
 - The shipped billing matrix pauses "Generate/send proposals" in `halted` and `expired` (`packages/domain/src/commerce/soft-block.ts`) — ruled: the shipped matrix stands until the new pricing replaces it; in those two states Generate and share pause while reading, exporting and every customer link keep working (`F5-23`) (owner ruling 2026-11-13, final review).
+- What the person sees (M06-26) — ruled: the gate's sheet says the cycle's count is used and when it starts again, lists what still works — edit and share, read and download, customers' links — and offers the plans to a holder of the billing right, or names who can change the plan; the draft stays saved (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -847,6 +934,7 @@ its entry in the shipped `RouteBillingMap` and nothing else in the proposal flow
 **Status:** planned
 **PRD rows:** M06-55 (P0)
 **Design:** none — a task on My Day
+**Drawn:** stop *Track* — the task row under the hero.
 **Why:** the next call already exists the moment a proposal goes out, and it disappears the moment the customer answers — nobody chases a customer who already said yes.
 **Depends on:** T-M06-025a, T-F5-008
 
@@ -867,6 +955,7 @@ voice.
 
 **Settle before the build:**
 - Who a link act's task goes to (M06-55) — ruled: the lead's current owner; when the lead has none or its owner is deactivated, the EPC Owner — active members only, the same chain the link's named person uses (`T-F5-001`) (owner ruling 2026-11-13, final review).
+- On the proposal (M06-55) — ruled: the open proposal task shows as the first row under the hero with its due date; an accepted proposal also offers *Thank {customer} with a message* (`T-F5-008`) (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -875,6 +964,7 @@ voice.
 **Status:** planned
 **PRD rows:** M06-58 (P0)
 **Design:** none — the withdraw act on Lead Detail
+**Drawn:** stop *Lead* → *Two proposals*; sheet *Withdraw one*.
 **Why:** two reps never quietly chase one customer; the record shows both and a person withdraws one.
 **Depends on:** T-M06-025a
 
@@ -888,6 +978,9 @@ transition and the guarantee that nothing auto-withdraws.
 
 **DONE WHEN:**
 - Given two proposals on one customer record, when the record renders, then both are visible and each offers the withdraw action (M06-58).
+
+**Settle before the build:**
+- The act (M06-58) — ruled: Lead Detail shows a warning and both proposals with their makers; *Withdraw* opens a sheet with that proposal's maker, size, price and state, says what its link will show, and withdraws on confirm (owner ruling 2026-11-13, approved design).
 
 ---
 

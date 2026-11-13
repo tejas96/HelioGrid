@@ -45,19 +45,19 @@ Block numbers are stable: other documents cite them, so a block that empties kee
 | **6** | **Sales execution + owner home** | built: My Day, lost, reopen, follow-ups, the owner home; left: trial-to-paid (parked) and the V2 dashboards | `M13-dashboards` (all but `T-M13-007`) |
 | **8** | **Proposals + customer link** | the proposal built without a design, the link the homeowner opens and answers, Won from the accepted proposal, and the forecast the proposals price | `M06-proposals` · `F5-customer-link` · `F-core` · `F-platform` · `M01-onboarding` · `M11-payments-collections` · `M13-dashboards` → `T-M13-007` |
 
-**Block 8 ships in four PRs, one session each (owner ruling 2026-11-13).** Inside each, the order
-is this file's: backend tasks first, then screens in the journey's order; each PR's screens are
-picked from samples before it builds.
+**Block 8 ships in one PR, built in one session (owner ruling 2026-11-13).** Inside it the order is
+this file's: backend tasks first, then screens in the journey's order. The screens' look is the
+approved proposal design (`CLAUDE.md` §6), so no sample is drawn before the build.
 
-1. **8a — build, generate and the PDF:** `T-M06-032`, `T-M06-024`, `T-M06-023`, `T-M06-033`,
+1. **Build, generate and the PDF:** `T-M06-032`, `T-M06-024`, `T-M06-023`, `T-M06-033`,
    `T-M06-034`, `T-M06-025a`, `T-M06-022`, `T-M06-027`, `T-M06-028`, then `T-M06-001`–`T-M06-013`,
-   `T-M06-017`, `T-FPLAT-074`, `T-M06-019` — a rep builds a proposal, generates it and downloads
-   the document.
-2. **8b — share and the customer's answer:** `T-M06-026`, `T-M06-029`, `T-F5-006`, `T-F5-007`,
+   `T-M06-017`, `T-FPLAT-074`, `T-M06-019`, `T-M01-030` — a rep builds a proposal, generates it and
+   downloads the document, and the owner sets its defaults.
+2. **Share and the customer's answer:** `T-M06-026`, `T-M06-029`, `T-F5-006`, `T-F5-007`,
    `T-F5-009`, `T-F5-008`, `T-M06-030`, then `T-M06-015`, `T-M06-016`, `T-M06-018`, `T-M06-020`,
    `T-M06-031`, `T-F5-001`, `T-F5-004`.
-3. **8c — Won and after:** `T-M06-025b`, `T-M06-025c`, `T-M11-015`, then `T-F5-002`, `T-F5-003`.
-4. **8d — the owner home:** `T-M13-007`.
+3. **Won and after:** `T-M06-025b`, `T-M06-025c`, `T-M11-015`, then `T-F5-002`, `T-F5-003`.
+4. **The owner home:** `T-M13-007`.
 
 **Proposals ship before the studio (owner ruling 2026-11-13).** Block 8's tasks that need a
 design — `T-M06-014`, `T-M06-021`, `T-F5-010`, `T-F5-011` and `T-M01-029` — are `**Parked:**` and are built

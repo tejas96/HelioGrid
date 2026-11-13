@@ -3,7 +3,7 @@
 This file carries every engineering task for the customer-link bucket: the no-login tokenised
 customer journey of `docs/prd/foundations/F5-customer-link.md` (the link's lifecycle, named links and
 attribution, acceptance, questions and callbacks, payment surface, progress, handover, security
-and branding laws). Task-id prefix: **T-F5-**. Screen tasks own SCR-F5-01 through SCR-F5-05 (SCR-F5-05 is T-F5-011's, parked until the studio); the
+and branding laws). Task-id prefix: **T-F5-**. The look of every page here is the approved proposal design (`CLAUDE.md` §6); each task's **Drawn** line names where it shows the page, and a page is built to match it at 390 px and 1440 px. Screen tasks own SCR-F5-01 through SCR-F5-05 (SCR-F5-05 is T-F5-011's, parked until the studio); the
 Proposal Document screen (SCR-M06-17) and Deal Link Manager screen (SCR-M06-20) are drawn under the
 M06 tasks file. Policy rows with no standalone build live in the Laws section; context rows in
 Realized elsewhere. The disposition index at the end covers every row in this bucket exactly once.
@@ -16,6 +16,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **Status:** planned
 **PRD rows:** F5-07 (P0), F5-32 (P0), F5-36 (P0), F5-37 (P0), F5-39 (P0), F5-42 (P1), F5-43 (P0), F5-44 (P0), F5-47 (P0), F5-48 (P0), F5-52 (P0), F5-53 (P0), F5-54 (P0), F5-55 (P0)
 **DESIGN:** SCR-F5-01
+**Drawn:** stop *Their page*; sheets *Accept*, *After Accept*, *Ask or change*, *Ask a question*, *Request a call*, *Ask for a change*, *Decline* and *With an EMI example*.
 **Why:** the homeowner decides on this page, on a phone, in one evening — it must be far better than a competitor's bare PDF: simple, clean and visually rich, understood in seconds, with Accept, Negotiate, Decline, a question and a call one tap away (owner, 2026-11-13); without it the rep chases a customer who already said yes.
 **Depends on:** T-F5-006, T-F5-007, T-F5-008, T-F5-009, T-M06-025a
 
@@ -58,6 +59,10 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 - Call requests and questions (`F5-53`, `F5-54`) — ruled: a question raises a call task as well as its notification, so the reply has an owner; a call request keeps one open call task per lead, due at the time the customer named or the next lawful moment; both buttons share the page's rate ceiling (`F5-25`) (owner ruling 2026-11-13, final review).
 - The acceptance confirmation's words (`F5-48`) — ruled: "your advance of {amount} is requested once {person} confirms" only when the version has an advance tranche; otherwise "{person} will call you to confirm the next steps"; the rep's proposal detail offers the composed confirmation to send (owner ruling 2026-11-13, final review).
 - The page's language (`F5-08`) — ruled: the contact's language, else the customer's, else the company's default language (owner ruling 2026-11-13, final review).
+- The page's parts (`F5-07`, `F5-32`) — ruled: the company's mark and name; a hero with the cover picture, a greeting, the title and three figures — the price, the monthly saving and the payback; then one card each for the price, the savings, the generation, the parts, the payment plan, the timeline and the terms, drawn by the document's own parts; the named person's card; and the version line with the PDF (owner ruling 2026-11-13, approved design).
+- Answering (`F5-43`, `F5-47`) — ruled: on a phone one bar at the foot holds *Accept* and *Ask or change*, and the second opens one sheet with four acts — ask a question, request a call, ask for a change, decline; on desktop a card beside the content holds the price, both buttons and the named person. Accept asks once, showing the system, the price and the first payment (owner ruling 2026-11-13, approved design).
+- After an answer (`F5-48`) — ruled: an accepted page shows when it was accepted and three next steps — the named person calls, then the advance is requested, and this link will show progress — and says nothing is paid now; the bar keeps only the question and the call. A declined page says so and names the person; a change request shows its words and that a new version will appear here (owner ruling 2026-11-13, approved design).
+- The company's colour in dark (`F5-81`) — ruled: the tint a tile or a wash takes is derived for the dark scheme as it is for the light one; the light tint alone drew white tiles on a dark phone (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -67,6 +72,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **Status:** planned
 **PRD rows:** F5-57 (P0), F5-58 (P0), F5-59 (P0), F5-61 (P0), F5-62 (P0), F5-63 (P0), F5-68 (P0), M08-15 (P0), M08-24 (P0), M08-25 (P0), M08-26 (P0), M08-28 (P0), M08-29 (P0), M08-39 (P0)
 **DESIGN:** SCR-F5-02
+**Drawn:** stop *Progress*; case *Project cancelled*; sheet *Crew message* (the operator's side).
 **Why:** after Won the customer's anxious question is "what is happening?" — this page answers it with stages, waits, receipts and a named person, so they stop calling the rep.
 **Depends on:** T-F5-006
 
@@ -102,6 +108,8 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 | T-F5-002b | The evening-before crew message (composed, `crew_arrival`) and the four facts on the page | `F5-68` | open |
 - Questions and call requests after Won (`F5-54`) — ruled: they raise a call task for the project's manager, with the named-person fallback, never the sales rep (owner ruling 2026-11-13, final review).
 - A project cancelled after Won (§F5.3) — ruled: the link keeps serving the project's honest cancelled state with the named person; the analytics event names it a cancelled project, not a dead link (owner ruling 2026-11-13, final review).
+- The page's parts (`F5-61`, `F5-63`) — ruled: a headline that says the step and who is waited on; the stages as one list — done, waiting with its start and typical length, and ahead; *Your installation day* with its four facts and the crew lead's number; then the payments — a paid part with its receipt and the words that the company recorded it, the due part with the instrument and the exact amount, and the parts ahead; the project manager's card (owner ruling 2026-11-13, approved design).
+- The crew message (`F5-68`) — ruled: the evening before, the project offers the composed message as a bubble with *Share on WhatsApp* and *Copy message*, the same surface the proposal's share uses (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -111,6 +119,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **Status:** planned
 **PRD rows:** F5-70 (P0), F5-71 (P0), F5-72 (P0), F5-73 (P0), M08-32 (P0), M08-46 (P0)
 **DESIGN:** SCR-F5-03
+**Drawn:** stop *Solar file*.
 **Why:** at handover the same link becomes the customer's solar file for life — warranties, certificates and approvals in one place — and the referral ask lives here.
 **Depends on:** T-F5-006
 
@@ -124,6 +133,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 - Given every checklist row past pending, when handover runs, then the pack is assembled from the checklist, the link becomes the pack and the project reaches `HANDED_OVER` (M08-46). *(Moved from T-M08-006 by owner ruling 2026-11-10: its proof needs the customer link, built in block 8.)*
 - Given a project with any row still pending, when handover is attempted, then it is refused and the pending rows are named; given every row past pending and the pack shared on the link, then handover proceeds (M08-32). *(Moved from T-M08-006 and T-M08-012, which carried the same line, by owner ruling 2026-11-10: its proof needs the pack shared on the customer link, built in block 8.)*
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+- The page's parts (`F5-70`, `F5-71`, `F5-72`) — ruled: a short hero with the switch-on date; the documents as one list, each with what it is and its download; the line that the link stays for the life of the system; the referral ask with the company's number and no money; the named person's card (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -133,6 +143,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **Status:** planned
 **PRD rows:** F5-25 (P0), F5-78 (P0)
 **DESIGN:** SCR-F5-04
+**Drawn:** stop *Link off* — its four reasons.
 **Why:** a link that cannot serve still names a person and a number, so a customer is never left at a blank page.
 **Depends on:** T-F5-006
 
@@ -147,6 +158,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **Settle before the build:**
 - Rate-limit counter persistence — pick: ephemeral, no counter table — the per-link view and respond ceilings are a trailing-hour count over the link's own append-only rows the audit law already requires, and the global public-route ceiling is an in-process counter that persists nothing (the network address is transient and never persisted, `F5-29`; every access is already a row, `F5-79`; no surface reads a counter back; cost if wrong: a process restart forgets the global count for at most one hour).
 - A link with no live proposal (`F5-25`, M06-45) — ruled: when the lead is reopened, a postponed loss resurfaces, or a person withdrew the proposal on an open lead, the page reads "No active proposal — {person} will send you one"; only a newly shared version brings answering back, and nothing revives by itself (owner ruling 2026-11-13, final review).
+- The page's parts (`F5-25`) — ruled: the company's mark, a grey line drawing, one sentence that says what happened and one that says what to do, and the named person's card; nothing about the proposal (owner ruling 2026-11-13, approved design).
 
 ---
 
@@ -235,6 +247,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **Status:** planned
 **PRD rows:** F5-45, F5-46, F5-49
 **Design:** none — the acceptance record and what it sets moving
+**Drawn:** sheet *Thank-you message*.
 **Why:** a customer's Accept tells the rep and the owner at once, closes the chase and lines up the win — while a person still confirms it, so no project is born from a mis-tap.
 **Depends on:** T-F5-006, T-M06-025a
 
@@ -258,6 +271,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 - An Accept outside working hours (`F6-13`) — ruled: in-app at once; the push waits for the company's working morning, per the quiet-hours rule — never a phone woken at night (owner ruling 2026-11-13, final review).
 - With the challenge off in V1 (`F5-44`) — ruled: the accept notification and the Confirm won task name the link label and contact that accepted, so the confirming call checks it was the right person (owner ruling 2026-11-13, final review).
 - `F5-47`'s stale-money clause — ruled: a shared version's figures are a record (`freshness: null`), so only a design change can stale it; that half is proven with the design on the link, `T-F5-011` (owner ruling 2026-11-13, final review).
+- The composed confirmation (`F5-48`) — ruled: the accepted proposal offers *Thank {customer} with a message*, a sheet with the words as a bubble, *Share on WhatsApp* and *Copy message*, and a line that the customer's page already shows the acceptance (owner ruling 2026-11-13, approved design).
 
 ---
 
