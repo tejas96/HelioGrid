@@ -56,17 +56,24 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 
 ### T-M13-007 · Revenue and forecast read-model
 
-**Placed in block 8** (owner ruling 2026-11-12): a lead carries no value until a proposal prices it, so the weighted pipeline is built with proposals; the stage likelihood is decided there. The won half (M13-04) shipped in block 6 — the owner dashboard counts no cancelled deal.
+**Placed in block 8** (owner ruling 2026-11-12): a lead carries no value until a proposal prices it, so the weighted pipeline is built with proposals. The won half (M13-04) shipped in block 6 — the owner dashboard counts no cancelled deal.
 
 **Type:** engine · **Tier:** P0
 **Status:** planned
-**PRD rows:** M13-03, M13-04
+**PRD rows:** M13-03
+**Design:** as T-M13-001 — the shipped owner home gains its pipeline value, its forecast and one attention item
+**Why:** the owner sees what the open proposals are worth and what is likely to close — labelled a projection, never added to won — and which sent proposals nobody has opened, so the rep calls today.
+**Depends on:** T-M06-025
 **Requirements (verbatim):**
 - **M13-03** (P0) — **Forecast is a projection, never revenue.** Weighted pipeline (value × stage likelihood), labelled *expected, not promised*, and **never in the same total as won**. Lead estimated value is a weighted-pipeline input — forecast ≠ revenue, anywhere, ever.
-- **M13-04** (P0) — **Won means signed, and a cancellation never silently keeps counting.** A deal cancelled after Won stops counting as revenue immediately (`CANCELLED` in the R2 machine); no report, total or trend quietly keeps it.
 **DONE WHEN:**
 - Given a forecast figure and a won figure, when any total renders, then they are never summed and the forecast carries its label (M13-03).
-- Given a project cancelled after Won, when any revenue view renders, then it excludes the deal from the moment of cancellation (M13-04).
+- (M13-14's Pipeline section carries value as well as count, and its Forecast section the weighted figure, with no dedicated Given/When/Then line in the PRD's acceptance block for either; the requirement text is the binding criterion — the shipped owner home's Pipeline shows each stage's value beside its count, from the latest shared version of each open proposal, and its Forecast shows the weighted figure labelled a projection.)
+- (M13-15's "proposals sent-and-not-opened" item carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text is the binding criterion — a shared proposal its customer has not opened appears in "what needs you", deep-linking to the proposal, and leaves the list when the link is first opened.)
+
+**Settle before the build:**
+- Stage likelihood — ruled (owner ruling 2026-11-13): per-stage likelihood is market-pack data (a `MarketPack` key with IN's values), never a tenant setting or a constant in this module.
+- Demo rows — ruled (owner ruling 2026-11-13): the read model excludes rows marked as demo; while the demo seed (T-M01-029) is parked there are none, and the exclusion is proven when it lands.
 
 
 
@@ -83,7 +90,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 - (M13-51 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text above is the binding criterion. The PRD's analytics-events note for §M13.8 names the event: trial-to-paid conversion recorded (M13-51).)
 
 **Settle before the build:**
-- No analytics event-stream store in V1: trial-to-paid (M13-51) derives from the `subscription` transitions M12 already records — trialing to paid, with timestamps — so the taxonomy is those named transitions and nothing is authored — pick: derive (cost if wrong: an appended analytics_event table whose rows the transitions already imply).
+- No analytics event-stream store in V1: trial-to-paid (M13-51) derives from the `subscription` transitions platform billing (being redesigned) already records — trialing to paid, with timestamps — so the taxonomy is those named transitions and nothing is authored — pick: derive (cost if wrong: an appended analytics_event table whose rows the transitions already imply).
 
 
 ## Laws (enforced through screens and review, no standalone build)
@@ -116,7 +123,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 
 - **M13-49** (P0) — **Reporting vocabulary for plans and billing states is platform billing's, verbatim:** any report segmenting by plan uses billing's plan names; any surface naming a billing state uses billing's state names. No reporting synonym exists. — *Enforced by:* review of report copy on every M13 surface and export against billing's plan and state names; its acceptance line: Given any plan- or state-segmented report, when its vocabulary is audited, then only billing's plan and state names appear (M13-49).
 
-- **M13-50** (P0) — **Usage figures on any dashboard read M12's rollups — the same numbers as billed** (`F8-33`); no dashboard recomputes usage, and the usage screen itself stays M12's owner-scoped surface (`F2.M12.view-usage-and-invoices`). — *Enforced by:* dashboards reading M12's rollups only — no task in this file builds any usage recomputation, and the usage screen remains M12's; its acceptance line: Given a usage figure on a dashboard, when compared with M12's rollup, then they are the same number from the same rollup (M13-50).
+- **M13-50** (P0) — **Usage figures on any dashboard read M12's rollups — the same numbers as billed** (`F8-33`); no dashboard recomputes usage, and the usage screen itself stays M12's owner-scoped surface (`F2.M12.view-usage-and-invoices`). — *Enforced by:* dashboards reading platform billing's usage rollups only (platform billing is being redesigned) — no task in this file builds any usage recomputation, and the usage screen remains platform billing's; its acceptance line: Given a usage figure on a dashboard, when compared with M12's rollup, then they are the same number from the same rollup (M13-50).
 
 ## Realized elsewhere
 
@@ -144,7 +151,7 @@ These M13 rows specify homes and dashboard renderings whose surfaces ship as oth
 | M13-01 | LAW |
 | M13-02 | LAW |
 | M13-03 | T-M13-007 |
-| M13-04 | T-M13-007 |
+| M13-04 | shipped in block 6 — the owner home counts no cancelled deal |
 | M13-05 | LAW |
 | M13-06 | LAW |
 | M13-07 | LAW |
@@ -155,7 +162,7 @@ These M13 rows specify homes and dashboard renderings whose surfaces ship as oth
 | M13-12 | LAW |
 | M13-13 | LAW |
 | M13-14 | T-M13-001, shipped — six sections; the agent card returns with voice (postponed) |
-| M13-15 | T-M13-001, shipped — proposals sent-and-not-opened join with block 8 |
+| M13-15 | T-M13-001, shipped — proposals sent-and-not-opened: T-M13-007 |
 | M13-16 | T-M13-001, shipped |
 | M13-17 | T-M13-008, shipped — the company target; a per-person target waits with the per-rep view (voice, postponed) |
 | M13-18 | T-M13-009, shipped — the won deal's low median with its n |

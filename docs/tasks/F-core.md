@@ -8,6 +8,8 @@ This file dispositions every requirement row of the suite's three core documents
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **Parked:** by owner ruling until the tenant base reaches real paying customers (roughly 10–20) — the *Deferred* note below; the build line never offers it as ready.
+**Design:** none — pack data and a support-backed workflow
+**Why:** a customer who asks for their data, or to be forgotten, is served within the law, and the EPC keeps the tax records it must keep.
 **Also lands:** the `dataRights` field on `packages/data`'s `useShell()` and the pack read behind it — `T-SHELL-007` left both out while the key has no type.
 **PRD rows:** F1-23, F1-24, F1-32, F1-54, F1-55, F1-56, F1-57, F1-58, F1-59
 **Requirements (verbatim):**
@@ -24,10 +26,10 @@ This file dispositions every requirement row of the suite's three core documents
 
 *Note:* the in-app grievance-contact surface of F1-59 rides the app shell (SCR-SHELL-01); this task owns the breach-notification duty and the determination/consent/erasure data and workflow.
 
-*Deferred:* parked by owner ruling until the tenant base reaches real-customer scale — roughly 10–20 paying customers, where a full privacy build earns its cost; `T-FCORE-010` proceeds next.
+*Deferred:* parked by owner ruling until the tenant base reaches real-customer scale — roughly 10–20 paying customers, where a full privacy build earns its cost.
 
-**Depends on:** the owner unparking it (the *Deferred* note above) · the customer record (`M02`, block 3), which erasure anonymises · the consent records of the calling module (`M07`, block 6), which `F1-58` exports.
-**Ruled at `/start`:** **the owner kept this task parked and moved it to block 8**, the last V1 block, so the build line stops offering it as ready; it builds when the owner unparks it.
+**Depends on:** the owner unparking it (the *Deferred* note above) · the customer record (`M02`, block 3), which erasure anonymises · the consent records of the calling module (`M07`), which `F1-58` exports — voice calling is postponed, so `F1-58`'s consent proof waits with voice and is proven when it returns.
+**Ruled at `/start`:** **the owner kept this task parked and moved it to block 8**, so the build line stops offering it as ready; it builds when the owner unparks it.
 
 **DONE WHEN:**
 
@@ -35,7 +37,7 @@ This file dispositions every requirement row of the suite's three core documents
 - Given any market, when tenant-level read or export is attempted in any billing state, then it works; and when erasure is requested, then the anonymisation workflow exists with the pack's retention carve-outs honored (F1-24).
 - Given the IN privacy determination, when it is consulted, then the platform's fiduciary/processor roles, the DPA terms and the residency rules read exactly as F1-54 and F1-55 declare them (F1-54, F1-55).
 - Given a data-principal export request, when support fulfils it, then JSON/CSV of all rows keyed to the principal is delivered within 30 days; and given an erasure, then anonymisation runs with financial records retained for the statutory period (F1-56, F1-57, F1-32).
-- Given a customer who declines call recording, when the call proceeds, then they are still served and the declination lands as a consent record with timestamp and source (F1-39, F1-58).
+- Given a customer who declines call recording, when the call proceeds, then they are still served and the declination lands as a consent record with timestamp and source (F1-39, F1-58). *(Waits with voice calling, postponed: proven when it returns.)*
 - Given a breach event, when duties trigger, then the Data Protection Board and affected principals are notified and the grievance contact is published in-app (F1-59).
 
 **Settle before the build:**

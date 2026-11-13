@@ -645,6 +645,11 @@ follows lead visibility. Won/Lost events are audited (`F2-22` names them).
 - Given a rep marks a lead won with final value and expected install date, when they confirm,
   then the project exists immediately with no re-entry of customer data, and the lead shows
   won (M07-62).
+- Given a lead whose latest proposal version the customer accepted, when Mark won opens, then the
+  final value is that version's payable, shown and not typed, and the project's collection
+  schedule is that version's tranches; and given a lead with no accepted version, when the rep
+  marks it won, then the typed value and the company's default payment terms stand and the
+  project shows it was won without an accepted proposal (M07-62; owner ruling 2026-11-13).
 - Given a rep marks a lead lost, when they must pick a reason, then the surface offers the
   ruled seven-reason set (the source six plus "not interested" — owner ruling 2026-08-04),
   refuses a reasonless save, and postponed losses carry a date (M07-63).

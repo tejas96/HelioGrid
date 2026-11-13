@@ -6,6 +6,9 @@ This file carries what is left of the tenant's own collections after block 5 shi
 **Type:** integration · **Tier:** P0
 **Status:** planned
 **PRD rows:** M11-45, M11-55
+**Design:** none — supplies facts to SCR-F5-02, drawn by T-F5-002
+**Why:** the customer sees their receipt and how to pay the next part on the same link, the moment the company records a payment — so they stop asking "did you get my money?"
+**Depends on:** T-F5-006
 **Requirements (verbatim):**
 - **M11-45** (P1) — **The receipt is one of the three things that carry the customer through their most anxious moment, and this module owns its half.** The source names them: *"an instant receipt, a named person to contact, and a clear statement of what happens next and when."* This module produces the receipt the instant the money is confirmed or recorded, and publishes it to the customer's surface; the named contact and the what-happens-next line are `foundations/F5`'s rendering of `modules/M08`'s facts.
 - **M11-55** (P0) — **What this module publishes to the customer's surface, and nothing more:** the due tranche's label and amount, its payment link where one has been minted, the receipts with their confirmation states, and the fact that nothing here may gate the page. `foundations/F5` renders every word the customer reads, decides the page's shape, and owns the token and its lifecycle; this module supplies facts and never copy.
@@ -15,6 +18,11 @@ Block 5 made the receipt — as text and as a PDF in the customer's language, ke
 **DONE WHEN:**
 - Given a confirmed payment, when the customer's surface is opened, then the receipt is already there (`M11-45`).
 - Given a confirmed or recorded payment, when the customer's surface renders, then the receipt and its confirmation state are available to it and no state in this module gates the page (`M11-55`, `M11-32`).
+- *(With no gateway every payment is recorded by a person, so "confirmed" above reads "recorded" and the one state supplied is* recorded *(owner ruling 2026-11-13, `F5-59`).)*
+
+**Settle before the build:**
+- The receipt that is "already there" — ruled (owner ruling 2026-11-13): the surface reads the text receipt (`paymentReceiptSchema`) at once, and recording a payment starts its PDF, so the customer never meets an empty receipt while the PDF is made.
+- The handover checklist — ruled (owner ruling 2026-11-13): a project's first recorded receipt is the proof of its checklist's advance-receipt row (`M08-46`), so nobody uploads a file the product already holds.
 
 ## Laws (enforced through screens and review, no standalone build)
 

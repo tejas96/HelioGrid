@@ -527,12 +527,12 @@ document is deleted leaves this register with it.
 | F5-27 | P0 | engine | engine | T-F5-007 |
 | F5-28 | P0 | policy | policy | T-F5-007 |
 | F5-29 | P0 | policy | policy | T-F5-007 |
-| F5-30 | P0 | mixed | SCR-M06-20 · +non-UI: customer page never shows other contacts' links, labels or open… | T-F5-007 |
+| F5-30 | P0 | mixed | SCR-M06-20 · +non-UI: customer page never shows other contacts' links, labels or open… | T-M06-020 |
 | F5-31 | P0 | policy | policy | T-F5-007 |
 | F5-32 | P0 | screen | SCR-F5-01 | T-F5-001 |
-| F5-33 | P0 | screen | SCR-F5-01 | T-F5-001 |
-| F5-34 | P0 | policy | policy | T-F5-009 |
-| F5-35 | P0 | screen | SCR-F5-01 | T-F5-001 |
+| F5-33 | P0 | screen | SCR-F5-01 | T-F5-011 |
+| F5-34 | P0 | policy | policy | T-F5-011 |
+| F5-35 | P0 | screen | SCR-F5-01 | T-F5-011 |
 | F5-36 | P0 | screen | SCR-F5-01 | T-F5-001 |
 | F5-37 | P0 | screen | SCR-F5-01 | T-F5-001 |
 | F5-38 | P0 | policy | policy | T-F5-009 |
@@ -988,7 +988,7 @@ document is deleted leaves this register with it.
 | Row | Tier | Type | Where | Task |
 |---|---|---|---|---|
 | M06-01 | P0 | policy | policy | LAW |
-| M06-02 | P0 | policy | policy | LAW |
+| M06-02 | P0 | policy | policy | T-M06-001 |
 | M06-03 | P0 | policy | policy | T-M06-021 |
 | M06-04 | P0 | mixed | SCR-M06-17 · +non-UI: F8 honesty law: every figure labelled; verbatim indicative line… | T-M06-017 |
 | M06-05 | P0 | screen | SCR-M06-01 | T-M06-001 |
@@ -1009,12 +1009,12 @@ document is deleted leaves this register with it.
 | M06-20 | P0 | policy | policy | T-M06-022 |
 | M06-21 | P0 | screen | SCR-M06-02 | T-M06-002 |
 | M06-22 | P0 | mixed | SCR-M06-02 · +non-UI: R12 law: free navigation everywhere, validation only at Generate… | T-M06-002 |
-| M06-23 | P0 | mixed | SCR-M06-02 · +non-UI: one-pass gate: components, battery validity, payable floor, tranches,  | T-M06-002 |
+| M06-23 | P0 | mixed | SCR-M06-02 · +non-UI: one-pass gate: components, battery validity, payable floor, tranches,  | T-M06-022 |
 | M06-24 | P0 | screen | SCR-M06-02 | T-M06-002 |
 | M06-25 | P0 | mixed | SCR-M02-04 · +non-UI: every field commits on blur; a draft exists from the first commit and is resumable from the lead | T-M06-023 |
 | M06-26 | P0 | policy | policy | T-M06-028 |
 | M06-27 | P0 | mixed | SCR-M06-10 · +non-UI: D22: all categories mandatory before Generate — the counter is the… | T-M06-010 |
-| M06-28 | P0 | mixed | SCR-M06-10 · +non-UI: DD12 one-picker law: M05 §M05.6 pattern cited, never restated; no… | T-M06-010 |
+| M06-28 | P0 | mixed | SCR-M06-10 · +non-UI: one picker, built here and reused by the studio; cable, electrical, structure from saved parts… | T-M06-010 |
 | M06-29 | P0 | screen | SCR-M06-10 | T-M06-010 |
 | M06-30 | P0 | mixed | SCR-M06-05, SCR-M06-10 · +non-UI: OFFGRID/HYBRID without battery: notice at step 3, hard block only at… | T-M06-005 |
 | M06-31 | P0 | policy | policy | T-M06-026 |
@@ -1032,9 +1032,9 @@ document is deleted leaves this register with it.
 | M06-43 | P0 | policy | policy | T-M06-025 |
 | M06-44 | P0 | policy | policy | T-M06-025 |
 | M06-45 | P0 | policy | policy | T-M06-025 |
-| M06-46 | P0 | mixed | SCR-M06-19, SCR-M06-18 · +non-UI: staleness derived by comparing pinned fingerprint/input versions… | T-M06-018 |
-| M06-47 | P0 | mixed | SCR-M06-18 · +non-UI: tier change shown before commit (F8-05); accept creates Path A… | T-M06-018 |
-| M06-48 | P0 | mixed | SCR-M06-19, SCR-M06-18 · +non-UI: duplicate copies all steps and components; never copies number… | T-M06-018 |
+| M06-46 | P0 | mixed | SCR-M06-19, SCR-M06-18 · +non-UI: staleness derived by comparing pinned fingerprint/input versions… | T-M06-021 |
+| M06-47 | P0 | mixed | SCR-M06-18 · +non-UI: tier change shown before commit (F8-05); accept creates Path A… | T-M06-021 |
+| M06-48 | P0 | mixed | SCR-M06-19, SCR-M06-18 · +non-UI: duplicate copies all steps and components; never copies number… | T-M06-019 |
 | M06-49 | P0 | policy | policy | T-M06-027 |
 | M06-50 | P0 | screen | SCR-M06-15 | T-M06-015 |
 | M06-51 | P0 | mixed | SCR-M06-17 · +non-UI: one computed value set feeds document, link, exports; render… | T-M06-017 |
@@ -1042,7 +1042,7 @@ document is deleted leaves this register with it.
 | M06-53 | P0 | mixed | SCR-M06-18 · +non-UI: auto-send via the tenant's connected transactional channel (owner ruling 2026-08-04)… | T-M06-018 |
 | M06-54 | P0 | mixed | SCR-M06-18 · +non-UI: delivery states only as connected channel reports; fallback never… | T-M06-018 |
 | M06-55 | P0 | policy | policy | T-M06-030 |
-| M06-56 | P0 | mixed | SCR-M06-17 · +non-UI: exactly one recommended variant by default; variants only when… | T-M06-017 |
+| M06-56 | P0 | mixed | SCR-M06-17 · +non-UI: exactly one recommended variant by default; variants only when… | T-M06-021 |
 | M06-57 | P0 | mixed | SCR-M06-18 · +non-UI: connected channel's failure report is the visible failure… | T-M06-018 |
 | M06-58 | P0 | mixed | SCR-M02-04 · +non-UI: nothing auto-withdraws; a person marks superseded/declined-by-tenant;  | T-M06-031 |
 
@@ -1362,7 +1362,7 @@ document is deleted leaves this register with it.
 | M13-01 | P0 | policy | policy | LAW |
 | M13-02 | P0 | policy | policy | LAW |
 | M13-03 | P0 | policy | policy | T-M13-007 |
-| M13-04 | P0 | policy | policy | T-M13-007 |
+| M13-04 | P0 | policy | policy | shipped |
 | M13-05 | P0 | policy | policy | LAW |
 | M13-06 | P0 | policy | policy | LAW |
 | M13-07 | P0 | policy | policy | LAW |
