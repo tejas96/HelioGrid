@@ -640,7 +640,8 @@ because there is no approval flow (`D34`, `foundations/F2` §5). Marking won or 
 - Given a customer tapping Negotiate, when it is recorded, then the lead moves to `negotiating`
   and the lead's owner is notified (`F5-21`, `F5-50`; owner ruling 2026-11-13).
 - Given a customer tapping Decline, when it is recorded, then the proposal is declined, the lead's
-  owner and their manager are notified, the open follow-up task closes and Mark lost is offered
+  owner and the EPC Owner are notified (no manager mapping exists before HR), the open follow-up
+  task is replaced by a Customer declined task due today, and Mark lost is offered
   to the owner — the lead is never marked lost without a person's reason (`F5-21`, `F5-51`;
   owner ruling 2026-11-13).
 - Given a customer asking for a discount, when the rep applies it, then the revised version is

@@ -49,17 +49,18 @@ Block numbers are stable: other documents cite them, so a block that empties kee
 is this file's: backend tasks first, then screens in the journey's order; each PR's screens are
 picked from samples before it builds.
 
-1. **8a — the record and the builder:** `T-M06-032`, `T-M06-024`, `T-M06-023`, `T-M06-033`,
-   `T-M06-034`, `T-M06-022`, `T-M06-027`, `T-M06-028`, then `T-M06-001`–`T-M06-013`.
-2. **8b — share and the customer's answer:** `T-M06-025a`, `T-M06-026`, `T-M06-029`, `T-F5-006`,
-   `T-F5-007`, `T-F5-009`, `T-F5-008`, `T-M06-030`, then `T-M06-017`, `T-FPLAT-074`, `T-M06-015`,
-   `T-M06-016`, `T-M06-018`, `T-M06-019`, `T-M06-020`, `T-M06-031`, `T-F5-001`, `T-F5-004`.
-3. **8c — Won and after:** `T-M06-025b`, `T-M06-025c`, `T-M11-015`, `T-F5-010`, then `T-F5-002`,
-   `T-F5-003`.
+1. **8a — build, generate and the PDF:** `T-M06-032`, `T-M06-024`, `T-M06-023`, `T-M06-033`,
+   `T-M06-034`, `T-M06-025a`, `T-M06-022`, `T-M06-027`, `T-M06-028`, then `T-M06-001`–`T-M06-013`,
+   `T-M06-017`, `T-FPLAT-074`, `T-M06-019` — a rep builds a proposal, generates it and downloads
+   the document.
+2. **8b — share and the customer's answer:** `T-M06-026`, `T-M06-029`, `T-F5-006`, `T-F5-007`,
+   `T-F5-009`, `T-F5-008`, `T-M06-030`, then `T-M06-015`, `T-M06-016`, `T-M06-018`, `T-M06-020`,
+   `T-M06-031`, `T-F5-001`, `T-F5-004`.
+3. **8c — Won and after:** `T-M06-025b`, `T-M06-025c`, `T-M11-015`, then `T-F5-002`, `T-F5-003`.
 4. **8d — the owner home:** `T-M13-007`.
 
 **Proposals ship before the studio (owner ruling 2026-11-13).** Block 8's tasks that need a
-design — `T-M06-014`, `T-M06-021`, `T-F5-011` and `T-M01-029` — are `**Parked:**` and are built
+design — `T-M06-014`, `T-M06-021`, `T-F5-010`, `T-F5-011` and `T-M01-029` — are `**Parked:**` and are built
 with the studio's block.
 
 **The 3D Design Studio is rebuilt from scratch.** Its tasks and its PRD are deleted; its block

@@ -17,7 +17,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **PRD rows:** F5-07 (P0), F5-32 (P0), F5-36 (P0), F5-37 (P0), F5-39 (P0), F5-42 (P1), F5-43 (P0), F5-44 (P0), F5-47 (P0), F5-48 (P0), F5-52 (P0), F5-53 (P0), F5-54 (P0), F5-55 (P0)
 **DESIGN:** SCR-F5-01
 **Why:** the homeowner decides on this page, on a phone, in one evening — it must be far better than a competitor's bare PDF: simple, clean and visually rich, understood in seconds, with Accept, Negotiate, Decline, a question and a call one tap away (owner, 2026-11-13); without it the rep chases a customer who already said yes.
-**Depends on:** T-F5-006, T-F5-007, T-F5-008, T-F5-009, T-M06-025
+**Depends on:** T-F5-006, T-F5-007, T-F5-008, T-F5-009, T-M06-025a
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. The cross-phase rows F5-07, F5-52, F5-53, F5-54 and F5-55 bind SCR-F5-02 and SCR-F5-03 as well; they are dispositioned here. In V1 no channel connects (owner ruling 2026-11-13, `F5-48`): this task builds the page's own confirmation state and the composed message a person sends; the connected-channel send is built with the connection. The design's own elements on this page — the 3D view, the recommended variant and the remote-imagery disclosure — are T-F5-011's, built with the studio.
 
@@ -33,7 +33,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 - Given an Accept on a superseded version, a stale money figure, or an already-won or already-lost deal, when it is submitted, then the server refuses, states what happened, and records no partial acceptance (`F5-47`).
 - Given a successful Accept, when the tap completes, then the page's confirmation state changes within seconds and states what was accepted and what happens next; and given a tenant with a connected transactional channel, when the Accept records, then the instant confirmation message sends automatically from that channel; and given no connected channel, then the composed confirmation is the fallback a person sends, no delivery is claimed on that path, and the page state has already done the acknowledging (`F5-48`; automatic transactional sending per owner ruling 2026-08-04). *(In V1 no channel connects, owner ruling 2026-11-13: this task proves the page state and the composed fallback.)*
 - Given a customer tapping Negotiate, when it is recorded, then the lead moves to `negotiating` and the lead's owner is notified (`F5-21`, `F5-50`; owner ruling 2026-11-13).
-- Given a customer tapping Decline, when it is recorded, then the proposal is declined, the lead's owner and their manager are notified, the open follow-up task closes and Mark lost is offered to the owner — the lead is never marked lost without a person's reason (`F5-21`, `F5-51`; owner ruling 2026-11-13).
+- Given a customer tapping Decline, when it is recorded, then the proposal is declined, the lead's owner and the EPC Owner are notified (no manager mapping exists before HR), the open follow-up task is replaced by a Customer declined task due today, and Mark lost is offered to the owner — the lead is never marked lost without a person's reason (`F5-21`, `F5-51`; owner ruling 2026-11-13).
 - Given any phase of the link, when the customer opens it, then the question affordance is present in the same place with the same behaviour (`F5-52`).
 - Given a submitted question, when it is received, then a notification and a timeline entry exist on the tenant's side, the customer's page acknowledges receipt without promising a delivery or a time the tenant has not committed to, and no reply surface exists (`F5-53`).
 - Given a customer requesting a call, when the request is submitted, then a call task for the lead's owner exists, due no earlier than the market's lawful window, and the request is recorded as the customer's timestamped consent (`F5-54`; owner ruling 2026-11-13).
@@ -44,7 +44,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **Settle before the build:**
 - Question acknowledgement persistence — ruled: every question the link has received is listed on the page in every phase with its acknowledgement state, for the life of the link, and the states are exactly submitted → received with no answered state (§F5.7's edge case has the page show the earlier question as received; the reply is a call the page never claims, `F5-53`; the rows are lead timeline entries and the link is permanent, `F5-22`, so nothing ages out).
 - The named person with a phone number in every phase, surviving project close (`F5-55`, `F5-73`) — ruled (owner ruling 2026-11-13): the proposal phase names the lead's owner and the progress and handover phases name the project's manager (`project.managerId`); where that person is deactivated or absent the page falls back to whoever minted the link, then to the company's owner — a rep who leaves never leaves a dead number on a customer's page. Each is rendered as that user's name and login phone (`M01-18`); users are deactivated, never deleted (`F2-20`).
-- The notifications this page raises are enrolled in `NOTIFICATION_TYPES` and the registry by this task (Law 12), matching `F6`'s matrix: negotiation requested → the rep; proposal declined → the rep and their sales manager; customer asked a question → the record's owner; customer requested a call → the rep.
+- The notifications this page raises are enrolled in `NOTIFICATION_TYPES` and the registry by this task (Law 12), matching `F6`'s matrix: negotiation requested → the rep; proposal declined → the lead's owner and the EPC Owner (no manager mapping exists before HR, owner ruling 2026-11-13); customer asked a question → the record's owner; customer requested a call → the rep.
 - The composed acceptance confirmation needs a key in `F6-26`'s exhaustive list — ruled (owner ruling 2026-11-13): this task adds `acceptance_confirmation` to `F6-26` and to `MESSAGE_TEMPLATE_KEYS` in one change (the invariant `template-keys-mirror-f6` holds the two equal) and authors its starter words, which say the advance is requested once the company confirms.
 
 #### Parts
@@ -54,6 +54,10 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 | T-F5-001a | The page and its honesty: layout, figures with tiers and source labels, disclosures, financing, named person, branding | `F5-06`/`F5-07`, `F5-32`, `F5-36`, `F5-37`, `F5-39`, `F5-42`, `F5-55`, `F7-07`/`F5-81` | open |
 | T-F5-001b | Respond: Accept (no challenge in V1), the server re-check, the confirmation state and composed message, Negotiate, Decline | `F5-43`, `F5-44`, `F5-47`, `F5-48`, Negotiate, Decline | open |
 | T-F5-001c | Question and callback: the affordance in every phase, the acknowledgement, the call task | `F5-52`, `F5-53`, `F5-54` | open |
+- Who receives what a link act raises (`F5-54`, `F5-55`) — ruled: every task and notification a customer's act raises goes to the same named person the page shows — lead owner, then whoever minted the link, then the EPC Owner, active members only; after Won, the project's manager first (owner ruling 2026-11-13, final review).
+- Call requests and questions (`F5-53`, `F5-54`) — ruled: a question raises a call task as well as its notification, so the reply has an owner; a call request keeps one open call task per lead, due at the time the customer named or the next lawful moment; both buttons share the page's rate ceiling (`F5-25`) (owner ruling 2026-11-13, final review).
+- The acceptance confirmation's words (`F5-48`) — ruled: "your advance of {amount} is requested once {person} confirms" only when the version has an advance tranche; otherwise "{person} will call you to confirm the next steps"; the rep's proposal detail offers the composed confirmation to send (owner ruling 2026-11-13, final review).
+- The page's language (`F5-08`) — ruled: the contact's language, else the customer's, else the company's default language (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -96,6 +100,8 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 |---|---|---|---|
 | T-F5-002a | The progress page: stages, waits, blockers, receipts with the pay request, moved M08 proofs | `F5-57`, `F5-58`, `F5-59`, `F5-61`, `F5-62`, `F5-63`, `M08-15`, `M08-24`, `M08-25`, `M08-26`, `M08-28`, `M08-29`, `M08-39` | open |
 | T-F5-002b | The evening-before crew message (composed, `crew_arrival`) and the four facts on the page | `F5-68` | open |
+- Questions and call requests after Won (`F5-54`) — ruled: they raise a call task for the project's manager, with the named-person fallback, never the sales rep (owner ruling 2026-11-13, final review).
+- A project cancelled after Won (§F5.3) — ruled: the link keeps serving the project's honest cancelled state with the named person; the analytics event names it a cancelled project, not a dead link (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -140,6 +146,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 
 **Settle before the build:**
 - Rate-limit counter persistence — pick: ephemeral, no counter table — the per-link view and respond ceilings are a trailing-hour count over the link's own append-only rows the audit law already requires, and the global public-route ceiling is an in-process counter that persists nothing (the network address is transient and never persisted, `F5-29`; every access is already a row, `F5-79`; no surface reads a counter back; cost if wrong: a process restart forgets the global count for at most one hour).
+- A link with no live proposal (`F5-25`, M06-45) — ruled: when the lead is reopened, a postponed loss resurfaces, or a person withdrew the proposal on an open lead, the page reads "No active proposal — {person} will send you one"; only a newly shared version brings answering back, and nothing revives by itself (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -182,6 +189,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 - The link's deal reference — ruled: the link holds a lead reference only; the progress and handover phases resolve the project through lead → project, which the won transition creates 1:1 (`M07-62`, `M08-02`), and the phase is read from the deal's state on every open (§F5.3: the link is the deal's identity and holds no state machine; a second reference would be a copy that can diverge).
 - Customer files — ruled (owner ruling 2026-11-13): the pages serve their files (receipts, the handover pack, documents) through a token-scoped file route that checks the token's scope against the link's current phase; the session-only download link stays operator-side (`F5-21`, `F5-70`).
 - White-label custom domain — ruled: no custom-domain field on the tenant record or the link at launch; link resolution is domain-independent, so the first Enterprise slice adds a tenant → domain routing mapping that touches no link row (`F5-82` builds on the first Enterprise ask; Law 9 authors no schema before its slice).
+- Who may call each link route (CLAUDE.md §3) — ruled: mint and re-mint under `customer_link.mint_customer_link`, revoke under `customer_link.revoke_customer_link`, both proven per role with the other-company 404; the public routes take no session and answer a revoked or unknown token with `F5-25`'s page (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -217,6 +225,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **Settle before the build:**
 - Customer-side audit attribution — ruled (owner ruling 2026-11-13): `AUDIT_ACTOR_KINDS` gains `customer_link` (its enum and the parity check in the same change, Law 12), and every customer-side act is written with the link and its contact as actor (`F5-31`).
 - Stored link events vs analytics — ruled: link_event holds exactly the five append-only events its source names — opened, section viewed (with section and duration), accepted, negotiate requested, declined — and every name under the PRD's "Analytics events" lists rides the suite's separate analytics stream and is never a link_event row (`F5-27`'s source names the five; `F5-28` makes viewed-for-how-long the product's own evidence; the analytics stream is a separate store by the suite's rule, `F2` §F2.4).
+- What counts as an open (`F5-27`, `F5-29`) — ruled: an open is recorded only from an in-page beacon after the page renders, never from a bare fetch (a messenger's link preview) and never from a request carrying a company user's session — so pasting the link never fires "opened" (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -227,7 +236,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **PRD rows:** F5-45, F5-46, F5-49
 **Design:** none — the acceptance record and what it sets moving
 **Why:** a customer's Accept tells the rep and the owner at once, closes the chase and lines up the win — while a person still confirms it, so no project is born from a mis-tap.
-**Depends on:** T-F5-006, T-M06-025
+**Depends on:** T-F5-006, T-M06-025a
 
 **Requirements (verbatim):**
 - **F5-45** (P0) — **The challenge is a challenge, not a credential.** It verifies a person at a moment; it creates no account, sets no password, establishes no session that outlives the act, and is never reused as a login anywhere in the product. This is what lets named links and a verified acceptance coexist with `F5-01` rather than contradict it.
@@ -239,12 +248,16 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 - Given a completed acceptance, when the record is read, then it names the link, the contact, the challenge outcome, the network address and the user agent (`F5-46`).
 - Given a successful Accept, when it is recorded, then the tenant is notified and no project exists until a person marks the deal won (`F5-49`).
 - Given a successful Accept, when it is recorded, then the lead's owner is notified at once, the open follow-up task on the proposal closes, a task to confirm the win is raised for them, and the customer's confirmation says the advance is requested once the company confirms (`F5-48`, `F5-49`; owner ruling 2026-11-13).
-- Given a recorded acceptance and a deal then marked won, when the project's handover checklist is read, then its signed-proposal row carries the acceptance record as its proof (`F5-46`, `F5-49`; owner ruling 2026-11-13).
 
 **Settle before the build:**
 - The accepted notification — ruled: this task enrols `proposal_accepted` in `NOTIFICATION_TYPES` and the registry (Law 12) as `F6`'s matrix states it: the rep and the EPC Owner, immediate.
 - Accepted proposal-version reference on acceptance_record — ruled: stored, as the version the server validated as current at the moment of accept (`F5-47` re-checks that exact version; `F5-48`'s confirmation states what was accepted; `F5-40` pins sent versions, so the reference names a version that never changes underneath the record; without it the record cannot say what was committed to).
 - Contact attribution on a contact-less link — ruled: acceptance_record's contact reference is the link's own at the moment of accept and is absent exactly where the link's is; the record still names the link, the challenge outcome, the network address and the user agent, and accept is never refused for want of a contact (`F5-47`'s re-check is version, deal state and challenge only; `F5-44` makes named-link attribution the evidence of record; §F5.4 calls a contact-less link an operational signal, not a failure).
+- One answer per version (`F5-43`, `F5-47`, M06-45) — ruled: the acceptance record is unique on the version and many per link; after an Accept the page shows only the confirmation, and a second Accept, Negotiate or Decline on that version is refused as "already accepted on {date} by {link label}"; a newly shared version answers again; the signed-proposal checklist proof is `T-M06-025b`'s (owner ruling 2026-11-13, final review).
+- A customer's act and the lead's parking (M02-49, M02-51) — ruled: each act on the link updates the lead's last activity and wakes a snoozed or dormant lead, so a Confirm won task is never hidden (owner ruling 2026-11-13, final review).
+- An Accept outside working hours (`F6-13`) — ruled: in-app at once; the push waits for the company's working morning, per the quiet-hours rule — never a phone woken at night (owner ruling 2026-11-13, final review).
+- With the challenge off in V1 (`F5-44`) — ruled: the accept notification and the Confirm won task name the link label and contact that accepted, so the confirming call checks it was the right person (owner ruling 2026-11-13, final review).
+- `F5-47`'s stale-money clause — ruled: a shared version's figures are a record (`freshness: null`), so only a design change can stale it; that half is proven with the design on the link, `T-F5-011` (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -255,7 +268,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **PRD rows:** F5-38, F5-40
 **Design:** none — what the page and the document render, and which version
 **Why:** the page and the PDF never disagree, and a customer who reopens the link sees the latest version while what they were sent stays pinned.
-**Depends on:** T-F5-006, T-M06-025
+**Depends on:** T-F5-006, T-M06-025a
 
 **Requirements (verbatim):**
 - **F5-38** (P0) — **The link and the document never disagree.** One computed value set feeds the page, the generated document and every export; a figure that differs between the customer's page and the customer's document is a defect, not a rounding difference.
@@ -276,6 +289,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **Design:** none — a staff-side task and a composed customer update
 **Why:** the wait before a design is where enthusiasm decays and competitors land first; a dated next step and a ready update keep the customer warm.
 **Depends on:** nothing open — the lead's `design` stage and the task table are built
+**Parked:** no V1 act moves a lead to `design` before the studio; built with the 3D studio's block (block 9) (owner ruling 2026-11-13, final review).
 
 **Requirements (verbatim):**
 - **F5-16** (P0) — **The wait between survey and proposal is never silent — and the day-two update is automatic (owner ruling 2026-08-04).** The source is categorical: *"Nothing in the product should let this gap be silent"* — this is where enthusiasm decays and competitors land first. The obligation is met three ways: the promise made at `F5-14` carries a date; the product raises the staff-side task that keeps it; and the *"we are working on your design"* update **sends automatically on day two from the tenant's connected transactional channel** (the same connection `modules/M03` establishes, transactional template class per `M03-03`). Where no channel is connected, the honest fallback is the composed draft a person sends plus the staff-side nudge — and no delivery is claimed on that path. **In V1 (owner ruling 2026-11-13)** no channel connects — the connection is V2 — so the composed update and the staff-side nudge are the path that ships, and the gap opens when the lead enters the `design` stage, the one V1 signal while the survey is V2; the automatic send is built with the connection.

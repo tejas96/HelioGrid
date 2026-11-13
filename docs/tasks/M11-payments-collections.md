@@ -95,3 +95,4 @@ Block 5 made the receipt — as text and as a PDF in the customer's language, ke
 | M11-54 | T-M11-001 |
 | M11-55 | T-M11-015 |
 | M11-56 | LAW |
+- A payment reversed after it was recorded (`F5-59`, `M11-46`) — ruled: its receipt on the link reads reversed with the date, and what is owed updates; the customer never keeps a plain receipt for money taken back (owner ruling 2026-11-13, final review).

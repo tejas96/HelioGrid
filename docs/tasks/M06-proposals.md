@@ -55,6 +55,10 @@ the proposals section's real count — the section reads `0` today
 **Settle before the build:**
 - Whether Quick-mode state is persisted on the proposal or purely presentational (M06-18, M06-19) — ruled: one boolean on the proposal, set by the entry toggle and cleared by the expansion act; the hidden-vs-shown step set is never stored (M06-18 fixes the shown steps at 1, 3, 8 and 10 as product law, and M06-19's generated Quick proposal opening in the full builder for its next version is knowable only if the proposal carries the mode).
 - The path-choice question while no studio exists (M06-05) — ruled: it is not asked; the entry opens the builder without a design, and the question returns with the studio (owner ruling 2026-11-13: a question with one answer is a wasted tap).
+- Who owns a lead made by New proposal (M06-05) — ruled: quick add started from New proposal assigns the lead to the person creating it, in the same transaction, so a Sales Executive (reach: own leads) can open the builder on it (owner ruling 2026-11-13, final review).
+- A duplicate number on a lead the person cannot see (M06-05, M02-08) — ruled: the sheet offers only log-enquiry and tell-the-owner, says the proposal is the owner's to make, and creates no proposal (owner ruling 2026-11-13, final review).
+- Several drafts per lead (M06-25) — ruled: a lead holds at most one open draft; Create proposal resumes it, and a new proposal starts only from Duplicate or after the draft is generated or discarded (owner ruling 2026-11-13, final review).
+- Quick mode's edges (M06-18, M06-19) — ruled: the rep can switch Quick back on before Generate and the hidden steps keep their values; Duplicate copies the flag; the draft chip's n/11 counts every step, hidden ones included, as complete when their default is in place (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -73,6 +77,10 @@ the proposals section's real count — the section reads `0` today
 - Given a 375 px viewport, when the builder renders, then the compressed rail shows `‹ n / 11 · title ›` and tapping it opens the full step sheet (M06-24).
 - Given Quick mode, when it opens, then exactly steps 1, 3, 8, 10 are presented, 4/5 are AI-filled `estimated`, and 6/7/9/11 carry the tenant defaults (M06-18).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+
+**Settle before the build:**
+- What Quick mode hides at Generate (M06-18) — ruled: Generate's summary lists each company fact that will be left out (bank details, logo, tax registration) and who can add it, so a hidden step never surprises the customer (owner ruling 2026-11-13, final review).
+- The longest titles at 375 px (M06-24) — ruled: the compressed rail truncates a long Hindi or Marathi title with an ellipsis and the full-title sheet shows it whole; checked with the longest `mr` title (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -111,13 +119,16 @@ re-implements the validation.
 - Given step 2 numeric fields, when values are entered, then units are auto-added and non-numeric input is refused (M06-08).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle before the build:**
+- A rep's edit of the achievements (M06-08) — ruled: it stays on this proposal; only a holder of `F2.M01.manage-tenant-settings` saves it to the company's cover, as with the terms (owner ruling 2026-11-13, final review).
+
 ---
 
 ### T-M06-005 · Builder Step 3 — Solar System Setup, site supply, our cost, battery and the live payable
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **Owed by `T-FPLAT-029` (`F8-23`):** the EMI tenure is the projection's `horizonYears`, and this step refuses a tenure that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
-**PRD rows:** M06-09 (P0), M06-30 (P0), M06-35 (P0), M06-37 (P0), M06-40 (P0)
+**PRD rows:** M06-09 (P0), M06-30 (P0), M06-35 (P0), M06-37 (P0), M06-38 (P0), M06-40 (P0)
 **DESIGN:** SCR-M06-05
 **Why:** the price the customer will see is built here, live, in the tenant's currency — the full amount the company collects, the subsidy shown beside it, the margin visible only to the owner.
 **Depends on:** T-M06-032, T-M06-024
@@ -138,6 +149,7 @@ The payable equation is `resolvePayable` / `payableStandsUp` in
 - Given a battery added at step 3, when step 8 renders, then a Battery section exists, the counter's denominator includes it, and the payable includes battery cost (M06-30, M06-27).
 - Given the EMI toggle on, when the document renders, then EMI figures carry the projection label with their assumptions (M06-40).
 - Given a proposal opened from a lead, when Step 3 renders, then the Category is the lead's segment and the bill is the lead's monthly bill, each pre-filled and never asked again (M02-05, OV-04) (moved from the block 3 CRM plan, owner yes 2026-11-09).
+- Given a residential on-grid proposal with incentive claimed switched off, when the money block computes, then the incentive is zero and Generate runs no certification check; and given an off-grid proposal, then the incentive is not offered (M06-38).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 **Settle before the build:**
@@ -145,6 +157,9 @@ The payable equation is `resolvePayable` / `payableStandsUp` in
 - Where the lead's monthly bill lands (M02-05) — ruled: it is step 5's savings input, carried from the lead, not a step 3 field (step 3 names no bill field; the bill feeds savings, not the system).
 - The EMI tenure (M06-40) — ruled: one tenure field beside the EMI rate, years, defaulting to the market pack's typical term (an EMI is not computable without a term; `T-FPLAT-029` already reads it as `horizonYears`).
 - Sanctioned load and supply phase on the lead (M06-09) — ruled: two nullable lead columns added by `T-M06-032`'s migration, read and written through the lead's contract (old app versions never send them, so null is their only old shape).
+- The margin's basis (M06-37) — ruled: margin = the pre-tax amount the customer pays − our cost, and our cost covers everything the payable covers, battery included; tax never counts as margin (owner ruling 2026-11-13, final review).
+- A slow network (M06-35, `F8-12`) — ruled: while the server recomputes, the payable card shows that it is updating and never shows the old payable beside new inputs as current (owner ruling 2026-11-13, final review).
+- The incentive claimed switch (M06-38) — ruled: it sits beside the incentive amount, on by default only when the pack offers the incentive for the segment and the system type; off-grid is not offered in IN (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -216,6 +231,8 @@ with the `AllocationMeter` component; no second 100 % check is written.
 
 **Settle before the build:**
 - The stage each tranche falls due on (M06-13, M11-09) — ruled: every row carries its due stage, copied from the tranche template line it came from; a row added here picks its stage from the market pack's chain stages (`project_tranche.due_on_stage` is NOT NULL, and M11-09 makes these rows the project's schedule unchanged).
+- Which stages a new row may fall due on (M06-13) — ruled: only the stages this segment's projects visit, so a commercial proposal never offers the incentive-claim stage it skips (owner ruling 2026-11-13, final review).
+- Amounts that do not divide evenly (M06-13, M11-08) — ruled: step 7 shows amounts from `splitSchedule` (`packages/domain/src/payments/schedule.ts`), the last row absorbing the remainder, so the builder and Won agree to the paisa (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -284,6 +301,7 @@ proposal drafts naming the item, replacing `OPEN_DRAFTS_BEFORE_THE_STUDIO`.
 
 **Settle before the build:**
 - When the number exists (M06-16, M06-44, M06-42) — ruled: it is assigned at the first successful Generate, with v1; before that step 10 reads "assigned when you generate" (drafts carry no version, and a number burned by an abandoned draft would leave gaps the customer can see).
+- Where the site address lives (M06-16) — ruled: the lead gains one site address with its state and district (`T-M06-032`'s migration); a visit booking that confirms an address writes it there, step 10 and step 3 read it, and a typed one saves there — one place, never a second copy (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -308,6 +326,7 @@ The fact's prompt state rides the shipped route `PUT /onboarding/prompt-points/:
 
 **Settle before the build:**
 - The Add 3D Design closing sheet while no studio exists (M06-17) — ruled: not shown; it returns with the studio's hand-off (`T-M06-021`) — a doorway to nothing is a dead end.
+- When company facts are read (M06-17) — ruled: bank details, logo, address, phone, email and tax registration are read live from the business profile until Generate and frozen only into the version, so an owner's new bank account reaches every open draft and never an already-sent version; template content (terms, timeline, tranches) is copied at fill as M06-18 says (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -356,7 +375,7 @@ they are the specification.
 **PRD rows:** M06-42 (P0)
 **DESIGN:** SCR-M06-16
 **Why:** when a customer asks for changes, the rep and the owner see what moved between versions and why, and v1 stays as it was sent.
-**Depends on:** T-M06-025
+**Depends on:** T-M06-025a
 
 **Requirements (verbatim):** Verbatim rows live in the PRD;
 they are the specification.
@@ -374,7 +393,7 @@ they are the specification.
 **PRD rows:** M06-04 (P0), M06-51 (P0), F3-15 (P0)
 **DESIGN:** SCR-M06-17
 **Why:** the document is what wins or loses the job — a homeowner understands it in seconds: one hero figure, pictures over tables, every number with its unit and honest label, no placeholder ever printed.
-**Depends on:** T-M06-024, T-M06-025
+**Depends on:** T-M06-024, T-M06-025a
 
 **Requirements (verbatim):** Verbatim rows live in the PRD;
 they are the specification.
@@ -399,6 +418,7 @@ achievements, bank-details and timeline bands this document prints.
 
 **Settle before the build:**
 - What a V1 document states as its basis when no survey exists behind it (M06-51; `F8-20`, `F8-22`) — ruled: the basis is derived at Generate from the design's roof-capture provenance tier and frozen into the version's honesty labels — no design keeps `F8-20`'s indicative line; a design whose roof tier is not `measured` renders `F8-22`'s remote line verbatim; a `measured` roof, M04's V2 path, carries no basis line; and no field is added to the design (`F8-21` reduces roof capture to exactly two flows, so the tier already names the flow, and a stored basis would be a second copy of it).
+- The document's language (M06-50, `F3-06`) — ruled: the customer's preferred language, and the company's default language when the customer has none (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -410,7 +430,7 @@ achievements, bank-details and timeline bands this document prints.
 **Owed by `T-FPLAT-028` (`F8-17`, `F8-18`):** the stale state reads from the version's `Freshness` (`freshnessOf`, `packages/domain`), shown on the detail before any share act with its corrective action; the share, send and issue acts are blocked while `issueBlockedBy` names a reason or `payableStandsUp` is false, and the stated reason is the one returned. Its freshness comes from this output's own stored pins, never pins built at the call site.
 **Owed by `T-M01-005` (`M01-24`, `M01-29`; owner ruling 2026-10-12):** the prompt at the first send. *Given a skipped company profile, when the first proposal is about to be sent, then the prompt to complete it fires there, inline (M01-24, M01-29).* → proof: QA (web and phone) skip the profile step, build a proposal to its send: `SCR-M01-05`'s tax part opens in `EditorSurface` over the proposal (board frames `m-prompt`, `d-prompt`), *Add it and send* saves the registration and *Send without it* leaves the default in place; the fact's state goes through `PUT /onboarding/prompt-points/company_profile` (fired, then completed or declined). The field set is `T-M01-005`'s shared component; this task mounts it and adds the client call. Only a holder of `F2.M01.manage-tenant-settings` is offered *Add it*; anyone else sees who can add it (M06-17).
 **Why:** one tap shares on WhatsApp with the words already written; the rep then sees when the customer opened it, and nothing claims a delivery the product cannot see.
-**Depends on:** T-M06-025, T-F5-006, T-F5-007
+**Depends on:** T-M06-025a, T-F5-006, T-F5-007
 
 **Requirements (verbatim):** Verbatim rows live in the PRD;
 they are the specification.
@@ -425,7 +445,11 @@ connected-channel clauses of `M06-53` and `M06-57` wait for the channel connecti
 - Given a V1 company, when the share sheet opens, then Share on WhatsApp opens a chat picker with the composed words and the customer link in the customer's language, Copy link and Download PDF are offered, and nothing claims a send (M06-53).
 - Given a shared proposal, when tracking renders, then states are shared → opened → viewed-for-how-long, delivery states appear only as the connected channel reported them, the fallback path shows no delivered state anywhere, and an open notifies the rep (M06-54).
 - Given a client phone that fails the pack's format, when step 10 commits, then the failure is stated at entry; given a connected-channel send that the channel reports failed, then the failure is shown and an alternative channel offered; and given a fallback-path share never opened, then the non-opening is visible, the composed message is re-offered for an alternative channel the rep sends, and no fallback surface claims a delivery state (M06-57; owner ruling 2026-08-04 on the transactional lane).
+- Given each share and mark-shared route, when an EPC Owner, Sales Manager and Sales Executive call it, then it succeeds; when a Design Engineer or any other role calls it, then it is refused; and given another company's proposal, then the answer is 404 (permissions; `F2.M06.send-proposals`).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+
+**Settle before the build:**
+- What marks a proposal shared in V1 (M06-53, `F5-20`) — ruled: the first Share on WhatsApp or Copy link is the mark-shared act and mints the link for the lead's primary contact; a re-share reuses that link, never minting a second; Download PDF alone shares nothing (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -436,7 +460,7 @@ connected-channel clauses of `M06-53` and `M06-57` wait for the channel connecti
 **DESIGN:** SCR-M06-19
 **Owed by `T-FPLAT-028` (`F8-18`, a law):** each row's stale state reads from its version's `Freshness` (`freshnessOf`, `packages/domain`) and is shown on the row with its corrective action, never only by a colour. Its freshness comes from this output's own stored pins, never pins built at the call site.
 **Why:** "same as the Sharma proposal, new customer, 6 kW" takes under a minute from the list; every proposal's state reads at a glance as glyph, word and tint.
-**Depends on:** T-M06-025
+**Depends on:** T-M06-025a
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they
 are the specification.
@@ -462,6 +486,9 @@ they are the specification.
 - Given the deal's link manager, when it is opened by an operator, then it shows labels, contacts, open history and link states; and given the customer's page, when it is opened, then it shows none of them (`F5-30`).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle before the build:**
+- The link manager's acts (`F5-30`) — ruled: it mints a named link for another contact, labels, re-mints and revokes, each under `customer_link.mint_customer_link` / `revoke_customer_link`; after Won the project's manager is the named person, so this task adds the project manager to those two capability rows (F2 row and matrix in one change) — a customer who loses their phone mid-install is served by the person they deal with (owner ruling 2026-11-13, final review).
+
 ---
 
 ## Engine, policy and integration tasks
@@ -475,7 +502,7 @@ they are the specification.
 **Depends on:** none
 
 The proposal, its draft lines (components, tranches, timeline), its versions with their copied
-lines, and the share record; the lead's two new columns (sanctioned load, supply phase); the
+lines, and the share record; the lead's new columns (sanctioned load, supply phase, the site address with its state and district); the
 `proposal` counter kind (`packages/domain/src/tenancy/counters.ts`, pgEnum, Law 12) and a `PRP-`
 number format beside the project and receipt ones; the contract in `packages/contracts`; the
 customer-merge repoint (`apps/api/src/modules/crm/crm.merge.repository.ts`). The capability rows
@@ -483,11 +510,18 @@ exist (`packages/domain/src/authz/proposals.ts`). Every migration starts from
 `pnpm db:migration:new`.
 
 **DONE WHEN:**
-- Given each proposal route, when an EPC Owner, Sales Manager, Sales Executive and Design Engineer call it, then create and edit succeed for all four, share and mark-shared succeed for all but the Design Engineer, and every other role is refused; and given a proposal of another company, when any role calls a route with its id, then the answer is 404 (permissions; `F2.M06.create-edit-proposals`, `F2.M06.send-proposals`).
+- Given each create, edit and Generate route, when an EPC Owner, Sales Manager, Sales Executive and Design Engineer call it on a lead they reach, then it succeeds, and every other role is refused; and given a proposal of another company, when any role calls a route with its id, then the answer is 404 (permissions; `F2.M06.create-edit-proposals`).
 - Given a lead a person cannot see, when they read its proposals, then none is returned (permissions; proposal visibility follows `F2.M02.lead-visibility`).
 - Given a Generate, a discount and a version creation, when each commits, then an audit-log event names the act, the actor and the amount where there is one (`F2-22`).
 - Given a lead with proposals, when Lead Detail opens, then the proposals section counts them and a draft shows as "Proposal draft — n/11" (M06-25).
 - Given two customers merged, when the merge completes, then every proposal of the loser points at the survivor and no proposal figure, version, discount or total changes (M02-60, M02-62) (moved from the block 3 CRM plan, owner yes 2026-11-09).
+- Given a lead marked lost, disqualified or junk, when a person tries to create a proposal on it, then it is refused with "Reopen the lead to make a proposal" (M06-45).
+
+**Settle before the build:**
+- Lead facts written from the builder (M06-09, M06-16) — ruled: they go through the lead's own edit path, allowed under either `crm.add_edit_leads` or the proposal grant, each write a timeline entry naming the actor and refused on a stale revision; Category writes the lead's segment; the client phone is read-only here — it is the customer's identity, changed on the customer (owner ruling 2026-11-13, final review).
+- Proposal work on parked leads (M02-49) — ruled: a draft act counts as activity, so a dormant lead returns to its stage; a share on a snoozed lead wakes it; create on a closed lead is refused as above (owner ruling 2026-11-13, final review).
+- The Design Engineer in V1 (M06 permissions) — ruled: they build proposals on the leads their scope reaches (visits they are booked on); New proposal is shown only to holders of `crm.add_edit_leads`, so nobody meets a quick add they cannot save (owner ruling 2026-11-13, final review).
+- The number's format (M06-44) — ruled: `PRP-0001`, one sequence per company, beside `PRJ-` and `RCPT-` — the same shape the shipped numbers use (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -512,6 +546,13 @@ and the inflation rate.
 - Given an energy figure produced by the source of record, when it renders on any surface, then it carries "Real · PVGIS ({database})" with the database named (`F8-08`).
 - Given an energy figure produced by the built-in fallback, when it renders on any surface, then it carries "Built-in estimate ±10%" (`F8-08`).
 
+**Settle before the build:**
+- Savings (M06-11) — ruled: monthly savings = units used on site × tariff, capped at the lead's monthly bill when it is known; exported units are valued at the pack's export rate, zero when the pack has none — savings never exceed the bill (owner ruling 2026-11-13, final review).
+- Losses counted once (M06-10) — ruled: PVGIS is asked at zero system loss and step 4's efficiency is applied once, so losses are never taken twice (owner ruling 2026-11-13, final review).
+- The fallback (`F8-08`, `F8-10`) — ruled: this task authors the built-in latitude fit on the server entry and proves it within ±10 % of PVGIS at sample points across the pack's areas; `energy-source.ts` holds only its label today (owner ruling 2026-11-13, final review).
+- A slow or failing source (M06-10, `F8-10`) — ruled: a fixed timeout, then the fallback with its label; results cached per coordinate at 1 kWp and scaled by capacity; a rep's edited figures stay when capacity changes, with "Capacity changed — Reset to AI values"; an offline phone gets the honest no-connection state (`F8-36`) (owner ruling 2026-11-13, final review).
+- A district missing from the pack (M06-09) — ruled: the rep picks the state alone and the state's coordinate is used, labelled as the coarser estimate it is (owner ruling 2026-11-13, final review).
+
 ---
 
 ### T-M06-034 · The company's saved parts — cable, electrical and structure
@@ -529,6 +570,9 @@ description — with no price, count or stock; written under the catalog-add gra
 **DONE WHEN:**
 - Given a Cable part added with Add new on one proposal, when the next proposal opens step 8, then that part is offered in the Cable picker with its brand, specification, warranty and description, and no price or count field exists for it (M06-28).
 
+**Settle before the build:**
+- Keeping the list clean (M06-28) — ruled: a part with the same brand and specification, ignoring case and spaces, is refused as a duplicate; a holder of `F2.M01.manage-catalog` edits or archives a part from the picker; an archived part leaves the picker, and versions keep their own copy (owner ruling 2026-11-13, final review).
+
 ---
 
 ### T-M06-021 · Path A — the studio's hand-off, pre-fill map, variants, staleness and the upgrade offer
@@ -539,7 +583,7 @@ description — with no price, count or stock; written under the catalog-add gra
 **PRD rows:** M06-03 (P0), M06-46 (P0), M06-47 (P0), M06-56 (P0), M08-04 (P0), M08-05 (P0), M08-16 (P0)
 **Design:** as T-M06-017
 **Why:** on a designed job every number arrives derived from the real model, the customer sees one recommended system, and a proposal whose design changed says so before anyone sends it.
-**Depends on:** T-M06-025
+**Depends on:** T-M06-025a
 **Parked:** needs a design; built with the 3D studio's block (owner ruling 2026-11-13 — proposals ship first).
 
 **Requirements (verbatim):**
@@ -564,7 +608,7 @@ description — with no price, count or stock; written under the catalog-add gra
 **PRD rows:** M06-20 (P0), M06-23 (P0), M06-36 (P0), M06-37 (P0)
 **Design:** as T-M06-002
 **Why:** every mistake shows up once, at Generate, as a list the rep taps through — and the three size warnings stop a 3 kW proposal going out with 3.47 kW of panels and a 5 kW inverter.
-**Depends on:** T-M06-024
+**Depends on:** T-M06-024, T-M06-025a
 
 **Requirements (verbatim):**
 
@@ -579,9 +623,16 @@ size checks' tolerance and inverter band are market-pack facts added here (Law 1
 - Given the same proposal content, when Generate runs from Quick mode, from a duplicate, or from the full rail, then the identical checklist produces the identical pass/fail result (M06-20).
 - Given a proposal with multiple failures, when Generate is tapped, then every failure renders as one tappable list ("Fix N issues to share") and each tap lands on the exact step with the failing fields highlighted (M06-22, M06-23).
 - Given a proposal on the incentive path with a component failing the pack's required scheme, when Generate runs, then the check fails naming the component line and the scheme, and clearing it (compliant component, or leaving the incentive path) passes (M06-23; `F1-34`).
-- Given 6 panels of 579 Wp on a 3 kW proposal with a 5 kW inverter and a 2 kW sanctioned load, when Generate runs, then three warnings list both figures of each check, each jumps to its step, and none blocks generation (M06-23).
+- Given 6 panels of 579 Wp on a 3 kW proposal with a three-phase 5 kW inverter, a 2 kW sanctioned load and a single-phase supply, when Generate runs, then four warnings list both figures of each check, each jumps to its step, and none blocks generation; and given no sanctioned load on the lead, then that check says it was skipped and why (M06-23).
+- Given a panel section listing a DCR panel and a non-DCR panel on the incentive path, when Generate runs, then the non-DCR brand fails by name, and no inverter, cable, electrical or structure line is checked against the scheme (M06-23; `F1-34`).
 - Given payable ≤ 0, when Generate runs, then it blocks with the negative shown; given payable corrected positive, then the same checklist passes (M06-36).
 - Given a discount below cost with payable > 0, when Generate runs, then a warning states the loss in tenant currency and generation proceeds if confirmed (M06-37).
+- Given a ₹0 system cost and no discount, when Generate runs, then the payable floor blocks it — the check reads payable ≤ 0 itself, not `zeroOrBelow`, which needs a deduction (M06-36).
+- Given Generate tapped twice, or retried on a slow network, when both reach the server with one creation key (`createHeadersSchema`, `creationKeyOf`), then one version and one number exist (M06-44).
+
+**Settle before the build:**
+- Which components a certification scheme binds (M06-23(f), `F1-34`) — ruled: each required scheme names the component categories it applies to, a market-pack fact (IN: DCR → panel, Law 12), and every listed brand of those categories is checked; `unmetSubsidySchemes` reads that scope (owner ruling 2026-11-13, final review).
+- What a person without `F2.M01.manage-catalog` sees when the price is below cost (M06-37) — ruled: "below the company's cost", with no figure, so the loss never reveals our cost; holders see the amount (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -603,6 +654,12 @@ the resume path behind it.
 
 **DONE WHEN:**
 - Given a field edited and blurred, when the app is killed and the lead reopened, then the draft resumes with that value present and the lead shows "Proposal draft — n/11" (M06-25).
+- Given a field blurred while the network fails, when the commit is refused, then the typed value stays with "Not saved — tap to retry", and nothing claims it saved (M06-25).
+- Given the same draft open on a phone and a desk, when the older device commits a field the newer one changed, then the write is refused with "Changed on another device — reload" and no value is silently overwritten (M06-25).
+
+**Settle before the build:**
+- Draft writes (M06-25, `F8-36`) — ruled: each field write carries the draft's revision and a stale one is refused; nothing is queued offline — an offline phone shows the no-connection state and keeps what was typed on screen (owner ruling 2026-11-13, final review).
+- A lead that moves away mid-draft (M06-25) — ruled: the next commit answers "This lead moved to {person}" instead of a bare refusal, and the draft stays with the lead for its new owner (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -617,7 +674,7 @@ the resume path behind it.
 **Requirements (verbatim):**
 
 - **M06-34** (P0) — **The proposal money block is scheme-generic, currency-stamped, and reconciles to the minor unit.** It carries: currency code (stamped at creation, one currency per tenant — `F1-07` consumed) · system cost excl./incl. tax · per-line tax % · a document-level taxes[] breakdown · battery cost + battery tax % · incentive amount · discount (% ⇄ amount) · payable. **Tax strategy comes from the market pack** (`F1-13`: per-line-rate or document-level); no tax column, label or rate is hard-coded. Sums reconcile to the currency's minor unit (`DOC04.currency-stamp` via `F1-07`).
-- **M06-38** (P0) — **The incentive amount is computed from the market pack's incentive model — never manually configured per tenant.** Eligibility (segment, capacity, component-certification requirements, geography) and the computation ship as versioned pack data (`F1-14` consumed; the IN instance is `F1-33`'s slab model). The proposal shows the computed amount and treats it as `M06-35` says; where the pack ties the incentive path to a certification scheme, the Generate-time check is `M06-23`(f). A pack revision never changes an existing version's figures (`M06-42`).
+- **M06-38** (P0) — **The incentive amount is computed from the market pack's incentive model — never manually configured per tenant.** Eligibility (segment, capacity, component-certification requirements, geography) and the computation ship as versioned pack data (`F1-14` consumed; the IN instance is `F1-33`'s slab model). The proposal shows the computed amount and treats it as `M06-35` says; an **incentive claimed** switch at step 3 — on by default when the pack offers the incentive for the proposal's segment and system type — lets the rep leave the incentive path (a customer who already used the scheme, or wants non-certified panels), which zeroes the amount and lifts the certification check (owner ruling 2026-11-13); where the pack ties the incentive path to a certification scheme, the Generate-time check is `M06-23`(f). A pack revision never changes an existing version's figures (`M06-42`).
 - **M06-41** (P0) — **Proposal money is never computed on a device and never renders stale as final.** No device prints a customer-facing price computed locally (`F4-04` consumed); a proposal whose inputs changed renders **stale, visibly, with the corrective action offered** — regenerate as a new version — and *"money must never render as final while stale — this is a hard product rule"* (`F8-12`–`F8-15`, `F8-18` consumed; the version mechanics are §M06.7's).
 
 The tax and incentive arithmetic is `taxBreakdown` (`packages/domain/src/tax/breakdown.ts`) and
@@ -629,12 +686,19 @@ Who receives the incentive is a new market-pack fact (`MarketPack`, Law 12; IN: 
 - Given an incentive-eligible proposal, when the money block computes, then the incentive amount is the pack-computed value — no manual slab entry exists anywhere (M06-38).
 - Given a stale proposal, when any money renders, then it is stale-marked with regenerate offered — never final (M06-41).
 
+**Settle before the build:**
+- The discount's base (M06-34, M06-35) — ruled: a discount is pre-tax, pro-rated across the system and battery lines by taxable value, tax recomputed per line through `taxBreakdown`, and a % converted through `applyRate` — so the printed tax is always on the price the customer pays (owner ruling 2026-11-13, final review).
+- A price typed including tax (M06-09) — ruled: the typed inclusive figure is the authority; the pre-tax figure is derived through `money/` and tax = typed − pre-tax, so the two always add up to what was typed (owner ruling 2026-11-13, final review).
+- Place of supply and an unregistered company (M06-34, `F1-13`) — ruled: the customer's place is step 3's state, the company's is its tax registration's state; a company with no tax registration prints no tax line and its price is the price — it cannot collect a tax it is not registered for — and the step says so to the owner (owner ruling 2026-11-13, final review).
+- The shipped equation's comment (`packages/domain/src/money/equation.ts`) still reads the incentive as a deduction; this task corrects it with the pack fact and adds the test that an IN incentive is never passed as a deduction (owner ruling 2026-11-13, final review).
+- Incentive eligibility (M06-38, `F1-14`) — ruled: the subsidy pack's eligibility gains the system types it covers (IN: on-grid and hybrid), a pack fact (Law 12) (owner ruling 2026-11-13, final review).
+
 ---
 
 ### T-M06-025 · Versions, numbering, the status machine and the Won hand-off
 **Type:** engine · **Tier:** P0
 **Status:** planned
-**PRD rows:** M06-43 (P0), M06-44 (P0), M06-45 (P0), M07-62 (P0), M08-50 (P0), M11-09 (P0), F6-22 (P0)
+**PRD rows:** M06-43 (P0), M06-44 (P0), M06-45 (P0), M07-62 (P0), M08-50 (P0), M11-09 (P0), M11-14 (P0), F5-46 (P0), F6-22 (P0)
 **Design:** none — the record's life behind the list, the detail and the link
 **Owed by `T-FPLAT-028` (`F8-14`, `F8-15`):** a version pins what it was computed from as `InputPins` (`packages/domain`) — the design fingerprint, the catalog release, the tenant price-book version, the pack pin with the keys read, and the engine versions — at generation, in its migration; once shared, its figures qualify as a record (`freshness: null`) and keep their standing, and its pins are never updated. Its freshness comes from this output's own stored pins, never pins built at the call site.
 **Why:** the lead, the proposal and the project move by themselves as the customer answers, and Won uses the price and the payment plan the customer accepted — nobody types the deal twice.
@@ -645,14 +709,14 @@ Who receives the incentive is a new market-pack fact (`MarketPack`, Law 12; IN: 
 | part | what | AC | depends on | status |
 |---|---|---|---|---|
 | a | Versions, the server number and the status machine, with the lead's stage following it and withdrawn on lost or disqualified | M06-43, M06-44, M06-45 lines | — | open |
-| b | The Won hand-off: Mark won reads the accepted version's payable and tranches (`'proposal_version'` source), scope change after Won | M07-62, M08-50 lines | part a, `T-F5-008` | open |
+| b | The Won hand-off: Mark won reads the accepted version's payable and tranches (`'proposal_version'` source), scope change after Won with every receipt kept | M07-62, M08-50, M11-14 lines; the signed-proposal checklist line moved from `T-F5-008` | part a, `T-F5-008` | open |
 | c | Global search finds proposals under "quote" | F6-22 line | part a | open |
 
 **Requirements (verbatim):**
 
 - **M06-43** (P0) — **Sent proposals keep their prices forever.** Once shared, a version's figures never move: it keeps the rate versions, catalog release and pack version pinned at generation; a later price-book change, catalog release or pack revision produces **a new version if the tenant wants new numbers — never an edit of the sent one**. The customer's copy and the tenant's copy always agree.
 - **M06-44** (P0) — **The proposal number is server-assigned — never client-generated.** Numbers come from server-side tenant counters; two users generating at once can never collide (`S6B.wrong.8`). Step 10 shows the number auto-filled and disabled. The same law governs project numbers (`modules/M08`'s half — cited, not disposed here).
-- **M06-45** (P0) — **The proposal status machine: draft → shared → accepted / declined, with superseded when a newer proposal replaces it on the lead.** Statuses move by acts, not edits: sharing is the rep's explicit mark (`M06-53`); accept/decline arrive from the customer link (`foundations/F5`); superseded is set when a newer proposal takes over the lead. **The customer link always shows the latest version** (`S6.wrong.6`; the link mechanics are F5's). **Withdrawn** is set when the lead is marked lost or disqualified, or when a person withdraws the proposal (`M06-58`); its link then shows `F5-25`'s honest "no longer active" page with a named person. **The lead's funnel stage follows these acts by itself and never moves back:** the first share moves it to `proposal`, a Negotiate from the link moves it to `negotiating` (`M02-41`, consumed); an Accept never makes it won — the rep's Mark won does (`M07-62`, consumed) (owner ruling 2026-11-13).
+- **M06-45** (P0) — **The proposal status machine: draft → shared → accepted / declined, with superseded when a newer proposal replaces it on the lead.** Statuses move by acts, not edits: sharing is the rep's explicit mark (`M06-53`); accept/decline arrive from the customer link (`foundations/F5`); superseded is set when a newer proposal takes over the lead. **The customer link always shows the latest version** (`S6.wrong.6`; the link mechanics are F5's) — **the latest shared version**: a version generated and not yet shared is invisible to the customer, and an older proposal turns superseded when the newer one is marked shared, not when it generates (owner ruling 2026-11-13). **Withdrawn** is set when the lead is marked lost, disqualified or junk, or when a person withdraws the proposal (`M06-58`); its link then shows `F5-25`'s honest "no longer active" page with a named person. **The lead's funnel stage follows these acts by itself and never moves back:** the first share moves it to `proposal`, a Negotiate from the link moves it to `negotiating` (`M02-41`, consumed); an Accept never makes it won — the rep's Mark won does (`M07-62`, consumed) (owner ruling 2026-11-13). **Each version takes one answer:** after an Accept, Negotiate or Decline on a version the link shows that answer and refuses another on it; sharing a newer version sets the proposal back to `shared` and opens answering on that version, the earlier answer staying in history. Nothing revives by itself: a withdrawn or superseded proposal returns only through a newly shared version.
 
 Mark won's contract (`markWonSchema`, `packages/contracts/src/projects/project-acts.ts`) gains an
 optional accepted version; the schedule writes `project_tranche` rows with source
@@ -663,17 +727,26 @@ act appends a timeline entry (`M02-35`).
 **DONE WHEN:**
 - Given a shared version and a subsequent price-book publish, when the version renders anywhere (tenant or customer side), then its figures are unchanged (M06-43).
 - Given two simultaneous Generates on one tenant, when both complete, then they hold distinct server-assigned numbers (M06-44).
-- Given a newer proposal on the same lead, when it generates, then the older proposal reads superseded and the link serves the latest (M06-45).
+- Given a newer proposal on the same lead, when it is marked shared, then the older proposal reads superseded and the link serves the latest shared version; and given it only generated, then the link still serves the older one (M06-45).
+- Given a version the customer accepted, when they try to accept, negotiate or decline it again, then the link refuses and shows the earlier answer; and given a newer version then shared, when the customer opens the link, then they can answer that version (M06-45).
 - Given a lead at `qualified`, when its first proposal is marked shared, then the lead reads `proposal`; and given a Negotiate from the link, when it lands, then the lead reads `negotiating`; and given an Accept, when it lands, then the lead is not won (M06-45).
 - Given a shared proposal, when its lead is marked lost or disqualified, then the proposal reads withdrawn and its link shows the no-longer-active page naming a person to call (M06-45).
 - Given a lead whose latest proposal version the customer accepted, when Mark won opens, then the final value is that version's payable, shown and not typed, and the project's collection schedule is that version's tranches; and given a lead with no accepted version, when the rep marks it won, then the typed value and the company's default payment terms stand and the project shows it was won without an accepted proposal (M07-62; owner ruling 2026-11-13).
 - Given a customer changes scope after Won, when a new proposal version is accepted, then the project references the new version, the earlier version remains readable, and the collection schedule follows the version in force (M08-50). *(Moved from T-M08-015 by owner ruling 2026-11-10: its proof needs a new proposal version, built in block 8.)*
 - Given the queries "quote" and "quotation", when global search runs, then Proposals return and every rendered label says Proposal — this task adds the proposal search target (F6-22) (moved from the block 3 CRM plan, owner yes 2026-11-09).
+- Given a new accepted version with revised terms, when the schedule re-renders, then it follows the version in force, every earlier receipt is still present and readable, and the earlier schedule remains viewable (`M11-14`).
+- Given a recorded acceptance and a deal then marked won, when the project's handover checklist is read, then its signed-proposal row carries the acceptance record as its proof (`F5-46`, `F5-49`; owner ruling 2026-11-13).
+- Given Mark won sent with a final value that differs from the accepted version's payable, or with a version that is another lead's or was not accepted, when the server receives it, then it is refused — the server finds the accepted version from the lead itself (M07-62; `F4-04`).
 
 **Settle before the build:**
 - Whether a version physically copies its component and tranche rows or references frozen draft rows (M06-31, M06-42) — ruled: physical copy at Generate — each version owns its own copied component and tranche rows beside its field-set and money snapshot, and the draft rows stay the one editable set with no frozen flag (M06-42 defines a version as a snapshot and demands byte-identity, which is provable only on rows nothing else can write; a frozen flag would turn every post-Generate edit into a copy-on-write of the draft).
 - Which object carries the status machine at the share boundary (M06-45, M06-53) — ruled: the proposal alone carries `status`; a version is a stateless snapshot, and M06-53's version moving to shared is the proposal's transition taken with its latest version, which the share act's own record names (M06-45 states the machine verbatim on the proposal; a second status on the version would be two machines for one act and a write to an immutable row).
 - The status set (M06-45, M06-58) — ruled: draft · shared · accepted · declined · superseded · withdrawn; a person's withdrawal and a lead closed lost or disqualified both take `withdrawn`, the act's actor and cause living in the timeline and audit record (owner ruling 2026-11-13 adds `withdrawn` to M06-45).
+- Mark won when a newer version is shared and unanswered (M07-62) — ruled: Mark won pre-fills only from an acceptance of the latest shared version; otherwise the typed value stands and the sheet says "v2 accepted, v3 not answered" (owner ruling 2026-11-13, final review).
+- Putting a version in force after Won (M08-50, M11-14) — ruled: the link has no answer after Won, so a person's act on the project — "Put v3 in force", by the lead's owner or the project's manager — records the customer's agreement with who and when; the project gains `proposal_version_id`; paid and part-paid tranche rows stay as they are, the unpaid rows are replaced by the new version's split of what remains, and more collected than the new total is shown as a surplus, never hidden (owner ruling 2026-11-13, final review).
+- Parking on a won lead (M07-62, M02-51) — ruled: Mark won clears snoozed and dormant, so the daily sweep never wakes a won lead (owner ruling 2026-11-13, final review).
+- Two leads for one customer (M06-58) — ruled: Lead Detail and Mark won name the sibling lead's live proposal, so one customer is never won twice unseen (owner ruling 2026-11-13, final review).
+- A share or Negotiate on a lead already at or past the target stage (M06-45) — ruled: `advanceStage`'s `stage_reached` is success and the act completes; a share on a closed lead is refused with Reopen offered (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -683,7 +756,7 @@ act appends a timeline entry (`M02-35`).
 **PRD rows:** M06-31 (P0)
 **Design:** none — the line record behind step 8
 **Why:** a product archived or repriced later never changes what a customer was already sent.
-**Depends on:** T-M06-025
+**Depends on:** T-M06-025a
 
 **Requirements (verbatim):**
 
@@ -718,6 +791,9 @@ words are platform copy (`M06-53`).
 - Given the proposal-template settings, when the builder generates a document, then cover, included sections, default terms and bank details come from these settings (or their platform defaults), and the document is titled with the ruled name in every locale (M01-51). → proof: QA (web and phone) save a cover, section set, terms and the printed bank details on `T-M01-019`'s screen, then generate a proposal: each appears, and the document is titled with the ruled name in every language of the set — the proof `T-M01-019` hands here, because its block has no builder
 - (M01-52, handed here by `T-M01-019`, whose block has no builder.) → proof: QA (web and phone) a phase order saved on `T-M01-019`'s screen is the order step 6 opens with
 
+**Settle before the build:**
+- Company terms and the customer's language (M06-15, M06-49) — ruled: the company's own terms in any language beat the platform default; when they are not in the customer's language, the builder says "terms will print in English" (or the language they exist in) (owner ruling 2026-11-13, final review).
+
 ---
 
 ### T-M06-028 · The single entitlement checkpoint at proposal creation
@@ -738,6 +814,10 @@ its entry in the shipped `RouteBillingMap` and nothing else in the proposal flow
 **DONE WHEN:**
 - Given a tenant at its proposal-count limit, when they edit, duplicate or share an existing proposal, then nothing pauses; when they create a new one, then the billing gate behaviour applies (M06-26).
 
+**Settle before the build:**
+- When a proposal counts against the plan (M06-26) — ruled: at its first successful Generate, not at draft creation, so an abandoned draft never uses up the limit; a duplicate counts the same way (owner ruling 2026-11-13, final review).
+- The shipped billing matrix pauses "Generate/send proposals" in `halted` and `expired` (`packages/domain/src/commerce/soft-block.ts`) — ruled: the shipped matrix stands until the new pricing replaces it; in those two states Generate and share pause while reading, exporting and every customer link keep working (`F5-23`) (owner ruling 2026-11-13, final review).
+
 ---
 
 ### T-M06-029 · Fact-traceable proposal narrative
@@ -746,7 +826,7 @@ its entry in the shipped `RouteBillingMap` and nothing else in the proposal flow
 **PRD rows:** M06-52 (P0)
 **Design:** none — the words the document prints
 **Why:** every sentence the customer reads is backed by a figure in the proposal — the document never promises what the numbers do not say.
-**Depends on:** T-M06-025
+**Depends on:** T-M06-025a
 
 **Requirements (verbatim):**
 
@@ -766,21 +846,25 @@ its entry in the shipped `RouteBillingMap` and nothing else in the proposal flow
 **PRD rows:** M06-55 (P0)
 **Design:** none — a task on My Day
 **Why:** the next call already exists the moment a proposal goes out, and it disappears the moment the customer answers — nobody chases a customer who already said yes.
-**Depends on:** T-M06-025, T-F5-008
+**Depends on:** T-M06-025a, T-F5-008
 
 **Requirements (verbatim):**
 
-- **M06-55** (P0) — **An automatic follow-up task on send — always.** *"The moment a proposal goes out, the next action must already exist and be owned"*: marking shared auto-creates a follow-up task on the sending rep for **two days later** (`S6.happy`'s "+2 days"), carrying its provenance rule (`DOC04.tasks` cited — `modules/M07`'s surface). A proposal unopened for three days is the voice agent's safety-net trigger (`D17`, `S6.wrong.5` — *"this is exactly what the voice agent picks up"*; `modules/M07` owns the agent). **The task closes itself when the customer answers (owner ruling 2026-11-13):** an Accept or a Decline from the link closes the open follow-up task, so nobody chases a customer who already answered; an Accept raises a **Confirm won** task on the lead's owner, due the same day.
+- **M06-55** (P0) — **An automatic follow-up task on send — always.** *"The moment a proposal goes out, the next action must already exist and be owned"*: marking shared auto-creates a follow-up task on the lead's owner for **two days later** (`S6.happy`'s "+2 days"), carrying its provenance rule (`DOC04.tasks` cited — `modules/M07`'s surface). A proposal unopened for three days is the voice agent's safety-net trigger (`D17`, `S6.wrong.5` — *"this is exactly what the voice agent picks up"*; `modules/M07` owns the agent). **The task closes itself when the customer answers (owner ruling 2026-11-13):** an Accept or a Decline from the link closes the open follow-up task, so nobody chases a customer who already answered; an Accept raises a **Confirm won** task on the lead's owner, due the same day; a Decline raises **Customer declined — call, then mark lost or re-share**, due the same day, so the next action still exists. A lead holds one open proposal follow-up at a time — a re-share moves its due date — every proposal task goes to the lead's current owner (the EPC Owner when the lead has none or its owner is deactivated), and Mark won closes them all.
 
 The task reuses the shipped `task` table and `raiseTask`
 (`apps/api/src/modules/crm/crm.raised-tasks.repository.ts`), adding the provenances
-`proposal_shared` and `proposal_accepted` to `TASK_PROVENANCES`
+`proposal_shared`, `proposal_accepted` and `proposal_declined` to `TASK_PROVENANCES`
 (`packages/domain/src/crm/vocabulary.ts`, Law 12). The voice agent's unopened trigger waits with
 voice.
 
 **DONE WHEN:**
-- Given mark-shared, when it commits, then a follow-up task exists for +2 days owned by the sender, carrying its provenance rule (M06-55).
-- Given an open follow-up task from a share, when the customer accepts, then the task is closed and a Confirm won task due today exists on the lead's owner; and given a decline instead, then the task is closed and no Confirm won task exists (M06-55).
+- Given mark-shared, when it commits, then a follow-up task exists for +2 days owned by the lead's owner, carrying its provenance rule (M06-55).
+- Given an open follow-up task from a share, when the customer accepts, then the task is closed and a Confirm won task due today exists on the lead's owner; and given a decline instead, then the task is closed, a Customer declined task due today exists and no Confirm won task exists (M06-55).
+- Given a proposal shared twice on one lead, when My Day renders, then one proposal follow-up exists, due two days after the latest share; and given Mark won, when it commits, then no proposal task stays open on the lead (M06-55).
+
+**Settle before the build:**
+- Who a link act's task goes to (M06-55) — ruled: the lead's current owner; when the lead has none or its owner is deactivated, the EPC Owner — active members only, the same chain the link's named person uses (`T-F5-001`) (owner ruling 2026-11-13, final review).
 
 ---
 
@@ -790,7 +874,7 @@ voice.
 **PRD rows:** M06-58 (P0)
 **Design:** none — the withdraw act on Lead Detail
 **Why:** two reps never quietly chase one customer; the record shows both and a person withdraws one.
-**Depends on:** T-M06-025
+**Depends on:** T-M06-025a
 
 **Requirements (verbatim):**
 

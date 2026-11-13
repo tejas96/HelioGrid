@@ -202,3 +202,4 @@ These M13 rows specify homes and dashboard renderings whose surfaces ship as oth
 | M13-52 | T-M13-012, shipped — the CSV is built from the read on screen |
 | M13-53 | T-M13-012, shipped |
 | M13-54 | T-M13-012, shipped |
+- Which proposals the pipeline counts (M13-14) — ruled: one per open lead — its latest shared version, in status shared or accepted; declined, withdrawn, superseded and draft never count; snoozed and dormant leads count at their stage; demo rows never count (owner ruling 2026-11-13, final review).
