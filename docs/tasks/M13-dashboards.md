@@ -2,20 +2,6 @@
 
 This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboard screens (Owner Dashboard, Pipeline Dashboard, Operations Home, Pipeline Funnel, Win/Loss Analytics), the home-composition engine behind the role-decided homes, the dashboard read-models (revenue/forecast, inline targets, medians/outliers and cycle time), the monthly in-app summaries, trial-to-paid conversion reporting, and dashboard export. Task-id prefix: `T-M13-`. Source doc: `docs/prd/modules/M13-dashboards-and-reporting.md` (rows M13-01…M13-54). Screen tasks' verbatim requirement rows live in the PRD; engine and policy tasks quote their rows in full below. Rows whose surfaces ship in other modules' screens are listed under "Realized elsewhere" with their pointers.
 
-### T-M13-001 · Owner Dashboard
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M13-14 (P0), M13-15 (P0), M13-16 (P0), M13-20 (P1), M13-29 (P0), M13-30 (P0)
-**DESIGN:** SCR-M13-01
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. (This is the single EPC Owner / Sales Manager home. M13-29 and M13-30 are the rows the PRD tags "`PS-07` consumed" and "`PS-09` consumed" — so the attention list, cash, pipeline, this-period, forecast and win/loss that `docs/prd/02-personas.md`'s PS-07 and PS-09 describe are built once, here, with the manager's rendering the same screen team-scoped. T-M13-002 / SCR-M13-02 is the Sales Executive's own-scoped step-back and builds none of it.)
-**DONE WHEN:**
-- Given the owner dashboard, when it renders, then the seven sections appear in the stated order with "what needs you" and cash leading (M13-14, M13-20).
-- Given an unassigned lead past 24 h, when the dashboard renders, then it appears in "what needs you" deep-linking to the lead (M13-15).
-- Given each of the twelve presets held singly, when the person signs in, then their home matches their row above, with content identical to the owning module's contract (M13-29 through M13-40, M13-11).
-- Given a Sales Manager, when their home renders, then it is the owner dashboard **scoped to their team**, with the team's per-rep view reachable from it and that per-rep view still gated by `F2.M07.agent-performance` (`M13-30`).
-- (M13-16 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief is the binding criterion — cash is collected vs due this month from the project tranches plus the overdue total, read from `modules/M11`'s figures with their freshness and confirmation qualifiers intact, and collections ageing renders the ageing M11 publishes, never a recomputation.)
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ### T-M13-002 · Pipeline Dashboard (Rep's own step-back)
 
@@ -47,10 +33,11 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 
 **Type:** screen · **Tier:** P0
 **Status:** planned
-**PRD rows:** M13-22 (P0)
+**PRD rows:** M13-22 (P0), M13-24 (P0)
 **DESIGN:** SCR-M13-04
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
+- Given any cycle-time figure, when it renders, then period, basis and median/mean choice are stated, and any implied driver carries the correlation caption (M13-24) (moved from T-M13-009, owner ruling 2026-11-12).
 - Given the funnel, when it renders for a Sales Manager, then conversion, leaks and time-in-stage cover exactly the team's deals (M13-22, M13-07).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
@@ -69,6 +56,8 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 
 ### T-M13-007 · Revenue and forecast read-model
 
+**Placed in block 8** (owner ruling 2026-11-12): a lead carries no value until a proposal prices it, so the weighted pipeline is built with proposals; the stage likelihood is decided there. The won half (M13-04) shipped in block 6 — the owner dashboard counts no cancelled deal.
+
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** M13-03, M13-04
@@ -79,51 +68,14 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 - Given a forecast figure and a won figure, when any total renders, then they are never summed and the forecast carries its label (M13-03).
 - Given a project cancelled after Won, when any revenue view renders, then it excludes the deal from the moment of cancellation (M13-04).
 
-### T-M13-008 · Monthly targets — inline goal storage and derived actuals
 
-**Type:** engine · **Tier:** P1
-**Status:** planned
-**PRD rows:** M13-17
-**Requirements (verbatim):**
-- **M13-17** (P1) — **Targets are optional, inline, and never a nag.** The dashboard works without a target; if used, a monthly target (tenant or per-user scope, one per scope+month) is set **inline on the dashboard** — there is no separate targets settings screen in v1. Stored as the goal only; actuals derive from proposals/payments at read time.
-(M13-17's inline set/edit surface is SCR-M13-01's — `SCR-M13-01` carries the verbatim row; this task builds the storage — one goal per scope+month, goal only — and the read-time derivation of actuals from proposals/payments.)
-**DONE WHEN:**
-- Given a target unset, when the dashboard renders, then no nag appears anywhere and every section works; given a target set inline, then "this period" compares against it (M13-17).
 
-**Settle before the build:**
-- The monthly target's unit (M13-17, M13-14) is money — an integer in the tenant currency's minor unit, the one actual the dashboard compares (M13-14's won/signed value against the target) — ruled: no unit column and no count target; a second metric is a new row, not a column.
-
-### T-M13-009 · Descriptive statistics — medians, outlier flags, cycle-time measurement
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M13-18, M13-24
-**Requirements (verbatim):**
-- **M13-18** (P1) — **The outlier rule:** where one deal skews an average, the dashboard shows medians or flags the outlier — one outsized C&I deal must not make the pipeline look healthier than it is (the source's example is a single large C&I deal distorting the averages).
-- **M13-24** (P0) — **The sales cycle is made measurable, descriptively:** lead-created → won/lost duration (the cycle), duration per funnel stage, and medians per segment — the owner brief's "reduce sales cycle time" goal given its measuring stick. The figures are descriptive facts; where any surface implies a *driver* of cycle change (a campaign, the agent, a process change), the correlation law applies and the caption renders beside the figure.
-(The rendering surfaces are SCR-M13-01 and SCR-M13-04 — their briefs carry these verbatim rows too; this task builds the computations: median selection / outlier detection, lead-created → won/lost cycle duration, per-stage durations, per-segment medians, and the stated period/basis on every figure.)
-**DONE WHEN:**
-- Given any cycle-time figure, when it renders, then period, basis and median/mean choice are stated, and any implied driver carries the correlation caption (M13-24).
-- Given a period in which one deal skews an average, when any affected figure renders, then the surface shows a median or flags the outlier — one outsized C&I deal must not make the pipeline look healthier than it is; and given a stage with three deals, then the median renders with the n stated and three deals are not presented as a trend (M13-18; wording taken from the row itself and from `docs/prd/modules/M13-dashboards-and-reporting.md` §M13.4 "Edge cases & what-goes-wrong", the only binding text the PRD carries for this row).
-- (M13-18 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text above is the binding criterion. The flag's rendering half is exercised by SCR-M13-01's outlier-flagged state and SCR-M13-04's small-sample-n-stated state under T-M13-001 and T-M13-004; the detection this task builds is what the line above asserts.)
-
-### T-M13-010 · Monthly in-app summaries (dashboard and agent)
-
-**Type:** engine · **Tier:** P1
-**Status:** planned
-**PRD rows:** M13-21, M13-45
-**Requirements (verbatim):**
-- **M13-21** (P1) — **If the owner never opens it, a short monthly summary is pushed in-app** — where they actually read things; the same fix as Agent performance's. The notification type registers with `foundations/F6`.
-- **M13-45** (P1) — **A monthly agent summary is pushed in-app to the owner** — the nobody-opens-it fix, shared with M13-21's dashboard summary; the notification type registers with `foundations/F6`.
-(The receiving surface is the Notification Center — `T-SHELL-003` / `SCR-SHELL-03` carries these verbatim rows; this task builds the monthly summary generation and push scheduling for both summaries, with the two notification types registering with `foundations/F6` per `docs/prd/foundations/F6-notifications-and-search.md`.)
-**Moved here at `T-SHELL-003`'s `/start` (2026-10-03):** the centre's two summary frames — `s-summary-received` (the owner's inbox with the summaries, each with "Read the summary") and `s-summary-opened` (the summary read in place: "All notifications" back, the month, four `StatCard`s in one column, "Open the full dashboard") on `SCR-SHELL-03` — build with this task, because the summary type and the four figures they show land here. `T-SHELL-003` ships the centre and its card; this task adds the type, its card form and the in-place reader, on web and phone.
-**DONE WHEN:**
-- (M13-21 and M13-45 carry no dedicated Given/When/Then lines in the PRD's acceptance blocks; the requirement texts above are the binding criteria.)
 
 ### T-M13-011 · Trial-to-paid conversion reporting
 
 **Type:** engine · **Tier:** P1
 **Status:** planned
+**Parked:** by owner ruling 2026-11-12 until the new platform pricing replaces billing — the metric reads billing's states, and it has no V1 screen.
 **PRD rows:** M13-51
 **Requirements (verbatim):**
 - **M13-51** (P1) — **Trial-to-paid conversion is the launch conversion metric this module reports** — the one acquisition measure named by source; its event taxonomy lands here.
@@ -133,19 +85,6 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **Settle before the build:**
 - No analytics event-stream store in V1: trial-to-paid (M13-51) derives from the `subscription` transitions M12 already records — trialing to paid, with timestamps — so the taxonomy is those named transitions and nothing is authored — pick: derive (cost if wrong: an appended analytics_event table whose rows the transitions already imply).
 
-### T-M13-012 · Dashboard export
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M13-52, M13-53, M13-54
-**Requirements (verbatim):**
-- **M13-52** (P0) — **Every dashboard read is exportable, and export works in every billing state** — the read + export law applied to reporting (dashboards and search are in the always-on set; export is never gated).
-- **M13-53** (P0) — **Exports carry everything the screen carried:** provenance labels, freshness qualifiers, correlation caveats, gap statements, the forecast's expected-not-promised label — a caveat that renders beside a number on screen travels into the export beside the same number.
-- **M13-54** (P0) — **Exports are scoped exactly as screens are:** an export never contains a row, figure or aggregate the exporting user's visibility scopes would not let them read on the screen (D20 through `F2-12`/`F2-14`), and company-wide report exports ride `F2.M13.company-reports`.
-**DONE WHEN:**
-- Given a tenant in `halted`, when any dashboard is opened and exported, then both work (M13-52).
-- Given an export of a screen bearing caveats and labels, when opened, then every caveat and label is present beside its figure (M13-53).
-- Given an export by a team-scoped manager, when its rows are audited, then nothing outside the team's scope appears (M13-54).
 
 ## Laws (enforced through screens and review, no standalone build)
 
@@ -215,23 +154,23 @@ These M13 rows specify homes and dashboard renderings whose surfaces ship as oth
 | M13-11 | LAW |
 | M13-12 | LAW |
 | M13-13 | LAW |
-| M13-14 | T-M13-001 |
-| M13-15 | T-M13-001 |
-| M13-16 | T-M13-001 |
-| M13-17 | T-M13-008 |
-| M13-18 | T-M13-009 |
+| M13-14 | T-M13-001, shipped — six sections; the agent card returns with voice (postponed) |
+| M13-15 | T-M13-001, shipped — proposals sent-and-not-opened join with block 8 |
+| M13-16 | T-M13-001, shipped |
+| M13-17 | T-M13-008, shipped — the company target; a per-person target waits with the per-rep view (voice, postponed) |
+| M13-18 | T-M13-009, shipped — the won deal's low median with its n |
 | M13-19 | LAW |
-| M13-20 | T-M13-001 |
-| M13-21 | T-M13-010 (engine) — surface half T-SHELL-003 |
+| M13-20 | T-M13-001, shipped |
+| M13-21 | T-M13-010, shipped — the summary opens the owner home |
 | M13-22 | T-M13-004 |
 | M13-23 | T-M13-005 |
-| M13-24 | T-M13-009 |
+| M13-24 | T-M13-004 (V2) — the cycle-time figures render on the funnel |
 | M13-25 | T-M13-003 |
 | M13-26 | T-M13-005 |
 | M13-27 | LAW |
 | M13-28 | LAW |
-| M13-29 | T-M13-001 |
-| M13-30 | T-M13-001 |
+| M13-29 | T-M13-001, shipped — proven for the V1 presets; the V2 presets' homes come with their modules |
+| M13-30 | T-M13-001, shipped — team = own leads and the unassigned queue until M10 maps teams |
 | M13-31 | T-M13-002 |
 | M13-32 | realized-by: T-M04-006 — SCR-M04-06 screen task |
 | M13-33 | realized-by: the 3D Design Studio, rebuilt from scratch — no PRD or task yet |
@@ -246,13 +185,13 @@ These M13 rows specify homes and dashboard renderings whose surfaces ship as oth
 | M13-42 | realized-by: SCR-M07-18 — voice, postponed |
 | M13-43 | realized-by: SCR-M07-19, SCR-M07-10, SCR-M07-20, SCR-M07-18 — voice, postponed |
 | M13-44 | realized-by: SCR-M07-18 — voice, postponed |
-| M13-45 | T-M13-010 (engine) — surface half T-SHELL-003 |
+| M13-45 | voice — postponed (the agent summary) |
 | M13-46 | realized-by: SCR-M03-01 (T-M03-001) |
 | M13-47 | T-M13-003 |
 | M13-48 | realized-by: T-M10-001 — SCR-M10-01 screen task |
 | M13-49 | LAW |
 | M13-50 | LAW |
 | M13-51 | T-M13-011 |
-| M13-52 | T-M13-012 |
-| M13-53 | T-M13-012 |
-| M13-54 | T-M13-012 |
+| M13-52 | T-M13-012, shipped — the CSV is built from the read on screen |
+| M13-53 | T-M13-012, shipped |
+| M13-54 | T-M13-012, shipped |

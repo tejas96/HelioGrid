@@ -118,7 +118,7 @@ TWO entry points: `.` for everyone, and `./server` (`src/server.ts`) for `apps/a
 alone — the functions that compute a money figure (`F4-04`), and a business-identifier formatter
 when one is written. No package a device bundles imports `./server` (dependency-cruiser
 `devices-never-compute-money`).
-Extension point: one folder per module slice (audit/, auth/, authz/, branding/, calling/, catalog/, certification/, commerce/, files/, format/, market/, messaging/, money/, notifications/, pricing/, projects/, rails/, shell/, subject/, subsidy/, tax/, tenancy/ today); each
+Extension point: one folder per module slice (audit/, auth/, authz/, branding/, calling/, catalog/, certification/, commerce/, crm/, dashboards/, files/, format/, import/, market/, messaging/, money/, notifications/, payments/, pricing/, projects/, rails/, search/, shell/, subject/, subsidy/, tasks/, tax/, tenancy/ today); each
 module appends its own capability rows when its slice begins.
 
 ### db — schema mirror, migrations, backend client

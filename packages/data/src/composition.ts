@@ -32,8 +32,13 @@ import {
   createLeadMessagesRepository,
   type LeadMessagesRepository,
 } from './crm/messages-repository';
+import { createMyDayRepository, type MyDayRepository } from './crm/my-day-repository';
 import { createTasksRepository, type TasksRepository } from './crm/tasks-repository';
 import { createVisitsRepository, type VisitsRepository } from './crm/visits-repository';
+import {
+  createDashboardsRepository,
+  type DashboardsRepository,
+} from './dashboards/dashboards-repository';
 import { createFileRepository, type FileRepository } from './file/repository';
 import { createHealthRepository, type HealthRepository } from './health/repository';
 import { createInvitationRepository, type InvitationRepository } from './invitation/repository';
@@ -95,6 +100,8 @@ export interface Repositories {
   projects: ProjectsRepository;
   leadMessages: LeadMessagesRepository;
   leads: LeadsRepository;
+  myDay: MyDayRepository;
+  dashboards: DashboardsRepository;
   tasks: TasksRepository;
   visits: VisitsRepository;
 }
@@ -175,6 +182,8 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     projects: createProjectsRepository(api),
     leadMessages: createLeadMessagesRepository(api),
     leads: createLeadsRepository(api),
+    myDay: createMyDayRepository(api),
+    dashboards: createDashboardsRepository(api),
     tasks: createTasksRepository(api),
     visits: createVisitsRepository(api),
   };

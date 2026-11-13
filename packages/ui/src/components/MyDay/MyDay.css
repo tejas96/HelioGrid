@@ -1,0 +1,278 @@
+/* MyDay — a salesperson's day (`SCR-M07-01`, sample B). The glass is `HeroPanel`'s and the rows are
+   `CardRows'`; this file lays out what they hold, and the two columns a wide room gets. */
+
+.hg-my-day {
+  container-type: inline-size;
+}
+
+.hg-my-day-columns,
+.hg-my-day-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+/* A wide room: the hero and overdue on the left, today and this week on the right (`deskDay`). */
+@container (min-width: 760px) {
+  .hg-my-day-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: start;
+    gap: var(--sp-4);
+  }
+}
+
+/* Each block rises once, a step after the one before; the rows inside arrive with their block. */
+.hg-my-day-rise {
+  min-width: 0;
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+  animation-delay: calc(var(--i) * var(--stagger-step));
+}
+
+.hg-my-day-hero-aside {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.hg-my-day-position {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--on-panel-muted);
+}
+
+.hg-my-day-who {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-my-day-who-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-my-day-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--tr-h1);
+  color: var(--on-panel);
+  overflow-wrap: anywhere;
+}
+
+.hg-my-day-task {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--sp-2);
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+/* The parts of the task line are one line, a quiet dot between two. */
+.hg-my-day-task-part + .hg-my-day-task-part::before {
+  content: "·";
+  margin-inline-end: var(--sp-2);
+}
+
+.hg-my-day-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+/* A fact on the glass: the card colour, frosted, with the soft hairline — never a control. */
+.hg-my-day-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: var(--sp-8);
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--glass);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: 0 0 0 1px var(--line-soft);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+}
+
+/* Call and Message share the row; the tick is a circle at its end. */
+.hg-my-day-acts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-my-day-answers {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sp-2);
+}
+
+.hg-my-day-later {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-1) var(--sp-3);
+  padding-top: var(--sp-2);
+  border-top: 1px solid var(--line-soft);
+}
+
+/* The footer is one row, as the sample draws it: why this task leads, and the ghost *Move to
+   tomorrow* at the far end, its own inline padding pulled back so its words end where the hero's
+   content ends. */
+.hg-my-day-later > .hg-button[data-variant="ghost"] {
+  margin-inline-end: calc(-1 * var(--sp-4));
+}
+
+/* Why this task leads — the footer's quiet line, taking the room the move leaves. */
+.hg-my-day-why-first {
+  flex: 1 1 var(--sp-24);
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+.hg-my-day-ask {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  color: var(--on-panel);
+}
+
+.hg-my-day-failed {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  padding-inline: var(--sp-1);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--danger-text);
+}
+
+.hg-my-day-band {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-my-day-band-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-inline: var(--sp-1);
+  color: var(--text-secondary);
+}
+
+.hg-my-day-band-title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+}
+
+.hg-my-day-band[data-band="overdue"] .hg-my-day-band-head {
+  color: var(--danger-text);
+}
+
+.hg-my-day-count {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-my-day-more {
+  display: flex;
+  justify-content: center;
+}
+
+.hg-card-row-body.hg-my-day-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-1);
+}
+
+/* The tick takes its own presses over the row's open target, as the row's acts do. */
+.hg-my-day-check {
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+/* The tick draws in as the box fills — transform and opacity only. */
+.hg-my-day-check .hg-checkbox-box svg {
+  animation: hg-pop-in var(--dur-micro) var(--ease-spring);
+}
+
+.hg-my-day-row-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-0-5);
+  min-width: 0;
+  margin-inline-start: var(--sp-1);
+}
+
+.hg-my-day-row-name {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-my-day-row-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+/* When it is due, and why its call is off beside it — wrapping under when the room is narrow. */
+.hg-my-day-row-marks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+}
+
+.hg-my-day-row > .hg-card-row-aside {
+  flex-shrink: 0;
+}
+
+/* A row's call and its menu, side by side at the row's end. */
+.hg-my-day-row-acts {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* A call that is off reads off: the sunk circle's own disabled ink on its glyph too, not the live
+   call's — the row's mark says why. */
+.hg-my-day-row-acts .hg-icon-button:disabled > .hg-shell-glyph {
+  color: var(--text-disabled);
+}

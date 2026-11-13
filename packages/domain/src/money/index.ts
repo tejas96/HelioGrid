@@ -22,5 +22,10 @@ export type {
   ResolvedPayable,
   ResolvedPayableLine,
 } from './equation';
-export { type MinorUnits, minorUnits, minorUnitsOfDecimal } from './minor-units';
+export {
+  AMOUNT_WHOLE_DIGITS_MAX,
+  type MinorUnits,
+  minorUnits,
+  minorUnitsOfDecimal,
+} from './minor-units';
 export type { CyclePrice, PartCycle } from './part-cycle';

@@ -1,7 +1,8 @@
 export type { LoadLead, LoadTask, MemberLoad } from './assign-load';
-export { isOpenLead, memberLoads } from './assign-load';
+export { isOpenLead, lightestHolderOf, memberLoads } from './assign-load';
 export {
   CRM_WAKE_TIME,
+  calendarMonthsAfter,
   callBackDueAt,
   callBackWindowOf,
   DORMANT_AFTER_DAYS,
@@ -10,6 +11,7 @@ export {
   isUnassignedOverdue,
   NO_CALL_MONTHS,
   noCallUntilOf,
+  REOPENED_FOLLOW_UP_AFTER_MS,
   UNASSIGNED_ESCALATES_AFTER_MS,
   wakeInstantOf,
 } from './crm-clock';
@@ -41,7 +43,7 @@ export {
   isActOut,
 } from './inbox-view';
 export type { LeadActFailure, LeadQuickAct, LeadQuickStanding } from './lead-act-standing';
-export type { LeadActDays } from './lead-detail-clock';
+export type { LeadActDays, LeadPostponeDays } from './lead-detail-clock';
 export { leadActDaysOf, tenantInstantOf } from './lead-detail-clock';
 export type {
   DialBlock,

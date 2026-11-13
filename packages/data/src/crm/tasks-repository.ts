@@ -1,4 +1,4 @@
-import type { CreateTask, Task, TaskAct } from '@heliogrid/contracts';
+import type { CreateTask, MoveTask, Task, TaskAct } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
 import { createCreationKeys } from '../client/creation-key';
 import { bodyAt } from '../errors/errors';
@@ -13,6 +13,8 @@ export interface TasksRepository {
   /** A cancelled task is history: refused `CONFLICT` (409). */
   done(taskId: string, body: TaskAct): Promise<Task>;
   reopen(taskId: string, body: TaskAct): Promise<Task>;
+  /** Another moment for an open task; a done or cancelled one is refused `CONFLICT` (409). */
+  move(taskId: string, body: MoveTask): Promise<Task>;
 }
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
@@ -30,5 +32,6 @@ export function createTasksRepository(api: ApiClient): TasksRepository {
     },
     done: (taskId, body) => bodyAt(() => api.tasks.done({ params: { id: taskId }, body }), 200),
     reopen: (taskId, body) => bodyAt(() => api.tasks.reopen({ params: { id: taskId }, body }), 200),
+    move: (taskId, body) => bodyAt(() => api.tasks.move({ params: { id: taskId }, body }), 200),
   };
 }

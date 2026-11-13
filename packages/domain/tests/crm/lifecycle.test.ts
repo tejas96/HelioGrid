@@ -53,12 +53,17 @@ describe('the funnel and R9 are two machines (M02-41, M02-49)', () => {
       expect(result.next.stage).toBe(stage);
       expect(result.transitions.every((t) => t.moveKind === 'lifecycle_state')).toBe(true);
     }
-    /* Only a won lead is past dormancy — every other act parked every stage. */
+    /* A won lead is a project: past dormancy and past every close. Every other stage parks. */
     expect(
       parked
         .filter(({ result }) => result.kind === 'refused')
         .map(({ stage, act }) => [stage, act]),
-    ).toEqual([['won', 'flag dormant']]);
+    ).toEqual([
+      ['won', 'flag dormant'],
+      ['won', 'disqualify'],
+      ['won', 'junk'],
+      ['won', 'mark lost'],
+    ]);
   });
 });
 

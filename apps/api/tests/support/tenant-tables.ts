@@ -27,6 +27,8 @@ import {
   leadImportRow,
   leadStageTransition,
   leadVisitBooking,
+  monthlySummary,
+  monthlyTarget,
   onboardingProgress,
   overageAddOn,
   priceBookRate,
@@ -66,6 +68,8 @@ export const TENANT_SETTING_TABLES = [
   timelineTemplate,
   onboardingProgress,
   collectionsSettings,
+  monthlyTarget,
+  monthlySummary,
 ] as const;
 
 /**

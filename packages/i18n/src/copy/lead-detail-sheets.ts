@@ -1,12 +1,17 @@
 /**
  * Lead Detail's sheets (`packages/ui`'s `LeadDetailSheet` words): Log activity, Book visit,
- * Snooze, Disqualify, Junk, a call-back, the message to copy and a contact, with the field words
+ * Snooze, Disqualify, Mark lost, Junk, a call-back, the message to copy and a contact, with the field words
  * every form shares and how a send that came back undone says why.
  */
 import type { ContactRoleLabel } from '@heliogrid/contracts';
-import type { LeadActFailure, LeadStage } from '@heliogrid/domain';
+import type { LeadActFailure, LeadStage, LostReason } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
-import { CALL_OUTCOME_WORD, DISQUALIFY_REASON_WORD, LEAD_STAGE_WORD } from './crm-vocabulary';
+import {
+  CALL_OUTCOME_WORD,
+  DISQUALIFY_REASON_WORD,
+  LEAD_STAGE_WORD,
+  LOST_REASON_WORD,
+} from './crm-vocabulary';
 import { datePickerWords } from './date-picker';
 import { leadActFailureWords } from './lead-act-failure';
 import { LEAD_DETAIL } from './lead-detail';
@@ -56,6 +61,20 @@ const SHEETS = {
   disqualifyLine: /*i18n*/ { id: 'A reason is needed. It stays on the record.' },
   reasonLabel: /*i18n*/ { id: 'Reason' },
   wrongNumberLine: /*i18n*/ { id: 'No one will be offered a call to this number again.' },
+  lostTitle: /*i18n*/ { id: 'Why was it lost?' },
+  lostLine: /*i18n*/ { id: 'A reason is needed. You can reopen the lead later.' },
+  /* The same message My Day's next-up hero says beside a lead's name. */
+  bill: /*i18n*/ { id: 'Bill {amount} a month' },
+  bringBack: /*i18n*/ { id: 'Bring it back in' },
+  inAWeek: /*i18n*/ { id: '1 week' },
+  inAMonth: /*i18n*/ { id: '1 month' },
+  inThreeMonths: /*i18n*/ { id: '3 months' },
+  pickDate: /*i18n*/ { id: 'Pick date' },
+  comesBackOn: /*i18n*/ { id: 'Comes back on' },
+  comesBack: /*i18n*/ { id: 'Comes back to Today on {day} · {time} with a follow-up.' },
+  notInterestedLine: /*i18n*/ { id: 'No call task is raised for this lead for six months.' },
+  markLost: LEAD_DETAIL.markLost,
+  markLostAs: /*i18n*/ { id: 'Mark lost · {reason}' },
   junkTitle: /*i18n*/ { id: 'Bin this lead as junk?' },
   junkLine: /*i18n*/ {
     id: 'It leaves every list and queue. Search still finds it, and it can be reopened.',
@@ -152,6 +171,36 @@ export function leadActSheetWords(t: T, copyAct: 'copy' | 'share') {
         wrong_number: t(DISQUALIFY_REASON_WORD.wrong_number),
       },
       wrongNumberLine: t(SHEETS.wrongNumberLine),
+    },
+    lost: {
+      title: t(SHEETS.lostTitle),
+      line: t(SHEETS.lostLine),
+      reasonLabel: t(SHEETS.reasonLabel),
+      reason: {
+        price: t(LOST_REASON_WORD.price),
+        chose_competitor: t(LOST_REASON_WORD.chose_competitor),
+        postponed: t(LOST_REASON_WORD.postponed),
+        not_reachable: t(LOST_REASON_WORD.not_reachable),
+        roof_unsuitable: t(LOST_REASON_WORD.roof_unsuitable),
+        financing_failed: t(LOST_REASON_WORD.financing_failed),
+        not_interested: t(LOST_REASON_WORD.not_interested),
+      },
+      bill: (amount: string) => t(SHEETS.bill, { amount }),
+      noName: t(LEAD_DETAIL.noName),
+      whenLabel: t(SHEETS.bringBack),
+      span: {
+        week: t(SHEETS.inAWeek),
+        month: t(SHEETS.inAMonth),
+        threeMonths: t(SHEETS.inThreeMonths),
+        pick: t(SHEETS.pickDate),
+      },
+      dayLabel: t(SHEETS.comesBackOn),
+      comesBack: (day: string, time: string) => t(SHEETS.comesBack, { day, time }),
+      notInterestedLine: t(SHEETS.notInterestedLine),
+      send: (reason: LostReason | null) =>
+        reason === null
+          ? t(SHEETS.markLost)
+          : t(SHEETS.markLostAs, { reason: t(LOST_REASON_WORD[reason]) }),
     },
     junk: { title: t(SHEETS.junkTitle), line: t(SHEETS.junkLine), send: t(SHEETS.junkSend) },
     callBack: {

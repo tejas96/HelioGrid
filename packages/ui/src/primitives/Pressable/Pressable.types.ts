@@ -103,4 +103,17 @@ export interface PressableProps {
   ripple?: PressableRipple;
   /** The tap the phone gives as the press lands (`PressableHaptic`). Default by role (`hapticOf`). */
   haptic?: PressableHaptic;
+  /**
+   * One option of a radio group: the group is ONE tab stop — the chosen option, else the first —
+   * and the arrows move between its options (WAI-ARIA radio group). A phone has no tab order, so
+   * its half ignores this.
+   */
+  focusGroup?: PressableFocusGroup;
+}
+
+export interface PressableFocusGroup {
+  /** The group's one tab stop: the chosen option, else the first. */
+  readonly tabbable: boolean;
+  /** A key pressed on this option; `true` when the group used it, so the browser does not. */
+  readonly onKey: (key: string) => boolean;
 }

@@ -1,0 +1,153 @@
+/* NeedsYouHero — the dashboard's one hero (`HeroPanel`'s glass); this file lays out its items.
+   Widths read the dashboard's own room (`.hg-owner` is the container). */
+
+.hg-owner-need-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-inline-start: auto;
+}
+
+.hg-owner-need-position,
+.hg-owner-need-count {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--on-panel-muted);
+}
+
+.hg-owner-need-count {
+  display: none;
+}
+
+.hg-owner-needs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-owner-need {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+/* Narrow: one item at a time. Shown again, its entrance plays again — a short slide in from the
+   side it came from, over the standard duration. */
+.hg-owner-need[data-current="false"] {
+  display: none;
+}
+
+.hg-owner-need[data-current="true"] {
+  animation: hg-owner-need-in var(--dur-standard) var(--ease-enter) backwards;
+}
+
+@keyframes hg-owner-need-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--sp-4));
+  }
+}
+
+.hg-owner-need-head,
+.hg-owner-need-clear {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-owner-need-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-owner-need-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--tr-h3);
+  color: var(--on-panel);
+  overflow-wrap: anywhere;
+}
+
+.hg-owner-on-panel {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+  overflow-wrap: anywhere;
+}
+
+.hg-owner-need-act {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The one-tap act and *Pick someone* share the row as two pills, each as wide as its words; when
+   the room is too narrow for both, the second moves under the first rather than clipping. */
+.hg-owner-need-act[data-pair="true"] {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-owner-need-act[data-pair="true"] > .hg-button {
+  flex: 1 1 auto;
+}
+
+/* Wide: every item in a row of frosted panes on the glass, each with its own act; one at a time
+   and *Next* are the narrow room's answer, so they step aside. */
+@container (min-width: 720px) {
+  .hg-owner-needs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(calc(var(--sp-24) * 2), 1fr));
+  }
+
+  .hg-owner-need,
+  .hg-owner-need[data-current="false"] {
+    display: flex;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+    border-radius: var(--r-tile);
+    background: var(--glass);
+    box-shadow:
+      inset 0 1px 0 var(--glass-edge),
+      0 0 0 1px var(--line-soft);
+    animation: none;
+  }
+
+  .hg-owner-need-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hg-owner-need-title {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    letter-spacing: var(--tr-body);
+    font-weight: var(--fw-medium);
+  }
+
+  .hg-owner-need-act {
+    margin-top: auto;
+  }
+
+  .hg-owner-need-position,
+  .hg-owner-need-next {
+    display: none;
+  }
+
+  .hg-owner-need-nav[data-many="true"] .hg-owner-need-count {
+    display: inline;
+  }
+}

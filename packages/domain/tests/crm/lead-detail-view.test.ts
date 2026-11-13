@@ -97,7 +97,15 @@ describe('lead detail: the acts its standing offers (M02-45, M02-51…M02-56)', 
     ['lost', ['reopen']],
     ['junk', ['reopen']],
   ])('a lead in state %s offers %j', (state, acts) => {
-    expect(leadStateActsOf(state)).toEqual(acts);
+    expect(leadStateActsOf(state, 'proposal')).toEqual(acts);
+  });
+
+  it.each<[LeadLifecycleState | null, readonly string[]]>([
+    [null, ['snooze']],
+    ['snoozed', ['wake', 'snooze']],
+  ])('a won lead in state %s offers %j — no close reaches a project (M07-62)', (state, acts) => {
+    expect(leadStateActsOf(state, 'won')).toEqual(acts);
+    expect(leadActsOf(withLead({ stage: 'won', state })).stateActs).toEqual(acts);
   });
 
   it.each<[LeadStage, LeadLifecycleState | null, boolean]>([
@@ -243,8 +251,24 @@ describe('lead detail: the days its acts name, on the tenant clock (F1-10, M02-5
     ['2026-11-09T18:30:00Z', '2026-11-10', '2026-11-11'],
     ['2026-12-31T20:00:00Z', '2027-01-01', '2027-01-02'],
   ])('at %s Kolkata reads today %s and tomorrow %s', (instant, today, tomorrow) => {
-    expect(leadActDaysOf(Date.parse(instant), 'Asia/Kolkata')).toEqual({ today, tomorrow });
+    expect(leadActDaysOf(Date.parse(instant), 'Asia/Kolkata')).toMatchObject({ today, tomorrow });
   });
+
+  it.each([
+    ['2026-11-12T04:00:00Z', '2026-11-19', '2026-12-12', '2027-02-12'],
+    ['2026-11-09T18:30:00Z', '2026-11-17', '2026-12-10', '2027-02-10'],
+    ['2026-10-31T06:00:00Z', '2026-11-07', '2026-11-30', '2027-01-31'],
+    ['2026-11-30T06:00:00Z', '2026-12-07', '2026-12-30', '2027-02-28'],
+  ])(
+    'a loss postponed at %s Kolkata comes back in a week %s, a month %s or three months %s (M02-54)',
+    (instant, week, month, threeMonths) => {
+      expect(leadActDaysOf(Date.parse(instant), 'Asia/Kolkata').postpone).toEqual({
+        week,
+        month,
+        threeMonths,
+      });
+    },
+  );
 
   it.each([
     ['2026-11-14', '11:30', 'Asia/Kolkata', '2026-11-14T06:00:00.000Z'],

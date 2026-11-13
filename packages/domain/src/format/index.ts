@@ -16,6 +16,7 @@ export {
   checklistForDeal,
   IN_DOCUMENT_CHECKLIST,
 } from './checklist';
+export { csvText } from './csv';
 export {
   formatClockAt,
   formatDate,
@@ -83,6 +84,7 @@ export {
   type MoneyOptions,
   moneySymbol,
 } from './money';
+export { firstDayOf, type Month, monthOf, monthShifted, monthSpan } from './month';
 export {
   formatCompact,
   formatNumber,
@@ -166,4 +168,11 @@ export {
   type StageLabel,
   stageLabel,
 } from './vocabulary';
-export { localDate, localInstant, localMinutes, MS_PER_DAY, nextLocalTime } from './zone';
+export {
+  calendarDayAfter,
+  localDate,
+  localInstant,
+  localMinutes,
+  MS_PER_DAY,
+  nextLocalTime,
+} from './zone';

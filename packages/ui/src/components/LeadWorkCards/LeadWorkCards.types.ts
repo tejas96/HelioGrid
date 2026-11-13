@@ -14,7 +14,7 @@ import type { QualifyCardWords } from '../QualifyCard/QualifyCard.types';
 
 /** The sheets these cards open; the screen's `acts.open` takes them among its others. */
 export type LeadWorkCardsSheet =
-  | { readonly kind: 'log' | 'visit' | 'details' | Exclude<LeadStateAct, LeadQuickAct> }
+  | { readonly kind: 'log' | 'visit' | 'details' | 'lost' | Exclude<LeadStateAct, LeadQuickAct> }
   | { readonly kind: 'message'; readonly template: 'follow_up_nudge' };
 
 /** What the cards read and press on the lead's screen; `useLeadDetailScreen` satisfies it. */
@@ -38,7 +38,7 @@ export interface LeadWorkCardsScreen {
   };
   /** The reader may merge this customer with another (`crm.merge_customers`). */
   readonly canMerge: boolean;
-  /** The reader may close the deal as won (`sales.mark_won_lost`). */
+  /** The reader may close the deal as won or lost (`sales.mark_won_lost`). */
   readonly canWin: boolean;
   /** The won lead's project answered this reader: only then does the lead link to it. */
   readonly canOpenProject: boolean;

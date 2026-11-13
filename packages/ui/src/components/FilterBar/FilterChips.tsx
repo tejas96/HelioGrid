@@ -1,6 +1,7 @@
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
 import { useImperativeHandle, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { rovingTargetOf } from '../../primitives/press-keys';
 import { chosenChipIndex } from './FilterBar.logic';
 import type { FilterChipsProps } from './FilterBar.types';
 import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
@@ -71,17 +72,12 @@ export function FilterChips({
   );
 
   const onKeyDown = (index: number, event: KeyboardEvent<HTMLButtonElement>) => {
-    const go = (next: number) => {
-      event.preventDefault();
-      const target = (next + options.length) % options.length;
-      refs.current[target]?.focus();
-      const option = options[target];
-      if (option !== undefined) onChange?.(optionValue(option));
-    };
-    if (event.key === 'ArrowRight') go(index + 1);
-    else if (event.key === 'ArrowLeft') go(index - 1);
-    else if (event.key === 'Home') go(0);
-    else if (event.key === 'End') go(options.length - 1);
+    const target = rovingTargetOf(event.key, index, options.length, 'row');
+    if (target === null) return;
+    event.preventDefault();
+    refs.current[target]?.focus();
+    const option = options[target];
+    if (option !== undefined) onChange?.(optionValue(option));
   };
 
   return (

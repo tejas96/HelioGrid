@@ -1,5 +1,5 @@
 import type { CalendarDate } from '../format/holidays';
-import { localDate } from '../format/zone';
+import { calendarDayAfter } from '../format/zone';
 import {
   type BoardManager,
   boardManagersOf,
@@ -103,8 +103,7 @@ export const HANDED_OVER_RECENT_DAYS = 30;
 
 /** The first company day the handed-over stop looks back to from `today`. */
 export function handedOverSince(today: CalendarDate): CalendarDate {
-  const from = Date.parse(`${today}T00:00:00Z`) - HANDED_OVER_RECENT_DAYS * 86_400_000;
-  return localDate(from, 'UTC');
+  return calendarDayAfter(today, -HANDED_OVER_RECENT_DAYS);
 }
 
 /** What the person chose to see: a stage, a search, and whether they may act at all. */

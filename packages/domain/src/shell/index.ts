@@ -36,8 +36,11 @@ export {
   homeFor,
   homesOf,
   MODULE_HOME_BLOCKS,
+  MY_DAY_PRESET,
   showsInstallerJob,
   showsMoneyDue,
+  showsMyDay,
+  showsOwnerDashboard,
   waitingHomeBlocks,
 } from './home';
 export type {

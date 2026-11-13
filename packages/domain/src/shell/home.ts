@@ -63,23 +63,46 @@ export function composedHome(
 
 /**
  * The presets whose home block is their module's own part, which the home draws itself instead of
- * a waiting block: the installer's job (`SCR-M08-05`, `M08-45`) and Finance's money due
- * (`SCR-M11-01`, `M11-54`).
+ * a waiting block: the installer's job (`SCR-M08-05`, `M08-45`), Finance's money due
+ * (`SCR-M11-01`, `M11-54`), the sales executive's My Day (`SCR-M07-01`) and the owner dashboard
+ * the EPC Owner and the Sales Manager share (`SCR-M13-01`, `M13-30`).
  */
 export const MODULE_HOME_BLOCKS = [
   'installation_team_member',
   'finance',
+  'sales_executive',
+  'epc_owner',
+  'sales_manager',
 ] as const satisfies readonly RolePreset[];
+
+/** The presets whose home is the owner dashboard, one surface scoped by role (`M13-07`, `M13-30`). */
+const OWNER_DASHBOARD_PRESETS: readonly RolePreset[] = ['epc_owner', 'sales_manager'];
 
 /**
  * Whether the home shows Money due (`SCR-M11-01`): Finance's own home block, and the owner's —
- * who answers for the money until the owner's dashboard lands (ruling 2026-11-12).
+ * under the owner dashboard, where its late payments open to the rows (ruling 2026-11-12).
  */
 export function showsMoneyDue(home: ComposedHome | null): boolean {
   return (
     home !== null &&
     [home.home, ...home.composed].some((preset) => preset === 'finance' || preset === 'epc_owner')
   );
+}
+
+/**
+ * Whether the home in force is the owner dashboard (`SCR-M13-01`). Only the home in force: the two
+ * presets sit at the top of the ladder, so neither is ever composed into another's home.
+ */
+export function showsOwnerDashboard(home: ComposedHome | null): boolean {
+  return home !== null && OWNER_DASHBOARD_PRESETS.includes(home.home);
+}
+
+/** The preset whose home is My Day (`SCR-M07-01`) — where "your overdue tasks" opens. */
+export const MY_DAY_PRESET = 'sales_executive' satisfies RolePreset;
+
+/** Whether the home in force, or a home composed into it, is the sales executive's My Day. */
+export function showsMyDay(home: ComposedHome | null): boolean {
+  return home !== null && [home.home, ...home.composed].includes(MY_DAY_PRESET);
 }
 
 /** Whether the home in force, or a home composed into it, is the installer's job. */

@@ -1,6 +1,7 @@
 import {
   type CreateHeaders,
   type CreateTask,
+  type MoveTask,
   type Task,
   type TaskAct,
   tasksContract,
@@ -70,6 +71,10 @@ export class CrmTasksService {
     return taskOf(await this.tasks.done(reader, taskId, new Date(body.capturedAt), act));
   }
 
+  async move(reader: LeadReader, taskId: string, body: MoveTask): Promise<Task> {
+    return taskOf(await this.tasks.move(reader, taskId, new Date(body.dueAt)));
+  }
+
   async reopen(reader: LeadReader, taskId: string): Promise<Task> {
     return taskOf(await this.tasks.reopen(reader, taskId));
   }
@@ -79,6 +84,9 @@ function taskOf(outcome: TaskActOutcome): Task {
   if (outcome.outcome === 'not-found') throw new NotFoundException('No such task.');
   if (outcome.outcome === 'cancelled') {
     throw new ConflictException('A cancelled task is history and cannot change.');
+  }
+  if (outcome.outcome === 'not-open') {
+    throw new ConflictException('Only an open task moves; a done one is reopened first.');
   }
   return outcome.task;
 }

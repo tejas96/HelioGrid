@@ -1,0 +1,87 @@
+/* DashBars — a card's count bars: an 8 px pill, its fill grown once by transform, each row its
+   words and its count; a fill's depth deepens it down a funnel. */
+
+.hg-owner-bars {
+  display: grid;
+  /* The words take their own length where the room allows, so a reason reads on one line at 375;
+     the rail keeps a readable length and gives way first. Every row shares the one set of columns. */
+  grid-template-columns: minmax(0, max-content) minmax(var(--sp-16), 1fr) auto;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-owner-bar {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+/* The foot row (a funnel's won deals) shares the bars' columns, below a dashed line. */
+.hg-owner-bar[data-foot="true"] {
+  padding-block-start: var(--sp-3);
+  border-block-start: 1px dashed var(--line-soft);
+}
+
+.hg-owner-bar-label {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-owner-bar-rail {
+  height: var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  box-shadow: var(--track-edge);
+  overflow: hidden;
+}
+
+.hg-owner-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  /* A stage further down the funnel reads deeper; the words and the count carry the fact. */
+  opacity: calc(0.45 + 0.55 * var(--hg-owner-bar-depth, 1));
+  transform-origin: left center;
+  transform: scaleX(var(--hg-owner-bar-share, 0));
+  animation: hg-owner-bar-in var(--dur-data) var(--ease-enter) backwards;
+  animation-delay: calc(var(--i) * var(--stagger-step));
+}
+
+[dir="rtl"] .hg-owner-bar-fill {
+  transform-origin: right center;
+}
+
+.hg-owner-bar-fill[data-tone="danger"] {
+  background: var(--danger);
+}
+
+.hg-owner-bar-fill[data-tone="success"] {
+  background: var(--success);
+}
+
+.hg-owner-bar-fill[data-tone="neutral"] {
+  background: var(--line-strong);
+}
+
+@keyframes hg-owner-bar-in {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.hg-owner-bar-count {
+  min-width: var(--sp-6);
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  white-space: nowrap;
+  color: var(--text-secondary);
+}

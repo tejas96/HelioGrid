@@ -91,3 +91,11 @@ export function localInstant(
   const guess = wall - offsetMs(wall, timeZone);
   return wall - offsetMs(guess, timeZone);
 }
+
+/**
+ * The calendar day `days` after `date` (`days` may be negative) — calendar arithmetic on the date
+ * itself, on no zone's clock, so a daylight-saving day is still one day.
+ */
+export function calendarDayAfter(date: CalendarDate, days: number): CalendarDate {
+  return localDate(Date.parse(`${date}T00:00:00Z`) + days * MS_PER_DAY, 'UTC');
+}

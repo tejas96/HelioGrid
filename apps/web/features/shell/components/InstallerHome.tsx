@@ -4,7 +4,7 @@ import { installerJobWords, projectPackWords, projectToastWords } from '@heliogr
 import { useI18n } from '@heliogrid/i18n/react';
 import { InstallerJob, installerJobActsOf, useFormat } from '@heliogrid/ui';
 import { useRef } from 'react';
-import { openExternal } from '../../../lib/open-external';
+import { openDirections, openExternal } from '../../../lib/open-external';
 import { pickProjectFile } from '../../../lib/pick-file';
 import { ProjectToast } from '../../../lib/project-toast';
 
@@ -37,10 +37,7 @@ export function InstallerHome() {
               void project.fileLink(file.fileId).then(openExternal, () => undefined);
             },
             call: (phoneE164) => window.location.assign(`tel:${phoneE164}`),
-            directions: (place) =>
-              openExternal(
-                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}`,
-              ),
+            directions: openDirections,
           },
           jobs.tickOncePhotographed,
         )}

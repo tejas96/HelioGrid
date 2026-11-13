@@ -24,6 +24,8 @@ export interface HomeHeadProps {
   dateLine: string;
   /** "Good morning, Arjun" — the part of the day and the person's first name. */
   greeting: TranslatedText;
+  /** The day in counts under the greeting, where a home has one ("7 overdue · 15 today · 4 done"). */
+  summary?: TranslatedText | undefined;
   title: TranslatedText;
   /** The title button's accessible name: the title, and that it switches. */
   switchName: string;

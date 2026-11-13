@@ -1,5 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { CallOutcome, DisqualifyReason, LeadStage } from '@heliogrid/domain';
+import type { CallOutcome, DisqualifyReason, LeadStage, LostReason } from '@heliogrid/domain';
 
 /*
  * Each form's words, built in `@heliogrid/i18n` (`leadActSheetWords`). Every form has its title,
@@ -53,6 +53,31 @@ export interface LeadDisqualifyWords extends FormWords {
 }
 
 export type LeadJunkWords = FormWords;
+
+/** The four ways a postponed loss's day is picked: three spans from today, or a day of one's own. */
+export type LeadPostponeSpan = 'week' | 'month' | 'threeMonths' | 'pick';
+
+/** Mark lost (`M07-63`, `M02-54`): the reason, and for *Postponed* the day it comes back. */
+export interface LeadLostWords {
+  readonly title: TranslatedText;
+  readonly line: TranslatedText;
+  readonly reasonLabel: TranslatedText;
+  readonly reason: Readonly<Record<LostReason, TranslatedText>>;
+  /** "Bill ₹3,100 a month" — beside the lead's name in the sheet's head. */
+  readonly bill: (amount: string) => TranslatedText;
+  readonly noName: TranslatedText;
+  /** The postponed row's name — "Bring it back in" — and its four chips. */
+  readonly whenLabel: TranslatedText;
+  readonly span: Readonly<Record<LeadPostponeSpan, TranslatedText>>;
+  /** The date field's own label, a different word from the *Pick date* chip that opens it. */
+  readonly dayLabel: TranslatedText;
+  /** "Comes back to Today on {day} · {time} with a follow-up." */
+  readonly comesBack: (day: string, time: string) => TranslatedText;
+  /** Under *Not interested*: no call task is raised for six months (`M02-54`). */
+  readonly notInterestedLine: TranslatedText;
+  /** "Mark lost" until a reason is picked, then "Mark lost · {reason}". */
+  readonly send: (reason: LostReason | null) => TranslatedText;
+}
 
 export interface LeadCallBackWords extends FormWords {
   readonly date: TranslatedText;

@@ -24,6 +24,12 @@ export const DORMANT_AFTER_DAYS = 30;
 /** More than twenty-four hours unassigned escalates to the owner (`M02-50`). */
 export const UNASSIGNED_ESCALATES_AFTER_MS = MS_PER_DAY;
 
+/**
+ * A reopened lead with nothing open gets a follow-up due within the hour: due at once, it would be
+ * born overdue and read as already missed (Block 6 live QA).
+ */
+export const REOPENED_FOLLOW_UP_AFTER_MS = MS_PER_DAY / 24;
+
 /** A loss for *not interested* raises no call task for six months (`M02-54`). */
 export const NO_CALL_MONTHS = 6;
 
@@ -92,16 +98,21 @@ export function callBackDueAt(nowEpoch: number, timeZone: string, window: Messag
 }
 
 /**
- * The last day of a six-month no-call spell starting `today` (`M02-54`). A month shorter than the
- * start day ends the spell on its last day: 31 August runs to 28 or 29 February.
+ * The same day `months` calendar months after `date`. A month shorter than the start day lands on
+ * its last day: 31 August plus six months is 28 or 29 February.
  */
-export function noCallUntilOf(today: CalendarDate): CalendarDate {
-  const [year = 0, month = 1, day = 1] = today.split('-').map(Number);
-  const monthIndex = month - 1 + NO_CALL_MONTHS;
+export function calendarMonthsAfter(date: CalendarDate, months: number): CalendarDate {
+  const [year = 0, month = 1, day = 1] = date.split('-').map(Number);
+  const monthIndex = month - 1 + months;
   const endYear = year + Math.floor(monthIndex / 12);
   const endMonth = monthIndex % 12;
   const daysInEndMonth =
     (Date.UTC(endYear, endMonth + 1, 1) - Date.UTC(endYear, endMonth, 1)) / MS_PER_DAY;
   const endDay = Math.min(day, daysInEndMonth);
   return `${endYear}-${String(endMonth + 1).padStart(2, '0')}-${String(endDay).padStart(2, '0')}`;
+}
+
+/** The last day of a six-month no-call spell starting `today` (`M02-54`). */
+export function noCallUntilOf(today: CalendarDate): CalendarDate {
+  return calendarMonthsAfter(today, NO_CALL_MONTHS);
 }

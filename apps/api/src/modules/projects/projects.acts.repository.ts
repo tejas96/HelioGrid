@@ -17,6 +17,7 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { recordOutboxEvent } from '../../common/temporal/outbox.repository';
+import { memberAct, recordAuditEntry } from '../audit/audit.public';
 import {
   type ActContext,
   movedAs,
@@ -150,9 +151,23 @@ export function confirmProof(context: ActContext, to: ProjectStage) {
   };
 }
 
+/** Cancel with its reason (`M13-04`): the cancellation is audited with the move (`F2-22`). */
 export function cancelWith(context: ActContext, why: CancelWhy) {
-  return (tx: DbTransaction, locked: LockedProject) =>
-    movedAs(tx, locked, context, decideCancel(standingOfLocked(locked), why), { cancel: why });
+  return async (tx: DbTransaction, locked: LockedProject) => {
+    const decided = decideCancel(standingOfLocked(locked), why);
+    const moved = await movedAs(tx, locked, context, decided, { cancel: why });
+    if (moved.kind === 'refused') return moved;
+    await recordAuditEntry(
+      tx,
+      memberAct(
+        'projects.project_cancelled',
+        locked.tenantId,
+        { kind: 'project', ref: locked.projectId },
+        context.act,
+      ),
+    );
+    return moved;
+  };
 }
 
 /** Handover (`M08-32`): only with no row waiting on a person; the pack's own row is made here. */

@@ -1,10 +1,9 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
-import { type ReactNode, useEffect, useRef } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { Rising } from '../../primitives/rising.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { HeroPanel } from '../HeroPanel/HeroPanel.native';
@@ -13,8 +12,6 @@ import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { ProgressRing } from '../ProgressRing/ProgressRing.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
 import type { ProposalReadinessProps, ReadinessStep } from './ProposalReadiness.types';
-
-const { stepMs, maxItems, risePx } = theme.motion.stagger;
 
 /** The first-proposal hero and its steps on the phone, the steps rising one after another. */
 export function ProposalReadiness({
@@ -108,28 +105,6 @@ function StepMark({ step, doneWord }: { step: ReadinessStep; doneWord: Translate
   if (step.done === true) return <StatusChip label={doneWord} tone="success" />;
   if (step.done === false) return <ShellGlyph name="chevron-right" size="sm" />;
   return null;
-}
-
-/** A row rising into place once, after the rows before it (transform and opacity, native driver). */
-function Rising({ order, children }: { order: number; children: ReactNode }) {
-  const reduced = useReducedMotion();
-  const rise = useRef(new Animated.Value(reduced ? 1 : 0)).current;
-  useEffect(() => {
-    if (reduced) return;
-    const anim = Animated.timing(rise, {
-      toValue: 1,
-      duration: theme.motion.durations.emphasised,
-      delay: Math.min(order, maxItems) * stepMs,
-      useNativeDriver: true,
-    });
-    anim.start();
-    return () => anim.stop();
-  }, [rise, order, reduced]);
-  const style = {
-    opacity: rise,
-    transform: [{ translateY: rise.interpolate({ inputRange: [0, 1], outputRange: [risePx, 0] }) }],
-  };
-  return <Animated.View style={style}>{children}</Animated.View>;
 }
 
 const styles = StyleSheet.create({

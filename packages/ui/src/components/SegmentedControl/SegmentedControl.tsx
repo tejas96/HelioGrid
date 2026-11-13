@@ -1,6 +1,7 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { useId, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { rovingTargetOf } from '../../primitives/press-keys';
 import { clampCount } from '../../utils/count';
 import { renderActionReason } from '../ActionReason';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
@@ -21,18 +22,11 @@ interface WebSegmentedControlProps extends SegmentedControlProps {
 }
 
 /** Arrow keys skip the natively-disabled segments — those are not focusable to land on. */
-function reachableIndex(options: SegmentedOption[], from: number, to: number): number {
-  const count = options.length;
-  const step = to > from ? 1 : -1;
-  let index = ((to % count) + count) % count;
-  for (let guard = 0; guard < count; guard += 1) {
+function unreachable(options: SegmentedOption[]) {
+  return (index: number) => {
     const candidate = options[index];
-    if (candidate === undefined || candidate.disabled !== true || hasReason(candidate)) {
-      break;
-    }
-    index = (((index + step) % count) + count) % count;
-  }
-  return index;
+    return candidate !== undefined && candidate.disabled === true && !hasReason(candidate);
+  };
 }
 
 /**
@@ -65,13 +59,11 @@ export function SegmentedControl({
   const wrapped = isField || reasoned.length > 0;
 
   const onKeyDown = (from: number) => (event: KeyboardEvent<HTMLButtonElement>) => {
-    const forward = event.key === 'ArrowRight' || event.key === 'ArrowDown';
-    const back = event.key === 'ArrowLeft' || event.key === 'ArrowUp';
-    if (!forward && !back) {
+    const target = rovingTargetOf(event.key, from, options.length, 'both', unreachable(options));
+    if (target === null) {
       return;
     }
     event.preventDefault();
-    const target = reachableIndex(options, from, forward ? from + 1 : from - 1);
     refs.current[target]?.focus();
     const option = options[target];
     if (option !== undefined && option.disabled !== true) {

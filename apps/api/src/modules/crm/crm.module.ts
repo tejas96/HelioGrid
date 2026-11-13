@@ -49,6 +49,9 @@ import { CrmMergeService } from './crm.merge.service';
 import { CrmMessagesController } from './crm.messages.controller';
 import { CrmMessagesRepository } from './crm.messages.repository';
 import { CrmMessagesService } from './crm.messages.service';
+import { CrmMyDayController } from './crm.my-day.controller';
+import { CrmMyDayRepository } from './crm.my-day.repository';
+import { CrmMyDayService } from './crm.my-day.service';
 import { CrmTasksController } from './crm.tasks.controller';
 import { CrmTasksRepository } from './crm.tasks.repository';
 import { CrmTasksService } from './crm.tasks.service';
@@ -78,6 +81,7 @@ import { CrmVisitsService } from './crm.visits.service';
     CrmLifecycleController,
     CrmCallsController,
     CrmTasksController,
+    CrmMyDayController,
     CrmVisitsController,
     CrmMessagesController,
   ],
@@ -113,6 +117,8 @@ import { CrmVisitsService } from './crm.visits.service';
     CrmCallsRepository,
     CrmTasksService,
     CrmTasksRepository,
+    CrmMyDayService,
+    CrmMyDayRepository,
     CrmVisitsService,
     CrmVisitsRepository,
     CrmMessagesService,

@@ -1,8 +1,9 @@
-import type { AriaAttributes, CSSProperties, PointerEvent } from 'react';
+import type { AriaAttributes, CSSProperties, KeyboardEvent, PointerEvent } from 'react';
 import { classNames } from '../class-names';
 import { useReducedMotion } from '../use-reduced-motion';
 import type {
   PressableAccessibilityState,
+  PressableFocusGroup,
   PressableProps,
   PressableRipple,
   PressableRole,
@@ -115,6 +116,7 @@ export function Pressable({
   accessibilityRole = 'button',
   accessibilityState,
   ripple = 'bounded',
+  focusGroup,
   className,
   style,
 }: WebPressableProps) {
@@ -132,9 +134,16 @@ export function Pressable({
       aria-description={accessibilityHint}
       {...ariaState(accessibilityRole, disabled, accessibilityState)}
       onClick={onPress}
+      tabIndex={focusGroup === undefined ? undefined : focusGroup.tabbable ? 0 : -1}
+      onKeyDown={focusGroup === undefined ? undefined : (event) => keyOf(event, focusGroup)}
       onPointerDown={inks ? (event) => drawInk(event, ripple) : undefined}
     >
       {children}
     </button>
   );
+}
+
+/** A key the group walks with is the group's; every other key is the button's own. */
+function keyOf(event: KeyboardEvent<HTMLButtonElement>, group: PressableFocusGroup): void {
+  if (group.onKey(event.key)) event.preventDefault();
 }

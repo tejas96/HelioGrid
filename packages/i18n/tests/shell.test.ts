@@ -149,16 +149,24 @@ describe('homeHeadWords — the switcher ticks the home in force (M13-10)', () =
   });
 });
 
-describe("homeBlocksWords — the home's own block first, then each composed preset (M13-10)", () => {
+describe("homeBlocksWords — the home's waiting block first, then each composed one (M13-10)", () => {
+  /* The ladder's fourth and fifth rungs wait for their modules; the owner dashboard's two do not. */
+  const [, , , PROJECTS, MARKETING] = HOME_LADDER;
   it.each([
-    { composed: [], overlines: ['EPC Owner'] },
-    { composed: [MANAGER], overlines: ['EPC Owner', 'Sales Manager'] },
-    { composed: [MANAGER, OPERATIONS], overlines: ['EPC Owner', 'Sales Manager', 'Operations'] },
-  ])('composed $composed', async ({ composed, overlines }) => {
+    { home: OPERATIONS, composed: [], keys: [OPERATIONS], overlines: ['Operations'] },
+    {
+      home: OPERATIONS,
+      composed: [PROJECTS, MARKETING],
+      keys: [OPERATIONS, PROJECTS, MARKETING],
+      overlines: ['Operations', 'Project Manager', 'Marketing'],
+    },
+    { home: OWNER, composed: [MANAGER], keys: [], overlines: [] },
+    { home: OWNER, composed: [MANAGER, OPERATIONS], keys: [OPERATIONS], overlines: ['Operations'] },
+  ])('$home with $composed', async ({ home, composed, keys, overlines }) => {
     const { t } = await createTranslator('en');
-    const words = homeBlocksWords(t, { home: OWNER, composed });
+    const words = homeBlocksWords(t, { home, composed });
     expect(words.blocks.map((block) => block.overline)).toEqual(overlines);
-    expect(words.blocks.map((block) => block.key)).toEqual([OWNER, ...composed]);
+    expect(words.blocks.map((block) => block.key)).toEqual(keys);
   });
 });
 

@@ -1,4 +1,4 @@
-import { useHomeToday, useShellScreen } from '@heliogrid/data/react';
+import { useHomeToday, useMyDay, useShellScreen } from '@heliogrid/data/react';
 import { SETTINGS_SEGMENT, type SettingsRow } from '@heliogrid/domain';
 import {
   accessRemovedWords,
@@ -7,6 +7,7 @@ import {
   homeBlocksWords,
   homeGreeting,
   homeHeadWords,
+  myDaySummary,
   todayLine,
   verbLabel,
 } from '@heliogrid/i18n';
@@ -28,6 +29,8 @@ import { GrievanceNote } from './components/GrievanceNote';
 import { HomeMoneyDue } from './components/HomeMoneyDue';
 import { HomeToday } from './components/HomeToday';
 import { InstallerHome } from './components/InstallerHome';
+import { MyDayHome } from './components/MyDayHome';
+import { OwnerHome } from './components/OwnerHome';
 import { ShellFrame } from './components/ShellFrame';
 import { ShellTopBar } from './components/ShellTopBar';
 import { doorRoute } from './doors';
@@ -48,6 +51,7 @@ export function ShellScreen() {
   const { width } = useWindowDimensions();
   const screen = useShellScreen();
   const today = useHomeToday();
+  const myDayCounts = useMyDay().counts;
   const navigation = useNavigation();
   const { shell, grievance, connection } = screen;
   const titleRef = useRef<View>(null);
@@ -85,6 +89,7 @@ export function ShellScreen() {
             {...head}
             dateLine={todayLine(t, format.date(new Date()))}
             greeting={homeGreeting(t, today.dayPart, today.personName)}
+            summary={myDaySummary(t, myDayCounts)}
             entries={head.entries.map((entry) => ({
               ...entry,
               key: entry.preset,
@@ -105,14 +110,18 @@ export function ShellScreen() {
               )
             }
           />
+          <OwnerHome />
+          <MyDayHome />
           <HomeMoneyDue />
           <HomeToday today={today} open={openRow} />
           <InstallerHome />
-          <HomeBlocks
-            {...homeBlocksWords(t, home)}
-            read={shell.read}
-            loadingLabel={t(BLOCK.loading)}
-          />
+          {homeBlocksWords(t, home).blocks.length === 0 ? null : (
+            <HomeBlocks
+              {...homeBlocksWords(t, home)}
+              read={shell.read}
+              loadingLabel={t(BLOCK.loading)}
+            />
+          )}
         </>
       )}
       {/* A mark points at THIS screen's controls. Under a door a link opened, the home is mounted

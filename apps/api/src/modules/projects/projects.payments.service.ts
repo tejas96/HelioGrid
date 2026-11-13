@@ -7,7 +7,13 @@ import {
   type RecordPayment,
   type ReferenceCheck,
 } from '@heliogrid/contracts';
-import { availablePaymentModes, can, localDate, type MoneyDueGroup } from '@heliogrid/domain';
+import {
+  availablePaymentModes,
+  can,
+  localDate,
+  type MoneyDueGroup,
+  monthOf,
+} from '@heliogrid/domain';
 import { createTranslator, paymentRecordedNotice, paymentReversedNotice } from '@heliogrid/i18n';
 import { HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
@@ -207,10 +213,4 @@ export class ProjectsPaymentsService {
     }
     return this.payments(reader, projectId, act.now);
   }
-}
-
-/** The company month a day falls in, `YYYY-MM` — what "this month" sums. */
-function monthOf(day: string): string {
-  const [year, month] = day.split('-');
-  return `${year}-${month}`;
 }

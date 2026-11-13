@@ -126,6 +126,9 @@ const GROUP_SENTENCE: Record<NotificationType, MessageRef> = {
     id: '{count, plural, one {# trial reminder} other {# trial reminders}}',
   },
   project_moved: PROJECTS_MOVED_COUNT,
+  monthly_summary: /*i18n*/ {
+    id: '{count, plural, one {# monthly summary} other {# monthly summaries}}',
+  },
   system: /*i18n*/ {
     id: '{count, plural, one {# product update} other {# product updates}}',
   },

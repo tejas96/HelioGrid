@@ -15,7 +15,7 @@ import {
   referenceKeyOf,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, asc, eq, isNull, ne, sql } from 'drizzle-orm';
+import { and, asc, eq, isNull, ne, type SQL, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberNameOf } from '../crm/crm.public';
 import type { ProjectReader } from './internal/reader';
@@ -134,6 +134,35 @@ export async function entriesOf(
   }));
 }
 
+/**
+ * What came in on the company's `month` (`YYYY-MM`) on the projects `scope` reaches — by the day
+ * the money was received, else the company day it was recorded. Money due's "collected this month"
+ * and the owner dashboard's cash read this one sum, so the two can never disagree (`M13-16`).
+ */
+export async function collectedIn(
+  tx: DbTransaction,
+  tenantId: string,
+  scope: SQL | undefined,
+  month: string,
+): Promise<number> {
+  const [collected] = await tx
+    .select({ total: sql<string>`coalesce(sum(${projectPayment.amountMinor}), 0)` })
+    .from(projectPayment)
+    .innerJoin(
+      project,
+      and(eq(project.id, projectPayment.projectId), eq(project.tenantId, projectPayment.tenantId)),
+    )
+    .innerJoin(tenant, eq(tenant.id, project.tenantId))
+    .where(
+      and(
+        eq(projectPayment.tenantId, tenantId),
+        sql`to_char(coalesce(${projectPayment.receivedOn}, (${projectPayment.recordedAt} at time zone ${tenant.timezone})::date), 'YYYY-MM') = ${month}`,
+        scope,
+      ),
+    );
+  return Number(collected?.total ?? 0);
+}
+
 /** A project with an unpaid part: who it is for, and its parts' facts. */
 export interface OwingProject {
   readonly projectId: string;
@@ -210,27 +239,10 @@ export class ProjectsPaymentsReadRepository {
         reader.tenantId,
         rows.map((row) => row.projectId),
       );
-      const [collected] = await tx
-        .select({ total: sql<string>`coalesce(sum(${projectPayment.amountMinor}), 0)` })
-        .from(projectPayment)
-        .innerJoin(
-          project,
-          and(
-            eq(project.id, projectPayment.projectId),
-            eq(project.tenantId, projectPayment.tenantId),
-          ),
-        )
-        .innerJoin(tenant, eq(tenant.id, project.tenantId))
-        .where(
-          and(
-            eq(projectPayment.tenantId, reader.tenantId),
-            sql`to_char(coalesce(${projectPayment.receivedOn}, (${projectPayment.recordedAt} at time zone ${tenant.timezone})::date), 'YYYY-MM') = ${month}`,
-            scope,
-          ),
-        );
+      const collectedMinor = await collectedIn(tx, reader.tenantId, scope, month);
       return {
         projects: rows.map((row) => ({ ...row, parts: facts.get(row.projectId) ?? [] })),
-        collectedMinor: Number(collected?.total ?? 0),
+        collectedMinor,
       };
     });
   }

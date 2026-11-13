@@ -1,6 +1,6 @@
 import { type DbTransaction, lead, leadAssignment, leadVisitBooking } from '@heliogrid/db';
 import { type LeadReach, type LeadScope, leadScopeOf } from '@heliogrid/domain';
-import { and, eq, type SQL, sql } from 'drizzle-orm';
+import { and, eq, isNull, ne, type SQL, sql } from 'drizzle-orm';
 import type { MayRead } from '../notification/notification.public';
 
 /**
@@ -29,6 +29,12 @@ function scopeWhere(scope: LeadScope, actorId: string, ownerId: SQL): SQL {
  * `all`, else the OR of the reaches — and no lead at all when the presets reach none, so a scope
  * fails closed. It names `lead` unaliased, so a query applying it reads `from lead`.
  */
+/**
+ * An active lead: not parked or closed, and not yet won — a won deal is a project (`M07-62`). My Day
+ * and the owner dashboard's "on your My Day" count read the same rule, so they always agree.
+ */
+export const activeLead = and(isNull(lead.lifecycleState), ne(lead.stage, 'won')) as SQL;
+
 export function leadScopeWhere(scope: LeadScope, actorId: string): SQL {
   return scopeWhere(scope, actorId, sql`${lead.ownerUserId}`);
 }

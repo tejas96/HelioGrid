@@ -11,7 +11,7 @@ import {
 import { calendarDateSchema } from '../tenant-settings';
 import { leadDetailSchema, leadParamsSchema } from './leads';
 import { capturedAtSchema } from './schemas';
-import { disqualifyReasonSchema } from './vocabulary';
+import { disqualifyReasonSchema, lostReasonSchema } from './vocabulary';
 
 const c = initContract();
 
@@ -19,7 +19,7 @@ const c = initContract();
  * The R9 acts (`M02-49`…`M02-56`) and Mark qualified (`M02-45`): each its own route, so each body
  * is one plain object. A move the machine does not allow from where the lead stands is refused
  * with domain's reason (`F4-16`); stage and state stay two fields, and no parking state moves the
- * stage. Mark lost arrives with its surface in block 6 (`T-M07-003`).
+ * stage. Mark lost (`M07-63`) is one of them, with its seven reasons and a postponed loss's date.
  */
 
 /** Every act carries when the person did it (`F4-19`). */
@@ -35,6 +35,15 @@ export const disqualifyLeadSchema = leadActSchema
   .extend({ reason: disqualifyReasonSchema })
   .strict();
 export type DisqualifyLead = z.infer<typeof disqualifyLeadSchema>;
+
+/**
+ * Mark lost (`M07-63`, `M02-54`): one of the seven reasons, mandatory. *Postponed* carries the day
+ * the lead comes back at 09:00 tenant time; *not interested* holds calls back for six months.
+ */
+export const markLostSchema = leadActSchema
+  .extend({ reason: lostReasonSchema, resurfaceOn: calendarDateSchema.optional() })
+  .strict();
+export type MarkLost = z.infer<typeof markLostSchema>;
 
 /**
  * A move the lead's standing does not allow — a wake on a lead not snoozed, a snooze to a day not
@@ -88,6 +97,15 @@ export const leadLifecycleContract = c.router({
     body: disqualifyLeadSchema,
     summary:
       'Disqualify the lead with one of the six reasons — a wrong number removes every dial offer for it',
+    responses: answers,
+  },
+  lost: {
+    method: 'POST',
+    path: '/leads/:id/lost',
+    pathParams: leadParamsSchema,
+    body: markLostSchema,
+    summary:
+      'Mark the lead lost with one of the seven reasons — a postponed loss comes back on its day, and the lead’s open tasks are cancelled',
     responses: answers,
   },
   junk: {

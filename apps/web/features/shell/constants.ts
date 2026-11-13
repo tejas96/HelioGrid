@@ -18,6 +18,12 @@ export const DOOR_PATH: Record<ShellDoor, string> = {
 };
 
 /** A settings row's address: under the door that opens the list (`M01-61`, `SETTINGS_SEGMENT`). */
+/** The inbox's address (`SCR-M02-02`): under the Leads door, as the phone's link is. */
+export const LEAD_INBOX_PATH = `/${DOOR_SEGMENT.leads}/inbox`;
+
+/** One lead's page, which a queued lead's name, My Day and the dashboard open (`SCR-M02-04`). */
+export const leadPath = (leadId: string): string => `/${DOOR_SEGMENT.leads}/${leadId}`;
+
 export const settingsRowPath = (segment: string): string => `${DOOR_PATH.more}/${segment}`;
 
 /** One project's page (`SCR-M08-02`): the board, a project notice and *Mark won* open it. */

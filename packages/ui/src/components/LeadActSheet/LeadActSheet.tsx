@@ -11,6 +11,7 @@ import {
 import type { LeadActForm, LeadActSheetProps } from './LeadActSheet.types';
 import { LeadContactForm } from './LeadContactForm';
 import { LeadDetailsForm } from './LeadDetailsForm';
+import { LeadLostForm } from './LeadLostForm';
 import { LeadMessageBody } from './LeadMessageBody';
 import { LeadVisitForm } from './LeadVisitForm';
 
@@ -66,6 +67,8 @@ function FormBody({ form, ...frame }: FormFrame & { form: LeadActForm }) {
       return <SnoozeForm form={form} {...frame} />;
     case 'disqualify':
       return <DisqualifyForm form={form} {...frame} />;
+    case 'lost':
+      return <LeadLostForm form={form} {...frame} />;
     case 'junk':
       return <JunkForm form={form} {...frame} />;
     case 'callBack':

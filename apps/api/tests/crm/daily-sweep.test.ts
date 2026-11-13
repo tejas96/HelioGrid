@@ -1,19 +1,10 @@
 import type { BulkAssigned, LeadDetail } from '@heliogrid/contracts';
 import { lead, leadStageTransition } from '@heliogrid/db';
-import {
-  DORMANT_AFTER_DAYS,
-  FOUNDER_ROLE,
-  leadScopeOf,
-  localDate,
-  MS_PER_DAY,
-  markLost,
-} from '@heliogrid/domain';
+import { DORMANT_AFTER_DAYS, FOUNDER_ROLE, localDate, MS_PER_DAY } from '@heliogrid/domain';
+import { HttpStatus } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { CrmDailySweepAdminRepository } from '../../src/modules/crm/crm.daily-sweep.admin.repository';
-import { lockLeadInScope, personOf } from '../../src/modules/crm/crm.lead-lock.repository';
-import { recordLeadMoves } from '../../src/modules/crm/crm.timeline.repository';
-import type { LeadReader } from '../../src/modules/crm/internal/reader';
 import { skipWithoutDatabase } from '../support/fixture';
 import { holdLock } from '../support/held-lock';
 import { dayFromToday, KOLKATA, onTheClock, sweepAt, tasksOf } from './lead-work';
@@ -166,24 +157,12 @@ describe.skipIf(skip)('the CRM daily sweep, against a migrated database', () => 
     await ownLead(world, made.lead.id, company.people.rep.userId);
     const tenantId = company.company.tenantId;
     const resurfaceOn = dayFromToday(NEXT_MORNING);
-    // Mark lost's route is block 6's (T-M07-003); its act and writer are proven here directly.
-    const reader: LeadReader = {
-      tenantId,
-      actorId: company.people.owner.userId,
-      roles: [FOUNDER_ROLE],
-      scope: leadScopeOf([FOUNDER_ROLE]),
-    };
-    await world.pools.tenants.withTenantTransaction(tenantId, async (tx) => {
-      const locked = await lockLeadInScope(tx, reader, made.lead.id);
-      if (locked === null) throw new Error('the lead is not in its own company');
-      const act = { actorUserId: company.people.owner.userId, now: Date.now() };
-      const result = markLost(
-        locked.lifecycle,
-        { reason: 'postponed', resurfaceOn },
-        { today: dayFromToday(0), at: act.now, by: act.actorUserId },
-      );
-      await recordLeadMoves(tx, locked, result, personOf(act));
+    const lost = await ownerOf(company).call('POST', `/leads/${made.lead.id}/lost`, {
+      reason: 'postponed',
+      resurfaceOn,
+      capturedAt: new Date().toISOString(),
     });
+    expect(lost.status).toBe(HttpStatus.OK);
     expect((await read(company, made.lead.id)).lead.state).toBe('lost');
     expect(await sweepAt(world, tenantId, onTheClock(dayFromToday(2), '09:30'))).toBe(true);
     expect((await read(company, made.lead.id)).lead.state).toBe('lost');

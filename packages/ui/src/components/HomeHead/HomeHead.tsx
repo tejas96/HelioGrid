@@ -9,6 +9,7 @@ import type { HomeHeadProps } from './HomeHead.types';
 export function HomeHead({
   dateLine,
   greeting,
+  summary,
   title,
   switchName,
   switchLabel,
@@ -28,6 +29,11 @@ export function HomeHead({
           <Text variant="display" as="p">
             {greeting}
           </Text>
+          {summary === undefined ? null : (
+            <Text variant="body" color="secondary">
+              {summary}
+            </Text>
+          )}
           <div className="hg-home-head-switch">
             {/* Not a heading: the menu draws its open list inside this wrapper, and a list inside a
               heading names the heading with every home in it. */}

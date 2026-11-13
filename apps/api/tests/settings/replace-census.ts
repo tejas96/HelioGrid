@@ -19,5 +19,7 @@ export const noRepeatToProve: Readonly<Record<string, string>> = {
   'PATCH /leads/:id':
     'records no entry; a field sent as stored writes no timeline entry (tests/crm/lead-fields.test.ts)',
   'PATCH /contacts/:id': 'records no entry',
+  'PATCH /tasks/:id':
+    'records no entry; the same due moment again writes nothing (tests/crm/tasks.test.ts)',
   'PUT /customers/:id/primary-contact': 'records no entry; the same choice again writes nothing',
 };

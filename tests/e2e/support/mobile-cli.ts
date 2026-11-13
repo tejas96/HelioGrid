@@ -30,8 +30,6 @@ import {
   setupInviteWords,
   setupWhatYouSellWords,
   tierName,
-  usagePageWords,
-  usageViewWords,
   verbLabel,
 } from '@heliogrid/i18n';
 import { API, codeSentTo } from './api-log.ts';
@@ -39,10 +37,12 @@ import { customerMergeFlowWords, mergeFromLine } from './customer-merge-flow.ts'
 import { assertEveryFlowWordKnown } from './flow-words.ts';
 import { leadDetailFlowWords } from './lead-detail-flow.ts';
 import { leadImportFlowWords } from './lead-import-flow.ts';
+import { ownerDashboardFlowWords } from './owner-dashboard.ts';
 import { paymentsFlowWords } from './payments.ts';
 import { freshMobile } from './phone.ts';
 import { markWonBody } from './project-facts.ts';
 import { projectFlowWords } from './project-flow.ts';
+import { usageWords } from './usage-flow.ts';
 
 /**
  * What `mobile/run.sh` hands Maestro, which reads no file and imports nothing mid-flow:
@@ -97,6 +97,7 @@ if (command === 'words') {
     READY_TITLE: SETUP_READY.title,
     FIRST_LEAD: SETUP_READY.leadAct,
     MORE: destinationLabel(t.t, 'more'),
+    HOME: destinationLabel(t.t, 'home'),
     PLACEHOLDER: SHELL.comingLater,
     SETTINGS_TITLE: settingsWords(t.t).title,
     BACK_TO_SETTINGS: backToSettings(t.t),
@@ -143,6 +144,7 @@ if (command === 'words') {
     ...leadImportFlowWords(t),
     ...projectFlowWords(t),
     ...paymentsFlowWords(t),
+    ...ownerDashboardFlowWords(t),
     ...usageWords(t),
     /** `SCR-SHELL-06`: a fresh trial's quiet count, the day it starts. */
     TRIAL_CHIP: billingStripWords(t.t).trialDaysLeft(14),
@@ -288,23 +290,6 @@ function firstSegment(t: Awaited<ReturnType<typeof createTranslator>>): string {
   const first = words.options[0];
   if (first === undefined) throw new Error('What do you sell? offers no answer');
   return first.title;
-}
-
-/** The usage screen's words (`SCR-M12-04`): its cards, the meters a fresh trial shows and a ledger's. */
-function usageWords(t: Awaited<ReturnType<typeof createTranslator>>): Record<string, string> {
-  const view = usageViewWords(t.t, 'en');
-  const page = usagePageWords(t.t);
-  return {
-    ALL_USAGE: t.t(BILLING_HOME.allUsage),
-    USAGE_LIMITS: view.limits,
-    USAGE_INCLUDED: view.included,
-    VOICE_MINUTES: view.view.limits.voiceMinutes,
-    OTP_CODES: view.otpCodes,
-    NOT_BILLED: view.notBilled,
-    VOICE_EVENTS: page.eventsOf(view.view.limits.voiceMinutes),
-    NO_CALLS: view.noCalls.title,
-    USAGE_CLOSE: page.close,
-  };
 }
 
 /** Each settings row's name, `ROW_<row>`, as the settings list and the row's own header show it. */

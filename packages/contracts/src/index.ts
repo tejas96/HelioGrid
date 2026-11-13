@@ -20,8 +20,10 @@ import { leadsContract } from './crm/leads';
 import { leadLifecycleContract } from './crm/lifecycle';
 import { customerMergeContract } from './crm/merge';
 import { leadMessagesContract } from './crm/messages';
+import { myDayContract } from './crm/my-day';
 import { tasksContract } from './crm/tasks';
 import { visitsContract } from './crm/visits';
+import { dashboardsContract } from './dashboards';
 import { sharedRefusals } from './error';
 import { fileContract } from './file';
 import { healthContract } from './health';
@@ -76,11 +78,13 @@ export * from './crm/leads';
 export * from './crm/lifecycle';
 export * from './crm/merge';
 export * from './crm/messages';
+export * from './crm/my-day';
 export * from './crm/schemas';
 export * from './crm/tasks';
 export * from './crm/visits';
 export * from './crm/vocabulary';
 // Content shapes a customer document is made of: per-language values, rich text.
+export * from './dashboards';
 export * from './document-content';
 // The tenant's document defaults: branding, proposal, timeline and payment-term templates.
 export * from './document-templates';
@@ -181,6 +185,7 @@ const crmRouters = c.router(
     leadLifecycle: leadLifecycleContract,
     leadMessages: leadMessagesContract,
     leads: leadsContract,
+    myDay: myDayContract,
     tasks: tasksContract,
     visits: visitsContract,
   },
@@ -190,6 +195,7 @@ const crmRouters = c.router(
 /** The delivery after Won (`M08`): the projects' reads and acts, and *Mark won* that starts one. */
 const deliveryRouters = c.router(
   {
+    dashboards: dashboardsContract,
     payments: paymentsContract,
     projectActs: projectActsContract,
     projects: projectsContract,

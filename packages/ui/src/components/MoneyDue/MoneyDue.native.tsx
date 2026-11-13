@@ -21,13 +21,20 @@ type DueProps = MoneyDueProps & { readonly due: Due };
 
 /**
  * Money due on the phone (`SCR-M11-01`): the hero with the total to collect, the late and due-today
- * tiles and what came in this month; then the groups, a card per row, each its first few until
+ * tiles and what came in this month — or, under a dashboard that holds the cash, a plain head —
+ * then the groups, a card per row, each its first few until
  * *Show all*. The screen's scroll view holds it.
  */
 export function MoneyDue(props: MoneyDueProps) {
   const { read, words } = props;
+  const hero = props.figures !== 'none';
   if (read.kind === 'loading') {
-    return <LoadingBars bars={['panel', 'row', 'row', 'row']} label={words.loading} />;
+    return (
+      <LoadingBars
+        bars={hero ? ['panel', 'row', 'row', 'row'] : ['row', 'row', 'row']}
+        label={words.loading}
+      />
+    );
   }
   if (read.kind === 'failed') {
     return (
@@ -43,7 +50,13 @@ export function MoneyDue(props: MoneyDueProps) {
   const due = read.value;
   return (
     <View style={styles.page}>
-      <DueHero {...props} due={due} />
+      {hero ? (
+        <DueHero {...props} due={due} />
+      ) : (
+        <View accessible accessibilityRole="header">
+          <Text variant="h3">{words.moneyDue}</Text>
+        </View>
+      )}
       {due.rows.totalCount === 0 ? (
         <EmptyState
           icon={<ShellGlyph name="check-check" size="lg" tone="secondary" />}

@@ -11,6 +11,13 @@ declare const MINOR_UNITS: unique symbol;
 
 export type MinorUnits = number & { readonly [MINOR_UNITS]: 'money' };
 
+/**
+ * The most whole digits an amount carries on the wire. The contract's amount pattern is built from
+ * it and a form refuses a larger figure before it sends. Raise it and an amount at three fraction
+ * digits can pass the safe-integer range of `minorUnits`, which then throws instead of refusing.
+ */
+export const AMOUNT_WHOLE_DIGITS_MAX = 12;
+
 /** A whole number of minor units, negative for a credit. Anything else is an authoring error. */
 export function minorUnits(amount: number): MinorUnits {
   if (!Number.isSafeInteger(amount)) {

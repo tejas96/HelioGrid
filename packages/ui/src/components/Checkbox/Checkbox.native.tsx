@@ -31,8 +31,12 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['rf-sm'],
     alignItems: 'center',
     justifyContent: 'center',
+    /* The fill alone is one step off its ground — invisible on a dark card — so an open box keeps
+       the quiet mark's edge, which clears 3:1 on every ground in every mode. */
+    borderWidth: 1.5,
+    borderColor: colors['mark-subtle'],
   },
-  boxChecked: { backgroundColor: colors.accent },
+  boxChecked: { backgroundColor: colors.accent, borderColor: colors.accent },
 });
 
 /**
@@ -72,7 +76,9 @@ export function Checkbox({
           { backgroundColor: controlFill },
           checked ? styles.boxChecked : undefined,
           // Sunk below the fill, on the page and in a tile alike — see the web half.
-          disabled ? { backgroundColor: controlFillDisabled } : undefined,
+          disabled
+            ? { backgroundColor: controlFillDisabled, borderColor: controlFillDisabled }
+            : undefined,
         ]}
       >
         {checked ? <CheckboxTick ink={tick} /> : null}

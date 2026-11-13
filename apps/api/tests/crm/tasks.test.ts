@@ -55,6 +55,15 @@ describe.skipIf(skip)('follow-up tasks, over HTTP against a migrated database', 
       retryKey(),
     );
 
+  /** The task row's Postgres version — a write moves it. */
+  const rowVersionOf = async (id: string) => {
+    const [row] = await world.pools.admin.db
+      .select({ version: sql<string>`xmin::text` })
+      .from(task)
+      .where(eq(task.id, id));
+    return row?.version;
+  };
+
   beforeAll(async () => {
     world = await openCrmWorld([here, elsewhere]);
   });
@@ -182,5 +191,38 @@ describe.skipIf(skip)('follow-up tasks, over HTTP against a migrated database', 
       .call<Task>('POST', `/tasks/${id}/done`, { capturedAt: now() });
     expect(closed.status).toBe(HttpStatus.OK);
     expect(closed.body.status).toBe('done');
+  });
+
+  it('the assignee moves an open task; the same moment again writes nothing', async () => {
+    const made = await captured(owner(), aCapture(aPhone()));
+    await ownLead(world, made.lead.id, here.people.rep.userId);
+    const id = (await add(made.lead.id, { kind: 'follow_up' })).body.id;
+    const rep = world.as(here.members.rep);
+    const dueAt = new Date(Date.now() + 2 * MS_PER_DAY).toISOString();
+    const moved = await rep.call<Task>('PATCH', `/tasks/${id}`, { capturedAt: now(), dueAt });
+    expect(moved.status).toBe(HttpStatus.OK);
+    expect(moved.body).toMatchObject({ id, status: 'open', dueAt });
+    const before = await rowVersionOf(id);
+    const again = await rep.call<Task>('PATCH', `/tasks/${id}`, { capturedAt: now(), dueAt });
+    expect(again.status).toBe(HttpStatus.OK);
+    expect(again.body.dueAt).toBe(dueAt);
+    expect(await rowVersionOf(id)).toBe(before);
+    const malformed = await rep.call('PATCH', `/tasks/${id}`, { capturedAt: now(), dueAt: 'soon' });
+    expect(malformed.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(malformed.body).toMatchObject({ error: { details: [{ path: 'dueAt' }] } });
+  });
+
+  it('a done task does not move; out of scope and another company’s task are not found', async () => {
+    const made = await captured(owner(), aCapture(aPhone()));
+    await ownLead(world, made.lead.id, here.people.owner.userId);
+    const id = (await add(made.lead.id, { kind: 'follow_up' })).body.id;
+    const body = { capturedAt: now(), dueAt: tomorrow() };
+    const outOfScope = await world.as(here.members.rep).call('PATCH', `/tasks/${id}`, body);
+    expect(outOfScope.status).toBe(HttpStatus.NOT_FOUND);
+    const theirs = await world.as(elsewhere.members.owner).call('PATCH', `/tasks/${id}`, body);
+    expect(theirs.status).toBe(HttpStatus.NOT_FOUND);
+    await owner().call('POST', `/tasks/${id}/done`, { capturedAt: now() });
+    const done = await owner().call('PATCH', `/tasks/${id}`, body);
+    expect(done.status).toBe(HttpStatus.CONFLICT);
   });
 });

@@ -21,8 +21,12 @@ const REFUSAL: Record<LeadActRefusal, MessageRef> = {
   not_due: /*i18n*/ { id: 'Not done. Its day has not come yet.' },
   not_reopenable: /*i18n*/ { id: 'Not reopened. The lead is open already.' },
   not_postponed: /*i18n*/ { id: 'Not done. The lead is not postponed.' },
-  not_open: /*i18n*/ { id: 'Not done. The lead is not open.' },
+  /* A person meets it only on a won lead (`lifecycle-close.ts`): the sweep's own refusal is never said. */
+  not_open: /*i18n*/ { id: 'Not done. This lead is already won — it is a project now.' },
 };
+
+/** A refusal this release does not know yet — a newer server's — said without naming a cause. */
+const NOT_DONE = /*i18n*/ { id: 'Not done. The lead is not open.' };
 
 /** A call-back asked for a number marked wrong or do-not-call (`M02-44`). */
 const NOT_DIALLABLE = /*i18n*/ {
@@ -34,7 +38,7 @@ export function leadActFailureWords(t: Translator['t'], failed: LeadActFailure):
   if (failed.kind === 'not_diallable') return t(NOT_DIALLABLE);
   if (failed.kind === 'refused') {
     const known = LEAD_ACT_REFUSALS.find((refusal) => refusal === failed.refusal);
-    return t(known === undefined ? REFUSAL.not_open : REFUSAL[known]);
+    return t(known === undefined ? NOT_DONE : REFUSAL[known]);
   }
   const id = attemptFailureMessageId({ failure: failed.failure, code: failed.code });
   return id === undefined ? shownAsSent(failed.message) : t({ id });

@@ -7,6 +7,7 @@ import * as catalogTenant from './catalog-tenant';
 import * as checkout from './checkout';
 import * as crmDailySweep from './crm-daily-sweep';
 import * as customer from './customer';
+import * as dashboard from './dashboard';
 import * as dunning from './dunning';
 import * as entitlement from './entitlement';
 import * as file from './file';
@@ -77,6 +78,7 @@ export const schema = {
   ...leadVisitBooking,
   ...leadImport,
   ...crmDailySweep,
+  ...dashboard,
 };
 
 export * from './activity';
@@ -88,6 +90,7 @@ export * from './catalog-tenant';
 export * from './checkout';
 export * from './crm-daily-sweep';
 export * from './customer';
+export * from './dashboard';
 export * from './dunning';
 export * from './entitlement';
 export * from './file';

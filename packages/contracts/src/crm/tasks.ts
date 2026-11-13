@@ -47,6 +47,10 @@ export type TaskAct = z.infer<typeof taskActSchema>;
 export const taskErrorCodes = ['ASSIGNEE_UNAVAILABLE', 'NUMBER_NOT_DIALLABLE'] as const;
 export const taskErrorCodeSchema = z.enum(taskErrorCodes);
 
+/** Move an open task to another moment (`M07-05`): overdue follows the new due time at once. */
+export const moveTaskSchema = taskActSchema.extend({ dueAt: z.string().datetime() }).strict();
+export type MoveTask = z.infer<typeof moveTaskSchema>;
+
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 const taskParams = z.object({ id: uuidSchema });
 
@@ -76,6 +80,21 @@ export const tasksContract = c.router({
       401: unauthenticatedEnvelope,
       404: notFound,
       /** A cancelled task is history, never done. */
+      409: errorEnvelope(baseError('CONFLICT')),
+    },
+  },
+  move: {
+    method: 'PATCH',
+    path: '/tasks/:id',
+    pathParams: taskParams,
+    body: moveTaskSchema,
+    summary:
+      'Move an open task to another moment — the same moment again changes nothing; overdue is derived from it',
+    responses: {
+      200: taskSchema,
+      401: unauthenticatedEnvelope,
+      404: notFound,
+      /** Only an open task moves: a done or cancelled one is history. */
       409: errorEnvelope(baseError('CONFLICT')),
     },
   },

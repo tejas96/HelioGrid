@@ -1,5 +1,6 @@
 import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import {
+  AMOUNT_WHOLE_DIGITS_MAX,
   LOGIN_PROVIDERS,
   MEASUREMENT_SYSTEMS,
   MEMBERSHIP_STATUSES,
@@ -63,7 +64,10 @@ export const phoneE164Schema = z
  */
 export const amountSchema = z
   .string()
-  .regex(/^-?\d{1,12}(\.\d{1,3})?$/, 'amount as decimal string scaled to the currency minor unit');
+  .regex(
+    new RegExp(`^-?\\d{1,${AMOUNT_WHOLE_DIGITS_MAX}}(\\.\\d{1,3})?$`),
+    'amount as decimal string scaled to the currency minor unit',
+  );
 
 /** An amount never below zero — a price, a monthly bill. Zero is an amount; a negative one is not. */
 export const nonNegativeAmountSchema = amountSchema.refine(

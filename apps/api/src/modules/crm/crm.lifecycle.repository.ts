@@ -1,15 +1,18 @@
 import type { LeadDetail } from '@heliogrid/contracts';
-import { customer, type DbTransaction, lead, type TenantPool } from '@heliogrid/db';
-import type {
-  LeadActContext,
-  LeadActRefusal,
-  LeadActResult,
-  LeadLifecycle,
+import { customer, type DbTransaction, lead, type TenantPool, task } from '@heliogrid/db';
+import {
+  type LeadActContext,
+  type LeadActRefusal,
+  type LeadActResult,
+  type LeadLifecycle,
+  REOPENED_FOLLOW_UP_AFTER_MS,
+  TASK_KINDS,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, inArray, isNull } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
+import { memberAct, recordAuditEntry } from '../audit/audit.public';
 import {
   detailAfterAct,
   type LockedLead,
@@ -17,7 +20,8 @@ import {
   personOf,
   todayOf,
 } from './crm.lead-lock.repository';
-import { cancelOpenTasks } from './crm.raised-tasks.repository';
+import { activeMemberOf } from './crm.member-roles.repository';
+import { cancelOpenTasks, raiseTask } from './crm.raised-tasks.repository';
 import { recordLeadMoves } from './crm.timeline.repository';
 import type { LeadMoney } from './internal/lead-wire';
 import type { LeadReader } from './internal/reader';
@@ -107,4 +111,55 @@ export async function blockWrongNumber(
     leads.map((one) => one.id),
     DIAL_TASKS,
   );
+}
+
+/**
+ * A loss (`M07-63`): every task still open on the lead is cancelled — kept as history — and the
+ * close is audited (`F2-22`), both with the loss or neither.
+ */
+export async function closeLost(tx: DbTransaction, locked: LockedLead, act: Act): Promise<void> {
+  await cancelOpenTasks(tx, locked.tenantId, [locked.leadId], TASK_KINDS);
+  await recordAuditEntry(
+    tx,
+    memberAct('crm.lead_lost', locked.tenantId, { kind: 'lead', ref: locked.leadId }, act),
+  );
+}
+
+/**
+ * A reopen (`M02-56`) with no task left open — a loss cancelled them all (`M07-63`) — leaves the
+ * lead one next step: a follow-up due now for its owner, or for whoever reopened an unowned lead,
+ * so the lead never sits back in the funnel with nothing to do (`M07-06`'s "the next action must
+ * already exist and be owned").
+ */
+export async function nextStepAfterReopen(
+  tx: DbTransaction,
+  locked: LockedLead,
+  act: Act,
+): Promise<void> {
+  const [open] = await tx
+    .select({ id: task.id })
+    .from(task)
+    .where(
+      and(
+        eq(task.tenantId, locked.tenantId),
+        eq(task.leadId, locked.leadId),
+        eq(task.status, 'open'),
+      ),
+    )
+    .limit(1);
+  if (open !== undefined) return;
+  const at = new Date(act.now);
+  // An owner who has left the company would hold a task no one sees; the person reopening takes it.
+  const owner = locked.lifecycle.ownerId;
+  const ownerActive = owner !== null && (await activeMemberOf(tx, locked.tenantId, owner)) !== null;
+  await raiseTask(tx, {
+    tenantId: locked.tenantId,
+    leadId: locked.leadId,
+    assigneeUserId: ownerActive ? owner : act.actorUserId,
+    kind: 'follow_up',
+    provenance: 'manual',
+    dueAt: new Date(act.now + REOPENED_FOLLOW_UP_AFTER_MS),
+    raisedBy: act.actorUserId,
+    at,
+  });
 }

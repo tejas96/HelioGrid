@@ -20,6 +20,7 @@ import type {
   RoofType,
   Shading,
   TaskKind,
+  TaskProvenance,
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 
@@ -137,6 +138,18 @@ export const TASK_KIND_WORD: Record<TaskKind, MessageRef> = {
   site_visit: /*i18n*/ { id: 'Site visit' },
   call: /*i18n*/ { id: 'Call' },
   custom: /*i18n*/ { id: 'Custom' },
+};
+
+/**
+ * Why an automatic task exists (`M07-06`): the rule that raised it, so a rep always sees why. A
+ * task a person added says nothing more.
+ */
+export const TASK_PROVENANCE_WORD: Record<Exclude<TaskProvenance, 'manual'>, MessageRef> = {
+  call_back_window: /*i18n*/ { id: 'Asked for this time' },
+  retry_after_no_answer: /*i18n*/ { id: 'Try again — no answer last time' },
+  snooze_wake: /*i18n*/ { id: 'Back from snooze' },
+  resurface: /*i18n*/ { id: 'Postponed loss is back' },
+  visit_booked: /*i18n*/ { id: 'Visit booked' },
 };
 
 /** What one timeline entry records (`M02-35`); a kind a newer server adds reads as a system entry. */

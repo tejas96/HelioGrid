@@ -16,6 +16,12 @@
   border-radius: var(--r-tile);
 }
 
+/* Each row is its own stacking context, so a menu opened in one would draw under the next row's
+   open target and could not be pressed: the row holding an open menu stands above its siblings. */
+.hg-card-row:has([aria-expanded="true"]) {
+  z-index: 1;
+}
+
 /* A tile per row: the list itself draws nothing, its rows stand apart with a gap between them, and
    no hairline is drawn — the gap is the line. */
 .hg-card-rows[data-form="separate"] {

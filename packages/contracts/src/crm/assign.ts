@@ -51,9 +51,12 @@ export type AssignLead = z.infer<typeof assignLeadSchema>;
  * reassign (`M02-30`): with it, a lead someone else owns moves too and the reason is recorded;
  * without it — the inbox's send — such a lead stays and answers who holds it.
  */
+/** The most leads one bulk assign gives away. */
+export const BULK_ASSIGN_MAX = 100;
+
 export const bulkAssignSchema = z
   .object({
-    leadIds: z.array(uuidSchema).min(1).max(100),
+    leadIds: z.array(uuidSchema).min(1).max(BULK_ASSIGN_MAX),
     assigneeId: uuidSchema,
     reason: crmReasonSchema.optional(),
   })

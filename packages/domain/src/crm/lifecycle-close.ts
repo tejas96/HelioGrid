@@ -24,6 +24,13 @@ import {
  * the record. A lead is closed once at a time: closing a closed lead is refused.
  */
 
+/** A won deal is a project (`M07-62`): no close reaches it; a cancellation is the project's. */
+function closeRefusal(lead: LeadLifecycle): LeadActResult | null {
+  if (isClosed(lead)) return refused('lead_closed');
+  if (lead.stage === 'won') return refused('not_open');
+  return null;
+}
+
 function isListed<Reason extends string>(
   reasons: readonly Reason[],
   reason: string | null,
@@ -37,7 +44,8 @@ export function disqualify(
   reason: string | null,
   context: LeadActContext,
 ): LeadActResult {
-  if (isClosed(lead)) return refused('lead_closed');
+  const refusal = closeRefusal(lead);
+  if (refusal !== null) return refusal;
   if (!isListed<DisqualifyReason>(DISQUALIFY_REASONS, reason)) return refused('reason_not_listed');
   const close = { state: 'disqualified', reason, at: context.at, by: context.by } as const;
   return moved(
@@ -48,7 +56,8 @@ export function disqualify(
 
 /** Junk (`M02-55`): it leaves every queue, is found by search alone, and is never deleted. */
 export function junk(lead: LeadLifecycle, context: LeadActContext): LeadActResult {
-  if (isClosed(lead)) return refused('lead_closed');
+  const refusal = closeRefusal(lead);
+  if (refusal !== null) return refusal;
   const close = { state: 'junk', at: context.at, by: context.by } as const;
   return moved({ ...lead, state: 'junk', wakeOn: null, close }, stateMove(lead, 'junk', 'manual'));
 }
@@ -63,7 +72,8 @@ export function markLost(
   context: LeadActContext,
 ): LeadActResult {
   const { reason } = loss;
-  if (isClosed(lead)) return refused('lead_closed');
+  const refusal = closeRefusal(lead);
+  if (refusal !== null) return refusal;
   if (!isListed<LostReason>(LOST_REASONS, reason)) return refused('reason_not_listed');
   const postponed = reason === 'postponed';
   if (postponed && !isFutureDay(loss.resurfaceOn, context.today)) {

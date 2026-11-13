@@ -53,3 +53,20 @@ export function memberLoads(
     ]),
   );
 }
+
+/**
+ * Who waiting leads are offered to in one tap (plan gap 17): the holder with the fewest open
+ * leads; on a tie the first in the order given (by name), so the offer never flickers between
+ * equals. `null` when no one can hold a lead.
+ */
+export function lightestHolderOf<T extends { readonly userId: string }>(
+  holders: readonly T[],
+  openLeads: ReadonlyMap<string, number>,
+): (T & { readonly openLeads: number }) | null {
+  let best: (T & { readonly openLeads: number }) | null = null;
+  for (const holder of holders) {
+    const open = openLeads.get(holder.userId) ?? 0;
+    if (best === null || open < best.openLeads) best = { ...holder, openLeads: open };
+  }
+  return best;
+}
