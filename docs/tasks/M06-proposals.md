@@ -227,6 +227,7 @@ with the `AllocationMeter` component; no second 100 % check is written.
 
 **DONE WHEN:**
 - Given step 7, when tranche percentages do not sum to 100.00, then the gap renders live and Generate lists it with the remainder stated (M06-13).
+- Given step 7, when the rep picks another of the company's named tranche templates, or edits, adds or removes a row, then the rows change on this proposal only, and ↺ Reset returns them to the company's default template in force (M06-13; `M01-54`).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 **Settle before the build:**
@@ -790,6 +791,7 @@ words are platform copy (`M06-53`).
 - Given untouched tenant settings, when a proposal is built, then platform-seeded defaults carry every templated step and no settings visit is required (M06-49; `M01-28` consumed).
 - Given the proposal-template settings, when the builder generates a document, then cover, included sections, default terms and bank details come from these settings (or their platform defaults), and the document is titled with the ruled name in every locale (M01-51). → proof: QA (web and phone) save a cover, section set, terms and the printed bank details on `T-M01-019`'s screen, then generate a proposal: each appears, and the document is titled with the ruled name in every language of the set — the proof `T-M01-019` hands here, because its block has no builder
 - (M01-52, handed here by `T-M01-019`, whose block has no builder.) → proof: QA (web and phone) a phase order saved on `T-M01-019`'s screen is the order step 6 opens with
+- Given a new proposal, when steps 6, 7 and 9 fill, then each holds the company's saved template where one exists and HelioGrid's default where none does; given the rep then edits any of them, then the edit stays on this proposal and the company's settings and every other proposal are unchanged; and given the owner changes a template while the draft is open, then the draft keeps what it holds until the rep taps step 6's or step 7's ↺ Reset, which reads the template in force (M06-12, M06-13, M06-15, M06-18, M06-49).
 
 **Settle before the build:**
 - Company terms and the customer's language (M06-15, M06-49) — ruled: the company's own terms in any language beat the platform default; when they are not in the customer's language, the builder says "terms will print in English" (or the language they exist in) (owner ruling 2026-11-13, final review).
