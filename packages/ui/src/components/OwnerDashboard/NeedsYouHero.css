@@ -91,11 +91,17 @@
   flex-direction: column;
 }
 
-/* The one-tap act and *Pick someone* share the row, as two equal pills. */
+/* The one-tap act and *Pick someone* share the row as two pills, each as wide as its words; when
+   the room is too narrow for both, the second moves under the first rather than clipping. */
 .hg-owner-need-act[data-pair="true"] {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: var(--sp-2);
+}
+
+.hg-owner-need-act[data-pair="true"] > .hg-button {
+  flex: 1 1 auto;
 }
 
 /* Wide: every item in a row of frosted panes on the glass, each with its own act; one at a time

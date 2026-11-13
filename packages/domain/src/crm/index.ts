@@ -11,6 +11,7 @@ export {
   isUnassignedOverdue,
   NO_CALL_MONTHS,
   noCallUntilOf,
+  REOPENED_FOLLOW_UP_AFTER_MS,
   UNASSIGNED_ESCALATES_AFTER_MS,
   wakeInstantOf,
 } from './crm-clock';

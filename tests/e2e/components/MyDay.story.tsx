@@ -19,13 +19,15 @@ export interface MyDayStoryProps {
   readonly onExpand?: (band: MyDayBand) => void;
   readonly onAnswer?: (outcome: CallOutcome) => void;
   readonly onRetry?: () => void;
+  /** The hero's task, when the spec needs another than the day's own. */
+  readonly nextSeed?: Seed;
 }
 
 const counts = { overdue: 14, today: 3, week: 6, doneToday: 3 };
 
 /** My Day as the home holds it: a salesperson's day in Pune, the read in the state the spec asks. */
 export function MyDayStory(props: MyDayStoryProps) {
-  const next = itemOf(SEEDS.next);
+  const next = itemOf(props.nextSeed ?? SEEDS.next);
   const rows = (seeds: readonly Seed[]) => seeds.map(itemOf);
   const clear = props.state === 'clear';
   const bands: MyDayBandRows[] = clear

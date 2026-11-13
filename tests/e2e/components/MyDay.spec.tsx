@@ -58,6 +58,14 @@ test.describe('at 375', () => {
     await expectNoSeriousViolations(page);
   });
 
+  test('a hero no one may dial says so on its face, beside the dimmed Call', async ({ mount }) => {
+    const day = await mount(<MyDayStory state="day" nextSeed={KIRAN} />);
+    const hero = day.getByRole('region', { name: words.nextUp });
+    await expect(hero.getByRole('button', { name: words.call })).toBeDisabled();
+    await expect(hero.getByText(words.callOff)).toBeVisible();
+    await expect(hero.getByText(words.whyFirstLate)).toHaveCount(0);
+  });
+
   test('the bands: overdue first with its count and more, a visit offers directions, a do-not-call row says why', async ({
     mount,
   }) => {

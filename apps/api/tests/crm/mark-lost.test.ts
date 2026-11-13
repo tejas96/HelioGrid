@@ -1,6 +1,11 @@
 import type { LeadDetail } from '@heliogrid/contracts';
 import { lead, subscription, tenantMembership } from '@heliogrid/db';
-import { FOUNDER_ROLE, MS_PER_DAY, noCallUntilOf } from '@heliogrid/domain';
+import {
+  FOUNDER_ROLE,
+  MS_PER_DAY,
+  noCallUntilOf,
+  REOPENED_FOLLOW_UP_AFTER_MS,
+} from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -92,7 +97,7 @@ describe.skipIf(skip)('Mark lost, over HTTP against a migrated database', () => 
     ]);
   });
 
-  it('a reopen after a loss leaves the lead one next step: a follow-up for its owner, due now', async () => {
+  it('a reopen after a loss leaves the lead one next step: a follow-up for its owner, within the hour', async () => {
     const made = await captured(owner(), aCapture(aPhone()));
     await ownLead(world, made.lead.id, here.people.rep.userId);
     const lost = await lose(world.as(here.members.rep), made.lead.id, { reason: 'price' });
@@ -104,7 +109,10 @@ describe.skipIf(skip)('Mark lost, over HTTP against a migrated database', () => 
     const open = (await tasksOf(world, made.lead.id)).filter((one) => one.status === 'open');
     expect(open).toHaveLength(1);
     expect(open[0]).toMatchObject({ kind: 'follow_up', assigneeUserId: here.people.rep.userId });
-    expect(Date.parse(String(open[0]?.dueAt))).toBeLessThanOrEqual(Date.now());
+    // Due within the hour, never at once: a task born overdue reads as already missed.
+    const due = Date.parse(String(open[0]?.dueAt)) - Date.now();
+    expect(due).toBeGreaterThan(0);
+    expect(due).toBeLessThanOrEqual(REOPENED_FOLLOW_UP_AFTER_MS);
   });
 
   it('a reopen whose owner has left gives the follow-up to the person who reopened it', async () => {

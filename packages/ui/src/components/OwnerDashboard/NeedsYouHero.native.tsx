@@ -186,9 +186,10 @@ function Arriving({ children }: { children: ReactNode }) {
 }
 
 const styles = StyleSheet.create({
-  /* The one-tap act and *Pick someone* share the row, as two equal pills. */
-  acts: { flexDirection: 'row', gap: theme.spacing['sp-2'] },
-  act: { flex: 1, flexBasis: 0, minWidth: 0 },
+  /* The one-tap act and *Pick someone* share the row as two pills, each as wide as its words; when
+     the room is too narrow for both, the second moves under the first rather than clipping. */
+  acts: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing['sp-2'] },
+  act: { flexGrow: 1, flexShrink: 0 },
   nav: {
     flexDirection: 'row',
     alignItems: 'center',

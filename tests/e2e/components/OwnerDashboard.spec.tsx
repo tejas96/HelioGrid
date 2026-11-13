@@ -107,7 +107,7 @@ test('waiting leads go to the lightest-loaded member in one tap, or to someone p
   await at(page, 375);
   const board = await mount(<OwnerDashboardAsRead frame="suggested" />);
   const hero = page.getByRole('region', { name: words.needsYouNow });
-  const assign = hero.getByRole('button', { name: words.assignTo('Ravi Kulkarni') });
+  const assign = hero.getByRole('button', { name: words.assignTo('Ravi') });
   const pick = hero.getByRole('button', { name: words.pickSomeone });
   await expect(hero.getByText(words.fewestOpen('Ravi Kulkarni', 3))).toBeVisible();
   // The two acts share one row.

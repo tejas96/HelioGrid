@@ -81,7 +81,6 @@ function NextHero(props: HeroProps & { readonly item: MyDayItem }) {
               fullWidth
               icon={<ShellGlyph name={act.glyph} size="sm" tone="inverse" />}
               disabled={act.off !== null}
-              disabledReason={act.off ?? undefined}
               onClick={act.onPress}
             >
               {act.label}
@@ -108,11 +107,19 @@ function NextHero(props: HeroProps & { readonly item: MyDayItem }) {
           </IconButton>
         </View>
         <View style={styles.foot}>
-          {whyFirst === null ? null : (
+          {/* A lead no one may dial says so where the reason the task leads would be: the dimmed
+              Call above it is not left to explain itself. */}
+          {act.off === null ? (
+            whyFirst === null ? null : (
+              <View style={styles.why}>
+                <Text variant="body-sm" color="secondary">
+                  {whyFirst}
+                </Text>
+              </View>
+            )
+          ) : (
             <View style={styles.why}>
-              <Text variant="body-sm" color="secondary">
-                {whyFirst}
-              </Text>
+              <StatusMark tone="warning" label={act.off} />
             </View>
           )}
           <View style={styles.flush}>

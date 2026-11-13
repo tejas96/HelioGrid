@@ -1,5 +1,5 @@
 import type { OwnerDashboard, TranslatedText } from '@heliogrid/contracts';
-import type { LostReason, NeedsYouKind } from '@heliogrid/domain';
+import { firstNameOf, type LostReason, type NeedsYouKind } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import type { HueTileProps } from '../HueTile/HueTile.types';
@@ -107,7 +107,8 @@ function unassignedDetailOf(
     return { line, open: { kind: 'unassigned' } };
   return {
     line,
-    act: words.assignTo(suggested.name),
+    // The act names the first name, so it fits its pill; the reason under it names them in full.
+    act: words.assignTo(firstNameOf(suggested.name)),
     open: { kind: 'assign_waiting' },
     reason: words.fewestOpen(suggested.name, suggested.openLeads),
     other: { act: words.pickSomeone, open: { kind: 'unassigned' } },

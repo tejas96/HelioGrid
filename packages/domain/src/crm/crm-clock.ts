@@ -24,6 +24,12 @@ export const DORMANT_AFTER_DAYS = 30;
 /** More than twenty-four hours unassigned escalates to the owner (`M02-50`). */
 export const UNASSIGNED_ESCALATES_AFTER_MS = MS_PER_DAY;
 
+/**
+ * A reopened lead with nothing open gets a follow-up due within the hour: due at once, it would be
+ * born overdue and read as already missed (Block 6 live QA).
+ */
+export const REOPENED_FOLLOW_UP_AFTER_MS = MS_PER_DAY / 24;
+
 /** A loss for *not interested* raises no call task for six months (`M02-54`). */
 export const NO_CALL_MONTHS = 6;
 

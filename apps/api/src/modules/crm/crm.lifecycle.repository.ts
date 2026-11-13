@@ -5,6 +5,7 @@ import {
   type LeadActRefusal,
   type LeadActResult,
   type LeadLifecycle,
+  REOPENED_FOLLOW_UP_AFTER_MS,
   TASK_KINDS,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
@@ -157,7 +158,7 @@ export async function nextStepAfterReopen(
     assigneeUserId: ownerActive ? owner : act.actorUserId,
     kind: 'follow_up',
     provenance: 'manual',
-    dueAt: at,
+    dueAt: new Date(act.now + REOPENED_FOLLOW_UP_AFTER_MS),
     raisedBy: act.actorUserId,
     at,
   });
