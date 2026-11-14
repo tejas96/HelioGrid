@@ -2,6 +2,7 @@ import type { CSSProperties, MouseEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
+import { useCommitOnUnmount } from '../../primitives/use-commit-on-unmount';
 import type { ToolCommand } from './RichText.commands';
 import { LINK_SCHEME } from './RichText.commands';
 import { EMPTY_RICH_TEXT, isBlank, isOverLength, measure, richTextRows } from './RichText.model';
@@ -45,6 +46,8 @@ export function RichText({
   saveTemplateLabel,
   pageEstimate,
   onMeasure,
+  marksOnly = false,
+  countOnTop = false,
   className,
   style,
 }: WebRichTextProps) {
@@ -56,6 +59,8 @@ export function RichText({
   const [focus, setFocus] = useState(false);
   const m = measure(value);
   const hasLogo = m.hasLogo;
+  /* Left by a press that unmounts the editor before it blurs: the last value it handed up. */
+  useCommitOnUnmount(focus, () => onCommit?.(value));
 
   /* The DOM is written from the value only when the value came from OUTSIDE (a template load, a
      reset). Rewriting it on our own serialisation would move the caret on every keystroke. */
@@ -125,10 +130,21 @@ export function RichText({
   };
 
   const over = isOverLength(m, maxLength);
+  const count = (
+    <span className="hg-rich-text-count" data-over={over}>
+      {pageEstimate}
+      <span>{words.characters(m.chars, maxLength)}</span>
+    </span>
+  );
 
   return (
     <div className={classNames('hg-rich-text', className)} style={style}>
-      {label !== undefined ? <div className="hg-rich-text-label">{label}</div> : null}
+      {label !== undefined || countOnTop ? (
+        <div className="hg-rich-text-label">
+          {label}
+          {countOnTop ? count : null}
+        </div>
+      ) : null}
       <div
         className="hg-rich-text-frame"
         {...fieldBox({ focused: focus, disabled, density: 'expressive' })}
@@ -139,6 +155,7 @@ export function RichText({
           disabled={disabled}
           hasLogo={hasLogo}
           linking={linking}
+          marksOnly={marksOnly}
           templates={templates}
           saveTemplateLabel={saveTemplateLabel}
           onRun={run}
@@ -202,10 +219,7 @@ export function RichText({
           empty — the editor never prints "≈ 1 page" it cannot stand behind. */}
       <div className="hg-rich-text-footer">
         <span className="hg-rich-text-helper">{helper}</span>
-        <span className="hg-rich-text-count" data-over={over}>
-          {pageEstimate}
-          <span>{words.characters(m.chars, maxLength)}</span>
-        </span>
+        {countOnTop ? null : count}
       </div>
     </div>
   );

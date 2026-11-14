@@ -20,7 +20,7 @@ export function NeedsYouHero(props: DashboardPartProps) {
   const { view, words, needsYou, onNeed } = props;
   useAssignLanding(props.assigning, props.assignFailed, props.focusAfter);
   const format = useFormat();
-  const items = needItemsOf(view.needsYou, needsYou, words, (amount) => format.money(amount));
+  const items = needItemsOf(view.needsYou, needsYou, words, format);
   const [chosen, setChosen] = useState(0);
   const at = chosen < items.length ? chosen : 0;
   if (items.length === 0) {

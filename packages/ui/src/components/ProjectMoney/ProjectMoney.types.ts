@@ -1,6 +1,7 @@
 import type { ProjectMoneyGlance, ProjectPayments, TranslatedText } from '@heliogrid/contracts';
 import type { Read } from '@heliogrid/domain';
 import type { FocusAfter } from '../../primitives/FocusAfter';
+import type { EarlierPlanWords } from './ProjectMoney.parts.types';
 
 /**
  * A project's money (`SCR-M11-02`, design A "Quiet Ledger"): the hero with what to collect now and
@@ -57,6 +58,8 @@ export interface ProjectMoneyWords {
   readonly shareRequest: TranslatedText;
   readonly partMenu: (part: string) => TranslatedText;
   readonly entryMenu: (receipt: string) => TranslatedText;
+  /** The folded earlier plan under the live one (`T-M06-025`, `M11-14`). */
+  readonly earlier: EarlierPlanWords;
   readonly noScheduleTitle: TranslatedText;
   readonly noScheduleBody: TranslatedText;
   readonly failedTitle: TranslatedText;

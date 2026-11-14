@@ -226,9 +226,9 @@ describe('lead detail: the header and sections (M02-32, M02-43, M02-51)', () => 
       tasks: 0,
       files: 2,
     });
-    expect(view.siteAddress).toBeNull();
+    expect(view.site.address).toBeNull();
     const booked = { ...PRIYA, visit: { id: 'visit-1', address: 'Plot 14, Gangapur Road' } };
-    expect(leadDetailViewOf(booked, QUIET).siteAddress).toBe('Plot 14, Gangapur Road');
+    expect(leadDetailViewOf(booked, QUIET).site.address).toBe('Plot 14, Gangapur Road');
   });
 
   it('the qualify card reads the bill from the lead and the five answers from the read', () => {

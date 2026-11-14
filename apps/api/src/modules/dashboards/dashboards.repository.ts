@@ -1,13 +1,25 @@
 import type { TenantPool } from '@heliogrid/db';
-import { type LeadStage, type LostReason, type MinorUnits, moneyScopeOf } from '@heliogrid/domain';
+import {
+  type LeadStage,
+  type LostReason,
+  type MinorUnits,
+  moneyScopeOf,
+  type OpenProposalValue,
+} from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { leadScopeWhere } from '../crm/crm.public';
 import { collectedIn, projectScopeWhere } from '../projects/projects.public';
+import {
+  type OpenProposalStageValue,
+  openProposalStageValues,
+  openProposalValues,
+} from '../proposals/proposals.public';
 import { lostIn, pipelineOf, targetOf, wonIn, wonSince } from './dashboards.figures.repository';
 import {
   blockedOnUsOf,
   myOverdueTasksOf,
+  proposalsUnopenedOf,
   unassignedOf,
   waitingLongestOf,
 } from './dashboards.needs-you.repository';
@@ -33,6 +45,10 @@ export interface OwnerFacts {
   readonly wonInWindow: { readonly count: number; readonly medianMinor: MinorUnits | null };
   readonly target: MinorUnits | null;
   readonly pipeline: readonly { stage: LeadStage; count: number }[];
+  /** The open proposals as the forecast weighs them, and by their lead's funnel stage (`M13-03`). */
+  readonly openProposals: readonly OpenProposalValue[];
+  readonly openByStage: readonly OpenProposalStageValue[];
+  readonly proposalsUnopened: Awaited<ReturnType<typeof proposalsUnopenedOf>>;
   readonly lostInWindow: readonly { reason: LostReason; count: number }[];
 }
 
@@ -65,6 +81,9 @@ export class DashboardsRepository {
         wonInWindow: await wonSince(tx, tenantId, money, windowStart),
         target: await targetOf(tx, tenantId, firstDayOf(clock.month)),
         pipeline: await pipelineOf(tx, tenantId, leads),
+        openProposals: await openProposalValues(tx, tenantId, leads),
+        openByStage: await openProposalStageValues(tx, tenantId, leads),
+        proposalsUnopened: await proposalsUnopenedOf(tx, tenantId, leads),
         lostInWindow: await lostIn(tx, tenantId, leads, { from: windowStart }),
       };
     });

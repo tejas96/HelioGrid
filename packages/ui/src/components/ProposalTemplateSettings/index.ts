@@ -1,18 +1,14 @@
+export { ProposalTemplateOverlays } from './ProposalTemplateOverlays';
 export { ProposalTemplateSettings } from './ProposalTemplateSettings';
 export {
-  KW,
-  TEMPLATE_PHASE_PANEL,
-  TEMPLATE_SAMPLE,
-  templateDocumentProps,
+  DEFAULTS_PAGE_WIDTH,
+  DEFAULTS_PART_GLYPH,
+  defaultsSteps,
 } from './ProposalTemplateSettings.logic';
 export * from './ProposalTemplateSettings.types';
 export {
-  phaseEditorFieldsOf,
-  type TemplateBinding,
-  type TemplateViewShape,
-  templateDocumentOf,
-  templateSettingsParts,
+  type DefaultsBinding,
+  type DefaultsViewShape,
+  defaultsPartsOf,
 } from './ProposalTemplateSettings.view';
 export { TemplatePhaseDelete } from './TemplatePhaseDelete';
-export { TemplatePhaseEditor } from './TemplatePhaseEditor';
-export { TemplatePhaseFields } from './TemplatePhaseFields';

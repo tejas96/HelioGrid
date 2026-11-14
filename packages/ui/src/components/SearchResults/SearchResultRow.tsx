@@ -10,6 +10,7 @@ import { LeadSourceMark } from '../LeadSourceMark';
 import { LeadStateBadge } from '../LeadStateBadge';
 import { NamedGap } from '../NamedGap';
 import { PendingAction } from '../PendingAction';
+import { ProposalStatus } from '../ProposalStatus';
 import { CATALOG_GLYPH, numberRuns, rowNameOf, rowOpenOf } from './SearchResults.logic';
 import type { SearchResultsProps } from './SearchResults.types';
 
@@ -73,10 +74,14 @@ export function SearchResultRow<Failure>(props: RowProps<Failure>) {
 }
 
 function RowFace<Failure>({ row }: { row: SearchRow<Failure> }) {
-  if (row.kind === 'catalog_item') {
+  if (row.kind === 'catalog_item' || row.kind === 'proposal') {
     return (
       <span className="hg-search-tile" aria-hidden="true">
-        <ShellGlyph name={CATALOG_GLYPH[row.componentKind]} size="md" tone="secondary" />
+        <ShellGlyph
+          name={row.kind === 'proposal' ? 'file-text' : CATALOG_GLYPH[row.componentKind]}
+          size="md"
+          tone="secondary"
+        />
       </span>
     );
   }
@@ -110,6 +115,27 @@ function RowWords<Failure>({ row, words }: RowProps<Failure>) {
       <>
         {title}
         <span className="hg-search-row-line">{words.componentKind(row.componentKind)}</span>
+      </>
+    );
+  }
+  if (row.kind === 'proposal') {
+    return (
+      <>
+        <span className="hg-search-row-top">
+          {title}
+          {row.exact ? <Badge tone="accent">{words.numberMatch}</Badge> : null}
+        </span>
+        <span className="hg-search-row-line">
+          <span>{words.proposal(row.number)}</span>
+          {row.city === null ? null : <span>{row.city}</span>}
+        </span>
+        <span className="hg-search-row-marks">
+          <ProposalStatus
+            standing={row.standing}
+            label={words.proposalStanding(row.standing)}
+            density="functional"
+          />
+        </span>
       </>
     );
   }

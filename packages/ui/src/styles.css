@@ -174,8 +174,10 @@
 @import "./components/ProgressBar/ProgressBar.css";
 @import "./components/ProgressRing/ProgressRing.css";
 @import "./components/PaymentTermsSettings/PaymentTermsSettings.css";
+@import "./components/ProposalPicture/ProposalPicture.css";
+@import "./components/ProposalBlocks/ProposalBlocks.css";
+@import "./components/ProposalPages/ProposalPages.css";
 @import "./components/ProposalTemplateSettings/ProposalTemplateSettings.css";
-@import "./components/ProposalTemplateSettings/ProposalTemplateStage.css";
 @import "./components/Provenance/Provenance.css";
 @import "./components/QRCode/QRCode.css";
 @import "./components/QualifyCard/QualifyCard.css";

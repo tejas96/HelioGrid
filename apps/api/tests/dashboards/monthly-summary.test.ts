@@ -1,5 +1,5 @@
 import { notification } from '@heliogrid/db';
-import { FOUNDER_ROLE, formatMoney, IN_PACK } from '@heliogrid/domain';
+import { FOUNDER_ROLE } from '@heliogrid/domain';
 import { and, eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { DashboardsSummaryAdminRepository } from '../../src/modules/dashboards/dashboards.summary.admin.repository';
@@ -64,7 +64,7 @@ describe.skipIf(skip)('the monthly summary, against a migrated database', () => 
     );
     await recordPayment(owner, projectId, {
       partId: payments.body.parts[0]?.id,
-      amount: '12000.00',
+      amount: '12000.50',
     });
     await loseLead(world, await aLeadOf(world, owner, ownerId), ownerId, 'price');
   });
@@ -82,9 +82,9 @@ describe.skipIf(skip)('the monthly summary, against a migrated database', () => 
     const told = await summariesOf(here.people.owner.userId);
     expect(told).toHaveLength(1);
     expect(told[0]?.title).toMatch(/ in four figures$/);
-    const money = (amount: string) => formatMoney(IN_PACK.formats, amount);
+    /* Money received or owed is never rounded (§9): a paisa prints, a whole amount stays whole. */
     expect(told[0]?.body).toBe(
-      `Collected ${money('12000.00')} · won 1 worth ${money('450000.00')} · 1 lost · too few closed deals for a win rate yet`,
+      'Collected ₹12,000.50 · won 1 worth ₹4,50,000 · 1 lost · too few closed deals for a win rate yet',
     );
     expect(await summariesOf(here.people.manager.userId)).toHaveLength(0);
     // Written: a later run that day, and the next day, write nothing more.

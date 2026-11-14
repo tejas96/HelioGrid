@@ -36,3 +36,110 @@
   padding-block: var(--sp-2) var(--sp-4);
   text-align: center;
 }
+
+/* The proposal basis (`T-M06-025`): the acceptance as proof, the locked value, the plan. */
+.hg-mark-won-proof {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4) var(--sp-3) var(--sp-3);
+  border-radius: var(--r-lg);
+  background: var(--success-bg);
+}
+
+.hg-mark-won-proof[data-tone="warning"] {
+  background: var(--warning-bg);
+}
+
+.hg-mark-won-proof-words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-mark-won-proof-words b {
+  font-weight: var(--fw-semibold);
+}
+
+.hg-mark-won-proof-words span {
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-mark-won-value {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-5);
+  border-radius: var(--r-lg);
+  background: var(--panel-glow);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+
+.hg-mark-won-value b {
+  color: var(--on-panel);
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: var(--fw-regular);
+  line-height: 50px;
+  letter-spacing: var(--tr-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  overflow-wrap: anywhere;
+}
+
+.hg-mark-won-plan {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border-radius: var(--r-lg);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+  list-style: none;
+}
+
+.hg-mark-won-plan li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--sp-16);
+  padding: var(--sp-3) var(--sp-4);
+}
+
+.hg-mark-won-plan li + li {
+  border-block-start: 1px solid var(--line-soft);
+}
+
+.hg-mark-won-plan-share {
+  flex: none;
+  min-width: var(--sp-12);
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  font-variant-numeric: tabular-nums lining-nums;
+  text-align: center;
+}
+
+.hg-mark-won-plan-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-mark-won-plan-words b {
+  font-weight: var(--fw-medium);
+}
+
+.hg-mark-won-plan-words span {
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}
+
+.hg-mark-won-plan-amount {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

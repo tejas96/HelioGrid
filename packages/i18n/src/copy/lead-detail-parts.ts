@@ -10,9 +10,8 @@ import {
   type LeadActFailure,
   type LeadDetailSection,
   type LeadDetailView,
+  type LeadSiteView,
   type QualifyChoiceQuestion,
-  TASK_KINDS,
-  type TaskKind,
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { shownAsSent } from './assembled';
@@ -24,10 +23,11 @@ import {
   ROOF_OWNERSHIP_WORD,
   ROOF_TYPE_WORD,
   SHADING_WORD,
-  TASK_KIND_WORD,
 } from './crm-vocabulary';
 import { leadActFailureWords } from './lead-act-failure';
 import { LEAD_DETAIL, leadDockWords, leadHeroWords } from './lead-detail';
+import { type LeadSiteMarket, leadSiteFactWords } from './lead-site';
+import { leadTaskTitle, type TaskTitleFacts } from './lead-task-title';
 import { numberFieldWords } from './number-field';
 import { FILE_PICK } from './project-sheets';
 import { SHELL } from './shell';
@@ -38,10 +38,6 @@ type T = Translator['t'];
 type ContactRole = { readonly seed: ContactRoleSeed | null; readonly text: string | null } | null;
 
 /** A task as its title is said: its kind, or a custom task's own words. */
-interface TaskTitleFacts {
-  readonly kind: string;
-  readonly title: string | null;
-}
 
 /* The three below are type aliases, not interfaces: `t` takes its values as a record, and only an
    alias carries the implicit index signature a record needs. */
@@ -183,13 +179,6 @@ export function contactLanguageOptions(): { value: string; label: string }[] {
   return Object.entries(LANGUAGES).map(([code, facts]) => ({ value: code, label: facts.endonym }));
 }
 
-/** A task's words: its kind's, or a custom task's own as typed; a kind a newer server learned as sent. */
-export function leadTaskTitle(t: T, task: TaskTitleFacts): TranslatedText {
-  if (task.title !== null) return shownAsSent(task.title);
-  const kind = TASK_KINDS.find((known): known is TaskKind => known === task.kind);
-  return kind === undefined ? shownAsSent(task.kind.replace(/_/g, ' ')) : t(TASK_KIND_WORD[kind]);
-}
-
 /** `LeadSections`' words, with the day and time formatters the caller holds for the tenant. */
 export function leadSectionsWords(t: T) {
   return {
@@ -243,11 +232,12 @@ export function leadVisitLine(t: T, visit: VisitLineFacts) {
 
 /**
  * `LeadDetailCards`' words: the contacts card's and the sections', the languages by their own
- * names, and how a role, a task, its due time, the booked visit and an act that came back undone
- * are said.
+ * names, the site's facts, and how a role, a task, its due time, the booked visit and an act that
+ * came back undone are said.
  */
-export function leadDetailCardsWords(t: T) {
+export function leadDetailCardsWords(t: T, market: LeadSiteMarket) {
   return {
+    siteFacts: (site: LeadSiteView) => leadSiteFactWords(t, market, site),
     contacts: leadContactsWords(t),
     sections: leadSectionsWords(t),
     languages: contactLanguageOptions(),
@@ -287,3 +277,5 @@ export function leadWorkCardsWords(
     failure: (failed: LeadActFailure) => leadActFailureWords(t, failed),
   };
 }
+
+export { leadTaskTitle } from './lead-task-title';

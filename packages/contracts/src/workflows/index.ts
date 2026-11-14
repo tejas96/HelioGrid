@@ -55,9 +55,16 @@ export type {
   InvoiceDocumentPage,
   InvoiceDocumentStepInput,
   InvoiceDocumentStepResult,
+  PageToPrint,
+  PrintedDocument,
   RenderedDocument,
 } from './invoice-document';
-export { DOCUMENT_RENDER_QUEUE, invoiceDocumentWorkflow } from './invoice-document';
+export {
+  DOCUMENT_RENDER_QUEUE,
+  invoiceDocumentWorkflow,
+  PRINT_READY_ATTRIBUTE,
+  PRINT_REFUSED_ATTRIBUTE,
+} from './invoice-document';
 export type {
   LeadImportActivities,
   LeadImportStepInput,
@@ -91,6 +98,13 @@ export type {
 } from './payment-receipt';
 export { paymentReceiptWorkflow } from './payment-receipt';
 export { platformHealthcheckWorkflow } from './platform';
+export type {
+  ProposalDocumentActivities,
+  ProposalDocumentPage,
+  ProposalDocumentStepInput,
+  ProposalDocumentStepResult,
+} from './proposal-document';
+export { proposalDocumentWorkflow } from './proposal-document';
 export type {
   TaskQueue,
   WorkflowDefinition,

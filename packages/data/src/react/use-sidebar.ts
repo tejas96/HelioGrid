@@ -5,6 +5,7 @@ import {
   billingStripFactOf,
   opensSettingsRow,
   type StandingDestination,
+  sidebarWorkLists,
   type WorkDestination,
   workListLanded,
 } from '@heliogrid/domain';
@@ -22,6 +23,11 @@ import { membersRead } from './use-team';
 export interface Sidebar {
   /** A work list whose module has not landed: its door is the placeholder, so the row says *Soon*. */
   soon(destination: StandingDestination): boolean;
+  /**
+   * The sidebar's lists for these slots: every landed list a slot's grant reads, after it — the
+   * pill keeps `F7-48`'s two, the sidebar has the room (`sidebarWorkLists`).
+   */
+  lists(destinations: readonly StandingDestination[]): readonly WorkDestination[];
   readonly counts: ShellCounts;
 }
 
@@ -43,6 +49,7 @@ export function useSidebar(): Sidebar {
   const counts = useShellCounts();
   return {
     soon: (destination) => isWork(destination) && !workListLanded(destination),
+    lists: sidebarWorkLists,
     counts,
   };
 }

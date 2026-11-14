@@ -7,6 +7,7 @@ import { useFocusRequest } from '../../primitives/use-focus-request';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { useFormat } from '../MarketProvider/market-context';
+import { EMPTY_PLAIN_FIGURE } from './NumberField.logic';
 import type { NumberDraftState } from './NumberField.state';
 import type { NumberFieldWords } from './NumberField.types';
 
@@ -55,6 +56,10 @@ export interface NumberFieldBoxProps {
   draft: NumberDraftState;
   steppers: boolean;
   density: 'expressive' | 'functional';
+  /** `NumberFieldProps.hero`. */
+  hero: boolean;
+  /** `NumberFieldProps.plain`. */
+  plain: boolean;
   disabled: boolean;
   /** Refusal or error — the inset danger ring, which the focus ring is drawn ON TOP of. */
   danger: boolean;
@@ -75,6 +80,8 @@ export function NumberFieldBox({
   draft,
   steppers,
   density,
+  hero,
+  plain,
   disabled,
   danger,
   label,
@@ -92,13 +99,17 @@ export function NumberFieldBox({
     <div
       className="hg-number-field-box"
       data-density={density}
+      data-hero={hero ? '' : undefined}
+      data-plain={plain ? '' : undefined}
       data-steppers={steppers}
-      {...fieldBox({
-        focused: draft.focus,
-        tone: danger ? 'error' : 'none',
-        disabled,
-        density,
-      })}
+      {...(plain
+        ? {}
+        : fieldBox({
+            focused: draft.focus,
+            tone: danger ? 'error' : 'none',
+            disabled,
+            density,
+          }))}
     >
       {steppers ? (
         <Pressable
@@ -118,6 +129,7 @@ export function NumberFieldBox({
         data-steppers={steppers}
         data-currency={currency}
         inputMode="decimal"
+        placeholder={plain ? EMPTY_PLAIN_FIGURE : undefined}
         value={draft.draft}
         disabled={disabled}
         aria-label={ariaLabel}

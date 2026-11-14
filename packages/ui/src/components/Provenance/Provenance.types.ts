@@ -3,7 +3,13 @@ import type {
   ProvenanceTier,
   TranslatedText,
 } from '@heliogrid/contracts';
-import type { EnergySource, Freshness, FreshnessWarning } from '@heliogrid/domain';
+import type {
+  EnergySource,
+  Freshness,
+  FreshnessWarning,
+  ProjectionAssumption,
+  ProjectionAssumptions,
+} from '@heliogrid/domain';
 
 /**
  * A mark colour, named as a DS colour token rather than as a CSS colour string — the web half
@@ -65,6 +71,10 @@ export interface ProvenanceWords {
   energySource: (source: EnergySource) => TranslatedText;
   /** Never handed `current`, which prints nothing. */
   freshness: (warning: FreshnessWarning) => TranslatedText;
+  /** The word that calls a figure a projection (`F8-23`) — never left to the reader to infer. */
+  projection: TranslatedText;
+  /** One stated assumption beside it, its value already printed — "over 25 years". */
+  assumption: (kind: ProjectionAssumption, value: string) => TranslatedText;
 }
 
 export type ProvenanceAlign = 'left' | 'right' | 'center';
@@ -95,8 +105,12 @@ export interface ProvenanceProps {
    * fact such as a usage meter's billing period — so it stays a string.
    */
   source?: string;
-  /** The assumptions a multi-year figure rides on (`F8-23` / `F5-37`). */
-  projection?: TranslatedText;
+  /**
+   * The assumptions a multi-year figure rides on (`F8-23`, `F5-37`), as `QualifiedAmount` carries
+   * them: the label prints the word that calls the figure a projection and then each assumption
+   * `statedAssumptions` lists, in that order and never its own — beside the tier, never on hover.
+   */
+  projection?: ProjectionAssumptions | null;
   note?: TranslatedText;
   /** 12 (default) or 13. Never below 12 — the type floor. */
   size?: number;

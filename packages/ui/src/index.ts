@@ -163,6 +163,9 @@ export * from './components/ProjectBoard';
 export * from './components/ProjectDetail';
 export * from './components/ProjectMoney';
 export * from './components/ProjectRows';
+export * from './components/ProposalBlocks';
+export * from './components/ProposalPages';
+export * from './components/ProposalPicture';
 export * from './components/ProposalReadiness';
 export * from './components/ProposalTemplateSettings';
 export * from './components/Provenance';
@@ -231,6 +234,8 @@ export { Box, Stack } from './primitives/Box';
 export { colors, type ThemeColor, usePalette } from './primitives/Color';
 export type { FieldProps } from './primitives/Field';
 export { Field } from './primitives/Field';
+export type { FieldCommits } from './primitives/FieldCommits';
+export { FieldCommitsProvider, useFieldCommits } from './primitives/FieldCommits';
 export type { FocusAfter, FocusHandle, LeavingPress } from './primitives/FocusAfter';
 export { landFocusOn, useFocusAfter } from './primitives/FocusAfter';
 export type { IconProps, IconSize } from './primitives/Icon';
@@ -261,6 +266,9 @@ export { Surface } from './primitives/Surface';
 export type { TextAlign, TextColor, TextProps, TextVariant } from './primitives/Text';
 export { Text } from './primitives/Text';
 export { useOwnWidth } from './primitives/use-own-width';
+// END COMPONENT EXPORTS
+export * from './proposal-after';
+export * from './proposal-builder';
 export * from './utils/color-contrast';
 /* MarketFormat / IN_FORMAT / useFormat were declared TWICE — once here and once in the
    calendar's own `DatePicker/market-format.ts` — which made a bare `export *` ambiguous (TS2308)
@@ -272,4 +280,3 @@ export * from './utils/format';
 export { IN_FORMAT } from './utils/format';
 export * from './utils/qr-encode';
 export * from './utils/qr-encode-blocks';
-// END COMPONENT EXPORTS

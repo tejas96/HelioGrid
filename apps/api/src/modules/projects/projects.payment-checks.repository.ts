@@ -107,6 +107,8 @@ export type PaymentActOutcome =
       readonly notified: readonly string[];
       /** The payment a recording wrote, so its photo can be stored against it (`M11-37`). */
       readonly recorded?: string;
+      /** Outbox events the act wrote — the receipt's PDF — started after its commit. */
+      readonly started?: readonly string[];
     }
   | { readonly outcome: 'replayed'; readonly recorded: string }
   | { readonly outcome: 'key-reused' }

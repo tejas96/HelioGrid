@@ -1,5 +1,5 @@
 import type { ProvenanceStanding, ProvenanceTier, TranslatedText } from '@heliogrid/contracts';
-import type { EnergySource, FreshnessWarning } from '@heliogrid/domain';
+import type { EnergySource, FreshnessWarning, ProjectionAssumption } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { energySourceLabel } from './energy-source';
 import { freshnessLabel } from './freshness';
@@ -40,6 +40,20 @@ export function standingLabel(
   return translate(PROVENANCE_STANDING_WORD[standing]);
 }
 
+/** The word that calls a figure a projection (`F8-23`): the drawn proposal document's own. */
+const PROJECTION_WORD = /*i18n*/ { id: 'A projection' };
+
+/** Each assumption a projection states, its value in it (`F8-23`): the drawn document's words. */
+const PROJECTION_ASSUMPTION_WORD: Record<ProjectionAssumption, MessageRef> = {
+  horizonYears: /*i18n*/ {
+    id: '{years, plural, one {over # year} other {over # years}}',
+  },
+  escalationRate: /*i18n*/ { id: 'rising {value}% a year' },
+  interestRate: /*i18n*/ { id: 'at {value}% a year' },
+  margin: /*i18n*/ { id: 'with a {value}% margin' },
+  incentive: /*i18n*/ { id: 'after {value} of incentive' },
+};
+
 /**
  * Every word a provenance label prints, bound to one mount's `t` — what a root mounts
  * `ProvenanceWordsProvider` with, once, so no label falls back to English (`F3-12`).
@@ -50,5 +64,10 @@ export function provenanceWords(translate: Translator['t']) {
     standing: (standing: ProvenanceStanding) => standingLabel(translate, standing),
     energySource: (source: EnergySource) => energySourceLabel(translate, source),
     freshness: (warning: FreshnessWarning) => freshnessLabel(translate, warning),
+    projection: translate(PROJECTION_WORD),
+    assumption: (kind: ProjectionAssumption, value: string) =>
+      kind === 'horizonYears'
+        ? translate(PROJECTION_ASSUMPTION_WORD.horizonYears, { years: Number(value), value })
+        : translate(PROJECTION_ASSUMPTION_WORD[kind], { value }),
   };
 }

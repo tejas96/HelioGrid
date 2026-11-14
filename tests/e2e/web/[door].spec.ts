@@ -111,8 +111,9 @@ test('a member removed while a door is open sees Frame 8 on that door', async ({
 test('a door the person is not offered, or no door at all, is not found', async ({ page }) => {
   await createCompany(page, en, freshMobile());
 
-  // An owner's rail holds Projects, never Proposals; their verb adds a lead, never a survey.
-  for (const path of ['/proposals', '/start-survey', '/no-such-door']) {
+  // An owner's verb adds a lead, never a survey. (Proposals is no door on an owner's rail, but
+  // its list is theirs to open: a proposal is seen with its lead — `proposals.spec.ts`.)
+  for (const path of ['/start-survey', '/no-such-door']) {
     await page.goto(path);
     await expect(page.getByText(onItsWayWords(en.t, 'leads').badge)).toBeHidden();
     await expect(page.getByRole('heading', { level: 1, name: en.t(SHELL.notFound) })).toBeVisible();
@@ -188,12 +189,12 @@ test('a link to a door the person is not offered is not found after sign-in', as
   context,
 }) => {
   const mobile = await ownerWithNoSession(page, context);
-  // An owner's rail holds Projects, never Proposals.
-  await page.goto('/proposals');
+  // An owner's verb adds a lead, never a survey.
+  await page.goto('/start-survey');
 
   await signInAtTheDoor(page, mobile);
 
-  await expect(page).toHaveURL(/\/proposals$/);
+  await expect(page).toHaveURL(/\/start-survey$/);
   await expect(page.getByRole('heading', { level: 1, name: en.t(SHELL.notFound) })).toBeVisible();
   await page.getByRole('button', { name: en.t(SHELL.goToHome) }).click();
   await expect(page).toHaveURL(/\/home$/);

@@ -3,6 +3,8 @@ import type { BlockerParty, BlockerReason, CancelReason, Read } from '@heliogrid
 import type { ReactNode } from 'react';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import type { DatePickerWords, ISODate } from '../DatePicker/DatePicker.types';
+import type { NumberFieldWords } from '../NumberField/NumberField.types';
+import type { TimeFieldWords } from '../TimeField/TimeField.types';
 
 /** A person a project sheet can pick — a manager, an installer — as the wire names them. */
 export interface ProjectPersonChoice {
@@ -90,6 +92,15 @@ export interface ProjectActSheetWords {
     readonly title: TranslatedText;
     readonly line: TranslatedText;
     readonly send: TranslatedText;
+    /** The installation day's facts, each a field's label (`F5-68`). */
+    readonly day: TranslatedText;
+    readonly time: TranslatedText;
+    readonly duration: TranslatedText;
+    readonly disturbance: TranslatedText;
+    readonly disturbanceHint: TranslatedText;
+    readonly crewLead: TranslatedText;
+    /** The lead's pick while no one is picked; the crew is named at dispatch. */
+    readonly crewLeadPick: TranslatedText;
   };
   readonly manager: {
     readonly title: TranslatedText;
@@ -110,9 +121,26 @@ export interface ProjectActSheetWords {
     readonly name: TranslatedText;
     readonly send: TranslatedText;
   };
-  readonly fields: { readonly date: DatePickerWords };
+  readonly fields: {
+    readonly date: DatePickerWords;
+    readonly time: TimeFieldWords;
+    readonly number: NumberFieldWords;
+  };
   readonly close: TranslatedText;
   readonly retry: TranslatedText;
+}
+
+/**
+ * The installation day's facts beside its date (`F5-68`): when the crew starts, how many working
+ * days (halves allowed), what the customer should expect and who leads. Each `null` is not set.
+ */
+export interface InstallDayFacts {
+  /** "HH:MM", 24-hour. */
+  readonly startTime: string | null;
+  readonly durationDays: number | null;
+  /** The manager's own sentence for the customer, sent as typed. */
+  readonly disturbance: string | null;
+  readonly crewLeadId: string | null;
 }
 
 /** Each act's form — the one the sheet draws, what it starts with, and its send. */
@@ -171,7 +199,11 @@ export type ProjectActForm =
       readonly start: ISODate | null;
       /** The first day the install can be promised for — today on the company's clock. */
       readonly firstDay: ISODate;
-      readonly onSend: (date: ISODate) => void;
+      /** The day's other facts as they stand — what the customer is told (`F5-68`). */
+      readonly install: InstallDayFacts;
+      /** Who may lead: the project's crew, by their names. */
+      readonly crew: readonly { readonly userId: string; readonly name: string }[];
+      readonly onSend: (day: ISODate, facts: InstallDayFacts) => void;
     }
   | {
       readonly kind: 'manager';

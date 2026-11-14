@@ -120,6 +120,21 @@ export const ACTIVITY_KINDS = [
   'project_document',
   'project_step',
   'project_changed',
+  /** A proposal's acts on its lead (`M06-45`, `M02-35`): each one a person's or the customer's. */
+  'proposal_generated',
+  'proposal_shared',
+  'proposal_withdrawn',
+  /** What the customer did on their link (`F5-31`): each is attributed to the link and its contact. */
+  'proposal_opened',
+  'proposal_accepted',
+  'proposal_negotiation_requested',
+  'proposal_declined',
+  'customer_question',
+  'customer_call_requested',
+  /** A link minted, given a new address or turned off (`F5-30`). */
+  'customer_link_changed',
+  /** A newer accepted version put in force on a won deal's project (`M08-50`). */
+  'proposal_version_in_force',
 ] as const;
 export type ActivityKind = (typeof ACTIVITY_KINDS)[number];
 
@@ -143,8 +158,28 @@ export const TASK_PROVENANCES = [
   'snooze_wake',
   'resurface',
   'visit_booked',
+  /** A proposal marked shared: the follow-up two days later (`M06-55`). */
+  'proposal_shared',
+  /** The customer accepted on the link: confirm the win, the same day (`M06-55`). */
+  'proposal_accepted',
+  /** The customer declined on the link: call, then mark lost or share again (`M06-55`). */
+  'proposal_declined',
+  /** The customer asked a question on the link: the reply is a call (`F5-53`). */
+  'customer_question',
+  /** The customer asked to be called on the link: the request is its recorded consent (`F5-54`). */
+  'customer_call_request',
 ] as const;
 export type TaskProvenance = (typeof TASK_PROVENANCES)[number];
+
+/**
+ * The tasks a proposal's own acts raise on its lead (`M06-55`): a lead holds one open at a time,
+ * and each closes with the proposal that raised it — on an answer, a withdrawal or the win.
+ */
+export const PROPOSAL_TASK_PROVENANCES = [
+  'proposal_shared',
+  'proposal_accepted',
+  'proposal_declined',
+] as const satisfies readonly TaskProvenance[];
 
 /** How a funnel or R9 move happened (`lead_stage_transition.cause`). */
 export const TRANSITION_CAUSES = [

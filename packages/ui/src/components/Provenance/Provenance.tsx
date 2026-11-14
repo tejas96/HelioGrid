@@ -14,6 +14,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Fragment } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { useFormat } from '../MarketProvider/market-context';
 import {
   isProvenanceEmpty,
   type ProvenanceLinePart,
@@ -111,6 +112,7 @@ export function Provenance({
   const parts = provenanceLineParts(
     { tier, standing, freshness, energySource, source, projection, note },
     useProvenanceWords(),
+    useFormat(),
   );
   if (parts.length === 0) {
     return null;

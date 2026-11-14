@@ -24,6 +24,10 @@ const styles = StyleSheet.create({
     paddingTop: 6 - FIELD_BOX_EDGE,
     paddingBottom: 6,
     paddingHorizontal: theme.spacing['sp-2'] - FIELD_BOX_EDGE,
+    /* The tools sit on their own band, joined to the text box under it by one hairline. */
+    backgroundColor: colors.fill,
+    borderBottomWidth: 1,
+    borderBottomColor: colors['line-strong'],
   },
   tool: { minWidth: 44, height: 44, borderRadius: theme.radius['r-pill'] },
   toolWide: { paddingHorizontal: theme.spacing['sp-3'] },
@@ -91,6 +95,8 @@ interface RichTextToolbarProps {
   disabled: boolean;
   hasLogo: boolean;
   linking: boolean;
+  /** `RichTextProps.marksOnly`: the link and the logo are not offered. */
+  marksOnly?: boolean;
   templates?: RichTextTemplate[];
   saveTemplateLabel: TranslatedText | undefined;
   onRun: (c: ToolCommand) => void;
@@ -112,6 +118,7 @@ export function RichTextToolbar({
   disabled,
   hasLogo,
   linking,
+  marksOnly = false,
   templates,
   saveTemplateLabel,
   onRun,
@@ -131,14 +138,23 @@ export function RichTextToolbar({
           onPress={() => onRun(c)}
         />
       ))}
-      <ToolButton label={words.link} glyph={LINK_GLYPH} active={linking} onPress={onToggleLink} />
-      <View style={styles.divider} />
-      <ToolButton
-        label={hasLogo ? words.removeTheLogo : words.addTheLogo}
-        word={hasLogo ? words.logoOn : words.addLogo}
-        active={hasLogo}
-        onPress={onToggleLogo}
-      />
+      {marksOnly ? null : (
+        <>
+          <ToolButton
+            label={words.link}
+            glyph={LINK_GLYPH}
+            active={linking}
+            onPress={onToggleLink}
+          />
+          <View style={styles.divider} />
+          <ToolButton
+            label={hasLogo ? words.removeTheLogo : words.addTheLogo}
+            word={hasLogo ? words.logoOn : words.addLogo}
+            active={hasLogo}
+            onPress={onToggleLogo}
+          />
+        </>
+      )}
       {templates !== undefined && templates.length > 0 ? (
         <View style={styles.templates}>
           {templates.map((t) => (

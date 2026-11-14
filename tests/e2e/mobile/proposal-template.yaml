@@ -1,4 +1,5 @@
-# Proposal template: what every proposal carries, opened from settings and closed back to it.
+# Proposal defaults: what every new proposal starts with — a focus screen opened from settings
+# and closed back to it by its own back button.
 appId: com.heliogrid.app
 ---
 - runFlow:

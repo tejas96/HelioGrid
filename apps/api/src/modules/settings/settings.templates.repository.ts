@@ -7,6 +7,7 @@ import {
   userAccount,
 } from '@heliogrid/db';
 import type {
+  CoverPicture,
   StoredProposalTemplate,
   StoredTimelineTemplate,
   TimelinePhase,
@@ -39,12 +40,16 @@ export class SettingsTemplatesRepository {
   ): Promise<StoredProposalTemplate> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       const stored = await storedProposalTemplate(tx, tenantId);
-      if (stored !== null && isDeepStrictEqual(stored, settings)) return stored;
+      // A save that names no picture keeps the one stored (`T-M01-030`).
+      const coverPicture = settings.coverPicture ?? stored?.coverPicture;
+      const toStore = { ...settings, ...(coverPicture !== undefined && { coverPicture }) };
+      if (stored !== null && isDeepStrictEqual(stored, toStore)) return stored;
       const now = new Date(act.now);
       const values = {
         cover: settings.cover,
         sectionsIncluded: [...settings.sectionsIncluded],
         defaultTerms: settings.defaultTerms,
+        coverPicture: coverPicture ?? null,
         updatedAt: now,
         updatedBy: act.actorUserId,
       };
@@ -64,11 +69,16 @@ export class SettingsTemplatesRepository {
         ),
       );
       const { id: _id, ...saved } = row;
-      return saved;
+      return asTemplate(saved);
     });
   }
 
   /** Who saved the proposal template last, read apart from the template so the unchanged-save check and the effective read never see it. */
+  /** The stored cover picture alone: the effective read resolves the template without it. */
+  async coverPicture(tenantId: string): Promise<CoverPicture | null> {
+    return this.db.withTenantTransaction(tenantId, (tx) => storedCoverPicture(tx, tenantId));
+  }
+
   async proposalTemplateLastSave(tenantId: string): Promise<LastSave | null> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       const [last] = await tx
@@ -147,7 +157,30 @@ export async function storedProposalTemplate(
     .from(proposalTemplateSettings)
     .where(eq(proposalTemplateSettings.tenantId, tenantId))
     .limit(1);
-  return row ?? null;
+  return row === undefined ? null : asTemplate(row);
+}
+
+/** The row as the template reads: the picture named only once the company picked one. */
+function asTemplate({
+  coverPicture,
+  ...template
+}: Omit<StoredProposalTemplate, 'coverPicture'> & {
+  coverPicture: CoverPicture | null;
+}): StoredProposalTemplate {
+  return coverPicture === null ? template : { ...template, coverPicture };
+}
+
+/** The picture new proposals' covers start with (`T-M01-030`); `null` until the company picks one. */
+export async function storedCoverPicture(
+  tx: TenantScopedDb,
+  tenantId: string,
+): Promise<CoverPicture | null> {
+  const [row] = await tx
+    .select({ coverPicture: proposalTemplateSettings.coverPicture })
+    .from(proposalTemplateSettings)
+    .where(eq(proposalTemplateSettings.tenantId, tenantId))
+    .limit(1);
+  return row?.coverPicture ?? null;
 }
 
 export async function storedTimelineTemplate(
@@ -167,6 +200,7 @@ function proposalColumns() {
     cover: proposalTemplateSettings.cover,
     sectionsIncluded: proposalTemplateSettings.sectionsIncluded,
     defaultTerms: proposalTemplateSettings.defaultTerms,
+    coverPicture: proposalTemplateSettings.coverPicture,
   };
 }
 

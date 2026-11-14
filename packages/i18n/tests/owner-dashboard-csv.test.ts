@@ -71,6 +71,19 @@ describe('ownerDashboardCsv', () => {
     }
   });
 
+  it('a forecast the server sent is written as its figure, never as the gap (M13-03, M13-53)', async () => {
+    const { t } = await createTranslator('en');
+    const forecast: OwnerDashboard['forecast'] = {
+      expected: '0.00',
+      tier: 'assumed',
+      count: 0,
+      stages: [],
+    };
+    const csv = ownerDashboardCsv(t, { ...view, forecast }, winRateOf(1, 2), format);
+    expect(csv).toContain('"Forecast","expected from 0 open proposals","₹0.00","Assumed"');
+    expect(csv).not.toContain('Starts with proposals');
+  });
+
   it('opens on its header row and ends on the day it was taken', async () => {
     const { t } = await createTranslator('en');
     const lines = ownerDashboardCsv(t, view, winRateOf(1, 2), format).split('\r\n');

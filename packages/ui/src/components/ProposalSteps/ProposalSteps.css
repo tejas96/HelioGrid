@@ -1,0 +1,250 @@
+/* The builder's step bodies (`T-M06-003`–`T-M06-013`). A step is a column of parts; a part that is
+   one record — the facts, the rows, the folded rows — is a tile, drawn by `Ground.css`. Tokens
+   only; motion is transform and opacity. */
+.hg-pst-step,
+.hg-pst-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+.hg-pst-controls {
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+.hg-pst-step > .hg-hero,
+.hg-pst-blockcard,
+.hg-pst-peek-in {
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+.hg-pst-tile {
+  border-radius: var(--r-lg);
+}
+.hg-pst-blockcard {
+  padding: var(--sp-5);
+}
+.hg-pst-start {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--sp-3);
+}
+
+/* a field's own head, helper and save line */
+.hg-pst-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.hg-pst-field-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  min-height: 20px;
+}
+.hg-pst-field-label {
+  font-size: var(--fs-field-label);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+.hg-pst-field-tag,
+.hg-pst-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pst-helper {
+  font-size: var(--fs-field-helper);
+  line-height: 18px;
+  color: var(--text-secondary);
+}
+.hg-pst-saved {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--success-text);
+  animation: hg-fade-in var(--dur-standard) var(--ease-enter) backwards;
+}
+.hg-pst-fault-press {
+  align-self: flex-start;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+.hg-pst-fault {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: var(--r-xs);
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+}
+.hg-pst-two {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sp-3);
+  align-items: start;
+}
+.hg-pst-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.hg-pst-chips-note {
+  margin-inline-start: auto;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+/* a notice, a hint, a worded act */
+.hg-pst-note,
+.hg-pst-note-in {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  border-radius: var(--r-md);
+}
+.hg-pst-note {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  font: inherit;
+  color: inherit;
+}
+div.hg-pst-note,
+.hg-pst-note-in {
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+.hg-pst-note-in {
+  flex: 1;
+  cursor: pointer;
+}
+.hg-pst-note[data-tone="danger"],
+.hg-pst-note-in[data-tone="danger"] {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+.hg-pst-note[data-tone="info"],
+.hg-pst-note-in[data-tone="info"] {
+  background: var(--info-bg);
+  color: var(--info-text);
+}
+.hg-pst-note .hg-shell-glyph {
+  flex: none;
+  color: currentColor;
+}
+.hg-pst-note-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hg-pst-note-title {
+  font-weight: var(--fw-semibold);
+}
+.hg-pst-note-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+.hg-pst-note-act {
+  flex: none;
+  font-weight: var(--fw-medium);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.hg-pst-hint {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+.hg-pst-hint .hg-shell-glyph {
+  flex: none;
+  margin-top: 2px;
+}
+.hg-pst-acts {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: calc(var(--sp-2) * -1) calc(var(--sp-3) * -1) 0;
+}
+.hg-pst-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+.hg-pst-link-in {
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-pill);
+  color: var(--accent-text);
+  font: var(--fw-medium) var(--fs-body-sm) / 1 var(--font-sans);
+  transition: background var(--dur-micro) var(--ease-standard);
+}
+.hg-pst-link-in .hg-shell-glyph {
+  color: currentColor;
+}
+.hg-pst-link:hover .hg-pst-link-in {
+  background: var(--accent-subtle);
+}
+.hg-pst-link-in[data-quiet] {
+  color: var(--text-secondary);
+}
+.hg-pst-link:hover .hg-pst-link-in[data-quiet] {
+  background: var(--fill);
+}
+
+/* A save is out: the hero's figures are about to move, so they read as stale until the answer. */
+.hg-pst-hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-pst-hero > .hg-hero {
+  transition: opacity var(--dur-standard) var(--ease-standard);
+}
+
+.hg-pst-hero[data-updating="true"] > .hg-hero {
+  opacity: 0.55;
+}
+
+.hg-pst-updating {
+  align-self: flex-start;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}

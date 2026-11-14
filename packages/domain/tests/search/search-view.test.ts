@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { IN_FORMATS } from '../../src/format/pack';
+import type { SearchHits, SearchLeadHit, SearchProposalHit } from '../../src/search/search-hits';
 import {
-  type SearchHits,
-  type SearchLeadHit,
   type SearchOpens,
   type SearchReopenAct,
   type SearchViewFacts,
@@ -29,6 +28,14 @@ const SURESH: SearchLeadHit = {
   source: 'quick_add',
 };
 
+const ANIL_PROPOSAL: SearchProposalHit = {
+  id: 'prp-anil',
+  number: 'PRP-0042',
+  customerName: 'Anil Sharma',
+  city: 'Pune',
+  standing: 'opened',
+};
+
 const NONE = { total: 0, items: [] };
 const HITS: SearchHits = {
   leads: { total: 214, items: [PRIYA, SURESH] },
@@ -38,6 +45,7 @@ const HITS: SearchHits = {
       { id: 'cust-1', name: 'Deshmukh Cold Storage', phoneE164: '+919822020519', city: null },
     ],
   },
+  proposals: NONE,
   people: { total: 0, items: [] },
   catalog: {
     total: 1,
@@ -183,9 +191,79 @@ describe('searchViewOf — a junk lead and its Reopen (F6-23)', () => {
 
 describe('searchFoundNothing', () => {
   it.each([
-    [{ leads: NONE, customers: NONE, people: NONE, catalog: NONE }, true],
+    [{ leads: NONE, customers: NONE, proposals: NONE, people: NONE, catalog: NONE }, true],
+    [
+      {
+        leads: NONE,
+        customers: NONE,
+        proposals: { total: 1, items: [ANIL_PROPOSAL] },
+        people: NONE,
+        catalog: NONE,
+      },
+      false,
+    ],
     [HITS, false],
   ])('%#', (hits, nothing) => {
     expect(searchFoundNothing(hits)).toBe(nothing);
+  });
+});
+
+describe('searchViewOf — proposals (F6-20, F6-22, F6-25)', () => {
+  const WITH_PROPOSALS: SearchHits = {
+    ...HITS,
+    proposals: {
+      total: 2,
+      items: [
+        ANIL_PROPOSAL,
+        { ...ANIL_PROPOSAL, id: 'prp-draft', number: null, standing: 'draft' },
+      ],
+    },
+  };
+
+  it('draws the proposals group after the customers, each row opening its proposal', () => {
+    const view = searchViewOf(WITH_PROPOSALS, facts('anil'));
+    expect(view.groups.map((group) => group.group)).toEqual([
+      'leads',
+      'customers',
+      'proposals',
+      'catalog',
+    ]);
+    const group = view.groups.find((found) => found.group === 'proposals');
+    expect(group?.rows).toEqual([
+      {
+        kind: 'proposal',
+        key: 'proposal:prp-anil',
+        address: 'proposals/prp-anil',
+        id: 'prp-anil',
+        number: 'PRP-0042',
+        customerName: 'Anil Sharma',
+        city: 'Pune',
+        standing: 'opened',
+        exact: false,
+      },
+      {
+        kind: 'proposal',
+        key: 'proposal:prp-draft',
+        address: 'proposals/prp-draft',
+        id: 'prp-draft',
+        number: null,
+        customerName: 'Anil Sharma',
+        city: 'Pune',
+        standing: 'draft',
+        exact: false,
+      },
+    ]);
+  });
+
+  it.each([
+    ['PRP-0042', true],
+    ['prp-0042', true],
+    ['PRP-004', false],
+    ['anil', false],
+  ])('typing %j is the proposal’s whole number: %s', (asked, exact) => {
+    const view = searchViewOf(WITH_PROPOSALS, facts(asked));
+    const rows = view.groups.find((found) => found.group === 'proposals')?.rows ?? [];
+    expect(rows[0]).toMatchObject({ kind: 'proposal', exact });
+    expect(rows[1]).toMatchObject({ kind: 'proposal', exact: false });
   });
 });

@@ -19,6 +19,7 @@ import { and, asc, eq, isNull, ne, type SQL, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberNameOf } from '../crm/crm.public';
 import type { ProjectReader } from './internal/reader';
+import { type EarlierPlanFacts, earlierPlansOf } from './projects.earlier-plans.repository';
 import { type PartFacts, partFactsOf } from './projects.money.repository';
 import { receiptOnReference } from './projects.payment-checks.repository';
 import { projectScopeWhere } from './projects.scope.repository';
@@ -60,6 +61,7 @@ export interface PaymentsFacts {
   readonly head: PaymentsHead;
   readonly parts: readonly PartFacts[];
   readonly entries: readonly EntryFacts[];
+  readonly earlierPlans: readonly EarlierPlanFacts[];
 }
 
 /** One project's head, if the reader may see its money. */
@@ -180,11 +182,12 @@ export class ProjectsPaymentsReadRepository {
     return this.db.withTenantTransaction(reader.tenantId, async (tx) => {
       const head = await paymentsHeadOf(tx, reader, projectId);
       if (head === null) return null;
-      const [parts, entries] = await Promise.all([
+      const [parts, entries, earlierPlans] = await Promise.all([
         partFactsOf(tx, reader.tenantId, [projectId]),
         entriesOf(tx, reader.tenantId, projectId),
+        earlierPlansOf(tx, reader.tenantId, projectId),
       ]);
-      return { head, parts: parts.get(projectId) ?? [], entries };
+      return { head, parts: parts.get(projectId) ?? [], entries, earlierPlans };
     });
   }
 
@@ -230,6 +233,7 @@ export class ProjectsPaymentsReadRepository {
             eq(projectTranche.tenantId, reader.tenantId),
             ne(project.stage, 'cancelled'),
             isNull(projectTranche.waivedAt),
+            isNull(projectTranche.replacedAt),
             sql`${projectTranche.amountMinor} > ${received}`,
             scope,
           ),

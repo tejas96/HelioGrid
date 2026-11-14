@@ -20,6 +20,7 @@ export {
   moneyDueGroupOf,
   type StageArrival,
 } from './due';
+export type { KeptPart, ScheduleInForce } from './in-force';
 export { isUpiId, type ReferenceStanding, referenceKeyOf, upiIdOf } from './reference';
 export { REQUEST_CHATS, type RequestChat, type UpiRequest } from './request';
 export type { SchedulePart, ScheduleTerm } from './schedule';

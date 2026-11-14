@@ -1,3 +1,4 @@
+import type { ComponentCategory } from '../proposals/component-category';
 import type { Certification, CertificationScheme, CertificationSchemesPack } from './pack';
 
 /**
@@ -77,4 +78,19 @@ export function certificationVerdict(
     return claim.reference === null ? 'reference_missing' : 'held';
   }
   return claim.reference === null ? 'held' : 'reference_unexpected';
+}
+
+/**
+ * Whether a scheme applies to a component category (`M06-23`, `F1-34`). A scheme the market never
+ * declared binds nothing; one declared with no binding list binds every category, so a pack stored
+ * before the list existed still checks every line.
+ */
+export function schemeBinds(
+  certification: CertificationSchemesPack,
+  scheme: string,
+  category: ComponentCategory,
+): boolean {
+  const declared = certificationScheme(certification, scheme);
+  if (declared === null) return false;
+  return declared.binds === null || declared.binds.includes(category);
 }

@@ -20,6 +20,9 @@ export const NO_CONTRACT_YET: Record<string, string> = {
   plan_change_status:
     'a scheduled plan change’s life is server-internal; the billing home sends only the change ' +
     'still scheduled (T-M12-003)',
+  acceptance_challenge:
+    'whether a challenge ran at Accept is the acceptance record’s own evidence, read by the company ' +
+    'in words; the value never crosses the wire (F5-46)',
   tenant_counter_kind:
     'which number series a company counter keeps is server-internal; only the formatted number ' +
     '(PRJ-0042) crosses the wire',

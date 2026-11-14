@@ -101,6 +101,11 @@ export class UsageService {
     return this.scoped.activeProjects(tenantId);
   }
 
+  /** The proposals counted against the plan since `since` — the cycle's start (`M06-26`). */
+  proposalsCounted(tenantId: string, since: Date): Promise<number> {
+    return this.scoped.proposalsCounted(tenantId, since);
+  }
+
   /** The latest nightly weight of a company's files; `null` before its first night. */
   latestStorageGauge(tenantId: string): Promise<StorageGauge | null> {
     return this.scoped.latestGauge(tenantId);

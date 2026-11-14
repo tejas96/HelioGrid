@@ -61,16 +61,19 @@ export function StatusMark({
   label,
   mark = true,
   bare = false,
+  glyph: ownGlyph,
   style,
 }: NativeStatusMarkProps) {
   const pair = TONE[tone];
   return (
     <View style={[container, bare ? bareLook : { backgroundColor: pair.bg }, style]}>
-      {mark ? (
-        <RNText importantForAccessibility="no" style={[glyph, { color: pair.text }]}>
-          {STATUS_GLYPH[tone]}
-        </RNText>
-      ) : null}
+      {mark
+        ? (ownGlyph ?? (
+            <RNText importantForAccessibility="no" style={[glyph, { color: pair.text }]}>
+              {STATUS_GLYPH[tone]}
+            </RNText>
+          ))
+        : null}
       <RNText style={[words, { color: pair.text }]}>{label}</RNText>
     </View>
   );

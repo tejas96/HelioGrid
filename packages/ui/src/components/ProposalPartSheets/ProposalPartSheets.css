@@ -1,0 +1,240 @@
+/* Step 8's sheets and the timeline step's sheet. A sheet is a page ground; an option is a tile. */
+.hg-pps-body,
+.hg-pps-fields,
+.hg-pps-options,
+.hg-pps-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+.hg-pps-options,
+.hg-pps-foot {
+  gap: var(--sp-2);
+}
+.hg-pps-tile {
+  border-radius: var(--r-tile);
+}
+.hg-pps-option,
+.hg-pps-add,
+.hg-pps-link {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.hg-pps-option-in {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+  animation-delay: calc(var(--i, 0) * var(--stagger-step));
+  transition: transform var(--dur-micro) var(--ease-standard);
+}
+.hg-pps-option:active:not(:disabled) .hg-pps-option-in {
+  transform: scale(var(--press-scale));
+}
+.hg-pps-option:disabled {
+  cursor: default;
+}
+.hg-pps-option-in[data-on] {
+  background: var(--panel-glow);
+  box-shadow:
+    inset 0 0 0 2px var(--accent),
+    var(--e1);
+}
+.hg-pps-option-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hg-pps-option-brand {
+  font-weight: var(--fw-semibold);
+}
+.hg-pps-option:disabled .hg-pps-option-brand {
+  color: var(--text-disabled);
+}
+.hg-pps-option-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+.hg-pps-mark {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-xs);
+  display: inline-grid;
+  place-items: center;
+  font: var(--fw-semibold) var(--fs-caption) / 1 var(--font-sans);
+}
+.hg-pps-mark[data-large] {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-body);
+}
+.hg-pps-flag {
+  flex: none;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--success-bg);
+  color: var(--success-text);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+}
+.hg-pps-flag .hg-shell-glyph {
+  color: currentColor;
+}
+.hg-pps-check {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-pill);
+  box-shadow: inset 0 0 0 1.5px var(--line-strong);
+}
+.hg-pps-check[data-on] {
+  background: var(--accent);
+  box-shadow: none;
+}
+.hg-pps-hint {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+.hg-pps-hint .hg-shell-glyph {
+  flex: none;
+  margin-top: 2px;
+}
+.hg-pps-hint[data-tone="warning"] {
+  color: var(--warning-text);
+}
+.hg-pps-edits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.hg-pps-link {
+  width: auto;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.hg-pps-link-in {
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-pill);
+  color: var(--accent-text);
+  font: var(--fw-medium) var(--fs-body-sm) / 1 var(--font-sans);
+}
+.hg-pps-link-in .hg-shell-glyph {
+  color: currentColor;
+}
+.hg-pps-link:hover .hg-pps-link-in {
+  background: var(--accent-subtle);
+}
+.hg-pps-add-in {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-tile);
+  box-shadow: inset 0 0 0 1.5px var(--line-strong);
+  color: var(--accent-text);
+}
+.hg-pps-add-in .hg-shell-glyph {
+  flex: none;
+  color: currentColor;
+}
+.hg-pps-add-title {
+  font-weight: var(--fw-medium);
+}
+.hg-pps-brand,
+.hg-pps-certified {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+}
+.hg-pps-brand-name {
+  flex: 1;
+  min-width: 0;
+  font: var(--fw-regular) 22px / 28px var(--font-display);
+}
+.hg-pps-lock,
+.hg-pps-field-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pps-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hg-pps-field-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.hg-pps-field-label {
+  font-size: var(--fs-field-label);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+.hg-pps-failure {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--danger-text);
+}
+.hg-pps-foot-note {
+  text-align: center;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+/* `Pressable` centres what it holds; a row that IS the target fills it instead. */
+.hg-pressable.hg-pps-option,
+.hg-pressable.hg-pps-add {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  border-radius: var(--r-tile);
+}
+.hg-pps-option > .hg-pps-option-in,
+.hg-pps-add > .hg-pps-add-in {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Two figures of one kind side by side — a panel's count and its watt peak. */
+.hg-pps-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+}

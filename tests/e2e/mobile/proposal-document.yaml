@@ -1,0 +1,13 @@
+# A proposal's document (`SCR-M06-17`) at `proposals/<id>/document`: it stands alone, its bar
+# holding the way back and the document's name — a draft never generated says it is the draft as it
+# stands. The way back leads to the proposal.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://proposals/${PROPOSAL_ID}/document
+- extendedWaitUntil:
+    visible: ${DOCUMENT_DRAFT}
+    timeout: 15000
+- tapOn: ${BACK_TO_PROPOSAL}
+- extendedWaitUntil:
+    visible: ${PROPOSAL_DRAFT}
+    timeout: 15000

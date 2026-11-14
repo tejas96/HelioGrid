@@ -94,6 +94,7 @@ export class CrmCaptureService {
       referrerId: body.referredBy?.customerId ?? null,
       referredByName: body.referredBy?.name ?? null,
       keepBoth: body.keepBoth ?? null,
+      ownedByCapturer: body.ownedByCapturer === true,
     };
     const key = creationKeyOf(headers, act.actorUserId, route, body);
     const callBackWindow = callBackWindowOf(callingRules, null);

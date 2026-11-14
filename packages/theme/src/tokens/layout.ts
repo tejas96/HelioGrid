@@ -37,6 +37,8 @@ export const LAYOUT = {
   'tile-gap': 10,
   'tile-pad': 16,
   'content-max': 1160,
+  /** A page that reads as one column — a proposal's track, versions and links. */
+  'content-narrow': 860,
   'bp-desktop': 968,
   'form-max': 480,
   'gutter-mobile': 16,

@@ -17,6 +17,18 @@
   --hg-ring-side: calc(var(--sp-24) + var(--sp-16));
 }
 
+/* A count beside its words: no room for a caption, and a stroke that leaves the centre open. */
+.hg-ring[data-size="sm"] {
+  --hg-ring-side: calc(var(--sp-12) + var(--sp-2));
+  --hg-ring-stroke: calc(var(--sp-1) + 1px);
+}
+
+.hg-ring-count {
+  font: var(--fw-medium) var(--fs-caption) / 1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
 .hg-ring-track,
 .hg-ring-arc {
   position: absolute;
@@ -46,6 +58,10 @@
   );
   filter: drop-shadow(0 0 var(--sp-2) color-mix(in srgb, var(--accent) 35%, transparent));
   animation: hg-ring-in var(--dur-data) var(--ease-enter) backwards;
+}
+
+.hg-ring[data-size="sm"] .hg-ring-arc {
+  filter: none;
 }
 
 .hg-ring[data-on-panel="true"] .hg-ring-track {

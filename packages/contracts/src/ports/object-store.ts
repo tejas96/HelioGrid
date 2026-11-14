@@ -40,12 +40,27 @@ export interface DownloadLinkRequest {
 export interface StoredObject {
   /** Null when the store kept none — which `complete` treats as a mismatch, never as a pass. */
   readonly checksumSha256: string | null;
+  readonly byteSize: number;
+}
+
+/**
+ * A signed PUT for a document the platform makes in another process — the renderer's proposal PDF,
+ * whose size is unknown when the address is minted. The store cannot hold it to a length or a
+ * checksum, so whoever keeps it reads the bytes back and checks them against what was printed.
+ */
+export interface DocumentPutRequest {
+  /** The object key, built from server ids only. */
+  readonly key: string;
+  /** Signed: a PUT with any other type is refused. */
+  readonly contentType: FileContentType;
+  readonly expiresInSeconds: number;
 }
 
 export interface ObjectStore {
   /** Which store this is — what a file row records, so its bytes can always be found again. */
   readonly provider: StorageProvider;
   signUpload(request: UploadLinkRequest): Promise<SignedUpload>;
+  signDocumentPut(request: DocumentPutRequest): Promise<SignedUpload>;
   /** Always served as an attachment, so no stored bytes ever render as a page. */
   signDownload(request: DownloadLinkRequest): Promise<string>;
   /** Null when nothing is stored under the key. Throws on an outage — anything but "absent". */

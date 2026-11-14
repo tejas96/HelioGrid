@@ -10,7 +10,7 @@ import {
   proposalTemplateWords,
   sectionWords,
 } from '../src/copy/proposal-template';
-import { phaseEditorWords, templateRefusalWords } from '../src/copy/proposal-template-phase';
+import { templateRefusalWords } from '../src/copy/proposal-template-phase';
 import { createTranslator } from '../src/runtime';
 
 type T = Awaited<ReturnType<typeof createTranslator>>['t'];
@@ -74,7 +74,7 @@ describe('the counted words', () => {
     expect(words.bankFrom('HDFC Bank')).toBe('HDFC Bank · from Business profile');
     expect(words.bankFrom(null)).toBe('not added yet · from Business profile');
     expect(words.phaseCap).toBe('A timeline holds up to 20 phases.');
-    expect(words.title).toBe('Proposal template');
+    expect(words.title).toBe('Proposal defaults');
   });
 
   it('the document keeps its ruled name in every language', () => {
@@ -100,19 +100,5 @@ describe('the refusals', () => {
     expect(templateRefusalWords(en, 'name', 'too-long')).toBe(
       'A phase name holds up to 120 characters',
     );
-  });
-});
-
-describe('the phase editor’s heading', () => {
-  const shown = { name: null, description: null } as const;
-
-  it.each([
-    ['a new phase', true, '', 'New phase', 'Phase 4 of 4'],
-    ['a held phase, its name as the company wrote it', false, 'स्थापना', 'स्थापना', 'Phase 2 of 3'],
-  ] as const)('%s', (_case, adding, name, title, subtitle) => {
-    const words = phaseEditorWords(en, { adding, name, position: 2, count: 3, shown });
-
-    expect(words.title).toBe(title);
-    expect(words.subtitle).toBe(subtitle);
   });
 });

@@ -74,6 +74,7 @@ export const PROJECT_DETAIL = {
   design: /*i18n*/ { id: 'Design' },
   proposal: /*i18n*/ { id: 'Proposal' },
   noneLinked: /*i18n*/ { id: 'None linked yet' },
+  proposalLinked: /*i18n*/ { id: '{number} · version {version}' },
   accessNote: /*i18n*/ { id: 'How to get in' },
   noAccessNote: /*i18n*/ { id: 'Not written yet' },
   activity: /*i18n*/ { id: 'Activity' },
@@ -219,6 +220,9 @@ export function projectDetailWords(t: T, word: PackWord, day: (date: string) => 
     design: t(PROJECT_DETAIL.design),
     proposal: t(PROJECT_DETAIL.proposal),
     noneLinked: t(PROJECT_DETAIL.noneLinked),
+    /** The proposal version the project runs on (`M08-50`), as the Deal card names it. */
+    proposalLinked: (number: string, version: number) =>
+      t(PROJECT_DETAIL.proposalLinked, { number, version }),
     accessNote: t(PROJECT_DETAIL.accessNote),
     noAccessNote: t(PROJECT_DETAIL.noAccessNote),
     activity: t(PROJECT_DETAIL.activity),

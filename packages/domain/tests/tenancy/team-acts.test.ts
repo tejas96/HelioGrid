@@ -177,15 +177,30 @@ describe('inviteAgainOf — the send Invite again makes (AC-13)', () => {
   });
 });
 
-describe('firstNameOf — the name a confirm and a toast call a person by (D6 A)', () => {
+describe('firstNameOf — the short name a confirm, a toast and a customer line call a person by (D6 A)', () => {
   it.each([
     ['Anjali Kulkarni', 'Anjali'],
     ['  Priya   Deshmukh ', 'Priya'],
     ['Sunil', 'Sunil'],
     ['अमित राणे', 'अमित'],
     ['   ', ''],
+    // A first word that is an initial calls no one: the short name is the whole name.
+    ['O Patil', 'O Patil'],
+    ['S. Kulkarni', 'S. Kulkarni'],
+    ['  A.   Kumar ', 'A. Kumar'],
+    ['Om Patil', 'Om'],
+    ['O', 'O'],
+    ['रा. पाटील', 'रा. पाटील'],
+    ['क्ष पाटील', 'क्ष पाटील'],
+    ['श्री. देशमुख', 'श्री. देशमुख'],
+    ['रा', 'रा'],
+    ['राम पाटील', 'राम'],
   ])('%j → %j', (name, first) => {
     expect(firstNameOf(name)).toBe(first);
+  });
+
+  it('no name stays none', () => {
+    expect(firstNameOf(null)).toBeNull();
   });
 });
 

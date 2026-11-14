@@ -39,3 +39,14 @@ export function disclosureLine(translate: Translator['t'], kind: RuledDisclosure
 export function disclosureLead(translate: Translator['t'], kind: RuledDisclosure): TranslatedText {
   return translate(DISCLOSURE_LEAD_WORD[kind]);
 }
+
+/**
+ * Every word a disclosure prints, bound to one mount's `t` — what a root mounts
+ * `DisclosureWordsProvider` with, once, beside the provenance words (`F3-12`).
+ */
+export function disclosureWords(translate: Translator['t']) {
+  return {
+    lead: (kind: RuledDisclosure) => disclosureLead(translate, kind),
+    line: (kind: RuledDisclosure) => disclosureLine(translate, kind),
+  };
+}

@@ -29,7 +29,7 @@ export function NeedsYouHero(props: DashboardPartProps) {
     failed: props.assignFailed ? words.assignFailed : null,
   };
   const format = useFormat();
-  const items = needItemsOf(view.needsYou, needsYou, words, (amount) => format.money(amount));
+  const items = needItemsOf(view.needsYou, needsYou, words, format);
   const [chosen, setChosen] = useState(0);
   const [room, setRoom] = useState(0);
   const at = chosen < items.length ? chosen : 0;

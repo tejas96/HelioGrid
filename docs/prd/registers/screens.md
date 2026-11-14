@@ -482,7 +482,7 @@ document is deleted leaves this register with it.
 | ~~F4-24~~ | — | **excluded** | — | — |
 | F4-25 | P0 | policy | policy | T-M04-015 |
 | ~~F4-26~~ | — | **excluded** | — | — |
-| F4-27 | P0 | policy | policy | LAW (`docs/tasks/F-platform.md`) |
+| F4-27 | P0 | policy | policy | LAW |
 | ~~F4-28~~ | — | **excluded** | — | — |
 | ~~F4-29~~ | — | **excluded** | — | — |
 | ~~F4-30~~ | — | **excluded** | — | — |

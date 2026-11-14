@@ -5,7 +5,7 @@ import {
   type TaskKind,
   type TaskProvenance,
 } from '@heliogrid/domain';
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import type { CreationKey } from '../../common/creation-key';
 
@@ -153,6 +153,68 @@ export async function cancelOpenTasks(
         eq(task.tenantId, tenantId),
         inArray(task.leadId, [...leadIds]),
         inArray(task.kind, [...kinds]),
+        eq(task.status, 'open'),
+      ),
+    );
+}
+
+/**
+ * The lead's one open task a rule raised under any of `provenances` — the proposal follow-up, the
+ * Confirm won, the decline call (`M06-55`): a lead holds one at a time, so the newest is the one.
+ */
+export async function openTaskRaisedBy(
+  tx: DbTransaction,
+  tenantId: string,
+  leadId: string,
+  provenances: readonly TaskProvenance[],
+): Promise<{ readonly id: string; readonly dueAt: Date } | null> {
+  const [open] = await tx
+    .select({ id: task.id, dueAt: task.dueAt })
+    .from(task)
+    .where(
+      and(
+        eq(task.tenantId, tenantId),
+        eq(task.leadId, leadId),
+        inArray(task.provenance, [...provenances]),
+        eq(task.status, 'open'),
+      ),
+    )
+    .orderBy(desc(task.createdAt), desc(task.id))
+    .limit(1);
+  return open ?? null;
+}
+
+/** A second share moves the one open follow-up's date and hands it to who holds the lead now (`M06-55`). */
+export async function moveTaskDue(
+  tx: DbTransaction,
+  tenantId: string,
+  taskId: string,
+  to: { readonly dueAt: Date; readonly assigneeUserId: string },
+): Promise<void> {
+  await tx
+    .update(task)
+    .set({ dueAt: to.dueAt, assigneeUserId: to.assigneeUserId })
+    .where(and(eq(task.tenantId, tenantId), eq(task.id, taskId)));
+}
+
+/**
+ * Closes the lead's open tasks raised under any of `provenances`: the customer answered, the
+ * proposal was withdrawn or the deal was won, so nobody chases it (`M06-55`).
+ */
+export async function closeTasksRaisedBy(
+  tx: DbTransaction,
+  tenantId: string,
+  leadId: string,
+  provenances: readonly TaskProvenance[],
+): Promise<void> {
+  await tx
+    .update(task)
+    .set({ status: 'cancelled' })
+    .where(
+      and(
+        eq(task.tenantId, tenantId),
+        eq(task.leadId, leadId),
+        inArray(task.provenance, [...provenances]),
         eq(task.status, 'open'),
       ),
     );

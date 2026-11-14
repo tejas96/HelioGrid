@@ -28,7 +28,15 @@ export type ProjectActSend =
   | { readonly kind: 'reopen'; readonly row: string }
   | { readonly kind: 'tick'; readonly step: string; readonly doneBy: string | null }
   | { readonly kind: 'untick'; readonly step: string }
-  | { readonly kind: 'date'; readonly expectedInstallOn: string }
+  | {
+      readonly kind: 'date';
+      readonly expectedInstallOn: string;
+      /** The installation day's facts the customer is told (`F5-68`); each `null` clears it. */
+      readonly startTime: string | null;
+      readonly durationDays: number | null;
+      readonly disturbance: string | null;
+      readonly crewLeadId: string | null;
+    }
   | { readonly kind: 'manager'; readonly managerId: string }
   | { readonly kind: 'access'; readonly accessNote: string | null }
   | { readonly kind: 'showFile'; readonly projectFileId: string; readonly shown: boolean }
@@ -85,7 +93,14 @@ export function sendAct(
     case 'untick':
       return acts.untickStep(id, { step: send.step, capturedAt });
     case 'date':
-      return acts.change(id, { expectedInstallOn: send.expectedInstallOn, capturedAt });
+      return acts.change(id, {
+        expectedInstallOn: send.expectedInstallOn,
+        installStartTime: send.startTime,
+        installDurationDays: send.durationDays,
+        installDisturbance: send.disturbance,
+        crewLeadId: send.crewLeadId,
+        capturedAt,
+      });
     case 'manager':
       return acts.change(id, { managerId: send.managerId, capturedAt });
     case 'access':

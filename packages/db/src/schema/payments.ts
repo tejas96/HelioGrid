@@ -32,8 +32,9 @@ const day = (name: string) => date(name, { mode: 'string' });
  * One part of a project's price (`M11-09`, `M11-13`): its label, share and amount, made once when
  * the schedule is made — at Mark won from the company's payment terms (ruling 2026-11-10) — and
  * never re-typed. Its state, what is still owed and since when are READ from the ledger and the
- * stage history, never stored (`M11-10`). A waiver is the one change: terminal, with its reason
- * and who (`M11-49`).
+ * stage history, never stored (`M11-10`). A waiver is one change: terminal, with its reason and who
+ * (`M11-49`). The other is a newer proposal version put in force, which retires the unpaid parts
+ * and adds its own (`M08-50`).
  *
  * Tenant-scoped, all four always: SELECT, INSERT and UPDATE (the waiver) for `app_user`.
  */
@@ -59,6 +60,16 @@ export const projectTranche = pgTable(
     waivedAt: instant('waived_at'),
     waivedBy: uuid('waived_by').references(() => userAccount.id),
     waiveReason: text('waive_reason'),
+    /**
+     * When a newer proposal version put in force replaced this unpaid part (`M08-50`, `M11-14`).
+     * A replaced part is out of the schedule and is never paid against; its row stays, so the
+     * earlier schedule remains readable. Null for every part of the schedule in force.
+     */
+    replacedAt: instant('replaced_at'),
+    /** Who put in force the version that replaced it; null with `replacedAt`. */
+    replacedBy: uuid('replaced_by').references(() => userAccount.id),
+    /** The version in force this part belonged to; null for a plan made at Mark won with none. */
+    replacedVersionId: uuid('replaced_version_id'),
   },
   (table) => [
     uniqueIndex('project_tranche_tenant_project_position_key').on(

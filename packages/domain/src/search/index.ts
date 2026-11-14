@@ -7,20 +7,24 @@ export type { PhoneQuery, SearchQuery } from './query';
 export { searchQueryOf, searchTermsOf } from './query';
 export type { SearchCandidate, SearchMatch } from './ranking';
 export { rankSearchHits, SEARCH_MATCHES, searchMatchOf } from './ranking';
-export type { SearchNumber } from './search-number';
 export type {
   SearchCatalogHit,
-  SearchCatalogRow,
   SearchCustomerHit,
+  SearchHits,
+  SearchLeadHit,
+  SearchPersonHit,
+  SearchProposalHit,
+} from './search-hits';
+export type { SearchNumber } from './search-number';
+export type {
+  SearchCatalogRow,
   SearchCustomerRow,
   SearchGroup,
   SearchGroupView,
-  SearchHits,
-  SearchLeadHit,
   SearchLeadRow,
   SearchOpens,
-  SearchPersonHit,
   SearchPersonRow,
+  SearchProposalRow,
   SearchRead,
   SearchReopen,
   SearchReopenAct,

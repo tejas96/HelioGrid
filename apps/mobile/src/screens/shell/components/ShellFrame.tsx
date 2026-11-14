@@ -12,7 +12,7 @@ import {
   useKeyboardUp,
 } from '@heliogrid/ui';
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Animated, RefreshControl, StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles, underPill } from '../styles';
 import { ShellBillingStrip } from './ShellBillingStrip';
@@ -52,6 +52,8 @@ export interface ShellFrameProps {
    * large title and pushed Call below the fold; the home and the lists carry it.
    */
   stripless?: boolean;
+  /** A list that reads again on a pull: whether that read is out, and the pull. */
+  pull?: { readonly pulled: boolean; readonly onPull: () => void };
   children: ReactNode;
 }
 
@@ -72,6 +74,7 @@ export function ShellFrame({
   pad = 'expressive',
   foot,
   stripless,
+  pull,
   children,
 }: ShellFrameProps) {
   const t = useTranslate();
@@ -106,6 +109,15 @@ export function ShellFrame({
             footBandUnderKeyboard={insets.bottom}
             /* The held head is the first child, or the second under a lead that scrolls away. */
             heldChild={heldChildOf(stickyHead, lead)}
+            refreshControl={
+              pull === undefined ? undefined : (
+                <RefreshControl
+                  refreshing={pull.pulled}
+                  onRefresh={pull.onPull}
+                  tintColor={colors['text-secondary']}
+                />
+              )
+            }
             onScrollOffset={(offset) => {
               scroll.tell(offset);
               holdHead(offset >= leadHeight.current);

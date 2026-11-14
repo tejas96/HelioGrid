@@ -1,7 +1,9 @@
 'use client';
 import {
   type LeadDetailScreen as LeadDetailScreenView,
+  type LeadProposalsSection,
   useLeadDetailScreen,
+  useLeadProposalsSection,
 } from '@heliogrid/data/react';
 import {
   destinationLabel,
@@ -10,11 +12,14 @@ import {
   leadDetailSheetWords,
   leadTitleWords,
   leadWorkCardsWords,
+  markWonBasisWords,
   markWonWords,
+  proposalMoments,
+  proposalPageHeadWords,
 } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
+import { useI18n, useTranslate } from '@heliogrid/i18n/react';
 import {
-  Button,
+  type FocusAfter,
   LargeTitle,
   LeadAssignPicker,
   LeadDetailSheet,
@@ -22,7 +27,7 @@ import {
   LeadRecordMenu,
   MarkWonSheet,
   markWonSheetOf,
-  ShellGlyph,
+  PageTrail,
   useFormat,
   useOwnWidth,
 } from '@heliogrid/ui';
@@ -32,8 +37,13 @@ import {
   LeadContactsAndSections,
   LeadWork,
 } from './components/LeadDetailCards';
+import { LeadProposalSheets, useLeadProposalsPanel } from './components/LeadProposals';
 import { LEAD_DETAIL_COLUMNS_FROM } from './constants';
-import { type LeadDetailMoves, useLeadDetailMoves } from './hooks/use-lead-detail-moves';
+import {
+  type LeadDetailMoves,
+  useLeadDetailMoves,
+  useWonOnArrival,
+} from './hooks/use-lead-detail-moves';
 
 import './lead-detail.css';
 
@@ -45,14 +55,27 @@ import './lead-detail.css';
  * `useLeadDetailScreen`'s, the phone's too; the web's own parts are the width, the router, the
  * dialler and the clipboard.
  */
-export function LeadDetailScreen({ leadId }: { leadId: string }) {
+export function LeadDetailScreen({
+  leadId,
+  won = false,
+}: {
+  leadId: string;
+  /** The address asked for the *Mark won* sheet — a proposal's *Confirm won* (`M07-62`). */
+  won?: boolean;
+}) {
   const t = useTranslate();
   const format = useFormat();
   const screen = useLeadDetailScreen(leadId, format.pack.timeZone);
   const moves = useLeadDetailMoves(screen.files);
+  const { read } = screen;
+  const proposals = useLeadProposalsSection(
+    leadId,
+    read.kind === 'ready' ? read.value.lead : null,
+    moves.proposals,
+  );
+  useWonOnArrival(won, screen);
   const [room, width] = useOwnWidth<HTMLDivElement>();
   const columns = width !== null && width >= LEAD_DETAIL_COLUMNS_FROM;
-  const { read } = screen;
   return (
     <div
       ref={room}
@@ -62,6 +85,8 @@ export function LeadDetailScreen({ leadId }: { leadId: string }) {
     >
       <BackToLeads
         moves={moves}
+        wide={columns}
+        here={read.kind === 'ready' ? read.value.lead.lead.name : null}
         menu={
           read.kind === 'ready' ? (
             <LeadRecordMenu
@@ -83,6 +108,8 @@ export function LeadDetailScreen({ leadId }: { leadId: string }) {
           view={read.value.view}
           moves={moves}
           columns={columns}
+          proposals={proposals}
+          focusAfter={room}
         />
       ) : (
         <LeadDetailStates
@@ -97,41 +124,68 @@ export function LeadDetailScreen({ leadId }: { leadId: string }) {
 }
 
 /**
- * The way back to the list, above the page — the desktop's crumb and the phone width's back — and
- * the record menu at its other end on every width, where a project's page holds its own.
+ * The way back above the page, the app's one pattern (`PageTrail`): the desktop's breadcrumb, one
+ * back below it, and the record menu at the row's other end on every width.
  */
-function BackToLeads({ moves, menu }: { moves: LeadDetailMoves; menu: ReactNode }) {
+function BackToLeads({
+  moves,
+  wide,
+  here,
+  menu,
+}: {
+  moves: LeadDetailMoves;
+  wide: boolean;
+  here: string | null;
+  menu: ReactNode;
+}) {
   const t = useTranslate();
+  const format = useFormat();
+  const leads = destinationLabel(t, 'leads');
+  const head = proposalPageHeadWords(t, {
+    money: (amount) => format.moneyPlain(amount),
+    number: format.number,
+  });
   return (
-    <div className="hg-lead-detail-back">
-      <Button
-        variant="ghost"
-        size="sm"
-        icon={<ShellGlyph name="chevron-left" size="sm" />}
-        onClick={moves.toLeads}
-      >
-        {destinationLabel(t, 'leads')}
-      </Button>
-      {menu}
-    </div>
+    <PageTrail
+      trail={[{ label: leads, onOpen: moves.toLeads }]}
+      here={here ?? leads}
+      label={head.trail}
+      narrow={!wide}
+      acts={menu}
+    />
   );
 }
 
 function LeadDetailReady({
   columns,
+  focusAfter,
   ...card
-}: LeadCardProps & { screen: LeadDetailScreenView; columns: boolean }) {
-  const t = useTranslate();
+}: LeadCardProps & {
+  screen: LeadDetailScreenView;
+  columns: boolean;
+  proposals: LeadProposalsSection;
+  /** The page itself: where focus lands once a withdraw takes its row's act away. */
+  focusAfter: FocusAfter;
+}) {
+  const { t, locale } = useI18n();
   const format = useFormat();
-  const { screen, lead } = card;
+  const { proposals, ...shown } = card;
+  const { screen, lead } = shown;
+  const reopen = shown.view.acts.stateActs.includes('reopen')
+    ? () => screen.acts.quick('reopen')
+    : null;
+  const panel = useLeadProposalsPanel(lead, proposals, reopen);
+  const cards = { ...shown, ...(panel === null ? {} : { proposals: panel }) };
+  const { basis } = screen.won;
+  const moments = proposalMoments(t, { pack: format.pack, language: locale, now: Date.now() });
   const overlays = (
     <>
       <LeadDetailSheet
         screen={screen}
         lead={lead}
-        view={card.view}
-        onHandOn={card.moves.copy}
-        onMerge={card.moves.merge}
+        view={shown.view}
+        onHandOn={shown.moves.copy}
+        onMerge={shown.moves.merge}
         words={leadDetailSheetWords(t, 'copy')}
       />
       <LeadAssignPicker
@@ -140,9 +194,28 @@ function LeadDetailReady({
         words={leadAssignPickerWords(t, lead.lead.name)}
       />
       <MarkWonSheet
-        {...markWonSheetOf(screen.won, card.moves.openProject, screen.days.today)}
+        {...markWonSheetOf(screen.won, shown.moves.openProject, screen.days.today)}
         words={markWonWords(t, lead.lead.name ?? format.phone(lead.lead.phoneE164))}
+        {...(basis.kind === 'ready'
+          ? {
+              basis: markWonBasisWords(
+                t,
+                {
+                  money: (amount, beside) => format.moneyPlain(amount, beside),
+                  when: moments.when,
+                  due: (stage) => format.word('stage', stage),
+                },
+                basis.value,
+                {
+                  customerName: lead.lead.name,
+                  segment: lead.lead.segment,
+                  phone: format.phone(lead.lead.phoneE164),
+                },
+              ),
+            }
+          : {})}
       />
+      <LeadProposalSheets lead={lead} section={proposals} focusAfter={focusAfter} />
     </>
   );
   if (!columns) {
@@ -154,8 +227,8 @@ function LeadDetailReady({
     return (
       <div className="hg-lead-detail-column">
         <LargeTitle title={heading.title} summary={heading.summary} nameTitle />
-        <LeadWork {...card} columns={false} />
-        <LeadContactsAndSections {...card} first="contacts" />
+        <LeadWork {...shown} columns={false} />
+        <LeadContactsAndSections {...cards} first="contacts" />
         {overlays}
       </div>
     );
@@ -163,10 +236,10 @@ function LeadDetailReady({
   return (
     <div className="hg-lead-detail-columns">
       <div className="hg-lead-detail-column">
-        <LeadWork {...card} columns />
+        <LeadWork {...shown} columns />
       </div>
       <div className="hg-lead-detail-column">
-        <LeadContactsAndSections {...card} first="sections" />
+        <LeadContactsAndSections {...cards} first="sections" />
       </div>
       {overlays}
     </div>

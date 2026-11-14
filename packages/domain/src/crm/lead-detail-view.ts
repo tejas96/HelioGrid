@@ -10,6 +10,7 @@ import {
   type QualifySaves,
   qualifyCardOf,
 } from './lead-qualify';
+import { type LeadSiteFacts, type LeadSiteView, leadSiteViewOf } from './lead-site-view';
 import { isClosedState } from './lifecycle-model';
 import {
   type ContactRoleSeed,
@@ -99,6 +100,8 @@ export interface LeadDetailFacts {
   readonly canDial: boolean;
   readonly cameFrom: { readonly customerId: string | null; readonly name: string | null } | null;
   readonly visit: { readonly id: string; readonly address: string } | null;
+  /** The lead's own site facts; absent on an api built before the lead held them. */
+  readonly site?: LeadSiteFacts;
   readonly openTasks: readonly LeadTaskFacts[];
   readonly sections: {
     readonly designs: number;
@@ -112,6 +115,8 @@ export interface LeadTaskFacts {
   readonly id: string;
   readonly kind: string;
   readonly title: string | null;
+  /** What raised it — a customer's answer words its task (`M06-55`); absent on an older read. */
+  readonly provenance?: string;
   readonly status: TaskStatus;
   readonly dueAt: string;
   readonly assignee: LeadMember;
@@ -161,8 +166,8 @@ export interface LeadDetailView {
   readonly qualify: QualifyCardView;
   readonly contacts: readonly LeadContactView[];
   readonly tasks: readonly LeadTaskView[];
-  /** The confirmed address of the booked visit; null until one is booked. */
-  readonly siteAddress: string | null;
+  /** Where the system goes and its supply; the address is confirmed once a visit is booked. */
+  readonly site: LeadSiteView;
   /** Each section's count where it has one; the timeline and the site have none. */
   readonly counts: Readonly<Record<LeadDetailSection, number | null>>;
 }
@@ -296,7 +301,7 @@ export function leadDetailViewOf(facts: LeadDetailFacts, moment: LeadDetailMomen
     qualify: qualifyCardOf(answers, moment.saves, moment.lastSaved),
     contacts: leadContactsOf(facts),
     tasks: leadTasksOf(facts.openTasks, moment.doneHere, moment.nowEpoch),
-    siteAddress: facts.visit?.address ?? null,
+    site: leadSiteViewOf(facts.visit, facts.site),
     counts: {
       timeline: null,
       site: null,

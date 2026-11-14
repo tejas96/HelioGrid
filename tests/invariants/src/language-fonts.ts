@@ -24,6 +24,7 @@ const BUILT = {
   theme: 'packages/theme/dist/theme.js',
 };
 const MOBILE = 'apps/mobile';
+const LINE_BREAK = '\n';
 const PHONE_FONT_FOLDER = 'assets/fonts';
 const ANDROID_FONTS = 'android/app/src/main/res/font';
 const ANDROID_REGISTRY = 'android/app/src/main/java/com/heliogridmobile/MainApplication.kt';
@@ -119,6 +120,8 @@ async function uncoveredCharacters(
     const texts = [endonym, ...Object.values(catalog).flatMap(textsOf)];
     const uncovered = new Map<number, string>();
     for (const character of texts.join('')) {
+      // A line break is layout, drawn by no face: a message written for a chat keeps its lines.
+      if (character === LINE_BREAK) continue;
       characters += 1;
       const codePoint = character.codePointAt(0) ?? 0;
       if (!drawn(codePoint)) uncovered.set(codePoint, character);

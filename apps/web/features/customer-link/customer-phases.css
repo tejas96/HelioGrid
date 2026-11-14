@@ -1,0 +1,285 @@
+/* The customer's page after the proposal — the link that cannot serve, the progress and its money.
+   Tokens only. */
+
+/* ── the link that cannot serve ──────────────────────────────────────────── */
+.hg-cust-off {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  max-width: calc(var(--sp-20) * 5.25);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hg-cust-off > h1 {
+  margin: var(--sp-3) 0 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  text-wrap: balance;
+}
+
+.hg-cust-off > p {
+  margin: 0 0 var(--sp-4);
+  color: var(--text-secondary);
+}
+
+.hg-cust-off > .hg-cust-person {
+  align-self: stretch;
+  text-align: start;
+}
+
+/* ── progress ────────────────────────────────────────────────────────────── */
+.hg-cust-progress-title {
+  margin: var(--sp-1) 0 var(--sp-3);
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-figure);
+  line-height: var(--lh-figure);
+  text-wrap: balance;
+}
+
+.hg-cust-stages {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-cust-stages > li {
+  position: relative;
+  display: flex;
+  gap: var(--sp-3);
+  padding-block-end: var(--sp-4);
+}
+
+.hg-cust-stages > li:last-child {
+  padding-block-end: 0;
+}
+
+.hg-cust-stages > li:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--sp-3) + var(--sp-0-5) / 2);
+  inset-block: calc(var(--sp-8) - var(--sp-0-5)) var(--sp-0-5);
+  width: var(--sp-0-5);
+  border-radius: var(--r-pill);
+  background: var(--line-strong);
+}
+
+.hg-cust-stages > li[data-at="done"]:not(:last-child)::before {
+  background: var(--accent);
+}
+
+.hg-cust-stage-dot {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: calc(var(--sp-1) * 7);
+  height: calc(var(--sp-1) * 7);
+  border-radius: var(--r-pill);
+  background: var(--fill);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+}
+
+/* The mark inside a dot takes the dot's own ink. */
+.hg-cust-stage-dot .hg-shell-glyph {
+  color: currentColor;
+}
+
+.hg-cust-stages > li[data-at="done"] .hg-cust-stage-dot {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.hg-cust-stages > li[data-at="waiting"] .hg-cust-stage-dot {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  box-shadow: 0 0 0 var(--sp-1) color-mix(in srgb, var(--warning) 16%, transparent);
+}
+
+.hg-cust-stage-words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-cust-stage-words > b {
+  font-weight: var(--fw-medium);
+  line-height: calc(var(--sp-1) * 7);
+}
+
+.hg-cust-stages > li[data-at="waiting"] .hg-cust-stage-words > b {
+  font-weight: var(--fw-semibold);
+}
+
+.hg-cust-stages > li[data-at="ahead"] .hg-cust-stage-words > b {
+  color: var(--text-secondary);
+}
+
+.hg-cust-stage-words > span {
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-cust-four {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sp-4) var(--sp-3);
+  margin: 0;
+}
+
+.hg-cust-four > div {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-cust-four > div > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-cust-four dt {
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}
+
+.hg-cust-four dd {
+  margin: 0;
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  overflow-wrap: anywhere;
+}
+
+.hg-cust-pay {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-3);
+  padding: var(--sp-3) 0;
+}
+
+.hg-cust-pay + .hg-cust-pay {
+  border-block-start: var(--hg-cust-line) solid var(--line-soft);
+}
+
+.hg-cust-pay[data-due] {
+  margin: var(--sp-2) calc(var(--sp-3) * -1);
+  padding: var(--sp-3);
+  border: 0;
+  border-radius: var(--r-sm);
+  background: var(--warning-bg);
+}
+
+.hg-cust-pay[data-due] + .hg-cust-pay {
+  border-block-start: 0;
+}
+
+.hg-cust-pay-words {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-cust-pay-words > b {
+  font-weight: var(--fw-medium);
+}
+
+.hg-cust-pay-words > span {
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-cust-receipt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+}
+
+.hg-cust-pay-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1);
+}
+
+.hg-cust-payto {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border-radius: var(--r-xs);
+  /* biome-ignore lint/plugin/raw-white-css: the pay-to rows — a card inside the due part's tint, so the account reads on the card colour */
+  background: var(--surface);
+}
+
+.hg-cust-payto > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+}
+
+.hg-cust-payto > div + div {
+  border-block-start: var(--hg-cust-line) solid var(--line-soft);
+}
+
+.hg-cust-payto dt {
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+}
+
+.hg-cust-payto dd {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  text-align: end;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+/* A receipt number is one token: wrapping it is worse than any overflow. */
+.hg-cust-whole {
+  white-space: nowrap;
+}
+
+.hg-cust-refer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-size: var(--fs-body-lg);
+}
+
+@media (min-width: 968px) {
+  .hg-cust-progress-title {
+    font-size: var(--fs-h1);
+    line-height: var(--lh-h1);
+  }
+}
+
+/* The solar file's documents sit flat in their card, one rule between them: the shared rows draw a
+   tile of their own, and a tile inside the card would be a card inside a card. */
+.hg-cust-card .hg-after-rows {
+  margin-inline: calc(var(--sp-4) * -1);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}

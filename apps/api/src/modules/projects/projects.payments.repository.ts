@@ -1,19 +1,23 @@
 import type { RecordPayment } from '@heliogrid/contracts';
+import { paymentReceiptWorkflow } from '@heliogrid/contracts/workflows';
 import {
+  projectDocument,
   projectPayment,
   projectTranche,
   type TenantPool,
   trancheRequestShare,
+  uuidv7,
 } from '@heliogrid/db';
 import { minorUnits, refusalToReverse, refusalToWaive, type UiLanguage } from '@heliogrid/domain';
 import { minorUnitsToDecimal } from '@heliogrid/domain/server';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, eq, isNull, sql } from 'drizzle-orm';
+import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import type { CreationKey } from '../../common/creation-key';
 import { TENANT_DB } from '../../common/db/tenant.token';
+import { lockCounter, nextNumber } from '../../common/db/tenant-counter.repository';
+import { recordOutboxEvent } from '../../common/temporal/outbox.repository';
 import { memberAct, recordAuditEntry } from '../audit/audit.public';
 import type { NoticeWords } from '../notification/notification.public';
-import { lockCounter, nextNumber } from './projects.counter.repository';
 import { lockProjectInScope } from './projects.lock.repository';
 import {
   checkedPayment,
@@ -43,6 +47,8 @@ export class ProjectsPaymentsRepository {
     body: RecordPayment,
     modes: readonly string[],
     key: CreationKey | null,
+    /** The checklist rows a recorded receipt proves (`M08-46`): the pack's `payments` rows. */
+    receiptRows: readonly string[],
     recordedWords: (
       project: string,
       amount: string,
@@ -99,7 +105,28 @@ export class ProjectsPaymentsRepository {
         context.words.quietHours,
         act.actorUserId,
       );
-      return { outcome: 'done', notified, recorded: entry.id };
+      if (receiptRows.length > 0) {
+        // The receipt is the row's proof: nobody uploads a paper the product already holds.
+        await tx
+          .update(projectDocument)
+          .set({ state: 'done', reason: null, changedAt: now, changedBy: null })
+          .where(
+            and(
+              eq(projectDocument.tenantId, reader.tenantId),
+              eq(projectDocument.projectId, projectId),
+              inArray(projectDocument.rowKey, [...receiptRows]),
+              eq(projectDocument.state, 'pending'),
+            ),
+          );
+      }
+      // Its PDF is made after the commit, so the customer's link never waits on a render (`M11-45`).
+      const eventId = uuidv7();
+      await recordOutboxEvent(tx, reader.tenantId, paymentReceiptWorkflow, {
+        eventId,
+        tenantId: reader.tenantId,
+        entryId: entry.id,
+      });
+      return { outcome: 'done', notified, recorded: entry.id, started: [eventId] };
     });
   }
 

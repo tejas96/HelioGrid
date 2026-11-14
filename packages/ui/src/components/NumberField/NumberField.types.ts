@@ -97,6 +97,16 @@ export interface NumberFieldProps {
   hint?: TranslatedText;
   disabled?: boolean;
   density?: 'expressive' | 'functional';
+  /**
+   * The one large figure a step is about — the proposal's price (`T-M06-005`): a taller well and the
+   * display face. Never a second size of ordinary field; `density` keeps that choice.
+   */
+  hero?: boolean;
+  /**
+   * The figure IS the field (`T-M06-004`): no well and no edge — the display face on whatever holds
+   * it, which draws the frame and shows focus. Only where the printed figure is tapped to change.
+   */
+  plain?: boolean;
   /** Overrides the generated "Rounded up to the 0.3 m minimum." correction line. */
   correctionMessage?: TranslatedText;
   /**
@@ -122,6 +132,12 @@ export interface NumberFieldProps {
    * market writes it; the grouping is not applied while the amount is edited.
    */
   currency?: boolean;
+  /**
+   * The most digits the field takes before the point — the caller's limit, an amount's being the
+   * wire's (`AMOUNT_WHOLE_DIGITS_MAX`). A digit typed past it is not taken; a longer figure pasted
+   * at once stays as pasted, unformatted, so the person sees it beside the caller's error.
+   */
+  wholeDigits?: number;
   /**
    * **What happens to a value outside `min`/`max`.**
    *

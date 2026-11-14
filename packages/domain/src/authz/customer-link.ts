@@ -1,7 +1,9 @@
 import { type CapabilityRow, DENIED, GRANTED } from './cells';
 
 /**
- * F2 §F2.5-F5 — Customer-link surfaces. Every cell is the PRD's, and
+ * F2 §F2.5-F5 — Customer-link surfaces. The Project Manager holds both rows since proposals shipped:
+ * after Won the project's manager is the person the link names, and a customer who loses their
+ * phone mid-install is served by them (owner ruling 2026-11-13). Every cell is the PRD's, and
  * `tests/authz/matrix-mirrors-f2.test.ts` holds them equal; a placeholder row of this module is
  * appended HERE by its first slice (Law 9), never typed into a screen or a handler.
  */
@@ -15,7 +17,7 @@ export const CUSTOMER_LINK_ROWS = {
       sales_executive: GRANTED,
       survey_engineer: DENIED,
       design_engineer: DENIED,
-      project_manager: DENIED,
+      project_manager: GRANTED,
       field_technician: DENIED,
       installation_team_member: DENIED,
       hr_admin: DENIED,
@@ -33,7 +35,7 @@ export const CUSTOMER_LINK_ROWS = {
       sales_executive: GRANTED,
       survey_engineer: DENIED,
       design_engineer: DENIED,
-      project_manager: DENIED,
+      project_manager: GRANTED,
       field_technician: DENIED,
       installation_team_member: DENIED,
       hr_admin: DENIED,

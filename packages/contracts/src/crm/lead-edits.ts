@@ -1,3 +1,4 @@
+import { SUPPLY_PHASES } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { baseError, errorEnvelope, unauthenticatedEnvelope } from '../error';
@@ -18,7 +19,8 @@ const c = initContract();
 
 /**
  * The fields a person edits on a lead and its customer (`M02-36`, `M02-37`, `M02-39`): the four
- * capture facts, the bill and the five qualifying chips, preferred language and do-not-call. Each
+ * capture facts, the bill and the five qualifying chips, preferred language and do-not-call, and the
+ * site's address, area and supply. Each
  * is sent alone as it is answered; `null` empties a field back to its named gap. Every applied
  * change writes one timeline entry with the old and new value, and the server's apply order —
  * never the device clock — decides which of two edits to one field stands (`F4-16`).
@@ -35,6 +37,14 @@ export const leadFieldsSchema = z.object({
   decisionMaker: decisionMakerSchema.nullable(),
   preferredLanguage: uiLanguageSchema.nullable(),
   doNotCall: z.boolean(),
+  /** Where the system goes (`M06-16`): one address, kept on the lead for the proposal and the project. */
+  siteAddress: z.string().trim().min(1).max(500).nullable(),
+  /** The site's region and district, as the market pack names them (`M06-09`). */
+  area: z
+    .object({ area: z.string().min(1).max(12), district: z.string().min(1).max(120).nullable() })
+    .nullable(),
+  sanctionedLoadKw: z.number().positive().max(100000).nullable(),
+  supplyPhase: z.enum(SUPPLY_PHASES).nullable(),
 });
 
 /** Which field an edit changed — the keys of the edit, named once (`field_change` entries). */

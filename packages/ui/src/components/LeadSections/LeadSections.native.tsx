@@ -1,14 +1,16 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { LEAD_DETAIL_SECTIONS } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
-import { type ReactNode, useEffect, useRef } from 'react';
+import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { useChosenInView } from '../../primitives/use-chosen-in-view.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { LeadFileList } from './LeadFileList.native';
+import { LeadProposalList } from './LeadProposalList.native';
 import type { LeadSectionsProps } from './LeadSections.types';
 import { LeadSitePanel } from './LeadSitePanel.native';
 import { LeadTaskList } from './LeadTaskList.native';
@@ -20,15 +22,7 @@ import { LeadTaskList } from './LeadTaskList.native';
  */
 export function LeadSections(props: LeadSectionsProps) {
   const { section, onSection, counts, words } = props;
-  /* The chosen tab is scrolled into view: a strip wider than the phone hid the last tabs, chosen
-     one included, behind the screen's edge with no cue that more were there. */
-  const strip = useRef<ScrollView>(null);
-  const starts = useRef(new Map<string, number>());
-  useEffect(() => {
-    const x = starts.current.get(section);
-    if (x !== undefined)
-      strip.current?.scrollTo({ x: Math.max(0, x - SCROLL_LEAD), animated: true });
-  }, [section]);
+  const { strip, placed } = useChosenInView(section);
   return (
     <View style={styles.sections}>
       <ScrollView
@@ -43,10 +37,7 @@ export function LeadSections(props: LeadSectionsProps) {
           const count = counts[each];
           const chosen = each === section;
           return (
-            <View
-              key={each}
-              onLayout={(event) => starts.current.set(each, event.nativeEvent.layout.x)}
-            >
+            <View key={each} onLayout={placed(each)}>
               <Pressable
                 accessibilityRole="tab"
                 accessibilityState={{ selected: chosen }}
@@ -71,9 +62,6 @@ export function LeadSections(props: LeadSectionsProps) {
   );
 }
 
-/** How far before the chosen tab the strip stops, so the tab before it still shows as a cue. */
-const SCROLL_LEAD = theme.spacing['sp-8'];
-
 /** The chosen section's panel. */
 function Panel(props: LeadSectionsProps) {
   const { section, counts, words } = props;
@@ -83,7 +71,7 @@ function Panel(props: LeadSectionsProps) {
     case 'site':
       return (
         <Tile>
-          <LeadSitePanel siteAddress={props.siteAddress} visit={props.visit} words={words} />
+          <LeadSitePanel site={props.site} visit={props.visit} words={words} />
         </Tile>
       );
     case 'designs':
@@ -96,6 +84,13 @@ function Panel(props: LeadSectionsProps) {
         />
       );
     case 'proposals':
+      if (props.proposals !== undefined) {
+        return (
+          <Tile>
+            <LeadProposalList panel={props.proposals} />
+          </Tile>
+        );
+      }
       return (
         <CountPanel
           count={counts.proposals}

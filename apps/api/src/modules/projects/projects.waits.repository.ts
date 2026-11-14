@@ -1,18 +1,10 @@
 import {
   type DbTransaction,
-  project,
   projectBlocker,
   projectCrewMember,
   projectDocument,
 } from '@heliogrid/db';
-import {
-  decideWaitEnd,
-  decideWaitStart,
-  isClosedStage,
-  isPromisableInstallDate,
-  PROJECT_MANAGER_PRESETS,
-  type WaitToStart,
-} from '@heliogrid/domain';
+import { decideWaitEnd, decideWaitStart, type WaitToStart } from '@heliogrid/domain';
 import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { recordActivity } from '../crm/crm.public';
 import {
@@ -22,7 +14,6 @@ import {
   type StepOutcome,
 } from './projects.act-kit.repository';
 import { type LockedProject, standingOfLocked, todayOfLocked } from './projects.lock.repository';
-import { allHold } from './projects.people.repository';
 
 /*
  * The work beside the stage that is the manager's (`M08-20`…`M08-29`, rulings 2026-11-10): the
@@ -32,7 +23,14 @@ import { allHold } from './projects.people.repository';
 
 const atOf = (context: ActContext) => new Date(context.act.now);
 
-function entryBase(locked: LockedProject, context: ActContext) {
+/** Every row of one project's crew. */
+export const crewOf = (locked: LockedProject) =>
+  and(
+    eq(projectCrewMember.tenantId, locked.tenantId),
+    eq(projectCrewMember.projectId, locked.projectId),
+  );
+
+export function entryBase(locked: LockedProject, context: ActContext) {
   return {
     tenantId: locked.tenantId,
     customerId: locked.customerId,
@@ -49,14 +47,12 @@ export async function replaceCrew(
   crew: readonly string[],
   context: ActContext,
 ): Promise<void> {
-  await tx
-    .delete(projectCrewMember)
-    .where(
-      and(
-        eq(projectCrewMember.tenantId, locked.tenantId),
-        eq(projectCrewMember.projectId, locked.projectId),
-      ),
-    );
+  // A new pick replaces the crew; its lead keeps the mark where the pick still names them (`F5-68`).
+  const [led] = await tx
+    .select({ userId: projectCrewMember.userId })
+    .from(projectCrewMember)
+    .where(and(crewOf(locked), eq(projectCrewMember.isLead, true)));
+  await tx.delete(projectCrewMember).where(crewOf(locked));
   const named = [...new Set(crew)];
   if (named.length > 0) {
     await tx.insert(projectCrewMember).values(
@@ -66,6 +62,7 @@ export async function replaceCrew(
         userId,
         addedAt: atOf(context),
         addedBy: context.mover.userId,
+        isLead: userId === led?.userId,
       })),
     );
   }
@@ -193,60 +190,4 @@ function openWaitOf(locked: LockedProject) {
     eq(projectBlocker.projectId, locked.projectId),
     isNull(projectBlocker.endedAt),
   );
-}
-
-type DetailsChange = {
-  managerId?: string;
-  expectedInstallOn?: string | null;
-  accessNote?: string | null;
-};
-
-/** The timeline's name for each fact a change may set. */
-const CHANGED_FIELDS = [
-  ['managerId', 'manager'],
-  ['expectedInstallOn', 'install_date'],
-  ['accessNote', 'access_note'],
-] as const;
-
-/** The manager's own facts: who manages, the promised date, how the crew gets in. */
-export function changeDetails(context: ActContext, change: DetailsChange) {
-  return async (tx: DbTransaction, locked: LockedProject): Promise<StepOutcome> => {
-    if (isClosedStage(locked.stage)) return refusedWith('project_closed');
-    const fields = CHANGED_FIELDS.filter(([key]) => change[key] !== undefined).map(
-      ([, field]) => field,
-    );
-    if (fields.length === 0) return done();
-    const { managerId, expectedInstallOn } = change;
-    const today = todayOfLocked(locked, context.act);
-    if (expectedInstallOn != null && !isPromisableInstallDate(expectedInstallOn, today)) {
-      return refusedWith('date_in_past');
-    }
-    if (
-      managerId !== undefined &&
-      !(await allHold(tx, locked.tenantId, [managerId], PROJECT_MANAGER_PRESETS))
-    ) {
-      return refusedWith('not_a_manager');
-    }
-    await tx
-      .update(project)
-      .set(namedFactsOf(change))
-      .where(and(eq(project.tenantId, locked.tenantId), eq(project.id, locked.projectId)));
-    for (const field of fields) {
-      await recordActivity(tx, {
-        ...entryBase(locked, context),
-        kind: 'project_changed',
-        body: { projectId: locked.projectId, field },
-      });
-    }
-    return done();
-  };
-}
-
-/** Only the facts the change names; the others stay as they are. */
-function namedFactsOf(change: DetailsChange) {
-  return {
-    ...(change.managerId !== undefined && { managerId: change.managerId }),
-    ...(change.expectedInstallOn !== undefined && { expectedInstallOn: change.expectedInstallOn }),
-    ...(change.accessNote !== undefined && { accessNote: change.accessNote }),
-  };
 }

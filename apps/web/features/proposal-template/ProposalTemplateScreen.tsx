@@ -1,149 +1,167 @@
 'use client';
 import {
-  type ProposalTemplateScreen as ProposalTemplate,
+  type ProposalTemplateScreen as ProposalDefaults,
   useProposalTemplateScreen,
 } from '@heliogrid/data/react';
 import { SETTINGS_SEGMENT } from '@heliogrid/domain';
 import {
   documentDefaults,
-  proposalTemplatePageWords,
+  proposalBuilderLabels,
+  proposalDefaultsCovers,
+  proposalDefaultsPartWords,
+  proposalDefaultsSampleCustomer,
+  proposalDefaultsStanding,
+  proposalDefaultsWords,
+  proposalPhaseSheetWords,
+  proposalStepWords,
   proposalTemplateWords,
   SHELL,
-  sectionWords,
   settingsSavedToast,
   templateFieldRefusals,
   toastHostWords,
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
+import { theme } from '@heliogrid/theme';
 import {
-  Banner,
-  BannerAction,
+  defaultsPartsOf,
+  type FocusHandle,
+  PageTrail,
+  ProposalTemplateOverlays,
   ProposalTemplateSettings,
-  Text,
   ToastHost,
-  templateDocumentOf,
-  templateSettingsParts,
   useFormat,
+  useOwnWidth,
   useSavedMoment,
   useToasts,
 } from '@heliogrid/ui';
 import { notFound, useRouter } from 'next/navigation';
-import { type RefObject, useRef } from 'react';
+import { useRef } from 'react';
 import { useGuardedMove, useLeaveGuard } from '../../lib/leave-guard';
+import { openImagePicker, useImageFile } from '../../lib/use-image-file';
+import { PaymentPlanEditor } from '../payment-terms';
 import { settingsRowPath } from '../settings';
-import { TemplateOverlays } from './components/TemplateOverlays';
+import { DOOR_PATH } from '../shell';
+import { useDefaultsSample } from './hooks/use-defaults-sample';
+import '../../lib/focus-screen.css';
+import './proposal-template.css';
 
 /**
- * The Proposal template behind `More` on the web (`SCR-M01-19`, `M01-51`, `M01-52`): the PDF a
- * customer opens, and the cover, sections, terms and phases that make it. What it draws is
+ * Proposal defaults behind `More` on the web (`SCR-M01-19`, `M01-51`, `M01-52`, `T-M01-030`): what
+ * every new proposal starts with, set on the builder's own parts beside the real page. A focus
+ * screen — it has the whole window, with its breadcrumb back to Settings. What it draws is
  * `useProposalTemplateScreen`'s, the phone's too; the page body is `ProposalTemplateSettings`. The
- * web's own parts are the phase editor's panel, the full-size reader, the two confirms and the
- * leave guard. Only a person whose presets open the row reaches it (`F7-48`).
+ * web's own parts are the phase editor's panel, the plan editor, the image chooser, the confirms
+ * and the leave guard. Only a person whose presets open the row reaches it (`F7-48`).
  */
 export function ProposalTemplateScreen() {
   const { t } = useI18n();
-  const screen = useProposalTemplateScreen(documentDefaults(t));
-  /* One page element through a failed read and the page that follows it: *Try again* leaves with
-     the failure, and the focus goes here. */
-  const frame = useRef<HTMLDivElement>(null);
+  const { pack } = useFormat();
+  const defaults = documentDefaults(t);
+  const screen = useProposalTemplateScreen(defaults, defaults.trancheTemplates[0], {
+    formats: pack,
+    customer: proposalDefaultsSampleCustomer(t),
+    newPart: proposalBuilderLabels(t).newPart,
+  });
   if (!screen.allowed) notFound();
-  const { page } = screen;
-  const words = proposalTemplateWords(t);
-  if (page.read.kind !== 'failed') return <TemplatePage screen={screen} frame={frame} />;
-  return (
-    <div ref={frame} tabIndex={-1} className="hg-shell-page hg-focus-target">
-      <Text as="h1" variant="display">
-        {words.title}
-      </Text>
-      <Banner
-        kind="validation"
-        density="functional"
-        title={words.unread}
-        action={
-          <BannerAction onClick={page.read.retry} focusAfter={frame}>
-            {words.tryAgain}
-          </BannerAction>
-        }
-      />
-    </div>
-  );
+  return <DefaultsPage screen={screen} />;
 }
 
-function TemplatePage({
-  screen,
-  frame,
-}: {
-  screen: ProposalTemplate;
-  frame: RefObject<HTMLDivElement | null>;
-}) {
+function DefaultsPage({ screen }: { screen: ProposalDefaults }) {
   const { t } = useI18n();
   const { pack, date } = useFormat();
   const router = useRouter();
   const guarded = useGuardedMove();
-  const { page, view, overlays, held } = screen;
-  useLeaveGuard(held, screen.leave.ask);
+  const { page, overlays, held, plans, coverPhoto } = screen;
+  /* A change held on the page, or in the plan editor opened over it: the ask that owns it answers. */
+  const planChanged = plans.page.editor?.changed ?? false;
+  useLeaveGuard(held || planChanged, planChanged ? plans.askLeave : screen.leave.ask);
   const toasts = useToasts();
   useSavedMoment(toasts.push, page.saving, page.saveFailure !== null, settingsSavedToast(t));
+  const [room, width] = useOwnWidth<HTMLDivElement>();
+  const title = useRef<FocusHandle>(null);
+  const sample = useDefaultsSample(screen);
+  const chooseFile = useImageFile(coverPhoto.choose);
 
-  const words = proposalTemplateWords(t);
-  const said = proposalTemplatePageWords(t, page, { date: (epochMs) => date(new Date(epochMs)) });
-  const sectionWord = sectionWords(t, page.draft?.phases.length ?? 0);
-  const document = templateDocumentOf(
-    view,
-    {
-      cover: page.cover,
-      taxIdLabel: pack.taxIdLabel,
-      colour: page.brandColour,
-      docDate: date(new Date()),
-    },
-    sectionWord,
-  );
-  const toRow = (row: 'branding' | 'company_profile') =>
-    guarded(() => router.push(settingsRowPath(SETTINGS_SEGMENT[row])));
+  const words = proposalDefaultsWords(t);
+  const shell = proposalTemplateWords(t);
+  const toSettings = () => guarded(() => router.push(DOOR_PATH.more));
+  const toBranding = () => guarded(() => router.push(settingsRowPath(SETTINGS_SEGMENT.branding)));
+  const refusal = templateFieldRefusals(t, page.refusals).termsError;
 
   return (
-    <div ref={frame} tabIndex={-1} className="hg-shell-page hg-focus-target">
+    <div ref={room} tabIndex={-1} className="hg-defaults-screen hg-focus-ground hg-focus-target">
       <ProposalTemplateSettings
+        wide={width !== null && width >= theme.layout['bp-desktop']}
         words={words}
+        shared={proposalStepWords(t)}
         read={page.read}
-        title={words.title}
-        {...(said.standing === undefined ? {} : { standing: said.standing })}
         part={screen.part}
         onPart={screen.choosePart}
-        document={document}
-        unsaved={page.changed.template}
-        held={held}
-        teaching={page.teaching}
-        onWriteOwn={(written) => page.edit({ kind: 'writeOwn', part: written })}
-        {...templateSettingsParts(view, {
-          sectionWord,
-          ...templateFieldRefusals(t, page.refusals),
+        trail={
+          <PageTrail
+            trail={[{ label: words.settings, onOpen: toSettings }]}
+            here={words.title}
+            label={words.trail}
+          />
+        }
+        standing={proposalDefaultsStanding(
+          t,
+          { standing: page.standing, held },
+          { date: (epochMs) => date(new Date(epochMs)) },
+        )}
+        sample={sample}
+        {...defaultsPartsOf(screen.view, {
+          words: proposalDefaultsPartWords(t, {
+            owner: '',
+            routingLabel: pack.bankRoutingLabel,
+            printsBank: screen.view.pages.rows.some((row) => row.page === 'bank' && row.on),
+          }),
+          covers: proposalDefaultsCovers(t),
           edit: page.edit,
+          photo: {
+            picture: coverPhoto.picture,
+            held: coverPhoto.held?.kind === 'own' ? coverPhoto.held : null,
+            storing: coverPhoto.storing,
+            refused: coverPhoto.refused,
+            onChoose: () => openImagePicker(chooseFile),
+          },
+          onOpenBranding: toBranding,
+          platformPhases: documentDefaults(t).phases,
           onEditPhase: overlays.editPhase,
           onDeletePhase: overlays.askDeletePhase,
           onAddPhase: overlays.addPhase,
+          plans: plans.page.cards.inUse,
+          changingPlan: plans.page.acting !== null,
+          onPlan: (id) => plans.page.act(id, 'make-default'),
+          onNewPlan: plans.add,
+          plan: screen.plan,
+          bank: page.bank,
+          sample,
         })}
-        bankLine={words.bankFrom(page.bankName)}
-        onOpenBranding={() => toRow('branding')}
-        onOpenProfile={() => toRow('company_profile')}
-        onOpenFullSize={overlays.openFullSize}
         saveFailed={page.saveFailure !== null}
+        {...(refusal === undefined || !held ? {} : { refusal })}
         {...(held
           ? { act: { saving: page.saving, onSave: screen.save, onDiscard: page.discard } }
           : {})}
+        onDone={toSettings}
+        previewOpen={overlays.previewOpen}
+        onPreview={overlays.setPreview}
+        titleRef={title}
+        focusAfter={title}
       />
       <ToastHost
         toasts={toasts.toasts}
         onDismiss={toasts.dismiss}
-        focusAfter={frame}
+        focusAfter={room}
         {...toastHostWords(t)}
       />
-      <TemplateOverlays
-        page={page}
-        words={words}
-        closeLabel={t(SHELL.close)}
-        document={document}
+      <PaymentPlanEditor screen={plans} />
+      <ProposalTemplateOverlays
         overlays={overlays}
+        phaseWords={proposalPhaseSheetWords(t, { number: overlays.phaseNumber })}
+        words={shell}
+        leaveBody={words.leaveBody}
+        closeLabel={t(SHELL.close)}
         leave={screen.leave}
       />
     </div>

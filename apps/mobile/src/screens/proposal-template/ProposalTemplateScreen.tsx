@@ -1,162 +1,124 @@
-import {
-  type ProposalTemplateScreen as ProposalTemplate,
-  useProposalTemplateScreen,
-} from '@heliogrid/data/react';
+import { useProposalTemplateScreen } from '@heliogrid/data/react';
 import {
   documentDefaults,
-  proposalTemplatePageWords,
+  proposalBuilderLabels,
+  proposalDefaultsCovers,
+  proposalDefaultsPartWords,
+  proposalDefaultsSampleCustomer,
+  proposalDefaultsStanding,
+  proposalDefaultsWords,
+  proposalPhaseSheetWords,
+  proposalStepWords,
   proposalTemplateWords,
   SHELL,
-  sectionWords,
   templateFieldRefusals,
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
-  Button,
-  EmptyState,
+  defaultsPartsOf,
+  type FocusHandle,
+  ProposalTemplateOverlays,
   ProposalTemplateSettings,
-  type TemplatePartName,
-  templateDocumentOf,
-  templateSettingsParts,
   useFormat,
 } from '@heliogrid/ui';
 import { useRef } from 'react';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SavedToast } from '../settings/components/SavedToast';
-import { useSettingsDrillDown } from '../settings/hooks/use-settings-drill-down';
-import { ShellPage } from '../shell/components/ShellPage';
-import { TemplateActBar } from './components/TemplateActBar';
-import { TemplateOverlays } from './components/TemplateOverlays';
+import { PlanEditing } from './components/PlanEditing';
+import { useDefaultsSample } from './hooks/use-defaults-sample';
 import { useTemplateActs } from './hooks/use-template-acts';
+import { styles } from './styles';
 
 /**
- * The Proposal template behind `More` on the phone (`SCR-M01-19`, the 375 frames): the settings
- * page's bar holds the title and the way back, the shared page draws the stage and the editor, and
- * while a change is held the act bar stands in the nav's place (m19-n5). What it draws is
- * `useProposalTemplateScreen`'s, the web's too; the phone's own parts are the keyboard and the way
- * back.
+ * Proposal defaults behind `More` on the phone (`SCR-M01-19`, `T-M01-030`): a focus screen — back,
+ * the page's name and the eye in its own bar, the seven parts as one row, the part's title with
+ * what is in force, a peek of the page it feeds, the builder step's own controls, and the dock.
+ * What it draws is `useProposalTemplateScreen`'s, the web's too; the phone's own parts are the
+ * safe areas, the keyboard, the photo picker and the way back.
  */
 export function ProposalTemplateScreen() {
-  const drillDown = useSettingsDrillDown('proposal_templates');
-  const { t } = useI18n();
-  const screen = useProposalTemplateScreen(documentDefaults(t));
-  const { page } = screen;
-  const words = proposalTemplateWords(t);
-  if (page.read.kind === 'failed') {
-    return (
-      <ShellPage inView="more" drillDown={drillDown}>
-        <EmptyState
-          title={words.unread}
-          action={
-            <Button variant="primary" size="lg" onClick={page.read.retry}>
-              {words.tryAgain}
-            </Button>
-          }
-        />
-      </ShellPage>
-    );
-  }
-  return <TemplatePage screen={screen} drillDown={drillDown} />;
-}
-
-function TemplatePage({
-  screen,
-  drillDown,
-}: {
-  screen: ProposalTemplate;
-  drillDown: ReturnType<typeof useSettingsDrillDown>;
-}) {
   const { t } = useI18n();
   const format = useFormat();
-  const acts = useTemplateActs(screen);
-  const { page, view, overlays } = screen;
-  /* A saved or discarded change takes the act bar away: the screen reader goes on to the page. */
-  const body = useRef<View>(null);
-
-  const words = proposalTemplateWords(t);
-  const said = proposalTemplatePageWords(t, page, {
-    date: (epochMs) => format.date(new Date(epochMs)),
+  const insets = useSafeAreaInsets();
+  const defaults = documentDefaults(t);
+  const screen = useProposalTemplateScreen(defaults, defaults.trancheTemplates[0], {
+    formats: format.pack,
+    customer: proposalDefaultsSampleCustomer(t),
+    newPart: proposalBuilderLabels(t).newPart,
   });
-  const sectionWord = sectionWords(t, page.draft?.phases.length ?? 0);
-  const document = templateDocumentOf(
-    view,
-    {
-      cover: page.cover,
-      taxIdLabel: format.pack.taxIdLabel,
-      colour: page.brandColour,
-      docDate: format.date(new Date()),
-    },
-    sectionWord,
-  );
-  const act = screen.held ? (
-    <TemplateActBar
-      words={words}
-      saving={page.saving}
-      saveFailed={page.saveFailure !== null}
-      onSave={acts.save}
-      onDiscard={page.discard}
-      focusAfter={body}
-    />
-  ) : undefined;
-
+  const acts = useTemplateActs(screen);
+  const sample = useDefaultsSample(screen);
+  const title = useRef<FocusHandle>(null);
+  const { page, overlays, held, plans, coverPhoto } = screen;
+  const words = proposalDefaultsWords(t);
+  const refusal = templateFieldRefusals(t, page.refusals).termsError;
   return (
-    <ShellPage inView="more" drillDown={drillDown} foot={act}>
-      <View ref={body}>
-        <ProposalTemplateSettings
-          {...bodyProps({ screen, words, said, document, acts })}
-          part={screen.part}
-          onPart={screen.choosePart}
-          {...templateSettingsParts(view, {
-            sectionWord,
-            ...templateFieldRefusals(t, page.refusals),
-            edit: page.edit,
-            onEditPhase: overlays.editPhase,
-            onDeletePhase: overlays.askDeletePhase,
-            onAddPhase: overlays.addPhase,
-          })}
-          onOpenFullSize={overlays.openFullSize}
-        />
-      </View>
-      <TemplateOverlays
-        page={page}
+    <View style={styles.screen}>
+      <ProposalTemplateSettings
+        wide={false}
         words={words}
-        closeLabel={t(SHELL.close)}
-        document={document}
+        shared={proposalStepWords(t)}
+        read={page.read}
+        part={screen.part}
+        onPart={screen.choosePart}
+        trail={null}
+        standing={proposalDefaultsStanding(
+          t,
+          { standing: page.standing, held },
+          { date: (epochMs) => format.date(new Date(epochMs)) },
+        )}
+        sample={sample}
+        {...defaultsPartsOf(screen.view, {
+          words: proposalDefaultsPartWords(t, {
+            owner: '',
+            routingLabel: format.pack.bankRoutingLabel,
+            printsBank: screen.view.pages.rows.some((row) => row.page === 'bank' && row.on),
+          }),
+          covers: proposalDefaultsCovers(t),
+          edit: page.edit,
+          photo: {
+            picture: coverPhoto.picture,
+            held: coverPhoto.held?.kind === 'own' ? coverPhoto.held : null,
+            storing: coverPhoto.storing,
+            refused: coverPhoto.refused,
+            onChoose: acts.pickPhoto,
+          },
+          onOpenBranding: acts.openBranding,
+          platformPhases: defaults.phases,
+          onEditPhase: overlays.editPhase,
+          onDeletePhase: overlays.askDeletePhase,
+          onAddPhase: overlays.addPhase,
+          plans: plans.page.cards.inUse,
+          changingPlan: plans.page.acting !== null,
+          onPlan: (id) => plans.page.act(id, 'make-default'),
+          onNewPlan: plans.add,
+          plan: screen.plan,
+          bank: page.bank,
+          sample,
+        })}
+        saveFailed={page.saveFailure !== null}
+        {...(refusal === undefined || !held ? {} : { refusal })}
+        {...(held
+          ? { act: { saving: page.saving, onSave: acts.save, onDiscard: page.discard } }
+          : {})}
+        onDone={acts.done}
+        previewOpen={overlays.previewOpen}
+        onPreview={overlays.setPreview}
+        safe={{ top: insets.top, bottom: insets.bottom }}
+        titleRef={title}
+        focusAfter={title}
+      />
+      <PlanEditing plans={plans} />
+      <ProposalTemplateOverlays
         overlays={overlays}
+        phaseWords={proposalPhaseSheetWords(t, { number: overlays.phaseNumber })}
+        words={proposalTemplateWords(t)}
+        leaveBody={words.leaveBody}
+        closeLabel={t(SHELL.close)}
         leave={screen.leave}
       />
-      <SavedToast saving={page.saving} failed={page.saveFailure !== null} focusAfter={body} />
-    </ShellPage>
+      <SavedToast saving={page.saving} failed={page.saveFailure !== null} focusAfter={title} />
+    </View>
   );
-}
-
-/** The page body's props that follow from the page alone: its words, state and the two rows. */
-function bodyProps({
-  screen,
-  words,
-  said,
-  document,
-  acts,
-}: {
-  screen: ProposalTemplate;
-  words: ReturnType<typeof proposalTemplateWords>;
-  said: ReturnType<typeof proposalTemplatePageWords>;
-  document: ReturnType<typeof templateDocumentOf>;
-  acts: ReturnType<typeof useTemplateActs>;
-}) {
-  const { page } = screen;
-  return {
-    words,
-    read: page.read,
-    ...(said.standing === undefined ? {} : { standing: said.standing }),
-    document,
-    unsaved: page.changed.template,
-    held: screen.held,
-    teaching: page.teaching,
-    onWriteOwn: (part: TemplatePartName) => page.edit({ kind: 'writeOwn', part }),
-    bankLine: words.bankFrom(page.bankName),
-    onOpenBranding: acts.openBranding,
-    onOpenProfile: acts.openProfile,
-    saveFailed: page.saveFailure !== null,
-  };
 }

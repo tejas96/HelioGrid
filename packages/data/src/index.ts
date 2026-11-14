@@ -32,6 +32,19 @@ export type { CustomerMergeRepository } from './crm/merge-repository';
 export type { LeadMessagesRepository } from './crm/messages-repository';
 export type { TasksRepository } from './crm/tasks-repository';
 export type { VisitsRepository } from './crm/visits-repository';
+export type {
+  CustomerLinkAddress,
+  CustomerLinksRepository,
+  RemintLink,
+} from './customer-link/links-repository';
+export { LinkActRefusedError } from './customer-link/links-repository';
+export type {
+  CustomerLinkPublicRepository,
+  LinkDeviceClass,
+  LinkFileDownload,
+  LinkSectionViewed,
+} from './customer-link/public-repository';
+export { LinkActNotTakenError } from './customer-link/public-repository';
 export type { DataLayer, DataLayerConfig, Repositories } from './data-layer';
 export { createDataLayer } from './data-layer';
 export type { ApiErrorDetail } from './errors/errors';
@@ -67,6 +80,23 @@ export type {
   ProjectsRepository,
 } from './projects/projects-repository';
 export { MarkWonRefusedError, ProjectActRefusedError } from './projects/projects-repository';
+export {
+  ProposalActRefusedError,
+  ProposalConflictError,
+  ProposalNotReadyError,
+} from './proposals/proposal-refusals';
+export type {
+  FillEnergy,
+  GeneratedProposal,
+  ProposalListAsk,
+  ProposalsRepository,
+  ResetStep,
+  SharedProposal,
+  ShareProposal,
+  StartedProposal,
+} from './proposals/proposals-repository';
+export type { SavedPartCreate, SavedPartsRepository } from './proposals/saved-parts-repository';
+export { SavedPartDuplicateError } from './proposals/saved-parts-repository';
 export type { SearchAsk, SearchRepository } from './search/repository';
 export type { BlockedRefusal, BlockedStore } from './session/blocked';
 export type { HeldWork } from './session/held-work';

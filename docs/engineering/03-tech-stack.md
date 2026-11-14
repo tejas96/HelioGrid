@@ -230,7 +230,7 @@ Sources: [Razorpay subscriptions webhooks](https://razorpay.com/docs/webhooks/su
 
 | Component | Choice & pin | Why | Rejected (reason) |
 |---|---|---|---|
-| PDF | **Playwright 1.x headless Chromium** in `apps/worker` (`DocumentRenderPort`); Noto Sans Devanagari bundled in the worker image (`fonts-noto`); 300–500 MB RAM budget/instance, pooled processes | Chromium's HarfBuzz is the only path that shapes Devanagari correctly — proposals in Hindi/Marathi are commercial documents, broken conjuncts are not acceptable; HTML/CSS templates reuse web skills | react-pdf (fontkit does not fully shape Devanagari — long-standing broken conjuncts/matras, issues #454/#856 — disqualified) · Typst (genuine Indic shaping, far lighter — documented swap behind the port if Chromium RAM bites, but a new template language for agents now) |
+| PDF | **Playwright 1.x headless Chromium** in `apps/worker` (`DocumentRenderPort`); Noto Sans Devanagari bundled in the worker image (`fonts-noto`); 300–500 MB RAM budget/instance, pooled processes; a proposal prints the web's own print page, its fonts served by the web (`07-integrations.md` §10) | Chromium's HarfBuzz is the only path that shapes Devanagari correctly — proposals in Hindi/Marathi are commercial documents, broken conjuncts are not acceptable; HTML/CSS templates reuse web skills | react-pdf (fontkit does not fully shape Devanagari — long-standing broken conjuncts/matras, issues #454/#856 — disqualified) · Typst (genuine Indic shaping, far lighter — documented swap behind the port if Chromium RAM bites, but a new template language for agents now) |
 
 Sources: [react-pdf #454](https://github.com/diegomura/react-pdf/issues/454) · [State of Text Rendering](https://behdad.org/text2024/).
 

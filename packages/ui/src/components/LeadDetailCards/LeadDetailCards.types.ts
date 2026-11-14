@@ -7,7 +7,11 @@ import type {
   LeadContactsCardWords,
 } from '../LeadContactsCard/LeadContactsCard.types';
 import type { LeadTaskRowWords } from '../LeadSections/LeadSections.logic';
-import type { LeadSectionsWords } from '../LeadSections/LeadSections.types';
+import type {
+  LeadProposalsPanel,
+  LeadSectionsWords,
+  LeadSiteFactLine,
+} from '../LeadSections/LeadSections.types';
 
 /** The sheets these cards open; the screen's `acts.open` takes them among its others. */
 export type LeadDetailCardsSheet =
@@ -83,6 +87,8 @@ export interface LeadDetailCardsWords<Failure> {
   readonly taskTitle: LeadTaskRowWords['title'];
   /** "Due Fri 14 Nov, 11:30" — the day and time formatted on the tenant's clock. */
   readonly taskDue: (when: LeadDayAndTime) => TranslatedText;
+  /** The site's facts beside its address, each named — "Sanctioned load · 5 kW". */
+  readonly siteFacts: (site: LeadDetailView['site']) => readonly LeadSiteFactLine[];
   /** "Fri 14 Nov, 10:00 · Rajesh Jadhav" — the booked visit. */
   readonly visitLine: (visit: LeadVisitLineFacts) => TranslatedText;
   /** "Added by Asha Patil · 10 Nov" — a file on the lead. */
@@ -114,5 +120,10 @@ export interface LeadDetailCardsProps<Failure> {
    * they head the desktop's second column.
    */
   readonly first: 'contacts' | 'sections';
+  /**
+   * The Proposals section, assembled by the screen's own hook (`useLeadProposalsSection`); absent
+   * on an api built before proposals, where the section draws its count alone.
+   */
+  readonly proposals?: LeadProposalsPanel;
   readonly words: LeadDetailCardsWords<Failure>;
 }

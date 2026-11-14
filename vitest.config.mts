@@ -128,6 +128,7 @@ export default defineConfig({
         'packages/domain/src/money/**': COMPLETE,
         'packages/domain/src/payments/{acts,due,reference,request,schedule,standing}.ts': COMPLETE,
         'packages/domain/src/pricing/**': COMPLETE,
+        'packages/domain/src/proposals/{forecast,money,number,projections}.ts': COMPLETE,
         'packages/domain/src/subsidy/**': COMPLETE,
         'packages/domain/src/tax/**': COMPLETE,
       },

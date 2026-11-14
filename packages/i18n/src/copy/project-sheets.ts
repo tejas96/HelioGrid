@@ -11,6 +11,7 @@ import { numberFieldWords } from './number-field';
 import { CANCEL_REASON_WORDS } from './project-cancel';
 import type { PackWord } from './projects';
 import { SHELL } from './shell';
+import { timeFieldWords } from './time-field';
 
 export * from './project-toast';
 
@@ -29,6 +30,9 @@ const WON = {
   started: /*i18n*/ { id: 'Project {number} started' },
   openProject: /*i18n*/ { id: 'Open project' },
   alreadyWon: /*i18n*/ { id: 'This lead is already won. Its project is on the board.' },
+  valueNotAccepted: /*i18n*/ {
+    id: 'The customer answered again. The value is now the one they accepted — check it and send.',
+  },
   closedLead: /*i18n*/ { id: 'A closed lead cannot be won. Reopen it first.' },
   notManager: /*i18n*/ { id: 'That person can no longer manage projects. Pick someone else.' },
   finerThanCurrency: /*i18n*/ { id: 'Too many decimal places for your currency.' },
@@ -95,9 +99,20 @@ const SHEET = {
   cancelReason: /*i18n*/ { id: 'Reason (needed)' },
   cancelSend: /*i18n*/ { id: 'Cancel project' },
   keep: /*i18n*/ { id: 'Keep it' },
-  dateTitle: /*i18n*/ { id: 'New install date' },
-  dateLine: /*i18n*/ { id: 'The date you promise the customer.' },
-  dateSend: /*i18n*/ { id: 'Save date' },
+  dateTitle: /*i18n*/ { id: 'Installation day' },
+  dateLine: /*i18n*/ {
+    id: 'The day you promise the customer, and what their link and message tell them about it.',
+  },
+  dateSend: /*i18n*/ { id: 'Save' },
+  dateDay: /*i18n*/ { id: 'Install date' },
+  dateTime: /*i18n*/ { id: 'Crew arrives at' },
+  dateDuration: /*i18n*/ { id: 'Days on site' },
+  dateDisturbance: /*i18n*/ { id: 'What to expect' },
+  dateDisturbanceHint: /*i18n*/ {
+    id: 'In your words, for the customer — power off for an hour, drilling on the roof.',
+  },
+  dateCrewLead: /*i18n*/ { id: 'Crew lead' },
+  dateCrewLeadPick: /*i18n*/ { id: 'Pick the crew lead' },
   managerTitle: /*i18n*/ { id: 'Change manager' },
   managerSend: /*i18n*/ { id: 'Save manager' },
   managerPick: /*i18n*/ { id: 'Pick a manager' },
@@ -141,6 +156,7 @@ export function markWonWords(t: T, who: string) {
     started: (number: string) => t(WON.started, { number }),
     openProject: t(WON.openProject),
     alreadyWon: t(WON.alreadyWon),
+    valueNotAccepted: t(WON.valueNotAccepted),
     closedLead: t(WON.closedLead),
     notManager: t(WON.notManager),
     finerThanCurrency: t(WON.finerThanCurrency),
@@ -241,7 +257,18 @@ export function projectSheetWords(t: T, word: PackWord, day: (date: string) => s
       send: (to: string) => t(SHEET.earlySend, { stage: stage(to) }),
       keep: t(SHEET.earlyKeep),
     },
-    date: { title: t(SHEET.dateTitle), line: t(SHEET.dateLine), send: t(SHEET.dateSend) },
+    date: {
+      title: t(SHEET.dateTitle),
+      line: t(SHEET.dateLine),
+      send: t(SHEET.dateSend),
+      day: t(SHEET.dateDay),
+      time: t(SHEET.dateTime),
+      duration: t(SHEET.dateDuration),
+      disturbance: t(SHEET.dateDisturbance),
+      disturbanceHint: t(SHEET.dateDisturbanceHint),
+      crewLead: t(SHEET.dateCrewLead),
+      crewLeadPick: t(SHEET.dateCrewLeadPick),
+    },
     manager: {
       title: t(SHEET.managerTitle),
       send: t(SHEET.managerSend),
@@ -252,7 +279,7 @@ export function projectSheetWords(t: T, word: PackWord, day: (date: string) => s
     },
     access: { title: t(SHEET.accessTitle), line: t(SHEET.accessLine), send: t(SHEET.accessSend) },
     file: { name: t(SHEET.fileName), send: t(SHEET.fileSend) },
-    fields: { date: datePickerWords(t) },
+    fields: { date: datePickerWords(t), time: timeFieldWords(t), number: numberFieldWords(t) },
     close: t(SHELL.close),
     retry: t(SHELL.tryAgain),
   };

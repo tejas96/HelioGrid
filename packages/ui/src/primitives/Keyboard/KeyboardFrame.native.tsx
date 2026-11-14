@@ -1,7 +1,8 @@
 import { theme } from '@heliogrid/theme';
-import { useState } from 'react';
+import { type ReactElement, useState } from 'react';
 import {
   type LayoutChangeEvent,
+  type RefreshControlProps,
   type StyleProp,
   StyleSheet,
   View,
@@ -18,6 +19,8 @@ import { useKeyboardHeight } from './use-keyboard.native';
 interface NativeKeyboardFrameProps extends KeyboardFrameProps {
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
+  /** A page that reads again on a pull hands its `RefreshControl` here (the phone's alone). */
+  refreshControl?: ReactElement<RefreshControlProps>;
 }
 
 /**
@@ -42,6 +45,7 @@ export function KeyboardFrame({
   heldChild,
   style,
   contentContainerStyle,
+  refreshControl,
 }: NativeKeyboardFrameProps) {
   const [footHeight, setFootHeight] = useState(0);
   const keyboardHeight = useKeyboardHeight();
@@ -76,6 +80,7 @@ export function KeyboardFrame({
             : (event) => onScrollOffset(event.nativeEvent.contentOffset.y)
         }
         contentContainerStyle={contentContainerStyle}
+        refreshControl={refreshControl}
       >
         {children}
       </KeyboardAwareScrollView>

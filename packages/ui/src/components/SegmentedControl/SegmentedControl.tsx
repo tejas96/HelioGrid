@@ -8,6 +8,7 @@ import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { renderMarks } from '../ChipGroup';
 import {
   hasReason,
+  isChosen,
   isFieldControl,
   reasonedOptions,
   selectedIndex,
@@ -89,7 +90,7 @@ export function SegmentedControl({
       data-error={error === undefined ? undefined : 'true'}
       style={pillStyle}
     >
-      <span className="hg-segmented-control-indicator" />
+      {isChosen(options, value) ? <span className="hg-segmented-control-indicator" /> : null}
       {options.map((option, position) => (
         <Segment
           key={option.value}

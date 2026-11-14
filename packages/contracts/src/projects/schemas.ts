@@ -8,6 +8,7 @@ import {
   PROJECT_FILE_SLOTS,
   PROJECT_MOVE_CAUSES,
   PROJECT_STAGES,
+  SIGNED_PROPOSAL_ACTS,
   TODO_KINDS,
 } from '@heliogrid/domain';
 import { z } from 'zod';
@@ -18,6 +19,7 @@ import { dealSegmentSchema } from '../crm/vocabulary';
 import { uiLanguageResponseSchema } from '../locale';
 import { calendarDateSchema } from '../tenant-settings';
 import { projectMoneyGlanceSchema } from './money';
+import { installationFactsSchema } from './proposal-handoff';
 
 /*
  * The projects' shared shapes (`M08`). A stage, a party, a reason and a row are the
@@ -134,6 +136,18 @@ export const projectMoveSchema = z.object({
 });
 export type ProjectMoveEntry = z.infer<typeof projectMoveSchema>;
 
+/**
+ * What proves the signed-proposal row (`F5-46`, `T-M06-025`): the version in force, the link it was
+ * accepted on (none where a person put it in force), when, and by which act.
+ */
+export const signedProposalProofSchema = z.object({
+  version: z.number().int().positive(),
+  linkLabel: z.string().nullable(),
+  at: z.string().datetime(),
+  act: extensibleEnum(SIGNED_PROPOSAL_ACTS),
+});
+export type SignedProposalProof = z.infer<typeof signedProposalProofSchema>;
+
 /** One checklist row (`SCR-M08-03`): its pack key, state, reason, what it proves and its files. */
 export const projectDocumentSchema = z.object({
   row: z.string(),
@@ -145,6 +159,8 @@ export const projectDocumentSchema = z.object({
   changedAt: z.string().datetime(),
   changedBy: memberRefSchema.nullable(),
   files: z.array(projectFileSchema),
+  /** The signed-proposal row's proof once it stands done on a proposal; `null` on every other row. */
+  proof: signedProposalProofSchema.nullable().optional(),
 });
 export type ProjectDocument = z.infer<typeof projectDocumentSchema>;
 
@@ -170,6 +186,8 @@ export const projectActsSchema = z.object({
   stages: z.boolean(),
   documents: z.boolean(),
   steps: z.boolean(),
+  /** May put a newer accepted version in force (`M08-50`): the lead's owner or the manager. */
+  versionInForce: z.boolean().optional(),
 });
 
 /**
@@ -227,6 +245,20 @@ export const projectDetailSchema = z.object({
   acts: projectActsSchema,
   /** The Money card (`M11-52`'s one mirror): absent for the crew and on an older api (`M11-56`). */
   money: projectMoneyGlanceSchema.nullable().optional(),
+  /**
+   * The proposal version the project runs on (`M08-50`); `null` for a deal won with no accepted
+   * proposal, which the project says. Absent on an api built before proposals.
+   */
+  proposalVersion: z
+    .object({ proposalId: uuidSchema, number: z.string(), version: z.number().int().positive() })
+    .nullable()
+    .optional(),
+  /** A newer version of that proposal exists and is not in force — what *Put in force* offers. */
+  newerVersion: z.number().int().positive().nullable().optional(),
+  /** The installation day's facts the customer's link shows (`F5-68`). */
+  installation: installationFactsSchema.optional(),
+  /** The evening-before crew message is due to be sent by a person (`F5-68`). */
+  crewMessageDue: z.boolean().optional(),
 });
 export type ProjectDetail = z.infer<typeof projectDetailSchema>;
 

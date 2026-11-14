@@ -139,6 +139,9 @@ export const entitlementBlockedSchema = z.discriminatedUnion('reason', [
     key: z.enum([...ENTITLEMENT_KEYS, ...RETIRED_ON_THE_WIRE]),
     /** `null` for a ceiling no cycle resets — design kW, storage — which only an upgrade lifts. */
     resetsAt: z.string().datetime().nullable(),
+    /** How much of the cap is used, and the cap itself — "40 of 40" — where the refusal counts them. */
+    used: z.number().int().nonnegative().optional(),
+    limit: z.number().int().nonnegative().optional(),
   }),
 ]);
 export type EntitlementBlocked = z.infer<typeof entitlementBlockedSchema>;

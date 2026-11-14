@@ -1,0 +1,60 @@
+/* ProposalPicture — one of the proposal's pictures, filling its caller's box. The sky under the file
+   is what shows while it loads or when there is none. The shade is mixed from the ink, so words on
+   it clear WCAG AA over any picture: at its lightest stop under words (72%) white reads 7:1. */
+.hg-proposal-picture {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(
+    175deg,
+    color-mix(in srgb, var(--brand-blue) 38%, var(--canvas)) 0%,
+    color-mix(in srgb, var(--brand-blue) 14%, var(--canvas)) 42%,
+    color-mix(in srgb, var(--sun) 42%, var(--canvas)) 66%,
+    color-mix(in srgb, var(--brand-teal) 55%, var(--ink)) 100%
+  );
+}
+
+.hg-proposal-picture-file {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hg-proposal-picture-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hg-proposal-picture-shade[data-shade="cover"] {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ink) 50%, transparent) 0%,
+    transparent 17%,
+    transparent 42%,
+    color-mix(in srgb, var(--ink) 72%, transparent) 68%,
+    color-mix(in srgb, var(--ink) 94%, transparent) 100%
+  );
+}
+
+.hg-proposal-picture-shade[data-shade="foot"] {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 30%,
+    color-mix(in srgb, var(--ink) 85%, transparent) 100%
+  );
+}
+
+.hg-proposal-picture-over {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  color: var(--text-inverse);
+}

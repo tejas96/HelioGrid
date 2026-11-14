@@ -1,0 +1,14 @@
+# A deal's named links (`SCR-M06-20`, `F5-30`) at `proposals/<id>/links`: the large title and the
+# line that says the customer's page shows none of this; a draft never shared holds no link yet.
+# The way back leads to the proposal.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://proposals/${PROPOSAL_ID}/links
+- extendedWaitUntil:
+    visible: ${LINKS_TITLE}
+    timeout: 15000
+- assertVisible: ${LINKS_SUMMARY}
+- tapOn: ${BACK_TO_PROPOSAL}
+- extendedWaitUntil:
+    visible: ${PROPOSAL_DRAFT}
+    timeout: 15000

@@ -186,9 +186,54 @@ export const NOTIFICATION_REGISTRY: Record<NotificationType, NotificationRegistr
     channels: ['in_app'],
     urgency: 'standard',
   },
+  /**
+   * `F6-13`'s second immediate type: a customer said yes, and it never groups. The record lands at
+   * once; a push after hours waits for the working morning (`F6-14`, `T-F5-008`).
+   */
+  proposal_accepted: {
+    raisedBy: 'customer_link',
+    recipients: ['subject_owner', 'epc_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'immediate',
+  },
+  /**
+   * The matrix names the rep and their Sales Manager; no manager mapping exists before HR, so the
+   * EPC Owner stands in (owner ruling 2026-11-13, `T-F5-001`).
+   */
+  proposal_declined: {
+    raisedBy: 'customer_link',
+    recipients: ['subject_owner', 'epc_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
+  negotiation_requested: {
+    raisedBy: 'customer_link',
+    recipients: ['subject_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
+  /** The reply is a call the record's owner makes (`F5-53`); the page never shows one. */
+  customer_question: {
+    raisedBy: 'customer_link',
+    recipients: ['subject_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
+  customer_call_requested: {
+    raisedBy: 'customer_link',
+    recipients: ['subject_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
+  /**
+   * The matrix routes an announcement to its own audience, by default the EPC Owner: a notice about
+   * a record goes to that record's owner — a proposal whose PDF could not be made, to its lead's
+   * owner (`F5-39`'s operator) — and one with no owner falls back to the EPC Owner, as every type's
+   * delivery does when no one else is left (`recipientsFor`).
+   */
   system: {
     raisedBy: 'platform',
-    recipients: ['epc_owner'],
+    recipients: ['subject_owner'],
     channels: ['in_app'],
     urgency: 'standard',
   },
@@ -206,6 +251,7 @@ const GROUP_BY_SOURCE: Record<NotificationSource, NotificationTypeGroup> = {
   crm: 'sales',
   proposals: 'sales',
   sales_execution: 'sales',
+  customer_link: 'sales',
   survey: 'delivery',
   design: 'delivery',
   projects: 'delivery',

@@ -16,6 +16,11 @@ export function reasonedOptions(options: SegmentedOption[]): SegmentedOption[] {
 }
 
 /** Where the active pill sits — the first segment when no option holds the value. */
+/** Whether an option holds the value: with none chosen yet, no pill is drawn on any of them. */
+export function isChosen(options: SegmentedOption[], value: string): boolean {
+  return options.some((option) => option.value === value);
+}
+
 export function selectedIndex(options: SegmentedOption[], value: string): number {
   return Math.max(
     0,

@@ -107,8 +107,12 @@ export function visitBooked(lead: LeadLifecycle): LeadActResult {
 /**
  * *Mark won* (`M07-62`): the deal is won and its project starts in the same act (`M08-02`), from any
  * open stage before it. Refused on a closed lead and on one already won — a won deal is a project,
- * and there is never a second one.
+ * and there is never a second one. Winning ends a snooze, as it ends dormancy (`T-M06-025`).
  */
 export function markWon(lead: LeadLifecycle): LeadActResult {
-  return advanceStage(lead, 'won');
+  // A won deal is never parked: a snooze would have the daily sweep wake a won lead (`M02-51`).
+  const unparked = lead.state === 'snoozed' ? { ...lead, state: null, wakeOn: null } : lead;
+  const won = advanceStage(unparked, 'won');
+  if (won.kind === 'refused' || unparked === lead) return won;
+  return { ...won, transitions: [...stateMove(lead, null, 'manual'), ...won.transitions] };
 }

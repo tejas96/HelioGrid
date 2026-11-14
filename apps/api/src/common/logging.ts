@@ -43,16 +43,22 @@ const REDACTED_PATHS = [
   'req.params.phone',
   'req.query.email',
   'req.query.phone',
+  // The print read's grant opens a frozen proposal version on its own (`/proposal-print/:versionId`).
+  'req.query.grant',
   // A Temporal activity's task token completes or fails that activity; the SDK's lines carry
   // it at the top level (`temporal.sdk-logger.ts`).
   'taskToken',
 ];
 
 /**
- * A path segment that IS a secret: the invite link's token opens a stranger's invite
- * (`invitation.ts`, `landingParamsSchema`), so it never reaches a log line.
+ * Each path whose segment after the prefix IS a credential, so it never reaches a log line: the
+ * invite link's token opens a stranger's invite (`landingParamsSchema`), and a customer link's
+ * token is that link's whole authority (`F5-21`). A new credential-bearing path joins by one line.
  */
-const SECRET_IN_PATH = /^(\/invitations\/landing\/)[^/]+/i;
+const SECRET_IN_PATH: readonly RegExp[] = [
+  /^(\/invitations\/landing\/)[^/]+/i,
+  /^(\/customer-link\/)[^/]+/i,
+];
 
 /**
  * `redact` reaches STRUCTURED fields only, so `req.query.phone` is censored while the same
@@ -72,7 +78,7 @@ export function loggedRequest<R extends { url?: unknown; params?: unknown }>(
 /** The path a log line may show: no query string, and no secret segment (`SECRET_IN_PATH`). */
 export function loggedPath(url: string): string {
   const path = url.split('?')[0] ?? '';
-  return path.replace(SECRET_IN_PATH, '$1[redacted]');
+  return SECRET_IN_PATH.reduce((logged, secret) => logged.replace(secret, '$1[redacted]'), path);
 }
 
 function requestSerializer(req: Parameters<typeof stdSerializers.req>[0]) {

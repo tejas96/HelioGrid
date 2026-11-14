@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { billingContract, httpStatusFor } from '@heliogrid/contracts';
 import type { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import type { NextFunction, Request, Response } from 'express';
 import { json, raw, urlencoded } from 'express';
 import { Logger, PinoLogger } from 'nestjs-pino';
@@ -9,6 +10,7 @@ import { AppModule } from './app.module';
 import { readMinimumClientVersion, refuseClientsBelow } from './common/client-version';
 import { assertTenancyPrecondition } from './common/db/tenancy-precondition';
 import { assignRequestId, REQUEST_ID_HEADER } from './common/request-id';
+import { trustProxyHops } from './common/trusted-proxy';
 import { ENV } from './config/env';
 
 const BODY_LIMIT_BYTES = 1_048_576;
@@ -35,11 +37,12 @@ function isPayloadTooLarge(error: unknown): error is Error {
  * registered in one caller that the other never sees (Law 5: one fact, two callers).
  */
 export async function createApp(): Promise<INestApplication> {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bodyParser: false,
     bufferLogs: true,
   });
   app.useLogger(app.get(Logger));
+  trustProxyHops(app, ENV.TRUSTED_PROXY_HOPS);
   const edgeLogger = await app.resolve(PinoLogger);
 
   app.use(assignRequestId);

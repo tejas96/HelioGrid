@@ -1,0 +1,211 @@
+/* The steps' rows: facts, the timeline's and the plan's rows, the folded rows and the filled card. */
+.hg-pst-facts,
+.hg-pst-rows,
+.hg-pst-folds {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.hg-pst-fact {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.hg-pst-fact-words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.hg-pst-fact-label {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pst-fact-value {
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  overflow-wrap: anywhere;
+}
+.hg-pst-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 60px;
+  padding: 10px var(--sp-3) 10px var(--sp-4);
+}
+.hg-pst-row-n {
+  flex: none;
+  width: 24px;
+  font: var(--fs-body-sm) var(--font-mono);
+  color: var(--text-secondary);
+}
+.hg-pst-row-press {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.hg-pst-row-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hg-pst-row-title {
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-body);
+  line-height: 20px;
+}
+.hg-pst-row-line {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pst-mini.hg-icon-button {
+  flex: none;
+}
+/* A move that cannot happen (the first row up, the last down) keeps IconButton's sunk disabled look. */
+.hg-pst-mini.hg-icon-button:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--hg-control-fill);
+}
+.hg-pst-share {
+  flex: none;
+  width: 72px;
+}
+
+/* a folded row: its head is the whole target; its body is there always, only out of sight */
+.hg-pst-fold-press {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.hg-pst-fold-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  transition: background var(--dur-micro) var(--ease-standard);
+}
+.hg-pst-fold-press:hover .hg-pst-fold-head {
+  background: var(--hg-control-fill);
+}
+.hg-pst-fold-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hg-pst-fold-title {
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-body);
+  line-height: 20px;
+}
+.hg-pst-fold-value {
+  font-size: var(--fs-body-sm);
+  line-height: 18px;
+  color: var(--text-secondary);
+}
+.hg-pst-fold-chevron {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  transition: transform var(--dur-standard) var(--ease-standard);
+}
+.hg-pst-fold[data-open] .hg-pst-fold-chevron {
+  transform: rotate(180deg);
+}
+/* The body opens at once and rises into place, as the phone's does (`Rising`): a height that
+   animates lays the page out again on every frame, so only opacity and transform move. */
+.hg-pst-fold-body {
+  display: none;
+}
+.hg-pst-fold[data-open] .hg-pst-fold-body {
+  display: block;
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+.hg-pst-fold-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-1) var(--sp-4) var(--sp-4);
+}
+/* Opening: the body's content rises in — transform and opacity only, the row's height is not animated. */
+.hg-pst-fold[data-open] .hg-pst-fold-inner {
+  animation: hg-rise var(--dur-standard) var(--ease-enter) backwards;
+}
+
+/* step 4 */
+.hg-pst-auto {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--hue-teal-bg);
+  color: var(--hue-teal-text);
+}
+.hg-pst-auto[data-tone="fallback"] {
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+}
+.hg-pst-auto-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hg-pst-auto-title {
+  font-weight: var(--fw-semibold);
+}
+.hg-pst-auto-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+.hg-pst-months {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-2);
+}
+
+/* `Pressable` centres what it holds; a row that IS the target fills it instead. */
+.hg-pressable.hg-pst-fold-press,
+.hg-pressable.hg-pst-row-press,
+.hg-pressable.hg-pst-note,
+.hg-pressable.hg-pst-peek,
+.hg-pressable.hg-pst-cover {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  border-radius: var(--r-md);
+}
+.hg-pst-fold-press > .hg-pst-fold-head,
+.hg-pst-row-press > .hg-pst-row-words,
+.hg-pst-peek > .hg-pst-peek-in,
+.hg-pst-cover > .hg-pst-cover-in {
+  flex: 1;
+  min-width: 0;
+}
+.hg-pressable.hg-pst-fold-press {
+  border-radius: 0;
+}
+.hg-pst-fact + .hg-pst-fact,
+.hg-pst-row + .hg-pst-row,
+.hg-pst-fold + .hg-pst-fold {
+  border-top: 1px solid var(--line-soft);
+}

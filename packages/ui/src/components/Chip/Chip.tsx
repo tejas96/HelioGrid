@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { isCategoryHue } from '../Avatar/Avatar.logic';
 import type { BadgeProps, ChipProps } from './Chip.types';
 
@@ -31,6 +32,7 @@ export function Chip({
   dot = false,
   tone = 'neutral',
   density = 'expressive',
+  glyph,
   className,
   style,
 }: WebChipProps) {
@@ -44,6 +46,7 @@ export function Chip({
       style={style}
     >
       {dot ? <span className="hg-chip-dot" aria-hidden="true" /> : null}
+      {glyph === undefined ? null : <ShellGlyph name={glyph} size="sm" />}
       {children}
       {count === undefined ? null : <span className="hg-chip-count">{count}</span>}
     </span>
@@ -68,10 +71,13 @@ export function Badge({
   children,
   tone = 'neutral',
   density = 'expressive',
+  glyph,
   className,
   style,
 }: WebBadgeProps) {
   const iris = isCategoryHue(tone);
+  /* The mark takes the words' ink: a state tone's own, else the quiet one. */
+  const ink = iris || tone === 'neutral' ? 'secondary' : tone;
   return (
     <span
       className={classNames('hg-badge', iris ? 'hg-hue' : undefined, className)}
@@ -80,6 +86,7 @@ export function Badge({
       data-density={density}
       style={style}
     >
+      {glyph === undefined ? null : <ShellGlyph name={glyph} size="sm" tone={ink} />}
       {children}
     </span>
   );

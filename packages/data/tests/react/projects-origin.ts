@@ -81,6 +81,8 @@ interface Origin {
   /** Every request's method and path, in order. */
   sent: string[];
   writes: { path: string; body: unknown; key: string }[];
+  /** The evening-before crew message, as `/projects/:id/crew-message` composes it. */
+  crewMessage: { language: string; text: string; link: string | null; chatUri: string | null };
 }
 
 const START = (): Origin => ({
@@ -94,6 +96,12 @@ const START = (): Origin => ({
   gate: null,
   sent: [],
   writes: [],
+  crewMessage: {
+    language: 'mr',
+    text: 'Namaste Priya — the crew comes tomorrow.',
+    link: null,
+    chatUri: 'https://wa.me/919822014567',
+  },
 });
 
 export const origin: Origin = START();
@@ -186,6 +194,7 @@ function readAt(path: string): unknown {
     '/projects/people': origin.people,
     '/projects/jobs': origin.jobs,
     [`/projects/${PROJECT_ID}/handover`]: PREVIEW,
+    [`/projects/${PROJECT_ID}/crew-message`]: origin.crewMessage,
   };
   return reads[path];
 }

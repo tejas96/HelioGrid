@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 import {
+  boolean,
   check,
   index,
   integer,
@@ -58,8 +59,8 @@ export const projectInstallStep = pgTable(
  * The crew on a project (ruling 2026-11-10): picked when it is dispatched, and the installers'
  * whole reach — an installer sees the jobs naming them and nothing else (`F2-14`).
  *
- * Tenant-scoped, all four always: SELECT, INSERT and DELETE for `app_user` — a new pick replaces
- * the crew.
+ * Tenant-scoped, all four always: SELECT, INSERT, UPDATE (the lead's mark) and DELETE for
+ * `app_user` — a new pick replaces the crew.
  */
 export const projectCrewMember = pgTable(
   'project_crew_member',
@@ -77,9 +78,14 @@ export const projectCrewMember = pgTable(
     addedBy: uuid('added_by')
       .notNull()
       .references(() => userAccount.id),
+    /** The crew's lead, whose name and number the customer is given (`F5-68`): one per project. */
+    isLead: boolean('is_lead').notNull().default(false),
   },
   (table) => [
     primaryKey({ name: 'project_crew_member_pkey', columns: [table.projectId, table.userId] }),
     index('project_crew_member_tenant_user_idx').on(table.tenantId, table.userId),
+    uniqueIndex('project_crew_member_one_lead_key')
+      .on(table.tenantId, table.projectId)
+      .where(sql`${table.isLead}`),
   ],
 );

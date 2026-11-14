@@ -1,6 +1,6 @@
 import type { ProjectDetail } from '@heliogrid/contracts';
 import { type TenantPool, tenant } from '@heliogrid/db';
-import type { FormatPack } from '@heliogrid/domain';
+import type { CrewMessageRules, FormatPack } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
@@ -17,9 +17,10 @@ export class ProjectsDetailReadRepository {
     reader: ProjectReader,
     projectId: string,
     formats: FormatPack,
+    crewRules: CrewMessageRules | null = null,
   ): Promise<ProjectDetail | null> {
     return this.db.withTenantTransaction(reader.tenantId, (tx) =>
-      loadProjectDetail(tx, reader, projectId, formats),
+      loadProjectDetail(tx, reader, projectId, formats, 'scoped', crewRules),
     );
   }
 

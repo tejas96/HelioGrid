@@ -30,7 +30,31 @@ export interface SearchQuery {
   /** Lower-case terms, each a whole token: a hyphen stays inside one, so `NP-1` is one term. */
   readonly terms: readonly string[];
   readonly phone: PhoneQuery | null;
+  /**
+   * The person typed one of the words people use for a proposal (`F6-22`), so every proposal the
+   * reader reaches answers. The word is read as a query and shown nowhere: results say Proposal.
+   */
+  readonly asksForProposals: boolean;
+  /** The terms with those words taken out: whatever else the query names a proposal by. */
+  readonly termsBesideAlias: readonly string[];
 }
+
+/**
+ * `F6-22`, the naming law's one exception: the words a person types for a priced offer, read as a
+ * query alias only. They live in this list and nowhere else in the product.
+ */
+const PROPOSAL_ALIASES: readonly string[] = [
+  // biome-ignore lint/plugin/banned-word: F6-22 — a search-query alias, never an identifier or shown copy
+  'quote',
+  // biome-ignore lint/plugin/banned-word: F6-22 — a search-query alias, never an identifier or shown copy
+  'quotes',
+  // biome-ignore lint/plugin/banned-word: F6-22 — a search-query alias, never an identifier or shown copy
+  'quotation',
+  // biome-ignore lint/plugin/banned-word: F6-22 — a search-query alias, never an identifier or shown copy
+  'quotations',
+  // biome-ignore lint/plugin/banned-word: F6-22 — a search-query alias, never an identifier or shown copy
+  'कोटेशन',
+];
 
 /** The terms of a query or of a record's text, once each, in the order written. */
 export function searchTermsOf(text: string): readonly string[] {
@@ -74,5 +98,11 @@ function phoneQueryOf(pack: FormatPack, typed: string): PhoneQuery | null {
  */
 export function searchQueryOf(pack: FormatPack, raw: string): SearchQuery {
   const typed = asciiDigits(raw).trim();
-  return { terms: searchTermsOf(typed), phone: phoneQueryOf(pack, typed) };
+  const terms = searchTermsOf(typed);
+  return {
+    terms,
+    phone: phoneQueryOf(pack, typed),
+    asksForProposals: terms.some((term) => PROPOSAL_ALIASES.includes(term)),
+    termsBesideAlias: terms.filter((term) => !PROPOSAL_ALIASES.includes(term)),
+  };
 }

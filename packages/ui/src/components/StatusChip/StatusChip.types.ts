@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { LeadStage } from '@heliogrid/domain';
+import type { ReactNode } from 'react';
 import type { StatusTone } from '../../primitives/StatusMark';
 
 /** The canonical pipeline vocabulary. **Not a boundary** — `status` accepts any string. */
@@ -40,4 +41,6 @@ export interface StatusChipProps {
   density?: StatusChipDensity;
   /** Status dot. Turn off inside a table where a NextAction dot already sits in the row. */
   dot?: boolean;
+  /** The state's own mark in place of the tone's glyph (`StatusMark`'s `glyph`): the words stay. */
+  glyph?: ReactNode;
 }

@@ -5,16 +5,9 @@ import {
   type PaymentReceiptStepResult,
   paymentReceiptWorkflow,
 } from '@heliogrid/contracts/workflows';
-import {
-  formatMoney,
-  type MarketPack,
-  minorUnits,
-  packLabel,
-  paymentModeLabel,
-  type UiLanguage,
-} from '@heliogrid/domain';
-import { minorUnitsToDecimal, projectNumberOf, receiptNumberOf } from '@heliogrid/domain/server';
-import { createTranslator, receiptMessage } from '@heliogrid/i18n';
+import { packLabel, type UiLanguage } from '@heliogrid/domain';
+import { receiptNumberOf } from '@heliogrid/domain/server';
+import { createTranslator } from '@heliogrid/i18n';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { TemporalGateway } from '../../common/temporal/temporal.gateway';
@@ -23,14 +16,9 @@ import { SettingsService } from '../settings/settings.public';
 import { paymentReceiptHtml, type ReceiptIssuer } from './internal/payment-receipt.html';
 import { languageOfCustomer } from './internal/payments-view';
 import type { ProjectReader } from './internal/reader';
+import { paymentModeIn, receiptTextOf } from './internal/receipt-text';
 import { ProjectsPaymentReceiptRepository } from './projects.payment-receipt.repository';
 import { ProjectsPaymentsReadRepository } from './projects.payments-read.repository';
-
-/**
- * How long a person's ask waits for a first PDF: a warm render takes about a second, a cold
- * Chromium a few. Past it the answer says "still being made", and the next ask joins the same run.
- */
-const PDF_WAIT_MS = 15_000;
 
 /**
  * A payment's receipt (`M11-41`): as text to share, and as a PDF made the first time someone asks
@@ -62,22 +50,18 @@ export class ProjectsPaymentReceiptService {
       this.issuerOf(reader.tenantId, language),
       createTranslator(language),
     ]);
-    const number = receiptNumberOf(facts.receiptNumber);
     return {
-      receiptNumber: number,
+      receiptNumber: receiptNumberOf(facts.receiptNumber),
       language,
-      text: receiptMessage(t, {
-        number,
+      text: receiptTextOf(t, pack, language, {
+        receiptNumber: facts.receiptNumber,
         company: issuer.name,
         customer: facts.customerName ?? facts.phoneE164,
-        project: projectNumberOf(facts.projectNumber),
+        projectNumber: facts.projectNumber,
         part: facts.part.label,
-        amount: formatMoney(
-          pack.formats,
-          minorUnitsToDecimal(minorUnits(facts.amountMinor), pack.formats.minorUnitDigits),
-        ),
-        mode: modeOf(pack, facts.mode, language),
-        date: facts.receivedOn ?? '',
+        amountMinor: facts.amountMinor,
+        mode: facts.mode,
+        receivedOn: facts.receivedOn,
         reference: facts.reference,
         recorder: facts.recorderName,
       }),
@@ -86,7 +70,7 @@ export class ProjectsPaymentReceiptService {
 
   /**
    * The receipt PDF's link, for a payment the reader may see: the kept one, or one made now. A
-   * render still going after `PDF_WAIT_MS` — or a renderer that cannot be reached — answers null,
+   * render still going after the wait a person is given (`resultWhileAPersonWaits`) — or a renderer that cannot be reached — answers null,
    * and the next ask joins the same run (its id is the payment's).
    */
   async pdf(reader: ProjectReader, projectId: string, entryId: string): Promise<ReceiptPdf> {
@@ -111,7 +95,7 @@ export class ProjectsPaymentReceiptService {
       this.issuerOf(tenantId, language),
       createTranslator(language),
     ]);
-    const mode = modeOf(pack, facts.mode, language);
+    const mode = paymentModeIn(pack, facts.mode, language);
     return { kind: 'page', html: paymentReceiptHtml(facts, issuer, mode, pack, translator) };
   }
 
@@ -135,20 +119,9 @@ export class ProjectsPaymentReceiptService {
   /** The PDF made by its workflow, waited for a while; null when it is not ready in time. */
   private async made(input: PaymentReceiptStepInput): Promise<string | null> {
     try {
-      await this.temporal.start(paymentReceiptWorkflow, input);
-      // A run that fails after the wait gave up answers nobody: its failure is let go here.
-      const result = this.temporal
-        .result(paymentReceiptWorkflow, paymentReceiptWorkflow.workflowId(input))
-        .catch(() => null);
-      let timer: ReturnType<typeof setTimeout> | undefined;
-      const waited = new Promise<null>((resolve) => {
-        timer = setTimeout(() => resolve(null), PDF_WAIT_MS);
-      });
-      try {
-        return (await Promise.race([result, waited]))?.fileId ?? null;
-      } finally {
-        clearTimeout(timer);
-      }
+      return (
+        (await this.temporal.resultWhileAPersonWaits(paymentReceiptWorkflow, input))?.fileId ?? null
+      );
     } catch (error) {
       // The payment stands and the text receipt still answers: an unreachable renderer only delays.
       this.logger.warn({ err: error, entryId: input.entryId }, 'receipt PDF not made');
@@ -193,11 +166,4 @@ export class ProjectsPaymentReceiptService {
           : `${scheme === null ? '' : `${packLabel(scheme, language)} `}${held.value}`,
     };
   }
-}
-
-/** A mode as the market pack names it, in the customer's language. */
-function modeOf(pack: MarketPack, mode: string | null, language: UiLanguage): string {
-  if (mode === null) return '';
-  const label = paymentModeLabel(pack.formats.vocabulary, mode);
-  return label === null ? mode : packLabel(label, language);
 }

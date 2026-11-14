@@ -168,6 +168,37 @@ export const PAYMENT_REFUSAL_WORDS: Record<PaymentRefusal, MessageRef> = {
   date_in_future: /*i18n*/ { id: 'The money cannot arrive after today.' },
 };
 
+const EARLIER = {
+  title: /*i18n*/ { id: 'Earlier plan' },
+  count: /*i18n*/ { id: '{count, plural, one {# replaced} other {# replaced}}' },
+  version: /*i18n*/ { id: 'Version {version} · replaced {date} by {name}' },
+  versionNoName: /*i18n*/ { id: 'Version {version} · replaced {date}' },
+  noVersion: /*i18n*/ { id: 'Plan from Mark won · replaced {date} by {name}' },
+  noVersionNoName: /*i18n*/ { id: 'Plan from Mark won · replaced {date}' },
+} as const;
+
+/**
+ * The earlier plan's words (`T-M06-025`, `M11-14`): each replaced plan named by the version it
+ * belonged to, when and by whom — a part replaced before those were kept says only when.
+ */
+function earlierPlanWords(t: T) {
+  return {
+    title: t(EARLIER.title),
+    count: (count: number) => t(EARLIER.count, { count }),
+    plan: (plan: { version: number | null; name: string | null }, date: string) => {
+      if (plan.version === null) {
+        return plan.name === null
+          ? t(EARLIER.noVersionNoName, { date })
+          : t(EARLIER.noVersion, { date, name: plan.name });
+      }
+      return plan.name === null
+        ? t(EARLIER.versionNoName, { version: plan.version, date })
+        : t(EARLIER.version, { version: plan.version, date, name: plan.name });
+    },
+    dueAt: (stage: string) => t(PAYMENTS.dueAt, { stage }),
+  };
+}
+
 /** The payments screen's words (`ProjectMoneyWords`); every value it takes is already formatted. */
 export function projectMoneyWords(t: T) {
   const p = PAYMENTS;
@@ -214,6 +245,7 @@ export function projectMoneyWords(t: T) {
     shareRequest: t(p.shareRequest),
     partMenu: (part: string) => t(p.partMenu, { part }),
     entryMenu: (receipt: string) => t(p.entryMenu, { receipt }),
+    earlier: earlierPlanWords(t),
     noScheduleTitle: t(p.noScheduleTitle),
     noScheduleBody: t(p.noScheduleBody),
     failedTitle: t(p.failedTitle),
@@ -240,6 +272,7 @@ export function moneyCardWords(t: T) {
     days: (count: number) => t(PROJECT_DAYS, { count }),
     sharedBy: (name: string, date: string) => t(p.sharedBy, { name, date }),
     nothingDue: t(p.nothingDue),
+    earlier: earlierPlanWords(t),
     noScheduleTitle: t(p.noScheduleTitle),
     shareRequest: t(p.shareRequest),
     openPayments: t(p.openPayments),

@@ -1,6 +1,7 @@
 import type {
   ProjectDetail as ProjectDetailFacts,
   ProjectFile,
+  SignedProposalProof,
   TranslatedText,
 } from '@heliogrid/contracts';
 import type { ActivityKind, NextStep, ProjectDetailView, ProjectFileSlot } from '@heliogrid/domain';
@@ -63,6 +64,8 @@ export interface ProjectDetailWords {
   readonly movesProject: (stage: string) => TranslatedText;
   readonly notNeededBecause: (reason: string) => TranslatedText;
   readonly uploadedBy: (name: string, date: string) => TranslatedText;
+  /** The signed-proposal row's proof: the version, its link or who put it in force, and when. */
+  readonly signedProof: (proof: SignedProposalProof, by: string | null) => TranslatedText;
   /** The spoken names of a row's acts, each with its row — never one name for every row. */
   readonly uploadRow: (row: string) => TranslatedText;
   readonly notNeededRow: (row: string) => TranslatedText;
@@ -97,6 +100,7 @@ export interface ProjectDetailWords {
   readonly design: TranslatedText;
   readonly proposal: TranslatedText;
   readonly noneLinked: TranslatedText;
+  readonly proposalLinked: (number: string, version: number) => TranslatedText;
   readonly activity: TranslatedText;
   readonly activityNote: TranslatedText;
   readonly event: (kind: ProjectEventKind, key: string) => TranslatedText;

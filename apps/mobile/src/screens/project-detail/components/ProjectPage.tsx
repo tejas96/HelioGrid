@@ -20,6 +20,7 @@ import { ShellPage } from '../../shell/components/ShellPage';
 import { useProjectMoves } from '../hooks/use-project-moves';
 import { styles } from '../styles';
 import { ProjectDetailBody } from './ProjectDetailBody';
+import { ProjectProposalRows } from './ProjectProposalRows';
 
 /**
  * The project page or its checklist: the large title names the customer, its facts and its acts —
@@ -81,6 +82,13 @@ export function ProjectPage({ projectId, documents, ask }: ProjectPageRoute) {
           <View style={styles.head}>
             <ProjectFacts project={shown.project} words={words} />
           </View>
+        )}
+        {shown === null || documents === 'all' ? null : (
+          <ProjectProposalRows
+            project={shown.project}
+            onScheduleDay={() => screen.open({ kind: 'date' })}
+            focusAfter={page}
+          />
         )}
         {read.kind === 'ready' ? (
           <ProjectDetailBody

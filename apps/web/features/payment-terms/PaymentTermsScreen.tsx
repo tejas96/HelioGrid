@@ -8,12 +8,8 @@ import {
 import {
   documentDefaults,
   type PaymentTermsWords,
-  paymentTermsEditorSaid,
   paymentTermsFailureWords,
   paymentTermsSavedLine,
-  paymentTermsWords,
-  SHELL,
-  stageWords,
   type Translator,
   toastHostWords,
 } from '@heliogrid/i18n';
@@ -26,9 +22,6 @@ import {
   type TermsEditorView,
   ToastHost,
   termsCardsOf,
-  termsContextOf,
-  termsEditorViewOf,
-  termsLetterheadOf,
   useFormat,
   useOwnWidth,
 } from '@heliogrid/ui';
@@ -36,6 +29,7 @@ import { notFound } from 'next/navigation';
 import { useLeaveGuard } from '../../lib/leave-guard';
 import { TermsArchiveConfirm } from './components/TermsArchiveConfirm';
 import { TermsEditorSheet } from './components/TermsEditorSheet';
+import { useTermsEditor } from './hooks/use-terms-editor';
 
 /** The editor card at width (`SCR-M01-20` m20-g): 440 wide, beside the cards. */
 const EDITOR_CARD_WIDTH = 440;
@@ -63,37 +57,14 @@ export function PaymentTermsScreen() {
 }
 
 function PaymentTermsIn({ screen }: { screen: PaymentTermsScreenView }) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const format = useFormat();
   const { page } = screen;
   const [room, width] = useOwnWidth<HTMLDivElement>();
   const wide = width !== null && width >= TERMS_WIDE_FROM;
   const editor = page.editor;
   useLeaveGuard(editor?.changed ?? false, screen.askLeave);
-
-  const words = paymentTermsWords(t);
-  const closeLabel = t(SHELL.close);
-  const context = termsContextOf(words, stageWords(t), locale, format);
-
-  const view =
-    editor === null
-      ? null
-      : termsEditorViewOf({
-          editor,
-          context,
-          letterhead: termsLetterheadOf(page.cover, page.brandColour, format.pack.taxIdLabel),
-          said: paymentTermsEditorSaid(t, editor),
-          picking: screen.picking,
-          acting: page.acting === 'restore' ? null : page.acting,
-          acts: {
-            edit: page.edit,
-            save: page.save,
-            makeDefault: (id) => page.act(id, 'make-default'),
-            pickStage: screen.pickStage,
-            askArchive: screen.askArchive,
-            cancel: screen.closeEditor,
-          },
-        });
+  const { view, words, context, closeLabel } = useTermsEditor(screen);
 
   return (
     /* A closed toast hands the keyboard back to the page it spoke about. */

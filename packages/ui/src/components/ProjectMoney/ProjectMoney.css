@@ -257,3 +257,10 @@
 .hg-money-row > .hg-money-entry {
   flex: 1;
 }
+
+/* The earlier plan, folded under the live one: each replaced plan's line over its parts. */
+.hg-money-earlier {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}

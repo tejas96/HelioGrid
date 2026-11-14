@@ -1,10 +1,11 @@
 import { EditorSurface } from '../EditorSurface';
-import { AccessForm, DateForm, FileNameForm, NotNeededForm } from './ProjectActForms';
+import { AccessForm, FileNameForm, NotNeededForm } from './ProjectActForms';
 import { formOf, type ProjectForms } from './ProjectActSheet.forms';
 import { headOf } from './ProjectActSheet.logic';
 import type { ProjectActSheetProps } from './ProjectActSheet.types';
 import { CancelForm } from './ProjectCancelForm';
 import { EarlyForm } from './ProjectEarlyForm';
+import { InstallDayForm } from './ProjectInstallDayForm';
 import { DispatchForm, ManagerForm } from './ProjectPeopleForms';
 import { WaitForm } from './ProjectWaitForm';
 import './ProjectActSheet.css';
@@ -46,7 +47,7 @@ const FORMS: ProjectForms = {
   earlyProof: EarlyForm,
   notNeeded: NotNeededForm,
   cancel: CancelForm,
-  date: DateForm,
+  date: InstallDayForm,
   manager: ManagerForm,
   access: AccessForm,
   fileName: FileNameForm,

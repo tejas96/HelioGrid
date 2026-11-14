@@ -150,6 +150,11 @@ export const TASK_PROVENANCE_WORD: Record<Exclude<TaskProvenance, 'manual'>, Mes
   snooze_wake: /*i18n*/ { id: 'Back from snooze' },
   resurface: /*i18n*/ { id: 'Postponed loss is back' },
   visit_booked: /*i18n*/ { id: 'Visit booked' },
+  proposal_shared: /*i18n*/ { id: 'Proposal shared — follow up' },
+  proposal_accepted: /*i18n*/ { id: 'Customer accepted — confirm the win' },
+  proposal_declined: /*i18n*/ { id: 'Customer declined — call, then mark lost or share again' },
+  customer_question: /*i18n*/ { id: 'Customer asked a question' },
+  customer_call_request: /*i18n*/ { id: 'Customer asked for a call' },
 };
 
 /** What one timeline entry records (`M02-35`); a kind a newer server adds reads as a system entry. */
@@ -174,6 +179,17 @@ export const ACTIVITY_KIND_WORD: Record<ActivityKind, MessageRef> = {
   project_document: /*i18n*/ { id: 'Project document' },
   project_step: /*i18n*/ { id: 'Install step' },
   project_changed: /*i18n*/ { id: 'Project changed' },
+  proposal_generated: /*i18n*/ { id: 'Proposal generated' },
+  proposal_shared: /*i18n*/ { id: 'Proposal shared' },
+  proposal_withdrawn: /*i18n*/ { id: 'Proposal withdrawn' },
+  proposal_opened: /*i18n*/ { id: 'Proposal opened' },
+  proposal_accepted: /*i18n*/ { id: 'Proposal accepted' },
+  proposal_negotiation_requested: /*i18n*/ { id: 'Change requested' },
+  proposal_declined: /*i18n*/ { id: 'Proposal declined' },
+  customer_question: /*i18n*/ { id: 'Customer question' },
+  customer_call_requested: /*i18n*/ { id: 'Call requested' },
+  customer_link_changed: /*i18n*/ { id: 'Customer link changed' },
+  proposal_version_in_force: /*i18n*/ { id: 'Version put in force' },
 };
 
 type Worded<K extends string> = Readonly<Record<K, TranslatedText>>;

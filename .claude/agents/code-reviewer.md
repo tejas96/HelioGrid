@@ -38,7 +38,10 @@ check what it cannot. The invariants run later, in the gate.
    differently. Every new read, route or response field carries its tenant predicate and its
    role's reach (own, assigned, team), and a field a role must not see is absent from the
    response, not only hidden on screen. A value the server words in its reader's language is cached per language, and a
-   whole-record save never stores it back as the company's own. Under `pipefail`, a pipe into
+   whole-record save never stores it back as the company's own. A customer's act on a page
+   (Accept, an answer) names the version it was shown, and the server refuses it once that is not
+   the version the link serves. An amount owed, paid or priced prints to its minor unit, never
+   through a rounding formatter; only an estimate (a saving, a forecast) is rounded. Under `pipefail`, a pipe into
    `grep -q` reads a match as a failure once the writer outlives grep; feed it a here-string.
 3. **The rules no machine checks.** `awk -F'|' 'NF > 2 && $(NF-1) ~ /review/' .claude/protections.md` lists
    them; check each one this change reaches, and skip those about the session's own steps. A

@@ -1,8 +1,11 @@
 import { IN_MARKET, type MarketCode } from '../market/code';
+import type { AdministrativeArea } from './areas';
+import { IN_AREAS } from './areas-in';
 import { type ChecklistRow, IN_DOCUMENT_CHECKLIST } from './checklist';
 import type { CalendarDate } from './holidays';
 import { IN_INSTALL_STEPS, type InstallStepRow } from './install-steps';
 import type { PackLabel } from './languages';
+import { IN_PROPOSAL_FACTS, type ProposalMarketFacts } from './proposal-facts';
 import { IN_UTILITIES, type UtilityDirectory } from './utility';
 import { type DisplayVocabulary, IN_VOCABULARY } from './vocabulary';
 
@@ -118,6 +121,17 @@ export interface FormatPack {
   readonly installSteps: readonly InstallStepRow[];
   /** `F1-53` — regions, their network operators, and how long the operator's queue runs. */
   readonly utilities: UtilityDirectory;
+  /**
+   * `F1-22`, `M06-09` — the administrative areas a site sits in, each with a point an energy
+   * estimate is asked for. Empty on a pack stored before proposals: step 3 then offers none.
+   */
+  readonly areas: readonly AdministrativeArea[];
+  /**
+   * `M06-23`, `M06-40`, `M13-03` — what a proposal built without a design reads of the market.
+   * `null` on a pack stored before proposals: its size checks say they were skipped, and nothing
+   * is forecast.
+   */
+  readonly proposal: ProposalMarketFacts | null;
 }
 
 /**
@@ -172,4 +186,6 @@ export const IN_FORMATS: FormatPack = {
   documentChecklist: IN_DOCUMENT_CHECKLIST,
   installSteps: IN_INSTALL_STEPS,
   utilities: IN_UTILITIES,
+  areas: IN_AREAS,
+  proposal: IN_PROPOSAL_FACTS,
 };

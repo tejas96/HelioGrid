@@ -12,10 +12,11 @@ import { useSettingsList } from './hooks/use-settings-list';
  * that list — the list page would only repeat it (owner ruling), as OneOhm's Settings opens its
  * first section. The move REPLACES `/more` in the history, so Back never lands here to be sent on
  * again. Below that width, and for a list of one row, it is the list page: one `SettingsList`,
- * rows domain's, words i18n's.
+ * rows domain's, words i18n's — at phone width headed by the work lists the pill has no slot for;
+ * the desktop sidebar already holds them.
  */
 export function SettingsScreen() {
-  const { list, summary, hints, person, open, first } = useSettingsList();
+  const { list, summary, hints, person, open, first, workLists } = useSettingsList();
   const desktop = useDesktopShell();
   const router = useRouter();
   useEffect(() => {
@@ -32,6 +33,7 @@ export function SettingsScreen() {
         person={person}
         groups={list.groups}
         onOpen={open}
+        workLists={desktop === false ? workLists : undefined}
       />
     </div>
   );

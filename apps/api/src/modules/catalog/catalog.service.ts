@@ -24,6 +24,7 @@ import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
 import { MarketPackService } from '../market/market.public';
+import { CatalogOpenDraftsRepository } from './catalog.open-drafts.repository';
 import { CatalogPricesRepository } from './catalog.prices.repository';
 import { CatalogRatesRepository } from './catalog.rates.repository';
 import { CatalogRepository } from './catalog.repository';
@@ -40,9 +41,6 @@ import {
   type Scope,
 } from './internal/write-checks';
 
-/** No draft table exists yet: the studio's and M06's slices add the query (decision 15). */
-const OPEN_DRAFTS_BEFORE_THE_STUDIO = 0;
-
 /**
  * The catalog a tenant sees and writes (`M01-33` … `M01-44`): every item through the one
  * resolver, money shown only to its readers (ruling 1A), and every write admitted by the grant
@@ -54,6 +52,7 @@ export class CatalogService {
   // Explicit tokens: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(
     @Inject(CatalogSliceRepository) private readonly slice: CatalogSliceRepository,
+    @Inject(CatalogOpenDraftsRepository) private readonly openDrafts: CatalogOpenDraftsRepository,
     @Inject(CatalogRepository) private readonly items: CatalogRepository,
     @Inject(CatalogPricesRepository) private readonly prices: CatalogPricesRepository,
     @Inject(CatalogRatesRepository) private readonly rates: CatalogRatesRepository,
@@ -95,7 +94,7 @@ export class CatalogService {
     if (row === null) throw refused({ outcome: 'not-found' });
     return {
       ...resolvedWire(resolvedOf(row, scope.resolve), moneyFor(roles, scope)),
-      openDraftCount: OPEN_DRAFTS_BEFORE_THE_STUDIO,
+      openDraftCount: await this.openDrafts.naming(tenantId, id),
     };
   }
 

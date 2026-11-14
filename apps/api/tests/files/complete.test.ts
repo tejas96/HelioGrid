@@ -33,6 +33,7 @@ const A_LOGO = 64;
 const forgetsChecksums = (store: ObjectStore): ObjectStore => ({
   provider: store.provider,
   signUpload: (request) => store.signUpload(request),
+  signDocumentPut: (request) => store.signDocumentPut(request),
   signDownload: (request) => store.signDownload(request),
   head: async (key) => {
     const stored = await store.head(key);

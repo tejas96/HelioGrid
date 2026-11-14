@@ -30,6 +30,9 @@ export const UNASSIGNED_ESCALATES_AFTER_MS = MS_PER_DAY;
  */
 export const REOPENED_FOLLOW_UP_AFTER_MS = MS_PER_DAY / 24;
 
+/** `M06-55` — a shared proposal's follow-up falls due two days after the share; a second share moves it. */
+export const PROPOSAL_FOLLOW_UP_AFTER_MS = 2 * MS_PER_DAY;
+
 /** A loss for *not interested* raises no call task for six months (`M02-54`). */
 export const NO_CALL_MONTHS = 6;
 

@@ -1,4 +1,4 @@
-import type { TranslatedText } from '@heliogrid/contracts';
+import type { LeadProposals, TranslatedText } from '@heliogrid/contracts';
 import type { LeadDetailSection, Read } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 
@@ -12,6 +12,21 @@ export interface LeadTaskRow {
   /** Derived from the due moment (`isOverdue`); drawn as glyph, word and tint. */
   readonly overdue: boolean;
   readonly done: boolean;
+}
+
+/** One fact of the site beside its address — "Sanctioned load · 5 kW". */
+export interface LeadSiteFactLine {
+  readonly key: string;
+  readonly label: TranslatedText;
+  readonly value: TranslatedText;
+}
+
+/** What the Site section shows: the address — confirmed once a visit is booked — and the supply. */
+export interface LeadSitePanelFacts {
+  /** A fact as typed; null with no fact draws the named gap. */
+  readonly address: string | null;
+  readonly confirmed: boolean;
+  readonly facts: readonly LeadSiteFactLine[];
 }
 
 /** The booked visit as the Site section names it. */
@@ -102,10 +117,67 @@ export interface LeadFilesPanel {
   readonly onOpen: (fileId: string) => void;
 }
 
+/** One proposal on the lead, as the server sends it. */
+export type LeadProposal = LeadProposals['items'][number];
+
+/** The Proposals section's words (`T-M06-001`, `T-M06-031`) — `leadProposalsWords`, by shape. */
+export interface LeadProposalsWords {
+  readonly noneTitle: TranslatedText;
+  /** "Build one for Anil in about a minute." */
+  readonly noneLine: TranslatedText;
+  readonly create: TranslatedText;
+  readonly draftTitle: TranslatedText;
+  /** The ring's figure — `7/11` — and what a screen reader says for it. */
+  // biome-ignore lint/plugin/copy-prop-type: a figure, two counts and a stroke
+  readonly ringValue: (complete: number, of: number) => string;
+  readonly ringName: (complete: number, of: number) => TranslatedText;
+  readonly continue: TranslatedText;
+  /** "PRP-0042 · v1". */
+  readonly numbered: (number: string, version: number | null) => TranslatedText;
+  /** A proposal's second line: its size, its price, and when it was saved or who made it. */
+  readonly line: (proposal: LeadProposal) => TranslatedText;
+  readonly standing: (standing: string) => TranslatedText;
+  /** "Two proposals for one customer" and "Keep one. A person withdraws the other." */
+  readonly twoTitle: TranslatedText;
+  readonly twoLine: TranslatedText;
+  readonly withdraw: TranslatedText;
+  /** Withdraw's spoken name with the proposal's number. */
+  readonly withdrawNamed: (number: string | null) => TranslatedText;
+  /** A closed lead: what it is marked as, and that reopening it brings proposals back. */
+  readonly closedTitle: TranslatedText;
+  readonly closedLine: TranslatedText;
+  readonly reopenLead: TranslatedText;
+  /** Another lead of this customer holds a live proposal (`M06-58`). */
+  readonly siblingLine: (number: string | null) => TranslatedText;
+  readonly openSibling: TranslatedText;
+}
+
+/**
+ * The Proposals section (`M06-02`, `M06-25`, `M06-58`): one of five states — none (the empty scene
+ * and *Create proposal*), a draft (the n/11 ring and *Continue*), one proposal (number, version,
+ * standing), two live proposals (the warning and *Withdraw* on each), and a closed lead (*Reopen
+ * lead*, no create).
+ */
+export interface LeadProposalsPanel {
+  /** The section as the server sends it; what the reader may do rides in it. */
+  readonly section: LeadProposals;
+  /** The lead is lost, disqualified or junk: no proposal is made on it until it is reopened. */
+  readonly closed: boolean;
+  readonly words: LeadProposalsWords;
+  readonly onCreate: () => void;
+  readonly onContinue: (proposalId: string) => void;
+  readonly onOpen: (proposalId: string) => void;
+  /** Opens the Withdraw sheet for one proposal. */
+  readonly onWithdraw: (proposalId: string) => void;
+  /** Absent for a reader who may not reopen the lead. */
+  readonly onReopenLead: (() => void) | null;
+  readonly onOpenSibling: () => void;
+}
+
 /**
  * The lead's six sections as tabs (`M02-32`): Timeline, Site, Designs, Proposals, Tasks and Files,
  * each with its count where it has one. The timeline is the caller's `LeadTimeline`; the site is
- * the confirmed booking address, else its named gap; designs and proposals say none yet; tasks are
+ * its address — confirmed by a booked visit — and its supply, else its named gap; designs and proposals say none yet; tasks are
  * the open ones with their due time and overdue mark, each done or reopened in place; files are
  * the lead's papers, each opened with a tap, and a new one added.
  */
@@ -114,11 +186,12 @@ export interface LeadSectionsProps {
   readonly onSection: (section: LeadDetailSection) => void;
   readonly counts: Readonly<Record<LeadDetailSection, number | null>>;
   readonly timeline: ReactNode;
-  /** The confirmed address — a fact; null draws the gap. */
-  readonly siteAddress: string | null;
+  readonly site: LeadSitePanelFacts;
   readonly visit: LeadSiteVisit | null;
   readonly tasks: readonly LeadTaskRow[];
   readonly taskActs: LeadTaskActs;
   readonly files: LeadFilesPanel;
+  /** The Proposals section; absent on an api built before proposals, which draws the count alone. */
+  readonly proposals?: LeadProposalsPanel;
   readonly words: LeadSectionsWords;
 }

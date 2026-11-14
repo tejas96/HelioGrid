@@ -1,7 +1,6 @@
 import type { NextStep } from '@heliogrid/domain';
 import {
   createTranslator,
-  destinationLabel,
   installerJobWords,
   projectDetailWords,
   projectSheetWords,
@@ -55,9 +54,12 @@ test('the steps page shows the crew, how to get in and every install step to tic
   const [first] = steps;
   if (first === undefined) throw new Error('a project carries no install step');
 
-  /* The way back: the board, then the project by its customer's name, then where the person is. */
-  const trail = page.getByRole('navigation', { name: destinationLabel(en.t, 'projects') });
-  await expect(trail.getByRole('button', { name: CUSTOMER.name, exact: true })).toBeVisible();
+  /*
+   * The way back names the project by its customer's name: one step of the desktop's trail, the one
+   * back of the phone's row (`PageTrail`).
+   */
+  const wayBack = page.getByRole('main').getByRole('button', { name: CUSTOMER.name, exact: true });
+  await expect(wayBack).toBeVisible();
   await expect(
     page.getByText(DETAIL.stepsSummary(CUSTOMER.name, 0, steps.length), { exact: true }),
   ).toBeVisible();

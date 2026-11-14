@@ -1,0 +1,7 @@
+/* ProposalWithdrawSheet — the proposal's facts, what its link will show, then the one confirm. */
+
+.hg-withdraw {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}

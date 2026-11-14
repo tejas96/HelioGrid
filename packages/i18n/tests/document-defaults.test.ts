@@ -1,9 +1,10 @@
 /**
  * The platform's document defaults (`M01-28`, `M01-51`, `M01-52`, `M01-54`) in each reader's words,
- * against the real catalogs: a whole body of terms with no number in it, and the eight phases of
- * `M08-08`'s chain, each named and explained.
+ * against the real catalogs: a whole body of terms whose one number is the validity `M06-15` rules
+ * (days from the proposal's date, from `packages/domain`), and the eight phases of `M08-08`'s
+ * chain, each named and explained.
  */
-import { UI_LANGUAGES } from '@heliogrid/domain';
+import { PROPOSAL_VALIDITY_DAYS, UI_LANGUAGES } from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
 import { documentDefaults } from '../src/copy/document-defaults';
 import { createTranslator } from '../src/runtime';
@@ -16,15 +17,23 @@ describe('the platform’s document defaults', () => {
       const defaults = documentDefaults(t);
 
       expect(defaults.terms.blocks).toHaveLength(4);
-      for (const block of defaults.terms.blocks) {
-        expect(block.type).toBe('p');
-        expect(JSON.stringify(block)).not.toMatch(/\d/);
-      }
+      for (const block of defaults.terms.blocks) expect(block.type).toBe('p');
       expect(defaults.phases).toHaveLength(8);
       for (const phase of defaults.phases) {
         expect(phase.name.trim()).not.toBe('');
         expect(phase.description.trim()).not.toBe('');
       }
+    },
+  );
+
+  it.each(UI_LANGUAGES.map((language) => [language]))(
+    'a %s reader’s terms state the validity in days, and no other number',
+    async (language) => {
+      const { t } = await createTranslator(language);
+      const [validity, ...rest] = documentDefaults(t).terms.blocks;
+
+      expect(JSON.stringify(validity).match(/\d+/g)).toEqual([String(PROPOSAL_VALIDITY_DAYS)]);
+      for (const block of rest) expect(JSON.stringify(block)).not.toMatch(/\d/);
     },
   );
 });

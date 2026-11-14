@@ -43,7 +43,7 @@ const ROW_NAME: Record<SettingsRow, { id: string }> = {
   roles: /*i18n*/ { id: 'Roles reference' },
   company_profile: /*i18n*/ { id: 'Business profile' },
   branding: /*i18n*/ { id: 'Branding' },
-  proposal_templates: /*i18n*/ { id: 'Proposal template' },
+  proposal_templates: /*i18n*/ { id: 'Proposal defaults' },
   payment_terms: /*i18n*/ { id: 'Payment terms' },
   catalog: /*i18n*/ { id: 'Catalog' },
   agent: /*i18n*/ { id: 'Agent & voice' },

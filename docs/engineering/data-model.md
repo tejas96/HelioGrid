@@ -200,7 +200,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | project_stage_transition | V1 | 4 | Append-only stage-history event: forward and backward moves with dates; the basis of days-in-stage and the customer link's stage history  | tenant | project ref; from_stage; to_stage; moved_at; moved_by; backward_flag | — (append-only) | M08-11, M08-14, M08-29 |
 | project_assignment | V1 | 4 | Names a person on a project — the only row F2.M08.project-visibility's Own-projects and Assigned-job-only cells can resolve over; without it the crew preset whose whole premise is reaching exactly one job resolves to the whole tenant. | tenant | project_ref; person_ref (user_account); role_on_project (coordinator \| crew_member); assigned_at; assigned_by | — (append-only, per the suite's attribution posture: an ended assignment is a new row, never an edit or a delete) | M08-18, M08-41..43, M08-45, F2 §F2.5-M08, F2-20 |
 | commissioning_artifact | V1 | 4 | Commissioning fact retained as data at handover (certificates, as-built references, system facts) so future O&M attaches without re-collection  | tenant | project ref; artifact_kind; file/document ref; system_facts | — (retained at handover) | M08-48 |
-| project_tranche | V1 | 5 | One part of a project's price, made once at Mark won from the company's default payment terms (`tranche_template_line`; an accepted proposal version's terms take over once proposals land) and never re-typed; state and what is still owed are read from the ledger and the stage history, never stored. | tenant | project_id; position (unique per project); label; share_basis_points (0–10000); amount_minor; due_on_stage (never `cancelled`); source (`payment_terms` \| `proposal_version`); created_at; waived_at + waived_by + waive_reason (all or none) | upcoming → due → part_received → received (derived); waived terminal (the one UPDATE) | M11-08..14, M11-49, M08-35, M08-36 |
+| project_tranche | V1 | 5 | One part of a project's price, made once at Mark won from the accepted proposal version's payment plan (else the company's default payment terms, `tranche_template_line`) and never re-typed; a later version put in force replaces the unpaid parts (§4.10); state and what is still owed are read from the ledger and the stage history, never stored. | tenant | project_id; position (unique per project); label; share_basis_points (0–10000); amount_minor; due_on_stage (never `cancelled`); source (`payment_terms` \| `proposal_version`); created_at; waived_at + waived_by + waive_reason (all or none) | upcoming → due → part_received → received (derived); waived terminal (the one UPDATE) | M11-08..14, M11-49, M08-35, M08-36 |
 | project_payment | V1 | 5 | Append-only ledger, one per project: every payment a person recorded and every reversal of one; the receipt is this entry rendered. Its receipt photo (stored after the save) and its receipt PDF (made on first ask) are `file` rows whose subject is the payment — no entry ever points at one. *(Finance 'receipts waiting to be recorded' queue has no backing entity — M11-54)* | tenant | project_id; tranche_id; kind (`payment` \| `reversal`); amount_minor (> 0 on a payment, < 0 on a reversal); mode (market pack's rails); reference + reference_key (spaces and dashes gone — one UTR typed two ways is one payment; checked for reuse); received_on; receipt_number (server-assigned from the tenant counter, payments only); reverses_id + reason (reversals only, at most one per payment); recorded_at; recorded_by; creation_key + creation_fingerprint | — (append-only: SELECT + INSERT only for `app_user`) | M11-34, M11-36..42, M11-46 |
 | tranche_request_share | V1 | 5 | Each hand-off of a part's pay message — the customer's chat, the share sheet, the clipboard — that the person then said went out (*Yes, sent*): "Shared by <name> · <date>"; never a delivery. | tenant | tranche_id; shared_at; shared_by | — (append-only) | M11-24, M11-26 |
 | collections_settings | V1 | 5 | How the company's customers pay it: its own UPI ID and the payee name a UPI app shows, from which the domain builds an exact-amount `upi://pay` request (not offered above the pack's `upiRequestLimit`; bank transfer to the business profile's account instead — never a second copy). One row per company, owner-edited. | tenant | tenant_id (PK); upi_id; payee_name; updated_at; updated_by | — (upserted; every change audited) | M11-17, SCR-M11-04 |
@@ -396,7 +396,7 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | customer_link | is served by tokens | link_token | 1:N | yes | Revocation instant and absolute regardless of expiry, no propagation window (F5-76); PRD silent on removal of dead token rows | F5-22, F5-75, F5-76, F5 §F5.11 |
 | customer_link | accrues append-only events | link_event | 1:N | yes | Append-only, never mutated; retention beyond the tenant-exportable audit log PRD silent (F5-79) | F5-27, F5-29, F5-31 |
 | customer_link | records acceptance via | acceptance_record | 1:N | yes | One per version answered through the link — each written once, never a running collection (F5-46; owner ruling 2026-11-13: one answer per version, a newer shared version answers again); the sale's evidence — PRD silent on any deletion | F5-43, F5-46, F5-47 |
-| proposal_version | is the version accepted by | acceptance_record | 1:1 | yes at validation (storage of the ref is an open question) | Sent versions pinned forever — a price change is a new version, never an edit (F5-40); PRD silent on record deletion | F5-40, F5-47 |
+| proposal_version | is the version accepted by | acceptance_record | 1:1 | yes (stored: `proposal_version_id`, unique per version) | Sent versions pinned forever — a price change is a new version, never an edit (F5-40); PRD silent on record deletion | F5-40, F5-47 |
 | contact | attributes the accepter of | acceptance_record | 1:N | yes per F5-46 attribution (unresolved for contact-less links — see open questions) | PRD silent; attribution must remain readable (append-only audit posture, F5-31) | F5-46, F5-26 |
 | customer_link | receives questions via | customer_question | 1:N | yes | PRD silent | F5-52, F5-53 |
 | lead | receives as timeline entry | customer_question | 1:N | yes | PRD silent (no lead state ever deletes) | F5-53, F5 §4 provides (M02) |
@@ -425,8 +425,8 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | design | derives step definition of | installation_checklist_step | 1:N | no | PRD silent; manual steps carry no design reference, marked manual | M08-41 (cited) |
 | project | collects on (inherited schedule) | project_tranche | 1:N | yes | Cancellation never unwinds money; receipts stay readable; refunds are reversing entries | M11-09, M11-50, M08-35, M08-53 |
 | user_account | is named on jobs via | project_assignment | 1:N | yes | Users are deactivated, never deleted; attribution survives deactivation (F2-20); a deactivated person's rows stay readable and stop granting scope | F2-20, M08-18 |
-| proposal_version | sets pinned terms of (once proposals land) | project_tranche | 1:N | no | No stored pointer — `source = proposal_version` marks such parts; V1 parts come from the company's payment terms at Mark won (`source = payment_terms`); receipts never rewritten | M11-09, M11-13, M11-14 |
-| proposal_tranche | is inherited as ("same rows, never re-entered") | project_tranche | 1:1 | no | Term rows immutable per sent version; copied (label, share, due_on_stage) once proposals land | M11-09, M08-35, M11.2 behavior |
+| proposal_version | sets pinned terms of (the version in force, `project.proposal_version_id`) | project_tranche | 1:N | no | `source = proposal_version` marks parts copied from the version's plan; a deal won with no accepted version takes the company's payment terms (`source = payment_terms`); a later version put in force replaces only the unpaid parts, whose rows stay (`replaced_at`, `replaced_by`, `replaced_version_id`); receipts never rewritten | M11-09, M11-13, M11-14 |
+| proposal_tranche | is inherited as ("same rows, never re-entered") | project_tranche | 1:1 | no | Term rows immutable per sent version (inside `proposal_version.snapshot`, no table of their own); copied (label, share, due_on_stage) at Mark won or put in force | M11-09, M08-35, M11.2 behavior |
 | project_tranche | receives entries against | project_payment | 1:N | yes | Append-only: never edited, never deleted; no correction path removes an entry | M11-10, M11-36, M11-40 |
 | project | owns the one ledger of | project_payment | 1:N | yes | Ledger permanent; readable on cancelled projects in every billing state | M11-40, M11-50 |
 | project_payment | reverses (negative amount + `reverses_id`) | project_payment | 1:1 | no | At most one reversal per payment (unique index); both rows remain visible as a pair; totals reflect the reversal | M11-38, M11-46, M11-47 |
@@ -1011,6 +1011,26 @@ erDiagram
 
 ### 4.8 Proposals, sales execution & voice
 
+**As built (migrations `0065`, `0069`; `packages/db/src/schema/proposal.ts`).** The diagram below
+is the logical model; the store differs in these places. A proposal's component lines, payment
+parts and timeline are not tables: they live inside the proposal's one field set (`proposal.field_set`)
+and are frozen whole inside `proposal_version.snapshot` — so `PROPOSAL_COMPONENT_LINE` and
+`PROPOSAL_TRANCHE` have no table, and a project's schedule is copied from the accepted version's
+snapshot. Both jsonb values are versioned envelopes (`FieldSetEnvelope`, `VersionSnapshotEnvelope`),
+read only through `fieldSetOf` / `versionSnapshotOf` in `@heliogrid/domain`: a key a later build
+added reads with its default, and a schema version newer than the build is refused. The proposal's
+type and path are fields of that set, not columns; a draft is edited on `revision`. A version's four
+pins are one `pins` value (`InputPins`). `proposal_version` and `proposal_share` are append-only
+ledgers (SELECT and INSERT for `app_user`); `proposal` takes DELETE only for a draft discarded before
+its first Generate. The proposal number is the company counter's integer (`PRP-0042` is its
+rendering), null until the first Generate. `proposal` also carries the position its lists read —
+latest and shared version, the answer, the first open, the payable — each written by the act that
+appends its record. `proposal_share`, `saved_part` (the company's cable, electrical and structure
+parts; each change an audit entry, `saved_parts.*`, `0069`) and the global `energy_estimate` (the
+energy source's twelve monthly yields per kWp for a point, readable reference data) are tables the
+diagram does not draw. The lead gains its site (address, area, district), its sanctioned load and
+its supply phase; the proposal template gains its cover picture.
+
 ```mermaid
 erDiagram
   PROPOSAL {
@@ -1177,6 +1197,18 @@ erDiagram
 
 ### 4.9 Customer link
 
+**As built (migrations `0066`, `0068`; `packages/db/src/schema/customer-link.ts`).** A link's address is a
+`link_token` row holding the hash of its secret; the link itself holds no `url_identity`. The
+customer's own link is named by `customer_link.for_customer`, never by a missing contact — a link
+named for someone the customer record does not hold carries no contact either; one active link per
+deal is the customer's, and one per contact. `link_event`, `acceptance_record`, `customer_question`
+and `callback_request` are append-only ledgers. Neither
+carries an expiry or a per-scope lifetime: a respond scope's life is read from the deal's phase.
+`link_event` also names the version the page was serving and the customer's words on a change
+request or a decline. `acceptance_record` is one per VERSION (`T-F5-008`), and names its token and
+proposal. A stored `customer_question` is a received one, so it holds no state column;
+`callback_request` holds the time named and the moment the call falls due.
+
 ```mermaid
 erDiagram
     LEAD ||--o{ CUSTOMER_LINK : "carries named links"
@@ -1248,6 +1280,15 @@ erDiagram
 ```
 
 ### 4.10 Projects, payments & collections
+
+**As built, from block 8 (migrations `0065`–`0067`, `0070`).** `project.proposal_version_id` names
+the version in force — the accepted one at Mark won, or a later accepted one a person puts in force.
+Putting a later version in force keeps every paid part and replaces the unpaid ones: a replaced
+`project_tranche` keeps its row, marked `replaced_at`, with who put the new version in force
+(`replaced_by`) and the version its plan belonged to (`replaced_version_id`), so the earlier plan
+stays readable; every reader of the schedule takes the parts whose mark is null. The project gains
+the installation day's facts the customer is told (start time, duration, disturbance), and its crew
+one lead (`project_crew_member.is_lead`).
 
 ```mermaid
 erDiagram
@@ -1816,7 +1857,7 @@ erDiagram
 - No commercial figure ever reaches the installation surface or any surface the Installation Team Member preset reaches. (M08-43, M08-45, M11-56)
 - Person-scoped project visibility resolves over project_assignment: "Own projects" (Project Manager) and "Assigned job only" (Installation Team Member) are exactly the rows naming that person on that project — absent a row, a crew-preset user reaches no project at all, never the whole tenant. "Team" (Sales Manager) does NOT read project_assignment: it resolves over the M10-31 flat manager mapping applied to the source lead's owner, and fails closed to an empty team when the mapping is unset. (F2 §F2.5-M08, M08-18, M10-31..34)
 - Active project = neither HANDED_OVER nor CANCELLED; entitlement limits gate creating one, never working one. (M08-07)
-- Tranche rows ARE the terms they were made from — the company's payment terms at Mark won (an accepted version's terms once proposals land): Σshare_basis_points = 10000, Σamounts = the payable to the minor unit, the rounding remainder on the last part; a person never types an amount; one arithmetic everywhere (`splitSchedule`). (M11-08, M11-09, M11-13)
+- Tranche rows ARE the terms they were made from — the accepted version's payment plan at Mark won or put in force, else the company's payment terms: Σshare_basis_points = 10000, Σamounts = the payable to the minor unit, the rounding remainder on the last part; a person never types an amount; one arithmetic everywhere (`splitSchedule`). (M11-08, M11-09, M11-13)
 - Tranche state is derived from the ledger and can never be typed; a reversal restates it automatically. (M11-10, M11-48)
 - Stage completion is the only event making a tranche due; a tranche mapped to a skipped stage becomes due when the project passes that point (disclosed reading, owner-overturnable). (M11-11, M11-12, M08-36)
 - The ledger (`project_payment`) is append-only, one per project; entries are never edited or deleted; negatives exist only as reversal rows with `reverses_id`, mandatory reason and actor, at most one per payment. (M11-38, M11-40, M11-46)
@@ -2390,7 +2431,7 @@ The studio is rebuilt from scratch (`docs/build-order.md`); its PRD rows are not
 | M11 rails | Pack payment-rails vocabulary (M11-05, 35) | project_payment.mode validated against market-pack vocabulary | yes |
 | M11 engine | Online-only mutations, idempotent retry (M11-06, 39) | server-write behaviour only | n/a (no stored data) |
 | M11 audit | Every money event audited, the payment-request share included (M11-07) | audit_log_entry (platform-services); tranche_request_share | yes |
-| M11 §M11.2 | Schedule inheritance and arithmetic (M11-08, 09, 13..16) | project_tranche (from payment terms at Mark won; proposal_tranche once proposals land) | yes |
+| M11 §M11.2 | Schedule inheritance and arithmetic (M11-08, 09, 13..16) | project_tranche (from the version in force's plan, else payment terms, at Mark won) | yes |
 | M11 tranche states | Derived state and stage-driven due-ness (M11-10..12) | project_tranche state derived from project_payment and stage history; due_on_stage mapping | yes |
 | M11 §M11.3 | Gateway connection and credentials (M11-17..23) | none — no payment gateway (owner ruling 2026-11-11); collections_settings holds the company's UPI ID | n/a |
 | M11 §M11.4 | Payment links and supersession (M11-24..26, 30, 31) | none — no payment link (owner ruling 2026-11-11); UPI request built on read; tranche_request_share records each share | n/a |

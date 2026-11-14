@@ -8,6 +8,7 @@ import type {
   TaxRegistrations,
 } from '@heliogrid/contracts';
 import {
+  type CoverPicture,
   checkTaxRegistration,
   clockTime,
   clockTimeHhmm,
@@ -17,6 +18,7 @@ import {
   packLabel,
   type QuietWindow,
   resolveEffectiveSettings,
+  type TrancheTemplate,
   type UiLanguage,
 } from '@heliogrid/domain';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
@@ -31,6 +33,15 @@ import { effectiveWire } from './internal/wire';
 import { SettingsAdminRepository } from './settings.admin.repository';
 import { QuietHoursRepository } from './settings.quiet-hours.repository';
 import { SettingsRepository, type TenantSettingsRead } from './settings.repository';
+
+/** The company's settings as a proposal reads them (`forProposals`). */
+export interface ProposalSettings {
+  readonly inForce: EffectiveSettings;
+  readonly pack: MarketPack;
+  /** The company's named payment plans, archived ones left out (`M01-54`). */
+  readonly paymentPlans: readonly TrancheTemplate[];
+  readonly coverPicture: CoverPicture | null;
+}
 
 /**
  * Tenant settings (`M01-28`, `M01-31`, `M01-50`, `M01-59`): the one resolved read, and the
@@ -136,6 +147,25 @@ export class SettingsService {
 
   async saveHolidays(tenantId: string, body: Holidays, act: Act): Promise<Holidays> {
     return { holidays: [...(await this.scoped.replaceHolidays(tenantId, body.holidays, act))] };
+  }
+
+  /**
+   * What a proposal reads of the company (`T-M06-027`, `T-M06-013`): the settings in force in the
+   * reader's words, its named payment plans, the picture new covers start with, and the pack — one
+   * read, so a draft, its checklist and its document cannot resolve a setting two ways.
+   */
+  async forProposals(tenantId: string, reader?: UiLanguage): Promise<ProposalSettings> {
+    const read = await this.stored(tenantId);
+    const [inForce, pack] = await Promise.all([
+      this.resolved(read, reader),
+      this.markets.currentPackOf(read.tenant.marketCode),
+    ]);
+    return {
+      inForce,
+      pack,
+      paymentPlans: read.settings.trancheTemplates.filter((template) => !template.archived),
+      coverPicture: read.coverPicture,
+    };
   }
 
   /** Every setting resolved for this tenant — one read, one rule (`M01-28`). */

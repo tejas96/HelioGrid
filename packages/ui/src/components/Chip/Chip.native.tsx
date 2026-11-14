@@ -7,12 +7,13 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { GlyphInkContext, ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { hueTintOf, isCategoryHue } from '../Avatar/Avatar.logic';
 import type { BadgeProps, BadgeTone, ChipDensity, ChipProps, ChipTone } from './Chip.types';
 
 /* The DS pill heights, the dot and the pill's inner gap — none of the three is on the 4px scale,
    so no theme token carries them. 44 is MIN_TOUCH_TARGET, the product's own floor. */
-const PILL_H: Record<ChipDensity, number> = { expressive: 28, functional: 24 };
+const PILL_H: Record<ChipDensity, number> = { expressive: 28, functional: 24, pick: 36 };
 const DOT = 6;
 const GAP = 6;
 
@@ -57,6 +58,10 @@ const styles = StyleSheet.create({
   /* A kind with nothing in it stays, quiet: a hairline pill on no fill. */
   chipEmpty: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors['line-soft'] },
   rest: { borderWidth: 1, borderColor: colors['line-soft'] },
+  /* A pick: the strong hairline at rest, the accent ring over the wash in force. */
+  pickRest: { borderWidth: 1.5, borderColor: colors['line-strong'] },
+  pickActive: { borderWidth: 1.5, borderColor: colors.accent },
+  pickPad: { paddingHorizontal: theme.spacing['sp-4'] },
   count: {
     minWidth: theme.spacing['sp-5'],
     height: theme.spacing['sp-5'],
@@ -81,6 +86,12 @@ const styles = StyleSheet.create({
 
 /* The chosen chip's words: the accent words on the accent wash. */
 const onWash: TextStyle = { color: colors['accent-text'] };
+
+/** A pick's own edge: the strong hairline at rest, the accent ring in force; other densities none. */
+function pickLook(density: ChipDensity, active: boolean) {
+  if (density !== 'pick') return undefined;
+  return [styles.pickPad, active ? styles.pickActive : styles.pickRest];
+}
 
 /** The chip in force is the accent wash; a kind with nothing in it a quiet hairline; else the fill. */
 function chipFill(active: boolean, count: number | undefined, controlFill: ThemeColor): ViewStyle {
@@ -130,6 +141,7 @@ export function Chip({
   dot = false,
   tone = 'neutral',
   density = 'expressive',
+  glyph,
   style,
 }: NativeChipProps) {
   /* The opposite of what holds it (`F7-15`), flat whether it is a label or pressable. */
@@ -138,6 +150,7 @@ export function Chip({
     <View
       style={[
         pillStyle(density, chipFill(active, count, controlFill), onClick !== undefined),
+        pickLook(density, active),
         style,
       ]}
     >
@@ -149,8 +162,9 @@ export function Chip({
           ]}
         />
       ) : null}
+      {glyph === undefined ? null : <ShellGlyph name={glyph} size="sm" />}
       <Text
-        variant={density === 'expressive' ? 'body-sm' : 'caption'}
+        variant={density === 'functional' ? 'caption' : 'body-sm'}
         color={count === 0 && !active ? 'secondary' : 'primary'}
         style={active ? [medium, onWash] : medium}
       >
@@ -198,14 +212,20 @@ export function Badge({
   children,
   tone = 'neutral',
   density = 'expressive',
+  glyph,
   style,
 }: NativeBadgeProps) {
   const pair = badgePair(tone);
   const { controlFill } = useGround();
   return (
     <View style={[pillStyle(density, { backgroundColor: pair.background ?? controlFill }), style]}>
+      {glyph === undefined ? null : (
+        <GlyphInkContext.Provider value={pair.color}>
+          <ShellGlyph name={glyph} size="sm" />
+        </GlyphInkContext.Provider>
+      )}
       <Text
-        variant={density === 'expressive' ? 'body-sm' : 'caption'}
+        variant={density === 'functional' ? 'caption' : 'body-sm'}
         style={[isCategoryHue(tone) ? hueWeight : medium, { color: pair.color }]}
       >
         {children}

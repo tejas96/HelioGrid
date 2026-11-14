@@ -1,0 +1,166 @@
+/* ProposalTrack — the hero that says where a proposal stands, the four steps under it, and the
+   rows. Sized from its own room (`@container`), so it holds beside a side list. */
+
+.hg-track {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  container-type: inline-size;
+}
+
+.hg-track-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-5);
+}
+
+.hg-track-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  min-width: 0;
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) both;
+}
+
+.hg-track-words h2 {
+  margin: var(--sp-1) 0 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: var(--fw-regular);
+  line-height: 34px;
+  letter-spacing: var(--tr-display);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.hg-track-words p {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--on-panel-muted);
+}
+
+.hg-track-acts {
+  display: flex;
+  /* In a phone's room the two acts stand one under the other, each its own words' width, as the
+     approved design draws them; side by side once the hero has the desktop's room (below). */
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-3);
+}
+
+.hg-track-cover {
+  flex: none;
+  width: 112px;
+  transform: rotate(3deg);
+  transition: transform var(--dur-emphasised) var(--ease-enter);
+}
+
+.hg-track-cover:hover {
+  transform: rotate(0deg) scale(1.03);
+}
+
+.hg-track-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: var(--sp-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-track-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+  padding-block-start: 34px;
+}
+
+/* The line a step draws to the next one: filled once the step is done. */
+.hg-track-step::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 11px;
+  inset-inline: 0;
+  height: 3px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--on-panel) 12%, transparent);
+}
+
+.hg-track-step[data-at="done"]::before {
+  background: var(--accent);
+}
+
+.hg-track-dot {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: grid;
+  width: var(--sp-6);
+  height: var(--sp-6);
+  place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--hg-ground);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--on-panel) 20%, transparent);
+}
+
+.hg-track-step[data-at="done"] .hg-track-dot,
+.hg-track-step[data-at="now"] .hg-track-dot {
+  background: var(--accent);
+  box-shadow: none;
+}
+
+.hg-track-step[data-at="now"] .hg-track-dot {
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.hg-track-step b {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-semibold);
+  overflow-wrap: anywhere;
+}
+
+.hg-track-step span:last-child {
+  padding-inline-end: var(--sp-2);
+  color: var(--on-panel-muted);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  overflow-wrap: anywhere;
+}
+
+.hg-track-step[data-at="ahead"] b {
+  color: var(--on-panel-muted);
+  font-weight: var(--fw-regular);
+}
+
+.hg-track-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin: var(--sp-4) 0 0;
+  color: var(--on-panel-muted);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}
+
+@container (min-width: 720px) {
+  .hg-track-acts {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .hg-track-words h2 {
+    font-size: 40px;
+    line-height: 46px;
+  }
+
+  .hg-track-cover {
+    width: 190px;
+  }
+}

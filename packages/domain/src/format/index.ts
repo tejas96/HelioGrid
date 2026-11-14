@@ -10,6 +10,18 @@
 
 export { APPEARANCES, type Appearance, appearanceOf } from './appearance';
 export {
+  type AdministrativeArea,
+  type AdministrativeDistrict,
+  AREA_GRAINS,
+  type AreaGrain,
+  type AreaRef,
+  areaOf,
+  type Coordinate,
+  type LocatedArea,
+  locateArea,
+} from './areas';
+export { IN_AREAS } from './areas-in';
+export {
   CHECKLIST_ROW_MAKERS,
   type ChecklistRow,
   type ChecklistRowMaker,
@@ -80,7 +92,9 @@ export {
 export {
   formatCompactMoney,
   formatMinorUnits,
+  formatMinorUnitsPlainly,
   formatMoney,
+  formatMoneyPlainly,
   type MoneyOptions,
   moneySymbol,
 } from './money';
@@ -119,6 +133,12 @@ export {
   statedAssumptions,
 } from './projection';
 export {
+  type ForecastLikelihood,
+  forecastLikelihoodOf,
+  IN_PROPOSAL_FACTS,
+  type ProposalMarketFacts,
+} from './proposal-facts';
+export {
   compactQualified,
   PROVENANCE_STANDINGS,
   PROVENANCE_TIERS,
@@ -129,10 +149,13 @@ export {
   qualifiers,
   qualifyMinorUnits,
   qualifyMoney,
+  STATED_FIGURE_TIER,
   weakestTier,
 } from './qualified';
 export {
   type FamilyCoverage,
+  isBrandFaceRun,
+  lineBoxRaisedTo,
   type ScriptRun,
   type ScriptStack,
   splitScriptRuns,

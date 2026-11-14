@@ -35,13 +35,6 @@ const iso = (moment: Date | number) => new Date(moment).toISOString();
 /** Ledger seconds in one billed voice minute — the unit `billedQuantityOf` turns the total by. */
 const SECONDS_PER_MINUTE = 60;
 
-/**
- * No proposal exists before `M06` lands (Law 9), so none is counted: zero is the truth today. Its
- * task replaces this with its own count and the `fullSince` its gate reads (`T-M06`, *Usage
- * screen (T-M12-004)*). Active projects are counted (`M08-07`).
- */
-const NOT_COUNTED_YET = 0;
-
 /** The steps a person who is not the Owner may see, by name only (`M12-56`). */
 const SIGNALLED: ReadonlySet<string> = new Set(CAP_HELD_STEPS);
 
@@ -51,6 +44,13 @@ const SIGNALLED: ReadonlySet<string> = new Set(CAP_HELD_STEPS);
  * `EntitlementService.limitsOf` — and extra charges worked out by `overageAddOns`, the function
  * the overage sweep bills by (`M12-35`), so the screen and the next invoice cannot differ.
  */
+/** This cycle's proposal limit and the window it counts in. */
+export interface ProposalAllowance {
+  readonly limit: number | null;
+  readonly from: Date;
+  readonly resetsAt: Date;
+}
+
 @Injectable()
 export class BillingUsageService {
   // Explicit tokens: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
@@ -75,7 +75,12 @@ export class BillingUsageService {
       currencyCode: pack.formats.currency,
       priceListPublishedAt: publishedAt,
       cycle: { from: iso(cycle.from), resetsAt: iso(cycle.resetsAt) },
-      proposals: counted(NOT_COUNTED_YET, limits.get('proposals_per_cycle') ?? null, cycle, now),
+      proposals: counted(
+        await this.usage.proposalsCounted(tenantId, cycle.from),
+        limits.get('proposals_per_cycle') ?? null,
+        cycle,
+        now,
+      ),
       activeProjects: counted(
         await this.usage.activeProjects(tenantId),
         limits.get('active_projects') ?? null,
@@ -93,6 +98,21 @@ export class BillingUsageService {
       otpCodes: otp.get('otp_delivery') ?? 0,
       extraCharges: extraChargesWire(pack, facts, voice.extra),
     };
+  }
+
+  /**
+   * What the proposal gate reads (`M06-26`, `T-M06-028`): this cycle's limit — `null` where the
+   * plan sets none a count can reach — the day the count began and the day it starts again.
+   */
+  async proposalAllowance(tenantId: string, now: number): Promise<ProposalAllowance> {
+    const row = await this.rows.latestRow(tenantId);
+    // A company with no billing row yet has no cycle: its count runs from its own beginning.
+    const cycle =
+      row === null
+        ? { from: new Date(0), resetsAt: new Date(now) }
+        : await usageCycleOf(this.rows, tenantId, row, now);
+    const limit = (await this.limitsOf(tenantId)).get('proposals_per_cycle');
+    return { limit: typeof limit === 'number' ? limit : null, ...cycle };
   }
 
   /**
@@ -217,7 +237,7 @@ function soFarOf(cycle: UsageCycle, now: number): UsageWindow {
   return { from: cycle.from, to: new Date(Math.min(now, cycle.resetsAt.getTime())) };
 }
 
-/** A count the cap ladder reads; one not counted yet passes `NOT_COUNTED_YET` and stands clear. */
+/** A count the cap ladder reads: proposals counted at their first Generate (`M06-26`), active projects (`M08-07`). */
 function counted(used: number, limit: TierLimit | null, cycle: UsageCycle, now: number) {
   return {
     used,

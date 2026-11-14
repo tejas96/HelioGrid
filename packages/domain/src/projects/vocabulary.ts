@@ -68,6 +68,25 @@ export type ProjectMoveCause = (typeof PROJECT_MOVE_CAUSES)[number];
 export const DOCUMENT_STATES = ['pending', 'done', 'not_needed'] as const;
 export type DocumentState = (typeof DOCUMENT_STATES)[number];
 
+/**
+ * The act that proves the signed-proposal row (`F5-46`, `T-M06-025`): the customer's Accept on a
+ * link, or a person's record that the customer agreed to a newer version put in force (`M08-50`).
+ */
+export const SIGNED_PROPOSAL_ACTS = ['accepted', 'put_in_force'] as const;
+export type SignedProposalAct = (typeof SIGNED_PROPOSAL_ACTS)[number];
+
+/**
+ * The installation day's facts a timeline entry names finer than its field (`F5-68`): when the
+ * crew starts, how many days it is on site, what to expect, and who of the crew leads it.
+ */
+export const PROJECT_CHANGED_FACTS = [
+  'install_start',
+  'days_on_site',
+  'what_to_expect',
+  'crew_lead',
+] as const;
+export type ProjectChangedFact = (typeof PROJECT_CHANGED_FACTS)[number];
+
 /** How a wait ended: a person said it was over, or a forward move closed it (ruling 2026-11-10). */
 export const BLOCKER_CLEARS = ['person', 'stage_move', 'cancel'] as const;
 export type BlockerClear = (typeof BLOCKER_CLEARS)[number];

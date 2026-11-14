@@ -26,7 +26,7 @@ import {
   type NotificationToWrite,
   recordNotification,
   type TenantQuietHours,
-} from '../../src/modules/notification/notification.repository';
+} from '../../src/modules/notification/notification.writes.repository';
 import { silentLogger } from '../billing/support';
 import {
   aCompany,

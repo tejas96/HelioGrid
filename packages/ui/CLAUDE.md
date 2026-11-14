@@ -44,6 +44,7 @@ src/components/<Name>/
   <Name>.<concern>.ts a pure helper split from .logic.ts (.words.ts, .shapes.ts …)
   <helper>.ts         a pure helper named for what it does (time-parse.ts, commit-draft.ts)
   moments/            LottieMoment's JSON files
+  pictures/           ProposalPicture's nine photographs, read only through its picture-files halves
   <Name>.parts.types.ts  the inner parts' contracts, only when <Name>.types.ts would pass 300 lines
   use-<thing>.ts      a hook only this component uses
   index.ts            the only thing outside imports
@@ -98,3 +99,5 @@ part there fails it.
 - On the phone a growing child inside a flex item sized to its content takes the whole row and crushes its siblings (the import stepper's last step hid the first three) → give the growing child a bounded basis, or lay the row out as equal cells.
 - `backdrop-filter` on a host that holds fixed overlays makes it their containing block, so the overlays move with it → put the blur on a `::before` layer.
 - A hand-written arrow-key walk in a one-tab-stop group (radios, tabs, chips) is too short for jscpd to catch, and five copies had drifted on Home, End and disabled options → walk the keys through `rovingTargetOf` (`primitives/press-keys.ts`); a `Pressable` option joins the group through `focusGroup`.
+- A bundled picture (`require`d jpg) hands `Image` its own size, applied before the caller's style, so a picture given only the four edges (`StyleSheet.absoluteFill`) draws at the file's size and leaves the box's ground showing → state `width: '100%'` and `height: '100%'` beside the edges (`ProposalPicture.native.tsx`).
+- A press that unmounts a field's step (a builder's Next, Back or ✕) leaves before the field blurs, so a field that commits on blur drops its edit even outside a form → hold it with `useCommitOnUnmount` (`primitives/use-commit-on-unmount.ts`), as `NumberField`, `RichText` and step 2's about box do.

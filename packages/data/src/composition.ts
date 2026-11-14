@@ -36,6 +36,14 @@ import { createMyDayRepository, type MyDayRepository } from './crm/my-day-reposi
 import { createTasksRepository, type TasksRepository } from './crm/tasks-repository';
 import { createVisitsRepository, type VisitsRepository } from './crm/visits-repository';
 import {
+  type CustomerLinksRepository,
+  createCustomerLinksRepository,
+} from './customer-link/links-repository';
+import {
+  type CustomerLinkPublicRepository,
+  createCustomerLinkPublicRepository,
+} from './customer-link/public-repository';
+import {
   createDashboardsRepository,
   type DashboardsRepository,
 } from './dashboards/dashboards-repository';
@@ -52,6 +60,14 @@ import { createPaymentsRepository, type PaymentsRepository } from './payments/pa
 import { createPriceBookRepository, type PriceBookRepository } from './price-book/repository';
 import { createPricingRepository, type PricingRepository } from './pricing/repository';
 import { createProjectsRepository, type ProjectsRepository } from './projects/projects-repository';
+import {
+  createProposalsRepository,
+  type ProposalsRepository,
+} from './proposals/proposals-repository';
+import {
+  createSavedPartsRepository,
+  type SavedPartsRepository,
+} from './proposals/saved-parts-repository';
 import { createSearchRepository, type SearchRepository } from './search/repository';
 import { createSettingsRepository, type SettingsRepository } from './settings/repository';
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
@@ -104,6 +120,11 @@ export interface Repositories {
   dashboards: DashboardsRepository;
   tasks: TasksRepository;
   visits: VisitsRepository;
+  proposals: ProposalsRepository;
+  savedParts: SavedPartsRepository;
+  customerLinks: CustomerLinksRepository;
+  /** The customer's own side of a link: signed-out, the token its whole authority (`F5-21`). */
+  customerLinkPublic: CustomerLinkPublicRepository;
 }
 
 type RepositoryRegistryConfig = { baseUrl: string } & (
@@ -186,5 +207,9 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     dashboards: createDashboardsRepository(api),
     tasks: createTasksRepository(api),
     visits: createVisitsRepository(api),
+    proposals: createProposalsRepository(api),
+    savedParts: createSavedPartsRepository(api),
+    customerLinks: createCustomerLinksRepository(api),
+    customerLinkPublic: createCustomerLinkPublicRepository(api),
   };
 }

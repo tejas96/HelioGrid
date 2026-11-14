@@ -17,6 +17,7 @@ import {
   undoLast,
 } from './projects.acts.repository';
 import { type ProjectStep, ProjectsActsService } from './projects.acts.service';
+import { changeDetails } from './projects.details.repository';
 import {
   attachFile,
   documentNotNeeded,
@@ -25,7 +26,8 @@ import {
   tickStep,
   untickStep,
 } from './projects.files.repository';
-import { changeDetails, endWait, startWait } from './projects.waits.repository';
+import { putVersionInForce } from './projects.in-force.repository';
+import { endWait, startWait } from './projects.waits.repository';
 import { ProjectsWonService } from './projects.won.service';
 
 const STAGES = { capability: 'projects.update_stages' } as const;
@@ -66,6 +68,7 @@ export class ProjectsActsController {
     change: 'sell_and_deliver',
     cancel: 'sell_and_deliver',
     handover: 'sell_and_deliver',
+    putVersionInForce: 'sell_and_deliver',
   })
   @RouteAccessMap(projectActsContract, {
     markWon: { capability: 'sales.mark_won_lost' },
@@ -85,6 +88,8 @@ export class ProjectsActsController {
     change: STAGES,
     cancel: STAGES,
     handover: STAGES,
+    // Every member may ask; the act itself admits the lead's owner or the project's manager alone.
+    putVersionInForce: 'member',
   })
   handler(@Req() req: Request) {
     const reader = projectReaderOf(req);
@@ -144,6 +149,8 @@ export class ProjectsActsController {
           cancelWith(c, { reason: body.reason, note: body.note }),
         ),
       handover: ({ params, body }) => run(params.id, body.capturedAt, (c) => handOver(c)),
+      putVersionInForce: ({ params, body }) =>
+        run(params.id, body.capturedAt, (c) => putVersionInForce(c, body.version)),
     });
   }
 }

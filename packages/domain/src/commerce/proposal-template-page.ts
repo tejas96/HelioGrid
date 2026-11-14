@@ -1,3 +1,4 @@
+import { termsFitTheirPages } from '../proposals/terms-pages';
 import {
   type SettingsLastSave,
   type SettingsStanding,
@@ -92,9 +93,14 @@ export function templateWritesOf(
   };
 }
 
-/** The terms always print, so they must hold words (`SCR-M01-19`, decision 4). */
+/**
+ * The terms always print, so they must hold words (`SCR-M01-19`, decision 4) — and no more than
+ * their pages hold (`M06-15`): a longer default would seed drafts whose next terms edit is refused.
+ */
 export function termsRefusal(draft: TemplateDraft): TemplateRefusal | null {
-  return hasWords(draft.template.defaultTerms) ? null : 'empty';
+  const terms = draft.template.defaultTerms;
+  if (!hasWords(terms)) return 'empty';
+  return termsFitTheirPages(terms) ? null : 'too-long';
 }
 
 /** The phase editor's refusals: a phase prints its name and its sentence. */

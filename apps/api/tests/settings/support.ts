@@ -2,6 +2,8 @@ import { auditLogEntry } from '@heliogrid/db';
 import { sql } from 'drizzle-orm';
 import { PinoLogger } from 'nestjs-pino';
 import { CreationReplies } from '../../src/common/creation-key';
+import { FileDocumentService } from '../../src/modules/file/file.documents.service';
+import { FileRepository } from '../../src/modules/file/file.repository';
 import { SettingsAdminRepository } from '../../src/modules/settings/settings.admin.repository';
 import { SettingsBrandingRepository } from '../../src/modules/settings/settings.branding.repository';
 import { SettingsBrandingService } from '../../src/modules/settings/settings.branding.service';
@@ -56,6 +58,8 @@ export function settingsServicesOf(pools: Pools): {
     new SettingsTranchesRepository(pools.tenants),
     settings,
     new CreationReplies(new PinoLogger({ pinoHttp: { level: 'silent' } })),
+    files.service,
+    new FileDocumentService(new FileRepository(pools.tenants), files.store),
   );
   const branding = new SettingsBrandingService(
     new SettingsBrandingRepository(pools.tenants),

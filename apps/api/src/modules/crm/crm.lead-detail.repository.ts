@@ -1,24 +1,16 @@
-import type { LeadDetail, Task, Visit } from '@heliogrid/contracts';
+import type { LeadDetail, Task } from '@heliogrid/contracts';
 import {
   customer,
   type DbTransaction,
   lead,
   leadFile,
   leadStageTransition,
-  leadVisitBooking,
   referral,
   task,
-  tenant,
   userAccount,
 } from '@heliogrid/db';
-import {
-  clockTimeHhmm,
-  clockTimeOfMinutes,
-  type LeadLifecycleState,
-  localDate,
-  localMinutes,
-} from '@heliogrid/domain';
-import { and, asc, count, desc, eq, max, notExists } from 'drizzle-orm';
+import { isClosedState, type LeadLifecycleState } from '@heliogrid/domain';
+import { and, asc, count, eq, max } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { customerRecordOf } from './crm.customer-record.repository';
 import {
@@ -28,6 +20,8 @@ import {
   memberNameOf,
 } from './crm.lead-columns.repository';
 import { projectOf } from './crm.lead-project.repository';
+import { leadProposalsOf } from './crm.lead-proposals.repository';
+import { visitOf } from './crm.lead-visit.repository';
 import { leadScopeWhere } from './crm.scope.repository';
 import { type LeadMoney, leadSummaryOf, memberRefOf } from './internal/lead-wire';
 import type { LeadReader } from './internal/reader';
@@ -68,7 +62,6 @@ export async function findLeadInScope(
 
 const closer = alias(userAccount, 'lead_closer');
 const referrer = alias(customer, 'referrer');
-const surveyor = alias(userAccount, 'surveyor');
 const assignee = alias(userAccount, 'task_assignee');
 
 /**
@@ -106,6 +99,11 @@ export async function loadLeadDetail(
       referredByName: lead.referredByName,
       doNotCallSetAt: customer.doNotCallSetAt,
       wrongNumberAt: customer.wrongNumberAt,
+      siteAddress: lead.siteAddress,
+      siteArea: lead.siteArea,
+      siteDistrict: lead.siteDistrict,
+      sanctionedLoadKw: lead.sanctionedLoadKw,
+      supplyPhase: lead.supplyPhase,
     })
     .from(lead)
     .innerJoin(customer, leadCustomerJoin)
@@ -115,6 +113,18 @@ export async function loadLeadDetail(
   if (row === undefined) return null;
   const record = await customerRecordOf(tx, reader, row.customerId);
   if (record === null) throw new Error(`lead ${leadId} names a customer its company lacks`);
+  const area = row.siteArea === null ? null : { area: row.siteArea, district: row.siteDistrict };
+  const proposals = await leadProposalsOf(
+    tx,
+    reader,
+    {
+      leadId,
+      customerId: row.customerId,
+      closed: isClosedState(row.state),
+      deal: { siteAddress: row.siteAddress, area },
+    },
+    money,
+  );
   return {
     currencyCode: money.currencyCode,
     lead: leadSummaryOf(row, money),
@@ -139,8 +149,19 @@ export async function loadLeadDetail(
     cameFrom: await cameFromOf(tx, tenantId, leadId, row.referredByName),
     visit: await visitOf(tx, tenantId, leadId),
     openTasks: await openTasksOf(tx, tenantId, leadId),
-    sections: { designs: 0, proposals: 0, files: await filesOf(tx, tenantId, leadId) },
+    sections: {
+      designs: 0,
+      proposals: proposals.items.length,
+      files: await filesOf(tx, tenantId, leadId),
+    },
     project: await projectOf(tx, tenantId, leadId),
+    site: {
+      address: row.siteAddress,
+      area,
+      sanctionedLoadKw: row.sanctionedLoadKw,
+      supplyPhase: row.supplyPhase,
+    },
+    proposals,
   };
 }
 
@@ -198,60 +219,13 @@ async function cameFromOf(
   return referredByName === null ? null : { customerId: null, name: referredByName };
 }
 
-/**
- * The booked visit in force: the newest booking no reschedule has replaced, its moment on the
- * tenant's clock (`F1-10`).
- */
-async function visitOf(tx: DbTransaction, tenantId: string, leadId: string): Promise<Visit | null> {
-  const replacement = alias(leadVisitBooking, 'replacement');
-  const [booking] = await tx
-    .select({
-      id: leadVisitBooking.id,
-      scheduledAt: leadVisitBooking.scheduledAt,
-      surveyorId: leadVisitBooking.surveyorUserId,
-      surveyorName: memberNameOf(surveyor),
-      address: leadVisitBooking.address,
-      rescheduledFromId: leadVisitBooking.rescheduledFromId,
-      bookedAt: leadVisitBooking.createdAt,
-      timeZone: tenant.timezone,
-    })
-    .from(leadVisitBooking)
-    .innerJoin(surveyor, eq(surveyor.id, leadVisitBooking.surveyorUserId))
-    .innerJoin(tenant, eq(tenant.id, leadVisitBooking.tenantId))
-    .where(
-      and(
-        eq(leadVisitBooking.tenantId, tenantId),
-        eq(leadVisitBooking.leadId, leadId),
-        notExists(
-          tx
-            .select({ id: replacement.id })
-            .from(replacement)
-            .where(
-              and(
-                eq(replacement.tenantId, leadVisitBooking.tenantId),
-                eq(replacement.rescheduledFromId, leadVisitBooking.id),
-              ),
-            ),
-        ),
-      ),
-    )
-    .orderBy(desc(leadVisitBooking.createdAt), desc(leadVisitBooking.id))
-    .limit(1);
-  if (booking === undefined) return null;
-  const at = booking.scheduledAt.getTime();
-  return {
-    id: booking.id,
-    date: localDate(at, booking.timeZone),
-    time: clockTimeHhmm(clockTimeOfMinutes(localMinutes(at, booking.timeZone))),
-    surveyor: { userId: booking.surveyorId, name: booking.surveyorName ?? '' },
-    address: booking.address,
-    rescheduledFromId: booking.rescheduledFromId,
-    bookedAt: booking.bookedAt.toISOString(),
-  };
-}
-
 /** The lead's open tasks, soonest due first; overdue is the screen's to derive (`tasks/overdue.ts`). */
-async function openTasksOf(tx: DbTransaction, tenantId: string, leadId: string): Promise<Task[]> {
+/** The lead's open tasks, soonest due first — Lead Detail's list, and where a proposal finds its follow-up. */
+export async function openTasksOf(
+  tx: DbTransaction,
+  tenantId: string,
+  leadId: string,
+): Promise<Task[]> {
   const rows = await tx
     .select({
       id: task.id,

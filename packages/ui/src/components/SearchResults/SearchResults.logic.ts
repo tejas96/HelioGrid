@@ -28,7 +28,9 @@ export const CATALOG_GLYPH: Record<ComponentKind, ShellGlyphName> = {
 
 /** The name a row is known by: a person's or a lead's, an item's brand and model. */
 export function rowNameOf<Failure>(row: SearchRow<Failure>): string | null {
-  return row.kind === 'catalog_item' ? `${row.brand} ${row.model}` : row.name;
+  if (row.kind === 'catalog_item') return `${row.brand} ${row.model}`;
+  /* A proposal is known by its customer: its number rides on the line under the name. */
+  return row.kind === 'proposal' ? row.customerName : row.name;
 }
 
 /** The row's target, when it opens something: its spoken name and what it opens. */

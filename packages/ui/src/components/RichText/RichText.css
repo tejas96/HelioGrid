@@ -4,6 +4,10 @@
    alignment, no tables — a tenant editing their terms may not break the document's type system. */
 
 .hg-rich-text-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
@@ -24,6 +28,9 @@
   align-items: center;
   gap: 2px;
   padding: 6px var(--sp-2);
+  /* The tools sit on their own band, joined to the text box under it by one hairline. */
+  background: var(--fill);
+  border-bottom: 1px solid var(--line-strong);
 }
 
 /* 44px, like every other target in this product — the floor Pressable owns, held here because a
@@ -260,4 +267,9 @@
 .hg-rich-text-empty {
   margin: 0;
   color: var(--text-tertiary);
+}
+
+/* Beside the label (`countOnTop`) the count keeps the label's row but not its weight. */
+.hg-rich-text-label .hg-rich-text-count {
+  font-weight: var(--fw-regular);
 }

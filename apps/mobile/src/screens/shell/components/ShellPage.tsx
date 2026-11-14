@@ -50,6 +50,7 @@ export function ShellPage({
   pad,
   foot,
   onAction,
+  pull,
   children,
 }: {
   inView?: string;
@@ -64,6 +65,8 @@ export function ShellPage({
   foot?: ReactNode;
   /** The add action's press on the page the action itself opened: it opens again in place. */
   onAction?: () => void;
+  /** A list that reads again on a pull (`ShellFrame`). */
+  pull?: ShellFrameProps['pull'];
   children: ReactNode;
 }) {
   const t = useTranslate();
@@ -122,6 +125,7 @@ export function ShellPage({
       pad={pad}
       foot={foot}
       stripless={drillDown?.stripless === true}
+      pull={pull}
     >
       {children}
       <GrievanceNote open={screen.grievance.isOpen} onClose={screen.grievance.close} />

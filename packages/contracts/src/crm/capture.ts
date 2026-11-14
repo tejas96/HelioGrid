@@ -66,6 +66,11 @@ export const createLeadSchema = z
     ...typedCaptureShape,
     referredBy: referredBySchema.optional(),
     keepBoth: keepBothSchema.optional(),
+    /**
+     * *New proposal*'s capture (`T-M06-001`): the lead is the maker's own from its first moment,
+     * so a Sales Executive opens the builder on it at once. Absent: it waits unassigned (`M02-50`).
+     */
+    ownedByCapturer: z.literal(true).optional(),
   })
   .strict();
 export type CreateLead = z.infer<typeof createLeadSchema>;

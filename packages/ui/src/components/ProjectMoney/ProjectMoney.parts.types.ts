@@ -1,4 +1,10 @@
-import type { PayRequest, PayTo, ProjectPart, TranslatedText } from '@heliogrid/contracts';
+import type {
+  EarlierPlan,
+  PayRequest,
+  PayTo,
+  ProjectPart,
+  TranslatedText,
+} from '@heliogrid/contracts';
 import type { ReferenceStanding } from '@heliogrid/domain';
 import type { DatePickerWords } from '../DatePicker/DatePicker.types';
 import type { NumberFieldWords } from '../NumberField/NumberField.types';
@@ -145,4 +151,33 @@ export interface MoneyQrFullProps {
   readonly payTo: PayTo;
   readonly words: MoneySheetWords;
   readonly onClose: () => void;
+}
+
+/** The earlier plan's words — `projectMoneyWords(t).earlier`, by shape. */
+export interface EarlierPlanWords {
+  /** "Earlier plan". */
+  readonly title: TranslatedText;
+  /** "2 replaced" — the fold's standing. */
+  readonly count: (count: number) => TranslatedText;
+  /** "Version 1 · replaced 14 Nov by Priya Kale", the day already formatted. */
+  readonly plan: (
+    plan: {
+      readonly version: number | null;
+      // biome-ignore lint/plugin/copy-prop-type: a member's name, a fact
+      readonly name: string | null;
+    },
+    date: string,
+  ) => TranslatedText;
+  readonly dueAt: (stage: string) => TranslatedText;
+}
+
+/**
+ * **The earlier plan** (`T-M06-025` DONE WHEN, `M11-14`): once a newer version's plan is put in
+ * force, the replaced parts stay viewable under the live plan — folded, so the plan in force stays
+ * the one in view; opened, each replaced plan with the version it belonged to, when and by whom,
+ * and its parts with their stage and amount. Drawn only when a plan was replaced.
+ */
+export interface EarlierPlansProps {
+  readonly plans: readonly EarlierPlan[];
+  readonly words: EarlierPlanWords;
 }

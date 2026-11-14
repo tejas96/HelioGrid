@@ -8,7 +8,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   type NotificationToWrite,
   recordNotification,
-} from '../../src/modules/notification/notification.repository';
+} from '../../src/modules/notification/notification.writes.repository';
 import { aMembership, aPerson, openPools, seed } from '../support/fixture';
 import { bootHttp, type Http, skipWithoutHarness } from '../support/http';
 

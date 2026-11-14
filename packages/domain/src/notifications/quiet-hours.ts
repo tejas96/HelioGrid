@@ -2,14 +2,14 @@ import type { ClockTime } from '../calling/clock-time';
 import { clockTime } from '../calling/clock-time';
 import type { CallingRulesPack } from '../calling/pack';
 import { localMinutes, nextLocalTime } from '../format/zone';
-import type { NotificationUrgency } from './types';
 
 /**
  * When a push falls due (`F6-13`, `F6-14`).
  *
  * The RECORD is never held — it is the truth and lands at emit (`F6-06`). Only the push waits,
- * and only for a standard type: an immediate one is what the class exists to say, and the window
- * does not touch it. No staff notification wakes a phone at night.
+ * and it waits whatever the type's urgency: `F6-14` — where an immediate type ever fires inside
+ * the window, the push holds and the record stands, so no staff notification wakes a phone at
+ * night. Urgency decides grouping (`centre.ts`), never this.
  *
  * Pure: the instant is handed in as epoch milliseconds, never read from a clock and never
  * constructed — `new Date(…)` is how a clock read gets into this package and the spelling is
@@ -62,13 +62,7 @@ function insideWindow(minutes: number, window: QuietWindow): boolean {
  * The instant this notification's push becomes due — `emittedAt` unless the tenant's quiet window
  * holds it, in which case the window's end.
  */
-export function pushDueAt(
-  urgency: NotificationUrgency,
-  emittedAt: number,
-  window: QuietWindow,
-  timezone: string,
-): number {
-  if (urgency === 'immediate') return emittedAt;
+export function pushDueAt(emittedAt: number, window: QuietWindow, timezone: string): number {
   if (!insideWindow(localMinutes(emittedAt, timezone), window)) return emittedAt;
   return nextLocalTime(emittedAt, window.end, timezone);
 }

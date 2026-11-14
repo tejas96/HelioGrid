@@ -25,16 +25,42 @@ export async function refuseUnlessOwnLogo(
   tenantId: string,
   logoFileId: string | null | undefined,
 ): Promise<void> {
-  if (logoFileId === null || logoFileId === undefined) return;
+  await refuseUnlessOwnImage(files, tenantId, logoFileId, {
+    path: 'logoFileId',
+    issue: 'not a stored logo of this company',
+    message: 'That file is not a stored logo of this company.',
+  });
+}
+
+/**
+ * The company's own cover photo (`T-M01-030`): stored through the same door as its logo — the
+ * company's own confirmed image, or refused at its field.
+ */
+export async function refuseUnlessOwnCoverPhoto(
+  files: FileService,
+  tenantId: string,
+  fileId: string | undefined,
+): Promise<void> {
+  await refuseUnlessOwnImage(files, tenantId, fileId, {
+    path: 'coverPicture.fileId',
+    issue: 'not a stored photo of this company',
+    message: 'That file is not a stored photo of this company.',
+  });
+}
+
+async function refuseUnlessOwnImage(
+  files: FileService,
+  tenantId: string,
+  fileId: string | null | undefined,
+  refusal: { readonly path: string; readonly issue: string; readonly message: string },
+): Promise<void> {
+  if (fileId === null || fileId === undefined) return;
   try {
-    await files.confirmed(tenantId, logoFileId, LOGO);
-  } catch (refusal) {
-    if (!isNoStoredLogo(refusal)) throw refusal;
-    throw new ContractException(
-      'VALIDATION_FAILED',
-      'That file is not a stored logo of this company.',
-      HttpStatus.BAD_REQUEST,
-      [{ path: 'logoFileId', issue: 'not a stored logo of this company' }],
-    );
+    await files.confirmed(tenantId, fileId, LOGO);
+  } catch (thrown) {
+    if (!isNoStoredLogo(thrown)) throw thrown;
+    throw new ContractException('VALIDATION_FAILED', refusal.message, HttpStatus.BAD_REQUEST, [
+      { path: refusal.path, issue: refusal.issue },
+    ]);
   }
 }

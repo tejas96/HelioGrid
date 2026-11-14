@@ -14,6 +14,7 @@ import { LeadSourceMark } from '../LeadSourceMark/LeadSourceMark.native';
 import { LeadStateBadge } from '../LeadStateBadge/LeadStateBadge.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { PendingAction } from '../PendingAction/PendingAction.native';
+import { ProposalStatus } from '../ProposalStatus/ProposalStatus.native';
 import { CATALOG_GLYPH, numberRuns, rowNameOf, rowOpenOf } from './SearchResults.logic';
 import type { SearchResultsProps } from './SearchResults.types';
 
@@ -71,9 +72,13 @@ function RowBody<Failure>(props: RowProps<Failure> & { opens: boolean }) {
   const junk = row.kind === 'lead' && row.state === 'junk';
   return (
     <View style={[styles.row, { paddingEnd: room }]}>
-      {row.kind === 'catalog_item' ? (
+      {row.kind === 'catalog_item' || row.kind === 'proposal' ? (
         <View style={styles.tile}>
-          <ShellGlyph name={CATALOG_GLYPH[row.componentKind]} size="md" tone="secondary" />
+          <ShellGlyph
+            name={row.kind === 'proposal' ? 'file-text' : CATALOG_GLYPH[row.componentKind]}
+            size="md"
+            tone="secondary"
+          />
         </View>
       ) : (
         <View style={junk ? styles.sunk : undefined}>
@@ -113,6 +118,33 @@ function RowWords<Failure>({ row, words }: RowProps<Failure>) {
         <Text variant="body-sm" color="secondary">
           {words.componentKind(row.componentKind)}
         </Text>
+      </>
+    );
+  }
+  if (row.kind === 'proposal') {
+    return (
+      <>
+        <View style={styles.line}>
+          {title}
+          {row.exact ? <Badge tone="accent">{words.numberMatch}</Badge> : null}
+        </View>
+        <View style={styles.line}>
+          <Text variant="body-sm" color="secondary">
+            {words.proposal(row.number)}
+          </Text>
+          {row.city === null ? null : (
+            <Text variant="body-sm" color="secondary">
+              {row.city}
+            </Text>
+          )}
+        </View>
+        <View style={styles.line}>
+          <ProposalStatus
+            standing={row.standing}
+            label={words.proposalStanding(row.standing)}
+            density="functional"
+          />
+        </View>
       </>
     );
   }

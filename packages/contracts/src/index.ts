@@ -23,6 +23,8 @@ import { leadMessagesContract } from './crm/messages';
 import { myDayContract } from './crm/my-day';
 import { tasksContract } from './crm/tasks';
 import { visitsContract } from './crm/visits';
+import { customerLinksContract } from './customer-link/links';
+import { customerLinkPublicContract } from './customer-link/public';
 import { dashboardsContract } from './dashboards';
 import { sharedRefusals } from './error';
 import { fileContract } from './file';
@@ -36,6 +38,8 @@ import { pricingContract } from './pricing';
 import { paymentsContract } from './projects/payments';
 import { projectActsContract } from './projects/project-acts';
 import { projectsContract } from './projects/projects';
+import { proposalsContract } from './proposals/proposals';
+import { savedPartsContract } from './proposals/saved-parts';
 import { searchContract } from './search';
 import { tenantContract } from './tenant';
 import { tenantSettingsContract } from './tenant-settings';
@@ -83,6 +87,11 @@ export * from './crm/schemas';
 export * from './crm/tasks';
 export * from './crm/visits';
 export * from './crm/vocabulary';
+// The customer's link (`F5`): the named links a company keeps, and the page a customer opens.
+export * from './customer-link/links';
+export * from './customer-link/pages';
+export * from './customer-link/public';
+export * from './customer-link/vocabulary';
 // Content shapes a customer document is made of: per-language values, rich text.
 export * from './dashboards';
 export * from './document-content';
@@ -105,6 +114,7 @@ export * from './notification';
 export * from './onboarding';
 // The platform message rail (the code and the invite), the session projection and its port.
 export * from './ports/billing-gateway';
+export * from './ports/energy-source';
 export * from './ports/identity-provider';
 export * from './ports/message-delivery';
 export * from './ports/object-store';
@@ -118,7 +128,18 @@ export * from './projects/money-due';
 export * from './projects/payments';
 export * from './projects/project-acts';
 export * from './projects/projects';
+export * from './projects/proposal-handoff';
 export * from './projects/schemas';
+// Proposals (`M06`): the one commercial document on a lead, its versions and its share.
+export * from './proposals/acts';
+export * from './proposals/checklist';
+export * from './proposals/detail';
+export * from './proposals/document';
+export * from './proposals/field-set';
+export * from './proposals/money';
+export * from './proposals/proposals';
+export * from './proposals/saved-parts';
+export * from './proposals/vocabulary';
 // Global search (`T-FPLAT-020`): leads, customers, people and catalog items in one read.
 export * from './search';
 export * from './session';
@@ -203,10 +224,29 @@ const deliveryRouters = c.router(
   ROOT_OPTIONS,
 );
 
-export type ApiContract = typeof platformRouters & typeof crmRouters & typeof deliveryRouters;
+/** The sell loop (`M06`, `F5`): proposals, the company's saved parts, and both sides of the customer's link. */
+const proposalRouters = c.router(
+  {
+    customerLinkPublic: customerLinkPublicContract,
+    customerLinks: customerLinksContract,
+    proposals: proposalsContract,
+    savedParts: savedPartsContract,
+  },
+  ROOT_OPTIONS,
+);
+
+export type ApiContract = typeof platformRouters &
+  typeof crmRouters &
+  typeof deliveryRouters &
+  typeof proposalRouters;
 
 /**
  * The root API contract. Feature modules mount their routers here — contract FIRST,
  * then implementation; the contract diff is the API review surface (CLAUDE.md §2 Law 3).
  */
-export const apiContract: ApiContract = { ...platformRouters, ...crmRouters, ...deliveryRouters };
+export const apiContract: ApiContract = {
+  ...platformRouters,
+  ...crmRouters,
+  ...deliveryRouters,
+  ...proposalRouters,
+};

@@ -28,6 +28,10 @@
 - **A market fact is a key on `MarketPack` (`market/pack.ts`), never a constant.** A new key adds
   its folder beside `format/`, its property on `MarketPack` and India's values on `IN_PACK`, and
   imports `MarketCode` from `market/code` by path, never the market index.
+- **A fact that belongs to a key that exists goes INSIDE that key** — its `pack.ts`, its
+  `pack-schema.ts` and India's values — never a ninth key (`PACK_KEYS` is closed). Its schema gives
+  it a `.default()` for a row stored before it existed, and a reader says what that absence means;
+  a required field with no default refuses every stored pack until the next publish.
 - `commerce/` holds packaging every market prices against — never a market fact — so it is not a
   `MarketPack` key. A capacity change reaches a company at once only when it takes nothing away;
   otherwise it waits for the company's next paid period.

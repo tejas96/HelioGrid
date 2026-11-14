@@ -1,0 +1,44 @@
+/* MessageSheet — the message as a bubble, the main act, the two under it side by side. */
+
+.hg-message-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-message-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--r-lg);
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-message-notice-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-message-notice-words b {
+  font-weight: var(--fw-semibold);
+}
+
+.hg-message-notice-words span {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-message-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+  align-items: start;
+}
+
+.hg-message-two[data-one] {
+  grid-template-columns: 1fr;
+}

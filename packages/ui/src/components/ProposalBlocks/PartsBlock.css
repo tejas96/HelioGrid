@@ -1,0 +1,163 @@
+/* The parts block: a kind is a tile in the builder (`Ground.css` draws the tile), a flat row split
+   by hairlines on paper and on the customer's page. */
+
+.hg-pb-parts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hg-pb-part {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  box-sizing: border-box;
+  text-align: start;
+}
+
+.hg-pb-part-tile {
+  padding: 14px var(--sp-4);
+  border-radius: var(--r-tile);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+  animation-delay: calc(var(--i) * var(--stagger-step));
+}
+.hg-pressable.hg-pb-part-tile {
+  justify-content: flex-start;
+}
+@media (hover: hover) {
+  .hg-pressable.hg-pb-part-tile:hover {
+    box-shadow:
+      inset 0 1px 0 var(--glass-edge),
+      0 0 0 1px var(--line-soft),
+      var(--e3);
+  }
+}
+/* Nothing picked: the danger tint and its edge, with the line that says what to do. */
+.hg-pb-part-tile.hg-pb-part-empty {
+  /* biome-ignore lint/plugin/raw-white-css: a tint over the tile — the card colour under the danger wash */
+  background: color-mix(in srgb, var(--danger-bg) 38%, var(--surface));
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--danger) 45%, transparent);
+}
+
+.hg-pb-part-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+.hg-pb-part-kind {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-tertiary);
+}
+.hg-pb-part-count::before {
+  content: " · ";
+}
+.hg-pb-part-brands {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+.hg-pb-part-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+}
+.hg-pb-part-or {
+  font-style: normal;
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  margin-inline-end: 3px;
+}
+.hg-pb-part-spec {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+.hg-pb-part-none {
+  font-weight: var(--fw-medium);
+  color: var(--danger-text);
+}
+.hg-pb-part-add,
+.hg-pb-part-go {
+  flex: none;
+  width: var(--sp-8);
+  height: var(--sp-8);
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+}
+.hg-pb-part-go {
+  background: var(--fill);
+}
+.hg-pb-part-add {
+  background: var(--action-primary);
+}
+
+/* A brand's letter: the name's own category hue (`hg-hue`), never a colour of the brand's. */
+.hg-pb-mark {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  display: inline-grid;
+  place-items: center;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: 1;
+}
+
+.hg-pb-flag {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  height: var(--sp-6);
+  padding: 0 9px 0 7px;
+  border-radius: var(--r-pill);
+  background: var(--success-bg);
+  color: var(--success-text);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+}
+
+/* Flat rows: paper, and the customer's page, where the block already stands in a card. */
+.hg-pb-parts[data-mode="paper"] .hg-pb-parts-list,
+.hg-pb-parts[data-mode="link"] .hg-pb-parts-list {
+  gap: 0;
+}
+.hg-pb-parts[data-mode="link"] .hg-pb-part {
+  padding: var(--sp-3) 0;
+  border-top: 1px solid var(--line-soft);
+}
+.hg-pb-parts[data-mode="paper"] .hg-pb-part {
+  padding: 20px 0;
+  border-top: 1px solid var(--line-soft);
+}
+.hg-pb-parts[data-mode="paper"] .hg-pb-part:first-child,
+.hg-pb-parts[data-mode="link"] .hg-pb-part:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.hg-pb-parts[data-mode="paper"] .hg-pb-part-kind {
+  font-size: 13px;
+}
+.hg-pb-parts[data-mode="paper"] .hg-pb-part-brand {
+  font-size: 19px;
+}
+.hg-pb-parts[data-mode="paper"] .hg-pb-part-spec {
+  font-size: 15px;
+  line-height: 22px;
+}
+.hg-pb-parts[data-mode="paper"] .hg-pb-part-none {
+  color: var(--text-tertiary);
+  font-weight: var(--fw-regular);
+  font-style: italic;
+}

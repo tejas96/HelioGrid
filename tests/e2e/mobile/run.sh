@@ -35,8 +35,8 @@ flow -e "COMPANY=E2E $national" -e "OWNER=Owner $national" company-signup.yaml
 read -r owner_national owner_e164 < <(node ../support/mobile-cli.ts phone)
 # It also makes three leads given to the owner: one for Lead Detail, that customer and the same
 # family's second record for Customer Merge, and one it marks won, whose project the projects flows
-# open — their ids come back.
-read -r lead_id survivor_id loser_id project_id < <(node ../support/mobile-cli.ts company "$owner_national" "$owner_e164")
+# open — and a proposal draft on the first lead, which the proposals flows open. Their ids come back.
+read -r lead_id survivor_id loser_id project_id proposal_id < <(node ../support/mobile-cli.ts company "$owner_national" "$owner_e164")
 flow boot.yaml
 since="$(node -e 'console.log(Date.now())')"
 flow -e "PHONE=$owner_national" login.yaml
@@ -71,6 +71,16 @@ flow -e "LEAD_NAME=Lead $owner_national" leads-list.yaml
 # The import opens on its first step over the same list, and its way back returns to it.
 flow lead-import.yaml
 flow -e "LEAD_ID=$lead_id" -e "LEAD_NAME=Lead $owner_national" lead-detail.yaml
+# The first lead's proposal draft: the list holds its card and opens *New proposal*'s capture, its
+# own page says where it stands, and its versions, links and document open under it.
+proposal=(-e "PROPOSAL_ID=$proposal_id" -e "LEAD_NAME=Lead $owner_national")
+flow "${proposal[@]}" proposals-list.yaml
+flow "${proposal[@]}" proposal-track.yaml
+flow "${proposal[@]}" proposal-versions.yaml
+flow "${proposal[@]}" proposal-links.yaml
+flow "${proposal[@]}" proposal-document.yaml
+# Its builder: the step a link names, every step from the capsule, and the check before Generate.
+flow "${proposal[@]}" proposal-builder.yaml
 # The won lead's project: the board lists it under Won, its page moves it on and back and marks a
 # row not needed, and its handover then names only the rows still waiting.
 project=(-e "PROJECT_ID=$project_id" -e "PROJECT_NAME=Won $owner_national")

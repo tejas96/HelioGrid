@@ -1,297 +1,13 @@
 # F5 · Customer link — engineering tasks
 
-This file carries every engineering task for the customer-link bucket: the no-login tokenised
-customer journey of `docs/prd/foundations/F5-customer-link.md` (the link's lifecycle, named links and
-attribution, acceptance, questions and callbacks, payment surface, progress, handover, security
-and branding laws). Task-id prefix: **T-F5-**. The look of every page here is the approved proposal design (`CLAUDE.md` §6); each task's **Drawn** line names where it shows the page, and a page is built to match it at 390 px and 1440 px. Screen tasks own SCR-F5-01 through SCR-F5-05 (SCR-F5-05 is T-F5-011's, parked until the studio); the
-Proposal Document screen (SCR-M06-17) and Deal Link Manager screen (SCR-M06-20) are drawn under the
-M06 tasks file. Policy rows with no standalone build live in the Laws section; context rows in
-Realized elsewhere. The disposition index at the end covers every row in this bucket exactly once.
-
----
-
-### T-F5-001 · Customer Link — Proposal page (SCR-F5-01)
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** F5-07 (P0), F5-32 (P0), F5-36 (P0), F5-37 (P0), F5-39 (P0), F5-42 (P1), F5-43 (P0), F5-44 (P0), F5-47 (P0), F5-48 (P0), F5-52 (P0), F5-53 (P0), F5-54 (P0), F5-55 (P0)
-**DESIGN:** SCR-F5-01
-**Drawn:** stop *Their page*; sheets *Accept*, *After Accept*, *Ask or change*, *Ask a question*, *Request a call*, *Ask for a change*, *Decline* and *With an EMI example*.
-**Why:** the homeowner decides on this page, on a phone, in one evening — it must be far better than a competitor's bare PDF: simple, clean and visually rich, understood in seconds, with Accept, Negotiate, Decline, a question and a call one tap away (owner, 2026-11-13); without it the rep chases a customer who already said yes.
-**Depends on:** T-F5-006, T-F5-007, T-F5-008, T-F5-009, T-M06-025a
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. The cross-phase rows F5-07, F5-52, F5-53, F5-54 and F5-55 bind SCR-F5-02 and SCR-F5-03 as well; they are dispositioned here. In V1 no channel connects (owner ruling 2026-11-13, `F5-48`): this task builds the page's own confirmation state and the composed message a person sends; the connected-channel send is built with the connection. The design's own elements on this page — the 3D view, the recommended variant and the remote-imagery disclosure — are T-F5-011's, built with the studio.
-
-**DONE WHEN:**
-- Given the proposal phase, when it is designed and reviewed, then it is designed at the small viewport first, reads in one sitting, and reaches its decisive content before any heavy asset (`F5-06`, `F5-07`).
-- Given a shared proposal, when the customer opens the link, then the page carries system size, generation, savings, price, incentive, payable, payback, the roof view, financing, Accept and Ask a question (`F5-32`). *(The roof view is T-F5-011's; a proposal with no design carries none.)*
-- Given any figure on the page, when it renders, then it carries a provenance tier, and any energy figure additionally carries its source label naming the database (`F5-36`).
-- Given a proposal built without a design, a design built on remote imagery, or a multi-year financial figure, when the page renders, then the corresponding disclosure line appears verbatim (`F5-37`). *(The remote-imagery clause is proven by T-F5-011.)*
-- Given a customer who downloads nothing, when they read the page, then every figure, label and disclosure is available to them; and given a failed document render, when it fails, then it retries once and then notifies the operator (`F5-39`).
-- Given the financing block on the customer's page, when it renders, then each option is labelled a projection carrying its assumptions, and the block makes no statement about eligibility, approval or availability — there is no financing marketplace in this release (`F5-42`).
-- Given any path in the product other than the customer tapping Accept on their link, when it is exercised, then no acceptance is recorded (`F5-43`).
-- Given any tenant in V1, when the customer taps Accept, then no challenge fires and the acceptance record states that the challenge was off (`F5-44`, `F5-46`; owner ruling 2026-11-13).
-- Given an Accept on a superseded version, a stale money figure, or an already-won or already-lost deal, when it is submitted, then the server refuses, states what happened, and records no partial acceptance (`F5-47`).
-- Given a successful Accept, when the tap completes, then the page's confirmation state changes within seconds and states what was accepted and what happens next; and given a tenant with a connected transactional channel, when the Accept records, then the instant confirmation message sends automatically from that channel; and given no connected channel, then the composed confirmation is the fallback a person sends, no delivery is claimed on that path, and the page state has already done the acknowledging (`F5-48`; automatic transactional sending per owner ruling 2026-08-04). *(In V1 no channel connects, owner ruling 2026-11-13: this task proves the page state and the composed fallback.)*
-- Given a customer tapping Negotiate, when it is recorded, then the lead moves to `negotiating` and the lead's owner is notified (`F5-21`, `F5-50`; owner ruling 2026-11-13).
-- Given a customer tapping Decline, when it is recorded, then the proposal is declined, the lead's owner and the EPC Owner are notified (no manager mapping exists before HR), the open follow-up task is replaced by a Customer declined task due today, and Mark lost is offered to the owner — the lead is never marked lost without a person's reason (`F5-21`, `F5-51`; owner ruling 2026-11-13).
-- Given any phase of the link, when the customer opens it, then the question affordance is present in the same place with the same behaviour (`F5-52`).
-- Given a submitted question, when it is received, then a notification and a timeline entry exist on the tenant's side, the customer's page acknowledges receipt without promising a delivery or a time the tenant has not committed to, and no reply surface exists (`F5-53`).
-- Given a customer requesting a call, when the request is submitted, then a call task for the lead's owner exists, due no earlier than the market's lawful window, and the request is recorded as the customer's timestamped consent (`F5-54`; owner ruling 2026-11-13).
-- Given any phase of the link, when it renders, then a named person and a phone number are present (`F5-55`).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-- Given a tenant with a saved brand colour and logo, when its customer-link page renders, then the page carries the tenant's mark and the compliant shade `compliantShades` derived — never a raw colour that fails contrast — and the operator application renders nothing tenant-styled (`F7-07`, `F5-81`; moved here from `T-FPLAT-022`, whose engine and save path are built). → proof: QA (web) the link page shows the mark and the derived shade for a colour that fails contrast; the operator home for the same tenant shows neither
-
-**Settle before the build:**
-- Question acknowledgement persistence — ruled: every question the link has received is listed on the page in every phase with its acknowledgement state, for the life of the link, and the states are exactly submitted → received with no answered state (§F5.7's edge case has the page show the earlier question as received; the reply is a call the page never claims, `F5-53`; the rows are lead timeline entries and the link is permanent, `F5-22`, so nothing ages out).
-- The named person with a phone number in every phase, surviving project close (`F5-55`, `F5-73`) — ruled (owner ruling 2026-11-13): the proposal phase names the lead's owner and the progress and handover phases name the project's manager (`project.managerId`); where that person is deactivated or absent the page falls back to whoever minted the link, then to the company's owner — a rep who leaves never leaves a dead number on a customer's page. Each is rendered as that user's name and login phone (`M01-18`); users are deactivated, never deleted (`F2-20`).
-- The notifications this page raises are enrolled in `NOTIFICATION_TYPES` and the registry by this task (Law 12), matching `F6`'s matrix: negotiation requested → the rep; proposal declined → the lead's owner and the EPC Owner (no manager mapping exists before HR, owner ruling 2026-11-13); customer asked a question → the record's owner; customer requested a call → the rep.
-- The composed acceptance confirmation needs a key in `F6-26`'s exhaustive list — ruled (owner ruling 2026-11-13): this task adds `acceptance_confirmation` to `F6-26` and to `MESSAGE_TEMPLATE_KEYS` in one change (the invariant `template-keys-mirror-f6` holds the two equal) and authors its starter words, which say the advance is requested once the company confirms.
-
-#### Parts
-
-| Part | Builds | Proves | Status |
-|---|---|---|---|
-| T-F5-001a | The page and its honesty: layout, figures with tiers and source labels, disclosures, financing, named person, branding | `F5-06`/`F5-07`, `F5-32`, `F5-36`, `F5-37`, `F5-39`, `F5-42`, `F5-55`, `F7-07`/`F5-81` | open |
-| T-F5-001b | Respond: Accept (no challenge in V1), the server re-check, the confirmation state and composed message, Negotiate, Decline | `F5-43`, `F5-44`, `F5-47`, `F5-48`, Negotiate, Decline | open |
-| T-F5-001c | Question and callback: the affordance in every phase, the acknowledgement, the call task | `F5-52`, `F5-53`, `F5-54` | open |
-- Who receives what a link act raises (`F5-54`, `F5-55`) — ruled: every task and notification a customer's act raises goes to the same named person the page shows — lead owner, then whoever minted the link, then the EPC Owner, active members only; after Won, the project's manager first (owner ruling 2026-11-13, final review).
-- Call requests and questions (`F5-53`, `F5-54`) — ruled: a question raises a call task as well as its notification, so the reply has an owner; a call request keeps one open call task per lead, due at the time the customer named or the next lawful moment; both buttons share the page's rate ceiling (`F5-25`) (owner ruling 2026-11-13, final review).
-- The acceptance confirmation's words (`F5-48`) — ruled: "your advance of {amount} is requested once {person} confirms" only when the version has an advance tranche; otherwise "{person} will call you to confirm the next steps"; the rep's proposal detail offers the composed confirmation to send (owner ruling 2026-11-13, final review).
-- The page's language (`F5-08`) — ruled: the contact's language, else the customer's, else the company's default language (owner ruling 2026-11-13, final review).
-- The page's parts (`F5-07`, `F5-32`) — ruled: the company's mark and name; a hero with the cover picture, a greeting, the title and three figures — the price, the monthly saving and the payback; then one card each for the price, the savings, the generation, the parts, the payment plan, the timeline and the terms, drawn by the document's own parts; the named person's card; and the version line with the PDF (owner ruling 2026-11-13, approved design).
-- Answering (`F5-43`, `F5-47`) — ruled: on a phone one bar at the foot holds *Accept* and *Ask or change*, and the second opens one sheet with four acts — ask a question, request a call, ask for a change, decline; on desktop a card beside the content holds the price, both buttons and the named person. Accept asks once, showing the system, the price and the first payment (owner ruling 2026-11-13, approved design).
-- After an answer (`F5-48`) — ruled: an accepted page shows when it was accepted and three next steps — the named person calls, then the advance is requested, and this link will show progress — and says nothing is paid now; the bar keeps only the question and the call. A declined page says so and names the person; a change request shows its words and that a new version will appear here (owner ruling 2026-11-13, approved design).
-- The company's colour in dark (`F5-81`) — ruled: the tint a tile or a wash takes is derived for the dark scheme as it is for the light one; the light tint alone drew white tiles on a dark phone (owner ruling 2026-11-13, approved design).
-
----
-
-### T-F5-002 · Customer Link — Progress page (SCR-F5-02)
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** F5-57 (P0), F5-58 (P0), F5-59 (P0), F5-61 (P0), F5-62 (P0), F5-63 (P0), F5-68 (P0), M08-15 (P0), M08-24 (P0), M08-25 (P0), M08-26 (P0), M08-28 (P0), M08-29 (P0), M08-39 (P0)
-**DESIGN:** SCR-F5-02
-**Drawn:** stop *Progress*; case *Project cancelled*; sheet *Crew message* (the operator's side).
-**Why:** after Won the customer's anxious question is "what is happening?" — this page answers it with stages, waits, receipts and a named person, so they stop calling the rep.
-**Depends on:** T-F5-006
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. The cross-phase rows F5-07, F5-52, F5-53, F5-54 and F5-55 also bind this screen — they are dispositioned at T-F5-001. The laws F5-60, F5-64, F5-65, F5-66, F5-67 and F5-69 (Laws section below) are enforced through this screen's build and review. `F5-68`'s build-side half — the evening-before crew message — is part of this task's build: in V1 no channel connects (owner ruling 2026-11-13), so the composed message a person sends is the path built here, and the connected-channel send is built with the connection; the four facts this task draws on the progress page are the customer's record of them regardless of which path carried the message. That half has two named suppliers, both settled by owner rulings of 2026-08-06: the message composes from the registry's seeded **`crew_arrival`** template (`F6-26` → T-FPLAT-021, F-platform tasks file — the authoring act applying the lane ruling), and the hour it goes out is **market-pack data** — a pack default the tenant may narrow, inside a statutory messaging-window **floor**, a slot outside lawful hours resolving to the last lawful moment before it and never after (`F1-15`, `F1-17`), read on the **tenant's timezone** (`F1-10`) and never the customer's (superseding the earlier "customer's market timezone" wording — the owner's premise is that a solar EPC's customers are local to it, and the accepted consequence is that an out-of-timezone customer receives the message at the EPC's evening hour), **with the statutory messaging window evaluated on that same tenant clock — one clock for the hour and the window, never two** (`F1-10`; the same premise and the same accepted consequence extended to the lawful-hours check, so an out-of-timezone customer's own statutory hours are never evaluated and a tenant whose timezone differs from its market's default is judged on its own clock). This task builds no hour of its own, exposes no setting for one, reads no customer timezone for send timing, and evaluates the window in one frame rather than reconciling two. *(The IN values both resolve against are declared at `F1-62` — an empty messaging window and a 19:00 tenant-local send hour; this task takes both from the pack and defaults neither.)*
-
-**DONE WHEN:**
-- Given a confirmed or recorded payment, when the customer opens their link, then a receipt, a named contact with a number, and a statement of what happens next and when are all present (`F5-57`).
-- Given a due tranche, when the customer opens their link, then the instrument presented is the company's own UPI request and bank details for that tranche's exact amount, as the money module's pay request carries them; and given a company that has saved neither, then no instrument is shown and none is fabricated (`F5-58`; owner rulings 2026-11-11, 2026-11-13).
-- Given a recorded payment, when its receipt renders, then it reads as recorded by the company and is never presented as confirmed by a bank or a gateway (`F5-59`; owner ruling 2026-11-13).
-- Given a won deal, when the customer opens the URL they were sent with the proposal, then the progress phase renders with done, current and waiting items and their dates (`F5-61`).
-- Given any stage rendered on the customer's page, when it is read, then it is a value of the canonical chain displayed with the market pack's label, and a stage the market skips is absent rather than permanently empty (`F5-62`).
-- Given a project with an active blocker, when the customer's page renders, then the line names the party, the reason, the date the wait started, and the typical duration where the pack declares one (`F5-63`).
-- Given a scheduled installation, when the customer is informed, then who is coming, when, how long and what disturbance to expect are all stated, and the same four facts are on the progress page (`F5-68`).
-- *(In V1 no channel connects, owner ruling 2026-11-13: of the line below this task proves the composed branch; the connected branch is proven with the connection.)*
-- Given a scheduled installation in a tenant with a connected transactional channel, when the evening before it arrives, then the crew message — who is coming, when, how long and what disturbance to expect — sends automatically from that channel under the transactional template class; and given no connected channel, then it is composed for a person to send and no delivery is claimed on that path; the four facts stand on the progress page whichever path carried the message (`F5-68`, `M03-03`, owner ruling 2026-08-06).
-- Given that crew message on either branch, when its text is composed, then it is composed from the `crew_arrival` template in the reader's language — carrying the four facts plus the crew lead's name and number — whose starter words this task authors as per-language template content under the registry's key, never as an ad-hoc string in its code (`F5-68`, `F6-26`, `docs/tasks/F-platform.md` T-FPLAT-021, owner ruling 2026-08-06).
-- Given the market pack's declared send hour, when the evening-before moment is resolved, then the message goes at that hour **on the tenant's timezone** (`F1-10`) — and given a customer whose own timezone differs from the tenant's, then the message still goes at the tenant's evening hour, this task reading no customer timezone and storing none for send timing; and given a configured slot outside that market's statutory messaging window — the window evaluated on the same tenant timezone as the hour (`F1-10`), including where the tenant's timezone differs from its market's default (`F1-21`), this task computing no second frame and reconciling none — then it goes at the last lawful moment before the slot and never after it — past the close that day's close, before the open the previous day's close with the day it lands on carried, a case only a pack revision reaches (owner ruling 2026-09-07); and given a tenant configuring the window, then only narrowing succeeds — a narrowing that would leave the send hour outside the window in force refused at save (`M01-56`) — and this task exposes no setting, and honours no support action, that widens it or moves a send past the floor (`F5-68`, `F1-10`, `F1-15`, `F1-17`, owner rulings 2026-08-06). *(This criterion previously read "then the message goes at that hour in the customer's market timezone", which pointed at a different clock from `F1-10` wherever the two differ; the tenant-clock clause for the hour, and then for the window, replaced it. **Both values exist for IN at `F1-62`**: an EMPTY messaging window and a 19:00 tenant-local send hour. The criterion still tests resolution rules; they resolve against real pack data.)*
-- Given a coordinator completes a stage, when the move is saved, then the matching tranche becomes due and the customer link reflects the new stage — and nothing is sent to anyone (M08-15). *(Moved from T-M08-009 by owner ruling 2026-11-10: its proof needs the customer link, built in block 8.)*
-- Given a blocker with party `customer` and a start date, when the customer opens their progress link, then the wait and its start are visible to them (M08-24, M08-29). *(Moved from T-M08-010 by owner ruling 2026-11-10: its proof needs the customer link, built in block 8.)*
-- Given a material blocker with an internal note naming a supplier, when the customer's page renders, then the internal note is not on it (M08-25). *(Moved from T-M08-010 by owner ruling 2026-11-10: its proof needs the customer link, built in block 8.)*
-- Given a market pack that declares a typical wait for utility inspection, when a utility blocker renders on the customer's page, then the framing is the pack's and this module supplies only the party, reason and dates (M08-26, M08-28, M08-29). *(Moved from T-M08-010 by owner ruling 2026-11-10: its proof needs the customer link, built in block 8.)*
-- Given a project with an overdue tranche, when the customer opens their progress link, then the link works normally and shows the project's progress (M08-39). *(Moved from T-M08-011 by owner ruling 2026-11-10: its proof needs the customer link, built in block 8.)*
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-**Settle before the build:**
-- The installation's four facts and its crew lead (`F5-68`) — ruled (owner, 2026-11-13): part b adds them — a start time and a duration beside the project's `expected_install_on`, a crew-lead mark on one `project_crew_member`, and the disturbance as a sentence the project manager writes; all nullable, so a project won before this reads as not yet scheduled (the customer needs who is coming and when, and a V2 wait would leave the message empty).
-
-#### Parts
-
-| Part | Builds | Proves | Status |
-|---|---|---|---|
-| T-F5-002a | The progress page: stages, waits, blockers, receipts with the pay request, moved M08 proofs | `F5-57`, `F5-58`, `F5-59`, `F5-61`, `F5-62`, `F5-63`, `M08-15`, `M08-24`, `M08-25`, `M08-26`, `M08-28`, `M08-29`, `M08-39` | open |
-| T-F5-002b | The evening-before crew message (composed, `crew_arrival`) and the four facts on the page | `F5-68` | open |
-- Questions and call requests after Won (`F5-54`) — ruled: they raise a call task for the project's manager, with the named-person fallback, never the sales rep (owner ruling 2026-11-13, final review).
-- A project cancelled after Won (§F5.3) — ruled: the link keeps serving the project's honest cancelled state with the named person; the analytics event names it a cancelled project, not a dead link (owner ruling 2026-11-13, final review).
-- The page's parts (`F5-61`, `F5-63`) — ruled: a headline that says the step and who is waited on; the stages as one list — done, waiting with its start and typical length, and ahead; *Your installation day* with its four facts and the crew lead's number; then the payments — a paid part with its receipt and the words that the company recorded it, the due part with the instrument and the exact amount, and the parts ahead; the project manager's card (owner ruling 2026-11-13, approved design).
-- The crew message (`F5-68`) — ruled: the evening before, the project offers the composed message as a bubble with *Share on WhatsApp* and *Copy message*, the same surface the proposal's share uses (owner ruling 2026-11-13, approved design).
-
----
-
-### T-F5-003 · Customer Link — Handover Pack page (SCR-F5-03)
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** F5-70 (P0), F5-71 (P0), F5-72 (P0), F5-73 (P0), M08-32 (P0), M08-46 (P0)
-**DESIGN:** SCR-F5-03
-**Drawn:** stop *Solar file*.
-**Why:** at handover the same link becomes the customer's solar file for life — warranties, certificates and approvals in one place — and the referral ask lives here.
-**Depends on:** T-F5-006
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. The cross-phase rows F5-07, F5-52, F5-53, F5-54 and F5-55 also bind this screen — they are dispositioned at T-F5-001.
-
-**DONE WHEN:**
-- Given a project reaching its terminal handed-over stage, when the customer opens the same URL they have always used, then the document pack renders (`F5-70`).
-- Given a completed checklist, when the pack renders, then it carries the warranty documents, the commissioning certificate, the interconnection or metering approval and the how-to-read-generation material, with no row invented and no absent document shown as present (`F5-71`).
-- Given the handover page, when it renders, then the referral ask is present and offers no monetary credit, redemption or balance (`F5-72`).
-- Given a closed project, when the customer opens the link, then a named person and a phone number are present (`F5-73`).
-- Given every checklist row past pending, when handover runs, then the pack is assembled from the checklist, the link becomes the pack and the project reaches `HANDED_OVER` (M08-46). *(Moved from T-M08-006 by owner ruling 2026-11-10: its proof needs the customer link, built in block 8.)*
-- Given a project with any row still pending, when handover is attempted, then it is refused and the pending rows are named; given every row past pending and the pack shared on the link, then handover proceeds (M08-32). *(Moved from T-M08-006 and T-M08-012, which carried the same line, by owner ruling 2026-11-10: its proof needs the pack shared on the customer link, built in block 8.)*
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-- The page's parts (`F5-70`, `F5-71`, `F5-72`) — ruled: a short hero with the switch-on date; the documents as one list, each with what it is and its download; the line that the link stays for the life of the system; the referral ask with the company's number and no money; the named person's card (owner ruling 2026-11-13, approved design).
-
----
-
-### T-F5-004 · Link Failure Page (SCR-F5-04)
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** F5-25 (P0), F5-78 (P0)
-**DESIGN:** SCR-F5-04
-**Drawn:** stop *Link off* — its four reasons.
-**Why:** a link that cannot serve still names a person and a number, so a customer is never left at a blank page.
-**Depends on:** T-F5-006
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. F5-78's build-side half (per-link view and respond ceilings, global public-route ceiling with backoff, tuned above ordinary reading) is part of this task's build; the page this task draws is what a customer who meets a ceiling sees.
-
-**DONE WHEN:**
-- Given an expired, revoked or rate-limited link, when it is opened, then the page states what happened, names a contact person and their number, and discloses no customer data (`F5-25`).
-- Given a link whose lead was lost or disqualified before it was won, when it is opened, then the page states that the proposal is no longer active, names a contact person and their number, and discloses no customer data (`F5-25`; owner ruling 2026-11-13).
-- Given a link exceeding a viewing or responding ceiling, when it is used, then the customer is shown the honest page with a named contact rather than a blank or an error (`F5-78`).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-**Settle before the build:**
-- Rate-limit counter persistence — pick: ephemeral, no counter table — the per-link view and respond ceilings are a trailing-hour count over the link's own append-only rows the audit law already requires, and the global public-route ceiling is an in-process counter that persists nothing (the network address is transient and never persisted, `F5-29`; every access is already a row, `F5-79`; no surface reads a counter back; cost if wrong: a process restart forgets the global count for at most one hour).
-- A link with no live proposal (`F5-25`, M06-45) — ruled: when the lead is reopened, a postponed loss resurfaces, or a person withdrew the proposal on an open lead, the page reads "No active proposal — {person} will send you one"; only a newly shared version brings answering back, and nothing revives by itself (owner ruling 2026-11-13, final review).
-- The page's parts (`F5-25`) — ruled: the company's mark, a grey line drawing, one sentence that says what happened and one that says what to do, and the named person's card; nothing about the proposal (owner ruling 2026-11-13, approved design).
-
----
-
-### T-F5-006 · Link token service & lifecycle (mint, scopes, phases, permanence, revocation, billing independence)
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** F5-19, F5-20, F5-21, F5-22, F5-23, F5-24, F5-74, F5-75, F5-76, F5-80
-**Design:** none — the token service every customer-link page stands on
-**Why:** the customer bookmarks one link once and it keeps working — proposal, progress, then their solar file for life — whatever the company's billing state; without it nothing the rep shares can be opened, answered or tracked.
-**Depends on:** nothing open — the link holds a lead reference only, and leads are built
-
-**Requirements (verbatim):**
-- **F5-19** (P0) — **One link, its whole life: the tokenised URL shared with the proposal becomes the progress tracker after the deal is won, and the document pack after handover.** Three phases, one object, one URL — *"the customer bookmarks it once. Designing it as three separate things would be the mistake."* The link advances **in place**: no phase change re-issues a URL, invalidates a bookmark, or requires the customer to be sent anything new.
-- **F5-20** (P0) — **A link comes into existence when a proposal is shared, and never before.** Sharing is the rep's explicit act on the share surface (`M06-53`); minting the link *is* that act, which is why the capability rows of `foundations/F2` §F2.5-F5 carry exactly the send-proposals holder set. Nothing else in the product creates a customer-facing URL.
-- **F5-21** (P0) — **The link carries its own authority: a scoped, expiring grant, never a session and never an account.** The scope set is fixed at product level — view the proposal · respond to the proposal (accept, negotiate, decline) · view progress · view the handover pack — and **effective rights are the token's scopes intersected with the link's current phase**, so a token that carries a respond scope grants nothing once the deal has moved past the phase in which responding is meaningful. The link sits outside the role system entirely (`F2-18`).
-- **F5-22** (P0) — **The link is permanent (owner ruling 2026-08-04): view scopes never expire, and after handover the same URL is the customer's permanent read-only "solar file" for life.** The former twelve-month view-scope expiry is superseded — a customer returning to a bookmark years later still reaches their page; respond scopes still end with their phase (`F5-21`), and **revocation remains the operator's kill switch** (`F5-76`): re-minting issues a fresh token for the same link, and regenerate-with-revoke kills the old one immediately. The `expired` state survives in the lifecycle vocabulary only for tokens minted under the pre-ruling horizon. Neither expiry nor revocation is ever a consequence of the tenant's billing state (`F5-23`) or of money the customer owes (`F5-24`).
-- **F5-23** (P0) — **Customer links keep working in every tenant billing state, without exception.** View **and** respond, proposal and progress pages alike, in every one of the six billing states — `trialing` · `active` · `past_due` · `halted` · `expired` · `cancelled` (the closed vocabulary; no other state name exists) *(Final review: the earlier illustrative list named states outside the six)* — the tenant's customer is never punished for the tenant's billing state. The soft-block matrix is product law and no enforcement surface may move this from working to blocked.
-- **F5-24** (P0) — **A customer link is never revoked, degraded or gated over money the customer owes.** The law is stated where the temptation lives: ***"never block the customer's progress link over money — chase the person, do not punish the view."*** An unpaid tranche is visible to the tenant and chased through a person (`M08-39`, `M11-32`); nothing on the customer's page changes because of it, including the parts of the page that have nothing to do with money.
-- **F5-74** (P1) — **The link keeps serving the pack after the project closes — permanently.** Closing is not deleting: a handed-over project stays readable with its documents intact, and the customer's link continues to serve them **for life** (`F5-22` as ruled — view scopes never expire; owner ruling 2026-08-04). Nothing about closure removes the customer's access, and nothing about the tenant's billing state does either (`F5-23`).
-- **F5-75** (P0) — **The link's product-level security properties are fixed and non-negotiable: unguessable, scoped, expiring, revocable — and attributable.** These are the properties the token scheme must satisfy; how it satisfies them is engineering and is deliberately absent from this suite. No surface may weaken one of them for convenience, and no market pack, plan tier or tenant setting may switch one off. *("Expiring" is the capability of a defined per-scope lifetime: respond scopes end with their phase, and the deal link's view scope carries a **permanent-until-revoked** lifetime by owner ruling 2026-08-04 — revocability is the kill switch that keeps permanence safe.)*
-- **F5-76** (P0) — **A revoked or regenerate-with-revoke link dies instantly, regardless of its own expiry.** Revocation is immediate and absolute; there is no propagation window a customer could slip through, and an expiry date does not survive a revocation.
-- **F5-80** (P0) — **There is one customer-link framework, and no private or local share path survives beside it.** Every customer-facing share surface in the product is a tokenised link under these laws — server-rendered, scoped, expiring, revocable; the prototype-era local share viewer is replaced and no local-only share path exists anywhere. The framework ships with its full lifecycle, labelling, contact attribution and acceptance challenge from launch rather than in stages. **Resolved (owner ruling 2026-08-04):** the studio's customer-facing 3D view ships **inside the proposal link** ("View in 3D", `F5-33`) — no separate customer-facing 3D share link exists, so the one-framework law holds with nothing beside it.
-
-**DONE WHEN:**
-- Given a deal that moves from shared proposal to won project to handed over, when the customer opens their bookmark at each point, then the same URL serves them and the page's phase matches the deal's state (`F5-19`).
-- Given a proposal that has never been shared, when the product is inspected, then no customer-facing URL exists for it (`F5-20`).
-- Given a token carrying a respond scope, when the deal has moved past the proposal phase, then the respond actions are absent and the token grants only what the current phase allows (`F5-21`).
-- Given a link minted years ago on a view scope, when it is opened, then it serves — view scopes never expire (owner ruling 2026-08-04); and given a re-mint without revoke, when the earlier token is used, then it continues to work unless explicitly revoked (`F5-22`).
-- Given a tenant in any of the six billing states, including `halted`, `expired` and `cancelled`, when their customer opens a link, then the page loads and responds exactly as it does for a tenant in good standing (`F5-23`).
-- Given an overdue tranche of any age, when the customer opens their link, then nothing on the page is withheld, degraded or gated (`F5-24`).
-- Given any customer-facing link in the product, when its properties are inspected, then it is unguessable, scoped, expiring, revocable and attributable, and no setting can disable one (`F5-75`).
-- Given a revoked link, when it is opened at any time before its expiry, then it does not serve (`F5-76`).
-- Given every customer-facing share surface in the product, when they are enumerated, then each is a tokenised link under this framework and no local-only share path exists (`F5-80`).
-- (`F5-74` carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text above is the binding criterion — the link keeps serving the pack after the project closes, permanently, so closing is not de-provisioning.)
-- Given two customers merged, when the merge completes, then every customer link of the loser resolves to the survivor and its token keeps working (M02-60) (moved from the block 3 CRM plan, owner yes 2026-11-09).
-
-**Settle before the build:**
-- Link vs token — ruled: two entities, a customer_link (label, contact, lead, scope set) served by many link_token rows, each individually revocable, with no expiry column on either — a respond scope's lifetime is derived at read from the deal's phase, never stored (`F5-22` re-mints a fresh token for the same link and lets both serve until one is revoked; `F5-21` makes effective rights scopes ∩ phase; no token was ever minted under the pre-ruling horizon — the POC's local share ids are replaced, not migrated, `F5-80` — so `expired` stays in the contracts vocabulary `F5-22` keeps and no row can reach it).
-- The link's deal reference — ruled: the link holds a lead reference only; the progress and handover phases resolve the project through lead → project, which the won transition creates 1:1 (`M07-62`, `M08-02`), and the phase is read from the deal's state on every open (§F5.3: the link is the deal's identity and holds no state machine; a second reference would be a copy that can diverge).
-- Customer files — ruled (owner ruling 2026-11-13): the pages serve their files (receipts, the handover pack, documents) through a token-scoped file route that checks the token's scope against the link's current phase; the session-only download link stays operator-side (`F5-21`, `F5-70`).
-- White-label custom domain — ruled: no custom-domain field on the tenant record or the link at launch; link resolution is domain-independent, so the first Enterprise slice adds a tenant → domain routing mapping that touches no link row (`F5-82` builds on the first Enterprise ask; Law 9 authors no schema before its slice).
-- Who may call each link route (CLAUDE.md §3) — ruled: mint and re-mint under `customer_link.mint_customer_link`, revoke under `customer_link.revoke_customer_link`, both proven per role with the other-company 404; the public routes take no session and answer a revoked or unknown token with `F5-25`'s page (owner ruling 2026-11-13, final review).
-
----
-
-### T-F5-007 · Named links, open attribution, PII-free tracking and link audit
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** F5-26, F5-27, F5-28, F5-29, F5-31, F5-77, F5-79
-**Design:** none — link data, events and audit; the Deal Link Manager is drawn by T-M06-020
-**Why:** the owner can see who opened a proposal and who accepted it, months later, without collecting personal data while the customer reads.
-**Depends on:** T-F5-006
-
-**Requirements (verbatim):**
-- **F5-26** (P0) — **Links are named: a deal may carry several labelled links, each addressed to one contact.** Each link carries a human label and, where the contact is known, the contact it was minted for. This is what closes the sharpest liability in the product — a commitment of any size accepted by *"whoever holds the URL"*, with no way to say which stakeholder acted. The earlier decision to defer per-contact links is **superseded**: they ship at launch, not later. Revoking one named link never affects another link on the same deal.
-- **F5-27** (P0) — **Opens are attributed per link, so an open can be tied to a named contact.** The open history of a deal reads as *who* opened, not merely *someone* opened; this is the property that makes named links worth having, and it is the same property that makes the acceptance record of `F5-46` meaningful.
-- **F5-28** (P0) — **Opens are the product's own evidence and are always tracked; delivery states exist only where the product actually sent (owner ruling 2026-08-04).** The link's shared → opened → viewed-for-how-long progression remains the evidence the product owns outright. Where a transactional message carrying the link was **sent from the tenant's connected channel**, the channel's own delivery states are shown honestly, as that channel reports them and no further. Where the copy-paste fallback was used — a person sent from their own device — **no delivered state exists anywhere**, exactly as `D32` originally ruled: a delivery claim there would be a fabrication, and no surface, notification or analytic may imply one.
-- **F5-29** (P0) — **Open events carry no personal data.** An open is recorded as the link, the moment and a device class; the viewer's network address is not persisted on the open event; no customer personal data appears in any URL; and the public pages carry **no third-party scripts, fonts or analytics** of any kind. The richer attribution the acceptance record captures (`F5-46`) exists only at the moment of commitment, deliberately, and is not collected while the customer is merely reading.
-- **F5-31** (P0) — **Every act on a link is audit-covered, with attribution.** Mint, re-mint, revoke, open, and each of accept, negotiate and decline are named in the suite's audit checklist and are written with who and when; the customer-side acts are attributed to the link and its contact rather than to a user.
-- **F5-77** (P0) — **The public page carries no customer personal data in its address and no third-party code of any kind.** No customer name, phone number, address or identifier appears in a URL or in a log line; the pages load no third-party script, font or analytics; and the open events they emit carry link, moment and device class only (`F5-29`).
-- **F5-79** (P0) — **Every access to a customer link is audit-logged, and every act on one is on the suite's audit checklist.** Mint, re-mint, revoke, open, accept, negotiate and decline are named events written with their attribution; the log is tenant-scoped and exportable by the tenant (`F2-23`).
-
-**DONE WHEN:**
-- Given a deal with several stakeholders, when links are minted, then each carries a label and, where known, its contact, and revoking one leaves the others working (`F5-26`).
-- Given an open on a named link, when the operator reads the deal's link history, then the open is attributed to that link and its contact (`F5-27`).
-- Given any customer-facing surface, notification or analytic in the suite, when share states are enumerated, then the set contains shared, opened and viewed-duration; a delivered state appears only where the product's own connected transactional channel sent and reported it, as that channel reports it and no further, and the copy-paste fallback path carries no delivered state anywhere (`F5-28`, `M03-03`, owner ruling 2026-08-04).
-- Given an open event, when it is inspected, then it holds the link, the moment and a device class only, no network address, and the page that produced it loaded no third-party script, font or analytic (`F5-29`).
-- Given the customer's page, when it is opened, then it shows none of them (`F5-30`). *(The customer-page half of `F5-30`'s line — no other contact's links, labels or open history; the row and its operator half land at T-M06-020.)*
-- Given any mint, re-mint, revoke, open, accept, negotiate or decline, when it occurs, then an append-only audit entry records it with its attribution (`F5-31`).
-- Given any customer-facing page, when it is loaded, then its address contains no customer personal data and it requests no third-party script, font or analytic (`F5-77`).
-- Given any mint, re-mint, revoke, open, accept, negotiate or decline, when it occurs, then an audit entry records it with attribution, and the tenant can export their own log (`F5-79`).
-- (`F5-28`'s acceptance line above previously departed from the PRD's own acceptance block, which carried the unscoped ban on any delivered state that preceded the transactional-lane ruling and repeated it as the M13 cross-module contract line — *"the standing prohibition on a delivered state (`F5-28`)"*. **Both PRD lines are now reconciled to the two-branch shape at `docs/prd/foundations/F5-customer-link.md` (§F5.4 acceptance block and §4's M13 contract row), annotated to the owner ruling of 2026-08-04 — the divergence is closed and the build line above matches the PRD's.** The reconciled `F5-28` requirement text quoted in full above, with `M03-03`, remains the binding criterion.)
-
-**Settle before the build:**
-- Customer-side audit attribution — ruled (owner ruling 2026-11-13): `AUDIT_ACTOR_KINDS` gains `customer_link` (its enum and the parity check in the same change, Law 12), and every customer-side act is written with the link and its contact as actor (`F5-31`).
-- Stored link events vs analytics — ruled: link_event holds exactly the five append-only events its source names — opened, section viewed (with section and duration), accepted, negotiate requested, declined — and every name under the PRD's "Analytics events" lists rides the suite's separate analytics stream and is never a link_event row (`F5-27`'s source names the five; `F5-28` makes viewed-for-how-long the product's own evidence; the analytics stream is a separate store by the suite's rule, `F2` §F2.4).
-- What counts as an open (`F5-27`, `F5-29`) — ruled: an open is recorded only from an in-page beacon after the page renders, never from a bare fetch (a messenger's link preview) and never from a request carrying a company user's session — so pasting the link never fires "opened" (owner ruling 2026-11-13, final review).
-
----
-
-### T-F5-008 · Acceptance record, challenge shape and tenant notification
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** F5-45, F5-46, F5-49
-**Design:** none — the acceptance record and what it sets moving
-**Drawn:** sheet *Thank-you message*.
-**Why:** a customer's Accept tells the rep and the owner at once, closes the chase and lines up the win — while a person still confirms it, so no project is born from a mis-tap.
-**Depends on:** T-F5-006, T-M06-025a
-
-**Requirements (verbatim):**
-- **F5-45** (P0) — **The challenge is a challenge, not a credential.** It verifies a person at a moment; it creates no account, sets no password, establishes no session that outlives the act, and is never reused as a login anywhere in the product. This is what lets named links and a verified acceptance coexist with `F5-01` rather than contradict it.
-- **F5-46** (P0) — **The acceptance record captures full attribution from day one:** which link, which contact, whether and how the challenge was satisfied (or that it was off — the tenant's OTP-at-accept setting state is recorded), the network address and the user agent of the accepting session. **Named-link attribution is the acceptance evidence of record (owner ruling 2026-08-04)** — with OTP-at-accept default OFF, this record plus the named link's open-attribution is what answers, months later, *who* committed the company to this — the question the single-link design could not answer. It is written once, at the moment of acceptance, and is not a running collection while the customer reads (`F5-29`).
-- **F5-49** (P0) — **Acceptance notifies the tenant; a person still confirms the win.** The customer's Accept raises a notification and a timeline entry; the rep marks the deal won, and that act — not the customer's tap — creates the project. *"The rep still marks Won (human confirms, then the project row is born)."*
-
-**DONE WHEN:**
-- Given a satisfied challenge, when the product is inspected afterwards, then no account, password or persistent session exists for that customer (`F5-45`).
-- Given a completed acceptance, when the record is read, then it names the link, the contact, the challenge outcome, the network address and the user agent (`F5-46`).
-- Given a successful Accept, when it is recorded, then the tenant is notified and no project exists until a person marks the deal won (`F5-49`).
-- Given a successful Accept, when it is recorded, then the lead's owner is notified at once, the open follow-up task on the proposal closes, a task to confirm the win is raised for them, and the customer's confirmation says the advance is requested once the company confirms (`F5-48`, `F5-49`; owner ruling 2026-11-13).
-
-**Settle before the build:**
-- The accepted notification — ruled: this task enrols `proposal_accepted` in `NOTIFICATION_TYPES` and the registry (Law 12) as `F6`'s matrix states it: the rep and the EPC Owner, immediate.
-- Accepted proposal-version reference on acceptance_record — ruled: stored, as the version the server validated as current at the moment of accept (`F5-47` re-checks that exact version; `F5-48`'s confirmation states what was accepted; `F5-40` pins sent versions, so the reference names a version that never changes underneath the record; without it the record cannot say what was committed to).
-- Contact attribution on a contact-less link — ruled: acceptance_record's contact reference is the link's own at the moment of accept and is absent exactly where the link's is; the record still names the link, the challenge outcome, the network address and the user agent, and accept is never refused for want of a contact (`F5-47`'s re-check is version, deal state and challenge only; `F5-44` makes named-link attribution the evidence of record; §F5.4 calls a contact-less link an operational signal, not a failure).
-- One answer per version (`F5-43`, `F5-47`, M06-45) — ruled: the acceptance record is unique on the version and many per link; after an Accept the page shows only the confirmation, and a second Accept, Negotiate or Decline on that version is refused as "already accepted on {date} by {link label}"; a newly shared version answers again; the signed-proposal checklist proof is `T-M06-025b`'s (owner ruling 2026-11-13, final review).
-- A customer's act and the lead's parking (M02-49, M02-51) — ruled: each act on the link updates the lead's last activity and wakes a snoozed or dormant lead, so a Confirm won task is never hidden (owner ruling 2026-11-13, final review).
-- An Accept outside working hours (`F6-13`) — ruled: in-app at once; the push waits for the company's working morning, per the quiet-hours rule — never a phone woken at night (owner ruling 2026-11-13, final review).
-- With the challenge off in V1 (`F5-44`) — ruled: the accept notification and the Confirm won task name the link label and contact that accepted, so the confirming call checks it was the right person (owner ruling 2026-11-13, final review).
-- `F5-47`'s stale-money clause — ruled: a shared version's figures are a record (`freshness: null`), so only a design change can stale it; that half is proven with the design on the link, `T-F5-011` (owner ruling 2026-11-13, final review).
-- The composed confirmation (`F5-48`) — ruled: the accepted proposal offers *Thank {customer} with a message*, a sheet with the words as a bubble, *Share on WhatsApp* and *Copy message*, and a line that the customer's page already shows the acceptance (owner ruling 2026-11-13, approved design).
-
----
-
-### T-F5-009 · Proposal render gates & version currency (one value set, latest-version/pinning)
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** F5-38, F5-40
-**Design:** none — what the page and the document render, and which version
-**Why:** the page and the PDF never disagree, and a customer who reopens the link sees the latest version while what they were sent stays pinned.
-**Depends on:** T-F5-006, T-M06-025a
-
-**Requirements (verbatim):**
-- **F5-38** (P0) — **The link and the document never disagree.** One computed value set feeds the page, the generated document and every export; a figure that differs between the customer's page and the customer's document is a defect, not a rounding difference.
-- **F5-40** (P0) — **The page always shows the latest version, and a version already shared never changes underneath the customer.** A newer version supersedes the one the page renders, at the same URL; and the figures of a version that has been shared are pinned forever — a later price change produces a new version rather than editing the one the customer read (`F8-15`). Where the design behind a live proposal has been superseded by newer survey data, the page continues to render what the shared version carries; the reconciliation policy is ruled (owner ruling 2026-08-04: design marked "survey updated — review needed", designer notified, drafts blocked from sending until review, sent versions pinned), and its customer-visible consequence arrives only as a new version at this same URL.
-
-**DONE WHEN:**
-- Given the same figure on the page and in the generated document, when both are read, then the value, the tier and the disclosure are identical (`F5-38`).
-- Given a newer version of the proposal, when the customer opens the same URL, then the newer version renders; and given a version already shared, when it is inspected later, then its figures are unchanged (`F5-40`).
-- *(`F5-40`'s survey-superseded clause needs a design and is proven with the studio, T-F5-011.)*
+This file carries what is left of the customer-link bucket (`docs/prd/foundations/F5-customer-link.md`)
+after block 8 shipped the link, its pages and its lifecycle: the two tasks that need a design —
+`T-F5-010` (the day-two design-wait update) and `T-F5-011` (the design on the link, SCR-F5-05), both
+parked until the studio's block — and the laws every customer-facing surface keeps. Task-id prefix:
+**T-F5-**. The look of every page here is the approved proposal design (`CLAUDE.md` §6), built to
+match at 390 px and 1440 px. Policy rows with no standalone build live in the Laws section; context
+rows in Realized elsewhere. The disposition index at the end covers every row in this bucket
+exactly once.
 
 ---
 
@@ -335,6 +51,9 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 - Given a proposal built without a design, a design built on remote imagery, or a multi-year financial figure, when the page renders, then the corresponding disclosure line appears verbatim (`F5-37`). *(The remote-imagery clause.)*
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle before the build:**
+- `F5-47`'s stale-money clause — ruled: a shared version's figures are a record (`freshness: null`), so only a design change can stale it; that half is proven with the design on the link, `T-F5-011` (owner ruling 2026-11-13, final review).
+
 ---
 
 ## Laws (enforced through screens and review, no standalone build)
@@ -360,7 +79,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 - **F5-13** (P0) — **A booked site visit produces a confirmation carrying four mandatory facts: what is happening, the date and time, the name of the person coming, and that person's phone number.** The message is composed by the product and — per the owner ruling of 2026-08-04 — **sends automatically from the tenant's connected transactional channel**, with a person sending the composed copy-paste text where no channel is connected (`M02-47`); this document fixes the four fields as a customer-facing minimum, so that no surface may compose a confirmation that omits one.
   *Enforced by:* `M02-47`'s composing build (M02 tasks file); review that no composing surface omits a field.
 - **F5-14** (P0) — **A survey leaves the customer with a promise and a date — and nobody leaves a site without saying what happens next.** The trust rule is the source's: what builds trust is the surveyor explaining what they are photographing and why; what destroys it is silent photographing followed by leaving. The customer receives a confirmation of the form *"Survey done. Your proposal will reach you by <date>."* — **a promise with a date**. Where the survey is remote the customer experiences nothing at this step and receives their proposal sooner, which is itself the competitive answer; where it is physical, the visit is confirmed, attended and closed out.
-  *Enforced by:* the promise with a date is composed and sent at survey-submission commit by T-M04-009 (M04 tasks file), from the `survey_complete` template, whose starter words T-M04-009 authors under the registry's key (`F6-26` → T-FPLAT-021, F-platform tasks file — the key is named in `F6-26`'s own list, which owner ruling 2026-08-06 makes exhaustive), on the transactional lane with copy-for-a-person where no channel is connected (`M03-03`, owner ruling 2026-08-04); the visit's confirmation, attendance and close-out are `M02-46`'s booking build (T-M02-014) and `M02-47`/`M02-48`'s send build (T-M02-013) in the M02 tasks file. PRD check, verbatim: "Given a completed survey, when the customer is updated, then the update states that the survey is done and names the date by which the proposal will reach them (`F5-14`)."
+  *Enforced by:* the promise with a date is composed and sent at survey-submission commit by T-M04-009 (M04 tasks file), from the `survey_complete` template, whose starter words T-M04-009 authors under the registry's key (`F6-26` → T-FPLAT-021, shipped — the key is named in `F6-26`'s own list, which owner ruling 2026-08-06 makes exhaustive), on the transactional lane with copy-for-a-person where no channel is connected (`M03-03`, owner ruling 2026-08-04); the visit's confirmation, attendance and close-out are `M02-46`'s booking build (T-M02-014) and `M02-47`/`M02-48`'s send build (T-M02-013) in the M02 tasks file. PRD check, verbatim: "Given a completed survey, when the customer is updated, then the update states that the survey is done and names the date by which the proposal will reach them (`F5-14`)."
 - **F5-15** (P0) — **No verbal price is given that the proposal then contradicts.** A figure spoken on a roof becomes the number the customer remembers; a document that disagrees with it reads as a bait. The product's answer is that the priced document is the only price surface and it carries its own honesty labels (`F5-36`, `F5-37`) — no surveyor-side or call-side surface in the product produces a customer-facing price.
   *Enforced by:* review — T-F5-001's page and the proposal document (SCR-M06-17) are the only customer-facing price surfaces; no other task in the suite emits one.
 - **F5-18** (P0) — **The follow-up call is configured to protect the customer out of the box.** The shipped defaults are the source's: capped attempts, a calling window, the customer's own language, an always-offered hand-off to a person, and an automated caller that says it is automated. The owner may change what is above the statutory floor and owns that choice; the floor itself is not theirs to move (`F5-11`). Stated as the customer's four protections: not called three times in a week, not called at dinner, not addressed in a language they do not speak, and never trapped without a route to a human.
@@ -422,7 +141,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 | F5-11 | LAW |
 | F5-12 | LAW |
 | F5-13 | LAW |
-| F5-14 | realized-by (V2 — the survey): T-M04-009 (M04 tasks file — the survey-submission send) · T-FPLAT-021 (F-platform tasks file — the `survey_complete` key and the composer; the key is named in `F6-26`'s exhaustive list per owner ruling 2026-08-06, its words authored by T-M04-009) |
+| F5-14 | realized-by (V2 — the survey): T-M04-009 (M04 tasks file — the survey-submission send) · T-FPLAT-021 (shipped — the `survey_complete` key and the composer; the key is named in `F6-26`'s exhaustive list per owner ruling 2026-08-06, its words authored by T-M04-009) |
 | F5-15 | LAW |
 | F5-16 | T-F5-010 |
 | F5-17 | realized-by: F5-12 (LAW) · F5-52/F5-53 (T-F5-001) |
@@ -476,7 +195,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 | F5-65 | LAW |
 | F5-66 | LAW |
 | F5-67 | LAW |
-| F5-68 | realized-by: T-F5-002 (the progress page and the evening-before send) · T-FPLAT-021 (F-platform tasks file — the `crew_arrival` key and the composer, owner ruling 2026-08-06; its words authored by T-F5-002) |
+| F5-68 | realized-by: T-F5-002 (the progress page and the evening-before send) · T-FPLAT-021 (shipped — the `crew_arrival` key and the composer, owner ruling 2026-08-06; its words authored by T-F5-002) |
 | F5-69 | LAW |
 | F5-70 | T-F5-003 |
 | F5-71 | T-F5-003 |

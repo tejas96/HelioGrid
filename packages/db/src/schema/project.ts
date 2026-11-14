@@ -14,6 +14,7 @@ import {
   date,
   index,
   integer,
+  numeric,
   pgEnum,
   pgTable,
   smallint,
@@ -27,6 +28,7 @@ import { creationKeyColumns } from './creation-key';
 import { customer } from './customer';
 import { userAccount } from './identity';
 import { lead } from './lead';
+import { proposalVersion } from './proposal';
 import { tenant } from './tenant';
 
 /** pgEnums hand-mirror domain's tuples (invariant `enum-parity` proves each pair equal). */
@@ -81,6 +83,23 @@ export const project = pgTable(
     finalValueMinor: bigint('final_value_minor', { mode: 'number' }).notNull(),
     packVersion: text('pack_version').notNull(),
     incentiveApplies: boolean('incentive_applies').notNull(),
+    /**
+     * The proposal version the project runs on (`M08-50`): the one accepted at Mark won, then any
+     * later one a person put in force. Null for a deal won with no accepted proposal.
+     */
+    proposalVersionId: uuid('proposal_version_id').references(() => proposalVersion.id),
+    /**
+     * The installation day as the customer is told it (`F5-68`): when the crew starts, in minutes
+     * past midnight on the company's clock, for how many working days, and what to expect — the
+     * manager's own sentence. Each null until scheduled.
+     */
+    installStartMinutes: smallint('install_start_minutes'),
+    installDurationDays: numeric('install_duration_days', {
+      precision: 4,
+      scale: 1,
+      mode: 'number',
+    }),
+    installDisturbance: text('install_disturbance'),
     /** How the crew gets in (`M08-45`) until the site record exists (M04). */
     accessNote: text('access_note'),
     cancelReason: projectCancelReason('cancel_reason'),
@@ -108,6 +127,8 @@ export const project = pgTable(
     uniqueIndex('project_tenant_lead_key').on(table.tenantId, table.leadId),
     index('project_tenant_stage_idx').on(table.tenantId, table.stage, table.stageEnteredAt),
     index('project_tenant_manager_idx').on(table.tenantId, table.managerId),
+    check('project_install_start_is_a_time', sql`${table.installStartMinutes} between 0 and 1439`),
+    check('project_install_duration_above_zero', sql`${table.installDurationDays} > 0`),
     index('project_tenant_sold_by_idx').on(table.tenantId, table.soldBy),
     check('project_number_positive', sql`${table.number} >= 1`),
     check('project_final_value_positive', sql`${table.finalValueMinor} > 0`),

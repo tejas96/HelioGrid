@@ -87,9 +87,25 @@ export function inviteAgainOf(
   return { inviteeName: row.name, phoneE164: row.phoneE164, roles: [...row.roles] };
 }
 
-/** The first word of a stored name — what a confirm and a toast call a person (owner ruling D6 A). */
-export function firstNameOf(name: string): string {
-  return name.trim().split(/\s+/u)[0] ?? '';
+/**
+ * One written letter — a Latin letter, or an Indic akshara (consonants joined by a virama, with
+ * its vowel sign) — with or without a dot: an initial, never a name to call someone by.
+ */
+const INITIAL =
+  /^\p{L}(?:\p{M}*[\u094D\u09CD\u0A4D\u0ACD\u0B4D\u0BCD\u0C4D\u0CCD\u0D4D]\p{L})*\p{M}*\.?$/u;
+
+/**
+ * The short name of a stored name — what a confirm, a toast and every customer line call a person
+ * (owner ruling D6 A): its first word, or the whole name when that word is an initial ("S. Kulkarni");
+ * no name stays none.
+ */
+export function firstNameOf(name: string): string;
+export function firstNameOf(name: string | null): string | null;
+export function firstNameOf(name: string | null): string | null {
+  if (name === null) return null;
+  const words = name.trim().split(/\s+/u);
+  const first = words[0] ?? '';
+  return INITIAL.test(first) ? words.join(' ') : first;
 }
 
 /** What the screen tells the person once an act settles; its words are the screen's. */

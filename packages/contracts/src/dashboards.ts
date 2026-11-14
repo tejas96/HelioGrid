@@ -1,6 +1,14 @@
+import { FORECAST_STAGES } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
-import { amountSchema, currencyCodeSchema, nonNegativeAmountSchema, uuidSchema } from './common';
+import {
+  amountSchema,
+  currencyCodeSchema,
+  extensibleEnum,
+  nonNegativeAmountSchema,
+  provenanceTierSchema,
+  uuidSchema,
+} from './common';
 import { BULK_ASSIGN_MAX } from './crm/assign';
 import { memberRefSchema } from './crm/schemas';
 import { leadStageSchema, lostReasonSchema } from './crm/vocabulary';
@@ -52,8 +60,43 @@ export const needsYouSchema = z.object({
   }),
   waitingLongest: z.array(attentionLeadSchema).max(3),
   myOverdueTasks: countSchema,
+  /**
+   * Proposals shared and not yet opened (`M13-15`): the one waiting longest is what *Open* opens,
+   * and one leaves the count at its first open. Absent on an api built before proposals.
+   */
+  proposalsUnopened: z
+    .object({
+      count: countSchema,
+      oldest: z
+        .object({ proposalId: uuidSchema, name: z.string().nullable(), days: countSchema })
+        .nullable(),
+    })
+    .optional(),
 });
 export type NeedsYou = z.infer<typeof needsYouSchema>;
+
+/** The weighted pipeline (`pipelineForecast`): each stage's proposals at the market's likelihood. */
+const forecastObject = z.object({
+  expected: nonNegativeAmountSchema,
+  /** A figure worked out from other figures: its tier travels with it (`F8-01`). */
+  tier: provenanceTierSchema,
+  /** How many open proposals stand behind it. */
+  count: countSchema,
+  stages: z.array(
+    z.object({
+      stage: extensibleEnum(FORECAST_STAGES),
+      count: countSchema,
+      total: nonNegativeAmountSchema,
+      likelihoodPercent: z.string(),
+      expected: nonNegativeAmountSchema,
+    }),
+  ),
+});
+/** Named, so each route that carries it references the name rather than spelling its whole type. */
+export interface ForecastSchema extends ForecastSchemaObject {}
+type ForecastSchemaObject = typeof forecastObject;
+export const forecastSchema: ForecastSchema = forecastObject;
+export type Forecast = z.infer<typeof forecastSchema>;
 
 /**
  * The owner dashboard (`SCR-M13-01`, `M13-14`): one read, scoped by role — the whole company for
@@ -84,7 +127,22 @@ export const ownerDashboardSchema = z.object({
   /** Whether the reader may set the company target inline. */
   canSetTarget: z.boolean(),
   /** Open leads by funnel stage, before won (`M13-14`'s pipeline: counts until proposals price them). */
-  pipeline: z.array(z.object({ stage: leadStageSchema, count: countSchema })),
+  pipeline: z.array(
+    z.object({
+      stage: leadStageSchema,
+      count: countSchema,
+      /**
+       * What the stage's open proposals are worth, from the latest shared version of each
+       * (`M13-14`); `null` for a stage no proposal prices. Absent on an api built before proposals.
+       */
+      value: nonNegativeAmountSchema.nullable().optional(),
+    }),
+  ),
+  /**
+   * The forecast (`M13-03`): the weighted pipeline — expected, not promised, and never in a total
+   * with won. Absent on an api built before proposals.
+   */
+  forecast: forecastSchema.optional(),
   /** Closed deals over the last `windowDays` (`M13-23`, `M13-27`). */
   winLoss: z.object({
     windowDays: countSchema,

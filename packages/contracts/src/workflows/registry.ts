@@ -66,6 +66,12 @@ export interface WorkflowDefinition<
    * to prevent.
    */
   workflowId(input: z.infer<TInput>): string;
+  /**
+   * A run that FAILED under this id may be started again — for work a person asks for again, never
+   * for an outbox event, whose retry must stay one run. Without it any finished run refuses a new
+   * one (`TemporalGateway.start`).
+   */
+  readonly startsAgainAfterFailure?: true;
 }
 
 /** Narrows a definition to its own literal types while keeping the shape checked. */

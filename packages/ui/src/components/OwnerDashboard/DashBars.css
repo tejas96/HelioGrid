@@ -85,3 +85,13 @@
   white-space: nowrap;
   color: var(--text-secondary);
 }
+
+/* A stage's value under its name, where proposals price it (`M13-14`). */
+.hg-owner-bar-note {
+  display: block;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  font-variant-numeric: tabular-nums;
+}

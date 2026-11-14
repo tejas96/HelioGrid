@@ -43,52 +43,74 @@ export class CrmEditsRepository {
     const { tenantId } = reader;
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       await lockLead(tx, tenantId, leadId);
-      const [stored] = await tx
-        .select({
-          customerId: lead.customerId,
-          name: customer.name,
-          city: customer.city,
-          segment: lead.segment,
-          monthlyBillMinor: lead.monthlyBillMinor,
-          roofOwnership: lead.roofOwnership,
-          roofType: lead.roofType,
-          shading: lead.shading,
-          timeline: lead.buyingTimeline,
-          decisionMaker: lead.decisionMaker,
-          preferredLanguage: customer.preferredLanguage,
-          doNotCallSetAt: customer.doNotCallSetAt,
-        })
-        .from(lead)
-        .innerJoin(customer, leadCustomerJoin)
-        .where(
-          and(
-            eq(lead.tenantId, tenantId),
-            eq(lead.id, leadId),
-            leadScopeWhere(reader.scope, reader.actorId),
-          ),
-        )
-        .for('no key update', { of: customer });
-      if (stored === undefined) return null;
-      const changes = fieldChangesOf(
-        fieldTextsOf(
-          { ...stored, doNotCall: stored.doNotCallSetAt !== null },
-          money.minorUnitDigits,
-        ),
-        sentTextsOf(edit, money.minorUnitDigits),
-      );
-      const changed = new Set(changes.map((change) => change.field));
-      await applyToLead(tx, tenantId, leadId, edit, changed, money);
-      await applyToCustomer(tx, tenantId, stored.customerId, edit, changed, act);
-      await recordChanges(
-        tx,
-        { tenantId, customerId: stored.customerId, leadId },
-        changes,
-        capturedAt,
-        act,
-      );
-      return loadLeadDetail(tx, reader, leadId, money);
+      const applied = await applyLeadEdit(tx, reader, leadId, edit, capturedAt, money, act);
+      return applied ? loadLeadDetail(tx, reader, leadId, money) : null;
     });
   }
+}
+
+/**
+ * One edit applied to a lead ALREADY LOCKED on the caller's transaction (`lockLead`): the fields
+ * that change are written to the lead and its customer and each is one `field_change` entry. The
+ * proposal builder's commit calls this too, so a site fact typed at a step is saved the way the
+ * lead's own page saves it (`T-M06-032`). `false` when the lead is not one the reader may act on.
+ */
+export async function applyLeadEdit(
+  tx: DbTransaction,
+  reader: LeadReader,
+  leadId: string,
+  edit: LeadFieldEdit,
+  capturedAt: Date,
+  money: LeadMoney,
+  act: Act,
+): Promise<boolean> {
+  const { tenantId } = reader;
+  const [stored] = await tx
+    .select({
+      customerId: lead.customerId,
+      name: customer.name,
+      city: customer.city,
+      segment: lead.segment,
+      monthlyBillMinor: lead.monthlyBillMinor,
+      roofOwnership: lead.roofOwnership,
+      roofType: lead.roofType,
+      shading: lead.shading,
+      timeline: lead.buyingTimeline,
+      decisionMaker: lead.decisionMaker,
+      preferredLanguage: customer.preferredLanguage,
+      doNotCallSetAt: customer.doNotCallSetAt,
+      siteAddress: lead.siteAddress,
+      siteArea: lead.siteArea,
+      siteDistrict: lead.siteDistrict,
+      sanctionedLoadKw: lead.sanctionedLoadKw,
+      supplyPhase: lead.supplyPhase,
+    })
+    .from(lead)
+    .innerJoin(customer, leadCustomerJoin)
+    .where(
+      and(
+        eq(lead.tenantId, tenantId),
+        eq(lead.id, leadId),
+        leadScopeWhere(reader.scope, reader.actorId),
+      ),
+    )
+    .for('no key update', { of: customer });
+  if (stored === undefined) return false;
+  const changes = fieldChangesOf(
+    fieldTextsOf({ ...stored, doNotCall: stored.doNotCallSetAt !== null }, money.minorUnitDigits),
+    sentTextsOf(edit, money.minorUnitDigits),
+  );
+  const changed = new Set(changes.map((change) => change.field));
+  await applyToLead(tx, tenantId, leadId, edit, changed, money);
+  await applyToCustomer(tx, tenantId, stored.customerId, edit, changed, act);
+  await recordChanges(
+    tx,
+    { tenantId, customerId: stored.customerId, leadId },
+    changes,
+    capturedAt,
+    act,
+  );
+  return true;
 }
 
 type Changed = ReadonlySet<FieldChange['field']>;
@@ -115,12 +137,26 @@ async function applyToLead(
     ...(changed.has('shading') && { shading: edit.shading ?? null }),
     ...(changed.has('timeline') && { buyingTimeline: edit.timeline ?? null }),
     ...(changed.has('decisionMaker') && { decisionMaker: edit.decisionMaker ?? null }),
+    ...siteChanges(edit, changed),
   };
   if (Object.keys(set).length === 0) return;
   await tx
     .update(lead)
     .set(set)
     .where(and(eq(lead.tenantId, tenantId), eq(lead.id, leadId)));
+}
+
+/** Where the system goes and its supply (`M06-09`, `M06-16`): the site facts the edit changed. */
+function siteChanges(edit: LeadFieldEdit, changed: Changed) {
+  return {
+    ...(changed.has('siteAddress') && { siteAddress: edit.siteAddress ?? null }),
+    ...(changed.has('area') && {
+      siteArea: edit.area?.area ?? null,
+      siteDistrict: edit.area?.district ?? null,
+    }),
+    ...(changed.has('sanctionedLoadKw') && { sanctionedLoadKw: edit.sanctionedLoadKw ?? null }),
+    ...(changed.has('supplyPhase') && { supplyPhase: edit.supplyPhase ?? null }),
+  };
 }
 
 /** The customer's facts the edit changed: name, city, language and do-not-call (`M02-37`). */

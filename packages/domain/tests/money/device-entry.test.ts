@@ -99,7 +99,9 @@ type ReviewedComputesNothing =
   | 'activeStatutoryExtras'
   /* return a whole pack as written */
   | 'marketOfPhone'
+  | 'packOnTenantTime'
   | 'taxPackOf'
+  | 'subsidyPackOf'
   | 'phoneReach'
   | 'parseStoredPack'
   | 'readStoredPack'
@@ -117,6 +119,8 @@ type ReviewedComputesNothing =
   | 'templateDraftOf'
   | 'templateEdit'
   | 'templateWritesOf'
+  /* Proposal defaults' sample deal (`T-M01-030`): every amount in it is authored as it stands and labelled, none worked out — the payment plan prints no part amounts for that reason */
+  | 'templateSampleSnapshot'
   /* Global Search's groups, as drawn from the answer it is handed: its rows outrun the depth the check walks, and they hold no figure */
   | 'searchViewOf'
   /* the Projects board, as drawn from the cards it is handed: its groups of rows outrun the depth the check walks, and they hold no figure (block 4 ships no money) */
@@ -125,7 +129,9 @@ type ReviewedComputesNothing =
   | 'qualifyMoney'
   | 'qualifyMinorUnits'
   | 'compactQualified'
-  | 'statedAssumptions';
+  | 'statedAssumptions'
+  /* splits a proposal's terms into the sheets they print on: words in, words out, no figure */
+  | 'termsPagesOf';
 
 /** `true` only when the set is empty; otherwise the type NAMES what is in it, so the error does. */
 type NoneOf<Names> = [Names] extends [never] ? true : { unreviewed: Names };

@@ -138,14 +138,15 @@ describe.skipIf(skip)('the owner dashboard, over HTTP against a migrated databas
       },
     });
     expect(read.pipeline).toEqual([
-      // The three open leads and the one reopened — back in the funnel, never lost.
-      { stage: 'new', count: 4 },
-      { stage: 'contacted', count: 0 },
-      { stage: 'qualified', count: 0 },
-      { stage: 'survey', count: 0 },
-      { stage: 'design', count: 0 },
-      { stage: 'proposal', count: 0 },
-      { stage: 'negotiating', count: 0 },
+      // The three open leads and the one reopened — back in the funnel, never lost. No lead holds
+      // a proposal here, so no stage states a worth.
+      { stage: 'new', count: 4, value: null },
+      { stage: 'contacted', count: 0, value: null },
+      { stage: 'qualified', count: 0, value: null },
+      { stage: 'survey', count: 0, value: null },
+      { stage: 'design', count: 0, value: null },
+      { stage: 'proposal', count: 0, value: null },
+      { stage: 'negotiating', count: 0, value: null },
     ]);
     expect(read.needsYou).toMatchObject({
       unassigned: { count: 1, oldestHours: QUEUED_HOURS },
@@ -190,7 +191,7 @@ describe.skipIf(skip)('the owner dashboard, over HTTP against a migrated databas
       },
       cash: { collectedThisMonth: '0.00', collectedLastMonth: '0.00' },
     });
-    expect(read.pipeline[0]).toEqual({ stage: 'new', count: 2 });
+    expect(read.pipeline[0]).toEqual({ stage: 'new', count: 2, value: null });
     const waiting = read.needsYou.waitingLongest.map((one) => one.leadId);
     expect(waiting).toEqual([made.queued, made.teamLead]);
     expect(waiting).not.toContain(made.repLead);

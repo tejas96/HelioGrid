@@ -1,0 +1,234 @@
+/* ProposalBlocks — the blocks a proposal is made of, drawn once and read three ways (`data-mode`):
+   `app` in the builder, `paper` on the document's A4 page, `link` on the customer's page.
+
+   TWO VOCABULARIES, as in DocumentPreview. In `app` and `link` every measure is a theme token. On
+   `paper` the type sizes and paddings are print geometry measured against the 794 px page, which no
+   token describes, so they stay literal there; every COLOUR is a token in all three, and paper
+   reads the light palette through its page's `[data-paper]`.
+
+   Motion: each block's parts arrive once — bars grow, the curve draws, rows rise with the theme's
+   stagger (`--i`, capped by the component) — by transform and opacity alone. Under reduced motion
+   the duration tokens fall to 1 ms, and a `[data-still]` page (a print) holds everything at rest. */
+
+@import "./GenerationBlock.css";
+@import "./SavingsBlock.css";
+@import "./PartsBlock.css";
+@import "./SmallBlocks.css";
+
+.hg-pb {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-family: var(--font-sans);
+}
+
+.hg-pb-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.hg-pb-over-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  min-height: var(--sp-5);
+}
+
+.hg-pb-over {
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* The one large figure: Newsreader, tabular. The paper's is larger; `display` is a track record's. */
+.hg-pb-figure .hg-text {
+  font-size: 46px;
+  line-height: 52px;
+  letter-spacing: -0.03em;
+}
+.hg-pb-figure[data-size="display"] .hg-text {
+  font-size: 34px;
+  line-height: 40px;
+  letter-spacing: -0.015em;
+}
+.hg-pb[data-mode="paper"] .hg-pb-figure .hg-text {
+  font-size: 64px;
+  line-height: 68px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-figure[data-size="display"] .hg-text {
+  font-size: 46px;
+  line-height: 52px;
+}
+
+.hg-pb-unit {
+  margin-inline-start: var(--sp-2);
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
+}
+
+.hg-pb-sub {
+  margin: 6px 0 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+.hg-pb-sub b {
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.hg-pb[data-mode="paper"] .hg-pb-sub {
+  font-size: 15px;
+  line-height: 22px;
+}
+
+/* The honesty line: in the reading flow, at the weight of what it qualifies (`M06-04`, `F8-23`). */
+.hg-pb-honest {
+  margin: var(--sp-4) 0 0;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--line-soft);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+.hg-pb[data-mode="paper"] .hg-pb-honest {
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--text-primary);
+}
+
+.hg-pb-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+}
+.hg-pb-verdict[data-state="met"] {
+  color: var(--success-text);
+}
+.hg-pb-verdict[data-state="off"] {
+  color: var(--warning-text);
+}
+
+.hg-pb-bad-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--danger-text);
+  font-weight: var(--fw-medium);
+}
+
+/* ── price ─────────────────────────────────────────────────────────────────── */
+.hg-pb-price-main {
+  margin-top: var(--sp-2);
+}
+.hg-pb-price-main[data-bad] .hg-text {
+  color: var(--danger-text);
+}
+
+.hg-pb-pair {
+  margin-top: var(--sp-4);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-2);
+}
+.hg-pb-fact {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  /* biome-ignore lint/plugin/raw-white-css: glass — the card colour let through over the hero's light, as a tile is */
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  min-width: 0;
+}
+.hg-pb-fact-words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.hg-pb-fact-name {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pb-fact-value {
+  margin-top: var(--sp-0-5);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+}
+.hg-pb[data-mode="paper"] .hg-pb-fact {
+  padding: 16px 18px;
+  background: var(--fill);
+  box-shadow: none;
+}
+.hg-pb[data-mode="paper"] .hg-pb-fact-name {
+  font-size: 14px;
+  line-height: 20px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-fact-value {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+/* The margin: only its holder is handed it, and the strip says so. */
+.hg-pb-margin {
+  margin-top: var(--sp-3);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 10px var(--sp-3);
+  border-radius: var(--r-sm);
+  background: var(--success-bg);
+  color: var(--success-text);
+  font-size: var(--fs-body-sm);
+}
+.hg-pb-margin[data-loss] {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+.hg-pb-margin .hg-shell-glyph {
+  color: inherit;
+}
+.hg-pb-margin b {
+  font-weight: var(--fw-medium);
+}
+.hg-pb-margin-aside {
+  margin-inline-start: auto;
+  font-size: var(--fs-caption);
+}
+
+@keyframes hg-pb-grow {
+  from {
+    transform: scaleY(0.02);
+  }
+}
+@keyframes hg-pb-grow-across {
+  from {
+    transform: scaleX(0.02);
+  }
+}
+@keyframes hg-pb-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* A printed page holds still: nothing on it is caught mid-arrival. */
+[data-still] .hg-pb *,
+[data-still] .hg-pb *::before {
+  /* biome-ignore lint/complexity/noImportantStyles: print — a still page must beat every arrival the same blocks play on a screen */
+  animation: none !important;
+  /* biome-ignore lint/complexity/noImportantStyles: print — a still page must beat every arrival the same blocks play on a screen */
+  transition: none !important;
+}
+[data-still] .hg-pb-payback-line {
+  stroke-dashoffset: 0;
+}

@@ -12,14 +12,15 @@ import {
 import { useI18n } from '@heliogrid/i18n/react';
 import {
   LargeTitle,
+  PROJECT_WIDE_FROM,
   ProjectActSheet,
   ProjectDetailStates,
   ProjectInstallSteps,
   projectActFormOf,
   projectStepsActsOf,
   useFormat,
+  useOwnWidth,
 } from '@heliogrid/ui';
-import { useRef } from 'react';
 import { ProjectToast } from '../../lib/project-toast';
 import { ProjectTrail } from './components/ProjectTrail';
 import { useProjectMoves } from './hooks/use-project-moves';
@@ -39,7 +40,9 @@ export function ProjectStepsScreen({ projectId }: { projectId: string }) {
   const moves = useProjectMoves(projectId, screen);
   const word = projectPackWords(format.pack, locale);
   const words = projectDetailWords(t, word, format.date);
-  const room = useRef<HTMLDivElement>(null);
+  const [room, width] = useOwnWidth<HTMLDivElement>();
+  /* Below the desktop's room the trail is one way back, as on the project's own page. */
+  const narrow = width === null || width < PROJECT_WIDE_FROM;
   const { read } = screen;
   const project = read.kind === 'ready' ? read.value.project : null;
   const title =
@@ -55,6 +58,7 @@ export function ProjectStepsScreen({ projectId }: { projectId: string }) {
     <div ref={room} tabIndex={-1} className="hg-shell-page hg-focus-target hg-project-page">
       <ProjectTrail
         acts={null}
+        narrow={narrow}
         board={destinationLabel(t, moves.wayBack)}
         project={title}
         documents={words.steps}

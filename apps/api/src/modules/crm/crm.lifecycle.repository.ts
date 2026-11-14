@@ -1,6 +1,7 @@
 import type { LeadDetail } from '@heliogrid/contracts';
 import { customer, type DbTransaction, lead, type TenantPool, task } from '@heliogrid/db';
 import {
+  isClosed,
   type LeadActContext,
   type LeadActRefusal,
   type LeadActResult,
@@ -20,6 +21,7 @@ import {
   personOf,
   todayOf,
 } from './crm.lead-lock.repository';
+import { withdrawProposalsOfClosedLead } from './crm.lead-proposals.repository';
 import { activeMemberOf } from './crm.member-roles.repository';
 import { cancelOpenTasks, raiseTask } from './crm.raised-tasks.repository';
 import { recordLeadMoves } from './crm.timeline.repository';
@@ -64,6 +66,10 @@ export class CrmLifecycleRepository {
       if (result.kind === 'refused') return { outcome: 'refused', refusal: result.refusal };
       await recordLeadMoves(tx, locked, result, personOf(act), capturedAt);
       await plan.follows?.(tx, locked, act);
+      // A lead that closes takes its proposals off the customer's link (`M06-45`).
+      if (isClosed(result.next) && !isClosed(locked.lifecycle)) {
+        await withdrawProposalsOfClosedLead(tx, locked, capturedAt);
+      }
       return { outcome: 'done', detail: await detailAfterAct(tx, reader, leadId, money) };
     });
   }

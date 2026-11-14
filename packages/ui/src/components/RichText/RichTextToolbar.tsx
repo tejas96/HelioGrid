@@ -61,6 +61,8 @@ interface RichTextToolbarProps {
   disabled: boolean;
   hasLogo: boolean;
   linking: boolean;
+  /** `RichTextProps.marksOnly`: the link and the logo are not offered. */
+  marksOnly?: boolean;
   templates?: RichTextTemplate[];
   saveTemplateLabel: TranslatedText | undefined;
   onRun: (e: MouseEvent<HTMLButtonElement>, c: ToolCommand) => void;
@@ -77,6 +79,7 @@ export function RichTextToolbar({
   disabled,
   hasLogo,
   linking,
+  marksOnly = false,
   templates,
   saveTemplateLabel,
   onRun,
@@ -96,26 +99,30 @@ export function RichTextToolbar({
           onMouseDown={(e) => onRun(e, c)}
         />
       ))}
-      <ToolButton
-        label={words.link}
-        glyph={LINK_GLYPH}
-        active={linking}
-        onMouseDown={(e) => {
-          e.preventDefault();
-          onToggleLink();
-        }}
-      />
-      <span className="hg-rich-text-divider" aria-hidden="true" />
-      <ToolButton
-        label={hasLogo ? words.removeTheLogo : words.addTheLogo}
-        active={hasLogo}
-        onMouseDown={(e) => {
-          e.preventDefault();
-          onToggleLogo();
-        }}
-      >
-        {hasLogo ? words.logoOn : words.addLogo}
-      </ToolButton>
+      {marksOnly ? null : (
+        <>
+          <ToolButton
+            label={words.link}
+            glyph={LINK_GLYPH}
+            active={linking}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              onToggleLink();
+            }}
+          />
+          <span className="hg-rich-text-divider" aria-hidden="true" />
+          <ToolButton
+            label={hasLogo ? words.removeTheLogo : words.addTheLogo}
+            active={hasLogo}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              onToggleLogo();
+            }}
+          >
+            {hasLogo ? words.logoOn : words.addLogo}
+          </ToolButton>
+        </>
+      )}
       <span className="hg-rich-text-spacer" />
       {templates !== undefined && templates.length > 0 ? (
         <select

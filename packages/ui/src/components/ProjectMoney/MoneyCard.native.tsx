@@ -9,6 +9,7 @@ import { Card } from '../Card/Card.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { useFormat } from '../MarketProvider';
 import { CardHead } from '../ProjectDetail/ProjectDetailParts.native';
+import { moneyCardAmountsOf } from './ProjectMoney.logic';
 import type { MoneyCardProps } from './ProjectMoney.types';
 
 /**
@@ -19,6 +20,7 @@ import type { MoneyCardProps } from './ProjectMoney.types';
 export function MoneyCard({ money, today, words, onShare, onOpen }: MoneyCardProps) {
   const format = useFormat();
   const due = money.duePart;
+  const amounts = moneyCardAmountsOf(money, format);
   return (
     <Card density="functional" style={styles.card}>
       <CardHead
@@ -34,9 +36,7 @@ export function MoneyCard({ money, today, words, onShare, onOpen }: MoneyCardPro
         {Number(money.total) === 0 ? (
           <Text variant="body">{words.noScheduleTitle}</Text>
         ) : (
-          <Text variant="body">
-            {words.collectedOf(format.money(money.collected), format.money(money.total))}
-          </Text>
+          <Text variant="body">{words.collectedOf(amounts.collected, amounts.total)}</Text>
         )}
         {due === null ? (
           <Text variant="body-sm" color="secondary">
@@ -44,9 +44,7 @@ export function MoneyCard({ money, today, words, onShare, onOpen }: MoneyCardPro
           </Text>
         ) : (
           <View style={styles.due}>
-            <Text variant="body">
-              {words.duePartLine(due.label, format.money(due.outstanding))}
-            </Text>
+            <Text variant="body">{words.duePartLine(due.label, amounts.outstanding ?? '')}</Text>
             <StatusMark
               tone="warning"
               label={words.dueFor(words.days(daysFrom(due.dueOn, today)))}

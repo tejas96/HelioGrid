@@ -1,3 +1,5 @@
+import type { ComponentCategory } from '../proposals/component-category';
+
 /**
  * `pack.certification-schemes` — which certification schemes a market requires, and the
  * engineering-standards labels its documents carry (`F1-19`, `F1-20`). Two structures in one
@@ -35,6 +37,12 @@ export interface CertificationScheme {
   /** The scheme's own name — `ALMM`. A value, and the text a badge shows. */
   readonly scheme: string;
   readonly evidence: CertificationEvidence;
+  /**
+   * The component categories the scheme applies to (`M06-23`, `F1-34`): a gate checks only the
+   * lines of these categories against it. `null` on a pack stored before the fact existed, which
+   * reads as every category — the gate then fails closed rather than passing a line unchecked.
+   */
+  readonly binds: readonly ComponentCategory[] | null;
 }
 
 /**
@@ -84,8 +92,10 @@ export const IN_CERTIFICATION_SCHEMES: CertificationSchemesPack = {
    * references the MNRE list, while DCR is the flag the subsidy path gates on (`F1-34`).
    */
   schemes: [
-    { scheme: 'ALMM', evidence: 'list_reference' },
-    { scheme: 'DCR', evidence: 'flag' },
+    /** ALMM is MNRE's list of PV modules and their makers, so it binds the panels. */
+    { scheme: 'ALMM', evidence: 'list_reference', binds: ['panel'] },
+    /** DCR is a rule on where a module's cells are made: the panels alone (owner ruling 2026-11-13). */
+    { scheme: 'DCR', evidence: 'flag', binds: ['panel'] },
   ],
   /**
    * `F1-45` — the IS/IEC family on every electrical document, with CEA named on the drawings

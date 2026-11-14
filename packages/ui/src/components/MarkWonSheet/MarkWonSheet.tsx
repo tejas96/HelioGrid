@@ -7,6 +7,7 @@ import { DatePicker } from '../DatePicker';
 import { EditorSurface } from '../EditorSurface';
 import { LottieMoment } from '../LottieMoment';
 import { NumberField } from '../NumberField';
+import { MarkWonLockedValue, MarkWonPlan, MarkWonProof } from './MarkWonBasis';
 import { MarkWonManagerField } from './MarkWonManager';
 import type { MarkWonSheetProps } from './MarkWonSheet.types';
 import { useMarkWonForm } from './use-mark-won-form';
@@ -43,6 +44,7 @@ export function MarkWonSheet(props: MarkWonSheetProps) {
 
 function MarkWonForm(props: MarkWonSheetProps) {
   const form = useMarkWonForm(props);
+  const { basis } = props;
   /* A form, so Enter in a typed field sends as the button does — the value field keeps Enter for
      its own commit, so the key is read here; on a trigger (the date, the manager) Enter opens that
      control instead. `dialog`: an Enter before the page is live reloads nothing. */
@@ -61,9 +63,15 @@ function MarkWonForm(props: MarkWonSheetProps) {
       <Text variant="body-sm" color="secondary">
         {props.words.line}
       </Text>
-      <NumberField {...form.value} />
+      {basis === undefined ? null : <MarkWonProof basis={basis} />}
+      {basis?.locked === true ? (
+        <MarkWonLockedValue basis={basis} />
+      ) : (
+        <NumberField {...form.value} />
+      )}
       <DatePicker {...form.date} />
       <MarkWonManagerField {...form.manager} />
+      {basis === undefined ? null : <MarkWonPlan basis={basis} />}
       <div className="hg-mark-won-send">
         {form.failure === null ? null : (
           <Text variant="body-sm" color="danger" live>

@@ -57,15 +57,16 @@ describe('The sidebar, through the real client', () => {
     expect(requestsTo('/tenants/me/members')).toHaveLength(0);
   });
 
-  it('Proposals is marked Soon until its module lands; Leads and Projects, landed, and Home and More never are', async () => {
+  it('People is marked Soon until its module lands; Leads, Proposals and Projects, landed, and Home and More never are', async () => {
     const view = mountedSidebar();
     const { soon } = view.result.current;
     expect([
       soon('leads'),
       soon('projects'),
       soon('proposals'),
+      soon('people'),
       soon('home'),
       soon('more'),
-    ]).toEqual([false, false, true, false, false]);
+    ]).toEqual([false, false, false, true, false, false]);
   });
 });

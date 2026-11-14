@@ -57,7 +57,23 @@ export interface QuickAddFormProps {
   onSave: () => void;
   onRetry: () => void;
   onDismissReturned: () => void;
+  /**
+   * The number is already a lead the person reaches (`T-M06-001`, *Who is it for?*): the form shows
+   * that lead and one act that uses it, and asks for nothing more — so no second lead is made.
+   */
+  knownLead?: QuickAddKnownLead | null;
+  /** A line under Save: what the save also does — "This also makes a lead…". */
+  saveNote?: TranslatedText;
   words: QuickAddFormWords;
+}
+
+/** The lead a typed number already belongs to, and the act that goes on with it. */
+export interface QuickAddKnownLead {
+  /** "Anil Sharma is already a lead". */
+  readonly line: TranslatedText;
+  /** "Use Anil Sharma". */
+  readonly use: TranslatedText;
+  readonly onUse: () => void;
 }
 
 /**

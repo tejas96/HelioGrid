@@ -32,6 +32,61 @@ export const queryKeys = {
     /** Under the projects, so a payment recorded or reversed asks again. */
     referenceCheck: (tenantId: string, referenceKey: string) =>
       ['projects', tenantId, 'reference', referenceKey] as const,
+    /** What putting a version in force would do (`M08-50`): under the projects, so a payment asks again. */
+    versionInForce: (tenantId: string, projectId: string, version: number) =>
+      ['projects', tenantId, 'version-in-force', projectId, version] as const,
+    /** The evening-before installation message (`F5-68`): a project's change composes it again. */
+    crewMessage: (tenantId: string, projectId: string) =>
+      ['projects', tenantId, 'crew-message', projectId] as const,
+  },
+  /**
+   * A company's proposals (`M06`). One prefix: a commit moves the proposal, its row in the list,
+   * every chip's count and the forecast at once, so every act refreshes the lists under it. The
+   * one detail read is written from each act's own answer, so the builder never waits to redraw.
+   */
+  proposals: {
+    all: (tenantId: string) => ['proposals', tenantId] as const,
+    lists: (tenantId: string) => ['proposals', tenantId, 'list'] as const,
+    list: (tenantId: string, ask: unknown) => ['proposals', tenantId, 'list', ask] as const,
+    detail: (tenantId: string, proposalId: string) =>
+      ['proposals', tenantId, 'detail', proposalId] as const,
+    /** What hangs off one proposal, apart from its detail: an act lets all of it go at once. */
+    about: (tenantId: string, proposalId: string) =>
+      ['proposals', tenantId, 'about', proposalId] as const,
+    versions: (tenantId: string, proposalId: string) =>
+      ['proposals', tenantId, 'about', proposalId, 'versions'] as const,
+    version: (tenantId: string, proposalId: string, version: number) =>
+      ['proposals', tenantId, 'about', proposalId, 'version', version] as const,
+    /** A version's PDF: `null` while it is made, so the read is asked again until it is there. */
+    versionPdf: (tenantId: string, proposalId: string, version: number) =>
+      ['proposals', tenantId, 'about', proposalId, 'pdf', version] as const,
+    shareMessage: (tenantId: string, proposalId: string) =>
+      ['proposals', tenantId, 'about', proposalId, 'share-message'] as const,
+    acceptanceMessage: (tenantId: string, proposalId: string) =>
+      ['proposals', tenantId, 'about', proposalId, 'acceptance-message'] as const,
+    /** A deal's named links (`SCR-M06-20`), by its lead: a share mints one, so a share refreshes them. */
+    links: (tenantId: string, leadId: string) => ['proposals', tenantId, 'links', leadId] as const,
+    /** What *Mark won* takes from the lead's proposal (`M07-62`): an answer or a share moves it. */
+    wonBasis: (tenantId: string, leadId: string) =>
+      ['proposals', tenantId, 'won-basis', leadId] as const,
+  },
+  /** The company's saved parts (`M06-28`): a write's answer refreshes every picker's list. */
+  savedParts: {
+    all: (tenantId: string) => ['saved-parts', tenantId] as const,
+    list: (tenantId: string, kind: string | null, archived: boolean) =>
+      ['saved-parts', tenantId, kind, archived] as const,
+  },
+  /**
+   * The customer's own page (`F5-19`), keyed by the link's token and nothing else: no company and
+   * no person is known there. An act's answer replaces the page.
+   */
+  customerLink: {
+    page: (token: string) => ['customer-link', token, 'page'] as const,
+    /** By the version the page shows: a page read onto a newer version never keeps the earlier PDF. */
+    pdf: (token: string, versionId: string | null) =>
+      ['customer-link', token, 'pdf', versionId] as const,
+    /** A frozen version for the renderer, by the version and its grant. */
+    print: (versionId: string, grant: string) => ['proposal-print', versionId, grant] as const,
   },
   /** The owner dashboard (`SCR-M13-01`): its own prefix — a periodic read, asked again on its target. */
   dashboards: {

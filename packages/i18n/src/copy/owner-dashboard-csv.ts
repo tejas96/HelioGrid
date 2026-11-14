@@ -30,6 +30,27 @@ export interface DashboardCsvFormat {
 }
 
 /**
+ * The forecast's row: the figure the server sent with its count and tier, or — from an api built
+ * before proposals, which sends none — the gap the screen shows then. Never the gap beside a figure.
+ */
+function forecastRowOf(
+  t: T,
+  forecast: OwnerDashboard['forecast'],
+  format: DashboardCsvFormat,
+): string[] {
+  const title = t(OWNER_DASHBOARD.forecastTitle);
+  if (forecast === undefined) {
+    return [title, '', t(OWNER_DASHBOARD.forecastGap), t(OWNER_DASHBOARD.forecastNote)];
+  }
+  return [
+    title,
+    t(OWNER_DASHBOARD.forecastFrom, { count: forecast.count }),
+    format.money(forecast.expected),
+    t(PROVENANCE_TIER_WORD[forecast.tier]),
+  ];
+}
+
+/**
  * The dashboard as a CSV (`M13-52`…`M13-54`): the same scoped figures the screen read, each beside
  * its provenance and caveat — "so far this month", "expected, not promised", the median's n — so
  * an export never says less than the screen. Built from the read the screen already holds, so it
@@ -105,12 +126,7 @@ export function ownerDashboardCsv(
       view.target === null ? '' : format.money(view.target.amount),
       view.target === null ? t(OWNER_DASHBOARD.noTarget) : '',
     ],
-    [
-      t(OWNER_DASHBOARD.forecastTitle),
-      '',
-      t(OWNER_DASHBOARD.forecastGap),
-      t(OWNER_DASHBOARD.forecastNote),
-    ],
+    forecastRowOf(t, view.forecast, format),
     ...LEAD_STAGES.filter((stage) => stage !== 'won').map((stage) => [
       pipeline,
       t(LEAD_STAGE_WORD[stage]),

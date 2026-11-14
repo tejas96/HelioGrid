@@ -13,7 +13,12 @@ import { clampCount } from '../../utils/count';
 import { renderActionReason } from '../ActionReason/ActionReason.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
-import { isFieldControl, reasonedOptions, selectedIndex } from './SegmentedControl.options';
+import {
+  isChosen,
+  isFieldControl,
+  reasonedOptions,
+  selectedIndex,
+} from './SegmentedControl.options';
 import type { SegmentedControlProps, SegmentedOption } from './SegmentedControl.types';
 
 interface NativeSegmentedControlProps extends SegmentedControlProps {
@@ -82,16 +87,18 @@ export function SegmentedControl({
           error !== undefined ? styles.trackError : undefined,
         ]}
       >
-        <Animated.View
-          style={[
-            styles.indicator,
-            {
-              width: segmentWidth,
-              backgroundColor: colors['accent-subtle'],
-              transform: [{ translateX: slide }],
-            },
-          ]}
-        />
+        {isChosen(options, value) ? (
+          <Animated.View
+            style={[
+              styles.indicator,
+              {
+                width: segmentWidth,
+                backgroundColor: colors['accent-subtle'],
+                transform: [{ translateX: slide }],
+              },
+            ]}
+          />
+        ) : null}
         {options.map((option) => (
           <Segment
             key={option.value}

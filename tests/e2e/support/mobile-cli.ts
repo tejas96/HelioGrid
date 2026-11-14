@@ -42,6 +42,7 @@ import { paymentsFlowWords } from './payments.ts';
 import { freshMobile } from './phone.ts';
 import { markWonBody } from './project-facts.ts';
 import { projectFlowWords } from './project-flow.ts';
+import { proposalFlowWords } from './proposal-flow.ts';
 import { usageWords } from './usage-flow.ts';
 
 /**
@@ -148,6 +149,7 @@ if (command === 'words') {
     ...usageWords(t),
     /** `SCR-SHELL-06`: a fresh trial's quiet count, the day it starts. */
     TRIAL_CHIP: billingStripWords(t.t).trialDaysLeft(14),
+    ...proposalFlowWords(t),
     ...settingsRows(t),
   };
   assertEveryFlowWordKnown(Object.keys(words));
@@ -194,7 +196,12 @@ async function companyFor(national: string, phoneE164: string): Promise<void> {
   /* A lead of its own for the projects flows, so the lead flows still read theirs as captured. */
   const won = await leadFor(owned, actor.userId, { name: `Won ${national}`, city: 'Pune' });
   const projectId = await projectFor(owned, won.leadId, actor.userId);
-  process.stdout.write(`${lead.leadId} ${lead.customerId} ${family.customerId} ${projectId}\n`);
+  /* A proposal draft on the first lead, started as the start sheet sends it for a home lead: the
+     proposals flows open it (`SCR-M06-16`…`SCR-M06-20`). */
+  const proposalId = await draftFor(owned, lead.leadId);
+  process.stdout.write(
+    `${lead.leadId} ${lead.customerId} ${family.customerId} ${projectId} ${proposalId}\n`,
+  );
   /* The phone asks the same number for a code next, and the api sends none until the resend time
      it gave here has passed — a code asked for sooner never reaches the api log. */
   const wait = Date.parse(resendAvailableAt) - Date.now();
@@ -224,6 +231,14 @@ async function leadFor(
   };
   await call(`/leads/${lead.id}/assign`, { assigneeId: ownerId, expectedOwnerId: null }, cookie);
   return { leadId: lead.id, customerId: customer.id };
+}
+
+/** The lead's proposal draft (`M06-05`), in Quick mode; answers the proposal's id. */
+async function draftFor(cookie: string, leadId: string): Promise<string> {
+  const body = { quickMode: true, copyOf: null };
+  const key = { [IDEMPOTENCY_KEY_HEADER]: randomUUID() };
+  const started = await call(`/leads/${leadId}/proposals`, body, cookie, key);
+  return ((await started.json()) as { id: string }).id;
 }
 
 /**

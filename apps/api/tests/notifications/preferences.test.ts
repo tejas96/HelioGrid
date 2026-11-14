@@ -12,7 +12,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   type NotificationToWrite,
   recordNotification,
-} from '../../src/modules/notification/notification.repository';
+} from '../../src/modules/notification/notification.writes.repository';
 import { openPools } from '../support/fixture';
 import { bootHttp, type Http, skipWithoutHarness } from '../support/http';
 
@@ -208,15 +208,16 @@ describe.skipIf(skip)('quiet hours and push mutes, over HTTP against a migrated 
     expect(row?.pushDueAt?.toISOString()).toBe(WINDOW_ENDS);
   });
 
-  it('does not hold an immediate push, however deep in the window it fires (F6-13)', async () => {
+  it("holds an immediate push too — a customer's Accept at night waits for the morning (F6-14, T-F5-008)", async () => {
     await pools.admin.db.transaction((tx) =>
-      recordNotification(tx, sent('urgent', 'agent_escalation'), NIGHT),
+      recordNotification(tx, sent('accepted at night', 'proposal_accepted'), NIGHT),
     );
     const [row] = await pools.admin.db
-      .select({ pushDueAt: notification.pushDueAt })
+      .select({ emittedAt: notification.emittedAt, pushDueAt: notification.pushDueAt })
       .from(notification)
-      .where(and(eq(notification.tenantId, tenantId), eq(notification.title, 'urgent')));
-    expect(row?.pushDueAt?.toISOString()).toBe(AT_NIGHT.toISOString());
+      .where(and(eq(notification.tenantId, tenantId), eq(notification.title, 'accepted at night')));
+    expect(row?.emittedAt.toISOString()).toBe(AT_NIGHT.toISOString());
+    expect(row?.pushDueAt?.toISOString()).toBe(WINDOW_ENDS);
   });
 
   it('holds nothing at all when the tenant keeps no quiet hours', async () => {

@@ -5,7 +5,8 @@ import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Button } from '../Button';
 import { NamedGap } from '../NamedGap';
 import { LeadFileList } from './LeadFileList';
-import type { LeadSectionsProps, LeadSiteVisit } from './LeadSections.types';
+import { LeadProposalList } from './LeadProposalList';
+import type { LeadSectionsProps, LeadSitePanelFacts, LeadSiteVisit } from './LeadSections.types';
 import { LeadTaskList } from './LeadTaskList';
 
 /** The one section in view: the caller's timeline, or the site, designs, proposals, tasks or files. */
@@ -15,7 +16,7 @@ export function LeadSectionPanel(props: LeadSectionsProps) {
     case 'timeline':
       return props.timeline;
     case 'site':
-      return <Site address={props.siteAddress} visit={props.visit} words={words} />;
+      return <Site site={props.site} visit={props.visit} words={words} />;
     case 'designs':
       return (
         <Count
@@ -25,6 +26,7 @@ export function LeadSectionPanel(props: LeadSectionsProps) {
         />
       );
     case 'proposals':
+      if (props.proposals !== undefined) return <LeadProposalList panel={props.proposals} />;
       return (
         <Count
           glyph="document"
@@ -40,11 +42,11 @@ export function LeadSectionPanel(props: LeadSectionsProps) {
 }
 
 function Site({
-  address,
+  site,
   visit,
   words,
 }: {
-  address: string | null;
+  site: LeadSitePanelFacts;
   visit: LeadSiteVisit | null;
   words: LeadSectionsProps['words'];
 }) {
@@ -52,15 +54,24 @@ function Site({
     <div className="hg-lead-section-site">
       <div className="hg-lead-section-head">
         <span className="hg-lead-section-overline">{words.site}</span>
-        {visit === null ? null : <StatusMark tone="success" label={words.confirmed} />}
+        {site.confirmed ? <StatusMark tone="success" label={words.confirmed} /> : null}
       </div>
-      {address === null ? (
-        <NamedGap gap={words.siteGap} />
-      ) : (
+      {site.address === null && site.facts.length === 0 ? <NamedGap gap={words.siteGap} /> : null}
+      {site.address === null ? null : (
         <p className="hg-lead-section-address">
           <ShellGlyph name="pin" size="sm" tone="secondary" />
-          <span>{address}</span>
+          <span>{site.address}</span>
         </p>
+      )}
+      {site.facts.length === 0 ? null : (
+        <dl className="hg-lead-section-facts">
+          {site.facts.map((fact) => (
+            <div key={fact.key}>
+              <dt>{fact.label}</dt>
+              <dd>{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
       )}
       {visit === null ? null : (
         <>

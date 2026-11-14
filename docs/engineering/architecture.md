@@ -118,7 +118,7 @@ TWO entry points: `.` for everyone, and `./server` (`src/server.ts`) for `apps/a
 alone — the functions that compute a money figure (`F4-04`), and a business-identifier formatter
 when one is written. No package a device bundles imports `./server` (dependency-cruiser
 `devices-never-compute-money`).
-Extension point: one folder per module slice (audit/, auth/, authz/, branding/, calling/, catalog/, certification/, commerce/, crm/, dashboards/, files/, format/, import/, market/, messaging/, money/, notifications/, payments/, pricing/, projects/, rails/, search/, shell/, subject/, subsidy/, tasks/, tax/, tenancy/ today); each
+Extension point: one folder per module slice (audit/, auth/, authz/, branding/, calling/, catalog/, certification/, commerce/, crm/, customer-link/, dashboards/, files/, format/, import/, market/, messaging/, money/, notifications/, payments/, pricing/, projects/, proposals/, rails/, search/, shell/, subject/, subsidy/, tasks/, tax/, tenancy/ today); each
 module appends its own capability rows when its slice begins.
 
 ### db — schema mirror, migrations, backend client
@@ -145,7 +145,9 @@ contracts, domain, config. Platform scope: shared frontend (core framework-free;
 confined to src/react/ and src/server/). THREE entry points, all declared in package.json
 exports and all named in package-index-only: `.` framework-free · `./react` the React Query
 adapter · `./server` one request-scoped context for a Next server render. Belongs: every new
-endpoint's repository + hook. Never (all held by data-lean): db (the uuid subpath included), ui, theme, i18n,
+endpoint's repository + hook; a view model two screens draw from either of two sources is one hook
+(`src/react/use-proposal-reader-document.ts`: a version's document as the server sent it, or a
+sample). Never (all held by data-lean): db (the uuid subpath included), ui, theme, i18n,
 adapters, and any app; a second client; platform APIs; a process-global holding credentials
 or a QueryClient. Extension point: one repository per contract router, registered in
 src/composition.ts.
@@ -192,8 +194,11 @@ grow here.
 Owns: `primitives/` (the 10 atoms, two of which hold product law — 44px targets and
 status-never-by-colour-alone) and `components/<Name>/` where `<Name>.types.ts` is the one
 prop contract, `<Name>.tsx` is web and `<Name>.native.tsx` is RN. Allowed deps: contracts,
-domain, theme, config. Platform scope: BOTH. Belongs: a new shared visual component — one
-folder, three files, one change (Law 7). Never: screens/routes; data access; navigation;
+domain, theme, config. Platform scope: BOTH. TWO entry points: `.` for both platforms, and `./print` (`src/print.ts`) — the
+print surfaces with no native half (`PagedDocument`, `ProposalPrint`), imported by the web alone.
+Belongs: a new shared visual component — one folder, three files, one change (Law 7); a picture a
+component draws, bundled once in that component's folder and chosen by name
+(`components/ProposalPicture/pictures/`). Never: screens/routes; data access; navigation;
 raw colour (Biome plugins `raw-colour`, `raw-colour-css`). Extension point: a folder under `src/components/`.
 
 Replaces the v1 split of `packages/ui` (web) + `apps/mobile/src/ui` (RN) +
@@ -206,7 +211,11 @@ Owns: routes (app/ — routing only), features/ (capability owners), web screens
 (app infrastructure: env.ts — the allowlisted literal
 NEXT_PUBLIC_* read; see §2 env). Allowed deps: contracts, data, domain, env, forms, i18n,
 theme, ui, config. Platform scope: web (browser + Next server runtime). Belongs: screen
-composition, web-only hooks (DOM APIs) under features/*/shared/. Never: db (web-no-db — uuid subpath included), @ts-rest/* or any HTTP client (apps-never-touch-the-wire,
+composition, web-only hooks (DOM APIs) under features/*/shared/. A FOCUS screen — one job, drawn
+without the sidebar, the settings side list or the bottom pill — joins by its path pattern in
+`lib/focus-screen.tsx` and nowhere else. `(open)/p/[token]` is the customer's page (the token is
+the grant); `(open)/print/proposal/[versionId]` is the PDF renderer's alone, read through a
+short-lived signed grant. Never: db (web-no-db — uuid subpath included), @ts-rest/* or any HTTP client (apps-never-touch-the-wire,
 no-raw-http-clients), react-hook-form/zod directly (forms is the fence), RN imports.
 Extension point: a new capability is a new features/<capability>/ folder with an index
 barrel — app/ may import it only through that barrel
@@ -249,15 +258,21 @@ commands that drive a service. Never: ui/theme/data (frontend layers — held by
 Turbo boundary tag); i18n's `./react` or `./rn` (dependency-cruiser `server-no-i18n-frontend-entries`); raw
 process.env (env owns it); a periodic job — every api instance would run it, so it is a Temporal
 Schedule whose workflow lives in apps/worker (the step host's reconnect timer is per process by
-design, not a job). Extension point: one Nest module per contract router,
+design, not a job). A public route (the customer link) declares `public` access: the token is the grant, and the
+token never reaches a log line (a credential-bearing path joins `SECRET_IN_PATH`, common/logging.ts). A query fragment two modules
+must share where one may not import the other lives in common/db
+(`proposal-on-link.repository.ts`, the SQL mirror of a domain rule: the domain function changes
+first). Extension point: one Nest module per contract router,
 repositories fenced by db-access-in-repositories-only.
 
 ### apps/worker — Temporal workflows and activities
 **STATUS: Temporal worker (ADR-0025).** BullMQ was removed in the Track 7 cutover and its
-contract export deleted in Track 9; `no-bullmq` makes re-adding it a build failure. Two areas
-exist: `modules/platform/`, deliberately not a product module — the cutover proves the path
-without a product module depending on an unproven mechanism — and `modules/outbox/`, the sweep
-that starts what the api's fast dispatch missed.
+contract export deleted in Track 9; `no-bullmq` makes re-adding it a build failure. One area per
+business area under `modules/`; `modules/platform/` is deliberately not a product module, and
+`modules/outbox/` is the sweep that starts what the api's fast dispatch missed. `modules/documents/`
+is the one renderer: a small document's HTML page in and its PDF back, or a web page printed and
+its bytes PUT to a signed object-store address — a proposal's PDF never rides a payload
+(`docs/engineering/07-integrations.md` §10).
 Owns: the single Temporal connection and worker lifecycle (common/temporal — graceful drain on
 SIGTERM), and one folder per business area under src/modules/<area>/ holding
 `<area>.workflows.ts` (DETERMINISTIC — imports nothing from Node, Nest, db, HTTP or env),

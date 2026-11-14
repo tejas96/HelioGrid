@@ -1,4 +1,5 @@
 import { IDEMPOTENCY_KEY_HEADER, type KnownActivity, type LeadDetail } from '@heliogrid/contracts';
+import { IN_FORMATS } from '@heliogrid/domain';
 import {
   assignPickerWords,
   createTranslator,
@@ -89,7 +90,7 @@ function createdLine(): string {
     kind: 'lead_created',
     body: { source: 'quick_add', segment: 'residential' },
   };
-  const formats = { day: String, time: String, money: String, word: packWord };
+  const formats = { pack: IN_FORMATS, day: String, time: String, word: packWord };
   return leadTimelineEntryWords(en.t, formats, { known: true, activity: created }).summary;
 }
 

@@ -2,7 +2,7 @@
 import type { Paginated } from '@heliogrid/contracts';
 import { mapRead, type Read } from '@heliogrid/domain';
 import { keepPreviousData, type QueryKey, useInfiniteQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { readFailureOf, readOf } from './read';
 
 interface PaginatedListOptions<TItem extends { id: string }> {
@@ -46,6 +46,9 @@ export function usePaginatedList<TItem extends { id: string }>({
     placeholderData: keepPreviousWhileLoading ? keepPreviousData : undefined,
   });
 
+  /* The pull's own wait, from the press to the answer: a read again the cache starts by itself is no pull. */
+  const [pulling, setPulling] = useState(false);
+
   /* One array per answer, so a screen that memoises on the rows redraws only when they move. */
   const items = useMemo(
     () => dedupeById(query.data?.pages.flatMap((page) => page.items) ?? []),
@@ -68,6 +71,12 @@ export function usePaginatedList<TItem extends { id: string }>({
     isFetchingNextPage: query.isFetchingNextPage,
     /** The next page failed while the pages already shown stand. */
     isFetchNextPageError: query.isFetchNextPageError,
+    /** Reads every page in again — a pull on the list; `pulling` holds until it answers. */
+    pull: () => {
+      setPulling(true);
+      void query.refetch().finally(() => setPulling(false));
+    },
+    pulling,
   };
 }
 

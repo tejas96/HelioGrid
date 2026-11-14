@@ -1,5 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { DayPart, SetupReadiness, SetupStep } from '@heliogrid/domain';
+import { type DayPart, firstNameOf, type SetupReadiness, type SetupStep } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { settingsRowName, settingsWords } from './settings';
 
@@ -44,7 +44,7 @@ export function homeGreeting(
   part: DayPart,
   name: string,
 ): TranslatedText {
-  return translate(GREETING[part], { name: name.trim().split(/\s+/)[0] ?? name });
+  return translate(GREETING[part], { name: firstNameOf(name) });
 }
 
 /** Every word the first-proposal hero draws around its figure and its steps. */

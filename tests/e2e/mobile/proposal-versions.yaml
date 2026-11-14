@@ -1,0 +1,13 @@
+# A proposal's versions (`SCR-M06-16`, `M06-42`) at `proposals/<id>/versions`: the large title and
+# the draft's line that Generate makes the first version, and the way back to the proposal.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://proposals/${PROPOSAL_ID}/versions
+- extendedWaitUntil:
+    visible: ${VERSIONS_TITLE}
+    timeout: 15000
+- assertVisible: ${VERSIONS_NONE}
+- tapOn: ${BACK_TO_PROPOSAL}
+- extendedWaitUntil:
+    visible: ${PROPOSAL_DRAFT}
+    timeout: 15000

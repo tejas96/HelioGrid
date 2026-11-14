@@ -33,6 +33,19 @@ export const LEAD_ACTIVITY_LOOK: Record<ActivityKind, ActivityKindLook> = {
   project_document: { tone: 'neutral', glyph: 'doc' },
   project_step: { tone: 'success', glyph: 'check' },
   project_changed: { tone: 'neutral', glyph: 'cog' },
+  /* A proposal's acts: what a person did is neutral or success; what the customer did is info,
+     their yes success, their no danger — the tone beside the word, never instead of it. */
+  proposal_generated: { tone: 'success', glyph: 'doc' },
+  proposal_shared: { tone: 'accent', glyph: 'link' },
+  proposal_withdrawn: { tone: 'warning', glyph: 'undo' },
+  proposal_opened: { tone: 'info', glyph: 'doc' },
+  proposal_accepted: { tone: 'success', glyph: 'check' },
+  proposal_negotiation_requested: { tone: 'warning', glyph: 'note' },
+  proposal_declined: { tone: 'danger', glyph: 'flag' },
+  customer_question: { tone: 'info', glyph: 'note' },
+  customer_call_requested: { tone: 'info', glyph: 'phone' },
+  customer_link_changed: { tone: 'neutral', glyph: 'link' },
+  proposal_version_in_force: { tone: 'success', glyph: 'doc' },
 };
 
 /** The stream's registry for the CRM's kinds, each named in the reader's words. */
@@ -50,7 +63,7 @@ export function leadTimelineStreamOf<Entry>(
   format: MarketFormat,
 ): Omit<ActivityStreamProps, 'density'> {
   const { read } = timeline;
-  const formats = { day: format.date, time: format.time, money: format.money, word: format.word };
+  const formats = { pack: format.pack, day: format.date, time: format.time, word: format.word };
   return {
     entries: read.kind === 'ready' ? words.entries(read.value, formats) : [],
     kinds: leadActivityKinds(words.kind),

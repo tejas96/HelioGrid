@@ -7,8 +7,10 @@ import * as catalogTenant from './catalog-tenant';
 import * as checkout from './checkout';
 import * as crmDailySweep from './crm-daily-sweep';
 import * as customer from './customer';
+import * as customerLink from './customer-link';
 import * as dashboard from './dashboard';
 import * as dunning from './dunning';
+import * as energyEstimate from './energy-estimate';
 import * as entitlement from './entitlement';
 import * as file from './file';
 import * as identity from './identity';
@@ -29,6 +31,7 @@ import * as priceBook from './price-book';
 import * as project from './project';
 import * as projectInstallation from './project-installation';
 import * as projectPapers from './project-papers';
+import * as proposal from './proposal';
 import * as settings from './settings';
 import * as subject from './subject';
 import * as task from './task';
@@ -79,6 +82,9 @@ export const schema = {
   ...leadImport,
   ...crmDailySweep,
   ...dashboard,
+  ...proposal,
+  ...customerLink,
+  ...energyEstimate,
 };
 
 export * from './activity';
@@ -90,8 +96,10 @@ export * from './catalog-tenant';
 export * from './checkout';
 export * from './crm-daily-sweep';
 export * from './customer';
+export * from './customer-link';
 export * from './dashboard';
 export * from './dunning';
+export * from './energy-estimate';
 export * from './entitlement';
 export * from './file';
 export * from './identity';
@@ -112,6 +120,7 @@ export * from './price-book';
 export * from './project';
 export * from './project-installation';
 export * from './project-papers';
+export * from './proposal';
 export * from './settings';
 export * from './subject';
 export * from './task';

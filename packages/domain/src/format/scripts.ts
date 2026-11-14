@@ -64,3 +64,20 @@ export function splitScriptRuns(text: string, stack: ScriptStack): readonly Scri
   if (run !== '') runs.push({ text: run, family });
   return runs;
 }
+
+/**
+ * Whether a run is drawn by its stack's brand face, the first — the only face the type scale's
+ * letter spacing is set for. Any other script's run (Devanagari's vowel signs and conjuncts) loses
+ * its shaping under spacing, so it is set untracked.
+ */
+export function isBrandFaceRun(run: ScriptRun, stack: ScriptStack): boolean {
+  return run.family === stack[0].family;
+}
+
+/**
+ * The line box a script's floor raises a line to, in px, or `undefined` where the box it is drawn
+ * at already holds it — so a caller's own box, when larger than the floor, is kept as it is.
+ */
+export function lineBoxRaisedTo(floor: number, drawn: number): number | undefined {
+  return floor > drawn ? floor : undefined;
+}

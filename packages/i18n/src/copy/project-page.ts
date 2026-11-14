@@ -3,7 +3,7 @@
  * closed hero, the documents' rows and their spoken names, the activity, the checklist's own screen,
  * the install steps' screen, and the kind line *Remind* hands the person to send the customer.
  */
-import type { TranslatedText } from '@heliogrid/contracts';
+import type { SignedProposalProof, TranslatedText } from '@heliogrid/contracts';
 import { type UiLanguage, uiLanguageOrSource } from '@heliogrid/domain';
 import { createTranslator, type MessageRef, type Translator } from '../runtime';
 import { CANCEL_REASON_WORDS } from './project-cancel';
@@ -21,6 +21,9 @@ const PAGE = {
   byWithCrew: /*i18n*/ { id: 'by {name} · {crew}' },
   notNeededBecause: /*i18n*/ { id: 'Not needed · {reason}' },
   uploadedBy: /*i18n*/ { id: 'Uploaded by {name} · {date}' },
+  signedAccepted: /*i18n*/ { id: 'Version {version} accepted on {link} · {date}' },
+  signedPutInForce: /*i18n*/ { id: 'Version {version} put in force by {name} · {date}' },
+  signedPlain: /*i18n*/ { id: 'Version {version} · {date}' },
   uploadRow: /*i18n*/ { id: 'Upload {row}' },
   notNeededRow: /*i18n*/ { id: 'Not needed: {row}' },
   reopenRow: /*i18n*/ { id: 'Needed after all: {row}' },
@@ -96,6 +99,18 @@ export function projectPageWords(t: T, word: PackWord, day: (date: string) => st
       t(PAGE.byWithCrew, { name, crew: crew.join(', ') }),
     notNeededBecause: (reason: string) => t(PAGE.notNeededBecause, { reason }),
     uploadedBy: (name: string, date: string) => t(PAGE.uploadedBy, { name, date: day(date) }),
+    /** The signed-proposal row's proof (`F5-46`): which version, on which link or by whom, and when. */
+    signedProof: (proof: SignedProposalProof, by: string | null): TranslatedText => {
+      const { version } = proof;
+      const date = day(proof.at);
+      if (proof.act === 'accepted' && proof.linkLabel !== null) {
+        return t(PAGE.signedAccepted, { version, link: proof.linkLabel, date });
+      }
+      if (proof.act === 'put_in_force' && by !== null) {
+        return t(PAGE.signedPutInForce, { version, name: by, date });
+      }
+      return t(PAGE.signedPlain, { version, date });
+    },
     uploadRow: (row: string) => t(PAGE.uploadRow, { row: word('row', row) }),
     notNeededRow: (row: string) => t(PAGE.notNeededRow, { row: word('row', row) }),
     reopenRow: (row: string) => t(PAGE.reopenRow, { row: word('row', row) }),

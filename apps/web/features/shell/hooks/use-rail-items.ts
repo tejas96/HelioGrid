@@ -32,7 +32,7 @@ interface RailItems {
  */
 export function useRailItems(
   shell: Pick<Shell, 'destinations'>,
-  sidebar: Pick<Sidebar, 'soon'>,
+  sidebar: Pick<Sidebar, 'soon' | 'lists'>,
   settings: Pick<SettingsScreen, 'firstBeside'>,
   goTo: (path: string) => void,
 ): RailItems {
@@ -40,8 +40,13 @@ export function useRailItems(
   // A press lights its item at once; the page it opens is loaded before the press.
   const pathname = useShownPath();
   const destinations = shell.destinations ?? [];
+  // The sidebar has room for every list a slot's grant reads; the pill keeps `F7-48`'s two.
+  const sidebarLists: readonly StandingDestination[] = [
+    ...destinations.filter((d) => d === 'home'),
+    ...sidebar.lists(destinations),
+  ];
   const pathOf = new Map<string, string>(
-    destinations.map((d) => [d, d === 'home' ? HOME_ROUTE : DOOR_PATH[d]]),
+    [...destinations, ...sidebarLists].map((d) => [d, d === 'home' ? HOME_ROUTE : DOOR_PATH[d]]),
   );
   pathOf.set(SETTINGS_KEY, DOOR_PATH.more);
   /* The sidebar is the desktop's, where `/more` only sends a person on to the first settings page
@@ -73,7 +78,7 @@ export function useRailItems(
   return {
     pill: { items: pillItems, inView: pillInView },
     rail: {
-      items: destinations.filter((d) => d !== 'more').map(destinationItem),
+      items: sidebarLists.map(destinationItem),
       footer: [
         {
           key: SETTINGS_KEY,
@@ -82,7 +87,7 @@ export function useRailItems(
           onClick: () => goTo(settingsOpens),
         },
       ],
-      value: sidebarValue(pathname, pathOf, destinations),
+      value: sidebarValue(pathname, pathOf, sidebarLists),
     },
     choose: (key) => {
       const path = pathOf.get(key);

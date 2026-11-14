@@ -13,7 +13,7 @@ describe('the Proposal template page — its reads and its one save, through the
     const view = await mounted();
 
     expect(view.result.current.standing).toEqual({ kind: 'never-set' });
-    expect(view.result.current.changed).toEqual({ template: false, timeline: false });
+    expect(view.result.current.changed).toEqual({ template: false, timeline: false, bank: false });
     expect(view.result.current.bankName).toBe('HDFC Bank');
     // The page is ready on its own reads; the cover's company facts fill it after.
     await waitFor(() =>
@@ -31,13 +31,47 @@ describe('the Proposal template page — its reads and its one save, through the
     const view = await mounted();
 
     act(() => view.result.current.edit({ kind: 'move', from: 1, to: 0 }));
-    expect(view.result.current.changed).toEqual({ template: false, timeline: true });
+    expect(view.result.current.changed).toEqual({ template: false, timeline: true, bank: false });
     act(() => view.result.current.save());
     await waitFor(() => expect(view.result.current.changed.timeline).toBe(false));
 
     expect(templateOrigin.templateBodies).toHaveLength(0);
     expect(templateOrigin.timelineBodies).toHaveLength(1);
     expect(view.result.current.standing).toMatchObject({ kind: 'saved', name: 'Rajesh Kulkarni' });
+  });
+
+  it('the cover picture chosen is sent with the template, and nothing else is', async () => {
+    const view = await mounted();
+
+    act(() =>
+      view.result.current.edit({
+        kind: 'coverPicture',
+        picture: { kind: 'platform', key: 'factory' },
+      }),
+    );
+    expect(view.result.current.changed).toEqual({ template: true, timeline: false, bank: false });
+    act(() => view.result.current.save());
+    await waitFor(() => expect(view.result.current.changed.template).toBe(false));
+
+    expect(templateOrigin.templateBodies).toHaveLength(1);
+    expect(templateOrigin.templateBodies[0]).toMatchObject({
+      coverPicture: { kind: 'platform', key: 'factory' },
+    });
+    expect(templateOrigin.timelineBodies).toHaveLength(0);
+  });
+
+  it('an account typed here is held apart from the profile until it is saved or dropped', async () => {
+    const view = await mounted();
+
+    expect(view.result.current.bank.held).toBe(true);
+    act(() => view.result.current.bank.edit('accountNumber', '50200099990000'));
+    expect(view.result.current.changed).toEqual({ template: false, timeline: false, bank: true });
+    expect(view.result.current.bank.details.accountNumber).toBe('50200099990000');
+    act(() => view.result.current.discard());
+
+    expect(view.result.current.changed.bank).toBe(false);
+    expect(view.result.current.bank.details.accountNumber).not.toBe('50200099990000');
+    expect(templateOrigin.templateBodies).toHaveLength(0);
   });
 
   it('a failed save keeps the draft', async () => {
@@ -85,7 +119,7 @@ describe('the Proposal template page — its reads and its one save, through the
     act(() => view.result.current.edit({ kind: 'move', from: 1, to: 0 }));
     act(() => view.result.current.save());
     await waitFor(() => expect(view.result.current.saveFailure).not.toBeNull());
-    expect(view.result.current.changed).toEqual({ template: false, timeline: true });
+    expect(view.result.current.changed).toEqual({ template: false, timeline: true, bank: false });
 
     act(() => view.result.current.save());
     await waitFor(() => expect(view.result.current.changed.timeline).toBe(false));
@@ -116,7 +150,7 @@ describe('the Proposal template page — its reads and its one save, through the
     act(() => view.result.current.edit({ kind: 'delete', key: 0 }));
     act(() => view.result.current.discard());
 
-    expect(view.result.current.changed).toEqual({ template: false, timeline: false });
+    expect(view.result.current.changed).toEqual({ template: false, timeline: false, bank: false });
     expect(view.result.current.draft?.phases).toHaveLength(DEFAULTS.phases.length);
   });
 

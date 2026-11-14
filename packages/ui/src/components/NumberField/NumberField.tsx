@@ -33,6 +33,8 @@ export function NumberField(props: WebNumberFieldProps) {
     hint,
     disabled = false,
     density = 'expressive',
+    hero = false,
+    plain = false,
     currency = false,
     provenance,
     override,
@@ -77,6 +79,8 @@ export function NumberField(props: WebNumberFieldProps) {
         draft={draft}
         steppers={showSteppers}
         density={density}
+        hero={hero}
+        plain={plain}
         disabled={disabled}
         danger={danger}
         label={label}

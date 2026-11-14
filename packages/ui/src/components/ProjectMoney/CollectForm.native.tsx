@@ -79,7 +79,7 @@ function UpiWay({ form, words, upiLimit }: CollectProps) {
         showValue={false}
         value={request.upiUri}
         size={204}
-        label={words.qrLabel(format.money(request.amount))}
+        label={words.qrLabel(format.moneyPlain(request.amount))}
         caption={words.noteOnPayment(request.note)}
         errorTitle={words.qrFailedTitle}
         errorMessage={words.qrFailedMessage}

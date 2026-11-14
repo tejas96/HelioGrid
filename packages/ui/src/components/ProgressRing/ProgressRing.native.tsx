@@ -7,7 +7,7 @@ import { usePalette } from '../../primitives/Color/use-palette.native';
 import { Text } from '../../primitives/Text';
 import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
 import { RollingNumber } from '../RollingNumber/RollingNumber.native';
-import { RING_SIDE, RING_STROKE, ringArcOf } from './ProgressRing.logic';
+import { RING_SIDE, ringArcOf, ringStrokeOf } from './ProgressRing.logic';
 import type { ProgressRingProps } from './ProgressRing.types';
 
 const [x1, y1, x2, y2] = theme.motion.easings.enter;
@@ -44,7 +44,8 @@ export function ProgressRing({
   }, [turn, reduced]);
 
   const side = RING_SIDE[size];
-  const { radius, length, arc } = ringArcOf(side, RING_STROKE, share);
+  const stroke = ringStrokeOf(size);
+  const { radius, length, arc } = ringArcOf(side, stroke, share);
   const sweep = {
     opacity: turn,
     transform: [
@@ -65,7 +66,7 @@ export function ProgressRing({
           r={radius}
           stroke={onPanel ? palette['on-panel'] : palette.accent}
           strokeOpacity={0.14}
-          strokeWidth={RING_STROKE}
+          strokeWidth={stroke}
           fill="none"
         />
       </Svg>
@@ -82,7 +83,7 @@ export function ProgressRing({
             cy={side / 2}
             r={radius}
             stroke="url(#hg-ring-arc)"
-            strokeWidth={RING_STROKE}
+            strokeWidth={stroke}
             strokeLinecap="round"
             strokeDasharray={`${arc} ${length}`}
             fill="none"
@@ -90,10 +91,16 @@ export function ProgressRing({
         </Svg>
       </Animated.View>
       <View style={styles.centre} importantForAccessibility="no-hide-descendants">
-        <RollingNumber value={value} variant={size === 'lg' ? 'display' : 'figure'} />
-        <Text variant="caption" style={styles.caption}>
-          {caption}
-        </Text>
+        {size === 'sm' ? (
+          <Text variant="mono">{value}</Text>
+        ) : (
+          <>
+            <RollingNumber value={value} variant={size === 'lg' ? 'display' : 'figure'} />
+            <Text variant="caption" style={styles.caption}>
+              {caption}
+            </Text>
+          </>
+        )}
       </View>
     </View>
   );

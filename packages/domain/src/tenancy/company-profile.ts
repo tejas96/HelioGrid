@@ -50,7 +50,8 @@ export function standingMark(standing: CompanyProfileStanding): StandingMark {
  */
 export type BankDetailsTyped = { readonly [Fact in keyof BankDetails]: BankDetails[Fact] | null };
 
-const BANK_FACTS = [
+/** The four facts bank details are made of, in the order a form asks for them. */
+export const BANK_FACTS = [
   'bankName',
   'accountName',
   'accountNumber',

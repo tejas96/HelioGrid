@@ -9,7 +9,7 @@ import {
 } from '@heliogrid/db';
 import type { CalendarDate } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, asc, eq, isNotNull, lte, sql } from 'drizzle-orm';
+import { and, asc, eq, gt, isNotNull, isNull, lte, or, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberNameOf } from '../crm/crm.public';
 
@@ -101,7 +101,14 @@ export class ProjectsPaymentReceiptRepository {
         })
         .from(projectTranche)
         .where(
-          and(eq(projectTranche.tenantId, tenantId), eq(projectTranche.projectId, row.projectId)),
+          and(
+            eq(projectTranche.tenantId, tenantId),
+            eq(projectTranche.projectId, row.projectId),
+            // The schedule as it stood then: a part a later version in force added was not there
+            // yet, and one it replaced still was (`M11-14`).
+            lte(projectTranche.createdAt, row.recordedAt),
+            or(isNull(projectTranche.replacedAt), gt(projectTranche.replacedAt, row.recordedAt)),
+          ),
         )
         .orderBy(asc(projectTranche.position), asc(projectTranche.id));
       const received = await tx

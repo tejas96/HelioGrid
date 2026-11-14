@@ -1,0 +1,148 @@
+/* ProposalAfterParts — the hint line, the summary, the rows card and the message bubble the
+   proposal's after-build screens share. Tokens only. */
+
+.hg-after-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-after-hint > :first-child {
+  flex: none;
+  margin-block-start: var(--sp-0-5);
+}
+
+.hg-after-summary {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border-radius: var(--r-lg);
+  background: var(--fill);
+}
+
+.hg-after-summary > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+}
+
+.hg-after-summary > div + div {
+  border-block-start: 1px solid var(--line-soft);
+}
+
+.hg-after-summary dt {
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-after-summary dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-semibold);
+  text-align: end;
+  overflow-wrap: anywhere;
+}
+
+.hg-after-summary dd[data-mono],
+.hg-after-summary dd span[data-mono] {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A tile: its fill and edge are `Ground.css`'s. */
+.hg-after-rows {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.hg-after-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  min-height: var(--sp-16);
+  padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-4);
+  color: var(--text-primary);
+  text-align: start;
+}
+
+.hg-after-row + .hg-after-row {
+  border-block-start: 1px solid var(--line-soft);
+}
+
+.hg-after-row-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-after-row-words b {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+  overflow-wrap: anywhere;
+}
+
+.hg-after-row-words span {
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  overflow-wrap: anywhere;
+}
+
+.hg-after-row-aside {
+  flex: none;
+}
+
+/* The message as the person will send it: a chat bubble, its tail at the top of the sender's side. */
+.hg-after-bubble {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  gap: var(--sp-2);
+  max-width: 92%;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-xs) var(--r-lg) var(--r-lg) var(--r-lg);
+  /* A chat message's green: its words, link and note are declared pairs on it (`contrast.ts`). */
+  background: var(--success-bg);
+  color: var(--text-primary);
+}
+
+.hg-after-bubble p {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  overflow-wrap: anywhere;
+}
+
+.hg-after-bubble p[data-kind="toCome"] {
+  color: var(--accent-text);
+}
+
+.hg-after-bubble p[data-kind="link"] {
+  color: var(--accent-text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hg-after-bubble-note {
+  padding-block-start: var(--sp-1);
+  border-block-start: 1px solid var(--hairline);
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}

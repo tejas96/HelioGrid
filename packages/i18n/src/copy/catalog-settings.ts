@@ -148,12 +148,15 @@ const TECHNOLOGY: Record<PanelTechnology, { id: string }> = {
   bifacial: /*i18n*/ { id: 'Bifacial' },
   poly: /*i18n*/ { id: 'Poly' },
   hjt: /*i18n*/ { id: 'HJT' },
+  mono: /*i18n*/ { id: 'Mono' },
+  thin_film: /*i18n*/ { id: 'Thin-film' },
 };
 
 const CHEMISTRY: Record<BatteryChemistry, { id: string }> = {
   lfp: /*i18n*/ { id: 'LFP' },
   nmc: /*i18n*/ { id: 'NMC' },
   lead_acid: /*i18n*/ { id: 'lead-acid' },
+  custom: /*i18n*/ { id: 'custom' },
 };
 
 /** A chemistry as a choice in a list, in sentence case; `CHEMISTRY` reads inside a spec line. */
@@ -161,6 +164,7 @@ const CHEMISTRY_OPTION: Record<BatteryChemistry, { id: string }> = {
   lfp: CHEMISTRY.lfp,
   nmc: CHEMISTRY.nmc,
   lead_acid: /*i18n*/ { id: 'Lead-acid' },
+  custom: /*i18n*/ { id: 'Custom' },
 };
 
 const SORT: Record<CatalogSort, { id: string }> = {

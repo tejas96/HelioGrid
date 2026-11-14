@@ -6,6 +6,7 @@ import { Card } from '../Card';
 import { IconButton } from '../IconButton';
 import { useFormat } from '../MarketProvider';
 import { CardHead } from '../ProjectDetail/ProjectDetailParts';
+import { moneyCardAmountsOf } from './ProjectMoney.logic';
 import type { MoneyCardProps } from './ProjectMoney.types';
 
 /**
@@ -16,6 +17,7 @@ import type { MoneyCardProps } from './ProjectMoney.types';
 export function MoneyCard({ money, today, words, onShare, onOpen }: MoneyCardProps) {
   const format = useFormat();
   const due = money.duePart;
+  const amounts = moneyCardAmountsOf(money, format);
   return (
     <section aria-label={words.money}>
       <Card density="functional" className="hg-money-card">
@@ -33,7 +35,7 @@ export function MoneyCard({ money, today, words, onShare, onOpen }: MoneyCardPro
             <span className="hg-money-glance-line">{words.noScheduleTitle}</span>
           ) : (
             <span className="hg-money-glance-line">
-              {words.collectedOf(format.money(money.collected), format.money(money.total))}
+              {words.collectedOf(amounts.collected, amounts.total)}
             </span>
           )}
           {due === null ? (
@@ -41,7 +43,7 @@ export function MoneyCard({ money, today, words, onShare, onOpen }: MoneyCardPro
           ) : (
             <div className="hg-money-glance-due">
               <span className="hg-money-glance-line">
-                {words.duePartLine(due.label, format.money(due.outstanding))}
+                {words.duePartLine(due.label, amounts.outstanding ?? '')}
               </span>
               <StatusMark
                 tone="warning"

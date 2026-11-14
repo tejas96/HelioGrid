@@ -42,22 +42,8 @@ Block numbers are stable: other documents cite them, so a block that empties kee
 
 | # | Block | Holds | Task files |
 |---|---|---|---|
-| **6** | **Sales execution + owner home** | built: My Day, lost, reopen, follow-ups, the owner home; left: trial-to-paid (parked) and the V2 dashboards | `M13-dashboards` (all but `T-M13-007`) |
-| **8** | **Proposals + customer link** | the proposal built without a design, the link the homeowner opens and answers, Won from the accepted proposal, and the forecast the proposals price | `M06-proposals` · `F5-customer-link` · `F-core` · `F-platform` · `M01-onboarding` · `M11-payments-collections` · `M13-dashboards` → `T-M13-007` |
-
-**Block 8 ships in one PR, built in one session (owner ruling 2026-11-13).** Inside it the order is
-this file's: backend tasks first, then screens in the journey's order. The screens' look is the
-approved proposal design (`CLAUDE.md` §6), so no sample is drawn before the build.
-
-1. **Build, generate and the PDF:** `T-M06-032`, `T-M06-024`, `T-M06-023`, `T-M06-033`,
-   `T-M06-034`, `T-M06-025a`, `T-M06-022`, `T-M06-027`, `T-M06-028`, then `T-M06-001`–`T-M06-013`,
-   `T-M06-017`, `T-FPLAT-074`, `T-M06-019`, `T-M01-030` — a rep builds a proposal, generates it and
-   downloads the document, and the owner sets its defaults.
-2. **Share and the customer's answer:** `T-M06-026`, `T-M06-029`, `T-F5-006`, `T-F5-007`,
-   `T-F5-009`, `T-F5-008`, `T-M06-030`, then `T-M06-015`, `T-M06-016`, `T-M06-018`, `T-M06-020`,
-   `T-M06-031`, `T-F5-001`, `T-F5-004`.
-3. **Won and after:** `T-M06-025b`, `T-M06-025c`, `T-M11-015`, then `T-F5-002`, `T-F5-003`.
-4. **The owner home:** `T-M13-007`.
+| **6** | **Sales execution + owner home** | built: My Day, lost, reopen, follow-ups, the owner home; left: trial-to-paid (parked) and the V2 dashboards | `M13-dashboards` |
+| **8** | **Proposals + customer link** | built: the proposal built without a design, the link the homeowner opens and answers, Won from the accepted proposal, the proposal defaults, and the forecast the proposals price; left: the BOM detail, Path A, the design-wait update, the design on the link and the demo seed (parked until the studio), and the data-rights engine (parked) | `M06-proposals` · `F5-customer-link` · `F-core` · `M01-onboarding` |
 
 **Proposals ship before the studio (owner ruling 2026-11-13).** Block 8's tasks that need a
 design — `T-M06-014`, `T-M06-021`, `T-F5-010`, `T-F5-011` and `T-M01-029` — are `**Parked:**` and are built
@@ -69,6 +55,10 @@ returns, as block 9, with the new studio's tasks; block 7 stays empty. When its 
 designed and strung system, when the installation checklist opens on the project, then its steps are
 the design's derived work order in build order, and this module has generated no sequence of its own
 (M08-41).*; until then a project's install steps are the market pack's standard steps.
+Its last task carries `F6-10`'s proof, moved here from the shipped `T-FPLAT-074` because only the
+last V1 block can walk every module: *given every V1 module's §4 contract (M01, M02, M06, M07, M08,
+M11, M13, F5 and the studio), when its named events are checked against the matrix, then each appears
+with recipients and channels, and the matrix contains no event no module raises.*
 
 **Voice calling waits.** Its PRD rows stay in `docs/prd/modules/M07-sales-execution.md` and its
 screens are V2 in the register; its tasks are written again when it returns, and carry what block 6
@@ -81,8 +71,7 @@ the new pricing replaces it, in a task of its own.
 
 **Blocks 0 and 1 are built.** Their last tasks sit in block 8: `T-FCORE-009` (the data-rights
 engine) is parked until the tenant base reaches real paying customers (roughly 10–20);
-`T-M01-029` (the demo project seed) needs the lead, design and proposal tables and is parked until the studio; `T-FPLAT-074`
-(the projection label) prints the words of the proposal document drawn in block 8. `M01`'s other
+`T-M01-029` (the demo project seed) needs the lead, design and proposal tables and is parked until the studio. `M01`'s other
 four tasks are V2 screens (*What V2 holds*).
 
 **Blocks 1–6 ship a working product on their own**: lead → won → project → payment.
@@ -108,7 +97,7 @@ Build the consumer after the producer, or stub it deliberately and record the st
 | `M08` projects | `M07` sales execution | a project starts from a closed sale |
 | `M11` payments | `M08` projects | tranches hang off the project's milestones |
 | `M13` dashboards | every module | it reports on their data |
-| every module | `F-core` + `F-platform` (built; their tasks left in block 8 feed only block 8) | permissions, formats, notifications, honesty |
+| every module | the foundations (built; `F-core`'s one task left is parked) | permissions, formats, notifications, honesty |
 
 ### Recorded: a V1 task whose proof waits on a later block
 

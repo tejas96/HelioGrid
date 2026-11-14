@@ -145,7 +145,8 @@ export function planMerge(
  * Every table a merge writes: the two customers — the survivor's picked fields and
  * the loser's tombstone — the rows naming the loser, re-pointed to the survivor, and the two ledgers
  * it appends one entry to. Bookings, tasks, files and notices name a lead, whose id survives, so they
- * move with it unwritten. The timeline is append-only, so no activity is re-pointed: the survivor's
+ * move with it unwritten — and so do its proposals and customer links, which name the lead and the
+ * contact, both of which keep their ids (`M02-60`). The timeline is append-only, so no activity is re-pointed: the survivor's
  * stream is read through the tombstone. The api's merge test holds the transaction to this list.
  */
 export const MERGE_REPOINTED_TABLES = ['contact', 'lead', 'referral', 'duplicate_link'] as const;
@@ -160,9 +161,9 @@ export type MergeWriteTable = (typeof MERGE_WRITE_SET)[number];
 /**
  * The tables holding a money figure, or a rate or share a figure is computed from, that a merge
  * must never write (`M02-62`). A lead's monthly bill rides `lead`, which the merge writes, so the
- * merge sets only a lead's customer and the api's test reads the bill back unchanged. Proposal,
- * tranche, payment and discount tables join this list in the change that creates them (T-M06-025,
- * T-M11-006).
+ * merge sets only a lead's customer and the api's test reads the bill back unchanged. The proposal's
+ * two tables — the draft with its price, discount and payment shares, and its versions' frozen
+ * money — joined with `T-M06-032`.
  */
 export const MONEY_TABLES = [
   'billing_checkout',
@@ -174,6 +175,8 @@ export const MONEY_TABLES = [
   'plan_price',
   'price_book_rate',
   'price_book_version',
+  'proposal',
+  'proposal_version',
   'subscription_invoice',
   'subscription_payment',
   'tenant_catalog_override',

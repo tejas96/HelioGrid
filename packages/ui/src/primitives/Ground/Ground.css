@@ -47,6 +47,11 @@
 .hg-template-card,
 /* The Payment terms editor card at width (`PaymentTermsEditorCard`, `Editor card 1536`). */
 .hg-pay-editor-card,
+/* The proposal builder's step card on a desktop (`ProposalBuilder`, `T-M06-002`): a page ground. */
+.hg-pbf-editor,
+/* A stepped number field: the white well holding its two steppers, which a stepped hero draws as
+   discs on the fill (step 3's size) wherever the field stands. */
+.hg-number-field-box[data-steppers="true"],
 /* A raised `Card` (`surface="raised"`, `SCR-M01-20`'s payment terms): a white card on the page,
    not a tile — it beats the tiles' one-class `.hg-card` entry, and paints its fill from this ground. */
 .hg-card[data-surface="raised"],
@@ -129,6 +134,23 @@
 .hg-list-row.hg-plans-rest,
 /* The usage screen's `Bigger plans` row and its ledger events (`SCR-M12-04`). */
 .hg-list-row.hg-usage-tile,
+/* A builder step's records (`ProposalSteps`): its facts, its rows, its folded rows — one tile each. */
+.hg-pst-tile,
+.hg-pdf-tile,
+/* The builder's sheets: a brand to pick, a finding to fix, the proposals to copy from. */
+.hg-pps-tile,
+.hg-pchk-tile,
+.hg-pstart-tile,
+/* A kind of part in the proposal builder (`ProposalPartsBlock`, `app`): one tile a kind, pressed
+   to open its picker. */
+.hg-pb-part-tile,
+.hg-pressable.hg-pb-part-tile,
+/* A proposal after it is built: the rows card under a hero (`ProposalAfterParts`), a named link's
+   card while it is live (`ProposalLinks`), and a proposal's card on a phone list (`ProposalList`). */
+.hg-after-rows,
+.hg-links-card:not([data-off]),
+.hg-plist-card:not([data-quiet]),
+.hg-pressable.hg-plist-card:not([data-quiet]),
 .hg-dt-card:not([data-editable="true"]) {
   /* Glass: the card colour let through over the page's glow, a 1 px light on its top edge, a
      hairline and a soft lift — the tile reads as a pane of the page, never a flat box. No frost on the

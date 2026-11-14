@@ -21,7 +21,9 @@ test('a new company reads every section, sets its target inline and keeps it', a
   await passTheOwnersMark(page, en);
 
   await expect(page.getByText(dashboard.allClearTitle)).toBeVisible();
-  await expect(page.getByText(dashboard.forecastGap)).toBeVisible();
+  // The api prices the pipeline for every company now: a new one reads its forecast as zero, from none.
+  const forecast = page.getByRole('region', { name: dashboard.forecastTitle });
+  await expect(forecast.getByText(dashboard.forecastFrom(0))).toBeVisible();
   await expect(page.getByText(dashboard.pipelineTitle)).toBeVisible();
   await expect(page.getByText(dashboard.tooFew(0, 0))).toBeVisible();
   await expectNoSidewaysScroll(page);
@@ -59,7 +61,7 @@ test('the export saves the dashboard as a CSV, each figure beside its label', as
   expect(file.suggestedFilename()).toMatch(/^dashboard-\d{4}-\d{2}\.csv$/);
   const path = await file.path();
   const text = await readFile(path, 'utf8');
-  expect(text).toContain(`"${dashboard.forecastGap}"`);
+  expect(text).toContain(`"${dashboard.forecastTitle}","${dashboard.forecastFrom(0)}"`);
   expect(text).toContain(`"${dashboard.valuesGap}"`);
   // The header row opens the file; the day it was taken closes it.
   const rows = text

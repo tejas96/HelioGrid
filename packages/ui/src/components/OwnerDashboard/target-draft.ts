@@ -1,5 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import { AMOUNT_WHOLE_DIGITS_MAX, minorUnitsOfDecimal } from '@heliogrid/domain';
+import { amountFitsWire, minorUnitsOfDecimal } from '@heliogrid/domain';
 import { useEffect, useRef, useState } from 'react';
 import { type FocusAfter, landFocusOn } from '../../primitives/FocusAfter';
 import { useFormat } from '../MarketProvider';
@@ -35,7 +35,7 @@ export type TargetRefusal =
 export function targetRefusalOf(draft: string, minorUnitDigits: number): TargetRefusal | null {
   const figure = Number(draft);
   if (!(figure > 0)) return { kind: 'not-positive' };
-  if (figure >= 10 ** AMOUNT_WHOLE_DIGITS_MAX) return { kind: 'too-large' };
+  if (!amountFitsWire(figure)) return { kind: 'too-large' };
   try {
     minorUnitsOfDecimal(draft, minorUnitDigits);
     return null;

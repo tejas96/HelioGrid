@@ -1,7 +1,7 @@
 import type { CSSProperties, JSX } from 'react';
 import { createElement } from 'react';
 import { classNames } from '../../primitives/class-names';
-import type { CustomerSurfaceProps } from './CustomerSurface.types';
+import type { CustomerSurfaceProps, TenantTokens } from './CustomerSurface.types';
 import { tenantTokens } from './tenant-tokens';
 
 /**
@@ -11,6 +11,28 @@ import { tenantTokens } from './tenant-tokens';
  * scoping rather than by convention.
  */
 type CssVars = CSSProperties & Record<`--${string}`, string>;
+
+/**
+ * The tokens whose value differs by scheme. Written inline under their own name, a light value
+ * would outrank the dark rule; so they ride as `--tenant-light-*` and `CustomerSurface.css` picks
+ * the light or the dark one.
+ */
+const SCHEME_TOKENS = new Set([
+  '--accent-subtle',
+  '--accent-text',
+  '--link',
+  '--link-hover',
+  '--focus-ring',
+]);
+
+function inlineVars(tokens: TenantTokens): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(tokens).map(([name, value]) => [
+      SCHEME_TOKENS.has(name) ? name.replace('--', '--tenant-light-') : name,
+      value,
+    ]),
+  );
+}
 
 interface WebCustomerSurfaceProps extends CustomerSurfaceProps {
   /** Element to render. Default `div`; `main` or a body-level wrapper on a real link page. */
@@ -40,13 +62,15 @@ export function CustomerSurface({
   style,
 }: WebCustomerSurfaceProps) {
   const tokens = tenantTokens(brandColor);
-  const vars: CssVars = { ...(tokens ?? {}), ...style };
+  const vars: CssVars = { ...(tokens === null ? {} : inlineVars(tokens)), ...style };
   return createElement(
     as,
     {
       'data-customer-surface': '',
       'data-tenant': tenantName === undefined || tenantName === '' ? undefined : tenantName,
       'data-full-height': fullHeight ? 'true' : undefined,
+      /* Present only while a tenant colour is in force: the dark scheme's rules key on it. */
+      'data-branded': tokens === null ? undefined : '',
       className: classNames('hg-customer-surface', className),
       style: vars,
     },

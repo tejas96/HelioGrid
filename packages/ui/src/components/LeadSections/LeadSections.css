@@ -98,6 +98,31 @@
   overflow-wrap: anywhere;
 }
 
+.hg-lead-section-facts {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+}
+
+.hg-lead-section-facts > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--sp-1) var(--sp-3);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-lead-section-facts dt {
+  color: var(--text-secondary);
+}
+
+.hg-lead-section-facts dd {
+  margin: 0;
+  color: var(--text-primary);
+}
+
 .hg-lead-section-line {
   margin: 0;
   font-family: var(--font-sans);

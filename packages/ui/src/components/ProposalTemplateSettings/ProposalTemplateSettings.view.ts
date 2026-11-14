@@ -1,163 +1,239 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { ProposalSection, TemplateEdit, TimelinePhase } from '@heliogrid/domain';
-import { brandingDocumentOf } from '../BrandingSettings/BrandingSettings.logic';
-import type { BrandingDocumentFacts } from '../BrandingSettings/BrandingSettings.types';
-import type { RichTextValue } from '../RichText/RichText.types';
-import { TEMPLATE_SAMPLE } from './ProposalTemplateSettings.logic';
+import {
+  ABOUT_COMPANY_LIMIT,
+  type BankDetails,
+  type CoverPictureKey,
+  type ProposalCover,
+  type ProposalPage,
+  sectionOfPage,
+  type TemplateEdit,
+  type TimelinePhase,
+  type TrancheLineRead,
+} from '@heliogrid/domain';
 import type {
+  BankStepWords,
+  TermsStepWords,
+  TimelineStepWords,
+  TrackRecordStepWords,
+} from '../ProposalSteps/ProposalSteps.words.types';
+import type { RichTextValue } from '../RichText/RichText.types';
+import type {
+  BrandMark,
+  DefaultsCoverChoice,
+  DefaultsPaymentView,
+  DefaultsSample,
   ProposalTemplateSettingsProps,
-  TemplateCoverCount,
-  TemplateDocument,
-  TemplateOrigin,
-  TemplatePhaseEditorProps,
 } from './ProposalTemplateSettings.types';
 
 /**
- * The four parts both screens hand `ProposalTemplateSettings`, bound once from the page's view
- * (`@heliogrid/data`'s `templateViewOf`, read here by its shape) and the screen's words and acts —
- * so the web and the phone cannot wire a part two ways.
+ * The seven parts' props from what the page holds (`packages/data`'s `templateViewOf`, read here by
+ * its shape) and what an app binds to it — its words and where each act goes. Both screens build
+ * their parts here, so the web and the phone cannot assemble them two ways.
  */
-
-/** `templateViewOf`'s answer, as this binder reads it. */
-export interface TemplateViewShape {
-  readonly cover: {
-    readonly origin: TemplateOrigin;
-    readonly about: string;
-    readonly counts: Readonly<Record<TemplateCoverCount, number | null>>;
-  };
-  readonly sections: {
-    readonly origin: TemplateOrigin;
+export interface DefaultsViewShape {
+  readonly look: { readonly chosen: CoverPictureKey | 'own' };
+  readonly record: ProposalCover;
+  readonly pages: {
     readonly rows: readonly {
-      readonly key: ProposalSection;
+      readonly page: ProposalPage;
       readonly on: boolean;
-      readonly floor: boolean;
+      readonly always: boolean;
     }[];
-    readonly printing: number;
-    readonly of: number;
   };
-  readonly terms: {
-    readonly origin: TemplateOrigin;
-    readonly value: RichTextValue;
-  };
+  readonly terms: { readonly value: RichTextValue };
   readonly timeline: {
-    readonly origin: TemplateOrigin;
-    readonly phases: readonly {
-      readonly key: number;
-      // biome-ignore lint/plugin/copy-prop-type: the phase's name as the company wrote it
-      readonly title: string;
-      // biome-ignore lint/plugin/copy-prop-type: the phase's note as the company wrote it
-      readonly note: string;
-      readonly phase: TimelinePhase;
-    }[];
-    readonly atCap: boolean;
+    readonly phases: readonly { readonly key: number; readonly phase: TimelinePhase }[];
   };
 }
 
-export interface TemplateBinding {
-  /** A section's name and line in the reader's words (`sectionWords`). */
-  sectionWord(key: ProposalSection): {
-    readonly title: TranslatedText;
-    readonly about: TranslatedText;
+export interface DefaultsBinding {
+  readonly words: {
+    readonly record: TrackRecordStepWords;
+    readonly timeline: TimelineStepWords;
+    readonly payment: DefaultsPaymentView['words'];
+    readonly terms: TermsStepWords;
+    readonly bank: BankStepWords;
+    /** *Brand colour and logo*, and where they come from. */
+    readonly brand: TranslatedText;
+    readonly brandFrom: TranslatedText;
+    readonly ownPhotoRefused: TranslatedText;
   };
-  readonly termsError?: TranslatedText;
+  readonly covers: readonly DefaultsCoverChoice[];
+  /** The page's one draft: every part's edit lands there until *Save*. */
   edit(edit: TemplateEdit): void;
-  /** Opens the editor on a phase: its key, and the phase as it stands. */
+  /** The company's own cover photo as the page holds it, and the device's chooser. */
+  readonly photo: {
+    readonly picture: string | null;
+    readonly held: { readonly kind: 'own'; readonly fileId: string } | null;
+    readonly storing: boolean;
+    readonly refused: boolean;
+    onChoose(): void;
+  };
+  onOpenBranding(): void;
+  /** HelioGrid's phases in the reader's words: what *Reset* goes back to. */
+  readonly platformPhases: readonly TimelinePhase[];
   onEditPhase(key: number, phase: TimelinePhase): void;
-  /** Asks before a delete: the phase's key, and its name as the list shows it. */
   onDeletePhase(key: number, title: string): void;
   onAddPhase(): void;
+  /** The company's plans in use, the default marked, and the plan editor's doors. */
+  readonly plans: readonly {
+    readonly id: string;
+    readonly name: string;
+    readonly isDefault: boolean;
+  }[];
+  readonly changingPlan: boolean;
+  onPlan(id: string): void;
+  onNewPlan(): void;
+  /** The default plan as the page holds it, edited with step 7's rows (`useDefaultsPlan`, by shape). */
+  readonly plan: {
+    readonly lines: readonly TrancheLineRead[] | null;
+    readonly failed: boolean;
+    share(index: number, percent: number): void;
+    remove(index: number): void;
+    add(): void;
+    reset(): void;
+  };
+  readonly bank: {
+    readonly details: BankDetails;
+    readonly held: boolean;
+    edit(field: keyof BankDetails, value: string): void;
+  };
+  /** The sample document, whose words say the plan and the account as the customer reads them. */
+  readonly sample: DefaultsSample | null;
 }
 
-export function templateSettingsParts(
-  view: TemplateViewShape,
-  binding: TemplateBinding,
-): Pick<ProposalTemplateSettingsProps, 'cover' | 'sections' | 'terms' | 'timeline'> {
-  const { edit } = binding;
+type Parts = Pick<
+  ProposalTemplateSettingsProps,
+  'look' | 'record' | 'pages' | 'timeline' | 'payment' | 'terms' | 'bank'
+>;
+
+function lookOf(view: DefaultsViewShape, bound: DefaultsBinding): Parts['look'] {
+  const { photo } = bound;
+  const held = photo.held;
   return {
-    cover: {
-      origin: view.cover.origin,
-      about: view.cover.about,
-      onAbout: (text) => edit({ kind: 'about', text }),
-      counts: view.cover.counts,
-      onCount: (count, value) => edit({ kind: 'count', count, value }),
+    covers: bound.covers,
+    chosen: view.look.chosen,
+    onCover: (key) => bound.edit({ kind: 'coverPicture', picture: { kind: 'platform', key } }),
+    own: {
+      ...(photo.picture === null ? {} : { src: photo.picture }),
+      storing: photo.storing,
+      ...(photo.refused ? { error: bound.words.ownPhotoRefused } : {}),
+      onChoose: photo.onChoose,
+      ...(held === null
+        ? {}
+        : { onUse: () => bound.edit({ kind: 'coverPicture', picture: held }) }),
     },
-    sections: {
-      origin: view.sections.origin,
-      rows: view.sections.rows.map((row) => ({ ...row, ...binding.sectionWord(row.key) })),
-      printing: view.sections.printing,
-      of: view.sections.of,
-      onToggle: (key) => {
-        const row = view.sections.rows.find((held) => held.key === key);
-        if (row !== undefined) edit({ kind: 'section', section: row.key });
+    brand: {
+      key: 'brand',
+      glyph: 'palette',
+      label: bound.words.brand,
+      value: bound.words.brandFrom,
+      onOpen: bound.onOpenBranding,
+      ...(bound.sample === null ? {} : { mark: markOf(bound.sample) }),
+    },
+  };
+}
+
+function markOf({ snapshot, facts }: DefaultsSample): BrandMark {
+  return {
+    name: snapshot.company.name,
+    colour: snapshot.company.brandColour,
+    ...(facts.logoSrc === undefined ? {} : { logo: facts.logoSrc }),
+  };
+}
+
+function timelineOf(view: DefaultsViewShape, bound: DefaultsBinding): Parts['timeline'] {
+  const { phases } = view.timeline;
+  return {
+    words: bound.words.timeline,
+    phases: phases.map(({ phase }) => ({ ...phase, durationDays: null })),
+    onMove: (index, by) => bound.edit({ kind: 'move', from: index, to: index + by }),
+    onRemove: (index) => {
+      const row = phases[index];
+      if (row !== undefined) bound.onDeletePhase(row.key, row.phase.name);
+    },
+    onEdit: (index) => {
+      const row = phases[index];
+      if (row !== undefined) bound.onEditPhase(row.key, row.phase);
+    },
+    onAdd: bound.onAddPhase,
+    onReset: () => bound.edit({ kind: 'phases', phases: bound.platformPhases }),
+  };
+}
+
+function paymentOf(bound: DefaultsBinding): Parts['payment'] {
+  const plan = bound.plans.find((each) => each.isDefault) ?? null;
+  const { sample } = bound;
+  return {
+    words: bound.words.payment,
+    plans: bound.plans.map(({ id, name }) => ({ id, name })),
+    planId: plan?.id ?? null,
+    onPlan: bound.onPlan,
+    changing: bound.changingPlan,
+    onNewPlan: bound.onNewPlan,
+    /* Each part in the words the document prints for its stage; none until the sample's words are read. */
+    parts:
+      sample === null
+        ? []
+        : (bound.plan.lines ?? []).map((line, index) => ({
+            key: `${index}`,
+            label: line.label,
+            due: sample.words.blocks.split.due(line.dueOnStage),
+            percent: Number(line.percent),
+          })),
+    onShare: bound.plan.share,
+    /* No remove: the design's parts take − / + only; a plan is reshaped or archived in Payment terms. */
+    onAdd: bound.plan.add,
+    onReset: bound.plan.reset,
+    failed: bound.plan.failed,
+  };
+}
+
+function bankOf(view: DefaultsViewShape, bound: DefaultsBinding): Parts['bank'] {
+  const { bank, sample } = bound;
+  const include = view.pages.rows.some((row) => row.page === 'bank' && row.on);
+  return {
+    words: bound.words.bank,
+    bank:
+      sample === null || !bank.held
+        ? null
+        : { bank: bank.details, notPrinted: !include, words: sample.words.blocks.bank },
+    include,
+    onInclude: (next) => {
+      if (next !== include) bound.edit({ kind: 'section', section: 'bank_details' });
+    },
+    edit: { details: bank.details, onDetail: bank.edit },
+  };
+}
+
+/** The seven parts as `ProposalTemplateSettings` takes them. */
+export function defaultsPartsOf(view: DefaultsViewShape, bound: DefaultsBinding): Parts {
+  return {
+    look: lookOf(view, bound),
+    record: {
+      words: bound.words.record,
+      record: view.record,
+      onCount: (count, value) => bound.edit({ kind: 'count', count, value }),
+      about: {
+        max: ABOUT_COMPANY_LIMIT,
+        onCommit: (text) => bound.edit({ kind: 'about', text }),
       },
     },
+    pages: {
+      rows: view.pages.rows,
+      onToggle: (page) => {
+        const section = sectionOfPage(page);
+        if (section !== null) bound.edit({ kind: 'section', section });
+      },
+    },
+    timeline: timelineOf(view, bound),
+    payment: paymentOf(bound),
     terms: {
-      origin: view.terms.origin,
-      value: view.terms.value,
-      ...(binding.termsError === undefined ? {} : { error: binding.termsError }),
-      onChange: (value) => edit({ kind: 'terms', value }),
+      words: bound.words.terms,
+      terms: view.terms.value,
+      onChange: (value) => bound.edit({ kind: 'terms', value }),
+      onCommit: (value) => bound.edit({ kind: 'terms', value }),
     },
-    timeline: {
-      origin: view.timeline.origin,
-      phases: view.timeline.phases,
-      atCap: view.timeline.atCap,
-      onMove: (from, to) => edit({ kind: 'move', from, to }),
-      onDelete: (key) => {
-        const row = view.timeline.phases.find((held) => held.key === key);
-        if (row !== undefined) binding.onDeletePhase(key, row.title);
-      },
-      onEdit: (key) => {
-        const row = view.timeline.phases.find((held) => held.key === key);
-        if (row !== undefined) binding.onEditPhase(key, row.phase);
-      },
-      onAdd: binding.onAddPhase,
-    },
-  };
-}
-
-/**
- * What the stage prints, from the view: the cover facts as Branding draws them, the optional
- * sections in the document's order with whether each prints, the terms, and the sample number and the date the screen formats. The stage and the full-size reader both
- * draw it.
- */
-export function templateDocumentOf(
-  view: TemplateViewShape | null,
-  facts: {
-    readonly cover: Omit<BrandingDocumentFacts, 'taxIdLabel'> | null;
-    // biome-ignore lint/plugin/copy-prop-type: the market pack's name for the tax id
-    readonly taxIdLabel: string;
-    readonly colour: string | null;
-    readonly docDate: string;
-  },
-  sectionWord: TemplateBinding['sectionWord'],
-): TemplateDocument {
-  return {
-    facts: brandingDocumentOf(facts.cover, facts.taxIdLabel),
-    colour: facts.colour,
-    sections: (view?.sections.rows ?? [])
-      .filter((row) => !row.floor)
-      .map((row) => ({ label: sectionWord(row.key).title, included: row.on })),
-    terms: view?.terms.value ?? { version: 1, blocks: [] },
-    docNumber: TEMPLATE_SAMPLE.docNumber,
-    docDate: facts.docDate,
-  };
-}
-
-/** The phase editor's fields from its flow (`usePhaseEditor`, read here by its shape) and its words. */
-export function phaseEditorFieldsOf(
-  editor: {
-    readonly phase: TimelinePhase;
-    editName(text: string): void;
-    editWhat(text: string): void;
-  },
-  errors: { readonly nameError?: TranslatedText; readonly whatError?: TranslatedText },
-): TemplatePhaseEditorProps['fields'] {
-  return {
-    name: editor.phase.name,
-    what: editor.phase.description,
-    ...(errors.nameError === undefined ? {} : { nameError: errors.nameError }),
-    ...(errors.whatError === undefined ? {} : { whatError: errors.whatError }),
-    onName: editor.editName,
-    onWhat: editor.editWhat,
+    bank: bankOf(view, bound),
   };
 }

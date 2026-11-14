@@ -1,8 +1,8 @@
 # Engineering tasks — structure and rules
 
 One file per module that still has open work (`M<nn>-<name>.md`), `SHELL.md` (the app shell's
-disposition index, which other task files point to), and `F-core.md` / `F-platform.md` /
-`F5-customer-link.md` where a foundation builds something itself. `UI.md` is the one
+disposition index, which other task files point to), and `F-core.md` /
+`F5-customer-link.md` where a foundation still builds something itself. `UI.md` is the one
 file here that is a REGISTER rather than tasks — component gaps with no requirement rows behind
 them, so no `T-` ids and no task anatomy. `deferred.md` holds rows earlier tasks found
 outside their scope, each naming what reopens it (`CLAUDE.md` §1). No P0 requirement exists

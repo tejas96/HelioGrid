@@ -54,29 +54,6 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 - Given a lead disqualified with one of the six reasons, when win/loss renders, then the lead counts under that reason in the disqualify breakdown (M02-42, M02-53) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
-### T-M13-007 · Revenue and forecast read-model
-
-**Placed in block 8** (owner ruling 2026-11-12): a lead carries no value until a proposal prices it, so the weighted pipeline is built with proposals. The won half (M13-04) shipped in block 6 — the owner dashboard counts no cancelled deal.
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M13-03
-**Design:** as T-M13-001 — the shipped owner home gains its pipeline value, its forecast and one attention item
-**Drawn:** stop *Forecast*.
-**Why:** the owner sees what the open proposals are worth and what is likely to close — labelled a projection, never added to won — and which sent proposals nobody has opened, so the rep calls today.
-**Depends on:** T-M06-025
-**Requirements (verbatim):**
-- **M13-03** (P0) — **Forecast is a projection, never revenue.** Weighted pipeline (value × stage likelihood), labelled *expected, not promised*, and **never in the same total as won**. Lead estimated value is a weighted-pipeline input — forecast ≠ revenue, anywhere, ever.
-**DONE WHEN:**
-- Given a forecast figure and a won figure, when any total renders, then they are never summed and the forecast carries its label (M13-03).
-- (M13-14's Pipeline section carries value as well as count, and its Forecast section the weighted figure, with no dedicated Given/When/Then line in the PRD's acceptance block for either; the requirement text is the binding criterion — the shipped owner home's Pipeline shows each stage's value beside its count, from the latest shared version of each open proposal, and its Forecast shows the weighted figure labelled a projection.)
-- (M13-15's "proposals sent-and-not-opened" item carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text is the binding criterion — a shared proposal its customer has not opened appears in "what needs you", deep-linking to the proposal, and leaves the list when the link is first opened.)
-
-**Settle before the build:**
-- Stage likelihood — ruled (owner ruling 2026-11-13): per-stage likelihood is market-pack data (a `MarketPack` key with IN's values), never a tenant setting or a constant in this module.
-- Demo rows — ruled (owner ruling 2026-11-13): the read model excludes rows marked as demo; while the demo seed (T-M01-029) is parked there are none, and the exclusion is proven when it lands.
-- The forecast card (M13-03) — ruled: the figure with its tier, the count of open proposals behind it, one bar split by stage, a row per stage with its count, its total and its likelihood, and the line *Expected, not promised. It is never added to Won.*; a row opens the proposals list (owner ruling 2026-11-13, approved design).
-
 ### T-M13-011 · Trial-to-paid conversion reporting
 
 **Type:** engine · **Tier:** P1

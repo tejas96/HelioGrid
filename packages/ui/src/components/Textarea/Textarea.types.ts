@@ -8,7 +8,11 @@ export type TextareaDensity = 'expressive' | 'functional';
 export interface TextareaProps {
   value?: string;
   onChange?: (value: string) => void;
+  /** The box was left — a form that saves a field when it is left saves it here. */
+  onLeave?: () => void;
   label?: TranslatedText;
+  /** The label is said, not drawn: the form draws it beside the box itself (a count in its tag). */
+  labelSpokenOnly?: boolean;
   placeholder?: TranslatedText;
   rows?: number;
   /** Shows a counter that warns before it blocks. */

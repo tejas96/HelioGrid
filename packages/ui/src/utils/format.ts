@@ -6,7 +6,9 @@ import {
   formatCompactMoney,
   formatDate,
   formatMinorUnits,
+  formatMinorUnitsPlainly,
   formatMoney,
+  formatMoneyPlainly,
   formatMonthYear,
   formatNumber,
   formatPhone,
@@ -51,6 +53,14 @@ export interface MarketFormat {
    * tranche, a receipt. `money` is for a major-unit figure that makes no minor-unit claim.
    */
   amount: (value: MinorUnits) => string;
+  /**
+   * A minor-unit amount as a HEADLINE reads it: a zero fraction left unsaid, a real one printed
+   * whole, never rounded — `₹1,90,575`, `₹19,057.50`. `beside` names the other amounts of the same
+   * column, which then share one form.
+   */
+  amountPlain: (value: MinorUnits, beside?: readonly MinorUnits[]) => string;
+  /** The same headline form for a figure held in major units — a `QualifiedAmount`'s `value`. */
+  moneyPlain: (value: Numberish, beside?: readonly Numberish[]) => string;
   /**
    * **The resolved symbol** — the pack's if it writes one, else Intl's, else the ISO code.
    * `NumberField` renders a money field's adornment from this, which is how no component ends
@@ -103,6 +113,8 @@ export function createFormat(
     number: (value, options) => formatNumber(pack, value, options),
     money: (value, options) => formatMoney(pack, value, { digits: options?.fractionDigits }),
     amount: (value) => formatMinorUnits(pack, value),
+    amountPlain: (value, beside) => formatMinorUnitsPlainly(pack, value, beside),
+    moneyPlain: (value, beside) => formatMoneyPlainly(pack, value, beside),
     currencySymbol: moneySymbol(pack),
     symbolPosition: pack.symbolPosition,
     compact: (value) => formatCompact(pack, value),

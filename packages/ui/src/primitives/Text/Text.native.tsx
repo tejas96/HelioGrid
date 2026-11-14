@@ -4,7 +4,7 @@ import type { StyleProp, TextStyle } from 'react-native';
 import { Platform, Text as RNText, StyleSheet } from 'react-native';
 import type { ThemeColor } from '../Color/colors';
 import { colors } from '../Color/colors';
-import { isMono, lineHeightFor, roleOf, runsOfString } from './Text.logic';
+import { isBrandRun, isMono, lineHeightFor, roleOf, runsOfString } from './Text.logic';
 import type { TextAlign, TextColor, TextProps, TextVariant } from './Text.types';
 
 const R = theme.type.roles;
@@ -142,6 +142,8 @@ const COLOR: Record<TextColor, ThemeColor> = {
 };
 
 const BOLD: TextStyle = { fontWeight: '700' };
+/* A run outside the brand face is set untracked: Devanagari loses its shaping under spacing. */
+const UNTRACKED: TextStyle = { letterSpacing: 0 };
 
 const ALIGN: Record<TextAlign, TextStyle['textAlign']> = {
   start: 'left',
@@ -180,7 +182,11 @@ function drawRuns(children: ReactNode, variant: TextVariant, tracked: boolean): 
       <RNText
         // biome-ignore lint/suspicious/noArrayIndexKey: runs are positional slices of one string
         key={`${run.family}-${index}`}
-        style={{ fontFamily: run.family, ...tracking }}
+        style={{
+          fontFamily: run.family,
+          ...tracking,
+          ...(tracked && !isBrandRun(run, variant) ? UNTRACKED : undefined),
+        }}
       >
         {run.text}
       </RNText>
@@ -210,8 +216,12 @@ export function Text({
      own line height — a shorter box is what loses the marks. `flattenStyle` copies every key of
      every object it is given, `undefined` values included, so an entry written unconditionally
      would erase the variant's line height on every line that needs no raise. */
-  const raised = lineHeightFor(variant, children);
-  const letterSpacing = StyleSheet.flatten(style)?.letterSpacing ?? VARIANT[variant].letterSpacing;
+  const own = StyleSheet.flatten(style);
+  const raised = lineHeightFor(variant, children, {
+    fontSize: own?.fontSize,
+    lineHeight: own?.lineHeight,
+  });
+  const letterSpacing = own?.letterSpacing ?? VARIANT[variant].letterSpacing;
   const tracked = letterSpacing !== undefined && letterSpacing !== 0;
   return (
     <RNText

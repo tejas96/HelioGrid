@@ -11,6 +11,9 @@ import type { z } from 'zod';
 import type { TemporalConnection } from './temporal.client';
 import { TEMPORAL_CLIENT } from './temporal.tokens';
 
+/** How long an ask waits for a run a person is watching before it answers "not yet". */
+const PERSON_WAIT_MS = 15_000;
+
 /**
  * The ONE seam through which this app starts, signals, queries and schedules workflows.
  *
@@ -35,7 +38,8 @@ export class TemporalGateway {
    * be a second run. `USE_EXISTING` joins a run still in flight (proven in
    * `infra/temporal/spike/probe-durable-handoff.mjs`); it says nothing about a run that has already
    * FINISHED, which Temporal would start afresh — so `REJECT_DUPLICATE` refuses that, and the
-   * refusal is read as "already started", the answer a retry wants.
+   * refusal is read as "already started", the answer a retry wants. A definition that
+   * `startsAgainAfterFailure` lets a FAILED run's id start afresh: a person asking again.
    */
   async start<D extends WorkflowDefinition>(
     definition: D,
@@ -50,7 +54,9 @@ export class TemporalGateway {
         workflowId,
         args: [parsed],
         workflowIdConflictPolicy: 'USE_EXISTING',
-        workflowIdReusePolicy: 'REJECT_DUPLICATE',
+        workflowIdReusePolicy: definition.startsAgainAfterFailure
+          ? 'ALLOW_DUPLICATE_FAILED_ONLY'
+          : 'REJECT_DUPLICATE',
       });
     } catch (error) {
       if (!(error instanceof WorkflowExecutionAlreadyStartedError)) throw error;
@@ -130,5 +136,31 @@ export class TemporalGateway {
   ): Promise<z.infer<D['result']>> {
     const client = await this.connection.client();
     return definition.result.parse(await client.workflow.getHandle(workflowId).result());
+  }
+
+  /**
+   * Starts a workflow — or joins its run — and waits for its result while a person is watching
+   * (`PERSON_WAIT_MS`): a run still going after the wait, or one that failed, answers null, and the
+   * next ask joins the same run (its id is the record's). A Temporal that cannot be reached throws.
+   */
+  async resultWhileAPersonWaits<D extends WorkflowDefinition>(
+    definition: D,
+    input: z.infer<D['input']>,
+  ): Promise<z.infer<D['result']> | null> {
+    await this.start(definition, input);
+    // A run that fails after the wait gave up answers nobody: its failure is let go here.
+    const result = this.result(
+      definition,
+      definition.workflowId(definition.input.parse(input)),
+    ).catch(() => null);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const waited = new Promise<null>((resolve) => {
+      timer = setTimeout(() => resolve(null), PERSON_WAIT_MS);
+    });
+    try {
+      return await Promise.race([result, waited]);
+    } finally {
+      clearTimeout(timer);
+    }
   }
 }

@@ -30,4 +30,9 @@ export const SUBJECT_LOOKUPS: Readonly<Record<FileSubjectKind, SubjectLookup>> =
   lead: async () => true,
   project: async () => true,
   project_payment: async () => true,
+  /**
+   * A version's PDF is made by the platform and never declared by a person (`T-M06-017`): no upload
+   * names a version, so none is found. Its link comes from the version's own route.
+   */
+  proposal_version: async () => false,
 };

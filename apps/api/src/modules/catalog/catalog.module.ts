@@ -12,6 +12,7 @@ import { CatalogImportPreviewService } from './catalog.import-preview.service';
 import { CatalogImportRowsRepository } from './catalog.import-rows.repository';
 import { CatalogImportRunRepository } from './catalog.import-run.repository';
 import { CatalogImportRunService } from './catalog.import-run.service';
+import { CatalogOpenDraftsRepository } from './catalog.open-drafts.repository';
 import { CatalogPlatformService } from './catalog.platform.service';
 import { CatalogPriceBookController } from './catalog.price-book.controller';
 import { CatalogPriceBookRepository } from './catalog.price-book.repository';
@@ -45,6 +46,7 @@ import { CatalogSliceRepository } from './catalog.slice.repository';
     CatalogPlatformService,
     CatalogAdminRepository,
     CatalogService,
+    CatalogOpenDraftsRepository,
     CatalogSliceRepository,
     CatalogRepository,
     CatalogPricesRepository,

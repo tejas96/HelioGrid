@@ -36,7 +36,11 @@ export const TAX_PACK_SCHEMA: z.ZodType<TaxPack, z.ZodTypeDef, unknown> = z.obje
   placeOfSupply: z.object({
     samePlace: z.array(componentShare),
     differentPlace: z.array(componentShare),
+    /** A pack stored before the table existed names no area's place. */
+    placeByArea: z.array(z.object({ area: z.string(), place: z.string() })).default([]),
   }),
+  /** A pack stored before proposals declares no supply rates. */
+  systemSupplyRates: z.object({ system: packRate, battery: packRate }).nullable().default(null),
   platformSale: z.object({ serviceCode: z.string(), rateBasisPoints: packRate }),
   platformIsSupplierOfRecord: z.boolean(),
   platformRegistration,

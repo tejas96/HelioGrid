@@ -15,6 +15,7 @@ import { type CreationKey, type Keyed, replayOf } from '../../common/creation-ke
 import { lockCreationKey } from '../../common/db/creation-key-lock';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberAct, recordAuditEntry } from '../audit/audit.public';
+import { takeOnCapture } from './crm.capture-own.repository';
 import {
   currentLeadOf,
   customerInScope,
@@ -42,6 +43,8 @@ export interface CaptureInput {
   readonly referredByName: string | null;
   /** Create anyway (`M02-12`): the customer the number met, and why both are kept. */
   readonly keepBoth: { readonly otherCustomerId: string; readonly reason: string } | null;
+  /** *New proposal*'s capture: the lead is its maker's from the start (`T-M06-001`). */
+  readonly ownedByCapturer: boolean;
 }
 
 export type CaptureOutcome =
@@ -103,6 +106,7 @@ export class CrmCaptureRepository {
       const made = await writeCapture(tx, reader, input, act, key);
       if (judged.keptBeside !== null)
         await keepBoth(tx, reader, made, input, judged.keptBeside, act);
+      if (input.ownedByCapturer) await takeOnCapture(tx, tenantId, made, act);
       await raiseFirstCallBack(tx, { ...made, tenantId, act, window: callBackWindow });
       return { outcome: 'created', row: await detailOf(tx, reader, made.leadId, money) };
     });

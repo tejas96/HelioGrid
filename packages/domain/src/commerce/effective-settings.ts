@@ -4,6 +4,7 @@ import { UI_SOURCE_LOCALE, type UiLanguage } from '../format/languages';
 import type { FormatPack } from '../format/pack';
 import type { BasisPoints } from '../money/basis-points';
 import type { ProjectChainStage } from '../projects/stages';
+import type { CoverPicture } from '../proposals/vocabulary';
 import {
   type PromptPointFact,
   type PromptPointStates,
@@ -77,6 +78,11 @@ export interface ProposalTemplateSettings {
   readonly sectionsIncluded: readonly ProposalSection[];
   /** The tenant's own words — one value, shown as written (`F3-10`). */
   readonly defaultTerms: RichTextValue;
+  /**
+   * The picture every new proposal's cover starts with (`T-M01-030`); absent where a reader built
+   * before the field answers without it — the platform's first picture then stands.
+   */
+  readonly coverPicture?: CoverPicture;
 }
 
 /**

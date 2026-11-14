@@ -8,6 +8,7 @@ import { BrandBloom } from '../BrandBloom/BrandBloom';
 import { LargeTitle } from '../LargeTitle/LargeTitle';
 import { personRow, SETTINGS_ROW_GLYPH } from './SettingsList.logic';
 import type { SettingsListPerson, SettingsListProps } from './SettingsList.types';
+import { ListRow, WorkLists } from './SettingsListRow';
 import { SettingsSideList } from './SettingsSideList';
 
 /** The person's avatar diameter in their hero tile, on a phone and on a wide screen. */
@@ -60,6 +61,7 @@ export function SettingsList({
   person,
   groups,
   onOpen,
+  workLists,
   form = 'page',
   current,
 }: SettingsListProps) {
@@ -70,6 +72,9 @@ export function SettingsList({
     <div className="hg-settings-list">
       <LargeTitle title={title} summary={summary} />
       <div className="hg-settings-column">
+        {workLists === undefined || workLists.items.length === 0 ? null : (
+          <WorkLists items={workLists.items} onOpen={workLists.onOpen} />
+        )}
         {groups.map((group) => {
           const own = personRow(group);
           if (own !== null) {
@@ -86,28 +91,13 @@ export function SettingsList({
             <Block key={group.key} overline={group.name} density="functional">
               <div className="hg-settings-tile">
                 {group.rows.map((row) => (
-                  <Pressable
+                  <ListRow
                     key={row.key}
-                    className="hg-settings-row"
+                    glyph={SETTINGS_ROW_GLYPH[row.key]}
+                    name={row.name}
+                    hint={hints?.[row.key]}
                     onPress={() => onOpen(row.key)}
-                  >
-                    <span className="hg-settings-row-icon">
-                      <ShellGlyph name={SETTINGS_ROW_GLYPH[row.key]} size="md" tone="accent" />
-                    </span>
-                    <span className="hg-settings-row-words">
-                      <span className="hg-settings-row-name">
-                        <Text variant="body" bold>
-                          {row.name}
-                        </Text>
-                      </span>
-                      {hints === undefined ? null : (
-                        <Text variant="body-sm" color="secondary">
-                          {hints[row.key]}
-                        </Text>
-                      )}
-                    </span>
-                    <ShellGlyph name="chevron-right" size="md" />
-                  </Pressable>
+                  />
                 ))}
               </div>
             </Block>

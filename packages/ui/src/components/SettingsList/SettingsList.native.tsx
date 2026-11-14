@@ -2,7 +2,6 @@ import { theme } from '@heliogrid/theme';
 import { useId } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
-import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -14,6 +13,7 @@ import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import { LargeTitle } from '../LargeTitle/LargeTitle.native';
 import { personRow, SETTINGS_ROW_GLYPH } from './SettingsList.logic';
 import type { SettingsListPerson, SettingsListProps } from './SettingsList.types';
+import { ListRow, tileStyle, WorkLists } from './SettingsListRow.native';
 import { SettingsSideList } from './SettingsSideList.native';
 
 /** The person's avatar diameter in their hero tile, and the ring's 3px around it. */
@@ -117,6 +117,7 @@ export function SettingsList({
   person,
   groups,
   onOpen,
+  workLists,
   form = 'page',
   current,
 }: SettingsListProps) {
@@ -126,6 +127,9 @@ export function SettingsList({
   return (
     <View style={styles.list}>
       <LargeTitle title={title} summary={summary} />
+      {workLists === undefined || workLists.items.length === 0 ? null : (
+        <WorkLists items={workLists.items} onOpen={workLists.onOpen} />
+      )}
       {groups.map((group) => {
         const own = personRow(group);
         if (own !== null) {
@@ -140,26 +144,17 @@ export function SettingsList({
         }
         return (
           <Block key={group.key} overline={group.name} density="functional" style={styles.group}>
-            <View style={[tileSurface, styles.tile]}>
+            <View style={tileStyle}>
               <GroundProvider ground="tile">
                 {group.rows.map((row, index) => (
-                  <Pressable key={row.key} onPress={() => onOpen(row.key)} style={styles.row}>
-                    {index === 0 ? null : <View style={styles.rule} />}
-                    <View style={styles.chip}>
-                      <ShellGlyph name={SETTINGS_ROW_GLYPH[row.key]} size="md" tone="accent" />
-                    </View>
-                    <View style={styles.name}>
-                      <Text variant="body" bold>
-                        {row.name}
-                      </Text>
-                      {hints === undefined ? null : (
-                        <Text variant="body-sm" color="secondary">
-                          {hints[row.key]}
-                        </Text>
-                      )}
-                    </View>
-                    <ShellGlyph name="chevron-right" size="md" />
-                  </Pressable>
+                  <ListRow
+                    key={row.key}
+                    first={index === 0}
+                    glyph={SETTINGS_ROW_GLYPH[row.key]}
+                    name={row.name}
+                    hint={hints?.[row.key]}
+                    onPress={() => onOpen(row.key)}
+                  />
                 ))}
               </GroundProvider>
             </View>
@@ -210,40 +205,4 @@ const styles = StyleSheet.create({
   raised: { ...theme.elevation.e2 },
   flat: { ...theme.elevation.e1 },
   icon: {},
-  /* A group's tile: its rows inset by the record's 8, a hairline between them. */
-  tile: {
-    padding: theme.spacing['sp-2'],
-    borderRadius: theme.radius['r-tile'],
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    gap: theme.spacing['sp-3'],
-    minHeight: 64,
-    paddingVertical: theme.spacing['sp-2'],
-    paddingLeft: theme.spacing['sp-2'],
-    paddingRight: theme.spacing['sp-3'],
-    borderRadius: theme.radius['rf-lg'],
-  },
-  /* The hairline between two rows starts at the name, under the icon chip's column. */
-  rule: {
-    position: 'absolute',
-    top: 0,
-    left: theme.spacing['sp-2'] + 40 + theme.spacing['sp-3'],
-    right: theme.spacing['sp-3'],
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.hairline,
-  },
-  /* A row's icon chip: a soft accent pane — the row's mark, never a control. */
-  chip: {
-    width: 40,
-    height: 40,
-    borderRadius: theme.radius['r-sm'],
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors['accent-subtle'],
-    ...theme.elevation.e1,
-  },
-  name: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
 });

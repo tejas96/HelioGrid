@@ -5,7 +5,7 @@ import { HueTile } from '../HueTile';
 import { useFormat } from '../MarketProvider';
 import { Menu } from '../Menu';
 import { CardHead } from '../ProjectDetail/ProjectDetailParts';
-import { entriesNewestFirst, entryActsOf } from './ProjectMoney.logic';
+import { entriesNewestFirst, entryActsOf, paymentsAmountOf } from './ProjectMoney.logic';
 import type { ProjectMoneyProps } from './ProjectMoney.types';
 
 /**
@@ -38,9 +38,13 @@ export function MoneyEntries(props: ProjectMoneyProps & { readonly payments: Pro
 
 function EntryLine({
   entry,
+  payments,
   words,
   attaching,
-}: ProjectMoneyProps & { readonly entry: ProjectPaymentEntry }) {
+}: ProjectMoneyProps & {
+  readonly payments: ProjectPayments;
+  readonly entry: ProjectPaymentEntry;
+}) {
   const format = useFormat();
   const isReversal = entry.kind === 'reversal';
   const mode = entry.mode === null ? null : format.word('mode', entry.mode);
@@ -54,7 +58,9 @@ function EntryLine({
       />
       <div className="hg-money-entry-text">
         <span className="hg-money-entry-title">
-          <span className="hg-money-figure">{format.money(entry.amount)}</span>
+          <span className="hg-money-figure">
+            {paymentsAmountOf(payments, format)(entry.amount)}
+          </span>
           {mode === null ? null : (
             <span>
               {entry.reference === null ? mode : words.entryReference(mode, entry.reference)}

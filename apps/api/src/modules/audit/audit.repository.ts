@@ -120,5 +120,6 @@ function toChangePayload(stored: AuditChangePayload | null): AuditLogEntry['chan
     return { mergedId: stored.mergedId, choices: stored.choices.map((choice) => ({ ...choice })) };
   }
   if ('keptBesideId' in stored) return { reason: stored.reason, keptBesideId: stored.keptBesideId };
+  if ('amount' in stored) return { ...stored };
   return { from: [...stored.from], to: [...stored.to] };
 }

@@ -1,285 +1,229 @@
-/* The Proposal template page body (`SCR-M01-19`). `data-layout` is the room the shell gives it,
-   measured by the component: `narrow` is the 375 column, `wide` the 1536 pair. The page's side
-   padding is the shell's. Every value is a token but the board's own sizes: the 420 editor card
-   and the 480 sheet. The stage's ground and the card's are `Ground.css`'s lists. */
-
-.hg-template {
+/* Proposal defaults (`SCR-M01-19`, `T-M01-030`): its own parts inside the builder's frame — the
+   cover choices, the page rows, the wall of pages, the phone's peek and the held act. Tokens only;
+   motion is transform and opacity from the motion tokens. */
+.hg-pdf-part {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-4);
+  gap: var(--sp-5);
   min-width: 0;
 }
-
-.hg-template-pretty {
-  text-wrap: pretty;
-}
-
-.hg-template-medium {
-  font-weight: var(--fw-medium);
-}
-
-/* The title over the standing and Quick lines (`Intro 375`): the two lines `sp-0-5` apart under
-   the phone bar's title, past its back control; under a drawn title `sp-1` apart. */
-.hg-template-head {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-0-5);
-  min-width: 0;
-}
-
-/* A titled head spaces its lines as `LargeTitle` does, so every settings page's title and line sit
-   alike. */
-.hg-template-head[data-titled] {
-  gap: var(--sp-2);
-}
-
-.hg-template[data-layout="narrow"] .hg-template-head:not([data-titled]) {
-  margin-left: calc(var(--sp-10) + var(--sp-4));
-}
-
-/* The stage: the sunken desk the window and its caption row sit on (`Stage 375`). */
-.hg-template-stage {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-width: 0;
-  padding: var(--sp-3);
-  background: var(--canvas-sunken);
+.hg-pdf-tile {
   border-radius: var(--r-lg);
 }
 
-.hg-template-caption-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-}
-
-.hg-template-caption {
-  flex: 1;
-  min-width: 0;
-  text-wrap: pretty;
-}
-
-.hg-template-caption-row .hg-icon-button,
-.hg-template-caption-row .hg-button,
-.hg-template-add .hg-button {
-  flex-shrink: 0;
-}
-
-/* The editor (`Editor 375`): the part's switch, the part and the two rows, `sp-4` apart. */
-.hg-template-editor,
-.hg-template-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-  min-width: 0;
-}
-
-/* A part's blocks, `sp-4` apart (`Cover part`, `Terms part`, `Timeline part`). */
-.hg-template-part {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-  min-width: 0;
-}
-
-/* The kW figure across, the two counts under it side by side, `sp-3` apart. */
-.hg-template-counts {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
-
-.hg-template-count-pair {
+/* ── Look ──────────────────────────────────────────────────────────────── */
+.hg-pdf-covers {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--sp-3);
-  align-items: start;
 }
-
-/* The sections (`Sections part`): the count line over the nine rows, `sp-2` apart. */
-.hg-template-sections {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
+.hg-pdf-cover,
+.hg-pdf-brand,
+.hg-pdf-peek {
+  display: block;
   min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: start;
+  color: inherit;
 }
-
-.hg-template-section-list {
+.hg-pdf-cover-own {
+  grid-column: 1 / -1;
+}
+.hg-pdf-cover-in {
+  position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  transition: transform var(--dur-micro) var(--ease-standard);
 }
-
-.hg-template-section {
+.hg-pdf-cover-picture {
+  display: block;
+  aspect-ratio: 7 / 3;
+  overflow: hidden;
+}
+.hg-pdf-cover-picture > *,
+.hg-pdf-own-picture > .hg-ppic {
+  width: 100%;
+  height: 100%;
+}
+.hg-pdf-cover-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--sp-3);
+}
+.hg-pdf-cover-name {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+.hg-pdf-cover-line {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pdf-check {
+  position: absolute;
+  inset-block-start: var(--sp-2);
+  inset-inline-end: var(--sp-2);
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  background: var(--glass-strong);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+.hg-pdf-check[data-on] {
+  background: var(--accent);
+  box-shadow: none;
+}
+.hg-pdf-own-in,
+.hg-pdf-brand-in {
+  position: relative;
   display: flex;
   align-items: center;
+  overflow: hidden;
+  min-height: 64px;
+}
+.hg-pdf-own-picture {
+  flex: none;
+  align-self: stretch;
+  width: 64px;
+  display: grid;
+  place-items: center;
+  background: var(--fill);
+  color: var(--text-secondary);
+}
+.hg-pdf-cover:active .hg-pdf-cover-in,
+.hg-pdf-cover:active .hg-pdf-own-in {
+  transform: scale(var(--press-scale));
+}
+.hg-pdf-cover-in[data-on],
+.hg-pdf-own-in[data-on] {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.hg-pdf-brand-in {
   gap: var(--sp-3);
-  padding: calc(var(--sp-1) + var(--sp-0-5)) 0;
-  border-top: 1px solid var(--line-soft);
+  padding: 0 var(--sp-4);
 }
-
-.hg-template-section > .hg-switch,
-.hg-template-section > .hg-switch-wrap {
-  flex: 1;
-  min-width: 0;
+.hg-pdf-brand-in .hg-pdf-swatch {
+  display: inline-flex;
+  flex: none;
+  background: none;
 }
-
-.hg-template-section[data-floor] {
-  min-height: var(--sp-12);
+.hg-pdf-brand-in .hg-pdf-cover-words {
+  padding: var(--sp-3) 0;
 }
-
-.hg-template-section-words {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-0-5);
-  min-width: 0;
-}
-
-.hg-template-always {
-  flex: 0 0 auto;
+.hg-pdf-refusal {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--danger-text);
 }
 
-.hg-template-terms,
-.hg-template-phase {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
-  min-width: 0;
-}
-
-/* *Add a phase* at its own width at 375; across the card at width. */
-.hg-template-add {
-  display: flex;
-}
-
-.hg-template-links,
-.hg-template-link-rows {
+/* ── Pages ─────────────────────────────────────────────────────────────── */
+.hg-pdf-pagerows {
   display: flex;
   flex-direction: column;
 }
-
-.hg-template-hairline {
-  height: 1px;
-  background: var(--line-soft);
-}
-
-.hg-list-row.hg-template-link {
-  padding-left: 0;
-  padding-right: 0;
-  box-shadow: none;
-}
-
-.hg-list-row.hg-template-link:not(:hover) {
-  background: transparent;
-}
-
-.hg-template-end {
-  margin: 0;
-}
-
-/* The phone's sticky foot (m19-n4): the failed save on the page's ground over the act bar. */
-.hg-template-foot {
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
+.hg-pdf-pagerow {
   display: flex;
-  flex-direction: column;
-}
-
-.hg-template-foot .hg-template-failure {
-  padding: var(--sp-3) var(--screen-pad-mobile);
-  background: var(--hg-ground);
-}
-
-/* The 1536 pair (`Chrome 1536`): the heading row over the stage, the teaching banner across both
-   columns, the editor card 420 wide and `sp-8` from the stage. */
-.hg-template[data-layout="wide"] {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 420px;
-  column-gap: var(--sp-8);
-  row-gap: var(--sp-4);
-  align-items: start;
-}
-
-.hg-template[data-layout="wide"] .hg-template-head,
-.hg-template[data-layout="wide"] .hg-template-stage {
-  grid-column: 1;
-}
-
-.hg-template[data-layout="wide"] .hg-template-teaching {
-  grid-column: 1 / -1;
-}
-
-/* The stage at width (`Stage 1536`): the caption row across its top, the whole sheet at its 480. */
-.hg-template[data-layout="wide"] .hg-template-stage {
   align-items: center;
-  gap: var(--sp-4);
-  padding: var(--sp-5) var(--sp-8) 0;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.hg-pdf-pagerow + .hg-pdf-pagerow {
+  box-shadow: inset 0 1px 0 var(--hairline);
+}
+.hg-pdf-pagerow-thumb {
+  flex: none;
+  display: block;
+  border-radius: var(--r-xs);
   overflow: hidden;
-  border-radius: var(--r-xl);
+  box-shadow: 0 0 0 1px var(--line-soft);
+}
+.hg-pdf-pagerow[data-off] .hg-pdf-pagerow-thumb {
+  opacity: 0.45;
+}
+.hg-pdf-pagerow-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.hg-template[data-layout="wide"] .hg-template-caption-row {
-  align-self: stretch;
+/* ── the wall of every page ────────────────────────────────────────────── */
+.hg-pdf-wall {
+  display: grid;
+  grid-template-columns: repeat(var(--hg-pdf-wall-columns), minmax(0, 1fr));
+  justify-items: center;
+  gap: var(--sp-5) var(--sp-4);
+  padding: var(--sp-4) 0;
 }
-
-/* The frame's note under the sheet (*Not saved yet*) keeps the stage's own side room below it. */
-.hg-template[data-layout="wide"] .hg-template-stage .hg-preview-frame-caption {
-  padding-bottom: var(--sp-5);
+.hg-pdf-wall-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
 }
-
-.hg-template-sheet {
-  flex: 0 0 auto;
-  width: 480px;
-}
-
-/* The editor card (`Editor 1536`): level with the stage, its foot the act bar or the page end. */
-.hg-template-card {
-  grid-column: 2;
-  align-self: start;
-  padding: var(--sp-5);
-  background: var(--hg-ground);
-  border-radius: var(--r-tile);
+.hg-pdf-wall-page > :first-child {
+  border-radius: var(--r-xs);
+  overflow: hidden;
   box-shadow: var(--e2);
 }
-
-/* At width the hairline runs to the card's edges, `sp-4` above the rows, which sit `sp-1` apart. */
-.hg-template[data-layout="wide"] .hg-template-links {
-  gap: var(--sp-4);
+.hg-pdf-wall-page[data-off] > :first-child {
+  opacity: 0.4;
+  transform: scale(0.94);
+}
+.hg-pdf-wall-line {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
 }
 
-.hg-template[data-layout="wide"] .hg-template-link-rows {
-  gap: var(--sp-1);
+/* ── the phone's peek ──────────────────────────────────────────────────── */
+.hg-pdf-peek-in {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 236px;
+  overflow: hidden;
+  padding-top: var(--sp-4);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+.hg-pdf-peek-tag {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: var(--sp-3);
+  transform: translateX(-50%);
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
+  box-shadow: var(--e2);
+  font: var(--fw-medium) var(--fs-caption) / 1 var(--font-sans);
+  color: var(--text-primary);
 }
 
-.hg-template[data-layout="wide"] .hg-template-hairline {
-  margin: 0 calc(-1 * var(--sp-5));
-}
-
-.hg-template[data-layout="wide"] .hg-template-counts {
-  gap: var(--sp-4);
-}
-
-.hg-template[data-layout="wide"] .hg-template-section {
-  gap: var(--sp-2);
-  padding: var(--sp-1) 0;
-}
-
-.hg-template[data-layout="wide"] .hg-template-timeline {
-  gap: var(--sp-3);
-}
-
-.hg-template[data-layout="wide"] .hg-template-add {
-  flex-direction: column;
-}
-
-/* The phase editor's body (m19-g): the two fields, `sp-4` apart. */
-.hg-template-phase-fields {
+/* ── the held act ──────────────────────────────────────────────────────── */
+.hg-pdf-act {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-4);
+  gap: var(--sp-3);
 }

@@ -22,5 +22,6 @@ export {
   certificationScheme,
   certificationVerdict,
   holdsScheme,
+  schemeBinds,
   undeclaredSchemes,
 } from './schemes';

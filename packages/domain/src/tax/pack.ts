@@ -38,6 +38,28 @@ export interface TaxComponentShare {
 export interface PlaceOfSupplyRule {
   readonly samePlace: readonly TaxComponentShare[];
   readonly differentPlace: readonly TaxComponentShare[];
+  /**
+   * The scheme's own code for each administrative area (`formats.areas`): what a customer's region
+   * is compared by against a supplier's registration place (`M06-34`, `F1-29`). Empty on a pack
+   * stored before the table existed, where a customer's place is then unknown.
+   */
+  readonly placeByArea: readonly AreaPlace[];
+}
+
+/** One administrative area and the place the scheme knows it by — `IN-MH` is GST state `27`. */
+export interface AreaPlace {
+  readonly area: string;
+  readonly place: string;
+}
+
+/**
+ * The rates a company's own sale of a solar system carries where the proposal names no per-item
+ * rate (`M06-09`, `M06-34`): the system as one supply, and a battery sold with it. A proposal built
+ * without a design starts on these and its line keeps the rate it was priced at.
+ */
+export interface SystemSupplyRates {
+  readonly system: BasisPoints;
+  readonly battery: BasisPoints;
 }
 
 /** A tenant registration the scheme knows, and when the product asks for it (`F1-13`). */
@@ -110,6 +132,8 @@ export interface TaxPack {
   readonly strategy: TaxStrategy;
   readonly registrationTypes: readonly TaxRegistrationType[];
   readonly placeOfSupply: PlaceOfSupplyRule;
+  /** `M06-34` — `null` on a pack stored before proposals: step 3 then has no rate to start from. */
+  readonly systemSupplyRates: SystemSupplyRates | null;
   readonly platformSale: PlatformSaleTax;
   /**
    * Whether the platform itself is supplier of record for subscription sales here — its
@@ -174,7 +198,51 @@ export const IN_TAX: TaxPack = {
       { code: 'SGST', parts: 1 },
     ],
     differentPlace: [{ code: 'IGST', parts: 1 }],
+    /** The GST state codes, by ISO 3166-2 area code. `IN-DH` is the merged territory's `26`. */
+    placeByArea: [
+      { area: 'IN-JK', place: '01' },
+      { area: 'IN-HP', place: '02' },
+      { area: 'IN-PB', place: '03' },
+      { area: 'IN-CH', place: '04' },
+      { area: 'IN-UK', place: '05' },
+      { area: 'IN-HR', place: '06' },
+      { area: 'IN-DL', place: '07' },
+      { area: 'IN-RJ', place: '08' },
+      { area: 'IN-UP', place: '09' },
+      { area: 'IN-BR', place: '10' },
+      { area: 'IN-SK', place: '11' },
+      { area: 'IN-AR', place: '12' },
+      { area: 'IN-NL', place: '13' },
+      { area: 'IN-MN', place: '14' },
+      { area: 'IN-MZ', place: '15' },
+      { area: 'IN-TR', place: '16' },
+      { area: 'IN-ML', place: '17' },
+      { area: 'IN-AS', place: '18' },
+      { area: 'IN-WB', place: '19' },
+      { area: 'IN-JH', place: '20' },
+      { area: 'IN-OD', place: '21' },
+      { area: 'IN-CG', place: '22' },
+      { area: 'IN-MP', place: '23' },
+      { area: 'IN-GJ', place: '24' },
+      { area: 'IN-DH', place: '26' },
+      { area: 'IN-MH', place: '27' },
+      { area: 'IN-KA', place: '29' },
+      { area: 'IN-GA', place: '30' },
+      { area: 'IN-LD', place: '31' },
+      { area: 'IN-KL', place: '32' },
+      { area: 'IN-TN', place: '33' },
+      { area: 'IN-PY', place: '34' },
+      { area: 'IN-AN', place: '35' },
+      { area: 'IN-TS', place: '36' },
+      { area: 'IN-AP', place: '37' },
+      { area: 'IN-LA', place: '38' },
+    ],
   },
+  /**
+   * `M06-35`'s own worked case — ₹15,575 of tax on ₹1,75,000 — is 8.9 %: a solar system sold as one
+   * supply, 70 % goods at 5 % and 30 % services at 18 %. A battery sold with it carries 18 %.
+   */
+  systemSupplyRates: { system: basisPoints(890), battery: basisPoints(1800) },
   /** `F1-28` — SAC 998434, cloud/SaaS, at 18%; book prices are ex-tax (`BM-40`). */
   platformSale: { serviceCode: '998434', rateBasisPoints: basisPoints(1800) },
   /** `F1-29` — our GSTIN, our remittance, our liability; the gateway is a gateway. */

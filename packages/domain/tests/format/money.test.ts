@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import {
   formatCompactMoney,
   formatMinorUnits,
+  formatMinorUnitsPlainly,
   formatMoney,
+  formatMoneyPlainly,
   moneySymbol,
 } from '../../src/format/money';
 import { type FormatPack, IN_FORMATS } from '../../src/format/pack';
@@ -127,5 +129,49 @@ describe('formatMinorUnits — paise printed to the minor unit, in the market’
   it('never rounds to the screen default: the last paisa is shown even where screens hide it', () => {
     expect(formatMoney(IN_FORMATS, 45271.01)).toBe('₹45,271');
     expect(formatMinorUnits(IN_FORMATS, minorUnits(4_527_101))).toBe('₹45,271.01');
+  });
+});
+
+describe('formatMinorUnitsPlainly — a headline leaves a zero fraction unsaid and never rounds (T-M06-017)', () => {
+  it.each([
+    ['a whole amount', 19_057_500, [], '₹1,90,575'],
+    ['an amount with paise prints them all', 1_905_750, [], '₹19,057.50'],
+    ['one paisa', 1_905_701, [], '₹19,057.01'],
+    ['zero', 0, [], '₹0'],
+    [
+      'a whole amount beside one with paise takes its form',
+      11_434_500,
+      [1_905_750],
+      '₹1,14,345.00',
+    ],
+    ['a column of whole amounts stays whole', 11_434_500, [3_811_500], '₹1,14,345'],
+    ['a negative amount keeps its leading sign', -4_500_000, [], '-₹45,000'],
+  ] as const)('%s', (_, amount, beside, expected) => {
+    expect(
+      formatMinorUnitsPlainly(
+        IN_FORMATS,
+        minorUnits(amount),
+        beside.map((each) => minorUnits(each)),
+      ),
+    ).toBe(expected);
+  });
+});
+
+describe('formatMoneyPlainly — the same form for a figure held in major units', () => {
+  it.each([
+    ['a whole figure', 190_575, '₹1,90,575'],
+    ['a figure with paise', 19_057.5, '₹19,057.50'],
+    ['a wire string', '112575.00', '₹1,12,575'],
+    ['nothing to render', Number.NaN, ''],
+  ] as const)('%s', (_, value, expected) => {
+    expect(formatMoneyPlainly(IN_FORMATS, value)).toBe(expected);
+  });
+
+  it.each([
+    ['whole beside whole stays whole', 114_345, [38_115], '₹1,14,345'],
+    ['whole beside paise takes the column’s form', 114_345, ['19057.50'], '₹1,14,345.00'],
+    ['paise beside whole keeps its paise', '19057.50', [114_345], '₹19,057.50'],
+  ] as const)('a column shares one form: %s', (_, value, beside, expected) => {
+    expect(formatMoneyPlainly(IN_FORMATS, value, beside)).toBe(expected);
   });
 });

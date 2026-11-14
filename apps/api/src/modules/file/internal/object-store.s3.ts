@@ -8,6 +8,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import type {
+  DocumentPutRequest,
   DownloadLinkRequest,
   ObjectStore,
   PutObjectRequest,
@@ -95,6 +96,16 @@ export class S3ObjectStore implements ObjectStore {
     };
   }
 
+  async signDocumentPut(request: DocumentPutRequest): Promise<SignedUpload> {
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: request.key,
+      ContentType: request.contentType,
+    });
+    const url = await getSignedUrl(this.client, command, { expiresIn: request.expiresInSeconds });
+    return { url, headers: { 'content-type': request.contentType } };
+  }
+
   signDownload(request: DownloadLinkRequest): Promise<string> {
     const command = new GetObjectCommand({
       Bucket: this.bucket,
@@ -110,7 +121,7 @@ export class S3ObjectStore implements ObjectStore {
       const stored = await this.client.send(
         new HeadObjectCommand({ Bucket: this.bucket, Key: key, ChecksumMode: 'ENABLED' }),
       );
-      return { checksumSha256: stored.ChecksumSHA256 ?? null };
+      return { checksumSha256: stored.ChecksumSHA256 ?? null, byteSize: stored.ContentLength ?? 0 };
     } catch (error) {
       if (isAbsent(error)) return null;
       throw error;

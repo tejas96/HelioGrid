@@ -4,7 +4,7 @@ import { Card } from '../Card';
 import { useFormat } from '../MarketProvider';
 import { ProvenanceTier } from '../Provenance';
 import { RollingNumber } from '../RollingNumber';
-import type { DashboardPartProps } from './OwnerDashboard.logic';
+import { cashFiguresOf, type DashboardPartProps } from './OwnerDashboard.logic';
 
 /**
  * Cash so far this month (`M13-16`): what came in, measured, as the card's one big figure, last
@@ -13,6 +13,7 @@ import type { DashboardPartProps } from './OwnerDashboard.logic';
 export function CashCard({ view, words }: DashboardPartProps) {
   const format = useFormat();
   const { cash } = view;
+  const figures = cashFiguresOf(cash, format);
   return (
     <Card className="hg-owner-card">
       <section className="hg-owner-card-body" aria-label={words.cashTitle}>
@@ -27,10 +28,10 @@ export function CashCard({ view, words }: DashboardPartProps) {
             {words.soFarThisMonth}
           </Text>
           <span className="hg-owner-hero-figure">
-            <RollingNumber value={format.money(cash.collectedThisMonth)} variant="hero" />
+            <RollingNumber value={figures.collected} variant="hero" />
           </span>
           <Text variant="body-sm" color="secondary">
-            {words.vsLastMonth(format.money(cash.collectedLastMonth))}
+            {words.vsLastMonth(figures.lastMonth)}
           </Text>
         </div>
         <div className="hg-owner-cash-split">
@@ -38,7 +39,7 @@ export function CashCard({ view, words }: DashboardPartProps) {
             <Text variant="caption" color="secondary">
               {words.toCollect}
             </Text>
-            <span className="hg-owner-amount">{format.money(cash.toCollect)}</span>
+            <span className="hg-owner-amount">{figures.toCollect}</span>
           </div>
           <div className="hg-owner-cash-cell">
             <span className="hg-owner-late-word">
@@ -55,7 +56,7 @@ export function CashCard({ view, words }: DashboardPartProps) {
                 {words.late(cash.late.count)}
               </Text>
             </span>
-            <span className="hg-owner-amount">{format.money(cash.late.amount)}</span>
+            <span className="hg-owner-amount">{figures.late}</span>
           </div>
         </div>
       </section>

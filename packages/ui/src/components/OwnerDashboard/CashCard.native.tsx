@@ -7,7 +7,7 @@ import { Card } from '../Card/Card.native';
 import { useFormat } from '../MarketProvider';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
 import { RollingNumber } from '../RollingNumber/RollingNumber.native';
-import type { DashboardPartProps } from './OwnerDashboard.logic';
+import { cashFiguresOf, type DashboardPartProps } from './OwnerDashboard.logic';
 
 /**
  * Cash so far this month on the phone (`M13-16`): what came in, measured, as the card's one big
@@ -16,6 +16,7 @@ import type { DashboardPartProps } from './OwnerDashboard.logic';
 export function CashCard({ view, words }: DashboardPartProps) {
   const format = useFormat();
   const { cash } = view;
+  const figures = cashFiguresOf(cash, format);
   const late = cash.late.count > 0;
   return (
     <Card>
@@ -33,9 +34,9 @@ export function CashCard({ view, words }: DashboardPartProps) {
           <Text variant="caption" color="secondary">
             {words.soFarThisMonth}
           </Text>
-          <RollingNumber value={format.money(cash.collectedThisMonth)} variant="hero" />
+          <RollingNumber value={figures.collected} variant="hero" />
           <Text variant="body-sm" color="secondary">
-            {words.vsLastMonth(format.money(cash.collectedLastMonth))}
+            {words.vsLastMonth(figures.lastMonth)}
           </Text>
         </View>
         <View style={styles.split}>
@@ -44,7 +45,7 @@ export function CashCard({ view, words }: DashboardPartProps) {
               {words.toCollect}
             </Text>
             <Text variant="mono" oneLine>
-              {format.money(cash.toCollect)}
+              {figures.toCollect}
             </Text>
           </View>
           <View style={styles.cell}>
@@ -55,7 +56,7 @@ export function CashCard({ view, words }: DashboardPartProps) {
               </Text>
             </View>
             <Text variant="mono" oneLine>
-              {format.money(cash.late.amount)}
+              {figures.late}
             </Text>
           </View>
         </View>

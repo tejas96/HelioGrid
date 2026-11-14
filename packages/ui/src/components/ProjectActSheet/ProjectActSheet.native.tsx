@@ -3,12 +3,13 @@ import { StyleSheet, View } from 'react-native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { TILE_STROKE } from '../ProjectDetail/ProjectDetail.logic';
 import { Sheet } from '../Sheet/Sheet.native';
-import { AccessForm, DateForm, FileNameForm, NotNeededForm } from './ProjectActForms.native';
+import { AccessForm, FileNameForm, NotNeededForm } from './ProjectActForms.native';
 import { formOf, type ProjectForms } from './ProjectActSheet.forms';
 import { headOf } from './ProjectActSheet.logic';
 import type { ProjectActSheetProps } from './ProjectActSheet.types';
 import { CancelForm } from './ProjectCancelForm.native';
 import { EarlyForm } from './ProjectEarlyForm.native';
+import { InstallDayForm } from './ProjectInstallDayForm.native';
 import { DispatchForm, ManagerForm } from './ProjectPeopleForms.native';
 import { WaitForm } from './ProjectWaitForm.native';
 
@@ -53,7 +54,7 @@ const FORMS: ProjectForms = {
   earlyProof: EarlyForm,
   notNeeded: NotNeededForm,
   cancel: CancelForm,
-  date: DateForm,
+  date: InstallDayForm,
   manager: ManagerForm,
   access: AccessForm,
   fileName: FileNameForm,

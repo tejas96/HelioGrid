@@ -217,3 +217,25 @@ test('an ariaLabel names the field', async ({ mount }) => {
   await expect(labelled.getByRole('textbox', { name: LABEL })).toBeVisible();
   await expect(labelled.getByRole('textbox', { name: SHARE_NAME })).toHaveCount(0);
 });
+
+test("a worked-out figure reads to the field's places, and is sent again only when it is changed", async ({
+  mount,
+}) => {
+  const exact = 405.52799999999996;
+  const field = await mount(
+    <HeldNumberField label={LABEL} unit={UNIT} initial={exact} precision={0} />,
+  );
+  const input = field.getByRole('textbox', { name: LABEL });
+
+  await expect(input).toHaveValue('406');
+  await input.focus();
+  await expect(input).toHaveValue('406');
+  await input.blur();
+  await expect(field.getByTestId('commits')).toHaveText('0');
+  await expect(field.getByTestId('held')).toHaveText(String(exact));
+
+  await input.fill('410');
+  await input.blur();
+  await expect(field.getByTestId('held')).toHaveText('410');
+  await expect(field.getByTestId('commits')).toHaveText('1');
+});

@@ -135,6 +135,13 @@ export interface RichTextProps {
   pageEstimate?: ReactNode;
   /** Called with fresh metrics after every edit — the input side of the same seam. */
   onMeasure?: (metrics: RichTextMetrics) => void;
+  /**
+   * The five marks alone — bold, italic, heading, list, numbered list — with no link and no logo:
+   * a text whose links and logo the document places itself (step 9, `T-M06-011` ruling).
+   */
+  marksOnly?: boolean;
+  /** The count and the page estimate sit beside the label, above the box, instead of under it. */
+  countOnTop?: boolean;
 }
 
 export interface RichTextViewProps {

@@ -1,5 +1,7 @@
-import type { LeadStage, LostReason, NeedsYouKind } from '@heliogrid/domain';
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { ForecastStage, LeadStage, LostReason, NeedsYouKind } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
+import { shownAsSent } from './assembled';
 import { LEAD_STAGE_WORD, LOST_REASON_WORD } from './crm-vocabulary';
 import { LEAD_DETAIL } from './lead-detail';
 import { numberFieldWords } from './number-field';
@@ -21,6 +23,9 @@ export const OWNER_DASHBOARD = {
     id: '{count, plural, one {# project is blocked on us} other {# projects are blocked on us}}',
   },
   waitingLongest: /*i18n*/ { id: 'Waiting longest' },
+  proposalsUnopened: /*i18n*/ {
+    id: '{count, plural, one {# proposal is not opened yet} other {# proposals are not opened yet}}',
+  },
   myOverdueTasks: /*i18n*/ {
     id: '{count, plural, one {# of your tasks is overdue} other {# of your tasks are overdue}}',
   },
@@ -35,6 +40,12 @@ export const OWNER_DASHBOARD = {
   },
   waitingLine: /*i18n*/ {
     id: '{name} · {days, plural, =0 {in {stage} since today} one {# day in {stage}} other {# days in {stage}}}',
+  },
+  unopenedLine: /*i18n*/ {
+    id: '{days, plural, =0 {{name} has not opened it yet} one {{name} has not opened it for # day} other {{name} has not opened it for # days}}',
+  },
+  unopenedLineNoName: /*i18n*/ {
+    id: '{days, plural, =0 {Not opened yet} one {Not opened for # day} other {Not opened for # days}}',
   },
   myTasksLine: /*i18n*/ { id: 'They are on your My Day' },
   assign: /*i18n*/ { id: 'Assign' },
@@ -79,6 +90,15 @@ export const OWNER_DASHBOARD = {
   forecastNote: /*i18n*/ {
     id: 'Weighted by stage once proposals carry prices. Expected, not promised — never added to won.',
   },
+  forecastFrom: /*i18n*/ {
+    id: '{count, plural, one {expected from # open proposal} other {expected from # open proposals}}',
+  },
+  forecastShared: /*i18n*/ { id: 'Shared or opened' },
+  forecastNegotiating: /*i18n*/ { id: 'Wants changes' },
+  forecastAccepted: /*i18n*/ { id: 'Accepted' },
+  forecastStageLine: /*i18n*/ { id: '{count} · {total} × {likelihood}%' },
+  forecastBarName: /*i18n*/ { id: 'Forecast by stage' },
+  forecastHonest: /*i18n*/ { id: 'Expected, not promised. It is never added to Won.' },
   pipelineTitle: /*i18n*/ { id: 'Pipeline by stage' },
   openLeads: /*i18n*/ { id: '{count, plural, one {# open lead} other {# open leads}}' },
   valuesGap: /*i18n*/ { id: 'Stage values come with proposals.' },
@@ -102,11 +122,19 @@ export const OWNER_DASHBOARD = {
   failedMessage: /*i18n*/ { id: 'Check your connection and try again.' },
 } satisfies Record<string, MessageRef>;
 
+/** Each forecast stage's name; a stage a newer server learned has no word here and reads as sent. */
+const FORECAST_STAGE_WORD: Readonly<Record<string, MessageRef | undefined>> = {
+  shared: OWNER_DASHBOARD.forecastShared,
+  negotiating: OWNER_DASHBOARD.forecastNegotiating,
+  accepted: OWNER_DASHBOARD.forecastAccepted,
+} satisfies Record<ForecastStage, MessageRef>;
+
 export const NEEDS_YOU_TITLE: Record<NeedsYouKind, MessageRef> = {
   unassigned: OWNER_DASHBOARD.unassigned,
   payments_late: OWNER_DASHBOARD.paymentsLate,
   blocked_on_us: OWNER_DASHBOARD.blockedOnUs,
   waiting_longest: OWNER_DASHBOARD.waitingLongest,
+  proposals_unopened: OWNER_DASHBOARD.proposalsUnopened,
   my_overdue_tasks: OWNER_DASHBOARD.myOverdueTasks,
 };
 
@@ -115,6 +143,7 @@ const NEED_ACT: Record<NeedsYouKind, MessageRef> = {
   payments_late: OWNER_DASHBOARD.open,
   blocked_on_us: OWNER_DASHBOARD.open,
   waiting_longest: OWNER_DASHBOARD.review,
+  proposals_unopened: OWNER_DASHBOARD.open,
   my_overdue_tasks: OWNER_DASHBOARD.openMyDay,
 };
 
@@ -133,6 +162,10 @@ export function ownerDashboardWords(t: T) {
     blockedLine: (name: string, days: number) => t(OWNER_DASHBOARD.blockedLine, { name, days }),
     waitingLine: (name: string | null, stage: LeadStage, days: number) =>
       waitingLineOf(t, name, stage, days),
+    unopenedLine: (name: string | null, days: number) =>
+      name === null
+        ? t(OWNER_DASHBOARD.unopenedLineNoName, { days })
+        : t(OWNER_DASHBOARD.unopenedLine, { name, days }),
     myTasksLine: t(OWNER_DASHBOARD.myTasksLine),
     needAct: (kind: NeedsYouKind) => t(NEED_ACT[kind]),
     nextNeed: t(OWNER_DASHBOARD.nextNeed),
@@ -161,6 +194,15 @@ export function ownerDashboardWords(t: T) {
     forecastTitle: t(OWNER_DASHBOARD.forecastTitle),
     forecastGap: t(OWNER_DASHBOARD.forecastGap),
     forecastNote: t(OWNER_DASHBOARD.forecastNote),
+    forecastFrom: (count: number) => t(OWNER_DASHBOARD.forecastFrom, { count }),
+    forecastStage: (stage: string): TranslatedText => {
+      const word = FORECAST_STAGE_WORD[stage];
+      return word === undefined ? shownAsSent(stage) : t(word);
+    },
+    forecastStageLine: (count: number, total: string, likelihood: string) =>
+      t(OWNER_DASHBOARD.forecastStageLine, { count, total, likelihood }),
+    forecastBarName: t(OWNER_DASHBOARD.forecastBarName),
+    forecastHonest: t(OWNER_DASHBOARD.forecastHonest),
     pipelineTitle: t(OWNER_DASHBOARD.pipelineTitle),
     openLeads: (count: number) => t(OWNER_DASHBOARD.openLeads, { count }),
     stage: (stage: LeadStage) => t(LEAD_STAGE_WORD[stage]),

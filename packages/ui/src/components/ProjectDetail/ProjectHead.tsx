@@ -1,9 +1,10 @@
+import { firstNameOf } from '@heliogrid/domain';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Avatar } from '../Avatar';
 import { IconButton } from '../IconButton';
 import { Menu } from '../Menu';
-import { firstNameOf, installFactOf, projectMenuOf } from './ProjectDetail.logic';
+import { installFactOf, projectMenuOf } from './ProjectDetail.logic';
 import type { ProjectHeadProps } from './ProjectDetail.parts.types';
 import './ProjectHead.css';
 

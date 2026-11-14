@@ -68,7 +68,7 @@ into pure domain functions.
 
 | Port | v1 adapter | Later adapters | Billable meter |
 |---|---|---|---|
-| SolarDataPort | PVGIS (SARAH3→ERA5) | NSRDB, Solcast | no (quota only) |
+| EnergySourceOfRecord | PVGIS (the answer names SARAH3 or ERA5), called by the api | NSRDB, Solcast | no |
 | TelephonyProvider | Exotel | Bolna (Plan B), LiveKit SIP (v2) | **voice_minutes** |
 | SpeechProvider / LanguageModel | Sarvam | AI4Bharat self-host, Chirp (global) | rolled into voice_minutes |
 | ComplianceGate | ours — **non-swappable** | never | no |
@@ -82,32 +82,30 @@ into pure domain functions.
 
 ---
 
-## 1. SolarDataPort — energy source of record
+## 1. EnergySourceOfRecord — the energy source of record
 
 ```ts
-interface SolarDataPort {
-  getSiteWeather(pin: LatLng): Promise<PortResult<SiteWeather>>;
+// packages/contracts/src/ports/energy-source.ts
+interface EnergySourceOfRecord {
+  monthlyYield(point: Coordinate): Promise<EnergyAnswer>; // 12 months, kWh per 1 kWp at zero loss
 }
 ```
 
-**v1: `PvgisAdapter`.** Upstream `https://re.jrc.ec.europa.eu/api/v5_3/MRcalc?lat&lon&horirrad=1&d2g=1&raddatabase={db}&outputformat=json`,
-8 s timeout. **DB ladder `['PVGIS-SARAH3','PVGIS-ERA5']`**: a 400 on SARAH3 (all of India is
-outside its grid) falls through to ERA5; 400 on both → `unavailable`. Pure mapper
-`pvgisToWeather` (`SiteWeather{monthlyGhi[12], monthlyDiffuseFrac[12],
-annualGhi, forLatLng, source, raddatabase, yearsOfRecord}`), including the verified Pune
-fixture test. Server cache: `solar_data_cache` table keyed on lat/lng rounded to 4 dp + db,
-TTL 30 days (PVGIS is multi-year climatology; it does not change daily).
+**v1: PVGIS, called by `apps/api`** (`modules/proposals/internal/energy-source.pvgis.ts`) inside
+the request that fills the proposal's energy step — one HTTP call whose answer the same request
+needs is not a durable job. A fixed 6 s timeout and no retry; the answer names its database
+(`SARAH3` or `ERA5` — PVGIS answers India from ERA5) and the label prints it. A memory binding
+stands in for it in tests. Each answer is kept in the global `energy_estimate` table per point (two
+decimal places) and database, so a point is asked once and a proposal scales it by its size.
 
 **Scope binding:** PVGIS is the ONLY energy source. Google Solar flux
 layers are never requested; no adapter may introduce a second irradiance path without an ADR.
 
-**Failure/degradation:** `unavailable` → domain falls back to `mockIrradiance(lat)` with
-`irradianceSource:'estimate'` provenance; the estimate badge renders on energy and finance
-outputs; design is never blocked. Money produced from an estimate carries the provisional
-provenance chain (`CLAUDE.md` money rules).
-
-**Metering:** `solar_data_fetch`, non-billable; per-tenant daily quota (default 500) as a
-courtesy limit on a free EU service — we are a good citizen or we lose the source of record.
+**Failure/degradation:** a source that is down, slow or has no data for the point → the built-in
+estimate: a recorded PVGIS answer per district of the market (IN's is
+`packages/domain/src/proposals/built-in-yield-in.json`), looked up by the lead's district and
+labelled `estimated` (`F8-10`). A market with no recorded table gets no built-in estimate and the
+step is filled by hand. The step never waits on a third party.
 
 ## 2. BuildingInsightsPort — removed
 
@@ -313,16 +311,21 @@ work regardless of billing state** (product law).
 ## 10. DocumentRenderPort — Playwright now, Typst swap
 
 ```ts
-// packages/contracts/src/workflows/invoice-document.ts — a step on the `heliogrid-documents` queue
+// packages/contracts/src/workflows/invoice-document.ts — steps on the `heliogrid-documents` queue
 interface DocumentRenderActivities {
-  renderPdf(input: { html: string }): Promise<{ pdfBase64: string }>;
+  renderPdf(input: { html: string }): Promise<RenderedDocument>;      // a small document, base64
+  renderPagePdf(input: PageToPrint): Promise<PrintedDocument>;       // a web page, PUT to the store
 }
 ```
 
-A document is its page: the api writes the whole HTML page in the reader's language (the worker
-may not import `i18n`), the renderer prints it as it is, and the api step that asked stores the PDF
-in the files table and points its record at it. The first caller is the invoice PDF
-(`invoiceDocument`, T-M12-012d).
+A document is its page, printed as it is, in two forms. A small one (an invoice, a credit note, a
+receipt) is a whole HTML page the api writes in the reader's language (the worker may not import
+`i18n`), and its PDF comes back to the api step that stores it. A proposal version's PDF
+(`proposalDocument`) is the web's own print page (`/print/proposal/<versionId>`, read through a
+short-lived signed grant), drawn from the same `packages/ui` parts as the preview and the customer's
+link so the three cannot differ (`F5-38`); the page may load only the web and api origins, and the
+renderer PUTs the bytes to a signed object-store address from its own process — the PDF never rides
+a Temporal payload (`infra/temporal/README.md` §4).
 
 **v1: Playwright Chromium** in `apps/worker` (`modules/documents/`) — headless Chromium is the only
 renderer that shapes Devanagari correctly (HarfBuzz); react-pdf is disqualified on broken
@@ -335,7 +338,8 @@ context per render, no network; concurrency 2 per machine; budget 300–500 MB R
 step takes a page and returns a PDF either way, so the swap is invisible to its callers.
 
 **Failure/degradation:** a render that fails is retried by Temporal with backoff up to ten minutes
-until it lands; the record it belongs to is already committed, so a failure only delays the PDF.
+until it lands; the record it belongs to is already committed, so a failure only delays the PDF. A proposal's render is tried twice, then its run fails and the operator is told
+(`F5-39`); the next ask prints anew.
 The customer link always renders the proposal as web — PDF is an artifact, never the only path to
 the number.
 

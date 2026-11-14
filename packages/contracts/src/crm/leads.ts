@@ -1,7 +1,14 @@
-import { LEAD_LIST_SORTS, LEAD_SOURCES, TASK_KINDS } from '@heliogrid/domain';
+import {
+  LEAD_LIST_SORTS,
+  LEAD_SOURCES,
+  PROPOSAL_STANDINGS,
+  SUPPLY_PHASES,
+  TASK_KINDS,
+} from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
+  amountSchema,
   currencyCodeSchema,
   extensibleEnum,
   nonNegativeAmountSchema,
@@ -156,6 +163,47 @@ export const leadLifecycleSchema = z.object({
 });
 export type LeadLifecycleWire = z.infer<typeof leadLifecycleSchema>;
 
+/** Where the system goes, and the supply it meets — typed once, read by the proposal and the project. */
+export const leadSiteSchema = z.object({
+  address: z.string().nullable(),
+  /** The market pack's region code and the district, as step 3 picks them. */
+  area: z.object({ area: z.string(), district: z.string().nullable() }).nullable(),
+  sanctionedLoadKw: z.number().positive().nullable(),
+  supplyPhase: extensibleEnum(SUPPLY_PHASES).nullable(),
+});
+
+/** One proposal on the lead: a draft shows its n/11 ring, a generated one its number and standing. */
+export const leadProposalSchema = z.object({
+  id: uuidSchema,
+  number: z.string().nullable(),
+  version: z.number().int().positive().nullable(),
+  standing: extensibleEnum(PROPOSAL_STANDINGS),
+  progress: z.object({ complete: z.number().int().nonnegative(), of: z.number().int().positive() }),
+  capacityKw: z.number().positive().nullable(),
+  payable: amountSchema.nullable(),
+  madeBy: memberRefSchema.nullable(),
+  /** When the proposal was started — the withdraw sheet's "Made by … · 11 Nov". */
+  madeAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+  /** Live on the lead — a draft, shared, accepted or declined one — so two of them is the collision (`M06-58`). */
+  live: z.boolean(),
+});
+
+/**
+ * The lead's proposals section: its proposals newest first, and what the reader may do. Two live
+ * ones show the warning and *Withdraw* on each; a closed lead offers *Reopen lead* and no create.
+ */
+export const leadProposalsSchema = z.object({
+  items: z.array(leadProposalSchema),
+  canStart: z.boolean(),
+  canWithdraw: z.boolean(),
+  /** Another lead of the same customer holds a live proposal (`M06-58`). */
+  sibling: z
+    .object({ leadId: uuidSchema, proposalId: uuidSchema, number: z.string().nullable() })
+    .nullable(),
+});
+export type LeadProposals = z.infer<typeof leadProposalsSchema>;
+
 /**
  * One lead, as Lead Detail shows it (`M02-32`): the header facts, its customer with contacts, the
  * qualifying answers, the R9 standing, the call facts, where it came from, the booked visit, open
@@ -183,6 +231,10 @@ const leadDetailShape = {
   }),
   /** The project a won lead became (`M07-62`, `M08-02`); null before the win. */
   project: z.object({ id: uuidSchema, number: z.string() }).nullable().optional(),
+  /** Where the system goes and its supply (`M06-09`, `M06-16`): the lead's own facts, each a gap while null. */
+  site: leadSiteSchema.optional(),
+  /** The lead's proposals as its section shows them (`M06-02`, `M06-25`, `M06-58`); absent on an older api. */
+  proposals: leadProposalsSchema.optional(),
 };
 
 /**

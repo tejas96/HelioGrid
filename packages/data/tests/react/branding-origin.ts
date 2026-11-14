@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { BrandingRead, BrandingSave, SessionProjection } from '@heliogrid/contracts';
-import { compliantShades, IN_TAX, ROLE_PRESETS } from '@heliogrid/domain';
+import { compliantShades, IN_SUBSIDY, IN_TAX, ROLE_PRESETS } from '@heliogrid/domain';
 import { cleanup, renderHook, waitFor } from '@testing-library/react';
 import { createElement, type ReactNode } from 'react';
 import { afterEach, expect } from 'vitest';
@@ -23,7 +23,7 @@ const [OWNER_ROLE] = ROLE_PRESETS;
 const TENANT = '01a30000-0000-7000-8000-000000000001';
 const USER = '01a30000-0000-7000-8000-000000000002';
 export const SAVED_LOGO = '01a30000-0000-7000-8000-000000000101';
-const NEW_LOGO = '01a30000-0000-7000-8000-000000000102';
+export const NEW_LOGO = '01a30000-0000-7000-8000-000000000102';
 
 /** What the origin answers a write with: a status and body, no answer at all, or later. */
 export type Answer = { status: number; body?: unknown; afterMs?: number } | 'drop';
@@ -92,6 +92,7 @@ const PACK_READ = {
   publishedAt: '2026-10-01T00:00:00.000Z',
   version: 'IN@1',
   tax: IN_TAX,
+  subsidy: IN_SUBSIDY,
 };
 
 const profileRead = () => ({
@@ -248,11 +249,16 @@ export function anImage(width = 800, byteSize = 4, contentType = 'image/png'): C
   };
 }
 
+/** The real provider over the origin, for `renderHook`'s wrapper. */
+export function provided() {
+  const layer = createDataLayer({ baseUrl: listening.url(), language: () => 'en' });
+  return ({ children }: { children: ReactNode }) =>
+    createElement(DataProvider, { layer, children });
+}
+
 /** The Branding page, mounted in the real provider over the origin, its reads answered. */
 export async function mounted() {
-  const layer = createDataLayer({ baseUrl: listening.url(), language: () => 'en' });
-  const wrapper = ({ children }: { children: ReactNode }) =>
-    createElement(DataProvider, { layer, children });
+  const wrapper = provided();
   const view = renderHook(() => useBranding(), { wrapper });
   await waitFor(() => expect(view.result.current.read.kind).toBe('ready'));
   await waitFor(() => expect(view.result.current.company).not.toBeNull());

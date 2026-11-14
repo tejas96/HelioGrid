@@ -1,3 +1,4 @@
+import type { CoverPicture } from '../proposals/vocabulary';
 import { sameContent } from '../tenancy/settings-page';
 import type { ProposalTemplateSettings } from './effective-settings';
 import {
@@ -18,7 +19,9 @@ import { TIMELINE_PHASE_LIMIT, type TimelinePhase } from './timeline-template-de
 export const TEMPLATE_PARTS = ['cover', 'sections', 'terms', 'timeline'] as const;
 export type TemplatePart = (typeof TEMPLATE_PARTS)[number];
 
-export type CoverCount = 'totalCapacityInstalledKw' | 'happyCustomers' | 'citiesServed';
+/** The cover's three figures, in the order every surface draws them. */
+export const COVER_COUNTS = ['totalCapacityInstalledKw', 'happyCustomers', 'citiesServed'] as const;
+export type CoverCount = (typeof COVER_COUNTS)[number];
 
 /** What the page reads: the two records as the api serves them, the platform's filled where unset. */
 export interface TemplateSaved {
@@ -40,6 +43,8 @@ export interface TemplateDraft {
 
 export type TemplateEdit =
   | { readonly kind: 'writeOwn'; readonly part: TemplatePart }
+  /** The picture every new proposal's cover starts with (`T-M01-030`). */
+  | { readonly kind: 'coverPicture'; readonly picture: CoverPicture }
   | { readonly kind: 'about'; readonly text: string }
   | { readonly kind: 'count'; readonly count: CoverCount; readonly value: number | null }
   /** Flips the section from what the draft holds, never from a value a control hands back. */
@@ -48,6 +53,8 @@ export type TemplateEdit =
   /** `key` null adds the phase at the end. */
   | { readonly kind: 'phase'; readonly key: number | null; readonly phase: TimelinePhase }
   | { readonly kind: 'move'; readonly from: number; readonly to: number }
+  /** Back to a whole timeline — HelioGrid's phases, in the reader's words (`T-M01-030`). */
+  | { readonly kind: 'phases'; readonly phases: readonly TimelinePhase[] }
   | { readonly kind: 'delete'; readonly key: number };
 
 /** What a field says before any save: a required value left empty, or a name past its bound. */
@@ -74,6 +81,8 @@ export function templateEdit(draft: TemplateDraft, edit: TemplateEdit): Template
       return draft.writing.includes(edit.part)
         ? draft
         : { ...draft, writing: [...draft.writing, edit.part] };
+    case 'coverPicture':
+      return withTemplate(draft, { coverPicture: edit.picture });
     case 'about':
     case 'count':
       return withCover(draft, coverEdited(draft.template.cover ?? EMPTY_COVER, edit));
@@ -123,9 +132,11 @@ function termsEdited(edit: Extract<TemplateEdit, { kind: 'terms' }>): RichTextVa
 
 function phasesEdited(
   phases: readonly DraftPhase[],
-  edit: Extract<TemplateEdit, { kind: 'phase' | 'move' | 'delete' }>,
+  edit: Extract<TemplateEdit, { kind: 'phase' | 'move' | 'delete' | 'phases' }>,
 ): readonly DraftPhase[] {
   switch (edit.kind) {
+    case 'phases':
+      return edit.phases.map((phase, key) => ({ ...phase, key }));
     case 'phase':
       if (edit.key === null) {
         if (phases.length >= TIMELINE_PHASE_LIMIT) return phases;

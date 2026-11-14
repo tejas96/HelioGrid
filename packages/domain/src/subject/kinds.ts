@@ -50,5 +50,13 @@ export const SUBJECT_KINDS = [
   'project_payment',
   /** How the company's customers pay it: its UPI ID and the name shown (`SCR-M11-04`). */
   'collections_settings',
+  /** One commercial document on a lead, from draft to its answer (`M06-45`). */
+  'proposal',
+  /** One immutable generated version — what its PDF's file row is stored against (`M06-42`). */
+  'proposal_version',
+  /** One named link to a deal, for one contact (`F5-26`). */
+  'customer_link',
+  /** A company's saved cable, electrical or structure part (`M06-28`). */
+  'saved_part',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

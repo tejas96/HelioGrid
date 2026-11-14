@@ -58,7 +58,7 @@ graph TB
   WORKER --> RD
   WORKER --> PG
   WORKER --> TG
-  WORKER --> PVGIS
+  API -->|energy fill, fixed timeout| PVGIS
   WORKER --> PUSHN
   VOICE <-->|bidirectional WS| EXO
   VOICE <--> SAR
@@ -234,8 +234,8 @@ Workers live in `apps/worker` (`autostop="off"`, dedicated larger machines). CPU
 
 **Task queues are a scaling and isolation boundary, not a label** — a slow PDF render sharing
 a queue with lead assignment starves it. `TASK_QUEUES` in
-`packages/contracts/src/workflows/registry.ts` is the authoritative list, and today it holds
-exactly one entry (`heliogrid-platform`). The table below is the PLANNED split: each row
+`packages/contracts/src/workflows/registry.ts` is the authoritative list (`infra/temporal/README.md`
+§4 says what each built queue carries). The table below is the PLANNED split: each row
 becomes a task queue when its module lands, not before (Law 9).
 
 > Every name — workflow type, task queue, workflow id — is **permanent once a durable history
@@ -244,7 +244,7 @@ becomes a task queue when its module lands, not before (Law 9).
 | Planned task queue | Work | Notes |
 |---|---|---|
 | `shading` | Server-side solar-access sims via the same pure kernels as the browser | worker_threads; big-array jobs chunked |
-| `pdf` | Proposal/document render — Playwright/Chromium (only correct Devanagari shaping) | output → object store `pdfs` bucket |
+| `pdf` | Built as `heliogrid-documents` — every document render, Playwright/Chromium (only correct Devanagari shaping) | a proposal's PDF is PUT to the object store by a signed address; a small document returns to the api step that stores it |
 | `imports` | Catalog/price-book imports, DEM tile ingestion | validates then versions, never in-place |
 | `agent-triggers` | Voice-agent journeys + compliance housekeeping | queued calls use queue-time agent-config version (D36) |
 | `webhooks` | Razorpay/Exotel/MSG91 event processing + reconciliation | idempotent by provider event id |

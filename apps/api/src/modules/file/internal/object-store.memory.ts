@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import type {
+  DocumentPutRequest,
   DownloadLinkRequest,
   ObjectStore,
   PutObjectRequest,
@@ -24,7 +25,8 @@ const LINK_PREFIX = 'memory://files/';
  */
 export class MemoryObjectStore implements ObjectStore {
   readonly provider = 'local' as const;
-  private readonly expected = new Map<string, Expected>();
+  /** `null`: a document PUT, which takes any bytes — its keeper checks them after. */
+  private readonly expected = new Map<string, Expected | null>();
   private readonly objects = new Map<string, Uint8Array>();
   private down = false;
 
@@ -39,6 +41,14 @@ export class MemoryObjectStore implements ObjectStore {
     };
   }
 
+  async signDocumentPut(request: DocumentPutRequest): Promise<SignedUpload> {
+    this.expected.set(request.key, null);
+    return {
+      url: `${LINK_PREFIX}${request.key}`,
+      headers: { 'content-type': request.contentType },
+    };
+  }
+
   async signDownload(request: DownloadLinkRequest): Promise<string> {
     return `${LINK_PREFIX}${request.key}?type=${encodeURIComponent(request.contentType)}`;
   }
@@ -47,7 +57,7 @@ export class MemoryObjectStore implements ObjectStore {
     this.answer();
     const bytes = this.objects.get(key);
     if (bytes === undefined) return null;
-    return { checksumSha256: sha256Of(bytes) };
+    return { checksumSha256: sha256Of(bytes), byteSize: bytes.length };
   }
 
   async readFirstBytes(key: string, count: number): Promise<Uint8Array> {
@@ -75,7 +85,10 @@ export class MemoryObjectStore implements ObjectStore {
     const key = url.slice(LINK_PREFIX.length);
     const expected = this.expected.get(key);
     if (expected === undefined) return false;
-    if (bytes.length !== expected.byteSize || sha256Of(bytes) !== expected.checksumSha256) {
+    if (
+      expected !== null &&
+      (bytes.length !== expected.byteSize || sha256Of(bytes) !== expected.checksumSha256)
+    ) {
       return false;
     }
     this.objects.set(key, bytes);

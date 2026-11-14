@@ -1,0 +1,96 @@
+/* *New proposal*: two option cards, then the proposals to copy from. */
+.hg-pstart,
+.hg-pstart-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.hg-pstart-foot {
+  gap: var(--sp-2);
+}
+.hg-pstart-or {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pstart-or::before,
+.hg-pstart-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line-soft);
+}
+.hg-pstart-tile {
+  border-radius: var(--r-lg);
+}
+.hg-pstart-rows {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.hg-pstart-row {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.hg-pstart-row + .hg-pstart-row {
+  border-top: 1px solid var(--line-soft);
+}
+.hg-pstart-row-in {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 10px var(--sp-3) 10px var(--sp-4);
+  transition: background var(--dur-micro) var(--ease-standard);
+}
+.hg-pstart-row:hover .hg-pstart-row-in {
+  background: var(--hg-control-fill);
+}
+.hg-pstart-row-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hg-pstart-row-title {
+  font-weight: var(--fw-medium);
+  line-height: 20px;
+}
+.hg-pstart-row-line {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pstart-note {
+  text-align: center;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pstart-failure {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--danger-text);
+}
+
+/* `Pressable` centres what it holds; a row that IS the target fills it instead. */
+.hg-pressable.hg-pstart-row {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  border-radius: 0;
+}
+.hg-pstart-row > .hg-pstart-row-in {
+  flex: 1;
+  min-width: 0;
+}

@@ -12,10 +12,13 @@ import type {
   invoiceDocumentWorkflow,
   PaymentReceiptActivities,
   PaymentReceiptStepResult,
+  ProposalDocumentActivities,
+  ProposalDocumentStepResult,
   paymentReceiptWorkflow,
+  proposalDocumentWorkflow,
   WorkflowInput,
 } from '@heliogrid/contracts/workflows';
-import { proxyActivities } from '@temporalio/workflow';
+import { ActivityFailure, proxyActivities } from '@temporalio/workflow';
 
 /**
  * DETERMINISTIC CODE — replayed from history (`platform.workflows.ts` says what that forbids).
@@ -45,6 +48,15 @@ const { renderPdf } = proxyActivities<DocumentRenderActivities>({
   // A cold Chromium starts in seconds and an invoice renders in under one.
   startToCloseTimeout: '2 minutes',
   retry: { initialInterval: '10 seconds', maximumInterval: '10 minutes' },
+});
+
+const { renderPagePdf } = proxyActivities<DocumentRenderActivities>({
+  taskQueue: RENDER_QUEUE,
+  // The page waits up to 45 seconds to load and 45 more to draw, then prints and PUTs.
+  startToCloseTimeout: '2 minutes',
+  // Tried once more, then the run fails and the operator is told (`F5-39`). The store address
+  // `DOCUMENT_PUT_SECONDS` signs outlives both tries.
+  retry: { initialInterval: '10 seconds', maximumAttempts: 2 },
 });
 
 /** The exported name IS the workflow type; `documents.public.ts` asserts it equals the contract's. */
@@ -101,4 +113,37 @@ export async function paymentReceipt(
   if (page.kind === 'kept') return { fileId: page.fileId };
   const { pdfBase64 } = await renderPdf({ html: page.html });
   return keepPaymentReceipt({ ...payment, pdfBase64 });
+}
+
+const { proposalDocumentPage, keepProposalDocument, proposalDocumentFailed } =
+  proxyActivities<ProposalDocumentActivities>({
+    // One read, one store check or one notice; a step still running after this is stuck.
+    startToCloseTimeout: '1 minute',
+    // A person is waiting for this PDF, but the version is already frozen: an outage only delays it.
+    // A keep that finds the store without what was printed fails for good instead.
+    retry: { initialInterval: '5 seconds', maximumInterval: '5 minutes' },
+  });
+
+/**
+ * A proposal version's PDF (`M06-51`, `F5-38`): the web's own print page, printed as it stands and
+ * PUT to the store, then kept against the version — so the PDF is drawn by the parts the preview
+ * and the customer's link are drawn by, and cannot differ from them. A print that fails its two
+ * tries fails the run and tells the operator (`F5-39`); the next ask starts a new run.
+ */
+export async function proposalDocument(
+  input: WorkflowInput<typeof proposalDocumentWorkflow>,
+): Promise<ProposalDocumentStepResult> {
+  const version = { tenantId: input.tenantId, versionId: input.versionId };
+  const page = await proposalDocumentPage(version);
+  if (page === null) return { fileId: null };
+  if (page.kind === 'kept') return { fileId: page.fileId };
+  try {
+    const printed = await renderPagePdf({ url: page.url, origins: page.origins, put: page.put });
+    return await keepProposalDocument({ ...version, ...printed });
+  } catch (failure) {
+    if (!(failure instanceof ActivityFailure)) throw failure;
+    await proposalDocumentFailed(version);
+    // A Temporal failure thrown from the workflow fails the RUN, which lets the next ask start anew.
+    throw failure;
+  }
 }

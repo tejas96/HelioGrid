@@ -9,7 +9,7 @@ import { NotificationPushService } from '../../src/modules/notification/notifica
 import {
   type NotificationToWrite,
   recordNotification,
-} from '../../src/modules/notification/notification.repository';
+} from '../../src/modules/notification/notification.writes.repository';
 import { openPools } from '../support/fixture';
 import { bootHttp, type Http, skipWithoutHarness } from '../support/http';
 

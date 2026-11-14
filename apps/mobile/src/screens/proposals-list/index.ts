@@ -1,0 +1,1 @@
+export { ProposalsListScreen } from './ProposalsListScreen';

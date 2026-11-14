@@ -1,0 +1,101 @@
+/* ForecastCard — the owner home's forecast (`T-M13-007`). */
+/* The forecast (`T-M13-007`): one bar split by stage, then a row per stage. The hues are the
+   chart's own; each row's words carry the fact, the dot only ties it to its part of the bar. */
+.hg-owner-forecast-bar {
+  display: flex;
+  gap: var(--sp-0-5);
+  height: var(--sp-3);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+
+.hg-owner-forecast-bar i {
+  flex: var(--hg-owner-forecast-weight, 1) 0 var(--sp-1);
+  transform-origin: left center;
+  animation: hg-owner-bar-in var(--dur-data) var(--ease-enter) backwards;
+}
+
+[dir="rtl"] .hg-owner-forecast-bar i {
+  transform-origin: right center;
+}
+
+.hg-owner-forecast-bar i[data-hue="0"],
+.hg-owner-forecast-dot[data-hue="0"] {
+  background: var(--chart-1);
+}
+
+.hg-owner-forecast-bar i[data-hue="1"],
+.hg-owner-forecast-dot[data-hue="1"] {
+  background: var(--chart-2);
+}
+
+.hg-owner-forecast-bar i[data-hue="2"],
+.hg-owner-forecast-dot[data-hue="2"] {
+  background: var(--chart-3);
+}
+
+.hg-owner-forecast-rows {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-owner-forecast-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  min-height: var(--touch-min, 44px);
+  padding-block: var(--sp-2);
+  text-align: start;
+  color: var(--text-primary);
+}
+
+.hg-owner-forecast-dot {
+  flex: none;
+  width: var(--sp-2);
+  height: var(--sp-2);
+  border-radius: var(--r-pill);
+}
+
+.hg-owner-forecast-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-owner-forecast-words b {
+  font-weight: var(--fw-semibold);
+}
+
+.hg-owner-forecast-words span {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.hg-owner-forecast-amount {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-owner-forecast-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}

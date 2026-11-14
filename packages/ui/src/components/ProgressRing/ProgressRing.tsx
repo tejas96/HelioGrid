@@ -27,8 +27,14 @@ export function ProgressRing({
       <span className="hg-ring-track" aria-hidden="true" />
       <span className="hg-ring-arc" aria-hidden="true" />
       <span className="hg-ring-centre" aria-hidden="true">
-        <RollingNumber value={value} variant={size === 'lg' ? 'display' : 'figure'} />
-        <span className="hg-ring-caption">{caption}</span>
+        {size === 'sm' ? (
+          <span className="hg-ring-count">{value}</span>
+        ) : (
+          <>
+            <RollingNumber value={value} variant={size === 'lg' ? 'display' : 'figure'} />
+            <span className="hg-ring-caption">{caption}</span>
+          </>
+        )}
       </span>
     </div>
   );

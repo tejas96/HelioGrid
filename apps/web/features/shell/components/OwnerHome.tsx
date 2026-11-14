@@ -13,12 +13,14 @@ import {
   leadPath,
   projectPath,
   projectPaymentsPath,
+  proposalPath,
 } from '../constants';
 
 /**
  * The owner dashboard on the EPC Owner's and the Sales Manager's home (`SCR-M13-01`): the web's
- * adapters around the one component — each attention item opens its record, the export saves the
- * CSV built from the read already on screen (`M13-52`…`M13-54`).
+ * adapters around the one component — each attention item opens its record, a forecast stage the
+ * proposals list (`T-M13-007`), the export saves the CSV built from the read already on screen
+ * (`M13-52`…`M13-54`).
  */
 export function OwnerHome() {
   const t = useTranslate();
@@ -41,6 +43,8 @@ export function OwnerHome() {
         return router.push(projectPath(open.projectId));
       case 'waiting_longest':
         return router.push(leadPath(open.leadId));
+      case 'proposals_unopened':
+        return router.push(proposalPath(open.proposalId));
       case 'my_overdue_tasks':
         return shell.homes.includes(MY_DAY_PRESET)
           ? shell.chooseHome(MY_DAY_PRESET)
@@ -65,6 +69,7 @@ export function OwnerHome() {
         needsYou={board.needsYou}
         winRate={board.winRate}
         onNeed={onNeed}
+        onForecastStage={() => router.push(DOOR_PATH.proposals)}
         onSetTarget={board.setTarget}
         targetSaving={board.targetSaving}
         targetFailed={board.targetFailed}

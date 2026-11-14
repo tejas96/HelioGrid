@@ -1,6 +1,7 @@
 import type {
   BankDetails,
   BankDetailsTyped,
+  CoverPicture,
   Letterhead,
   PromptPointStates,
   ProposalCover,
@@ -144,6 +145,8 @@ export const proposalTemplateSettings = pgTable(
     sectionsIncluded: text('sections_included').array().$type<ProposalSection[]>().notNull(),
     /** Null while the terms are the platform's, which read in each reader's words (`F3-10`). */
     defaultTerms: jsonb('default_terms').$type<RichTextValue>(),
+    /** The picture a new proposal's cover starts with (`T-M01-030`); null is the platform's first. */
+    coverPicture: jsonb('cover_picture').$type<CoverPicture>(),
     updatedAt: instant('updated_at').notNull(),
     /** Who saved it last; null on a row written before the column. */
     updatedBy: uuid('updated_by').references(() => userAccount.id),

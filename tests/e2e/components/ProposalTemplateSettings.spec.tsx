@@ -1,224 +1,157 @@
-import { expect, test } from '@playwright/experimental-ct-react';
-import { expectNoSidewaysScroll, settledBox } from '../support/layout';
+import { PROPOSAL_PAGES } from '@heliogrid/domain';
 import {
-  actBar,
-  card,
-  en,
-  expectNothingWiderThanItsRoom,
-  expectStageAndEditor,
-  frameWindow,
-  heightOf,
-  pageEnd,
-  partSwitch,
-  phaseTitles,
-  STAGE_WINDOW,
-  stage,
-  WIDTHS,
-  windowHeightFor,
-  wordsIn,
-} from '../support/proposal-template-page';
-import { expectTouchFloor } from '../support/touch-target';
-import { ProposalTemplateAsHeld } from './ProposalTemplateSettings.story';
+  createTranslator,
+  proposalDefaultsCovers,
+  proposalDefaultsPartWords,
+  proposalDefaultsWords,
+} from '@heliogrid/i18n';
+import { expect, test } from '@playwright/experimental-ct-react';
+import { expectNoSidewaysScroll } from '../support/layout';
+import { PLAN_LINES, PLANS } from '../support/proposal-template-sample';
+import { ProposalDefaultsStory } from './ProposalTemplateSettings.story';
 
 /**
- * The Proposal template page body (`SCR-M01-19`) at the board's two widths: the 375 column and the
- * 1536 pair, each frame mounted in the state that shows it and read against the owner's picked
- * sample — its components in order, its tokens measured, its words the real catalog's.
+ * Proposal defaults (`SCR-M01-19`, `T-M01-030`): seven parts on the builder's frame, the page each
+ * feeds drawn by the document's own renderer, and the builder step's own controls as its editor.
  */
+const en = await createTranslator('en');
+const WORDS = proposalDefaultsWords(en.t);
+const STEP = proposalDefaultsPartWords(en.t, {
+  owner: '',
+  routingLabel: 'IFSC',
+  printsBank: false,
+});
+const COVERS = proposalDefaultsCovers(en.t);
+const PARTS = ['look', 'record', 'pages', 'timeline', 'payment', 'terms', 'bank'] as const;
 
-for (const width of WIDTHS) {
-  test.describe(`at ${width.name}`, () => {
-    test.use({ viewport: width.viewport });
+for (const size of [
+  { name: '1536', width: 1536, height: 960, wide: true },
+  { name: '375', width: 375, height: 812, wide: false },
+] as const) {
+  test.describe(`at ${size.name}`, () => {
+    test.use({ viewport: { width: size.width, height: size.height } });
 
-    test('every frame at 375 and 1536', async ({ mount, page }) => {
-      const { wide } = width;
-
-      // m19-a · m19-i — saved, Cover: the ruled name, About, the kW figure and its tier.
-      let body = await mount(<ProposalTemplateAsHeld reader="en" />);
-      await expectStageAndEditor(page, body, wide);
-      await expect(body.getByText(en.intro)).toBeVisible();
-      await expect(partSwitch(body).getByRole('radio', { name: en.cover })).toBeChecked();
-      await expect(body.getByText(en.proposal, { exact: true }).first()).toBeVisible();
-      await expect(body.getByRole('textbox', { name: en.about })).toHaveAttribute(
-        'rows',
-        wide ? '5' : '3',
-      );
-      await expect(body.getByText(en.counts.totalCapacityInstalledKw)).toBeVisible();
-      await expect(body.getByText(en.declaredByYou)).toHaveCount(1);
-      await expect(body.getByText(en.counts.happyCustomers)).toBeVisible();
-      await expect(body.getByText(en.counts.citiesServed)).toBeVisible();
-      await expect(pageEnd(body)).toHaveText(en.pageEnd);
-      await expect(body.getByText(en.teachTitle)).toHaveCount(0);
-      if (wide) await expect(card(body).locator('.hg-template-end')).toHaveCount(1);
-      else expect(await heightOf(frameWindow(body))).toBe(windowHeightFor('cover'));
-      await body.unmount();
-
-      // m19-b · m19-j — Sections: 6 of 8, nine rows, the terms row a lock and no switch.
-      body = await mount(<ProposalTemplateAsHeld reader="en" part="sections" />);
-      await expectStageAndEditor(page, body, wide);
-      await expect(body.getByText(en.sectionsPrint(6, 8))).toBeVisible();
-      await expect(body.locator('.hg-template-section')).toHaveCount(9);
-      const switches = body.getByRole('switch');
-      await expect(switches).toHaveCount(8);
-      await expect(body.getByText(en.alwaysPrints)).toBeVisible();
-      await expect(
-        body.locator('.hg-template-section[data-floor]').getByRole('switch'),
-      ).toHaveCount(0);
-      await expect(body.locator('.hg-template-section').first()).toHaveCSS(
-        'border-top-style',
-        'solid',
-      );
-      await body.locator('.hg-template-section').first().locator('.hg-switch').click();
-      await expect(body.getByText(en.sectionsPrint(5, 8))).toBeVisible();
-      if (!wide) expect(await heightOf(frameWindow(body))).toBe(windowHeightFor('sections'));
-      await body.unmount();
-
-      // m19-c · m19-i2 — Terms: the editor, named for the terms, and its pages.
-      body = await mount(<ProposalTemplateAsHeld reader="en" part="terms" />);
-      await expectStageAndEditor(page, body, wide);
-      await expect(body.getByRole('textbox', { name: en.termsTitle })).toBeVisible();
-      await expect(body.getByText(en.pages(1))).toBeVisible();
-      if (!wide) expect(await heightOf(frameWindow(body))).toBe(windowHeightFor('terms'));
-      await body.unmount();
-
-      // m19-e · m19-k — Timeline: six phases, each with its pencil, then *Add a phase*.
-      body = await mount(<ProposalTemplateAsHeld reader="en" part="timeline" />);
-      await expectStageAndEditor(page, body, wide);
-      const [first] = phaseTitles('en', 1);
-      const pencil = body.getByRole('button', { name: en.editPhase(first ?? '') });
-      await expect(pencil).toBeVisible();
-      await expect(body.getByRole('button', { name: en.editPhase(first ?? '') })).toHaveCount(1);
-      const add = body.getByRole('button', { name: en.addPhase });
-      await expect(add).toBeVisible();
-      await expectTouchFloor([pencil, add]);
-      await pencil.click();
-      await expect(body.getByTestId('pressed')).toHaveText('edit:0');
-      if (!wide) expect(await heightOf(frameWindow(body))).toBe(windowHeightFor('timeline'));
-      await body.unmount();
-    });
-
-    test('the never-saved frames at 375 and 1536', async ({ mount, page }) => {
-      // m19-n2 · n2b · n3 · n3b — never saved: no standing, the teaching banner, each part's source.
-      for (const part of ['cover', 'sections', 'terms', 'timeline'] as const) {
-        const body = await mount(<ProposalTemplateAsHeld reader="en" part={part} neverSaved />);
-        await expect(body.getByText(en.teachTitle)).toBeVisible();
-        await expect(body.getByText(en.teachBody)).toBeVisible();
-        await expect(body.getByText(en.platform[part].layer, { exact: true })).toBeVisible();
-        if (part === 'cover') await expect(body.getByText(en.declaredByYou)).toHaveCount(0);
-        if (part === 'sections') await expect(body.getByText(en.sectionsPrint(8, 8))).toBeVisible();
-        const writeOwn = body.getByRole('button', { name: en.writeOwn });
-        await expectTouchFloor([writeOwn]);
-        await writeOwn.click();
-        await expect(body.getByTestId('pressed')).toHaveText(`write-own:${part}`);
-        await expectNoSidewaysScroll(page);
-        await body.unmount();
+    test('the seven parts, each with its title, in one row', async ({ mount, page }) => {
+      const body = await mount(<ProposalDefaultsStory wide={size.wide} />);
+      for (const part of PARTS) {
+        const tab = size.wide
+          ? body.getByRole('navigation', { name: WORDS.frame.steps }).getByRole('button', {
+              name: WORDS.parts[part].title,
+              exact: true,
+            })
+          : body.getByRole('tab', { name: WORDS.parts[part].title, exact: true });
+        await tab.click();
+        await expect(
+          body.getByRole('heading', { level: 1, name: WORDS.parts[part].heading }),
+        ).toBeVisible();
       }
+      await expectNoSidewaysScroll(page);
     });
 
-    test('a held change whose save failed at 375 and 1536', async ({ mount, page }) => {
-      const { wide } = width;
-      // m19-n4 · m19-n8 — a held change whose save failed: the banner over the act bar, no page end.
+    test('Look offers the four pictures and the company’s own photo', async ({ mount }) => {
+      const body = await mount(<ProposalDefaultsStory wide={size.wide} part="look" ownPhoto />);
+      const pictures = body.getByRole('radiogroup', { name: WORDS.coverPicture });
+      await expect(pictures.getByRole('radio')).toHaveCount(COVERS.length + 1);
+      await expect(pictures.getByRole('radio', { name: COVERS[0]?.name })).toBeChecked();
+      await pictures.getByRole('radio', { name: COVERS[2]?.name }).click();
+      await expect(pictures.getByRole('radio', { name: COVERS[2]?.name })).toBeChecked();
+      await pictures.getByRole('radio', { name: WORDS.ownPhoto }).click();
+      await expect(pictures.getByRole('radio', { name: WORDS.ownPhoto })).toBeChecked();
+      await expect(body.getByRole('button', { name: WORDS.save })).toBeVisible();
+    });
+
+    test('Pages: three pages are locked, a switched page leaves the document', async ({
+      mount,
+      page,
+    }) => {
+      const body = await mount(<ProposalDefaultsStory wide={size.wide} part="pages" />);
+      await expect(body.getByRole('switch')).toHaveCount(PROPOSAL_PAGES.length - 3);
+      await expect(body.getByText(WORDS.always, { exact: true })).toHaveCount(3);
+      const about = page.getByRole('switch', { name: WORDS.printPage(WORDS.pageName.about) });
+      await expect(about).toBeChecked();
+      /* The input is drawn as its toggle; a person presses the label that holds it. */
+      await page.locator('label').filter({ has: about }).click();
+      await expect(about).not.toBeChecked();
+      if (size.wide) {
+        await expect(body.getByText(WORDS.pageOff(WORDS.pageName.about))).toBeVisible();
+        await expect(
+          body.getByText(WORDS.pagesPrint(PROPOSAL_PAGES.length - 1, PROPOSAL_PAGES.length)),
+        ).toBeVisible();
+      }
+      await body.getByRole('button', { name: WORDS.discard }).click();
+      await expect(about).toBeChecked();
+    });
+
+    test('Payment names the plans, the default chosen, and edits it with step 7’s rows', async ({
+      mount,
+    }) => {
+      const body = await mount(<ProposalDefaultsStory wide={size.wide} part="payment" />);
+      for (const plan of PLANS) {
+        await expect(body.getByRole('button', { name: plan.name })).toBeVisible();
+      }
+      await body.getByRole('button', { name: PLANS[1].name }).click();
+      await expect(body.getByTestId('said')).toHaveText(`plan ${PLANS[1].id}`);
+      const first = PLAN_LINES[0].label;
+      await body.getByRole('button', { name: STEP.payment.more(first) }).click();
+      await expect(body.getByTestId('said')).toHaveText('share 0 15');
+      await body.getByRole('button', { name: STEP.payment.add }).click();
+      await expect(body.getByTestId('said')).toHaveText('add part');
+      await body.getByRole('button', { name: STEP.payment.reset }).click();
+      await expect(body.getByTestId('said')).toHaveText('reset plan');
+    });
+
+    test('a plan that did not save says so in its part', async ({ mount }) => {
       const body = await mount(
-        <ProposalTemplateAsHeld reader="en" part="sections" unsaved saveFailed />,
+        <ProposalDefaultsStory wide={size.wide} part="payment" planFailed />,
       );
-      const bar = actBar(body);
-      await expect(bar).toHaveAttribute('data-placement', wide ? 'footer' : 'sticky');
-      await expect(bar.getByText(en.consequence)).toBeVisible();
-      await expect(bar.getByRole('button', { name: en.save })).toBeVisible();
-      await expect(bar.getByRole('button', { name: en.discard })).toBeVisible();
-      await expect(pageEnd(body)).toHaveCount(0);
-      const failure = body.getByText(en.saveFailed);
-      await expect(failure).toBeVisible();
-      await expect(body.getByText(en.saveFailedBody)).toBeVisible();
-      expect((await settledBox(failure))?.y ?? Infinity).toBeLessThan(
-        (await settledBox(bar))?.y ?? 0,
-      );
-      if (wide) await expect(card(body).locator('.hg-form-action-bar')).toHaveCount(1);
-      else await expect(body.locator('.hg-template-foot')).toHaveCSS('position', 'sticky');
-      await bar.getByRole('button', { name: en.save }).click();
-      await expect(body.getByTestId('pressed')).toHaveText('save');
-      await expectNoSidewaysScroll(page);
-      await body.unmount();
+      await expect(body.getByText(STEP.payment.planFailed.title)).toBeVisible();
     });
 
-    test('the phase cap at 375 and 1536', async ({ mount, page }) => {
-      // The 20-phase cap: *Add a phase* gives way to the cap's line.
-      const body = await mount(<ProposalTemplateAsHeld reader="en" part="timeline" atCap />);
-      await expect(body.getByText(en.phaseCap)).toBeVisible();
-      await expect(body.getByRole('button', { name: en.addPhase })).toHaveCount(0);
-      await expectNoSidewaysScroll(page);
+    test('a failed read says so and offers its retry', async ({ mount }) => {
+      const body = await mount(<ProposalDefaultsStory wide={size.wide} read="failed" />);
+      await expect(body.getByText(WORDS.unread)).toBeVisible();
+      await body.getByRole('button', { name: WORDS.tryAgain }).click();
+      await expect(body.getByTestId('said')).toHaveText('retried');
     });
 
-    test('Hindi and Marathi at 375 and 1536', async ({ mount, page }) => {
-      for (const reader of ['hi', 'mr'] as const) {
-        const words = wordsIn(reader);
-        for (const state of [
-          { part: 'cover', held: false },
-          { part: 'sections', held: true },
-          { part: 'terms', held: false },
-          { part: 'timeline', held: true },
-        ] as const) {
-          const body = await mount(
-            <ProposalTemplateAsHeld
-              reader={reader}
-              part={state.part}
-              unsaved={state.held}
-              saveFailed={state.held}
-              titled
-            />,
-          );
-          await expect(body.getByRole('radiogroup', { name: words.edit })).toBeVisible();
-          await expect(body.getByRole('button', { name: words.bankRow })).toBeVisible();
-          if (state.held) {
-            await expect(body.getByRole('button', { name: words.save })).toBeVisible();
-            await expect(body.getByText(words.saveFailed)).toBeVisible();
-          } else {
-            await expect(body.locator('.hg-template-end')).toHaveText(words.pageEnd);
-          }
-          await expectNoSidewaysScroll(page);
-          await expectNothingWiderThanItsRoom(page);
-          await body.unmount();
-        }
-        const fresh = await mount(<ProposalTemplateAsHeld reader={reader} neverSaved titled />);
-        await expect(fresh.getByText(words.teachTitle)).toBeVisible();
-        await expectNothingWiderThanItsRoom(page);
-        await fresh.unmount();
-      }
+    test('a save that did not land keeps its bar and says what to do', async ({ mount }) => {
+      const body = await mount(<ProposalDefaultsStory wide={size.wide} saveFailed />);
+      await expect(body.getByText(WORDS.saveFailed)).toBeVisible();
+      await expect(body.getByRole('button', { name: WORDS.save })).toBeVisible();
+    });
+
+    test('Hindi keeps every part in its room', async ({ mount, page }) => {
+      await mount(<ProposalDefaultsStory wide={size.wide} part="pages" reader="hi" />);
+      await expectNoSidewaysScroll(page);
     });
   });
 }
 
-test.describe('at 375', () => {
+test.describe('the desktop head', () => {
+  test.use({ viewport: { width: 1536, height: 960 } });
+
+  test('a breadcrumb back to Settings, the note, and Done — no close and no Generate', async ({
+    mount,
+  }) => {
+    const body = await mount(<ProposalDefaultsStory wide part="look" />);
+    await expect(body.getByText(WORDS.note)).toHaveCount(2);
+    await body.getByRole('button', { name: WORDS.settings }).click();
+    await expect(body.getByTestId('said')).toHaveText('settings');
+    await body.getByRole('button', { name: WORDS.frame.generate, exact: true }).first().click();
+    await expect(body.getByTestId('said')).toHaveText('done');
+  });
+});
+
+test.describe('the phone head', () => {
   test.use({ viewport: { width: 375, height: 812 } });
 
-  test('the loading frame', async ({ mount, page }) => {
-    const body = await mount(<ProposalTemplateAsHeld reader="en" loading />);
-    const wait = body.getByRole('status', { name: en.loadingPreview });
-    await expect(wait).toBeVisible();
-    await expect(wait).toHaveAttribute('aria-busy', 'true');
-    expect(await heightOf(wait)).toBe(STAGE_WINDOW.tall);
-    const bars = body.getByRole('status', { name: en.loading });
-    await expect(bars).toBeVisible();
-    await expect(bars.locator(':scope > *')).toHaveCount(3);
-    /* The caption row stays; the editor is the bars alone, with no rows and no page end. */
-    await expect(stage(body).getByRole('button', { name: en.openFullSize })).toBeVisible();
-    await expect(body.getByText(en.intro)).toBeVisible();
-    await expect(partSwitch(body)).toHaveCount(0);
-    await expect(body.getByRole('button', { name: en.bankRow })).toHaveCount(0);
-    await expect(pageEnd(body)).toHaveCount(0);
-    await expectNoSidewaysScroll(page);
-  });
-
-  test('the stage notes only a template change', async ({ mount }) => {
-    /* m19-n6: a phase moved holds a change — the act bar rises, the stage keeps no note. */
-    let body = await mount(<ProposalTemplateAsHeld reader="en" part="timeline" held />);
-    await expect(actBar(body)).toBeVisible();
-    await expect(body.getByText(en.notSaved)).toHaveCount(0);
-    await body.unmount();
-
-    /* m19-n5: a section switched off is a template change — the note under the window. */
-    body = await mount(<ProposalTemplateAsHeld reader="en" part="sections" unsaved />);
-    await expect(actBar(body)).toBeVisible();
-    await expect(stage(body).getByText(en.notSaved)).toBeVisible();
+  test('back, the page’s name held still, and the eye that opens the page', async ({
+    mount,
+    page,
+  }) => {
+    const body = await mount(<ProposalDefaultsStory wide={false} part="record" />);
+    await expect(body.getByText(WORDS.title, { exact: true })).toBeVisible();
+    await body.getByRole('button', { name: WORDS.frame.preview }).click();
+    await expect(page.getByRole('dialog', { name: WORDS.peek })).toBeVisible();
   });
 });

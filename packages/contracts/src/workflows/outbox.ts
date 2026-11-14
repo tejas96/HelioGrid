@@ -5,6 +5,7 @@ import { handoverPackWorkflow } from './handover-pack';
 import { inviteMessageWorkflow } from './invite-message';
 import { invoiceDocumentWorkflow } from './invoice-document';
 import { leadImportWorkflow } from './lead-import';
+import { paymentReceiptWorkflow } from './payment-receipt';
 import { defineWorkflow, type WorkflowDefinition, type WorkflowResult } from './registry';
 import { usageRecordWorkflow } from './usage-ledger';
 
@@ -56,6 +57,7 @@ const OUTBOX_WORKFLOWS: readonly WorkflowDefinition[] = [
   inviteMessageWorkflow,
   invoiceDocumentWorkflow,
   leadImportWorkflow,
+  paymentReceiptWorkflow,
   usageRecordWorkflow,
 ];
 

@@ -10,6 +10,7 @@ import { DatePicker } from '../DatePicker/DatePicker.native';
 import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import { NumberField } from '../NumberField/NumberField.native';
 import { Sheet } from '../Sheet/Sheet.native';
+import { MarkWonLockedValue, MarkWonPlan, MarkWonProof } from './MarkWonBasis.native';
 import { MarkWonManagerField } from './MarkWonManager.native';
 import type { MarkWonSheetProps } from './MarkWonSheet.types';
 import { useMarkWonForm } from './use-mark-won-form';
@@ -28,6 +29,7 @@ export function MarkWonSheet(props: MarkWonSheetProps) {
         if (!sending) onClose();
       }}
       closeLabel={words.close}
+      showClose
       title={words.title}
       subtitle={started === null ? words.who : undefined}
       dismissible={!sending}
@@ -43,18 +45,25 @@ export function MarkWonSheet(props: MarkWonSheetProps) {
 
 function MarkWonForm(props: MarkWonSheetProps) {
   const form = useMarkWonForm(props);
+  const { basis } = props;
   return (
     <View style={styles.form}>
       <Text variant="body-sm" color="secondary">
         {props.words.line}
       </Text>
-      <NumberField {...form.value} />
+      {basis === undefined ? null : <MarkWonProof basis={basis} />}
+      {basis?.locked === true ? (
+        <MarkWonLockedValue basis={basis} />
+      ) : (
+        <NumberField {...form.value} />
+      )}
       {/* A touch on the date lets the value's keyboard go first: left up, it covers the calendar's
           rows (Android). The touch itself goes on to the picker. */}
       <View onTouchStart={closeKeyboard}>
         <DatePicker {...form.date} />
       </View>
       <MarkWonManagerField {...form.manager} />
+      {basis === undefined ? null : <MarkWonPlan basis={basis} />}
       <View style={styles.foot}>
         {form.failure === null ? null : (
           <Text variant="body-sm" color="danger" live>

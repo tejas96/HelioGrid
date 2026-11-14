@@ -5,13 +5,14 @@ import { Badge } from '../Chip';
 import { FailedRead } from '../EmptyState';
 import { LoadingBars } from '../LoadingBars';
 import { CashCard } from './CashCard';
+import { ForecastCard } from './ForecastCard';
 import { NeedsYouHero } from './NeedsYouHero';
 import type { DashboardPartProps } from './OwnerDashboard.logic';
 import type { OwnerDashboardProps } from './OwnerDashboard.types';
 import { PipelineCard } from './PipelineCard';
 import { useTargetEditing } from './target-draft';
 import { WinLossCard } from './WinLossCard';
-import { ForecastTile, WonCard } from './WonCard';
+import { WonCard } from './WonCard';
 import './OwnerDashboard.css';
 
 /** A rise's place in the stagger; the delay itself is the stylesheet's, from the motion tokens. */
@@ -85,7 +86,7 @@ export function OwnerDashboard(props: OwnerDashboardProps) {
             <WonCard {...part} target={target} figure={figure} />
           </Rise>
           <Rise order={3}>
-            <ForecastTile words={words} />
+            <ForecastCard {...part} />
           </Rise>
         </div>
       </div>

@@ -1,222 +1,240 @@
 import {
-  type DocumentDefaults,
-  formatDate,
-  IN_PACK,
-  isSectionFloor,
+  type DefaultsPart,
   PROPOSAL_SECTIONS,
   type ProposalSection,
-  TIMELINE_PHASE_LIMIT,
-  type UiLanguage,
+  pagesPrinted,
+  type Read,
+  sectionOfPage,
+  type TemplateEdit,
 } from '@heliogrid/domain';
 import {
   createTranslator,
-  documentDefaults,
-  proposalTemplateWords,
+  proposalDefaultsCovers,
+  proposalDefaultsPartWords,
+  proposalDefaultsWords,
+  proposalStepWords,
   provenanceWords,
-  sectionWords,
-  settingsSavedLine,
 } from '@heliogrid/i18n';
 import {
+  type DefaultsSample,
+  type DefaultsViewShape,
+  defaultsPartsOf,
+  type FocusHandle,
+  PageTrail,
   ProposalTemplateSettings,
   ProvenanceWordsProvider,
-  type RichTextValue,
-  TEMPLATE_SAMPLE,
-  type TemplateCoverCount,
-  type TemplatePartName,
 } from '@heliogrid/ui';
-import { useState } from 'react';
-import { COMPANY } from '../support/proposal-template-sample';
+import { useRef, useState } from 'react';
+import { DATE_TEXT, SNAPSHOT } from '../support/proposal-document-sample';
+import { pageWordsOf } from '../support/proposal-document-words';
+import { PLAN_LINES, PLANS } from '../support/proposal-template-sample';
 
-/** The board's tenant (`SCR-M01-19`): its cover facts, its counts and who saved the template. */
-const SAMPLE = {
-  colour: '#0D7A4F',
-  taxId: '27AABCS1429P1ZQ',
-  address: 'Shop 14, Laxmi Complex, Baner Road, Pune 411045',
-  about:
-    'Suryodaya Solar has designed and installed rooftop solar across Pune and Nashik since 2011 — homes, housing societies and small factories.',
-  counts: { totalCapacityInstalledKw: 1840, happyCustomers: 620, citiesServed: 14 },
-  changer: 'Rajesh Kulkarni',
-  changedOn: '2026-08-28',
-  docDate: '2026-08-30',
-  bank: 'HDFC Bank',
-  /* m19-a … m19-e: Performance and Components left out. */
-  off: ['performance', 'components'] as readonly ProposalSection[],
-} as const;
+const READERS = { en: await createTranslator('en'), hi: await createTranslator('hi') };
 
-const NO_COUNTS: Record<TemplateCoverCount, number | null> = {
-  totalCapacityInstalledKw: null,
-  happyCustomers: null,
-  citiesServed: null,
-};
+export type DefaultsStoryRead = 'ready' | 'loading' | 'failed';
 
-const READERS = {
-  en: await createTranslator('en'),
-  hi: await createTranslator('hi'),
-  mr: await createTranslator('mr'),
-};
+/** What the story's page holds: the sections that print and the cover picture. */
+interface Held {
+  readonly sections: readonly ProposalSection[];
+  readonly cover: 'home' | 'villa' | 'factory' | 'society' | 'own';
+  readonly changed: boolean;
+}
 
-/** Domain's terms are read-only lists; the editor's value is its own copy of them. */
-function editable(value: DocumentDefaults['terms']): RichTextValue {
-  return {
-    version: 1,
-    blocks: value.blocks.flatMap((block) =>
-      block.type === 'p' || block.type === 'h'
-        ? [{ type: block.type, spans: block.spans.map((span) => ({ ...span })) }]
-        : [],
-    ),
-  };
+const START: Held = { sections: PROPOSAL_SECTIONS, cover: 'home', changed: false };
+
+function held(was: Held, edit: TemplateEdit): Held {
+  if (edit.kind === 'section') {
+    const on = was.sections.includes(edit.section);
+    const sections = on
+      ? was.sections.filter((section) => section !== edit.section)
+      : [...was.sections, edit.section];
+    return { ...was, sections, changed: true };
+  }
+  if (edit.kind === 'coverPicture') {
+    return {
+      ...was,
+      cover: edit.picture.kind === 'platform' ? edit.picture.key : 'own',
+      changed: true,
+    };
+  }
+  return { ...was, changed: true };
 }
 
 /**
- * The Proposal template page as a screen holds it (`SCR-M01-19`): the part, the sections and the
- * phases' order live here, in the browser; every word is the real catalog's in the reader's
- * language, built while the page renders — the words hold functions, so they cannot come through
- * `mount`.
+ * Proposal defaults as its screen mounts it (`SCR-M01-19`, `T-M01-030`): the seven parts over the
+ * sample document, a section switched in the page's draft, and the act bar a held change raises.
  */
-export function ProposalTemplateAsHeld({
-  reader,
-  part: partAtStart = 'cover',
-  neverSaved = false,
-  loading = false,
-  unsaved = false,
-  held = unsaved,
+export function ProposalDefaultsStory({
+  wide,
+  part: first = 'look',
+  read: kind = 'ready',
+  reader = 'en',
   saveFailed = false,
-  atCap = false,
-  titled = false,
+  planFailed = false,
+  ownPhoto = false,
 }: {
-  reader: UiLanguage;
-  part?: TemplatePartName;
-  /** Every part is HelioGrid's: no standing line, the teaching banner, the source lines. */
-  neverSaved?: boolean;
-  loading?: boolean;
-  /** The template record differs from the saved one: the stage's note. */
-  unsaved?: boolean;
-  /** A change is held — the act bar; a phase move holds one with no note. */
-  held?: boolean;
+  wide: boolean;
+  part?: DefaultsPart;
+  read?: DefaultsStoryRead;
+  reader?: keyof typeof READERS;
   saveFailed?: boolean;
-  /** The timeline holds its twenty phases. */
-  atCap?: boolean;
-  titled?: boolean;
+  /** The default plan's save did not land. */
+  planFailed?: boolean;
+  ownPhoto?: boolean;
 }) {
   const { t } = READERS[reader];
-  const words = proposalTemplateWords(t);
-  const defaults = documentDefaults(t);
-  const [part, setPart] = useState(partAtStart);
-  const [off, setOff] = useState<readonly ProposalSection[]>(neverSaved ? [] : SAMPLE.off);
-  const phaseCount = atCap ? TIMELINE_PHASE_LIMIT : neverSaved ? defaults.phases.length : 6;
-  const [phases, setPhases] = useState(() =>
-    Array.from({ length: phaseCount }, (_, key) => {
-      const phase = defaults.phases[key % defaults.phases.length];
-      return { key, title: phase?.name ?? '', note: phase?.description ?? '' };
-    }),
-  );
-  const [pressed, setPressed] = useState<readonly string[]>([]);
-  const press = (what: string) => setPressed((list) => [...list, what]);
-  const origin = neverSaved ? 'platform' : 'own';
-  const sectionWord = sectionWords(t, phases.length);
-  const rows = PROPOSAL_SECTIONS.map((key) => ({
-    key,
-    ...sectionWord(key),
-    on: !off.includes(key),
-    floor: isSectionFloor(key),
-  }));
-  const optional = rows.filter((row) => !row.floor);
-  const date = (iso: string) => formatDate(IN_PACK.formats, Date.parse(iso), reader);
-  const standing = neverSaved
-    ? null
-    : settingsSavedLine(
-        t,
-        { kind: 'saved', at: Date.parse(SAMPLE.changedOn), name: SAMPLE.changer },
-        { date: (epochMs) => formatDate(IN_PACK.formats, epochMs, reader) },
-      );
-  const terms = editable(defaults.terms);
+  const [part, setPart] = useState<DefaultsPart>(first);
+  const [page, setPage] = useState(START);
+  const [preview, setPreview] = useState(false);
+  const [said, setSaid] = useState('');
+  const title = useRef<FocusHandle>(null);
+  const words = proposalDefaultsWords(t);
+  const snapshot = {
+    ...SNAPSHOT,
+    pages: pagesPrinted(page.sections),
+    fields: {
+      ...SNAPSHOT.fields,
+      company: {
+        ...SNAPSHOT.fields.company,
+        coverPicture:
+          page.cover === 'own'
+            ? ({ kind: 'own', fileId: 'photo' } as const)
+            : ({ kind: 'platform', key: page.cover } as const),
+      },
+    },
+  };
+  const sample: DefaultsSample = {
+    snapshot,
+    facts: { dateText: DATE_TEXT, generationTier: 'estimated' },
+    words: pageWordsOf(t, snapshot, true),
+  };
+  const view: DefaultsViewShape = {
+    look: { chosen: page.cover },
+    record: SNAPSHOT.fields.achievements,
+    pages: {
+      rows: (
+        [
+          'cover',
+          'about',
+          'system',
+          'generation',
+          'savings',
+          'price',
+          'timeline',
+          'terms',
+          'bank',
+        ] as const
+      ).map((each) => {
+        const section = sectionOfPage(each);
+        return {
+          page: each,
+          on: section === null || page.sections.includes(section),
+          always: section === null,
+        };
+      }),
+    },
+    terms: {
+      value: {
+        version: 1,
+        blocks: [
+          { type: 'p', spans: [{ text: 'This proposal is valid for 30 days from its date.' }] },
+        ],
+      },
+    },
+    timeline: {
+      phases: SNAPSHOT.fields.timeline.map((phase, key) => ({
+        key,
+        phase: { name: phase.name, description: phase.description },
+      })),
+    },
+  };
+  const read: Read<unknown> =
+    kind === 'ready'
+      ? { kind: 'ready', value: null }
+      : kind === 'loading'
+        ? { kind: 'loading' }
+        : { kind: 'failed', failure: 'no_connection', retry: () => setSaid('retried') };
+  const bank = SNAPSHOT.company.bankDetails;
   return (
     <ProvenanceWordsProvider value={provenanceWords(t)}>
-      {/* The shell's gutter, as the app's page sits in it: the page leaves its sides to the shell. */}
-      <div lang={reader} style={{ padding: '0 var(--screen-pad-mobile)' }}>
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
         <ProposalTemplateSettings
+          wide={wide}
           words={words}
-          read={loading ? { kind: 'loading' } : { kind: 'ready', value: null }}
-          {...(titled ? { title: words.title } : {})}
-          {...(standing === null ? {} : { standing })}
+          shared={proposalStepWords(t)}
+          read={read}
           part={part}
           onPart={setPart}
-          document={{
-            facts: {
-              companyName: COMPANY,
-              taxId: SAMPLE.taxId,
-              taxIdLabel: IN_PACK.formats.taxIdLabel,
-              address: SAMPLE.address,
-              letterhead: {},
+          trail={
+            <PageTrail
+              trail={[{ label: words.settings, onOpen: () => setSaid('settings') }]}
+              here={words.title}
+              label={words.trail}
+            />
+          }
+          standing={page.changed ? READERS[reader].t({ id: 'Not saved yet' }) : words.note}
+          sample={kind === 'ready' ? sample : null}
+          {...defaultsPartsOf(view, {
+            words: proposalDefaultsPartWords(t, {
+              owner: '',
+              routingLabel: 'IFSC',
+              printsBank: page.sections.includes('bank_details'),
+            }),
+            covers: proposalDefaultsCovers(t),
+            edit: (edit) => setPage((was) => held(was, edit)),
+            photo: {
+              picture: ownPhoto ? 'data:image/gif;base64,R0lGODlhAQABAAAAACw=' : null,
+              held: ownPhoto ? { kind: 'own', fileId: 'photo' } : null,
+              storing: false,
+              refused: false,
+              onChoose: () => setSaid('choose'),
             },
-            colour: SAMPLE.colour,
-            sections: optional.map((row) => ({ label: row.title, included: row.on })),
-            terms,
-            docNumber: TEMPLATE_SAMPLE.docNumber,
-            docDate: date(SAMPLE.docDate),
-          }}
-          unsaved={unsaved}
-          held={held}
-          teaching={neverSaved}
-          onWriteOwn={(written) => press(`write-own:${written}`)}
-          cover={{
-            origin,
-            about: neverSaved ? '' : SAMPLE.about,
-            onAbout: () => press('about'),
-            counts: neverSaved ? NO_COUNTS : SAMPLE.counts,
-            onCount: (count) => press(`count:${count}`),
-          }}
-          sections={{
-            origin,
-            rows,
-            printing: optional.filter((row) => row.on).length,
-            of: optional.length,
-            onToggle: (key) =>
-              setOff((list) =>
-                list.includes(key as ProposalSection)
-                  ? list.filter((each) => each !== key)
-                  : [...list, key as ProposalSection],
-              ),
-          }}
-          terms={{
-            origin,
-            value: terms,
-            onChange: () => press('terms'),
-          }}
-          timeline={{
-            origin,
-            phases,
-            atCap,
-            onMove: (from, to) =>
-              setPhases((list) => {
-                const next = [...list];
-                const [moved] = next.splice(from, 1);
-                if (moved !== undefined) next.splice(to, 0, moved);
-                return next;
-              }),
-            onDelete: (key) => press(`delete:${key}`),
-            onEdit: (key) => press(`edit:${key}`),
-            onAdd: () => press('add'),
-          }}
-          bankLine={words.bankFrom(SAMPLE.bank)}
-          onOpenBranding={() => press('branding')}
-          onOpenProfile={() => press('profile')}
-          onOpenFullSize={() => press('full-size')}
+            onOpenBranding: () => setSaid('branding'),
+            platformPhases: [],
+            onEditPhase: (key) => setSaid(`edit ${key}`),
+            onDeletePhase: (key) => setSaid(`delete ${key}`),
+            onAddPhase: () => setSaid('add'),
+            plans: PLANS,
+            changingPlan: false,
+            onPlan: (id) => setSaid(`plan ${id}`),
+            onNewPlan: () => setSaid('new plan'),
+            plan: {
+              lines: PLAN_LINES,
+              failed: planFailed,
+              share: (index, percent) => setSaid(`share ${index} ${percent}`),
+              remove: (index) => setSaid(`remove ${index}`),
+              add: () => setSaid('add part'),
+              reset: () => setSaid('reset plan'),
+            },
+            bank: {
+              details: bank ?? {
+                bankName: '',
+                accountName: '',
+                accountNumber: '',
+                bankRoutingIdentifier: '',
+              },
+              held: bank !== null,
+              edit: () => setPage((was) => ({ ...was, changed: true })),
+            },
+            sample: kind === 'ready' ? sample : null,
+          })}
           saveFailed={saveFailed}
-          {...(held
+          {...(page.changed || saveFailed
             ? {
                 act: {
                   saving: false,
-                  onSave: () => press('save'),
-                  onDiscard: () => press('discard'),
+                  onSave: () => setPage((was) => ({ ...was, changed: false })),
+                  onDiscard: () => setPage(START),
                 },
               }
             : {})}
+          onDone={() => setSaid('done')}
+          previewOpen={preview}
+          onPreview={setPreview}
+          titleRef={title}
+          focusAfter={title}
         />
-        {/* Read by a spec, never drawn: a long report would widen the page it measures. */}
-        <div hidden>
-          <output data-testid="pressed">{pressed.join('|')}</output>
-        </div>
+        <output data-testid="said">{said}</output>
       </div>
     </ProvenanceWordsProvider>
   );

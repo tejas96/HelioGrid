@@ -95,30 +95,6 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ## Engine tasks
 
-### T-M01-030 · Proposal defaults — the template settings rebuilt on the builder's parts
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** none — `M01-51` and `M01-52` shipped with this screen's first build; this task redraws it on the parts block 8 adds
-**DESIGN:** SCR-M01-19
-**Drawn:** stop *Defaults*; *Cover picture*, *Pages on and off*, *New payment plan* and *Terms with text tools* in the design's index.
-**Why:** the owner sets what every new proposal starts with on the same parts the rep builds with, and sees the real page change — one screen to learn, and the settings can no longer show a document the customer never gets.
-**Depends on:** T-M06-017, T-M06-008, T-M06-009, T-M06-011, T-M06-013
-
-The shipped screen (`ProposalTemplateSettings`) previews one cover page and a list; block 8's
-document has nine pages, so the preview and the editor are rebuilt, and the screen's routes, rights
-and saved template stay as they are.
-
-**DONE WHEN:**
-- Given the proposal-template settings, when the builder generates a document, then cover, included sections, default terms and bank details come from these settings (or their platform defaults), and the document is titled with the ruled name in every locale (M01-51).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-**Settle before the build:**
-- The screen's parts (M01-51, M01-52) — ruled: seven parts in one rail — Look, Track record, Pages, Timeline, Payment, Terms, Bank; the stage shows the page that part feeds, drawn by the document's renderer over a sample customer, and the editor card holds that part's controls — the same components the builder's steps 2, 6, 7, 9 and 11 use, never a second editor (owner ruling 2026-11-13, approved design).
-- Look (M01-51) — ruled: the cover picture is chosen from the platform's set of four or the company's own photo, uploaded through the shipped photo field; the brand colour and logo stay Branding's and are linked, not edited here (owner ruling 2026-11-13).
-- Pages (M01-51) — ruled: the stage shows every page as a wall and the editor one row per page with its thumbnail and a switch; the cover, the price page and the terms have no switch; a page that is off is left out of the document and the customer link, and its builder step stays (owner ruling 2026-11-13, approved design).
-- Payment (M01-51) — ruled: the company's named plans as chips, one of them the default, and *New plan* opening the editor Payment Terms Settings already uses (`SCR-M01-20`), which stays the place to archive a plan (owner ruling 2026-11-13, approved design).
-- What a change reaches (M01-51) — ruled: every new proposal from the next one; an open draft keeps what it holds until its Reset; a sent version never moves — the line the screen prints under its title (owner ruling 2026-11-13, approved design).
-
 ### T-M01-029 · Demo project seed per market pack
 **Type:** engine · **Tier:** P0
 **Status:** planned
@@ -146,6 +122,9 @@ and saved template stay as they are.
 - (The `DocumentPreview` sample defaults quoted above carry no Given/When/Then; the binding criterion is that no sample value can print on a real document.) → proof: QA (web) every settings preview of a real tenant renders that tenant's own values or platform defaults, and the sample content is reachable only from the demo project
 - Given `demo_project_content`, when the tenancy scan runs, then it passes as readable global reference data — SELECT held, no write privilege, no RLS. → proof: invariant table-tenancy-scan
 - Given a reset, when it runs, then the tenant's demo instance is replaced from the pack content and nothing outside the demo rows changes. → proof: unit apps/api/tests/demo/reset.test.ts
+
+**Settle before the build:**
+- Demo rows in the forecast — ruled (owner ruling 2026-11-13): the forecast read model (`T-M13-007`) excludes rows marked as demo; it shipped with none to exclude, so the exclusion is proven when this seed lands.
 
 ## Disposition index
 

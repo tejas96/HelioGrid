@@ -134,7 +134,7 @@ describe.skipIf(skip)('the billing notices’ channels and the trial nudges (M12
     const atNight = Date.parse('2001-03-03T18:00:00Z');
     const held = await companies.holding({ state: 'past_due', enteredAt: atNight });
     const quiet = await settingsServicesOf(pools).settings.quietHoursOf(held.tenantId);
-    const morning = pushDueAt('standard', atNight + aMinute, quiet.window, quiet.timezone);
+    const morning = pushDueAt(atNight + aMinute, quiet.window, quiet.timezone);
     expect(morning).toBeGreaterThan(atNight + aMinute);
     await notices.tellDue(atNight + aMinute);
     expect(await toldTo(pools, held.subscriptionId)).toHaveLength(0);

@@ -122,6 +122,7 @@ describe.skipIf(skip)('the global search, over HTTP against a migrated database'
       customers: none,
       people: none,
       catalog: none,
+      proposals: none,
     });
   });
 

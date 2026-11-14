@@ -29,6 +29,7 @@ export function StatusChip({
   tone,
   density = 'expressive',
   dot = true,
+  glyph,
   style,
 }: NativeStatusChipProps) {
   return (
@@ -36,6 +37,7 @@ export function StatusChip({
       tone={statusChipTone(status, tone)}
       label={label}
       mark={dot}
+      glyph={glyph}
       style={[DENSITY[density], style]}
     />
   );

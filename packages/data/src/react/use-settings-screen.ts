@@ -1,10 +1,13 @@
 'use client';
 import {
   firstSettingsPageBeside,
+  moreWorkLists,
   opensSettingsRow,
   type RolePreset,
   type SettingsRow,
   settingsRowOfSegment,
+  shellViewFor,
+  type WorkDestination,
 } from '@heliogrid/domain';
 import { useSession } from './use-session';
 
@@ -19,6 +22,11 @@ export interface SettingsScreen {
   /** The presets held: the list holds the rows they open. */
   readonly roles: readonly RolePreset[];
   /**
+   * The work lists the pill has no slot for, which More offers first on a phone (`moreWorkLists`):
+   * a list `sidebarWorkLists` lists beside a slot has no other way in there.
+   */
+  readonly workLists: readonly WorkDestination[];
+  /**
    * The page the list opens first when it stands beside settings pages at the shell's desktop
    * width; null when it has nothing to move between, and so stays a list page with no side list.
    */
@@ -31,11 +39,12 @@ export interface SettingsScreen {
 }
 
 export function useSettingsScreen(): SettingsScreen {
-  const { user } = useSession();
+  const { user, chosenHome } = useSession();
   const roles = user?.tenant?.roles ?? [];
   return {
     personName: user?.name ?? '',
     roles,
+    workLists: moreWorkLists(shellViewFor(roles, chosenHome).destinations ?? []),
     firstBeside: firstSettingsPageBeside(roles),
     openedRow: (segment) => {
       const row = settingsRowOfSegment(segment);

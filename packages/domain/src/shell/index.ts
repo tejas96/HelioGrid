@@ -80,7 +80,7 @@ export type {
 export { SETUP_STEPS, setupReadiness } from './setup-readiness';
 export type { ShellView } from './shell-view';
 export { shellViewFor } from './shell-view';
-export { workListLanded } from './sidebar';
+export { moreWorkLists, sidebarWorkLists, workListLanded } from './sidebar';
 export type {
   StandingDestination,
   StandingDestinationSet,

@@ -7,7 +7,14 @@
 export const FONT_STACKS = {
   display: ['Newsreader', 'Noto Serif Devanagari', 'Geist', 'Georgia', 'serif'],
   sans: ['Geist', 'Noto Sans Devanagari', '-apple-system', 'system-ui', 'sans-serif'],
-  mono: ['Geist Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+  mono: [
+    'Geist Mono',
+    'Noto Sans Devanagari',
+    'ui-monospace',
+    'SFMono-Regular',
+    'Menlo',
+    'monospace',
+  ],
 } as const;
 
 export type FontStack = keyof typeof FONT_STACKS;
@@ -69,12 +76,16 @@ export interface TypeRole {
 
 /**
  * The type scale. `hero` is the one figure a screen is about; `display` the large page title;
- * `figure` a hero's secondary numbers. Line heights leave room for matras and conjuncts.
+ * `figure` a hero's secondary numbers; `cover` / `cover-wide` the title written on a cover picture,
+ * phone and desktop; `card-title` a card's own serif heading on the customer's page. Line heights leave room for matras and conjuncts.
  */
 export const TYPE_ROLES = {
   hero: { size: 72, lineHeight: 76, tracking: -0.03 },
   'hero-phone': { size: 46, lineHeight: 52, tracking: -0.03 },
   display: { size: 40, lineHeight: 46, tracking: -0.015 },
+  cover: { size: 36, lineHeight: 42, tracking: -0.02 },
+  'cover-wide': { size: 52, lineHeight: 58, tracking: -0.02 },
+  'card-title': { size: 24, lineHeight: 30, tracking: -0.01 },
   figure: { size: 28, lineHeight: 34, tracking: -0.01 },
   h1: { size: 32, lineHeight: 38, tracking: -0.015 },
   h2: { size: 20, lineHeight: 28, tracking: -0.01 },

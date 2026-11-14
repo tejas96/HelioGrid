@@ -45,14 +45,19 @@ export function leadSectionsOf<Failure>(
   props: LeadDetailCardsProps<Failure>,
   format: MarketFormat,
 ): LeadSectionsProps {
-  const { screen, view, visit, timeline, words } = props;
+  const { screen, view, visit, timeline, words, proposals } = props;
   const { acts, tasks } = screen;
   return {
+    ...(proposals === undefined ? {} : { proposals }),
     section: screen.section,
     onSection: screen.setSection,
     counts: view.counts,
     timeline,
-    siteAddress: view.siteAddress,
+    site: {
+      address: view.site.address,
+      confirmed: view.site.confirmed,
+      facts: words.siteFacts(view.site),
+    },
     visit:
       visit === null
         ? null
