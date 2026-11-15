@@ -8,7 +8,7 @@ import type { EmptySceneName } from '../EmptyScene/EmptyScene.types';
  * soft brand bloom behind a circular icon for an error or a status; a headline, an encouraging
  * description and a primary action. Never leave a screen blank.
  *
- * For an error state pass a danger-tinted icon and an action labelled "Try again".
+ * A read that failed is `FailedRead`; another failure takes the `failed` scene and a "Try again".
  */
 export interface EmptyStateProps {
   /** line-drawing icon or large glyph */

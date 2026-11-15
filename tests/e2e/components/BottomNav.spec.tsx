@@ -65,7 +65,9 @@ test('the verb is the lit accent circle: it runs its act, never becomes the item
       acts.push('proposals');
     },
   };
-  const items = [destination('home'), destination('leads'), verb, destination('proposals')];
+  /* The plus opens Proposals, so no tab beside it carries that name: two "Proposals" buttons made
+     the verb's lookup ambiguous. */
+  const items = [destination('home'), destination('leads'), verb, destination('more')];
   const changes: string[] = [];
   const screen = await mount(
     <div style={{ position: 'relative', height: 600 }}>

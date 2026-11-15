@@ -23,7 +23,7 @@ export type OverlaySubtitleFace = 'sans' | 'mono';
 
 interface SheetOwnProps extends OverlayCloseWords {
   open?: boolean;
-  /** Called on backdrop click, Esc, close button and drag-past-threshold. */
+  /** Called on backdrop click, Esc, Back, close button, drag-past-threshold and the phone handle's spoken close. */
   onClose?: () => void;
   /** The surface's heading: its words, or the record's own name (a person, a lead) the board draws. */
   // biome-ignore lint/plugin/copy-prop-type: a heading may be the record's own name, a fact
@@ -57,7 +57,11 @@ interface SheetOwnProps extends OverlayCloseWords {
   density?: SheetDensity;
   /** 36x4 grab handle. Also the drag target. */
   handle?: boolean;
-  /** 44x44 close button in the header. Handle is enough on mobile; use on desktop/tablet. */
+  /**
+   * 44x44 close button in the header, for a pointer: the phone app draws none, and on a touch
+   * screen the web keeps it only for a screen reader — a drag, a tap outside and Back close the
+   * sheet there, and the phone's handle is a screen reader's close.
+   */
   showClose?: boolean;
   /** false = must resolve via an action (destructive confirms, required steps). */
   dismissible?: boolean;

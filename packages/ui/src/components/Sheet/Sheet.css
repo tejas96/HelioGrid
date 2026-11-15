@@ -34,7 +34,7 @@
   --hg-sheet-pad-x: var(--sp-5);
   --hg-sheet-pad-top: var(--sp-3);
   --hg-sheet-pad-bottom: var(--sp-6);
-  --hg-sheet-title: var(--fs-figure);
+  --hg-sheet-title: var(--fs-h2);
   /* ONE NUMBER, TWO CONSUMERS: the fade's height and the clearance the body keeps under it. Split
      them and the fade draws over the body's last line — which on a form is the provenance tier. */
   --hg-sheet-footer-fade: var(--sp-5);
@@ -113,6 +113,42 @@
   cursor: grab;
 }
 
+/* Room under the bar for the tucked title: the bar keeps its place, the title sits below it. */
+.hg-sheet[data-tucks="true"] .hg-sheet-handle {
+  position: relative;
+  /* The padding makes the row 47px, still past the 44px target; a minimum on top doubled it. */
+  min-height: 0;
+  place-items: start center;
+  padding-top: 10px;
+  padding-bottom: var(--sp-8);
+}
+
+/* The title, small and centred in the handle's row once the body scrolls. Its alt text is empty:
+   the heading already speaks it. */
+.hg-sheet-handle[data-tucked]::after {
+  content: attr(data-tucked) / "";
+  position: absolute;
+  top: var(--sp-6);
+  inset-inline: var(--sp-12);
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-h4);
+  color: var(--text-primary);
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity var(--dur-standard) var(--ease-standard),
+    transform var(--dur-standard) var(--ease-standard);
+  pointer-events: none;
+}
+
+.hg-sheet[data-scrolled="true"] .hg-sheet-handle[data-tucked]::after {
+  opacity: 1;
+  transform: none;
+}
+
 /* The strong line: the sunken colour all but vanished on the glass. */
 .hg-sheet-handle-bar {
   width: 40px;
@@ -148,6 +184,13 @@
 
 .hg-sheet[data-size="auto"] .hg-sheet-body {
   flex: 0 1 auto;
+}
+
+/* Scrolled, the rows fade out under the head — luminance, never a divider line or a shadowed
+   slab. A mask reads only alpha, so any opaque token draws it. */
+.hg-sheet[data-scrolled="true"] .hg-sheet-body {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, var(--text-primary) var(--sp-5));
+  mask-image: linear-gradient(to bottom, transparent, var(--text-primary) var(--sp-5));
 }
 
 /* A held body does not scroll: its content takes the room left and scrolls its own part. */

@@ -1,9 +1,9 @@
-import type { CSSProperties, UIEvent } from 'react';
+import type { CSSProperties, ReactNode, UIEvent } from 'react';
 import { useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { OverlayBody } from './OverlayBody';
-import { isBodyScrolled, sheetHeaderOf } from './Sheet.logic';
+import { isBodyScrolled, sheetHeaderOf, sheetTucks } from './Sheet.logic';
 import type { SheetProps } from './Sheet.types';
 import { SheetBackdrop } from './SheetBackdrop';
 import { SheetHandle } from './SheetHandle';
@@ -98,6 +98,35 @@ export function Sheet({
   }
 
   const header = sheetHeaderOf(handle, showClose, [title, overline, subtitle]);
+  const tucks = sheetTucks({
+    handle,
+    hasTitle: title !== undefined,
+    headerLook,
+    meta,
+    bodyScrolls,
+  });
+  /* A tucking header is the body's first, sticky row: it holds the top while the rows scroll
+     under it, and its title goes up into the handle's row. */
+  const headerView = header.drawn ? (
+    <SheetHeader
+      leading={leading}
+      headerLook={headerLook}
+      handle={handle}
+      bare={header.closeOnly}
+      closeLabel={closeLabel}
+      onClose={onClose}
+      onPointerDown={handle ? undefined : onPointerDown}
+      overline={overline}
+      scrolled={scrolled}
+      showClose={showClose}
+      status={status}
+      subtitle={subtitle}
+      subtitleFace={subtitleFace}
+      title={title}
+      titleId={titleId}
+    />
+  ) : null;
+  const place = headerPlaceOf(tucks, headerView, title);
   const vars: SheetVars = { '--hg-sheet-z': `${zIndex}`, '--hg-sheet-drag': `${dragY}px` };
 
   return (
@@ -106,7 +135,7 @@ export function Sheet({
         <SheetBackdrop inset={inset} onClick={dismissible ? onClose : undefined} zIndex={zIndex} />
       ) : null}
       <div
-        {...sheetPanelAttrs({ density, dragY, dragging, inset, size })}
+        {...sheetPanelAttrs({ density, dragY, dragging, inset, scrolled, size, tucks })}
         aria-labelledby={namedBy}
         aria-modal={modal ? 'true' : undefined}
         className={classNames('hg-sheet', readFrameClass(read), className)}
@@ -116,28 +145,15 @@ export function Sheet({
         tabIndex={-1}
       >
         {handle ? (
-          <SheetHandle draggable={draggable} hasHeader={header.row} onPointerDown={onPointerDown} />
-        ) : null}
-
-        {header.drawn ? (
-          <SheetHeader
-            leading={leading}
-            headerLook={headerLook}
-            handle={handle}
-            bare={header.closeOnly}
-            closeLabel={closeLabel}
-            onClose={onClose}
-            onPointerDown={handle ? undefined : onPointerDown}
-            overline={overline}
-            scrolled={scrolled}
-            showClose={showClose}
-            status={status}
-            subtitle={subtitle}
-            subtitleFace={subtitleFace}
-            title={title}
-            titleId={titleId}
+          <SheetHandle
+            draggable={draggable}
+            hasHeader={header.row}
+            onPointerDown={onPointerDown}
+            tucked={place.tucked}
           />
         ) : null}
+
+        {place.top}
 
         <SheetMeta meta={meta} />
 
@@ -150,6 +166,7 @@ export function Sheet({
           ref={bodyRef}
           style={bodyStyle}
         >
+          {place.inBody}
           <OverlayBody
             emptyAction={emptyAction}
             emptyMessage={emptyMessage}
@@ -181,4 +198,17 @@ export function Sheet({
       </div>
     </>
   );
+}
+
+/**
+ * Where the header goes: a row of its own above the body, or — when its title tucks — the body's
+ * first, sticky row, with its title copied into the handle's row.
+ */
+function headerPlaceOf(
+  tucks: boolean,
+  view: ReactNode,
+  title: string | undefined,
+): { top: ReactNode; inBody: ReactNode; tucked?: string } {
+  if (tucks) return { top: null, inBody: view, tucked: title };
+  return { top: view, inBody: null };
 }
