@@ -8,6 +8,33 @@ import type { NeedOpen, OwnerDashboardProps, OwnerDashboardWords } from './Owner
 /** What each part of the dashboard takes: the props and the read's value. */
 export type DashboardPartProps = OwnerDashboardProps & { readonly view: OwnerDashboard };
 
+/** The cash card's four figures, as both halves print them. */
+export interface CashFigures {
+  readonly collected: string;
+  readonly lastMonth: string;
+  readonly toCollect: string;
+  readonly late: string;
+}
+
+/**
+ * Money received and owed is never rounded (§9): a zero fraction is left unsaid and paise are
+ * printed when a figure has them. The figures read together share one form — this month beside
+ * last month, to collect beside late — so a pair never reads one whole and one in paise.
+ */
+export function cashFiguresOf(
+  cash: OwnerDashboard['cash'],
+  format: Pick<MarketFormat, 'moneyPlain'>,
+): CashFigures {
+  const months = [cash.collectedThisMonth, cash.collectedLastMonth];
+  const owed = [cash.toCollect, cash.late.amount];
+  return {
+    collected: format.moneyPlain(cash.collectedThisMonth, months),
+    lastMonth: format.moneyPlain(cash.collectedLastMonth, months),
+    toCollect: format.moneyPlain(cash.toCollect, owed),
+    late: format.moneyPlain(cash.late.amount, owed),
+  };
+}
+
 /** One attention item as both halves draw it: its mark, headline, line and the act it opens. */
 export interface NeedItem {
   readonly kind: NeedsYouKind;
@@ -29,6 +56,7 @@ const NEED_MARK: Record<NeedsYouKind, Pick<NeedItem, 'glyph' | 'hue'>> = {
   payments_late: { glyph: 'rupee', hue: 'danger' },
   blocked_on_us: { glyph: 'blocked', hue: 'ocean' },
   waiting_longest: { glyph: 'clock', hue: 'plum' },
+  proposals_unopened: { glyph: 'eye-off', hue: 'ocean' },
   my_overdue_tasks: { glyph: 'flag', hue: 'danger' },
 };
 
@@ -44,6 +72,9 @@ function countOf(kind: NeedsYouKind, needs: Needs): number {
       return needs.blockedOnUs.count;
     case 'waiting_longest':
       return needs.waitingLongest.length;
+    case 'proposals_unopened':
+      /* Absent on an api built before proposals: nothing to count. */
+      return needs.proposalsUnopened?.count ?? 0;
     case 'my_overdue_tasks':
       return needs.myOverdueTasks;
   }
@@ -87,6 +118,14 @@ function detailOf(
         open: { kind, leadId: first.leadId },
       };
     }
+    case 'proposals_unopened': {
+      const oldest = needs.proposalsUnopened?.oldest ?? null;
+      if (oldest === null) return null;
+      return {
+        line: words.unopenedLine(oldest.name, oldest.days),
+        open: { kind, proposalId: oldest.proposalId },
+      };
+    }
     case 'my_overdue_tasks':
       return { line: words.myTasksLine, open: { kind } };
   }
@@ -120,8 +159,10 @@ export function needItemsOf(
   needs: Needs,
   kinds: readonly NeedsYouKind[],
   words: OwnerDashboardWords,
-  money: (amount: string) => string,
+  format: Pick<MarketFormat, 'moneyPlain'>,
 ): readonly NeedItem[] {
+  /* Money owed is never rounded: the late sum keeps its paise, as Money due prints them (§9). */
+  const money = (amount: string) => format.moneyPlain(amount);
   return kinds.flatMap((kind) => {
     const detail = detailOf(kind, needs, words, money);
     if (detail === null) return [];
@@ -179,6 +220,9 @@ export interface DashBar {
   readonly tone: 'accent' | 'danger' | 'neutral' | 'success';
   /** How deep the fill reads, 0 to 1: a stage further down the funnel reads deeper. */
   readonly depth: number;
+  /** A figure under the words — a stage's value, where proposals price it (`M13-14`). */
+  // biome-ignore lint/plugin/copy-prop-type: a figure, printed by the market format
+  readonly note?: string;
 }
 
 function shareAgainst(count: number, longest: number): number {
@@ -192,6 +236,8 @@ function shareAgainst(count: number, longest: number): number {
 export function pipelineBarsOf(
   view: Pick<OwnerDashboard, 'pipeline' | 'won'>,
   words: Pick<OwnerDashboardWords, 'stage' | 'wonSoFar'>,
+  /** Prints a stage's value; absent, the bars carry counts alone. */
+  valueText?: (amount: string) => string,
 ): { readonly bars: readonly DashBar[]; readonly open: number; readonly won: DashBar } {
   const { pipeline } = view;
   const wonCount = view.won.thisMonth.count;
@@ -206,6 +252,9 @@ export function pipelineBarsOf(
       share: shareAgainst(row.count, longest),
       tone: 'accent',
       depth: index / lastStep,
+      ...(valueText !== undefined && row.value !== undefined && row.value !== null
+        ? { note: valueText(row.value) }
+        : {}),
     })),
     won: {
       key: 'won',

@@ -10,8 +10,9 @@ import { doorRoute } from '../doors';
 
 /**
  * The owner dashboard on the EPC Owner's and the Sales Manager's home (`SCR-M13-01`): the phone's
- * adapters around the one component — each attention item opens its record, and the export hands
- * the CSV built from the read already on screen to the share sheet (`M13-52`…`M13-54`).
+ * adapters around the one component — each attention item opens its record, a forecast stage the
+ * proposals list (`T-M13-007`), and the export hands the CSV built from the read already on screen
+ * to the share sheet (`M13-52`…`M13-54`).
  */
 export function OwnerHome() {
   const t = useTranslate();
@@ -34,6 +35,8 @@ export function OwnerHome() {
         return navigation.navigate('ProjectDetail', { projectId: open.projectId });
       case 'waiting_longest':
         return navigation.navigate('LeadDetail', { leadId: open.leadId });
+      case 'proposals_unopened':
+        return navigation.navigate('ProposalTrack', { proposalId: open.proposalId });
       case 'my_overdue_tasks':
         return shell.homes.includes(MY_DAY_PRESET)
           ? shell.chooseHome(MY_DAY_PRESET)
@@ -58,6 +61,7 @@ export function OwnerHome() {
         needsYou={board.needsYou}
         winRate={board.winRate}
         onNeed={onNeed}
+        onForecastStage={() => navigation.navigate(doorRoute.proposals)}
         onSetTarget={board.setTarget}
         targetSaving={board.targetSaving}
         targetFailed={board.targetFailed}

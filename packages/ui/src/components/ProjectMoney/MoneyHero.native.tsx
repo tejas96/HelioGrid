@@ -8,7 +8,14 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { HeroPanel } from '../HeroPanel/HeroPanel.native';
 import { useFormat } from '../MarketProvider';
-import { barOf, dueForOf, heroActsOf, nextUpOf, nowDueOf } from './ProjectMoney.logic';
+import {
+  barOf,
+  dueForOf,
+  heroActsOf,
+  nextUpOf,
+  nowDueOf,
+  paymentsAmountOf,
+} from './ProjectMoney.logic';
 import type { ProjectMoneyProps } from './ProjectMoney.types';
 
 type HeroProps = ProjectMoneyProps & { readonly payments: ProjectPayments };
@@ -21,6 +28,7 @@ type HeroProps = ProjectMoneyProps & { readonly payments: ProjectPayments };
 export function MoneyHero(props: HeroProps) {
   const { payments, words } = props;
   const format = useFormat();
+  const amount = paymentsAmountOf(payments, format);
   const now = nowDueOf(payments);
   const next = nextUpOf(payments);
   return (
@@ -45,7 +53,7 @@ export function MoneyHero(props: HeroProps) {
         <View style={styles.block}>
           <View style={styles.figureRow}>
             <Text variant="hero" oneLine>
-              {format.money(now.request.amount)}
+              {amount(now.request.amount)}
             </Text>
           </View>
           <Text variant="body-sm" color="secondary">
@@ -54,7 +62,7 @@ export function MoneyHero(props: HeroProps) {
                   now.part.label,
                   now.part.position,
                   payments.parts.length,
-                  format.money(now.part.received),
+                  amount(now.part.received),
                 )
               : words.partOf(now.part.label, now.part.position, payments.parts.length)}
           </Text>
@@ -76,13 +84,14 @@ const SEGMENT_LOOK = {
 /** Received, due and still to come, one bar, each segment its own colour and named below it. */
 function MoneyBar({ payments, words }: HeroProps) {
   const format = useFormat();
+  const amount = paymentsAmountOf(payments, format);
   const { money } = payments;
   const segments = barOf(payments);
   if (segments.length === 0) return null;
   const legend = {
-    in: words.legendIn(format.money(money.collected)),
-    due: words.legendDue(format.money(money.toCollect)),
-    next: words.legendNext(format.money(money.next)),
+    in: words.legendIn(amount(money.collected)),
+    due: words.legendDue(amount(money.toCollect)),
+    next: words.legendNext(amount(money.next)),
   };
   return (
     <View style={styles.barFrame}>
@@ -91,9 +100,9 @@ function MoneyBar({ payments, words }: HeroProps) {
         accessible
         accessibilityRole="image"
         accessibilityLabel={words.moneyBar(
-          format.money(money.collected),
-          format.money(money.toCollect),
-          format.money(money.next),
+          amount(money.collected),
+          amount(money.toCollect),
+          amount(money.next),
         )}
       >
         {segments.map((segment) => (

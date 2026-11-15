@@ -22,6 +22,7 @@ import {
   leadHoldersOf,
   openLeadCountsOf,
 } from '../crm/crm.public';
+import { unopenedProposals } from '../proposals/proposals.public';
 
 /*
  * "What needs you" (`M13-15`) on the caller's transaction: each item a bounded read — a count, an
@@ -173,4 +174,34 @@ export async function myOverdueTasksOf(
       ),
     );
   return row?.count ?? 0;
+}
+
+/**
+ * Proposals shared and not yet opened (`M13-15`): how many, and the one waiting longest — what
+ * *Open* opens. One leaves at its link's first open, since the read is of what stands, not a mark.
+ */
+export async function proposalsUnopenedOf(
+  tx: DbTransaction,
+  tenantId: string,
+  scope: SQL,
+): Promise<{
+  readonly count: number;
+  readonly oldest: {
+    readonly proposalId: string;
+    readonly name: string | null;
+    readonly sharedAt: Date;
+  } | null;
+}> {
+  const waiting = await unopenedProposals(tx, tenantId, scope);
+  const first = waiting.oldest;
+  if (first === null) return { count: 0, oldest: null };
+  const [named] = await tx
+    .select({ name: customer.name })
+    .from(lead)
+    .innerJoin(customer, leadCustomerJoin)
+    .where(and(eq(lead.tenantId, tenantId), eq(lead.id, first.leadId)));
+  return {
+    count: waiting.count,
+    oldest: { proposalId: first.proposalId, name: named?.name ?? null, sharedAt: first.sharedAt },
+  };
 }

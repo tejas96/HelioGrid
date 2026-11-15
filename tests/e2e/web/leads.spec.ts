@@ -19,7 +19,7 @@ import { expectTouchFloor } from '../support/touch-target';
 
 /**
  * `/leads` (`SCR-M02-03`, T-M02-003): the monthly bill sorts as data in the tenant's currency and
- * reads in its grouping (`M02-40`) — by the table's column wide, by the sort sheet narrow; the
+ * reads in its grouping (`M02-40`) — by the table's column wide, by the filter sheet's order narrow; the
  * summary's dormant figure narrows the list while the list top stays, and *Clear filters* brings
  * every lead back (`M02-52`). A new company is empty, so the leads are
  * captured and billed through the api inside the flow, under the owner's own session.
@@ -104,14 +104,14 @@ test("the leads list sorts by the monthly bill and shows it in the tenant's grou
     await bill.getByRole('button').click();
     await expect(bill).toHaveAttribute('aria-sort', 'descending');
   } else {
-    /* Narrow, the sort glyph opens the orders as a sheet; a tap sorts and closes it. */
-    await page.getByRole('button', { name: TOP.sortNamed(TOP.newest), exact: true }).click();
-    const sheet = page.getByRole('dialog', { name: TOP.sortTitle });
-    await sheet.getByRole('radio', { name: TOP.billLargest }).click();
-    await expect(sheet).toBeHidden();
-    await expect(
-      page.getByRole('button', { name: TOP.sortNamed(TOP.billLargest), exact: true }),
-    ).toBeVisible();
+    /* Narrow, the order is the filter sheet's first choice; a tap sorts the list behind it. */
+    await page.getByRole('button', { name: TOP.filters, exact: true }).click();
+    const orders = page.getByRole('tablist', { name: TOP.sortTitle, exact: true });
+    await orders.getByRole('tab', { name: TOP.billLargest, exact: true }).click();
+    await expect(orders.getByRole('tab', { name: TOP.billLargest, exact: true })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
   }
   /* Largest first, and a lead whose bill was never asked sorts last. */
   await expect

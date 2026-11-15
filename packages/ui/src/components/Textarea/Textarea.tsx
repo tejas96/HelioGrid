@@ -21,7 +21,9 @@ interface WebTextareaProps extends TextareaProps {
 export function Textarea({
   value,
   onChange,
+  onLeave,
   label,
+  labelSpokenOnly = false,
   placeholder,
   rows = 4,
   maxLength,
@@ -45,7 +47,13 @@ export function Textarea({
   return (
     <div className={classNames('hg-textarea', className)} style={style}>
       {label !== undefined ? (
-        <label className="hg-textarea-label" htmlFor={autoId}>
+        <label
+          className={classNames(
+            'hg-textarea-label',
+            labelSpokenOnly ? 'hg-spoken-only' : undefined,
+          )}
+          htmlFor={autoId}
+        >
           {label}
         </label>
       ) : null}
@@ -63,7 +71,10 @@ export function Textarea({
         aria-invalid={error !== undefined ? true : undefined}
         onChange={(event) => onChange?.(event.target.value)}
         onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onBlur={() => {
+          setFocused(false);
+          onLeave?.();
+        }}
       />
       {attributionNode === null ? null : (
         <div className="hg-textarea-attribution">{attributionNode}</div>

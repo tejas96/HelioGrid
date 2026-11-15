@@ -11,7 +11,11 @@ export interface SheetPanelAttrs {
   /** While a finger owns the transform the transition stands aside too. */
   'data-dragging': BoolAttr;
   'data-inset': BoolAttr;
+  /** The body has left its top: the rows fade under the head, and a tucking title goes up. */
+  'data-scrolled': BoolAttr;
   'data-size': SheetSize;
+  /** The title tucks into the handle's row as the body scrolls (`sheetTucks`). */
+  'data-tucks': BoolAttr;
 }
 
 export interface SheetBodyAttrs {
@@ -28,7 +32,9 @@ export interface SheetPanelState {
   dragY: number;
   dragging: boolean;
   inset: boolean;
+  scrolled: boolean;
   size: SheetSize;
+  tucks: boolean;
 }
 
 /**
@@ -40,14 +46,18 @@ export function sheetPanelAttrs({
   dragY,
   dragging,
   inset,
+  scrolled,
   size,
+  tucks,
 }: SheetPanelState): SheetPanelAttrs {
   return {
     'data-density': density,
     'data-dragged': dragY > 0 ? 'true' : 'false',
     'data-dragging': dragging ? 'true' : 'false',
     'data-inset': inset ? 'true' : 'false',
+    'data-scrolled': scrolled ? 'true' : 'false',
     'data-size': size,
+    'data-tucks': tucks ? 'true' : 'false',
   };
 }
 

@@ -520,6 +520,11 @@
         "!**/packages/ui/src/components/SolarSky/SkyMotion.native.tsx",
         "!**/packages/ui/src/components/SolarSky/SkyClouds.native.tsx",
         "!**/packages/ui/src/components/ProgressRing/ProgressRing.native.tsx",
+        "!**/packages/ui/src/components/ProposalBlocks/PaybackCurve.tsx",
+        "!**/packages/ui/src/components/ProposalBlocks/PaybackCurve.native.tsx",
+        "!**/packages/ui/src/components/ProposalPicture/PictureShade.native.tsx",
+        "!**/packages/ui/src/components/Sheet/SheetFade.native.tsx",
+        "!**/packages/ui/src/components/ProposalPages/PageGround.native.tsx",
         "!**/packages/ui/src/components/TeamDock/TeamDockRing.native.tsx",
         "!**/packages/ui/src/components/ProgressBar/BrandGradientFill.native.tsx",
         "!**/packages/ui/src/components/SettingsList/SettingsList.native.tsx"

@@ -3,19 +3,19 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, BackHandler, PanResponder, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { OverlayBody } from './OverlayBody.native';
-import { isBodyScrolled, sheetHeaderOf } from './Sheet.logic';
+import { isBodyScrolled } from './Sheet.logic';
 import type { SheetDensity, SheetProps, SheetSize } from './Sheet.types';
 import { SheetBackdrop } from './SheetBackdrop.native';
-import { SheetHandle } from './SheetHandle.native';
-import { SheetHeaderSlot } from './SheetHeader.native';
-import { SheetMeta } from './SheetMeta.native';
+import { SheetScrollBody } from './SheetScrollBody.native';
 import { SheetSkeleton } from './SheetSkeleton.native';
+import { SheetTop } from './SheetTop.native';
+import { sheetHeadOf } from './sheet-head.native';
 import { percentOf, SHEET_HEIGHT, useKeyboardLift } from './use-keyboard-lift.native';
 import { useSheetEntry } from './use-sheet-entry.native';
+import { useSheetTuck } from './use-sheet-tuck.native';
 
 type NativeSheetProps = SheetProps & {
   style?: StyleProp<ViewStyle>;
@@ -34,8 +34,9 @@ const DRAG_DISMISS = 96;
  *   primitive — the one thing in the system that lifts a surface out of its screen.
  * · The Esc key's partner is Android's Back: while a dismissible sheet is open, Back closes it and
  *   goes no further. The DOM focus trap has no touch equivalent; dismissal is also the backdrop
- *   tap, the 44×44 close button and the drag past 96dp, and the trap becomes
- *   `accessibilityViewIsModal`, which is what hides the layer behind from a screen reader.
+ *   tap, the drag past 96dp, the handle (a screen reader's close) and the escape gesture, and the
+ *   trap becomes `accessibilityViewIsModal`, which is what hides the layer behind from a screen
+ *   reader. The phone draws no ✕ (`showClose` is the desktop's).
  * · The web half clears the home-indicator band in CSS; here the app root hands the band's height
  *   to `PortalHost`, and the sheet's last line sits above it.
  * · The body scroll lock is inherent: a modal sheet's layer covers the screen; a non-modal one sets
@@ -57,7 +58,6 @@ export function Sheet({
   size = 'auto',
   density = 'expressive',
   handle = true,
-  showClose = false,
   dismissible = true,
   dragToDismiss = true,
   modal = true,
@@ -85,6 +85,7 @@ export function Sheet({
   const scrollTop = useRef(0);
   const [panelHeight, setPanelHeight] = useState(0);
   const [scrolled, setScrolled] = useState(false);
+  const tuck = useSheetTuck(scrolled);
   const draggable = dragToDismiss && dismissible;
   const { panelLift, bottomInset } = useKeyboardLift(open, size, usePortalBottomInset());
   /* Read through a ref: Android calls the newest listener first, so re-registering on a new
@@ -135,12 +136,16 @@ export function Sheet({
   if (!open) return null;
 
   const ladder = DENSITY[density];
-  const header = sheetHeaderOf(handle, showClose, [title, overline, subtitle]);
+  const head = sheetHeadOf(
+    { density, leading, headerLook, handle, overline, status, subtitle, subtitleFace, title },
+    { meta, bodyScrolls, pan, tuck },
+  );
+  const close = dismissible ? onClose : undefined;
   const onLayout = (event: LayoutChangeEvent) => setPanelHeight(event.nativeEvent.layout.height);
 
   const bodyPad = [
     ladder.bodyPad,
-    header.row ? styles.bodyNoTop : undefined,
+    head.row ? styles.bodyNoTop : undefined,
     footer === null ? undefined : styles.bodyWithFooter,
     bodyStyle,
     footer === null ? clearBand(ladder.bodyPad, bottomInset) : undefined,
@@ -184,6 +189,7 @@ export function Sheet({
              body and a footer was announced as ONE interruption. `accessibilityViewIsModal` is what
              actually carries the modality. */
           accessibilityViewIsModal={modal}
+          onAccessibilityEscape={close}
           ref={panelRef}
           onLayout={onLayout}
           style={[
@@ -195,34 +201,23 @@ export function Sheet({
             style,
           ]}
         >
-          {handle ? <SheetHandle hasHeader={header.row} pan={pan} /> : null}
-          {header.drawn ? (
-            <SheetHeaderSlot
-              panHandlers={handle ? undefined : pan.panHandlers}
-              density={density}
-              leading={leading}
-              headerLook={headerLook}
-              handle={handle}
-              closeLabel={closeLabel}
-              onClose={onClose}
-              overline={overline}
-              scrolled={scrolled}
-              showClose={showClose}
-              status={status}
-              subtitle={subtitle}
-              subtitleFace={subtitleFace}
-              title={title}
-            />
-          ) : null}
-
-          <SheetMeta meta={meta} density={density} />
+          <SheetTop
+            handle={handle}
+            pan={pan}
+            closeLabel={closeLabel}
+            onClose={close}
+            header={head.ownRow}
+            tucked={head.tucked}
+            hasHeaderRow={head.row}
+            meta={meta}
+            density={density}
+          />
 
           {bodyScrolls ? (
-            /* The panel itself rises over the keyboard, so the frame only keeps the focused field
-               and its line above the footer. */
-            <KeyboardFrame
-              rises
-              style={BODY_FLEX[size]}
+            <SheetScrollBody
+              flex={BODY_FLEX[size]}
+              lifted={head.lifted}
+              tuck={tuck}
               onScrollOffset={(top) => {
                 scrollTop.current = top;
                 setScrolled(isBodyScrolled(top));
@@ -230,8 +225,8 @@ export function Sheet({
               contentContainerStyle={bodyPad}
               foot={footerView}
             >
-              <View style={styles.bodyFill}>{content}</View>
-            </KeyboardFrame>
+              {content}
+            </SheetScrollBody>
           ) : (
             <>
               {/* A held body: its content bounds itself and scrolls its own part. */}

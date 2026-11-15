@@ -1,13 +1,15 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import type { GestureResponderHandlers, StyleProp, TextStyle, ViewStyle } from 'react-native';
-import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
+import type {
+  GestureResponderHandlers,
+  LayoutChangeEvent,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
-import { OverlayClose } from './OverlayClose.native';
-import { sheetHeaderOf } from './Sheet.logic';
 import type { OverlayStatus, OverlaySubtitleFace, SheetDensity } from './Sheet.types';
 
 interface SheetHeaderProps {
@@ -18,12 +20,9 @@ interface SheetHeaderProps {
   headerLook: 'row' | 'moment';
   /** With a handle above it the header loses its own top padding, as on web. */
   handle: boolean;
-  closeLabel: TranslatedText;
-  onClose?: () => void;
   overline?: TranslatedText;
-  /** The scroll shadow — luminance, never a divider line. */
-  scrolled: boolean;
-  showClose: boolean;
+  /** Set when the title tucks into the handle's row: the heading leaves as it goes there. */
+  tuck?: Animated.Value;
   status?: OverlayStatus;
   subtitle?: string;
   subtitleFace: OverlaySubtitleFace;
@@ -32,30 +31,26 @@ interface SheetHeaderProps {
 }
 
 /**
- * A sheet's title is a title: the display face, as the web's. A functional sheet, dense with
- * fields, keeps the compact UI title — 1.25 line-height on the reference's 17 size.
+ * A sheet's title is the UI face at semibold, as a system sheet's is — the display face is the
+ * page's large title, and over a list it read heavy. A functional sheet, dense with fields, takes
+ * the compact size.
  */
-const TITLE_LOOK: Record<SheetDensity, { variant: 'figure' | 'h4'; style?: TextStyle }> = {
-  expressive: { variant: 'figure' },
-  functional: { variant: 'h4', style: { fontWeight: '700', letterSpacing: -0.34, lineHeight: 21 } },
-};
+const TITLE_VARIANT: Record<SheetDensity, 'h2' | 'h4'> = { expressive: 'h2', functional: 'h4' };
 
 /**
- * The sheet's sticky header. The title keeps its drawn size whatever text size the person set,
- * as a platform sheet's own title does: grown, one word was wider than the line and broke inside
- * itself. `overline` is the Text primitive's own 11px signature — the one sanctioned appearance
- * below the 12px floor — so this file never re-spells it.
+ * The sheet's header. It draws no ✕ on the phone: a drag, a tap outside and Back close the sheet,
+ * and its handle is the close a screen reader finds. The title keeps its drawn size whatever text
+ * size the person set, as a platform sheet's own title does: grown, one word was wider than the
+ * line and broke inside itself. `overline` is the Text primitive's own 11px signature — the one
+ * sanctioned appearance below the 12px floor — so this file never re-spells it.
  */
 export function SheetHeader({
   density,
   leading,
   headerLook,
   handle,
-  closeLabel,
-  onClose,
   overline,
-  scrolled,
-  showClose,
+  tuck,
   status,
   subtitle,
   subtitleFace,
@@ -63,12 +58,12 @@ export function SheetHeader({
   style,
 }: SheetHeaderProps) {
   return (
-    <View
+    <Animated.View
       style={[
         styles.header,
         density === 'functional' ? styles.headerFunctional : styles.headerExpressive,
         handle ? styles.headerWithHandle : undefined,
-        scrolled ? styles.scrolled : undefined,
+        tuck === undefined ? undefined : tuckedOut(tuck),
         style,
       ]}
     >
@@ -83,12 +78,24 @@ export function SheetHeader({
           title={title}
         />
       </Lead>
-      {showClose ? (
-        <OverlayClose label={closeLabel} offset={handle ? 'handle' : 'sheet'} onClick={onClose} />
-      ) : null}
-    </View>
+    </Animated.View>
   );
 }
+
+/** The heading rising a little, shrinking and fading as the title goes up into the handle's row. */
+function tuckedOut(tuck: Animated.Value) {
+  return {
+    opacity: tuck.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+    transform: [
+      { translateY: tuck.interpolate({ inputRange: [0, 1], outputRange: [0, -TUCK_RISE] }) },
+      { scale: tuck.interpolate({ inputRange: [0, 1], outputRange: [1, TUCK_SCALE] }) },
+    ],
+  };
+}
+
+/** How far the heading rises and how small it gets on its way out — a nudge, not a journey. */
+const TUCK_RISE = theme.spacing['sp-3'];
+const TUCK_SCALE = 0.92;
 
 /** The heading block: overline, title with its status, and the line under it — centred for a moment. */
 function Heading({
@@ -115,8 +122,8 @@ function Heading({
       {title === undefined ? null : (
         <View style={styles.titleLine}>
           <Text
-            variant={TITLE_LOOK[density].variant}
-            style={[TITLE_LOOK[density].style, moment ? styles.centred : undefined]}
+            variant={TITLE_VARIANT[density]}
+            style={moment ? styles.centred : undefined}
             fixedSize
           >
             {title}
@@ -166,31 +173,34 @@ function Lead({
   );
 }
 
-interface SheetHeaderSlotProps extends Omit<SheetHeaderProps, 'style'> {
+export interface SheetHeaderSlotProps extends Omit<SheetHeaderProps, 'style'> {
   /** The drag, when no handle above the header takes it. */
   panHandlers?: GestureResponderHandlers;
+  /**
+   * Set when the header lies over the top of the body, which pads itself by this height. It takes
+   * no touch: once its title has tucked, the rows beneath it must still answer a tap.
+   */
+  onLift?: (height: number) => void;
 }
 
-/**
- * Where the header sits in the panel: a row of its own, or — the close alone — at the end of the
- * handle's row, as on the web, so a sheet whose content opens on its own title keeps that row.
- */
-export function SheetHeaderSlot({ panHandlers, ...header }: SheetHeaderSlotProps) {
-  const bare = sheetHeaderOf(header.handle, header.showClose, [
-    header.title,
-    header.overline,
-    header.subtitle,
-  ]).closeOnly;
+/** Where the header sits in the panel: a row of its own, or lifted over the body's top. */
+export function SheetHeaderSlot({ panHandlers, onLift, ...header }: SheetHeaderSlotProps) {
+  const lifted = onLift !== undefined;
+  const measure = (event: LayoutChangeEvent) => onLift?.(event.nativeEvent.layout.height);
   return (
-    <View {...panHandlers} style={bare ? slot.closeOnly : undefined}>
-      <SheetHeader {...header} style={bare ? slot.bare : undefined} />
+    <View
+      {...panHandlers}
+      pointerEvents={lifted ? 'none' : 'auto'}
+      onLayout={lifted ? measure : undefined}
+      style={lifted ? slot.lifted : undefined}
+    >
+      <SheetHeader {...header} />
     </View>
   );
 }
 
 const slot = StyleSheet.create({
-  closeOnly: { position: 'absolute', top: 0, right: theme.spacing['sp-3'], zIndex: 2 },
-  bare: { padding: 0, backgroundColor: 'transparent' },
+  lifted: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 2 },
 });
 
 const styles = StyleSheet.create({
@@ -201,17 +211,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
     paddingBottom: theme.spacing['sp-3'],
-    // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
-    backgroundColor: colors.surface,
     zIndex: 1,
   },
   /* 10 has no spacing token — it is the reference's own functional top padding. */
   headerExpressive: { paddingTop: theme.spacing['sp-3'], paddingHorizontal: theme.spacing['sp-5'] },
   headerFunctional: { paddingTop: 10, paddingHorizontal: theme.spacing['sp-4'] },
   headerWithHandle: { paddingTop: 0 },
-  /* The web half draws a downward-only scroll shadow; RN shadows have no spread or inset, so e2 —
-     the next elevation step up from flat — carries the same "content has moved under me". */
-  scrolled: theme.elevation.e2,
   heading: { flexShrink: 1, minWidth: 0 },
   lead: {
     flexDirection: 'row',

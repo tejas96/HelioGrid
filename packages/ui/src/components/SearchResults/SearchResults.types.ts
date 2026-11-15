@@ -3,6 +3,7 @@ import type {
   ComponentKind,
   LeadLifecycleState,
   LeadStage,
+  ProposalStanding,
   SearchGroup,
   SearchRead,
   SearchRow,
@@ -34,6 +35,9 @@ export interface SearchResultsWords<Failure> {
   source: (source: string) => TranslatedText;
   state: (state: LeadLifecycleState) => TranslatedText;
   componentKind: (kind: ComponentKind) => TranslatedText;
+  /** A proposal's own line: "Proposal PRP-0042", or "Proposal draft" before it has a number. */
+  proposal: (number: string | null) => TranslatedText;
+  proposalStanding: (standing: ProposalStanding) => TranslatedText;
   /** A row's target's spoken name: "Open Priya Sharma", or the kind's own when it has no name. */
   open: (kind: SearchRow<Failure>['kind'], name: string | null) => TranslatedText;
   reopen: TranslatedText;

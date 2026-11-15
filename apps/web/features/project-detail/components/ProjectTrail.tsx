@@ -1,51 +1,53 @@
 'use client';
 import type { TranslatedText } from '@heliogrid/contracts';
-import { Button, ShellGlyph } from '@heliogrid/ui';
+import { proposalPageHeadWords } from '@heliogrid/i18n';
+import { useTranslate } from '@heliogrid/i18n/react';
+import { PageTrail, useFormat } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 
 /**
- * The way back above a project's page (the picked desktop): the board, then — on the checklist's own
- * page — the project, each a step back, and where the person is now, quiet.
+ * The way back above a project's page, the app's one pattern (`PageTrail`): the board, then — on a
+ * page under the project — the project, and where the person is now. Below the desktop's room it is
+ * one back, with the page's Call and ⋯ at the row's other end, as the phone's bar holds them.
  */
 export function ProjectTrail({
   acts,
   board,
   project,
   documents,
+  narrow = false,
   onBoard,
   onProject,
 }: {
-  /** At the phone width, the page's Call and ⋯ at the row's other end, as the phone's bar holds them. */
   acts: ReactNode;
   board: TranslatedText;
   project: TranslatedText | null;
+  /** The page under the project — its checklist, its steps, its payments — or `null` on the project. */
   documents: TranslatedText | null;
+  narrow?: boolean;
   onBoard: () => void;
   onProject: () => void;
 }) {
-  const back = <ShellGlyph name="chevron-left" size="sm" />;
+  const t = useTranslate();
+  const format = useFormat();
+  const { trail } = proposalPageHeadWords(t, {
+    money: (amount) => format.moneyPlain(amount),
+    number: format.number,
+  });
+  const above =
+    project === null || documents === null
+      ? [{ label: board, onOpen: onBoard }]
+      : [
+          { label: board, onOpen: onBoard },
+          { label: project, onOpen: onProject },
+        ];
   return (
-    <div className="hg-project-page-trail-row">
-      <nav className="hg-project-page-trail" aria-label={board}>
-        <Button variant="ghost" size="sm" icon={back} onClick={onBoard}>
-          {board}
-        </Button>
-        {project === null ? null : documents === null ? (
-          <span className="hg-project-page-here" aria-current="page">
-            {project}
-          </span>
-        ) : (
-          <>
-            <Button variant="ghost" size="sm" onClick={onProject}>
-              {project}
-            </Button>
-            <span className="hg-project-page-here" aria-current="page">
-              {documents}
-            </span>
-          </>
-        )}
-      </nav>
-      {acts}
-    </div>
+    <PageTrail
+      trail={above}
+      here={documents ?? project ?? board}
+      label={trail}
+      narrow={narrow}
+      acts={acts}
+    />
   );
 }

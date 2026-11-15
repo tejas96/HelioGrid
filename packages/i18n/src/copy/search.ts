@@ -11,6 +11,7 @@ import type {
   LeadActFailure,
   LeadLifecycleState,
   LeadStage,
+  ProposalStanding,
   SearchGroup,
   SearchRow,
 } from '@heliogrid/domain';
@@ -20,13 +21,16 @@ import { LEAD_STAGE_WORD } from './crm-vocabulary';
 import { leadActFailureWords } from './lead-act-failure';
 import { LEAD_DETAIL } from './lead-detail';
 import { leadSourceWord, leadStateLabel } from './lead-marks';
+import { proposalStandingWord } from './proposal-after-standing';
 import { SHELL } from './shell';
 
 type T = Translator['t'];
 
 const SEARCH = {
   idleTitle: /*i18n*/ { id: 'Search by name, phone or city' },
-  covers: /*i18n*/ { id: 'Finds the leads, customers, people and catalog items you can open.' },
+  covers: /*i18n*/ {
+    id: 'Finds the leads, customers, proposals, people and catalog items you can open.',
+  },
   loading: /*i18n*/ { id: 'Searching' },
   noneTitle: /*i18n*/ { id: 'No results for “{query}”' },
   noneBody: /*i18n*/ {
@@ -42,6 +46,9 @@ const SEARCH = {
   openNamed: /*i18n*/ { id: 'Open {name}' },
   openThisLead: /*i18n*/ { id: 'Open this lead' },
   openThisCustomer: /*i18n*/ { id: 'Open this customer' },
+  openThisProposal: /*i18n*/ { id: 'Open this proposal' },
+  proposalNumbered: /*i18n*/ { id: 'Proposal {number}' },
+  proposalDraft: /*i18n*/ { id: 'Proposal draft' },
   reopenNamed: /*i18n*/ { id: 'Reopen {name}' },
   reopenThis: /*i18n*/ { id: 'Reopen this lead' },
   cancel: /*i18n*/ { id: 'Cancel' },
@@ -56,6 +63,7 @@ const SEARCH = {
 const GROUP: Record<SearchGroup, MessageRef> = {
   leads: /*i18n*/ { id: 'Leads' },
   customers: /*i18n*/ { id: 'Customers' },
+  proposals: /*i18n*/ { id: 'Proposals' },
   people: /*i18n*/ { id: 'People' },
   catalog: /*i18n*/ { id: 'Catalog' },
 };
@@ -89,8 +97,13 @@ export function searchWords(t: T) {
     source: (source: string): TranslatedText => leadSourceWord(t, source),
     state: (state: LeadLifecycleState): TranslatedText => leadStateLabel(t, state),
     componentKind: (kind: ComponentKind): TranslatedText => catalogKind(t, kind),
+    proposal: (number: string | null): TranslatedText =>
+      number === null ? t(SEARCH.proposalDraft) : t(SEARCH.proposalNumbered, { number }),
+    proposalStanding: (standing: ProposalStanding): TranslatedText =>
+      proposalStandingWord(t, standing),
     open: (kind: RowKind, name: string | null): TranslatedText => {
       if (name !== null) return t(SEARCH.openNamed, { name });
+      if (kind === 'proposal') return t(SEARCH.openThisProposal);
       return t(kind === 'customer' ? SEARCH.openThisCustomer : SEARCH.openThisLead);
     },
     reopen: t(LEAD_DETAIL.reopen),

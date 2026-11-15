@@ -2,21 +2,30 @@ import type { ComponentKind } from '../catalog/vocabulary';
 import type { LeadLifecycleState, LeadStage } from '../crm/vocabulary';
 import type { FormatPack } from '../format/pack';
 import { subjectAddressOf } from '../notifications/subject-address';
+import type { ProposalStanding } from '../proposals/tracked-standing';
 import { DOOR_SEGMENT } from '../shell/doors';
 import type { Read } from '../shell/read';
 import { SETTINGS_SEGMENT } from '../shell/settings-rows';
 import { type SearchQuery, searchQueryOf } from './query';
+import type {
+  SearchCatalogHit,
+  SearchCustomerHit,
+  SearchHits,
+  SearchLeadHit,
+  SearchPersonHit,
+  SearchProposalHit,
+} from './search-hits';
 import { isExact, numberOf, type SearchNumber } from './search-number';
 
 /*
  * Global Search (`SCR-SHELL-02`, `F6-20`, `F6-23`) decided once for both apps: the groups the one
  * read answered, each row as drawn and the address it opens, the typed digits marked in each
  * number, and a junk lead's Reopen as it stands. A group that found nothing is not drawn, and the
- * kinds no module searches yet — proposals, projects, sites — draw no group at all (Law 9).
+ * kinds no module searches yet — projects, sites — draw no group at all (Law 9).
  */
 
 /** The groups, in the order every surface draws them. */
-export const SEARCH_GROUPS = ['leads', 'customers', 'people', 'catalog'] as const;
+export const SEARCH_GROUPS = ['leads', 'customers', 'proposals', 'people', 'catalog'] as const;
 export type SearchGroup = (typeof SEARCH_GROUPS)[number];
 
 /**
@@ -24,49 +33,6 @@ export type SearchGroup = (typeof SEARCH_GROUPS)[number];
  * short enough that a number read off a ringing phone answers before the call is picked up.
  */
 export const SEARCH_SETTLE_MS = 250;
-
-/** What the view reads of the one search's answer; the wire's `SearchResults` satisfies it. */
-export interface SearchHits {
-  readonly leads: SearchHitGroup<SearchLeadHit>;
-  readonly customers: SearchHitGroup<SearchCustomerHit>;
-  readonly people: SearchHitGroup<SearchPersonHit>;
-  readonly catalog: SearchHitGroup<SearchCatalogHit>;
-}
-
-interface SearchHitGroup<Hit> {
-  readonly total: number;
-  readonly items: readonly Hit[];
-}
-
-export interface SearchLeadHit {
-  readonly id: string;
-  readonly name: string | null;
-  readonly phoneE164: string;
-  readonly city: string | null;
-  readonly stage: LeadStage;
-  readonly state: LeadLifecycleState | null;
-  /** A source a newer server learned is shown as sent (`extensibleEnum`). */
-  readonly source: string;
-}
-
-export interface SearchCustomerHit {
-  readonly id: string;
-  readonly name: string | null;
-  readonly phoneE164: string;
-  readonly city: string | null;
-}
-
-export interface SearchPersonHit {
-  readonly userId: string;
-  readonly name: string;
-}
-
-export interface SearchCatalogHit {
-  readonly id: string;
-  readonly kind: ComponentKind;
-  readonly brand: string;
-  readonly model: string;
-}
 
 /** What the person did that the answer shown does not hold yet: a Reopen out, back undone, or done. */
 export type SearchReopenAct<Failure> =
@@ -114,6 +80,19 @@ export interface SearchCustomerRow {
   readonly exact: boolean;
 }
 
+export interface SearchProposalRow {
+  readonly kind: 'proposal';
+  readonly key: string;
+  readonly address: string;
+  readonly id: string;
+  readonly number: string | null;
+  readonly customerName: string | null;
+  readonly city: string | null;
+  readonly standing: ProposalStanding;
+  /** The number typed is this proposal's, whole: it ranks first and says so (`F6-25`). */
+  readonly exact: boolean;
+}
+
 export interface SearchPersonRow {
   readonly kind: 'person';
   readonly key: string;
@@ -138,6 +117,7 @@ export interface SearchCatalogRow {
 export type SearchRow<Failure> =
   | SearchLeadRow<Failure>
   | SearchCustomerRow
+  | SearchProposalRow
   | SearchPersonRow
   | SearchCatalogRow;
 
@@ -201,6 +181,7 @@ export function searchViewOf<Failure>(
   const rowsOf: { readonly [Group in SearchGroup]: () => readonly SearchRow<Failure>[] } = {
     leads: () => hits.leads.items.map((lead) => leadRowOf(lead, query, facts)),
     customers: () => hits.customers.items.map((customer) => customerRowOf(customer, query, facts)),
+    proposals: () => hits.proposals.items.map((proposal) => proposalRowOf(proposal, query)),
     people: () => hits.people.items.map((person) => personRowOf(person, facts)),
     catalog: () => hits.catalog.items.map((item) => catalogRowOf(item, facts)),
   };
@@ -260,6 +241,20 @@ function customerRowOf<Failure>(
     city: customer.city,
     number: numberOf(facts.pack, query, customer.phoneE164),
     exact: isExact(query, customer),
+  };
+}
+
+function proposalRowOf(proposal: SearchProposalHit, query: SearchQuery): SearchProposalRow {
+  return {
+    kind: 'proposal',
+    key: `proposal:${proposal.id}`,
+    address: `${DOOR_SEGMENT.proposals}/${proposal.id}`,
+    id: proposal.id,
+    number: proposal.number,
+    customerName: proposal.customerName,
+    city: proposal.city,
+    standing: proposal.standing,
+    exact: proposal.number !== null && query.terms.includes(proposal.number.toLowerCase()),
   };
 }
 

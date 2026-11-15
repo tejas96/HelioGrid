@@ -37,7 +37,11 @@ export function leadsListTopOf(props: LeadsListFilterBarProps): ListTopProps {
     (stage) => counted(stage) > 0 || stage === filters.stage,
   );
   const side: ListFigure[] = [];
-  if (screen.inboxOffered && screen.inboxWaiting !== null) {
+  const inboxInHero = screen.inboxOffered && screen.inboxWaiting !== null;
+  /* In the narrow room the hero's figure is the one way to the inbox: the switch keeps whose leads. */
+  const scopeFacts =
+    props.room === 'narrow' && inboxInHero ? { ...screen, inboxOffered: false } : screen;
+  if (inboxInHero) {
     side.push({
       value: String(screen.inboxWaiting),
       label: top.inbox,
@@ -76,7 +80,7 @@ export function leadsListTopOf(props: LeadsListFilterBarProps): ListTopProps {
       },
     },
     scope:
-      whoseChoices.length > 1 || screen.inboxOffered
+      whoseChoices.length > 1 || scopeFacts.inboxOffered
         ? {
             ariaLabel: words.whoseLabel,
             value: filters.whose,
@@ -86,7 +90,7 @@ export function leadsListTopOf(props: LeadsListFilterBarProps): ListTopProps {
               if (whose === undefined) props.onInbox();
               else screen.setWhose(whose);
             },
-            options: words.whoseOptions(screen),
+            options: words.whoseOptions(scopeFacts),
           }
         : null,
     search: {
@@ -100,7 +104,6 @@ export function leadsListTopOf(props: LeadsListFilterBarProps): ListTopProps {
     sort: {
       title: top.sortTitle,
       spokenName: top.sortNamed,
-      closeLabel: top.close,
       chosen: leadsOrderKey(filters.sort),
       choices: LEADS_LIST_ORDERS.map((order, index) => ({
         key: leadsOrderKey(order),

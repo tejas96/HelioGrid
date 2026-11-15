@@ -1,6 +1,6 @@
 import type { FormatPack } from '../format/pack';
-import { applyRate, type BasisPoints } from '../money/basis-points';
-import { type MinorUnits, sumMinorUnits } from '../money/minor-units';
+import { amountBeforeRate, applyRate, type BasisPoints, proportionOf } from '../money/basis-points';
+import { type MinorUnits, minorUnits, sumMinorUnits } from '../money/minor-units';
 import type { TaxComponentShare, TaxPack } from './pack';
 
 /**
@@ -97,6 +97,64 @@ export function taxBreakdown(
   }
   const shares = componentsAt(scheme.tax, place);
   const taxed = lines.map((line) => taxLine(line, shares));
+  const taxableAmount = sumMinorUnits(taxed.map((line) => line.taxableAmount));
+  const taxAmount = sumMinorUnits(taxed.map((line) => line.taxAmount));
+  return {
+    currency: scheme.formats.currency,
+    lines: taxed,
+    taxableAmount,
+    components: componentTotals(taxed, shares),
+    taxAmount,
+    totalAmount: sumMinorUnits([taxableAmount, taxAmount]),
+  };
+}
+
+/** A line whose amount was typed including its tax (`M06-09`, `T-M06-024`). */
+export interface InclusiveLine {
+  readonly inclusiveAmount: MinorUnits;
+  readonly rateBasisPoints: BasisPoints;
+}
+
+/** The line's tax, shared among the place's components; the last takes what rounding leaves. */
+function sharedOut(
+  taxAmount: MinorUnits,
+  shares: readonly TaxComponentShare[],
+): readonly TaxComponentAmount[] {
+  const ofParts = shares.reduce((total, share) => total + share.parts, 0);
+  const rounded = shares.map((share) => ({
+    code: share.code,
+    amount: proportionOf(taxAmount, { parts: share.parts, ofParts }),
+  }));
+  const left = minorUnits(taxAmount - sumMinorUnits(rounded.map((component) => component.amount)));
+  return rounded.map((component, index) =>
+    index === rounded.length - 1
+      ? { ...component, amount: minorUnits(component.amount + left) }
+      : component,
+  );
+}
+
+/**
+ * The breakdown of lines typed INCLUDING tax: the typed figure is the authority, the taxable
+ * amount is derived from it once, and the tax is the difference — so every line, and the document,
+ * adds up to exactly what was typed. A rate applied forward to a rounded taxable amount can miss
+ * the typed figure by a minor unit; this never does.
+ */
+export function inclusiveTaxBreakdown(
+  scheme: MoneyScheme,
+  lines: readonly InclusiveLine[],
+  place: PlaceOfSupply,
+): TaxBreakdown {
+  const shares = componentsAt(scheme.tax, place);
+  const taxed = lines.map((line): TaxedLine => {
+    const taxableAmount = amountBeforeRate(line.inclusiveAmount, line.rateBasisPoints);
+    const taxAmount = minorUnits(line.inclusiveAmount - taxableAmount);
+    return {
+      taxableAmount,
+      rateBasisPoints: line.rateBasisPoints,
+      components: sharedOut(taxAmount, shares),
+      taxAmount,
+    };
+  });
   const taxableAmount = sumMinorUnits(taxed.map((line) => line.taxableAmount));
   const taxAmount = sumMinorUnits(taxed.map((line) => line.taxAmount));
   return {

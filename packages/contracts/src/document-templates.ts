@@ -9,6 +9,7 @@ import {
 import { z } from 'zod';
 import { percentSchema, uuidSchema } from './common';
 import { labelSchema, paragraphSchema, richTextValueSchema } from './document-content';
+import { coverPictureKeySchema } from './proposals/vocabulary';
 
 /**
  * The tenant's document defaults (`M01-50`–`M01-54`): branding, the proposal template, the
@@ -85,11 +86,24 @@ export const proposalCoverSchema = z.object({
   citiesServed: z.number().int().nonnegative().nullable(),
 });
 
+/** A cover picture (`M06-07`): one of the platform's, or the company's own stored photo. */
+export const coverPictureSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('platform'), key: coverPictureKeySchema }),
+  z.object({ kind: z.literal('own'), fileId: uuidSchema }),
+]);
+export type CoverPictureWire = z.infer<typeof coverPictureSchema>;
+
 /** The document defaults (`M01-51`): the save keeps the terms in whatever the list says (`SCR-M01-19`). */
 export const proposalTemplateSchema = z.object({
   cover: proposalCoverSchema.nullable(),
   sectionsIncluded: z.array(proposalSectionSchema),
   defaultTerms: richTextValueSchema,
+  /**
+   * The picture every new proposal's cover starts with (`T-M01-030`). Optional: a save without it
+   * keeps what is stored, and an api built before the field answers without it — the platform's
+   * first picture then stands.
+   */
+  coverPicture: coverPictureSchema.optional(),
 });
 export type ProposalTemplate = z.infer<typeof proposalTemplateSchema>;
 
@@ -100,6 +114,8 @@ export type ProposalTemplate = z.infer<typeof proposalTemplateSchema>;
  */
 export const proposalTemplateReadSchema = proposalTemplateSchema.extend({
   changed: settingsChangedSchema.nullable().optional(),
+  /** The company's own cover photo as a short-lived address, when the picture is `own`. */
+  coverPhotoUrl: z.string().url().nullable().optional(),
 });
 export type ProposalTemplateRead = z.infer<typeof proposalTemplateReadSchema>;
 

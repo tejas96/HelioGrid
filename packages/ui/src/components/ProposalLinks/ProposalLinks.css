@@ -1,0 +1,79 @@
+/* ProposalLinks — a card per named link: who it is for, its state, its last open, its acts. */
+
+.hg-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.hg-links-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-links-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border-radius: var(--r-tile);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) both;
+  animation-delay: calc(var(--i) * var(--stagger-step));
+}
+
+/* A link that is off is an outline only: it holds nothing a person can act on. */
+.hg-links-card[data-off] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+
+.hg-links-face {
+  flex: none;
+}
+
+.hg-links-card[data-off] .hg-links-face {
+  opacity: 0.5;
+}
+
+.hg-links-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  overflow-wrap: anywhere;
+}
+
+.hg-links-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--text-primary);
+}
+
+.hg-links-top b {
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body-lg);
+  font-weight: var(--fw-semibold);
+}
+
+.hg-links-acts {
+  display: flex;
+  flex: none;
+  gap: var(--sp-2);
+}
+
+.hg-links-confirm,
+.hg-new-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}

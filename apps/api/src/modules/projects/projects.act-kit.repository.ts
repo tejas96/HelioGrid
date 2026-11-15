@@ -1,12 +1,14 @@
 import type { ProjectDetail } from '@heliogrid/contracts';
 import type { DbTransaction } from '@heliogrid/db';
 import {
+  type CrewMessageRules,
   decideProof,
   type FormatPack,
   type ProjectActRefusal,
   type ProjectChainStage,
   type ProjectMoveResult,
   stepsProve,
+  type VersionInForceRefusal,
 } from '@heliogrid/domain';
 import type { Act } from '../../common/auth/session-context';
 import type { ProjectReader } from './internal/reader';
@@ -23,6 +25,9 @@ import {
  * person's, and proof's own move — shared by the stage acts and the work beside the stage.
  */
 
+/** Why an act is refused: the project's own reasons, and a version in force's (`M08-50`). */
+export type ActRefusal = ProjectActRefusal | VersionInForceRefusal;
+
 /** What one act wrote: the notices for their push, or the reason it was refused. */
 export type StepOutcome =
   | {
@@ -31,7 +36,9 @@ export type StepOutcome =
       /** Outbox events the act wrote, started after its commit. */
       readonly started: readonly string[];
     }
-  | { readonly kind: 'refused'; readonly refusal: ProjectActRefusal };
+  | { readonly kind: 'refused'; readonly refusal: ActRefusal }
+  /** The act is not this person's, decided on the locked rows: it answers 403 and writes nothing. */
+  | { readonly kind: 'forbidden' };
 
 /** One act: what it writes on the locked project, built from the act's context. */
 export type ProjectStep = (
@@ -45,7 +52,8 @@ export type ProjectActOutcome =
       readonly notified: readonly string[];
       readonly started: readonly string[];
     }
-  | { readonly outcome: 'refused'; readonly refusal: ProjectActRefusal }
+  | { readonly outcome: 'refused'; readonly refusal: ActRefusal }
+  | { readonly outcome: 'forbidden' }
   | { readonly outcome: 'not-found' };
 
 /** Everything an act needs besides its own body: who, when, the pack, the notice. */
@@ -54,6 +62,8 @@ export interface ActContext {
   readonly act: Act;
   readonly capturedAt: Date;
   readonly formats: FormatPack;
+  /** The market's send hour and window, so an act's answer says whether the crew message is due. */
+  readonly crewRules: CrewMessageRules;
   readonly notice: MoveNotice;
   readonly mover: Extract<Mover, { kind: 'person' }>;
 }
@@ -63,10 +73,11 @@ export const done = (notified: readonly string[] = []): StepOutcome => ({
   notified,
   started: [],
 });
-export const refusedWith = (refusal: ProjectActRefusal): StepOutcome => ({
+export const refusedWith = (refusal: ActRefusal): StepOutcome => ({
   kind: 'refused',
   refusal,
 });
+export const forbidden = (): StepOutcome => ({ kind: 'forbidden' });
 
 /** A decided move written as the person's, or its refusal. */
 export async function movedAs(

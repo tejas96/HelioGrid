@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import type { CategoryHue } from '../Avatar/Avatar.types';
 
 /** The six chip/badge tones — each resolves to a semantic `-text` token (and a `-bg` for Badge). */
@@ -10,8 +11,12 @@ export type ChipTone = 'neutral' | 'success' | 'warning' | 'danger' | 'info' | '
  */
 export type BadgeTone = ChipTone | CategoryHue;
 
-/** Expressive = the brand's 28px pill; functional = the dense 24px working set. */
-export type ChipDensity = 'expressive' | 'functional';
+/**
+ * Expressive = the brand's 28px pill; functional = the dense 24px working set; pick = a quick
+ * choice a form offers a thumb (a size, a plan) — 36px, a strong hairline, ringed in the accent
+ * when in force.
+ */
+export type ChipDensity = 'expressive' | 'functional' | 'pick';
 
 export interface ChipProps {
   children?: ReactNode;
@@ -28,6 +33,8 @@ export interface ChipProps {
   dot?: boolean;
   tone?: ChipTone;
   density?: ChipDensity;
+  /** A mark before the words — *New plan*'s plus — drawn the same on both platforms. */
+  glyph?: ShellGlyphName;
 }
 
 export interface BadgeProps {
@@ -35,4 +42,6 @@ export interface BadgeProps {
   /** `violet` | `blue` | `magenta` are the brand iris tones for a KIND, never a state. */
   tone?: BadgeTone;
   density?: ChipDensity;
+  /** The state's mark before the word, in the word's ink: status is glyph + word + tint. */
+  glyph?: ShellGlyphName;
 }

@@ -33,7 +33,8 @@ export function ProjectJourney(props: ProjectDetailProps) {
 
 /**
  * The deal behind the project (wide): the customer with their number, who manages it, and the
- * design and proposal it will point at once their modules land — none linked yet, said so.
+ * proposal version it runs on, and the design it will point at once its module lands — none
+ * linked yet, said so.
  */
 export function ProjectDeal({ project, words }: ProjectDetailProps) {
   const format = useFormat();
@@ -58,7 +59,16 @@ export function ProjectDeal({ project, words }: ProjectDetailProps) {
           <dt>{words.design}</dt>
           <dd className="hg-project-detail-quiet">{words.noneLinked}</dd>
           <dt>{words.proposal}</dt>
-          <dd className="hg-project-detail-quiet">{words.noneLinked}</dd>
+          {project.proposalVersion == null ? (
+            <dd className="hg-project-detail-quiet">{words.noneLinked}</dd>
+          ) : (
+            <dd>
+              {words.proposalLinked(
+                project.proposalVersion.number,
+                project.proposalVersion.version,
+              )}
+            </dd>
+          )}
         </dl>
       </Card>
     </section>

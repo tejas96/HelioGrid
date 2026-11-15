@@ -39,7 +39,7 @@ function LeadsListIn({ screen }: { screen: LeadsListScreenView }) {
   const words = leadsListWords(t, { pack: format.pack, language: locale, now: Date.now() });
   const { read } = screen;
   const moves = {
-    add: () => router.push(DOOR_PATH.add_lead),
+    add: screen.canAdd ? () => router.push(DOOR_PATH.add_lead) : null,
     import: screen.canImport ? () => router.push(LEAD_IMPORT_PATH) : null,
     inbox: () => router.push(LEAD_INBOX_PATH),
     open: (leadId: string) => router.push(leadPath(leadId)),

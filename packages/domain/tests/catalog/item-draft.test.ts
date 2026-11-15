@@ -13,8 +13,8 @@ import type { CatalogSpec } from '../../src/catalog/specs';
 import type { CertificationScheme } from '../../src/certification/pack';
 
 const SCHEMES: readonly CertificationScheme[] = [
-  { scheme: 'ALMM', evidence: 'list_reference' },
-  { scheme: 'DCR', evidence: 'flag' },
+  { scheme: 'ALMM', evidence: 'list_reference', binds: ['panel'] },
+  { scheme: 'DCR', evidence: 'flag', binds: ['panel'] },
 ];
 
 const SAATVIK = {

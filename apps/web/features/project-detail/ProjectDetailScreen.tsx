@@ -20,6 +20,7 @@ import {
 } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 import { ProjectDetailBody } from './components/ProjectDetailBody';
+import { ProjectProposalRows } from './components/ProjectProposalRows';
 import { ProjectTrail } from './components/ProjectTrail';
 import { useProjectMoves } from './hooks/use-project-moves';
 
@@ -67,6 +68,7 @@ export function ProjectDetailScreen({ projectId, documents, ask }: ProjectPageRo
     <div ref={room} tabIndex={-1} className="hg-shell-page hg-focus-target hg-project-page">
       <ProjectTrail
         acts={wide ? null : acts('bar')}
+        narrow={!wide}
         board={destinationLabel(t, moves.wayBack)}
         project={heading?.title ?? null}
         documents={documents === 'all' ? words.documents : null}
@@ -82,6 +84,13 @@ export function ProjectDetailScreen({ projectId, documents, ask }: ProjectPageRo
           acts={wide ? acts('header') : null}
         />
       )}
+      {shown !== null && documents !== 'all' ? (
+        <ProjectProposalRows
+          project={shown.project}
+          onScheduleDay={() => screen.open({ kind: 'date' })}
+          focusAfter={room}
+        />
+      ) : null}
       {read.kind === 'ready' ? (
         <ProjectDetailBody
           screen={screen}

@@ -44,10 +44,13 @@ export type StoredActivityBody<Kind extends KnownKind> = Kind extends keyof Name
   ? Omit<ActivityBody<Kind>, NamedOnRead[Kind]>
   : ActivityBody<Kind>;
 
-/** Who did it: a person names their account; the system names no one. */
+/**
+ * Who did it: a person names their account; the system names no one; the customer, acting on their
+ * link, names no account either — the entry's body names the link and its contact (`F5-31`).
+ */
 export type ActivityActorRef =
   | { readonly kind: Extract<ActivityActor, 'person'>; readonly userId: string }
-  | { readonly kind: Extract<ActivityActor, 'system'> };
+  | { readonly kind: Extract<ActivityActor, 'system' | 'customer'> };
 
 /** One entry to append: its anchor, its kind with that kind's body, who, and the device's moment. */
 export type ActivityEntry = {
@@ -146,8 +149,11 @@ export async function activityMadeWith(
   return made ?? null;
 }
 
-/** The lead was worked on just now: its quiet clock restarts and a dormant lead wakes. */
-async function leadWorkedOn(
+/**
+ * The lead was worked on just now: its quiet clock restarts and a dormant lead wakes. Exported for
+ * work that writes no entry of its own — a proposal draft's commit (`M02-49`, `T-M06-032`).
+ */
+export async function leadWorkedOn(
   tx: DbTransaction,
   tenantId: string,
   customerId: string,

@@ -1,11 +1,17 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { SettingsListGroup, SettingsRow } from '@heliogrid/domain';
+import type { SettingsListGroup, SettingsRow, WorkDestination } from '@heliogrid/domain';
 
 /** The signed-in person, as the first tile draws them: the name over their own settings row. */
 export interface SettingsListPerson {
   name: string;
   /** A picture when the account holds one; initials otherwise. */
   picture?: string;
+}
+
+/** A work list the pill has no slot for, as More offers it: the list and its name. */
+export interface SettingsWorkList {
+  key: WorkDestination;
+  name: TranslatedText;
 }
 
 /**
@@ -29,6 +35,15 @@ export interface SettingsListProps {
   groups: readonly SettingsListGroup<TranslatedText>[];
   /** A row pressed: the app routes to its screen. */
   onOpen: (row: SettingsRow) => void;
+  /**
+   * The work lists the pill has no slot for (`moreWorkLists`), drawn first, as one tile of rows in
+   * the settings rows' own pattern, each marked with its pill glyph; absent or empty, nothing is
+   * drawn. The `side` form never draws them: beside a settings page the sidebar holds the lists.
+   */
+  workLists?: {
+    readonly items: readonly SettingsWorkList[];
+    readonly onOpen: (list: WorkDestination) => void;
+  };
   /**
    * `page` (default) is the list behind `More`. `side` is the same list as the 248 px column a
    * settings page draws beside its content at the shell's desktop width — the title as an overline,

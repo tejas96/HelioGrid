@@ -7,5 +7,6 @@
 
    `DocumentSection` here is PagedDocument's; the main entry's is DocumentPreview's. */
 export * from './components/PagedDocument';
+export * from './components/ProposalPrint';
 export * from './utils/page-size';
 export * from './utils/print-scope';

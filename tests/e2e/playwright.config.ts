@@ -1,8 +1,26 @@
+import { registerHooks } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, devices } from '@playwright/test';
 import { API, API_LOG } from './support/api-log';
 
 const WEB = 'http://localhost:3002';
+
+/* A flow's support file reads a constant from `@heliogrid/ui`, whose barrel reaches the proposal
+   pictures. A bundler turns a picture import into its address; this runner would read the file as
+   code and stop every spec at load. Here a picture import is its own address, which no flow draws.
+   The runner loads every file through its module hooks, so the rule is a hook registered after
+   them (the last one registered is asked first); each worker reads this config again, so it holds
+   in every process. */
+registerHooks({
+  load(url, context, nextLoad) {
+    if (!url.endsWith('.jpg')) return nextLoad(url, context);
+    return {
+      format: 'commonjs',
+      source: `module.exports = ${JSON.stringify(url)};`,
+      shortCircuit: true,
+    };
+  },
+});
 
 /* The flows sign companies up through the api and remove none, so off CI they run only against
    the test database: both URLs name `heliogrid_test` (the test-database prefix, `CLAUDE.md` §5), and the

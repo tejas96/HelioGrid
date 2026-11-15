@@ -1,16 +1,30 @@
 import type { ProjectDetail, ProjectFile } from '@heliogrid/contracts';
 import { customer, type DbTransaction, lead, project, tenant, userAccount } from '@heliogrid/db';
-import { can, type FormatPack, isActiveStage, localDate, seesOnlyTheJob } from '@heliogrid/domain';
-import { projectNumberOf } from '@heliogrid/domain/server';
+import {
+  type CrewMessageRules,
+  can,
+  type FormatPack,
+  isActiveStage,
+  isCrewMessageDue,
+  localDate,
+  mayPutVersionInForce,
+  type ProjectStage,
+  seesOnlyTheJob,
+} from '@heliogrid/domain';
+import { projectNumberOf, proposalNumberOf } from '@heliogrid/domain/server';
 import { and, eq } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { memberNameOf } from '../crm/crm.public';
 import { isMoneyDue, moneyFormatOf } from './internal/money';
 import type { ProjectReader } from './internal/reader';
 import { askFieldsOf, asksOf } from './internal/standing';
+import { crewLeadOf } from './projects.customer.repository';
+import { installationOf } from './projects.customer.service';
 import { detailBlocksOf } from './projects.detail-blocks.repository';
+import { inForceFactsOf } from './projects.in-force-facts.repository';
 import { moneyGlanceOf } from './projects.money-glance.repository';
 import { projectScopeWhere } from './projects.scope.repository';
+import { signedProposalBasisOf, signedProposalProofOf } from './projects.won-basis.repository';
 
 /*
  * One project as its screen shows it (`SCR-M08-02`, `M08-16`): every block, each naming the record
@@ -33,6 +47,8 @@ export async function loadProjectDetail(
   formats: FormatPack,
   /** `proven` when the caller's lock already proved the reader's reach — an act may have ended it. */
   reach: 'scoped' | 'proven' = 'scoped',
+  /** The market's send hour and window: with them the read says whether the crew message is due. */
+  crewRules: CrewMessageRules | null = null,
 ): Promise<ProjectDetail | null> {
   const [row] = await tx
     .select({
@@ -54,6 +70,10 @@ export async function loadProjectDetail(
       soldBy: project.soldBy,
       sellerName: memberNameOf(seller),
       expectedInstallOn: project.expectedInstallOn,
+      installStartMinutes: project.installStartMinutes,
+      installDurationDays: project.installDurationDays,
+      installDisturbance: project.installDisturbance,
+      leadOwnerId: lead.ownerUserId,
       accessNote: project.accessNote,
       cancelReason: project.cancelReason,
       cancelNote: project.cancelNote,
@@ -122,6 +142,7 @@ export async function loadProjectDetail(
   const declared = (key: string) =>
     formats.documentChecklist.find((checklistRow) => checklistRow.row === key);
   const jobOnly = seesOnlyTheJob(reader.scope);
+  const handoff = await handoffBlockOf(tx, reader, { ...row, projectId }, jobOnly, crewRules);
   return {
     id: row.id,
     number: projectNumberOf(row.number),
@@ -185,6 +206,7 @@ export async function loadProjectDetail(
             changedAt: document.changedAt.toISOString(),
             changedBy: memberOf(document.changedBy, document.changerName),
             files: filesIn('document', document.row),
+            proof: signedProposalProofOf(document, handoff.signed),
           };
         }),
     steps: steps.map((step) => ({
@@ -200,12 +222,75 @@ export async function loadProjectDetail(
     ...askFieldsOf(asks),
     packLeftOut: row.packLeftOut,
     designId: null,
-    proposalId: null,
+    proposalId: handoff.proposalId,
     acts: {
       stages: isActiveStage(row.stage) && can(reader.roles, 'projects.update_stages'),
       documents: isActiveStage(row.stage) && can(reader.roles, 'projects.project_documents'),
       steps: isActiveStage(row.stage) && can(reader.roles, 'projects.installation_checklist'),
+      versionInForce: handoff.mayPutInForce,
     },
     money,
+    proposalVersion: handoff.proposalVersion,
+    newerVersion: handoff.newerVersion,
+    installation: handoff.installation,
+    crewMessageDue: handoff.crewMessageDue,
+  };
+}
+
+/** What the project's hand-off block reads from its row. */
+interface HandoffRow {
+  readonly projectId: string;
+  readonly stage: ProjectStage;
+  readonly managerId: string;
+  readonly leadOwnerId: string | null;
+  readonly timeZone: string;
+  readonly expectedInstallOn: string | null;
+  readonly installStartMinutes: number | null;
+  readonly installDurationDays: number | null;
+  readonly installDisturbance: string | null;
+}
+
+/**
+ * Where the project meets its proposal and its customer (`M08-50`, `F5-68`): the version it runs
+ * on, a newer one that may be put in force and by whom, the installation day as the customer is
+ * told it, and whether the evening-before message is due. The installer's read names no
+ * commercial paper (`M08-43`).
+ */
+async function handoffBlockOf(
+  tx: DbTransaction,
+  reader: ProjectReader,
+  row: HandoffRow,
+  jobOnly: boolean,
+  crewRules: CrewMessageRules | null,
+) {
+  const [crewLead, facts] = await Promise.all([
+    crewLeadOf(tx, reader.tenantId, row.projectId),
+    inForceFactsOf(tx, reader.tenantId, row.projectId, null),
+  ]);
+  const inForce = jobOnly ? null : (facts?.inForce ?? null);
+  const signed = await signedProposalBasisOf(tx, reader.tenantId, inForce);
+  const latest = jobOnly ? null : (facts?.latestVersion ?? null);
+  const newer = latest !== null && (inForce === null || latest > inForce.version);
+  const active = isActiveStage(row.stage);
+  const number = facts?.proposalNumber ?? null;
+  return {
+    proposalId: inForce?.proposalId ?? null,
+    proposalVersion:
+      inForce === null || number === null
+        ? null
+        : {
+            proposalId: inForce.proposalId,
+            number: proposalNumberOf(number),
+            version: inForce.version,
+          },
+    newerVersion: newer ? latest : null,
+    signed,
+    mayPutInForce: active && newer && mayPutVersionInForce(reader.actorId, row),
+    installation: installationOf({ ...row, crewLead }),
+    crewMessageDue:
+      crewRules !== null &&
+      active &&
+      row.expectedInstallOn !== null &&
+      isCrewMessageDue(Date.now(), row.expectedInstallOn, row.timeZone, crewRules),
   };
 }

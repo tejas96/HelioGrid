@@ -18,7 +18,7 @@ export { resolveCatalogItem } from './catalog/resolve';
 export { addOnVerdict, overageAddOns } from './commerce/overage-amounts';
 export { PREVIEW_CONTRACT_VALUE, previewTrancheAmounts } from './commerce/tranche-preview';
 export { judgeLeadImportRows, readLeadImportRow } from './crm/lead-import-rows';
-export { applyRate } from './money/basis-points';
+export { amountBeforeRate, applyRate, proportionOf } from './money/basis-points';
 export { reconcileMinorUnits, resolvePayable } from './money/equation';
 export {
   amountForQuantity,
@@ -26,14 +26,37 @@ export {
   sumMinorUnits,
 } from './money/minor-units';
 export { dayRate, partCycleCharge } from './money/part-cycle';
+export { scheduleInForce } from './payments/in-force';
 export { chatRequestUri, receiptNumberOf, upiRequestUri } from './payments/request';
 export { splitSchedule } from './payments/schedule';
 export { projectMoneyOf, trancheStandingOf } from './payments/standing';
 export { tenMonthYearly } from './pricing/book';
 export { clearsCogsFloor, metersBelowCogsFloor } from './pricing/cogs';
 export { projectNumberOf } from './projects/number';
+export { builtInMonthlyYield } from './proposals/built-in-yield';
+export { IN_BUILT_IN_YIELD } from './proposals/built-in-yield-in';
+export { builtInYieldTableOf } from './proposals/built-in-yield-tables';
+export { generateVerdict } from './proposals/checklist';
+export { pipelineForecast } from './proposals/forecast';
+export { proposalMoney, tranchesTotal } from './proposals/money';
+export { proposalNumberOf } from './proposals/number';
+export { proposalEmi, proposalSavings } from './proposals/projections';
+export {
+  fieldSetEnvelopeOf,
+  fieldSetOf,
+  versionSnapshotEnvelopeOf,
+  versionSnapshotOf,
+} from './proposals/stored-envelope';
+export {
+  DEFAULT_EFFICIENCY_PERCENT,
+  newDraftFieldSet,
+  paymentFromTemplate,
+  templateFilledSteps,
+  timelineFromTemplate,
+} from './proposals/template-fill';
+export { versionDiff } from './proposals/version-diff';
 export { subsidyAmount } from './subsidy/amount';
-export { taxBreakdown } from './tax/breakdown';
+export { inclusiveTaxBreakdown, taxBreakdown } from './tax/breakdown';
 export { creditNoteNumber, fiscalYearOf, invoiceNumber } from './tax/fiscal-year';
 export { invoiceTotals } from './tax/invoice-totals';
 export { platformInvoice } from './tax/platform-invoice';

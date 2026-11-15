@@ -6,10 +6,13 @@ import {
   holdReads,
   lastAsk,
   mountedList,
+  OWNER_ROLE,
   origin,
   RAJESH,
   READ_RETRIES_MS,
   READER,
+  SALES_EXECUTIVE_ROLE,
+  SURVEY_ENGINEER_ROLE,
   shownIds,
 } from './leads-list-origin';
 
@@ -36,6 +39,17 @@ describe('the leads list', () => {
     if (read.kind !== 'ready') throw new Error(read.kind);
     expect(read.value.pipeline).toMatchObject({ open: 3, dormant: 1 });
     expect(read.value.rows[2]?.next).toEqual({ kind: 'snoozed', wakeOn: '2026-11-14' });
+  });
+
+  it.each([
+    ['an owner may add and import', OWNER_ROLE, true, true],
+    ['a sales executive may add, never import', SALES_EXECUTIVE_ROLE, true, false],
+    ['a survey engineer reads the list and may do neither', SURVEY_ENGINEER_ROLE, false, false],
+  ] as const)('%s', async (_, role, canAdd, canImport) => {
+    const view = await mountedList([MINE], 0, role);
+    expect(view.result.current.allowed).toBe(true);
+    expect(view.result.current.canAdd).toBe(canAdd);
+    expect(view.result.current.canImport).toBe(canImport);
   });
 
   it.each([

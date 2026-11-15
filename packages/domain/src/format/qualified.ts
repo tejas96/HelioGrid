@@ -37,6 +37,13 @@ export const PROVENANCE_TIERS = ['measured', 'derived', 'estimated', 'assumed'] 
 export type ProvenanceTier = (typeof PROVENANCE_TIERS)[number];
 
 /**
+ * The tier of a figure a person typed or a company stated, with nothing measured or designed behind
+ * it (`F8-21`): a typed price, a typed system size, the company's own track record — and so is all
+ * it is summed into. A surface that carries such a figure on to someone else states it (`F8-01`).
+ */
+export const STATED_FIGURE_TIER: ProvenanceTier = 'assumed';
+
+/**
  * The second axis (`F8-12`): how far a figure can be relied on as FINAL. Orthogonal to the tier —
  * a derived figure computed from a stale version is still derived, and still must not read final.
  */

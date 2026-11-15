@@ -1,6 +1,5 @@
 import type { MarkWon } from '@heliogrid/contracts';
 import {
-  customer,
   type DbTransaction,
   lead,
   project,
@@ -14,10 +13,12 @@ import {
   isSubsidyAvailable,
   type LeadActRefusal,
   localDate,
+  MARK_WON_VALUE_REFUSAL,
   type MarketPack,
   markWon,
   minorUnitsOfDecimal,
   PROJECT_MANAGER_PRESETS,
+  PROPOSAL_TASK_PROVENANCES,
 } from '@heliogrid/domain';
 import { projectNumberOf } from '@heliogrid/domain/server';
 import { Inject, Injectable } from '@nestjs/common';
@@ -25,19 +26,26 @@ import { and, count, eq, notInArray } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import type { CreationKey } from '../../common/creation-key';
 import { TENANT_DB } from '../../common/db/tenant.token';
+import { lockCounter, nextNumber } from '../../common/db/tenant-counter.repository';
 import { memberAct, recordAuditEntry } from '../audit/audit.public';
 import {
+  closeTasksRaisedBy,
   type LeadReader,
   lockLeadInScope,
   personOf,
   recordActivity,
   recordLeadMoves,
 } from '../crm/crm.public';
-import { lockCounter, nextNumber } from './projects.counter.repository';
+import type { AcceptedVersion } from '../proposals/proposals.public';
 import { noticePartsNowDue, type PaymentNoticeWords } from './projects.payment-notices.repository';
-import { allHold } from './projects.people.repository';
-import { startSchedule } from './projects.schedule.repository';
+import { allHold, customerNameOf } from './projects.people.repository';
+import { startSchedule, startScheduleFrom } from './projects.schedule.repository';
 import { seed } from './projects.seed.repository';
+import {
+  acceptedFor,
+  markSignedProposalDone,
+  planOfVersion,
+} from './projects.won-basis.repository';
 
 export type MarkWonOutcome =
   | {
@@ -48,7 +56,10 @@ export type MarkWonOutcome =
       readonly notified?: readonly string[];
     }
   | { readonly outcome: 'key-reused' }
-  | { readonly outcome: 'refused'; readonly refusal: LeadActRefusal }
+  | {
+      readonly outcome: 'refused';
+      readonly refusal: LeadActRefusal | typeof MARK_WON_VALUE_REFUSAL;
+    }
   | { readonly outcome: 'not-a-manager' }
   | { readonly outcome: 'install-date-past' }
   | { readonly outcome: 'over-limit' }
@@ -59,6 +70,10 @@ export type MarkWonOutcome =
  * the SAME transaction — numbered from the company's own counter, seeded once from the pack in
  * force, pointing at the lead and its customer and copying neither. The lead is locked first, as
  * every CRM write is, so two people winning one deal make one project.
+ *
+ * The accepted proposal is found from the lead itself (`T-M06-025`, `F4-04`): where the customer
+ * accepted the latest shared version, the final value MUST be that version's payable and the
+ * schedule is that version's own plan; otherwise the typed value and the company's terms stand.
  */
 @Injectable()
 export class ProjectsWonRepository {
@@ -90,9 +105,18 @@ export class ProjectsWonRepository {
       if (refused !== null) return refused;
       const result = markWon(locked.lifecycle);
       if (result.kind === 'refused') return { outcome: 'refused', refusal: result.refusal };
+      const typed = minorUnitsOfDecimal(body.finalValue, pack.formats.minorUnitDigits);
+      const stands = await acceptedFor(tx, reader.tenantId, leadId, typed);
+      if (stands === 'value-differs') {
+        return { outcome: 'refused', refusal: MARK_WON_VALUE_REFUSAL };
+      }
+      const accepted = stands;
       const capturedAt = new Date(body.capturedAt);
       await recordLeadMoves(tx, locked, result, personOf(act), capturedAt);
+      // The deal is decided: no proposal follow-up, confirm-won or declined task stays open (`M06-55`).
+      await closeTasksRaisedBy(tx, reader.tenantId, leadId, PROPOSAL_TASK_PROVENANCES);
       const created = await startProject(tx, {
+        accepted,
         tenantId: reader.tenantId,
         leadId,
         customerId: locked.customerId,
@@ -169,6 +193,8 @@ interface ProjectStart {
   readonly key: CreationKey | null;
   /** The company's day the deal was won — the day Won began. */
   readonly today: CalendarDate;
+  /** The version the customer accepted, where Won stands on one. */
+  readonly accepted: AcceptedVersion | null;
 }
 
 /** The company's day at the act's moment. */
@@ -212,6 +238,7 @@ async function startProject(
       expectedInstallOn: body.expectedInstallOn,
       finalValueMinor,
       packVersion: start.packVersion,
+      proposalVersionId: start.accepted?.versionId ?? null,
       incentiveApplies: isSubsidyAvailable(pack.subsidy, segment),
       createdAt: now,
       createdBy: act.actorUserId,
@@ -221,7 +248,12 @@ async function startProject(
     .returning({ id: project.id });
   if (created === undefined) throw new Error('the project insert returned no row');
   await seed(tx, tenantId, created.id, pack, segment, now);
-  await startSchedule(tx, tenantId, created.id, finalValueMinor, now);
+  if (start.accepted === null) {
+    await startSchedule(tx, tenantId, created.id, finalValueMinor, now);
+  } else {
+    await startScheduleFrom(tx, tenantId, created.id, planOfVersion(start.accepted.snapshot), now);
+    await markSignedProposalDone(tx, tenantId, created.id, start.accepted.acceptedAt);
+  }
   await tx.insert(projectStageTransition).values({
     tenantId,
     projectId: created.id,
@@ -264,17 +296,4 @@ async function activeCount(tx: DbTransaction, tenantId: string): Promise<number>
       and(eq(project.tenantId, tenantId), notInArray(project.stage, ['handed_over', 'cancelled'])),
     );
   return row?.count ?? 0;
-}
-
-/** How the won customer reads in a notice: their name, else their phone. */
-async function customerNameOf(
-  tx: DbTransaction,
-  tenantId: string,
-  customerId: string,
-): Promise<string> {
-  const [row] = await tx
-    .select({ name: customer.name, phone: customer.phoneE164 })
-    .from(customer)
-    .where(and(eq(customer.tenantId, tenantId), eq(customer.id, customerId)));
-  return row?.name ?? row?.phone ?? '';
 }

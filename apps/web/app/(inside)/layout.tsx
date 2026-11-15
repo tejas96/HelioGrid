@@ -9,11 +9,12 @@ import {
   SetupWhatYouSellScreen,
 } from '../../features/onboarding';
 import { ShellScreen } from '../../features/shell';
+import { FocusOrShell } from '../../lib/focus-screen';
 
 /**
  * The inside group — signed in with a company. The gate and the shell live here once; a page under
  * this folder holds neither. The gate draws a setup step in the shell's place for an owner who
- * still owes it.
+ * still owes it, and a focus screen (`lib/focus-screen.tsx`) is drawn without the shell.
  */
 export default function InsideLayout({ children }: { children: ReactNode }) {
   return (
@@ -27,7 +28,9 @@ export default function InsideLayout({ children }: { children: ReactNode }) {
         'ready-step': <SetupReadyScreen />,
       }}
     >
-      <ShellScreen strip={<ShellBillingStrip />}>{children}</ShellScreen>
+      <FocusOrShell shell={<ShellScreen strip={<ShellBillingStrip />}>{children}</ShellScreen>}>
+        {children}
+      </FocusOrShell>
     </SessionGate>
   );
 }

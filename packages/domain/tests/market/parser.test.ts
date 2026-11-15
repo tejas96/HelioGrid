@@ -235,3 +235,45 @@ describe('readStoredPack — a server read, which throws rather than serves (T-F
     expect(() => readStoredPack(malformed)).toThrow(/tax: /);
   });
 });
+
+/** A stored value one level further in — the row is JSON, so its shape is read, never assumed. */
+const deeper = (value: unknown): Record<string, unknown> => value as Record<string, unknown>;
+const listOf = (value: unknown): unknown[] => value as unknown[];
+
+describe('parseStoredPack — a row stored before proposals still reads (expand, then contract)', () => {
+  const before = withPayload((pack) => {
+    delete inside(pack, 'formats').areas;
+    delete inside(pack, 'formats').proposal;
+    delete inside(pack, 'tax').systemSupplyRates;
+    delete deeper(inside(pack, 'tax').placeOfSupply).placeByArea;
+    delete inside(pack, 'subsidy').paidTo;
+    delete deeper(inside(pack, 'subsidy').eligibility).systemTypes;
+    for (const scheme of listOf(inside(pack, 'certificationSchemes').schemes)) {
+      delete deeper(scheme).binds;
+    }
+  });
+  const parsed = parseStoredPack(before);
+  const pack = parsed.ok ? parsed.pack : null;
+
+  it('reads whole, with nothing refused', () => {
+    expect(parsed.ok).toBe(true);
+  });
+
+  it('offers no area and no proposal facts, so the size checks and the forecast say so', () => {
+    expect(pack?.formats.areas).toEqual([]);
+    expect(pack?.formats.proposal).toBeNull();
+    expect(pack?.tax.systemSupplyRates).toBeNull();
+    expect(pack?.tax.placeOfSupply.placeByArea).toEqual([]);
+  });
+
+  it('never takes the incentive off a payable, and restricts no system type', () => {
+    expect(pack?.subsidy).toMatchObject({
+      paidTo: 'customer',
+      eligibility: { systemTypes: ['on_grid', 'hybrid', 'off_grid'] },
+    });
+  });
+
+  it('binds every category to each scheme, so a line is never passed unchecked', () => {
+    expect(pack?.certificationSchemes.schemes.map((scheme) => scheme.binds)).toEqual([null, null]);
+  });
+});

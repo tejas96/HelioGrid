@@ -12,6 +12,7 @@ import {
 import type {
   BankDetailsTyped,
   BrandingSettings,
+  CoverPicture,
   PromptPointStates,
   TaxRegistration,
   TenantFacts,
@@ -23,7 +24,11 @@ import { and, asc, eq, notInArray } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberAct, recordAuditEntry } from '../audit/audit.public';
-import { storedProposalTemplate, storedTimelineTemplate } from './settings.templates.repository';
+import {
+  storedCoverPicture,
+  storedProposalTemplate,
+  storedTimelineTemplate,
+} from './settings.templates.repository';
 import { trancheTemplatesOf } from './settings.tranche-reads.repository';
 
 /** The tenant's own row: the signup facts, the two declarations, the locale pair — and its market. */
@@ -34,6 +39,8 @@ export interface TenantRead extends TenantFacts {
 /** Everything the effective read resolves, from one tenant transaction. */
 export interface TenantSettingsRead {
   readonly tenant: TenantRead;
+  /** The picture new proposals' covers start with (`T-M01-030`); `null` until the company picks one. */
+  readonly coverPicture: CoverPicture | null;
   readonly settings: TenantSettings;
   readonly bankDetailsTyped: BankDetailsTyped | null;
   readonly promptPoints: PromptPointStates;
@@ -88,6 +95,7 @@ export class SettingsRepository {
           trancheTemplates: await trancheTemplatesOf(tx, tenantId),
           holidays: await holidaysOf(tx, tenantId),
         },
+        coverPicture: await storedCoverPicture(tx, tenantId),
         bankDetailsTyped,
         promptPoints: progress?.promptPointStates ?? {},
       };

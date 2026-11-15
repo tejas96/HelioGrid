@@ -31,8 +31,14 @@ export function restingMoney(
   return format.number(figure, { minimumFractionDigits: digits, maximumFractionDigits: digits });
 }
 
-export function displayNumber(value: number | undefined): string {
-  return value === undefined ? '' : String(value);
+/**
+ * A field with a `precision` shows its figure to that many places: a figure the server worked out
+ * (405.52799999999996 kWh) reads as the field would commit it (406), never as a float. Only shown —
+ * the figure is sent again only when the person changes the text (`useNumberFieldDraft`).
+ */
+export function displayNumber(value: number | undefined, precision?: number): string {
+  if (value === undefined) return '';
+  return precision === undefined ? String(value) : String(Number(value.toFixed(precision)));
 }
 
 /** The spoken representation of a bound: "0.3 m", "2500". */
@@ -93,6 +99,45 @@ export function draftFigureOf(draft: string): number {
   return plain === '' ? Number.NaN : Number(plain);
 }
 
+/** How many digits a figure or a draft holds before its point, leading zeros and grouping left out. */
+export function wholeDigitsOf(draft: string): number {
+  const [whole = ''] = draft.replace(/[,\s\u00a0\u202f]/g, '').split('.');
+  return whole.replace(/\D/g, '').replace(/^0+/, '').length;
+}
+
+/** How many characters two texts share from their start. */
+function sharedHeadLength(a: string, b: string): number {
+  let length = 0;
+  while (length < a.length && length < b.length && a[length] === b[length]) length += 1;
+  return length;
+}
+
+/**
+ * The draft a field keeps from one edit. Characters ADDED to the draft never carry it past the
+ * field's whole digits — those digits are not taken, however many arrive in one change, because a
+ * phone hands `onChangeText` several keystrokes at once when they come faster than a render. Text
+ * that REPLACES the draft (a paste over it, a paste into an empty field) is kept as it came, so it
+ * can be seen beside the caller's error.
+ */
+export function draftWithinWholeDigits(
+  previous: string,
+  next: string,
+  wholeDigits: number,
+): string {
+  if (wholeDigitsOf(next) <= wholeDigits) return next;
+  const head = sharedHeadLength(previous, next);
+  const tail = previous.slice(head);
+  const addedEnd = next.length - tail.length;
+  const replaced = previous === '' || addedEnd < head || !next.endsWith(tail);
+  if (replaced) return next;
+  let taken = '';
+  for (const character of next.slice(head, addedEnd)) {
+    const candidate = previous.slice(0, head) + taken + character + tail;
+    if (wholeDigitsOf(candidate) <= wholeDigits) taken += character;
+  }
+  return previous.slice(0, head) + taken + tail;
+}
+
 /** The whole of blur/Enter, as a decision the platform half only has to render. */
 export function commitDraft(input: NumberCommitInput): NumberCommit {
   const { draft, min, max, precision, outOfRange } = input;
@@ -144,3 +189,9 @@ export function nudgeValue(opts: {
   if (precision !== undefined) v = Number(v.toFixed(precision));
   return v;
 }
+
+/**
+ * What a `plain` figure with no value shows: it has no well to read as a field, so an empty one
+ * would be nothing at all to tap. A mark, not a word, and no value it was not told.
+ */
+export const EMPTY_PLAIN_FIGURE = '—';

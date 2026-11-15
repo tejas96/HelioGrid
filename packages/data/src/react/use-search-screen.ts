@@ -1,5 +1,4 @@
 'use client';
-import type { SearchResults } from '@heliogrid/contracts';
 import {
   can,
   type FormatPack,
@@ -7,6 +6,7 @@ import {
   offersDoor,
   opensSettingsRow,
   SEARCH_SETTLE_MS,
+  type SearchHits,
   type SearchRead,
   type SearchReopenAct,
   searchFoundNothing,
@@ -17,6 +17,7 @@ import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-quer
 import { useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { ApiError } from '../errors/errors';
+import { searchHitsOf } from '../search/search-hits';
 import { useAction } from './action';
 import { useRepositories } from './context';
 import { leadActFailureOf } from './lead-detail-cache';
@@ -51,7 +52,7 @@ export interface SearchScreen {
 /** One answer and the query it is for, so an answer kept while the next is out names its own. */
 interface Answer {
   readonly asked: string;
-  readonly results: SearchResults;
+  readonly results: SearchHits;
 }
 
 export function useSearchScreen({ pack }: { readonly pack: FormatPack }): SearchScreen {
@@ -67,7 +68,7 @@ export function useSearchScreen({ pack }: { readonly pack: FormatPack }): Search
     queryKey: queryKeys.search(tenantId, { q: asked }),
     queryFn: async ({ signal }): Promise<Answer> => ({
       asked,
-      results: await repositories.search.search({ q: asked }, signal),
+      results: searchHitsOf(await repositories.search.search({ q: asked }, signal)),
     }),
     enabled: tenantId !== '' && asked !== '',
     placeholderData: keepPreviousData,

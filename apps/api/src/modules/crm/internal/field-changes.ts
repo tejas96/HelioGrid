@@ -21,13 +21,27 @@ export interface LeadFieldValues {
   readonly decisionMaker: string | null;
   readonly preferredLanguage: string | null;
   readonly doNotCall: boolean;
+  readonly siteAddress: string | null;
+  readonly siteArea: string | null;
+  readonly siteDistrict: string | null;
+  readonly sanctionedLoadKw: number | null;
+  readonly supplyPhase: string | null;
+}
+
+/** A site's region and district as one timeline text — the district first, as a person says it. */
+export function areaTextOf(area: string | null, district: string | null): string | null {
+  if (area === null) return null;
+  return district === null ? area : `${district} · ${area}`;
 }
 
 /** Each fact as its timeline text, the bill scaled to the tenant currency's digits. */
 export function fieldTextsOf(values: LeadFieldValues, minorUnitDigits: number): LeadFieldTexts {
-  const { monthlyBillMinor, doNotCall, ...plain } = values;
+  const { monthlyBillMinor, doNotCall, siteArea, siteDistrict, sanctionedLoadKw, ...plain } =
+    values;
   return {
     ...plain,
+    area: areaTextOf(siteArea, siteDistrict),
+    sanctionedLoadKw: sanctionedLoadKw === null ? null : String(sanctionedLoadKw),
     monthlyBill:
       monthlyBillMinor === null
         ? null
@@ -44,7 +58,7 @@ export type LeadFieldEdit = Omit<EditLead, 'capturedAt'>;
  * The service has already refused a bill finer than the currency's minor unit.
  */
 export function sentTextsOf(edit: LeadFieldEdit, minorUnitDigits: number): Partial<LeadFieldTexts> {
-  const { monthlyBill, doNotCall, ...plain } = edit;
+  const { monthlyBill, doNotCall, area, sanctionedLoadKw, ...plain } = edit;
   const bill =
     monthlyBill === undefined
       ? {}
@@ -61,6 +75,12 @@ export function sentTextsOf(edit: LeadFieldEdit, minorUnitDigits: number): Parti
     ...plain,
     ...bill,
     ...(doNotCall === undefined ? {} : { doNotCall: String(doNotCall) }),
+    ...(area === undefined
+      ? {}
+      : { area: area === null ? null : areaTextOf(area.area, area.district) }),
+    ...(sanctionedLoadKw === undefined
+      ? {}
+      : { sanctionedLoadKw: sanctionedLoadKw === null ? null : String(sanctionedLoadKw) }),
   };
 }
 

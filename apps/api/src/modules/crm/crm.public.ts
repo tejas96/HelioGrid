@@ -16,32 +16,54 @@ export {
   type PhoneMatch,
   phoneMatchOf,
 } from './crm.customers.repository';
+export { applyLeadEdit } from './crm.edits.repository';
 export {
   leadCustomerJoin,
   leadOwner,
   leadSummaryColumns,
   memberNameOf,
 } from './crm.lead-columns.repository';
-export { findLeadInScope, loadLeadDetail, type ScopedLead } from './crm.lead-detail.repository';
+export {
+  findLeadInScope,
+  loadLeadDetail,
+  openTasksOf,
+  type ScopedLead,
+} from './crm.lead-detail.repository';
 export { leadFilesOf } from './crm.lead-files.repository';
-export { lockLeadInScope, personOf } from './crm.lead-lock.repository';
+export {
+  type LockedLead,
+  lockLeadInScope,
+  lockLeadOfCompany,
+  personOf,
+} from './crm.lead-lock.repository';
+export { siblingOf as siblingProposalOf } from './crm.lead-proposals.repository';
+export { activeMemberOf } from './crm.member-roles.repository';
 export { CrmModule } from './crm.module';
+export {
+  closeTasksRaisedBy,
+  moveTaskDue,
+  openTaskRaisedBy,
+  raiseTask,
+  type TaskToRaise,
+} from './crm.raised-tasks.repository';
 export { activeLead, leadReadableBy, leadScopeWhere } from './crm.scope.repository';
 export {
   type ActivityActorRef,
   type ActivityBody,
   type ActivityEntry,
   leadLifecycleColumns,
+  leadWorkedOn,
   type MovedLead,
   type RecordedActivity,
   recordActivity,
   recordLeadMoves,
 } from './crm.timeline.repository';
+export type { LeadFieldEdit } from './internal/field-changes';
 export {
   type LeadLifecycleRow,
   lifecycleColumnsOf,
   lifecycleOf,
 } from './internal/lead-lifecycle';
-export { type LeadMoney, leadSummaryOf, moneyOf } from './internal/lead-wire';
+export { type LeadMoney, leadSummaryOf, memberRefOf, moneyOf } from './internal/lead-wire';
 export { phoneLockKey } from './internal/phone-lock';
 export { actorNameOf, type LeadReader, readerOf } from './internal/reader';

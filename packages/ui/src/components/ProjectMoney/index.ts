@@ -1,3 +1,4 @@
+export { EarlierPlans } from './EarlierPlans';
 export { MoneyCard } from './MoneyCard';
 export { MoneyQrFull } from './MoneyQrFull';
 export { MoneySheet } from './MoneySheet';

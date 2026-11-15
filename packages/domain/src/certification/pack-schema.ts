@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { COMPONENT_CATEGORIES } from '../proposals/component-category';
 import {
   CERTIFICATION_EVIDENCE,
   type CertificationScheme,
@@ -12,7 +13,14 @@ export const CERTIFICATION_SCHEMES_PACK_SCHEMA: z.ZodType<
   z.ZodTypeDef,
   unknown
 > = z.object({
-  schemes: z.array(z.object({ scheme: z.string(), evidence: z.enum(CERTIFICATION_EVIDENCE) })),
+  schemes: z.array(
+    z.object({
+      scheme: z.string(),
+      evidence: z.enum(CERTIFICATION_EVIDENCE),
+      /** A pack stored before the fact existed binds every category. */
+      binds: z.array(z.enum(COMPONENT_CATEGORIES)).nullable().default(null),
+    }),
+  ),
   standards: z.object({ family: z.string(), additional: z.array(z.string()) }),
 });
 

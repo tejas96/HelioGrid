@@ -1,0 +1,131 @@
+/* ProposalReader — the document's pages at their real ratio. Wide: thumbnails beside the pages.
+   Narrow: a pill that says which page is in view, and a dock of acts in thumb reach. */
+
+.hg-reader {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-height: 0;
+  height: 100%;
+}
+
+.hg-reader-acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+}
+
+.hg-reader-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.hg-reader-scroll {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  scroll-padding-block-start: var(--sp-5);
+}
+
+.hg-reader-pages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-5);
+  margin: 0;
+  padding: var(--sp-5) 0 calc(var(--sp-16) + var(--sp-8));
+  list-style: none;
+}
+
+.hg-reader-pages li {
+  border-radius: var(--r-xs);
+  box-shadow: var(--e2);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) both;
+}
+
+/* Which page is in view, floating at the top of the pages: the ink pill a tooltip wears. */
+.hg-reader-pill {
+  position: sticky;
+  inset-block-start: var(--sp-3);
+  z-index: 1;
+  display: block;
+  width: fit-content;
+  margin-inline: auto;
+  padding: var(--sp-1) var(--sp-4);
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-body);
+  box-shadow: var(--e2);
+}
+
+.hg-reader-thumbs {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--sp-3);
+  width: 176px;
+  padding: var(--sp-2) var(--sp-4) var(--sp-8) 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.hg-reader-thumb {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  border-radius: var(--r-sm);
+}
+
+.hg-reader-thumb[aria-pressed="true"] {
+  background: var(--accent-subtle);
+}
+
+.hg-reader-thumb-paper {
+  display: block;
+  border-radius: var(--r-xs);
+  box-shadow:
+    0 0 0 1px var(--line-soft),
+    var(--e1);
+  overflow: hidden;
+}
+
+.hg-reader-thumb[aria-pressed="true"] .hg-reader-thumb-paper {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.hg-reader-thumb-name {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+}
+
+/* The dock: a frosted pill above the home indicator, the main act filling it. */
+.hg-reader-dock {
+  position: sticky;
+  inset-block-end: var(--sp-5);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-inline: var(--sp-4);
+  padding: var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--glass-strong);
+  box-shadow:
+    var(--e4),
+    inset 0 0 0 1px var(--line-soft);
+}
+
+.hg-reader-dock > :last-child {
+  flex: 1;
+}

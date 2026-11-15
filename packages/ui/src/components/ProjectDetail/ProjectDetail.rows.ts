@@ -81,6 +81,9 @@ function documentSubOf(
   if (document.state === 'not_needed' && document.reason !== null) {
     return words.notNeededBecause(document.reason);
   }
+  if (document.state === 'done' && document.proof != null) {
+    return words.signedProof(document.proof, document.changedBy?.name ?? null);
+  }
   if (document.state === 'done' && document.changedBy !== null) {
     return words.uploadedBy(document.changedBy.name, format.date(document.changedAt));
   }

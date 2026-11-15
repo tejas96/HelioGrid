@@ -18,6 +18,7 @@ export function StatusMark({
   label,
   mark = true,
   bare = false,
+  glyph,
   className,
   style,
 }: WebStatusMarkProps) {
@@ -30,7 +31,7 @@ export function StatusMark({
     >
       {mark ? (
         <span className="hg-status-mark-glyph" aria-hidden="true">
-          {STATUS_GLYPH[tone]}
+          {glyph ?? STATUS_GLYPH[tone]}
         </span>
       ) : null}
       {/* The word is its own element, as the phone's own `Text`: found and read as the word alone. */}

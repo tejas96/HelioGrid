@@ -32,9 +32,10 @@ export interface MarkWonGaps {
   readonly manager: boolean;
 }
 
-export function gapsOf(draft: MarkWonSheetDraft): MarkWonGaps {
+/** `locked`: the accepted version's value stands — shown, never typed — so the draft holds none. */
+export function gapsOf(draft: MarkWonSheetDraft, locked: boolean): MarkWonGaps {
   return {
-    value: draft.finalValue.trim() === '',
+    value: !locked && draft.finalValue.trim() === '',
     date: draft.expectedInstallOn === '',
     manager: draft.managerId === '',
   };
@@ -125,6 +126,8 @@ export function sendFailureOf(
       return words.alreadyWon;
     case 'lead_closed':
       return words.closedLead;
+    case 'value_not_accepted':
+      return words.valueNotAccepted;
     case 'not_a_manager':
       return words.notManager;
     case 'failed':

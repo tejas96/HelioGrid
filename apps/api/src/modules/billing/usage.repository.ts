@@ -1,5 +1,6 @@
 import {
   project,
+  proposal,
   storageGaugeSnapshot,
   type TenantPool,
   tenantMembership,
@@ -145,6 +146,20 @@ export class UsageRepository {
         .where(where);
       return { rows, totalCount: count?.totalCount ?? 0 };
     });
+  }
+
+  /**
+   * The proposals that used one of the plan's this cycle (`M06-26`, `T-M06-028`): each counts at its
+   * first Generate, so an abandoned draft never uses one up.
+   */
+  async proposalsCounted(tenantId: string, since: Date): Promise<number> {
+    const [row] = await this.db.withTenantTransaction(tenantId, (tx) =>
+      tx
+        .select({ count: sql<number>`count(*)::int` })
+        .from(proposal)
+        .where(and(eq(proposal.tenantId, tenantId), gte(proposal.countedAt, since))),
+    );
+    return row?.count ?? 0;
   }
 
   /** The company's active projects (`M08-07`): neither handed over nor cancelled. */

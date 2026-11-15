@@ -24,6 +24,7 @@ export function StatusChip({
   tone,
   density = 'expressive',
   dot = true,
+  glyph,
   className,
   style,
 }: WebStatusChipProps) {
@@ -32,6 +33,7 @@ export function StatusChip({
       tone={statusChipTone(status, tone)}
       label={label}
       mark={dot}
+      glyph={glyph}
       className={classNames('hg-status-chip', `hg-status-chip-${density}`, className)}
       style={style}
     />

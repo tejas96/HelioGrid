@@ -129,6 +129,21 @@ const GROUP_SENTENCE: Record<NotificationType, MessageRef> = {
   monthly_summary: /*i18n*/ {
     id: '{count, plural, one {# monthly summary} other {# monthly summaries}}',
   },
+  proposal_accepted: /*i18n*/ {
+    id: '{count, plural, one {# proposal accepted} other {# proposals accepted}}',
+  },
+  proposal_declined: /*i18n*/ {
+    id: '{count, plural, one {# proposal declined} other {# proposals declined}}',
+  },
+  negotiation_requested: /*i18n*/ {
+    id: '{count, plural, one {# change requested} other {# changes requested}}',
+  },
+  customer_question: /*i18n*/ {
+    id: '{count, plural, one {# customer question} other {# customer questions}}',
+  },
+  customer_call_requested: /*i18n*/ {
+    id: '{count, plural, one {# call requested} other {# calls requested}}',
+  },
   system: /*i18n*/ {
     id: '{count, plural, one {# product update} other {# product updates}}',
   },

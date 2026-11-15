@@ -8,7 +8,7 @@ import type { RefObject } from 'react';
 interface FirstRunMarkProps {
   shell: Pick<
     Shell,
-    'coachMarkInView' | 'home' | 'centreVerb' | 'passCoachMark' | 'dismissCoachMarks'
+    'coachMarkInView' | 'home' | 'homeVerb' | 'passCoachMark' | 'dismissCoachMarks'
   >;
   /** The page region the mark is drawn inside, so it never lies on the rail. */
   within: RefObject<HTMLElement | null>;
@@ -28,7 +28,7 @@ export function FirstRunMark({ shell, within, anchors }: FirstRunMarkProps) {
   const inView = shell.coachMarkInView;
   const home = shell.home?.home;
   if (inView === null || home === undefined) return null;
-  const words = firstRunMarkWords(t, inView.mark, home, shell.centreVerb);
+  const words = firstRunMarkWords(t, inView.mark, home, shell.homeVerb);
   if (words === null) return null;
   /* The control the mark names takes the focus once the run has closed. */
   const anchor = inView.mark === 'switch-home' ? anchors.switchHome : anchors.action;

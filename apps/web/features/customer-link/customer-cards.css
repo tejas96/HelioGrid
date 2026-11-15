@@ -1,0 +1,299 @@
+/* The customer's page — its cards, the note of an answer, the person, the foot, the bar and what a
+   sheet lays out. Tokens only. */
+
+/* ── cards and notes ─────────────────────────────────────────────────────── */
+.hg-cust-card,
+.hg-cust-note,
+.hg-cust-person,
+.hg-cust-sidecard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  border-radius: var(--r-lg);
+  /* biome-ignore lint/plugin/raw-white-css: the customer's page card — the white card on the page's canvas, as the product's tile is */
+  background: var(--surface);
+  box-shadow:
+    var(--e1),
+    inset 0 0 0 var(--hg-cust-line) var(--line-soft);
+  min-width: 0;
+}
+
+.hg-cust-card[data-glass] {
+  /* biome-ignore lint/plugin/raw-white-css: the same card, lit from its corner by the company's colour */
+  background:
+    radial-gradient(
+      90% 120% at 100% 0%,
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      transparent 60%
+    ),
+    var(--surface);
+}
+
+.hg-cust-card-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-card-title);
+  line-height: var(--lh-card-title);
+  letter-spacing: var(--tr-card-title);
+  color: var(--text-primary);
+}
+
+.hg-cust-note {
+  gap: var(--sp-2);
+  box-shadow: none;
+  /* An answer just given rises into place once, as the design draws it. */
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+
+.hg-cust-note[data-tone="success"] {
+  background: var(--success-bg);
+}
+
+.hg-cust-note[data-tone="neutral"] {
+  background: var(--neutral-bg);
+}
+
+.hg-cust-note[data-tone="info"] {
+  background: var(--accent-subtle);
+}
+
+.hg-cust-note p,
+.hg-cust-quiet {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.hg-cust-said {
+  margin: 0;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-cust-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: var(--sp-2) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  color: var(--text-primary);
+}
+
+.hg-cust-steps > li {
+  position: relative;
+  counter-increment: step;
+  padding-inline-start: var(--sp-8);
+}
+
+.hg-cust-steps > li::before {
+  content: counter(step);
+  position: absolute;
+  inset-inline-start: 0;
+  display: grid;
+  place-items: center;
+  width: var(--sp-6);
+  height: var(--sp-6);
+  border-radius: var(--r-pill);
+  /* biome-ignore lint/plugin/raw-white-css: the step's number sits on the card colour inside a tinted note */
+  background: var(--surface);
+  color: var(--success-text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+}
+
+.hg-cust-asked {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-cust-asked > li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+  overflow-wrap: anywhere;
+}
+
+.hg-cust-asked > li + li {
+  border-block-start: var(--hg-cust-line) solid var(--line-soft);
+}
+
+.hg-cust-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-cust-over {
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hg-cust-label {
+  font-size: var(--fs-field-label);
+  color: var(--text-secondary);
+}
+
+.hg-cust-failure {
+  margin: 0;
+  color: var(--danger-text);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+/* ── the person, the foot, the bar ───────────────────────────────────────── */
+.hg-cust-person {
+  flex-direction: row;
+  align-items: center;
+  padding: var(--sp-4);
+}
+
+.hg-cust-person-words {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-cust-person-words > b {
+  font-weight: var(--fw-semibold);
+}
+
+.hg-cust-person-words > span {
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-cust-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-1);
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}
+
+.hg-cust-bar {
+  position: fixed;
+  inset-inline: max(var(--sp-4), env(safe-area-inset-left))
+    max(var(--sp-4), env(safe-area-inset-right));
+  inset-block-end: calc(var(--sp-5) + env(safe-area-inset-bottom));
+  z-index: 4;
+  display: flex;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  border-radius: var(--r-xl);
+  background: var(--glass-strong);
+  box-shadow:
+    var(--e4),
+    inset 0 0 0 var(--hg-cust-line) var(--line-soft);
+}
+
+/* The frost sits on its own layer: a blur on the bar itself would re-anchor the sheets it opens. */
+.hg-cust-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+/* The main act keeps its own width and the door to everything else takes the rest, so neither
+   label breaks at a phone's width. */
+.hg-cust-bar > * {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.hg-cust-bar > :last-child {
+  flex: 1 1 auto;
+}
+
+.hg-cust-sidecard {
+  gap: var(--sp-1);
+  padding: var(--sp-6);
+  box-shadow: var(--e2);
+}
+
+.hg-cust-price {
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tr-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+}
+
+.hg-cust-facts {
+  margin-block-start: var(--sp-3);
+  padding-block-start: var(--sp-3);
+  border-block-start: var(--hg-cust-line) solid var(--line-soft);
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-cust-acts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-5);
+}
+
+/* ── sheets ──────────────────────────────────────────────────────────────── */
+.hg-cust-in-sheet {
+  --action-primary: var(--accent);
+}
+
+.hg-cust-in-sheet > .hg-customer-surface {
+  --action-primary: var(--accent);
+  --action-primary-hover: var(--accent-hover);
+  --action-primary-pressed: var(--accent-hover);
+  background: transparent;
+}
+
+.hg-cust-sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-cust-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-cust-foot-note {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+/* At the desktop's room the acts sit in the card beside the content, and the person with them. */
+@media (min-width: 968px) {
+  .hg-cust-bar,
+  .hg-cust-phone-only {
+    display: none;
+  }
+}

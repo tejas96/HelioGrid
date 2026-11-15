@@ -63,9 +63,12 @@ function CustomerMergeIn({
   const format = useFormat();
   const words = customerMergeWords(t);
   const { read, done } = screen;
+  /* Each step's page carries its own key: one page for all three would keep the last step's
+     scroll, and the confirm would open halfway down, its first heading out of sight. */
   if (done !== null) {
     return (
       <ShellPage
+        key="done"
         inView="leads"
         drillDown={{ title: words.title, back: words.done.backToLeads, onBack: moves.toLeads }}
       >
@@ -82,6 +85,7 @@ function CustomerMergeIn({
   if (screen.step === 'confirm' && read.kind === 'ready') {
     return (
       <ShellPage
+        key="confirm"
         inView="leads"
         drillDown={{
           title: words.confirmTitle,

@@ -1,4 +1,4 @@
-import { formatMoney, formatMonthYear, formatNumber, minorUnits } from '@heliogrid/domain';
+import { formatMoneyPlainly, formatMonthYear, formatNumber, minorUnits } from '@heliogrid/domain';
 import { minorUnitsToDecimal } from '@heliogrid/domain/server';
 import { monthlySummaryNotice } from '@heliogrid/i18n';
 import { Inject, Injectable } from '@nestjs/common';
@@ -63,8 +63,9 @@ export class DashboardsSummaryService {
       this.settings.packOf(tenantId),
       this.settings.quietHoursOf(tenantId),
     ]);
+    /* Money received or owed prints to its minor unit, never rounded (§9). */
     const money = (amount: number) =>
-      formatMoney(formats, minorUnitsToDecimal(minorUnits(amount), formats.minorUnitDigits));
+      formatMoneyPlainly(formats, minorUnitsToDecimal(minorUnits(amount), formats.minorUnitDigits));
     const wordsFor = (figures: MonthFigures) => {
       const clock = { ...formats, timeZone: figures.timeZone };
       const monthStart = monthSpan(figures.month, figures.timeZone).from.getTime();

@@ -7,7 +7,9 @@ import type {
   ProjectJob,
 } from '@heliogrid/contracts';
 import {
+  type CrewMessageRules,
   type FormatPack,
+  type MarketPack,
   packLabel,
   rowsWaitingForHandover,
   UI_LANGUAGES,
@@ -56,7 +58,8 @@ export class ProjectsService {
   }
 
   async detail(reader: ProjectReader, projectId: string): Promise<ProjectDetail> {
-    const detail = await this.detail_.detail(reader, projectId, await this.formatsOf(reader));
+    const pack = await this.settings.packOf(reader.tenantId);
+    const detail = await this.detail_.detail(reader, projectId, pack.formats, crewRulesOf(pack));
     if (detail === null) throw new NotFoundException('No such project.');
     return detail;
   }
@@ -113,6 +116,14 @@ export class ProjectsService {
   private async formatsOf(reader: ProjectReader): Promise<FormatPack> {
     return (await this.settings.packOf(reader.tenantId)).formats;
   }
+}
+
+/**
+ * When the evening-before crew message goes (`F5-68`): the market's hour inside its window. No
+ * company narrows either yet — no setting exists — so the pack's own stand (`F1-17`).
+ */
+export function crewRulesOf(pack: Pick<MarketPack, 'callingRules'>): CrewMessageRules {
+  return { rules: pack.callingRules, tenantWindow: null, tenantSendHour: null };
 }
 
 /** The customer's own language where the platform speaks it, else the source language (`F3-06`). */

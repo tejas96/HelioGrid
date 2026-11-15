@@ -21,4 +21,8 @@ export interface ProgressRingProps {
   readonly onPanel?: boolean;
 }
 
-export type ProgressRingSize = 'md' | 'lg';
+/**
+ * `sm` is a count beside its words (the builder's parts counter, `T-M06-010`): 56 across, the figure
+ * in the mono face, and the caption spoken only — there is no room to print it.
+ */
+export type ProgressRingSize = 'sm' | 'md' | 'lg';

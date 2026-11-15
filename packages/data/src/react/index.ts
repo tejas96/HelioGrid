@@ -12,6 +12,7 @@ export type { HostLifecycle } from './host-lifecycle';
 export { followHostLifecycle } from './host-lifecycle';
 export type { ChosenSpreadsheet, ImportActFailure, ImportUpload } from './import-job-facts';
 export type { FilePickTarget, PickedFile } from './picked-file';
+export * from './proposal-hooks';
 export type { ProposalTemplateView } from './proposal-template-view';
 export { templateViewOf } from './proposal-template-view';
 export { DataProvider } from './provider';
@@ -127,6 +128,7 @@ export { useCustomerMergeScreen } from './use-customer-merge-screen';
 export { useDayPart } from './use-day-part';
 export type { DeactivateReassign } from './use-deactivate-reassign';
 export { useDeactivateReassign } from './use-deactivate-reassign';
+export type { DefaultsPlan } from './use-defaults-plan';
 export type { FirstRunProfile } from './use-first-run-profile';
 export { useEndFirstRun, useFirstRunOwed, useFirstRunProfile } from './use-first-run-profile';
 export type { Handover, ReferralDraft } from './use-handover';
@@ -183,8 +185,6 @@ export { usePagedList } from './use-paged-list';
 export { usePaginatedList } from './use-paginated-list';
 export type { PaymentTermsScreen } from './use-payment-terms-screen';
 export { usePaymentTermsScreen } from './use-payment-terms-screen';
-export type { PhaseEditor, PhaseOpen } from './use-phase-editor';
-export { usePhaseEditor } from './use-phase-editor';
 export type {
   PlanActFailure,
   PlanActFailureAt,
@@ -239,7 +239,11 @@ export type {
 export { useProjectScreen } from './use-project-screen';
 export type { ProposalTemplatePage } from './use-proposal-template';
 export { useProposalTemplate } from './use-proposal-template';
-export type { ProposalTemplateScreen, TemplateOverlayState } from './use-proposal-template-screen';
+export type {
+  PhaseOpen,
+  ProposalTemplateScreen,
+  TemplateOverlayState,
+} from './use-proposal-template-screen';
 export { useProposalTemplateScreen } from './use-proposal-template-screen';
 export type { PushPreferences } from './use-push-preferences';
 export { usePushPreferences } from './use-push-preferences';

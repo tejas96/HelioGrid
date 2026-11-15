@@ -8,7 +8,15 @@
    which is distinguishable from having forgotten. */
 
 import type { ProvenanceTier } from '@heliogrid/contracts';
-import type { Freshness, FreshnessWarning } from '@heliogrid/domain';
+import {
+  type Freshness,
+  type FreshnessWarning,
+  type ProjectionAssumptions,
+  type StatedAssumption,
+  shareTextOf,
+  statedAssumptions,
+} from '@heliogrid/domain';
+import type { MarketFormat } from '../../utils/format';
 import type {
   ProvenanceMarkToken,
   ProvenanceProps,
@@ -87,6 +95,7 @@ export interface ProvenanceLinePart {
 export function provenanceLineParts(
   { tier, standing, freshness, energySource, source, projection, note }: ProvenanceProps,
   words: ProvenanceWords,
+  format: MarketFormat,
 ): ProvenanceLinePart[] {
   const parts: ProvenanceLinePart[] = [];
   if (standing) {
@@ -109,7 +118,7 @@ export function provenanceLineParts(
   for (const [id, prose] of [
     ['energySource', energySource ? words.energySource(energySource) : undefined],
     ['source', source],
-    ['projection', projection],
+    ['projection', projection ? projectionWords(projection, words, format) : undefined],
     ['note', note],
   ] as const) {
     if (prose) {
@@ -117,6 +126,37 @@ export function provenanceLineParts(
     }
   }
   return parts;
+}
+
+/** One stated assumption's value as the label prints it: years and rates as numbers, money as money. */
+function assumptionValue(stated: StatedAssumption, format: MarketFormat): string {
+  switch (stated.kind) {
+    case 'horizonYears':
+      return format.number(stated.value, { maximumFractionDigits: 1 });
+    case 'incentive':
+      return format.amountPlain(stated.value);
+    case 'escalationRate':
+    case 'interestRate':
+    case 'margin':
+      return shareTextOf(stated.value);
+  }
+}
+
+/**
+ * A projection's words (`F8-23`, `T-FPLAT-074`): the word that calls the figure a projection, then
+ * each assumption domain's `statedAssumptions` lists, in its order and never this label's own.
+ */
+export function projectionWords(
+  projection: ProjectionAssumptions,
+  words: Pick<ProvenanceWords, 'projection' | 'assumption'>,
+  format: MarketFormat,
+): string {
+  return [
+    words.projection,
+    ...statedAssumptions(projection).map((stated) =>
+      words.assumption(stated.kind, assumptionValue(stated, format)),
+    ),
+  ].join(' · ');
 }
 
 /**

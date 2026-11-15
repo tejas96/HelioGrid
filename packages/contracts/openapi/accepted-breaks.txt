@@ -1,5 +1,20 @@
-PUT /settings/proposal-template added the new required request property `defaultTerms/blocks`
-PUT /settings/proposal-template added the new required request property `defaultTerms/version`
-GET /tenants/me/audit-log added `subschema #1, subschema #2, subschema #3` to the `items/items/changePayload` response property `oneOf` list for the response status `200`
+GET /catalog/imports/{id}/rows added `subschema #1, subschema #3` to the `items/items/named/items/spec` response property `oneOf` list for the response status `200`
+PUT /catalog/imports/{id}/rows/{rowNumber} added `subschema #1, subschema #3` to the `rows/items/named/items/spec` response property `oneOf` list for the response status `200`
+GET /catalog/items added `subschema #1, subschema #3` to the `items/items/spec` response property `oneOf` list for the response status `200`
+POST /catalog/items removed `subschema #1, subschema #3` from the `spec` request property `oneOf` list
+POST /catalog/items added `subschema #1, subschema #3` to the `spec` response property `oneOf` list for the response status `201`
+GET /catalog/items/{id} added `subschema #1, subschema #3` to the `spec` response property `oneOf` list for the response status `200`
+PUT /catalog/items/{id} removed `subschema #1, subschema #3` from the `spec` request property `oneOf` list
+PUT /catalog/items/{id} added `subschema #1, subschema #3` to the `spec` response property `oneOf` list for the response status `200`
+POST /catalog/items/{id}/archive added `subschema #1, subschema #3` to the `spec` response property `oneOf` list for the response status `200`
+DELETE /catalog/items/{id}/override added `subschema #1, subschema #3` to the `spec` response property `oneOf` list for the response status `200`
+PUT /catalog/items/{id}/override added `subschema #1, subschema #3` to the `spec` response property `oneOf` list for the response status `200`
+POST /catalog/items/{id}/rate-entries added `subschema #1, subschema #3` to the `spec` response property `oneOf` list for the response status `201`
+POST /catalog/items/{id}/unarchive added `subschema #1, subschema #3` to the `spec` response property `oneOf` list for the response status `200`
+GET /catalog/release-preview added `subschema #1, subschema #3` to the `lines/items/items/after/oneOf[subschema #1]/spec` response property `oneOf` list for the response status `200`
+GET /catalog/release-preview added `subschema #1, subschema #3` to the `lines/items/items/before/oneOf[subschema #1]/spec` response property `oneOf` list for the response status `200`
+GET /catalog/releases/{id} added `subschema #1, subschema #3` to the `lines/items/items/after/oneOf[subschema #1]/spec` response property `oneOf` list for the response status `200`
+GET /catalog/releases/{id} added `subschema #1, subschema #3` to the `lines/items/items/before/oneOf[subschema #1]/spec` response property `oneOf` list for the response status `200`
 GET /customers/{id}/activities added `subschema #1, subschema #2` to the `items/items/` response property `oneOf` list for the response status `200`
 GET /leads/{id}/activities added `subschema #1, subschema #2` to the `items/items/` response property `oneOf` list for the response status `200`
+GET /tenants/me/audit-log added `subschema #4` to the `items/items/changePayload` response property `oneOf` list for the response status `200`

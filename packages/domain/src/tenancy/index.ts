@@ -37,6 +37,7 @@ export type {
   StandingMark,
 } from './company-profile';
 export {
+  BANK_FACTS,
   COMPANY_PROFILE_PARTS,
   COMPANY_PROFILE_STANDINGS,
   companyLetterhead,

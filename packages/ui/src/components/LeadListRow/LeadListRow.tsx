@@ -3,7 +3,9 @@ import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { CardRow } from '../CardRows';
 import { LeadSourceMark } from '../LeadSourceMark';
-import { leadNextToneOf } from './LeadListRow.logic';
+import { ProvenanceTier } from '../Provenance';
+import { LEAD_STAGE_TONE } from '../StatusChip/StatusChip.registry';
+import { LEAD_STAGE_GLYPH, leadNextToneOf, MARK_GLYPH_TONE } from './LeadListRow.logic';
 import type { LeadListRowProps, LeadNextMarkProps } from './LeadListRow.types';
 
 /** What comes next on a lead, as glyph, word and tint — the list's Next column draws it too. */
@@ -11,8 +13,22 @@ export function LeadNextMark(props: LeadNextMarkProps) {
   return <StatusMark tone={leadNextToneOf(props)} label={props.label} />;
 }
 
-/** One lead of the list, its own card: the whole card opens it; the bill and what comes next end it. */
+/** What comes next, as the card's last line: its own glyph and its words in the step's ink. */
+function NextLine(props: LeadNextMarkProps) {
+  const tone = leadNextToneOf(props);
+  return (
+    <StatusMark
+      tone={tone}
+      bare
+      label={props.label}
+      glyph={<ShellGlyph name={props.glyph} size="sm" tone={MARK_GLYPH_TONE[tone]} />}
+    />
+  );
+}
+
+/** One lead of the list, its own card in three lines: the whole card opens it. */
 export function LeadListRow({ lead, sourceLabel, next, first, onOpen, words }: LeadListRowProps) {
+  const stage = { glyph: LEAD_STAGE_GLYPH[lead.stage], tone: LEAD_STAGE_TONE[lead.stage] };
   return (
     <CardRow
       first={first}
@@ -27,24 +43,43 @@ export function LeadListRow({ lead, sourceLabel, next, first, onOpen, words }: L
         <Avatar name={lead.name} size={44} />
       )}
       <span className="hg-lead-list-row-main">
-        {lead.name === null ? (
-          <span className="hg-lead-list-row-phone">{lead.phone}</span>
-        ) : (
-          <span className="hg-lead-list-row-name">{lead.name}</span>
-        )}
-        <span className="hg-lead-list-row-sub">
-          <LeadSourceMark source={lead.source} label={sourceLabel} form="glyph" />
-          <StatusMark tone="accent" bare label={words.stage(lead.stage)} />
+        <span className="hg-lead-list-row-top">
+          {lead.name === null ? (
+            <span className="hg-lead-list-row-phone">{lead.phone}</span>
+          ) : (
+            <span className="hg-lead-list-row-name">{lead.name}</span>
+          )}
+          <StatusMark
+            tone={stage.tone}
+            label={words.stage(lead.stage)}
+            glyph={<ShellGlyph name={stage.glyph} size="sm" tone={MARK_GLYPH_TONE[stage.tone]} />}
+          />
+        </span>
+        <span className="hg-lead-list-row-facts">
+          <LeadSourceMark
+            source={lead.source}
+            label={sourceLabel}
+            form={lead.city === null && lead.bill === null ? 'word' : 'glyph'}
+          />
           {lead.city === null ? null : <span className="hg-lead-list-row-city">{lead.city}</span>}
+          {lead.bill === null ? null : (
+            <span className="hg-lead-list-row-bill">
+              <span className="hg-lead-list-row-money">{lead.bill}</span>
+              <ProvenanceTier tier="assumed" />
+            </span>
+          )}
+        </span>
+        <span className="hg-lead-list-row-foot">
+          <span className="hg-lead-list-row-next">
+            {next === null ? null : <NextLine {...next} />}
+          </span>
+          {lead.owner === null ? (
+            <span className="hg-lead-list-row-unowned">{words.noOwner}</span>
+          ) : (
+            <Avatar name={lead.owner} size={24} />
+          )}
         </span>
       </span>
-      {lead.bill === null && next === null && lead.owner === null ? null : (
-        <span className="hg-lead-list-row-end">
-          {lead.bill === null ? null : <span className="hg-lead-list-row-money">{lead.bill}</span>}
-          {next === null ? null : <LeadNextMark {...next} />}
-          {lead.owner === null ? null : <Avatar name={lead.owner} size={24} />}
-        </span>
-      )}
     </CardRow>
   );
 }

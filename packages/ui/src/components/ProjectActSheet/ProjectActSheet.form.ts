@@ -8,7 +8,7 @@ import {
   type ProjectChainStage,
   type Read,
 } from '@heliogrid/domain';
-import type { ProjectActForm, ProjectPersonChoice } from './ProjectActSheet.types';
+import type { InstallDayFacts, ProjectActForm, ProjectPersonChoice } from './ProjectActSheet.types';
 
 /** The sheet the project's screen has open — `useProjectScreen`'s, by shape. */
 export type ProjectSheetOpen =
@@ -41,7 +41,7 @@ export type ProjectSheetAct =
   // biome-ignore lint/plugin/copy-prop-type: the note the person typed — a fact
   | { readonly kind: 'cancel'; readonly reason: CancelReason; readonly note: string | null }
   | { readonly kind: 'confirmProof'; readonly to: ProjectChainStage }
-  | { readonly kind: 'date'; readonly expectedInstallOn: string }
+  | ({ readonly kind: 'date'; readonly expectedInstallOn: string } & InstallDayFacts)
   | { readonly kind: 'manager'; readonly managerId: string }
   // biome-ignore lint/plugin/copy-prop-type: the manager's note, sent as typed — a fact
   | { readonly kind: 'access'; readonly accessNote: string | null };
@@ -54,6 +54,17 @@ export interface ProjectSheetScreen {
   /** A picked file waiting for its name, before it goes up as an other file. */
   readonly naming: { readonly name: string } | null;
   nameFile(name: string): void;
+}
+
+/** The installation day's facts as the project holds them; an older api holds none. */
+function installDayOf(project: ProjectDetail): InstallDayFacts {
+  const day = project.installation;
+  return {
+    startTime: day?.startTime ?? null,
+    durationDays: day?.durationDays ?? null,
+    disturbance: day?.disturbance ?? null,
+    crewLeadId: day?.crewLead?.userId ?? null,
+  };
 }
 
 /** The project's name as a sheet says it: the customer's, else its number. */
@@ -151,7 +162,9 @@ export function projectActFormOf(
         kind: 'date',
         start: project.expectedInstallOn,
         firstDay: project.today,
-        onSend: (date) => send({ kind: 'date', expectedInstallOn: date }),
+        install: installDayOf(project),
+        crew: project.crew,
+        onSend: (date, facts) => send({ kind: 'date', expectedInstallOn: date, ...facts }),
       };
     case 'manager':
       return {

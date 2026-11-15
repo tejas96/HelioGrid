@@ -17,6 +17,7 @@ export const MESSAGE_TEMPLATE_KEYS = [
   'survey_complete',
   'handover',
   'crew_arrival',
+  'acceptance_confirmation',
 ] as const;
 export type MessageTemplateKey = (typeof MESSAGE_TEMPLATE_KEYS)[number];
 

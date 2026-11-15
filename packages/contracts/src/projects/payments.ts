@@ -42,6 +42,7 @@ export const paymentRefusalSchema = z.enum(PAYMENT_REFUSALS);
 /** One part of the schedule (`M11-52`): its state, what it asks, what came in and what is left. */
 export const projectPartSchema = z.object({
   id: uuidSchema,
+  /** Its place among the parts in force, 1…n — never the stored position, which a replaced plan's parts keep. */
   position: z.number().int().positive(),
   label: z.string(),
   share: z.string(),
@@ -111,6 +112,26 @@ export const paymentActsSchema = z.object({
   share: z.boolean(),
 });
 
+/**
+ * A plan a newer version put in force replaced (`T-M06-025`, `M11-14`): its unpaid parts, under the
+ * version they belonged to — null for the plan made at Mark won with none — with when and by whom.
+ * A part replaced before who and which were kept reads null for both.
+ */
+export const earlierPlanSchema = z.object({
+  version: z.number().int().positive().nullable(),
+  replacedAt: z.string().datetime(),
+  replacedBy: memberRefSchema.nullable(),
+  parts: z.array(
+    z.object({
+      id: uuidSchema,
+      label: z.string(),
+      amount: nonNegativeAmountSchema,
+      dueOnStage: projectStageReadSchema,
+    }),
+  ),
+});
+export type EarlierPlan = z.infer<typeof earlierPlanSchema>;
+
 /** The payments screen (`SCR-M11-02`): the whole schedule, the ledger and the requests. */
 export const projectPaymentsSchema = z.object({
   projectId: uuidSchema,
@@ -122,6 +143,8 @@ export const projectPaymentsSchema = z.object({
   /** Empty when the company had no payment terms at Mark won (`M11-15`). */
   parts: z.array(projectPartSchema),
   entries: z.array(projectPaymentEntrySchema),
+  /** The earlier plans, newest replaced first; empty while the plan is the first. */
+  earlierPlans: z.array(earlierPlanSchema),
   payTo: payToSchema,
   /** One per part that still owes money, due first. */
   requests: z.array(payRequestSchema),

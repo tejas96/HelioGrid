@@ -24,7 +24,12 @@ export function DashBars({ bars, foot }: { bars: readonly DashBar[]; foot?: Dash
         };
         return (
           <li key={bar.key} className="hg-owner-bar" data-foot={bar === foot ? 'true' : undefined}>
-            <span className="hg-owner-bar-label">{bar.label}</span>
+            <span className="hg-owner-bar-label">
+              {bar.label}
+              {bar.note === undefined ? null : (
+                <span className="hg-owner-bar-note">{bar.note}</span>
+              )}
+            </span>
             <span className="hg-owner-bar-rail" aria-hidden="true">
               <span className="hg-owner-bar-fill" data-tone={bar.tone} style={vars} />
             </span>

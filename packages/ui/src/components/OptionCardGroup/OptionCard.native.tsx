@@ -12,7 +12,9 @@ import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { renderActionReason } from '../ActionReason/ActionReason.native';
+import { GlyphInkContext } from '../AppShell/ShellGlyph.native';
 import { CheckboxTick } from '../Checkbox/CheckboxTick.native';
+import { BrandGradientFill } from '../ProgressBar/BrandGradientFill.native';
 import { currentWord, optionRole } from './OptionCardGroup.logic';
 import type { OptionCardGroupMode, OptionCardItem } from './OptionCardGroup.types';
 
@@ -110,6 +112,8 @@ const styles = StyleSheet.create({
   content: { marginTop: 10 },
   meta: { marginTop: 6 },
   /* The option's icon in a chip at the card's start. */
+  /* The disc is clipped to the chip's own corners. */
+  iconPicked: { overflow: 'hidden' },
   icon: {
     flexShrink: 0,
     width: theme.spacing['sp-12'],
@@ -180,7 +184,10 @@ function Dot({
   );
 }
 
-/** The icon's chip: the control fill at rest; on a picked card the card colour over its tint. */
+/**
+ * The icon's chip: the control fill at rest; picked, the logo's disc (`--gradient-mark`) with the
+ * icon in the inverse ink, as the web half draws it.
+ */
 function IconChip({
   selected,
   functional,
@@ -191,15 +198,20 @@ function IconChip({
   children: ReactNode;
 }) {
   const ground = useGround();
-  // biome-ignore lint/plugin/raw-white: ground — the chip is the card colour over the picked card's tint
-  const fill = selected ? colors.surface : ground.controlFill;
   return (
     <View
-      style={[styles.icon, functional ? styles.iconFunctional : null, { backgroundColor: fill }]}
+      style={[
+        styles.icon,
+        functional ? styles.iconFunctional : null,
+        selected ? styles.iconPicked : { backgroundColor: ground.controlFill },
+      ]}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
-      {children}
+      {selected ? <BrandGradientFill diagonal /> : null}
+      <GlyphInkContext.Provider value={selected ? colors['text-inverse'] : null}>
+        {children}
+      </GlyphInkContext.Provider>
     </View>
   );
 }

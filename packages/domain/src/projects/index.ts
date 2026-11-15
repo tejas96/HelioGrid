@@ -96,6 +96,15 @@ export {
   PROJECT_STAGES,
 } from './stages';
 export {
+  MARK_WON_VALUE_REFUSAL,
+  mayPutVersionInForce,
+  typicalWaitDays,
+  VERSION_IN_FORCE_REFUSALS,
+  type VersionInForceParties,
+  type VersionInForceRefusal,
+  versionInForceRefusal,
+} from './version-in-force';
+export {
   BLOCKER_CLEARS,
   BLOCKER_PARTIES,
   BLOCKER_REASONS,
@@ -109,11 +118,15 @@ export {
   type DocumentState,
   isReasonOfParty,
   PROJECT_ACT_REFUSALS,
+  PROJECT_CHANGED_FACTS,
   PROJECT_FILE_SLOTS,
   PROJECT_MOVE_CAUSES,
   type ProjectActRefusal,
+  type ProjectChangedFact,
   type ProjectFileSlot,
   type ProjectMoveCause,
+  SIGNED_PROPOSAL_ACTS,
+  type SignedProposalAct,
 } from './vocabulary';
 export {
   daysFrom,

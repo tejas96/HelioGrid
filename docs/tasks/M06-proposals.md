@@ -1,17 +1,16 @@
 # M06 · Proposals — engineering tasks
 
-This file carries every engineering task for bucket **M06 — Proposals**: the one-object rule and
-the two entry paths, the eleven-step builder and its Quick mode, free navigation and the Generate
-gate, the mandatory-components step and battery, pricing/payable/BOM, versions and numbering and
-staleness, duplicate and template consumption, and preview/share/tracking up to the customer-link
-boundary. Task ids use the prefix **`T-M06-`**.
+This file carries what is left of bucket **M06 — Proposals** after block 8 shipped the proposals
+built without a design: the two tasks that need one — `T-M06-014` (the BOM detail) and `T-M06-021`
+(Path A, variants, design staleness and the upgrade offer), both parked until the studio's block —
+and the laws every proposal surface keeps. Task ids use the prefix **`T-M06-`**.
 
 **Source docs.** Requirements and acceptance criteria are quoted from
-`docs/prd/modules/M06-proposals.md` (rows `M06-01`–`M06-58`). One screen task exists per SID `SCR-M06-01` … `SCR-M06-20`.
-`SCR-M06-20`'s single row is `F5-30`, quoted from `docs/prd/foundations/F5-customer-link.md` (the row
-belongs to F5's bucket; the screen is drawn by M06). Two rows in this bucket (`M06-25`, `M06-58`)
-have their tenant-facing surface on `SCR-M02-04` (Lead Detail, owned by M02); their build-side
-halves are tasks here and the screen work is M02's.
+`docs/prd/modules/M06-proposals.md` (rows `M06-01`–`M06-58`).
+
+**The design.** The look of every screen in this file is the approved proposal design
+(`CLAUDE.md` §6), built to match at 390 px and 1440 px on the parts block 8 lifted into
+`packages/ui` — never a second copy.
 
 Every row in the bucket is dispositioned exactly once in the **Disposition index** at the end of
 this file: to a task, to `LAW`, or to a `realized-by` pointer.
@@ -20,224 +19,14 @@ this file: to a task, to `LAW`, or to a `realized-by` pointer.
 
 ## Screen tasks
 
-### T-M06-001 · Proposal Entry — path choice and the Quick-mode toggle
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-05 (P0), M06-18 (P0), M06-19 (P0)
-**DESIGN:** SCR-M06-01
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they
-are the specification.
-
-**DONE WHEN:**
-- Given a lead with no design, when a proposal is created, then the same eleven-step builder opens with nothing pre-filled beyond lead/tenant data, and every AI-filled or typed number carries `estimated`/`assumed` — never `derived` (M06-02, M06-03).
-- Given a completed design, when Generate proposal is tapped in the studio, then the builder opens on Path A with steps 3/4/5/8 pre-filled `derived` per the pre-fill table (M06-03, M06-05).
-- Given Quick mode, when it opens, then exactly steps 1, 3, 8, 10 are presented, 4/5 are AI-filled `estimated`, and 6/7/9/11 carry the tenant defaults (M06-18).
-- Given a Quick-mode proposal expanded to the full builder, when the rail renders, then every value from Quick mode is present unchanged and nothing must be re-entered (M06-19).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-**Settle before the build:**
-- Whether Quick-mode state is persisted on the proposal or purely presentational (M06-18, M06-19) — ruled: one boolean on the proposal, set by the entry toggle and cleared by the expansion act; the hidden-vs-shown step set is never stored (M06-18 fixes the shown steps at 1, 3, 8 and 10 as product law, and M06-19's generated Quick proposal opening in the full builder for its next version is knowable only if the proposal carries the mode).
-
----
-
-### T-M06-002 · Proposal Builder shell — chip rail, footer, failure list, Quick-mode view
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-18 (P0), M06-21 (P0), M06-22 (P0), M06-23 (P0), M06-24 (P0)
-**DESIGN:** SCR-M06-02
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**DONE WHEN:**
-- Given any step in any completeness state, when any chip or Back/Next is tapped, then navigation succeeds — no disabled Next exists anywhere in the builder (M06-21, M06-22).
-- Given a proposal with multiple failures, when Generate is tapped, then every failure renders as one tappable list ("Fix N issues to share") and each tap lands on the exact step with the failing fields highlighted (M06-22, M06-23).
-- Given a proposal on the incentive path with a component failing the pack's required scheme, when Generate runs, then the check fails naming the component line and the scheme, and clearing it (compliant component, or leaving the incentive path) passes (M06-23; `F1-34`).
-- Given a 375 px viewport, when the builder renders, then the compressed rail shows `‹ n / 11 · title ›` and tapping it opens the full step sheet (M06-24).
-- Given Quick mode, when it opens, then exactly steps 1, 3, 8, 10 are presented, 4/5 are AI-filled `estimated`, and 6/7/9/11 carry the tenant defaults (M06-18).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-003 · Builder Step 1 — Company, and the Proposal Type sheet
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-06 (P0), M06-07 (P0)
-**DESIGN:** SCR-M06-03
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**DONE WHEN:**
-- Given step 1, when the account-linked phone or email is rendered, then the field is locked in the builder and editable only in tenant settings (M06-07).
-- Given the Proposal Type modal, when OPEX/PPA is chosen, then only the rendered document and the projection honesty label differ downstream — builder steps, checks, versioning and share are identical (M06-06).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-004 · Builder Step 2 — Achievements
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-08 (P0)
-**DESIGN:** SCR-M06-04
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**DONE WHEN:**
-- Given step 2 numeric fields, when values are entered, then units are auto-added and non-numeric input is refused (M06-08).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-005 · Builder Step 3 — Solar System Setup, battery card and the live payable
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**Owed by `T-FPLAT-029` (`F8-23`):** the EMI tenure is the projection's `horizonYears`, and this step refuses a tenure that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
-**PRD rows:** M06-09 (P0), M06-30 (P0), M06-35 (P0), M06-40 (P0)
-**DESIGN:** SCR-M06-05
-**Landed ahead:** the equation's domain half — `packages/domain/src/money/equation.ts` (`resolvePayable`, whole minor units, the payable at or below zero reported as M06-35 states, two figures reconciling only when equal per M11-08) — moved out of `packages/ui` by the one-money-path fix, and onto `@heliogrid/domain/server` by `T-FPLAT-070` (`F4-04`: no device computes a money figure). The server runs it on every change and returns the equation; `MoneySummary` (`equation`), `DataTable.totalRow` (`reconcile`) and `DocumentPreview` (`total`, `payable`) print what it returned, and this screen composes them.
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**Verified:** digest 685b6c3d27ab · 2026-09-11 · smoke (a shared module no screen reaches yet) · web pass — the running dev server on 3002 compiled this tree, `/login` renders the "Sign in" heading, the one console error is `GET /auth/session` refused because no api was running (environment) · mobile bundle pass — Metro resolved the tree to a 3.1 MB bundle; ios/android not booted, no screen mounts `MoneySummary`, `DataTable.totalRow` or `DocumentPreview` · api/worker n/a · parity n/a — both halves call one domain function, `qa-parity` not dispatched · unit 1048 pass, `money/**` and `format/**` at 100% · design-system contract green after the `MoneySummary` re-pull
-**DONE WHEN:**
-- Given step 3, when capacity, type, category, AMC and the money fields are filled, then the client-payable card updates live with every change, and every tax and incentive field carries the pack's scheme labels — no hard-coded market term (M06-09; `F1-13`/`F1-14`).
-- Given cost, battery, incentive and discount values, when any changes, then the payable card recomputes live and shows a negative payable the moment it goes ≤ 0 (M06-35).
-- Given an OFFGRID system with no battery, when step 3 renders, then the ⚠ "Battery required" notice is visible immediately; when Generate runs, then it blocks with that failure listed (M06-30).
-- Given a battery added at step 3, when step 8 renders, then a Battery section exists, the counter's denominator includes it, and the payable includes battery cost (M06-30, M06-27).
-- Given the EMI toggle on, when the document renders, then EMI figures carry the projection label with their assumptions (M06-40).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-- Given a proposal opened from a lead, when Step 3 renders, then the Category is the lead's segment and the bill is the lead's monthly bill, each pre-filled and never asked again (M02-05, OV-04) (moved from the block 3 CRM plan, owner yes 2026-11-09).
-
-**Settle before the build:**
-- Which range bounds the stored capacity field — step 3's 0.5–7000 kW or the design range M06-09 records beside it (M06-09) — ruled: neither; the column takes any positive capacity, step 3's typed entry validates 0.5–7000 kW as M06-09's own row states, and a Path A value is stored exactly as the design derived it (M06-09 records the divergence and forbids normalising either side; a column bound would silently normalise the derived value).
-
----
-
-### T-M06-006 · Builder Step 4 — Performance Metrics
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-10 (P0)
-**DESIGN:** SCR-M06-06
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**DONE WHEN:**
-- Given step 4 or 5, when ✦ AI Auto-fill runs, then every filled figure is labelled `estimated`, the chart tabs render, and ↺ restores the AI values after manual edits (M06-10, M06-11).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-007 · Builder Step 5 — Financial Data
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**Owed by `T-FPLAT-029` (`F8-23`):** the lifetime horizon is the projection's `horizonYears`, and this step refuses a horizon that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
-**PRD rows:** M06-11 (P0)
-**DESIGN:** SCR-M06-07
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**DONE WHEN:**
-- Given step 4 or 5, when ✦ AI Auto-fill runs, then every filled figure is labelled `estimated`, the chart tabs render, and ↺ restores the AI values after manual edits (M06-10, M06-11).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-008 · Builder Step 6 — Project Timeline
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-12 (P0)
-**DESIGN:** SCR-M06-08
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**DONE WHEN:**
-- Given step 6, when phases are reordered, added, deleted or reset, then the tenant's timeline template is the reset target (M06-12; `M01-52`).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-009 · Builder Step 7 — Payment Terms
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-13 (P0)
-**DESIGN:** SCR-M06-09
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**DONE WHEN:**
-- Given step 7, when tranche percentages do not sum to 100.00, then the gap renders live and Generate lists it with the remainder stated (M06-13).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-010 · Builder Step 8 — Components: the five-category gate, edit sheets and inline add
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-14 (P0), M06-27 (P0), M06-28 (P0), M06-29 (P0), M06-30 (P0)
-**DESIGN:** SCR-M06-10
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**DONE WHEN:**
-- Given a person with `F2.M01.add-own-catalog-items` (the holders of `onboarding.add_own_catalog_items` in `packages/domain/src/authz/onboarding.ts`) or `F2.M01.manage-catalog`, when they open the builder's component picker, then inline add is present; given neither grant, then it is absent (permissions; moved from `T-M01-015`).
-- Given step 8, when it renders, then it is the mandatory-components surface of §M06.5 and its picker is `modules/M05` §M05.6's pattern — no second picker, no restated definition (M06-14; M06-27, M06-28).
-- Given a Path B proposal with no components, when step 8 renders, then all five sections show Empty, the counter reads "0/5", and Generate blocks jumping here (M06-27).
-- Given a product missing from the resolved catalog mid-pick, when the rep invokes add-in-flow, then the single-form and spreadsheet-import paths are offered (the spreadsheet path only with `F2.M01.manage-catalog` held outright, M01-39) inside the builder, the created SKU is picked in place, and the flow never leaves step 8 (M06-28).
-- Given the edit sheet for any type, when it opens, then Brand Name is locked, the type's fields match the census list, and Description caps at 110 characters (M06-29).
-- Given a battery added at step 3, when step 8 renders, then a Battery section exists, the counter's denominator includes it, and the payable includes battery cost (M06-30, M06-27).
-- Given a duplicated proposal, when step 8 renders, then every component of the source proposal is present and the counter is already satisfied (M06-32; §M06.8).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-011 · Builder Step 9 — Terms & Conditions
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-15 (P0)
-**DESIGN:** SCR-M06-11
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**DONE WHEN:**
-- Given step 9 with T&C added, when "Save as template" is used, then the tenant's template set gains it and the page estimate reflects the content (M06-15; `M01-51`).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-012 · Builder Step 10 — Client Details
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-16 (P0)
-**DESIGN:** SCR-M06-12
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**DONE WHEN:**
-- Given step 10, when it renders, then the proposal number is present, auto-assigned and disabled — never editable, never client-generated (M06-16, M06-44).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-- Given a proposal opened from a lead, when Step 10 renders, then the client name and phone come from the lead's customer and the address from the lead's confirmed visit booking where one exists, pre-filled and never asked again (OV-04) (moved from the block 3 CRM plan, owner yes 2026-11-09).
-
----
-
-### T-M06-013 · Builder Step 11 — Bank Details and the closing sheets
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-17 (P0)
-**DESIGN:** SCR-M06-13
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-
-**DONE WHEN:**
-- Given step 11 with the include toggle off, when the document generates, then bank details are saved but do not print, and the note says exactly that (M06-17).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
 ### T-M06-014 · BOM Detail — Path A line items behind the price
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-39 (P0)
 **DESIGN:** SCR-M06-14
+**Why:** on a designed job the owner sees every line, quantity and rate behind the price, and the margin on it.
+**Depends on:** T-M06-021
+**Parked:** needs the studio's BOM; built with the 3D studio's block (owner ruling 2026-11-13 — proposals ship first).
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are
 the specification.
@@ -248,133 +37,22 @@ the specification.
 
 **Settle before the build:**
 - Whether BOM-detail edits at proposal time live on the proposal's money block or write back to the studio's BOM (M06-39, §M06.6) — ruled: they are the proposal's own money inputs — the per-proposal margin and every line adjustment are stored on the proposal and snapshotted into the version's money block; `bom_line` is read-only to this module and never written (M06-01 makes the BOM the studio's internal object, and a write-back would move the design's fingerprint and stale the proposal from its own edit, M06-46).
-
----
-
-### T-M06-015 · Proposal Preview — the customer-eye rendering before sending
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-50 (P0)
-**DESIGN:** SCR-M06-15
-
-**Requirements (verbatim):** Verbatim rows live in the PRD;
-they are the specification.
-
-**DONE WHEN:**
-- Given a generated version, when preview renders, then it is pixel-for-content identical to what the customer's rendering will show, in the customer's language (M06-50).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-016 · Proposal Versions — v1 vs v2, what changed and why
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-42 (P0)
-**DESIGN:** SCR-M06-16
-
-**Requirements (verbatim):** Verbatim rows live in the PRD;
-they are the specification.
-
-**DONE WHEN:**
-- Given a generated version, when any input later changes, then the version's snapshot and money block are byte-identical to generation time and a change note exists (M06-42).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-017 · Proposal Document — the rendered commercial document and its honesty obligations
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**Owed by `T-FPLAT-029` (`F8-20`, `F8-22`, `F8-23`; `F8-24`, a law):** the basis line is `basisLineOf({ designed, roofTier })` from `@heliogrid/domain`, printed through `@heliogrid/i18n`'s `BASIS_LINE_WORD` — never a second rule or a second copy of the words; every figure is the `QualifiedAmount` the screen and the link read, projections included with their assumptions, never recomputed for the page. Depends on `T-FPLAT-073`: `Disclosure`'s `indicative-basis` and `remote-survey` kinds print the wrong English until it lands, so this document never uses them before; and on `T-FPLAT-074`, whose label prints a projection with its assumptions.
-**PRD rows:** M06-04 (P0), M06-51 (P0), M06-56 (P0), F3-15 (P0)
-**DESIGN:** SCR-M06-17
-**Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this document prints carries the shading model's limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
-
-**Requirements (verbatim):** Verbatim rows live in the PRD;
-they are the specification.
-
-`F3-15` moved here at `T-FPLAT-007`'s `/start`: its proof opens a generated document and reads
-its conjuncts, and this is the ticket that renders the first one. The obligation binds every
-generated artifact through the one renderer — drawing sheets and exports as much as this
-document — and the bundled face and its per-script metrics are `T-FPLAT-007`'s, consumed
-here and never re-declared.
-
-- **F3-15** (P0) — **Generated documents shape every script correctly — correct conjuncts, matras and ligatures — because they are commercial documents.** A proposal in a non-Latin script is the same legal and commercial artifact as its English counterpart: broken conjuncts are not acceptable output. The document-rendering capability is chosen and kept on the strength of its script shaping; per the suite's vendor rule, the capability is "a document renderer that shapes the product's scripts correctly", and the v1 reference implementation is the headless-browser renderer with the script face bundled into its runtime. This obligation covers every generated artifact — proposals, drawing sheets, exports — not only the proposal PDF.
-
-**DONE WHEN:**
-- Given a Path B proposal, when its document or customer-facing rendering is produced, then the verbatim indicative line renders on the document in the reading flow at the same visual weight as the figures it qualifies (M06-04; `F8-20`).
-- Given any Path B version, when document or link render, then the verbatim indicative line is present in the reading flow; given a remote-survey-based design, then the basis line renders (M06-51).
-- Given a design with variants, when the customer-facing rendering is produced, then exactly one recommended system shows by default (M06-56).
-- Given the EMI toggle on, when the document renders, then EMI figures carry the projection label with their assumptions (M06-40).
-- Given a generated document in a non-Latin language, when it is produced and opened, then conjuncts, matras and ligatures are shaped correctly throughout (`F3-15`). → proof: QA (api) renders this document in `mr` and reads the produced artifact's embedded faces and glyph runs, so a broken conjunct is read rather than eyeballed
-- Given a tenant with a saved brand colour and logo, when its proposal document renders, then the document carries the mark and the compliant shade `compliantShades` derived — never a raw colour that fails contrast — and the branding changes no number, label or disclosure (`F7-07`, `F5-81`; moved here from `T-FPLAT-022`). → proof: the rendered document for a colour that fails contrast carries the derived shade and the mark, and its text layer equals the unbranded render's
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-**Settle before the build:**
-- What a V1 document states as its basis when no survey exists behind it (M06-51; `F8-20`, `F8-22`) — ruled: the basis is derived at Generate from the design's roof-capture provenance tier and frozen into the version's honesty labels — no design keeps `F8-20`'s indicative line; a design whose roof tier is not `measured` renders `F8-22`'s remote line verbatim; a `measured` roof, M04's V2 path, carries no basis line; and no field is added to the design (`F8-21` reduces roof capture to exactly two flows, so the tier already names the flow, and a stored basis would be a second copy of it).
-
----
-
-### T-M06-018 · Proposal Detail — status, tracking, staleness, upgrade offer and the share sheet
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-46 (P0), M06-47 (P0), M06-48 (P0), M06-53 (P0), M06-54 (P0), M06-57 (P0)
-**DESIGN:** SCR-M06-18
-**Owed by `T-FPLAT-028` (`F8-17`, `F8-18`):** the stale state reads from the version's `Freshness` (`freshnessOf`, `packages/domain`), shown on the detail before any share act with its corrective action; the share, send and issue acts are blocked while `issueBlockedBy` names a reason or `payableStandsUp` is false, and the stated reason is the one returned. Its freshness comes from this output's own stored pins, never pins built at the call site.
-
-**Requirements (verbatim):** Verbatim rows live in the PRD;
-they are the specification.
-
-**DONE WHEN:**
-- Given a design edit after generation, when the proposal list or detail renders, then the stale state is visible with Regenerate offered; no flag was stored — removing the design edit restores freshness by comparison alone (M06-46).
-- Given a completed design on a lead with an indicative proposal, when the upgrade is offered, then the changed figures and their tier changes are shown before commit, and declining changes nothing (M06-47).
-- Given an existing proposal, when Duplicate is invoked onto another lead, then every step arrives pre-filled including all components, client details come from the new lead, and a fresh server number is assigned at Generate (M06-48).
-- Given the share sheet with a connected transactional channel, when the share sends, then it goes from the tenant's official channel under the transactional template class and the same act marks the version shared; and given no connected channel, then Download PDF + Copy link + composed message are offered, nothing sends, and only the explicit mark-shared act changes status and starts the clock (M06-53, owner ruling 2026-08-04).
-- Given a shared proposal, when tracking renders, then states are shared → opened → viewed-for-how-long, delivery states appear only as the connected channel reported them, the fallback path shows no delivered state anywhere, and an open notifies the rep (M06-54).
-- Given a client phone that fails the pack's format, when step 10 commits, then the failure is stated at entry; given a connected-channel send that the channel reports failed, then the failure is shown and an alternative channel offered; and given a fallback-path share never opened, then the non-opening is visible, the composed message is re-offered for an alternative channel the rep sends, and no fallback surface claims a delivery state (M06-57; owner ruling 2026-08-04 on the transactional lane).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-019 · Proposal List — status, staleness and per-row duplicate
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-46 (P0), M06-48 (P0)
-**DESIGN:** SCR-M06-19
-**Owed by `T-FPLAT-028` (`F8-18`, a law):** each row's stale state reads from its version's `Freshness` (`freshnessOf`, `packages/domain`) and is shown on the row with its corrective action, never only by a colour. Its freshness comes from this output's own stored pins, never pins built at the call site.
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they
-are the specification.
-
-**DONE WHEN:**
-- Given a design edit after generation, when the proposal list or detail renders, then the stale state is visible with Regenerate offered; no flag was stored — removing the design edit restores freshness by comparison alone (M06-46).
-- Given an existing proposal, when Duplicate is invoked onto another lead, then every step arrives pre-filled including all components, client details come from the new lead, and a fresh server number is assigned at Generate (M06-48).
-- Given a newer proposal on the same lead, when it generates, then the older proposal reads superseded and the link serves the latest (M06-45).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
-### T-M06-020 · Deal Link Manager — the tenant-side link surface on the deal
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** F5-30 (P0) (`docs/prd/foundations/F5-customer-link.md` — F5's row; the screen is drawn by M06 and is not part of this bucket's disposition index)
-**DESIGN:** SCR-M06-20
-
-**Requirements (verbatim):** Verbatim rows live in the PRD;
-they are the specification.
-
-**DONE WHEN:**
-- Given the deal's link manager, when it is opened by an operator, then it shows labels, contacts, open history and link states; and given the customer's page, when it is opened, then it shows none of them (`F5-30`).
-- three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+- `MAX_MARGIN` (`packages/domain/src/catalog/price-book.ts`) cites a deleted studio row; re-cite it to `M06-39` / `M01-48` here.
 
 ---
 
 ## Engine, policy and integration tasks
 
-### T-M06-021 · Path A pre-fill map — what a design fills, and at which provenance tier
+### T-M06-021 · Path A — the studio's hand-off, pre-fill map, variants, staleness and the upgrade offer
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **Owed by `T-FPLAT-029` (`F8-21`):** every tier this map assigns passes `tierFitsBasis(basis, tier)` from `@heliogrid/domain` — never a second copy of the no-design rule.
-**PRD rows:** M06-03
+**Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output the document prints carries the shading model's limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
+**PRD rows:** M06-03 (P0), M06-46 (P0), M06-47 (P0), M06-56 (P0), M08-04 (P0), M08-05 (P0), M08-16 (P0)
+**Design:** as T-M06-017
+**Why:** on a designed job every number arrives derived from the real model, the customer sees one recommended system, and a proposal whose design changed says so before anyone sends it.
+**Depends on:** T-M06-025a
+**Parked:** needs a design; built with the 3D studio's block (owner ruling 2026-11-13 — proposals ship first).
 
 **Requirements (verbatim):**
 
@@ -382,195 +60,17 @@ they are the specification.
 
 **DONE WHEN:**
 - Given a completed design, when Generate proposal is tapped in the studio, then the builder opens on Path A with steps 3/4/5/8 pre-filled `derived` per the pre-fill table (M06-03, M06-05).
-- Given a lead with no design, when a proposal is created, then the same eleven-step builder opens with nothing pre-filled beyond lead/tenant data, and every AI-filled or typed number carries `estimated`/`assumed` — never `derived` (M06-02, M06-03).
-
----
-
-### T-M06-022 · The Generate gate evaluator — one checklist for every speed path
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**Owed by `T-FPLAT-029` (`F8-21`):** Generate is refused while any figure's tier fails `tierFitsBasis(basis, tier)` from `@heliogrid/domain` — a no-design document holding a `derived` or `measured` figure — and the refusal names the figure; the gate never weakens the tier to pass.
-**Owed by `T-M01-005` (`M01-24`, `M01-29`; owner ruling 2026-10-12):** the prompt at the first send. *Given a skipped company profile, when the first proposal is about to be sent, then the prompt to complete it fires there, inline (M01-24, M01-29).* → proof: QA (web and phone) skip the profile step, build a proposal to its send: `SCR-M01-05`'s tax part opens in `EditorSurface` over the proposal (board frames `m-prompt`, `d-prompt`), *Add it and send* saves the registration and *Send without it* leaves the default in place; the fact's state goes through `PUT /onboarding/prompt-points/company_profile` (fired, then completed or declined). The field set is `T-M01-005`'s shared component; this task mounts it and adds the client call.
-**PRD rows:** M06-20, M06-36, M06-37
-
-**Requirements (verbatim):**
-
-- **M06-20** (P0) — **The two speed paths never diverge in validation.** Quick mode and duplicate-an-earlier-proposal are the two speed paths, and they **must not diverge in validation behaviour**: both validate exactly once, at Generate, against exactly the same checklist as the full rail (`M06-23`). Quick mode hides steps; it never skips checks.
-- **M06-36** (P0) — **The payable floor is the only hard discount guard.** A discount driving the client-payable figure to **zero or below** in the tenant currency shows the negative and **blocks Generate until corrected** — *"the only hard discount guard."* No approval flow, no request sheet, no queue, no "Pending approval" status, no per-rep ceilings exist anywhere (`D34`, superseding `D19`; revisit-trigger recorded in §5). Whoever can build a proposal can discount and share it immediately.
-- **M06-37** (P0) — **Below-cost pricing warns — explicitly, with the loss stated — and never blocks.** When a discount pushes the job below cost (Path A: below the BOM-derived cost; Path B: below the typed cost basis), the product says so **with the loss stated in the tenant currency**, and lets the person proceed: the guard is information, not permission.
-
-**DONE WHEN:**
-- Given the same proposal content, when Generate runs from Quick mode, from a duplicate, or from the full rail, then the identical checklist produces the identical pass/fail result (M06-20).
-- Given payable ≤ 0, when Generate runs, then it blocks with the negative shown; given payable corrected positive, then the same checklist passes (M06-36).
-- Given a discount below cost with payable > 0, when Generate runs, then a warning states the loss in tenant currency and generation proceeds if confirmed (M06-37).
-- Given a proposal with multiple failures, when Generate is tapped, then every failure renders as one tappable list ("Fix N issues to share") and each tap lands on the exact step with the failing fields highlighted (M06-22, M06-23).
-- Given a proposal on the incentive path with a component failing the pack's required scheme, when Generate runs, then the check fails naming the component line and the scheme, and clearing it (compliant component, or leaving the incentive path) passes (M06-23; `F1-34`).
-
----
-
-### T-M06-023 · Continuous draft save — commit on blur, resumable from the lead
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-25
-
-**Requirements (verbatim):**
-
-- **M06-25** (P0) — **Save continuously, never on Next.** Someone will lose a network mid-build: **every field commits on blur**; a draft always exists from the first commit and is **resumable from the lead**, shown as **"Proposal draft — 7/11"** on the lead surface. This row is the draft-save specification `R14`'s ledger note asked this module to state.
-
-The lead-surface chip ("Proposal draft — n/11") renders on `SCR-M02-04` (Lead Detail), which is
-M02's screen; this task owns the commit-on-blur draft behaviour and the resume path behind it.
-
-**DONE WHEN:**
-- Given a field edited and blurred, when the app is killed and the lead reopened, then the draft resumes with that value present and the lead shows "Proposal draft — n/11" (M06-25).
-
----
-
-### T-M06-024 · The proposal money block — scheme-generic computation, pack incentive, one value set
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-34, M06-38, M06-41
-
-**Requirements (verbatim):**
-
-- **M06-34** (P0) — **The proposal money block is scheme-generic, currency-stamped, and reconciles to the minor unit.** It carries: currency code (stamped at creation, one currency per tenant — `F1-07` consumed) · system cost excl./incl. tax · per-line tax % · a document-level taxes[] breakdown · battery cost + battery tax % · incentive amount · discount (% ⇄ amount) · payable. **Tax strategy comes from the market pack** (`F1-13`: per-line-rate or document-level); no tax column, label or rate is hard-coded. Sums reconcile to the currency's minor unit (`DOC04.currency-stamp` via `F1-07`).
-- **M06-38** (P0) — **The incentive amount is computed from the market pack's incentive model — never manually configured per tenant.** Eligibility (segment, capacity, component-certification requirements, geography) and the computation ship as versioned pack data (`F1-14` consumed; the IN instance is `F1-33`'s slab model). The proposal consumes the computed amount into the payable; where the pack ties the incentive path to a certification scheme, the Generate-time check is `M06-23`(f). A pack revision never changes an existing version's figures (`M06-42`).
-- **M06-41** (P0) — **Proposal money is never computed on a device and never renders stale as final.** No device prints a customer-facing price computed locally (`F4-04` consumed); a proposal whose inputs changed renders **stale, visibly, with the corrective action offered** — regenerate as a new version — and *"money must never render as final while stale — this is a hard product rule"* (`F8-12`–`F8-15`, `F8-18` consumed; the version mechanics are §M06.7's).
-
-**DONE WHEN:**
-- Given any tenant market, when the money block renders, then tax fields, strategy, incentive naming and currency format come from the pack (`F1-13`/`F1-14`/`F1-21`) and no market term is hard-coded (M06-34).
-- Given an incentive-eligible proposal, when the money block computes, then the incentive amount is the pack-computed value — no manual slab entry exists anywhere (M06-38).
-- Given a stale proposal, when any money renders, then it is provisional/stale-marked with regenerate offered — never final (M06-41).
-- Given cost, battery, incentive and discount values, when any changes, then the payable card recomputes live and shows a negative payable the moment it goes ≤ 0 (M06-35).
-
----
-
-### T-M06-025 · Version records, server numbering and the status machine
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-43, M06-44, M06-45, M08-04 (P0), M08-05 (P0), M08-16 (P0), M08-50 (P0)
-**Owed by `T-FPLAT-028` (`F8-14`, `F8-15`):** a version pins what it was computed from as `InputPins` (`packages/domain`) — the design fingerprint, the catalog release, the tenant price-book version, the pack pin with the keys read, and the engine versions — at generation, in its migration; once shared, its figures qualify as a record (`freshness: null`) and keep their standing, and its pins are never updated. Its freshness comes from this output's own stored pins, never pins built at the call site.
-
-**Requirements (verbatim):**
-
-- **M06-43** (P0) — **Sent proposals keep their prices forever.** Once shared, a version's figures never move: it keeps the rate versions, catalog release and pack version pinned at generation; a later price-book change, catalog release or pack revision produces **a new version if the tenant wants new numbers — never an edit of the sent one**. The customer's copy and the tenant's copy always agree.
-- **M06-44** (P0) — **The proposal number is server-assigned — never client-generated.** Numbers come from server-side tenant counters; two users generating at once can never collide (`S6B.wrong.8`). Step 10 shows the number auto-filled and disabled. The same law governs project numbers (`modules/M08`'s half — cited, not disposed here).
-- **M06-45** (P0) — **The proposal status machine: draft → shared → accepted / declined, with superseded when a newer proposal replaces it on the lead.** Statuses move by acts, not edits: sharing is the rep's explicit mark (`M06-53`); accept/decline arrive from the customer link (`foundations/F5`); superseded is set when a newer proposal takes over the lead. **The customer link always shows the latest version** (`S6.wrong.6`; the link mechanics are F5's).
-
-**DONE WHEN:**
-- Given a shared version and a subsequent price-book publish, when the version renders anywhere (tenant or customer side), then its figures are unchanged (M06-43).
-- Given two simultaneous Generates on one tenant, when both complete, then they hold distinct server-assigned numbers (M06-44).
-- Given a newer proposal on the same lead, when it generates, then the older proposal reads superseded and the link serves the latest (M06-45).
-- Given step 10, when it renders, then the proposal number is present, auto-assigned and disabled — never editable, never client-generated (M06-16, M06-44).
-- Given a generated version, when any input later changes, then the version's snapshot and money block are byte-identical to generation time and a change note exists (M06-42).
-- Given the queries "quote" and "quotation", when global search runs, then Proposals return and every rendered label says Proposal — this task adds the proposal search target (F6-22) (moved from the block 3 CRM plan, owner yes 2026-11-09).
-- Given two customers merged, when the merge completes, then every proposal of the loser points at the survivor and no proposal figure, version, discount or total changes (M02-60, M02-62) (moved from the block 3 CRM plan, owner yes 2026-11-09).
-- Given a project, when its detail screen opens, then the stage timeline, design, proposal, payments, documents, blockers and activity are all present on one screen, each naming the object it reads (M08-16). *(Moved from T-M08-002 by owner ruling 2026-11-10: its proof needs the design, the proposal and the payments on the project, the last of them built in block 8.)*
-- Given the project has just been created, when it opens, then the customer, site, approved design, accepted proposal version and the accepted version's tranche schedule are present by reference, and the document checklist is seeded for this project's segment from the tenant's market pack (M08-04, M08-05). *(Moved from T-M08-007 by owner ruling 2026-11-10: its proof needs the approved design, the accepted proposal version and its tranche schedule, the last of them built in block 8.)*
-- Given a customer changes scope after Won, when a new proposal version is accepted, then the project references the new version, the earlier version remains readable, and the collection schedule follows the version in force (M08-50). *(Moved from T-M08-015 by owner ruling 2026-11-10: its proof needs a new proposal version, built in block 8.)*
+- Given any Path B version, when document or link render, then the verbatim indicative line is present in the reading flow; given a remote-survey-based design, then the basis line renders (M06-51).
+- Given a design with variants, when the customer-facing rendering is produced, then exactly one recommended system shows by default (M06-56).
+- Given a design edit after generation, when the proposal list or detail renders, then the stale state is visible with Regenerate offered; no flag was stored — removing the design edit restores freshness by comparison alone (M06-46).
+- Given a completed design on a lead with an indicative proposal, when the upgrade is offered, then the changed figures and their tier changes are shown before commit, and declining changes nothing (M06-47).
+- Given a project, when its detail screen opens, then the stage timeline, design, proposal, payments, documents, blockers and activity are all present on one screen, each naming the object it reads (M08-16). *(Moved from T-M08-002 by owner ruling 2026-11-10: its proof needs the design, the proposal and the payments on the project.)*
+- Given the project has just been created, when it opens, then the customer, site, approved design, accepted proposal version and the accepted version's tranche schedule are present by reference, and the document checklist is seeded for this project's segment from the tenant's market pack (M08-04, M08-05). *(Moved from T-M08-007 by owner ruling 2026-11-10: its proof needs the approved design.)*
 
 **Settle before the build:**
-- Whether a version physically copies its component and tranche rows or references frozen draft rows (M06-31, M06-42) — ruled: physical copy at Generate — each version owns its own copied component and tranche rows beside its field-set and money snapshot, and the draft rows stay the one editable set with no frozen flag (M06-42 defines a version as a snapshot and demands byte-identity, which is provable only on rows nothing else can write; a frozen flag would turn every post-Generate edit into a copy-on-write of the draft).
-- Which object carries the status machine at the share boundary (M06-45, M06-53) — ruled: the proposal alone carries `status`; a version is a stateless snapshot, and M06-53's version moving to shared is the proposal's transition taken with its latest version, which the share act's own record names (M06-45 states the machine verbatim on the proposal; a second status on the version would be two machines for one act and a write to an immutable row).
-- Whether declined-by-tenant is a status value or a reason (M06-45, M06-58) — ruled: no sixth status — a withdrawal is the `superseded` transition, and the act's actor and cause are the transition's timeline and audit record, never a status or reason column (M06-45 closes the set at five and moves statuses by acts; `declined` is the customer link's act, so a tenant act cannot share it).
-
----
-
-### T-M06-026 · Component line resolution provenance, frozen with the version
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-31
-
-**Requirements (verbatim):**
-
-- **M06-31** (P0) — **Component lines are honest about their resolution and frozen with their version.** Each selected line carries its catalog-resolution provenance (tenant override / tenant item / platform item / custom) and its provenance tier (`F8-02`); component rows are **immutable with their proposal version** — an archived or repriced product never changes an existing version's lines (`M01-42`/`M01-43`, consumed).
-
-**DONE WHEN:**
-- Given a component picked from any resolution tier, when the version generates, then the line records its resolution provenance and tier and never changes thereafter (M06-31).
-
----
-
-### T-M06-027 · Tenant template consumption and the save-as-template round-trip
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-49
-
-**Requirements (verbatim):**
-
-- **M06-49** (P0) — **Tenant document defaults feed the builder — asked once, consumed everywhere.** The proposal template (cover, sections included, default T&C, bank details — `M01-51`), the timeline template (`M01-52`), the payment-term templates and tenant default (`M01-54`), the message templates (`M01-55`) and the Quick-mode default set (`M01-53`) are consumed by their steps; this module adds the **"Save as template"** round-trips (T&C at step 9) and never defines a second template surface. Template edits never restyle already-generated versions (`F8-15` via `M01-51`, consumed).
-
-**DONE WHEN:**
-- Given untouched tenant settings, when a proposal is built, then platform-seeded defaults carry every templated step and no settings visit is required (M06-49; `M01-28` consumed).
-- Given step 9 with T&C added, when "Save as template" is used, then the tenant's template set gains it and the page estimate reflects the content (M06-15; `M01-51`).
-- Given step 6, when phases are reordered, added, deleted or reset, then the tenant's timeline template is the reset target (M06-12; `M01-52`).
-- Given the proposal-template settings, when the builder generates a document, then cover, included sections, default terms and bank details come from these settings (or their platform defaults), and the document is titled with the ruled name in every locale (M01-51). → proof: QA (web and phone) save a cover, section set, terms and the printed bank details on `T-M01-019`'s screen, then generate a proposal: each appears, and the document is titled with the ruled name in all three languages — the proof `T-M01-019` hands here, because its block has no builder
-- (M01-52, handed here by `T-M01-019`, whose block has no builder.) → proof: QA (web and phone) a phase order saved on `T-M01-019`'s screen is the order step 6 opens with
-
----
-
-### T-M06-028 · The single entitlement checkpoint at proposal creation
-**Type:** policy · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-26
-**Billing gate (T-M12-009):** proposal create names `sell_and_deliver` in its `RouteBillingMap`; its count cap reads `capStepOf` (`packages/domain`) over this cycle's proposals, `fullSince` being the created time of the cycle's limit-th proposal, and refuses only at `paused`, by throwing `EntitlementBlockedException` with `reason: 'cap'`, key `proposals_per_cycle` and the cycle's end as `resetsAt`.
-**Downgrade preview (T-M12-003):** this cycle's proposals against the lower plan's `proposals_per_cycle` join `PLAN_CHANGE_BLOCKS` (`packages/domain` `commerce/plan-change.ts`) as `proposals_this_cycle`, counted in the api's `plan-change.preview.service.ts` and in its digest (`SCR-M12-03` frame s7: `Proposals this month · 41 of 30`).
-**Usage screen (T-M12-004):** this cycle's proposal count, with the `fullSince` the create gate reads, replaces `NOT_COUNTED_YET` for `proposals` in the api's `billing-usage.service.ts`, so `SCR-M12-04`'s `Proposals this month` and its 80%, grace and paused steps read the gate's own count.
-
-**Requirements (verbatim):**
-
-- **M06-26** (P0) — **The entitlement checkpoint sits at proposal create — nowhere else in this module.** Per-cycle proposal-creation counts are a tier capacity dimension; enforcement is at **new proposal creation only**, with the ahead-of-the-block disclosure and grace platform billing owns. **Editing, sharing and duplicating existing proposals — and all reads and exports — never pause**, in any billing state (the soft-block law, consumed). No Generate check and no builder step is entitlement-gated.
-
-**DONE WHEN:**
-- Given a tenant at its proposal-count limit, when they edit, duplicate or share an existing proposal, then nothing pauses; when they create a new one, then the billing gate behaviour applies (M06-26).
-
----
-
-### T-M06-029 · Fact-traceable proposal narrative
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-52
-
-**Requirements (verbatim):**
-
-- **M06-52** (P0) — **Proposal narrative is fact-traceable.** Where the document carries generated narrative (the cover story, system description, savings prose), **every narrative claim maps to a facts entry** from the proposal's own field set and computed block — no narrative sentence asserts a number or fact that is not in the version's data.
-
-**DONE WHEN:**
-- Given generated narrative, when the document renders, then every narrative claim traces to a field or computed value of the version (M06-52).
-
-**Settle before the build:**
-- Whether the narrative claim-to-fact mapping is persisted data or a generation-time discipline (M06-52) — pick: generation-time — the narrative is rendered from the version's snapshot through `i18n` templates whose only slots are the version's fields and computed values, so the template is the mapping and nothing is stored beyond the version's PDF artifact (M06-52's source drops the traceability test as implementation detail, and a slot template cannot assert a fact the version lacks; cost if wrong: free-form generated prose would need a stored narrative plus a claim-to-fact map on the version, both additive).
-
----
-
-### T-M06-030 · The automatic follow-up task on mark-shared
-**Type:** integration · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-55
-
-**Requirements (verbatim):**
-
-- **M06-55** (P0) — **An automatic follow-up task on send — always.** *"The moment a proposal goes out, the next action must already exist and be owned"*: marking shared auto-creates a follow-up task on the sending rep for **two days later** (`S6.happy`'s "+2 days"), carrying its provenance rule (`DOC04.tasks` cited — `modules/M07`'s surface). A proposal unopened for three days is the voice agent's safety-net trigger (`D17`, `S6.wrong.5` — *"this is exactly what the voice agent picks up"*; `modules/M07` owns the agent).
-
-**DONE WHEN:**
-- Given mark-shared, when it commits, then a follow-up task exists for +2 days owned by the sender, carrying its provenance rule (M06-55).
-
----
-
-### T-M06-031 · Double-proposal collision — both visible, one withdrawn by a person
-**Type:** policy · **Tier:** P0
-**Status:** planned
-**PRD rows:** M06-58
-
-**Requirements (verbatim):**
-
-- **M06-58** (P0) — **Two proposals on one customer is a visible state that must converge.** When the Stage-2 duplicate check did not catch a double-chase (`M02-08` consumed), the customer record shows **both** proposals and **one must be withdrawn** — the withdrawing rep marks their proposal superseded/declined-by-tenant and the lead follows `modules/M02`'s machine. Nothing auto-withdraws; the record makes the collision impossible to miss.
-
-The customer-record surface that shows both proposals and offers the withdraw action is
-`SCR-M02-04` (Lead Detail), which is M02's screen; this task owns the withdraw act, the
-superseded/declined-by-tenant transition and the guarantee that nothing auto-withdraws.
-
-**DONE WHEN:**
-- Given two proposals on one customer record, when the record renders, then both are visible and each offers the withdraw action (M06-58).
-- Given a newer proposal on the same lead, when it generates, then the older proposal reads superseded and the link serves the latest (M06-45).
+- The path-choice question while no studio exists (M06-05) — ruled: it is not asked; the entry opens the builder without a design, and the question returns with the studio (owner ruling 2026-11-13: a question with one answer is a wasted tap).
+- The Add 3D Design closing sheet while no studio exists (M06-17) — ruled: not shown; it returns with the studio's hand-off (`T-M06-021`) — a doorway to nothing is a dead end.
+- What a V1 document states as its basis when no survey exists behind it (M06-51; `F8-20`, `F8-22`) — ruled: the basis is derived at Generate from the design's roof-capture provenance tier and frozen into the version's honesty labels — no design keeps `F8-20`'s indicative line; a design whose roof tier is not `measured` renders `F8-22`'s remote line verbatim; a `measured` roof, M04's V2 path, carries no basis line; and no field is added to the design (`F8-21` reduces roof capture to exactly two flows, so the tier already names the flow, and a stored basis would be a second copy of it).
 
 ---
 
@@ -586,18 +86,11 @@ string review of identifiers and interface copy in T-M06-001 … T-M06-020 and T
 rendering. The BOM stays the internal object of T-M06-014; Path B never gains one.
 *Acceptance covering it (verbatim):* Given any tenant surface or rendered document in any launch locale, when proposal vocabulary renders, then the single term "Proposal" (per-locale per `F3-11`) is used and no "quote"/"quotation" string appears outside search-query aliasing (M06-01).
 
-**M06-02** (P0) — **Two paths, one builder.** PATH A — WITH DESIGN: survey → studio → BOM → proposal; used when the job is won on engineering credibility, C&I, a complex roof, a customer comparing vendors on technical detail; *"numbers are DERIVED from the model."* PATH B — WITHOUT DESIGN: lead → proposal, straight away; used when the customer wants a number today, small residential, a repeat/standard system, or the rep is standing in their living room; *"numbers are ESTIMATED or ASSUMED."* **Both paths use the same eleven-step builder** — the difference is only how much arrives pre-filled. Provenance tiers are `foundations/F8`'s closed four (`F8-02`); Path B AI fill is `estimated` by definition.
-
-*Enforced by:* T-M06-001 (one entry surface, two paths), T-M06-002 (one builder shell) and
-T-M06-021 (the pre-fill map is the only difference between the paths); review rejects any
-second builder, second step set or path-specific validation.
-*Acceptance covering it (verbatim):* Given a lead with no design, when a proposal is created, then the same eleven-step builder opens with nothing pre-filled beyond lead/tenant data, and every AI-filled or typed number carries `estimated`/`assumed` — never `derived` (M06-02, M06-03).
-
 **M06-32** (P0) — **Component kits were considered and REMOVED — speed comes from duplication, and that decision is carried, not reopened.** The three speeds: **duplicate** (components come with it — the common residential path) · **Path A** (the BOM fills all five) · genuinely new with nothing to duplicate → pick five (*"slower, and rare"*). The lesson is carried verbatim as product law: *"if mandatory components ever start costing minutes rather than seconds, the fix is to make duplicating easier, not to make components optional."*
 
-*Enforced by:* T-M06-010 (no kit concept on the components step), T-M06-018/T-M06-019 (duplicate
-is the offered speed path) and review — a kit feature is out of scope and the components gate is
-never made optional.
+*Enforced by:* T-M06-010 (no kit concept on the components step), T-M06-019 (duplicate is the
+offered speed path) and review — a kit feature is out of scope and the components gate is never
+made optional.
 *Acceptance covering it (verbatim):* Given a duplicated proposal, when step 8 renders, then every component of the source proposal is present and the counter is already satisfied (M06-32; §M06.8).
 
 ---
@@ -617,7 +110,7 @@ honesty laws).
 | Row | Disposition |
 |---|---|
 | M06-01 | LAW |
-| M06-02 | LAW |
+| M06-02 | T-M06-001 |
 | M06-03 | T-M06-021 |
 | M06-04 | T-M06-017 |
 | M06-05 | T-M06-001 |
@@ -638,7 +131,7 @@ honesty laws).
 | M06-20 | T-M06-022 |
 | M06-21 | T-M06-002 |
 | M06-22 | T-M06-002 |
-| M06-23 | T-M06-002 |
+| M06-23 | T-M06-022 |
 | M06-24 | T-M06-002 |
 | M06-25 | T-M06-023 |
 | M06-26 | T-M06-028 |
@@ -661,9 +154,9 @@ honesty laws).
 | M06-43 | T-M06-025 |
 | M06-44 | T-M06-025 |
 | M06-45 | T-M06-025 |
-| M06-46 | T-M06-018 |
-| M06-47 | T-M06-018 |
-| M06-48 | T-M06-018 |
+| M06-46 | T-M06-021 |
+| M06-47 | T-M06-021 |
+| M06-48 | T-M06-019 |
 | M06-49 | T-M06-027 |
 | M06-50 | T-M06-015 |
 | M06-51 | T-M06-017 |
@@ -671,6 +164,6 @@ honesty laws).
 | M06-53 | T-M06-018 |
 | M06-54 | T-M06-018 |
 | M06-55 | T-M06-030 |
-| M06-56 | T-M06-017 |
+| M06-56 | T-M06-021 |
 | M06-57 | T-M06-018 |
 | M06-58 | T-M06-031 |

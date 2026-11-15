@@ -1,38 +1,14 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 /**
- * The Proposal template's field refusals and the phase editor's words (`SCR-M01-19` m19-g): its
- * heading, its act and each field's refusal. The page's other words are `proposal-template.ts`'s.
+ * The Proposal template's field refusals (`SCR-M01-19`). The page's other words are
+ * `proposal-template.ts`'s; a phase is edited on the builder's own phase sheet (`T-M01-030`).
  */
 import { PHASE_NAME_LIMIT, type TemplateRefusal } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import { proposalTermsOverPages } from './proposal-builder-steps-rest';
 import { TEMPLATE } from './proposal-template';
 
 type T = Translator['t'];
-
-/**
- * The phase editor's heading (m19-g): a new phase is *New phase*, last of one more; a held phase
- * is its own name as the company wrote it (`F3-10`), at its place.
- */
-function phaseEditorHeading(
-  t: T,
-  phase: {
-    readonly adding: boolean;
-    readonly name: string;
-    readonly position: number;
-    readonly count: number;
-  },
-): { readonly title: string; readonly subtitle: TranslatedText } {
-  if (phase.adding) {
-    return {
-      title: t(TEMPLATE.newPhase),
-      subtitle: t(TEMPLATE.phaseOf, { position: phase.count + 1, count: phase.count + 1 }),
-    };
-  }
-  return {
-    title: phase.name,
-    subtitle: t(TEMPLATE.phaseOf, { position: phase.position, count: phase.count }),
-  };
-}
 
 /** A field's refusal in words. */
 export function templateRefusalWords(
@@ -41,6 +17,7 @@ export function templateRefusalWords(
   refusal: TemplateRefusal | null,
 ): TranslatedText | null {
   if (refusal === null) return null;
+  if (refusal === 'too-long' && field === 'terms') return proposalTermsOverPages(t);
   if (refusal === 'too-long') return t(TEMPLATE.nameTooLong, { count: PHASE_NAME_LIMIT });
   const words = {
     name: TEMPLATE.nameNeeded,
@@ -59,36 +36,5 @@ export function templateFieldRefusals(
   return terms === null ? {} : { termsError: terms };
 }
 
-/**
- * The phase editor's words for the phase it holds (m19-g): its heading, its act — *Add phase* for a
- * new one — and each field's refusal once the person tried to save it.
- */
-export function phaseEditorWords(
-  t: T,
-  phase: {
-    readonly adding: boolean;
-    readonly name: string;
-    readonly position: number;
-    readonly count: number;
-    readonly shown: {
-      readonly name: TemplateRefusal | null;
-      readonly description: TemplateRefusal | null;
-    };
-  },
-): {
-  /** *New phase*, or the phase's name as the company wrote it. */
-  readonly title: string;
-  readonly subtitle: TranslatedText;
-  readonly act: TranslatedText;
-  readonly nameError?: TranslatedText;
-  readonly whatError?: TranslatedText;
-} {
-  const nameError = templateRefusalWords(t, 'name', phase.shown.name);
-  const whatError = templateRefusalWords(t, 'what', phase.shown.description);
-  return {
-    ...phaseEditorHeading(t, phase),
-    act: t(phase.adding ? TEMPLATE.addPhaseAct : TEMPLATE.savePhase),
-    ...(nameError === null ? {} : { nameError }),
-    ...(whatError === null ? {} : { whatError }),
-  };
-}
+/* Proposal defaults' own words ride this file's export: the index names it whole and is at its line limit. */
+export * from './proposal-defaults-words';

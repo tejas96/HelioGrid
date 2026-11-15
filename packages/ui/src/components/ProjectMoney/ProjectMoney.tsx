@@ -8,6 +8,7 @@ import { Menu } from '../Menu';
 import { projectFailedOf, projectLoadingOf } from '../ProjectDetail/ProjectDetail.states';
 import { CardHead } from '../ProjectDetail/ProjectDetailParts';
 import { Timeline } from '../Timeline';
+import { EarlierPlans } from './EarlierPlans';
 import { MoneyEntries } from './MoneyEntries';
 import { MoneyHero } from './MoneyHero';
 import { partRowsOf } from './ProjectMoney.logic';
@@ -36,6 +37,7 @@ export function ProjectMoney(props: ProjectMoneyProps) {
         <>
           <MoneyHero {...props} payments={read.value} />
           <MoneyParts {...props} payments={read.value} />
+          <EarlierPlans plans={read.value.earlierPlans} words={props.words.earlier} />
           <MoneyEntries {...props} payments={read.value} />
         </>
       )}

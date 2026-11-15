@@ -9,6 +9,7 @@ import { noHits, SearchRepository } from './search.repository';
 const NOTHING_ASKED: SearchResults = {
   leads: noHits,
   customers: noHits,
+  proposals: noHits,
   people: noHits,
   catalog: noHits,
 };

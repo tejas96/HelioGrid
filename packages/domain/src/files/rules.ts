@@ -65,6 +65,7 @@ export const FILE_SUBJECT_KINDS = [
   'lead',
   'project',
   'project_payment',
+  'proposal_version',
 ] as const satisfies readonly SubjectKind[];
 export type FileSubjectKind = (typeof FILE_SUBJECT_KINDS)[number];
 
@@ -141,6 +142,17 @@ export const FILE_SUBJECT_RULES = {
     read: 'subject',
     maxBytes: FILE_MAX_BYTES,
     contentTypes: ['image/png', 'image/jpeg'],
+  },
+  /**
+   * A generated version's document (`M06-42`, `M06-51`): made by the platform at Generate and kept
+   * against the version, never uploaded — its module answers no to every upload. Read by whoever
+   * may see the proposal's lead; the customer reads it through their link's own file route (`F5-70`).
+   */
+  proposal_version: {
+    upload: 'subject',
+    read: 'subject',
+    maxBytes: FILE_MAX_BYTES,
+    contentTypes: ['application/pdf'],
   },
 } as const satisfies Readonly<Record<FileSubjectKind, FileSubjectRule>>;
 

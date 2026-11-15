@@ -4,8 +4,9 @@
  * - `search` rows and a lens: a search that found nothing
  * - `settle` cards settling into a tray: a list with nothing in it yet
  * - `filter` a funnel that lets nothing through: filters that match nothing
+ * - `failed` a page whose last line breaks off, and a retry ring: a read or a job that failed
  */
-export type EmptySceneName = 'search' | 'settle' | 'filter';
+export type EmptySceneName = 'search' | 'settle' | 'filter' | 'failed';
 
 /** `regular` 120 × 96, over a block's words · `compact` half that, beside a line in a small tile. */
 export type EmptySceneSize = 'regular' | 'compact';

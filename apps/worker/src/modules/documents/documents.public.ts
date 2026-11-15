@@ -4,6 +4,7 @@ import {
   handoverPackWorkflow,
   invoiceDocumentWorkflow,
   type paymentReceiptWorkflow,
+  type proposalDocumentWorkflow,
 } from '@heliogrid/contracts/workflows';
 import type { TemporalWorkerRegistration } from '../../common/temporal/temporal.tokens';
 import * as bundledWorkflows from '../../worker.workflows';
@@ -15,7 +16,8 @@ type DocumentWorkflowName =
   | typeof invoiceDocumentWorkflow.name
   | typeof creditNoteDocumentWorkflow.name
   | typeof handoverPackWorkflow.name
-  | typeof paymentReceiptWorkflow.name;
+  | typeof paymentReceiptWorkflow.name
+  | typeof proposalDocumentWorkflow.name;
 documentsWorkflows satisfies Record<DocumentWorkflowName, unknown>;
 // And the bundle's one entry re-exports it: an area left out there starts, then fails every task.
 bundledWorkflows satisfies Record<DocumentWorkflowName, unknown>;
@@ -26,8 +28,8 @@ export const invoiceDocumentWorkerRegistration: TemporalWorkerRegistration = {
 };
 
 /**
- * A project's handover pack and a payment's receipt: their steps run in the api, beside the
- * project's files and ledger, on this one queue.
+ * A project's handover pack, a payment's receipt and a proposal version's PDF: their steps run in
+ * the api, beside the project's files, its ledger and the version, on this one queue.
  */
 export const handoverPackWorkerRegistration: TemporalWorkerRegistration = {
   taskQueue: handoverPackWorkflow.taskQueue,

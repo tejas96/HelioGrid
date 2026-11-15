@@ -1,8 +1,11 @@
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { paginated, paginationQuerySchema, uuidSchema } from '../common';
+import { leadParamsSchema } from '../crm/leads';
 import { baseError, errorEnvelope, unauthenticatedEnvelope } from '../error';
+import { shareableMessageSchema } from '../proposals/acts';
 import { calendarDateSchema } from '../tenant-settings';
+import { versionInForcePreviewSchema, wonBasisSchema } from './proposal-handoff';
 import {
   projectBoardSchema,
   projectCardSchema,
@@ -84,6 +87,34 @@ export const projectsContract = c.router({
     pathParams: projectParamsSchema,
     summary: 'One project — every block on one screen (`M08-16`)',
     responses: { 200: projectDetailSchema, 401: unauthenticatedEnvelope, 404: projectNotFound },
+  },
+  versionInForcePreview: {
+    method: 'GET',
+    path: '/projects/:id/version-in-force/:version',
+    pathParams: projectParamsSchema.extend({ version: z.coerce.number().int().positive() }),
+    summary:
+      'What putting a version in force would do: the new total, what is paid and stays, and the plan for the rest',
+    responses: {
+      200: versionInForcePreviewSchema,
+      401: unauthenticatedEnvelope,
+      404: projectNotFound,
+    },
+  },
+  crewMessage: {
+    method: 'GET',
+    path: '/projects/:id/crew-message',
+    pathParams: projectParamsSchema,
+    summary:
+      'The evening-before installation message a person sends, in the customer’s language (`F5-68`)',
+    responses: { 200: shareableMessageSchema, 401: unauthenticatedEnvelope, 404: projectNotFound },
+  },
+  wonBasis: {
+    method: 'GET',
+    path: '/leads/:id/won-basis',
+    pathParams: leadParamsSchema,
+    summary:
+      'What Mark won takes from the lead’s proposal: the accepted version’s value and plan, or why it is typed',
+    responses: { 200: wonBasisSchema, 401: unauthenticatedEnvelope, 404: projectNotFound },
   },
   handoverPreview: {
     method: 'GET',

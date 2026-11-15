@@ -1,0 +1,263 @@
+/* The savings block, the EMI example and the payment split. */
+
+.hg-pb-bill {
+  margin-top: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.hg-pb-bill-row {
+  display: grid;
+  grid-template-columns: minmax(76px, auto) 1fr minmax(64px, auto);
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: var(--fs-body-sm);
+}
+.hg-pb-bill-row b {
+  text-align: end;
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+.hg-pb-bill-name {
+  color: var(--text-secondary);
+}
+.hg-pb-bill-track {
+  height: 10px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--text-primary) 7%, transparent);
+  overflow: hidden;
+}
+.hg-pb-bill-track i {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pill);
+  transform-origin: left;
+  animation: hg-pb-grow-across var(--dur-data) var(--ease-enter) backwards;
+}
+.hg-pb-bill-now {
+  width: 100%;
+  background: var(--mark-subtle);
+}
+.hg-pb-bill-after {
+  width: var(--hg-pb-bill);
+  background: var(--gradient-brand);
+}
+
+.hg-pb-payback {
+  margin-top: var(--sp-4);
+}
+.hg-pb-payback-box {
+  position: relative;
+}
+.hg-pb-payback-drawing {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.hg-pb-payback-wash {
+  stop-color: var(--chart-2);
+}
+.hg-pb-payback-line {
+  fill: none;
+  stroke: var(--chart-2);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: hg-pb-draw var(--dur-scene) var(--ease-enter) var(--dur-micro) forwards;
+}
+.hg-pb-payback-net {
+  stroke: var(--line-strong);
+  stroke-dasharray: 4 5;
+}
+/* The ring where the savings pass the net cost: cut out of whatever the block stands on. */
+.hg-pb-payback-cross {
+  fill: var(--hg-ground);
+  stroke: var(--chart-2);
+  stroke-width: 2.5;
+}
+/* The net cost's words sit on its rule, at the plot's end; the two years under the plot's ends. */
+.hg-pb-payback-net-word {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: calc(var(--hg-pb-net) + 4px);
+  max-inline-size: 70%;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  text-align: end;
+}
+.hg-pb-payback-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-pb-trio {
+  margin-top: var(--sp-3);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-2);
+}
+.hg-pb-trio > div,
+.hg-pb-emi-pair > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--sp-3) 0 0;
+  border-top: 2px solid color-mix(in srgb, var(--text-primary) 9%, transparent);
+}
+.hg-pb-trio-value {
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: 20px;
+  line-height: 26px;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.hg-pb-trio-name {
+  margin-top: var(--sp-0-5);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pb-emi-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+
+.hg-pb[data-mode="paper"] .hg-pb-bill-row {
+  grid-template-columns: minmax(110px, auto) 1fr minmax(90px, auto);
+  font-size: 16px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-bill-track {
+  height: 16px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-trio-value {
+  font-size: 30px;
+  line-height: 36px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-trio-name {
+  font-size: 14px;
+  line-height: 20px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-payback {
+  margin-top: 28px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-payback-net-word,
+.hg-pb[data-mode="paper"] .hg-pb-payback-axis {
+  font-size: 15px;
+  line-height: 20px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-trio {
+  margin-top: 24px;
+  gap: 20px;
+}
+
+/* ── the payment split ─────────────────────────────────────────────────────── */
+.hg-pb-split-bar {
+  margin-top: var(--sp-4);
+  display: flex;
+  gap: 3px;
+  height: 14px;
+}
+.hg-pb-split-part,
+.hg-pb-split-gap {
+  flex-basis: 0;
+  min-width: 6px;
+  border-radius: 5px;
+  transform-origin: left;
+  animation: hg-pb-grow-across var(--dur-data) var(--ease-enter) backwards;
+}
+.hg-pb-split-bar > :first-child {
+  border-start-start-radius: 14px;
+  border-end-start-radius: 14px;
+}
+.hg-pb-split-bar > :last-child {
+  border-start-end-radius: 14px;
+  border-end-end-radius: 14px;
+}
+/* What is not shared out yet: hatched in the warning tint, with an edge, and said in words above. */
+.hg-pb-split-gap {
+  background: repeating-linear-gradient(135deg, var(--warning-bg) 0 5px, transparent 5px 9px);
+  box-shadow: inset 0 0 0 1px var(--warning);
+}
+.hg-pb-split-rows {
+  margin-top: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+}
+.hg-pb-split-row {
+  display: grid;
+  grid-template-columns: 10px minmax(46px, auto) 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 10px 0;
+  border-top: 1px solid var(--hairline);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+  animation-delay: calc(var(--i) * var(--stagger-step));
+}
+.hg-pb-split-row:first-child {
+  border-top: 0;
+}
+.hg-pb-split-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-pill);
+}
+.hg-pb-split-share {
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: 20px;
+  line-height: 24px;
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+}
+.hg-pb-split-words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.hg-pb-split-words b {
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+.hg-pb-split-words span {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pb-split-amount {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+.hg-pb[data-mode="paper"] .hg-pb-split-bar {
+  height: 18px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-split-row {
+  grid-template-columns: 12px minmax(70px, auto) 1fr auto;
+  padding: 14px 0;
+}
+.hg-pb[data-mode="paper"] .hg-pb-split-share {
+  font-size: 26px;
+  line-height: 30px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-split-words b {
+  font-size: 16px;
+  line-height: 22px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-split-words span {
+  font-size: 14px;
+  line-height: 20px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-split-amount {
+  font-size: 17px;
+}

@@ -1,5 +1,14 @@
 import { z } from 'zod';
-import { oneOf, packLabel, packMarketCode, packWhole } from '../market/stored-values';
+import {
+  oneOf,
+  packAmount,
+  packCount,
+  packLabel,
+  packMarketCode,
+  packRate,
+  packWhole,
+} from '../market/stored-values';
+import { FORECAST_STAGES } from '../proposals/forecast-stage';
 import { CHECKLIST_ROW_MAKERS } from './checklist';
 import { type FormatPack, MEASUREMENT_SYSTEMS } from './pack';
 
@@ -7,6 +16,23 @@ const stageLabel = z.object({ stage: z.string(), label: packLabel });
 const partyLabel = z.object({ party: z.string(), label: packLabel });
 const modeLabel = z.object({ mode: z.string(), label: packLabel });
 const reasonLabel = z.object({ reason: z.string(), label: packLabel });
+const coordinate = z.object({ latitude: z.number().finite(), longitude: z.number().finite() });
+const area = z.object({
+  code: z.string(),
+  name: packLabel,
+  coordinate,
+  districts: z.array(z.object({ name: z.string(), coordinate })),
+});
+const proposalFacts = z.object({
+  panelCapacityTolerance: packRate,
+  inverterBandPercent: z.object({ from: packCount, to: packCount }),
+  emiExample: z.object({ tenureYears: packCount, rate: packRate }),
+  exportRatePerKwh: packAmount,
+  tariffRise: packRate,
+  lifetimeYears: packWhole,
+  typicalTariffPerKwh: packAmount.nullable().default(null),
+  forecastLikelihood: z.array(z.object({ stage: z.enum(FORECAST_STAGES), likelihood: packRate })),
+});
 
 /** `pack.formats` as a row stores it, validated whole and re-minted (`T-FCORE-017`). */
 export const FORMAT_PACK_SCHEMA: z.ZodType<FormatPack, z.ZodTypeDef, unknown> = z.object({
@@ -56,4 +82,7 @@ export const FORMAT_PACK_SCHEMA: z.ZodType<FormatPack, z.ZodTypeDef, unknown> = 
       }),
     ),
   }),
+  /** A pack stored before proposals declares no areas and no proposal facts, until the next revision. */
+  areas: z.array(area).default([]),
+  proposal: proposalFacts.nullable().default(null),
 });

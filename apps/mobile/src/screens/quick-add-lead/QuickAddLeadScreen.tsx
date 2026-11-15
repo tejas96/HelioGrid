@@ -1,4 +1,4 @@
-import { useQuickAddScreen } from '@heliogrid/data/react';
+import { useQuickAddScreen, useShell } from '@heliogrid/data/react';
 import { quickAddDoneToast, quickAddWords, toastHostWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
@@ -38,6 +38,8 @@ export function QuickAddLeadScreen({ route }: Props) {
   const insets = useSafeAreaInsets();
   const toasts = useToasts();
   const moves = useQuickAddMoves();
+  /* The pill's action reopens quick add in place only where that action IS quick add. */
+  const shell = useShell();
   /* A closed toast hands the screen reader back to the page the capture stood over. */
   const page = useRef<View>(null);
   const screen = useQuickAddScreen({
@@ -63,7 +65,10 @@ export function QuickAddLeadScreen({ route }: Props) {
     referrer: referrer === null ? null : (referrer.name ?? format.phone(referrer.phoneE164)),
   });
   return (
-    <ShellPage inView="leads" onAction={screen.reopen}>
+    <ShellPage
+      inView="leads"
+      {...(shell.centreVerb === 'add_lead' ? { onAction: screen.reopen } : {})}
+    >
       <View ref={page}>
         <LeadsListPage onAdd={screen.reopen} />
       </View>

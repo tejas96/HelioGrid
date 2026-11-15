@@ -9,7 +9,8 @@ export function LeadsListActs({
   onImport,
 }: {
   words: LeadsListWords;
-  onAdd: () => void;
+  /** *Add lead*, offered only to who may add leads (`crm.add_edit_leads`); null draws none. */
+  onAdd: (() => void) | null;
   /** *Import*, offered only to who may import leads (`crm.import_leads`); null draws none. */
   onImport: (() => void) | null;
 }) {
@@ -20,9 +21,11 @@ export function LeadsListActs({
           {words.import}
         </Button>
       )}
-      <Button variant="primary" icon={<ShellGlyph name="plus" size="sm" />} onClick={onAdd}>
-        {words.addLead}
-      </Button>
+      {onAdd === null ? null : (
+        <Button variant="primary" icon={<ShellGlyph name="plus" size="sm" />} onClick={onAdd}>
+          {words.addLead}
+        </Button>
+      )}
     </div>
   );
 }

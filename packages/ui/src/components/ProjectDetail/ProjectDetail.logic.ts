@@ -89,11 +89,6 @@ export const PARTY_GLYPH: Readonly<Record<string, ShellGlyphName>> = {
   material: 'package',
 };
 
-/** A person's first name, as the *Call* button says it; the name itself when it is one word. */
-export function firstNameOf(name: string): string {
-  return name.trim().split(/\s+/)[0] ?? name;
-}
-
 /** The rows the project page shows of its checklist: three still waiting, or every row. */
 export const WAITING_SHOWN = 3;
 

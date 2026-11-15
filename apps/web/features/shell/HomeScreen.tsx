@@ -66,7 +66,7 @@ export function HomeScreen() {
   if (home === null) return null;
 
   const head = homeHeadWords(t, home.home, shell.homes);
-  const verb = shell.centreVerb;
+  const verb = shell.homeVerb;
   const openRow = (row: SettingsRow) => router.push(settingsRowPath(SETTINGS_SEGMENT[row]));
   const readiness = today.readiness;
   const ready = readiness?.kind === 'ready' ? readiness.value : null;

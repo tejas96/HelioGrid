@@ -17,10 +17,10 @@ const glyph = (destination: StandingDestination, filled: boolean) =>
   });
 
 /**
- * The pill's items, in `SCR-SHELL-01`'s order: Home, the first list, the add action, the second
+ * The pill's items, in `SCR-SHELL-01`'s order: Home, the first list, the action, the second
  * list, More — no action slot for a preset with no verb (`F7-48`). The slots follow the person and
  * the verb the home in force (`T-SHELL-011`); this only names, draws and wires them. `navigate`,
- * never `push`, so a second tap on the route already open does nothing — save the add action on its
+ * never `push`, so a second tap on the route already open does nothing — save the action on its
  * own page, where `onAction` opens it again in place (quick add's page after a save).
  */
 export function usePillItems(
@@ -47,7 +47,7 @@ export function usePillItems(
     key: 'action',
     verb: true,
     label: verbLabel(t, verb),
-    icon: createElement(ShellGlyph, { name: 'plus-circle' }),
+    icon: createElement(ShellGlyph, { name: 'plus', tone: 'inverse' }),
     anchor: actionRef,
     onClick: onAction ?? (() => navigation.navigate(doorRoute[verb])),
   };

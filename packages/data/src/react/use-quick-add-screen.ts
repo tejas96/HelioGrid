@@ -40,6 +40,11 @@ export interface QuickAddOptions {
   readonly pack: FormatPack;
   /** The referring lead, when quick add opens from its *Add a referral* (`M02-16`); else `null`. */
   readonly referredBy: string | null;
+  /**
+   * *New proposal*'s capture (`T-M06-001`, `M06-05`): the lead is the maker's own from its first
+   * moment, and a number already a lead the person reaches IS that lead — no sheet, no second one.
+   */
+  readonly ownedByCapturer?: boolean;
   /** The capture closed with nothing created — ✕, Esc, the backdrop, Back: the route's way out. */
   readonly onClosed: () => void;
   /**
@@ -170,7 +175,9 @@ export function useQuickAddScreen(options: QuickAddOptions): QuickAddScreen {
 
   /** A create, the referral and *Keep both* riding along: a number already someone's opens the sheet. */
   const create = async (body: CreateLead) => {
-    const outcome = await repositories.leadCapture.create(body);
+    const outcome = await repositories.leadCapture.create(
+      latest.current.ownedByCapturer === true ? { ...body, ownedByCapturer: true } : body,
+    );
     if (outcome.kind === 'duplicate') setSaveMatch(outcome.match);
     else finish({ kind: 'saved', leadId: outcome.lead.lead.id });
   };
@@ -188,7 +195,9 @@ export function useQuickAddScreen(options: QuickAddOptions): QuickAddScreen {
   );
 
   const known = check.kind === 'known' && dismissedFor !== checkable ? check.match : null;
-  const sheetMatch = open ? (saveMatch ?? known) : null;
+  const forProposal = latest.current.ownedByCapturer === true;
+  const reached = reachedLeadOf(check);
+  const sheetMatch = open ? sheetMatchOf(saveMatch ?? known, forProposal) : null;
   const duplicate = sheetMatch === null ? null : quickAddDuplicateOf(sheetMatch, roles, Date.now());
   const sheet = useQuickAddSheetActs({
     duplicate,
@@ -234,6 +243,7 @@ export function useQuickAddScreen(options: QuickAddOptions): QuickAddScreen {
     saveFailure: saving.failure instanceof DataError ? saving.failure : null,
     save: () => {
       if (busy()) return;
+      if (forProposal && reached !== null) return finish({ kind: 'saved', leadId: reached });
       const capture = typedCapture();
       if (capture === null) {
         setPhoneRefusal(phoneRefusalOf(pack, typed.phoneE164));
@@ -268,4 +278,14 @@ export function useQuickAddScreen(options: QuickAddOptions): QuickAddScreen {
       setDismissedFor(checkable);
     },
   };
+}
+
+/** The lead a known number is, where the person reaches it; `null` for any other check. */
+function reachedLeadOf(check: QuickAddScreen['check']): string | null {
+  return check.kind === 'known' && check.match.kind === 'visible' ? check.match.leadId : null;
+}
+
+/** New proposal uses a lead the person reaches as it stands: the form offers it, never the sheet. */
+function sheetMatchOf(match: QuickAddMatch | null, forProposal: boolean): QuickAddMatch | null {
+  return forProposal && match?.kind === 'visible' ? null : match;
 }

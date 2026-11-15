@@ -9,7 +9,7 @@ import { HueTile } from '../HueTile/HueTile.native';
 import { useFormat } from '../MarketProvider';
 import { Menu } from '../Menu/Menu.native';
 import { CardHead } from '../ProjectDetail/ProjectDetailParts.native';
-import { entriesNewestFirst, entryActsOf } from './ProjectMoney.logic';
+import { entriesNewestFirst, entryActsOf, paymentsAmountOf } from './ProjectMoney.logic';
 import type { ProjectMoneyProps } from './ProjectMoney.types';
 
 type EntriesProps = ProjectMoneyProps & { readonly payments: ProjectPayments };
@@ -44,6 +44,7 @@ export function MoneyEntries(props: EntriesProps) {
 
 function EntryLine({
   entry,
+  payments,
   words,
   attaching,
 }: EntriesProps & { readonly entry: ProjectPaymentEntry }) {
@@ -61,7 +62,7 @@ function EntryLine({
       <View style={styles.text}>
         <View style={styles.title}>
           <Text variant="mono" bold>
-            {format.money(entry.amount)}
+            {paymentsAmountOf(payments, format)(entry.amount)}
           </Text>
           {mode === null ? null : (
             <Text variant="body-sm">

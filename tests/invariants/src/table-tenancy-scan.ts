@@ -79,6 +79,10 @@ const GLOBAL_READABLE_TABLES: Record<string, string> = {
   catalog_item_certification:
     'one scheme-keyed certification held by one platform item (M01-34, F1-44): the row is the ' +
     'claim, read by every picker and by M06’s gate, written only by the publish command (T-M01-027)',
+  energy_estimate:
+    'what the energy source of record answered for one point on the map (F8-08, T-M06-033): it ' +
+    'belongs to no company and holds nothing of one; every company reads it, and only the ' +
+    'server’s own fill writes it, on the admin path',
 };
 
 /**
@@ -92,6 +96,9 @@ const GLOBAL_UNIQUES: Record<string, string> = {
   invitation_token_hash_key:
     'the hash of the secret in an invite link: the landing resolves a link before any tenant is ' +
     'known, and the secret is 32 random bytes, so no two tenants can meet on it (T-M01-028)',
+  link_token_hash_key:
+    'the hash of the secret in a customer link: the customer’s page resolves a link before any ' +
+    'tenant is known (F5-21), and the secret is 32 random bytes, so no two tenants can meet on it',
   catalog_rate_entry_sequence_key:
     'the rate ledger’s insertion order (M01-44), an identity column the database alone numbers: ' +
     'its uniqueness is what settles two entries on one date, and no tenant ever supplies a ' +

@@ -21,7 +21,8 @@ export function RollingNumber({ value, variant = 'body', color, bold }: RollingN
   const { fontScale } = useWindowDimensions();
   const role = roleOf(variant);
   const line = Math.round((role.lineHeight ?? role.fontSize * 1.3) * fontScale);
-  const progress = useRef(new Animated.Value(reduced ? 1 : 0)).current;
+  /* Settled until the roll starts: a busy first draw never shows a figure of zeros. */
+  const progress = useRef(new Animated.Value(1)).current;
   const rolled = useRef(false);
   useEffect(() => {
     if (rolled.current || reduced) {
@@ -29,6 +30,7 @@ export function RollingNumber({ value, variant = 'body', color, bold }: RollingN
       return;
     }
     rolled.current = true;
+    progress.setValue(0);
     const roll = Animated.timing(progress, {
       toValue: 1,
       duration: theme.motion.durations.data,

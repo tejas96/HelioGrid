@@ -11,10 +11,12 @@ export {
   isUnassignedOverdue,
   NO_CALL_MONTHS,
   noCallUntilOf,
+  PROPOSAL_FOLLOW_UP_AFTER_MS,
   REOPENED_FOLLOW_UP_AFTER_MS,
   UNASSIGNED_ESCALATES_AFTER_MS,
   wakeInstantOf,
 } from './crm-clock';
+export { customerShortNameOf } from './customer-name';
 export type {
   DedupeMatch,
   DedupeSheet,
@@ -134,6 +136,8 @@ export type {
 export { QUALIFY_CHOICES, QUALIFY_QUESTIONS, qualifyCardOf, qualifyEditOf } from './lead-qualify';
 export type { LeadReach, LeadScope } from './lead-scope';
 export { LEAD_REACHES, leadScopeOf } from './lead-scope';
+export type { LeadSiteFacts, LeadSiteView } from './lead-site-view';
+export { leadSiteViewOf } from './lead-site-view';
 export type {
   LeadListSortKey,
   LeadRowNext,
@@ -186,7 +190,7 @@ export type {
   LeadTransition,
 } from './lifecycle-model';
 export { isClosed, isClosedState, LEAD_ACT_REFUSALS } from './lifecycle-model';
-export { flagDormant, snooze, wake, wakeNow } from './lifecycle-parking';
+export { flagDormant, snooze, wake, wakeNow, wokenByCustomer } from './lifecycle-parking';
 export type {
   MergeCustomer,
   MergedPrimary,

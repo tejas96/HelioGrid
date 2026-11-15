@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { basename, dirname, join, relative } from 'node:path';
-import { walkFiles } from './repo-files';
+import { gitFiles, walkFiles } from './repo-files';
 
 /**
  * Every web route and every phone screen has its regression flow.
@@ -55,11 +55,22 @@ function flowName(file: string, under: string, dropGroups: boolean): string {
   return kept.join('-') || 'root';
 }
 
+/** The page and screen files on disk that git would not commit. */
+function ignoredByGit(repo: string, files: readonly string[]): string[] {
+  const committed = new Set(gitFiles(repo, [WEB_APP, PHONE_SCREENS]));
+  return files
+    .filter((file) => !committed.has(file))
+    .map(
+      (file) =>
+        `${file}: git ignores it — the screen exists on this disk only; except its folder in .gitignore`,
+    );
+}
+
 function scanFlows(repo: string): { findings: string[]; routes: number; screens: number } {
-  const routes = new Set(filesNamed(repo, WEB_APP, PAGE).map((f) => flowName(f, WEB_APP, true)));
-  const screens = new Set(
-    filesNamed(repo, PHONE_SCREENS, SCREEN).map((f) => flowName(f, PHONE_SCREENS, false)),
-  );
+  const pageFiles = filesNamed(repo, WEB_APP, PAGE);
+  const screenFiles = filesNamed(repo, PHONE_SCREENS, SCREEN);
+  const routes = new Set(pageFiles.map((f) => flowName(f, WEB_APP, true)));
+  const screens = new Set(screenFiles.map((f) => flowName(f, PHONE_SCREENS, false)));
   if (routes.size === 0 || screens.size === 0) {
     throw new Error(
       `e2e-flow-per-screen: found ${routes.size} web routes under ${WEB_APP} and ${screens.size} ` +
@@ -83,7 +94,12 @@ function scanFlows(repo: string): { findings: string[]; routes: number; screens:
     .map(
       (screen) => `held screen '${screen}' no longer needs holding — it is gone or has its flow`,
     );
-  return { findings: [...missing, ...staleHolds], routes: routes.size, screens: screens.size };
+  const ignored = ignoredByGit(repo, [...pageFiles, ...screenFiles]);
+  return {
+    findings: [...missing, ...staleHolds, ...ignored],
+    routes: routes.size,
+    screens: screens.size,
+  };
 }
 
 const RUNNER_CALL = /^\s*flow\s.*$/gm;

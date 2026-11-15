@@ -4,13 +4,18 @@ import {
   TARGET_MONTH_NOT_CURRENT,
 } from '@heliogrid/contracts';
 import {
+  basisPointsToPercent,
   daysFrom,
+  type FormatPack,
+  type LeadStage,
   localDate,
   MS_PER_DAY,
   minorUnits,
+  type OpenProposalValue,
+  type ProvenanceTier,
   WIN_RATE_WINDOW_DAYS,
 } from '@heliogrid/domain';
-import { minorUnitsToDecimal } from '@heliogrid/domain/server';
+import { minorUnitsToDecimal, pipelineForecast, sumMinorUnits } from '@heliogrid/domain/server';
 import { ForbiddenException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { ContractException } from '../../common/errors/contract-exception';
@@ -23,6 +28,39 @@ import { firstDayOf, monthOf } from './internal/clock';
 import type { DashboardReader } from './internal/reader';
 
 const HOUR_MS = MS_PER_DAY / 24;
+
+/**
+ * The tier the forecast carries (`F8-01`, `F8-04`): a sum is as weak as its weakest member, and
+ * every payable of a proposal built with no design behind it is a typed figure — `assumed`
+ * (`F8-21`). It rises only when a designed proposal's derived payable can stand behind it.
+ */
+const FORECAST_TIER: ProvenanceTier = 'assumed';
+
+/**
+ * The weighted pipeline (`M13-03`): domain's `pipelineForecast` at the market's own likelihoods —
+ * a projection, expected and not promised, built from open proposals alone, so it can never be in
+ * a total with Won. `null` where the market gives no likelihood at all.
+ */
+function forecastOf(
+  formats: FormatPack,
+  open: readonly OpenProposalValue[],
+  decimal: (amount: number) => string,
+): NonNullable<OwnerDashboard['forecast']> | null {
+  if (formats.proposal === null) return null;
+  const weighed = pipelineForecast(formats.proposal, formats.minorUnitDigits, open);
+  return {
+    expected: decimal(weighed.expected),
+    tier: FORECAST_TIER,
+    count: weighed.count,
+    stages: weighed.stages.map((row) => ({
+      stage: row.stage,
+      count: row.count,
+      total: decimal(row.total),
+      likelihoodPercent: basisPointsToPercent(row.likelihood),
+      expected: decimal(row.expected),
+    })),
+  };
+}
 
 /**
  * The owner dashboard (`SCR-M13-01`, `M13-14`): what needs you, cash, won, the target, the
@@ -63,6 +101,14 @@ export class DashboardsService {
       amount: decimal(period.amountMinor),
     });
     const { medianMinor: median, count: wonInWindow } = facts.wonInWindow;
+    /** What a stage's open proposals are worth; `null` for a stage no proposal prices (`M13-14`). */
+    const stageValue = (stage: LeadStage) => {
+      const priced = facts.openByStage.filter((one) => one.stage === stage);
+      return priced.length === 0
+        ? null
+        : decimal(sumMinorUnits(priced.map((one) => minorUnits(one.payableMinor))));
+    };
+    const forecast = forecastOf(pack.formats, facts.openProposals, decimal);
     const oldestLate = due.rows.items[0];
     const { oldest: blocked } = facts.blockedOnUs;
     return {
@@ -104,6 +150,17 @@ export class DashboardsService {
           days: daysSince(one.since),
         })),
         myOverdueTasks: facts.myOverdueTasks,
+        proposalsUnopened: {
+          count: facts.proposalsUnopened.count,
+          oldest:
+            facts.proposalsUnopened.oldest === null
+              ? null
+              : {
+                  proposalId: facts.proposalsUnopened.oldest.proposalId,
+                  name: facts.proposalsUnopened.oldest.name,
+                  days: daysSince(facts.proposalsUnopened.oldest.sharedAt),
+                },
+        },
       },
       cash: {
         collectedThisMonth: due.collectedThisMonth,
@@ -118,7 +175,8 @@ export class DashboardsService {
       },
       target: facts.target === null ? null : { amount: decimal(facts.target) },
       canSetTarget: reader.companyWide,
-      pipeline: [...facts.pipeline],
+      pipeline: facts.pipeline.map((row) => ({ ...row, value: stageValue(row.stage) })),
+      ...(forecast === null ? {} : { forecast }),
       winLoss: {
         windowDays: WIN_RATE_WINDOW_DAYS,
         won: wonInWindow,

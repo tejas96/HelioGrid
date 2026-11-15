@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { LeadRowNext, LeadSource, LeadStage } from '@heliogrid/domain';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 
 /** A lead as the list shows it, its bill already formatted in the tenant's currency. */
 export interface ListedLead {
@@ -25,6 +26,8 @@ export interface LeadNextMarkProps {
   kind: Exclude<LeadRowNext['kind'], 'none'>;
   /** A task past its moment reads as a problem; nothing else does. */
   overdue: boolean;
+  /** What the step is, drawn before its words on a lead's card (`leadNextGlyphOf`). */
+  glyph: ShellGlyphName;
   /** "Snoozed till 14 Nov", "Quiet 34 days", "2 tries, no answer", "Call 11:30". */
   label: TranslatedText;
 }
@@ -47,10 +50,10 @@ export interface LeadListRowWords {
 
 /**
  * **One lead of the Leads list** (`SCR-M02-03`), its own card on the phone and in a narrow web
- * column (the owner's pick L2): the face, the name — or the number while it has none — then the
- * source's glyph, the stage and the city in one quiet line; at its end the bill in mono, its tier
- * standing once on the list's head, what comes next and the owner's face. A fact the lead lacks is
- * left out, never said as a gap. The whole card opens the lead.
+ * column, in three lines: the name — or the number while it has none — with the stage as glyph,
+ * word and tint; the source's glyph, the city and the bill in mono beside its tier; then, under a
+ * hairline, what comes next and the owner's face, or that nobody owns it yet. A city or a bill the
+ * lead lacks is left out, never said as a gap. The whole card opens the lead.
  */
 export interface LeadListRowProps {
   lead: ListedLead;

@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { IN_PACK } from '../../src/market/pack';
 import { basisPoints } from '../../src/money/basis-points';
 import { minorUnits } from '../../src/money/minor-units';
-import { type TaxableLine, type TaxComponentAmount, taxBreakdown } from '../../src/tax/breakdown';
+import {
+  inclusiveTaxBreakdown,
+  type TaxableLine,
+  type TaxComponentAmount,
+  taxBreakdown,
+} from '../../src/tax/breakdown';
 
 /** Under GST a place of supply is the two-digit state code. */
 const MAHARASHTRA = '27';
@@ -104,5 +109,72 @@ describe('taxBreakdown — the one tax computation (F1-31, M11-08)', () => {
   it('refuses a document_level scheme until a pack declares one', () => {
     const scheme = { ...IN_PACK, tax: { ...IN_PACK.tax, strategy: 'document_level' as const } };
     expect(() => taxBreakdown(scheme, [], INTRA_STATE)).toThrow(/document_level/);
+  });
+});
+
+describe('inclusiveTaxBreakdown — a typed price is the authority (T-M06-024)', () => {
+  const typed = (inclusiveAmount: number, rateBasisPoints: number) => ({
+    inclusiveAmount: minorUnits(inclusiveAmount),
+    rateBasisPoints: basisPoints(rateBasisPoints),
+  });
+
+  it('₹1,90,575 at 8.9% is ₹1,75,000 and ₹15,575, split in halves', () => {
+    const breakdown = inclusiveTaxBreakdown(IN_PACK, [typed(19_057_500, 890)], INTRA_STATE);
+    expect(breakdown.taxableAmount).toBe(17_500_000);
+    expect(breakdown.taxAmount).toBe(1_557_500);
+    expect(breakdown.totalAmount).toBe(19_057_500);
+    expect(byCode(breakdown.components)).toEqual({ CGST: 778_750, SGST: 778_750 });
+    expect(breakdown.currency).toBe('INR');
+  });
+
+  it('an inter-state supply carries the one component', () => {
+    const breakdown = inclusiveTaxBreakdown(IN_PACK, [typed(19_057_500, 890)], INTER_STATE);
+    expect(byCode(breakdown.components)).toEqual({ IGST: 1_557_500 });
+  });
+
+  it.each([1, 99, 100, 101, 10_890, 12_345_67, 99_999_99, 33_333_33])(
+    'a price of %i paise adds up to exactly what was typed, line and document',
+    (inclusive) => {
+      const breakdown = inclusiveTaxBreakdown(IN_PACK, [typed(inclusive, 890)], INTRA_STATE);
+      const [only] = breakdown.lines;
+      expect(breakdown.totalAmount).toBe(inclusive);
+      expect((only?.taxableAmount ?? 0) + (only?.taxAmount ?? 0)).toBe(inclusive);
+      expect(sum(breakdown.components.map((component) => component.amount))).toBe(
+        breakdown.taxAmount,
+      );
+    },
+  );
+
+  it('an odd paisa of tax goes to the last component, never lost', () => {
+    /* ₹1.09 at 8.9%: ₹1.00 and 9 paise of tax — 5 and 4 would be 4.5 each rounded up twice. */
+    const breakdown = inclusiveTaxBreakdown(IN_PACK, [typed(109, 890)], INTRA_STATE);
+    expect(breakdown.taxAmount).toBe(9);
+    expect(byCode(breakdown.components)).toEqual({ CGST: 5, SGST: 4 });
+  });
+
+  it('two lines keep their own rates, and the document is their sum', () => {
+    const breakdown = inclusiveTaxBreakdown(
+      IN_PACK,
+      [typed(10_890_000, 890), typed(5_900_000, 1800)],
+      INTRA_STATE,
+    );
+    expect(breakdown.lines.map((line) => [line.taxableAmount, line.taxAmount])).toEqual([
+      [10_000_000, 890_000],
+      [5_000_000, 900_000],
+    ]);
+    expect(breakdown.taxableAmount).toBe(15_000_000);
+    expect(byCode(breakdown.components)).toEqual({ CGST: 895_000, SGST: 895_000 });
+  });
+
+  it('a line at no rate carries no tax', () => {
+    const breakdown = inclusiveTaxBreakdown(IN_PACK, [typed(12_345, 0)], INTRA_STATE);
+    expect(breakdown.taxableAmount).toBe(12_345);
+    expect(breakdown.taxAmount).toBe(0);
+  });
+
+  it('no lines is a document of nothing', () => {
+    const breakdown = inclusiveTaxBreakdown(IN_PACK, [], INTRA_STATE);
+    expect(breakdown.totalAmount).toBe(0);
+    expect(byCode(breakdown.components)).toEqual({ CGST: 0, SGST: 0 });
   });
 });

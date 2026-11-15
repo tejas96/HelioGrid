@@ -87,6 +87,43 @@ export function formatMinorUnits(pack: FormatPack, amount: MinorUnits): string {
   return formatMoney(pack, amount / perMajorUnit, { digits: pack.minorUnitDigits });
 }
 
+/**
+ * A minor-unit amount as a headline reads it (`T-M06-017`): printed to the minor unit, but a zero
+ * fraction is left unsaid — `₹1,90,575`, `₹19,057.50`. NEVER rounded: an amount with a fraction
+ * prints all of it, so the figure still reconciles (`F1-07`). `beside` names the other amounts of
+ * the same column — a payment plan's parts — which share one form: all whole, or all to the minor
+ * unit, so a column never reads ragged.
+ */
+export function formatMinorUnitsPlainly(
+  pack: FormatPack,
+  amount: MinorUnits,
+  beside: readonly MinorUnits[] = [],
+): string {
+  const perMajorUnit = 10 ** pack.minorUnitDigits;
+  const allWhole = [amount, ...beside].every((each) => each % perMajorUnit === 0);
+  return formatMoney(pack, amount / perMajorUnit, {
+    digits: allWhole ? 0 : pack.minorUnitDigits,
+  });
+}
+
+/**
+ * The same headline form for a figure held in MAJOR units — a `QualifiedAmount`'s `value`, which
+ * the server already brought to the minor unit: its zero fraction is left unsaid, and a real
+ * fraction is printed whole.
+ */
+export function formatMoneyPlainly(
+  pack: FormatPack,
+  value: Numberish,
+  beside: readonly Numberish[] = [],
+): string {
+  if (!isRenderableNumber(value)) return '';
+  const perMajorUnit = 10 ** pack.minorUnitDigits;
+  const isWhole = (each: Numberish) => Math.round(Number(each) * perMajorUnit) % perMajorUnit === 0;
+  /* `beside`: the other figures of the same column, which share one form (as `formatMinorUnitsPlainly`). */
+  const allWhole = [value, ...beside].every(isWhole);
+  return formatMoney(pack, value, { digits: allWhole ? 0 : pack.minorUnitDigits });
+}
+
 /** The compact figure with the currency on it — `₹92L`, `₹1.4 Cr` (`F1-46`). */
 export function formatCompactMoney(pack: FormatPack, value: Numberish): string {
   if (!isRenderableNumber(value)) return '';

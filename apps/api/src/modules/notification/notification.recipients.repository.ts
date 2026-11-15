@@ -9,7 +9,7 @@ import {
   type RolePreset,
 } from '@heliogrid/domain';
 import { and, eq } from 'drizzle-orm';
-import type { NoticeRecipient } from './notification.repository';
+import type { NoticeRecipient } from './notification.writes.repository';
 
 /**
  * The people a notice's subject names, for the recipient rules to read (`F6-05`): its owner, its

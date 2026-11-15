@@ -30,6 +30,12 @@ export const NOTIFICATION_TYPES = [
   'project_moved',
   /** The owner's month in four figures, on the first morning of the next (`M13-21`). */
   'monthly_summary',
+  /** What the customer did on their link (`F5` §4, `F6`'s event matrix): raised to the deal's people. */
+  'proposal_accepted',
+  'proposal_declined',
+  'negotiation_requested',
+  'customer_question',
+  'customer_call_requested',
   'system',
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
@@ -50,7 +56,8 @@ export type NotificationChannel = (typeof NOTIFICATION_CHANNELS)[number];
 
 /**
  * How soon, fixed per TYPE and never improvised per event (`F6-13`): `immediate` is pushed at
- * once and never grouped; `standard` is everything else. Whether a type groups is read from this
+ * once in the working day and never grouped; `standard` is everything else. Quiet hours hold
+ * either kind's push (`F6-14`). Whether a type groups is read from this
  * and from nothing else, which is why the registry carries no grouping class of its own.
  */
 export const NOTIFICATION_URGENCIES = ['immediate', 'standard'] as const;
@@ -118,6 +125,8 @@ export const NOTIFICATION_SOURCES = [
   'design',
   'proposals',
   'sales_execution',
+  /** The customer's own acts on their link (`F5`). */
+  'customer_link',
   /** The delivery after Won (`M08`). */
   'projects',
   'payments',

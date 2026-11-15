@@ -1,3 +1,4 @@
+import { firstNameOf } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
@@ -7,7 +8,7 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { loadSharesOf } from '../AssignPicker/AssignPicker.logic';
 import type { AssignPickerPerson } from '../AssignPicker/AssignPicker.types';
 import { Avatar } from '../Avatar/Avatar.native';
-import { dockColumnsOf, dockedOf, shortNameOf } from './TeamDock.logic';
+import { dockColumnsOf, dockedOf } from './TeamDock.logic';
 import type { TeamDockLayout, TeamDockProps, TeamDockWords } from './TeamDock.types';
 import { LoadRing } from './TeamDockRing.native';
 
@@ -103,7 +104,7 @@ function Face({ person, share, you, layout, waiting, onGive, words, width }: Fac
         <Avatar name={person.name} size={40} />
       </View>
       <Text variant="body-sm" bold style={styles.name}>
-        {you ? words.you : shortNameOf(person.name)}
+        {you ? words.you : firstNameOf(person.name)}
       </Text>
       <Text variant="caption" style={styles.muted}>
         {words.open(person.openCount)}

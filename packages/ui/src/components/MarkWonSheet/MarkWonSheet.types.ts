@@ -21,6 +21,8 @@ export interface MarkWonWords {
   readonly started: (number: string) => TranslatedText;
   readonly openProject: TranslatedText;
   readonly alreadyWon: TranslatedText;
+  /** The customer answered again since the sheet read the value: it now shows what they accepted. */
+  readonly valueNotAccepted: TranslatedText;
   readonly closedLead: TranslatedText;
   /** The picked person can no longer manage a project — they left, or lost the grant. */
   readonly notManager: TranslatedText;
@@ -56,6 +58,7 @@ export interface MarkWonManager {
 export type MarkWonSheetFailure =
   | 'already_won'
   | 'lead_closed'
+  | 'value_not_accepted'
   | 'finer_than_currency'
   | 'value_needed'
   | 'date_in_past'
@@ -87,6 +90,40 @@ export interface MarkWonSheetProps {
   /** Every way out — the sheet refuses it while the send is out. */
   readonly onClose: () => void;
   readonly onOpenProject: () => void;
+  /**
+   * What the lead's proposal gives the win (`M07-62`, `T-M06-025`): the acceptance as its proof
+   * line, the value — locked where the customer accepted the latest shared version — and the plan
+   * the project starts with. Absent on a lead with no proposal read, where the sheet is as it was.
+   */
+  readonly basis?: MarkWonBasisView;
+}
+
+/** One part of the plan the project starts with: its share, its name, when it is due, its amount. */
+export interface MarkWonPlanPart {
+  readonly share: string;
+  readonly name: TranslatedText;
+  readonly due: TranslatedText;
+  /** `null` until a value is typed: no amount is stated for a value nobody gave. */
+  readonly amount: string | null;
+}
+
+/** Mark won's proposal basis, in words — `@heliogrid/i18n`'s `markWonBasisWords` over the server's answer. */
+export interface MarkWonBasisView {
+  /** The accepted version fills the value: it is shown locked and never typed. */
+  readonly locked: boolean;
+  /** The acceptance, or why there is none to stand on. */
+  readonly proofTitle: TranslatedText;
+  readonly proofLine: TranslatedText;
+  readonly lockedLabel: TranslatedText;
+  readonly lockedValue: string;
+  /** "From the accepted proposal. You do not type it." */
+  readonly lockedNote: TranslatedText;
+  readonly planTitle: TranslatedText;
+  readonly plan: readonly MarkWonPlanPart[];
+  /** "Call Anil on … first. A person confirms a win, not a tap." */
+  readonly callFirst: TranslatedText | null;
+  /** Another lead of this customer holds a live proposal (`M06-58`): never won twice unseen. */
+  readonly sibling: TranslatedText | null;
 }
 
 /* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */

@@ -1,6 +1,8 @@
-import type { Certification } from '../certification/pack';
-import { holdsScheme } from '../certification/schemes';
+import type { Certification, CertificationSchemesPack } from '../certification/pack';
+import { holdsScheme, schemeBinds } from '../certification/schemes';
 import type { MinorUnits } from '../money/minor-units';
+import type { ComponentCategory } from '../proposals/component-category';
+import type { SystemType } from '../proposals/system-type';
 import type { DealSegment } from '../tenancy/segment';
 import type { SubsidyPack } from './pack';
 
@@ -48,6 +50,40 @@ export function unmetSubsidySchemes(
   held: readonly Certification[],
 ): readonly string[] {
   return requiredSubsidySchemes(subsidy).filter((scheme) => !holdsScheme(held, scheme));
+}
+
+/**
+ * The schemes one line of a subsidy-path output does not hold, among those that bind its category
+ * (`M06-23`(f), `F1-34`): a panel is read against DCR, and an inverter, a cable, an electrical or
+ * a structure line against nothing the scheme does not bind.
+ */
+export function unmetSubsidySchemesOf(
+  subsidy: SubsidyPack,
+  certification: CertificationSchemesPack,
+  line: { readonly category: ComponentCategory; readonly held: readonly Certification[] },
+): readonly string[] {
+  return unmetSubsidySchemes(subsidy, line.held).filter((scheme) =>
+    schemeBinds(certification, scheme, line.category),
+  );
+}
+
+/** A deal the incentive is being offered to at step 3 (`M06-38`). */
+export interface IncentiveOffer {
+  readonly segment: DealSegment;
+  readonly systemType: SystemType;
+}
+
+/**
+ * Whether the market's incentive is offered to this deal at all (`M06-38`): its segment and its
+ * system type are both ones the scheme reaches. Step 3's *incentive claimed* switch exists, and
+ * starts on, exactly where this holds; elsewhere the incentive is not offered and is zero.
+ */
+export function isIncentiveOffered(subsidy: SubsidyPack, deal: IncentiveOffer): boolean {
+  return (
+    isSubsidyAvailable(subsidy, deal.segment) &&
+    subsidy.offered &&
+    subsidy.eligibility.systemTypes.includes(deal.systemType)
+  );
 }
 
 /**

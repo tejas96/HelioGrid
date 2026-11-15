@@ -51,7 +51,11 @@ export function EmptyState({
 const BLOOM_SIZE = 180;
 
 const styles = StyleSheet.create({
+  /* `flexGrow` centres the state in the room its page gives it; in a list's content, which does
+     not grow, it stays where the rows would start. */
   root: {
+    flexGrow: 1,
+    justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: theme.spacing['sp-12'],
     paddingHorizontal: theme.spacing['sp-6'],
@@ -78,5 +82,4 @@ const styles = StyleSheet.create({
   action: {
     marginTop: theme.spacing['sp-4'],
   },
-  /** In a list the block starts where the rows would. */
 });

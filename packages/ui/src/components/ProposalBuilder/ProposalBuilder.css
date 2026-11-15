@@ -1,0 +1,264 @@
+/* The proposal builder's frame (`T-M06-002`): a focus screen. It fills the room its caller gives
+   it — the page's whole height — and scrolls only its step. Tokens only; motion is transform and
+   opacity from the motion tokens, and falls to the end state under reduced motion. */
+.hg-pbf {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  color: var(--text-primary);
+}
+
+/* ── phone ─────────────────────────────────────────────────────────────── */
+/* The phone form in a wider room (a tablet, a narrow desktop window): one readable column, centred,
+   so the dock is not a bar across the whole window. */
+.hg-pbf[data-form="phone"] {
+  max-width: var(--content-narrow);
+  margin-inline: auto;
+}
+.hg-pbf-top {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: calc(var(--sp-3) + env(safe-area-inset-top, 0px)) var(--sp-4) 0;
+}
+.hg-pbf-top-gap {
+  flex: none;
+  width: 44px;
+}
+.hg-pbf-capsule {
+  min-width: 0;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-3) 0 var(--sp-4);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
+  box-shadow:
+    var(--e1),
+    inset 0 0 0 1px var(--line-soft);
+  cursor: pointer;
+  font-size: var(--fs-body-sm);
+  transition: transform var(--dur-micro) var(--ease-standard);
+}
+.hg-pbf-capsule:active {
+  transform: scale(var(--press-scale));
+}
+.hg-pbf-capsule-count {
+  flex: none;
+  font: var(--fw-medium) var(--fs-body-sm) / 1 var(--font-mono);
+  color: var(--accent-text);
+  white-space: nowrap;
+}
+/* A long Hindi or Marathi title is cut here and read whole in the list the capsule opens. */
+.hg-pbf-capsule-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--fw-medium);
+}
+.hg-pbf-capsule .hg-shell-glyph {
+  flex: none;
+  color: var(--text-tertiary);
+}
+.hg-pbf-track {
+  flex: none;
+  display: flex;
+  gap: var(--sp-1);
+  padding: var(--sp-3) var(--sp-5) 0;
+}
+.hg-pbf-track-part {
+  flex: 1 1 0;
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--text-primary) 10%, transparent);
+}
+.hg-pbf-track-part[data-at="done"] {
+  background: var(--text-primary);
+}
+.hg-pbf-track-part[data-at="now"] {
+  flex-grow: 2.2;
+  background: var(--accent);
+}
+.hg-pbf-track-part[data-todo] {
+  background: var(--warning);
+}
+.hg-pbf-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-5) var(--sp-5) calc(var(--sp-20) + var(--sp-10));
+  -webkit-mask-image: linear-gradient(var(--ink) calc(100% - 110px), transparent calc(100% - 64px));
+  mask-image: linear-gradient(var(--ink) calc(100% - 110px), transparent calc(100% - 64px));
+}
+.hg-pbf-scroll::-webkit-scrollbar {
+  display: none;
+}
+.hg-pbf-title {
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+.hg-pbf-heading {
+  margin: 0;
+  font: var(--fw-regular) 32px / 36px var(--font-display);
+  letter-spacing: var(--tr-display);
+}
+.hg-pbf-under {
+  margin: var(--sp-1) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+.hg-pbf-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--success-text);
+  animation: hg-fade-in var(--dur-emphasised) var(--ease-enter) backwards;
+}
+.hg-pbf-save[data-tone="warning"] {
+  color: var(--warning-text);
+}
+.hg-pbf-dock {
+  position: absolute;
+  left: var(--sp-4);
+  right: var(--sp-4);
+  bottom: calc(var(--sp-5) + env(safe-area-inset-bottom, 0px));
+  z-index: 4;
+  display: flex;
+  gap: var(--sp-2);
+  padding: 6px;
+  border-radius: var(--r-pill);
+  box-shadow:
+    var(--e4),
+    inset 0 0 0 1px var(--line-soft);
+}
+/* The frost sits on a layer of its own: a blur on the dock itself would hold the page's overlays. */
+.hg-pbf-dock::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+.hg-pbf-dock > * {
+  position: relative;
+}
+.hg-pbf-dock-back.hg-icon-button {
+  flex: none;
+  background: var(--fill);
+}
+.hg-pbf-dock-next {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-4);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  font: var(--fw-medium) var(--fs-button) / 1 var(--font-sans);
+  cursor: pointer;
+  box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--action-primary) 70%, transparent);
+  transition:
+    transform var(--dur-micro) var(--ease-standard),
+    background var(--dur-micro) var(--ease-standard);
+}
+.hg-pbf-dock-next:hover {
+  background: var(--action-primary-hover);
+}
+.hg-pbf-dock-next:active {
+  transform: scale(var(--press-scale));
+}
+.hg-pbf-dock-word {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hg-pbf-dock-next .hg-shell-glyph {
+  flex: none;
+  transition: transform var(--dur-standard) var(--ease-enter);
+}
+.hg-pbf-dock-next:hover .hg-shell-glyph {
+  transform: translateX(3px);
+}
+
+/* ── a settings page's parts on the phone (`T-M01-030`) ─────────────────── */
+.hg-pbf-capsule-still {
+  padding: 0 var(--sp-5);
+  cursor: default;
+}
+.hg-pbf-capsule-still:active {
+  transform: none;
+}
+.hg-pbf-tabs {
+  flex: none;
+  display: flex;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5) 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.hg-pbf-tabs::-webkit-scrollbar {
+  display: none;
+}
+.hg-pbf-tab {
+  flex: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+.hg-pbf-tab-in {
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+  color: var(--text-primary);
+  font-size: var(--fs-body-sm);
+  white-space: nowrap;
+  transition:
+    background var(--dur-standard) var(--ease-standard),
+    color var(--dur-standard) var(--ease-standard);
+}
+/* The part in view is the accent wash, as every chosen option is. */
+.hg-pbf-tab-in[data-now] {
+  background: var(--accent-subtle);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--accent-text);
+  font-weight: var(--fw-medium);
+}
+.hg-pbf-tab-in .hg-shell-glyph {
+  color: currentColor;
+}

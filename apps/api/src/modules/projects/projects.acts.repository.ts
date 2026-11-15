@@ -60,9 +60,17 @@ export class ProjectsActsRepository {
       if (locked === null) return { outcome: 'not-found' };
       const result = await run(tx, locked);
       if (result.kind === 'refused') return { outcome: 'refused', refusal: result.refusal };
+      if (result.kind === 'forbidden') return { outcome: 'forbidden' };
       // The lock proved the reader's reach; the act may end it (a manager handing the project on),
       // so the answer is read with that proven reach, not the reader's scope again.
-      const detail = await loadProjectDetail(tx, reader, projectId, formats, 'proven');
+      const detail = await loadProjectDetail(
+        tx,
+        reader,
+        projectId,
+        formats,
+        'proven',
+        context.crewRules,
+      );
       if (detail === null) throw new Error(`project ${projectId} vanished inside its own act`);
       return { outcome: 'done', detail, notified: result.notified, started: result.started };
     });

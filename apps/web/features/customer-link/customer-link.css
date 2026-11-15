@@ -1,0 +1,232 @@
+/* The customer's page (`SCR-F5-01`…`04`) and the printer's page: what only these pages lay out — the
+   one-hand column and its second column at the desktop's room, the hero on the cover picture, the
+   cards, the note of an answer, the bar in thumb reach. The blocks, the sheets, the buttons and the
+   picture are `packages/ui`'s. Tokens only; a length is a multiple of a spacing token. */
+
+.hg-cust {
+  /* The page's main act is the company's own colour (`F5-81`), derived to pass contrast. */
+  --action-primary: var(--accent);
+  --action-primary-hover: var(--accent-hover);
+  --action-primary-pressed: var(--accent-hover);
+  --hg-cust-line: calc(var(--sp-0-5) / 2);
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--canvas);
+}
+
+.hg-cust-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  /* Room for the bar and for the phone's home indicator under it. */
+  padding: var(--sp-4) var(--sp-4) calc(var(--sp-24) + var(--sp-12) + env(safe-area-inset-bottom));
+  padding-inline: max(var(--sp-4), env(safe-area-inset-left))
+    max(var(--sp-4), env(safe-area-inset-right));
+}
+
+/* The brand row: the company's lockup at the start, the language pill at the far end. The shared
+   header pads itself for a page of its own; here the column already gives the room. */
+.hg-cust-top.hg-tenant-header {
+  flex-wrap: nowrap;
+  padding: 0;
+}
+
+.hg-cust-top .hg-tenant-header-lockup {
+  gap: var(--sp-3);
+}
+
+.hg-cust-top .hg-tenant-header-name {
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body-lg);
+  font-weight: var(--fw-semibold);
+}
+
+.hg-cust-grid,
+.hg-cust-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-cust-side {
+  display: none;
+}
+
+.hg-cust[data-centred] .hg-cust-column {
+  flex: 1;
+  padding-block-end: var(--sp-16);
+}
+
+.hg-cust[data-centred] .hg-cust-grid {
+  flex: 1;
+  justify-content: center;
+}
+
+.hg-cust-arriving {
+  padding: var(--sp-6) var(--sp-4);
+}
+
+/* ── the hero: the cover picture, the greeting, three figures on glass ───── */
+.hg-cust-hero {
+  display: grid;
+  min-height: calc(var(--sp-20) * 5.25);
+  border-radius: var(--r-xl);
+  box-shadow: var(--e3);
+  /* The page's one entrance: the hero rises once over content already drawn (`F7-51`). */
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+
+.hg-cust-hero-short {
+  min-height: calc(var(--sp-20) * 3);
+}
+
+.hg-cust-hero-words {
+  margin-block-start: auto;
+  padding: 0 var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-cust-hero-words-short {
+  padding-block-end: var(--sp-5);
+}
+
+.hg-cust-hero-words > span {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.hg-cust-hero-words > h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-cover);
+  line-height: var(--lh-cover);
+  letter-spacing: var(--tr-cover);
+  text-wrap: balance;
+}
+
+.hg-cust-hero-glass {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  margin: var(--sp-4);
+  border-radius: var(--r-md);
+  /* biome-ignore lint/plugin/raw-white-css: glass — a frost of white over the picture's shade, holding the hero's three figures */
+  background: color-mix(in srgb, var(--text-inverse) 14%, transparent);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  /* biome-ignore lint/plugin/raw-white-css: glass — the frost's own edge */
+  box-shadow: inset 0 0 0 var(--hg-cust-line)
+    color-mix(in srgb, var(--text-inverse) 22%, transparent);
+}
+
+.hg-cust-hero-glass > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--sp-3) var(--sp-3);
+}
+
+.hg-cust-hero-glass > div + div {
+  /* biome-ignore lint/plugin/raw-white-css: glass — the line between two figures on the frost */
+  box-shadow: inset var(--hg-cust-line) 0 0 color-mix(in srgb, var(--text-inverse) 20%, transparent);
+}
+
+.hg-cust-hero-glass dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+}
+
+.hg-cust-hero-glass dt {
+  order: 1;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}
+
+/* The figure's tier under its label: the glass's own ink, since the quiet ink of a white card
+   reads too faint over the picture's shade (WCAG AA, `CLAUDE.md` §10). */
+.hg-cust-hero-glass .hg-cust-hero-tier {
+  order: 2;
+  margin: 0;
+  line-height: var(--lh-caption);
+}
+
+.hg-cust-hero-tier .hg-provenance-tier {
+  color: inherit;
+}
+
+/* The side card's price and its tier, as a block's head puts them. */
+.hg-cust-over-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+/* A figure's tier after the sentence that holds it: one quiet mark at the line's end. */
+.hg-cust-quiet .hg-provenance-tier {
+  vertical-align: middle;
+}
+
+/* ── the desktop's room: two columns, the acts beside the content ───────── */
+@media (min-width: 968px) {
+  .hg-cust-column {
+    gap: var(--sp-6);
+    max-width: calc(var(--sp-20) * 14);
+    padding: var(--sp-6) var(--sp-8) var(--sp-16);
+  }
+
+  .hg-cust-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) calc(var(--sp-20) * 4.5);
+    gap: var(--sp-6);
+    align-items: start;
+  }
+
+  .hg-cust-grid[data-one] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hg-cust-main {
+    gap: var(--sp-5);
+  }
+
+  .hg-cust-side {
+    position: sticky;
+    inset-block-start: var(--sp-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+
+  .hg-cust-hero {
+    min-height: calc(var(--sp-20) * 5.5);
+  }
+
+  .hg-cust-hero-short {
+    min-height: calc(var(--sp-20) * 3);
+  }
+
+  .hg-cust-hero-words > h1 {
+    font-size: var(--fs-cover-wide);
+    line-height: var(--lh-cover-wide);
+  }
+
+  .hg-cust-hero-glass dd {
+    font-size: var(--fs-figure);
+    line-height: var(--lh-figure);
+  }
+}
+
+/* A person who asked for less motion gets the page as it stands (`F7-51`): nothing here moves. */

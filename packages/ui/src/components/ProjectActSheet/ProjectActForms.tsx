@@ -1,7 +1,5 @@
-import { type FormEvent, type ReactNode, useState } from 'react';
-import { DatePicker } from '../DatePicker';
+import type { FormEvent, ReactNode } from 'react';
 import { Input } from '../Input';
-import { dayOf } from '../LeadActSheet/LeadActParts';
 import { Textarea } from '../Textarea';
 import { footOf, sendWhen } from './ProjectActSheet.logic';
 import type { ProjectFormOf } from './ProjectActSheet.types';
@@ -39,33 +37,6 @@ export function NotNeededForm({ form, words, ...frame }: ProjectFormOf<'notNeede
         destructive={false}
       />
     </OneLine>
-  );
-}
-
-/**
- * A new install date — the day promised to the customer, today at the earliest. A promised day
- * already behind today is not offered again: the person picks a new one.
- */
-export function DateForm({ form, words, ...frame }: ProjectFormOf<'date'>) {
-  const start = form.start !== null && form.start >= form.firstDay ? form.start : null;
-  const [day, setDay] = useState<string | null>(start);
-  return (
-    <>
-      <DatePicker
-        words={words.fields.date}
-        value={day ?? undefined}
-        min={form.firstDay}
-        disabled={frame.sending}
-        onChange={(value) => setDay(dayOf(value))}
-      />
-      <ProjectSheetSend
-        label={words.date.send}
-        {...footOf(frame)}
-        {...sendWhen(day, form.onSend)}
-        glyph="calendar"
-        destructive={false}
-      />
-    </>
   );
 }
 

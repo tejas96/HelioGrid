@@ -14,7 +14,7 @@ import { FailedRead } from '../EmptyState/FailedRead.native';
 import { HeroPanel } from '../HeroPanel/HeroPanel.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { useFormat } from '../MarketProvider';
-import { dueRowOf, tileGroupsOf } from './MoneyDue.logic';
+import { dueFiguresOf, dueRowOf } from './MoneyDue.logic';
 import type { MoneyDueProps } from './MoneyDue.types';
 
 type DueProps = MoneyDueProps & { readonly due: Due };
@@ -81,29 +81,29 @@ export function MoneyDue(props: MoneyDueProps) {
 
 /** The total to collect, the late and due-today tiles, and what came in this month. */
 function DueHero({ due, words }: DueProps) {
-  const format = useFormat();
+  const figures = dueFiguresOf(due, useFormat());
   return (
     <HeroPanel label={words.toCollect}>
       <View style={styles.block}>
         <View style={styles.figureRow}>
           <Text variant="hero" oneLine>
-            {format.money(due.toCollect)}
+            {figures.toCollect}
           </Text>
         </View>
         <View style={styles.tiles}>
-          {tileGroupsOf(due).map((group) => (
-            <View key={group} style={[styles.tile, TILE[group].wash]}>
-              <Text variant="caption" bold style={TILE[group].ink}>
-                {words.tile(words.group(group), due.groups[group].count)}
+          {figures.tiles.map((tile) => (
+            <View key={tile.group} style={[styles.tile, TILE[tile.group].wash]}>
+              <Text variant="caption" bold style={TILE[tile.group].ink}>
+                {words.tile(words.group(tile.group), tile.count)}
               </Text>
-              <Text variant="mono" oneLine style={TILE[group].ink}>
-                {format.money(due.groups[group].amount)}
+              <Text variant="mono" oneLine style={TILE[tile.group].ink}>
+                {tile.amount}
               </Text>
             </View>
           ))}
         </View>
         <Text variant="body-sm" color="secondary">
-          {words.collectedThisMonth(format.money(due.collectedThisMonth))}
+          {words.collectedThisMonth(figures.collectedThisMonth)}
         </Text>
       </View>
     </HeroPanel>
@@ -140,8 +140,7 @@ function DueGroup(props: DueProps & { readonly group: MoneyDueGroupView<MoneyDue
 }
 
 function DueRow(props: DueProps & { readonly row: MoneyDueRow; readonly first: boolean }) {
-  const format = useFormat();
-  const shown = dueRowOf(props.row, props.due, props);
+  const shown = dueRowOf(props.row, props.due, props, useFormat());
   const { remind } = shown;
   return (
     <CardRow
@@ -160,7 +159,7 @@ function DueRow(props: DueProps & { readonly row: MoneyDueRow; readonly first: b
         )
       }
     >
-      <DueRowWords shown={shown} amount={format.money(props.row.outstanding)} />
+      <DueRowWords shown={shown} />
     </CardRow>
   );
 }
@@ -169,7 +168,7 @@ function DueRow(props: DueProps & { readonly row: MoneyDueRow; readonly first: b
  * The row's words on the phone: the name clear of *Remind* at the row's top end, and under it the
  * project and part, then the amount with its mark — so nothing sits under the act.
  */
-function DueRowWords({ shown, amount }: { shown: ReturnType<typeof dueRowOf>; amount: string }) {
+function DueRowWords({ shown }: { shown: ReturnType<typeof dueRowOf> }) {
   const asideRoom = useCardRowAsideRoom();
   return (
     <View style={styles.row}>
@@ -183,7 +182,7 @@ function DueRowWords({ shown, amount }: { shown: ReturnType<typeof dueRowOf>; am
         </Text>
         <View style={styles.rowEnd}>
           <Text variant="mono" oneLine>
-            {amount}
+            {shown.amount}
           </Text>
           <StatusMark tone={shown.mark.tone} label={shown.mark.label} />
         </View>

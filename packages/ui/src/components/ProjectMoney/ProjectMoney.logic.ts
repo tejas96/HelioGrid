@@ -1,5 +1,6 @@
 import type {
   PayRequest,
+  ProjectMoneyGlance,
   ProjectPart,
   ProjectPaymentEntry,
   ProjectPayments,
@@ -15,6 +16,20 @@ import type { ProjectMoneyProps, ProjectMoneyWords } from './ProjectMoney.types'
  * What the payments screen shows, worked out from what the server sent — positions, words and
  * marks, never a figure (`F4-04`): every amount drawn is one the server wrote.
  */
+
+/**
+ * How the payments screen prints an amount: exactly, never rounded (`M11-43`), and the whole screen
+ * one form — a paisa in any figure keeps the fraction in all, so the parts add up to the total on sight.
+ */
+export function paymentsAmountOf(payments: ProjectPayments, format: MarketFormat) {
+  const { money } = payments;
+  const column = [
+    ...[money.total, money.collected, money.toCollect, money.next],
+    ...payments.parts.flatMap((part) => [part.amount, part.received, part.outstanding, part.extra]),
+    ...payments.entries.map((entry) => entry.amount),
+  ];
+  return (amount: string) => format.moneyPlain(amount, column);
+}
 
 /** A part's state as a mark: its tone beside its word and glyph (`F7-12`). */
 export const PART_TONE: Readonly<Record<string, StatusTone>> = {
@@ -76,7 +91,9 @@ export function partLineOf(
     const last = payments.entries.filter((entry) => entry.partId === part.id).at(-1);
     return last?.receivedOn ? words.receivedOn(format.date(last.receivedOn)) : words.received;
   }
-  if (part.state === 'part_received') return words.left(format.money(part.outstanding));
+  if (part.state === 'part_received') {
+    return words.left(paymentsAmountOf(payments, format)(part.outstanding));
+  }
   if (part.dueOn !== null) return words.dueSince(format.date(part.dueOn));
   return words.dueAt(format.word('stage', part.dueOnStage));
 }
@@ -87,12 +104,14 @@ export function partLineOf(
  */
 export function partNotesOf(
   part: ProjectPart,
+  payments: ProjectPayments,
   words: ProjectMoneyWords,
   format: MarketFormat,
 ): TranslatedText[] {
   const shared = part.lastShared;
+  const amount = paymentsAmountOf(payments, format);
   return [
-    ...(Number(part.extra) > 0 ? [words.extra(format.money(part.extra))] : []),
+    ...(Number(part.extra) > 0 ? [words.extra(amount(part.extra))] : []),
     ...(shared === null || part.state === 'received'
       ? []
       : [words.sharedBy(shared.by.name, format.date(shared.at))]),
@@ -105,10 +124,11 @@ export function partItemsOf(
   words: ProjectMoneyWords,
   format: MarketFormat,
 ): TimelineItem[] {
+  const amount = paymentsAmountOf(payments, format);
   return payments.parts.map((part) => ({
     id: part.id,
     label: words.partShare(part.label, String(Number(part.share))),
-    meta: format.money(part.amount),
+    meta: amount(part.amount),
     description: partLineOf(part, payments, words, format),
     status: PART_STATUS[part.state] ?? 'upcoming',
   }));
@@ -206,7 +226,7 @@ export function partRowsOf(
   const { payments, words } = props;
   return partItemsOf(payments, words, format).map((item, index) => {
     const part = payments.parts[index];
-    const notes = part === undefined ? [] : partNotesOf(part, words, format);
+    const notes = part === undefined ? [] : partNotesOf(part, payments, words, format);
     const acts = part === undefined ? [] : partActsOf(props, part);
     const more =
       part === undefined || (notes.length === 0 && acts.length === 0)
@@ -239,4 +259,27 @@ export function heroActsOf(
         }
       : null,
   };
+}
+
+/**
+ * The Money card's three amounts, never rounded (`M11-43`): one card, one form — a paisa in any of
+ * them keeps the fraction in all, and whole rupees leave it unsaid.
+ */
+export function moneyCardAmountsOf(money: ProjectMoneyGlance, format: MarketFormat) {
+  const card = [
+    money.collected,
+    money.total,
+    ...(money.duePart === null ? [] : [money.duePart.outstanding]),
+  ];
+  const plain = (amount: string) => format.moneyPlain(amount, card);
+  return {
+    collected: plain(money.collected),
+    total: plain(money.total),
+    outstanding: money.duePart === null ? null : plain(money.duePart.outstanding),
+  };
+}
+
+/** A plan's amounts: one plan, one form — a paisa in any keeps the fraction in all, never rounded (`M11-43`). */
+export function amountsOf(plan: { readonly parts: readonly { readonly amount: string }[] }) {
+  return plan.parts.map((part) => part.amount);
 }

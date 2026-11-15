@@ -1,18 +1,28 @@
-import type { LeadFiles } from '@heliogrid/data/react';
+import type { LeadDetailScreen, LeadFiles, LeadProposalsMoves } from '@heliogrid/data/react';
 import { useNavigation } from '@react-navigation/native';
+import { useEffect } from 'react';
 import { Linking, Share } from 'react-native';
 import { useFilePick } from '../../shared/use-file-pick';
+import { useProposalMoves } from '../../shared/use-proposal-moves';
 
 /**
  * Lead Detail's ways out on the phone — the platform adapter: back to where it was opened from,
  * the leads list, the dialler, the system share sheet for a message to send from the person's own
- * apps, quick add naming this lead as the referrer (`M02-16`), and the system's own chooser for a
- * file and its viewer for one stored (`M02-32`).
+ * apps, quick add naming this lead as the referrer (`M02-16`), the system's own chooser for a file
+ * and its viewer for one stored (`M02-32`), and where the lead's proposals lead (`T-M06-001`).
  */
 export function useLeadDetailMoves(files: LeadFiles) {
   const navigation = useNavigation();
   const pick = useFilePick();
+  const proposal = useProposalMoves();
+  /* Where the lead's proposals lead: the builder, a proposal's own page, a sibling lead. */
+  const proposals: LeadProposalsMoves = {
+    toBuilder: proposal.toBuilder,
+    toProposal: proposal.toProposal,
+    toLead: proposal.toLead,
+  };
   return {
+    proposals,
     back: () => {
       if (navigation.canGoBack()) navigation.goBack();
       else navigation.navigate('Leads');
@@ -57,3 +67,19 @@ export function useLeadDetailMoves(files: LeadFiles) {
 }
 
 export type LeadDetailMoves = ReturnType<typeof useLeadDetailMoves>;
+
+/**
+ * `?won=1` in the route opens *Mark won* once the lead is read by someone who may close it — a
+ * proposal's *Confirm won* (`M07-62`); the mark is then taken off the route, so the next *Confirm
+ * won* handed to this screen, already in the stack, opens the sheet again.
+ */
+export function useWonOnArrival(won: string | undefined, screen: LeadDetailScreen): void {
+  const navigation = useNavigation();
+  const ready =
+    screen.read.kind === 'ready' && screen.canWin && screen.read.value.view.acts.markWon;
+  useEffect(() => {
+    if (won === undefined || !ready) return;
+    screen.won.open();
+    navigation.setParams({ won: undefined });
+  }, [won, ready, screen, navigation]);
+}

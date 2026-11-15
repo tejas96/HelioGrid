@@ -1,4 +1,8 @@
-import { catalogImportWorkflow, defineWorkflow } from '@heliogrid/contracts/workflows';
+import {
+  catalogImportWorkflow,
+  defineWorkflow,
+  paymentReceiptWorkflow,
+} from '@heliogrid/contracts/workflows';
 import { orchestrationOutbox, uuidv7 } from '@heliogrid/db';
 import { eq, inArray } from 'drizzle-orm';
 import { PinoLogger } from 'nestjs-pino';
@@ -136,6 +140,39 @@ describe.skipIf(skip)('the orchestration outbox, against a migrated database', (
     const workflowId = catalogImportWorkflow.workflowId(event);
     expect(temporal.startedIds()).toEqual([workflowId, workflowId]);
     expect((await rowOf(event.eventId))?.dispatchedAt).toBeInstanceOf(Date);
+  });
+
+  it('a payment’s receipt event starts its receipt workflow, by the fast path and by the sweep (M11-45)', async () => {
+    // Written as recording a payment writes it (`projects.payments.repository.ts`).
+    const receipt = { eventId: uuidv7(), tenantId: company.tenantId, entryId: uuidv7() };
+    const missed = { eventId: uuidv7(), tenantId: company.tenantId, entryId: uuidv7() };
+    for (const event of [receipt, missed]) {
+      await pools.tenants.withTenantTransaction(company.tenantId, (tx) =>
+        recordOutboxEvent(tx, company.tenantId, paymentReceiptWorkflow, event),
+      );
+    }
+    await pools.admin.db
+      .update(orchestrationOutbox)
+      .set({ createdAt: aMinuteAgo() })
+      .where(eq(orchestrationOutbox.id, missed.eventId));
+    const temporal = aRecordingTemporal();
+    const dispatcher = dispatcherOver(temporal.gateway);
+
+    await dispatcher.dispatchNow(receipt.eventId);
+    await dispatcher.dispatchDue();
+
+    expect(temporal.starts).toEqual(
+      expect.arrayContaining(
+        [receipt, missed].map((event) =>
+          expect.objectContaining({
+            taskQueue: paymentReceiptWorkflow.taskQueue,
+            workflowId: paymentReceiptWorkflow.workflowId(event),
+          }),
+        ),
+      ),
+    );
+    expect((await rowOf(receipt.eventId))?.dispatchedAt).toBeInstanceOf(Date);
+    expect((await rowOf(missed.eventId))?.dispatchedAt).toBeInstanceOf(Date);
   });
 
   it('sweeps an event the fast path missed, and leaves one still inside its grace', async () => {

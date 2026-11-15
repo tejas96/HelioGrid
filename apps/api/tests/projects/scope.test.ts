@@ -98,7 +98,12 @@ describe.skipIf(skip)('project visibility, over HTTP against a migrated database
   it('an installer sees only the projects whose crew names them, and may tick but not move', async () => {
     expect(await liveIds(as('installer'))).toEqual([crewed]);
     const detail = (await detailOf(as('installer'), crewed)).body;
-    expect(detail.acts).toEqual({ stages: false, documents: false, steps: true });
+    expect(detail.acts).toEqual({
+      stages: false,
+      documents: false,
+      steps: true,
+      versionInForce: false,
+    });
     expect((await detailOf(as('installer'), other)).status).toBe(HttpStatus.NOT_FOUND);
     const move = await actOn(as('installer'), crewed, 'move', { to: 'installation' });
     expect(move.status).toBe(HttpStatus.FORBIDDEN);
@@ -143,7 +148,12 @@ describe.skipIf(skip)('project visibility, over HTTP against a migrated database
     expect(await liveIds(as('seller'))).toEqual([crewed]);
     const detail = (await detailOf(as('seller'), crewed)).body;
     expect(detail.soldBy).toMatchObject({ userId: here.people.seller.userId });
-    expect(detail.acts).toEqual({ stages: false, documents: false, steps: false });
+    expect(detail.acts).toEqual({
+      stages: false,
+      documents: false,
+      steps: false,
+      versionInForce: false,
+    });
     for (const [verb, body] of [
       ['move', { to: 'installation' }],
       ['steps/tick', { step: 'mounting_structure', doneBy: null }],

@@ -56,4 +56,20 @@ export const APPEND_ONLY_LEDGERS: Record<string, string> = {
   tranche_request_share:
     'each tap that shared a part’s pay request — what stops a second person asking twice ' +
     '(ruling 2026-11-10)',
+  proposal_version:
+    'one generated version, frozen whole with its component and payment rows; a change makes a ' +
+    'new version, never an edit of a sent one (M06-42, M06-43)',
+  proposal_share:
+    'each tap that marked a proposal shared — a tap, never a delivery (M06-53, F5-28)',
+  link_event:
+    'what happened on a customer link: opened, a section viewed, an answer — the link, the moment ' +
+    'and a device class, never a network address (F5-27, F5-29)',
+  acceptance_record:
+    'the customer’s Accept with that one moment’s full attribution, written once per version ' +
+    '(F5-43, F5-46)',
+  customer_question:
+    'a question the customer asked on their link, their words untouched; the reply is a call ' +
+    '(F5-53)',
+  callback_request:
+    'a call the customer asked for — their timestamped consent to be called (F5-54)',
 };

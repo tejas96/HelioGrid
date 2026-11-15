@@ -1,9 +1,11 @@
 import { type MinorUnits, minorUnits, sumMinorUnits } from './minor-units';
 
 /**
- * The client-payable equation — `cost + battery − incentive − discount = payable` (`M06-35`) —
- * every amount a whole number of the currency's minor unit, so the block, the table and the
- * document that all state a total can only agree (`M11-08`).
+ * The client-payable equation — `cost + battery − discount = payable` (`M06-35`) — every amount a
+ * whole number of the currency's minor unit, so the block, the table and the document that all
+ * state a total can only agree (`M11-08`). An incentive is a deduction ONLY where the market pack
+ * says the company receives it; where the customer does — India — it never lowers the payable and
+ * the caller shows it beside the total as information (`proposals/money.ts` decides, from the pack).
  *
  * The row fixes three things a display might be tempted to soften. A payable driven to zero or
  * below is REPORTED — the card warns with the negative figure, and the block belongs to Generate
@@ -25,7 +27,7 @@ export interface PayableLine {
    * zero. A negative amount under `add` reads as a deduction of that size.
    */
   amount: MinorUnits | null;
-  /** `add` (default) — cost, battery, tax. `deduct` — incentive, subsidy, discount. */
+  /** `add` (default) — cost, battery, tax. `deduct` — a discount, and an incentive the company itself receives. */
   kind?: EquationSign;
 }
 

@@ -1,6 +1,6 @@
 import { useSettingsScreen } from '@heliogrid/data/react';
-import { SETTINGS_SEGMENT, type SettingsRow } from '@heliogrid/domain';
-import { settingsListFor, settingsWords } from '@heliogrid/i18n';
+import { SETTINGS_SEGMENT, type SettingsRow, type WorkDestination } from '@heliogrid/domain';
+import { destinationLabel, settingsListFor, settingsWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { useInstantMove, usePrefetch, useShownPath } from '../../../lib/instant-move';
 import { DOOR_PATH, settingsRowPath } from '../constants';
@@ -24,6 +24,11 @@ export function useSettingsList() {
     hints: words.hints,
     person: { name: settings.personName },
     open: (row: SettingsRow) => move(pathOf(row)),
+    /** The work lists the pill has no slot for, which the list page offers first at phone width. */
+    workLists: {
+      items: settings.workLists.map((key) => ({ key, name: destinationLabel(t, key) })),
+      onOpen: (list: WorkDestination) => move(DOOR_PATH[list]),
+    },
     first: settings.firstBeside,
     openedRow: settings.openedRow,
     /** The row whose page is in view, or on its way: the segment under `More`, else null. */

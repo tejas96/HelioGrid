@@ -7,12 +7,12 @@ import {
   userAccount,
 } from '@heliogrid/db';
 import { dueSinceOf, type ProjectStage, type StageArrival } from '@heliogrid/domain';
-import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { memberNameOf } from '../crm/crm.public';
 
 /*
- * The facts a project's money is read from (`M11-10`): its parts, what the ledger holds against
+ * The facts a project's money is read from (`M11-10`): its parts in force, what the ledger holds against
  * each, who last shared each part's request, and the stage history that says when each fell due.
  * Nothing here works out a figure — `internal/money.ts` does, on the server.
  */
@@ -32,6 +32,8 @@ export interface PartFacts {
   } | null;
   /** Payments less reversals against this part, in minor units. */
   readonly receivedMinor: number;
+  /** The day its last payment came in; null while none has. */
+  readonly lastPaidOn: string | null;
   readonly lastShared: { readonly by: { userId: string; name: string }; readonly at: Date } | null;
   /** The instant it fell due, or null while it is not due. */
   readonly dueSince: number | null;
@@ -64,13 +66,23 @@ export async function partFactsOf(
       })
       .from(projectTranche)
       .leftJoin(waiver, eq(waiver.id, projectTranche.waivedBy))
-      .where(and(eq(projectTranche.tenantId, tenantId), inArray(projectTranche.projectId, ids)))
+      .where(
+        and(
+          eq(projectTranche.tenantId, tenantId),
+          inArray(projectTranche.projectId, ids),
+          // A part a newer version in force replaced is out of the schedule (`M08-50`).
+          isNull(projectTranche.replacedAt),
+        ),
+      )
       .orderBy(asc(projectTranche.projectId), asc(projectTranche.position)),
     tx
       .select({
         trancheId: projectPayment.trancheId,
         received: sql<string>`sum(${projectPayment.amountMinor})`,
         paid: sql<boolean>`bool_or(${projectPayment.kind} = 'payment')`,
+        paidOn: sql<
+          string | null
+        >`max(${projectPayment.receivedOn}) filter (where ${projectPayment.kind} = 'payment')`,
       })
       .from(projectPayment)
       .where(and(eq(projectPayment.tenantId, tenantId), inArray(projectPayment.projectId, ids)))
@@ -147,7 +159,9 @@ interface PartRow {
 /** One part's facts: its ledger total, its last share, and when its stage made it due. */
 function factsOfPart(
   part: PartRow,
-  ledger: { readonly received: string; readonly paid: boolean } | undefined,
+  ledger:
+    | { readonly received: string; readonly paid: boolean; readonly paidOn: string | null }
+    | undefined,
   share: { readonly at: Date; readonly by: string; readonly name: string | null } | undefined,
   arrivals: readonly StageArrival[],
 ): PartFacts {
@@ -169,6 +183,7 @@ function factsOfPart(
             reason: part.waiveReason,
           },
     receivedMinor: Number(ledger?.received ?? 0),
+    lastPaidOn: ledger?.paidOn ?? null,
     lastShared:
       share === undefined
         ? null

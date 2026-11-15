@@ -78,7 +78,7 @@ export function ShellScreen() {
 
   const home = shell.home;
   const head = home === null ? null : homeHeadWords(t, home.home, shell.homes);
-  const verb = shell.centreVerb;
+  const verb = shell.homeVerb;
   const openRow = (row: SettingsRow) =>
     navigation.navigate('SettingsRow', { segment: SETTINGS_SEGMENT[row] });
   return (

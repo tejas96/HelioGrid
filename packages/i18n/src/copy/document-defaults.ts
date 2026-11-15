@@ -1,5 +1,7 @@
 import {
   type DocumentDefaults,
+  PROPOSAL_VALIDITY_DAYS,
+  type RichTextValue,
   richTextParagraphs,
   type StandardTranche,
   standardTrancheTemplates,
@@ -10,13 +12,14 @@ import type { MessageRef, Translator } from '../runtime';
  * The platform's document defaults (`M01-28`, `M01-51`, `M01-52`, `M01-54`): short, neutral, and
  * the tenant's to replace. They are catalog copy, so a new language translates them with every
  * other line; a default reads in its reader's words until the tenant saves its own, which is then
- * one value, shown as written (`F3-10`). No number lives in the terms — a validity period or a
- * price is the proposal's own fact; the splits' shares are `packages/domain`'s.
+ * one value, shown as written (`F3-10`). The terms' one number is the validity `M06-15` rules, a
+ * sentence and never a field, its days `packages/domain`'s; a price is the proposal's own fact.
  */
+const VALIDITY: MessageRef = /*i18n*/ {
+  id: 'This proposal is valid for {days} days from its date. Prices and taxes are as itemised in it.',
+};
+
 const TERMS: readonly MessageRef[] = [
-  /*i18n*/ {
-    id: 'This proposal is valid until the date stated on it. Prices and taxes are as itemised in it.',
-  },
   /*i18n*/ {
     id: 'Payment falls due in the tranches listed in the payment schedule. Work at each stage starts once the tranche for that stage is received.',
   },
@@ -76,10 +79,17 @@ const TRANCHE: Readonly<Record<StandardTranche, MessageRef>> = {
   on_commissioning: /*i18n*/ { id: 'On commissioning' },
 };
 
+function defaultTerms(t: Translator['t']): RichTextValue {
+  return richTextParagraphs([
+    t(VALIDITY, { days: PROPOSAL_VALIDITY_DAYS }),
+    ...TERMS.map((paragraph) => t(paragraph)),
+  ]);
+}
+
 /** Every document default in one reader's words. */
 export function documentDefaults(t: Translator['t']): DocumentDefaults {
   return {
-    terms: richTextParagraphs(TERMS.map((paragraph) => t(paragraph))),
+    terms: defaultTerms(t),
     phases: PHASES.map((phase) => ({ name: t(phase.name), description: t(phase.description) })),
     trancheTemplates: standardTrancheTemplates({
       name: (split) => t(SPLIT_NAME, { split }),

@@ -1,10 +1,6 @@
 import { theme } from '@heliogrid/theme';
-import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { DatePicker } from '../DatePicker/DatePicker.native';
-import type { ISODate } from '../DatePicker/DatePicker.types';
 import { Input } from '../Input/Input.native';
-import { dayOf } from '../LeadActSheet/LeadParkForms.native';
 import { Textarea } from '../Textarea/Textarea.native';
 import { footOf, sendWhen } from './ProjectActSheet.logic';
 import type { ProjectFormOf } from './ProjectActSheet.types';
@@ -22,30 +18,6 @@ export function NotNeededForm({ form, words, ...frame }: ProjectFormOf<'notNeede
         {...footOf(frame)}
         {...sendWhen(reason.typed, form.onSend)}
         glyph={null}
-        destructive={false}
-      />
-    </View>
-  );
-}
-
-/** A new install date — today at the earliest; a promised day already behind today is not offered. */
-export function DateForm({ form, words, ...frame }: ProjectFormOf<'date'>) {
-  const start = form.start !== null && form.start >= form.firstDay ? form.start : null;
-  const [day, setDay] = useState<ISODate | null>(start);
-  return (
-    <View style={styles.form}>
-      <DatePicker
-        words={words.fields.date}
-        min={form.firstDay}
-        {...(day === null ? {} : { value: day })}
-        onChange={(value) => setDay(dayOf(value))}
-        disabled={frame.sending}
-      />
-      <ProjectSheetSend
-        label={words.date.send}
-        {...footOf(frame)}
-        {...sendWhen(day, form.onSend)}
-        glyph="calendar"
         destructive={false}
       />
     </View>

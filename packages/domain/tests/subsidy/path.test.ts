@@ -4,10 +4,12 @@ import { IN_PACK } from '../../src/market/pack';
 import { minorUnits } from '../../src/money/minor-units';
 import type { SubsidyPack } from '../../src/subsidy/pack';
 import {
+  isIncentiveOffered,
   isIncentiveStageSkippable,
   isSubsidyAvailable,
   requiredSubsidySchemes,
   unmetSubsidySchemes,
+  unmetSubsidySchemesOf,
 } from '../../src/subsidy/path';
 
 const NO_SUBSIDY: SubsidyPack = { offered: false };
@@ -91,5 +93,48 @@ describe('isIncentiveStageSkippable — the claim stage (F1-14, F1-35)', () => {
     expect(
       isIncentiveStageSkippable(NO_SUBSIDY, { segment: 'residential', incentive: SOME_INCENTIVE }),
     ).toBe(true);
+  });
+});
+
+describe('unmetSubsidySchemesOf — one line, against the schemes that bind its category (M06-23)', () => {
+  const certification = IN_PACK.certificationSchemes;
+
+  it.each([
+    ['a DCR panel passes', 'panel', [DCR_COMPLIANT], []],
+    ['a panel that is listed but not DCR is named', 'panel', [ALMM_ONLY], ['DCR']],
+    ['a panel with no certification fails closed', 'panel', [], ['DCR']],
+    ['an inverter is never read against DCR', 'inverter', [], []],
+    ['nor a cable', 'cable', [], []],
+    ['nor an electrical line', 'electrical', [], []],
+    ['nor a structure', 'structure', [], []],
+    ['nor a battery', 'battery', [], []],
+  ] as const)('%s', (_, category, held, unmet) => {
+    expect(unmetSubsidySchemesOf(IN_PACK.subsidy, certification, { category, held })).toEqual(
+      unmet,
+    );
+  });
+
+  it('a market declaring no subsidy demands nothing of any line', () => {
+    expect(
+      unmetSubsidySchemesOf(NO_SUBSIDY, certification, { category: 'panel', held: [] }),
+    ).toEqual([]);
+  });
+});
+
+describe('isIncentiveOffered — the segment and the system type the scheme reaches (M06-38)', () => {
+  it.each([
+    ['residential', 'on_grid', true],
+    ['residential', 'hybrid', true],
+    ['residential', 'off_grid', false],
+    ['commercial', 'on_grid', false],
+    ['commercial', 'off_grid', false],
+  ] as const)('an IN %s %s deal: %s', (segment, systemType, offered) => {
+    expect(isIncentiveOffered(IN_PACK.subsidy, { segment, systemType })).toBe(offered);
+  });
+
+  it('is offered to nobody where the pack declares no subsidy', () => {
+    expect(isIncentiveOffered(NO_SUBSIDY, { segment: 'residential', systemType: 'on_grid' })).toBe(
+      false,
+    );
   });
 });

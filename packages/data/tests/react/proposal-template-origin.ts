@@ -18,6 +18,7 @@ import { DataProvider } from '../../src/react/provider';
 import { useProposalTemplate } from '../../src/react/use-proposal-template';
 import { type Answer, answeredCompanyFacts } from './branding-origin';
 import { listeningOrigin, send, writeBodyOf } from './origin-wire';
+import { answerTerms } from './tranche-templates-origin';
 
 export { refusal } from './origin-wire';
 
@@ -63,6 +64,8 @@ interface TemplateOrigin {
   /** The `reader` each template read asked in, in order. */
   readers: (string | null)[];
   bankName: string | null;
+  /** Every profile save's body — the account typed on the page goes there. */
+  profileBodies: unknown[];
 }
 
 export const templateOrigin: TemplateOrigin = {
@@ -74,6 +77,7 @@ export const templateOrigin: TemplateOrigin = {
   timelineBodies: [],
   readers: [],
   bankName: 'HDFC Bank',
+  profileBodies: [],
 };
 
 async function answerSave(
@@ -97,6 +101,13 @@ async function answerSave(
   send(res, req, 200, saved);
 }
 
+async function answerProfileSave(req: IncomingMessage, res: ServerResponse) {
+  const write = await writeBodyOf(req, res);
+  if (write === null) return;
+  templateOrigin.profileBodies.push(write.body);
+  send(res, req, 200, { ...(write.body as object), bankDetailsTyped: null });
+}
+
 function answer(req: IncomingMessage, res: ServerResponse) {
   const url = new URL(req.url ?? '/', 'http://origin');
   const path = url.pathname;
@@ -113,7 +124,9 @@ function answer(req: IncomingMessage, res: ServerResponse) {
       ? void answerSave(req, res, 'timeline')
       : send(res, req, 200, templateOrigin.timeline);
   }
+  if (path === '/settings/business-profile' && saving) return void answerProfileSave(req, res);
   if (answeredCompanyFacts(req, res, templateOrigin.bankName)) return;
+  if (path.startsWith('/settings/tranche-templates')) return void answerTerms(req, res);
   send(res, req, 404, { code: 'NOT_FOUND', message: 'Not found', requestId: 'test' });
 }
 
@@ -130,14 +143,20 @@ afterEach(() => {
     timelineBodies: [],
     readers: [],
     bankName: 'HDFC Bank',
+    profileBodies: [],
   });
 });
 
+/** The real provider over the origin, for `renderHook`'s wrapper. */
+export function providedTemplate() {
+  const layer = createDataLayer({ baseUrl: listening.url(), language: () => 'en' });
+  return ({ children }: { children: ReactNode }) =>
+    createElement(DataProvider, { layer, children });
+}
+
 /** The Proposal template page, mounted in the real provider over the origin, its reads answered. */
 export async function mounted() {
-  const layer = createDataLayer({ baseUrl: listening.url(), language: () => 'en' });
-  const wrapper = ({ children }: { children: ReactNode }) =>
-    createElement(DataProvider, { layer, children });
+  const wrapper = providedTemplate();
   const view = renderHook(() => useProposalTemplate(DEFAULTS), { wrapper });
   await waitFor(() => expect(view.result.current.read.kind).toBe('ready'));
   return view;

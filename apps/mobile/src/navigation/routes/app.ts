@@ -16,6 +16,12 @@ import {
 import { ProjectHandoverScreen } from '../../screens/project-handover';
 import { ProjectPaymentsScreen } from '../../screens/project-payments';
 import { ProjectsBoardScreen } from '../../screens/projects-board';
+import { ProposalBuilderScreen } from '../../screens/proposal-builder';
+import { ProposalDocumentScreen } from '../../screens/proposal-document';
+import { ProposalLinksScreen } from '../../screens/proposal-links';
+import { ProposalTrackScreen } from '../../screens/proposal-track';
+import { ProposalVersionsScreen } from '../../screens/proposal-versions';
+import { ProposalsListScreen } from '../../screens/proposals-list';
 import { QuickAddLeadScreen } from '../../screens/quick-add-lead';
 import { RoleExplainerScreen } from '../../screens/role-explainer';
 import { SearchScreen } from '../../screens/search';
@@ -53,6 +59,18 @@ import {
  * placeholder when it lands (`T-SHELL-001`'s Used by). A door's link is domain's address for it, the
  * one the web serves (`M01-61`).
  */
+/**
+ * A proposal's screens are one per proposal: a link to another proposal while one is open pushes its
+ * own screen, so a sheet left open on the first never opens over the second.
+ */
+function proposalScreenId({
+  params,
+}: {
+  params: Readonly<object | undefined>;
+}): string | undefined {
+  return params !== undefined && 'proposalId' in params ? String(params.proposalId) : undefined;
+}
+
 export const appScreens = {
   Shell: { screen: ShellScreen, if: useShowsShell },
   /** The step after a join that named the account from the invite (`SCR-M01-09`); the landing opens it. */
@@ -134,6 +152,53 @@ export const appScreens = {
     screen: ProjectPaymentsScreen,
     if: useHasHome,
     linking: `${DOOR_SEGMENT.projects}/:projectId/payments`,
+  },
+  /** The Proposals list (`SCR-M06-19`), the pill's Proposals door. */
+  [doorRoute.proposals]: {
+    screen: ProposalsListScreen,
+    if: useHasHome,
+    linking: DOOR_SEGMENT.proposals,
+  },
+  /**
+   * One proposal after it is built (`SCR-M06-18`) at `proposals/<id>`, the address the list, a
+   * lead, a search result and a proposal notice open; `?share=1` opens its share sheet on arrival.
+   * Its document, its versions and its links sit under it, as on the web.
+   */
+  ProposalTrack: {
+    screen: ProposalTrackScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.proposals}/:proposalId`,
+    getId: proposalScreenId,
+  },
+  /**
+   * The builder (`SCR-M06-02`) at `proposals/<id>/build`, as the web's: a focus screen with no
+   * shell. `?step=<key>` names a step. The proposal screens open it by this address
+   * (`proposalBuildAddress`, `screens/shared/use-proposal-moves.ts`).
+   */
+  ProposalBuild: {
+    screen: ProposalBuilderScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.proposals}/:proposalId/build`,
+    getId: proposalScreenId,
+  },
+  /** A proposal's document (`SCR-M06-17`); `?v=<n>` names a version, else the newest is read. */
+  ProposalDocument: {
+    screen: ProposalDocumentScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.proposals}/:proposalId/document`,
+    getId: proposalScreenId,
+  },
+  ProposalVersions: {
+    screen: ProposalVersionsScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.proposals}/:proposalId/versions`,
+    getId: proposalScreenId,
+  },
+  ProposalLinks: {
+    screen: ProposalLinksScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.proposals}/:proposalId/links`,
+    getId: proposalScreenId,
   },
   /**
    * Customer Merge (`SCR-M02-06`) at `customers/merge?survivorId=…&loserId=…`, as the web's

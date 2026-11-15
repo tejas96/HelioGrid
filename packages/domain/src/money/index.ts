@@ -23,7 +23,9 @@ export type {
   ResolvedPayableLine,
 } from './equation';
 export {
+  AMOUNT_TOO_LARGE,
   AMOUNT_WHOLE_DIGITS_MAX,
+  amountFitsWire,
   type MinorUnits,
   minorUnits,
   minorUnitsOfDecimal,

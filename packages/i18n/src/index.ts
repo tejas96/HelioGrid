@@ -100,6 +100,7 @@ export * from './copy/compliance-floor';
 export { CONNECTION, connectionWords } from './copy/connection';
 export { AGENT_CALL_CORRELATION, agentCallCorrelation } from './copy/correlation';
 export * from './copy/crm';
+export * from './copy/customer-link-notices';
 export * from './copy/data-table';
 export * from './copy/date-picker';
 export * from './copy/date-set';
@@ -203,17 +204,16 @@ export * from './copy/project-notices';
 export * from './copy/project-sheets';
 export { stageWords } from './copy/project-stages';
 export * from './copy/projects';
+export * from './copy/proposal-after';
+export * from './copy/proposal-builder';
+export * from './copy/proposal-document-pages';
 export type { ProposalTemplateWords } from './copy/proposal-template';
 export {
   proposalTemplatePageWords,
   proposalTemplateWords,
   sectionWords,
 } from './copy/proposal-template';
-export {
-  phaseEditorWords,
-  templateFieldRefusals,
-  templateRefusalWords,
-} from './copy/proposal-template-phase';
+export * from './copy/proposal-template-phase';
 export { provenanceWords, standingLabel, tierLabel } from './copy/provenance';
 export * from './copy/qr-code';
 export * from './copy/range-field';

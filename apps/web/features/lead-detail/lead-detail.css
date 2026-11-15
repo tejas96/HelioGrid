@@ -1,12 +1,5 @@
-/* Lead Detail (`SCR-M02-04`): what only this page lays out — the way back above it and its two
-   columns at the desktop's room. The hero, the dock, the cards and the sheets are `packages/ui`'s. */
-
-.hg-lead-detail-back {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-2);
-}
+/* Lead Detail (`SCR-M02-04`): what only this page lays out — its two columns at the
+   desktop's room; the way back above it is `PageTrail`. The hero, the dock, the cards and the sheets are `packages/ui`'s. */
 
 .hg-lead-detail-column {
   display: flex;

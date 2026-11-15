@@ -66,4 +66,15 @@ export const SCENES: Readonly<Record<EmptySceneName, readonly SceneLayer[]>> = {
     { marks: [circle(60, 11, 2.5)], pace: 'drop', step: 3 },
     { marks: [circle(73, 15, 2.5)], pace: 'drop', step: 4, faint: true },
   ],
+  failed: [
+    { marks: [rect(14, 10, 62, 70, 8)], pace: 'rise', step: 0 },
+    { marks: [path('M24 28h38')], pace: 'rise', step: 1 },
+    { marks: [path('M24 42h26')], pace: 'rise', step: 2, faint: true },
+    { marks: [path('M24 56h10'), path('M40 56h6')], pace: 'rise', step: 3, faint: true },
+    {
+      marks: [path('M106 72a12 12 0 1 1-3.5-8.5'), path('M96.5 63.5h6v-6')],
+      pace: 'glide',
+      step: 4,
+    },
+  ],
 };

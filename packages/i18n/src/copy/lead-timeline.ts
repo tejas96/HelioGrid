@@ -7,6 +7,8 @@ import type { KnownActivity, TranslatedText } from '@heliogrid/contracts';
 import {
   type ActivityActor,
   DEAL_SEGMENTS,
+  type FormatPack,
+  formatMoneyPlainly,
   LANGUAGES,
   MESSAGE_TEMPLATE_KEYS,
 } from '@heliogrid/domain';
@@ -22,7 +24,9 @@ import {
 } from './crm-vocabulary';
 import { leadTaskTitle, qualifyCardWords } from './lead-detail-parts';
 import { leadSourceWord } from './lead-marks';
+import { siteFieldNameOf, siteFieldValue } from './lead-site';
 import { projectEntryWords } from './project-timeline';
+import { proposalEntryWords } from './proposal-timeline';
 
 type T = Translator['t'];
 
@@ -78,12 +82,14 @@ const FIELD_NAME: Readonly<Record<string, MessageRef>> = {
   ...QUALIFY_QUESTION_LABEL,
 };
 
+type TimelineWordKind = 'stage' | 'party' | 'reason' | 'row' | 'step' | 'area';
 /** How the caller writes a day, a time and an amount on the tenant's clock and in its currency. */
 export interface LeadTimelineFormats {
+  /** The tenant's market format: an amount prints as the server wrote it, never rounded. */
+  readonly pack: FormatPack;
   readonly day: (date: string) => string;
   readonly time: (hhmm: string) => string;
-  readonly money: (amount: string) => string;
-  readonly word: (kind: 'stage' | 'party' | 'reason' | 'row' | 'step', key: string) => string;
+  readonly word: (kind: TimelineWordKind, key: string) => string;
 }
 
 /** What every entry carries, whatever its kind. */
@@ -110,10 +116,22 @@ function asSent(code: string): TranslatedText {
 }
 
 /** A stored value of a field, in words: a vocabulary key worded, an amount in the currency. */
-function fieldValue(t: T, formats: LeadTimelineFormats, field: string, value: string | null) {
+function fieldValue(
+  t: T,
+  formats: LeadTimelineFormats,
+  field: string,
+  value: string | null,
+  other: string | null,
+) {
   if (value === null) return t(ENTRY.notSet);
-  if (field === 'monthlyBill') return shownAsSent(formats.money(value));
+  if (field === 'monthlyBill') {
+    /* Both sides share one form: a paisa on one keeps it on the other, a zero fraction is unsaid. */
+    const beside = other === null ? [] : [other];
+    return shownAsSent(formatMoneyPlainly(formats.pack, value, beside));
+  }
   if (field === 'doNotCall') return t(value === 'true' ? ENTRY.on : ENTRY.off);
+  const site = siteFieldValue(t, (code) => formats.word('area', code), field, value);
+  if (site !== null) return site;
   const segment = DEAL_SEGMENTS.find((known) => known === value);
   if (field === 'segment' && segment !== undefined) return t(DEAL_SEGMENT_WORD[segment]);
   if (field === 'preferredLanguage') {
@@ -145,12 +163,12 @@ function fieldChange(
   formats: LeadTimelineFormats,
   body: Extract<KnownActivity, { kind: 'field_change' }>['body'],
 ): LeadTimelineEntryWords {
-  const name = FIELD_NAME[body.field];
+  const name = siteFieldNameOf(body.field, body.from, body.to) ?? FIELD_NAME[body.field];
   return {
     summary: t(ENTRY.fieldChanged, { field: name === undefined ? asSent(body.field) : t(name) }),
     detail: t(ENTRY.fromTo, {
-      from: fieldValue(t, formats, body.field, body.from),
-      to: fieldValue(t, formats, body.field, body.to),
+      from: fieldValue(t, formats, body.field, body.from, body.to),
+      to: fieldValue(t, formats, body.field, body.to, body.from),
     }),
   };
 }
@@ -254,6 +272,18 @@ function knownEntry(t: T, formats: LeadTimelineFormats, entry: KnownActivity) {
     case 'project_step':
     case 'project_changed':
       return projectEntryWords(t, formats, entry);
+    case 'proposal_generated':
+    case 'proposal_shared':
+    case 'proposal_withdrawn':
+    case 'proposal_opened':
+    case 'proposal_accepted':
+    case 'proposal_negotiation_requested':
+    case 'proposal_declined':
+    case 'customer_question':
+    case 'customer_call_requested':
+    case 'customer_link_changed':
+    case 'proposal_version_in_force':
+      return proposalEntryWords(t, formats, entry);
   }
 }
 

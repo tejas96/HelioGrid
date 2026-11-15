@@ -8,6 +8,11 @@ import type { NotificationListRow } from './NotificationCard.types';
  */
 const GLYPH_BY_TYPE: Record<Exclude<NotificationType, 'system'>, string> = {
   proposal_opened: 'eye',
+  proposal_accepted: 'check',
+  proposal_declined: 'flag',
+  negotiation_requested: 'note',
+  customer_question: 'note',
+  customer_call_requested: 'phone',
   agent_escalation: 'phone',
   follow_up_due: 'clock',
   survey_submitted: 'calendar-check',

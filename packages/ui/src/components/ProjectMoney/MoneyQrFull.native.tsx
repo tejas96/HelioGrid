@@ -12,7 +12,7 @@ import type { MoneyQrFullProps } from './ProjectMoney.parts.types';
  */
 export function MoneyQrFull({ request, payTo, words, onClose }: MoneyQrFullProps) {
   const format = useFormat();
-  const amount = request === null ? '' : format.money(request.amount);
+  const amount = request === null ? '' : format.moneyPlain(request.amount);
   return (
     <Modal
       open={request !== null && request.upiUri !== null}

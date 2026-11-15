@@ -1,6 +1,8 @@
 import type { ProjectPayments } from '@heliogrid/contracts';
+import { notification } from '@heliogrid/db';
 import { FOUNDER_ROLE } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
+import { and, eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { skipWithoutDatabase } from '../support/fixture';
 import {
@@ -220,5 +222,24 @@ describe.skipIf(skip)('a project’s money acts, over HTTP against a migrated da
     expect(detail.money?.duePart).toMatchObject({ id: second?.id, outstanding: second?.amount });
     const card = (await boardOf(owner())).live.find((one) => one.id === projectId);
     expect(card).toMatchObject({ todo: 'money_due', money: { duePart: { id: second?.id } } });
+  });
+
+  it('the part-due notice prints a paise amount exactly — ₹19,057.50, never ₹19,058 (F1-07)', async () => {
+    /* The default terms ask 60% before dispatch: 60% of ₹31,762.50 is ₹19,057.50. */
+    const projectId = await aProject('31762.50');
+    const [first] = (await paymentsOf(owner(), projectId)).parts;
+    await record(owner(), projectId, { partId: first?.id, amount: first?.amount });
+    await walk(owner(), projectId, ['material_ordered']);
+    const told = await world.pools.admin.db
+      .select({ body: notification.body })
+      .from(notification)
+      .where(
+        and(
+          eq(notification.recipientUserRef, ownerId()),
+          eq(notification.subjectRef, projectId),
+          eq(notification.type, 'payment_due'),
+        ),
+      );
+    expect(told.map((one) => one.body)).toContain('₹19,057.50 to collect. Share the pay request.');
   });
 });

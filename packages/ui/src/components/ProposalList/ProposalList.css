@@ -1,0 +1,191 @@
+/* ProposalList — the filter chips, then a card per proposal on a phone or a table at width. */
+
+.hg-plist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* One row that scrolls: a chip never wraps under another. */
+.hg-plist-filters {
+  display: flex;
+  gap: var(--sp-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.hg-plist-filters > * {
+  flex: none;
+}
+
+.hg-plist-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-plist-cards li {
+  position: relative;
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) both;
+  animation-delay: calc(var(--i) * var(--stagger-step));
+}
+
+/* Copy for another lead: in the card's foot corner, beside the latest line, which leaves it room. */
+.hg-plist-card-copy {
+  position: absolute;
+  inset-block-end: var(--sp-2);
+  inset-inline-end: var(--sp-2);
+}
+
+/* A tile: its fill and edge are `Ground.css`'s. */
+.hg-plist-card {
+  display: block;
+  width: 100%;
+  padding: var(--sp-4);
+  border-radius: var(--r-tile);
+  color: var(--text-primary);
+  text-align: start;
+}
+
+.hg-plist-card-face {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-plist-card-face[data-quiet] {
+  color: var(--text-secondary);
+}
+
+.hg-plist-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-1) var(--sp-2);
+}
+
+.hg-plist-card-top b,
+.hg-plist-name {
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body-lg);
+  font-weight: var(--fw-semibold);
+  overflow-wrap: anywhere;
+}
+
+.hg-plist-name {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.hg-plist-card-mid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-2);
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+/* The facts of one line, a middle dot between two. */
+.hg-plist-card-mid > * + *::before {
+  content: "·";
+  margin-inline-end: var(--sp-2);
+}
+
+.hg-plist-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-plist-card-line,
+.hg-plist-latest {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  overflow-wrap: anywhere;
+}
+
+.hg-plist-latest {
+  color: var(--text-secondary);
+}
+
+.hg-plist-cards li[data-copy] .hg-plist-card-line {
+  padding-inline-end: var(--sp-12);
+}
+
+.hg-plist-standing {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+}
+
+.hg-plist-row-acts {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* A row that is not current: its corrective act under the card; the copy act moves into that row. */
+.hg-plist-card-act {
+  display: flex;
+  padding-block-start: var(--sp-2);
+}
+
+.hg-plist-cards li[data-corrects] .hg-plist-card-copy {
+  inset-block-end: 0;
+  inset-inline-end: 0;
+}
+
+.hg-plist-cards li[data-corrects] .hg-plist-card-line {
+  padding-inline-end: 0;
+}
+
+.hg-plist-more {
+  align-self: center;
+}
+
+.hg-pick-lead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-pick-lead-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-pick-lead-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-2);
+  border-radius: var(--r-md);
+  color: var(--text-primary);
+  text-align: start;
+}
+
+.hg-pick-lead-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-pick-lead-words b {
+  font-weight: var(--fw-semibold);
+  overflow-wrap: anywhere;
+}
+
+.hg-pick-lead-words span {
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  overflow-wrap: anywhere;
+}

@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
+  AMOUNT_WHOLE_DIGITS_MAX,
+  amountFitsWire,
   amountForQuantity,
   minorUnits,
   minorUnitsOfDecimal,
   minorUnitsToDecimal,
   sumMinorUnits,
+  wholeMajorUnits,
 } from '../../src/money/minor-units';
 
 describe('minorUnits — a whole number of the currency minor unit (F1-07)', () => {
@@ -128,5 +131,35 @@ describe('minorUnitsToDecimal — whole minor units as the wire text', () => {
     ] as const) {
       expect(minorUnitsToDecimal(minorUnitsOfDecimal(text, digits), digits)).toBe(text);
     }
+  });
+});
+
+describe('wholeMajorUnits — an estimate to the whole major unit of its currency', () => {
+  it.each([
+    ['two digits: half a rupee rounds up', 1_234_550, 2, 1_234_600],
+    ['two digits: a paisa under half rounds down', 1_234_549, 2, 1_234_500],
+    ['two digits: a whole rupee stays', 1_234_500, 2, 1_234_500],
+    ['two digits: under half a rupee is nothing', 49, 2, 0],
+    ['two digits: a negative half rounds away from zero', -150, 2, -200],
+    ['three digits: a thousandth of the unit', 1_499, 3, 1_000],
+    ['no minor unit: the amount is already whole', 1_234, 0, 1_234],
+    ['a fraction of a minor unit, as a share of a year', 299_999.5, 2, 300_000],
+    ['zero', 0, 2, 0],
+  ])('%s', (_, amount, digits, whole) => {
+    expect(wholeMajorUnits(amount, digits)).toBe(whole);
+  });
+});
+
+describe('amountFitsWire — a typed figure the wire can carry', () => {
+  const ceiling = 10 ** AMOUNT_WHOLE_DIGITS_MAX;
+
+  it.each([
+    ['zero', 0, true],
+    ['the largest figure with the whole digits the wire carries', ceiling - 0.01, true],
+    ['the same figure as a credit', -(ceiling - 0.01), true],
+    ['one digit past the wire', ceiling, false],
+    ['one digit past the wire, as a credit', -ceiling, false],
+  ])('%s', (_, figure, fits) => {
+    expect(amountFitsWire(figure)).toBe(fits);
   });
 });

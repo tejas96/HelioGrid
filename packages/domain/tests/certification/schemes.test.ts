@@ -6,6 +6,7 @@ import {
   certificationScheme,
   certificationVerdict,
   holdsScheme,
+  schemeBinds,
   undeclaredSchemes,
 } from '../../src/certification/schemes';
 
@@ -90,5 +91,32 @@ describe('certificationVerdict — whether one claim may be held under a market 
   it('a market declaring no scheme holds no claim', () => {
     const none = { schemes: [], standards: IN_CERTIFICATION_SCHEMES.standards };
     expect(certificationVerdict(none, { scheme: 'DCR', reference: null })).toBe('undeclared');
+  });
+});
+
+describe('schemeBinds — which component categories a scheme applies to (M06-23, F1-34)', () => {
+  it.each([
+    ['DCR', 'panel', true],
+    ['DCR', 'inverter', false],
+    ['DCR', 'cable', false],
+    ['DCR', 'electrical', false],
+    ['DCR', 'structure', false],
+    ['DCR', 'battery', false],
+    ['ALMM', 'panel', true],
+    ['ALMM', 'inverter', false],
+  ] as const)('%s on a %s line: %s', (scheme, category, binds) => {
+    expect(schemeBinds(IN_CERTIFICATION_SCHEMES, scheme, category)).toBe(binds);
+  });
+
+  it('a scheme the market never declared binds nothing', () => {
+    expect(schemeBinds(IN_CERTIFICATION_SCHEMES, 'UL', 'panel')).toBe(false);
+  });
+
+  it('a scheme stored before bindings existed binds every category: the gate fails closed', () => {
+    const unbound: CertificationSchemesPack = {
+      ...IN_CERTIFICATION_SCHEMES,
+      schemes: [{ scheme: 'DCR', evidence: 'flag', binds: null }],
+    };
+    expect(schemeBinds(unbound, 'DCR', 'inverter')).toBe(true);
   });
 });

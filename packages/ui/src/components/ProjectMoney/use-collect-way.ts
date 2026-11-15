@@ -13,7 +13,7 @@ export function useCollectWay(
   return {
     way,
     switcher: {
-      ariaLabel: words.collectTitle(format.money(form.request.amount)),
+      ariaLabel: words.collectTitle(format.moneyPlain(form.request.amount)),
       value: way,
       onChange: (value: string) => setWay(value === 'bank' ? 'bank' : 'upi'),
       options: [

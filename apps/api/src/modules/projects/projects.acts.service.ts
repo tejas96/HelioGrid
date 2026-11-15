@@ -21,6 +21,7 @@ import type { ActContext, ProjectStep } from './projects.act-kit.repository';
 import { ProjectsActsRepository } from './projects.acts.repository';
 import type { MoveNotice } from './projects.moves.repository';
 import { ProjectsPaymentWordsService } from './projects.payment-words.service';
+import { crewRulesOf } from './projects.service';
 
 export type { ProjectStep } from './projects.act-kit.repository';
 
@@ -57,17 +58,22 @@ export class ProjectsActsService {
     if (needs !== undefined && !can(reader.roles, needs)) {
       throw new ForbiddenException('This act is not yours to do.');
     }
-    const formats = (await this.settings.packOf(reader.tenantId)).formats;
+    const pack = await this.settings.packOf(reader.tenantId);
+    const { formats } = pack;
     const context: ActContext = {
       reader,
       act,
       capturedAt: new Date(capturedAt),
       formats,
+      crewRules: crewRulesOf(pack),
       notice: await this.noticeOf(reader.tenantId, formats),
       mover: { kind: 'person', userId: reader.actorId, name: actorName },
     };
     const outcome = await this.acts.act(context, projectId, step(context));
     if (outcome.outcome === 'not-found') throw new NotFoundException('No such project.');
+    if (outcome.outcome === 'forbidden') {
+      throw new ForbiddenException('This act is not yours to do.');
+    }
     if (outcome.outcome === 'refused') {
       throw refusalWithFacts(
         projectActsContract.move.responses[422],

@@ -1,6 +1,8 @@
 // @vitest-environment happy-dom
+import { useQuery } from '@tanstack/react-query';
 import { act, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { queryKeys } from '../../src/cache/keys';
 import { type MarkWonDraft, useMarkWon } from '../../src/react/use-mark-won';
 import { useTenantId } from '../../src/react/use-tenant-id';
 import { refusal } from './origin-wire';
@@ -122,6 +124,32 @@ const refusalAt = (code: string, path: string) => ({
   error: { ...refusal(code).error, details: [{ path, issue: path }] },
 });
 
+describe('Mark won — what it moves is read again', () => {
+  it('the owner home and the leads list are asked again once it lands', async () => {
+    const asked = { home: 0, leads: 0 };
+    const view = mountedOver(() => {
+      const tenantId = useTenantId();
+      useQuery({
+        queryKey: queryKeys.dashboards.owner(tenantId),
+        queryFn: () => ++asked.home,
+        enabled: tenantId !== '',
+      });
+      useQuery({
+        queryKey: [...queryKeys.crm.all(tenantId), 'list-held-by-test'],
+        queryFn: () => ++asked.leads,
+        enabled: tenantId !== '',
+      });
+      return { won: useMarkWon(LEAD_ID), tenantId };
+    }, {});
+    await waitFor(() => expect(asked).toEqual({ home: 1, leads: 1 }));
+    act(() => view.result.current.won.open());
+
+    await sent(view, DRAFT);
+
+    await waitFor(() => expect(asked).toEqual({ home: 2, leads: 2 }));
+  });
+});
+
 describe('Mark won — refusals as the sheet says them', () => {
   const leadRefused = (reason: string) => ({
     error: { ...refusal('LEAD_TRANSITION_REFUSED').error, facts: { refusal: reason } },
@@ -141,6 +169,12 @@ describe('Mark won — refusals as the sheet says them', () => {
   it.each([
     ['422 stage_reached', 'already_won', { status: 422, body: leadRefused('stage_reached') }],
     ['422 lead_closed', 'lead_closed', { status: 422, body: leadRefused('lead_closed') }],
+    // The customer answered again since the sheet read the value: it is the accepted version's now.
+    [
+      '422 value_not_accepted_version',
+      'value_not_accepted',
+      { status: 422, body: leadRefused('value_not_accepted_version') },
+    ],
     // The plan's limit is told once, by the app's billing denial (`M12-21`): the sheet adds no line.
     ['403 ENTITLEMENT_BLOCKED', null, { status: 403, body: blocked }],
     [

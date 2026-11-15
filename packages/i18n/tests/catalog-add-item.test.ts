@@ -5,8 +5,8 @@ import { catalogItemFailureWords } from '../src/copy/catalog-add-item-fields';
 import { createTranslator } from '../src/runtime';
 
 const SCHEMES: readonly CertificationScheme[] = [
-  { scheme: 'ALMM', evidence: 'list_reference' },
-  { scheme: 'DCR', evidence: 'flag' },
+  { scheme: 'ALMM', evidence: 'list_reference', binds: ['panel'] },
+  { scheme: 'DCR', evidence: 'flag', binds: ['panel'] },
 ];
 
 const tIn = async (language: string) => (await createTranslator(language as never)).t;

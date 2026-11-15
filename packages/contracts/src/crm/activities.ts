@@ -1,6 +1,5 @@
 import {
   ACTIVITY_KINDS,
-  type ActivityKind,
   BLOCKER_CLEARS,
   BLOCKER_PARTIES,
   BLOCKER_REASONS,
@@ -8,6 +7,7 @@ import {
   LEAD_SOURCES,
   MERGE_FIELDS,
   MESSAGE_TEMPLATE_KEYS,
+  PROJECT_CHANGED_FACTS,
   PROJECT_MOVE_CAUSES,
   PROJECT_STAGES,
   TASK_KINDS,
@@ -18,12 +18,13 @@ import { z } from 'zod';
 import { extensibleEnum, paginated, paginationQuerySchema, uuidSchema } from '../common';
 import { baseError, errorEnvelope, unauthenticatedEnvelope } from '../error';
 import { calendarDateSchema, clockTimeSchema } from '../tenant-settings';
+import { entryOf, entryShape } from './activity-entry';
+import { proposalActivityEntries } from './activity-proposals';
 import { leadFieldSchema } from './lead-edits';
 import { leadParamsSchema } from './leads';
 import { mergeSideSchema } from './merge';
 import { memberRefSchema } from './schemas';
 import {
-  activityActorSchema,
   callOutcomeSchema,
   dealSegmentSchema,
   disqualifyReasonSchema,
@@ -39,26 +40,6 @@ const c = initContract();
  * optionally naming its lead, newest first by the server's apply order. A customer's stream reads
  * through the merge tombstone: every entry of the customer and of each customer merged into it.
  */
-
-const entryShape = {
-  id: uuidSchema,
-  leadId: uuidSchema.nullable(),
-  /** Who did it (`M02-35`); `id` and `name` are null for the system. A name survives deactivation. */
-  actor: z.object({
-    kind: activityActorSchema,
-    id: uuidSchema.nullable(),
-    name: z.string().nullable(),
-  }),
-  /** When it happened by the device's clock — shown, never what orders the stream (`F4-19`). */
-  capturedAt: z.string().datetime(),
-  /** When the server applied it; the stream is ordered by apply, newest first. */
-  appliedAt: z.string().datetime(),
-};
-
-/** One kind's entry: the shared facts, the kind, and the body that kind carries. */
-function entryOf<K extends ActivityKind, B extends z.ZodRawShape>(kind: K, body: B) {
-  return z.object({ ...entryShape, kind: z.literal(kind), body: z.object(body) });
-}
 
 const cause = extensibleEnum(TRANSITION_CAUSES);
 const visitFacts = {
@@ -178,7 +159,10 @@ export const knownActivitySchema = z.discriminatedUnion('kind', [
   entryOf('project_changed', {
     projectId: uuidSchema,
     field: z.enum(['manager', 'install_date', 'crew', 'access_note', 'file_shown']),
+    /** The installation day's fact the field is told as, finer; absent where the field says it all. */
+    fact: extensibleEnum(PROJECT_CHANGED_FACTS).optional(),
   }),
+  ...proposalActivityEntries,
 ]);
 export type KnownActivity = z.infer<typeof knownActivitySchema>;
 

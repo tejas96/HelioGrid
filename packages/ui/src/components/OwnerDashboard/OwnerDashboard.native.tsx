@@ -8,13 +8,14 @@ import { Badge } from '../Chip/Chip.native';
 import { FailedRead } from '../EmptyState/FailedRead.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { CashCard } from './CashCard.native';
+import { ForecastCard } from './ForecastCard.native';
 import { NeedsYouHero } from './NeedsYouHero.native';
 import type { DashboardPartProps } from './OwnerDashboard.logic';
 import type { OwnerDashboardProps } from './OwnerDashboard.types';
 import { PipelineCard } from './PipelineCard.native';
 import { useTargetEditing } from './target-draft';
 import { WinLossCard } from './WinLossCard.native';
-import { ForecastTile, WonCard } from './WonCard.native';
+import { WonCard } from './WonCard.native';
 
 /** The room at which the cards stand side by side — the web's `@container (min-width: 720px)`. */
 const SIDE_BY_SIDE = 720;
@@ -79,7 +80,7 @@ export function OwnerDashboard(props: OwnerDashboardProps) {
             </Rising>
           </View>
           <View style={stacked ? undefined : styles.sideCell}>
-            <ForecastTile words={words} />
+            <ForecastCard {...part} />
           </View>
         </View>
       </View>

@@ -42,3 +42,12 @@ export function placeOfRegistration(pack: TaxPack, registration: TaxRegistration
   const { start, length } = declared.placeAt;
   return registration.value.slice(start, start + length);
 }
+
+/**
+ * The place the scheme knows an administrative area by (`M06-34`): a customer's region as the
+ * place-of-supply rule compares it. `null` for an area the scheme names no place for — the caller
+ * then has no recipient place, and says so rather than guessing one.
+ */
+export function placeOfArea(pack: TaxPack, area: string): string | null {
+  return pack.placeOfSupply.placeByArea.find((declared) => declared.area === area)?.place ?? null;
+}

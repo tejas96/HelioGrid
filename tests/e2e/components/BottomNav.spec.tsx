@@ -2,12 +2,12 @@ import { createTranslator, destinationLabel, SHELL, verbLabel } from '@heliogrid
 import { BottomNav, type BottomNavItem, ShellGlyph } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
-import { resolvedLength } from '../support/token';
+import { resolvedColour, resolvedLength } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
 /**
  * The phone footer (`F7-22`, the design system's open-page `BottomNav`): one glass pill on the
- * footer tokens, separated by its shadow and its lit edge, never a line (`F7-15`); the verb runs its act and is
+ * footer tokens, separated by its shadow and its lit edge, never a line (`F7-15`); the verb is a lit accent circle that runs its act and is
  * never the item in view.
  */
 const en = await createTranslator('en');
@@ -51,20 +51,23 @@ test('the pill floats on the footer tokens, a glass float with no border, its ed
   expect(await pill.evaluate((node) => getComputedStyle(node).boxShadow)).toContain(e4);
 });
 
-test('the verb runs its act, never becomes the item in view, and every slot clears the touch floor', async ({
+test('the verb is the lit accent circle: it runs its act, never becomes the item in view, and every slot clears the touch floor', async ({
   mount,
+  page,
 }) => {
   const acts: string[] = [];
   const verb: BottomNavItem = {
     key: 'action',
     verb: true,
-    label: verbLabel(en.t, 'add_lead'),
-    icon: <ShellGlyph name="plus-circle" />,
+    label: verbLabel(en.t, 'proposals'),
+    icon: <ShellGlyph name="plus" tone="inverse" />,
     onClick: () => {
-      acts.push('add_lead');
+      acts.push('proposals');
     },
   };
-  const items = [destination('home'), destination('leads'), verb, destination('proposals')];
+  /* The plus opens Proposals, so no tab beside it carries that name: two "Proposals" buttons made
+     the verb's lookup ambiguous. */
+  const items = [destination('home'), destination('leads'), verb, destination('more')];
   const changes: string[] = [];
   const screen = await mount(
     <div style={{ position: 'relative', height: 600 }}>
@@ -76,11 +79,17 @@ test('the verb runs its act, never becomes the item in view, and every slot clea
       />
     </div>,
   );
-  const action = screen.getByRole('button', { name: verbLabel(en.t, 'add_lead') });
+  const action = screen.getByRole('button', { name: verbLabel(en.t, 'proposals') });
 
   await expect(action).not.toHaveAttribute('aria-current');
+  await expect(action).toHaveCSS(
+    'background-color',
+    await resolvedColour(page, '--action-primary'),
+  );
+  const circle = await settledBox(action);
+  expect(circle?.width).toBe(circle?.height);
   await action.click();
-  await expect.poll(() => acts).toEqual(['add_lead']);
+  await expect.poll(() => acts).toEqual(['proposals']);
   expect(changes).toEqual([]);
 
   for (const item of await screen.getByRole('button').all()) {

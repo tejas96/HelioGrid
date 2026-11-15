@@ -1,4 +1,5 @@
 import {
+  type ComposedMessage,
   type HandoverPreview,
   LEAD_TRANSITION_REFUSED,
   PROJECT_ACT_REFUSED,
@@ -7,6 +8,8 @@ import {
   type ProjectDetail,
   type ProjectJob,
   type projectActsContract,
+  type VersionInForcePreview,
+  type WonBasisWire,
 } from '@heliogrid/contracts';
 import type { ClientInferRequest } from '@ts-rest/core';
 import type { ApiClient } from '../client/client';
@@ -66,6 +69,19 @@ export interface ProjectsRepository {
   ): Promise<{ userId: string; name: string; liveProjects: number }[]>;
   jobs(signal?: AbortSignal): Promise<ProjectJob[]>;
   /**
+   * What *Mark won* takes from the lead's proposal (`M07-62`): the accepted version's value and
+   * plan, or why the value is typed. The server finds the version; a device never names one.
+   */
+  wonBasis(leadId: string, signal?: AbortSignal): Promise<WonBasisWire>;
+  /** What putting a version in force would do (`M08-50`), before the person confirms. */
+  versionInForcePreview(
+    id: string,
+    version: number,
+    signal?: AbortSignal,
+  ): Promise<VersionInForcePreview>;
+  /** The evening-before installation message a person sends (`F5-68`). */
+  crewMessage(id: string, signal?: AbortSignal): Promise<ComposedMessage>;
+  /**
    * *Mark won*: the project is created in the same act. The same body sent again — a second tap
    * after a dropped answer — carries the same retry key and answers the project the first made.
    */
@@ -105,6 +121,15 @@ export function createProjectsRepository(api: ApiClient): ProjectsRepository {
     people: (role, signal) =>
       bodyAt(() => reads.people({ query: { role }, fetchOptions: { signal } }), 200),
     jobs: (signal) => bodyAt(() => reads.jobs({ fetchOptions: { signal } }), 200),
+    wonBasis: (leadId, signal) =>
+      bodyAt(() => reads.wonBasis({ params: { id: leadId }, fetchOptions: { signal } }), 200),
+    versionInForcePreview: (id, version, signal) =>
+      bodyAt(
+        () => reads.versionInForcePreview({ params: { id, version }, fetchOptions: { signal } }),
+        200,
+      ),
+    crewMessage: (id, signal) =>
+      bodyAt(() => reads.crewMessage({ params: { id }, fetchOptions: { signal } }), 200),
     markWon: async (leadId, body) => {
       const answer = await bodyOrRefusalAt(
         () =>
@@ -142,6 +167,8 @@ export function createProjectsRepository(api: ApiClient): ProjectsRepository {
       untickStep: (id, body) => standingAfter(() => acts.untickStep({ params: { id }, body })),
       change: (id, body) => standingAfter(() => acts.change({ params: { id }, body })),
       cancel: (id, body) => standingAfter(() => acts.cancel({ params: { id }, body })),
+      putVersionInForce: (id, body) =>
+        standingAfter(() => acts.putVersionInForce({ params: { id }, body })),
       handover: (id, body) => standingAfter(() => acts.handover({ params: { id }, body })),
     },
   };

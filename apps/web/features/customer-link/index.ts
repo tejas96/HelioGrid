@@ -1,0 +1,1 @@
+export { CustomerPageRoute } from './CustomerPageRoute';

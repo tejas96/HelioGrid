@@ -1,17 +1,10 @@
-import { theme } from '@heliogrid/theme';
 import { colors } from '@heliogrid/ui';
 import { StyleSheet } from 'react-native';
 
-/* The full-size reader (`SCR-M01-19` m19-h) holds the sheet at its column width and never scrolls
-   sideways past it; the act bar's failure banner (m19-n4) sits on the page's ground over the bar. */
+/* Proposal defaults is a focus screen (`T-M01-030`): it fills the window on the page's ground. */
 export const styles = StyleSheet.create({
-  fullSize: {
+  screen: {
     flex: 1,
-    overflow: 'hidden',
-  },
-  failure: {
-    paddingVertical: theme.spacing['sp-3'],
-    paddingHorizontal: theme.layout['screen-pad-mobile'],
     backgroundColor: colors.canvas,
   },
 });

@@ -1,4 +1,4 @@
-import { LEAD_SOURCES } from '@heliogrid/domain';
+import { LEAD_SOURCES, PROPOSAL_STANDINGS } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { catalogItemSourceSchema, componentKindSchema } from './catalog-query';
@@ -57,11 +57,26 @@ export const searchCatalogItemSchema = z.object({
   model: z.string(),
 });
 
+/**
+ * A proposal (`F6-22`): found by its number, its customer's name or city, and by the words people
+ * still type for a priced offer — an alias of the query only, never a word the product shows.
+ */
+export const searchProposalSchema = z.object({
+  id: uuidSchema,
+  /** `null` while it is a draft never generated. */
+  number: z.string().nullable(),
+  customerName: z.string().nullable(),
+  city: z.string().nullable(),
+  standing: extensibleEnum(PROPOSAL_STANDINGS),
+});
+
 export const searchResultsSchema = z.object({
   leads: groupOf(searchLeadSchema),
   customers: groupOf(searchCustomerSchema),
   people: groupOf(searchPersonSchema),
   catalog: groupOf(searchCatalogItemSchema),
+  /** Absent on an api built before proposals. */
+  proposals: groupOf(searchProposalSchema).optional(),
 });
 export type SearchResults = z.infer<typeof searchResultsSchema>;
 
@@ -71,7 +86,7 @@ export const searchContract = c.router({
     path: '/search',
     query: searchQuerySchema,
     summary:
-      'Find any lead, customer, team member or catalog item by name, number or city — only what the searcher may open, in every billing state',
+      'Find any lead, customer, proposal, team member or catalog item by name, number or city — only what the searcher may open, in every billing state',
     responses: { 200: searchResultsSchema, 401: unauthenticatedEnvelope },
   },
 });

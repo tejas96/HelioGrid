@@ -6,6 +6,7 @@ const none = {
   paymentsLate: 0,
   blockedOnUs: 0,
   waitingLongest: 0,
+  proposalsUnopened: 0,
   myOverdueTasks: 0,
 };
 
@@ -14,9 +15,24 @@ describe('needsYouKindsOf — fixed order, zeros left out (M13-15)', () => {
     [none, []],
     [{ ...none, myOverdueTasks: 2, unassigned: 1 }, ['unassigned', 'my_overdue_tasks']],
     [
-      { unassigned: 1, paymentsLate: 3, blockedOnUs: 1, waitingLongest: 3, myOverdueTasks: 1 },
-      ['unassigned', 'payments_late', 'blocked_on_us', 'waiting_longest', 'my_overdue_tasks'],
+      {
+        unassigned: 1,
+        paymentsLate: 3,
+        blockedOnUs: 1,
+        waitingLongest: 3,
+        proposalsUnopened: 2,
+        myOverdueTasks: 1,
+      },
+      [
+        'unassigned',
+        'payments_late',
+        'blocked_on_us',
+        'waiting_longest',
+        'proposals_unopened',
+        'my_overdue_tasks',
+      ],
     ],
+    [{ ...none, proposalsUnopened: 1 }, ['proposals_unopened']],
     [{ ...none, waitingLongest: 1 }, ['waiting_longest']],
   ])('%o → %o', (counts, kinds) => {
     expect(needsYouKindsOf(counts)).toEqual(kinds);

@@ -44,16 +44,23 @@ export function useMarkWonForm({
   sending,
   failure,
   onSend,
+  basis,
 }: MarkWonSheetProps): MarkWonForm {
   const { pack } = useFormat();
   const [tried, setTried] = useState(false);
   const toSend = draftToSend(draft, managers);
-  const gaps = tried ? gapsOf(toSend) : NO_GAPS;
-  const faults = faultsOf(draft, today, pack.minorUnitDigits);
+  const locked = basis?.locked === true;
+  const gaps = tried ? gapsOf(toSend, locked) : NO_GAPS;
+  /* A locked value is shown, never typed: a figure typed before the basis arrived is not checked. */
+  const faults = faultsOf(
+    locked ? { ...draft, finalValue: '' } : draft,
+    today,
+    pack.minorUnitDigits,
+  );
   const send = () => {
     if (sending) return;
     setTried(true);
-    if (isComplete(gapsOf(toSend), faults)) onSend(toSend);
+    if (isComplete(gapsOf(toSend, locked), faults)) onSend(toSend);
   };
   return {
     value: {

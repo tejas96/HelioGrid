@@ -6,6 +6,8 @@ import type {
 } from '@heliogrid/contracts';
 import {
   allReads,
+  type BankDetails,
+  type CompanyLetterhead,
   mapRead,
   onPlatformTemplate,
   type Read,
@@ -35,6 +37,7 @@ import { useRepositories } from './context';
 import { pageRead } from './page-read';
 import { richTextWireOf } from './proposal-template-view';
 import { readOf } from './read';
+import { type BankDraft, bankWriteOf, useBankTyped } from './use-bank-typed';
 import { useBranding } from './use-branding';
 import { useSession } from './use-session';
 
@@ -49,8 +52,12 @@ export interface ProposalTemplatePage {
   readonly saveFailure: DataError | null;
   readonly draft: TemplateDraft | null;
   readonly standing: SettingsStanding | null;
-  /** Which record differs from what is saved: either raises the act bar; the stage notes only the template. */
-  readonly changed: { readonly template: boolean; readonly timeline: boolean };
+  /** Which record differs from what is saved: any raises the act bar; the stage notes only the template. */
+  readonly changed: {
+    readonly template: boolean;
+    readonly timeline: boolean;
+    readonly bank: boolean;
+  };
   readonly saving: boolean;
   /** Every part is HelioGrid's: the teaching banner shows. */
   readonly teaching: boolean;
@@ -63,6 +70,12 @@ export interface ProposalTemplatePage {
   readonly brandColour: string | null;
   /** The bank the documents print, from the profile's one write-point (`M01-31`); null when none is set. */
   readonly bankName: string | null;
+  /** The company's own cover photo as a short-lived address, while the saved picture is its own. */
+  readonly coverPhotoUrl: string | null;
+  /** The company's facts as the cover prints them (`companyLetterhead`); null until Branding answers. */
+  readonly company: CompanyLetterhead | null;
+  /** The account every proposal prints, as typed here and not yet saved, or as the profile holds it. */
+  readonly bank: BankDraft;
   edit(edit: TemplateEdit): void;
   discard(): void;
   /** Sends only the records that changed, the template first. */
@@ -72,13 +85,13 @@ export interface ProposalTemplatePage {
 /** Neither a read nor the save waits for a connection: held back offline, each would spin with no end. */
 const ASKED_ONCE = { staleTime: Number.POSITIVE_INFINITY, networkMode: 'always' } as const;
 
-const UNCHANGED = { template: false, timeline: false } as const;
+const UNCHANGED = { template: false, timeline: false, bank: false } as const;
 
 /** Branding's read with no answer: the page is drawn without its cover, never held back by it. */
 const COVER_FAILED = { kind: 'ready', value: null } as const;
 
 function savedOf(template: ProposalTemplateRead, timeline: TimelineTemplateRead): TemplateSaved {
-  const { changed: _template, ...content } = template;
+  const { changed: _template, coverPhotoUrl: _photo, ...content } = template;
   return { template: content, phases: timeline.phases };
 }
 
@@ -87,7 +100,20 @@ function templateWireOf(template: TemplateSaved['template']): ProposalTemplate {
     cover: template.cover,
     sectionsIncluded: [...template.sectionsIncluded],
     defaultTerms: richTextWireOf(template.defaultTerms),
+    ...(template.coverPicture === undefined ? {} : { coverPicture: template.coverPicture }),
   };
+}
+
+/** The company's own cover photo's address, where the saved picture is its own. */
+function photoUrlOf(template: ProposalTemplateRead | undefined): string | null {
+  return template?.coverPhotoUrl ?? null;
+}
+
+/** What one save sends: the two records as held, and the account when it was typed here. */
+interface Sent {
+  readonly saved: TemplateSaved;
+  readonly draft: TemplateDraft;
+  readonly bank: BankDetails | null;
 }
 
 /**
@@ -135,6 +161,7 @@ export function useProposalTemplate(defaults: TemplateDefaults): ProposalTemplat
   const opened = saved === null ? null : templateDraftOf(saved);
   const [typed, setTyped] = useState<TemplateDraft | null>(null);
   const draft = typed ?? opened;
+  const bank = useBankTyped(profile.data);
 
   // A save changes the template for every reader; the copies held in other languages are let go,
   // so a language switch asks again rather than showing the template from before the save.
@@ -145,7 +172,7 @@ export function useProposalTemplate(defaults: TemplateDefaults): ProposalTemplat
     });
 
   const save = useAction(
-    async (sent: { saved: TemplateSaved; draft: TemplateDraft }) => {
+    async (sent: Sent) => {
       const writes = templateWritesOf(sent.saved, sent.draft);
       if (writes.template !== undefined) {
         const answer = await repositories.settings.saveProposalTemplate(
@@ -162,12 +189,29 @@ export function useProposalTemplate(defaults: TemplateDefaults): ProposalTemplat
         );
         dropOtherReaders(queryKeys.settings.timelineTemplates(tenantId));
       }
+      if (sent.bank !== null && profile.data !== undefined) {
+        queryClient.setQueryData(
+          queryKeys.settings.businessProfile(tenantId),
+          await repositories.settings.saveBusinessProfile({
+            ...profile.data,
+            ...bankWriteOf(sent.bank),
+          }),
+        );
+      }
     },
-    // Only the draft the save sent is let go: an edit typed while it was out stays held.
-    { onDone: (_answer, sent) => setTyped((held) => (held === sent.draft ? null : held)) },
+    // Only what the save sent is let go: an edit typed while it was out stays held.
+    {
+      onDone: (_answer, sent) => {
+        setTyped((held) => (held === sent.draft ? null : held));
+        bank.sent(sent.bank);
+      },
+    },
   );
 
-  const changed = saved === null || draft === null ? UNCHANGED : templateChanged(saved, draft);
+  const changed =
+    saved === null || draft === null
+      ? UNCHANGED
+      : { ...templateChanged(saved, draft), bank: bank.changed };
   return {
     read,
     saveFailure: save.failure === null ? null : (save.failure as DataError),
@@ -185,17 +229,21 @@ export function useProposalTemplate(defaults: TemplateDefaults): ProposalTemplat
     cover: branding.cover,
     brandColour: branding.draft?.brandColour ?? null,
     bankName: profile.data?.bankDetails?.bankName ?? null,
+    coverPhotoUrl: photoUrlOf(template.data),
+    company: branding.company,
+    bank: bank.draft,
     // From what was last held, never from this render: two edits can land before the next one.
     edit: (next) => {
       if (opened !== null) setTyped((was) => templateEdit(was ?? opened, next));
     },
     discard: () => {
       setTyped(null);
+      bank.drop();
       save.clear();
     },
     save: () => {
       if (saved !== null && draft !== null && templateSendable(draft)) {
-        void save.run({ saved, draft });
+        void save.run({ saved, draft, bank: bank.changed ? bank.typed : null });
       }
     },
   };

@@ -1,5 +1,5 @@
 import type { KnownActivity, TranslatedText } from '@heliogrid/contracts';
-import { chainIndexOf, type ProjectStage } from '@heliogrid/domain';
+import { chainIndexOf, type ProjectChangedFact, type ProjectStage } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 
@@ -46,6 +46,10 @@ const PROJECT_ENTRY = {
   managerChanged: /*i18n*/ { id: 'Project manager changed' },
   installDateChanged: /*i18n*/ { id: 'Install date changed' },
   crewPicked: /*i18n*/ { id: 'Crew picked' },
+  installStartChanged: /*i18n*/ { id: 'Install start time changed' },
+  daysOnSiteChanged: /*i18n*/ { id: 'Days on site changed' },
+  whatToExpectChanged: /*i18n*/ { id: 'What to expect changed' },
+  crewLeadChanged: /*i18n*/ { id: 'Crew lead changed' },
   accessNoteChanged: /*i18n*/ { id: 'How to get in changed' },
   fileShownChanged: /*i18n*/ { id: 'A file’s place in the handover pack changed' },
 } satisfies Record<string, MessageRef>;
@@ -56,6 +60,14 @@ const CHANGED: Readonly<Record<string, MessageRef>> = {
   crew: PROJECT_ENTRY.crewPicked,
   access_note: PROJECT_ENTRY.accessNoteChanged,
   file_shown: PROJECT_ENTRY.fileShownChanged,
+};
+
+/** The installation day's facts, each told as itself (`F5-68`). */
+const CHANGED_FACT: Readonly<Record<ProjectChangedFact, MessageRef>> = {
+  install_start: PROJECT_ENTRY.installStartChanged,
+  days_on_site: PROJECT_ENTRY.daysOnSiteChanged,
+  what_to_expect: PROJECT_ENTRY.whatToExpectChanged,
+  crew_lead: PROJECT_ENTRY.crewLeadChanged,
 };
 
 interface Line {
@@ -140,8 +152,10 @@ export function projectEntryWords(t: T, formats: ProjectEntryFormats, entry: Pro
     case 'project_step':
       return stepEntry(t, formats, entry.body);
     case 'project_changed': {
-      const words = CHANGED[entry.body.field];
-      return line(words === undefined ? shownAsSent(entry.body.field) : t(words));
+      const { field, fact } = entry.body;
+      const told = fact === undefined ? undefined : CHANGED_FACT[fact as ProjectChangedFact];
+      const words: MessageRef | undefined = told ?? CHANGED[field];
+      return line(words === undefined ? shownAsSent(field) : t(words));
     }
   }
 }

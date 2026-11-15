@@ -11,20 +11,20 @@ export function sheetHeadOf(
   switch (form.kind) {
     case 'collect':
       return {
-        title: words.collectTitle(format.money(form.request.amount)),
+        title: words.collectTitle(format.moneyPlain(form.request.amount)),
         line: words.collectLead(form.projectName, form.part.label),
       };
     case 'record':
       return {
         title: words.recordTitle,
-        line: words.recordLead(form.part.label, format.money(form.part.outstanding)),
+        line: words.recordLead(form.part.label, format.moneyPlain(form.part.outstanding)),
       };
     case 'reverse':
-      return { title: words.reverseTitle(format.money(form.amount)), line: words.reverseLine };
+      return { title: words.reverseTitle(format.moneyPlain(form.amount)), line: words.reverseLine };
     case 'waive':
       return {
         title: words.waiveTitle(form.part.label),
-        line: words.waiveLine(format.money(form.part.outstanding)),
+        line: words.waiveLine(format.moneyPlain(form.part.outstanding)),
       };
   }
 }

@@ -93,3 +93,21 @@ export function percentWireOf(typed: string): string {
   const [, whole = '', fraction = ''] = match;
   return `${whole}.${fraction.padEnd(2, '0')}`;
 }
+
+/**
+ * The part of an amount that `parts` is of `ofParts`, rounded ONCE as `applyRate` rounds: a
+ * discount pro-rated across two lines by their value, a tax split across its components. The
+ * caller gives the last share the remainder, so the shares add up to the amount exactly.
+ */
+export function proportionOf(amount: MinorUnits, share: Share): MinorUnits {
+  return applyRate(amount, basisPoints(WHOLE_RATE), share);
+}
+
+/**
+ * What an amount typed INCLUDING a rate is before it (`M06-09`): `inclusive ÷ (1 + rate)`, rounded
+ * once. The typed figure stays the authority — its tax is `inclusive − this`, so the two always
+ * add up to what was typed.
+ */
+export function amountBeforeRate(inclusive: MinorUnits, rate: BasisPoints): MinorUnits {
+  return proportionOf(inclusive, { parts: WHOLE_RATE, ofParts: WHOLE_RATE + rate });
+}

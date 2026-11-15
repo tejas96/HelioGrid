@@ -19,7 +19,8 @@ appId: com.heliogrid.app
 - assertVisible: ${SEND_CHAT}
 - tapOn: ${BANK_TAB}
 - assertVisible: ${NO_BANK}
-- tapOn: ${CLOSE}
+# The Collect sheet draws no close button: it shuts on a drag, a tap outside or Android's Back.
+- back
 - extendedWaitUntil:
     notVisible: ${NO_BANK}
     timeout: 15000

@@ -208,3 +208,16 @@ export class ProjectsPeopleRepository {
     });
   }
 }
+
+/** How the won customer reads in a notice: their name, else their phone. */
+export async function customerNameOf(
+  tx: DbTransaction,
+  tenantId: string,
+  customerId: string,
+): Promise<string> {
+  const [row] = await tx
+    .select({ name: customer.name, phone: customer.phoneE164 })
+    .from(customer)
+    .where(and(eq(customer.tenantId, tenantId), eq(customer.id, customerId)));
+  return row?.name ?? row?.phone ?? '';
+}

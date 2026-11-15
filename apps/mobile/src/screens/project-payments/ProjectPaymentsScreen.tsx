@@ -55,7 +55,7 @@ export function ProjectPaymentsScreen({ route }: Props) {
       : moneySheetsOf(screen, payments, moves.sheet, {
           words: sheetWords,
           failure: screen.failure === null ? null : paymentFailureWords(t, screen.failure),
-          money: format.money,
+          money: format.moneyPlain,
         });
   return (
     <ShellPage

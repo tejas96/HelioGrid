@@ -52,18 +52,17 @@ export interface ListSortChoice {
 }
 
 /**
- * How the list is ordered. Narrow, a sort glyph opens a sheet of choices that sorts on the tap;
- * wide, a button that names the order opens the same choices as a menu.
+ * How the list is ordered. Narrow, the choices are the filter sheet's first group, and a tap sorts
+ * the list behind it; wide, a button that names the order opens the same choices as a menu.
  */
 export interface ListSortProps {
-  /** The sheet's title and the glyph's name — *Sort leads*. */
+  /** The menu's name and the filter sheet's heading over the orders — *Sort leads*. */
   readonly title: TranslatedText;
   /** The wide button's spoken name with the order in it — *Sort: Newest first*. */
   readonly spokenName: (chosen: TranslatedText) => TranslatedText;
   readonly choices: readonly ListSortChoice[];
   readonly chosen: string;
   readonly onChoose: (key: string) => void;
-  readonly closeLabel: TranslatedText;
 }
 
 /**
@@ -102,6 +101,6 @@ export interface ListTopProps {
   readonly sort: ListSortProps;
   readonly filter: ListFilterProps;
   /** The quick chips: one choice at a time, *All* first. */
-  readonly chips: Omit<FilterChipsProps, 'scroll' | 'ref'>;
+  readonly chips: Omit<FilterChipsProps, 'scroll' | 'look' | 'ref'>;
   readonly room: ListRoom;
 }

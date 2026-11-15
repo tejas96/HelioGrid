@@ -1,4 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import { FIGURE_SLOT } from '@heliogrid/domain';
 
 /**
  * A line this package put together from words its translator already gave and facts beside them —
@@ -27,4 +28,13 @@ export const NO_WORDS = '' as TranslatedText;
 /** A language's name in itself (`F3-03`): read the same in every language, so never translated. */
 export function namedInItself(endonym: string): TranslatedText {
   return endonym as TranslatedText;
+}
+
+/**
+ * The words one message says around its figure, where the figure is drawn apart on its own line
+ * (a stat's big value over its caption): the message keeps its `{slot}`, so a translation orders
+ * its words around the figure as its language does, and only the figure's own place is dropped.
+ */
+export function wordsAroundFigure(line: TranslatedText): TranslatedText {
+  return assembled(line.replace(FIGURE_SLOT, ' ').replace(/\s+/g, ' ').trim());
 }

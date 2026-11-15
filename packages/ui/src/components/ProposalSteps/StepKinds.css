@@ -1,0 +1,156 @@
+/* What single steps draw: the cover peek and strip, the three figures, the client, the parts ring. */
+/* step 1: the cover peek and the cover strip */
+.hg-pst-peek {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.hg-pst-peek-in {
+  position: relative;
+  height: 236px;
+  padding-top: var(--sp-3);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  border-radius: var(--r-lg);
+  background: var(--panel-glow);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+.hg-pst-peek-in::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 80px;
+  background: linear-gradient(transparent, color-mix(in srgb, var(--panel-deep) 94%, transparent));
+}
+.hg-pst-peek-tag {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: var(--sp-3);
+  transform: translateX(-50%);
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
+  box-shadow: var(--e2);
+  font: var(--fw-medium) var(--fs-caption) / 1 var(--font-sans);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.hg-pst-covers {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-2);
+}
+.hg-pst-cover {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.hg-pst-cover-in {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--r-sm);
+  background: var(--fill);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  transition: transform var(--dur-micro) var(--ease-standard);
+}
+.hg-pst-cover-in > .hg-proposal-picture {
+  position: absolute;
+  inset: 0;
+}
+.hg-pst-cover:active .hg-pst-cover-in {
+  transform: scale(var(--press-scale));
+}
+.hg-pst-cover-in[data-on] {
+  box-shadow:
+    0 0 0 2px var(--hg-ground),
+    0 0 0 4px var(--accent);
+}
+.hg-pst-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+}
+
+/* step 2: three figures; step 10: the client; step 8: the ring; step 4: the filled card */
+.hg-pst-counts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  padding: 0;
+}
+/* Three plain figures with a hairline between: a tap on one changes it, its cell lit while it is. */
+.hg-pst-count {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: var(--sp-5) var(--sp-4);
+  cursor: text;
+  transition: background var(--dur-micro) var(--ease-standard);
+}
+.hg-pst-count + .hg-pst-count {
+  border-inline-start: 1px solid var(--line-soft);
+}
+.hg-pst-count:focus-within {
+  background: var(--accent-subtle);
+}
+.hg-pst-count-unit {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+.hg-pst-client {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+}
+.hg-pst-client-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hg-pst-client-name {
+  font: var(--fw-regular) 22px / 28px var(--font-display);
+}
+.hg-pst-client-phone {
+  font: var(--fs-body-sm) / var(--lh-body-sm) var(--font-mono);
+  color: var(--text-secondary);
+}
+.hg-pst-ring {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+.hg-pst-ring-words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.hg-pst-ring-title {
+  font-weight: var(--fw-semibold);
+}
+.hg-pst-ring-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}

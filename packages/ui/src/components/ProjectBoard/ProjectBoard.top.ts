@@ -73,7 +73,6 @@ export function projectBoardTopOf(
     sort: {
       title: top.sortTitle,
       spokenName: top.sortNamed,
-      closeLabel: top.close,
       chosen: view.sort,
       choices: PROJECT_BOARD_SORTS.map((sort) => ({ key: sort, label: top.order[sort] })),
       onChoose: (key) => {

@@ -70,6 +70,7 @@ export function somePayments(): ProjectPayments {
     },
     parts: [part(1, 'Booking', '100000.00'), part(2, 'Installation', '100000.00')],
     entries: [],
+    earlierPlans: [],
     payTo: { upiId: 'epc@okaxis', payee: 'Sun EPC', bank: null, upiLimit: '100000.00' },
     // The installation part is over the UPI cap here, so it has no QR.
     requests: [

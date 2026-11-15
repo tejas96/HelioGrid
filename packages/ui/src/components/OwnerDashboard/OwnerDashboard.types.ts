@@ -1,5 +1,12 @@
 import type { OwnerDashboard, TranslatedText } from '@heliogrid/contracts';
-import type { LeadStage, LostReason, NeedsYouKind, Read, WinRate } from '@heliogrid/domain';
+import type {
+  ForecastStage,
+  LeadStage,
+  LostReason,
+  NeedsYouKind,
+  Read,
+  WinRate,
+} from '@heliogrid/domain';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import type { NumberFieldWords } from '../NumberField/NumberField.types';
 
@@ -21,6 +28,8 @@ export interface OwnerDashboardWords {
   readonly lateLine: (amount: string, days: number) => TranslatedText;
   readonly blockedLine: (name: string, days: number) => TranslatedText;
   readonly waitingLine: (name: string | null, stage: LeadStage, days: number) => TranslatedText;
+  /** The oldest shared proposal nobody has opened: whose it is, and for how many days (`M13-15`). */
+  readonly unopenedLine: (name: string | null, days: number) => TranslatedText;
   readonly myTasksLine: TranslatedText;
   /** The act each item opens: Assign, Open, Review, Open My Day. */
   readonly needAct: (kind: NeedsYouKind) => TranslatedText;
@@ -56,6 +65,16 @@ export interface OwnerDashboardWords {
   readonly forecastTitle: TranslatedText;
   readonly forecastGap: TranslatedText;
   readonly forecastNote: TranslatedText;
+  /** How many open proposals stand behind the figure — "expected from 5 open proposals". */
+  readonly forecastFrom: (count: number) => TranslatedText;
+  /** A stage's name; one a newer server learned reads as sent. */
+  readonly forecastStage: (stage: ForecastStage | (string & {})) => TranslatedText;
+  /** A stage's line: its count, what it is worth and the likelihood — "3 · ₹18,28,575 × 30%". */
+  readonly forecastStageLine: (count: number, total: string, likelihood: string) => TranslatedText;
+  /** The split bar's spoken name. */
+  readonly forecastBarName: TranslatedText;
+  /** "Expected, not promised. It is never added to Won." (`M13-03`). */
+  readonly forecastHonest: TranslatedText;
   readonly pipelineTitle: TranslatedText;
   readonly openLeads: (count: number) => TranslatedText;
   readonly stage: (stage: LeadStage) => TranslatedText;
@@ -87,6 +106,7 @@ export type NeedOpen =
   | { readonly kind: 'payments_late'; readonly projectId: string }
   | { readonly kind: 'blocked_on_us'; readonly projectId: string }
   | { readonly kind: 'waiting_longest'; readonly leadId: string }
+  | { readonly kind: 'proposals_unopened'; readonly proposalId: string }
   | { readonly kind: 'my_overdue_tasks' };
 
 /**
@@ -107,6 +127,11 @@ export interface OwnerDashboardProps {
   /** The one-tap assign is out, or did not land. */
   readonly assigning: boolean;
   readonly assignFailed: boolean;
+  /**
+   * Opens the proposals list at a forecast stage (`T-M13-007`). Absent, a stage's row is plain
+   * words: nothing is offered that opens nothing.
+   */
+  readonly onForecastStage?: (stage: string) => void;
   readonly onExport: () => void;
   readonly focusAfter: FocusAfter;
 }

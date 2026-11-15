@@ -36,6 +36,13 @@ const apiEnvObject = z.object({
   WEB_ORIGIN: originSchema.default('http://localhost:3002'),
 
   /**
+   * Where a browser reaches this api — the same address the web's `NEXT_PUBLIC_API_URL` names. The
+   * proposal PDF's renderer may load from the web and from here alone (`F5-38`), so the api must
+   * be able to say where "here" is. Not a secret, so it defaults for a machine running both locally.
+   */
+  API_PUBLIC_ORIGIN: originSchema.default(`http://localhost:${API_PORT_DEFAULT}`),
+
+  /**
    * Signs the ten-minute API token (`M01-07`). A secret: no default, and an absent value stops
    * the boot. Rotating it signs every live token out within one token life, which is the
    * revocation bound by design. The SMS provider's own variables arrive with its adapter.
@@ -128,6 +135,15 @@ const apiEnvObject = z.object({
   MOBILE_MIN_VERSION: z.string().min(1).optional(),
   MOBILE_STORE_URL_IOS: z.string().url().optional(),
   MOBILE_STORE_URL_ANDROID: z.string().url().optional(),
+
+  /**
+   * How many proxies stand in front of the api — a load balancer, a CDN. The public link routes'
+   * per-address ceiling reads the client's address from the forwarded header those hops add, and
+   * only from them: 0 (the default) trusts none, so a forged header from a direct caller is
+   * ignored. Behind a proxy left at 0, every customer shares the proxy's one address. The hosting
+   * task sets it.
+   */
+  TRUSTED_PROXY_HOPS: z.coerce.number().int().nonnegative().default(0),
 
   /* The release's version, set by the deploy; the health endpoint reports it. */
   APP_VERSION: z.string().default('0.0.1'),

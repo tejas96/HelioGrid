@@ -14,3 +14,34 @@
 .hg-customer-surface[data-full-height="true"] {
   min-height: 100%;
 }
+
+/* The tokens that differ by scheme (`F5-81`, `T-F5-001`). The tenant's light and dark values ride
+   the element inline under their own `--tenant-light-*` / `--tenant-dark-*` names, and these rules
+   pick one: a rule on the element outranks the theme's dark tokens inherited from `:root`, which an
+   inline `--accent-subtle` would not let a later rule override. A fill under white words keeps
+   `--accent`: it reads on both schemes. */
+.hg-customer-surface[data-branded] {
+  --accent-subtle: var(--tenant-light-accent-subtle);
+  --accent-text: var(--tenant-light-accent-text);
+  --link: var(--tenant-light-link);
+  --link-hover: var(--tenant-light-link-hover);
+  --focus-ring: var(--tenant-light-focus-ring);
+}
+
+:root[data-theme="dark"] .hg-customer-surface[data-branded] {
+  --accent-subtle: var(--tenant-dark-accent-subtle);
+  --accent-text: var(--tenant-dark-accent-text);
+  --link: var(--tenant-dark-link);
+  --link-hover: var(--tenant-dark-accent-text);
+  --focus-ring: var(--tenant-dark-link);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hg-customer-surface[data-branded] {
+    --accent-subtle: var(--tenant-dark-accent-subtle);
+    --accent-text: var(--tenant-dark-accent-text);
+    --link: var(--tenant-dark-link);
+    --link-hover: var(--tenant-dark-accent-text);
+    --focus-ring: var(--tenant-dark-link);
+  }
+}

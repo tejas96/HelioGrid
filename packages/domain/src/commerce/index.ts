@@ -195,6 +195,7 @@ export type {
   TemplateSaved,
 } from './proposal-template-draft';
 export {
+  COVER_COUNTS,
   EMPTY_PHASE,
   hasWords,
   TEMPLATE_PARTS,
@@ -214,6 +215,15 @@ export {
   templateWritesOf,
   termsRefusal,
 } from './proposal-template-page';
+export type { DefaultsPart } from './proposal-template-parts';
+export {
+  ABOUT_COMPANY_LIMIT,
+  DEFAULTS_PART_OF,
+  DEFAULTS_PART_PAGE,
+  DEFAULTS_PARTS,
+} from './proposal-template-parts';
+export type { TemplateSampleInput } from './proposal-template-sample';
+export { templateSampleSnapshot } from './proposal-template-sample';
 export { appliesImmediately } from './repricing';
 export type { RichTextBlock, RichTextSpan, RichTextValue } from './rich-text';
 export { richTextParagraphs } from './rich-text';

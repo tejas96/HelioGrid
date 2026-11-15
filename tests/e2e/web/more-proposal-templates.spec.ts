@@ -1,9 +1,9 @@
 import {
   createTranslator,
   documentDefaults,
-  proposalTemplateWords,
+  proposalDefaultsTimelineWords,
+  proposalDefaultsWords,
   SHELL,
-  sectionWords,
   settingsSavedLine,
   settingsWords,
 } from '@heliogrid/i18n';
@@ -16,25 +16,22 @@ import { wordsBeforeDate } from '../support/saved-line';
 import { passTheOwnersMark } from '../support/shell';
 
 /**
- * `/more/proposal-templates` (`SCR-M01-19`, `M01-51`, `M01-52`): the owner switches a section off
- * and moves a phase, saves them in one press, and a fresh read holds both and names who saved;
- * a person whose presets do not open the row meets the not-found page (`F7-48`).
+ * `/more/proposal-templates` — Proposal defaults (`SCR-M01-19`, `M01-51`, `M01-52`, `T-M01-030`): a
+ * focus screen with seven parts. The owner switches a page off and moves a phase, saves each in one
+ * press, and a fresh read holds both and names who saved; a person whose presets do not open the
+ * row meets the not-found page (`F7-48`).
  */
 const en = await createTranslator('en');
 const ROWS = settingsWords(en.t).rows;
-const WORDS = proposalTemplateWords(en.t);
+const WORDS = proposalDefaultsWords(en.t);
+const TIMELINE = proposalDefaultsTimelineWords(en.t);
 const PHASES = documentDefaults(en.t).phases;
-const SECTION = sectionWords(en.t, PHASES.length);
 const [FIRST, SECOND] = PHASES.map((phase) => phase.name);
-
 const SAVED_BY_OWNER = wordsBeforeDate((date) =>
   settingsSavedLine(en.t, { kind: 'saved', at: 0, name: OWNER_NAME }, { date }),
 );
-/* ReorderList still says its own English sentences (deferred D2), so this mirrors
-   `ReorderList.defaults.ts` `moveLabel` until the component takes its words from the catalog. */
-const moveDownTo = (name: string, to: number) => `Move ${name} down to position ${to}`;
 
-async function openTemplate(page: Page) {
+async function openDefaults(page: Page) {
   await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   await page.goto('/more');
@@ -43,59 +40,60 @@ async function openTemplate(page: Page) {
   await expect(page).toHaveURL(/\/more\/proposal-templates$/);
 }
 
+/** A part by its short word: a rail button at width, a tab in the phone's row. */
 const part = (page: Page, name: string) =>
-  page.getByRole('radiogroup', { name: WORDS.edit }).getByRole('radio', { name }).click();
+  page
+    .getByRole('button', { name, exact: true })
+    .or(page.getByRole('tab', { name, exact: true }))
+    .first()
+    .click();
 
 const saveOnce = async (page: Page) => {
   await page.getByRole('button', { name: WORDS.save }).click();
   await expect(page.getByRole('button', { name: WORDS.save })).toHaveCount(0);
 };
 
-test('an owner saves a section set and reads it back', async ({ page }) => {
-  await openTemplate(page);
+test('an owner switches a page off and reads it back', async ({ page }) => {
+  await openDefaults(page);
   await expect(
-    page.getByRole('heading', { level: 1, name: ROWS.proposal_templates }),
+    page.getByRole('heading', { level: 1, name: WORDS.parts.look.heading }),
   ).toBeVisible();
-  await expect(page.getByText(WORDS.teachTitle)).toBeVisible();
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
 
-  await part(page, WORDS.sections);
-  const performance = page.getByRole('switch', { name: SECTION('performance').title });
-  /* The input is drawn as its toggle; a person presses the row that holds it. */
-  await page.locator('label').filter({ has: performance }).click();
-  await expect(performance).not.toBeChecked();
-  await expect(page.getByText(WORDS.notSaved)).toBeVisible();
+  await part(page, WORDS.parts.pages.title);
+  const generation = page.getByRole('switch', {
+    name: WORDS.printPage(WORDS.pageName.generation),
+  });
+  /* The input is drawn as its toggle; a person presses the label that holds it. */
+  await page.locator('label').filter({ has: generation }).click();
+  await expect(generation).not.toBeChecked();
   await saveOnce(page);
 
   await page.reload();
-  await expect(page.getByText(SAVED_BY_OWNER, { exact: false })).toBeVisible();
-  await part(page, WORDS.sections);
-  await expect(page.getByRole('switch', { name: SECTION('performance').title })).not.toBeChecked();
-  await expect(page.getByRole('switch', { name: SECTION('terms').title })).toHaveCount(0);
+  await expect(page.getByText(SAVED_BY_OWNER, { exact: false }).first()).toBeVisible();
+  await part(page, WORDS.parts.pages.title);
+  await expect(
+    page.getByRole('switch', { name: WORDS.printPage(WORDS.pageName.generation) }),
+  ).not.toBeChecked();
+  /* The cover, the price page and the terms carry no switch (`T-M06-017`). */
+  await expect(
+    page.getByRole('switch', { name: WORDS.printPage(WORDS.pageName.terms) }),
+  ).toHaveCount(0);
 });
 
 test('an owner moves a phase and reads it back', async ({ page }) => {
-  await openTemplate(page);
-  await part(page, WORDS.timeline);
-  const list = page.getByRole('list', { name: WORDS.projectPhases });
-  await expect(list.getByRole('listitem').first()).toContainText(FIRST ?? '');
-
-  await list
-    .getByRole('listitem')
-    .first()
-    .getByRole('button', { name: moveDownTo(FIRST ?? '', 2) })
-    .click();
-  await expect(list.getByRole('listitem').first()).toContainText(SECOND ?? '');
-  await expect(page.getByText(WORDS.notSaved)).toHaveCount(0);
+  await openDefaults(page);
+  await part(page, WORDS.parts.timeline.title);
+  await page.getByRole('button', { name: TIMELINE.moveDown(FIRST ?? '') }).click();
   await saveOnce(page);
 
   await page.reload();
-  await part(page, WORDS.timeline);
-  await expect(
-    page.getByRole('list', { name: WORDS.projectPhases }).getByRole('listitem').first(),
-  ).toContainText(SECOND ?? '');
+  await part(page, WORDS.parts.timeline.title);
+  /* The first row's own edit act now names the phase that was second. */
+  await expect(page.getByRole('button', { name: TIMELINE.edit(SECOND ?? '') })).toBeVisible();
+  await expect(page.getByRole('button', { name: TIMELINE.moveUp(SECOND ?? '') })).toBeDisabled();
 });
 
 /**
@@ -119,7 +117,7 @@ test('a reader without the grant meets not found', async ({ page }) => {
   await page.goto('/more/proposal-templates');
 
   await expect(page.getByRole('heading', { level: 1, name: en.t(SHELL.notFound) })).toBeAttached();
-  await expect(page.getByRole('heading', { level: 1, name: ROWS.proposal_templates })).toHaveCount(
+  await expect(page.getByRole('heading', { level: 1, name: WORDS.parts.look.heading })).toHaveCount(
     0,
   );
 });

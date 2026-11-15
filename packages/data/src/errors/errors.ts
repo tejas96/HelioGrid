@@ -170,6 +170,35 @@ export async function bodyOrRefusalAt<
   }
 }
 
+/**
+ * One call's answer at its expected status, or one of several refusals a screen answers in place —
+ * a draft changed on another device at 409, an act the record does not allow at 422 — each carried
+ * whole with its status, so the caller tells them apart. Every other answer leaves as a `DataError`.
+ */
+export async function bodyOrRefusalsAt<
+  R extends { status: number; body: unknown },
+  S extends R['status'],
+  F extends R['status'],
+>(
+  send: () => Promise<R>,
+  expected: S,
+  refusals: readonly F[],
+): Promise<
+  | { readonly answered: true; readonly body: Extract<R, { status: S }>['body'] }
+  | { readonly answered: false; readonly refused: Extract<R, { status: F }> }
+> {
+  try {
+    const res = await send();
+    if (answeredAt(res, expected)) return { answered: true, body: res.body };
+    for (const refusal of refusals) {
+      if (answeredAt(res, refusal)) return { answered: false, refused: res };
+    }
+    throw toApiError(res);
+  } catch (error) {
+    throw normalizeClientError(error);
+  }
+}
+
 function answeredAt<R extends { status: number }, S extends R['status']>(
   res: R,
   expected: S,

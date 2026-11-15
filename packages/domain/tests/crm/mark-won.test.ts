@@ -36,4 +36,16 @@ describe('markWon — the deal is won from any open stage before it (M07-62, M08
       raisesTask: null,
     });
   });
+
+  it('wakes a snoozed lead as it wins it, so the sweep never wakes a won deal (T-M06-025)', () => {
+    expect(markWon(leadAt({ stage: 'proposal', state: 'snoozed', wakeOn: '2026-12-01' }))).toEqual({
+      kind: 'moved',
+      next: leadAt({ stage: 'won', state: null, wakeOn: null }),
+      transitions: [
+        { moveKind: 'lifecycle_state', from: 'snoozed', to: null, cause: 'manual' },
+        { moveKind: 'funnel_stage', from: 'proposal', to: 'won', cause: 'manual' },
+      ],
+      raisesTask: null,
+    });
+  });
 });

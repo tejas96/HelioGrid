@@ -136,11 +136,23 @@ describe('the sections', () => {
   });
 });
 
+/** Numbered clauses: 36 print on the terms' three pages, 37 run onto a fourth (`M06-15`). */
+const clauses = (count: number) =>
+  richTextParagraphs(
+    Array.from(
+      { length: count },
+      (_, index) =>
+        `${index + 1}. Work at each stage starts when its part of the payment is received, and the site is ready for it.`,
+    ),
+  );
+
 describe('the terms', () => {
   it.each([
     ['a paragraph with words', richTextParagraphs(['Valid for 30 days.']), null],
     ['a blank paragraph', richTextParagraphs(['  ']), 'empty'],
     ['no blocks', { version: 1, blocks: [] }, 'empty'],
+    ['three full pages', clauses(36), null],
+    ['one clause onto a fourth page', clauses(37), 'too-long'],
   ] as const)('terms of %s', (_case, value, refusal) => {
     const draft = edited(OWN, { kind: 'terms', value });
 

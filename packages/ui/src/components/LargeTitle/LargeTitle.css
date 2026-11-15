@@ -16,3 +16,22 @@
   color: var(--text-primary);
   outline: none;
 }
+
+/* The name and the page's own acts at its end; a long name wraps under itself, the acts keep theirs. */
+.hg-large-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-large-title-row > .hg-large-title-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-large-title-acts {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sp-2);
+}

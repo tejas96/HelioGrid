@@ -7,7 +7,14 @@ export * from './assign-picker';
 export * from './crm-vocabulary';
 export * from './customer-merge';
 export * from './customer-merge-pair';
-export { type CrmMessageKey, crmMessageTemplate } from './customer-messages';
+export {
+  type CrmMessageKey,
+  crmMessageTemplate,
+  installDurationWords,
+  type ProposalMessageKey,
+  proposalMessageTemplate,
+  proposalMoneyLineWords,
+} from './customer-messages';
 export * from './dedupe-sheet';
 export * from './lead-act-failure';
 export * from './lead-detail';
@@ -18,6 +25,7 @@ export * from './lead-inbox';
 export * from './lead-inbox-acts';
 export * from './lead-marks';
 export { leadAssignedNotice, leadEnquiryNotice, leadUnassignedNotice } from './lead-notices';
+export * from './lead-site';
 export * from './lead-timeline';
 export * from './lead-timeline-stream';
 export * from './leads-list';

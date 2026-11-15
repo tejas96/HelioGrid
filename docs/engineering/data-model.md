@@ -142,7 +142,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | survey_photograph | V2 | V2 — M04 | Reference imagery attached to a version — never measurement, any source; governed by the product's one device-held upload queue. | tenant | survey version ref; tag (closed 7-value set); source (on_site\|customer_sent\|drone); obstruction pin (optional); capture group; capture time; upload/acknowledgement status | captured_on_device → upload_queued → uploaded → acknowledged | M04-53..56, §M04.10, F4-21 |
 | roof_obstruction | V2 | V2 — M04 | Individually identifiable roof obstruction captured SURVEY-SIDE by a person, with person-entered height and sketch/overlay position. Nothing in V1 reads this row. | tenant | survey version ref; description/type (market-neutral); height with provenance tier (person-entered, never photo-derived); position/geometry | — (removable before submit; immutable after) | M04-46, M04-53/54, §M04.8 |
 | quarantined_submission | V2 | V2 — M04 | Failed-validation or server-refused submission preserved and badged for attention — nothing a field user captured is ever unrecoverable.  | tenant | author ref; badged-for-attention flag; preserved captured payload; refusal reason | — (preserved until recovered) | F4-21 |
-*(Sequencing hazard RESOLVED by owner ruling 2026-08-16 — the studio never waits on a survey, so shape (b) was taken. `pinned_tile` is no longer modelled here: it is a studio entity (§2.7), V1, build block 7, parented on `design`. The reasoning is the ruling's own: survey went to V2 precisely because the studio draws its own roof in Step 2, so gating the studio on the thing it replaces inverts that — the V1 studio pins its own tile and the person outlines the roof on it, with no survey in existence (owner ruling 2026-11-01: no automatic roof detection). When M04 lands, `survey_version` REFERENCES the same tile (§3.7, Required? = no) rather than owning it, and M04-09/10/13/22 remain its detailed specification. `roof_obstruction` deliberately did NOT move: the survey-side capture stays here, V2 with M04.)*
+*(Sequencing hazard RESOLVED by owner ruling 2026-08-16 — the studio never waits on a survey, so shape (b) was taken. `pinned_tile` is no longer modelled here: it is a studio entity (§2.7), V1, build block 9, parented on `design`. The reasoning is the ruling's own: survey went to V2 precisely because the studio draws its own roof in Step 2, so gating the studio on the thing it replaces inverts that — the V1 studio pins its own tile and the person outlines the roof on it, with no survey in existence (owner ruling 2026-11-01: no automatic roof detection). When M04 lands, `survey_version` REFERENCES the same tile (§3.7, Required? = no) rather than owning it, and M04-09/10/13/22 remain its detailed specification. `roof_obstruction` deliberately did NOT move: the survey-side capture stays here, V2 with M04.)*
 
 ### 2.7 Design studio
 
@@ -160,10 +160,10 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 
 | Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
 |---|---|---|---|---|---|---|---|
-| proposal | V1 | 8 | The single commercial object per lead — eleven-step builder output, two entry paths, duplicated, shared, accepted; no separate quote exists. *(status machine on proposal, version, or both? — M06-45 vs M06-53) · (declined-by-tenant status value and quick-mode persistence unsettled — M06-45/58, M06-18/19)*  | tenant | proposal_number (server-assigned); type (capex\|opex_ppa); path (with_design\|without_design\|duplicate); segment; status; currency_code (stamped at creation); system_capacity_kw + system_type; money block (cost, taxes[], incentive_amount, discount value+entered mode, client_payable); battery block (capacity_kwh, cost, chemistry); emi_enabled + emi_interest_rate; per-figure provenance tier (derived\|estimated\|assumed); marked_shared_at | draft → shared → accepted \| declined \| superseded | M06-01, M06-02, M06-06, M06-09, M06-25, M06-34, M06-44, M06-45 |
+| proposal | V1 | 8 | The single commercial object per lead — eleven-step builder output, two entry paths, duplicated, shared, accepted; no separate quote exists. *(ruled: status on the proposal only — draft · shared · accepted · declined · superseded · withdrawn; Quick mode is one boolean on the proposal — T-M06-025, T-M06-001)*  | tenant | proposal_number (server-assigned); type (capex\|opex_ppa); path (with_design\|without_design\|duplicate); segment; status; currency_code (stamped at creation); system_capacity_kw + system_type; money block (cost, taxes[], incentive_amount, discount value+entered mode, client_payable); battery block (capacity_kwh, cost, chemistry); emi_enabled + emi_interest_rate; per-figure provenance tier (derived\|estimated\|assumed); marked_shared_at | draft → shared → accepted \| declined \| superseded | M06-01, M06-02, M06-06, M06-09, M06-25, M06-34, M06-44, M06-45 |
 | proposal_version | V1 | 8 | Immutable, append-only, server-numbered snapshot per successful Generate; the unit of share, tracking, acceptance and tranche schedule downstream.  | tenant | version_number (server-numbered); full eleven-step field-set snapshot; computed money-block snapshot; pinned catalog_release; pinned price_book_version; pinned market_pack_version; pinned design fingerprint; change_note (mandatory at regenerate); creation_trigger (generate\|regenerate\|upgrade); indicative-disclaimer/honesty labels; PDF artifact | — (append-only, immutable) | M06-42, M06-43, M06-46, M06-47, M06-51 |
 | proposal_component_line | V1 | 8 | A selected component per category on a proposal — mandatory, no lump-sum quotes; frozen immutably with each generated version.  | tenant | category (panel\|inverter\|cable\|electrical\|structure\|battery); brand (locked); model; count; per-type spec fields (warranties, capacities, types); description (≤110 chars); resolution provenance (tenant_override\|tenant_item\|platform_item\|custom); provenance tier; certification-scheme compliance; frozen version ref | draft-editable → version-frozen | M06-27, M06-29, M06-30, M06-31, M06-23 |
-| proposal_tranche | V1 | 8 | Payment-term row (label + percentage + due-on stage) totalling 100% at Generate; the accepted version's rows become the project's collection schedule. *(tranche materialization open — this edge may be derived, not copied; M11-09/10)*  | tenant | label; percentage; order; due_on_stage (version-frozen — the row's own copy of the canonical stage, mandatory before the Generate Σ=100.00 check passes); source_template_ref (provenance only — records which tranche_template_line seeded the row; never read to resolve due-ness, since the template is tenant-mutable and archivable); frozen version ref | draft-editable → version-frozen | M06-13, M06-23, M07-62, M11-09, M11-11 |
+| proposal_tranche | V1 | 8 | Payment-term row (label + percentage + due-on stage) totalling 100% at Generate; the accepted version's rows become the project's collection schedule. *(ruled: each version copies its tranche rows at Generate, each with its due stage — T-M06-025, T-M06-009)*  | tenant | label; percentage; order; due_on_stage (version-frozen — the row's own copy of the canonical stage, mandatory before the Generate Σ=100.00 check passes); source_template_ref (provenance only — records which tranche_template_line seeded the row; never read to resolve due-ness, since the template is tenant-mutable and archivable); frozen version ref | draft-editable → version-frozen | M06-13, M06-23, M07-62, M11-09, M11-11 |
 | task | V1 | 6 | The follow-up task every module's automation feeds; fills My Day; overdue derived from due date, never stored. *(status vocabulary and transitions never enumerated — M07-05)*  | tenant | assignee (named person, never a pool); kind (follow_up\|site_visit\|call\|custom); due_date; status (set unenumerated); provenance_rule (on auto-created); lead ref | — (status vocabulary unenumerated; overdue derived) | M07-05, M07-06, M07-07, M06-55 |
 | agent_config_version | V1 | 6 | Versioned-append voice-agent configuration; publishing creates a new version; queued calls and call records pin the version that governed them. | tenant | version id; name/voice/tone; offered agent languages (subset of six); opening_line + fallback_line; hand-over rules ('asks to stop' non-removable); calling window (narrower than pack floor only); max_attempts; enabled + live triggers; discount_enable; negotiation_enable | draft → published (append-only) | M07-09..M07-15, M07-22, M07-23, M07-34 |
 | knowledge_base_section | V1 | 6 | One of eight fixed structured sections of owner-authored agent knowledge; seeded at tenant creation; mutable with its own change history. *(change-history granularity unstated; calls pin config version only — §M07.4, M07-26)*  | tenant | section_key (closed set of eight); content per agent language; seeded-from-market-default marker; change history | — (mutable, historized) | M07-16, M07-17, M07-19, M07-20, M07-26 |
@@ -186,7 +186,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | link_event | V1 | 8 | Append-only event stream on a link: opened / section viewed / accepted / negotiate requested / declined; deliberately PII-thin while reading. *(stored business events vs analytics-only boundary unresolved — F5-27, F5 §F5.1)*  | customer | link ref; event type (opened / section viewed / accepted / negotiate requested / declined); moment; device class (opens only — the sole device data allowed); section (section-viewed only); duration (section-viewed only) | — (append-only) | F5-27, F5-28, F5-29, F5-31, DOC04.link-events |
 | acceptance_record | V1 | 8 | One-time attribution snapshot written the moment the customer taps Accept — the sole acceptance evidence of record; server re-validates before writing. *(proposal_version and contact references in the attribution snapshot unsettled — F5-26/46/47)*  | customer | link ref; contact ref; accepted proposal-version pin (storage open — F5-46 omits, F5-47 validates); challenge outcome incl. the tenant's OTP-at-accept setting state; network address of accepting session; user agent; accepted-at moment | — (written once, never a running collection) | F5-43, F5-44, F5-46, F5-47 |
 | customer_question | V1 | 8 | Customer question asked via the link's every-phase Ask affordance; becomes tenant notification + lead timeline entry; the reply is a call. | customer | link ref; lead ref (timeline target); question text (customer-authored, never translated or altered); phase asked in; moment; acknowledgement state | submitted → received/acknowledged (state persists on the page) | F5-52, F5-53, F5-56, F5 §F5.7 |
-| callback_request | V1 | 8 | Customer-requested callback from the link — the recorded, timestamped consent the requested-callback calling lane requires; feeds M07's queue. | customer | link ref; request moment (the timestamped consent); customer-named time (optional, may sit outside lawful window); phase requested from; window-shift outcome (scheduled lawful moment the page states) | requested → scheduled (window-shifted where no time named) | F5-54, F5-11, M07-33 |
+| callback_request | V1 | 8 | Customer-requested callback from the link — the recorded, timestamped consent the requested-callback calling lane requires; in V1 it raises a call task for the named person (owner ruling 2026-11-13) and feeds M07's queue once voice returns. | customer | link ref; request moment (the timestamped consent); customer-named time (optional, may sit outside lawful window); phase requested from; window-shift outcome (scheduled lawful moment the page states) | requested → scheduled (window-shifted where no time named) | F5-54, F5-11, M07-33 |
 
 ### 2.10 Projects, payments & collections
 
@@ -200,7 +200,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | project_stage_transition | V1 | 4 | Append-only stage-history event: forward and backward moves with dates; the basis of days-in-stage and the customer link's stage history  | tenant | project ref; from_stage; to_stage; moved_at; moved_by; backward_flag | — (append-only) | M08-11, M08-14, M08-29 |
 | project_assignment | V1 | 4 | Names a person on a project — the only row F2.M08.project-visibility's Own-projects and Assigned-job-only cells can resolve over; without it the crew preset whose whole premise is reaching exactly one job resolves to the whole tenant. | tenant | project_ref; person_ref (user_account); role_on_project (coordinator \| crew_member); assigned_at; assigned_by | — (append-only, per the suite's attribution posture: an ended assignment is a new row, never an edit or a delete) | M08-18, M08-41..43, M08-45, F2 §F2.5-M08, F2-20 |
 | commissioning_artifact | V1 | 4 | Commissioning fact retained as data at handover (certificates, as-built references, system facts) so future O&M attaches without re-collection  | tenant | project ref; artifact_kind; file/document ref; system_facts | — (retained at handover) | M08-48 |
-| project_tranche | V1 | 5 | One part of a project's price, made once at Mark won from the company's default payment terms (`tranche_template_line`; an accepted proposal version's terms take over once proposals land) and never re-typed; state and what is still owed are read from the ledger and the stage history, never stored. | tenant | project_id; position (unique per project); label; share_basis_points (0–10000); amount_minor; due_on_stage (never `cancelled`); source (`payment_terms` \| `proposal_version`); created_at; waived_at + waived_by + waive_reason (all or none) | upcoming → due → part_received → received (derived); waived terminal (the one UPDATE) | M11-08..14, M11-49, M08-35, M08-36 |
+| project_tranche | V1 | 5 | One part of a project's price, made once at Mark won from the accepted proposal version's payment plan (else the company's default payment terms, `tranche_template_line`) and never re-typed; a later version put in force replaces the unpaid parts (§4.10); state and what is still owed are read from the ledger and the stage history, never stored. | tenant | project_id; position (unique per project); label; share_basis_points (0–10000); amount_minor; due_on_stage (never `cancelled`); source (`payment_terms` \| `proposal_version`); created_at; waived_at + waived_by + waive_reason (all or none) | upcoming → due → part_received → received (derived); waived terminal (the one UPDATE) | M11-08..14, M11-49, M08-35, M08-36 |
 | project_payment | V1 | 5 | Append-only ledger, one per project: every payment a person recorded and every reversal of one; the receipt is this entry rendered. Its receipt photo (stored after the save) and its receipt PDF (made on first ask) are `file` rows whose subject is the payment — no entry ever points at one. *(Finance 'receipts waiting to be recorded' queue has no backing entity — M11-54)* | tenant | project_id; tranche_id; kind (`payment` \| `reversal`); amount_minor (> 0 on a payment, < 0 on a reversal); mode (market pack's rails); reference + reference_key (spaces and dashes gone — one UTR typed two ways is one payment; checked for reuse); received_on; receipt_number (server-assigned from the tenant counter, payments only); reverses_id + reason (reversals only, at most one per payment); recorded_at; recorded_by; creation_key + creation_fingerprint | — (append-only: SELECT + INSERT only for `app_user`) | M11-34, M11-36..42, M11-46 |
 | tranche_request_share | V1 | 5 | Each hand-off of a part's pay message — the customer's chat, the share sheet, the clipboard — that the person then said went out (*Yes, sent*): "Shared by <name> · <date>"; never a delivery. | tenant | tranche_id; shared_at; shared_by | — (append-only) | M11-24, M11-26 |
 | collections_settings | V1 | 5 | How the company's customers pay it: its own UPI ID and the payee name a UPI app shows, from which the domain builds an exact-amount `upi://pay` request (not offered above the pack's `upiRequestLimit`; bank transfer to the business profile's account instead — never a second copy). One row per company, owner-edited. | tenant | tenant_id (PK); upi_id; payee_name; updated_at; updated_by | — (upserted; every change audited) | M11-17, SCR-M11-04 |
@@ -395,8 +395,8 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | contact | is the named recipient of | customer_link | 1:N | no (only where the contact is known) | Contact departure: that link is revoked and a new named link minted for the successor; other links untouched (§F5.4); PRD silent on contact deletion | F5-26, F5-27, F5 §F5.4 |
 | customer_link | is served by tokens | link_token | 1:N | yes | Revocation instant and absolute regardless of expiry, no propagation window (F5-76); PRD silent on removal of dead token rows | F5-22, F5-75, F5-76, F5 §F5.11 |
 | customer_link | accrues append-only events | link_event | 1:N | yes | Append-only, never mutated; retention beyond the tenant-exportable audit log PRD silent (F5-79) | F5-27, F5-29, F5-31 |
-| customer_link | records acceptance via | acceptance_record | 1:1 | yes | Written once at acceptance, never a running collection (F5-46); the sale's evidence — PRD silent on any deletion | F5-43, F5-46, F5-47 |
-| proposal_version | is the version accepted by | acceptance_record | 1:1 | yes at validation (storage of the ref is an open question) | Sent versions pinned forever — a price change is a new version, never an edit (F5-40); PRD silent on record deletion | F5-40, F5-47 |
+| customer_link | records acceptance via | acceptance_record | 1:N | yes | One per version answered through the link — each written once, never a running collection (F5-46; owner ruling 2026-11-13: one answer per version, a newer shared version answers again); the sale's evidence — PRD silent on any deletion | F5-43, F5-46, F5-47 |
+| proposal_version | is the version accepted by | acceptance_record | 1:1 | yes (stored: `proposal_version_id`, unique per version) | Sent versions pinned forever — a price change is a new version, never an edit (F5-40); PRD silent on record deletion | F5-40, F5-47 |
 | contact | attributes the accepter of | acceptance_record | 1:N | yes per F5-46 attribution (unresolved for contact-less links — see open questions) | PRD silent; attribution must remain readable (append-only audit posture, F5-31) | F5-46, F5-26 |
 | customer_link | receives questions via | customer_question | 1:N | yes | PRD silent | F5-52, F5-53 |
 | lead | receives as timeline entry | customer_question | 1:N | yes | PRD silent (no lead state ever deletes) | F5-53, F5 §4 provides (M02) |
@@ -425,8 +425,8 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | design | derives step definition of | installation_checklist_step | 1:N | no | PRD silent; manual steps carry no design reference, marked manual | M08-41 (cited) |
 | project | collects on (inherited schedule) | project_tranche | 1:N | yes | Cancellation never unwinds money; receipts stay readable; refunds are reversing entries | M11-09, M11-50, M08-35, M08-53 |
 | user_account | is named on jobs via | project_assignment | 1:N | yes | Users are deactivated, never deleted; attribution survives deactivation (F2-20); a deactivated person's rows stay readable and stop granting scope | F2-20, M08-18 |
-| proposal_version | sets pinned terms of (once proposals land) | project_tranche | 1:N | no | No stored pointer — `source = proposal_version` marks such parts; V1 parts come from the company's payment terms at Mark won (`source = payment_terms`); receipts never rewritten | M11-09, M11-13, M11-14 |
-| proposal_tranche | is inherited as ("same rows, never re-entered") | project_tranche | 1:1 | no | Term rows immutable per sent version; copied (label, share, due_on_stage) once proposals land | M11-09, M08-35, M11.2 behavior |
+| proposal_version | sets pinned terms of (the version in force, `project.proposal_version_id`) | project_tranche | 1:N | no | `source = proposal_version` marks parts copied from the version's plan; a deal won with no accepted version takes the company's payment terms (`source = payment_terms`); a later version put in force replaces only the unpaid parts, whose rows stay (`replaced_at`, `replaced_by`, `replaced_version_id`); receipts never rewritten | M11-09, M11-13, M11-14 |
+| proposal_tranche | is inherited as ("same rows, never re-entered") | project_tranche | 1:1 | no | Term rows immutable per sent version (inside `proposal_version.snapshot`, no table of their own); copied (label, share, due_on_stage) at Mark won or put in force | M11-09, M08-35, M11.2 behavior |
 | project_tranche | receives entries against | project_payment | 1:N | yes | Append-only: never edited, never deleted; no correction path removes an entry | M11-10, M11-36, M11-40 |
 | project | owns the one ledger of | project_payment | 1:N | yes | Ledger permanent; readable on cancelled projects in every billing state | M11-40, M11-50 |
 | project_payment | reverses (negative amount + `reverses_id`) | project_payment | 1:1 | no | At most one reversal per payment (unique index); both rows remain visible as a pair; totals reflect the reversal | M11-38, M11-46, M11-47 |
@@ -1011,6 +1011,26 @@ erDiagram
 
 ### 4.8 Proposals, sales execution & voice
 
+**As built (migrations `0065`, `0069`; `packages/db/src/schema/proposal.ts`).** The diagram below
+is the logical model; the store differs in these places. A proposal's component lines, payment
+parts and timeline are not tables: they live inside the proposal's one field set (`proposal.field_set`)
+and are frozen whole inside `proposal_version.snapshot` — so `PROPOSAL_COMPONENT_LINE` and
+`PROPOSAL_TRANCHE` have no table, and a project's schedule is copied from the accepted version's
+snapshot. Both jsonb values are versioned envelopes (`FieldSetEnvelope`, `VersionSnapshotEnvelope`),
+read only through `fieldSetOf` / `versionSnapshotOf` in `@heliogrid/domain`: a key a later build
+added reads with its default, and a schema version newer than the build is refused. The proposal's
+type and path are fields of that set, not columns; a draft is edited on `revision`. A version's four
+pins are one `pins` value (`InputPins`). `proposal_version` and `proposal_share` are append-only
+ledgers (SELECT and INSERT for `app_user`); `proposal` takes DELETE only for a draft discarded before
+its first Generate. The proposal number is the company counter's integer (`PRP-0042` is its
+rendering), null until the first Generate. `proposal` also carries the position its lists read —
+latest and shared version, the answer, the first open, the payable — each written by the act that
+appends its record. `proposal_share`, `saved_part` (the company's cable, electrical and structure
+parts; each change an audit entry, `saved_parts.*`, `0069`) and the global `energy_estimate` (the
+energy source's twelve monthly yields per kWp for a point, readable reference data) are tables the
+diagram does not draw. The lead gains its site (address, area, district), its sanctioned load and
+its supply phase; the proposal template gains its cover picture.
+
 ```mermaid
 erDiagram
   PROPOSAL {
@@ -1177,13 +1197,25 @@ erDiagram
 
 ### 4.9 Customer link
 
+**As built (migrations `0066`, `0068`; `packages/db/src/schema/customer-link.ts`).** A link's address is a
+`link_token` row holding the hash of its secret; the link itself holds no `url_identity`. The
+customer's own link is named by `customer_link.for_customer`, never by a missing contact — a link
+named for someone the customer record does not hold carries no contact either; one active link per
+deal is the customer's, and one per contact. `link_event`, `acceptance_record`, `customer_question`
+and `callback_request` are append-only ledgers. Neither
+carries an expiry or a per-scope lifetime: a respond scope's life is read from the deal's phase.
+`link_event` also names the version the page was serving and the customer's words on a change
+request or a decline. `acceptance_record` is one per VERSION (`T-F5-008`), and names its token and
+proposal. A stored `customer_question` is a received one, so it holds no state column;
+`callback_request` holds the time named and the moment the call falls due.
+
 ```mermaid
 erDiagram
     LEAD ||--o{ CUSTOMER_LINK : "carries named links"
     CONTACT |o--o{ CUSTOMER_LINK : "named recipient of"
     CUSTOMER_LINK ||--|{ LINK_TOKEN : "is served by"
     CUSTOMER_LINK ||--o{ LINK_EVENT : "accrues append-only events"
-    CUSTOMER_LINK ||--o| ACCEPTANCE_RECORD : "records acceptance via"
+    CUSTOMER_LINK ||--o{ ACCEPTANCE_RECORD : "records acceptance via"
     PROPOSAL_VERSION ||--o| ACCEPTANCE_RECORD : "is version accepted by"
     CONTACT |o--o{ ACCEPTANCE_RECORD : "attributes accepter of"
     CUSTOMER_LINK ||--o{ CUSTOMER_QUESTION : "receives questions via"
@@ -1248,6 +1280,15 @@ erDiagram
 ```
 
 ### 4.10 Projects, payments & collections
+
+**As built, from block 8 (migrations `0065`–`0067`, `0070`).** `project.proposal_version_id` names
+the version in force — the accepted one at Mark won, or a later accepted one a person puts in force.
+Putting a later version in force keeps every paid part and replaces the unpaid ones: a replaced
+`project_tranche` keeps its row, marked `replaced_at`, with who put the new version in force
+(`replaced_by`) and the version its plan belonged to (`replaced_version_id`), so the earlier plan
+stays readable; every reader of the schedule takes the parts whose mark is null. The project gains
+the installation day's facts the customer is told (start time, duration, disturbance), and its crew
+one lead (`project_crew_member.is_lead`).
 
 ```mermaid
 erDiagram
@@ -1816,7 +1857,7 @@ erDiagram
 - No commercial figure ever reaches the installation surface or any surface the Installation Team Member preset reaches. (M08-43, M08-45, M11-56)
 - Person-scoped project visibility resolves over project_assignment: "Own projects" (Project Manager) and "Assigned job only" (Installation Team Member) are exactly the rows naming that person on that project — absent a row, a crew-preset user reaches no project at all, never the whole tenant. "Team" (Sales Manager) does NOT read project_assignment: it resolves over the M10-31 flat manager mapping applied to the source lead's owner, and fails closed to an empty team when the mapping is unset. (F2 §F2.5-M08, M08-18, M10-31..34)
 - Active project = neither HANDED_OVER nor CANCELLED; entitlement limits gate creating one, never working one. (M08-07)
-- Tranche rows ARE the terms they were made from — the company's payment terms at Mark won (an accepted version's terms once proposals land): Σshare_basis_points = 10000, Σamounts = the payable to the minor unit, the rounding remainder on the last part; a person never types an amount; one arithmetic everywhere (`splitSchedule`). (M11-08, M11-09, M11-13)
+- Tranche rows ARE the terms they were made from — the accepted version's payment plan at Mark won or put in force, else the company's payment terms: Σshare_basis_points = 10000, Σamounts = the payable to the minor unit, the rounding remainder on the last part; a person never types an amount; one arithmetic everywhere (`splitSchedule`). (M11-08, M11-09, M11-13)
 - Tranche state is derived from the ledger and can never be typed; a reversal restates it automatically. (M11-10, M11-48)
 - Stage completion is the only event making a tranche due; a tranche mapped to a skipped stage becomes due when the project passes that point (disclosed reading, owner-overturnable). (M11-11, M11-12, M08-36)
 - The ledger (`project_payment`) is append-only, one per project; entries are never edited or deleted; negatives exist only as reversal rows with `reverses_id`, mandatory reason and actor, at most one per payment. (M11-38, M11-40, M11-46)
@@ -1949,7 +1990,7 @@ erDiagram
 | Entity.field(s) | Class (PII / credential-secret / financial / location / biometric-none / imagery) | Handling noted in PRD |
 |---|---|---|
 | proposal.prepared_for, client_address, client_phone | PII | Pack-format phone validation; embedded in drafts, versions, documents and customer links (M06-16, M06-50) |
-| proposal.bank_details (bank name, account name, account number, pack routing id) | financial | Saved even when the include toggle is off — 'details save but will not print' (M06-17) |
+| proposal_version.bank_details (bank name, account name, account number, pack routing id) | financial | Read live from the business profile until Generate and frozen into the version; saved even when the include toggle is off — 'details save but will not print' (M06-17) |
 | proposal / proposal_version money block (costs, taxes, discount, payable, margin, incentive, EMI) | financial | Server-computed only; BOM line pricing internal, never customer-facing; strict reconciliation (M06-34, M06-39, M06-41) |
 | call_record.recording (+ consent flag) | PII | Consent may be declined and the customer still served; purged at the pack's retention bound (M07-38, F1-36(e)) |
 | call_record.transcript, summary | PII | Full transcription is a hard floor; retained past recording purge; corrections keep original read (M07-24, M07-25, M07-38) |
@@ -2072,7 +2113,7 @@ Logical level only — access paths the PRD itself evidences. Every tenant-owned
 | survey_visit | (assigned_surveyor_ref, scheduled_date) ordered by time | Surveyor's home: today's visits by assignee and date, joined to lead/site for address/phone | M04-38 |
 | survey | site_ref (unique) | Current survey per site; opening a site with a survey offers "revisit", never "edit" | M04-57 |
 | survey_version | (survey_ref, version_no desc); supersedes chain | Latest submitted version; prior versions reachable in full from the current one | M04-57, F4-25 |
-| survey_version | status + superseded lookup | Freshness sweep: find designs built on a now-superseded version to set review-needed and block drafts — V2-onward, since no V1 design pins a survey version; the sweep is authored with M04, not with block 7 | M04-66 |
+| survey_version | status + superseded lookup | Freshness sweep: find designs built on a now-superseded version to set review-needed and block drafts — V2-onward, since no V1 design pins a survey version; the sweep is authored with M04, not with block 9 | M04-66 |
 | survey_gap | (survey_version_ref, resolution_state); open-state by lead/site | Open gaps shown on survey, lead and designer hand-off until closed; agenda build fetches open capture_on_site gaps at visit booking | M04-31, M04-32, M04-33 |
 | survey_photograph | (survey_version_ref, capture_group); upload status per capture session | Hand-off renders photographs inline by group with tag/source/pin; queue status on SCR-M04-07 only, failed uploads listed with retry-or-discard | M04-63, M04-55 |
 | survey / survey_visit | lead/site visibility scope | Every list/search filters by reader's lead/site scope; out-of-scope search returns nothing | M04-61 |
@@ -2085,7 +2126,7 @@ Logical level only — access paths the PRD itself evidences. Every tenant-owned
 | design | (tenant, lead_ref, updated_at) | Lead-scoped design list, live counts, sort by recency | — |
 | design | (tenant, status); search over name/customer/address | List status filters and search | — |
 | design | (pinned_catalog_release), (pinned_price_book_version), (pinned_pack_rules_version) | Self-stale sweep on publishing a newer release/revision | M01-43 |
-| design | (pinned_survey_version) | Survey-superseded sweep → review-needed + block draft proposal sending. V2-onward: in V1 the column is null on every row and nothing sweeps — index it with the pin's first real writer, not with block 7 | — |
+| design | (pinned_survey_version) | Survey-superseded sweep → review-needed + block draft proposal sending. V2-onward: in V1 the column is null on every row and nothing sweeps — index it with the pin's first real writer, not with block 9 | — |
 | design | (tenant, status=awaiting, queued_at ASC) | Sign-off queue oldest-first with waiting time; feeds M13 role-home | — |
 | design | (lead_ref, is_recommended) partial-unique path | Exactly one recommended variant per lead; compare grouping | — |
 | pinned_tile | (design_ref) current pin | Tile resolved on every canvas load and on the pin-move re-capture path | — |
@@ -2390,7 +2431,7 @@ The studio is rebuilt from scratch (`docs/build-order.md`); its PRD rows are not
 | M11 rails | Pack payment-rails vocabulary (M11-05, 35) | project_payment.mode validated against market-pack vocabulary | yes |
 | M11 engine | Online-only mutations, idempotent retry (M11-06, 39) | server-write behaviour only | n/a (no stored data) |
 | M11 audit | Every money event audited, the payment-request share included (M11-07) | audit_log_entry (platform-services); tranche_request_share | yes |
-| M11 §M11.2 | Schedule inheritance and arithmetic (M11-08, 09, 13..16) | project_tranche (from payment terms at Mark won; proposal_tranche once proposals land) | yes |
+| M11 §M11.2 | Schedule inheritance and arithmetic (M11-08, 09, 13..16) | project_tranche (from the version in force's plan, else payment terms, at Mark won) | yes |
 | M11 tranche states | Derived state and stage-driven due-ness (M11-10..12) | project_tranche state derived from project_payment and stage history; due_on_stage mapping | yes |
 | M11 §M11.3 | Gateway connection and credentials (M11-17..23) | none — no payment gateway (owner ruling 2026-11-11); collections_settings holds the company's UPI ID | n/a |
 | M11 §M11.4 | Payment links and supersession (M11-24..26, 30, 31) | none — no payment link (owner ruling 2026-11-11); UPI request built on read; tranche_request_share records each share | n/a |

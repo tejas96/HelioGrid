@@ -1,6 +1,7 @@
 'use client';
 import { SettingsList } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
+import { useIsFocusScreen } from '../../lib/focus-screen';
 import { useSettingsList } from './hooks/use-settings-list';
 import './settings.css';
 
@@ -13,7 +14,9 @@ import './settings.css';
  */
 export function SettingsLayout({ children }: { children: ReactNode }) {
   const { list, person, open, first, openedRow, shownSegment } = useSettingsList();
-  if (shownSegment === null || first === null) return children;
+  const focus = useIsFocusScreen();
+  // A focus screen (Proposal defaults) stands alone: no side list beside it.
+  if (focus || shownSegment === null || first === null) return children;
   return (
     <div className="hg-settings-page">
       <div className="hg-settings-page-side">

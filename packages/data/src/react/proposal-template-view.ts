@@ -1,55 +1,45 @@
 import type { RichTextValueWire } from '@heliogrid/contracts';
 import {
-  isSectionFloor,
-  optionalSectionsShown,
-  PROPOSAL_SECTIONS,
-  type ProposalSection,
+  type CoverPictureKey,
+  DEFAULT_COVER_PICTURE,
+  isPageOptional,
+  PROPOSAL_PAGES,
+  type ProposalCover,
+  type ProposalPage,
   type RichTextValue,
-  type TemplateDefaults,
+  sectionOfPage,
   type TemplateDraft,
   TIMELINE_PHASE_LIMIT,
   type TimelinePhase,
-  templatePartOrigin,
 } from '@heliogrid/domain';
 
 /**
- * The Proposal template page's pure answers from what `useProposalTemplate` holds, which both
- * screens hand to `ProposalTemplateSettings` with their words: each part's origin, the cover and
- * the terms, the section rows and the phase rows. What the tenant wrote is one value, shown as
- * written in every language (`F3-10`).
+ * Proposal defaults' pure answers from what `useProposalTemplate` holds (`SCR-M01-19`,
+ * `T-M01-030`), which both screens hand to `ProposalTemplateSettings` with their words: the cover
+ * picture, the track record, the page rows, the phases and the terms. What the tenant wrote is one
+ * value, shown as written in every language (`F3-10`).
  */
 
 export interface ProposalTemplateView {
-  readonly cover: {
-    readonly origin: 'platform' | 'own';
-    readonly about: string;
-    readonly counts: {
-      readonly totalCapacityInstalledKw: number | null;
-      readonly happyCustomers: number | null;
-      readonly citiesServed: number | null;
-    };
+  readonly look: {
+    /** The picture in force: one of the platform's, or the company's own photo. */
+    readonly chosen: CoverPictureKey | 'own';
   };
-  readonly sections: {
-    readonly origin: 'platform' | 'own';
+  readonly record: ProposalCover;
+  readonly pages: {
     readonly rows: readonly {
-      readonly key: ProposalSection;
+      readonly page: ProposalPage;
       readonly on: boolean;
-      readonly floor: boolean;
+      readonly always: boolean;
     }[];
-    readonly printing: number;
-    readonly of: number;
   };
   readonly terms: {
-    readonly origin: 'platform' | 'own';
     /** In the wire's own lists, which every renderer of rich text takes. */
     readonly value: RichTextValueWire;
   };
   readonly timeline: {
-    readonly origin: 'platform' | 'own';
     readonly phases: readonly {
       readonly key: number;
-      readonly title: string;
-      readonly note: string;
       /** The phase as the editor opens it. */
       readonly phase: TimelinePhase;
     }[];
@@ -69,62 +59,44 @@ export function richTextWireOf(value: RichTextValue): RichTextValueWire {
   };
 }
 
-/** What the page draws while its reads are out: no part holds anything yet, and every part is the tenant's to load. */
-const NOTHING_READ: ProposalTemplateView = {
-  cover: {
-    origin: 'own',
-    about: '',
-    counts: { totalCapacityInstalledKw: null, happyCustomers: null, citiesServed: null },
-  },
-  sections: { origin: 'own', rows: [], printing: 0, of: 0 },
-  terms: {
-    origin: 'own',
-    value: { version: 1, blocks: [] },
-  },
-  timeline: { origin: 'own', phases: [], atCap: false },
+const NO_RECORD: ProposalCover = {
+  aboutCompany: null,
+  totalCapacityInstalledKw: null,
+  happyCustomers: null,
+  citiesServed: null,
 };
 
-/**
- * The view of the draft against the platform's defaults in the reader's words; while the reads are
- * out (`draft` null), an empty view the page's loading frame draws over (m19-n1).
- */
-export function templateViewOf(
-  draft: TemplateDraft | null,
-  defaults: TemplateDefaults,
-): ProposalTemplateView {
+/** What the page draws while its reads are out: no part holds anything yet. */
+const NOTHING_READ: ProposalTemplateView = {
+  look: { chosen: DEFAULT_COVER_PICTURE.kind === 'platform' ? DEFAULT_COVER_PICTURE.key : 'own' },
+  record: NO_RECORD,
+  pages: { rows: [] },
+  terms: { value: { version: 1, blocks: [] } },
+  timeline: { phases: [], atCap: false },
+};
+
+/** The view of the draft; while the reads are out (`draft` null), an empty view the loading frame draws over. */
+export function templateViewOf(draft: TemplateDraft | null): ProposalTemplateView {
   if (draft === null) return NOTHING_READ;
   const { cover, sectionsIncluded, defaultTerms } = draft.template;
-  const shown = optionalSectionsShown(draft);
+  const picture = draft.template.coverPicture ?? DEFAULT_COVER_PICTURE;
   return {
-    cover: {
-      origin: templatePartOrigin(draft, 'cover', defaults),
-      about: cover?.aboutCompany ?? '',
-      counts: {
-        totalCapacityInstalledKw: cover?.totalCapacityInstalledKw ?? null,
-        happyCustomers: cover?.happyCustomers ?? null,
-        citiesServed: cover?.citiesServed ?? null,
-      },
+    look: { chosen: picture.kind === 'platform' ? picture.key : 'own' },
+    record: cover ?? NO_RECORD,
+    pages: {
+      rows: PROPOSAL_PAGES.map((page) => {
+        const section = sectionOfPage(page);
+        return {
+          page,
+          on: section === null || sectionsIncluded.includes(section),
+          always: !isPageOptional(page),
+        };
+      }),
     },
-    sections: {
-      origin: templatePartOrigin(draft, 'sections', defaults),
-      rows: PROPOSAL_SECTIONS.map((key) => ({
-        key,
-        on: sectionsIncluded.includes(key),
-        floor: isSectionFloor(key),
-      })),
-      printing: shown.printing,
-      of: shown.of,
-    },
-    terms: {
-      origin: templatePartOrigin(draft, 'terms', defaults),
-      value: richTextWireOf(defaultTerms),
-    },
+    terms: { value: richTextWireOf(defaultTerms) },
     timeline: {
-      origin: templatePartOrigin(draft, 'timeline', defaults),
       phases: draft.phases.map((phase) => ({
         key: phase.key,
-        title: phase.name,
-        note: phase.description,
         phase: { name: phase.name, description: phase.description },
       })),
       atCap: draft.phases.length >= TIMELINE_PHASE_LIMIT,

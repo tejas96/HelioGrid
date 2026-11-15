@@ -23,6 +23,7 @@ import { CatalogImportService } from '../../src/modules/catalog/catalog.import.s
 import { CatalogImportFixRepository } from '../../src/modules/catalog/catalog.import-fix.repository';
 import { CatalogImportPreviewService } from '../../src/modules/catalog/catalog.import-preview.service';
 import { CatalogImportRowsRepository } from '../../src/modules/catalog/catalog.import-rows.repository';
+import { CatalogOpenDraftsRepository } from '../../src/modules/catalog/catalog.open-drafts.repository';
 import { CatalogPlatformService } from '../../src/modules/catalog/catalog.platform.service';
 import { CatalogPricesRepository } from '../../src/modules/catalog/catalog.prices.repository';
 import { CatalogRatesRepository } from '../../src/modules/catalog/catalog.rates.repository';
@@ -52,6 +53,7 @@ export function catalogPlatformServiceOf(pools: Pools): CatalogPlatformService {
 export function catalogServiceOf(pools: Pools): CatalogService {
   return new CatalogService(
     new CatalogSliceRepository(pools.tenants),
+    new CatalogOpenDraftsRepository(pools.tenants),
     new CatalogRepository(pools.tenants),
     new CatalogPricesRepository(pools.tenants),
     new CatalogRatesRepository(pools.tenants),

@@ -27,6 +27,19 @@
   height: 40px;
 }
 
+/* The one large figure of a step (`hero`): a taller well and the display face, as a hero figure
+   reads everywhere else (CLAUDE.md §9). */
+.hg-number-field-box[data-hero] {
+  height: 60px;
+}
+
+.hg-number-field-box[data-hero]
+  :is(.hg-number-field-input, .hg-number-field-input[data-currency="true"]) {
+  font: var(--fw-regular) 24px / 1 var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--tr-display);
+}
+
 /* With steppers the buttons own the horizontal padding, so the box gives it up. */
 .hg-number-field-box[data-steppers="true"] {
   padding: 0;
@@ -121,4 +134,61 @@
 
 .hg-number-field-message[data-kind="correction"] {
   color: var(--warning-text);
+}
+
+/* The figure is the field: no well, no edge, no inset — its holder draws the frame and the focus. */
+.hg-number-field-box[data-plain] {
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.hg-number-field-box[data-plain] .hg-number-field-input {
+  font-size: 34px;
+  letter-spacing: -0.015em;
+}
+/* A plain figure in a dense row — a payment part's share — reads at the row's size. */
+.hg-number-field-box[data-plain][data-density="functional"] {
+  height: 32px;
+}
+.hg-number-field-box[data-plain][data-density="functional"] .hg-number-field-input {
+  font-size: 22px;
+  letter-spacing: 0;
+  text-align: end;
+}
+
+/* A stepped hero — step 3's size (`T-M06-005`), the one figure a person steps with a thumb: the
+   figure large and its unit beside it, the pair centred between two 56-wide discs. The phone half
+   draws the same (`NumberFieldBox.native.tsx`, `hug`). */
+.hg-number-field-box[data-hero][data-steppers="true"] {
+  height: 76px;
+}
+.hg-number-field-box[data-hero] .hg-number-field-input[data-steppers="true"] {
+  flex: 0 1 auto;
+  width: auto;
+  field-sizing: content;
+  /* Sized to itself, but never a target narrower than a thumb: a one-digit figure is still 44 wide,
+     its digits against the unit. */
+  min-width: var(--touch-min);
+  margin-inline-start: auto;
+  font-size: 44px;
+  letter-spacing: -0.03em;
+  text-align: end;
+}
+.hg-number-field-box[data-hero][data-steppers="true"] .hg-number-field-unit {
+  margin-inline: 6px auto;
+  padding: 0;
+  font-size: var(--fs-body-lg);
+}
+.hg-number-field-box[data-hero][data-steppers="true"] .hg-number-field-step.hg-pressable {
+  width: 56px;
+  margin: 10px;
+  border-radius: var(--r-md);
+  background: var(--hg-control-fill);
+}
+
+/* An empty plain figure's dash (`EMPTY_PLAIN_FIGURE`): quiet, a place to tap, not a value. */
+.hg-number-field-input::placeholder {
+  color: var(--text-tertiary);
+  opacity: 1;
 }

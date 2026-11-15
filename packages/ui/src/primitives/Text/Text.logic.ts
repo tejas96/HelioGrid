@@ -1,4 +1,10 @@
-import { type ScriptRun, type ScriptStack, splitScriptRuns } from '@heliogrid/domain';
+import {
+  isBrandFaceRun,
+  lineBoxRaisedTo,
+  type ScriptRun,
+  type ScriptStack,
+  splitScriptRuns,
+} from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { Children, isValidElement, type ReactNode } from 'react';
 import type { TextVariant } from './Text.types';
@@ -36,6 +42,11 @@ export function isMono(variant: TextVariant): boolean {
   return variant === 'mono';
 }
 
+/** Whether a run is in its variant's brand face, so it takes the role's tracking (`isBrandFaceRun`). */
+export function isBrandRun(run: ScriptRun, variant: TextVariant): boolean {
+  return isBrandFaceRun(run, isDisplay(variant) ? DISPLAY : SANS);
+}
+
 /** The runs of one string: which bundled family draws each stretch of it in this variant. */
 export function runsOfString(text: string, variant: TextVariant = 'body'): readonly ScriptRun[] {
   return splitScriptRuns(text, isDisplay(variant) ? DISPLAY : SANS);
@@ -49,6 +60,16 @@ function stringsIn(children: ReactNode): string[] {
 }
 
 /**
+ * The size a caller draws the role at, where its own style sets one — a cover's 84px name. The
+ * floor is measured at that size against that line box: measured at the role's, it would shrink a
+ * larger line and clip its letters.
+ */
+export interface DrawnAt {
+  readonly fontSize?: number;
+  readonly lineHeight?: number;
+}
+
+/**
  * The role's line box, raised to fit the tallest face this text is drawn in.
  *
  * `F3-17` — the scale keeps its sizes, and a script whose marks sit above and below the baseline
@@ -56,10 +77,14 @@ function stringsIn(children: ReactNode): string[] {
  * imposes no floor, so a Latin line is drawn exactly as it was before and neither half sets
  * anything. Only a line the scale would clip is raised.
  */
-export function lineHeightFor(variant: TextVariant, children: ReactNode): number | undefined {
-  const floor = scriptFloorFor(variant, children);
-  const drawn = roleOf(variant).lineHeight ?? 0;
-  return floor > drawn ? floor : undefined;
+export function lineHeightFor(
+  variant: TextVariant,
+  children: ReactNode,
+  drawnAt: DrawnAt = {},
+): number | undefined {
+  const floor = scriptFloorFor(variant, children, drawnAt.fontSize);
+  const drawn = drawnAt.lineHeight ?? roleOf(variant).lineHeight ?? 0;
+  return lineBoxRaisedTo(floor, drawn);
 }
 
 /**
@@ -67,7 +92,11 @@ export function lineHeightFor(variant: TextVariant, children: ReactNode): number
  * caller that draws a tighter line than the role's own takes the larger of the two, so a Hindi or
  * Marathi mark is never clipped (`F3-17`).
  */
-export function scriptFloorFor(variant: TextVariant, children: ReactNode): number {
+export function scriptFloorFor(
+  variant: TextVariant,
+  children: ReactNode,
+  fontSize: number = roleOf(variant).fontSize,
+): number {
   /* Mono sets the never-translated set (`F3-08`) — figures, identifiers and units, Latin in
      every language — in a family the stack does not name, so no script floor reaches it. */
   const floorEm = isMono(variant)
@@ -75,7 +104,7 @@ export function scriptFloorFor(variant: TextVariant, children: ReactNode): numbe
     : stringsIn(children)
         .flatMap((text) => runsOfString(text, variant))
         .reduce((tallest, run) => Math.max(tallest, LINE_FLOOR_EM.get(run.family) ?? 0), 0);
-  return Math.ceil(floorEm * roleOf(variant).fontSize);
+  return Math.ceil(floorEm * fontSize);
 }
 
 /**

@@ -1,125 +1,152 @@
-import { TEMPLATE_PARTS } from '@heliogrid/domain';
-import { theme } from '@heliogrid/theme';
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
-  BRANDING_SHEET,
-  BRANDING_STAGE,
-  brandingCoverProps,
-} from '../BrandingSettings/BrandingSettings.logic';
-import type { DocumentPreviewProps } from '../DocumentPreview/DocumentPreview.types';
-import { estimatePages } from '../PagedDocument/page-geometry';
-import { measure } from '../RichText/RichText.model';
-import type { RichTextValue } from '../RichText/RichText.types';
+  DEFAULTS_PART_PAGE,
+  DEFAULTS_PARTS,
+  PROPOSAL_PAGES,
+  type ProposalPage,
+  proposalSheetsOf,
+  sheetNumber,
+} from '@heliogrid/domain';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { BuilderStep } from '../ProposalBuilder/ProposalBuilder.types';
+import type { ProposalStepWords } from '../ProposalSteps/ProposalSteps.words.types';
+import { paymentControls } from '../ProposalSteps/payment-controls';
+import type { StepControl } from '../ProposalSteps/step-controls';
 import type {
-  ProposalTemplateSettingsWords,
-  TemplateCoverCount,
-  TemplateDocument,
-  TemplatePartName,
+  DefaultsPartName,
+  DefaultsPaymentView,
+  DefaultsSample,
+  ProposalDefaultsWords,
 } from './ProposalTemplateSettings.types';
 
 /**
- * The kW figure's unit. A unit symbol, never translated (`CLAUDE.md` §9: kW/kWh/kWp are never
- * translated), so it is not a catalog word — moving it into a language would print *किलोवॉट*
- * beside a figure the document prints as kW.
+ * Proposal defaults' own measures and pure answers (`SCR-M01-19`, `T-M01-030`), which both halves
+ * read: the parts as the builder's frame takes them, the page each feeds, and where a page stands
+ * among the pages that print.
  */
-export const KW = 'kW';
 
-/** The cover's two plain counts, side by side under the kW figure; neither carries a tier (`F8-01`). */
-export const TEMPLATE_PLAIN_COUNTS: readonly TemplateCoverCount[] = [
-  'happyCustomers',
-  'citiesServed',
-];
+/** The widths a page is fitted to, px or dp, as the approved design draws each place. */
+export const DEFAULTS_PAGE_WIDTH = {
+  /** The desktop stage: the cover stands narrower so the whole page shows. */
+  stageCover: 468,
+  stage: 600,
+  /** The phone's peek and its preview sheet. */
+  peek: 310,
+  preview: 326,
+  /** The wall of every page: on the desktop stage, and in the phone's preview sheet. */
+  wall: 118,
+  wallPhone: 100,
+  /** How many pages a row of the wall holds: five on the desktop stage, three in the phone's sheet. */
+  wallColumns: 5,
+  wallColumnsPhone: 3,
+  /** A page's thumbnail on its row in *Pages*. */
+  row: 54,
+} as const;
 
-/** The *About* text's limit and its rows: 3 in the 375 column, 5 in the 420 card (m19-a, m19-i). */
-export const TEMPLATE_ABOUT = { maxLength: 2000, rows: { narrow: 3, wide: 5 } } as const;
+/** The glyph each part wears on the rail and in the phone's row. */
+export const DEFAULTS_PART_GLYPH: Readonly<Record<DefaultsPartName, ShellGlyphName>> = {
+  look: 'palette',
+  record: 'star',
+  pages: 'layers',
+  timeline: 'calendar-clock',
+  payment: 'wallet',
+  terms: 'file-text',
+  bank: 'credit-card',
+};
 
-/** The phase's sentence (m19-g): three rows, the contract's paragraph limit. */
-export const TEMPLATE_PHASE_WHAT = { maxLength: 2000, rows: 3 } as const;
-
-/** The terms editor's floor (`rtTerms`): room for a page of terms before it grows. */
-export const TEMPLATE_TERMS_MIN_HEIGHT = 200;
-
-/** The editor card at width (`Editor 1536`): 420 wide. */
-export const TEMPLATE_EDITOR_WIDTH = 420;
-
-/**
- * The room from which the page stands as the board's 1536 pair: the stage holding the whole
- * 480-wide sheet inside its `--sp-8` sides, the `--sp-8` gap and the 420 card (996). Below it the
- * stage would scale the sheet, so the page is the 375 column.
- */
-export const TEMPLATE_WIDE_FROM =
-  BRANDING_SHEET.width + theme.spacing['sp-8'] * 3 + TEMPLATE_EDITOR_WIDTH;
-
-/**
- * The sample proposal's number the stage prints (`docPreview`): an identifier, never a word, so
- * it is the same in every language. The customer beside it is the catalog's sample.
- */
-export const TEMPLATE_SAMPLE = { docNumber: 'PRO-2026-0431' } as const;
-
-/** The phase editor's side panel at width (m19-l): 480 wide, non-modal. */
-export const TEMPLATE_PHASE_PANEL = 480;
-
-/** The editor's four parts, in the switch's order (*Cover · Sections · Terms · Timeline*) — domain's list. */
-export { TEMPLATE_PARTS };
-
-/**
- * The 375 stage's window (`pfStage`, `pfStageShort`): the cover cut at 186 while Cover or Sections
- * is open, at 120 while Terms or Timeline is, whose fields need the room below it.
- */
-export function templateStageHeight(part: TemplatePartName): number {
-  return part === 'cover' || part === 'sections'
-    ? BRANDING_STAGE.maxHeight
-    : BRANDING_STAGE.shortHeight;
+/** The seven parts as the frame's steps. A part has no standing: it always holds a default. */
+export function defaultsSteps(words: ProposalDefaultsWords): BuilderStep[] {
+  return DEFAULTS_PARTS.map((part) => ({
+    key: part,
+    title: words.parts[part].title,
+    heading: words.parts[part].heading,
+    glyph: DEFAULTS_PART_GLYPH[part],
+    standing: 'default',
+  }));
 }
 
-export const TEMPLATE_STAGE_MIN_SCALE = BRANDING_STAGE.minScale;
+/** The part a frame key names; the first part for a key that names none. */
+export function defaultsPartOf(key: string): DefaultsPartName {
+  return DEFAULTS_PARTS.find((part) => part === key) ?? DEFAULTS_PARTS[0];
+}
 
-/** The switch reports a string; only the four parts it offers come back from it. */
-export function templatePartOf(value: string): TemplatePartName | undefined {
-  return TEMPLATE_PARTS.find((part) => part === value);
+/** The page a part's stage shows, or `null` for *Pages*, whose stage is the wall. */
+export function defaultsPageOf(part: DefaultsPartName): ProposalPage | null {
+  return DEFAULTS_PART_PAGE[part];
+}
+
+/** One page on the wall: whether it prints, and its number among the pages that do. */
+export interface WallPage {
+  readonly page: ProposalPage;
+  readonly on: boolean;
+  /** One-based among the pages that print; `null` for a page left out. */
+  readonly at: number | null;
 }
 
 /**
- * The document the stage and an app's full-size reader both draw (`docPreview`): the cover from
- * Branding's facts (`brandingCoverProps`, so the two covers cannot differ), the sample customer and
- * number, the sections in document order and the terms.
+ * Every page in document order, each with its place among the sheets the sample prints — the
+ * domain's page plan, so a page after terms that run to two sheets is numbered as it prints.
  */
-export function templateDocumentProps(
-  document: TemplateDocument,
-  words: Pick<
-    ProposalTemplateSettingsWords,
-    | 'proposal'
-    | 'sampleCustomer'
-    | 'sampleCustomerPlace'
-    | 'sectionsTitle'
-    | 'termsTitle'
-    | 'logoAlt'
-  >,
-  width: number,
-): DocumentPreviewProps {
-  return {
-    /* No logo slot word: a real cover draws the logo or the name alone, and the terms carry none. */
-    ...brandingCoverProps(document.facts, document.colour, {
-      documentTitle: words.proposal,
-      logoAlt: words.logoAlt(document.facts.companyName),
-    }),
-    parts: ['cover', 'sections', 'terms'],
-    fit: 'content',
-    customerName: words.sampleCustomer,
-    customerMeta: words.sampleCustomerPlace,
-    docNumber: document.docNumber,
-    docDate: document.docDate,
-    sections: document.sections.map(({ label, included }) => ({ label, included })),
-    sectionsTitle: words.sectionsTitle,
-    terms: document.terms,
-    termsTitle: words.termsTitle,
-    width,
+export function wallPages(sample: DefaultsSample): WallPage[] {
+  const sheets = proposalSheetsOf(sample.snapshot.pages, sample.snapshot.fields);
+  return PROPOSAL_PAGES.map((page) => {
+    const at = sheetNumber(sheets, page, 0);
+    return { page, on: at > 0, at: at > 0 ? at : null };
+  });
+}
+
+/** The line under a wall page: *3 · About us*, or *Off · About us*. */
+export function wallLine(words: ProposalDefaultsWords, wall: WallPage): TranslatedText {
+  const name = words.pageName[wall.page];
+  return wall.at === null ? words.pageOff(name) : words.pageAt(wall.at, name);
+}
+
+/** What the stage's caption says of the page in view: its name, or how many pages print. */
+export function stagePageLine(
+  words: ProposalDefaultsWords,
+  part: DefaultsPartName,
+  sample: DefaultsSample,
+): TranslatedText {
+  const page = defaultsPageOf(part);
+  return page === null
+    ? words.pagesPrint(sample.snapshot.pages.length, PROPOSAL_PAGES.length)
+    : words.pageName[page];
+}
+
+/**
+ * The sample as a page left out still draws: the wall and a part's stage show every page, so a
+ * page that is off is drawn as it would print, and marked off beside it.
+ */
+export function sampleWith(sample: DefaultsSample, page: ProposalPage): DefaultsSample {
+  if (sample.snapshot.pages.includes(page)) return sample;
+  const pages = PROPOSAL_PAGES.filter(
+    (each) => each === page || sample.snapshot.pages.includes(each),
+  );
+  return { ...sample, snapshot: { ...sample.snapshot, pages } };
+}
+
+/** *Payment*'s controls: step 7's own, over the default plan; a plan that did not save says so first. */
+export function defaultsPaymentControls(
+  view: DefaultsPaymentView,
+  shared: ProposalStepWords,
+): StepControl[] {
+  const failed: StepControl[] = view.failed
+    ? [
+        {
+          kind: 'note',
+          key: 'failed',
+          notice: view.words.planFailed,
+          tone: 'danger',
+          glyph: 'alert-circle',
+        },
+      ]
+    : [];
+  const steady = {
+    ...view,
+    /* While a plan is being made the default, a second pick waits for it. */
+    onPlan: (id: string) => {
+      if (!view.changing && id !== view.planId) view.onPlan(id);
+    },
   };
-}
-
-/**
- * How many pages the terms take, against `PagedDocument`'s own page (`estimatePages`), so the
- * editor's count and the printed pages come from one idea of a page; 0 while they are empty.
- */
-export function termsPageCount(value: RichTextValue): number {
-  return estimatePages(measure(value)).pages;
+  return [...failed, ...paymentControls(steady, shared)];
 }

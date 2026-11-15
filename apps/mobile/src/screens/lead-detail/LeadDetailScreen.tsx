@@ -1,33 +1,37 @@
-import { useLeadDetailScreen } from '@heliogrid/data/react';
+import {
+  type LeadDetailShown,
+  type LeadDetailScreen as LeadDetailView,
+  type LeadProposalsSection,
+  useLeadDetailScreen,
+  useLeadProposalsSection,
+} from '@heliogrid/data/react';
 import {
   destinationLabel,
-  leadAssignPickerWords,
   leadDetailPageWords,
-  leadDetailSheetWords,
   leadTitleWords,
   leadWorkCardsWords,
-  markWonWords,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import {
-  LeadAssignPicker,
-  LeadDetailSheet,
-  LeadDetailStates,
-  LeadRecordMenu,
-  MarkWonSheet,
-  markWonSheetOf,
-  useFormat,
-} from '@heliogrid/ui';
+import { LeadDetailStates, LeadRecordMenu, useFormat } from '@heliogrid/ui';
 import type { StaticScreenProps } from '@react-navigation/native';
 import { useRef } from 'react';
 import { View } from 'react-native';
 import { ShellPage } from '../shell/components/ShellPage';
 import { LeadDetailBody } from './components/LeadDetailBody';
-import { useLeadDetailMoves } from './hooks/use-lead-detail-moves';
+import { LeadDetailOverlays } from './components/LeadDetailOverlays';
+import { useLeadProposalsPanel } from './components/LeadProposals';
+import {
+  type LeadDetailMoves,
+  useLeadDetailMoves,
+  useWonOnArrival,
+} from './hooks/use-lead-detail-moves';
 import { styles } from './styles';
 
-/** A lead opens at `heliogrid://leads/<id>` — from a list, a search result or a notice (`F6-02`). */
-type Props = StaticScreenProps<{ leadId: string }>;
+/**
+ * A lead opens at `heliogrid://leads/<id>` — from a list, a search result or a notice (`F6-02`);
+ * `?won=1` opens its *Mark won* sheet on arrival, a proposal's *Confirm won* (`M07-62`).
+ */
+type Props = StaticScreenProps<{ leadId: string; won?: string }>;
 
 /**
  * Lead Detail on the phone (`SCR-M02-04`, the 375 frames): a rep on a call or at the door, one hand
@@ -39,10 +43,14 @@ type Props = StaticScreenProps<{ leadId: string }>;
 export function LeadDetailScreen({ route }: Props) {
   const t = useTranslate();
   const format = useFormat();
-  const screen = useLeadDetailScreen(route.params.leadId, format.pack.timeZone);
+  const { leadId, won } = route.params;
+  const screen = useLeadDetailScreen(leadId, format.pack.timeZone);
   const moves = useLeadDetailMoves(screen.files);
   const words = leadDetailPageWords(t);
   const { read } = screen;
+  const shown = read.kind === 'ready' ? read.value : null;
+  const proposals = useLeadProposalsSection(leadId, shown?.lead ?? null, moves.proposals);
+  useWonOnArrival(won, screen);
   /* The page stays while a failed read is tried again: the screen reader lands on it. */
   const page = useRef<View>(null);
   const record = read.kind === 'ready' ? read.value.lead.lead : null;
@@ -80,7 +88,7 @@ export function LeadDetailScreen({ route }: Props) {
     >
       <View ref={page} style={styles.page}>
         {read.kind === 'ready' ? (
-          <LeadDetailBody screen={screen} shown={read.value} moves={moves} />
+          <LeadReady screen={screen} shown={read.value} moves={moves} proposals={proposals} />
         ) : (
           <LeadDetailStates
             read={read}
@@ -91,29 +99,36 @@ export function LeadDetailScreen({ route }: Props) {
         )}
       </View>
       {read.kind === 'ready' ? (
-        <>
-          <LeadDetailSheet
-            screen={screen}
-            lead={read.value.lead}
-            view={read.value.view}
-            onHandOn={moves.share}
-            onMerge={moves.merge}
-            words={leadDetailSheetWords(t, 'share')}
-          />
-          <MarkWonSheet
-            {...markWonSheetOf(screen.won, moves.openProject, screen.days.today)}
-            words={markWonWords(
-              t,
-              read.value.lead.lead.name ?? format.phone(read.value.lead.lead.phoneE164),
-            )}
-          />
-          <LeadAssignPicker
-            assign={screen.assign}
-            ownerId={read.value.lead.lead.owner?.userId ?? null}
-            words={leadAssignPickerWords(t, read.value.lead.lead.name)}
-          />
-        </>
+        <LeadDetailOverlays
+          screen={screen}
+          shown={read.value}
+          moves={moves}
+          proposals={proposals}
+          focusAfter={page}
+        />
       ) : null}
     </ShellPage>
   );
+}
+
+/**
+ * The lead once read, with its Proposals section filled: a closed lead offers *Reopen lead* there,
+ * where its view allows the act.
+ */
+function LeadReady({
+  screen,
+  shown,
+  moves,
+  proposals,
+}: {
+  screen: LeadDetailView;
+  shown: LeadDetailShown;
+  moves: LeadDetailMoves;
+  proposals: LeadProposalsSection;
+}) {
+  const reopen = shown.view.acts.stateActs.includes('reopen')
+    ? () => screen.acts.quick('reopen')
+    : null;
+  const panel = useLeadProposalsPanel(shown.lead, proposals, reopen);
+  return <LeadDetailBody screen={screen} shown={shown} moves={moves} proposals={panel} />;
 }

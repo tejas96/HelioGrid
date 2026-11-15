@@ -1,7 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
@@ -54,7 +53,7 @@ function stepOf(
     const { retry } = props.jobFailed;
     return only(
       <EmptyState
-        icon={<ShellGlyph name="alert-triangle" size="lg" tone="warning" />}
+        scene="failed"
         title={words.jobFailedTitle}
         description={words.jobFailedMessage}
         action={

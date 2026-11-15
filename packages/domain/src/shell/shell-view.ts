@@ -1,5 +1,5 @@
 import type { RolePreset } from '../authz/roles';
-import { type CentreVerb, centreVerbFor } from './centre-verb';
+import { type CentreVerb, centreVerbFor, homeVerbFor } from './centre-verb';
 import { type FirstRunMark, firstRunMarksFor } from './coach-marks';
 import { type ComposedHome, composedHome, homeFor, homesOf } from './home';
 import { type StandingDestinationSet, standingDestinationsFor } from './standing-destinations';
@@ -11,6 +11,8 @@ export interface ShellView {
   /** The switcher's list, in ladder order; one entry means no switcher (`M13-10`). */
   readonly homes: readonly RolePreset[];
   readonly centreVerb: CentreVerb | null;
+  /** The act on the home's own button (`homeVerbFor`). */
+  readonly homeVerb: CentreVerb | null;
   readonly destinations: StandingDestinationSet | null;
   readonly coachMarks: readonly FirstRunMark[];
 }
@@ -18,20 +20,28 @@ export interface ShellView {
 /**
  * The shell for a person holding `held`, with `chosen` the switcher's pick for this session. The
  * slots follow the PERSON — the ladder-top preset (`F7-48`) — so a switch never moves one; the
- * verb and the marks follow the home in force, so a mark never points at a centre that is gone.
+ * verbs and the marks follow the home in force, so a mark never points at a centre that is gone.
  */
 export function shellViewFor(held: readonly RolePreset[], chosen: RolePreset | null): ShellView {
   const home = composedHome(held, chosen);
   const top = homeFor(held);
   const homes = homesOf(held);
   if (home === null || top === null) {
-    return { home: null, homes, centreVerb: null, destinations: null, coachMarks: [] };
+    return {
+      home: null,
+      homes,
+      centreVerb: null,
+      homeVerb: null,
+      destinations: null,
+      coachMarks: [],
+    };
   }
   const centreVerb = centreVerbFor(home.home);
   return {
     home,
     homes,
     centreVerb,
+    homeVerb: homeVerbFor(home.home),
     destinations: standingDestinationsFor(top),
     coachMarks: firstRunMarksFor({ homes: homes.length, centreVerb }),
   };

@@ -91,7 +91,16 @@ const QUIET: Dashboard = {
   won: { ...BUSY.won, median: null },
 };
 
-export type DashboardFrame = 'busy' | 'quiet' | 'no-target' | 'suggested' | 'loading' | 'failed';
+export type DashboardFrame =
+  | 'busy'
+  | 'priced'
+  | 'priced-paise'
+  | 'cash-paise'
+  | 'quiet'
+  | 'no-target'
+  | 'suggested'
+  | 'loading'
+  | 'failed';
 
 /** The busy day with someone to offer the waiting leads to (plan gap 17). */
 const SUGGESTED: Dashboard = {
@@ -111,9 +120,93 @@ const SUGGESTED: Dashboard = {
   },
 };
 
-const VIEW: Record<'busy' | 'quiet' | 'no-target' | 'suggested', Dashboard> = {
+/**
+ * The same company once proposals price its pipeline (`T-M13-007`): five open proposals, the
+ * forecast weighted by stage, a stage's value beside its count, and one shared proposal nobody
+ * has opened. The figures are the approved design's.
+ */
+const PRICED: Dashboard = {
+  ...BUSY,
+  needsYou: {
+    ...BUSY.needsYou,
+    proposalsUnopened: {
+      count: 1,
+      oldest: {
+        proposalId: '00000000-0000-4000-8000-0000000000c1',
+        name: 'Meena Deshpande',
+        days: 4,
+      },
+    },
+  },
+  pipeline: BUSY.pipeline.map((row) =>
+    row.stage === 'proposal' ? { ...row, value: '1828575.00' } : { ...row, value: null },
+  ),
+  forecast: {
+    expected: '1387773.00',
+    tier: 'derived',
+    count: 5,
+    stages: [
+      {
+        stage: 'shared',
+        count: 3,
+        total: '1828575.00',
+        likelihoodPercent: '30',
+        expected: '548573.00',
+      },
+      {
+        stage: 'negotiating',
+        count: 1,
+        total: '1340000.00',
+        likelihoodPercent: '50',
+        expected: '670000.00',
+      },
+      {
+        stage: 'accepted',
+        count: 1,
+        total: '188000.00',
+        likelihoodPercent: '90',
+        expected: '169200.00',
+      },
+    ],
+  },
+};
+
+/** The same, with one stage's expected figure carrying a paisa: the column keeps one form. */
+const PRICED_PAISE: Dashboard = {
+  ...PRICED,
+  forecast: PRICED.forecast && {
+    ...PRICED.forecast,
+    expected: '1387773.50',
+    stages: PRICED.forecast.stages.map((stage) =>
+      stage.stage === 'accepted' ? { ...stage, expected: '169200.50' } : stage,
+    ),
+  },
+};
+
+/** Money in and owed that carries paise, as part-payments leave it: never rounded to the rupee. */
+const CASH_PAISE: Dashboard = {
+  ...BUSY,
+  needsYou: {
+    ...BUSY.needsYou,
+    paymentsLate: { ...BUSY.needsYou.paymentsLate, amount: '170390.83' },
+  },
+  cash: {
+    collectedThisMonth: '5000.25',
+    collectedLastMonth: '0.00',
+    toCollect: '408172.25',
+    late: { count: 2, amount: '170390.83' },
+  },
+};
+
+const VIEW: Record<
+  'busy' | 'priced' | 'priced-paise' | 'cash-paise' | 'quiet' | 'no-target' | 'suggested',
+  Dashboard
+> = {
   suggested: SUGGESTED,
   busy: BUSY,
+  priced: PRICED,
+  'priced-paise': PRICED_PAISE,
+  'cash-paise': CASH_PAISE,
   quiet: QUIET,
   'no-target': { ...BUSY, target: null },
 };
@@ -138,6 +231,7 @@ export function OwnerDashboardAsRead({
   const [failed, setFailed] = useState(false);
   const [exports, setExports] = useState(0);
   const [retries, setRetries] = useState(0);
+  const [stage, setStage] = useState('');
   const focus = useRef<HTMLDivElement>(null);
   const view = frame === 'loading' || frame === 'failed' ? null : VIEW[frame];
   const read =
@@ -157,6 +251,7 @@ export function OwnerDashboardAsRead({
         data-target={sent === undefined ? '' : (sent ?? 'none')}
         data-exports={exports}
         data-retries={retries}
+        data-stage={stage}
         style={{ padding: 16 }}
       >
         <OwnerDashboard
@@ -170,11 +265,13 @@ export function OwnerDashboardAsRead({
                   paymentsLate: counts.paymentsLate.count,
                   blockedOnUs: counts.blockedOnUs.count,
                   waitingLongest: counts.waitingLongest.length,
+                  proposalsUnopened: counts.proposalsUnopened?.count ?? 0,
                   myOverdueTasks: counts.myOverdueTasks,
                 })
           }
           winRate={view === null ? null : winRateOf(view.winLoss.won, view.winLoss.lost)}
           onNeed={setOpened}
+          onForecastStage={setStage}
           onSetTarget={(amount) => {
             setSent(amount);
             setSaving(true);

@@ -1,3 +1,4 @@
+import { firstNameOf } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
@@ -5,7 +6,7 @@ import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { loadSharesOf } from '../AssignPicker/AssignPicker.logic';
 import type { AssignPickerPerson } from '../AssignPicker/AssignPicker.types';
 import { Avatar } from '../Avatar';
-import { dockColumnsOf, dockedOf, KEYED_FACES, shortNameOf } from './TeamDock.logic';
+import { dockColumnsOf, dockedOf, KEYED_FACES } from './TeamDock.logic';
 import type { TeamDockLayout, TeamDockProps, TeamDockWords } from './TeamDock.types';
 
 /** A share or a column count rides in as a custom property; the geometry stays in TeamDock.css. */
@@ -90,7 +91,7 @@ function Face({ person, share, you, keyCap, layout, waiting, onGive, words }: Fa
       <span className="hg-team-dock-ring" style={ring}>
         <Avatar name={person.name} size={layout === 'tiles' ? 56 : 40} />
       </span>
-      <span className="hg-team-dock-name">{you ? words.you : shortNameOf(person.name)}</span>
+      <span className="hg-team-dock-name">{you ? words.you : firstNameOf(person.name)}</span>
       <span className="hg-team-dock-open">{words.open(person.openCount)}</span>
       {late || layout === 'tiles' ? (
         <span className="hg-team-dock-overdue">

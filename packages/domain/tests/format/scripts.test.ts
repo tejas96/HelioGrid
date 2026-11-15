@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { type ScriptStack, splitScriptRuns } from '../../src/format/scripts';
+import {
+  isBrandFaceRun,
+  lineBoxRaisedTo,
+  type ScriptStack,
+  splitScriptRuns,
+} from '../../src/format/scripts';
 
 /**
  * `F3-09` and `F3-13`: a line that mixes scripts is normal, and on a platform with no
@@ -78,5 +83,27 @@ describe('splitScriptRuns — which face draws which run (F3-09, F3-13)', () => 
 
   it('draws a script no bundled face covers in the brand face rather than dropping it', () => {
     expect(splitScriptRuns('বাংলা', STACK)).toEqual([{ text: 'বাংলা', family: LATIN }]);
+  });
+});
+
+describe('isBrandFaceRun — only the brand face is tracked (F3-13)', () => {
+  it.each([
+    [{ text: '5 kW ', family: LATIN }, true],
+    [{ text: 'सिस्टम', family: DEVANAGARI }, false],
+    [{ text: '', family: 'Unbundled' }, false],
+  ])('%o is the brand face: %s', (run, brand) => {
+    expect(isBrandFaceRun(run, STACK)).toBe(brand);
+  });
+});
+
+describe('lineBoxRaisedTo — a script floor raises a line, a larger drawn box is kept (F3-17)', () => {
+  it.each([
+    [0, 20, undefined],
+    [24, 23, 24],
+    [24, 24, undefined],
+    [24, 25, undefined],
+    [24, 0, 24],
+  ])('floor %s over a drawn %s raises to %s', (floor, drawn, raised) => {
+    expect(lineBoxRaisedTo(floor, drawn)).toBe(raised);
   });
 });

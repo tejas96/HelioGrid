@@ -7,6 +7,8 @@ import {
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
+  amountSchema,
+  currencyCodeSchema,
   extensibleEnum,
   paginated,
   paginationQuerySchema,
@@ -56,8 +58,21 @@ export const auditDuplicateKeptSchema = z.object({
 });
 export type AuditDuplicateKept = z.infer<typeof auditDuplicateKeptSchema>;
 
+/** A proposal's money act (`F2-22`): the amount generated, discounted or versioned, in the company's currency. */
+export const auditProposalAmountSchema = z.object({
+  version: z.number().int().positive().nullable(),
+  amount: amountSchema,
+  currencyCode: currencyCodeSchema,
+});
+export type AuditProposalAmount = z.infer<typeof auditProposalAmountSchema>;
+
 export const auditChangePayloadSchema = z
-  .union([auditRoleSetChangeSchema, auditCustomerMergeSchema, auditDuplicateKeptSchema])
+  .union([
+    auditRoleSetChangeSchema,
+    auditCustomerMergeSchema,
+    auditDuplicateKeptSchema,
+    auditProposalAmountSchema,
+  ])
   .nullable();
 export type AuditChangePayload = z.infer<typeof auditChangePayloadSchema>;
 
@@ -70,8 +85,15 @@ export const auditLogEntrySchema = z.object({
   id: uuidSchema,
   /** Grows with every module's slice (Law 9); a reader keeps a fallback for a value it does not know. */
   eventType: extensibleEnum(AUDIT_EVENT_TYPES),
-  actorKind: auditActorKindSchema,
-  /** A `user_account` id for BOTH kinds — one identity table for every human (`F2-24`). */
+  /**
+   * Who acted. Grows as a slice adds an actor (`F5-31`: the customer's link), so a reader keeps a
+   * fallback for a kind it does not know.
+   */
+  actorKind: extensibleEnum(AUDIT_ACTOR_KINDS),
+  /**
+   * A `user_account` id for a person (`F2-24`); for `customer_link` the link the customer acted
+   * through — no account stands behind a customer.
+   */
   actorRef: uuidSchema,
   occurredAt: z.string().datetime(),
   /** True when the act was REFUSED (`F2-19`): silence about a blocked act is how lockout disputes become unanswerable. */

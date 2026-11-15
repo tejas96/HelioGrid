@@ -1,10 +1,10 @@
 /* LeadListRow — one lead of the Leads list (`SCR-M02-03`), its own card in the separate form of
-   `CardRows`, whose frame and open target are the card's. The body lays out the face, the words
-   and the end. */
+   `CardRows`, whose frame and open target are the card's. The body lays out the face and the three
+   lines: the name with the stage, the facts, then what comes next over the owner. */
 
 .hg-card-row-body.hg-lead-list-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--sp-3);
   padding: var(--sp-3) var(--sp-4);
 }
@@ -15,6 +15,18 @@
   flex-direction: column;
   gap: var(--sp-1);
   min-width: 0;
+}
+
+/* The name and the stage: a long name wraps under itself, the stage keeps its width. */
+.hg-lead-list-row-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.hg-lead-list-row-top > .hg-status-mark {
+  flex: none;
 }
 
 /* A lead with no name yet: a dashed ring around the phone, where a face would be. */
@@ -34,8 +46,9 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
+  min-width: 0;
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body-lg);
   font-weight: var(--fw-semibold);
   color: var(--text-primary);
   overflow-wrap: anywhere;
@@ -45,18 +58,18 @@
 .hg-lead-list-row-phone {
   font-family: var(--font-mono);
   font-size: var(--fs-body);
-  line-height: var(--lh-body);
+  line-height: var(--lh-body-lg);
   font-weight: var(--fw-medium);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
   white-space: nowrap;
 }
 
-.hg-lead-list-row-sub {
+.hg-lead-list-row-facts {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-1) var(--sp-3);
+  gap: var(--sp-0-5) var(--sp-3);
   min-width: 0;
   font-size: var(--fs-body-sm);
   line-height: var(--lh-body-sm);
@@ -67,16 +80,14 @@
   overflow-wrap: anywhere;
 }
 
-.hg-lead-list-row-end {
-  display: flex;
-  flex: none;
-  flex-direction: column;
-  align-items: flex-end;
+/* The bill and its tier stay together when the line wraps. */
+.hg-lead-list-row-bill {
+  display: inline-flex;
+  align-items: center;
   gap: var(--sp-2);
-  max-width: 45%;
 }
 
-/* Money in a list is Geist Mono (`CLAUDE.md` §9); its tier stands once, on the list's head. */
+/* Money in a list is Geist Mono (`CLAUDE.md` §9), its tier beside it. */
 .hg-lead-list-row-money {
   font-family: var(--font-mono);
   font-size: var(--fs-body-sm);
@@ -85,4 +96,29 @@
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
   white-space: nowrap;
+}
+
+/* What comes next, then who owns the lead, under a hairline. */
+.hg-lead-list-row-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  min-height: var(--sp-8);
+  margin-top: var(--sp-2);
+  padding-top: var(--sp-2);
+  border-top: 1px solid var(--hairline);
+}
+
+.hg-lead-list-row-next {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-lead-list-row-unowned {
+  flex: none;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
 }

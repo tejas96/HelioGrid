@@ -2,7 +2,6 @@
 
 import type { ReactNode } from 'react';
 import { useOwnWidth } from '../../primitives/use-own-width';
-import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Banner } from '../Banner';
 import { Button } from '../Button';
 import { EmptyState } from '../EmptyState';
@@ -61,7 +60,7 @@ function stepOf(
   if (props.jobFailed !== null) {
     return only(
       <EmptyState
-        icon={<ShellGlyph name="alert-triangle" size="lg" tone="warning" />}
+        scene="failed"
         title={words.jobFailedTitle}
         description={words.jobFailedMessage}
         action={

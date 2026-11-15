@@ -3,8 +3,14 @@ import type { LeadDetail } from '@heliogrid/contracts';
 import type { LeadDetailScreen } from '@heliogrid/data/react';
 import type { LeadDetailView } from '@heliogrid/domain';
 import { leadDetailCardsWords, leadTimelineWords, leadWorkCardsWords } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
-import { LeadDetailCards, LeadTimeline, LeadWorkCards, useFormat } from '@heliogrid/ui';
+import { useI18n, useTranslate } from '@heliogrid/i18n/react';
+import {
+  LeadDetailCards,
+  type LeadProposalsPanel,
+  LeadTimeline,
+  LeadWorkCards,
+  useFormat,
+} from '@heliogrid/ui';
 import type { LeadDetailMoves } from '../hooks/use-lead-detail-moves';
 
 /** What every card of the page draws from: the hook, the lead as read and domain's view of it. */
@@ -55,8 +61,10 @@ export function LeadContactsAndSections({
   view,
   moves,
   first,
-}: LeadCardProps & { first: 'contacts' | 'sections' }) {
-  const t = useTranslate();
+  proposals,
+}: LeadCardProps & { first: 'contacts' | 'sections'; proposals?: LeadProposalsPanel }) {
+  const { t, locale } = useI18n();
+  const format = useFormat();
   return (
     <LeadDetailCards
       screen={screen}
@@ -67,7 +75,8 @@ export function LeadContactsAndSections({
       onAddFile={moves.addFile}
       onOpenFile={moves.openFile}
       first={first}
-      words={leadDetailCardsWords(t)}
+      {...(proposals === undefined ? {} : { proposals })}
+      words={leadDetailCardsWords(t, { areas: format.pack.areas, language: locale })}
     />
   );
 }

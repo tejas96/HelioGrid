@@ -1,0 +1,19 @@
+# A proposal's own page (`SCR-M06-18`): the draft the api started opens at its address, as a search
+# result or a notice opens it. The bar holds only its way back, the large title names it a draft,
+# and the hero says the product shows when a link is opened and never claims a delivery. The way
+# back leads to the proposals list.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://proposals/${PROPOSAL_ID}
+- extendedWaitUntil:
+    visible: ${PROPOSAL_DRAFT}
+    timeout: 15000
+- scrollUntilVisible:
+    element: ${NEVER_DELIVERED}
+    direction: DOWN
+    timeout: 15000
+    centerElement: true
+- tapOn: ${BACK_TO_PROPOSALS}
+- extendedWaitUntil:
+    visible: ${PROPOSALS_TITLE}
+    timeout: 15000

@@ -43,6 +43,11 @@ export interface FilterChipsProps {
   counts?: Record<string, number>;
   /** Horizontal scroll for the phone row. */
   scroll?: boolean;
+  /**
+   * `filled` (the default): the 44px pill in the control fill. `outlined`: the one `Chip` the
+   * proposals list draws — outlined, its count in a badge — under the same tab semantics.
+   */
+  look?: 'filled' | 'outlined';
   /** **The tablist's accessible name** — "Stage", "Outcome". A tablist with no name is a defect. */
   label?: TranslatedText;
   /**

@@ -64,7 +64,7 @@ export function useRecordForm({ form, words, sending, failure, failureField }: R
       if (typeof value === 'string') setReceivedOn(value);
     },
     send: {
-      label: words.save(amount === null ? '' : format.money(amount.toFixed(digits))),
+      label: words.save(amount === null ? '' : format.moneyPlain(amount.toFixed(digits))),
       ...footOf({ sending, refusal: atReference === null ? failure : null }),
       ready,
       onSend: () => {

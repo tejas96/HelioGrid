@@ -14,8 +14,10 @@ import { type DashboardPartProps, pipelineBarsOf } from './OwnerDashboard.logic'
  */
 export function PipelineCard({ view, words }: DashboardPartProps) {
   const format = useFormat();
-  const { bars, open, won } = pipelineBarsOf(view, words);
+  const { bars, open, won } = pipelineBarsOf(view, words, format.moneyPlain);
   const median = view.won.median;
+  /* Once a stage carries a value the gap's line has nothing left to say. */
+  const priced = bars.some((bar) => bar.note !== undefined);
   return (
     <Card>
       <View
@@ -40,9 +42,11 @@ export function PipelineCard({ view, words }: DashboardPartProps) {
               <ProvenanceTier tier="derived" />
             </View>
           )}
-          <Text variant="caption" color="secondary">
-            {words.valuesGap}
-          </Text>
+          {priced ? null : (
+            <Text variant="caption" color="secondary">
+              {words.valuesGap}
+            </Text>
+          )}
         </View>
       </View>
     </Card>

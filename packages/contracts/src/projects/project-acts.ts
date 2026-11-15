@@ -5,7 +5,7 @@ import { leadParamsSchema } from '../crm/leads';
 import { leadTransitionRefusedEnvelope } from '../crm/lifecycle';
 import { capturedAtSchema } from '../crm/schemas';
 import { errorEnvelopeWithFacts, keyReusedEnvelope, unauthenticatedEnvelope } from '../error';
-import { calendarDateSchema } from '../tenant-settings';
+import { calendarDateSchema, clockTimeSchema } from '../tenant-settings';
 import { projectNotFound } from './projects';
 import {
   blockerPartySchema,
@@ -103,7 +103,17 @@ export const changeProjectSchema = actSchema
     managerId: uuidSchema.optional(),
     expectedInstallOn: calendarDateSchema.nullable().optional(),
     accessNote: projectTextSchema.nullable().optional(),
+    /** The installation day's facts the customer is told (`F5-68`); each `null` clears it. */
+    installStartTime: clockTimeSchema.nullable().optional(),
+    installDurationDays: z.number().positive().max(60).multipleOf(0.5).nullable().optional(),
+    installDisturbance: projectTextSchema.nullable().optional(),
+    /** One of the project's crew; a person not on the crew is refused. */
+    crewLeadId: uuidSchema.nullable().optional(),
   })
+  .strict();
+/** *Put version N in force* (`M08-50`): the person confirms the customer agreed. */
+export const putVersionInForceSchema = actSchema
+  .extend({ version: z.number().int().positive() })
   .strict();
 /** Cancel (`M08-51`): the reason is mandatory, the state terminal. */
 export const cancelProjectSchema = actSchema
@@ -264,6 +274,15 @@ export const projectActsContract = c.router({
     pathParams: projectParamsSchema,
     body: cancelProjectSchema,
     summary: 'Cancel the project with its reason — nothing is deleted',
+    responses: answers,
+  },
+  putVersionInForce: {
+    method: 'POST',
+    path: '/projects/:id/version-in-force',
+    pathParams: projectParamsSchema,
+    body: putVersionInForceSchema,
+    summary:
+      'Put a newer accepted version in force — paid parts stay, what remains is split by the new plan',
     responses: answers,
   },
   handover: {

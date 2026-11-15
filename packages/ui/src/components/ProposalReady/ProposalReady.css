@@ -1,0 +1,109 @@
+/* After Generate: the cover lands once (transform and opacity), then the words rise. */
+.hg-prdy {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-6);
+  padding: var(--sp-8) var(--sp-6);
+  text-align: center;
+  background: var(--glow-mark) center 22% / 560px 560px no-repeat;
+}
+.hg-prdy[data-form="desktop"] {
+  flex-direction: row;
+  gap: var(--sp-20);
+  text-align: start;
+  background-position: 30% 50%;
+  background-size: 900px 900px;
+}
+.hg-prdy-art {
+  position: relative;
+  flex: none;
+}
+.hg-prdy-paper {
+  transform: rotate(-4deg);
+  animation: hg-prdy-land var(--dur-scene) var(--ease-enter) backwards;
+}
+.hg-prdy-mark {
+  position: absolute;
+  right: calc(var(--sp-8) * -1);
+  top: calc(var(--sp-6) * -1);
+}
+.hg-prdy-words {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+  animation-delay: var(--dur-standard);
+}
+.hg-prdy[data-form="desktop"] .hg-prdy-words {
+  align-items: flex-start;
+  max-width: 460px;
+}
+.hg-prdy-title {
+  margin: 0;
+  font: var(--fw-regular) 34px / 40px var(--font-display);
+  letter-spacing: var(--tr-display);
+  text-wrap: balance;
+}
+.hg-prdy[data-form="desktop"] .hg-prdy-title {
+  font-size: 52px;
+  line-height: 58px;
+}
+.hg-prdy-line {
+  margin: 0;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.hg-prdy-number {
+  font-family: var(--font-mono);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.hg-prdy-acts {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+}
+.hg-prdy[data-form="desktop"] .hg-prdy-acts {
+  flex-direction: row;
+  align-self: flex-start;
+}
+.hg-prdy-back {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+.hg-prdy-back-in {
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-pill);
+  color: var(--text-secondary);
+  font: var(--fw-medium) var(--fs-body-sm) / 1 var(--font-sans);
+}
+.hg-prdy-back:hover .hg-prdy-back-in {
+  background: var(--fill);
+}
+@keyframes hg-prdy-land {
+  from {
+    opacity: 0;
+    transform: translateY(40px) rotate(2deg) scale(0.94);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hg-prdy-paper,
+  .hg-prdy-words {
+    animation: none;
+  }
+}

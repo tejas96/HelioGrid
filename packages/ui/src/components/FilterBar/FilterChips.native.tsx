@@ -3,6 +3,7 @@ import { useImperativeHandle, useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
+import { Chip } from '../Chip/Chip.native';
 import { chosenChipIndex } from './FilterBar.logic';
 import type { FilterChipsProps } from './FilterBar.types';
 import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
@@ -43,6 +44,7 @@ export function FilterChips({
   onChange,
   counts,
   scroll = false,
+  look = 'filled',
   label,
   ref,
   style,
@@ -75,13 +77,20 @@ export function FilterChips({
         onPress={() => onChange?.(optValue)}
         style={filterStyles.target}
       >
-        <FilterPill kind="chip" active={active} lead={Boolean(icon)}>
-          <OptionGlyph icon={icon} color={pillInkColor('chip', active)} />
-          <PillLabel kind="chip" active={active}>
+        {look === 'outlined' ? (
+          <Chip active={active} {...(count === undefined ? {} : { count })}>
+            <OptionGlyph icon={icon} color={pillInkColor('chip', active)} />
             {optionLabel(option)}
-          </PillLabel>
-          {count === undefined ? null : <PillCount kind="chip" active={active} count={count} />}
-        </FilterPill>
+          </Chip>
+        ) : (
+          <FilterPill kind="chip" active={active} lead={Boolean(icon)}>
+            <OptionGlyph icon={icon} color={pillInkColor('chip', active)} />
+            <PillLabel kind="chip" active={active}>
+              {optionLabel(option)}
+            </PillLabel>
+            {count === undefined ? null : <PillCount kind="chip" active={active} count={count} />}
+          </FilterPill>
+        )}
       </RNPressable>
     );
   });

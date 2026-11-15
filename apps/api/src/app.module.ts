@@ -13,6 +13,7 @@ import { BillingNoticeModule } from './modules/billing/billing-notice.public';
 import { InvoiceDocumentModule } from './modules/billing/invoice-document.public';
 import { CatalogModule } from './modules/catalog/catalog.public';
 import { CrmModule } from './modules/crm/crm.public';
+import { CustomerLinkModule } from './modules/customer-link/customer-link.public';
 import { DashboardsModule } from './modules/dashboards/dashboards.public';
 import { FileModule } from './modules/file/file.public';
 import { HealthModule } from './modules/health/health.public';
@@ -20,6 +21,8 @@ import { InvitationModule } from './modules/invitation/invitation.public';
 import { MarketModule } from './modules/market/market.public';
 import { NotificationModule } from './modules/notification/notification.public';
 import { ProjectsModule } from './modules/projects/projects.public';
+import { ProposalsModule } from './modules/proposals/proposals.public';
+import { SavedPartsModule } from './modules/saved-parts/saved-parts.public';
 import { SearchModule } from './modules/search/search.public';
 import { SettingsModule } from './modules/settings/settings.public';
 import { TenantModule } from './modules/tenant/tenant.public';
@@ -28,8 +31,8 @@ import { UserModule } from './modules/user/user.public';
 /**
  * Modular monolith root. One Nest module per bounded context (apps/api/CLAUDE.md) — health,
  * the market pack, auth, the audit log, tenant, user, invitation, settings, the catalog, the CRM,
- * search, projects and the owner's dashboards today; the rest land with their slices: survey, design, proposal,
- * customer-link, agent, admin.
+ * search, projects, proposals, the customer link and the owner's dashboards today; the rest land
+ * with their slices: survey, design, agent, admin.
  *
  * The deny-by-default guard is bound HERE, as APP_GUARD, because this is the one module that
  * imports both `common/` (the guard) and the auth module (the `SessionResolver` it depends on);
@@ -58,6 +61,9 @@ import { UserModule } from './modules/user/user.public';
     CrmModule,
     SearchModule,
     ProjectsModule,
+    ProposalsModule,
+    SavedPartsModule,
+    CustomerLinkModule,
     DashboardsModule,
   ],
   providers: [

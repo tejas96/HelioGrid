@@ -36,7 +36,9 @@ const COUNT_COLOR: Record<CountLevel, 'danger' | 'tertiary' | 'warning'> = {
 export function Textarea({
   value,
   onChange,
+  onLeave,
   label,
+  labelSpokenOnly = false,
   placeholder,
   rows = 4,
   maxLength,
@@ -55,7 +57,7 @@ export function Textarea({
 
   return (
     <View style={style}>
-      {label !== undefined ? (
+      {label !== undefined && !labelSpokenOnly ? (
         <Text variant="field-label" color="secondary" style={styles.label}>
           {label}
         </Text>
@@ -78,7 +80,10 @@ export function Textarea({
         textAlignVertical="top"
         onChangeText={(next) => onChange?.(next)}
         onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
+        onBlur={() => {
+          setFocus(false);
+          onLeave?.();
+        }}
       />
       {attributionNode === null ? null : <View style={styles.attribution}>{attributionNode}</View>}
       {helper !== undefined || error !== undefined || maxLength !== undefined ? (

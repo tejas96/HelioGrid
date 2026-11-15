@@ -1,6 +1,7 @@
 import type { MoneyDue, MoneyDueRow, TranslatedText } from '@heliogrid/contracts';
 import { daysFrom, MONEY_DUE_GROUPS, type MoneyDueGroup } from '@heliogrid/domain';
 import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
+import type { MarketFormat } from '../../utils/format';
 import type { MoneyDueProps, MoneyDueWords } from './MoneyDue.types';
 
 /**
@@ -9,6 +10,22 @@ import type { MoneyDueProps, MoneyDueWords } from './MoneyDue.types';
  */
 export function tileGroupsOf(due: MoneyDue): readonly MoneyDueGroup[] {
   return MONEY_DUE_GROUPS.filter((group) => group !== 'part' || due.groups.part.count > 0);
+}
+
+/** Money owed or received is never rounded (§9): every figure prints to its minor unit. */
+type Amounts = Pick<MarketFormat, 'moneyPlain'>;
+
+/** The hero's figures as both halves print them: the total to collect, each tile's, this month's. */
+export function dueFiguresOf(due: MoneyDue, format: Amounts) {
+  return {
+    toCollect: format.moneyPlain(due.toCollect),
+    tiles: tileGroupsOf(due).map((group) => ({
+      group,
+      count: due.groups[group].count,
+      amount: format.moneyPlain(due.groups[group].amount),
+    })),
+    collectedThisMonth: format.moneyPlain(due.collectedThisMonth),
+  };
 }
 
 /** A row's mark — glyph, word and tint (`F7-12`): how late, due today, or part in. */
@@ -31,13 +48,14 @@ export function rowMarkOf(
  * One row as both halves draw it: who, the project and part, the mark, the press that opens its
  * payments, and *Remind* — absent for a reader who may not share the request.
  */
-export function dueRowOf(row: MoneyDueRow, due: MoneyDue, props: MoneyDueProps) {
+export function dueRowOf(row: MoneyDueRow, due: MoneyDue, props: MoneyDueProps, format: Amounts) {
   const { words, onRemind } = props;
   const name = row.name ?? row.number;
   return {
     name,
     // A project with no customer name is titled by its number, so its line says the part alone.
     line: row.name === null ? row.label : words.dueRowLine(row.number, row.label),
+    amount: format.moneyPlain(row.outstanding),
     mark: rowMarkOf(row, due.today, words),
     open: { name: words.open(name), onOpen: () => props.onOpen(row.projectId) },
     remind:

@@ -106,7 +106,9 @@ export function Pressable({
       }}
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
-      disabled={disabled}
+      /* Never `false`: React Native writes any `disabled` it is given over the state above, so a
+         `false` here would erase a stated-off control's "disabled" for the screen reader. */
+      disabled={disabled ? true : undefined}
       onPress={press}
       android_ripple={ripples && !disabled ? ink : undefined}
       style={(state: PressableStateCallbackType) => [

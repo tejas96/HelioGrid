@@ -18,6 +18,14 @@ export type MinorUnits = number & { readonly [MINOR_UNITS]: 'money' };
  */
 export const AMOUNT_WHOLE_DIGITS_MAX = 12;
 
+/** Why a typed amount is held on the device and never sent: it has more whole digits than the wire carries. */
+export const AMOUNT_TOO_LARGE = 'amount_too_large';
+
+/** Whether a typed major-unit figure fits the wire's whole digits — a form asks before it sends. */
+export function amountFitsWire(figure: number): boolean {
+  return Math.abs(figure) < 10 ** AMOUNT_WHOLE_DIGITS_MAX;
+}
+
 /** A whole number of minor units, negative for a credit. Anything else is an authoring error. */
 export function minorUnits(amount: number): MinorUnits {
   if (!Number.isSafeInteger(amount)) {
@@ -48,6 +56,16 @@ export function amountForQuantity(perUnit: MinorUnits, quantity: number): MinorU
   }
   const exact = perUnit * quantity;
   return minorUnits(Math.sign(exact) * Math.round(Math.abs(exact)));
+}
+
+/**
+ * An estimate to the whole major unit of its currency — the currency's own `minorUnitDigits`, never
+ * a typed 100: a projected saving to the paisa claims a precision no estimate has. Half a major
+ * unit rounds away from zero. Money owed — a price, a tax, a part, an instalment — never comes here.
+ */
+export function wholeMajorUnits(amount: number, minorUnitDigits: number): MinorUnits {
+  const perMajorUnit = 10 ** minorUnitDigits;
+  return minorUnits(Math.sign(amount) * Math.round(Math.abs(amount) / perMajorUnit) * perMajorUnit);
 }
 
 const DECIMAL_TEXT = /^(-?)(\d+)(?:\.(\d+))?$/;

@@ -1,4 +1,5 @@
 import { type MinorUnits, minorUnits } from '../money/minor-units';
+import type { SystemType } from '../proposals/system-type';
 import type { DealSegment } from '../tenancy/segment';
 
 /**
@@ -50,7 +51,20 @@ export interface SubsidyEligibility {
    * `undeclaredSchemes` is the read that ties them.
    */
   readonly requiredSchemes: readonly string[];
+  /**
+   * The system types the incentive reaches (`M06-38`): a type outside the list is not offered the
+   * incentive at all. A pack stored before the list existed reads as every type.
+   */
+  readonly systemTypes: readonly SystemType[];
 }
+
+/**
+ * Who the incentive is paid to (`M06-35`). Paid to the `customer`, it never lowers what the customer
+ * pays the company: the payable, the payment plan and the Won value are the full amount, and the
+ * incentive shows beside them as information. Paid to the `company`, it comes off the payable.
+ */
+export const INCENTIVE_RECEIVERS = ['customer', 'company'] as const;
+export type IncentiveReceiver = (typeof INCENTIVE_RECEIVERS)[number];
 
 /** When the canonical incentive-claim stage may be skipped in this market (`F1-14`, `F1-35`). */
 export interface IncentiveStage {
@@ -72,6 +86,8 @@ export interface SubsidyModel {
   /** The scheme's identifier — `PM Surya Ghar`. A value, never a field name. */
   readonly scheme: string;
   readonly eligibility: SubsidyEligibility;
+  /** `M06-35` — who receives the money. A pack stored before the fact existed reads `customer`. */
+  readonly paidTo: IncentiveReceiver;
   readonly slabs: readonly CapacitySlab[];
   readonly regionalTopUps: readonly RegionalTopUp[];
   readonly incentiveStage: IncentiveStage;
@@ -96,7 +112,11 @@ export const IN_SUBSIDY: SubsidyModel = {
     segments: ['residential'],
     /** `F1-34` — the subsidy path requires DCR-compliant components (`F1-44`'s scheme key). */
     requiredSchemes: ['DCR'],
+    /** `M06-38` — a rooftop system that feeds the grid; an off-grid system is outside the scheme. */
+    systemTypes: ['on_grid', 'hybrid'],
   },
+  /** `M06-35` — the government pays the homeowner after commissioning (owner ruling 2026-11-13). */
+  paidTo: 'customer',
   slabs: [
     { kw: 2, perKw: minorUnits(3_000_000) },
     { kw: 1, perKw: minorUnits(1_800_000) },

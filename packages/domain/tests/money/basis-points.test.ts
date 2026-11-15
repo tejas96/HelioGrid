@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
+  amountBeforeRate,
   applyRate,
   basisPoints,
   basisPointsOfShare,
   basisPointsToPercent,
   percentToBasisPoints,
   percentWireOf,
+  proportionOf,
   shareOfBasisPoints,
   shareTextOf,
 } from '../../src/money/basis-points';
@@ -102,4 +104,30 @@ describe("percentWireOf — a typed percent as the wire's two decimals", () => {
       expect(percentWireOf(typed)).toBe(typed.trim());
     },
   );
+});
+
+describe('proportionOf — a part of an amount, rounded once', () => {
+  it.each([
+    ['two thirds of ₹10,000.01', 1_000_001, 2, 3, 666_667],
+    ['one third of it', 1_000_001, 1, 3, 333_334],
+    ['the whole', 500, 7, 7, 500],
+    ['none of it', 500, 0, 7, 0],
+    ['half a paisa rounds away from zero', 1, 1, 2, 1],
+    ['a credit rounds away from zero too', -1, 1, 2, -1],
+  ])('%s', (_, amount, parts, ofParts, part) => {
+    expect(proportionOf(minorUnits(amount), { parts, ofParts })).toBe(part);
+  });
+});
+
+describe('amountBeforeRate — a figure typed including its rate (M06-09)', () => {
+  it.each([
+    ['₹1,90,575 at 8.9% is ₹1,75,000 before it', 19_057_500, 890, 17_500_000],
+    ['₹118 at 18% is ₹100', 11_800, 1800, 10_000],
+    ['no rate: the figure itself', 12_345, 0, 12_345],
+    ['₹100 at 18% is ₹84.75, rounded once', 10_000, 1800, 8_475],
+    ['a figure of nothing', 0, 890, 0],
+    ['a rate of the whole halves it', 1_000, 10_000, 500],
+  ])('%s', (_, inclusive, rate, before) => {
+    expect(amountBeforeRate(minorUnits(inclusive), basisPoints(rate))).toBe(before);
+  });
 });

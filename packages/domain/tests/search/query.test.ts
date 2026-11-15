@@ -46,3 +46,29 @@ describe('searchTermsOf — whole tokens, the hyphen kept', () => {
     expect(searchQueryOf(IN_FORMATS, '550').terms).toEqual(['550']);
   });
 });
+
+describe('searchQueryOf — the words people type for a proposal (F6-22)', () => {
+  it.each([
+    ['quote', true],
+    ['Quotation', true],
+    ['sharma quote', true],
+    ['QUOTES', true],
+    ['कोटेशन', true],
+    ['proposal', false],
+    ['quota', false],
+    ['misquoted', false],
+    ['', false],
+  ])('%j asks for proposals: %s', (typed, asks) => {
+    expect(searchQueryOf(IN_FORMATS, typed).asksForProposals).toBe(asks);
+  });
+
+  it.each([
+    ['sharma quote', ['sharma']],
+    ['Quotation Anil Sharma', ['anil', 'sharma']],
+    ['quote', []],
+    ['sharma', ['sharma']],
+    ['', []],
+  ])('%j names a proposal beside the word by %j', (typed, beside) => {
+    expect(searchQueryOf(IN_FORMATS, typed).termsBesideAlias).toEqual(beside);
+  });
+});

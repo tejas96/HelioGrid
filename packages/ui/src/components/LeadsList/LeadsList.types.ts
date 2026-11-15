@@ -30,7 +30,7 @@ export interface LeadsListReadWords {
     readonly body: TranslatedText;
     readonly clear: TranslatedText;
   };
-  /** The card of rows' head: the lead, and the bill beside its one tier. */
+  /** The table's heads for the lead and its bill, where the screen draws its table. */
   columns: { readonly lead: TranslatedText; readonly bill: TranslatedText };
   row: LeadListRowWords;
   /** A source's word (`leadSourceWord`). */
@@ -44,8 +44,8 @@ export interface LeadsListReadWords {
 /**
  * **The Leads list's read** (`SCR-M02-03`), both platforms: the calm wait, the failure with
  * *Try again*, the first run that teaches how a lead arrives (*Add a lead*, *Import a file*), no
- * match with *Clear filters*, or the leads — one card of rows under the column's head, or the
- * screen's own table where it has the room — and *Show more* with its own wait. What it draws is
+ * match with *Clear filters*, or the leads — a card each, or the screen's own table where it has
+ * the room — and *Show more* with its own wait. What it draws is
  * `useLeadsListScreen`'s; the screen supplies its moves.
  */
 export interface LeadsListProps {
@@ -59,7 +59,8 @@ export interface LeadsListProps {
   loadingMore: boolean;
   onShowMore: () => void;
   onClearFilters: () => void;
-  onAdd: () => void;
+  /** *Add a lead*, offered only to who may add leads (`crm.add_edit_leads`); null draws none. */
+  onAdd: (() => void) | null;
   /** *Import a file*, offered only to who may import leads (`crm.import_leads`); null draws none. */
   onImport: (() => void) | null;
   onOpen: (leadId: string) => void;

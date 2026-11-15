@@ -52,6 +52,7 @@ back after. Read a screen with:
 - Phone: `maestro --device <udid or serial> hierarchy --compact` for every element's label and
   bounds, and the screen itself (the simulator tool's `screenshot`; on Android `adb -s <serial>
   exec-out screencap -p`) where text cannot show a problem.
+  On iOS, when Maestro's driver does not start, `idb ui describe-all --udid <udid>` reads the same tree.
 - Web, at 375 and 1536 wide (the owner watches the browser pane): `read_page` and `find`,
   `javascript_tool` for `getBoundingClientRect` and `scrollWidth`, `read_console_messages` and
   `read_network_requests`.

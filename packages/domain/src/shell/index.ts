@@ -6,7 +6,7 @@
  */
 
 export type { CentreVerb } from './centre-verb';
-export { CENTRE_VERB_REQUIRES, CENTRE_VERBS, centreVerbFor } from './centre-verb';
+export { CENTRE_VERB_REQUIRES, CENTRE_VERBS, centreVerbFor, homeVerbFor } from './centre-verb';
 export type { ClientVersion, StorePlatform } from './client-version';
 export { isBelowMinimum, parseClientVersion, STORE_PLATFORMS } from './client-version';
 export type { FirstRunMark, MarkedControls, MarkInView } from './coach-marks';
@@ -80,7 +80,7 @@ export type {
 export { SETUP_STEPS, setupReadiness } from './setup-readiness';
 export type { ShellView } from './shell-view';
 export { shellViewFor } from './shell-view';
-export { workListLanded } from './sidebar';
+export { moreWorkLists, sidebarWorkLists, workListLanded } from './sidebar';
 export type {
   StandingDestination,
   StandingDestinationSet,

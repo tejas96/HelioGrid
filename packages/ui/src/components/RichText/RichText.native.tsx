@@ -8,6 +8,7 @@ import { FIELD_BOX_EDGE, fieldBox } from '../../primitives/FieldBox/FieldBox.nat
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { useCommitOnUnmount } from '../../primitives/use-commit-on-unmount';
 import type { ToolCommand } from './RichText.commands';
 import { LINK_SCHEME } from './RichText.commands';
 import type { RichTextAt } from './RichText.edit';
@@ -33,6 +34,13 @@ interface NativeRichTextProps extends RichTextProps {
 
 const styles = StyleSheet.create({
   label: { marginBottom: 6 },
+  labelRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    columnGap: theme.spacing['sp-3'],
+  },
   frame: { overflow: 'hidden' },
   /* The well's edge is always drawn on the phone (FIELD_BOX_EDGE) and inside the frame, so every
      inset gives up its width and the link row and body sit where the web's do. */
@@ -128,6 +136,8 @@ export function RichText({
   saveTemplateLabel,
   pageEstimate,
   onMeasure,
+  marksOnly = false,
+  countOnTop = false,
   style,
 }: NativeRichTextProps) {
   const [at, setAt] = useState<RichTextAt>({ block: 0 });
@@ -137,7 +147,25 @@ export function RichText({
 
   const working = value.blocks.length > 0 ? value : BLANK;
   const m = measure(working);
+  /* A touch press that unmounts the editor (Next, Back, ✕) never blurs it first. */
+  useCommitOnUnmount(focus, () => onCommit?.(working));
   const over = isOverLength(m, maxLength);
+  const count = (
+    <View style={styles.count}>
+      {/* Words the caller hands as a string must sit in a Text: bare, the phone throws. */}
+      {typeof pageEstimate === 'string' ? (
+        <Text variant="caption" color="secondary">
+          {pageEstimate}
+        </Text>
+      ) : (
+        pageEstimate
+      )}
+      {/* Secondary, not tertiary: a count and its limit are information (see RichText.css). */}
+      <Text variant="caption" color={over ? 'danger' : 'secondary'}>
+        {words.characters(m.chars, maxLength)}
+      </Text>
+    </View>
+  );
 
   const emit = (next: RichTextValue) => {
     onChange?.(next);
@@ -161,10 +189,13 @@ export function RichText({
 
   return (
     <View style={style}>
-      {label !== undefined ? (
-        <Text variant="body-sm" color="secondary" style={styles.label}>
-          {label}
-        </Text>
+      {label !== undefined || countOnTop ? (
+        <View style={styles.labelRow}>
+          <Text variant="body-sm" color="secondary" style={styles.label}>
+            {label}
+          </Text>
+          {countOnTop ? count : null}
+        </View>
       ) : null}
       <View style={[fieldBox({ focused: focus, disabled, density: 'expressive' }), styles.frame]}>
         {/* The frame is a field's well holding its own controls, so it is their ground: white, as in a tile. */}
@@ -175,6 +206,7 @@ export function RichText({
             disabled={disabled}
             hasLogo={m.hasLogo}
             linking={linking}
+            marksOnly={marksOnly}
             templates={templates}
             saveTemplateLabel={saveTemplateLabel}
             onRun={run}
@@ -232,13 +264,7 @@ export function RichText({
         <Text variant="caption" color="tertiary">
           {helper}
         </Text>
-        <View style={styles.count}>
-          {pageEstimate}
-          {/* Secondary, not tertiary: a count and its limit are information (see RichText.css). */}
-          <Text variant="caption" color={over ? 'danger' : 'secondary'}>
-            {words.characters(m.chars, maxLength)}
-          </Text>
-        </View>
+        {countOnTop ? null : count}
       </View>
     </View>
   );

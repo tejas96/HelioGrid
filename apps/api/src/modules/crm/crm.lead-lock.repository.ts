@@ -1,7 +1,7 @@
 import type { LeadDetail } from '@heliogrid/contracts';
 import { customer, type DbTransaction, lead, tenant } from '@heliogrid/db';
 import { type CalendarDate, type LeadLifecycle, localDate } from '@heliogrid/domain';
-import { and, asc, eq, inArray } from 'drizzle-orm';
+import { and, asc, eq, inArray, type SQL } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { loadLeadDetail } from './crm.lead-detail.repository';
 import { leadScopeWhere } from './crm.scope.repository';
@@ -64,12 +64,33 @@ export async function lockLeads(
 }
 
 /** The lead in this company and the reader's scope, locked; `null` answers 404. */
-export async function lockLeadInScope(
+export function lockLeadInScope(
   tx: DbTransaction,
   reader: LeadReader,
   leadId: string,
 ): Promise<LockedLead | null> {
-  await lockLead(tx, reader.tenantId, leadId);
+  return lockedLead(tx, reader.tenantId, leadId, leadScopeWhere(reader.scope, reader.actorId));
+}
+
+/**
+ * The lead of this company, locked, whoever may see it: for an act no member makes — the
+ * customer's own, on their link (`F5-21`), whose authority is the link and never a person's scope.
+ */
+export function lockLeadOfCompany(
+  tx: DbTransaction,
+  tenantId: string,
+  leadId: string,
+): Promise<LockedLead | null> {
+  return lockedLead(tx, tenantId, leadId, undefined);
+}
+
+async function lockedLead(
+  tx: DbTransaction,
+  tenantId: string,
+  leadId: string,
+  inScope: SQL | undefined,
+): Promise<LockedLead | null> {
+  await lockLead(tx, tenantId, leadId);
   const [row] = await tx
     .select({
       leadId: lead.id,
@@ -86,15 +107,9 @@ export async function lockLeadInScope(
       customer,
       and(eq(customer.id, lead.customerId), eq(customer.tenantId, lead.tenantId)),
     )
-    .where(
-      and(
-        eq(lead.tenantId, reader.tenantId),
-        eq(lead.id, leadId),
-        leadScopeWhere(reader.scope, reader.actorId),
-      ),
-    );
+    .where(and(eq(lead.tenantId, tenantId), eq(lead.id, leadId), inScope));
   if (row === undefined) return null;
-  return lockedLeadOf(reader.tenantId, row);
+  return lockedLeadOf(tenantId, row);
 }
 
 /** The columns `lockLeadInScope` reads, as the act sees them. */

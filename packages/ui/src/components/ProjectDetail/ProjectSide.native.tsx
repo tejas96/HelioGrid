@@ -62,7 +62,18 @@ export function ProjectDeal({ project, words }: ProjectDetailProps) {
       ),
     },
     { key: 'design', term: words.design, value: <Quiet>{words.noneLinked}</Quiet> },
-    { key: 'proposal', term: words.proposal, value: <Quiet>{words.noneLinked}</Quiet> },
+    {
+      key: 'proposal',
+      term: words.proposal,
+      value:
+        project.proposalVersion == null ? (
+          <Quiet>{words.noneLinked}</Quiet>
+        ) : (
+          <Text variant="body-sm">
+            {words.proposalLinked(project.proposalVersion.number, project.proposalVersion.version)}
+          </Text>
+        ),
+    },
   ];
   return (
     <Card density="functional" style={styles.card}>

@@ -1,0 +1,162 @@
+/* ProposalVersions — the change note in the display face, the facts that moved as old → new, then
+   a row per version. Sized from its own room. */
+
+.hg-versions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  container-type: inline-size;
+}
+
+.hg-versions-why {
+  margin: var(--sp-2) 0 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: var(--fw-regular);
+  line-height: 32px;
+  letter-spacing: var(--tr-display);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.hg-versions-who {
+  display: block;
+  margin-block-start: var(--sp-2);
+  color: var(--on-panel-muted);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-versions-changes {
+  display: flex;
+  flex-direction: column;
+  margin: var(--sp-5) 0 0;
+  padding: 0;
+  list-style: none;
+  container-type: inline-size;
+}
+
+/* A narrow room gives the name its own line; the old value under it, the new at the row's end. */
+.hg-versions-change {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  grid-template-areas: "tile name name" "tile from to";
+  align-items: center;
+  gap: 0 var(--sp-3);
+  padding-block: var(--sp-3);
+  border-block-start: 1px solid var(--hairline);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) both;
+  animation-delay: calc(var(--i) * var(--stagger-step));
+}
+
+.hg-versions-change:first-child {
+  border-block-start: 0;
+}
+
+.hg-versions-change > :first-child {
+  grid-area: tile;
+}
+
+.hg-versions-change > .hg-shell-glyph {
+  display: none;
+}
+
+.hg-versions-change-name {
+  grid-area: name;
+  font-weight: var(--fw-medium);
+  overflow-wrap: anywhere;
+}
+
+/* A wide room sets name, old, the arrow and new on one line, as the design does. */
+@container (min-width: 560px) {
+  .hg-versions-change {
+    grid-template-columns: 36px minmax(0, 1.1fr) minmax(0, 1fr) var(--sp-4) minmax(0, 1fr);
+    grid-template-areas: "tile name from arrow to";
+    gap: var(--sp-3);
+  }
+
+  .hg-versions-change > .hg-shell-glyph {
+    display: inline-flex;
+    grid-area: arrow;
+  }
+}
+
+.hg-versions-change-from,
+.hg-versions-change-to {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  overflow-wrap: anywhere;
+}
+
+.hg-versions-change-from {
+  grid-area: from;
+  color: var(--on-panel-muted);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
+}
+
+.hg-versions-change-to {
+  grid-area: to;
+  font-weight: var(--fw-semibold);
+}
+
+.hg-versions-same {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-block-start: var(--sp-3);
+  color: var(--on-panel-muted);
+  font-size: var(--fs-body-sm);
+}
+
+.hg-versions-mark {
+  display: grid;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: var(--r-sm);
+  background: var(--accent-subtle);
+  color: var(--accent-text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+}
+
+.hg-versions-mark[data-old] {
+  background: var(--fill);
+  color: var(--text-secondary);
+}
+
+@container (min-width: 640px) {
+  .hg-versions-change {
+    grid-template-columns: 36px minmax(0, 1.1fr) minmax(0, 1fr) var(--sp-4) minmax(0, 1fr);
+  }
+
+  .hg-versions-change > :first-child {
+    grid-row: auto;
+  }
+
+  .hg-versions-change-name {
+    grid-column: auto;
+  }
+}
+
+.hg-in-force {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-in-force-aside {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-in-force-amount {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

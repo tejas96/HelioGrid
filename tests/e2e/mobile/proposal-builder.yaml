@@ -1,0 +1,43 @@
+# The proposal builder (`SCR-M06-02`…`SCR-M06-13`): the draft the api started opens at its address
+# on the step the link names — a focus screen, no shell and no pill. The capsule opens every step;
+# Generate from there opens the check, which on an empty draft lists what stops it and never a dead
+# Generate; the sheet shuts on Close, and Close on the frame leads back to the lead, the draft kept.
+# Step 1 peeks the cover before any price is typed, and the peek opens the page.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://proposals/${PROPOSAL_ID}/build?step=company
+- extendedWaitUntil:
+    visible: ${BUILD_OPEN_PEEK}
+    timeout: 15000
+- tapOn: ${BUILD_OPEN_PEEK}
+- extendedWaitUntil:
+    visible: ${BUILD_PREVIEW_TITLE}
+    timeout: 15000
+- swipe:
+    direction: DOWN
+- openLink: heliogrid://proposals/${PROPOSAL_ID}/build?step=client
+- extendedWaitUntil:
+    visible: ${BUILD_CLIENT_HEADING}
+    timeout: 15000
+- tapOn:
+    text: ${BUILD_ALL_STEPS}
+- extendedWaitUntil:
+    visible: ${BUILD_STEPS_GENERATE}
+    timeout: 15000
+# The frame's own Generate lies under the open sheet with the same words, and Android still lists
+# it: a tap on that one lands on the sheet's caption and opens nothing. An index counts from the
+# top of the screen, and the sheet's is the higher of the two.
+- tapOn:
+    text: ${BUILD_STEPS_GENERATE}
+    index: 0
+- extendedWaitUntil:
+    visible: ${BUILD_CHECK_BLOCKED}
+    timeout: 15000
+- tapOn: ${BUILD_CHECK_CLOSE}
+- extendedWaitUntil:
+    notVisible: ${BUILD_CHECK_BLOCKED}
+    timeout: 15000
+- tapOn: ${BUILD_CLOSE}
+- extendedWaitUntil:
+    visible: ${LEAD_NAME}
+    timeout: 15000

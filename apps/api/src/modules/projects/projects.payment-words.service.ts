@@ -1,4 +1,4 @@
-import { formatMoney } from '@heliogrid/domain';
+import { formatMoneyPlainly } from '@heliogrid/domain';
 import { paymentDueNotice } from '@heliogrid/i18n';
 import { Inject, Injectable } from '@nestjs/common';
 import { renderedInEveryLanguage } from '../notification/notification.public';
@@ -23,7 +23,7 @@ export class ProjectsPaymentWordsService {
     return {
       due: (name, part, amount) =>
         renderedInEveryLanguage((t) => paymentDueNotice(t, { name, part, amount })),
-      amountOf: (decimal) => formatMoney(formats, decimal),
+      amountOf: (decimal) => formatMoneyPlainly(formats, decimal),
       format: {
         currency: formats.currency,
         digits: formats.minorUnitDigits,

@@ -107,7 +107,9 @@ const VALUE_WORDS: Readonly<
   battery: ['battery', 'बैटरी', 'बॅटरी'],
   micro_inverter: ['micro inverter', 'microinverter', 'माइक्रो इन्वर्टर', 'मायक्रो इन्व्हर्टर'],
   optimiser: ['optimiser', 'optimizer'],
-  mono_perc: ['mono perc', 'monoperc', 'perc', 'mono', 'monocrystalline'],
+  mono_perc: ['mono perc', 'monoperc', 'perc'],
+  mono: ['monocrystalline', 'mono crystalline'],
+  thin_film: ['thin film', 'thinfilm', 'cdte', 'cigs'],
   topcon: ['topcon', 'n type topcon'],
   bifacial: ['bifacial'],
   poly: ['poly', 'polycrystalline', 'multi'],
@@ -115,6 +117,7 @@ const VALUE_WORDS: Readonly<
   lfp: ['lfp', 'lifepo4', 'lithium iron phosphate'],
   nmc: ['nmc'],
   lead_acid: ['lead acid', 'vrla', 'tubular'],
+  custom: ['other'],
   '1': ['1', 'single', 'single phase', '1 phase', '1ph'],
   '3': ['3', 'three', 'three phase', '3 phase', '3ph'],
 };

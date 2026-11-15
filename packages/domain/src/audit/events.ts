@@ -37,6 +37,11 @@ export const AUDIT_EVENT_TYPES = [
   'catalog.override_cleared',
   'catalog.rate_recorded',
   'catalog.release_published',
+  /** A saved cable, electrical or structure part added, changed, archived or restored (`M06-28`). */
+  'saved_parts.part_added',
+  'saved_parts.part_changed',
+  'saved_parts.part_archived',
+  'saved_parts.part_restored',
   'price_book.version_published',
   'billing.goodwill_credit_issued',
   'billing.trial_extended',
@@ -63,15 +68,33 @@ export const AUDIT_EVENT_TYPES = [
   'settings.collections_changed',
   /** The company's monthly target set or cleared on the dashboard (`M13-17`). */
   'settings.monthly_target_changed',
+  /** A proposal's audited acts (`F2-22`, `M06` §M06.4): generate, a discount with its amount, a version. */
+  'proposals.proposal_generated',
+  'proposals.discount_applied',
+  'proposals.version_created',
+  'proposals.proposal_shared',
+  'proposals.proposal_withdrawn',
+  /** A newer accepted version put in force on the project, with who said the customer agreed (`M08-50`). */
+  'proposals.version_put_in_force',
+  /** Every act on a customer link (`F5-31`, `F5-79`); the customer's own carry the `customer_link` actor. */
+  'customer_link.minted',
+  'customer_link.reminted',
+  'customer_link.revoked',
+  'customer_link.opened',
+  'customer_link.accepted',
+  'customer_link.negotiation_requested',
+  'customer_link.declined',
 ] as const;
 export type AuditEventType = (typeof AUDIT_EVENT_TYPES)[number];
 
 /**
- * Who acted (`F2-24`). Both kinds are a `user_account` — the one identity table for every human —
- * so platform staff are simply an account holding no membership in the tenant whose log the entry
- * sits in, and the entry's own tenant says whose log that is.
+ * Who acted (`F2-24`). The first two kinds are a `user_account` — the one identity table for every
+ * human — so platform staff are simply an account holding no membership in the tenant whose log the
+ * entry sits in, and the entry's own tenant says whose log that is. `customer_link` is the one actor
+ * that is no account: a customer's act is attributed to the link and its contact (`F5-31`), since
+ * the customer never has an identity here (`F5-01`).
  */
-export const AUDIT_ACTOR_KINDS = ['tenant_user', 'platform_staff'] as const;
+export const AUDIT_ACTOR_KINDS = ['tenant_user', 'platform_staff', 'customer_link'] as const;
 export type AuditActorKind = (typeof AUDIT_ACTOR_KINDS)[number];
 
 /**
@@ -102,4 +125,19 @@ export interface AuditDuplicateKept {
   readonly keptBesideId: string;
 }
 
-export type AuditChangePayload = AuditRoleSetChange | AuditCustomerMerge | AuditDuplicateKept;
+/**
+ * A proposal's money acts (`F2-22`, `M06-23`): the amount a Generate froze, a discount applied or
+ * a version created — in the company's currency, as a decimal, with the version where one exists.
+ * The proposal is the entry's subject.
+ */
+export interface AuditProposalAmount {
+  readonly version: number | null;
+  readonly amount: string;
+  readonly currencyCode: string;
+}
+
+export type AuditChangePayload =
+  | AuditRoleSetChange
+  | AuditCustomerMerge
+  | AuditDuplicateKept
+  | AuditProposalAmount;

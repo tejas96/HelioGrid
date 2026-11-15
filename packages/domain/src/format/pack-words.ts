@@ -1,3 +1,4 @@
+import { areaOf } from './areas';
 import { installStepLabel } from './install-steps';
 import { type PackLabel, packLabel, type UiLanguage } from './languages';
 import type { FormatPack } from './pack';
@@ -5,10 +6,10 @@ import { blockerPartyLabel, blockerReasonLabel, paymentModeLabel, stageLabel } f
 
 /**
  * The market words a project screen shows (`F1-22`): a stage, a waited-on party, a wait's reason,
- * a checklist row, an install step and a payment mode — each the pack's label in the reader's language, or `null`
+ * a checklist row, an install step, a payment mode and a site's region — each the pack's label in the reader's language, or `null`
  * where the pack declares none (`F1-09`). One reader, so no surface looks a label up by itself.
  */
-export const PACK_WORD_KINDS = ['stage', 'party', 'reason', 'row', 'step', 'mode'] as const;
+export const PACK_WORD_KINDS = ['stage', 'party', 'reason', 'row', 'step', 'mode', 'area'] as const;
 export type PackWordKind = (typeof PACK_WORD_KINDS)[number];
 
 const LABEL_OF: Readonly<
@@ -20,6 +21,7 @@ const LABEL_OF: Readonly<
   row: (pack, key) => pack.documentChecklist.find((row) => row.row === key)?.label ?? null,
   step: (pack, key) => installStepLabel(pack.installSteps, key),
   mode: (pack, key) => paymentModeLabel(pack.vocabulary, key),
+  area: (pack, key) => areaOf(pack.areas, key)?.name ?? null,
 };
 
 export function packWordOf(

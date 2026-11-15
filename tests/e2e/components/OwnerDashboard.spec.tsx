@@ -1,4 +1,4 @@
-import { formatMoney, IN_FORMATS } from '@heliogrid/domain';
+import { formatMoney, formatMoneyPlainly, IN_FORMATS } from '@heliogrid/domain';
 import { createTranslator, numberFieldWords, ownerDashboardWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
@@ -215,4 +215,23 @@ test('loading draws its bars; a failed read offers its retry', async ({ mount, p
   await page.getByRole('button', { name: words.retry }).click();
   await expect(frame).toHaveAttribute('data-retries', '1');
   await expectNoSeriousViolations(page);
+});
+
+test('money in and owed keeps its paise, each pair of figures in one form, never rounded', async ({
+  mount,
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await mount(<OwnerDashboardAsRead frame="cash-paise" />);
+  const cash = page.getByRole('region', { name: words.cashTitle });
+  const plain = (amount: string, beside: string[]) =>
+    formatMoneyPlainly(IN_FORMATS, amount, beside);
+  const month = ['5000.25', '0.00'];
+  const owed = ['408172.25', '170390.83'];
+  await expect(cash.getByText(plain('5000.25', month)).first()).toBeAttached();
+  await expect(cash.getByText(words.vsLastMonth(plain('0.00', month)))).toBeVisible();
+  await expect(cash.getByText(plain('408172.25', owed), { exact: true })).toBeVisible();
+  await expect(cash.getByText(plain('170390.83', owed), { exact: true })).toBeVisible();
+  const hero = page.getByRole('region', { name: words.needsYouNow });
+  await expect(hero.getByText(words.lateLine(plain('170390.83', []), 12))).toBeAttached();
 });

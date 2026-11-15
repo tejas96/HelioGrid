@@ -21,12 +21,12 @@ describe('the timeline reads every kind, the known ones by their own body (M02-3
   });
 
   it('reads a kind a newer server learned as a plain entry rather than refusing the page', () => {
-    const entry = { ...ENTRY, kind: 'proposal_opened', body: { proposalId: 'p-1' } };
+    const entry = { ...ENTRY, kind: 'survey_submitted', body: { surveyId: 's-1' } };
     expect(knownActivitySchema.safeParse(entry).success).toBe(false);
     expect(activitySchema.safeParse(entry)).toEqual(
       expect.objectContaining({
         success: true,
-        data: expect.objectContaining({ kind: 'proposal_opened' }),
+        data: expect.objectContaining({ kind: 'survey_submitted' }),
       }),
     );
   });

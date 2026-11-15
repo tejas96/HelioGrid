@@ -7,6 +7,7 @@
 export type { SubsidyDeal } from './amount';
 export type {
   CapacitySlab,
+  IncentiveReceiver,
   IncentiveStage,
   NoSubsidy,
   RegionalTopUp,
@@ -14,11 +15,14 @@ export type {
   SubsidyModel,
   SubsidyPack,
 } from './pack';
-export { IN_SUBSIDY } from './pack';
-export type { IncentiveProject } from './path';
+export { IN_SUBSIDY, INCENTIVE_RECEIVERS } from './pack';
+export { subsidyPackOf } from './pack-schema';
+export type { IncentiveOffer, IncentiveProject } from './path';
 export {
+  isIncentiveOffered,
   isIncentiveStageSkippable,
   isSubsidyAvailable,
   requiredSubsidySchemes,
   unmetSubsidySchemes,
+  unmetSubsidySchemesOf,
 } from './path';

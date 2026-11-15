@@ -158,6 +158,7 @@ const billingGatewayProvider: Provider = {
   exports: [
     BillingService,
     BillingStateGuard,
+    BillingUsageService,
     ChargeService,
     EntitlementService,
     OtpUsageService,

@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useFieldCommits } from '../../primitives/FieldCommits';
+import { useCommitOnUnmount } from '../../primitives/use-commit-on-unmount';
 
 export interface CommitDraft {
   /** The text the field is showing. */
@@ -33,6 +35,8 @@ export function useCommitDraft(
 ): CommitDraft {
   const [focus, setFocus] = useState(false);
   const [draft, setDraft] = useState(value ?? '');
+  /* A form with its own Save hears each keystroke too — under the same two rules as a commit. */
+  const asTyped = useFieldCommits() === 'as-typed';
 
   useEffect(() => {
     if (commitOnBlur && !focus) {
@@ -52,6 +56,9 @@ export function useCommitDraft(
     }
   };
 
+  /* A touch press that unmounts the field (Next, Back, ✕) never blurs it first. */
+  useCommitOnUnmount(commitOnBlur && focus, commit);
+
   return {
     draft,
     setDraft,
@@ -63,6 +70,8 @@ export function useCommitDraft(
     change: (next) => {
       if (commitOnBlur) {
         setDraft(next);
+        const raw = next.trim();
+        if (asTyped && raw !== '' && raw !== (value ?? '')) onCommit?.(raw);
         return;
       }
       onChange?.(next);

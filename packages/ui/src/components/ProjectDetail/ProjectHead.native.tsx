@@ -1,3 +1,4 @@
+import { firstNameOf } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
@@ -7,7 +8,7 @@ import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Avatar } from '../Avatar/Avatar.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { Menu } from '../Menu/Menu.native';
-import { firstNameOf, installFactOf, projectMenuOf } from './ProjectDetail.logic';
+import { installFactOf, projectMenuOf } from './ProjectDetail.logic';
 import type { ProjectHeadProps } from './ProjectDetail.parts.types';
 
 /** The project's facts as pills under its title: who manages it, and where its install stands. */

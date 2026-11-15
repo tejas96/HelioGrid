@@ -80,6 +80,8 @@ export function useOwnerDashboard(): OwnerDashboardScreen {
             paymentsLate: value.needsYou.paymentsLate.count,
             blockedOnUs: value.needsYou.blockedOnUs.count,
             waitingLongest: value.needsYou.waitingLongest.length,
+            // Absent on an api built before proposals: nothing waits unopened there.
+            proposalsUnopened: value.needsYou.proposalsUnopened?.count ?? 0,
             myOverdueTasks: value.needsYou.myOverdueTasks,
           }),
     winRate: value === undefined ? null : winRateOf(value.winLoss.won, value.winLoss.lost),

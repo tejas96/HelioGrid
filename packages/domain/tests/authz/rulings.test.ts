@@ -57,3 +57,21 @@ describe('F2-14 — a cell that reads through another domain is carried, never f
     expect(limitsOn(['sales_manager'], 'reports.company_reports')).toEqual(['team-scoped']);
   });
 });
+
+describe('F5-30 — who operates a customer link (owner ruling 2026-11-13)', () => {
+  const LINK_HOLDERS = ['epc_owner', 'sales_manager', 'sales_executive', 'project_manager'];
+
+  it.each(ROLE_PRESETS)(
+    '%s mints and revokes a link only as a seller or the project’s manager',
+    (preset) => {
+      const holds = LINK_HOLDERS.includes(preset);
+      expect(can([preset], 'customer_link.mint_customer_link')).toBe(holds);
+      expect(can([preset], 'customer_link.revoke_customer_link')).toBe(holds);
+    },
+  );
+
+  it('a Project Manager still builds and sends no proposal', () => {
+    expect(can(['project_manager'], 'proposals.create_edit_proposals')).toBe(false);
+    expect(can(['project_manager'], 'proposals.send_proposals')).toBe(false);
+  });
+});

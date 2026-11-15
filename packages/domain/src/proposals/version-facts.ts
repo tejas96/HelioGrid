@@ -1,0 +1,25 @@
+/** A fact the versions screen can show a change of, in the order it lists them. */
+export const VERSION_FACTS = [
+  'payable',
+  'discount',
+  'capacity',
+  'system_type',
+  'battery',
+  'panels',
+  'inverters',
+  'other_parts',
+  'incentive',
+  'yearly_generation',
+  'yearly_saving',
+  'payment_plan',
+  'timeline',
+  'terms',
+  'maintenance',
+  'emi_example',
+  'cover',
+  'proposal_type',
+  'about',
+  'client',
+  'bank',
+] as const;
+export type VersionFact = (typeof VERSION_FACTS)[number];

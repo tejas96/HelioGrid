@@ -138,7 +138,7 @@ function dueDaysOf(row: TodoRow, today: string, words: ProjectBoardWords): Trans
 /** The part a project's money reason names, with what it still owes formatted. */
 function moneyLineOf(card: TodoRow['card'], format: MarketFormat) {
   const due = card.money?.duePart ?? null;
-  return due === null ? null : { part: due.label, amount: format.money(due.outstanding) };
+  return due === null ? null : { part: due.label, amount: format.moneyPlain(due.outstanding) };
 }
 
 /** The first row past the cap takes the focus handle once the rows are in. */

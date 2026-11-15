@@ -19,6 +19,7 @@ import { HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/commo
 import type { Act } from '../../common/auth/session-context';
 import type { CreationKey } from '../../common/creation-key';
 import { ContractException, refusalWithFacts } from '../../common/errors/contract-exception';
+import { OutboxDispatcher } from '../../common/temporal/outbox.dispatcher';
 import {
   NotificationPushService,
   renderedInEveryLanguage,
@@ -48,6 +49,7 @@ export class ProjectsPaymentsService {
     @Inject(SettingsService) private readonly settings: SettingsService,
     @Inject(SettingsCollectionsService) private readonly collections: SettingsCollectionsService,
     @Inject(NotificationPushService) private readonly push: NotificationPushService,
+    @Inject(OutboxDispatcher) private readonly dispatcher: OutboxDispatcher,
   ) {}
 
   async payments(reader: ProjectReader, projectId: string, now: number): Promise<ProjectPayments> {
@@ -110,6 +112,9 @@ export class ProjectsPaymentsService {
       body,
       modes,
       actor.key,
+      pack.formats.documentChecklist
+        .filter((row) => row.madeBy === 'payments')
+        .map((row) => row.row),
       (project, amount, part) =>
         renderedInEveryLanguage((t) =>
           paymentRecordedNotice(t, { name: project, part, amount, recorder: name }),
@@ -210,6 +215,7 @@ export class ProjectsPaymentsService {
     }
     if (outcome.outcome === 'done') {
       await this.push.deliverAfterCommit(reader.tenantId, outcome.notified, new Date(act.now));
+      for (const eventId of outcome.started ?? []) await this.dispatcher.dispatchNow(eventId);
     }
     return this.payments(reader, projectId, act.now);
   }

@@ -1,5 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { Ref } from 'react';
+import type { ReactNode, Ref } from 'react';
 import type { FocusHandle } from '../../primitives/FocusAfter/FocusAfter.types';
 
 /**
@@ -17,4 +17,9 @@ export interface LargeTitleProps {
    * lines and the page's work stays in view. A page's translated name never sets it.
    */
   readonly nameTitle?: boolean;
+  /**
+   * The page's own acts at the title's end — *Add lead* — in thumb reach beside the name; the
+   * summary keeps the full width under both.
+   */
+  readonly acts?: ReactNode;
 }

@@ -49,6 +49,16 @@ export function wakeNow(lead: LeadLifecycle): LeadActResult {
 }
 
 /**
+ * A customer's act on their link wakes a snoozed lead before its date (`M02-51`, `T-F5-008`): it is
+ * activity, neither a person's act nor the sweep's timer, so it reads `automation`, as an answer's
+ * wake and a dormant lead's return do. The act raises its own task, so none is raised here.
+ */
+export function wokenByCustomer(lead: LeadLifecycle): LeadActResult {
+  if (lead.state !== 'snoozed') return refused('not_snoozed');
+  return moved({ ...lead, state: null, wakeOn: null }, stateMove(lead, null, 'automation'));
+}
+
+/**
  * The sweep flags an active lead dormant after thirty quiet days on an open stage (`M02-52`,
  * `isDormantDue`). Never a person's act, never a lead already parked or closed, never a won one —
  * `won` is the one stage no longer open.

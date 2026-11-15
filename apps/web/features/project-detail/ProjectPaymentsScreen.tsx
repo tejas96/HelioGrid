@@ -15,10 +15,11 @@ import {
   MoneySheet,
   moneyPageActsOf,
   moneySheetsOf,
+  PROJECT_WIDE_FROM,
   ProjectMoney,
   useFormat,
+  useOwnWidth,
 } from '@heliogrid/ui';
-import { useRef } from 'react';
 import { PaymentToast } from './components/PaymentToast';
 import { ProjectTrail } from './components/ProjectTrail';
 import { usePaymentMoves } from './hooks/use-payment-moves';
@@ -37,7 +38,9 @@ export function ProjectPaymentsScreen({ projectId }: { projectId: string }) {
   const format = useFormat();
   const screen = useProjectPayments(projectId);
   const moves = usePaymentMoves(projectId, screen);
-  const room = useRef<HTMLDivElement>(null);
+  const [room, width] = useOwnWidth<HTMLDivElement>();
+  /* Below the desktop's room the trail is one way back, as on the project's own page. */
+  const narrow = width === null || width < PROJECT_WIDE_FROM;
   const { read } = screen;
   const payments = read.kind === 'ready' ? read.value : null;
   const page = paymentsPageWords(t);
@@ -52,12 +55,13 @@ export function ProjectPaymentsScreen({ projectId }: { projectId: string }) {
       : moneySheetsOf(screen, payments, moves.sheet, {
           words: sheetWords,
           failure: screen.failure === null ? null : paymentFailureWords(t, screen.failure),
-          money: format.money,
+          money: format.moneyPlain,
         });
   return (
     <div ref={room} tabIndex={-1} className="hg-shell-page hg-focus-target hg-project-page">
       <ProjectTrail
         acts={null}
+        narrow={narrow}
         board={destinationLabel(t, moves.wayBack)}
         project={title}
         documents={page.title}

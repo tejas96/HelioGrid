@@ -10,7 +10,7 @@ import { EmptyState, FailedRead } from '../EmptyState';
 import { HeroPanel } from '../HeroPanel';
 import { LoadingBars } from '../LoadingBars';
 import { useFormat } from '../MarketProvider';
-import { dueRowOf, tileGroupsOf } from './MoneyDue.logic';
+import { dueFiguresOf, dueRowOf } from './MoneyDue.logic';
 import type { MoneyDueProps } from './MoneyDue.types';
 import './MoneyDue.css';
 
@@ -74,24 +74,24 @@ export function MoneyDue(props: MoneyDueProps) {
 
 /** The total to collect, the late and due-today tiles, and what came in this month. */
 function DueHero({ due, words }: DueProps) {
-  const format = useFormat();
+  const figures = dueFiguresOf(due, useFormat());
   return (
     <HeroPanel label={words.toCollect}>
       <div className="hg-money-due-figure-row">
-        <span className="hg-money-due-figure">{format.money(due.toCollect)}</span>
+        <span className="hg-money-due-figure">{figures.toCollect}</span>
       </div>
       <div className="hg-money-due-tiles">
-        {tileGroupsOf(due).map((group) => (
-          <div key={group} className={`hg-money-due-tile hg-money-due-tile-${group}`}>
+        {figures.tiles.map((tile) => (
+          <div key={tile.group} className={`hg-money-due-tile hg-money-due-tile-${tile.group}`}>
             <span className="hg-money-due-tile-label">
-              {words.tile(words.group(group), due.groups[group].count)}
+              {words.tile(words.group(tile.group), tile.count)}
             </span>
-            <span className="hg-money-due-amount">{format.money(due.groups[group].amount)}</span>
+            <span className="hg-money-due-amount">{tile.amount}</span>
           </div>
         ))}
       </div>
       <span className="hg-money-due-on-panel">
-        {words.collectedThisMonth(format.money(due.collectedThisMonth))}
+        {words.collectedThisMonth(figures.collectedThisMonth)}
       </span>
     </HeroPanel>
   );
@@ -121,8 +121,7 @@ function DueGroup(props: DueProps & { readonly group: MoneyDueGroupView<MoneyDue
 }
 
 function DueRow(props: DueProps & { readonly row: MoneyDueRow; readonly first: boolean }) {
-  const format = useFormat();
-  const shown = dueRowOf(props.row, props.due, props);
+  const shown = dueRowOf(props.row, props.due, props, useFormat());
   const { remind } = shown;
   return (
     <CardRow
@@ -148,7 +147,7 @@ function DueRow(props: DueProps & { readonly row: MoneyDueRow; readonly first: b
           <span className="hg-money-due-row-line">{shown.line}</span>
         </div>
         <div className="hg-money-due-row-end">
-          <span className="hg-money-due-amount">{format.money(props.row.outstanding)}</span>
+          <span className="hg-money-due-amount">{shown.amount}</span>
           <StatusMark tone={shown.mark.tone} label={shown.mark.label} />
         </div>
       </div>

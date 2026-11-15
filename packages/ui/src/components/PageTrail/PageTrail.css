@@ -1,0 +1,58 @@
+/* PageTrail — the way back above a page: on the desktop quiet crumbs, a chevron between them and
+   this page last; in a narrow room one back. The page's acts close the row. */
+
+.hg-page-trail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-page-trail {
+  min-width: 0;
+}
+
+.hg-page-trail ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  /* The first crumb's words sit on the title's edge, not its pill's. */
+  margin-inline-start: calc(-1 * var(--sp-2));
+  padding: 0;
+  list-style: none;
+}
+
+.hg-page-trail li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-page-trail-crumb {
+  padding-inline: var(--sp-2);
+  border-radius: var(--r-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  overflow-wrap: anywhere;
+}
+
+.hg-page-trail-crumb:hover {
+  color: var(--text-primary);
+  background: var(--hg-control-fill);
+}
+
+.hg-page-trail-here {
+  padding-inline: var(--sp-2);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+  overflow-wrap: anywhere;
+}

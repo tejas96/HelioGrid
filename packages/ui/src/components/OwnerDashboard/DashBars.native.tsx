@@ -22,6 +22,11 @@ export function DashBars({ bars, foot }: { bars: readonly DashBar[]; foot?: Dash
         <View key={bar.key} style={[styles.bar, bar === foot ? styles.foot : undefined]}>
           <View style={styles.label}>
             <Text variant="body-sm">{bar.label}</Text>
+            {bar.note === undefined ? null : (
+              <Text variant="mono" color="secondary" style={styles.note}>
+                {bar.note}
+              </Text>
+            )}
           </View>
           <View
             style={styles.rail}
@@ -97,6 +102,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   fill: { height: '100%', borderRadius: theme.radius['r-pill'], transformOrigin: 'left center' },
+  /* A stage's value under its name, where proposals price it. */
+  note: {
+    fontSize: theme.type.roles.caption.fontSize,
+    lineHeight: theme.type.roles.caption.lineHeight,
+  },
   count: { minWidth: theme.spacing['sp-6'] },
   /* The foot row (a funnel's won deals) closes the bars below a dashed line. */
   foot: {

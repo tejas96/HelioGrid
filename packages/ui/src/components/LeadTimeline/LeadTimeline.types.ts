@@ -1,14 +1,20 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { ActivityKind, Read } from '@heliogrid/domain';
+import type { ActivityKind, FormatPack, Read } from '@heliogrid/domain';
 import type { ActivityEntry, ActivityStreamProps } from '../ActivityStream/ActivityStream.types';
 
-/** How an entry writes a day, a time and an amount: on the tenant's clock, in its currency. */
+/**
+ * How an entry writes a day, a time and an amount: on the tenant's clock, in its currency — an
+ * amount from the market's own format, never rounded (the words' `formatMoneyPlainly`).
+ */
 export interface LeadTimelineFormats {
+  readonly pack: FormatPack;
   readonly day: (date: string) => string;
   readonly time: (hhmm: string) => string;
-  readonly money: (amount: string) => string;
   /** A project's market word — a stage, a party, a reason, a row, a step (`format.word`). */
-  readonly word: (kind: 'stage' | 'party' | 'reason' | 'row' | 'step', key: string) => string;
+  readonly word: (
+    kind: 'stage' | 'party' | 'reason' | 'row' | 'step' | 'area',
+    key: string,
+  ) => string;
 }
 
 /**

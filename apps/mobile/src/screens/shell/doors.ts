@@ -22,7 +22,6 @@ export const doorRoute = {
  * a landing screen takes its door out of this list and its own row into `app.ts`.
  */
 export const PLACEHOLDER_DOORS = [
-  'proposals',
   'people',
   'campaigns',
   'start_survey',

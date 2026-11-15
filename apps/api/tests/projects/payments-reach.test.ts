@@ -138,4 +138,16 @@ describe.skipIf(skip)('who sees and asks for a project’s money, over HTTP', ()
     const byManager = await world.as(here.members.pm).call('GET', '/settings/collections');
     expect(byManager.status).toBe(HttpStatus.FORBIDDEN);
   });
+
+  it.each([
+    ['with paise prints every paisa', '0.50', '44,999.50'],
+    ['in whole rupees leaves the zero fraction unsaid', '1.00', '44,999'],
+  ])('the pay request’s message for an amount %s, never rounded', async (_, paid, said) => {
+    const projectId = await aProject('450000.00');
+    const [first] = (await paymentsOf(owner(), projectId)).parts;
+    expect(first?.amount).toBe('45000.00');
+    await record(owner(), projectId, { partId: first?.id, amount: paid });
+    const [request] = (await paymentsOf(owner(), projectId)).requests;
+    expect(request?.message.text).toContain(`₹${said}.`);
+  });
 });

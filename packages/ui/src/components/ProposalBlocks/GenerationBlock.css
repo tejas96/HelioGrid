@@ -1,0 +1,107 @@
+/* The generation block: the annual figure with its source, and twelve bars with the best marked. */
+
+.hg-pb-top {
+  margin-top: var(--sp-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.hg-pb-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+.hg-pb-source .hg-shell-glyph {
+  color: var(--sun);
+}
+
+.hg-pb-bars {
+  margin-top: var(--sp-5);
+  height: 150px;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 5px;
+}
+.hg-pb[data-mode="paper"] .hg-pb-bars {
+  height: 330px;
+  gap: 12px;
+  margin-top: 44px;
+}
+.hg-pb-bar {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.hg-pb-bar-col {
+  position: relative;
+  flex: 1;
+  align-self: stretch;
+}
+.hg-pb-bar-fill {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: 0;
+  height: var(--hg-pb-bar);
+  border-radius: 6px 6px 3px 3px;
+  background: linear-gradient(180deg, var(--chart-2), var(--chart-1));
+  opacity: 0.42;
+  transform-origin: bottom;
+  animation: hg-pb-grow var(--dur-data) var(--ease-enter) backwards;
+  animation-delay: calc(var(--i) * var(--stagger-step));
+}
+.hg-pb[data-mode="paper"] .hg-pb-bar-fill {
+  border-radius: 9px 9px 4px 4px;
+}
+.hg-pb-bar[data-peak] .hg-pb-bar-fill {
+  opacity: 1;
+}
+/* A month's name: its one letter in the builder and on the customer's page, where twelve columns
+   leave room for no more — the chart's spoken name carries the best month whole. */
+.hg-pb-bar-name {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-tertiary);
+}
+.hg-pb-gen {
+  container-type: inline-size;
+}
+.hg-pb:not([data-mode="paper"]) .hg-pb-bar-name [data-form="short"] {
+  display: none;
+}
+/* A column a short month name fits in: Marathi's longest short name at 12 px is about 36 px. */
+@container (min-width: 520px) {
+  .hg-pb:not([data-mode="paper"]) .hg-pb-bar-name [data-form="short"] {
+    display: inline;
+  }
+  .hg-pb:not([data-mode="paper"]) .hg-pb-bar-name [data-form="narrow"] {
+    display: none;
+  }
+}
+.hg-pb[data-mode="paper"] .hg-pb-bar-name {
+  font-size: 13px;
+  line-height: 16px;
+}
+.hg-pb-bar-value {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--hg-pb-bar) + 6px);
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-primary);
+  white-space: nowrap;
+  animation: hg-fade-in var(--dur-data) var(--ease-enter) backwards;
+}
+.hg-pb[data-mode="paper"] .hg-pb-bar-value {
+  font-size: 15px;
+  line-height: 18px;
+}

@@ -20,7 +20,7 @@ module buckets are dispositioned there.
 | M13-10 | T-SHELL-001 (surface) — non-UI half in owning module file |
 | F6-20 | `T-SHELL-002`, shipped |
 | F6-23 | T-SHELL-002 (surface) — non-UI half in owning module file |
-| F4-27 | T-SHELL-003 (surface) — the never-blocking half; the row itself is dispositioned in `docs/tasks/F-platform.md` |
+| F4-27 | T-SHELL-003 (surface) — the never-blocking half; the row itself is a law of the shipped platform foundations |
 | F6-07 | T-SHELL-003 (surface) — non-UI half in owning module file |
 | F6-12 | T-SHELL-003 |
 | F6-17 | T-SHELL-003 |

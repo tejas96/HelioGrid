@@ -73,9 +73,11 @@ visuals. No user-visible English lives in `packages/ui` (`packages/ui/CLAUDE.md`
 
 Every list page opens with `ListTop` (`packages/ui`), filled by its screen's logic: the summary as
 the page's one `HeroPanel`, whose list when there is a choice, the search — its hint names what it
-finds — with the sort and the filter beside it, then the quick chips in one row that scrolls, a
-chip with nothing in it left out. Sort and filter open a sheet on the phone and a menu or side panel
-where the room is wide. On the phone each row is its own card (`CardRows` `separate`).
+finds — with the filter beside it, then the quick chips in one row that scrolls, a chip with nothing
+in it left out. In the narrow room the order is the filter sheet's first choice, so the search keeps
+one circle, whose list is a small switch under the chips, and a summary figure that presses is a
+pill ending in a chevron; where the room is wide the order is a named menu beside the filter's side
+panel. On the phone each row is its own card (`CardRows` `separate`).
 
 ## States, saves and focus — decided before the markup
 

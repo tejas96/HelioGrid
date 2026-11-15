@@ -15,6 +15,8 @@ import {
   allocationVerdict,
   type BasisPoints,
   basisPointsToPercent,
+  type CoverPicture,
+  DEFAULT_COVER_PICTURE,
   minorUnits,
   percentToBasisPoints,
   sameContent,
@@ -37,7 +39,9 @@ import {
 import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
+import { FileDocumentService, FileService } from '../file/file.public';
 import { documentDefaultsIn } from './internal/document-defaults';
+import { refuseUnlessOwnCoverPhoto } from './internal/own-logo';
 import {
   lastSaveWire,
   richTextWire,
@@ -62,15 +66,40 @@ export class SettingsTemplatesService {
     @Inject(SettingsTranchesRepository) private readonly tranches: SettingsTranchesRepository,
     @Inject(SettingsService) private readonly settings: SettingsService,
     @Inject(CreationReplies) private readonly replies: CreationReplies,
+    @Inject(FileService) private readonly files: FileService,
+    @Inject(FileDocumentService) private readonly documents: FileDocumentService,
   ) {}
 
   /** Until the tenant saves one, the platform's template in `reader`'s words (`F3-10`). */
   async proposalTemplate(tenantId: string, reader: UiLanguage): Promise<ProposalTemplateRead> {
-    const [effective, last] = await Promise.all([
+    const [effective, last, picture] = await Promise.all([
       this.settings.effective(tenantId, reader),
       this.scoped.proposalTemplateLastSave(tenantId),
+      this.scoped.coverPicture(tenantId),
     ]);
-    return { ...effective.proposalTemplate.value, changed: lastSaveWire(last) };
+    return this.withPicture(tenantId, {
+      ...effective.proposalTemplate.value,
+      ...(picture !== null && { coverPicture: picture }),
+      changed: lastSaveWire(last),
+    });
+  }
+
+  /**
+   * The picture every new proposal's cover starts with (`T-M01-030`): the one stored, else the
+   * platform's first — and, for the company's own photo, a short-lived address to show it by.
+   */
+  private async withPicture(
+    tenantId: string,
+    template: Omit<ProposalTemplateRead, 'coverPicture' | 'coverPhotoUrl'> & {
+      readonly coverPicture?: CoverPicture;
+    },
+  ): Promise<ProposalTemplateRead> {
+    const coverPicture = template.coverPicture ?? DEFAULT_COVER_PICTURE;
+    const photo =
+      coverPicture.kind === 'own'
+        ? await this.documents.signedDownload(tenantId, coverPicture.fileId, Date.now())
+        : null;
+    return { ...template, coverPicture, coverPhotoUrl: photo?.url ?? null };
   }
 
   /** The terms stay in whatever the list said (`SCR-M01-19`): the set is made whole in domain before it lands. */
@@ -82,6 +111,9 @@ export class SettingsTemplatesService {
   ): Promise<ProposalTemplateRead> {
     // Terms sent back as the platform's, in the saver's words, stay the platform's: stored as
     // null, they keep reading in each reader's words — a cover edit never freezes them (`F3-10`).
+    if (body.coverPicture?.kind === 'own') {
+      await refuseUnlessOwnCoverPhoto(this.files, tenantId, body.coverPicture.fileId);
+    }
     const { terms: platformTerms } = await documentDefaultsIn(reader);
     const ownTerms = sameContent(body.defaultTerms, platformTerms) ? null : body.defaultTerms;
     const saved = await this.scoped.saveProposalTemplate(
@@ -93,12 +125,13 @@ export class SettingsTemplatesService {
       },
       act,
     );
-    return {
+    return this.withPicture(tenantId, {
       cover: saved.cover,
       sectionsIncluded: [...saved.sectionsIncluded],
       defaultTerms: richTextWire(saved.defaultTerms ?? platformTerms),
+      ...(saved.coverPicture !== undefined && { coverPicture: saved.coverPicture }),
       changed: lastSaveWire(await this.scoped.proposalTemplateLastSave(tenantId)),
-    };
+    });
   }
 
   /** Until the tenant saves one, the platform's phases in `reader`'s words (`F3-10`). */

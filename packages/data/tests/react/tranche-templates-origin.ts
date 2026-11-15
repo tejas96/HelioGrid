@@ -33,7 +33,7 @@ const line = (
 });
 
 /** The default split in fixed test words, as a screen hands it over (`documentDefaults`). */
-const [STANDARD_SPLIT] = standardTrancheTemplates({
+export const [STANDARD_SPLIT] = standardTrancheTemplates({
   name: (split) => `Standard ${split}`,
   tranche: {
     on_signing: 'Advance on signing',
@@ -139,7 +139,8 @@ function applied(path: string, body: unknown): { status: number; body: TrancheTe
   return { status: 200, body: now };
 }
 
-async function answer(req: IncomingMessage, res: ServerResponse) {
+/** The payment plans' routes; also answers them for an origin that holds them beside its own. */
+export async function answerTerms(req: IncomingMessage, res: ServerResponse) {
   const path = new URL(req.url ?? '/', 'http://origin').pathname;
   if (answeredCompanyFacts(req, res)) return;
   if (!path.startsWith('/settings/tranche-templates')) {
@@ -164,18 +165,23 @@ async function answer(req: IncomingMessage, res: ServerResponse) {
   send(res, req, done.status, done.body);
 }
 
-const listening = listeningOrigin((req, res) => void answer(req, res));
+const listening = listeningOrigin((req, res) => void answerTerms(req, res));
 
 afterEach(() => {
   cleanup();
   Object.assign(termsOrigin, fresh());
 });
 
+/** The real provider over the origin, for `renderHook`'s wrapper. */
+export function providedTerms() {
+  const layer = createDataLayer({ baseUrl: listening.url(), language: () => 'en' });
+  return ({ children }: { children: ReactNode }) =>
+    createElement(DataProvider, { layer, children });
+}
+
 /** The Payment terms page, mounted in the real provider over the origin, its list answered. */
 export async function mounted(ready = true) {
-  const layer = createDataLayer({ baseUrl: listening.url(), language: () => 'en' });
-  const wrapper = ({ children }: { children: ReactNode }) =>
-    createElement(DataProvider, { layer, children });
+  const wrapper = providedTerms();
   const view = renderHook(() => useTrancheTemplates(STANDARD_SPLIT), { wrapper });
   if (ready) await waitFor(() => expect(view.result.current.read.kind).toBe('ready'));
   return view;

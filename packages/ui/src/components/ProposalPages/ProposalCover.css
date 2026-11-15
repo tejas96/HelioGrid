@@ -1,0 +1,138 @@
+/* The cover: one picture edge to edge, the words on its shade, three figures on glass. Everything
+   over the picture takes the picture's fixed white ink (`ProposalPicture`). */
+
+.hg-pp-cover {
+  padding: 0;
+}
+.hg-pp-cover-picture {
+  position: absolute;
+  inset: 0;
+}
+
+.hg-pp-cover-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 44px 56px 0;
+}
+/* The company's chip: the paper's own white, so the mark and the name read as on a page. */
+.hg-pp-cover-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px 10px 10px;
+  border-radius: 18px;
+  /* biome-ignore lint/plugin/raw-white-css: paper — the cover's chip is the document's own white over the picture */
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: var(--e3);
+  min-width: 0;
+}
+.hg-pp-cover-brand-words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--text-primary);
+}
+.hg-pp-cover-brand-words b {
+  font-weight: var(--fw-semibold);
+  font-size: 16px;
+  line-height: 20px;
+}
+.hg-pp-cover-brand-words span {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-secondary);
+}
+/* The number's pill: 64% ink over any picture holds white words at 4.5:1 or better. */
+.hg-pp-cover-number {
+  flex: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 64%, transparent);
+  font-size: 12px;
+}
+
+.hg-pp-cover-words {
+  margin-top: auto;
+  padding: 0 56px;
+}
+.hg-pp-cover-over {
+  font-weight: var(--fw-semibold);
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.hg-pp-cover-words h1 {
+  margin: 12px 0 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: 84px;
+  line-height: 84px;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.hg-pp-cover-words p {
+  margin: 18px 0 0;
+  max-width: 30ch;
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.hg-pp-cover-glass {
+  margin: 44px 56px 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  border-radius: 22px;
+  /* biome-ignore lint/plugin/raw-white-css: glass — a frost of white over the picture's shade, holding the cover's three figures */
+  background: color-mix(in srgb, var(--text-inverse) 13%, transparent);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  /* biome-ignore lint/plugin/raw-white-css: glass — the frost's own edge */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-inverse) 22%, transparent);
+}
+.hg-pp-cover-glass > div {
+  padding: 22px 24px;
+  min-width: 0;
+}
+.hg-pp-cover-glass > div + div {
+  /* biome-ignore lint/plugin/raw-white-css: glass — the line between two figures on the frost */
+  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--text-inverse) 20%, transparent);
+}
+.hg-pp-cover-value {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: 30px;
+  line-height: 36px;
+  letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+}
+/* The tier sits on its own line under each caption, in every cell alike: beside a long caption it
+   wrapped in one cell only and the three figures lost their common baseline. */
+.hg-pp-cover-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 18px;
+}
+/* The tier in the label's own ink: a page's quiet ink fails AA on the picture's shade. */
+.hg-pp-cover-label .hg-provenance-tier {
+  color: inherit;
+}
+
+.hg-pp-cover-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 26px 56px 40px;
+  font-size: 13px;
+}

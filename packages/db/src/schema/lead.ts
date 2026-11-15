@@ -10,6 +10,7 @@ import {
   ROOF_OWNERSHIPS,
   ROOF_TYPES,
   SHADINGS,
+  SUPPLY_PHASES,
 } from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
 import {
@@ -18,6 +19,7 @@ import {
   date,
   index,
   integer,
+  numeric,
   pgEnum,
   pgTable,
   text,
@@ -43,6 +45,7 @@ export const buyingTimeline = pgEnum('buying_timeline', BUYING_TIMELINES);
 export const decisionMaker = pgEnum('decision_maker', DECISION_MAKERS);
 export const disqualifyReason = pgEnum('disqualify_reason', DISQUALIFY_REASONS);
 export const lostReason = pgEnum('lost_reason', LOST_REASONS);
+export const supplyPhase = pgEnum('supply_phase', SUPPLY_PHASES);
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
 /** `YYYY-MM-DD` on the tenant's clock — the day the 09:00 sweep acts on (`M02-49`). */
@@ -87,6 +90,16 @@ export const lead = pgTable(
     shading: shading('shading'),
     buyingTimeline: buyingTimeline('buying_timeline'),
     decisionMaker: decisionMaker('decision_maker'),
+    /**
+     * Where the system goes and the supply it meets (`M06-09`, `M06-16`): typed once — at a visit
+     * booking or in a proposal — and read by the proposal, the studio and the project. The region is
+     * the market pack's code, the district its name there.
+     */
+    siteAddress: text('site_address'),
+    siteArea: text('site_area'),
+    siteDistrict: text('site_district'),
+    sanctionedLoadKw: numeric('sanctioned_load_kw', { precision: 8, scale: 2, mode: 'number' }),
+    supplyPhase: supplyPhase('supply_phase'),
     /** The "came from" of a referrer who is not a customer (`M02-16`). */
     referredByName: text('referred_by_name'),
     snoozeWakeOn: day('snooze_wake_on'),
@@ -139,6 +152,11 @@ export const lead = pgTable(
       .on(table.tenantId, table.creationKey)
       .where(sql`${table.creationKey} is not null`),
     check('lead_bill_not_negative', sql`${table.monthlyBillMinor} >= 0`),
+    check('lead_sanctioned_load_above_zero', sql`${table.sanctionedLoadKw} > 0`),
+    check(
+      'lead_site_district_has_its_area',
+      sql`${table.siteDistrict} is null or ${table.siteArea} is not null`,
+    ),
     check(
       'lead_counts_not_negative',
       sql`${table.reopenCount} >= 0 and ${table.unansweredCalls} >= 0`,

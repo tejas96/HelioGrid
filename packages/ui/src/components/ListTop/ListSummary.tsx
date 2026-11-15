@@ -1,4 +1,5 @@
 import { Pressable } from '../../primitives/Pressable';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { HeroPanel } from '../HeroPanel';
 import { HueTile } from '../HueTile';
 import { StageMeter } from '../StageMeter/StageMeter';
@@ -6,7 +7,11 @@ import { ListStageBar } from './ListStageBar';
 import { FIGURE_TILE } from './ListTop.logic';
 import type { ListFigure, ListRoom, ListSummaryProps } from './ListTop.types';
 
-/** A figure: its count over its word, a button where it narrows or opens what it counts. */
+/**
+ * A figure: its count over its word, a button where it narrows or opens what it counts. In the
+ * narrow room a side figure that presses is a small pill ending in a chevron, so it reads as a way
+ * in, and the main figure's word sits quiet under its count.
+ */
 function Figure({ figure, lead }: { figure: ListFigure; lead: boolean }) {
   const inner = (
     <>
@@ -39,6 +44,12 @@ function Figure({ figure, lead }: { figure: ListFigure; lead: boolean }) {
     >
       <span className="hg-list-summary-face" data-look={look}>
         {inner}
+        {/* Drawn only where the narrow room makes the figure a pill (`ListTop.css`). */}
+        {lead ? null : (
+          <span className="hg-list-summary-chevron" aria-hidden="true">
+            <ShellGlyph name="chevron-right" size="sm" tone="secondary" />
+          </span>
+        )}
       </span>
     </Pressable>
   );
@@ -47,7 +58,7 @@ function Figure({ figure, lead }: { figure: ListFigure; lead: boolean }) {
 /** The list's one hero: the main figure large, the others beside it, and the stages when wide. */
 export function ListSummary({ summary, room }: { summary: ListSummaryProps; room: ListRoom }) {
   return (
-    <HeroPanel name={summary.name} label={summary.label}>
+    <HeroPanel name={summary.name} {...(room === 'wide' ? { label: summary.label } : {})}>
       <div className="hg-list-summary" data-room={room}>
         <div className="hg-list-summary-figures">
           <Figure figure={summary.lead} lead />

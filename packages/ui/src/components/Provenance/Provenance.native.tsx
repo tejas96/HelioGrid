@@ -10,6 +10,7 @@ import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
+import { useFormat } from '../MarketProvider/market-context';
 import {
   isProvenanceEmpty,
   type ProvenanceLinePart,
@@ -181,6 +182,7 @@ export function Provenance({
   const parts = provenanceLineParts(
     { tier, standing, freshness, energySource, source, projection, note },
     useProvenanceWords(),
+    useFormat(),
   );
   if (parts.length === 0) {
     return null;

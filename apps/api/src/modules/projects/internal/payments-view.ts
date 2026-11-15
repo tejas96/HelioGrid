@@ -2,7 +2,7 @@ import type { PayRequest, PayTo, ProjectPayments } from '@heliogrid/contracts';
 import {
   availablePaymentModes,
   type CalendarDate,
-  formatMoney,
+  formatMinorUnitsPlainly,
   type MarketPack,
   minorUnits,
   UI_LANGUAGES,
@@ -60,7 +60,8 @@ export function paymentsViewOf(input: PaymentsViewInput): ProjectPayments {
     stage: facts.head.stage,
     today: input.today,
     money,
-    parts: stood.map((part) => partOf(part, format)),
+    // A part's stored position keeps growing across plans; the screen counts the parts in force.
+    parts: stood.map((part, at) => ({ ...partOf(part, format), position: at + 1 })),
     entries: facts.entries.map((entry) => ({
       id: entry.id,
       partId: entry.partId,
@@ -76,6 +77,17 @@ export function paymentsViewOf(input: PaymentsViewInput): ProjectPayments {
       reversesId: entry.reversesId,
       reason: entry.reason,
       reversed: reversed.has(entry.id),
+    })),
+    earlierPlans: facts.earlierPlans.map((plan) => ({
+      version: plan.version,
+      replacedAt: plan.replacedAt.toISOString(),
+      replacedBy: plan.replacedBy,
+      parts: plan.parts.map((part) => ({
+        id: part.id,
+        label: part.label,
+        amount: decimal(part.amountMinor),
+        dueOnStage: part.dueOnStage,
+      })),
     })),
     payTo: input.payTo,
     requests: owingFirst(stood).map((part) => requestOf(part, input, format)),
@@ -96,19 +108,64 @@ function owingFirst(parts: readonly StoodPart[]): StoodPart[] {
     );
 }
 
-function requestOf(part: StoodPart, input: PaymentsViewInput, format: MoneyFormat): PayRequest {
-  const { facts, pack, payTo } = input;
+/** How one owing part is paid: its exact amount, the UPI request where one fits, and its note. */
+export interface PayInstrument {
+  readonly amount: string;
+  readonly note: string;
+  /** The company's UPI ID, where it saved one and the amount is within the market's request cap. */
+  readonly upiId: string | null;
+  readonly upiUri: string | null;
+  readonly overUpiLimit: boolean;
+}
+
+/**
+ * The instrument for what a part still owes (`M11-25`, `F5-58`): exactly that amount, to the
+ * company's own UPI ID or bank — the one arithmetic the payments screen and the customer's link
+ * both show.
+ */
+export function payInstrumentOf(
+  part: StoodPart,
+  facts: { readonly projectNumber: number; readonly pack: MarketPack; readonly payTo: PayTo },
+  format: MoneyFormat,
+): PayInstrument {
+  const { pack, payTo } = facts;
   const owed = part.standing.outstanding;
-  const amount = minorUnitsToDecimal(owed, format.digits);
   const limit = pack.paymentRails.upiRequestLimit ?? null;
   const overUpiLimit = limit !== null && owed > limit;
-  const note = `${projectNumberOf(facts.head.number)} · ${part.facts.label}`;
+  const note = `${projectNumberOf(facts.projectNumber)} · ${part.facts.label}`;
   const upiId = payTo.upiId !== null && limit !== null && !overUpiLimit ? payTo.upiId : null;
+  return {
+    amount: minorUnitsToDecimal(owed, format.digits),
+    note,
+    upiId,
+    upiUri:
+      upiId === null
+        ? null
+        : upiRequestUri({
+            upiId,
+            payee: payTo.payee,
+            amount: owed,
+            fractionDigits: format.digits,
+            currency: format.currency,
+            note,
+          }),
+    overUpiLimit,
+  };
+}
+
+function requestOf(part: StoodPart, input: PaymentsViewInput, format: MoneyFormat): PayRequest {
+  const { facts, pack, payTo } = input;
+  const { amount, note, upiId, upiUri, overUpiLimit } = payInstrumentOf(
+    part,
+    { projectNumber: facts.head.number, pack, payTo },
+    format,
+  );
   const text = payRequestMessage(input.t, {
     customer: facts.head.customerName,
     part: part.facts.label,
     number: projectNumberOf(facts.head.number),
-    amount: formatMoney(pack.formats, amount),
+    // What is owed, never rounded: a zero fraction is left unsaid, paise are printed (`F1-07`).
+    amount: formatMinorUnitsPlainly(pack.formats, part.standing.outstanding),
     company: input.company,
     upi: upiId === null ? null : { upiId, payee: payTo.payee, note },
     bank:
@@ -125,17 +182,7 @@ function requestOf(part: StoodPart, input: PaymentsViewInput, format: MoneyForma
   return {
     partId: part.facts.id,
     amount,
-    upiUri:
-      upiId === null
-        ? null
-        : upiRequestUri({
-            upiId,
-            payee: payTo.payee,
-            amount: owed,
-            fractionDigits: format.digits,
-            currency: format.currency,
-            note,
-          }),
+    upiUri,
     overUpiLimit,
     note,
     message: { language: input.language, text },

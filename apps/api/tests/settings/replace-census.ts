@@ -22,4 +22,10 @@ export const noRepeatToProve: Readonly<Record<string, string>> = {
   'PATCH /tasks/:id':
     'records no entry; the same due moment again writes nothing (tests/crm/tasks.test.ts)',
   'PUT /customers/:id/primary-contact': 'records no entry; the same choice again writes nothing',
+  'PATCH /proposals/:id':
+    'a commit sent again as stored writes nothing, records nothing and keeps its revision (tests/proposals/proposal-record.test.ts)',
+  'PUT /saved-parts/:id':
+    'records no entry; the same words again write nothing (tests/proposals/saved-parts.test.ts)',
+  'PUT /links/:id/label':
+    'records no audit entry; the same name again writes no timeline entry (tests/customer-link/link-manager.test.ts)',
 };

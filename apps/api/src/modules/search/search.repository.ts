@@ -26,6 +26,7 @@ import {
   leadScopeWhere,
   memberNameOf,
 } from '../crm/crm.public';
+import { proposalsFound } from './search.proposals.repository';
 
 /** The groups this module reads itself; the catalog's is the catalog module's own read. */
 export type RecordGroups = Omit<SearchResults, 'catalog'>;
@@ -121,7 +122,8 @@ const contactPhones = sql<string[]>`array(select k.phone_e164 from ${contact} k
 /**
  * The global search's own groups (`F6-24`) on the runtime pool: leads in the
  * reader's lead scope, junk ones too with their state (`M02-55`); customers with a lead in that
- * scope and never a merged one; team members within the people-records scope. Each group counts
+ * scope and never a merged one; proposals on the leads in that scope (`F6-22`); team members
+ * within the people-records scope. Each group counts
  * with its own `where` and ranks by domain's order, newest first within a rank.
  */
 @Injectable()
@@ -131,16 +133,32 @@ export class SearchRepository {
 
   async records(reader: LeadReader, asked: AskedQuery, limit: number): Promise<RecordGroups> {
     const match = customerMatchOf(reader.tenantId, asked);
-    if (match === null) return { leads: noHits, customers: noHits, people: noHits };
     return this.db.withTenantTransaction(reader.tenantId, async (tx) => ({
-      leads: await leadsFound(tx, reader, asked, match, limit),
-      customers: await customersFound(tx, reader, asked, match, limit),
-      people: await peopleFound(tx, reader, asked, limit),
+      leads: match === null ? noHits : await leadsFound(tx, reader, asked, match, limit),
+      customers: match === null ? noHits : await customersFound(tx, reader, asked, match, limit),
+      proposals: await proposalsFound(
+        tx,
+        reader,
+        asked,
+        proposalMatchOf(reader, asked, match),
+        limit,
+      ),
+      people: match === null ? noHits : await peopleFound(tx, reader, asked, limit),
     }));
   }
 }
 
 type CustomerMatch = NonNullable<ReturnType<typeof customerMatchOf>>;
+
+/** The customer match a proposal is found by: the query's other words where it names one (`F6-22`). */
+function proposalMatchOf(
+  reader: LeadReader,
+  asked: AskedQuery,
+  match: CustomerMatch | null,
+): CustomerMatch | null {
+  if (!asked.asksForProposals) return match;
+  return customerMatchOf(reader.tenantId, { ...asked, terms: asked.termsBesideAlias });
+}
 
 async function leadsFound(
   tx: DbTransaction,

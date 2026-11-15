@@ -126,7 +126,7 @@ function verdictOf(
 ): NoticeVerdict {
   const { tell, lookAgainAt } = nextNotice(standing.clock, standing.lastToldDueAt, now);
   if (tell === null) return { kind: 'look again', at: lookAgainAt };
-  const tellable = pushDueAt('standard', now, quietHours.window, quietHours.timezone);
+  const tellable = pushDueAt(now, quietHours.window, quietHours.timezone);
   if (tellable > now) return { kind: 'look again', at: tellable };
   return { kind: 'tell', notice: tell.notice, dueAt: tell.dueAt, lookAgainAt };
 }

@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { flagDormant, snooze, wake, wakeNow } from '../../src/crm/lifecycle-parking';
+import {
+  flagDormant,
+  snooze,
+  wake,
+  wakeNow,
+  wokenByCustomer,
+} from '../../src/crm/lifecycle-parking';
 import { CONTEXT, leadAt, nextOf, refusalOf } from './lead-fixture';
 
 describe('snooze — a mandatory wake date after today (M02-51)', () => {
@@ -77,6 +83,20 @@ describe('wakeNow — a person takes the lead back early, with no task', () => {
       transitions: [{ cause: 'manual', from: 'snoozed', to: null }],
       raisesTask: null,
     });
+  });
+});
+
+describe('wokenByCustomer — a customer’s act wakes a snoozed lead as activity (M02-51, T-F5-008)', () => {
+  it('wakes before the date, cause automation, nothing raised', () => {
+    expect(wokenByCustomer(leadAt({ state: 'snoozed', wakeOn: '2026-12-01' }))).toMatchObject({
+      next: { state: null, wakeOn: null },
+      transitions: [{ cause: 'automation', from: 'snoozed', to: null }],
+      raisesTask: null,
+    });
+  });
+
+  it.each([null, 'dormant', 'lost'] as const)('a %s lead is not snoozed', (state) => {
+    expect(refusalOf(wokenByCustomer(leadAt({ state })))).toBe('not_snoozed');
   });
 });
 

@@ -10,6 +10,7 @@ import {
   minorUnitsOfDecimal,
 } from '@heliogrid/domain';
 import type { StatusTone } from '../../primitives/StatusMark';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { LEAD_STATE_TONE } from '../LeadStateBadge/LeadStateBadge.logic';
 import type { LeadNextMarkProps, ListedLead } from './LeadListRow.types';
 
@@ -32,14 +33,58 @@ export function leadNextToneOf({
   }
 }
 
+/** What a next step is, as the glyph before its words: a call is a phone, any other task a date. */
+function leadNextGlyphOf(next: Exclude<LeadRowNext, { kind: 'none' }>): ShellGlyphName {
+  switch (next.kind) {
+    case 'snoozed':
+      return 'clock';
+    case 'dormant':
+      return 'moon';
+    case 'tries':
+      return 'phone';
+    case 'task':
+      return next.task === 'call' ? 'phone' : 'calendar-check';
+  }
+}
+
 /** A lead's next step as its mark, worded by the caller; nothing when nothing comes next. */
 export function leadNextMarkOf(
   next: LeadRowNext,
   label: TranslatedText | null,
 ): LeadNextMarkProps | null {
   if (next.kind === 'none' || label === null) return null;
-  return { kind: next.kind, overdue: next.kind === 'task' && next.overdue, label };
+  return {
+    kind: next.kind,
+    overdue: next.kind === 'task' && next.overdue,
+    glyph: leadNextGlyphOf(next),
+    label,
+  };
 }
+
+/**
+ * Each stage's glyph, drawn before its word in the stage's own tone (`LEAD_STAGE_TONE`) — status
+ * is never the tint alone (`CLAUDE.md` §10).
+ */
+export const LEAD_STAGE_GLYPH: Record<LeadStage, ShellGlyphName> = {
+  new: 'spark',
+  contacted: 'phone',
+  qualified: 'tick',
+  survey: 'pin',
+  design: 'grid',
+  proposal: 'file-text',
+  negotiating: 'chat',
+  won: 'circle-check',
+};
+
+/** The glyph's ink for a mark's tone: the neutral mark is the quiet ink, every other its own. */
+export const MARK_GLYPH_TONE = {
+  neutral: 'secondary',
+  info: 'info',
+  success: 'success',
+  warning: 'warning',
+  danger: 'danger',
+  accent: 'accent',
+} as const satisfies Record<StatusTone, string>;
 
 /** What a list row reads of a lead; the wire's list row satisfies it. */
 export interface ListableLead {

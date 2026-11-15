@@ -1,7 +1,12 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { createTranslator, numberFieldWords, provenanceWords } from '@heliogrid/i18n';
-import { NumberField, type ProvenanceEmphasis, ProvenanceWordsProvider } from '@heliogrid/ui';
-import { useState } from 'react';
+import {
+  FieldCommitsProvider,
+  NumberField,
+  type ProvenanceEmphasis,
+  ProvenanceWordsProvider,
+} from '@heliogrid/ui';
+import { useEffect, useState } from 'react';
 
 const en = await createTranslator('en');
 const WORDS = numberFieldWords(en.t);
@@ -22,9 +27,14 @@ export function HeldNumberField({
   asTyped = false,
   clears = false,
   currency = false,
+  precision,
+  wholeDigits,
+  hero = false,
 }: {
   label: TranslatedText;
   unit: string;
+  /** Places the field keeps; left out, every place. */
+  precision?: number;
   /** None: the field starts unset. */
   initial?: number;
   min?: number;
@@ -39,6 +49,10 @@ export function HeldNumberField({
   clears?: boolean;
   /** The field holds an amount. */
   currency?: boolean;
+  /** The most digits it takes before the point. */
+  wholeDigits?: number;
+  /** The one large figure of its step. */
+  hero?: boolean;
 }) {
   const [value, setValue] = useState<number | undefined>(initial);
   const [commits, setCommits] = useState(0);
@@ -52,6 +66,9 @@ export function HeldNumberField({
         min={min}
         steppers={steppers}
         currency={currency}
+        precision={precision}
+        wholeDigits={wholeDigits}
+        hero={hero}
         commits={asTyped ? 'as-typed' : 'on-leave'}
         onCommit={(next) => {
           setValue(next);
@@ -88,5 +105,46 @@ export function NamedNumberField({
       value={value}
       onCommit={setValue}
     />
+  );
+}
+
+/**
+ * A field the page takes away while it is still in use, as a touch press on Next, Back or ✕ does
+ * (it never blurs the field first): F2 here takes it away without leaving it. `inForm` sets it in a
+ * form with its own Save, where every field hands its edit up as typed.
+ */
+export function LeavingNumberField({
+  label,
+  unit,
+  inForm = false,
+}: {
+  label: TranslatedText;
+  unit: string;
+  inForm?: boolean;
+}) {
+  const [shown, setShown] = useState(true);
+  const [value, setValue] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    const away = (event: KeyboardEvent) => {
+      if (event.key === 'F2') setShown(false);
+    };
+    window.addEventListener('keydown', away);
+    return () => window.removeEventListener('keydown', away);
+  }, []);
+  const field = shown ? (
+    <NumberField
+      words={WORDS}
+      label={label}
+      unit={unit}
+      steppers={false}
+      value={value}
+      onCommit={setValue}
+    />
+  ) : null;
+  return (
+    <>
+      {inForm ? <FieldCommitsProvider value="as-typed">{field}</FieldCommitsProvider> : field}
+      <output data-testid="held">{value === undefined ? '' : String(value)}</output>
+    </>
   );
 }

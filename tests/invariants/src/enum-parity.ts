@@ -47,6 +47,7 @@ import postgres from 'postgres';
 import { CRM_ENUMS } from './enum-parity-crm';
 import { PAYMENT_ENUMS } from './enum-parity-payments';
 import { PROJECT_ENUMS } from './enum-parity-projects';
+import { PROPOSAL_ENUMS } from './enum-parity-proposals';
 import { NO_CONTRACT_YET } from './enum-parity-unmapped';
 
 /**
@@ -185,6 +186,7 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   ...CRM_ENUMS,
   ...PROJECT_ENUMS,
   ...PAYMENT_ENUMS,
+  ...PROPOSAL_ENUMS,
 };
 
 /**

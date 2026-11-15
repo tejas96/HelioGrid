@@ -19,16 +19,17 @@ export {
   recipientsFor,
 } from './notification.recipients.repository';
 export {
+  type NoticeWords,
+  renderedInEveryLanguage,
+  renderedInEveryLanguageWith,
+} from './notification.words';
+export {
   activeOwnersOf,
   type NoticeRecipient,
   type NoticeToEach,
   type NotificationToWrite,
   recordNotification,
+  recordNotificationsOnceTo,
   recordNotificationsTo,
   type TenantQuietHours,
-} from './notification.repository';
-export {
-  type NoticeWords,
-  renderedInEveryLanguage,
-  renderedInEveryLanguageWith,
-} from './notification.words';
+} from './notification.writes.repository';

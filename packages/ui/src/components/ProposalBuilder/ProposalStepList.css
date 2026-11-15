@@ -1,0 +1,106 @@
+/* The list of every step, and the page preview (`M06-24`, `T-M06-015`). */
+.hg-pbf-steplist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.hg-pbf-quickrow {
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--fill);
+}
+.hg-pbf-steps {
+  display: flex;
+  flex-direction: column;
+}
+.hg-pbf-steprow {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.hg-pbf-steprow-in {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 10px var(--sp-2);
+  border-radius: var(--r-md);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+  animation-delay: calc(var(--i, 0) * var(--stagger-step));
+  transition: background var(--dur-micro) var(--ease-standard);
+}
+.hg-pbf-steprow:hover .hg-pbf-steprow-in {
+  background: var(--fill);
+}
+.hg-pbf-steprow-in[data-now] {
+  background: var(--accent-subtle);
+}
+.hg-pbf-steprow-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hg-pbf-steprow-name {
+  font-weight: var(--fw-medium);
+  line-height: 20px;
+}
+/* A step Quick mode hides reads quiet through its words' ink, never through a faded row. */
+.hg-pbf-steprow-in[data-quiet] .hg-pbf-steprow-name {
+  color: var(--text-secondary);
+}
+.hg-pbf-steprow-line {
+  font-size: var(--fs-body-sm);
+  line-height: 18px;
+  color: var(--text-secondary);
+}
+.hg-pbf-stand {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  color: var(--success-text);
+}
+.hg-pbf-stand .hg-shell-glyph {
+  color: currentColor;
+}
+.hg-pbf-stand[data-stand="to_do"] {
+  color: var(--warning-text);
+}
+.hg-pbf-stand[data-stand="default"] {
+  color: var(--text-secondary);
+}
+.hg-pbf-sheet-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.hg-pbf-foot-note {
+  text-align: center;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pbf-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/* `Pressable` centres what it holds; a row that IS the target fills it instead. */
+.hg-pressable.hg-pbf-steprow {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+.hg-pbf-steprow > .hg-pbf-steprow-in {
+  flex: 1;
+  min-width: 0;
+}

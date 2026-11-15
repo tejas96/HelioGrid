@@ -1,4 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import type { ReactNode } from 'react';
 
 /** The six status tones — each resolves to a semantic token PAIR (`-text` on `-bg`). */
 export type StatusTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'accent';
@@ -32,4 +33,10 @@ export interface StatusMarkProps {
    * sits on a card (a lead's stage on its list card). The mark and the words always stay.
    */
   bare?: boolean;
+  /**
+   * The state's own mark, drawn in place of the tone's glyph — a proposal's eye for *Opened*, its
+   * star for *Won*. The tone still picks the wash and the words still say the state (F7-12): this
+   * only makes the mark say more, never less.
+   */
+  glyph?: ReactNode;
 }

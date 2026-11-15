@@ -8,6 +8,7 @@ export { startTrial } from './billing.admin.repository';
 export { BillingModule } from './billing.module';
 export { BillingService } from './billing.service';
 export { BillingStateGuard } from './billing-state.guard';
+export { BillingUsageService, type ProposalAllowance } from './billing-usage.service';
 export { ChargeRefused, ChargeService } from './charge.service';
 export { EntitlementService } from './entitlement.service';
 export { OtpUsageService } from './otp-usage.service';

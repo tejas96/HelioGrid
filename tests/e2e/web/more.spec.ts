@@ -1,4 +1,4 @@
-import { settingsRowsFor } from '@heliogrid/domain';
+import { moreWorkLists, settingsRowsFor, shellViewFor } from '@heliogrid/domain';
 import {
   createTranslator,
   destinationLabel,
@@ -15,14 +15,16 @@ import { passTheOwnersMark } from '../support/shell';
 
 /**
  * `/more` (`SCR-SHELL-01`, *More: the settings list*): on the phone's width the owner's `More`
- * opens the page titled Settings with the twelve rows the owner's presets open, in six groups,
- * `More` in view. At the shell's desktop width the sidebar holds the work and *Settings* only, as
- * OneOhm's does; *Settings* opens the owner's first settings page beside the settings side list,
- * and Back never returns to `/more`.
+ * opens the page titled Settings with the work lists the pill has no slot for first, then the
+ * twelve rows the owner's presets open, in six groups, `More` in view. At the shell's desktop width
+ * the sidebar holds the work and *Settings* only, as OneOhm's does; *Settings* opens the owner's
+ * first settings page beside the settings side list, and Back never returns to `/more`.
  */
 const en = await createTranslator('en');
 const WORDS = settingsWords(en.t);
 const OWNER_ROWS = settingsRowsFor(['epc_owner']).flatMap((group) => group.rows);
+/** The owner's work lists More offers first on the phone (`F7-48` keeps the pill at two slots). */
+const OWNER_MORE_LISTS = moreWorkLists(shellViewFor(['epc_owner'], null));
 
 test('More opens Settings: the owner’s twelve rows in six groups, More in view — or, at the desktop width, the first settings page beside them', async ({
   page,
@@ -80,9 +82,10 @@ test('More opens Settings: the owner’s twelve rows in six groups, More in view
   );
   await expect(page).toHaveURL(/\/more$/);
   await expect(page.getByRole('heading', { level: 1, name: WORDS.title })).toBeVisible();
-  await expect(page.locator('.hg-settings-row-name')).toHaveText(
-    OWNER_ROWS.map((row) => WORDS.rows[row]),
-  );
+  await expect(page.locator('.hg-settings-row-name')).toHaveText([
+    ...OWNER_MORE_LISTS.map((list) => destinationLabel(en.t, list)),
+    ...OWNER_ROWS.map((row) => WORDS.rows[row]),
+  ]);
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);

@@ -1,0 +1,220 @@
+/* The builder's desktop form (`T-M06-002`): top bar, the labelled rail, the stage and the step's card. */
+.hg-pbf-bar {
+  flex: none;
+  height: 72px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--sp-6);
+  padding: 0 var(--sp-8);
+}
+.hg-pbf-bar-start {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.hg-pbf-bar-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.hg-pbf-bar-title {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hg-pbf-bar-status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pbf-bar-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-4);
+}
+.hg-pbf-quick {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+.hg-pbf-rail {
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  margin: 0 var(--sp-8) var(--sp-4);
+  padding: 0 var(--sp-1);
+  border-radius: var(--r-pill);
+  background: var(--glass);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+.hg-pbf-rail-step {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+.hg-pbf-rail-in {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  color: var(--text-secondary);
+  font: var(--fw-regular) var(--fs-body-sm) / 1 var(--font-sans);
+  transition:
+    background var(--dur-standard) var(--ease-standard),
+    color var(--dur-standard) var(--ease-standard);
+}
+.hg-pbf-rail-step:hover .hg-pbf-rail-in {
+  background: var(--fill);
+  color: var(--text-primary);
+}
+.hg-pbf-rail-word {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hg-pbf-rail-node {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 0 1.5px var(--line-strong);
+  font: var(--fw-medium) var(--fs-caption) / 1 var(--font-mono);
+  color: var(--text-secondary);
+}
+.hg-pbf-rail-node .hg-shell-glyph {
+  width: 12px;
+  height: 12px;
+  color: currentColor;
+}
+.hg-pbf-rail-in[data-stand="done"] .hg-pbf-rail-node {
+  background: var(--ink);
+  box-shadow: none;
+  color: var(--on-ink);
+}
+.hg-pbf-rail-in[data-stand="to_do"] .hg-pbf-rail-node {
+  background: var(--warning-bg);
+  box-shadow: inset 0 0 0 1.5px var(--warning);
+  color: var(--warning-text);
+}
+.hg-pbf-rail-step .hg-pbf-rail-in[data-now] {
+  background: var(--hg-control-fill);
+  color: var(--text-primary);
+  font-weight: var(--fw-semibold);
+  box-shadow:
+    var(--e1),
+    inset 0 0 0 1px var(--line-soft);
+}
+.hg-pbf-rail-step .hg-pbf-rail-in[data-now] .hg-pbf-rail-node {
+  background: var(--accent);
+  box-shadow: none;
+  color: var(--text-inverse);
+}
+.hg-pbf-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: var(--sp-6);
+  padding: 0 var(--sp-8) var(--sp-8);
+}
+.hg-pbf-body[data-stage] {
+  grid-template-columns: minmax(0, 1fr) 560px;
+  justify-items: stretch;
+}
+.hg-pbf-editor {
+  width: 100%;
+  max-width: 560px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-xl);
+  background: var(--hg-ground);
+  box-shadow: var(--e2);
+}
+.hg-pbf-editor-head {
+  padding: var(--sp-8) var(--sp-8) var(--sp-2);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+.hg-pbf-over {
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.hg-pbf-editor-heading {
+  margin: 6px 0 0;
+  font: var(--fw-regular) var(--fs-display) / var(--lh-display) var(--font-display);
+  letter-spacing: var(--tr-display);
+}
+.hg-pbf-editor-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-5) var(--sp-8) var(--sp-6);
+}
+.hg-pbf-editor-foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-8) var(--sp-6);
+  border-top: 1px solid var(--line-soft);
+}
+.hg-pbf-pay {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hg-pbf-pay-label {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-pbf-pay-figure {
+  font: var(--fw-medium) var(--fs-body) / var(--lh-body) var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* A settings page's own head in the bar (`T-M01-030`): the note beside its act. */
+.hg-pbf-bar-note {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-align: end;
+}

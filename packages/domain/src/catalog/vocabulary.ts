@@ -43,8 +43,18 @@ export type CatalogSource = (typeof CATALOG_SOURCES)[number];
  * types because the POC's catalog files it there; how much a back face yields is the module's
  * `bifacialityPct`, never this key.
  */
-export const PANEL_TECHNOLOGIES = ['mono_perc', 'topcon', 'bifacial', 'poly', 'hjt'] as const;
+export const PANEL_TECHNOLOGIES = [
+  'mono_perc',
+  'topcon',
+  'bifacial',
+  'poly',
+  'hjt',
+  /** The proposal's edit sheet lists these two as well (`M06-29`): one vocabulary, never a second list. */
+  'mono',
+  'thin_film',
+] as const;
 export type PanelTechnology = (typeof PANEL_TECHNOLOGIES)[number];
 
-export const BATTERY_CHEMISTRIES = ['lfp', 'nmc', 'lead_acid'] as const;
+/** `custom` carries the person's own words beside it (`M06-30`): a chemistry no member names. */
+export const BATTERY_CHEMISTRIES = ['lfp', 'nmc', 'lead_acid', 'custom'] as const;
 export type BatteryChemistry = (typeof BATTERY_CHEMISTRIES)[number];
