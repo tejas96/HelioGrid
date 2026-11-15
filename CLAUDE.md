@@ -8,8 +8,10 @@ Studio is the flagship. Light and dark · EN/HI/MR · tenant-currency money (INR
 
 **The end-user law comes first, above every other rule.** Before a screen is built, say in one
 line who uses it (owners, reps, surveyors, installers — often on a phone, outdoors, in a hurry, in
-their own language), what they came to do and what could frustrate them. A screen that is correct
-but leaves them stuck, slow or unsure is not done.
+their own language), what they came to do and what could frustrate them. The main job is obvious in
+two seconds and takes the fewest taps; nothing is hidden without a reason; a wait feels short
+(skeletons, instant feedback); no words sit in images. A screen that is correct but leaves them
+stuck, slow or unsure is not done.
 
 **A better approach than the task's** — one that meets the same PRD row more simply — is taken and
 written into the plan with one reason. Never switch silently.
@@ -20,11 +22,13 @@ declarations. A check you add or change is trusted only after it fires on a plan
 (`.claude/rules/testing.md`).
 
 **A bug found is fixed in this change.** Whoever finds it — you, a reviewer, a check or the owner —
-it is fixed here, never deferred, and listed in the PR body; only what §4 keeps for the owner is
-raised to them. `docs/tasks/deferred.md` takes no new row; a change closes the rows it meets. A
-behaviour fix starts with a test that fails for the bug. A new check or rule line is added only when
-the same mistake can happen again and nothing that exists would catch it — a type, a lint rule or a
-test first; prose only when no machine can decide it, in the file that owns it.
+it is fixed here, never deferred, and listed in the PR body by its kind; only what §4 keeps for the
+owner is raised to them. `docs/tasks/deferred.md` takes no new row; a change closes the rows it
+meets. A behaviour fix starts with a test that fails for the bug. A new check or rule line is added
+only when the same mistake can happen again and nothing that exists would catch it — a type, a lint
+rule or a test first; prose only when no machine can decide it, in the file that owns it
+(`.claude/agents/code-reviewer.md`, `qa-live.md`, a package `CLAUDE.md` Traps, a `.claude/rules/`
+file). A new file or step only when none fits, and the PR says why.
 
 **No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. A script or
 a `package.json` command is added only when none of those can hold the fact, and the PR says why.
@@ -64,9 +68,10 @@ names — per session and per PR. The session decides how to plan, build and pro
 keeps what §4 lists. A change that adds or reshapes a screen shows the owner three strong samples in
 the approved design language (§10), each as good as the best product work on Dribbble, before it
 builds, at phone and desktop width; the owner picks one, the plan names the pick, and the build
-follows it. A fix that keeps a screen's parts and layout (spacing, alignment, colour, copy, or a
-bug inside one part) skips the samples; one before/after screenshot at phone and desktop width is
-the frame that the *Before `qa-live`* paragraph below compares against.
+follows it. A fix that keeps a screen's parts and layout (spacing, alignment, copy, one part's
+colour swapped for another existing token, or a bug inside one part) skips the samples and shows the
+owner a before/after screenshot at phone and desktop width; its frame stays the sample the owner
+picked for that screen. A token's value is §10's and waits for the owner.
 
 A shared part is reused by importing it, extending its one contract (Law 7) or lifting it into its
 shared package first (Law 5) — never by copying it. The session decides when a helper agent or a
@@ -184,10 +189,11 @@ the code. Where a doc and the code disagree, Law 8 says which is fixed.
   `data`.
 - **Zero duplication.** A second copy of a definition, formula or shape is a defect even when both
   are correct — they will diverge.
-- **The simplest code for today's problem.** No speculative abstraction unless a PRD row asks for
-  the extension point. A comment states a constraint, never a date. A file is named for what it
-  does — never `*2`/`*-extra`, a layer or a document id. A package typechecks with `tsc -p`, never
-  `tsc -b`.
+- **The simplest code for today's problem.** No speculative abstraction and no config for one
+  caller, unless a PRD row asks for the extension point — then it is built, and an acceptance line
+  proves it. Names say what, not how; a comment states a constraint, never a date. A file is split
+  by responsibility and named for what it does — never `*2`/`*-extra`, a layer or a document id. A
+  package typechecks with `tsc -p`, never `tsc -b`.
 - **Every boundary has a contract.** Nothing crosses a package or process edge on an inferred or
   `any` shape; where two sides must agree, the agreement is a type in `packages/contracts`.
 - **A release is safe at every step of its roll.** Old app versions, old machines and running
@@ -222,20 +228,23 @@ Digest of the foundations `F1`–`F8`, which are canonical.
 ## 10. The design language
 
 The look is the OneOhm design system as the approved canvas (§6) draws it — calm, premium,
-minimal — and OneOhm is the start, not the ceiling: where it is weak, build better (strong
-hierarchy, no needless table, 3D only where it explains, the proposal PDF as polished as the app).
-Every value is a token in `packages/theme/src/tokens/`, and `packages/ui` builds every component on
-them, so a screen composes the parts that hold the look: `HeroPanel` for the one solar-glass hero
-per screen, `StatusChip` for status (glyph + word + tint, never colour alone), `Wordmark` on doors,
-the sidebar and the phone's top bar (never the sun tile).
+minimal — and OneOhm is the start, not the ceiling: where it is weak, build better (speed first,
+strong hierarchy, cards that expand when needed, no needless table, 3D only where it explains, the
+proposal PDF as polished as the app). Every value is a token in `packages/theme/src/tokens/`, and
+`packages/ui` builds every component on them, so a screen composes the parts that hold the look:
+`BrandBloom` for the soft logo-colour glow at the top of a page, `HeroPanel` for the one solar-glass
+hero per screen, `StatusChip` for status (glyph + word + tint, never colour alone), `Button`'s
+`primary` for the main action, `Wordmark` on doors, the sidebar and the phone's top bar (never the
+sun tile).
 
 - **Type:** Newsreader for titles, Geist for UI text, Geist Mono for phones and IDs (money: §9).
 - **Light and dark** both ship; the default follows the device, and Profile & preferences offers
-  Light / Dark / Device, stored on the device. Field mode (sunlight) is a variant of light and wins over dark. Every text
-  and surface pair passes WCAG AA in every mode.
-- **Phone first, full parity:** iOS, Android and the web have the same features; nothing is dropped
-  on the phone — it moves lower, or behind a tab or a sheet. A phone screen has an icon-only top bar
-  and the large title below it; desktop uses the left sidebar.
+  Light / Dark / Device, stored on the device. Field mode (sunlight) is a variant of light and wins
+  over dark. Every text and surface pair passes WCAG AA in every mode.
+- **Phone first, full parity:** iOS, Android and the web have the same features. A screen is
+  designed for the phone first, then widened (split panes, more columns, side panels); nothing is
+  dropped on the phone — it moves lower, or behind a tab or a sheet. A phone screen has an icon-only
+  top bar and the large title below it with one summary line; desktop uses the left sidebar.
 - **Native edges:** safe areas (never a hard-coded inset), the bottom pill above the home indicator,
   status-bar icons per theme, fields above the keyboard, Android edge-to-edge and system back (top
   sheet first), iOS swipe-back and the large-title collapse, desktop hover, focus rings, Esc and Enter.
