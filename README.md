@@ -64,7 +64,7 @@ authoritative doc for that layer; this table is only the index.
 | `packages/theme` | Tokens, semantic layer and the RN theme object — GENERATED from the live design system, never hand-edited | — |
 | `packages/ui` | The design system, BOTH platforms: one folder per component as `<Name>.tsx` (web) + `<Name>.native.tsx` (RN) over one shared `<Name>.types.ts` | — |
 | `tests/invariants` | Cross-cutting invariant checks (tenancy, enum parity, schema parity, format rendering) against real state | [tests/invariants/CLAUDE.md](tests/invariants/CLAUDE.md) |
-| `<package>/tests` | Unit tests for the logic layers only — the set in `packages/config/unit-test-packages.json` (`pnpm test:unit`) | [CLAUDE.md §8](CLAUDE.md) |
+| `<package>/tests` | Unit tests for the logic layers only — the set in `packages/config/unit-test-packages.json` (`pnpm test:unit`) | [testing law](.claude/rules/testing.md) |
 | `docs/` | How THIS REPO is built — architecture, tech stack, gates, ADRs | — |
 | `docs/prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the screens register | — |
 | `docs/tasks/` | Per-module build tasks, written to as work completes | — |
