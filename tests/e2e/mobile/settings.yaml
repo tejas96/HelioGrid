@@ -1,5 +1,5 @@
-# Settings: the list names the rows an owner may open. It stays at its top, since the pages' flows
-# open the rows from top to bottom; Catalog, below the fold, is `catalog-settings.yaml`'s.
+# Settings: the list names the rows an owner may open. It ends at its top, since the pages' flows
+# open the rows from top to bottom; Catalog, further down, is `catalog-settings.yaml`'s.
 appId: com.heliogrid.app
 ---
 - extendedWaitUntil:
@@ -9,8 +9,13 @@ appId: com.heliogrid.app
 - assertVisible: ${ROW_TEAM}
 - assertVisible: ${ROW_ROLES}
 - assertVisible: ${ROW_BRANDING}
-- assertVisible: ${ROW_PROPOSAL_TEMPLATES}
-- assertVisible: ${ROW_PAYMENT_TERMS}
+# The Proposals row above the profile card puts these two below a phone's fold.
+- scrollUntilVisible:
+    element: ${ROW_PROPOSAL_TEMPLATES}
+    timeout: 15000
+- scrollUntilVisible:
+    element: ${ROW_PAYMENT_TERMS}
+    timeout: 15000
 # The owner's pill holds Leads and Projects (`F7-48`), so More offers the Proposals list first, the
 # one landed list the owner reads that the pill has no slot for (`moreWorkLists`); it opens the list.
 - scrollUntilVisible:

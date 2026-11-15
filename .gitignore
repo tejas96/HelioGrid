@@ -7,6 +7,8 @@ dist/
 build/
 .next/
 out/
+# A web route carries one of those names (`/proposals/<id>/build`): a route folder is source.
+!apps/web/app/**/build/
 .turbo/
 *.tsbuildinfo
 

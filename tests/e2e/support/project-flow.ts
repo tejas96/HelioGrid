@@ -33,8 +33,8 @@ export function projectFlowWords(
   const handover = handoverWords(t.t, packWord);
   const move = { kind: 'move', to: 'material_ordered' } as const;
   return {
-    /** The board: the day's hero — nothing needs the owner yet — the Won stage and its days figure. */
-    PROJECTS_ALL_CLEAR: board.allClearTitle,
+    /** The board: its To do group — the first part fell due at Won — the Won stage and its days figure. */
+    PROJECTS_TO_DO: board.toDoHeading,
     STAGE_WON: board.stage('won'),
     DAYS_TODAY: board.days(0),
     /** The project at Won: its next step, the act that moves it and the toast's way back. */

@@ -42,7 +42,7 @@ import { paymentsFlowWords } from './payments.ts';
 import { freshMobile } from './phone.ts';
 import { markWonBody } from './project-facts.ts';
 import { projectFlowWords } from './project-flow.ts';
-import { proposalFlowWords } from './proposal-flow.ts';
+import { proposalFlowWords, startProposalBody } from './proposal-flow.ts';
 import { usageWords } from './usage-flow.ts';
 
 /**
@@ -235,9 +235,8 @@ async function leadFor(
 
 /** The lead's proposal draft (`M06-05`), in Quick mode; answers the proposal's id. */
 async function draftFor(cookie: string, leadId: string): Promise<string> {
-  const body = { quickMode: true, copyOf: null };
   const key = { [IDEMPOTENCY_KEY_HEADER]: randomUUID() };
-  const started = await call(`/leads/${leadId}/proposals`, body, cookie, key);
+  const started = await call(`/leads/${leadId}/proposals`, startProposalBody(true), cookie, key);
   return ((await started.json()) as { id: string }).id;
 }
 

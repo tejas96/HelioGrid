@@ -1,3 +1,4 @@
+import type { StartProposal } from '@heliogrid/contracts';
 import type { createTranslator } from '@heliogrid/i18n';
 import {
   proposalBuilderWords,
@@ -13,6 +14,15 @@ import {
   proposalTrackWords,
   proposalVersionsWords,
 } from '@heliogrid/i18n';
+
+/**
+ * What starts a lead's draft through the api (`POST /leads/:id/proposals`), as the start sheet
+ * sends it. One body for the web flows and the phone suite's set-up, held to the contract's type:
+ * a field the route gains stops both at the type check, never at a 400 on a runner.
+ */
+export function startProposalBody(quickMode: boolean): StartProposal {
+  return { quickMode, copyOf: null, capturedAt: new Date().toISOString() };
+}
 
 /**
  * The words the phone's proposal flows read (`SCR-M06-16`…`SCR-M06-20`), each from the catalog the

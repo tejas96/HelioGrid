@@ -3,6 +3,7 @@ import type { Translator } from '@heliogrid/i18n';
 import { expect, type Page } from '@playwright/test';
 import { API } from './api-log';
 import { CUSTOMER, captureLead, ownerWithCompany } from './project';
+import { startProposalBody } from './proposal-flow';
 
 /*
  * The proposals specs' way to a proposal (`M06`). A new company holds none, so each spec captures
@@ -28,7 +29,7 @@ export async function startDraftThroughApi(
   quickMode = true,
 ): Promise<ProposalDetail> {
   const answer = await page.request.post(`${API}/leads/${leadId}/proposals`, {
-    data: { quickMode, copyOf: null, capturedAt: new Date().toISOString() },
+    data: startProposalBody(quickMode),
     headers: { [IDEMPOTENCY_KEY_HEADER]: crypto.randomUUID() },
   });
   expect([200, 201]).toContain(answer.status());

@@ -15,7 +15,9 @@ export function customerMergeFlowWords(
   const merge = customerMergeWords(t.t);
   return {
     MERGE_TITLE: merge.title,
-    WHICH_STAYS: t.t(CUSTOMER_MERGE.whichStays),
+    /* An overline: Android lists it in capitals, so only Maestro's pattern can meet it (a pattern
+       ignores case), and a pattern reads the words' own `?` as "optional" unless it is escaped. */
+    WHICH_STAYS: t.t(CUSTOMER_MERGE.whichStays).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
     REVIEW_MERGE: merge.review,
     CONFIRM_MERGE: merge.confirmTitle,
     WHAT_MOVES: t.t(CUSTOMER_MERGE.movesHeading),

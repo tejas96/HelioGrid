@@ -32,6 +32,8 @@ appId: com.heliogrid.app
 - extendedWaitUntil:
     visible: ${WHO_IS_IT_FOR}
     timeout: 15000
+# The capture opens with its phone field in focus: Android's Back closes the keyboard first.
+- hideKeyboard
 - back
 - extendedWaitUntil:
     notVisible: ${WHO_IS_IT_FOR}

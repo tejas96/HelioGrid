@@ -24,7 +24,12 @@ appId: com.heliogrid.app
 - extendedWaitUntil:
     visible: ${BUILD_STEPS_GENERATE}
     timeout: 15000
-- tapOn: ${BUILD_STEPS_GENERATE}
+# The frame's own Generate lies under the open sheet with the same words, and Android still lists
+# it: a tap on that one lands on the sheet's caption and opens nothing. An index counts from the
+# top of the screen, and the sheet's is the higher of the two.
+- tapOn:
+    text: ${BUILD_STEPS_GENERATE}
+    index: 0
 - extendedWaitUntil:
     visible: ${BUILD_CHECK_BLOCKED}
     timeout: 15000

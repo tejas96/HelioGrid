@@ -1,6 +1,6 @@
 import type { ComposedMessage } from '@heliogrid/contracts';
 import { DOOR_SEGMENT, SETTINGS_SEGMENT } from '@heliogrid/domain';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import { Linking, Platform, Share } from 'react-native';
 import { doorRoute } from '../shell/doors';
 import { openInside } from './open-inside';
@@ -36,10 +36,16 @@ export function useProposalMoves() {
   };
   const toLead = (leadId: string) => navigation.navigate('LeadDetail', { leadId });
   return {
+    /**
+     * A sub-page's way back names the proposal, so it lands on the proposal whatever lies beneath:
+     * a link, a notice or the list's card may have opened the sub-page with no proposal under it
+     * (as a settings page's way back lands on Settings).
+     */
     back: (proposalId?: string) => {
-      if (navigation.canGoBack()) navigation.goBack();
-      else if (proposalId === undefined) navigation.navigate(doorRoute.proposals);
-      else navigation.navigate('ProposalTrack', { proposalId });
+      if (proposalId !== undefined) {
+        navigation.dispatch(StackActions.popTo('ProposalTrack', { proposalId }));
+      } else if (navigation.canGoBack()) navigation.goBack();
+      else navigation.navigate(doorRoute.proposals);
     },
     toList: () => navigation.navigate(doorRoute.proposals),
     toProposal: (proposalId: string) => navigation.navigate('ProposalTrack', { proposalId }),
