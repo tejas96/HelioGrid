@@ -40,7 +40,7 @@ Deps: `architecture.md` §2 tests/e2e.
 
 ```
 pnpm --filter @heliogrid/e2e test:web [<spec files>]  # the web flows — locally only on heliogrid_test, after `pnpm check:all` (it builds the api and web they start); all of them in CI
-pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100)
+pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100); while building, the changed part's spec and every spec that imports it — a change under `primitives/` or `packages/theme` runs them all; the whole suite is CI's
 pnpm --filter @heliogrid/e2e test:web --project qa-seed  # the QA companies (support/qa-accounts.ts), off CI, with the worker and Temporal up
 pnpm --filter @heliogrid/e2e test:mobile <serial>    # the phone flows on one Android device
 ```
@@ -85,9 +85,11 @@ skips this.
    under one still checking. Rebuild a changed
    package before the re-check (`apps/web/CLAUDE.md` Traps), then re-check with a fresh agent given
    the fixes.
-7. After: stop what you started (never Docker), delete the logs, and
-   `mv .qa/env.local.dev .env.local`. Ask the owner to restart what they stopped for you; a web dev
-   server needs `rm -rf apps/web/.next` first.
+7. Once the session's last QA round is done — between fixes the app stays up, and a fix re-runs
+   only the step it reaches (a migration or a pack: step 2; the seed or the api build: step 3; a
+   native file: step 4's rebuild), else a reload: stop what you started (never Docker),
+   delete the logs, and `mv .qa/env.local.dev .env.local`. Ask the owner to restart what they
+   stopped for you; a web dev server needs `rm -rf apps/web/.next` first.
 
 ## Local conventions
 

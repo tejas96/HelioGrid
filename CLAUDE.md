@@ -6,14 +6,12 @@ Studio is the flagship. Light and dark · EN/HI/MR · tenant-currency money (INR
 
 ## 1. Core principles
 
-**The end-user law comes first, above every other rule.** Owners, sales reps, surveyors and
-installers use HelioGrid worldwide, often on a phone, outdoors, in a hurry, in their own language.
-Before a screen is built, say in one line who uses it, what they came to do and what could frustrate
-them (small targets, glare, one hand, a slow network). The main job is obvious in two seconds and
-takes the fewest taps; nothing is crowded, confusing or hidden without a reason; a mistake is easy to
-undo, a wait feels short (skeletons, instant feedback) and success feels good; it works in any
-language and region (room for longer text, no words in images, the user's locale and the tenant's
-currency). A screen that is correct but leaves the user stuck, slow or unsure is not done.
+**The end-user law comes first, above every other rule.** Before a screen is built, say in one
+line who uses it (owners, reps, surveyors, installers — often on a phone, outdoors, in a hurry, in
+their own language), what they came to do and what could frustrate them. The main job is obvious in
+two seconds and takes the fewest taps; nothing is hidden without a reason; a wait feels short
+(skeletons, instant feedback); no words sit in images. A screen that is correct but leaves them
+stuck, slow or unsure is not done.
 
 **A better approach than the task's** — one that meets the same PRD row more simply — is taken and
 written into the plan with one reason. Never switch silently.
@@ -23,15 +21,14 @@ reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and 
 declarations. A check you add or change is trusted only after it fires on a planted bad line
 (`.claude/rules/testing.md`).
 
-**Every mistake leaves a record.** A mistake or bug found in the work — yours, a reviewer's, a
-check's or the owner's — is fixed in this change, never deferred or left half-built, and listed in
-the PR body by its kind; only what §4 keeps for the owner is raised to them instead.
-`docs/tasks/deferred.md` takes no new row; a change closes the rows it meets. A behaviour fix
-starts with a test that fails for the bug, then makes it pass. One a machine could have
-caught gets that check: a type, a lint rule or a test. One no machine can decide gets one line in
-the file that owns it — `.claude/agents/code-reviewer.md`, `qa-live.md`, a package `CLAUDE.md`
-Traps, or the `.claude/rules/` file of a cross-package law; a new file or step only when no owner
-fits, and the PR says why.
+**A bug found is fixed in this change.** Whoever finds it — you, a reviewer, a check or the owner —
+it is fixed here, never deferred, and listed in the PR body by its kind; only what §4 keeps for the
+owner is raised to them. `docs/tasks/deferred.md` takes no new row; a change closes the rows it
+meets. A behaviour fix starts with a test that fails for the bug. A new check or rule line is added
+only when the same mistake can happen again and nothing that exists would catch it — a type, a lint
+rule or a test first; prose only when no machine can decide it, in the file that owns it
+(`.claude/agents/code-reviewer.md`, `qa-live.md`, a package `CLAUDE.md` Traps, a `.claude/rules/`
+file). A new file or step only when none fits, and the PR says why.
 
 **No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. A script or
 a `package.json` command is added only when none of those can hold the fact, and the PR says why.
@@ -71,7 +68,10 @@ names — per session and per PR. The session decides how to plan, build and pro
 keeps what §4 lists. A change that adds or reshapes a screen shows the owner three strong samples in
 the approved design language (§10), each as good as the best product work on Dribbble, before it
 builds, at phone and desktop width; the owner picks one, the plan names the pick, and the build
-follows it.
+follows it. A fix that keeps a screen's parts and layout (spacing, alignment, copy, one part's
+colour swapped for another existing token, or a bug inside one part) skips the samples and shows the
+owner a before/after screenshot at phone and desktop width; its frame stays the sample the owner
+picked for that screen. A token's value is §10's and waits for the owner.
 
 A shared part is reused by importing it, extending its one contract (Law 7) or lifting it into its
 shared package first (Law 5) — never by copying it. The session decides when a helper agent or a
@@ -189,19 +189,11 @@ the code. Where a doc and the code disagree, Law 8 says which is fixed.
   `data`.
 - **Zero duplication.** A second copy of a definition, formula or shape is a defect even when both
   are correct — they will diverge.
-- **Code reads like English or it is rewritten.** Names say WHAT, never how; a reader new to this
-  codebase follows a function top to bottom without scrolling back. Needing a comment to explain it
-  means the code is wrong. A comment states the CONSTRAINT — what breaks if you change this — and
-  never a date; when and why it changed goes in the commit.
-- **Solve today's problem, the simplest way.** A poor structure is replaced with one clearly
-  better, and the PR says why in one line. No speculative abstraction, no config for one caller, no indirection
-  for a future that has not been specified — unless a PRD row asks for the extension point; then
-  it is built, and an acceptance line proves it.
-- **Shape.** A file is split by responsibility (Biome refuses one over 300 lines) and named for what it does —
-  never `*2`/`*-extra`, never for a layer or a document id. A package builds and typechecks with
-  `tsc -p`, never `tsc -b`.
-- **Queries are correct the first time.** Index-backed, no N+1, no `select *`, no unbounded scan,
-  every tenant-scoped read carrying its tenant predicate.
+- **The simplest code for today's problem.** No speculative abstraction and no config for one
+  caller, unless a PRD row asks for the extension point — then it is built, and an acceptance line
+  proves it. Names say what, not how; a comment states a constraint, never a date. A file is split
+  by responsibility and named for what it does — never `*2`/`*-extra`, a layer or a document id. A
+  package typechecks with `tsc -p`, never `tsc -b`.
 - **Every boundary has a contract.** Nothing crosses a package or process edge on an inferred or
   `any` shape; where two sides must agree, the agreement is a type in `packages/contracts`.
 - **A release is safe at every step of its roll.** Old app versions, old machines and running
@@ -235,34 +227,27 @@ Digest of the foundations `F1`–`F8`, which are canonical.
 
 ## 10. The design language
 
-The look is the OneOhm official design system as the approved canvas (§6) draws it: calm, premium,
-minimal. A neutral canvas with a soft logo-colour glow at the top; white cards; one *solar glass*
-hero per screen (white lit by the logo's green, teal and blue, a faint PV-cell grid in the lit
-corner, a 2 px logo-gradient top line); Newsreader for titles, Geist for UI text, Geist Mono for
-phones and IDs (money's type is §9); status always glyph + word + tint, never colour
-alone; the active sidebar item `nav-active` (ink pill in light, soft accent wash in dark); the primary action the ocean accent. One typed token
-source, `packages/theme/src/tokens/`, holds every value; `packages/ui` builds every component on it.
+The look is the OneOhm design system as the approved canvas (§6) draws it — calm, premium,
+minimal — and OneOhm is the start, not the ceiling: where it is weak, build better (speed first,
+strong hierarchy, cards that expand when needed, no needless table, 3D only where it explains, the
+proposal PDF as polished as the app). Every value is a token in `packages/theme/src/tokens/`, and
+`packages/ui` builds every component on them, so a screen composes the parts that hold the look:
+`BrandBloom` for the soft logo-colour glow at the top of a page, `HeroPanel` for the one solar-glass
+hero per screen, `StatusChip` for status (glyph + word + tint, never colour alone), `Button`'s
+`primary` for the main action, `Wordmark` on doors, the sidebar and the phone's top bar (never the
+sun tile).
 
-- **OneOhm is the start, not the ceiling.** Where it is weak — a component, a state, accessibility,
-  dark mode, motion, phone layout, Devanagari, speed — build better, inside this philosophy: calm
-  colours and good type; strong hierarchy and clear status, cards that expand when needed, no
-  needless table; each role keeps its own home; motion that is smooth and useful, 3D only where it
-  explains (a roof); speed first; the proposal PDF as polished as the app; easy on the eyes.
-- **Light and dark.** Both ship. The default follows the device; Profile & preferences offers
-  Light / Dark / Device, stored on the device. Field mode (sunlight high contrast) is a variant of
-  light and wins over dark while it is on. Every text and surface pair passes WCAG AA in every mode.
-- **Mobile-first with full parity.** iOS, Android and the web have the same features. A screen is
-  designed for the phone first, then widened (split panes, more columns, side panels). Nothing is
-  dropped on the phone: it moves lower, or behind a tab or a sheet.
-- **Native on every platform.** One design, native system edges: safe areas on every screen (never a
-  hard-coded inset), the floating bottom pill above the home indicator or gesture bar, status-bar
-  icons per theme, fields kept above the keyboard, Android edge-to-edge and system back (top sheet
-  first), iOS swipe-back and the large-title collapse, desktop hover, focus rings, Esc and Enter.
-- **Phone screens use the large title.** The top bar holds only icons; the page title sits below it
-  in Newsreader with one summary line. On desktop the same navigation is the left sidebar.
-- **Motion everywhere it helps, never in the way.** Every interactive element answers (press,
-  hover, focus, select, toggle, expand) and every change of state moves, from the motion tokens,
-  built once into `packages/ui`. Lottie marks the moments that matter, played once. How it is
-  built: `.claude/rules/ui-adherence.md`, *Motion*.
-- **The name is the brand.** Doors, the sidebar and the phone's top bar show the HelioGrid wordmark,
-  never the sun tile, until a new logo is drawn.
+- **Type:** Newsreader for titles, Geist for UI text, Geist Mono for phones and IDs (money: §9).
+- **Light and dark** both ship; the default follows the device, and Profile & preferences offers
+  Light / Dark / Device, stored on the device. Field mode (sunlight) is a variant of light and wins
+  over dark. Every text and surface pair passes WCAG AA in every mode.
+- **Phone first, full parity:** iOS, Android and the web have the same features. A screen is
+  designed for the phone first, then widened (split panes, more columns, side panels); nothing is
+  dropped on the phone — it moves lower, or behind a tab or a sheet. A phone screen has an icon-only
+  top bar and the large title below it with one summary line; desktop uses the left sidebar.
+- **Native edges:** safe areas (never a hard-coded inset), the bottom pill above the home indicator,
+  status-bar icons per theme, fields above the keyboard, Android edge-to-edge and system back (top
+  sheet first), iOS swipe-back and the large-title collapse, desktop hover, focus rings, Esc and Enter.
+- **Motion:** every interactive element answers and every change of state moves, from the motion
+  tokens built into `packages/ui` (`.claude/rules/ui-adherence.md`, *Motion*); Lottie marks the
+  moments that matter, played once.
