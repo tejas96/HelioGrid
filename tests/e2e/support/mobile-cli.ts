@@ -118,7 +118,7 @@ if (command === 'words') {
     WHAT_CHANGES: PLAN_SELECTION.whatChanges,
     PLAN_PRO: tierName('pro'),
     CLOSE: SHELL.close,
-    /** `SCR-M02-01`: the pill's add action and quick add's four fields, Save and its answers. */
+    /** `SCR-M02-01`: the Leads list's *Add lead* and quick add's four fields, Save and its answers. */
     ADD_LEAD: verbLabel(t.t, 'add_lead'),
     NEW_LEAD: QUICK_ADD.title,
     QUICK_ADD_PHONE: QUICK_ADD.phone,

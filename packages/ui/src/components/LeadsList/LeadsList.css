@@ -1,5 +1,5 @@
 /* LeadsList — the Leads list's read (`SCR-M02-03`): the first run's two ways in, the leads with
-   *Show more* under them, and the card of rows' head. */
+   *Show more* under them. */
 
 .hg-leads-list-teach {
   display: flex;
@@ -17,19 +17,4 @@
 
 .hg-leads-list-rows > .hg-button {
   align-self: center;
-}
-
-/* The card of rows' head: the rows' name on the left, the bill and its one tier on the right. */
-.hg-leads-list-colhead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  padding-inline: var(--sp-4);
-}
-
-.hg-leads-list-colbill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
 }

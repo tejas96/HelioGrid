@@ -63,7 +63,7 @@ export function ShellPage({
   pad?: ShellFrameProps['pad'];
   /** An act bar in the pill's place while it shows (`ShellFrame`). */
   foot?: ReactNode;
-  /** The add action's press on the page the action itself opened: it opens again in place. */
+  /** The pill action's press on the page the action itself opened: it opens again in place. */
   onAction?: () => void;
   /** A list that reads again on a pull (`ShellFrame`). */
   pull?: ShellFrameProps['pull'];

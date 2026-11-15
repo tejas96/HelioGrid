@@ -4242,7 +4242,7 @@ msgid "Add a lead"
 msgstr "लीड जोडा"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:117
+#: src/copy/shell.ts:118
 msgid "Add a lead from your home"
 msgstr "तुमच्या होममधून लीड जोडा"
 
@@ -17166,6 +17166,7 @@ msgstr "प्रस्ताव मागे घेतला. त्याच�
 #: src/copy/proposal-after-list.ts:19
 #: src/copy/search.ts:66
 #: src/copy/shell.ts:95
+#: src/copy/shell.ts:111
 msgid "Proposals"
 msgstr "प्रस्ताव"
 
@@ -19914,7 +19915,7 @@ msgid "Start"
 msgstr "सुरू करा"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:121
+#: src/copy/shell.ts:126
 msgid "Start a survey from your home"
 msgstr "तुमच्या होममधून सर्व्हे सुरू करा"
 
@@ -19929,7 +19930,7 @@ msgid "Start handover"
 msgstr "हस्तांतरण सुरू करा"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:111
+#: src/copy/shell.ts:112
 msgid "Start survey"
 msgstr "सर्व्हे सुरू करा"
 
@@ -22903,7 +22904,7 @@ msgid "Twelve fixed roles. Tap one to see what it can do."
 msgstr "बारा ठरलेल्या भूमिका. एकावर टॅप करा आणि ती काय करू शकते ते पाहा."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:127
+#: src/copy/shell.ts:132
 msgid "Two presets, one home"
 msgstr "दोन प्रीसेट, एक होम"
 
@@ -23280,12 +23281,17 @@ msgid "Use my number instead. Goes back to the phone step."
 msgstr "त्याऐवजी माझा नंबर वापरा. फोनच्या पायरीवर परत जाते."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:118
+#: src/copy/shell.ts:119
 msgid "Use this button to add a lead."
 msgstr "लीड जोडण्यासाठी हे बटण वापरा."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:122
+#: src/copy/shell.ts:123
+msgid "Use this button to open your proposals and start a new one."
+msgstr "तुमचे प्रस्ताव उघडण्यासाठी आणि नवीन सुरू करण्यासाठी हे बटण वापरा."
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:127
 msgid "Use this button to start a survey."
 msgstr "सर्व्हे सुरू करण्यासाठी हे बटण वापरा."
 
@@ -25453,7 +25459,7 @@ msgid "Your free trial has ended. Still working: {working}."
 msgstr "तुमची फ्री ट्रायल संपली आहे. अजूनही चालू: {working}."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:128
+#: src/copy/shell.ts:133
 msgid "Your home is the {preset} one. Open the title to switch."
 msgstr "तुमचे होम {preset} चे आहे. बदलण्यासाठी शीर्षक उघडा."
 
@@ -25807,6 +25813,11 @@ msgstr "तुमचा प्रस्ताव सुरक्षित आह
 #: src/copy/proposal-template.ts:65
 msgid "Your proposal template didn't load"
 msgstr "तुमचा प्रस्ताव टेम्पलेट लोड झाला नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:122
+msgid "Your proposals from any screen"
+msgstr "कोणत्याही स्क्रीनवरून तुमचे प्रस्ताव"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-page-sheets.ts:39

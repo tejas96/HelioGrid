@@ -9,7 +9,7 @@ import { showsBadge } from '../AppShell/AppShell.types';
 import { CountBadge } from '../AppShell/CountBadge.native';
 import type { CoachMarkAnchor } from '../CoachMark/CoachMark.types';
 import { isRefAnchor, navItemIcon, spokenItemName } from './AppRail.logic';
-import type { BottomNavProps, RailItem } from './AppRail.types';
+import type { BottomNavItem, BottomNavProps } from './AppRail.types';
 import { isInView, PILL_NAV_SLOT_HEIGHT, PILL_NAV_SLOT_WIDTH, pressItem } from './AppRail.types';
 
 interface NativeBottomNavProps extends BottomNavProps {
@@ -48,12 +48,15 @@ export function BottomNav({
 }
 
 interface NavItemProps {
-  item: RailItem;
+  item: BottomNavItem;
   inView: boolean;
   onPress: () => void;
 }
 
-/** In view: the near-black pill with its filled icon and its label. Otherwise the icon alone. */
+/**
+ * In view: the near-black pill with its filled icon and its label. The role's action: a lit accent
+ * circle, the one thing on the pill that acts rather than goes. Otherwise the icon alone.
+ */
 function NavItem({ item, inView, onPress }: NavItemProps) {
   return (
     <View ref={viewRef(item.anchor)} collapsable={false}>
@@ -62,7 +65,11 @@ function NavItem({ item, inView, onPress }: NavItemProps) {
       <Pressable
         accessibilityLabel={spokenItemName(item)}
         onPress={onPress}
-        style={[styles.item, inView ? styles.inView : undefined]}
+        style={[
+          styles.item,
+          inView ? styles.inView : undefined,
+          item.verb ? styles.verb : undefined,
+        ]}
       >
         <View style={styles.icon}>
           {navItemIcon(item, inView)}
@@ -123,6 +130,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-4'],
     /* The ink pill: the words' own ink as the fill, so the inverse words read on it in both schemes. */
     backgroundColor: colors['text-primary'],
+  },
+  verb: {
+    width: PILL_NAV_SLOT_HEIGHT,
+    backgroundColor: colors['action-primary'],
+    ...theme.elevation.e2,
   },
   icon: {
     position: 'relative',

@@ -108,6 +108,7 @@ const UPDATE_ON_STORE: Record<StorePlatform, { id: string }> = {
 /** The add action's name: the verb it performs (`F7-22`). */
 const VERB_LABEL: Record<CentreVerb, { id: string }> = {
   add_lead: /*i18n*/ { id: 'Add lead' },
+  proposals: /*i18n*/ { id: 'Proposals' },
   start_survey: /*i18n*/ { id: 'Start survey' },
 };
 
@@ -116,6 +117,10 @@ const VERB_MARK: Record<CentreVerb, { title: { id: string }; body: { id: string 
   add_lead: {
     title: /*i18n*/ { id: 'Add a lead from your home' },
     body: /*i18n*/ { id: 'Use this button to add a lead.' },
+  },
+  proposals: {
+    title: /*i18n*/ { id: 'Your proposals from any screen' },
+    body: /*i18n*/ { id: 'Use this button to open your proposals and start a new one.' },
   },
   start_survey: {
     title: /*i18n*/ { id: 'Start a survey from your home' },

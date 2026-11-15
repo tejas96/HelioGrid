@@ -2,6 +2,7 @@ import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
 import { useImperativeHandle, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { rovingTargetOf } from '../../primitives/press-keys';
+import { Chip } from '../Chip';
 import { chosenChipIndex } from './FilterBar.logic';
 import type { FilterChipsProps } from './FilterBar.types';
 import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
@@ -48,6 +49,7 @@ export function FilterChips({
   onChange,
   counts,
   scroll = false,
+  look = 'filled',
   label,
   labelledBy,
   ref,
@@ -93,8 +95,6 @@ export function FilterChips({
       {options.map((option, index) => {
         const optValue = optionValue(option);
         const active = optValue === value;
-        const count = counts?.[optValue];
-        const icon = optionIcon(option);
         return (
           <button
             key={optValue}
@@ -109,19 +109,52 @@ export function FilterChips({
             onKeyDown={(event) => onKeyDown(index, event)}
             onClick={() => onChange?.(optValue)}
           >
-            <span
-              className="hg-filter-pill"
-              data-pill="chip"
-              data-active={active ? 'true' : undefined}
-              data-lead={icon ? 'true' : undefined}
-            >
-              <OptionIcon icon={icon} />
-              {optionLabel(option)}
-              {count === undefined ? null : <span className="hg-filter-count">{count}</span>}
-            </span>
+            <ChipFace
+              look={look}
+              active={active}
+              icon={optionIcon(option)}
+              label={optionLabel(option)}
+              count={counts?.[optValue]}
+            />
           </button>
         );
       })}
     </div>
+  );
+}
+
+/** A chip's face in its look: the filled 44px pill, or the outlined `Chip` with its count badge. */
+function ChipFace({
+  look,
+  active,
+  icon,
+  label,
+  count,
+}: {
+  look: NonNullable<FilterChipsProps['look']>;
+  active: boolean;
+  icon: ReactNode;
+  label: string;
+  count: number | undefined;
+}) {
+  if (look === 'outlined') {
+    return (
+      <Chip active={active} {...(count === undefined ? {} : { count })}>
+        <OptionIcon icon={icon} />
+        {label}
+      </Chip>
+    );
+  }
+  return (
+    <span
+      className="hg-filter-pill"
+      data-pill="chip"
+      data-active={active ? 'true' : undefined}
+      data-lead={icon ? 'true' : undefined}
+    >
+      <OptionIcon icon={icon} />
+      {label}
+      {count === undefined ? null : <span className="hg-filter-count">{count}</span>}
+    </span>
   );
 }

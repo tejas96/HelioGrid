@@ -4,7 +4,7 @@ import { showsBadge } from '../AppShell/AppShell.types';
 import { CountBadge } from '../AppShell/CountBadge';
 import type { CoachMarkAnchor } from '../CoachMark/CoachMark.types';
 import { isRefAnchor, navItemIcon, spokenItemName } from './AppRail.logic';
-import type { BottomNavProps, RailItem } from './AppRail.types';
+import type { BottomNavItem, BottomNavProps } from './AppRail.types';
 import { isInView, PILL_NAV_SLOT_HEIGHT, PILL_NAV_SLOT_WIDTH, pressItem } from './AppRail.types';
 
 type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
@@ -57,12 +57,15 @@ export function BottomNav({
 }
 
 interface NavItemProps {
-  item: RailItem;
+  item: BottomNavItem;
   inView: boolean;
   onClick: () => void;
 }
 
-/** In view: the near-black pill with its filled icon and its label. Otherwise the icon alone. */
+/**
+ * In view: the near-black pill with its filled icon and its label. The role's action: a lit accent
+ * circle, the one thing on the pill that acts rather than goes. Otherwise the icon alone.
+ */
 function NavItem({ item, inView, onClick }: NavItemProps) {
   return (
     <button
@@ -73,6 +76,7 @@ function NavItem({ item, inView, onClick }: NavItemProps) {
       onClick={onClick}
       className="hg-bottom-nav-item"
       data-in-view={inView ? 'true' : undefined}
+      data-verb={item.verb ? 'true' : undefined}
     >
       <span className="hg-bottom-nav-icon">
         {navItemIcon(item, inView)}

@@ -9,25 +9,16 @@ appId: com.heliogrid.app
 - assertVisible: ${ROW_TEAM}
 - assertVisible: ${ROW_ROLES}
 - assertVisible: ${ROW_BRANDING}
-# The Proposals row above the profile card puts these two below a phone's fold.
+# These two sit below a phone's fold.
 - scrollUntilVisible:
     element: ${ROW_PROPOSAL_TEMPLATES}
     timeout: 15000
 - scrollUntilVisible:
     element: ${ROW_PAYMENT_TERMS}
     timeout: 15000
-# The owner's pill holds Leads and Projects (`F7-48`), so More offers the Proposals list first, the
-# one landed list the owner reads that the pill has no slot for (`moreWorkLists`); it opens the list.
+# More holds no work list for the owner: the pill's action is the way into proposals
+# (`moreWorkLists`). The pages' flows open the rows from the top, so the list is left there.
 - scrollUntilVisible:
-    element: ${PROPOSALS_TITLE}
+    element: ${ROW_TEAM}
     direction: UP
-    timeout: 15000
-    centerElement: true
-- tapOn: ${PROPOSALS_TITLE}
-- extendedWaitUntil:
-    visible: ${NEW_PROPOSAL}
-    timeout: 15000
-- back
-- extendedWaitUntil:
-    visible: ${SETTINGS_TITLE}
     timeout: 15000

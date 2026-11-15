@@ -9,15 +9,16 @@ describe('shellViewFor — the one shell both platforms render (M13-10, F7-48)',
   });
 
   it.each([
-    { chosen: null, verb: 'add_lead' },
-    { chosen: 'sales_executive', verb: 'add_lead' },
-    { chosen: 'survey_engineer', verb: 'start_survey' },
+    { chosen: null, verb: 'add_lead', homeVerb: 'add_lead' },
+    { chosen: 'sales_executive', verb: 'add_lead', homeVerb: 'add_lead' },
+    { chosen: 'survey_engineer', verb: 'start_survey', homeVerb: 'start_survey' },
   ] as const)(
     'keeps the ladder-top preset’s slots whatever home is chosen: $chosen → $verb',
-    ({ chosen, verb }) => {
+    ({ chosen, verb, homeVerb }) => {
       const shell = shellViewFor(['sales_executive', 'survey_engineer'], chosen);
       expect(shell.destinations).toEqual(['home', 'leads', 'proposals', 'more']);
       expect(shell.centreVerb).toBe(verb);
+      expect(shell.homeVerb).toBe(homeVerb);
     },
   );
 
@@ -33,6 +34,7 @@ describe('shellViewFor — the one shell both platforms render (M13-10, F7-48)',
       home: null,
       homes: [],
       centreVerb: null,
+      homeVerb: null,
       destinations: null,
       coachMarks: [],
     });

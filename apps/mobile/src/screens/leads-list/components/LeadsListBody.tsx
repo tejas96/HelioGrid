@@ -4,6 +4,7 @@ import { useI18n } from '@heliogrid/i18n/react';
 import {
   Button,
   type FocusHandle,
+  IconButton,
   LargeTitle,
   LeadsList,
   LeadsListFilterBar,
@@ -22,8 +23,9 @@ interface BodyProps {
 }
 
 /**
- * The page: its large title and summary, the head of filters, then the list's read (`LeadsList`,
- * the web's too). *Try again* and *Clear filters* land the screen reader on the title, which stays
+ * The page: its large title with *Add lead* and *Import* at its end, its summary, the head of
+ * filters, then the list's read (`LeadsList`, the web's too). The first run teaches both ways in
+ * itself, so the title carries neither. *Try again* and *Clear filters* land the screen reader on the title, which stays
  * while the list reads again.
  */
 export function LeadsListBody({ screen, words, moves }: BodyProps) {
@@ -42,19 +44,33 @@ export function LeadsListBody({ screen, words, moves }: BodyProps) {
         : undefined;
   return (
     <View style={styles.page}>
-      <LargeTitle title={words.title} summary={summary} titleRef={title} />
-      {screen.canImport && read.kind !== 'empty' ? (
-        <View style={styles.acts}>
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={<ShellGlyph name="upload" size="sm" />}
-            onClick={moves.import}
-          >
-            {words.import}
-          </Button>
-        </View>
-      ) : null}
+      <LargeTitle
+        title={words.title}
+        summary={summary}
+        titleRef={title}
+        {...(read.kind === 'empty'
+          ? {}
+          : {
+              acts: (
+                <>
+                  {screen.canImport ? (
+                    <IconButton label={words.import} variant="surface" onClick={moves.import}>
+                      <ShellGlyph name="upload" size="sm" />
+                    </IconButton>
+                  ) : null}
+                  {screen.canAdd ? (
+                    <Button
+                      size="md"
+                      icon={<ShellGlyph name="plus" size="sm" tone="inverse" />}
+                      onClick={moves.add}
+                    >
+                      {words.addLead}
+                    </Button>
+                  ) : null}
+                </>
+              ),
+            })}
+      />
       {read.kind === 'ready' ? (
         <LeadsListFilterBar
           screen={screen}
@@ -73,7 +89,7 @@ export function LeadsListBody({ screen, words, moves }: BodyProps) {
         loadingMore={screen.loadingMore}
         onShowMore={screen.showMore}
         onClearFilters={screen.clearFilters}
-        onAdd={moves.add}
+        onAdd={screen.canAdd ? moves.add : null}
         onImport={screen.canImport ? moves.import : null}
         onOpen={moves.open}
         focusAfter={title}

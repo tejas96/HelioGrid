@@ -1,3 +1,4 @@
+import type { ShellView } from './shell-view';
 import {
   type StandingDestination,
   WORK_DESTINATION_DOMAIN,
@@ -56,10 +57,15 @@ function isWorkDestination(destination: StandingDestination): destination is Wor
 /**
  * The work lists the phone's More offers first: each landed list the person reads that the pill has
  * no slot for. `F7-48` keeps the pill at its two slots; the lists `sidebarWorkLists` adds beside a
- * slot would otherwise have no way in on a phone.
+ * slot would otherwise have no way in on a phone. Proposals is left out where the pill's own action
+ * opens the proposals list: the pill already holds its way in.
  */
 export function moreWorkLists(
-  destinations: readonly StandingDestination[],
+  view: Pick<ShellView, 'destinations' | 'centreVerb'>,
 ): readonly WorkDestination[] {
-  return sidebarWorkLists(destinations).filter((list) => !destinations.includes(list));
+  const destinations: readonly StandingDestination[] = view.destinations ?? [];
+  return sidebarWorkLists(destinations).filter(
+    (list) =>
+      !destinations.includes(list) && !(list === 'proposals' && view.centreVerb === 'proposals'),
+  );
 }

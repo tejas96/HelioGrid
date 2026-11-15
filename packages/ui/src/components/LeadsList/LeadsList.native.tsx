@@ -1,7 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { landFocusOn } from '../../primitives/FocusAfter';
-import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { CardRows } from '../CardRows/CardRows.native';
@@ -11,7 +10,6 @@ import { leadNextMarkOf, listedLeadOf } from '../LeadListRow/LeadListRow.logic';
 import { LeadListRow } from '../LeadListRow/LeadListRow.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { useFormat } from '../MarketProvider';
-import { ProvenanceTier } from '../Provenance/Provenance.native';
 import type { LeadsListProps, LeadsListRows } from './LeadsList.types';
 
 /**
@@ -64,22 +62,32 @@ function FirstRun({ words, onAdd, onImport }: LeadsListProps) {
       scene="settle"
       title={words.firstRun.title}
       description={words.firstRun.body}
-      action={
-        <View style={styles.teach}>
-          <Button variant="primary" icon={<ShellGlyph name="plus" size="sm" />} onClick={onAdd}>
-            {words.firstRun.add}
-          </Button>
-          {onImport === null ? null : (
-            <Button
-              variant="secondary"
-              icon={<ShellGlyph name="upload" size="sm" />}
-              onClick={onImport}
-            >
-              {words.firstRun.import}
-            </Button>
-          )}
-        </View>
-      }
+      {...(onAdd === null && onImport === null
+        ? {}
+        : {
+            action: (
+              <View style={styles.teach}>
+                {onAdd === null ? null : (
+                  <Button
+                    variant="primary"
+                    icon={<ShellGlyph name="plus" size="sm" />}
+                    onClick={onAdd}
+                  >
+                    {words.firstRun.add}
+                  </Button>
+                )}
+                {onImport === null ? null : (
+                  <Button
+                    variant="secondary"
+                    icon={<ShellGlyph name="upload" size="sm" />}
+                    onClick={onImport}
+                  >
+                    {words.firstRun.import}
+                  </Button>
+                )}
+              </View>
+            ),
+          })}
     />
   );
 }
@@ -112,36 +120,23 @@ function NoMatch({
   );
 }
 
-/** The column's head with the bill's one tier, then one card of rows, each opening its lead. */
+/** One card per lead, each opening its lead; a bill's tier stands beside it on the card. */
 function Rows({ rows, words, onOpen }: LeadsListProps & { rows: LeadsListRows }) {
   const format = useFormat();
   return (
-    <>
-      <View style={styles.colhead}>
-        <Text variant="overline" color="secondary">
-          {words.columns.lead}
-        </Text>
-        <View style={styles.colbill}>
-          <Text variant="overline" color="secondary">
-            {words.columns.bill}
-          </Text>
-          <ProvenanceTier tier="assumed" />
-        </View>
-      </View>
-      <CardRows form="separate">
-        {rows.map((row, index) => (
-          <LeadListRow
-            key={row.lead.id}
-            lead={listedLeadOf(row.lead, format.pack)}
-            sourceLabel={words.sourceWord(row.lead.source)}
-            next={leadNextMarkOf(row.next, words.next(row.next))}
-            first={index === 0}
-            onOpen={() => onOpen(row.lead.id)}
-            words={words.row}
-          />
-        ))}
-      </CardRows>
-    </>
+    <CardRows form="separate">
+      {rows.map((row, index) => (
+        <LeadListRow
+          key={row.lead.id}
+          lead={listedLeadOf(row.lead, format.pack)}
+          sourceLabel={words.sourceWord(row.lead.source)}
+          next={leadNextMarkOf(row.next, words.next(row.next))}
+          first={index === 0}
+          onOpen={() => onOpen(row.lead.id)}
+          words={words.row}
+        />
+      ))}
+    </CardRows>
   );
 }
 
@@ -149,12 +144,4 @@ const styles = StyleSheet.create({
   rows: { gap: theme.spacing['sp-3'] },
   more: { alignSelf: 'center' },
   teach: { gap: theme.spacing['sp-2'], alignItems: 'stretch' },
-  colhead: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: theme.spacing['sp-3'],
-    paddingHorizontal: theme.spacing['sp-4'],
-  },
-  colbill: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
 });

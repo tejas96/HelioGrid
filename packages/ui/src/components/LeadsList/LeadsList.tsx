@@ -1,4 +1,3 @@
-import { Text } from '../../primitives/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { CardRows } from '../CardRows';
@@ -6,7 +5,6 @@ import { EmptyState, FailedRead } from '../EmptyState';
 import { LeadListRow, leadNextMarkOf, listedLeadOf } from '../LeadListRow';
 import { LoadingBars } from '../LoadingBars';
 import { useFormat } from '../MarketProvider';
-import { ProvenanceTier } from '../Provenance';
 import type { LeadsListProps, LeadsListRows } from './LeadsList.types';
 
 /**
@@ -57,22 +55,32 @@ function FirstRun({ words, onAdd, onImport }: LeadsListProps) {
       scene="settle"
       title={words.firstRun.title}
       description={words.firstRun.body}
-      action={
-        <span className="hg-leads-list-teach">
-          <Button variant="primary" icon={<ShellGlyph name="plus" size="sm" />} onClick={onAdd}>
-            {words.firstRun.add}
-          </Button>
-          {onImport === null ? null : (
-            <Button
-              variant="secondary"
-              icon={<ShellGlyph name="upload" size="sm" />}
-              onClick={onImport}
-            >
-              {words.firstRun.import}
-            </Button>
-          )}
-        </span>
-      }
+      {...(onAdd === null && onImport === null
+        ? {}
+        : {
+            action: (
+              <span className="hg-leads-list-teach">
+                {onAdd === null ? null : (
+                  <Button
+                    variant="primary"
+                    icon={<ShellGlyph name="plus" size="sm" />}
+                    onClick={onAdd}
+                  >
+                    {words.firstRun.add}
+                  </Button>
+                )}
+                {onImport === null ? null : (
+                  <Button
+                    variant="secondary"
+                    icon={<ShellGlyph name="upload" size="sm" />}
+                    onClick={onImport}
+                  >
+                    {words.firstRun.import}
+                  </Button>
+                )}
+              </span>
+            ),
+          })}
     />
   );
 }
@@ -105,35 +113,22 @@ function NoMatch({
   );
 }
 
-/** The column's head with the bill's one tier, then one card of rows, each opening its lead. */
+/** One card per lead, each opening its lead; a bill's tier stands beside it on the card. */
 function Rows({ rows, words, onOpen }: LeadsListProps & { rows: LeadsListRows }) {
   const format = useFormat();
   return (
-    <>
-      <div className="hg-leads-list-colhead">
-        <Text variant="overline" color="secondary">
-          {words.columns.lead}
-        </Text>
-        <span className="hg-leads-list-colbill">
-          <Text variant="overline" color="secondary">
-            {words.columns.bill}
-          </Text>
-          <ProvenanceTier tier="assumed" />
-        </span>
-      </div>
-      <CardRows form="separate">
-        {rows.map((row, index) => (
-          <LeadListRow
-            key={row.lead.id}
-            lead={listedLeadOf(row.lead, format.pack)}
-            sourceLabel={words.sourceWord(row.lead.source)}
-            next={leadNextMarkOf(row.next, words.next(row.next))}
-            first={index === 0}
-            onOpen={() => onOpen(row.lead.id)}
-            words={words.row}
-          />
-        ))}
-      </CardRows>
-    </>
+    <CardRows form="separate">
+      {rows.map((row, index) => (
+        <LeadListRow
+          key={row.lead.id}
+          lead={listedLeadOf(row.lead, format.pack)}
+          sourceLabel={words.sourceWord(row.lead.source)}
+          next={leadNextMarkOf(row.next, words.next(row.next))}
+          first={index === 0}
+          onOpen={() => onOpen(row.lead.id)}
+          words={words.row}
+        />
+      ))}
+    </CardRows>
   );
 }

@@ -8,7 +8,7 @@ describe('offeredDoors — the doors a person’s shell may open (F7-48)', () =>
       who: 'an EPC Owner',
       held: ['epc_owner'],
       chosen: null,
-      doors: ['leads', 'projects', 'more', 'add_lead', 'search'],
+      doors: ['leads', 'projects', 'more', 'proposals', 'add_lead', 'search'],
     },
     {
       who: 'a Project Manager — the board, no verb',

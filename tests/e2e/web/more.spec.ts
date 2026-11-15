@@ -24,7 +24,7 @@ const en = await createTranslator('en');
 const WORDS = settingsWords(en.t);
 const OWNER_ROWS = settingsRowsFor(['epc_owner']).flatMap((group) => group.rows);
 /** The owner's work lists More offers first on the phone (`F7-48` keeps the pill at two slots). */
-const OWNER_MORE_LISTS = moreWorkLists(shellViewFor(['epc_owner'], null).destinations ?? []);
+const OWNER_MORE_LISTS = moreWorkLists(shellViewFor(['epc_owner'], null));
 
 test('More opens Settings: the owner’s twelve rows in six groups, More in view — or, at the desktop width, the first settings page beside them', async ({
   page,

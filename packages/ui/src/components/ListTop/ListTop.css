@@ -36,14 +36,6 @@
   min-width: 0;
 }
 
-/* The order's choices in the narrow sheet: one radio row each. */
-.hg-list-sort {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
-  padding-block-end: var(--sp-2);
-}
-
 /* The hero's figures: the main one large, the two that need the person beside it. */
 .hg-list-summary {
   display: flex;
@@ -165,7 +157,7 @@
 
 .hg-list-stage-bar-part {
   flex-basis: 0;
-  height: var(--sp-1);
+  height: var(--sp-2);
   border-radius: var(--r-pill);
   background: var(--accent);
 }
@@ -175,4 +167,45 @@
   padding: 0;
   background: transparent;
   box-shadow: none;
+}
+
+/* The narrow room: no rule between the figures, the main figure's word quiet under its count, and
+   a side figure that presses drawn as a small pill ending in a chevron — a way in, not a number. */
+.hg-list-summary[data-room="narrow"] .hg-list-summary-rule,
+.hg-list-summary-chevron {
+  display: none;
+}
+
+.hg-list-summary[data-room="narrow"] .hg-list-summary-side {
+  gap: var(--sp-2);
+  margin-inline-start: auto;
+}
+
+.hg-list-summary[data-room="narrow"] [data-look="lead"] .hg-list-summary-word {
+  color: var(--on-panel-muted);
+}
+
+.hg-list-summary[data-room="narrow"] .hg-pressable.hg-list-summary-figure {
+  margin-inline: 0;
+  padding-inline: var(--sp-1) var(--sp-2);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+
+.hg-list-summary[data-room="narrow"] .hg-pressable .hg-list-summary-chevron {
+  display: inline-grid;
+  margin-inline-start: auto;
+}
+
+.hg-list-summary[data-room="narrow"] .hg-pressable [data-look="side"] .hg-list-summary-value {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0;
+}
+
+/* Whose list under the chips in the narrow room: a small switch at the row's start. */
+.hg-list-top[data-room="narrow"] > .hg-list-top-scope {
+  align-self: flex-start;
+  min-width: 45%;
 }

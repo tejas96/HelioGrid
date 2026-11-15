@@ -39,3 +39,13 @@ appId: com.heliogrid.app
     notVisible: ${WHO_IS_IT_FOR}
     timeout: 15000
 - assertVisible: ${NEW_PROPOSAL}
+# The owner's pill action opens this list from any screen (`F7-48`): on the Leads list only the
+# pill names it, and the list's own *New proposal* shows it has opened.
+- openLink: heliogrid://leads
+- extendedWaitUntil:
+    visible: ${LEADS_OPEN}
+    timeout: 15000
+- tapOn: ${PROPOSALS_TITLE}
+- extendedWaitUntil:
+    visible: ${NEW_PROPOSAL}
+    timeout: 15000

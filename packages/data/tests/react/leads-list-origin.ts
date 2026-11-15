@@ -15,7 +15,8 @@ import { listeningOrigin, refusal, send } from './origin-wire';
  */
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-const [OWNER_ROLE] = ROLE_PRESETS;
+/** The presets a test reads the list as, by their place in the ladder: a role is never typed. */
+export const [OWNER_ROLE, , SALES_EXECUTIVE_ROLE, SURVEY_ENGINEER_ROLE] = ROLE_PRESETS;
 const TENANT = '01a50000-0000-7000-8000-000000000001';
 export const READER = '01a50000-0000-7000-8000-000000000002';
 export const RAJESH = '01a50000-0000-7000-8000-000000000003';
@@ -49,6 +50,8 @@ export function aRow(n: number, facts: Partial<LeadListRow> = {}): LeadListRow {
 }
 
 interface Origin {
+  /** The preset the reader holds; the owner's unless a test says otherwise. */
+  role: RolePreset;
   leads: LeadListRow[];
   inboxWaiting: number;
   failList: boolean;
@@ -59,6 +62,7 @@ interface Origin {
 }
 
 export const origin: Origin = {
+  role: OWNER_ROLE,
   leads: [],
   inboxWaiting: 0,
   failList: false,
@@ -87,7 +91,7 @@ function projection(): SessionProjection {
       interfaceLanguage: 'en',
       unitPreference: 'metric',
     },
-    membership: { tenantId: TENANT, roles: [OWNER_ROLE] as [RolePreset], authorizationVersion: 1 },
+    membership: { tenantId: TENANT, roles: [origin.role], authorizationVersion: 1 },
     expiry: { expiresAt: '2099-01-01T00:00:00.000Z', lastForegroundActivityAt: null },
   } as SessionProjection;
 }
@@ -152,7 +156,12 @@ afterEach(() => {
 });
 
 /** The list, mounted in the real provider over the origin, its first read settled. */
-export async function mountedList(leads: LeadListRow[], inboxWaiting = 0) {
+export async function mountedList(
+  leads: LeadListRow[],
+  inboxWaiting = 0,
+  role: RolePreset = OWNER_ROLE,
+) {
+  origin.role = role;
   origin.leads = structuredClone(leads);
   origin.inboxWaiting = inboxWaiting;
   const layer = createDataLayer({ baseUrl: server.url(), language: () => 'en' });

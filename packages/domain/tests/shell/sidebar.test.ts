@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import type { RolePreset } from '../../src/authz/roles';
+import { shellViewFor } from '../../src/shell/shell-view';
 import { moreWorkLists, sidebarWorkLists, workListLanded } from '../../src/shell/sidebar';
 import {
   type StandingDestination,
@@ -51,19 +53,15 @@ describe('sidebarWorkLists — the desktop sidebar shows every landed list read 
   });
 });
 
-describe('moreWorkLists — More on the phone offers each landed list the pill has no slot for', () => {
-  it.each<[string, readonly StandingDestination[], readonly WorkDestination[]]>([
-    ['EPC Owner reaches Proposals from More', standingDestinationsFor('epc_owner'), ['proposals']],
-    ['Sales Executive holds Proposals on the pill', standingDestinationsFor('sales_executive'), []],
-    [
-      'Survey Engineer reaches Proposals from More',
-      standingDestinationsFor('survey_engineer'),
-      ['proposals'],
-    ],
-    ['Marketing reaches Proposals from More', standingDestinationsFor('marketing'), ['proposals']],
-    ['Finance reads no leads, so More adds no list', standingDestinationsFor('finance'), []],
-    ['A person with no list slot gets none', standingDestinationsFor('field_technician'), []],
-  ])('%s', (_case, destinations, lists) => {
-    expect(moreWorkLists(destinations)).toEqual(lists);
+describe('moreWorkLists — More on the phone offers each landed list the pill holds no way into', () => {
+  it.each<[string, RolePreset, readonly WorkDestination[]]>([
+    ['EPC Owner starts and opens proposals from the pill’s action', 'epc_owner', []],
+    ['Sales Executive holds Proposals on the pill', 'sales_executive', []],
+    ['Survey Engineer reaches Proposals from More', 'survey_engineer', ['proposals']],
+    ['Marketing reaches Proposals from More', 'marketing', ['proposals']],
+    ['Finance reads no leads, so More adds no list', 'finance', []],
+    ['A person with no list slot gets none', 'field_technician', []],
+  ])('%s', (_case, preset, lists) => {
+    expect(moreWorkLists(shellViewFor([preset], null))).toEqual(lists);
   });
 });

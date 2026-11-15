@@ -58,6 +58,16 @@
   animation: hg-fade-in var(--dur-standard) var(--ease-enter);
 }
 
+/* The role's action: a lit accent circle, the one item that acts rather than goes. */
+.hg-bottom-nav-item[data-verb="true"] {
+  width: var(--hg-pill-slot-height);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--action-primary) 14%, transparent),
+    var(--e2);
+}
+
 /* The glyph takes the item's colour; `[data-tone]` keeps this above ShellGlyph.css's later tone
    rules, which would leave it grey on the ink pill. */
 .hg-bottom-nav-item .hg-shell-glyph[data-tone] {
@@ -65,7 +75,7 @@
 }
 
 @media (hover: hover) {
-  .hg-bottom-nav-item:hover:not([data-in-view="true"]) {
+  .hg-bottom-nav-item:hover:not([data-in-view="true"]):not([data-verb="true"]) {
     background: var(--hg-control-fill);
     color: var(--text-primary);
   }

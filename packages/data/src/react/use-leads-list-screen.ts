@@ -46,6 +46,8 @@ export interface LeadsListScreen {
   readonly inboxOffered: boolean;
   /** The reader may import leads (`crm.import_leads`): only then is *Import* offered. */
   readonly canImport: boolean;
+  /** The reader may add leads (`crm.add_edit_leads`): only then is *Add lead* offered. */
+  readonly canAdd: boolean;
   /** How many wait in the inbox; null while it is read, failed, or not offered. */
   readonly inboxWaiting: number | null;
   /** The filters as set — the query as typed, ahead of the read it settles into. */
@@ -126,6 +128,7 @@ export function useLeadsListScreen(): LeadsListScreen {
     whoseChoices: whose,
     inboxOffered,
     canImport: can(roles, 'crm.import_leads'),
+    canAdd: can(roles, 'crm.add_edit_leads'),
     inboxWaiting: inbox.data ?? null,
     filters,
     read,

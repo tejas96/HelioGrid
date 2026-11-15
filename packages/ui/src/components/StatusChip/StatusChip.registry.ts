@@ -28,7 +28,7 @@ import type { SolarStatus } from './StatusChip.types';
 /* The leads funnel, read from domain's `LEAD_STAGES` — a stage domain adds fails to compile here
    until it has a tone. Same semantic palette, no new colours; the words are `M02-41`'s, from
    `@heliogrid/i18n`'s `LEAD_STAGE_WORD`. */
-const LEAD_STAGE_TONE: Record<LeadStage, StatusTone> = {
+export const LEAD_STAGE_TONE: Record<LeadStage, StatusTone> = {
   new: 'neutral',
   contacted: 'accent',
   qualified: 'info',

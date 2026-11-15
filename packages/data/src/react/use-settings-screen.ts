@@ -44,7 +44,7 @@ export function useSettingsScreen(): SettingsScreen {
   return {
     personName: user?.name ?? '',
     roles,
-    workLists: moreWorkLists(shellViewFor(roles, chosenHome).destinations ?? []),
+    workLists: moreWorkLists(shellViewFor(roles, chosenHome)),
     firstBeside: firstSettingsPageBeside(roles),
     openedRow: (segment) => {
       const row = settingsRowOfSegment(segment);

@@ -1,8 +1,12 @@
-# Quick add (`SCR-M02-01`, `M02-06`): the pill's add action opens the four fields as a sheet over the
-# leads page; the number is checked as it is typed, a number alone saves, the sheet closes and its
-# toast says so; Back returns to the settings page the action was pressed on.
+# Quick add (`SCR-M02-01`, `M02-06`): *Add lead* beside the Leads list's title opens the four fields
+# as a sheet over the leads page; the number is checked as it is typed, a number alone saves, the
+# sheet closes and its toast says so; Back returns to the list the act was pressed on.
 appId: com.heliogrid.app
 ---
+- openLink: heliogrid://leads
+- extendedWaitUntil:
+    visible: ${LEADS_OPEN}
+    timeout: 15000
 - tapOn: ${ADD_LEAD}
 - extendedWaitUntil:
     visible: ${NEW_LEAD}
