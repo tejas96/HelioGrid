@@ -19,7 +19,7 @@ export function ProjectToast({
     <OneToast
       fact={toast}
       line={(said) => ({
-        tone: 'success',
+        tone: words.tone(said),
         title: words.title(said),
         ...('undoable' in said && said.undoable
           ? { undo: { label: words.undo, onUndo: undo }, duration: UNDO_TOAST_MS }

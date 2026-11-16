@@ -6,6 +6,7 @@ import type {
   ProjectChainStage,
   ProjectStage,
 } from '@heliogrid/domain';
+import type { PickRefusal } from '../react/picked-file';
 import type { ProjectsRepository } from './projects-repository';
 
 /** One act on the project, as the screen sends it. */
@@ -51,7 +52,9 @@ export type ProjectToast =
   | { readonly kind: 'copied' | 'notCopied' }
   | { readonly kind: 'waitSaved'; readonly party: string; readonly date: string }
   | { readonly kind: 'documentDone' | 'notNeeded'; readonly row: string }
-  | { readonly kind: 'stepTicked'; readonly step: string };
+  | { readonly kind: 'stepTicked'; readonly step: string }
+  /** A pick that never went up, said with why: bigger than a project takes, or not its type. */
+  | { readonly kind: 'fileRefused'; readonly why: PickRefusal; readonly name: string };
 
 type Acts = ProjectsRepository['acts'];
 

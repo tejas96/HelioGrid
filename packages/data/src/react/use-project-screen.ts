@@ -21,7 +21,7 @@ import {
 import { ProjectActRefusedError } from '../projects/projects-repository';
 import { useAction } from './action';
 import { useRepositories } from './context';
-import type { PickedFile } from './picked-file';
+import type { PickedFile, PickRefusal } from './picked-file';
 import { type FilePlace, type NextAnswer, nextOf, type ProjectSheet } from './project-hero-act';
 import { recordReadOf } from './read';
 import type { ProjectAsk } from './use-project-board-screen';
@@ -71,6 +71,8 @@ export interface ProjectScreen {
    * file opens its name first (`naming`), and goes up under the name the person gives it.
    */
   upload(file: PickedFile, place: FilePlace): void;
+  /** A chosen file the chooser could not read as a project file — said in the toast. */
+  refusePick(name: string, why: PickRefusal): void;
   /** The other file waiting for its name, while its sheet is open. */
   readonly naming: { readonly name: string } | null;
   nameFile(name: string): void;
@@ -195,9 +197,13 @@ export function useProjectScreen(projectId: string, ask: ProjectAsk | null = nul
     },
     upload: (file, place) => {
       if (place.slot !== 'other') return upload.store(file, place);
+      // Refused before its name is asked: no typing is spent on a file that cannot go up.
+      const why = upload.refusalOf(file);
+      if (why !== null) return setToast({ kind: 'fileRefused', why, name: file.name });
       setNaming(file);
       setSheet({ kind: 'file' });
     },
+    refusePick: (name, why) => setToast({ kind: 'fileRefused', why, name }),
     naming: naming === null ? null : { name: naming.name },
     nameFile: (name) => {
       if (naming !== null) upload.store({ ...naming, name }, { slot: 'other', slotKey: null });

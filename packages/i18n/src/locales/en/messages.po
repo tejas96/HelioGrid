@@ -134,7 +134,7 @@ msgid "{amount} will no longer be asked for. It never counts as collected, and t
 msgstr "{amount} will no longer be asked for. It never counts as collected, and this cannot be undone."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:57
+#: src/copy/lead-detail-parts.ts:58
 msgid "{answered} of {total}"
 msgstr "{answered} of {total}"
 
@@ -452,7 +452,7 @@ msgid "{count, plural, one {# design returned} other {# designs returned}}"
 msgstr "{count, plural, one {# design returned} other {# designs returned}}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:81
+#: src/copy/lead-detail-parts.ts:82
 msgid "{count, plural, one {# design} other {# designs}}"
 msgstr "{count, plural, one {# design} other {# designs}}"
 
@@ -729,7 +729,7 @@ msgid "{count, plural, one {# proposal opened} other {# proposals opened}}"
 msgstr "{count, plural, one {# proposal opened} other {# proposals opened}}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:84
+#: src/copy/lead-detail-parts.ts:85
 msgid "{count, plural, one {# proposal} other {# proposals}}"
 msgstr "{count, plural, one {# proposal} other {# proposals}}"
 
@@ -1164,7 +1164,7 @@ msgid "{day}, {time}"
 msgstr "{day}, {time}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:106
+#: src/copy/lead-detail-parts.ts:107
 msgid "{day}, {time} · {surveyor}"
 msgstr "{day}, {time} · {surveyor}"
 
@@ -2061,9 +2061,14 @@ msgid "{name} can change the plan."
 msgstr "{name} can change the plan."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:95
+#: src/copy/lead-detail-parts.ts:96
 msgid "{name} can’t be added. A lead takes {types} files."
 msgstr "{name} can’t be added. A lead takes {types} files."
+
+#. js-lingui-explicit-id
+#: src/copy/project-toast.ts:31
+msgid "{name} can’t be added. A project takes {types} files."
+msgstr "{name} can’t be added. A project takes {types} files."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:44
@@ -2161,9 +2166,14 @@ msgid "{name} is no longer active on this team, so nothing changed."
 msgstr "{name} is no longer active on this team, so nothing changed."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:94
+#: src/copy/lead-detail-parts.ts:95
 msgid "{name} is too large. A lead takes files up to {size} MB."
 msgstr "{name} is too large. A lead takes files up to {size} MB."
+
+#. js-lingui-explicit-id
+#: src/copy/project-toast.ts:30
+msgid "{name} is too large. A project takes files up to {size} MB."
+msgstr "{name} is too large. A project takes files up to {size} MB."
 
 #. js-lingui-explicit-id
 #: src/copy/project-notices.ts:18
@@ -2253,7 +2263,7 @@ msgid "{name} was handed over"
 msgstr "{name} was handed over"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:93
+#: src/copy/lead-detail-parts.ts:94
 msgid "{name} was not added to the lead."
 msgstr "{name} was not added to the lead."
 
@@ -2348,7 +2358,7 @@ msgid "{note} · saved, not printed"
 msgstr "{note} · saved, not printed"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:29
+#: src/copy/payments-sheet.ts:38
 msgid "{number} · {count, plural, one {# part} other {# parts}}"
 msgstr "{number} · {count, plural, one {# part} other {# parts}}"
 
@@ -2489,7 +2499,7 @@ msgid "{part} · {amount} due"
 msgstr "{part} · {amount} due"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:22
+#: src/copy/payments-sheet.ts:28
 msgid "{part} · {amount} left"
 msgstr "{part} · {amount} left"
 
@@ -2830,13 +2840,13 @@ msgstr "{row} came early"
 
 #. js-lingui-explicit-id
 #: src/copy/project-timeline.ts:40
-#: src/copy/project-toast.ts:18
+#: src/copy/project-toast.ts:20
 msgid "{row} done"
 msgstr "{row} done"
 
 #. js-lingui-explicit-id
 #: src/copy/project-timeline.ts:41
-#: src/copy/project-toast.ts:19
+#: src/copy/project-toast.ts:21
 msgid "{row} not needed"
 msgstr "{row} not needed"
 
@@ -3035,7 +3045,7 @@ msgstr "{step} tick taken back"
 
 #. js-lingui-explicit-id
 #: src/copy/project-timeline.ts:43
-#: src/copy/project-toast.ts:20
+#: src/copy/project-toast.ts:22
 msgid "{step} ticked"
 msgstr "{step} ticked"
 
@@ -3790,7 +3800,7 @@ msgid "A proposal for a factory can use another picture. The rep picks it in ste
 msgstr "A proposal for a factory can use another picture. The rep picks it in step 1."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:86
+#: src/copy/lead-detail-parts.ts:87
 msgid "A proposal is made from a design."
 msgstr "A proposal is made from a design."
 
@@ -4223,13 +4233,13 @@ msgid "Add a battery"
 msgstr "Add a battery"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:100
+#: src/copy/lead-detail-parts.ts:101
 #: src/copy/lead-detail-sheets.ts:88
 msgid "Add a call-back"
 msgstr "Add a call-back"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:65
+#: src/copy/lead-detail-parts.ts:66
 #: src/copy/lead-detail-sheets.ts:102
 msgid "Add a contact"
 msgstr "Add a contact"
@@ -4506,7 +4516,7 @@ msgid "Added by {name}"
 msgstr "Added by {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:91
+#: src/copy/lead-detail-parts.ts:92
 msgid "Added by {name} · {day}"
 msgstr "Added by {name} · {day}"
 
@@ -4526,7 +4536,7 @@ msgid "Added when your account was created · not changed since"
 msgstr "Added when your account was created · not changed since"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:92
+#: src/copy/lead-detail-parts.ts:93
 msgid "Adding {name}"
 msgstr "Adding {name}"
 
@@ -5884,7 +5894,7 @@ msgid "Call {name} on {phone} first. A person confirms a win, not a tap."
 msgstr "Call {name} on {phone} first. A person confirms a win, not a tap."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:67
+#: src/copy/lead-detail-parts.ts:68
 msgid "Call {who}"
 msgstr "Call {who}"
 
@@ -6423,7 +6433,7 @@ msgid "Choose an option"
 msgstr "Choose an option"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:96
+#: src/copy/lead-detail-parts.ts:97
 msgid "Choose another file"
 msgstr "Choose another file"
 
@@ -6832,7 +6842,7 @@ msgid "Confirm your mobile number"
 msgstr "Confirm your mobile number"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:78
+#: src/copy/lead-detail-parts.ts:79
 #: src/copy/provenance.ts:24
 msgid "Confirmed"
 msgstr "Confirmed"
@@ -6843,7 +6853,7 @@ msgid "Confirmed address"
 msgstr "Confirmed address"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:77
+#: src/copy/lead-detail-parts.ts:78
 msgid "Confirmed when a visit is booked"
 msgstr "Confirmed when a visit is booked"
 
@@ -6868,7 +6878,7 @@ msgid "Contacts"
 msgstr "Contacts"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:64
+#: src/copy/lead-detail-parts.ts:65
 msgid "Contacts · {count}"
 msgstr "Contacts · {count}"
 
@@ -6942,7 +6952,7 @@ msgid "Coordinator"
 msgstr "Coordinator"
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:26
+#: src/copy/project-toast.ts:28
 msgid "Copied — paste it in your chat"
 msgstr "Copied — paste it in your chat"
 
@@ -7005,7 +7015,7 @@ msgid "Copy or share"
 msgstr "Copy or share"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:80
+#: src/copy/lead-detail-parts.ts:81
 msgid "Copy the confirmation"
 msgstr "Copy the confirmation"
 
@@ -7072,7 +7082,7 @@ msgid "Couldn't load the comparison"
 msgstr "Couldn't load the comparison"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:98
+#: src/copy/lead-detail-parts.ts:99
 msgid "Couldn’t load the files"
 msgstr "Couldn’t load the files"
 
@@ -7907,7 +7917,7 @@ msgid "Design Queue"
 msgstr "Design Queue"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:112
+#: src/copy/lead-detail-parts.ts:113
 msgid "Designs"
 msgstr "Designs"
 
@@ -7922,7 +7932,7 @@ msgid "Designs are made in the design studio, which arrives in a later release."
 msgstr "Designs are made in the design studio, which arrives in a later release."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:83
+#: src/copy/lead-detail-parts.ts:84
 msgid "Designs are made in the design studio, which arrives later."
 msgstr "Designs are made in the design studio, which arrives later."
 
@@ -7978,7 +7988,7 @@ msgstr "Discard and leave"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:61
-#: src/copy/payments-sheet.ts:26
+#: src/copy/payments-sheet.ts:32
 #: src/copy/proposal-defaults-words.ts:60
 #: src/copy/proposal-template.ts:70
 msgid "Discard changes"
@@ -8071,7 +8081,7 @@ msgid "District"
 msgstr "District"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:71
+#: src/copy/lead-detail-parts.ts:72
 #: src/copy/lead-timeline.ts:70
 msgid "Do not call"
 msgstr "Do not call"
@@ -8132,7 +8142,7 @@ msgstr "done"
 #. js-lingui-explicit-id
 #: src/copy/filter-panel.ts:16
 #: src/copy/home-today.ts:21
-#: src/copy/lead-detail-parts.ts:102
+#: src/copy/lead-detail-parts.ts:103
 #: src/copy/lead-inbox.ts:30
 #: src/copy/my-day.ts:32
 #: src/copy/name-and-photo-editor.ts:16
@@ -8258,7 +8268,7 @@ msgid "Due {day}"
 msgstr "Due {day}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:105
+#: src/copy/lead-detail-parts.ts:106
 msgid "Due {day}, {time}"
 msgstr "Due {day}, {time}"
 
@@ -8415,7 +8425,7 @@ msgid "Edit {phase}"
 msgstr "Edit {phase}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:68
+#: src/copy/lead-detail-parts.ts:69
 msgid "Edit {who}"
 msgstr "Edit {who}"
 
@@ -8980,7 +8990,7 @@ msgstr "File name"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:119
-#: src/copy/lead-detail-parts.ts:115
+#: src/copy/lead-detail-parts.ts:116
 msgid "Files"
 msgstr "Files"
 
@@ -9747,7 +9757,7 @@ msgstr "Hand over"
 #: src/copy/project-detail.ts:94
 #: src/copy/project-handover.ts:45
 #: src/copy/project-next.ts:14
-#: src/copy/project-toast.ts:23
+#: src/copy/project-toast.ts:25
 msgid "Handed over"
 msgstr "Handed over"
 
@@ -11048,7 +11058,7 @@ msgid "Keep my plan"
 msgstr "Keep my plan"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:88
+#: src/copy/lead-detail-parts.ts:89
 msgid "Keep the bill, roof photos and ID here. The project won from this lead shows them too."
 msgstr "Keep the bill, roof photos and ID here. The project won from this lead shows them too."
 
@@ -11158,7 +11168,7 @@ msgstr "Landlord"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-page-proposal.ts:57
-#: src/copy/lead-detail-parts.ts:73
+#: src/copy/lead-detail-parts.ts:74
 #: src/copy/lead-timeline.ts:69
 #: src/copy/profile-preferences.ts:31
 #: src/copy/setup-language.ts:21
@@ -11288,7 +11298,7 @@ msgid "Lead saved"
 msgstr "Lead saved"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:75
+#: src/copy/lead-detail-parts.ts:76
 msgid "Lead sections"
 msgstr "Lead sections"
 
@@ -11644,7 +11654,7 @@ msgid "Loading more leads"
 msgstr "Loading more leads"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:24
+#: src/copy/payments-sheet.ts:30
 msgid "Loading payment settings"
 msgstr "Loading payment settings"
 
@@ -11699,7 +11709,7 @@ msgid "Loading the dashboard"
 msgstr "Loading the dashboard"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:97
+#: src/copy/lead-detail-parts.ts:98
 msgid "Loading the files"
 msgstr "Loading the files"
 
@@ -12042,7 +12052,7 @@ msgid "Maintenance"
 msgstr "Maintenance"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:69
+#: src/copy/lead-detail-parts.ts:70
 msgid "Make {who} the primary contact"
 msgstr "Make {who} the primary contact"
 
@@ -12082,7 +12092,7 @@ msgid "Make version {version}"
 msgstr "Make version {version}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:70
+#: src/copy/lead-detail-parts.ts:71
 msgid "Making primary…"
 msgstr "Making primary…"
 
@@ -12144,7 +12154,7 @@ msgid "Margin {margin} · since {date}"
 msgstr "Margin {margin} · since {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:103
+#: src/copy/lead-detail-parts.ts:104
 msgid "Mark “{task}” done"
 msgstr "Mark “{task}” done"
 
@@ -12185,7 +12195,7 @@ msgid "Mark one’s own day start and day end"
 msgstr "Mark one’s own day start and day end"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:62
+#: src/copy/lead-detail-parts.ts:63
 msgid "Mark qualified"
 msgstr "Mark qualified"
 
@@ -12672,7 +12682,7 @@ msgid "Move to tomorrow"
 msgstr "Move to tomorrow"
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:14
+#: src/copy/project-toast.ts:16
 msgid "Move undone"
 msgstr "Move undone"
 
@@ -12697,7 +12707,7 @@ msgid "Moved back · {stage}"
 msgstr "Moved back · {stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:13
+#: src/copy/project-toast.ts:15
 msgid "Moved back to {stage}"
 msgstr "Moved back to {stage}"
 
@@ -13569,7 +13579,7 @@ msgid "No deals lost in this time."
 msgstr "No deals lost in this time."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:82
+#: src/copy/lead-detail-parts.ts:83
 msgid "No design yet"
 msgstr "No design yet"
 
@@ -13619,7 +13629,7 @@ msgid "No files to put in a pack"
 msgstr "No files to put in a pack"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:87
+#: src/copy/lead-detail-parts.ts:88
 msgid "No files yet"
 msgstr "No files yet"
 
@@ -13757,7 +13767,7 @@ msgid "No one deactivated"
 msgstr "No one deactivated"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:72
+#: src/copy/lead-detail-parts.ts:73
 msgid "No one is offered a call to this customer."
 msgstr "No one is offered a call to this customer."
 
@@ -13787,7 +13797,7 @@ msgid "No open leads to move."
 msgstr "No open leads to move."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:99
+#: src/copy/lead-detail-parts.ts:100
 msgid "No open tasks"
 msgstr "No open tasks"
 
@@ -13885,7 +13895,7 @@ msgid "No proposal here yet"
 msgstr "No proposal here yet"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:85
+#: src/copy/lead-detail-parts.ts:86
 #: src/copy/proposal-after-lead.ts:19
 msgid "No proposal yet"
 msgstr "No proposal yet"
@@ -14089,7 +14099,7 @@ msgid "not added yet · from Business profile"
 msgstr "not added yet · from Business profile"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:58
+#: src/copy/lead-detail-parts.ts:59
 msgid "Not asked yet"
 msgstr "Not asked yet"
 
@@ -14197,7 +14207,7 @@ msgid "Not copied. Copy it by hand."
 msgstr "Not copied. Copy it by hand."
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:27
+#: src/copy/project-toast.ts:29
 msgid "Not copied. Try again."
 msgstr "Not copied. Try again."
 
@@ -14523,18 +14533,18 @@ msgid "Not saved. Try again."
 msgstr "Not saved. Try again."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:61
+#: src/copy/lead-detail-parts.ts:62
 msgid "Not saved. Your other answers are kept."
 msgstr "Not saved. Your other answers are kept."
 
 #. js-lingui-explicit-id
 #: src/copy/project-detail.ts:27
-#: src/copy/project-toast.ts:25
+#: src/copy/project-toast.ts:27
 msgid "Not sent · Retry"
 msgstr "Not sent · Retry"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:74
+#: src/copy/lead-detail-parts.ts:75
 #: src/copy/lead-timeline.ts:52
 msgid "Not set"
 msgstr "Not set"
@@ -15611,7 +15621,7 @@ msgid "Over {plan}’s limits"
 msgstr "Over {plan}’s limits"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:101
+#: src/copy/lead-detail-parts.ts:102
 #: src/copy/my-day.ts:23
 msgid "Overdue"
 msgstr "Overdue"
@@ -16115,7 +16125,7 @@ msgid "Payment received"
 msgstr "Payment received"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:25
+#: src/copy/payments-sheet.ts:31
 msgid "Payment recorded"
 msgstr "Payment recorded"
 
@@ -16140,7 +16150,7 @@ msgid "Payment schedule"
 msgstr "Payment schedule"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:23
+#: src/copy/payments-sheet.ts:29
 msgid "Payment settings did not load"
 msgstr "Payment settings did not load"
 
@@ -16866,7 +16876,7 @@ msgid "Prices exclude {scheme}"
 msgstr "Prices exclude {scheme}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:66
+#: src/copy/lead-detail-parts.ts:67
 msgid "Primary"
 msgstr "Primary"
 
@@ -16954,7 +16964,7 @@ msgstr "Project Board"
 #. js-lingui-explicit-id
 #: src/copy/project-page.ts:39
 #: src/copy/project-timeline.ts:34
-#: src/copy/project-toast.ts:22
+#: src/copy/project-toast.ts:24
 msgid "Project cancelled"
 msgstr "Project cancelled"
 
@@ -16995,7 +17005,7 @@ msgstr "Project moved back to {stage}"
 
 #. js-lingui-explicit-id
 #: src/copy/project-timeline.ts:28
-#: src/copy/project-toast.ts:12
+#: src/copy/project-toast.ts:14
 msgid "Project moved to {stage}"
 msgstr "Project moved to {stage}"
 
@@ -17209,7 +17219,7 @@ msgstr "Proposal withdrawn. Its link now says it is no longer active."
 
 #. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:97
-#: src/copy/lead-detail-parts.ts:113
+#: src/copy/lead-detail-parts.ts:114
 #: src/copy/pricing.ts:73
 #: src/copy/proposal-after-list.ts:19
 #: src/copy/search.ts:66
@@ -17311,7 +17321,7 @@ msgid "Qualified"
 msgstr "Qualified"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:56
+#: src/copy/lead-detail-parts.ts:57
 msgid "Qualify"
 msgstr "Qualify"
 
@@ -17880,7 +17890,7 @@ msgid "Reopen"
 msgstr "Reopen"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:104
+#: src/copy/lead-detail-parts.ts:105
 msgid "Reopen “{task}”"
 msgstr "Reopen “{task}”"
 
@@ -18034,7 +18044,7 @@ msgid "Reschedule"
 msgstr "Reschedule"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:79
+#: src/copy/lead-detail-parts.ts:80
 msgid "Reschedule a no-show"
 msgstr "Reschedule a no-show"
 
@@ -18565,8 +18575,8 @@ msgid "Save your company profile and continue setting up HelioGrid"
 msgstr "Save your company profile and continue setting up HelioGrid"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:59
-#: src/copy/project-toast.ts:21
+#: src/copy/lead-detail-parts.ts:60
+#: src/copy/project-toast.ts:23
 #: src/copy/proposal-builder-frame.ts:61
 #: src/copy/proposal-builder-steps.ts:17
 msgid "Saved"
@@ -18701,7 +18711,7 @@ msgid "Saving the lead…"
 msgstr "Saving the lead…"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:60
+#: src/copy/lead-detail-parts.ts:61
 msgid "Saving…"
 msgstr "Saving…"
 
@@ -19628,7 +19638,7 @@ msgid "Single phase"
 msgstr "Single phase"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:76
+#: src/copy/lead-detail-parts.ts:77
 msgid "Site"
 msgstr "Site"
 
@@ -19989,7 +19999,7 @@ msgid "Start with a real lead"
 msgstr "Start with a real lead"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:21
+#: src/copy/payments-sheet.ts:27
 msgid "Starts as what is left on this part"
 msgstr "Starts as what is left on this part"
 
@@ -20549,7 +20559,7 @@ msgstr "Task done · {task}"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:118
-#: src/copy/lead-detail-parts.ts:114
+#: src/copy/lead-detail-parts.ts:115
 msgid "Tasks"
 msgstr "Tasks"
 
@@ -20816,6 +20826,11 @@ msgid "That does not read as a registration of this type. Check it against the f
 msgstr "That does not read as a registration of this type. Check it against the format shown."
 
 #. js-lingui-explicit-id
+#: src/copy/payments-sheet.ts:35
+msgid "That file is not a photo a receipt takes. Choose a {types} photo."
+msgstr "That file is not a photo a receipt takes. Choose a {types} photo."
+
+#. js-lingui-explicit-id
 #: src/copy/branding.ts:96
 msgid "That file is not a PNG or JPG."
 msgstr "That file is not a PNG or JPG."
@@ -20961,7 +20976,7 @@ msgid "The amount"
 msgstr "The amount"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:63
+#: src/copy/lead-detail-parts.ts:64
 msgid "The answers inform. You decide."
 msgstr "The answers inform. You decide."
 
@@ -21559,7 +21574,7 @@ msgid "The phone network turned it away"
 msgstr "The phone network turned it away"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:28
+#: src/copy/payments-sheet.ts:34
 msgid "The photo did not open. Try again."
 msgstr "The photo did not open. Try again."
 
@@ -21719,7 +21734,7 @@ msgid "The proof moved it: {proof}."
 msgstr "The proof moved it: {proof}."
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:27
+#: src/copy/payments-sheet.ts:33
 msgid "The receipt did not load. Try again."
 msgstr "The receipt did not load. Try again."
 
@@ -22581,7 +22596,7 @@ msgid "Time"
 msgstr "Time"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:110
+#: src/copy/lead-detail-parts.ts:111
 #: src/copy/proposal-after-versions.ts:76
 #: src/copy/proposal-builder-findings.ts:73
 #: src/copy/proposal-builder-frame.ts:19
@@ -23021,7 +23036,7 @@ msgstr "Under your file’s own headers, so each row is easy to find and fix."
 #: src/copy/catalog-import.ts:95
 #: src/copy/lead-inbox-acts.ts:36
 #: src/copy/my-day.ts:54
-#: src/copy/project-toast.ts:15
+#: src/copy/project-toast.ts:17
 #: src/copy/remove-roles.ts:32
 msgid "Undo"
 msgstr "Undo"
@@ -23266,7 +23281,7 @@ msgstr "Uploading held photographs arrives with the survey capture."
 
 #. js-lingui-explicit-id
 #: src/copy/dropzone.ts:10
-#: src/copy/project-toast.ts:24
+#: src/copy/project-toast.ts:26
 msgid "Uploading…"
 msgstr "Uploading…"
 
@@ -23690,7 +23705,7 @@ msgid "Voltage temperature coefficient (%/°C)"
 msgstr "Voltage temperature coefficient (%/°C)"
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:17
+#: src/copy/project-toast.ts:19
 msgid "Wait closed · on the timeline"
 msgstr "Wait closed · on the timeline"
 
@@ -23744,7 +23759,7 @@ msgid "Waiting on {party} · {reason} · since {date}"
 msgstr "Waiting on {party} · {reason} · since {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:16
+#: src/copy/project-toast.ts:18
 msgid "Waiting on {party} · since {date}"
 msgstr "Waiting on {party} · since {date}"
 

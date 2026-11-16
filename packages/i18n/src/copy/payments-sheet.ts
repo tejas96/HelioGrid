@@ -5,10 +5,16 @@
  */
 
 import type { TranslatedText } from '@heliogrid/contracts';
-import { type FormatPack, type UiLanguage, UNDO_TOAST_MS } from '@heliogrid/domain';
+import {
+  FILE_SUBJECT_RULES,
+  type FormatPack,
+  type UiLanguage,
+  UNDO_TOAST_MS,
+} from '@heliogrid/domain';
 import { type MessageRef, projectPackWords, type Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import { datePickerWords } from './date-picker';
+import { fileLimitsOf } from './file-refusal';
 import { numberFieldWords } from './number-field';
 import { PAYMENT_ACTS } from './payment-acts';
 import { PAYMENT_REFUSAL_WORDS, PAYMENTS } from './payments-screen';
@@ -26,6 +32,9 @@ const SHEET = {
   discard: /*i18n*/ { id: 'Discard changes' },
   receiptFailed: /*i18n*/ { id: 'The receipt did not load. Try again.' },
   photoFailed: /*i18n*/ { id: 'The photo did not open. Try again.' },
+  photoNotTaken: /*i18n*/ {
+    id: 'That file is not a photo a receipt takes. Choose a {types} photo.',
+  },
   summaryNoName: /*i18n*/ { id: '{number} · {count, plural, one {# part} other {# parts}}' },
 } satisfies Record<string, MessageRef>;
 
@@ -166,6 +175,7 @@ export type PaymentToastFact =
         | 'notCopied'
         | 'receiptFailed'
         | 'photoFailed'
+        | 'photoNotTaken'
         | 'photoNotStored'
         | 'photoAdded'
         | 'receiptPreparing';
@@ -177,6 +187,7 @@ export function failedPaymentToast(toast: PaymentToastFact): boolean {
     'notCopied',
     'receiptFailed',
     'photoFailed',
+    'photoNotTaken',
     'photoNotStored',
     'receiptPreparing',
     'askSent',
@@ -210,6 +221,10 @@ export function paymentsPageWords(t: T) {
         return t(SHEET.receiptFailed);
       case 'photoFailed':
         return t(SHEET.photoFailed);
+      case 'photoNotTaken':
+        return t(SHEET.photoNotTaken, {
+          types: fileLimitsOf(FILE_SUBJECT_RULES.project_payment).types,
+        });
       case 'photoNotStored':
         return t(PAYMENT_ACTS.photoNotStored);
       case 'photoAdded':

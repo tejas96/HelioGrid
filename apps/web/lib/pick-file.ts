@@ -26,8 +26,7 @@ export function pickProjectFile(screen: ProjectScreen, place: FilePlace): void {
       uploadFailed:
         failed !== null && failed.slot === place.slot && failed.slotKey === place.slotKey,
       retryUpload: screen.retryUpload,
-      // A project place says nothing of a refused pick yet: it keeps today's quiet drop.
-      refusePick: () => undefined,
+      refusePick: screen.refusePick,
     },
     FILE_SUBJECT_RULES.project.contentTypes,
   );
@@ -36,6 +35,7 @@ export function pickProjectFile(screen: ProjectScreen, place: FilePlace): void {
 /** A receipt photo (`M11-37`): the browser's chooser for images, shrunk, with a local preview. */
 export function pickReceiptPhoto(
   onPicked: (photo: { readonly file: PickedFile; readonly preview: string }) => void,
+  onRefused: () => void,
 ): void {
   pickFile(
     {
@@ -46,7 +46,7 @@ export function pickReceiptPhoto(
         }),
       uploadFailed: false,
       retryUpload: () => undefined,
-      refusePick: () => undefined,
+      refusePick: onRefused,
     },
     FILE_SUBJECT_RULES.project.contentTypes.filter((type) => type.startsWith('image/')),
   );

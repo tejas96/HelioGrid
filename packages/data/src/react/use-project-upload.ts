@@ -1,8 +1,9 @@
 import type { ProjectDetail } from '@heliogrid/contracts';
+import { FILE_SUBJECT_RULES, judgeFileDeclaration } from '@heliogrid/domain';
 import { useRef, useState } from 'react';
 import type { ProjectToast } from '../projects/project-act-send';
 import { useRepositories } from './context';
-import type { PickedFile } from './picked-file';
+import type { PickedFile, PickRefusal } from './picked-file';
 import type { FilePlace } from './project-hero-act';
 
 /**
@@ -20,6 +21,9 @@ export function useProjectUpload(
   const [uploadFailed, setUploadFailed] = useState<FilePlace | null>(null);
   const last = useRef<{ file: PickedFile; place: FilePlace } | null>(null);
   const store = (file: PickedFile, place: FilePlace) => {
+    // The store would refuse it, and a retry never helps: said at once, nothing sent.
+    const why = refusalOf(file);
+    if (why !== null) return done({ kind: 'fileRefused', why, name: file.name });
     last.current = { file, place };
     setUploading(place);
     setUploadFailed(null);
@@ -53,10 +57,21 @@ export function useProjectUpload(
   };
   return {
     store,
+    refusalOf,
     retry: () => {
       if (last.current !== null) store(last.current.file, last.current.place);
     },
     uploading,
     uploadFailed,
   };
+}
+
+/** Why a project would refuse this file — too large, or not its type — or `null` when it takes it. */
+export function refusalOf(file: PickedFile): PickRefusal | null {
+  const verdict = judgeFileDeclaration(
+    FILE_SUBJECT_RULES.project,
+    file.contentType,
+    file.bytes.byteLength,
+  );
+  return verdict === 'accepted' ? null : verdict;
 }

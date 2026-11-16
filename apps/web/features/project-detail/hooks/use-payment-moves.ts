@@ -15,6 +15,7 @@ import { wayBackOf } from './use-project-moves';
  * opened in a tab, the browser's photo chooser, and the collect sheet a link opens on arrival.
  */
 export function usePaymentMoves(projectId: string, screen: PaymentsScreen) {
+  const notAPhoto = () => screen.say({ kind: 'photoNotTaken' });
   const router = useRouter();
   const wayBack = wayBackOf(useShell().doors);
   useCollectOnArrival(screen);
@@ -33,7 +34,7 @@ export function usePaymentMoves(projectId: string, screen: PaymentsScreen) {
       },
       sendMessage: (text: string, partId: string) => copy(text, () => screen.handedOff(partId)),
       fullScreen: (partId: string) => screen.showQr(partId),
-      pickPhoto: () => pickReceiptPhoto(screen.pickPhoto),
+      pickPhoto: () => pickReceiptPhoto(screen.pickPhoto, notAPhoto),
     },
     shareReceipt: (entryId: string) => {
       void screen.receipt(entryId).then(
@@ -52,7 +53,7 @@ export function usePaymentMoves(projectId: string, screen: PaymentsScreen) {
         // Stored from its bytes: the local address a preview needs is let go at once.
         URL.revokeObjectURL(photo.preview);
         screen.addPhoto(entryId, photo);
-      }),
+      }, notAPhoto),
     openPhoto: (fileId: string) => {
       void screen.fileLink(fileId).then(
         (url) => openExternal(url),

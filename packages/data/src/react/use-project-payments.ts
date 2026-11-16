@@ -58,6 +58,8 @@ export type PaymentToast =
         | 'notCopied'
         | 'receiptFailed'
         | 'photoFailed'
+        /** A chosen file that is no photo the receipt takes: said, never dropped. */
+        | 'photoNotTaken'
         | 'photoNotStored'
         | 'photoAdded'
         | 'receiptPreparing';

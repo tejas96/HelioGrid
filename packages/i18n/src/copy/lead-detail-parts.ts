@@ -25,6 +25,7 @@ import {
   ROOF_TYPE_WORD,
   SHADING_WORD,
 } from './crm-vocabulary';
+import { fileLimitsOf } from './file-refusal';
 import { leadActFailureWords } from './lead-act-failure';
 import { LEAD_DETAIL, leadDockWords, leadHeroWords } from './lead-detail';
 import { type LeadSiteMarket, leadSiteFactWords } from './lead-site';
@@ -213,9 +214,9 @@ export function leadSectionsWords(t: T) {
     fileNotAdded: (name: string) => t(PARTS.fileNotAdded, { name }),
     fileRefused: {
       'too-large': (name: string) =>
-        t(PARTS.fileTooLarge, { name, size: FILE_SUBJECT_RULES.lead.maxBytes / BYTES_PER_MB }),
+        t(PARTS.fileTooLarge, { name, size: fileLimitsOf(FILE_SUBJECT_RULES.lead).size }),
       'type-not-taken': (name: string) =>
-        t(PARTS.fileTypeNotTaken, { name, types: leadFileTypes() }),
+        t(PARTS.fileTypeNotTaken, { name, types: fileLimitsOf(FILE_SUBJECT_RULES.lead).types }),
     },
     chooseAnother: t(PARTS.chooseAnother),
     loadingFiles: t(PARTS.loadingFiles),
@@ -290,16 +291,3 @@ export function leadWorkCardsWords(
 }
 
 export { leadTaskTitle } from './lead-task-title';
-
-/** A megabyte as a person reads a file's size: a million bytes. */
-const BYTES_PER_MB = 1_000_000;
-
-/** The kinds a lead takes, as a file's own name ends — facts, never translated. */
-function leadFileTypes(): string {
-  const shortName: Readonly<Record<string, string>> = {
-    'image/png': 'PNG',
-    'image/jpeg': 'JPG',
-    'application/pdf': 'PDF',
-  };
-  return FILE_SUBJECT_RULES.lead.contentTypes.map((type) => shortName[type] ?? type).join(', ');
-}

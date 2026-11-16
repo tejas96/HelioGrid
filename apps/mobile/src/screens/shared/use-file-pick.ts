@@ -63,8 +63,7 @@ export function useProjectFilePick(screen: ProjectScreen): (place: FilePlace) =>
         uploadFailed:
           failed !== null && failed.slot === place.slot && failed.slotKey === place.slotKey,
         retryUpload: screen.retryUpload,
-        // A project place says nothing of a refused pick yet: it keeps today's quiet drop.
-        refusePick: () => undefined,
+        refusePick: screen.refusePick,
       },
       place.slot === 'step',
     );
