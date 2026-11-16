@@ -20,6 +20,5 @@ export function usageWords(
     NOT_BILLED: view.notBilled,
     VOICE_EVENTS: page.eventsOf(view.view.limits.voiceMinutes),
     NO_CALLS: view.noCalls.title,
-    USAGE_CLOSE: page.close,
   };
 }
