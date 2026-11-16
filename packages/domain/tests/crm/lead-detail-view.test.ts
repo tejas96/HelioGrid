@@ -118,6 +118,17 @@ describe('lead detail: the acts its standing offers (M02-45, M02-51…M02-56)', 
     expect(leadActsOf(withLead({ stage, state })).markQualified).toBe(offered);
   });
 
+  it.each<[LeadLifecycleState | null, boolean]>([
+    [null, true],
+    ['snoozed', true],
+    ['dormant', true],
+    ['junk', false],
+    ['disqualified', false],
+    ['lost', false],
+  ])('a lead in state %s may have its details and answers edited: %s', (state, editable) => {
+    expect(leadActsOf(withLead({ stage: 'contacted', state })).editable).toBe(editable);
+  });
+
   it.each<[LeadStage, LeadLifecycleState | null, boolean]>([
     // A deal is won once it is qualified: a lead no one has qualified offers no Mark won.
     ['new', null, false],

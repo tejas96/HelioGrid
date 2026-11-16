@@ -119,6 +119,7 @@ export interface LeadDetailSheetWords {
   /** "4 days ago", or "Not contacted yet", from the time since the other record's last contact. */
   readonly lastContact: (elapsedMs: number | null) => TranslatedText;
   readonly close: TranslatedText;
+  readonly leave: LeadActSheetProps['leave'];
   readonly fields: LeadActSheetProps['fields'];
 }
 

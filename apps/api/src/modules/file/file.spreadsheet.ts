@@ -30,7 +30,8 @@ export async function readSpreadsheet(
   const opened = await openWorkbook(bytes, contentType, unpackedLimit);
   if (!opened.readable) return opened;
   const sheets = opened.workbook.worksheets.map(sheetOf);
-  if (sheets.every((sheet) => sheet.rowCount === 0)) return { readable: false, reason: 'no_rows' };
+  // A header alone is no row to import: one filled row cannot be both the header and a record.
+  if (sheets.every((sheet) => sheet.rowCount <= 1)) return { readable: false, reason: 'no_rows' };
   return { readable: true, sheets };
 }
 

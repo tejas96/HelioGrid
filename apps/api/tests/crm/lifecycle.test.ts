@@ -105,6 +105,15 @@ describe.skipIf(skip)('the lead lifecycle acts, over HTTP against a migrated dat
     expect((await movesOf(made.lead.id)).length).toBe(0);
   });
 
+  it('a junk undone on a lead no one owns puts it back in triage with no task for the undoer', async () => {
+    const made = await captured(owner(), aCapture(aPhone()));
+    await act(made.lead.id, 'junk');
+    const reopened = await act(made.lead.id, 'reopen');
+    expect(reopened.body.lead).toMatchObject({ state: null, stage: 'new', owner: null });
+    const open = (await tasksOf(world, made.lead.id)).filter((one) => one.status === 'open');
+    expect(open).toEqual([]);
+  });
+
   it('a second snooze moves the wake day and says so on the timeline', async () => {
     const made = await captured(owner(), aCapture(aPhone()));
     await act(made.lead.id, 'snooze', { wakeOn: dayFromToday(1) });

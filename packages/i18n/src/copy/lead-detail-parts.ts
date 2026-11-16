@@ -6,6 +6,7 @@
 import type { LeadDetail, TranslatedText } from '@heliogrid/contracts';
 import {
   type ContactRoleSeed,
+  FILE_SUBJECT_RULES,
   LANGUAGES,
   type LeadActFailure,
   type LeadDetailSection,
@@ -90,8 +91,8 @@ const PARTS = {
   fileLine: /*i18n*/ { id: 'Added by {name} · {day}' },
   addingFile: /*i18n*/ { id: 'Adding {name}' },
   fileNotAdded: /*i18n*/ { id: '{name} was not added to the lead.' },
-  fileTooLarge: /*i18n*/ { id: '{name} is too large. A lead takes files up to 2 MB.' },
-  fileTypeNotTaken: /*i18n*/ { id: '{name} can’t be added. A lead takes PNG, JPG or PDF files.' },
+  fileTooLarge: /*i18n*/ { id: '{name} is too large. A lead takes files up to {size} MB.' },
+  fileTypeNotTaken: /*i18n*/ { id: '{name} can’t be added. A lead takes {types} files.' },
   chooseAnother: /*i18n*/ { id: 'Choose another file' },
   loadingFiles: /*i18n*/ { id: 'Loading the files' },
   filesFailed: /*i18n*/ { id: 'Couldn’t load the files' },
@@ -211,8 +212,10 @@ export function leadSectionsWords(t: T) {
     addingFile: (name: string) => t(PARTS.addingFile, { name }),
     fileNotAdded: (name: string) => t(PARTS.fileNotAdded, { name }),
     fileRefused: {
-      'too-large': (name: string) => t(PARTS.fileTooLarge, { name }),
-      'type-not-taken': (name: string) => t(PARTS.fileTypeNotTaken, { name }),
+      'too-large': (name: string) =>
+        t(PARTS.fileTooLarge, { name, size: FILE_SUBJECT_RULES.lead.maxBytes / BYTES_PER_MB }),
+      'type-not-taken': (name: string) =>
+        t(PARTS.fileTypeNotTaken, { name, types: leadFileTypes() }),
     },
     chooseAnother: t(PARTS.chooseAnother),
     loadingFiles: t(PARTS.loadingFiles),
@@ -287,3 +290,16 @@ export function leadWorkCardsWords(
 }
 
 export { leadTaskTitle } from './lead-task-title';
+
+/** A megabyte as a person reads a file's size: a million bytes. */
+const BYTES_PER_MB = 1_000_000;
+
+/** The kinds a lead takes, as a file's own name ends — facts, never translated. */
+function leadFileTypes(): string {
+  const shortName: Readonly<Record<string, string>> = {
+    'image/png': 'PNG',
+    'image/jpeg': 'JPG',
+    'application/pdf': 'PDF',
+  };
+  return FILE_SUBJECT_RULES.lead.contentTypes.map((type) => shortName[type] ?? type).join(', ');
+}

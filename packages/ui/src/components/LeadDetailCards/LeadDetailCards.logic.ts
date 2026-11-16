@@ -32,6 +32,7 @@ export function leadContactsCardOf<Failure>(
       onChange: contacts.setLanguage,
       pending: contacts.callingPending,
       options: words.languages,
+      locked: !view.acts.editable,
     },
     failure: contacts.cardFailure === null ? null : words.failure(contacts.cardFailure),
     /* One column is the narrow page: contacts lead there, folded to the primary person. */

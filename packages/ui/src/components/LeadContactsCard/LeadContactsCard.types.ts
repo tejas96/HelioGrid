@@ -63,7 +63,11 @@ export interface LeadContactsCardProps {
   readonly onDial: (phoneE164: string) => void;
   readonly doNotCall: LeadCallingFact<boolean>;
   /** The UI languages by their own names; `null` is not set. */
-  readonly language: LeadCallingFact<string | null> & { readonly options: readonly SelectOption[] };
+  readonly language: LeadCallingFact<string | null> & {
+    readonly options: readonly SelectOption[];
+    /** Shown and not changed — a closed lead's, until a reopen. */
+    readonly locked: boolean;
+  };
   /** A save here that came back undone — a calling fact or a primary — said in the card. */
   readonly failure: TranslatedText | null;
   /**

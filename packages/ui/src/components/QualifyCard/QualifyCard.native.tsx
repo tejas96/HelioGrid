@@ -22,6 +22,7 @@ export function QualifyCard({
   answered,
   onAnswer,
   onRetry,
+  locked,
   markQualified,
   foldable,
   words,
@@ -74,6 +75,7 @@ export function QualifyCard({
                 view={view}
                 onAnswer={onAnswer}
                 onRetry={onRetry}
+                locked={locked}
                 words={words}
               />
             ))

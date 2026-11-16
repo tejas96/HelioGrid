@@ -194,6 +194,31 @@ describe('a confirmed act says so, and junk can be undone', () => {
     await waitFor(() => expect(queueOf(view)).toEqual([PRIYA.id, UNNAMED.id, AMIT.id]));
   });
 
+  it('the deck lead binned and brought back is drawn once, never also flying off', async () => {
+    const view = await mountedInbox();
+    act(() => view.result.current.junk(PRIYA.id));
+    await waitFor(() => expect(view.result.current.departed?.lead.id).toBe(PRIYA.id));
+    act(() => view.result.current.undoJunk());
+    await waitFor(() => expect(view.result.current.note?.kind).toBe('restored'));
+    expect(view.result.current.departed).toBeNull();
+    await waitFor(() => expect(queueOf(view)).toEqual([PRIYA.id, UNNAMED.id, AMIT.id]));
+    // The lead brought back is the one the person was deciding on: it is on the deck again.
+    await waitFor(() => expect(view.result.current.view.deck?.lead.id).toBe(PRIYA.id));
+  });
+
+  it('Undo still brings the lead back when its toast closed first, as the web toast does', async () => {
+    const view = await mountedInbox();
+    act(() => view.result.current.junk(AMIT.id));
+    await waitFor(() => expect(view.result.current.note?.kind).toBe('junked'));
+    // The toast holds Undo across renders: one function, or the toast is remade under the press.
+    const undo = view.result.current.undoJunk;
+    act(() => view.result.current.dismissNote());
+    expect(view.result.current.undoJunk).toBe(undo);
+    act(() => undo());
+    await waitFor(() => expect(origin.writes.at(-1)?.path).toBe(`/leads/${AMIT.id}/reopen`));
+    await waitFor(() => expect(queueOf(view)).toEqual([PRIYA.id, UNNAMED.id, AMIT.id]));
+  });
+
   it('an undo the server refuses says so, and the lead stays binned', async () => {
     const view = await mountedInbox();
     act(() => view.result.current.junk(AMIT.id));

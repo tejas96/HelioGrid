@@ -41,7 +41,12 @@ export function LeadHero({
     <Chips source={source} ownerName={ownerName} onOwner={onOwner} words={words} />
   );
   return (
-    <HeroPanel name={words.stage} edit={{ label: words.editDetails, onPress: onEditDetails }}>
+    <HeroPanel
+      name={words.stage}
+      {...(onEditDetails === null
+        ? {}
+        : { edit: { label: words.editDetails, onPress: onEditDetails } })}
+    >
       {identity === null ? null : <Identity identity={identity} words={words} />}
       {chips}
       {words.state === null && words.tries === null ? null : (

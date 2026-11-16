@@ -4,10 +4,14 @@ import type { NextFunction, Request, Response } from 'express';
 /** No Postgres text column can hold this character; storing one is an opaque 500. */
 const NUL = '\u0000';
 
-/** The schema-field path of every string under `value` that holds a NUL, as `details[]` names it. */
-function nulPaths(value: unknown, path: readonly string[] = []): string[] {
+/**
+ * The schema-field path of every string under `value` that holds a NUL, as `details[]` names it.
+ * Bytes are no text: a webhook's raw body is verified as bytes, and walking a megabyte of them one
+ * entry at a time would spend the server on every unsigned post.
+ */
+export function nulPaths(value: unknown, path: readonly string[] = []): string[] {
   if (typeof value === 'string') return value.includes(NUL) ? [path.join('.')] : [];
-  if (value === null || typeof value !== 'object') return [];
+  if (value === null || typeof value !== 'object' || ArrayBuffer.isView(value)) return [];
   return Object.entries(value).flatMap(([key, inner]) => nulPaths(inner, [...path, key]));
 }
 

@@ -144,6 +144,17 @@ export function useLeadInboxScreen(): LeadInboxScreen {
     setCursor({ leadId: deckId, index: view.position });
   }, [deckId, cursor?.leadId, view.position]);
 
+  /* An undone junk brings back the lead the person was deciding on: once the read lists it again,
+     the deck holds it — once, so a step away from it afterwards stands. */
+  const restored = acts.note?.kind === 'restored' ? acts.note.lead.id : null;
+  const backAt = useRef(-1);
+  backAt.current =
+    restored === null ? -1 : view.queue.findIndex((card) => card.lead.id === restored);
+  const listed = backAt.current >= 0;
+  useEffect(() => {
+    if (restored !== null && listed) setCursor({ leadId: restored, index: backAt.current });
+  }, [restored, listed]);
+
   const leadOf = (leadId: string) => view.queue.find((card) => card.lead.id === leadId)?.lead;
   const assigneeOf = (userId: string) => team.people.find((person) => person.userId === userId);
 

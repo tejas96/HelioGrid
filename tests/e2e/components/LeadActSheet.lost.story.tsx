@@ -39,6 +39,7 @@ export function LeadLostSheet({
           pending={false}
           failure={null}
           closeLabel={words.close}
+          leave={words.leave}
           fields={words.fields}
         />
       </div>

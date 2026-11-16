@@ -112896,7 +112896,7 @@
     },
     "/leads/{id}/messages": {
       "post": {
-        "summary": "Compose a customer message as text to copy — the timeline records it was copied and claims no delivery",
+        "summary": "Compose a customer message as text to copy — the timeline records it as ready to send and claims no delivery",
         "tags": [
           "leadMessages"
         ],

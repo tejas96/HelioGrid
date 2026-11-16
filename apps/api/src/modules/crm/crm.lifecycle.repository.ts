@@ -182,6 +182,9 @@ export async function nextStepAfterReopen(
     )
     .limit(1);
   if (open !== undefined) return;
+  // A new lead no one owns goes back to the inbox: triage is its next step, and the person who
+  // reopened it — an undone junk tap — takes no task for a lead that is not theirs.
+  if (locked.lifecycle.ownerId === null && locked.lifecycle.stage === 'new') return;
   const at = new Date(act.now);
   // An owner who has left the company would hold a task no one sees; the person reopening takes it.
   const owner = locked.lifecycle.ownerId;

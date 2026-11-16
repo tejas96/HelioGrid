@@ -97,7 +97,7 @@ export function LeadContactsCard({
               value={language.value ?? UNSET}
               options={[{ value: UNSET, label: words.languageUnset }, ...language.options]}
               onChange={(value) => language.onChange(value === UNSET ? null : value)}
-              disabled={language.pending}
+              disabled={language.pending || language.locked}
             />
           </Card>
         </View>

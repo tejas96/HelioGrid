@@ -43,7 +43,7 @@ export class CrmTasksController {
       }),
       move: async ({ params, body }) => ({
         status: 200,
-        body: await this.tasks.move(readerOf(req), params.id, body),
+        body: await this.tasks.move(readerOf(req), params.id, body, actOf(req)),
       }),
       reopen: async ({ params }) => ({
         status: 200,

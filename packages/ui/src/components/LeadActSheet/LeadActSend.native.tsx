@@ -11,6 +11,8 @@ export interface LeadFormFrame {
   readonly pending: boolean;
   readonly failure: TranslatedText | null;
   readonly fields: LeadActSheetProps['fields'];
+  /** Tells the sheet whether the form holds an answer a close would lose. */
+  readonly holds: (holding: boolean) => void;
 }
 
 interface LeadActSendProps {

@@ -10,6 +10,7 @@ import type { FormFrame } from './LeadActForms';
 import { ActSend, dayOf } from './LeadActParts';
 import type { LeadActForm } from './LeadActSheet.types';
 import { firstMissing } from './missing-field';
+import { useReportHolds } from './use-form-holds';
 
 type VisitForm = Extract<LeadActForm, { kind: 'visit' }>;
 
@@ -17,7 +18,13 @@ type VisitForm = Extract<LeadActForm, { kind: 'visit' }>;
  * Book visit (`M02-46`) — or, with one booked, the no-show reschedule (`M02-48`): the day, the time,
  * who goes and the address the customer confirmed. The send sleeps until all four are given.
  */
-export function LeadVisitForm({ form, pending, failure, fields }: FormFrame & { form: VisitForm }) {
+export function LeadVisitForm({
+  form,
+  pending,
+  failure,
+  fields,
+  holds,
+}: FormFrame & { form: VisitForm }) {
   const { words, start } = form;
   const [day, setDay] = useState<string | null>(start.date ?? null);
   const [time, setTime] = useState(start.time ?? '');
@@ -31,6 +38,13 @@ export function LeadVisitForm({ form, pending, failure, fields }: FormFrame & { 
     [place === '', words.address],
   ]);
   const ready = waitingFor === null;
+  useReportHolds(
+    holds,
+    day !== (start.date ?? null) ||
+      time !== (start.time ?? '') ||
+      surveyorId !== (start.surveyorId ?? '') ||
+      address !== (start.address ?? ''),
+  );
   return (
     <>
       <DatePicker

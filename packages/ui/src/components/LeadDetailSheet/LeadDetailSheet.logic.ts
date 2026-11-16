@@ -24,6 +24,7 @@ export function leadActSheetOf(props: LeadDetailSheetProps): LeadActSheetProps {
     pending: forContact ? contacts.saving : acts.sending,
     failure: failure === null || sheet?.kind === 'message' ? null : words.failure(failure),
     closeLabel: words.close,
+    leave: words.leave,
     fields: words.fields,
   };
 }

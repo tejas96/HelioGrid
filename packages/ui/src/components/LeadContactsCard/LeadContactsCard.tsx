@@ -91,7 +91,7 @@ export function LeadContactsCard({
               placeholder={words.languageUnset}
               closeLabel={words.close}
               density="functional"
-              disabled={language.pending}
+              disabled={language.pending || language.locked}
               value={language.value ?? ''}
               options={[{ value: '', label: words.languageUnset }, ...language.options]}
               onChange={(value) => language.onChange(value === '' ? null : value)}

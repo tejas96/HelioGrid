@@ -2,7 +2,7 @@
 import type { LeadSummary } from '@heliogrid/contracts';
 import { bulkAssignReportOf, type InboxActReturn, type InboxActState } from '@heliogrid/domain';
 import { useQueryClient } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { ApiError, DataError } from '../errors/errors';
 import { useAction } from './action';
@@ -86,6 +86,8 @@ export function useLeadInboxActs(
   const [departed, setDeparted] = useState<LeadSummary | null>(null);
   const [bulkReport, setBulkReport] = useState<InboxBulkReport | null>(null);
   const [note, setNote] = useState<InboxActNote | null>(null);
+  /* The lead the last junk binned, held apart from its toast: a toast closes before its Undo runs. */
+  const lastBinned = useRef<LeadSummary | null>(null);
   /* Read in the same frame as a tap: a lead whose act is out sends nothing more. */
   const out = useRef(new Set<string>());
   const latest = useRef({ isDeck, onLeft });
@@ -136,6 +138,7 @@ export function useLeadInboxActs(
       try {
         await repositories.leadLifecycle.junk(lead.id, { capturedAt: new Date().toISOString() });
         settle(lead);
+        lastBinned.current = lead;
         setNote({ kind: 'junked', lead });
       } catch (error) {
         giveBack(lead, { act: 'junk', assignee: null, returned: null }, inboxReturnOf(error));
@@ -151,6 +154,8 @@ export function useLeadInboxActs(
         await repositories.leadLifecycle.reopen(lead.id, { capturedAt: new Date().toISOString() });
         // Back in the queue: the next read lists it again, so nothing here may hide it.
         setSettled((now) => without(now, lead.id));
+        // It is in the queue again, so it no longer flies off the deck as well.
+        setDeparted((now) => (now?.id === lead.id ? null : now));
         setNote({ kind: 'restored', lead });
       } catch {
         setNote({ kind: 'undo-failed', lead });
@@ -159,6 +164,17 @@ export function useLeadInboxActs(
     },
     { key: (lead) => lead.id },
   );
+
+  /* One function for the hook's life: a toast holds it, and a new one each render would remake the
+     toast under the press that reaches for its Undo. */
+  const unbinNow = useRef(unbin);
+  unbinNow.current = unbin;
+  const undoJunk = useCallback(() => {
+    const lead = lastBinned.current;
+    if (lead === null) return;
+    lastBinned.current = null;
+    void unbinNow.current.run(lead);
+  }, []);
 
   const bulk = useAction(
     async ({ leads, to }: { leads: readonly LeadSummary[]; to: InboxAssignee }) => {
@@ -224,9 +240,7 @@ export function useLeadInboxActs(
       setHeld((now) => withoutKey(now, leadId));
     },
     dismissBulkReport: () => setBulkReport(null),
-    undoJunk: () => {
-      if (note?.kind === 'junked') void unbin.run(note.lead);
-    },
+    undoJunk,
     dismissNote: () => setNote(null),
     clearDeparted: () => setDeparted(null),
   };

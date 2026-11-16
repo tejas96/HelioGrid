@@ -14,6 +14,7 @@ import { LeadActSend, type LeadFormFrame } from './LeadActSend.native';
 import type { LeadActForm } from './LeadActSheet.types';
 import { dayOf } from './LeadParkForms.native';
 import { firstMissing } from './missing-field';
+import { useReportHolds } from './use-form-holds';
 
 type VisitForm = Extract<LeadActForm, { kind: 'visit' }>;
 
@@ -36,6 +37,13 @@ export function LeadVisitForm({ form, frame }: { form: VisitForm; frame: LeadFor
     [confirmed === '', words.address],
   ]);
   const ready = waitingFor === null;
+  useReportHolds(
+    frame.holds,
+    date !== (start.date ?? null) ||
+      time !== (start.time ?? '') ||
+      surveyorId !== (start.surveyorId ?? '') ||
+      address !== (start.address ?? ''),
+  );
   return (
     <View style={styles.form}>
       <DatePicker

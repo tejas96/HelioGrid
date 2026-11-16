@@ -15,6 +15,7 @@ interface QualifyQuestionProps {
   onAnswer: QualifyCardProps['onAnswer'];
   onRetry: QualifyCardProps['onRetry'];
   words: QualifyCardProps['words'];
+  locked: boolean;
 }
 
 /**
@@ -22,7 +23,7 @@ interface QualifyQuestionProps {
  * saved — and its answer: the bill typed, or one chip of its set. An answer that came back unsaved
  * says so here, with Try again; once that goes, focus lands on the question's own words.
  */
-export function QualifyQuestion({ view, onAnswer, onRetry, words }: QualifyQuestionProps) {
+export function QualifyQuestion({ view, onAnswer, onRetry, words, locked }: QualifyQuestionProps) {
   const heading = useRef<HTMLSpanElement>(null);
   const { question, save } = view;
   const failed = save?.status === 'failed';
@@ -35,9 +36,15 @@ export function QualifyQuestion({ view, onAnswer, onRetry, words }: QualifyQuest
         <Standing view={view} words={words} />
       </div>
       {question === 'monthlyBill' ? (
-        <Bill view={view} onAnswer={onAnswer} words={words} />
+        <Bill view={view} onAnswer={onAnswer} words={words} locked={locked} />
       ) : (
-        <Choices view={view} question={question} onAnswer={onAnswer} words={words} />
+        <Choices
+          view={view}
+          question={question}
+          onAnswer={onAnswer}
+          words={words}
+          locked={locked}
+        />
       )}
       {failed ? (
         <FailLine onRetry={() => onRetry(question)} heading={heading} words={words} />
@@ -64,7 +71,7 @@ function Standing({ view, words }: Pick<QualifyQuestionProps, 'view' | 'words'>)
   return null;
 }
 
-function Bill({ view, onAnswer, words }: Omit<QualifyQuestionProps, 'onRetry'>) {
+function Bill({ view, onAnswer, words, locked }: Omit<QualifyQuestionProps, 'onRetry'>) {
   const { pack } = useFormat();
   return (
     <NumberField
@@ -80,6 +87,7 @@ function Bill({ view, onAnswer, words }: Omit<QualifyQuestionProps, 'onRetry'>) 
       precision={pack.minorUnitDigits}
       provenance="assumed"
       density="functional"
+      disabled={locked}
     />
   );
 }
@@ -89,6 +97,7 @@ function Choices({
   question,
   onAnswer,
   words,
+  locked,
 }: Omit<QualifyQuestionProps, 'onRetry'> & { question: Exclude<Question, 'monthlyBill'> }) {
   const failedValue = view.save?.status === 'failed' ? view.save.value : null;
   return (
@@ -100,7 +109,8 @@ function Choices({
             key={value}
             className="hg-chip-target hg-chip-target--expressive"
             accessibilityRole="radio"
-            accessibilityState={{ checked: chosen }}
+            accessibilityState={{ checked: chosen, disabled: locked }}
+            disabled={locked}
             haptic="selection"
             onPress={() => onAnswer(question, value)}
           >

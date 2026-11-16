@@ -241,4 +241,18 @@ describe.skipIf(skip)('follow-up tasks, over HTTP against a migrated database', 
       }
     },
   );
+
+  it('a task moved to a day before today is refused at its due field, and nothing moves', async () => {
+    const made = await captured(owner(), aCapture(aPhone()));
+    const added = await add(made.lead.id, { kind: 'follow_up' });
+    const yesterday = new Date(onTheClock(dayFromToday(-1), '23:59')).toISOString();
+    const moved = await owner().call('PATCH', `/tasks/${added.body.id}`, {
+      dueAt: yesterday,
+      capturedAt: now(),
+    });
+    expect(moved.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(moved.body).toMatchObject({ error: { details: [{ path: 'dueAt' }] } });
+    const [kept] = (await tasksOf(world, made.lead.id)).filter((one) => one.id === added.body.id);
+    expect(kept?.dueAt.toISOString()).toBe(added.body.dueAt);
+  });
 });

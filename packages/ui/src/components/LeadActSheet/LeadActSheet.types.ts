@@ -184,6 +184,13 @@ export interface LeadActSheetProps {
   /** Why the send came back undone, said above the sheet's send. */
   readonly failure: TranslatedText | null;
   readonly closeLabel: TranslatedText;
+  /** The ask before a way out drops what a form holds. */
+  readonly leave: {
+    readonly title: TranslatedText;
+    readonly body: TranslatedText;
+    readonly discard: TranslatedText;
+    readonly keep: TranslatedText;
+  };
   /** The field words every form shares. */
   readonly fields: {
     readonly date: DatePickerWords;

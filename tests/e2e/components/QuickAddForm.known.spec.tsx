@@ -40,3 +40,28 @@ test('a new number saves, and the line under Save says a lead is made too', asyn
   await expect(page.getByRole('button', { name: words.save, exact: true })).toBeVisible();
   await expect(page.getByText(words.saveNote)).toBeVisible();
 });
+
+test('Enter in a field saves, but not the Enter that finishes a word being composed', async ({
+  mount,
+  page,
+}) => {
+  await page.setViewportSize({ width: 1536, height: 900 });
+  const frame = await mount(<QuickAddAsDrawn />);
+  const name = page.getByRole('textbox').nth(1);
+  /* What a Hindi input method sends as it commits a word: Enter while composing. */
+  await name.evaluate((field) =>
+    field.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, isComposing: true }),
+    ),
+  );
+  await expect(frame).not.toHaveAttribute('data-act', 'save');
+  /* What Safari sends instead: the composition already ended, the Enter marked key code 229. */
+  await name.evaluate((field) => {
+    const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true });
+    Object.defineProperty(enter, 'keyCode', { value: 229 });
+    field.dispatchEvent(enter);
+  });
+  await expect(frame).not.toHaveAttribute('data-act', 'save');
+  await name.press('Enter');
+  await expect(frame).toHaveAttribute('data-act', 'save');
+});

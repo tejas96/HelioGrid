@@ -16,7 +16,8 @@ import { NamedGap } from '../NamedGap/NamedGap.native';
 import { NumberField } from '../NumberField/NumberField.native';
 import type { QualifyCardProps } from './QualifyCard.types';
 
-interface QualifyQuestionProps extends Pick<QualifyCardProps, 'onAnswer' | 'onRetry' | 'words'> {
+interface QualifyQuestionProps
+  extends Pick<QualifyCardProps, 'onAnswer' | 'onRetry' | 'words' | 'locked'> {
   readonly view: QualifyQuestionView;
 }
 
@@ -25,7 +26,7 @@ interface QualifyQuestionProps extends Pick<QualifyCardProps, 'onAnswer' | 'onRe
  * the bill as a money field with its `assumed` tier, or the answers as chips — and, when its answer
  * came back unsaved, the alert on that chip and *Not saved · Try again* under it alone.
  */
-export function QualifyQuestion({ view, onAnswer, onRetry, words }: QualifyQuestionProps) {
+export function QualifyQuestion({ view, onAnswer, onRetry, words, locked }: QualifyQuestionProps) {
   const label = useRef<View>(null);
   const failed = view.save?.status === 'failed' ? view.save : null;
   const retry = () => {
@@ -47,7 +48,7 @@ export function QualifyQuestion({ view, onAnswer, onRetry, words }: QualifyQuest
         {view.savedMark ? <SavedMark word={words.saved} /> : null}
       </View>
       {view.question === 'monthlyBill' ? (
-        <BillField view={view} onAnswer={onAnswer} words={words} />
+        <BillField view={view} onAnswer={onAnswer} words={words} locked={locked} />
       ) : (
         <Choices
           question={view.question}
@@ -55,6 +56,7 @@ export function QualifyQuestion({ view, onAnswer, onRetry, words }: QualifyQuest
           failedValue={failed?.value ?? null}
           onAnswer={onAnswer}
           words={words}
+          locked={locked}
         />
       )}
       {failed === null ? null : (
@@ -84,7 +86,7 @@ function SavedMark({ word }: { word: TranslatedText }) {
 }
 
 /** The monthly bill, typed in the tenant's currency and tiered `assumed` (`F8-01`). */
-function BillField({ view, onAnswer, words }: Omit<QualifyQuestionProps, 'onRetry'>) {
+function BillField({ view, onAnswer, words, locked }: Omit<QualifyQuestionProps, 'onRetry'>) {
   const format = useFormat();
   const shown = view.shown === null ? undefined : Number(view.shown);
   return (
@@ -100,6 +102,7 @@ function BillField({ view, onAnswer, words }: Omit<QualifyQuestionProps, 'onRetr
       precision={format.pack.minorUnitDigits}
       provenance="assumed"
       density="functional"
+      disabled={locked}
     />
   );
 }
@@ -114,7 +117,7 @@ interface ChoicesProps extends Omit<QualifyQuestionProps, 'onRetry'> {
  * pill sits in its 44 target as the web's does, and says its question after its answer — a phone
  * reads no group's name, where the web's radiogroup carries it.
  */
-function Choices({ question, view, failedValue, onAnswer, words }: ChoicesProps) {
+function Choices({ question, view, failedValue, onAnswer, words, locked }: ChoicesProps) {
   return (
     <View style={styles.choices} accessibilityRole="radiogroup">
       {view.choices.map((value) => {
@@ -124,7 +127,8 @@ function Choices({ question, view, failedValue, onAnswer, words }: ChoicesProps)
           <Pressable
             key={value}
             accessibilityRole="radio"
-            accessibilityState={{ checked: chosen }}
+            accessibilityState={{ checked: chosen, disabled: locked }}
+            disabled={locked}
             accessibilityLabel={words.choice(question, value)}
             accessibilityHint={words.question[question]}
             haptic="selection"

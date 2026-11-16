@@ -30,7 +30,11 @@ export function LeadHero({
 }: LeadHeroProps) {
   const narrow = form === 'narrow';
   return (
-    <HeroPanel edit={{ label: words.editDetails, onPress: onEditDetails }}>
+    <HeroPanel
+      {...(onEditDetails === null
+        ? {}
+        : { edit: { label: words.editDetails, onPress: onEditDetails } })}
+    >
       {identity === null ? null : <Identity identity={identity} words={words} />}
       {narrow ? (
         <QuietFacts words={words} />

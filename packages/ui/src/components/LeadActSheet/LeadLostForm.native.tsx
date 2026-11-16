@@ -21,6 +21,7 @@ import type { LeadActForm } from './LeadActSheet.types';
 import { LeadChoiceChips } from './LeadChoiceChips.native';
 import { dayOf } from './LeadParkForms.native';
 import { firstMissing } from './missing-field';
+import { useReportHolds } from './use-form-holds';
 
 type LostForm = Extract<LeadActForm, { kind: 'lost' }>;
 
@@ -35,6 +36,7 @@ export function LeadLostForm({ form, frame }: { form: LostForm; frame: LeadFormF
   const [reason, setReason] = useState<LostReason | null>(null);
   const [span, setSpan] = useState<LeadPostponeSpan | null>(null);
   const [picked, setPicked] = useState<ISODate | null>(null);
+  useReportHolds(frame.holds, reason !== null);
   const resurfaceOn = resurfaceOnOf(reason, span, picked, postpone);
   const ready = lostReady(reason, resurfaceOn);
   const waitingFor = ready

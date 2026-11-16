@@ -1,5 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import { useState } from 'react';
 import { EditorSurface } from '../EditorSurface';
+import { LeaveConfirm } from '../LeaveConfirm';
 import {
   CallBackForm,
   DisqualifyForm,
@@ -14,6 +16,7 @@ import { LeadDetailsForm } from './LeadDetailsForm';
 import { LeadLostForm } from './LeadLostForm';
 import { LeadMessageBody } from './LeadMessageBody';
 import { LeadVisitForm } from './LeadVisitForm';
+import { useSheetHolds } from './use-form-holds';
 
 /**
  * The lead's acts, each in one sheet (`SCR-M02-04`): below the editor breakpoint a sheet, above it
@@ -26,34 +29,55 @@ export function LeadActSheet({
   pending,
   failure,
   closeLabel,
+  leave,
   fields,
 }: LeadActSheetProps) {
   const head = form === null ? null : headOf(form);
+  const holds = useSheetHolds(form !== null);
+  const [asking, setAsking] = useState(false);
   return (
-    <EditorSurface
-      open={form !== null}
-      onClose={() => {
-        if (!pending) onClose();
-      }}
-      closeLabel={closeLabel}
-      showClose
-      title={head?.title}
-      subtitle={head?.line}
-      dismissible={!pending}
-      desktop="modal"
-    >
-      {form === null ? null : (
-        <div className="hg-lead-act" aria-busy={pending ? true : undefined}>
-          <FormBody
-            key={keyOf(form)}
-            form={form}
-            pending={pending}
-            failure={failure}
-            fields={fields}
-          />
-        </div>
-      )}
-    </EditorSurface>
+    <>
+      <EditorSurface
+        open={form !== null}
+        onClose={() => {
+          if (pending) return;
+          if (holds.holding) setAsking(true);
+          else onClose();
+        }}
+        closeLabel={closeLabel}
+        showClose
+        title={head?.title}
+        subtitle={head?.line}
+        dismissible={!pending}
+        desktop="modal"
+      >
+        {form === null ? null : (
+          <div className="hg-lead-act" aria-busy={pending ? true : undefined}>
+            <FormBody
+              key={keyOf(form)}
+              form={form}
+              pending={pending}
+              failure={failure}
+              fields={fields}
+              holds={holds.report}
+            />
+          </div>
+        )}
+      </EditorSurface>
+      <LeaveConfirm
+        open={asking}
+        title={leave.title}
+        body={leave.body}
+        discard={leave.discard}
+        keep={leave.keep}
+        onKeep={() => setAsking(false)}
+        onLeave={() => {
+          setAsking(false);
+          holds.forget();
+          onClose();
+        }}
+      />
+    </>
   );
 }
 

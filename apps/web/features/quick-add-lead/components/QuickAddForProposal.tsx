@@ -1,12 +1,14 @@
 'use client';
 import { useQuickAddScreen } from '@heliogrid/data/react';
 import type { DealSegment } from '@heliogrid/domain';
-import { proposalQuickAddWords, quickAddWords } from '@heliogrid/i18n';
+import { formLeaveWords, proposalQuickAddWords, quickAddWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import {
   EditorSurface,
+  LeaveConfirm,
   QuickAddForm,
   quickAddFormPropsOf,
+  quickAddLeaveOf,
   quickAddSurfaceOf,
   useFormat,
 } from '@heliogrid/ui';
@@ -65,6 +67,7 @@ export function QuickAddForProposal({
           }
         />
       </EditorSurface>
+      <LeaveConfirm {...quickAddLeaveOf(screen, formLeaveWords(t))} />
       <QuickAddDuplicateSheet screen={screen} />
     </>
   );

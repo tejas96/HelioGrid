@@ -27,7 +27,8 @@ export type ImportUpload =
   | {
       readonly state: 'refused';
       readonly name: string;
-      readonly refusal: Exclude<FileDeclarationVerdict, 'accepted'>;
+      /** Past the size, a type the import does not take, or no bytes at all. */
+      readonly refusal: Exclude<FileDeclarationVerdict, 'accepted'> | 'empty';
     }
   | { readonly state: 'storing'; readonly name: string }
   | { readonly state: 'failed'; readonly name: string };

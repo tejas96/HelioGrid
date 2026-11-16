@@ -120,8 +120,9 @@ export function Sheet({
         },
         onPanResponderRelease: (_event, gesture) => {
           if (gesture.dy > DRAG_DISMISS && onClose !== undefined) {
+            /* The owner may keep the sheet — a held form asks first — so it springs home too; a
+               sheet that does close starts its exit, which stops this spring on the same value. */
             onClose();
-            return;
           }
           if (reducedMotion.current) {
             offset.setValue(0);

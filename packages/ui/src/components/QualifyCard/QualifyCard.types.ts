@@ -53,6 +53,8 @@ export interface QualifyCardProps {
   readonly onAnswer: (question: QualifyQuestion, value: string | null) => void;
   /** Sends the unsaved answer at that question again. */
   readonly onRetry: (question: QualifyQuestion) => void;
+  /** The answers are shown and nothing takes a new one — a closed lead's, until a reopen. */
+  readonly locked: boolean;
   /** Null when the lead's stage or state offers no Mark qualified. */
   readonly markQualified: QualifyMarkAct | null;
   /**

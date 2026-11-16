@@ -1,7 +1,9 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
+import { LeaveConfirm } from '../LeaveConfirm/LeaveConfirm.native';
 import type { LeadFormFrame } from './LeadActSend.native';
 import type { LeadActForm, LeadActSheetProps } from './LeadActSheet.types';
 import { LeadContactForm } from './LeadContactForm.native';
@@ -16,6 +18,7 @@ import {
   LeadSnoozeForm,
 } from './LeadParkForms.native';
 import { LeadVisitForm } from './LeadVisitForm.native';
+import { useSheetHolds } from './use-form-holds';
 
 function titleOf(form: LeadActForm): TranslatedText {
   if (form.kind === 'contact' && form.start !== null) return form.words.editTitle;
@@ -40,26 +43,48 @@ export function LeadActSheet({
   pending,
   failure,
   closeLabel,
+  leave,
   fields,
 }: LeadActSheetProps) {
-  const frame: LeadFormFrame = { pending, failure, fields };
+  const holds = useSheetHolds(form !== null);
+  const [asking, setAsking] = useState(false);
+  const frame: LeadFormFrame = { pending, failure, fields, holds: holds.report };
   return (
-    <EditorSurface
-      open={form !== null}
-      onClose={onClose}
-      closeLabel={closeLabel}
-      showClose
-      desktop="modal"
-      title={form === null ? undefined : titleOf(form)}
-      subtitle={form === null ? undefined : form.words.line}
-      dismissible={!pending}
-    >
-      {form === null ? null : (
-        <View style={styles.body}>
-          <FormOf key={draftKeyOf(form)} form={form} frame={frame} />
-        </View>
-      )}
-    </EditorSurface>
+    <>
+      <EditorSurface
+        open={form !== null}
+        onClose={() => {
+          if (pending) return;
+          if (holds.holding) setAsking(true);
+          else onClose();
+        }}
+        closeLabel={closeLabel}
+        showClose
+        desktop="modal"
+        title={form === null ? undefined : titleOf(form)}
+        subtitle={form === null ? undefined : form.words.line}
+        dismissible={!pending}
+      >
+        {form === null ? null : (
+          <View style={styles.body}>
+            <FormOf key={draftKeyOf(form)} form={form} frame={frame} />
+          </View>
+        )}
+      </EditorSurface>
+      <LeaveConfirm
+        open={asking}
+        title={leave.title}
+        body={leave.body}
+        discard={leave.discard}
+        keep={leave.keep}
+        onKeep={() => setAsking(false)}
+        onLeave={() => {
+          setAsking(false);
+          holds.forget();
+          onClose();
+        }}
+      />
+    </>
   );
 }
 

@@ -24,6 +24,10 @@ import { timeFieldWords } from './time-field';
 type T = Translator['t'];
 
 const SHEETS = {
+  leaveTitle: /*i18n*/ { id: 'Leave without saving?' },
+  leaveBody: /*i18n*/ { id: 'What you entered here will be lost.' },
+  leaveDiscard: /*i18n*/ { id: 'Discard' },
+  leaveKeep: /*i18n*/ { id: 'Keep editing' },
   needs: /*i18n*/ { id: 'First fill in: {field}' },
   detailsTitle: /*i18n*/ { id: 'Edit details' },
   detailsLine: /*i18n*/ { id: 'The name and city, as the customer gives them.' },
@@ -273,11 +277,22 @@ export function leadDetailSheetWords(t: T, handOn: 'copy' | 'share') {
     role: (label: ContactRoleLabel) => contactRoleWord(t, label),
     lastContact: (elapsedMs: number | null) => lastContactWord(t, elapsedMs),
     close: t(SHELL.close),
+    leave: formLeaveWords(t),
     fields: {
       date: datePickerWords(t),
       time: timeFieldWords(t),
       phone: phoneFieldWords(t),
       needs: (field: TranslatedText) => t(SHEETS.needs, { field }),
     },
+  };
+}
+
+/** The ask before a way out drops a form's typing — a lead sheet's, a quick add's (`M02-32`). */
+export function formLeaveWords(t: T) {
+  return {
+    title: t(SHEETS.leaveTitle),
+    body: t(SHEETS.leaveBody),
+    discard: t(SHEETS.leaveDiscard),
+    keep: t(SHEETS.leaveKeep),
   };
 }

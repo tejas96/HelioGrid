@@ -160,4 +160,22 @@ describe('the lead import wizard, through the real client (SCR-M02-05)', () => {
     const wizard = mountedWizard(null);
     await waitFor(() => expect(wizard.screen().allowed).toBe(allowed));
   });
+
+  it('an empty file is refused on the device, never sent as a failed upload', async () => {
+    const wizard = mountedWizard(null);
+    await waitFor(() => expect(wizard.screen().allowed).toBe(true));
+    act(() =>
+      wizard.screen().choose({
+        name: 'leads.csv',
+        savedAt: null,
+        contentType: 'text/csv',
+        bytes: new Uint8Array(),
+      }),
+    );
+    expect(wizard.screen().upload).toEqual({
+      state: 'refused',
+      name: 'leads.csv',
+      refusal: 'empty',
+    });
+  });
 });

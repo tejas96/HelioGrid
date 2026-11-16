@@ -30,7 +30,20 @@ export function QuickAddForm(props: QuickAddFormProps) {
   useFocusRequest(phone, props.phoneFocus);
   const known = props.knownLead ?? null;
   return (
-    <div className="hg-quick-add">
+    // Enter in a field saves, as a form does on the web; a button keeps its own Enter.
+    // biome-ignore lint/a11y/noStaticElementInteractions: the fields inside take the keys; this only hears Enter bubble up from them
+    <div
+      className="hg-quick-add"
+      onKeyDown={(event) => {
+        if (event.key !== 'Enter' || !(event.target instanceof HTMLInputElement)) return;
+        // Enter that finishes a word an input method is still forming (Hindi, Marathi) is not Save;
+        // Safari ends the composition first and marks that Enter with key code 229 instead.
+        const composing = event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229;
+        if (composing || saving || known !== null) return;
+        event.preventDefault();
+        props.onSave();
+      }}
+    >
       {props.cameFrom === null ? null : (
         <span className="hg-quick-add-came-from">
           <Chip tone="info">{props.cameFrom}</Chip>

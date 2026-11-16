@@ -9,6 +9,7 @@ import { LeadActSend, type LeadFormFrame } from './LeadActSend.native';
 import type { LeadActForm } from './LeadActSheet.types';
 import { LeadChoiceChips } from './LeadChoiceChips.native';
 import { firstMissing } from './missing-field';
+import { useReportHolds } from './use-form-holds';
 
 type LogKind = 'call' | 'note';
 
@@ -33,6 +34,7 @@ export function LeadLogForm({
       ? firstMissing(frame.fields.needs, [[outcome === null, words.outcomeLabel]])
       : firstMissing(frame.fields.needs, [[typed === '', words.noteLabel]]);
   const ready = waitingFor === null;
+  useReportHolds(frame.holds, outcome !== null || typed !== '');
   const send = () => {
     if (kind === 'note') form.onSend({ kind: 'note', text: typed });
     else if (outcome !== null) {

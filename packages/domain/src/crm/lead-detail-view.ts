@@ -115,6 +115,8 @@ export interface LeadActsView {
   readonly markWon: boolean;
   /** A first booking, the no-show reschedule of the one booked, or none while the lead is closed. */
   readonly visit: 'book' | 'reschedule' | 'closed';
+  /** Its details and qualifying answers may change — not on a closed lead, until a reopen. */
+  readonly editable: boolean;
 }
 
 /** One person to reach on the lead: the customer themself (`id` null) or one of their contacts. */
@@ -217,6 +219,7 @@ export function leadActsOf(facts: LeadDetailFacts): LeadActsView {
       LEAD_STAGES.indexOf(stage) >= LEAD_STAGES.indexOf('qualified') &&
       LEAD_STAGES.indexOf(stage) < LEAD_STAGES.indexOf('won'),
     visit: closed ? 'closed' : facts.visit === null ? 'book' : 'reschedule',
+    editable: !closed,
   };
 }
 

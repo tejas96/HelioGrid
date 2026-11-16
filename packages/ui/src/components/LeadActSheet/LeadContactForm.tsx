@@ -10,6 +10,7 @@ import type { FormFrame } from './LeadActForms';
 import { ActSend } from './LeadActParts';
 import type { LeadActForm, LeadPhoneTaken } from './LeadActSheet.types';
 import { firstMissing } from './missing-field';
+import { useReportHolds } from './use-form-holds';
 
 type ContactForm = Extract<LeadActForm, { kind: 'contact' }>;
 
@@ -23,6 +24,7 @@ export function LeadContactForm({
   pending,
   failure,
   fields,
+  holds,
 }: FormFrame & { form: ContactForm }) {
   const { words, start } = form;
   const { pack } = useFormat();
@@ -30,6 +32,10 @@ export function LeadContactForm({
   const [phone, setPhone] = useState(start?.phoneE164 ?? '');
   const [roleLabelId, setRoleLabelId] = useState(start?.roleLabelId ?? '');
   const [newRole, setNewRole] = useState('');
+  useReportHolds(
+    holds,
+    name !== (start?.name ?? '') || phone !== (start?.phoneE164 ?? '') || newRole !== '',
+  );
   const { addedLabelId } = form;
   useEffect(() => {
     if (addedLabelId === null) return;

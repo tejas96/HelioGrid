@@ -15,6 +15,7 @@ import { LOST_REASON_LOOK, lostReady, POSTPONE_SPANS, resurfaceOnOf } from './Le
 import type { LeadPostponeSpan } from './LeadActSheet.parts.types';
 import type { LeadActForm } from './LeadActSheet.types';
 import { firstMissing } from './missing-field';
+import { useReportHolds } from './use-form-holds';
 
 type LostForm = Extract<LeadActForm, { kind: 'lost' }>;
 
@@ -23,12 +24,19 @@ type LostForm = Extract<LeadActForm, { kind: 'lost' }>;
  * *Postponed* the day it comes back — a week, a month, three months or a day picked — said as the
  * moment it returns to Today. The send names the reason and sleeps until the form is complete.
  */
-export function LeadLostForm({ form, pending, failure, fields }: FormFrame & { form: LostForm }) {
+export function LeadLostForm({
+  form,
+  pending,
+  failure,
+  fields,
+  holds,
+}: FormFrame & { form: LostForm }) {
   const { words, postpone } = form;
   const format = useFormat();
   const [reason, setReason] = useState<LostReason | null>(null);
   const [span, setSpan] = useState<LeadPostponeSpan | null>(null);
   const [picked, setPicked] = useState<ISODate | null>(null);
+  useReportHolds(holds, reason !== null);
   const resurfaceOn = resurfaceOnOf(reason, span, picked, postpone);
   const ready = lostReady(reason, resurfaceOn);
   const waitingFor = ready

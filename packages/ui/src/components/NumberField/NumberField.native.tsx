@@ -88,7 +88,8 @@ export function NumberField(props: NativeNumberFieldProps) {
       <NumberFieldSlots
         override={override}
         attribution={attribution}
-        provenance={provenance}
+        // A tier says where a figure came from; an empty box holds no figure to say it of.
+        provenance={props.value === undefined ? undefined : provenance}
         label={label}
       />
       <NumberFieldMessage

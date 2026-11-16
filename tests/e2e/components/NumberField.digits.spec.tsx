@@ -67,3 +67,12 @@ test('a stepped hero figure of one digit is still a thumb wide', async ({ mount 
   const box = await settledBox(field.getByRole('textbox', { name: LABEL }));
   expect(box.width).toBeGreaterThanOrEqual(TOUCH_MIN);
 });
+
+test('letters and a second point typed into a money field are not taken, so the figure stays a figure', async ({
+  mount,
+}) => {
+  const field = await mount(<HeldNumberField label={LABEL} unit="" currency min={0} />);
+  const input = field.getByRole('textbox', { name: LABEL });
+  await input.pressSequentially('-5abc9.9.9');
+  await expect(input).toHaveValue('59.99');
+});
