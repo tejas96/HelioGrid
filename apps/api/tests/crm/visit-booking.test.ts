@@ -183,4 +183,23 @@ describe.skipIf(skip)('booking a site visit, over HTTP against a migrated databa
     const stillActive = ['owner', 'surveyor', 'rep'] as const;
     expect(await offered()).toEqual(stillActive.map(person).sort());
   });
+
+  it.each([
+    ['yesterday', -1, HttpStatus.BAD_REQUEST],
+    ['today', 0, HttpStatus.CREATED],
+  ])(
+    'a visit booked for %s is held to today or later, as the sheet offers',
+    async (_when, days, status) => {
+      const made = await captured(owner(), aCapture(aPhone()));
+      const visit = aVisit(here.people.surveyor.userId, {
+        date: dayFromToday(days),
+        time: '23:59',
+      });
+      const reply = await owner().call('POST', `/leads/${made.lead.id}/visits`, visit, retryKey());
+      expect(reply.status).toBe(status);
+      if (status === HttpStatus.BAD_REQUEST) {
+        expect(reply.body).toMatchObject({ error: { details: [{ path: 'date' }] } });
+      }
+    },
+  );
 });

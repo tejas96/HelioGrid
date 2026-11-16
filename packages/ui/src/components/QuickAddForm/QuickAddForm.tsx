@@ -1,4 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import { COMPANY_PROFILE_FIELD_CAP, PERSON_NAME_CAP } from '@heliogrid/domain';
 import { useRef } from 'react';
 import type { FocusHandle } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text';
@@ -56,12 +57,19 @@ export function QuickAddForm(props: QuickAddFormProps) {
         <KnownLead known={known} />
       ) : (
         <>
-          <Input label={words.name} value={props.name} onChange={props.onName} disabled={saving} />
+          <Input
+            label={words.name}
+            value={props.name}
+            onChange={props.onName}
+            disabled={saving}
+            maxLength={PERSON_NAME_CAP}
+          />
           <Input
             label={words.city}
             value={props.city}
             onChange={props.onCity}
             disabled={saving}
+            maxLength={COMPANY_PROFILE_FIELD_CAP.city}
             leading={<ShellGlyph name="pin" size="sm" />}
           />
           <SegmentedControl

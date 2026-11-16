@@ -100,6 +100,13 @@ export class CrmVisitsService {
           HttpStatus.UNPROCESSABLE_ENTITY,
           [{ path: 'surveyorId', issue: 'an active member who holds survey' }],
         );
+      case 'day-past':
+        throw new ContractException(
+          'VALIDATION_FAILED',
+          'A visit is booked for today or later.',
+          HttpStatus.BAD_REQUEST,
+          [{ path: 'date', issue: 'today or later' }],
+        );
       case 'refused':
         throw refusalWithFacts(
           visitsContract.book.responses[422].options[0],

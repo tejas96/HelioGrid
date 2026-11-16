@@ -17,6 +17,7 @@ import {
 import { and, asc, count, eq, isNull, lt, min, type SQL, sql } from 'drizzle-orm';
 import {
   activeLead,
+  awaitingTriage,
   leadAssignersOf,
   leadCustomerJoin,
   leadHoldersOf,
@@ -49,8 +50,7 @@ export async function unassignedOf(
 }> {
   const waiting = and(
     eq(lead.tenantId, tenantId),
-    isNull(lead.ownerUserId),
-    isNull(lead.lifecycleState),
+    awaitingTriage,
     lt(lead.createdAt, new Date(now - UNASSIGNED_ESCALATES_AFTER_MS)),
     scope,
   );

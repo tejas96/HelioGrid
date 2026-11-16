@@ -98,7 +98,7 @@ function leadFilesPanelOf<Failure>(
   format: MarketFormat,
 ): LeadFilesPanel {
   const { files } = screen;
-  const going = files.uploading || files.uploadFailed;
+  const going = files.uploading || files.uploadFailed || files.refused !== null;
   return {
     read: mapRead(files.read, (listed) =>
       listed.map((file) => ({
@@ -110,7 +110,13 @@ function leadFilesPanelOf<Failure>(
     ),
     onAdd: files.canAdd ? onAddFile : null,
     pending:
-      going && files.picked !== null ? { name: files.picked, failed: files.uploadFailed } : null,
+      going && files.picked !== null
+        ? {
+            name: files.picked,
+            failed: files.uploadFailed || files.refused !== null,
+            refused: files.refused,
+          }
+        : null,
     onRetry: files.retryUpload,
     onOpen: onOpenFile,
   };

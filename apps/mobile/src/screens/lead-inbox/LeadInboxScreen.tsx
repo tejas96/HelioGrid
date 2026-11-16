@@ -7,7 +7,7 @@ import { useRef } from 'react';
 import { View } from 'react-native';
 import { ShellNotFoundState } from '../shell/components/ShellNotFoundState';
 import { ShellPage } from '../shell/components/ShellPage';
-import { InboxBulkToast } from './components/InboxBulkToast';
+import { InboxToasts } from './components/InboxToasts';
 
 /**
  * The Lead Inbox on the phone (`SCR-M02-02`, the 375 frames): the owner's morning triage, often
@@ -62,9 +62,12 @@ export function LeadInboxScreen() {
           focusAfter={page}
         />
       </View>
-      <InboxBulkToast
+      <InboxToasts
         report={screen.bulkReport}
-        onDismiss={screen.dismissBulkReport}
+        note={screen.note}
+        onUndo={screen.undoJunk}
+        onDismissReport={screen.dismissBulkReport}
+        onDismissNote={screen.dismissNote}
         focusAfter={page}
       />
     </ShellPage>

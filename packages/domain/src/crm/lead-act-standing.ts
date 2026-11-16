@@ -1,5 +1,5 @@
 import type { TransportFailure } from '../format/transport-failure';
-import type { LeadStateAct } from './lead-detail-view';
+import type { LeadStateAct } from './lead-detail-vocabulary';
 
 /**
  * Why an act on a lead came back undone, as every screen that acts on one says it (`F8-36`): the

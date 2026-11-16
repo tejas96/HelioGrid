@@ -35,6 +35,17 @@ function scopeWhere(scope: LeadScope, actorId: string, ownerId: SQL): SQL {
  */
 export const activeLead = and(isNull(lead.lifecycleState), ne(lead.stage, 'won')) as SQL;
 
+/**
+ * A lead waiting for triage (`M02-23`): new, active and owned by no one. A lead someone has moved
+ * on — qualified, booked for survey, won — has left triage even with no owner yet. The inbox, its
+ * one-day escalation (`M02-50`) and the owner home's count read this one rule, so they agree.
+ */
+export const awaitingTriage = and(
+  isNull(lead.ownerUserId),
+  isNull(lead.lifecycleState),
+  eq(lead.stage, 'new'),
+) as SQL;
+
 export function leadScopeWhere(scope: LeadScope, actorId: string): SQL {
   return scopeWhere(scope, actorId, sql`${lead.ownerUserId}`);
 }

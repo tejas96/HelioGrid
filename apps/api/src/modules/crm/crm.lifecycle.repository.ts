@@ -1,6 +1,7 @@
 import type { LeadDetail } from '@heliogrid/contracts';
 import { customer, type DbTransaction, lead, type TenantPool, task } from '@heliogrid/db';
 import {
+  type CalendarDate,
   isClosed,
   type LeadActContext,
   type LeadActRefusal,
@@ -24,7 +25,7 @@ import {
 import { withdrawProposalsOfClosedLead } from './crm.lead-proposals.repository';
 import { activeMemberOf } from './crm.member-roles.repository';
 import { cancelOpenTasks, raiseTask } from './crm.raised-tasks.repository';
-import { recordLeadMoves } from './crm.timeline.repository';
+import { recordActivity, recordLeadMoves } from './crm.timeline.repository';
 import type { LeadMoney } from './internal/lead-wire';
 import type { LeadReader } from './internal/reader';
 
@@ -66,9 +67,11 @@ export class CrmLifecycleRepository {
       if (result.kind === 'refused') return { outcome: 'refused', refusal: result.refusal };
       await recordLeadMoves(tx, locked, result, personOf(act), capturedAt);
       await plan.follows?.(tx, locked, act);
-      // A lead that closes takes its proposals off the customer's link (`M06-45`).
+      // A lead that closes takes its proposals off the customer's link (`M06-45`), and its open
+      // tasks — kept as history — so no one is reminded to work a lead that is out.
       if (isClosed(result.next) && !isClosed(locked.lifecycle)) {
         await withdrawProposalsOfClosedLead(tx, locked, capturedAt);
+        await cancelOpenTasks(tx, locked.tenantId, [locked.leadId], TASK_KINDS);
       }
       return { outcome: 'done', detail: await detailAfterAct(tx, reader, leadId, money) };
     });
@@ -120,11 +123,36 @@ export async function blockWrongNumber(
 }
 
 /**
- * A loss (`M07-63`): every task still open on the lead is cancelled — kept as history — and the
- * close is audited (`F2-22`), both with the loss or neither.
+ * A snooze to a new day on a lead already snoozed (`M02-51`): the state stands, so the funnel's
+ * history has no move to keep, but the timeline says the wake day moved and to when.
+ */
+export function wakeDayMoved(wakeOn: CalendarDate) {
+  return async (tx: DbTransaction, locked: LockedLead, act: Act): Promise<void> => {
+    if (locked.lifecycle.state !== 'snoozed') return;
+    await recordActivity(tx, {
+      tenantId: locked.tenantId,
+      customerId: locked.customerId,
+      leadId: locked.leadId,
+      kind: 'state_change',
+      body: {
+        from: 'snoozed',
+        to: 'snoozed',
+        cause: 'manual',
+        disqualifyReason: null,
+        lostReason: null,
+        wakeOn,
+      },
+      actor: personOf(act),
+      capturedAt: new Date(act.now),
+    });
+  };
+}
+
+/**
+ * A loss (`M07-63`) is audited (`F2-22`) with the loss or not at all; its open tasks are cancelled
+ * as every close's are.
  */
 export async function closeLost(tx: DbTransaction, locked: LockedLead, act: Act): Promise<void> {
-  await cancelOpenTasks(tx, locked.tenantId, [locked.leadId], TASK_KINDS);
   await recordAuditEntry(
     tx,
     memberAct('crm.lead_lost', locked.tenantId, { kind: 'lead', ref: locked.leadId }, act),

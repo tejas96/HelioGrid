@@ -189,5 +189,7 @@ export interface LeadActSheetProps {
     readonly date: DatePickerWords;
     readonly time: TimeFieldWords;
     readonly phone: PhoneFieldWords;
+    /** Why a send sleeps: the first field it still needs, by its label. */
+    readonly needs: (field: TranslatedText) => TranslatedText;
   };
 }

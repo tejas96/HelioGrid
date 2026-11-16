@@ -11,6 +11,7 @@ import { readMinimumClientVersion, refuseClientsBelow } from './common/client-ve
 import { assertTenancyPrecondition } from './common/db/tenancy-precondition';
 import { assignRequestId, REQUEST_ID_HEADER } from './common/request-id';
 import { trustProxyHops } from './common/trusted-proxy';
+import { refuseUnstorableText } from './common/unstorable-text';
 import { ENV } from './config/env';
 
 const BODY_LIMIT_BYTES = 1_048_576;
@@ -75,6 +76,7 @@ export async function createApp(): Promise<INestApplication> {
       },
     });
   });
+  app.use(refuseUnstorableText);
 
   // Filter and interceptor are registered declaratively (CommonModule), so they can inject
   // like any other provider.

@@ -24,9 +24,16 @@ export class CrmEditsService {
     const money = moneyOf((await this.settings.packOf(reader.tenantId)).formats);
     if (body.monthlyBill != null) refuseFinerThanCurrency(body.monthlyBill, money.minorUnitDigits);
     const { capturedAt, ...fields } = body;
-    const detail = await this.edits.edit(reader, leadId, fields, new Date(capturedAt), money, act);
-    if (detail === null) throw new NotFoundException('No such lead.');
-    return detail;
+    const edited = await this.edits.edit(reader, leadId, fields, new Date(capturedAt), money, act);
+    if (edited.outcome === 'not-found') throw new NotFoundException('No such lead.');
+    if (edited.outcome === 'closed') {
+      throw new ContractException(
+        'DOMAIN_RULE_VIOLATION',
+        'This lead is closed. Reopen it to change its details.',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+    return edited.detail;
   }
 }
 

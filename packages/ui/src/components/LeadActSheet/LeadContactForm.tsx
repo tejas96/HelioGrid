@@ -1,4 +1,4 @@
-import { phoneDigitsMismatch } from '@heliogrid/domain';
+import { PERSON_NAME_CAP, phoneDigitsMismatch } from '@heliogrid/domain';
 import { useEffect, useState } from 'react';
 import { Button } from '../Button';
 import { Input } from '../Input';
@@ -9,6 +9,7 @@ import { Select } from '../Select';
 import type { FormFrame } from './LeadActForms';
 import { ActSend } from './LeadActParts';
 import type { LeadActForm, LeadPhoneTaken } from './LeadActSheet.types';
+import { firstMissing } from './missing-field';
 
 type ContactForm = Extract<LeadActForm, { kind: 'contact' }>;
 
@@ -36,10 +37,20 @@ export function LeadContactForm({
     setNewRole('');
   }, [addedLabelId]);
   const typed = name.trim();
-  const ready = typed !== '' && phone !== '' && phoneDigitsMismatch(pack, phone) === null;
+  const waitingFor = firstMissing(fields.needs, [
+    [typed === '', words.name],
+    [phone === '' || phoneDigitsMismatch(pack, phone) !== null, words.phone],
+  ]);
+  const ready = waitingFor === null;
   return (
     <>
-      <Input label={words.name} value={name} onChange={setName} disabled={pending} />
+      <Input
+        label={words.name}
+        value={name}
+        onChange={setName}
+        disabled={pending}
+        maxLength={PERSON_NAME_CAP}
+      />
       <PhoneField
         label={words.phone}
         words={fields.phone}
@@ -69,6 +80,7 @@ export function LeadContactForm({
       <ActSend
         label={words.send}
         ready={ready}
+        waitingFor={waitingFor}
         pending={pending}
         failure={failure}
         onSend={() =>

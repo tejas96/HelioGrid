@@ -42,9 +42,13 @@ export type TaskAct = z.infer<typeof taskActSchema>;
 
 /**
  * The task refusals: the assignee is not an active member of the company; a call to a number no
- * one may dial — a wrong number or do-not-call (`M02-44`).
+ * one may dial — a wrong number or do-not-call (`M02-44`); a lead that is closed until a reopen.
  */
-export const taskErrorCodes = ['ASSIGNEE_UNAVAILABLE', 'NUMBER_NOT_DIALLABLE'] as const;
+export const taskErrorCodes = [
+  'ASSIGNEE_UNAVAILABLE',
+  'NUMBER_NOT_DIALLABLE',
+  'LEAD_CLOSED',
+] as const;
 export const taskErrorCodeSchema = z.enum(taskErrorCodes);
 
 /** Move an open task to another moment (`M07-05`): overdue follows the new due time at once. */

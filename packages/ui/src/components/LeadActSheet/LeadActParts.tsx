@@ -57,6 +57,7 @@ export function ActSend({
   failure,
   onSend,
   destructive = false,
+  waitingFor = null,
 }: {
   label: TranslatedText;
   ready: boolean;
@@ -64,6 +65,8 @@ export function ActSend({
   failure: TranslatedText | null;
   onSend: () => void;
   destructive?: boolean;
+  /** While the send sleeps, the field it still needs — said on a tap of the sleeping button. */
+  waitingFor?: TranslatedText | null;
 }) {
   return (
     <div className="hg-lead-act-send">
@@ -77,6 +80,7 @@ export function ActSend({
         size="lg"
         fullWidth
         disabled={!ready}
+        {...(!ready && waitingFor !== null && { disabledReason: waitingFor })}
         loading={pending}
         onClick={() => {
           if (ready && !pending) onSend();

@@ -9,6 +9,7 @@ import { TimeField } from '../TimeField/TimeField.native';
 import { LeadActSend, type LeadFormFrame } from './LeadActSend.native';
 import type { LeadActForm } from './LeadActSheet.types';
 import { LeadChoiceChips } from './LeadChoiceChips.native';
+import { firstMissing } from './missing-field';
 
 type FormOf<K extends LeadActForm['kind']> = {
   form: Extract<LeadActForm, { kind: K }>;
@@ -36,6 +37,7 @@ export function LeadSnoozeForm({ form, frame }: FormOf<'snooze'>) {
       <LeadActSend
         label={form.words.send}
         ready={wakeOn !== null}
+        waitingFor={firstMissing(frame.fields.needs, [[wakeOn === null, form.words.wakeOn]])}
         pending={frame.pending}
         failure={frame.failure}
         onSend={() => {
@@ -67,6 +69,7 @@ export function LeadDisqualifyForm({ form, frame }: FormOf<'disqualify'>) {
       <LeadActSend
         label={form.words.send}
         ready={reason !== null}
+        waitingFor={firstMissing(frame.fields.needs, [[reason === null, form.words.reasonLabel]])}
         pending={frame.pending}
         failure={frame.failure}
         variant="destructive"
@@ -118,6 +121,10 @@ export function LeadCallBackForm({ form, frame }: FormOf<'callBack'>) {
       <LeadActSend
         label={form.words.send}
         ready={date !== null && time !== ''}
+        waitingFor={firstMissing(frame.fields.needs, [
+          [date === null, form.words.date],
+          [time === '', form.words.time],
+        ])}
         pending={frame.pending}
         failure={frame.failure}
         onSend={() => {

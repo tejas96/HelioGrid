@@ -14,6 +14,7 @@ import { ActSend, ChoiceChips, dayOf } from './LeadActParts';
 import { LOST_REASON_LOOK, lostReady, POSTPONE_SPANS, resurfaceOnOf } from './LeadActSheet.lost';
 import type { LeadPostponeSpan } from './LeadActSheet.parts.types';
 import type { LeadActForm } from './LeadActSheet.types';
+import { firstMissing } from './missing-field';
 
 type LostForm = Extract<LeadActForm, { kind: 'lost' }>;
 
@@ -30,6 +31,13 @@ export function LeadLostForm({ form, pending, failure, fields }: FormFrame & { f
   const [picked, setPicked] = useState<ISODate | null>(null);
   const resurfaceOn = resurfaceOnOf(reason, span, picked, postpone);
   const ready = lostReady(reason, resurfaceOn);
+  const waitingFor = ready
+    ? null
+    : firstMissing(fields.needs, [
+        [reason === null, words.reasonLabel],
+        [span === null, words.whenLabel],
+        [true, words.dayLabel],
+      ]);
   /* *Postponed* opens on a month, the commonest answer, so it sends in one more tap; any other
      span is one tap away. */
   const choose = (next: LostReason) => {
@@ -75,6 +83,7 @@ export function LeadLostForm({ form, pending, failure, fields }: FormFrame & { f
       <ActSend
         label={words.send(reason)}
         ready={ready}
+        waitingFor={waitingFor}
         pending={pending}
         failure={failure}
         onSend={() => {

@@ -65,6 +65,9 @@ export interface LeadSectionsWords {
   readonly addingFile: (name: string) => TranslatedText;
   /** "Electricity bill.pdf was not added to the lead." — the pick that came back undone. */
   readonly fileNotAdded: (name: string) => TranslatedText;
+  /** Why a pick never went up — the file says what a lead takes, so a retry is never offered. */
+  readonly fileRefused: Readonly<Record<LeadFileRefusal, (name: string) => TranslatedText>>;
+  readonly chooseAnother: TranslatedText;
   readonly loadingFiles: TranslatedText;
   readonly filesFailed: TranslatedText;
   readonly filesFailedLine: TranslatedText;
@@ -102,7 +105,12 @@ export interface LeadFilePending {
   /** The file's own name, as its picker gave it: a fact, never translated. */
   readonly name: string;
   readonly failed: boolean;
+  /** Why the pick never went up; `null` for one that went up or came back undone. */
+  readonly refused: LeadFileRefusal | null;
 }
+
+/** Bigger than a lead takes, or a type it does not take. */
+export type LeadFileRefusal = 'too-large' | 'type-not-taken';
 
 /**
  * The Files section (`M02-32`): the files, oldest first, each opened with a tap; the add — absent

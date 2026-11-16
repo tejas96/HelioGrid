@@ -178,100 +178,41 @@ describe('junk — one tap, server-completed', () => {
   });
 });
 
-describe('bulk assign — one target for a selection (M02-29)', () => {
-  it('assigns each selected lead, shows each pending, and reports each result', async () => {
+describe('a confirmed act says so, and junk can be undone', () => {
+  it('a binned lead is named with Undo, which reopens it back into the queue', async () => {
     const view = await mountedInbox();
-    await waitFor(() => expect(view.result.current.team.read.kind).toBe('ready'));
-    act(() => {
-      view.result.current.select(UNNAMED.id, true);
-      view.result.current.select(AMIT.id, true);
-    });
-    act(() => view.result.current.openSelectionPicker());
-    expect(view.result.current.picking).toEqual({ kind: 'selection', count: 2 });
-
-    const release = holdWrites();
-    origin.bulks = [
-      {
-        status: 200,
-        body: {
-          results: [
-            { leadId: UNNAMED.id, outcome: 'assigned' },
-            { leadId: AMIT.id, outcome: 'unavailable' },
-          ],
-        },
-      },
-    ];
-    act(() => view.result.current.pick(NEHA.userId));
-    await waitFor(() => expect(origin.writes).toHaveLength(1));
-    expect(view.result.current.picking).toBeNull();
-    expect(cardOf(view, UNNAMED.id).act?.returned).toBeNull();
-    expect(cardOf(view, AMIT.id).act?.returned).toBeNull();
-    expect(origin.writes[0]?.body).toEqual({
-      leadIds: [UNNAMED.id, AMIT.id],
-      assigneeId: NEHA.userId,
-    });
-
-    origin.queue = origin.queue.filter((one) => one.id !== UNNAMED.id);
-    release();
+    act(() => view.result.current.junk(UNNAMED.id));
     await waitFor(() =>
-      expect(view.result.current.bulkReport).toEqual({ given: 1, refused: 1, name: NEHA.name }),
+      expect(view.result.current.note).toEqual({ kind: 'junked', lead: UNNAMED }),
     );
-    expect(queueOf(view)).toEqual([PRIYA.id, AMIT.id]);
-    expect(cardOf(view, AMIT.id).act?.returned).toEqual({ kind: 'unavailable' });
-    expect(view.result.current.view.selection).toEqual([]);
-  });
-});
 
-describe('bulk assign — each lead answers for itself (M02-29, M02-67)', () => {
-  it('a mixed answer: the given lead leaves, one someone else holds stays naming them, one gone stays naming that', async () => {
-    const view = await mountedInbox();
-    await waitFor(() => expect(view.result.current.team.read.kind).toBe('ready'));
-    act(() => {
-      for (const lead of [PRIYA, UNNAMED, AMIT]) view.result.current.select(lead.id, true);
-    });
-    act(() => view.result.current.openSelectionPicker());
-    origin.bulks = [
-      {
-        status: 200,
-        body: {
-          results: [
-            { leadId: PRIYA.id, outcome: 'assigned' },
-            {
-              leadId: UNNAMED.id,
-              outcome: 'already_assigned',
-              owner: { userId: RAJESH.userId, name: RAJESH.name },
-            },
-            { leadId: AMIT.id, outcome: 'unavailable' },
-          ],
-        },
-      },
-    ];
-    origin.queue = origin.queue.filter((one) => one.id === AMIT.id);
-    act(() => view.result.current.pick(NEHA.userId));
-
+    act(() => view.result.current.undoJunk());
     await waitFor(() =>
-      expect(view.result.current.bulkReport).toEqual({ given: 1, refused: 2, name: NEHA.name }),
+      expect(view.result.current.note).toEqual({ kind: 'restored', lead: UNNAMED }),
     );
-    expect(queueOf(view)).toEqual([UNNAMED.id, AMIT.id]);
-    expect(cardOf(view, UNNAMED.id).act?.returned).toEqual({ kind: 'taken', owner: RAJESH.name });
-    expect(cardOf(view, AMIT.id).act?.returned).toEqual({ kind: 'unavailable' });
+    expect(origin.writes.at(-1)?.path).toBe(`/leads/${UNNAMED.id}/reopen`);
+    await waitFor(() => expect(queueOf(view)).toEqual([PRIYA.id, UNNAMED.id, AMIT.id]));
   });
 
-  it('a send the server refused whole returns each lead with the one reason', async () => {
+  it('an undo the server refuses says so, and the lead stays binned', async () => {
     const view = await mountedInbox();
-    await waitFor(() => expect(view.result.current.team.read.kind).toBe('ready'));
-    act(() => {
-      view.result.current.select(UNNAMED.id, true);
-      view.result.current.select(AMIT.id, true);
-    });
-    act(() => view.result.current.openSelectionPicker());
-    origin.bulks = [{ status: 422, body: refusal('ASSIGNEE_UNAVAILABLE') }];
-    act(() => view.result.current.pick(NEHA.userId));
-
+    act(() => view.result.current.junk(AMIT.id));
+    await waitFor(() => expect(view.result.current.note?.kind).toBe('junked'));
+    origin.reopens = [{ status: 500, body: refusal('INTERNAL') }];
+    act(() => view.result.current.undoJunk());
     await waitFor(() =>
-      expect(cardOf(view, AMIT.id).act?.returned).toEqual({ kind: 'assignee_unavailable' }),
+      expect(view.result.current.note).toEqual({ kind: 'undo-failed', lead: AMIT }),
     );
-    expect(cardOf(view, UNNAMED.id).act?.returned).toEqual({ kind: 'assignee_unavailable' });
-    expect(queueOf(view)).toEqual([PRIYA.id, UNNAMED.id, AMIT.id]);
+    expect(queueOf(view)).toEqual([PRIYA.id, UNNAMED.id]);
+  });
+
+  it('a single assign names who has it now; the note clears on dismiss', async () => {
+    const view = await mountedInbox();
+    act(() => view.result.current.give(PRIYA.id, RAJESH));
+    await waitFor(() =>
+      expect(view.result.current.note).toEqual({ kind: 'given', lead: PRIYA, name: RAJESH.name }),
+    );
+    act(() => view.result.current.dismissNote());
+    expect(view.result.current.note).toBeNull();
   });
 });

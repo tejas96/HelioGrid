@@ -9,6 +9,7 @@ import { TimeField } from '../TimeField';
 import type { FormFrame } from './LeadActForms';
 import { ActSend, dayOf } from './LeadActParts';
 import type { LeadActForm } from './LeadActSheet.types';
+import { firstMissing } from './missing-field';
 
 type VisitForm = Extract<LeadActForm, { kind: 'visit' }>;
 
@@ -23,7 +24,13 @@ export function LeadVisitForm({ form, pending, failure, fields }: FormFrame & { 
   const [surveyorId, setSurveyorId] = useState(start.surveyorId ?? '');
   const [address, setAddress] = useState(start.address ?? '');
   const place = address.trim();
-  const ready = day !== null && time !== '' && surveyorId !== '' && place !== '';
+  const waitingFor = firstMissing(fields.needs, [
+    [day === null, words.date],
+    [time === '', words.time],
+    [surveyorId === '', words.surveyor],
+    [place === '', words.address],
+  ]);
+  const ready = waitingFor === null;
   return (
     <>
       <DatePicker
@@ -52,6 +59,7 @@ export function LeadVisitForm({ form, pending, failure, fields }: FormFrame & { 
       <ActSend
         label={words.send}
         ready={ready}
+        waitingFor={waitingFor}
         pending={pending}
         failure={failure}
         onSend={() => {

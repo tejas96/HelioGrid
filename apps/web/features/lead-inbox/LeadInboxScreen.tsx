@@ -6,6 +6,7 @@ import {
 import type { LeadSource } from '@heliogrid/domain';
 import {
   bulkAssignToasts,
+  inboxNoteToast,
   leadInboxSummary,
   leadInboxWords,
   toastHostWords,
@@ -23,7 +24,7 @@ import { useInboxKeys } from './hooks/use-inbox-keys';
  * phone's deck — the newest lead with the faces under it and Up next below; from it, one wide stage
  * with the team docked inside and the rest of the queue as tiles. What is read, acted on, selected
  * and given is `useLeadInboxScreen`'s and what it draws `LeadInbox`'s, the phone's too; the web's
- * own parts are the width, the keys, the router and the bulk line's toast.
+ * own parts are the width, the keys, the router and the acts' toasts.
  */
 export function LeadInboxScreen() {
   const screen = useLeadInboxScreen();
@@ -39,11 +40,17 @@ function LeadInboxIn({ screen }: { screen: LeadInboxScreenView }) {
   const stage = width !== null && width >= INBOX_STAGE_FROM;
   useInboxKeys(screen, stage);
   const words = leadInboxWords(t);
-  const { read, view, bulkReport } = screen;
+  const { read, view, bulkReport, note, undoJunk } = screen;
   const oldest =
     stage && view.oldestElapsedMs !== null ? words.deck.age.age(view.oldestElapsedMs) : null;
-  /* Held by its report: a new item each render would restart the toast's clock. */
-  const toasts = useMemo(() => bulkAssignToasts(t, bulkReport), [bulkReport, t]);
+  /* Held by their report and note: a new item each render would restart a toast's clock. */
+  const toasts = useMemo(
+    () => [
+      ...bulkAssignToasts(t, bulkReport),
+      ...(note === null ? [] : [inboxNoteToast(t, note, { onUndo: undoJunk, focusAfter: room })]),
+    ],
+    [bulkReport, note, undoJunk, room, t],
+  );
   return (
     <div ref={room} tabIndex={-1} className="hg-shell-page hg-focus-target">
       <LargeTitle
@@ -68,7 +75,7 @@ function LeadInboxIn({ screen }: { screen: LeadInboxScreenView }) {
       />
       <ToastHost
         toasts={toasts}
-        onDismiss={screen.dismissBulkReport}
+        onDismiss={(id) => (id === 'bulk' ? screen.dismissBulkReport() : screen.dismissNote())}
         {...toastHostWords(t)}
         focusAfter={room}
       />

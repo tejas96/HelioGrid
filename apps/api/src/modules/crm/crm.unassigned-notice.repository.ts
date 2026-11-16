@@ -8,7 +8,7 @@ import {
   type TenantQuietHours,
 } from '../notification/notification.public';
 import { leadCustomerJoin } from './crm.lead-columns.repository';
-import { leadReadableBy } from './crm.scope.repository';
+import { awaitingTriage, leadReadableBy } from './crm.scope.repository';
 
 /** How the sweep words its notice of a lead left unassigned: rendered per lead, in each language. */
 export interface UnassignedNotice {
@@ -22,12 +22,7 @@ export interface UnassignedNotice {
 /** A lead waiting in the inbox for more than a day, its EPC Owner not told yet (`M02-50`). */
 export function waitingUnassignedWhere(clock: { readonly now: number }) {
   const waitingSince = new Date(clock.now - UNASSIGNED_ESCALATES_AFTER_MS);
-  return and(
-    isNull(lead.ownerUserId),
-    isNull(lead.lifecycleState),
-    isNull(lead.unassignedEscalatedAt),
-    lt(lead.createdAt, waitingSince),
-  );
+  return and(awaitingTriage, isNull(lead.unassignedEscalatedAt), lt(lead.createdAt, waitingSince));
 }
 
 /**

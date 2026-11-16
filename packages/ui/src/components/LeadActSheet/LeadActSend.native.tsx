@@ -21,6 +21,8 @@ interface LeadActSendProps {
   readonly failure: TranslatedText | null;
   readonly onSend: () => void;
   readonly variant?: ButtonVariant;
+  /** While the send sleeps, the field it still needs — said on a tap of the sleeping button. */
+  readonly waitingFor?: TranslatedText | null;
 }
 
 /**
@@ -34,6 +36,7 @@ export function LeadActSend({
   failure,
   onSend,
   variant = 'primary',
+  waitingFor = null,
 }: LeadActSendProps) {
   return (
     <View style={styles.foot}>
@@ -47,6 +50,7 @@ export function LeadActSend({
         size="lg"
         fullWidth
         disabled={!ready}
+        {...(!ready && waitingFor !== null && { disabledReason: waitingFor })}
         loading={pending}
         onClick={() => {
           if (ready && !pending) onSend();

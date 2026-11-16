@@ -21,6 +21,14 @@ export interface InboxBulkReport {
   readonly name: string;
 }
 
+/**
+ * What the last confirmed single act says in its toast: a lead given to someone, a lead binned —
+ * with its way back — and how that way back went.
+ */
+export type InboxActNote =
+  | { readonly kind: 'given'; readonly lead: LeadSummary; readonly name: string }
+  | { readonly kind: 'junked' | 'restored' | 'undo-failed'; readonly lead: LeadSummary };
+
 /** The inbox's acts and what they left that the next read does not hold yet (`M02-67`). */
 export interface InboxActs {
   readonly settled: ReadonlySet<string>;
@@ -29,6 +37,7 @@ export interface InboxActs {
   /** The deck's lead that just left, flying off; null once the deck moves on. */
   readonly departed: LeadSummary | null;
   readonly bulkReport: InboxBulkReport | null;
+  readonly note: InboxActNote | null;
   give(lead: LeadSummary, to: InboxAssignee): void;
   junk(lead: LeadSummary): void;
   giveAll(leads: readonly LeadSummary[], to: InboxAssignee): void;
@@ -37,6 +46,9 @@ export interface InboxActs {
   /** Clears a returned act's line; the lead stays only while the read still lists it. */
   dismiss(leadId: string): void;
   dismissBulkReport(): void;
+  /** Reopens the lead the last junk binned, back into the queue (`M02-56`). */
+  undoJunk(): void;
+  dismissNote(): void;
   clearDeparted(): void;
 }
 
@@ -73,6 +85,7 @@ export function useLeadInboxActs(
   const [held, setHeld] = useState<ReadonlyMap<string, LeadSummary>>(new Map());
   const [departed, setDeparted] = useState<LeadSummary | null>(null);
   const [bulkReport, setBulkReport] = useState<InboxBulkReport | null>(null);
+  const [note, setNote] = useState<InboxActNote | null>(null);
   /* Read in the same frame as a tap: a lead whose act is out sends nothing more. */
   const out = useRef(new Set<string>());
   const latest = useRef({ isDeck, onLeft });
@@ -106,8 +119,10 @@ export function useLeadInboxActs(
           assigneeId: to.userId,
           expectedOwnerId: null,
         });
-        if (outcome.kind === 'assigned') settle(lead);
-        else giveBack(lead, act, { kind: 'taken', owner: outcome.owner?.name ?? null });
+        if (outcome.kind === 'assigned') {
+          settle(lead);
+          setNote({ kind: 'given', lead, name: to.name });
+        } else giveBack(lead, act, { kind: 'taken', owner: outcome.owner?.name ?? null });
       } catch (error) {
         giveBack(lead, act, inboxReturnOf(error));
       }
@@ -121,8 +136,24 @@ export function useLeadInboxActs(
       try {
         await repositories.leadLifecycle.junk(lead.id, { capturedAt: new Date().toISOString() });
         settle(lead);
+        setNote({ kind: 'junked', lead });
       } catch (error) {
         giveBack(lead, { act: 'junk', assignee: null, returned: null }, inboxReturnOf(error));
+      }
+      await refresh();
+    },
+    { key: (lead) => lead.id },
+  );
+
+  const unbin = useAction(
+    async (lead: LeadSummary) => {
+      try {
+        await repositories.leadLifecycle.reopen(lead.id, { capturedAt: new Date().toISOString() });
+        // Back in the queue: the next read lists it again, so nothing here may hide it.
+        setSettled((now) => without(now, lead.id));
+        setNote({ kind: 'restored', lead });
+      } catch {
+        setNote({ kind: 'undo-failed', lead });
       }
       await refresh();
     },
@@ -171,6 +202,7 @@ export function useLeadInboxActs(
     held,
     departed,
     bulkReport,
+    note,
     give: giveOne,
     junk: junkOne,
     giveAll: (leads, to) => {
@@ -192,8 +224,20 @@ export function useLeadInboxActs(
       setHeld((now) => withoutKey(now, leadId));
     },
     dismissBulkReport: () => setBulkReport(null),
+    undoJunk: () => {
+      if (note?.kind === 'junked') void unbin.run(note.lead);
+    },
+    dismissNote: () => setNote(null),
     clearDeparted: () => setDeparted(null),
   };
+}
+
+/** The set without one member — the same set when it holds none. */
+export function without(set: ReadonlySet<string>, key: string): ReadonlySet<string> {
+  if (!set.has(key)) return set;
+  const next = new Set(set);
+  next.delete(key);
+  return next;
 }
 
 function withoutKey<V>(map: ReadonlyMap<string, V>, key: string): ReadonlyMap<string, V> {

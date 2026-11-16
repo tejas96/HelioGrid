@@ -104,4 +104,18 @@ describe.skipIf(skip)('enquiries outside the scope, over HTTP against a migrated
       expect(await entriesOfKind(world, target.leadId, 'enquiry')).toHaveLength(2);
     },
   );
+
+  it('an enquiry on a lead in the scope with a number not its own answers 404 and writes nothing', async () => {
+    const target = await rajeshLead('Kiran More');
+    const reply = await world
+      .as(here.members.owner)
+      .call(
+        'POST',
+        `/leads/${target.leadId}/enquiries`,
+        aCapture(aPhone(), { name: 'Typed' }),
+        retryKey(),
+      );
+    expect(reply.status).toBe(HttpStatus.NOT_FOUND);
+    expect(await entriesOfKind(world, target.leadId, 'enquiry')).toHaveLength(0);
+  });
 });

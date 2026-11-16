@@ -26,6 +26,8 @@ export function pickProjectFile(screen: ProjectScreen, place: FilePlace): void {
       uploadFailed:
         failed !== null && failed.slot === place.slot && failed.slotKey === place.slotKey,
       retryUpload: screen.retryUpload,
+      // A project place says nothing of a refused pick yet: it keeps today's quiet drop.
+      refusePick: () => undefined,
     },
     FILE_SUBJECT_RULES.project.contentTypes,
   );
@@ -44,6 +46,7 @@ export function pickReceiptPhoto(
         }),
       uploadFailed: false,
       retryUpload: () => undefined,
+      refusePick: () => undefined,
     },
     FILE_SUBJECT_RULES.project.contentTypes.filter((type) => type.startsWith('image/')),
   );
@@ -63,12 +66,19 @@ function pickFile(target: FilePickTarget, accept: readonly string[]): void {
   input.accept = accept.join(',');
   input.addEventListener('change', () => {
     const file = input.files?.[0];
-    if (file !== undefined) {
-      void pickedOf(file).then(
-        (picked) => target.upload(picked),
-        () => undefined,
-      );
+    if (file === undefined) return;
+    // The browser's chooser can be told to show every file; a type the record does not take is
+    // said, never dropped. Any photo the browser can draw is taken: it goes up shrunk as a JPEG.
+    const photoTaken =
+      file.type.startsWith('image/') && accept.some((type) => type.startsWith('image/'));
+    if (!accept.includes(file.type) && !photoTaken) {
+      target.refusePick(file.name, 'type-not-taken');
+      return;
     }
+    void pickedOf(file).then(
+      (picked) => target.upload(picked),
+      () => target.refusePick(file.name, 'type-not-taken'),
+    );
   });
   input.click();
 }

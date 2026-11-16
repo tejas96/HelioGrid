@@ -43,6 +43,8 @@ const REDACTED_PATHS = [
   'req.params.phone',
   'req.query.email',
   'req.query.phone',
+  // What a person typed into a search — a name, a number's digits — is theirs, not the log's.
+  'req.query.q',
   // The print read's grant opens a frozen proposal version on its own (`/proposal-print/:versionId`).
   'req.query.grant',
   // A Temporal activity's task token completes or fails that activity; the SDK's lines carry

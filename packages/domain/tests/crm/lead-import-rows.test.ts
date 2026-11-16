@@ -29,6 +29,8 @@ describe('reading one row of an old spreadsheet of leads (M02-19, M02-21)', () =
     ],
     ['a negative bill', { phone: PHONE, monthly_bill: '-3500' }, PHONE, ['malformed_row']],
     ['a type that is no segment', { phone: PHONE, segment: 'Spaceship' }, PHONE, ['malformed_row']],
+    ['a name past 120', { phone: PHONE, name: 'a'.repeat(121) }, PHONE, ['malformed_row']],
+    ['a city past 80', { phone: PHONE, city: 'a'.repeat(81) }, PHONE, ['malformed_row']],
     [
       'an unreadable number and a bad bill',
       { phone: '12', monthly_bill: 'x' },
@@ -70,6 +72,16 @@ describe('reading one row of an old spreadsheet of leads (M02-19, M02-21)', () =
       IN_FORMATS,
     );
     expect(read).toMatchObject({ lead: { name: 'Priya Sharma', city: 'Nashik' } });
+  });
+
+  it('a name of 120 and a city of 80, spaces aside, land as written', () => {
+    const name = 'a'.repeat(120);
+    const city = 'b'.repeat(80);
+    const read = readLeadImportRow(
+      { phone: PHONE, name: ` ${name} `, city: ` ${city} ` },
+      IN_FORMATS,
+    );
+    expect(read).toMatchObject({ landable: true, lead: { name, city } });
   });
 });
 

@@ -30,11 +30,22 @@ export function leadTaskRowsOf(
  * with its retry — focus then lands on the add. `null` when no pick is out or undone.
  */
 export function leadFilePendingOf(
-  { pending, onRetry }: LeadFilesPanel,
+  { pending, onRetry, onAdd }: LeadFilesPanel,
   words: LeadSectionsWords,
   focusAfter: FocusAfter,
 ): PendingActionSpec | null {
   if (pending === null) return null;
+  if (pending.refused !== null) {
+    // The same file would be refused again: the way on is another file.
+    return {
+      state: 'returned',
+      label: words.addingFile(pending.name),
+      reason: words.fileRefused[pending.refused](pending.name),
+      onRetry: onAdd ?? onRetry,
+      retryLabel: words.chooseAnother,
+      focusAfter,
+    };
+  }
   return {
     state: pending.failed ? 'returned' : 'waiting',
     label: words.addingFile(pending.name),

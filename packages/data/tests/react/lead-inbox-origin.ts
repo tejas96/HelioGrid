@@ -73,6 +73,9 @@ interface Origin {
   assigns: Answer[];
   junks: Answer[];
   bulks: Answer[];
+  reopens: Answer[];
+  /** The leads binned as junk, which a reopen puts back in the queue. */
+  binned: LeadSummary[];
   /** While set, every write waits for it — the act is out until the test lets it go. */
   gate: Promise<void> | null;
   writes: { path: string; body: unknown }[];
@@ -87,6 +90,8 @@ export const origin: Origin = {
   assigns: [],
   junks: [],
   bulks: [],
+  reopens: [],
+  binned: [],
   gate: null,
   writes: [],
   failInbox: false,
@@ -179,27 +184,52 @@ const leave = (id: string) => {
   origin.queue = origin.queue.filter((one) => one.id !== id);
 };
 
+/** The queued answers a write to this path takes first, in the order a test set them. */
+function queuedAnswersFor(path: string) {
+  if (/^\/leads\/[^/]+\/assign$/.test(path)) return origin.assigns;
+  if (/^\/leads\/[^/]+\/junk$/.test(path)) return origin.junks;
+  if (/^\/leads\/[^/]+\/reopen$/.test(path)) return origin.reopens;
+  return origin.bulks;
+}
+
+/** A binned lead put back in the queue, as the api reopens it. */
+function answerReopen(req: IncomingMessage, res: ServerResponse, id: string) {
+  const back = origin.binned.find((one) => one.id === id);
+  if (back === undefined) return send(res, req, 404, refusal('NOT_FOUND'));
+  origin.binned = origin.binned.filter((one) => one.id !== back.id);
+  origin.queue = [...origin.queue, back].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  send(res, req, 200, detailOf(back, null));
+}
+
+/** One lead assigned to a person, or binned as junk. */
+function answerOne(
+  req: IncomingMessage,
+  res: ServerResponse,
+  id: string,
+  junk: boolean,
+  body: unknown,
+) {
+  const found = origin.queue.find((one) => one.id === id);
+  if (found === undefined) return send(res, req, 404, refusal('NOT_FOUND'));
+  const to = origin.people.find(
+    (one) => one.userId === (body as { assigneeId?: string }).assigneeId,
+  );
+  leave(id);
+  if (junk) origin.binned.push(found);
+  send(res, req, 200, detailOf(found, to ?? null));
+}
+
 async function answerWrite(req: IncomingMessage, res: ServerResponse, path: string) {
   const write = await writeBodyOf(req, res);
   if (write === null) return;
   origin.writes.push({ path, body: write.body });
   if (origin.gate !== null) await origin.gate;
-  const assign = /^\/leads\/([^/]+)\/assign$/.exec(path);
-  const junk = /^\/leads\/([^/]+)\/junk$/.exec(path);
-  const queue = assign ? origin.assigns : junk ? origin.junks : origin.bulks;
-  const answer = queue.shift();
+  const answer = queuedAnswersFor(path).shift();
   if (answer === 'drop') return void req.socket.destroy();
   if (answer !== undefined) return send(res, req, answer.status, answer.body);
-  if (assign || junk) {
-    const id = (assign ?? junk)?.[1] ?? '';
-    const found = origin.queue.find((one) => one.id === id);
-    if (found === undefined) return send(res, req, 404, refusal('NOT_FOUND'));
-    const to = origin.people.find(
-      (one) => one.userId === (write.body as { assigneeId?: string }).assigneeId,
-    );
-    leave(id);
-    return send(res, req, 200, detailOf(found, to ?? null));
-  }
+  const one = /^\/leads\/([^/]+)\/(assign|junk|reopen)$/.exec(path);
+  if (one?.[2] === 'reopen') return answerReopen(req, res, one[1] ?? '');
+  if (one) return answerOne(req, res, one[1] ?? '', one[2] === 'junk', write.body);
   const { leadIds } = write.body as { leadIds: string[] };
   for (const id of leadIds) leave(id);
   send(res, req, 200, { results: leadIds.map((leadId) => ({ leadId, outcome: 'assigned' })) });
@@ -226,6 +256,8 @@ afterEach(() => {
     assigns: [],
     junks: [],
     bulks: [],
+    reopens: [],
+    binned: [],
     gate: null,
     writes: [],
     failInbox: false,

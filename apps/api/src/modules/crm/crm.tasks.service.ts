@@ -56,6 +56,21 @@ export class CrmTasksService {
         [{ path: 'assigneeId', issue: 'an active member of the company' }],
       );
     }
+    if (outcome.outcome === 'day-past') {
+      throw new ContractException(
+        'VALIDATION_FAILED',
+        'A task is due today or later.',
+        HttpStatus.BAD_REQUEST,
+        [{ path: 'dueAt', issue: 'today or later' }],
+      );
+    }
+    if (outcome.outcome === 'lead-closed') {
+      throw new ContractException(
+        'LEAD_CLOSED',
+        'This lead is closed. Reopen it to plan more work on it.',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
     if (outcome.outcome === 'not-diallable') {
       throw new ContractException(
         'NUMBER_NOT_DIALLABLE',

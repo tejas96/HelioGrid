@@ -19,7 +19,7 @@ import {
   pipelineStateWhere,
   readPipeline,
 } from './crm.lead-list-facts.repository';
-import { leadScopeWhere } from './crm.scope.repository';
+import { awaitingTriage, leadScopeWhere } from './crm.scope.repository';
 import { type LeadMoney, leadSummaryOf } from './internal/lead-wire';
 import type { Page } from './internal/page';
 import type { LeadReader } from './internal/reader';
@@ -35,6 +35,11 @@ export interface LeadListFilters {
   readonly billMaxMinor?: number;
   readonly sort: LeadListSort;
   readonly order: 'asc' | 'desc';
+  /** What a search asked, or `null` when none was typed. */
+  readonly query: LeadListQueryAsked | null;
+}
+
+export interface LeadListQueryAsked {
   /** Name or city words, each a prefix (`simple` terms). */
   readonly words: readonly string[];
   /** A number's leading digits as stored — `+91984…` — when the query reads as one. */
@@ -52,15 +57,20 @@ function stateWhere(state: LeadListState | undefined): SQL | undefined {
   return state === 'active' ? isNull(lead.lifecycleState) : eq(lead.lifecycleState, state);
 }
 
-/** A name or city prefix match, or a number's prefix — either one keeps the lead. */
-function queryWhere(filters: LeadListFilters): SQL | undefined {
-  const words = prefixQueryOf(filters.words);
+/**
+ * A name or city prefix match, or a number's prefix — either one keeps the lead. A search that
+ * asks for neither (only symbols) keeps no lead, never every lead.
+ */
+function queryWhere(asked: LeadListQueryAsked | null): SQL | undefined {
+  if (asked === null) return undefined;
+  const words = prefixQueryOf(asked.words);
   const byWords =
     words === null ? undefined : sql`${customer.search} @@ to_tsquery('simple', ${words})`;
   const byPhone =
-    filters.phonePrefix === null
+    asked.phonePrefix === null
       ? undefined
-      : sql`${customer.phoneE164} like ${`${filters.phonePrefix}%`}`;
+      : sql`${customer.phoneE164} like ${`${asked.phonePrefix}%`}`;
+  if (byWords === undefined && byPhone === undefined) return sql`false`;
   return byWords === undefined || byPhone === undefined
     ? (byWords ?? byPhone)
     : or(byWords, byPhone);
@@ -113,7 +123,7 @@ export class CrmLeadsRepository {
       filters.billMaxMinor === undefined
         ? undefined
         : lte(lead.monthlyBillMinor, filters.billMaxMinor),
-      queryWhere(filters),
+      queryWhere(filters.query),
     );
     return this.db.withTenantTransaction(reader.tenantId, async (tx) => {
       const rows = await tx
@@ -153,8 +163,7 @@ export class CrmLeadsRepository {
     const where = and(
       eq(lead.tenantId, reader.tenantId),
       leadScopeWhere(reader.scope, reader.actorId),
-      isNull(lead.ownerUserId),
-      isNull(lead.lifecycleState),
+      awaitingTriage,
     );
     const waitingSince = new Date(now - UNASSIGNED_ESCALATES_AFTER_MS);
     return this.db.withTenantTransaction(reader.tenantId, async (tx) => {

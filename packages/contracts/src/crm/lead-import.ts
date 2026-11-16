@@ -186,7 +186,7 @@ export const leadImportContract = c.router({
       200: leadImportSchema,
       401: unauthenticatedEnvelope,
       404: notFound,
-      /** The job is not previewed yet, or already ran. */
+      /** The job is not previewed yet. One that already ran answers 200 as it stands. */
       409: wrongState,
     },
   },

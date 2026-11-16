@@ -161,4 +161,14 @@ describe.skipIf(skip)('the leads list, over HTTP against a migrated database', (
       dormant: 0,
     });
   });
+
+  it.each(['%', '_', '\\', '😀', '-'])(
+    'a search of only %j asks for no name, city or number, and finds no lead',
+    async (q) => {
+      const reply = await owner().call<LeadList>('GET', `/leads?q=${encodeURIComponent(q)}`);
+      expect(reply.status).toBe(HttpStatus.OK);
+      expect(reply.body.items).toEqual([]);
+      expect(reply.body.totalCount).toBe(0);
+    },
+  );
 });

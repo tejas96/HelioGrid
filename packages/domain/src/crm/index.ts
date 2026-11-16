@@ -48,27 +48,19 @@ export type { LeadActFailure, LeadQuickAct, LeadQuickStanding } from './lead-act
 export type { LeadActDays, LeadPostponeDays } from './lead-detail-clock';
 export { leadActDaysOf, tenantInstantOf } from './lead-detail-clock';
 export type {
-  DialBlock,
-  DialOffer,
   LeadActsView,
   LeadContactView,
-  LeadDetailAction,
   LeadDetailFacts,
   LeadDetailMoment,
-  LeadDetailSection,
   LeadDetailView,
   LeadHeaderMarks,
   LeadMember,
-  LeadStateAct,
   LeadTaskFacts,
   LeadTaskView,
   LeadValueShown,
 } from './lead-detail-view';
 export {
   dialOfferOf,
-  LEAD_DETAIL_ACTIONS,
-  LEAD_DETAIL_SECTIONS,
-  LEAD_STATE_ACTS,
   leadActsOf,
   leadContactsOf,
   leadDetailViewOf,
@@ -76,6 +68,18 @@ export {
   leadTasksOf,
   leadValueShownOf,
 } from './lead-detail-view';
+export type {
+  DialBlock,
+  DialOffer,
+  LeadDetailAction,
+  LeadDetailSection,
+  LeadStateAct,
+} from './lead-detail-vocabulary';
+export {
+  LEAD_DETAIL_ACTIONS,
+  LEAD_DETAIL_SECTIONS,
+  LEAD_STATE_ACTS,
+} from './lead-detail-vocabulary';
 export type {
   LeadImportCells,
   LeadImportColumnGuess,

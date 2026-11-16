@@ -18,7 +18,7 @@ import { useEffect, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { useRepositories } from './context';
 import { type LeadAssignees, useLeadAssignees } from './use-lead-assignees';
-import { type InboxActs, useLeadInboxActs } from './use-lead-inbox-acts';
+import { type InboxActs, useLeadInboxActs, without } from './use-lead-inbox-acts';
 import { usePaginatedList } from './use-paginated-list';
 import { useSession } from './use-session';
 
@@ -76,6 +76,10 @@ export interface LeadInboxScreen {
   pick(userId: string): void;
   readonly bulkReport: InboxActs['bulkReport'];
   dismissBulkReport(): void;
+  /** The last confirmed give or junk, for its toast; a junk's carries its Undo. */
+  readonly note: InboxActs['note'];
+  undoJunk(): void;
+  dismissNote(): void;
 }
 
 const NOTHING: InboxView<LeadSummary> = inboxViewOf(
@@ -217,12 +221,8 @@ export function useLeadInboxScreen(): LeadInboxScreen {
     },
     bulkReport: acts.bulkReport,
     dismissBulkReport: acts.dismissBulkReport,
+    note: acts.note,
+    undoJunk: acts.undoJunk,
+    dismissNote: acts.dismissNote,
   };
-}
-
-function without(set: ReadonlySet<string>, member: string): ReadonlySet<string> {
-  if (!set.has(member)) return set;
-  const next = new Set(set);
-  next.delete(member);
-  return next;
 }

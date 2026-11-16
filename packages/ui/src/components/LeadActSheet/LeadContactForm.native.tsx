@@ -1,4 +1,4 @@
-import { phoneDigitsMismatch } from '@heliogrid/domain';
+import { PERSON_NAME_CAP, phoneDigitsMismatch } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -12,6 +12,7 @@ import { Select } from '../Select/Select.native';
 import { LeadActSend, type LeadFormFrame } from './LeadActSend.native';
 import type { LeadActForm } from './LeadActSheet.types';
 import { LeadPhoneTakenNote } from './LeadPhoneTaken.native';
+import { firstMissing } from './missing-field';
 
 type ContactForm = Extract<LeadActForm, { kind: 'contact' }>;
 
@@ -25,7 +26,6 @@ const NO_ROLE = '';
  */
 export function LeadContactForm({ form, frame }: { form: ContactForm; frame: LeadFormFrame }) {
   const { words, start, labels } = form;
-  const { pack } = useFormat();
   const [name, setName] = useState(start?.name ?? '');
   const [phoneE164, setPhoneE164] = useState(start?.phoneE164 ?? '');
   const [roleLabelId, setRoleLabelId] = useState(start?.roleLabelId ?? NO_ROLE);
@@ -37,12 +37,22 @@ export function LeadContactForm({ form, frame }: { form: ContactForm; frame: Lea
       setNewRole('');
     }
   }, [form.addedLabelId]);
+  const { pack } = useFormat();
   const typed = name.trim();
-  /* The market's full number, as the web's Send asks — a short number is not sent. */
-  const ready = typed !== '' && phoneE164 !== '' && phoneDigitsMismatch(pack, phoneE164) === null;
+  const waitingFor = firstMissing(frame.fields.needs, [
+    [typed === '', words.name],
+    [phoneE164 === '' || phoneDigitsMismatch(pack, phoneE164) !== null, words.phone],
+  ]);
+  const ready = waitingFor === null;
   return (
     <View style={styles.form}>
-      <Input label={words.name} value={name} onChange={setName} disabled={frame.pending} />
+      <Input
+        label={words.name}
+        value={name}
+        onChange={setName}
+        disabled={frame.pending}
+        maxLength={PERSON_NAME_CAP}
+      />
       <PhoneField
         label={words.phone}
         words={frame.fields.phone}
@@ -99,6 +109,7 @@ export function LeadContactForm({ form, frame }: { form: ContactForm; frame: Lea
       <LeadActSend
         label={words.send}
         ready={ready}
+        waitingFor={waitingFor}
         pending={frame.pending}
         failure={frame.failure}
         onSend={() => {

@@ -117,7 +117,6 @@ if (command === 'words') {
     REVIEW_CHANGE: PLAN_SELECTION.reviewChange,
     WHAT_CHANGES: PLAN_SELECTION.whatChanges,
     PLAN_PRO: tierName('pro'),
-    CLOSE: SHELL.close,
     /** `SCR-M02-01`: the Leads list's *Add lead* and quick add's four fields, Save and its answers. */
     ADD_LEAD: verbLabel(t.t, 'add_lead'),
     NEW_LEAD: QUICK_ADD.title,

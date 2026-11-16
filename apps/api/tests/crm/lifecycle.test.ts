@@ -5,7 +5,7 @@ import { HttpStatus } from '@nestjs/common';
 import { asc, eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { skipWithoutDatabase } from '../support/fixture';
-import { dayFromToday } from './lead-work';
+import { dayFromToday, tasksOf } from './lead-work';
 import {
   aCapture,
   aPhone,
@@ -16,6 +16,7 @@ import {
   openCrmWorld,
   ownLead,
   preset,
+  retryKey,
 } from './support';
 
 /**
@@ -35,6 +36,9 @@ const skip = skipWithoutDatabase(
 );
 
 const now = () => new Date().toISOString();
+/** The second snooze moves the wake day further out than the first. */
+const LATER_WAKE_DAYS = 5;
+const DAY_MS = 86_400_000;
 
 interface Refused {
   readonly error: { readonly code: string; readonly facts: { readonly refusal: string } };
@@ -101,6 +105,23 @@ describe.skipIf(skip)('the lead lifecycle acts, over HTTP against a migrated dat
     expect((await movesOf(made.lead.id)).length).toBe(0);
   });
 
+  it('a second snooze moves the wake day and says so on the timeline', async () => {
+    const made = await captured(owner(), aCapture(aPhone()));
+    await act(made.lead.id, 'snooze', { wakeOn: dayFromToday(1) });
+    const before = await entriesOfKind(world, made.lead.id, 'state_change');
+    const moved = await act(made.lead.id, 'snooze', { wakeOn: dayFromToday(LATER_WAKE_DAYS) });
+    expect(moved.body.lifecycle.wakeOn).toBe(dayFromToday(LATER_WAKE_DAYS));
+    const after = await entriesOfKind(world, made.lead.id, 'state_change');
+    expect(after).toHaveLength(before.length + 1);
+    expect(after.at(-1)?.body).toMatchObject({
+      from: 'snoozed',
+      to: 'snoozed',
+      wakeOn: dayFromToday(LATER_WAKE_DAYS),
+    });
+    // The funnel's history records a change of state, and a new wake day is none.
+    expect((await movesOf(made.lead.id)).length).toBe(1);
+  });
+
   it('a snooze to tomorrow parks the lead at its stage, and waking it now returns it', async () => {
     const made = await captured(owner(), aCapture(aPhone()));
     const snoozed = await act(made.lead.id, 'snooze', { wakeOn: dayFromToday(1) });
@@ -135,4 +156,50 @@ describe.skipIf(skip)('the lead lifecycle acts, over HTTP against a migrated dat
     });
     expect(reply.status).toBe(HttpStatus.FORBIDDEN);
   });
+  const inADay = () => new Date(Date.now() + DAY_MS).toISOString();
+  const aTaskOn = (leadId: string) =>
+    owner().call(
+      'POST',
+      `/leads/${leadId}/tasks`,
+      { kind: 'follow_up', dueAt: inADay() },
+      retryKey(),
+    );
+
+  it.each([
+    ['junk', {}],
+    ['disqualify', { reason: 'not_interested' }],
+  ])(
+    'a %s close cancels the open tasks, refuses new tasks and edits, and keeps notes',
+    async (verb, body) => {
+      const made = await captured(owner(), aCapture(aPhone()));
+      await ownLead(world, made.lead.id, here.people.owner.userId);
+      expect((await aTaskOn(made.lead.id)).status).toBe(HttpStatus.CREATED);
+      expect((await act(made.lead.id, verb, body)).status).toBe(HttpStatus.OK);
+
+      const tasks = await tasksOf(world, made.lead.id);
+      expect(tasks.map((one) => one.status)).not.toContain('open');
+      const task = await aTaskOn(made.lead.id);
+      expect(task.status).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
+      expect(task.body).toMatchObject({ error: { code: 'LEAD_CLOSED' } });
+      const edit = await owner().call('PATCH', `/leads/${made.lead.id}`, {
+        name: 'Asha',
+        capturedAt: now(),
+      });
+      expect(edit.status).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
+      expect(edit.body).toMatchObject({ error: { code: 'DOMAIN_RULE_VIOLATION' } });
+      // A person must always be able to stop the calls, closed or not (`M02-44`).
+      const stop = await owner().call('PATCH', `/leads/${made.lead.id}`, {
+        doNotCall: true,
+        capturedAt: now(),
+      });
+      expect(stop.status).toBe(HttpStatus.OK);
+      const note = await owner().call(
+        'POST',
+        `/leads/${made.lead.id}/notes`,
+        { text: 'Customer called back to say no.', capturedAt: now() },
+        retryKey(),
+      );
+      expect(note.status).toBe(HttpStatus.CREATED);
+    },
+  );
 });

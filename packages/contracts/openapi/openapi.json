@@ -115383,6 +115383,7 @@
                           "x-extensible-enum": [
                             "ASSIGNEE_UNAVAILABLE",
                             "NUMBER_NOT_DIALLABLE",
+                            "LEAD_CLOSED",
                             "IDEMPOTENCY_KEY_REUSED"
                           ]
                         },

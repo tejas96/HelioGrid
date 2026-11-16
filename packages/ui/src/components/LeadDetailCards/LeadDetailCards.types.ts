@@ -8,6 +8,7 @@ import type {
 } from '../LeadContactsCard/LeadContactsCard.types';
 import type { LeadTaskRowWords } from '../LeadSections/LeadSections.logic';
 import type {
+  LeadFileRefusal,
   LeadProposalsPanel,
   LeadSectionsWords,
   LeadSiteFactLine,
@@ -55,6 +56,8 @@ export interface LeadDetailCardsScreen<Failure> {
     readonly uploadFailed: boolean;
     /** The last pick's own name. */
     readonly picked: string | null;
+    /** Why the last pick never went up, or `null`. */
+    readonly refused: LeadFileRefusal | null;
     retryUpload(): void;
   };
 }

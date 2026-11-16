@@ -8,6 +8,7 @@ import { Textarea } from '../Textarea/Textarea.native';
 import { LeadActSend, type LeadFormFrame } from './LeadActSend.native';
 import type { LeadActForm } from './LeadActSheet.types';
 import { LeadChoiceChips } from './LeadChoiceChips.native';
+import { firstMissing } from './missing-field';
 
 type LogKind = 'call' | 'note';
 
@@ -27,7 +28,11 @@ export function LeadLogForm({
   const [outcome, setOutcome] = useState<CallOutcome | null>(null);
   const [note, setNote] = useState('');
   const typed = note.trim();
-  const ready = kind === 'call' ? outcome !== null : typed !== '';
+  const waitingFor =
+    kind === 'call'
+      ? firstMissing(frame.fields.needs, [[outcome === null, words.outcomeLabel]])
+      : firstMissing(frame.fields.needs, [[typed === '', words.noteLabel]]);
+  const ready = waitingFor === null;
   const send = () => {
     if (kind === 'note') form.onSend({ kind: 'note', text: typed });
     else if (outcome !== null) {
@@ -74,6 +79,7 @@ export function LeadLogForm({
       <LeadActSend
         label={kind === 'call' ? words.send : words.sendNote}
         ready={ready}
+        waitingFor={waitingFor}
         pending={frame.pending}
         failure={frame.failure}
         onSend={send}

@@ -21,6 +21,8 @@ import {
  */
 
 const here = aStaffedCompany('Inbox EPC', { owner: [FOUNDER_ROLE] });
+/** A company of its own, so its leads leave the first company's counts alone. */
+const staged = aStaffedCompany('Inbox Stages EPC', { owner: [FOUNDER_ROLE] });
 
 const skip = skipWithoutDatabase(
   'LEAD INBOX PROOF',
@@ -41,7 +43,7 @@ describe.skipIf(skip)('the lead inbox, over HTTP against a migrated database', (
   const owner = () => world.as(here.members.owner);
 
   beforeAll(async () => {
-    world = await openCrmWorld([here]);
+    world = await openCrmWorld([here, staged]);
   });
 
   afterAll(async () => {
@@ -109,5 +111,19 @@ describe.skipIf(skip)('the lead inbox, over HTTP against a migrated database', (
     const reply = await owner().call<LeadInbox>('GET', '/lead-inbox?limit=1&page=2');
     expect(reply.body.items).toHaveLength(1);
     expect(reply.body.totalCount).toBe(WAITING);
+  });
+
+  it('a lead past new has left triage, owner or not (M02-23)', async () => {
+    const stagedOwner = world.as(staged.members.owner);
+    const fresh = await captured(stagedOwner, aCapture(aPhone()));
+    const moved = await captured(stagedOwner, aCapture(aPhone()));
+    const qualify = await stagedOwner.call('POST', `/leads/${moved.lead.id}/qualified`, {
+      capturedAt: new Date().toISOString(),
+    });
+    expect(qualify.status).toBe(HttpStatus.OK);
+
+    const reply = await stagedOwner.call<LeadInbox>('GET', '/lead-inbox');
+    expect(reply.body.items.map((row) => row.id)).toEqual([fresh.lead.id]);
+    expect(reply.body.totalCount).toBe(1);
   });
 });
