@@ -67,8 +67,8 @@ test('a new owner is asked what the company sells once: two questions, no way ro
   for (const card of await cards(page).all()) await expect(card).not.toBeChecked();
   await expect(size(page)).toHaveValue('');
   await expect(page.getByText(UNIT, { exact: true })).toBeVisible();
-  for (const word of [tierLabel(en.t, 'estimated'), en.t(SETUP_WHAT_YOU_SELL.declaredByYou)])
-    await expect(page.locator('.hg-provenance')).toContainText(word);
+  // An empty size holds no figure, so it says no tier until one is typed.
+  await expect(page.locator('.hg-provenance')).toHaveCount(0);
   // The step's only buttons are the ask and the way on: nothing skips it and nothing goes back.
   await expect(page.getByRole('main').getByRole('button')).toHaveText([
     '',
@@ -85,6 +85,8 @@ test('a new owner is asked what the company sells once: two questions, no way ro
     (request) => request.method() === 'PUT' && request.url().endsWith('/what_you_sell'),
   );
   await answerWhatYouSell(page, en);
+  for (const word of [tierLabel(en.t, 'estimated'), en.t(SETUP_WHAT_YOU_SELL.declaredByYou)])
+    await expect(page.locator('.hg-provenance')).toContainText(word);
   await wayOn(page).click();
   // The write replaces the profile whole, so everything the read held goes back beside the answers.
   expect((await saved).postDataJSON()).toEqual({

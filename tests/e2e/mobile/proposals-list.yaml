@@ -32,9 +32,17 @@ appId: com.heliogrid.app
 - extendedWaitUntil:
     visible: ${WHO_IS_IT_FOR}
     timeout: 15000
-# The capture opens with its phone field in focus: Android's Back closes the keyboard first.
-- hideKeyboard
+# The capture opens with its phone field in focus, and Android's Back closes the keyboard first
+# when it is up. Maestro's hideKeyboard is a Back too, so a keyboard not yet up let it close the
+# sheet and the next Back leave the app: one Back, and a second only while the sheet still stands.
+- waitForAnimationToEnd
 - back
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: ${WHO_IS_IT_FOR}
+    commands:
+      - back
 - extendedWaitUntil:
     notVisible: ${WHO_IS_IT_FOR}
     timeout: 15000
