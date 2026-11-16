@@ -1,22 +1,21 @@
 import { createContext, useContext } from 'react';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
-import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
+import { TONE } from '../../primitives/Tone/tone.native';
 import type { ShellGlyphProps } from './AppShell.types';
-import { glyphMarks, glyphStroke } from './ShellGlyph.logic';
-import { ShellGlyphMarks } from './ShellGlyphMarks.native';
+import { SHELL_GLYPHS } from './ShellGlyph.icons';
+import { GLYPH_SIZE, GLYPH_STROKE } from './ShellGlyph.logic';
 
-/* react-native-svg has no currentColor, so the tone resolves to its token here. */
-const TONE: Record<NonNullable<ShellGlyphProps['tone']>, ThemeColor> = {
+/* react-native-svg has no inherited colour, so the tone resolves to its token here. */
+const GLYPH_INK: Record<Exclude<NonNullable<ShellGlyphProps['tone']>, 'current'>, ThemeColor> = {
   primary: colors['text-primary'],
   secondary: colors['text-secondary'],
   inverse: colors['text-inverse'],
   accent: colors.accent,
   info: colors.info,
-  danger: colors['danger-text'],
-  success: colors['success-text'],
-  warning: colors['warning-text'],
+  danger: TONE.danger.ink,
+  success: TONE.success.ink,
+  warning: TONE.warning.ink,
 };
 
 /**
@@ -27,32 +26,30 @@ const TONE: Record<NonNullable<ShellGlyphProps['tone']>, ThemeColor> = {
 export const GlyphInkContext = createContext<ThemeColor | null>(null);
 
 /**
- * One of the shell's own glyphs. Decorative — the control that holds it carries the name — so it
- * is hidden from assistive tech. `tone` sets the colour; the stroke follows it.
+ * One of the design system's glyphs, hidden from assistive tech unless it has a `label`. `ink`
+ * wins, then the filled pill's ink, then `tone`.
  */
 export function ShellGlyph({
   name,
-  filled = false,
   size = 'lg',
   tone = 'secondary',
+  ink,
+  fill,
+  label,
 }: ShellGlyphProps) {
-  const { solid } = glyphMarks(name, filled);
-  const px = ICON_SIZE[size];
-  const color = useContext(GlyphInkContext) ?? TONE[tone];
+  const Glyph = SHELL_GLYPHS[name];
+  const pill = useContext(GlyphInkContext);
+  /* react-native-svg paints a system colour here; Lucide's props type it as a string only. */
+  const color = (ink ?? pill ?? GLYPH_INK[tone === 'current' ? 'primary' : tone]) as string;
   return (
-    <Svg
-      width={px}
-      height={px}
-      viewBox="0 0 24 24"
-      fill={solid ? color : 'none'}
+    <Glyph
+      size={GLYPH_SIZE[size]}
       stroke={color}
-      strokeWidth={glyphStroke(size)}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      accessibilityElementsHidden
-      importantForAccessibility="no-hide-descendants"
-    >
-      <ShellGlyphMarks name={name} filled={filled} />
-    </Svg>
+      strokeWidth={GLYPH_STROKE}
+      fill={fill === 'ink' ? color : ((fill as string | undefined) ?? 'none')}
+      {...(label === undefined
+        ? { accessibilityElementsHidden: true, importantForAccessibility: 'no-hide-descendants' }
+        : { accessible: true, accessibilityRole: 'image', accessibilityLabel: label })}
+    />
   );
 }

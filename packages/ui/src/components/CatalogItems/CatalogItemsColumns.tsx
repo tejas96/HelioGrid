@@ -1,8 +1,8 @@
-import { StatusMark } from '../../primitives/StatusMark/StatusMark';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Badge } from '../Chip';
 import type { DataTableColumn } from '../DataTable/DataTableColumn.types';
+import { StatusMark } from '../StatusMark/StatusMark';
 import { CATALOG_KIND_LEADING } from './CatalogItems.rows';
 import type { CatalogItemsWords, CatalogRow } from './CatalogItems.types';
 
@@ -41,7 +41,7 @@ function WideSub({
       <span>{row.specLine}</span>
       {row.provenance === 'verified_datasheet' ? (
         <span className="hg-cat-verified">
-          <ShellGlyph name="tick-small" size="sm" tone="success" />
+          <ShellGlyph name="check" size="sm" tone="success" />
           <Text as="span" variant="caption" color="success">
             {row.provenanceWord}
           </Text>

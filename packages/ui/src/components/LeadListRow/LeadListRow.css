@@ -80,6 +80,42 @@
   overflow-wrap: anywhere;
 }
 
+/* The number under a name, in the face numbers take (`F7-09`). */
+.hg-lead-list-row-number {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* When the lead was last touched: the clock and its words stay together. */
+.hg-lead-list-row-since {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* The owner's face and name: a long name wraps under itself, never past half the line. */
+.hg-lead-list-row-owner {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: var(--sp-2);
+  max-width: 50%;
+  min-width: 0;
+}
+
+.hg-lead-list-row-owner > .hg-avatar {
+  flex: none;
+}
+
+.hg-lead-list-row-owner-name {
+  min-width: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
 /* The bill and its tier stay together when the line wraps. */
 .hg-lead-list-row-bill {
   display: inline-flex;

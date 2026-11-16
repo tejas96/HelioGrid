@@ -12,8 +12,7 @@ import {
 } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { MarketFormat } from '../../utils/format';
-import { glyphStroke } from '../AppShell/ShellGlyph.logic';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { HueTileTone } from '../HueTile/HueTile.types';
 import type { MenuItem } from '../Menu/Menu.types';
 import type { TimelineItem } from '../Timeline/Timeline.types';
@@ -84,7 +83,7 @@ export function waitDaysOf(project: ProjectDetailFacts): number {
 /** Who a project waits on, as its tile's glyph. */
 export const PARTY_GLYPH: Readonly<Record<string, ShellGlyphName>> = {
   company: 'building',
-  customer: 'person',
+  customer: 'user',
   utility: 'bolt',
   material: 'package',
 };
@@ -111,9 +110,6 @@ export function provingRowOf(
   if (next.kind !== 'upload_proof') return null;
   return { row: next.row, to: next.to };
 }
-
-/** The glyph's stroke on a project's tiles: a row's and a card's, as the board draws them. */
-export const TILE_STROKE = glyphStroke('md');
 
 /** A document's tile: done reads the success wash, the rest the neutral fill. */
 export function documentToneOf(document: ProjectDocument): HueTileTone {
@@ -211,7 +207,7 @@ function movedByOf(
 /** Each safe act's glyph in the ⋯; cancel draws the menu's own trash, as every destructive row does. */
 const MENU_GLYPH: Record<Exclude<ProjectMenuAct, 'cancel'>, ShellGlyphName> = {
   date: 'calendar',
-  manager: 'person',
+  manager: 'user',
   access: 'key',
   moveBack: 'undo',
 };

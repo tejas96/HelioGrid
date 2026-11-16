@@ -21,7 +21,7 @@ export function StreamEntry({ entry, kinds, words, density, format }: StreamEntr
     );
   return (
     <li className="hg-stream-entry">
-      <span aria-hidden="true" className="hg-stream-mark" data-tone={spec.tone}>
+      <span aria-hidden="true" className="hg-stream-mark hg-tone" data-tone={spec.tone}>
         <ActivityGlyph name={spec.glyph} size={streamMarkOf(density).glyph} />
       </span>
       <div className="hg-stream-body">

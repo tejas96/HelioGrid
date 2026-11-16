@@ -1,10 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import type { FindingListProps, FindingStatus, FindingStatusMeta } from './FindingList.types';
 import { countSentence, FINDING_RANK, findingVerdict } from './FindingList.verdict';
 import { FINDING_TONE, FindingListRow } from './FindingListRow.native';
@@ -18,22 +18,21 @@ interface NativeFindingListProps extends FindingListProps {
 const FINDING_STATUSES: Record<FindingStatus, FindingStatusMeta> = {
   blocking: {
     rank: FINDING_RANK.blocking,
-    tone: colors['danger-text'],
-    bg: colors['danger-bg'],
-    mark: colors.danger,
+    tone: TONE.danger.ink,
+    bg: TONE.danger.tint,
+    mark: TONE.danger.mark,
   },
   attention: {
     rank: FINDING_RANK.attention,
-    tone: colors['warning-text'],
-    bg: colors['warning-bg'],
-    /* The warning MARK takes --warning-text: plain --warning clears no contrast floor. */
-    mark: colors['warning-text'],
+    tone: TONE.warning.ink,
+    bg: TONE.warning.tint,
+    mark: TONE.warning.mark,
   },
   ready: {
     rank: FINDING_RANK.ready,
-    tone: colors['success-text'],
-    bg: colors['success-bg'],
-    mark: colors.success,
+    tone: TONE.success.ink,
+    bg: TONE.success.tint,
+    mark: TONE.success.mark,
   },
 };
 

@@ -7,7 +7,7 @@
    A named gap suppresses the whole chip: a delta of an absent value is arithmetic on nothing. */
 
 import { Text } from '../../primitives/Text';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { StatCardDeltaProps } from './StatCard.types';
 import { DELTA_DIR_GLYPH, deltaChipOf } from './StatCardDelta.logic';
 
@@ -19,19 +19,7 @@ export function StatCardDelta({ dir, ...chipFacts }: StatCardDeltaProps) {
   return (
     <span className="hg-stat-card-delta" data-sentiment={sentiment}>
       {/* Direction's channel: the arrow. Sentiment's: the tint AND the word after it. */}
-      <svg
-        width="12"
-        height="12"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <ShellGlyphMarks name={DELTA_DIR_GLYPH[dir]} />
-      </svg>
+      <ShellGlyph name={DELTA_DIR_GLYPH[dir]} size="xs" tone="current" />
       {/* NAME_FROM_CONTENT (check h): the arrow is hidden, so DIRECTION is carried in words — and
           those words are CONTENT here where the native half folds the whole chip into one
           `accessibilityLabel`. Through the DS `Text` primitive so the name source is declared

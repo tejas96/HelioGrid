@@ -27,7 +27,7 @@ export function NeedsYouHero(props: DashboardPartProps) {
     return (
       <HeroPanel label={words.needsYouNow}>
         <div className="hg-owner-need-clear">
-          <HueTile glyph="check-check" hue="success" size={48} stroke={1.75} />
+          <HueTile glyph="check-check" hue="success" size={48} />
           <div className="hg-owner-need-words">
             <span className="hg-owner-need-title">{words.allClearTitle}</span>
             <span className="hg-owner-on-panel">{words.allClearBody}</span>
@@ -93,7 +93,7 @@ function NeedCard({
   return (
     <li className="hg-owner-need" data-current={current ? 'true' : 'false'}>
       <div className="hg-owner-need-head">
-        <HueTile glyph={item.glyph} hue={item.hue} size={44} stroke={1.75} />
+        <HueTile glyph={item.glyph} hue={item.hue} size={44} />
         <div className="hg-owner-need-words">
           <span className="hg-owner-need-title">{item.title}</span>
           <span className="hg-owner-on-panel">{item.line}</span>

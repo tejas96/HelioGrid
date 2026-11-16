@@ -6,6 +6,8 @@ import { Badge } from '../Chip/Chip.native';
 import { styles as card, Glyph, Meta, Tile } from './NotificationCard.native';
 import type { NotificationGroupProps, NotificationMemberProps } from './NotificationCard.types';
 
+// web-only part: ActivityStream — its glyph is drawn by NotificationCard.native, which draws ActivityGlyph.
+
 /**
  * Two or more of one type on one day (`F6-12`). The group card is not a link — grouping is
  * presentation only — and its members stack under it at full width, each its own record.

@@ -3,8 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import { useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { AfterHint, AfterSummary } from '../ProposalAfterParts/ProposalAfterParts.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import { withdrawSheetOf } from './ProposalWithdrawSheet.logic';
 import type { ProposalWithdrawSheetProps } from './ProposalWithdrawSheet.types';
 
@@ -25,7 +25,7 @@ export function ProposalWithdrawSheet(props: ProposalWithdrawSheetProps) {
   const { open, words, failure } = props;
   const frame = withdrawSheetOf(props);
   return (
-    <Sheet {...frame.sheet} showClose>
+    <EditorSurface {...frame.sheet} showClose desktop="modal">
       {open && words !== null ? (
         <View style={styles.body}>
           <AfterSummary rows={words.summary} />
@@ -41,7 +41,7 @@ export function ProposalWithdrawSheet(props: ProposalWithdrawSheetProps) {
           </Text>
         </View>
       ) : null}
-    </Sheet>
+    </EditorSurface>
   );
 }
 

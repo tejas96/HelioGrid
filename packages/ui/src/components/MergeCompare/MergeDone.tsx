@@ -21,7 +21,7 @@ export function MergeDone({ words, onOpenCustomer, onBackToLeads }: MergeDonePro
       <HeroPanel name={words.title}>
         <div className="hg-merge-done">
           <span className="hg-merge-tick">
-            <ShellGlyph name="tick" size="lg" tone="success" />
+            <ShellGlyph name="check" size="lg" tone="success" />
           </span>
           <h1 className="hg-merge-done-title">{words.title}</h1>
           <p className="hg-merge-done-line">{words.line}</p>

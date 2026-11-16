@@ -39,7 +39,12 @@ export function CatalogRowActs({ row, acts }: { row: CatalogRow; stacked: boolea
         pressed={row.preferred}
         onClick={() => acts.onPrefer(row)}
       >
-        <ShellGlyph name="star" size="sm" filled={row.preferred} tone={ink(row.preferred)} />
+        <ShellGlyph
+          name="star"
+          size="sm"
+          fill={row.preferred ? 'ink' : undefined}
+          tone={ink(row.preferred)}
+        />
       </IconButton>
       <IconButton
         label={row.labels.side}

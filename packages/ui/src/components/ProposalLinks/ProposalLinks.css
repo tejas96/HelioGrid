@@ -21,7 +21,7 @@
   align-items: center;
   gap: var(--sp-3);
   padding: var(--sp-4);
-  border-radius: var(--r-tile);
+  border-radius: var(--r-lg);
   animation: hg-rise var(--dur-emphasised) var(--ease-enter) both;
   animation-delay: calc(var(--i) * var(--stagger-step));
 }

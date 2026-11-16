@@ -57,6 +57,26 @@ describe('Collections settings', () => {
   });
 });
 
+describe('Collections settings — a token that ran out', () => {
+  /* A web token cookie dies with its token, so the save reaches the guard with no credential: the
+     client renews the token once and sends the same save again, under the same key. */
+  it('a save refused for no credential is renewed and sent again', async () => {
+    answerNext('collections', { status: 401, body: refusal('NO_CREDENTIAL') });
+    const view = mountedOver(() => useCollectionsSettings());
+    await waitFor(() => expect(view.result.current.read.kind).toBe('ready'));
+    act(() => view.result.current.edit(WRITE));
+    let saved = false;
+    await act(async () => {
+      saved = await view.result.current.save();
+    });
+    expect(saved).toBe(true);
+    expect(origin.sent.filter((sent) => sent === 'POST /auth/refresh')).toHaveLength(1);
+    const [first, again] = origin.writes;
+    expect(origin.writes).toHaveLength(2);
+    expect(again?.key).toBe(first?.key);
+  });
+});
+
 describe('Collections settings — what may be saved', () => {
   it.each([
     ['nothing typed', {}, false],

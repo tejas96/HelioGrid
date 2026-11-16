@@ -2,16 +2,17 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { DataTableWords, PaginationProps } from './DataTable.types';
 import type { PageStep } from './DataTableChrome.logic';
 import { pagerOf } from './DataTableChrome.logic';
+
+// web-only parts: Button, StateBody — its messages are drawn by its child DataTableFeedback.native.
 
 /** The row just added (`isRowHighlighted`): the accent's tint. */
 export const ROW_HIGHLIGHT = colors['accent-subtle'];
@@ -97,17 +98,7 @@ export function SelectionBar({
       style={styles.selection}
     >
       <Pressable accessibilityLabel={words.clearSelection} onPress={onClear} style={styles.clear}>
-        <Svg
-          width={16}
-          height={16}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={colors['text-secondary']}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-        >
-          <ShellGlyphMarks name="close" />
-        </Svg>
+        <ShellGlyph name="close" size="sm" ink={colors['text-secondary']} />
       </Pressable>
       <Text variant="body-sm" style={{ fontWeight: '500' }}>
         {words.selected(count)}
@@ -130,18 +121,11 @@ export function Pagination(props: PaginationProps) {
       style={styles.step}
     >
       <View style={direction < 0 ? { transform: [{ rotate: '180deg' }] } : undefined}>
-        <Svg
-          width={18}
-          height={18}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={disabled ? colors['text-disabled'] : colors['text-primary']}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <ShellGlyphMarks name="chevron-right" />
-        </Svg>
+        <ShellGlyph
+          name="chevron-right"
+          size="sm"
+          ink={disabled ? colors['text-disabled'] : colors['text-primary']}
+        />
       </View>
     </Pressable>
   );

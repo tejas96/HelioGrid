@@ -1,15 +1,13 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
-import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { renderActorClass } from '../ActorClass/ActorClass.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
 import { materialsLineOf, stepStateOf } from './Checklist.logic';
 import type { ChecklistItem, ChecklistRowProps, ChecklistWords } from './Checklist.types';
@@ -81,19 +79,12 @@ function TickBox({
       ]}
     >
       {filled ? (
-        <Svg
-          width={13}
-          height={13}
-          viewBox="0 0 24 24"
-          fill="none"
+        <ShellGlyph
+          name="check"
+          size="dense"
           // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-          stroke={colors['text-inverse']}
-          strokeWidth={4.4}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <ShellGlyphMarks name="tick-small" />
-        </Svg>
+          ink={colors['text-inverse']}
+        />
       ) : null}
     </View>
   );
@@ -144,18 +135,7 @@ function Body({
           <Text variant="body-sm" color="accent" style={{ fontWeight: '500' }}>
             {item.evidence.label ?? words.evidence}
           </Text>
-          <Icon size="sm" color={colors.accent}>
-            <Svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={colors.accent}
-              strokeWidth={1.8}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <ShellGlyphMarks name="arrow-up-right" />
-            </Svg>
-          </Icon>
+          <ShellGlyph name="arrow-up-right" size="sm" ink={colors.accent} />
         </Pressable>
       )}
       {attribution !== null || item.doneAt !== undefined ? (

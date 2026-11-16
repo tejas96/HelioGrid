@@ -1,11 +1,11 @@
 import type { CatalogImportRowWire } from '@heliogrid/contracts';
 import { Fragment } from 'react';
 import { Pressable } from '../../primitives/Pressable';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { Button } from '../Button';
 import { HueTile } from '../HueTile/HueTile';
 import type { ImportFormats } from '../Import/Import.types';
-import { ImportGlyph } from '../Import/ImportGlyph';
 import { StatusChip } from '../StatusChip';
 import { type ImportListRowView, listRowOf } from './CatalogImport.logic';
 import type { CatalogImportWords, ImportGroupId, ImportRowList } from './CatalogImport.types';
@@ -54,7 +54,7 @@ export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
         accessibilityState={{ expanded: open }}
         onPress={props.onToggle}
       >
-        <HueTile glyph={tile.glyph} hue={tile.hue} size={36} stroke={1.7} />
+        <HueTile glyph={tile.glyph} hue={tile.hue} size={36} />
         <span className="hg-import-group-words">
           <span className="hg-import-group-title">
             {words.groupTitle(words.groups[group.id], group.total)}
@@ -63,12 +63,9 @@ export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
             <Sample items={sample} more={group.total > sample.length} words={words} />
           )}
         </span>
-        <ImportGlyph
-          name="chevron"
-          size={wide ? 'md' : 'sm'}
-          stroke={1.7}
-          className="hg-import-group-chevron"
-        />
+        <span className="hg-import-group-chevron">
+          <ShellGlyph name="chevron" size={wide ? 'md' : 'sm'} tone="current" />
+        </span>
       </Pressable>
       {open ? (
         <div className="hg-import-group-panel">

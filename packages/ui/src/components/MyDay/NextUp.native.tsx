@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
@@ -13,6 +12,7 @@ import { HeroPanel } from '../HeroPanel/HeroPanel.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { useFormat } from '../MarketProvider';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { leadActOf, nameOf, positionOf, whenOf, whyFirstOf } from './MyDay.logic';
 import type { MyDayProps } from './MyDay.types';
 
@@ -103,7 +103,7 @@ function NextHero(props: HeroProps & { readonly item: MyDayItem }) {
             disabled={sending}
             onClick={() => props.onDone(item)}
           >
-            <ShellGlyph name="tick" size="md" tone="success" />
+            <ShellGlyph name="check" size="md" tone="success" />
           </IconButton>
         </View>
         <View style={styles.foot}>
@@ -270,5 +270,6 @@ const styles = StyleSheet.create({
   },
   why: { flexGrow: 1, flexShrink: 1, flexBasis: theme.spacing['sp-24'], minWidth: 0 },
   // The ghost act ends where the hero's content ends: a small pill's own padding pulled back.
-  flush: { marginEnd: -theme.spacing['sp-4'] },
+  /* A small button's inline padding (`Button`'s `sm`), pulled back. */
+  flush: { marginEnd: -theme.spacing['sp-3'] },
 });

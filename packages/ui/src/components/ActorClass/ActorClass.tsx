@@ -1,7 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
+import { nearestGlyphSize } from '../AppShell/ShellGlyph.logic';
 import { ACTOR_GLYPH } from './ActorClass.logic';
 import type { ActorClassName, ActorClassProps, ActorClassSpec } from './ActorClass.types';
 import { ACTOR_CLASSES, actorClassOptions, actorWords } from './ActorClass.types';
@@ -25,20 +26,9 @@ export function ActorGlyph({
   }
   const glyph = ACTOR_CLASSES[actorClass].glyph;
   return (
-    <svg
-      className="hg-actor-glyph"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name={ACTOR_GLYPH[glyph]} />
-    </svg>
+    <span className="hg-actor-glyph">
+      <ShellGlyph name={ACTOR_GLYPH[glyph]} size={nearestGlyphSize(size)} tone="current" />
+    </span>
   );
 }
 

@@ -38,7 +38,7 @@ export function ForecastCard({ view, words, onForecastStage }: DashboardPartProp
   if (forecast === undefined) return <ForecastTile words={words} />;
   const rows = forecastRowsOf(forecast, words, format);
   return (
-    <Card className="hg-owner-card">
+    <Card className="hg-owner-card" tile="glass">
       <section className="hg-owner-card-body" aria-label={words.forecastTitle}>
         <div className="hg-owner-card-head">
           <Text as="h2" variant="overline" color="secondary">
@@ -83,7 +83,7 @@ export function ForecastCard({ view, words, onForecastStage }: DashboardPartProp
           </>
         )}
         <p className="hg-owner-forecast-note">
-          <ShellGlyph name="info-circle" size="sm" tone="secondary" />
+          <ShellGlyph name="info" size="sm" tone="secondary" />
           <span>{words.forecastHonest}</span>
         </p>
       </section>

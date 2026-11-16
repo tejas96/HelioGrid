@@ -9,8 +9,8 @@ const bezier = (b: readonly number[]) => `cubic-bezier(${b.join(',')})`;
  * it lays the page out again on every frame. So the move is played back by transform: the page
  * slides from where it stood to its new place, and the sidebar's panel (`.hg-app-rail::before`)
  * stretches from its old width to its new one. While the sidebar opens, `data-moving="open"` lets
- * its words fade in once the page has cleared their room (`AppRailFolded.css`). The sidebar showing
- * or leaving at the desktop breakpoint is no fold, and moves nothing.
+ * its words fade in with it (`AppRailFolded.css`), and the whole fold is over in `fast`, as
+ * OneOhm's. The sidebar showing or leaving at the desktop breakpoint is no fold, and moves nothing.
  */
 export function useRailFollow(
   railBox: RefObject<HTMLDivElement | null>,
@@ -22,7 +22,7 @@ export function useRailFollow(
     const page = column.current;
     if (box === null || page === null || reduced || typeof ResizeObserver === 'undefined') return;
     const timing: KeyframeAnimationOptions = {
-      duration: theme.motion.durations.emphasised,
+      duration: theme.motion.durations.fast,
       easing: bezier(theme.motion.easings.standard),
     };
     let width = box.getBoundingClientRect().width;
@@ -42,7 +42,7 @@ export function useRailFollow(
         });
       if (width > from) {
         box.dataset.moving = 'open';
-        window.setTimeout(() => delete box.dataset.moving, theme.motion.durations.emphasised * 2);
+        window.setTimeout(() => delete box.dataset.moving, theme.motion.durations.fast);
       }
     });
     watch.observe(box);

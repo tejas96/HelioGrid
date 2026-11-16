@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { LeadStage } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
-import type { StatusTone } from '../../primitives/StatusMark';
+import type { StatusTone } from '../StatusMark';
 
 /** The canonical pipeline vocabulary. **Not a boundary** — `status` accepts any string. */
 export type SolarStatus =
@@ -34,7 +34,7 @@ export interface StatusChipProps {
    * The meaning. Supply it whenever `status` is outside the canonical set — that is how a word the
    * registry has never heard of gets the right colour instead of borrowing a wrong one.
    *
-   * `StatusTone` is the primitives' declaration (`StatusMark`), which is the one place the six
+   * `StatusTone` is `StatusMark`'s declaration, which is the one place the six
    * tones live in this repo.
    */
   tone?: StatusTone;

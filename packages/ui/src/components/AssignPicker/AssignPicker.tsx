@@ -1,7 +1,7 @@
-import { StatusMark } from '../../primitives/StatusMark';
 import { Avatar } from '../Avatar';
 import { ListRow } from '../ListRow';
 import { Sheet } from '../Sheet';
+import { StatusMark } from '../StatusMark';
 import { AssigneeLoad } from './AssigneeLoad';
 import { isAssignWaiting, loadSharesOf, pickOf } from './AssignPicker.logic';
 import type { AssignPickerProps } from './AssignPicker.types';

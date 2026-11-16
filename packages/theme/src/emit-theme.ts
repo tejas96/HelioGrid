@@ -21,13 +21,23 @@ import {
   AMBIENT,
   DURATION,
   EASING,
+  ENTER,
   PRESS,
   REDUCED_DURATION,
   SKELETON_DELAY_MS,
   SPRING,
   STAGGER,
+  TIP_DELAY_MS,
 } from './tokens/motion';
-import { DISPLAY_WEIGHTS, FIELD_TYPE, FONT_STACKS, TYPE_ROLES, WEIGHTS } from './tokens/typography';
+import {
+  DISPLAY_WEIGHTS,
+  DOCUMENT_PREVIEW_SCALE,
+  DOCUMENT_TYPE,
+  FIELD_TYPE,
+  FONT_STACKS,
+  TYPE_ROLES,
+  WEIGHTS,
+} from './tokens/typography';
 
 interface RnShadow {
   shadowColor: string;
@@ -96,6 +106,8 @@ export function buildThemeObject(scriptStacks: { sans: BundledFace[]; display: B
       displayWeights: DISPLAY_WEIGHTS,
       roles: roles(),
       field: FIELD_TYPE,
+      document: DOCUMENT_TYPE,
+      documentPreviewScale: DOCUMENT_PREVIEW_SCALE,
     },
     spacing: SPACING,
     layout: LAYOUT,
@@ -110,7 +122,9 @@ export function buildThemeObject(scriptStacks: { sans: BundledFace[]; display: B
       springs: SPRING,
       stagger: STAGGER,
       press: PRESS,
+      enter: ENTER,
       skeletonDelayMs: SKELETON_DELAY_MS,
+      tipDelayMs: TIP_DELAY_MS,
       /** prefers-reduced-motion values, for the phone's reduced-motion setting. */
       reducedMotionDurations: REDUCED_DURATION,
     },

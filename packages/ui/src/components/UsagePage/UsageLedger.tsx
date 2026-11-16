@@ -44,7 +44,7 @@ export function UsageLedger({
     >
       <div className="hg-usage-stack" data-gap="4">
         <div className="hg-usage-ledger-head">
-          <span className="hg-usage-overline">{words.eventsThisCycle}</span>
+          <span className="hg-usage-overline hg-overline">{words.eventsThisCycle}</span>
           <Provenance source={words.actualUsage} size={12} />
         </div>
         <div className="hg-usage-stack" data-gap="tile">

@@ -26,7 +26,7 @@ export function GrantCard({ grant, label }: { grant: AssignRolesGrant; label: st
         </span>
       )}
       <div className="hg-grant-card-words">
-        <span className="hg-grant-card-overline" aria-hidden="true">
+        <span className="hg-grant-card-overline hg-overline" aria-hidden="true">
           {label}
         </span>
         <p className="hg-grant-card-sentence" aria-live="polite">

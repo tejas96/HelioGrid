@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { usePulse } from '../../primitives/use-pulse.native';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { ImageGlyphName } from './Image.missing';
 import { IMAGE_GLYPH } from './Image.missing';
 
@@ -16,39 +16,15 @@ export function Glyph({
   color,
 }: {
   name: ImageGlyphName;
-  size: number;
+  size: ShellGlyphSize;
   color: ThemeColor;
 }) {
-  return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name={IMAGE_GLYPH[name]} />
-    </Svg>
-  );
+  return <ShellGlyph name={IMAGE_GLYPH[name]} size={size} ink={color} />;
 }
 
 /** The web half sweeps a gradient keyframe; RN has no CSS loop, so the sunken box pulses. */
 export function Skeleton() {
-  const value = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(value, { toValue: 1, duration: 700, useNativeDriver: true }),
-        Animated.timing(value, { toValue: 0, duration: 700, useNativeDriver: true }),
-      ]),
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [value]);
-  const opacity = value.interpolate({ inputRange: [0, 1], outputRange: [0.45, 1] });
+  const opacity = usePulse();
   return <Animated.View style={[styles.skeleton, { opacity }]} />;
 }
 

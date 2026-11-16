@@ -1,11 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
 import { standingWordAt } from './Accordion.logic';
@@ -74,12 +74,12 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
     fontWeight: '500',
-    color: colors['danger-text'],
+    color: TONE.danger.ink,
   },
   dot: {
     width: 6,
     height: 6,
-    borderRadius: 3,
+    borderRadius: theme.radius['r-pill'],
     flexShrink: 0,
     backgroundColor: colors.danger,
   },
@@ -103,19 +103,9 @@ const styles = StyleSheet.create({
 
 function Chevron({ open, color }: { open: boolean; color: ThemeColor }) {
   return (
-    <Svg
-      width={18}
-      height={18}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{ transform: [{ rotate: open ? '180deg' : '0deg' }] }}
-    >
-      <ShellGlyphMarks name="chevron" />
-    </Svg>
+    <View style={{ transform: [{ rotate: open ? '180deg' : '0deg' }] }}>
+      <ShellGlyph name="chevron" size="sm" ink={color} />
+    </View>
   );
 }
 

@@ -95,9 +95,9 @@ function Checks({
     <>
       <HeroPanel name={ready ? words.ready : words.waitingTitle}>
         <div className="hg-handover-status">
-          <span className="hg-handover-mark" data-tone={ready ? 'success' : 'warning'}>
+          <span className="hg-handover-mark hg-tone" data-tone={ready ? 'success' : 'warning'}>
             <ShellGlyph
-              name={ready ? 'tick' : 'alert-circle'}
+              name={ready ? 'check' : 'alert-circle'}
               size="md"
               tone={ready ? 'success' : 'warning'}
             />

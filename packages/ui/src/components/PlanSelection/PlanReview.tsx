@@ -96,7 +96,7 @@ function Section({ section, words }: { section: PlanReviewSection; words: PlanSe
       return (
         <div className="hg-plans-review-group">
           {section.overline === null ? null : (
-            <span className="hg-plans-review-overline">{section.overline}</span>
+            <span className="hg-plans-review-overline hg-overline">{section.overline}</span>
           )}
           <Rows label={section.label} rows={section.rows} />
           {section.source === null ? null : <Provenance source={section.source} size={12} />}

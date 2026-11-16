@@ -1,8 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { zoomStepsOf } from './MapSurface.logic';
 import type { MapControlsProps } from './MapSurface.types';
 
@@ -21,19 +20,7 @@ function Ctrl({ label, onPress, glyph, disabled = false }: CtrlProps) {
       onPress={onPress}
       disabled={disabled}
     >
-      <Icon size="md">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <ShellGlyphMarks name={glyph} />
-        </svg>
-      </Icon>
+      <ShellGlyph name={glyph} size="md" tone="current" />
     </Pressable>
   );
 }

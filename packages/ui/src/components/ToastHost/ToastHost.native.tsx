@@ -2,12 +2,11 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useMemo, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { landFocusOn } from '../../primitives/FocusAfter';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { Toast } from '../Toast/Toast.native';
 import { shownToasts } from './ToastHost.logic';
@@ -18,19 +17,7 @@ type NativeToastHostProps = ToastHostProps & {
 };
 
 function DismissGlyph() {
-  return (
-    <Svg
-      width={15}
-      height={15}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={colors['text-tertiary']}
-      strokeWidth={2}
-      strokeLinecap="round"
-    >
-      <ShellGlyphMarks name="close" />
-    </Svg>
-  );
+  return <ShellGlyph name="close" size="dense" ink={colors['text-tertiary']} />;
 }
 
 /** Web's three `position: fixed` placements, as RN absolute boxes. */

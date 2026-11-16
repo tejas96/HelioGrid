@@ -6,6 +6,7 @@ import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project —
    and a web half's DOM types then fail to compile under the native lib. Metro resolves both
@@ -53,6 +54,7 @@ interface NativeListRowProps extends ListRowProps {
 export function ListRow({
   icon,
   iconColor = colors.accent,
+  iconShape = 'circle',
   avatar,
   title,
   subtitle,
@@ -75,12 +77,9 @@ export function ListRow({
 
   const body: ReactNode = (
     <>
-      {avatar ||
-        (icon ? (
-          <IconCircle color={iconColor} size={leadingCircleSize(density)}>
-            {icon}
-          </IconCircle>
-        ) : null)}
+      {avatar || (
+        <Leading icon={icon} iconColor={iconColor} iconShape={iconShape} density={density} />
+      )}
       <View style={styles.bodyColumn}>
         <Text variant={isExpr ? 'body' : 'body-sm'} style={styles.title}>
           {title}
@@ -120,7 +119,34 @@ export function ListRow({
   );
 }
 
+/** The row's leading mark: the icon in its circle, or in its tile; none without an icon. */
+function Leading({
+  icon,
+  iconColor,
+  iconShape,
+  density,
+}: Required<Pick<ListRowProps, 'iconColor' | 'iconShape' | 'density'>> &
+  Pick<ListRowProps, 'icon'>) {
+  if (icon === undefined || icon === null) return null;
+  if (iconShape === 'tile') return <View style={styles.iconTile}>{icon}</View>;
+  return (
+    <IconCircle color={iconColor} size={leadingCircleSize(density)}>
+      {icon}
+    </IconCircle>
+  );
+}
+
 const styles = StyleSheet.create({
+  /* A settings row's mark: a soft accent pane — never a control. */
+  iconTile: {
+    width: theme.spacing['sp-10'],
+    height: theme.spacing['sp-10'],
+    borderRadius: theme.radius['r-sm'],
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors['accent-subtle'],
+    ...theme.elevation.e1,
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -151,7 +177,7 @@ const styles = StyleSheet.create({
 
 /** A state's line: its ink, at the medium weight the web half gives it. */
 const toned = StyleSheet.create({
-  warning: { color: colors['warning-text'], fontWeight: '500' },
-  danger: { color: colors['danger-text'], fontWeight: '500' },
-  info: { color: colors['info-text'], fontWeight: '500' },
+  warning: { color: TONE.warning.ink, fontWeight: '500' },
+  danger: { color: TONE.danger.ink, fontWeight: '500' },
+  info: { color: TONE.info.ink, fontWeight: '500' },
 });

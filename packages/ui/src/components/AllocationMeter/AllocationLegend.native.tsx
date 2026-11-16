@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   swatch: {
     width: theme.spacing['sp-2'],
     height: theme.spacing['sp-2'],
-    borderRadius: 2,
+    borderRadius: theme.radius['rf-xs'],
     backgroundColor: colors.accent,
     flexShrink: 0,
   },

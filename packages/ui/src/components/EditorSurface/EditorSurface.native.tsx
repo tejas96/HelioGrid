@@ -5,6 +5,7 @@ import { DetailPanel } from '../DetailPanel/DetailPanel.native';
 import { Modal } from '../Modal/Modal.native';
 import { Sheet } from '../Sheet/Sheet.native';
 import { SheetActions } from '../Sheet/SheetActions.native';
+
 import type { EditorSurfaceProps } from './EditorSurface.types';
 import {
   isDecision,
@@ -15,6 +16,7 @@ import {
   resolveForForm,
   sheetFormProps,
 } from './editor-form-props';
+import { ModalStateBody } from './ModalStateBody.native';
 import { PROBE_STYLE, useEditorForm, useLayerWidth } from './use-editor-form.native';
 
 type NativeEditorSurfaceProps = EditorSurfaceProps & {
@@ -66,7 +68,7 @@ export function EditorSurface(props: NativeEditorSurfaceProps) {
       <>
         {probe}
         <Modal {...modalFormProps(props)} style={style} {...modalProps}>
-          {body}
+          <ModalStateBody props={props}>{body}</ModalStateBody>
         </Modal>
       </>
     );

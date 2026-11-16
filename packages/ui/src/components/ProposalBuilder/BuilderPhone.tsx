@@ -118,7 +118,7 @@ export function BuilderPhone(props: ProposalBuilderProps) {
             {next === undefined ? words.last : words.next(next.title)}
           </span>
           <ShellGlyph
-            name={place.last ? (parts === undefined ? 'file-text' : 'tick') : 'arrow-right'}
+            name={place.last ? (parts === undefined ? 'document' : 'check') : 'arrow-right'}
             size="md"
             tone="inverse"
           />

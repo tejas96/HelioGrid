@@ -53,7 +53,7 @@ function Standing({ view, words }: Pick<QualifyQuestionProps, 'view' | 'words'>)
   if (view.savedMark) {
     return (
       <span className="hg-qualify-saved" role="status">
-        <ShellGlyph name="tick" size="sm" tone="success" />
+        <ShellGlyph name="check" size="sm" tone="success" />
         {words.saved}
       </span>
     );

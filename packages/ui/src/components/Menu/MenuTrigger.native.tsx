@@ -3,9 +3,9 @@ import { theme } from '@heliogrid/theme';
 import type { ReactElement } from 'react';
 import { cloneElement } from 'react';
 import { StyleSheet } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { OverflowGlyph } from './MenuGlyphs.native';
 
 /**
@@ -70,5 +70,5 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: theme.radius['r-pill'],
   },
-  overflowOpen: { backgroundColor: colors['neutral-bg'] },
+  overflowOpen: { backgroundColor: TONE.neutral.tint },
 });

@@ -1,54 +1,15 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import type { ThemeColor } from '../../primitives/Color/colors';
-import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
-import type { CountBadgeProps, CountBadgeTone } from './AppShell.types';
+import { TONE } from '../../primitives/Tone/tone.native';
+import type { CountBadgeProps } from './AppShell.types';
 import { badgeDigits, isBadgeDrawn } from './CountBadge.logic';
 
 interface NativeCountBadgeProps extends CountBadgeProps {
   style?: StyleProp<ViewStyle>;
 }
-
-interface TonePair {
-  bg: ThemeColor;
-  fg: ThemeColor;
-  mark: ThemeColor;
-}
-
-/* The numeral is WORDS, so the fill is the -bg tint and the digits the -text partner. The DOT is
-   a mark and takes the plain token — except warning, which measures 2.17 and is never a mark
-   anywhere in this system, so the warning dot takes --warning-text. */
-const TONES: Record<CountBadgeTone, TonePair> = {
-  danger: {
-    bg: colors['danger-bg'],
-    fg: colors['danger-text'],
-    mark: colors.danger,
-  },
-  warning: {
-    bg: colors['warning-bg'],
-    fg: colors['warning-text'],
-    mark: colors['warning-text'],
-  },
-  success: {
-    bg: colors['success-bg'],
-    fg: colors['success-text'],
-    mark: colors.success,
-  },
-  info: { bg: colors['info-bg'], fg: colors['info-text'], mark: colors.info },
-  neutral: {
-    bg: colors['neutral-bg'],
-    fg: colors['neutral-text'],
-    mark: colors.neutral,
-  },
-  accent: {
-    bg: colors['accent-subtle'],
-    fg: colors.accent,
-    mark: colors.accent,
-  },
-};
 
 /**
  * The unread count — a NUMERAL, not a red dot. Renders nothing at zero; over `max` it reads
@@ -67,7 +28,7 @@ export function CountBadge({
   if (!isBadgeDrawn(count)) {
     return null;
   }
-  const pair = TONES[tone];
+  const pair = TONE[tone];
   const shown = badgeDigits(count, max);
   if (shown === null) {
     /* The bare dot draws no digits, so there is no text node to hang the sentence on — the view
@@ -89,9 +50,9 @@ export function CountBadge({
     <View
       accessibilityRole="text"
       accessibilityLabel={label}
-      style={[styles.pill, { backgroundColor: pair.bg, borderColor: ground }, style]}
+      style={[styles.pill, { backgroundColor: pair.tint, borderColor: ground }, style]}
     >
-      <Text variant="caption" fixedSize style={[styles.digits, { color: pair.fg }]}>
+      <Text variant="caption" fixedSize style={[styles.digits, { color: pair.ink }]}>
         {shown}
       </Text>
     </View>

@@ -130,7 +130,7 @@ export function Image({
         <View style={styles.sheen} importantForAccessibility="no" pointerEvents="none" />
         {referenceOnly ? (
           <View style={styles.reference}>
-            <Glyph name="eye" size={13} color={colors['text-secondary']} />
+            <Glyph name="eye" size="dense" color={colors['text-secondary']} />
             <Text variant="overline" color="secondary">
               {compact ? words.referenceShort : referenceLabel}
             </Text>

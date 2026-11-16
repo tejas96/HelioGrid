@@ -26,7 +26,7 @@ export function CellLead<Row>({
     <span className="hg-dt-lead">
       {leading === null ? null : (
         /* The kind is said in the words beside it; the tile is its second channel. */
-        <HueTile glyph={leading.glyph} hue={leading.hue} size={34} stroke={1.5} />
+        <HueTile glyph={leading.glyph} hue={leading.hue} size={34} />
       )}
       <span className="hg-dt-lead-text">
         <span className="hg-dt-lead-value">{children}</span>

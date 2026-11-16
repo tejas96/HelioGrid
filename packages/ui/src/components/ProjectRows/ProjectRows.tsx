@@ -1,11 +1,11 @@
 import { useFocusAfter } from '../../primitives/FocusAfter';
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { Button } from '../Button';
 import { CardRow, CardRows } from '../CardRows';
 import { HueTile } from '../HueTile';
 import { NamedGap } from '../NamedGap';
+import { StatusMark } from '../StatusMark';
 import { KIND_TILE, rowActOf, rowOpenOf } from './ProjectRows.logic';
 import type {
   ProjectRowGroupProps,
@@ -77,7 +77,7 @@ export function ProjectRowGroup({ first, kind, label, count }: ProjectRowGroupPr
   return (
     <li className="hg-project-row-group" data-first={first ? 'true' : undefined}>
       <HueTile glyph={kind.glyph} hue={kind.tint} {...KIND_TILE.head} />
-      <span className="hg-project-row-group-label">{label}</span>
+      <span className="hg-project-row-group-label hg-overline">{label}</span>
       <span className="hg-project-row-group-count">{count}</span>
     </li>
   );

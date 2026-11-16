@@ -46,3 +46,32 @@
 .hg-tinted-block[data-tone="info"] {
   background: var(--info-bg);
 }
+
+.hg-tinted-block[data-tone="success"] {
+  background: var(--success-bg);
+}
+
+.hg-tinted-block[data-tone="neutral"] {
+  background: var(--neutral-bg);
+}
+
+/* A note a customer reads: the room of a card and its serif title. */
+.hg-tinted-block[data-face="display"] {
+  gap: var(--sp-2);
+  padding: var(--sp-5);
+}
+
+.hg-tinted-block-display {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-card-title);
+  line-height: var(--lh-card-title);
+  letter-spacing: var(--tr-card-title);
+  color: var(--text-primary);
+}
+
+/* An answer just given rises into place once; its duration tokens fall to 1ms under reduced motion. */
+.hg-tinted-block[data-rise="true"] {
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}

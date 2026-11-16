@@ -34,7 +34,7 @@ export function TranscriptPlaceholder({
         {TRANSCRIPT_SKELETON_BARS.map((bar) => (
           <span
             key={bar.key}
-            className="hg-transcript-skeleton-bar"
+            className="hg-transcript-skeleton-bar hg-skeleton"
             data-tall={bar.tall ? 'true' : undefined}
             data-density={density}
           />

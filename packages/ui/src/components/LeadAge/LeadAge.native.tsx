@@ -1,9 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { leadAgeStandingOf } from './LeadAge.logic';
 import type { LeadAgeProps } from './LeadAge.types';
 

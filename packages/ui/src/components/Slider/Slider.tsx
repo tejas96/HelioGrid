@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { renderProvenance } from '../Provenance';
 import type { SliderProps } from './Slider.types';
 import { clampToRange, fillPercent, formatValue, nudged, stepperOff } from './slider-math';
@@ -30,18 +30,7 @@ function StepButton({ disabled, glyph, label, onPress }: StepButtonProps) {
       disabled={disabled}
       onClick={onPress}
     >
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        aria-hidden="true"
-      >
-        <ShellGlyphMarks name={glyph} />
-      </svg>
+      <ShellGlyph name={glyph} size="sm" tone="current" />
     </button>
   );
 }

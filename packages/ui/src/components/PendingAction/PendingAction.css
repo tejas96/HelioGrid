@@ -41,10 +41,9 @@
 }
 
 .hg-pending-action-glyph {
+  display: inline-flex;
   flex-shrink: 0;
   margin-top: var(--sp-0-5);
-  width: var(--hg-pending-action-glyph-size, 13px);
-  height: var(--hg-pending-action-glyph-size, 13px);
 }
 
 .hg-pending-action-words {

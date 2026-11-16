@@ -10,6 +10,8 @@ import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { PhotoField } from '../PhotoField/PhotoField.native';
 import type { FirstRunProfileProps } from './FirstRunProfile.types';
 
+// web-only parts: AppShell, Card — the glyph and its circle sit in the web wide-only reasons list.
+
 const styles = StyleSheet.create({
   heading: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
   headingText: { flexShrink: 1 },

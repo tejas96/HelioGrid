@@ -1,8 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties, ReactNode } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
+import { StateRegion } from '../StateBody';
 import { STREAM_SKELETON } from './ActivityStream.logic';
 
 /** A shimmer bar; width and height are per-line measurements, not scale steps. */
@@ -11,7 +11,7 @@ export function StreamShimmer({ width, height }: { width: string; height: number
     '--hg-stream-shimmer-w': width,
     '--hg-stream-shimmer-h': `${height}px`,
   } as CSSProperties;
-  return <span className="hg-stream-shimmer" style={vars} />;
+  return <span className="hg-stream-shimmer hg-skeleton" style={vars} />;
 }
 
 /** Four entry-shaped rows: the stream keeps its shape while its content is coming. */
@@ -29,25 +29,6 @@ export function StreamSkeleton({ label }: { label: TranslatedText }) {
         </div>
       ))}
     </div>
-  );
-}
-
-function MessageGlyph({ warning }: { warning: boolean }) {
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      role="presentation"
-    >
-      <ShellGlyphMarks name={warning ? 'alert-circle' : 'lines'} />
-    </svg>
   );
 }
 
@@ -75,16 +56,17 @@ export function StreamMessage({
   focusAfter: FocusAfter;
 }) {
   return (
-    <div className="hg-stream-message">
-      <span className="hg-stream-message-mark" data-tone={tone}>
-        <MessageGlyph warning={tone === 'warning'} />
-      </span>
-      <div className="hg-stream-message-title">{title}</div>
-      {message !== undefined ? <div className="hg-stream-message-text">{message}</div> : null}
-      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
-      {action !== undefined && action !== null ? (
-        <div className="hg-stream-message-extra">{action}</div>
-      ) : null}
-    </div>
+    <StateRegion
+      tone={tone}
+      glyph="lines"
+      title={title}
+      message={message}
+      action={
+        <>
+          <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
+          {action}
+        </>
+      }
+    />
   );
 }

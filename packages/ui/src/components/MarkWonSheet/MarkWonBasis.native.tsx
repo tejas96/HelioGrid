@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import { AfterHint } from '../ProposalAfterParts/ProposalAfterParts.native';
@@ -14,7 +15,7 @@ export function MarkWonProof({ basis }: { basis: MarkWonBasisView }) {
       {basis.locked ? (
         <LottieMoment name="success" size={48} />
       ) : (
-        <HueTile glyph="alert-triangle" hue="warning" size={40} stroke={1.7} />
+        <HueTile glyph="alert-triangle" hue="warning" size={40} />
       )}
       <View style={styles.grow}>
         <Text variant="body" bold>
@@ -88,8 +89,8 @@ const styles = StyleSheet.create({
     padding: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-lg'],
   },
-  proofGood: { backgroundColor: colors['success-bg'] },
-  proofWarn: { backgroundColor: colors['warning-bg'] },
+  proofGood: { backgroundColor: TONE.success.tint },
+  proofWarn: { backgroundColor: TONE.warning.tint },
   value: {
     gap: theme.spacing['sp-1'],
     padding: theme.spacing['sp-5'],
@@ -97,7 +98,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors['line-soft'],
   },
-  figure: { fontFamily: theme.type.families.display, fontSize: 40, lineHeight: 46 },
+  figure: {
+    fontFamily: theme.type.families.display,
+    fontSize: theme.type.roles['hero-phone'].fontSize,
+    lineHeight: 46,
+  },
   plan: { borderRadius: theme.radius['r-lg'], borderWidth: 1, borderColor: colors['line-soft'] },
   part: {
     flexDirection: 'row',

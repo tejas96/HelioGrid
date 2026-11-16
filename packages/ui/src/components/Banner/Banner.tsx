@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { NO_FOCUS_AFTER, useFocusAfter } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { bannerKind } from './Banner.kinds';
 import {
   ACTION_BELOW,
@@ -21,22 +21,11 @@ type WebBannerProps = BannerProps & {
   style?: CSSProperties;
 };
 
-function Glyph({ name, size }: { name: BannerGlyph; size: number }) {
+function Glyph({ name }: { name: BannerGlyph }) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className="hg-banner-glyph"
-    >
-      <ShellGlyphMarks name={BANNER_GLYPH[name]} />
-    </svg>
+    <span className="hg-banner-glyph">
+      <ShellGlyph name={BANNER_GLYPH[name]} size="sm" tone="current" />
+    </span>
   );
 }
 
@@ -96,11 +85,11 @@ export function Banner({
     return (
       <div
         role={meta.role}
-        className={classNames('hg-banner-pill', className)}
+        className={classNames('hg-banner-pill', 'hg-tone', className)}
         data-tone={tone ?? meta.tone}
         style={style}
       >
-        {icon ?? <Glyph name={meta.icon} size={16} />}
+        {icon ?? <Glyph name={meta.icon} />}
         <span>{title ?? children}</span>
         {action}
       </div>
@@ -111,12 +100,12 @@ export function Banner({
     <div
       ref={width.ref}
       role={meta.role}
-      className={classNames('hg-banner', className)}
+      className={classNames('hg-banner', 'hg-tone', className)}
       data-tone={tone ?? meta.tone}
       data-density={density}
       style={style}
     >
-      {icon ?? <Glyph name={meta.icon} size={17} />}
+      {icon ?? <Glyph name={meta.icon} />}
       <Content title={title} actionBelowBody={stacked ? action : undefined}>
         {children}
       </Content>
@@ -129,18 +118,7 @@ export function Banner({
           accessibilityLabel={dismissal.label}
           onPress={leaving(dismissal.onDismiss)}
         >
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <ShellGlyphMarks name="close" />
-          </svg>
+          <ShellGlyph name="close" size="dense" tone="current" />
         </Pressable>
       )}
     </div>

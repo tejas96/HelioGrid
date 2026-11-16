@@ -159,3 +159,28 @@ test('a person who may not import is told why and never meets the wizard', async
   await expect(page.getByText(WORDS.choose)).toHaveCount(0);
   await expectNoSeriousViolations(page);
 });
+
+test('at a phone width the preview goes back a step to the columns, keeping the file', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await openTheImport(page);
+  await answerTheImport(page, ROWS);
+  await page.locator('.hg-dropzone input[type="file"]').setInputFiles({
+    name: 'Old leads 2024.csv',
+    mimeType: 'text/csv',
+    buffer: csvOf(ROWS),
+  });
+  await expect(page.getByText(WORDS.nextColumns)).toBeVisible({ timeout: 10_000 });
+  /* The first step has nothing behind it: only the page's way back to the list. */
+  await expect(page.getByRole('button', { name: WORDS.back, exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: WORDS.continue }).click();
+  await expect(page.getByText(WORDS.nextCounts)).toBeVisible();
+  await page.getByRole('button', { name: WORDS.continue }).click();
+  await expect(page.getByText(WORDS.counts(400, 90))).toBeVisible({ timeout: 10_000 });
+
+  await page.getByRole('button', { name: WORDS.back, exact: true }).click();
+  await expect(page.getByText(WORDS.nextCounts)).toBeVisible();
+  await expect(page.getByRole('combobox', { name: WORDS.importColumnAs('Town') })).toBeVisible();
+  await expectNoSidewaysScroll(page);
+});

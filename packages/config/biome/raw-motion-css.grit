@@ -1,0 +1,21 @@
+language css
+
+// A UI stylesheet types no motion value: a non-zero time (`ms` or `s`), or a cubic-bezier() or
+// linear() curve opened by a number. Durations, delays, curves and springs are var(--dur-*),
+// var(--amb-*), var(--ease-*) from @heliogrid/theme, which fall to 1ms under reduced motion. 0ms and
+// 0s pass; comments are never read.
+or {
+  CssRegularDimension() as $time where {
+    $time <: includes "s",
+    $time <: r"(?:\d*[1-9]\d*(?:\.\d+)?|\d*\.\d*[1-9]\d*)m?s",
+    register_diagnostic(span=$time, message="Raw motion in a UI path — a duration or delay is var(--dur-*) or var(--amb-*) from @heliogrid/theme.")
+  },
+  CssFunction() as $curve where {
+    $curve <: or {
+      includes "bezier",
+      includes "linear"
+    },
+    $curve <: r"(?s)(?:cubic-bezier|linear)\(\s*(?:\d|\.\d).*",
+    register_diagnostic(span=$curve, message="Raw motion in a UI path — a curve is var(--ease-*) or var(--ease-spring-*) from @heliogrid/theme.")
+  }
+}

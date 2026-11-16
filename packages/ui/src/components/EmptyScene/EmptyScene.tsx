@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
-import { GlyphMarkList } from '../AppShell/ShellGlyphMarks';
 import { PACES, SCENE_BOX, SCENES, type SceneLayer } from './EmptyScene.shapes';
 import type { EmptySceneProps } from './EmptyScene.types';
+import { SceneMarks } from './SceneMarks';
 
 /**
  * The scene, drawn in the quiet text colour so it follows light, dark and field mode. Each layer
@@ -24,7 +24,7 @@ export function EmptyScene({ name, size = 'regular' }: EmptySceneProps) {
           data-faint={layer.faint === true ? 'true' : undefined}
           style={paceOf(layer)}
         >
-          <GlyphMarkList marks={layer.marks} />
+          <SceneMarks marks={layer.marks} />
         </g>
       ))}
     </svg>

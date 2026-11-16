@@ -39,7 +39,7 @@ export function AnswerActs({
           size="lg"
           fullWidth={wide}
           disabled={waiting}
-          icon={<ShellGlyph name="tick" />}
+          icon={<ShellGlyph name="check" />}
           onClick={() => screen.open('accept')}
         >
           {wide ? words.acts.acceptWide : words.acts.accept}

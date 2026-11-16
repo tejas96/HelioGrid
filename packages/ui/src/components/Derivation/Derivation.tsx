@@ -1,7 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { Icon } from '../../primitives/Icon';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { DerivationProps } from './Derivation.types';
 import { DERIVATION_KINDS } from './Derivation.types';
 import { DerivationGroup } from './DerivationGroup';
@@ -60,19 +59,7 @@ export function Derivation({
         aria-controls={panel.panelId}
       >
         <span className="hg-derivation-chevron" data-open={panel.isOpen ? 'true' : undefined}>
-          <Icon size="xs">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <ShellGlyphMarks name="chevron-right" />
-            </svg>
-          </Icon>
+          <ShellGlyph name="chevron-right" size="xs" tone="current" />
         </span>
         {summary}
       </button>

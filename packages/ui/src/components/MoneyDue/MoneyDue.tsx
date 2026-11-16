@@ -1,6 +1,5 @@
 import type { MoneyDue as Due, MoneyDueRow } from '@heliogrid/contracts';
 import type { MoneyDueGroupView } from '@heliogrid/domain';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark';
 import { Text } from '../../primitives/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
@@ -10,6 +9,7 @@ import { EmptyState, FailedRead } from '../EmptyState';
 import { HeroPanel } from '../HeroPanel';
 import { LoadingBars } from '../LoadingBars';
 import { useFormat } from '../MarketProvider';
+import { StatusMark } from '../StatusMark/StatusMark';
 import { dueFiguresOf, dueRowOf } from './MoneyDue.logic';
 import type { MoneyDueProps } from './MoneyDue.types';
 import './MoneyDue.css';
@@ -103,7 +103,7 @@ function DueGroup(props: DueProps & { readonly group: MoneyDueGroupView<MoneyDue
   return (
     <div className="hg-money-due-group">
       <div className="hg-money-due-head">
-        <span className="hg-money-due-head-label">{words.group(group.group)}</span>
+        <span className="hg-money-due-head-label hg-overline">{words.group(group.group)}</span>
         <span className="hg-money-due-amount">{group.count}</span>
       </div>
       <CardRows form="joined">

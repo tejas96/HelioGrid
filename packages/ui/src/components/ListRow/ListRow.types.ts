@@ -6,8 +6,13 @@ import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { ValueSourceLevel, ValueSourceSpec } from '../ValueSource';
 
 export interface ListRowProps {
-  /** icon node rendered inside a circular IconCircle */
+  /** icon node rendered inside a circular IconCircle — or the tile `iconShape` names */
   icon?: ReactNode;
+  /**
+   * `circle` (default) the tinted `IconCircle`; `tile` a soft accent pane lit from its top edge — a
+   * settings row's mark, never a control. The tile takes the icon as it is, in its own ink.
+   */
+  iconShape?: 'circle' | 'tile';
   /** A DS colour token reference — the web half takes `var(--…)`, the native half a theme value. */
   iconColor?: ThemeColor;
   /** use instead of icon for an avatar leading element */

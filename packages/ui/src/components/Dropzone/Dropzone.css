@@ -103,7 +103,7 @@
   border: 2px solid var(--canvas-sunken);
   border-top-color: var(--accent);
   display: inline-block;
-  animation: hg-spin 0.7s linear infinite;
+  animation: hg-spin var(--amb-spin) linear infinite;
 }
 
 .hg-dropzone-track,
@@ -214,7 +214,7 @@
   border: 2px solid var(--canvas-sunken);
   border-top-color: var(--accent);
   display: inline-block;
-  animation: hg-spin 0.7s linear infinite;
+  animation: hg-spin var(--amb-spin) linear infinite;
 }
 
 .hg-dropzone-thumbs {

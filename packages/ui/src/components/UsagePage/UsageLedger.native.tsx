@@ -93,6 +93,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-1'],
   },
   rows: { gap: theme.layout['tile-gap'] },
-  row: { ...tileSurface, borderRadius: theme.radius['r-tile'] },
+  row: { ...tileSurface, borderRadius: theme.radius['r-lg'] },
   start: { flexDirection: 'row' },
 });

@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { MouseEvent, ReactNode } from 'react';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { ToolCommand } from './RichText.commands';
 import { CMD, LINK_GLYPH } from './RichText.commands';
 import type { RichTextTemplate, RichTextWords } from './RichText.types';
@@ -36,21 +36,8 @@ export function ToolButton({
       data-wide={children !== undefined}
       onMouseDown={onMouseDown}
     >
-      {children ?? (
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          {glyph === undefined ? null : <ShellGlyphMarks name={glyph} />}
-        </svg>
-      )}
+      {children ??
+        (glyph === undefined ? null : <ShellGlyph name={glyph} size="sm" tone="current" />)}
     </button>
   );
 }

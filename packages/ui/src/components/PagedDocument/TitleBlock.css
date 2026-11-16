@@ -28,11 +28,10 @@
   color: var(--text-tertiary);
 }
 
-/* 26px: the document heading. No --fs-* token states a paper heading size — the doc scale stops
-   at --doc-fs-figure (22px) — so this is the one stated size on the sheet. */
+/* The sheet's own name: the document's heading role. */
 .hg-title-block-name {
   margin: 6px 0 0;
-  font-size: 26px;
+  font-size: var(--doc-fs-heading);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tr-h2);
   line-height: 1.15;

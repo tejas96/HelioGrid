@@ -33,15 +33,16 @@
   box-shadow: inset 0 0 0 1.5px var(--danger);
 }
 
-/* Focus is an inset accent ring, as the verdict is — it moves nothing, and on the white page an
-   outer ring's --surface gap would vanish. One ring, so focus wins it while the caret is in, even in
+/* Focus is OneOhm's: the accent edge and a 3 px accent halo at a fifth. The edge is an inset ring,
+   as the verdict is — it moves nothing, and on the white page an outer ring's --surface gap would
+   vanish. One edge, so focus wins it while the caret is in, even in
    error (F7-24: focus is never removed); the error's words stay under the field and the danger ring
    returns on blur. The selector outranks the verdict's, so the order of the rules cannot undo it. */
 [data-field-box][data-fb-focused],
 [data-field-box][data-fb-focused][data-fb-tone="error"] {
   box-shadow:
-    inset 0 0 0 2px var(--accent),
-    0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+    inset 0 0 0 1px var(--accent),
+    0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 /* Disabled sinks the well and keeps the value readable — a locked number that looked empty would

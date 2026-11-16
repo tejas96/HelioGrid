@@ -33,7 +33,7 @@ function Changed({ view, words, won }: Ready) {
             const vars: RowVars = { '--i': riseOrder(index) };
             return (
               <li key={change.fact} className="hg-versions-change" style={vars}>
-                <HueTile glyph={versionFactGlyph(change.fact)} hue="ocean" size={36} stroke={1.7} />
+                <HueTile glyph={versionFactGlyph(change.fact)} hue="ocean" size={36} />
                 <span className="hg-versions-change-name">{text.name}</span>
                 <span className="hg-versions-change-from">{text.from}</span>
                 <ShellGlyph name="arrow-right" size="sm" tone="secondary" />
@@ -45,7 +45,7 @@ function Changed({ view, words, won }: Ready) {
       )}
       {latest.diff === null ? null : (
         <span className="hg-versions-same">
-          <ShellGlyph name="tick-small" size="sm" tone="secondary" />
+          <ShellGlyph name="check" size="sm" tone="secondary" />
           {words.unchanged(latest.diff.pagesUnchanged)}
         </span>
       )}

@@ -13,8 +13,8 @@ import {
   importFixAct,
   importFixRequest,
 } from '@heliogrid/domain';
-import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import type { ImportFormats } from '../Import/Import.types';
+import type { StatusTone } from '../StatusMark/StatusMark.types';
 import type {
   CatalogImportProps,
   CatalogImportWords,

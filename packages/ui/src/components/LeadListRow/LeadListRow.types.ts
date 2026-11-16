@@ -1,6 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { LeadRowNext, LeadSource, LeadStage } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 
 /** A lead as the list shows it, its bill already formatted in the tenant's currency. */
 export interface ListedLead {
@@ -51,14 +51,17 @@ export interface LeadListRowWords {
 /**
  * **One lead of the Leads list** (`SCR-M02-03`), its own card on the phone and in a narrow web
  * column, in three lines: the name — or the number while it has none — with the stage as glyph,
- * word and tint; the source's glyph, the city and the bill in mono beside its tier; then, under a
- * hairline, what comes next and the owner's face, or that nobody owns it yet. A city or a bill the
- * lead lacks is left out, never said as a gap. The whole card opens the lead.
+ * word and tint; the number under a name, the source's glyph, the city, the bill in mono beside
+ * its tier and when it was last touched; then, under a hairline, what comes next and the owner's
+ * face and name, or that nobody owns it yet. It holds every field the desktop's table does. A city
+ * or a bill the lead lacks is left out, never said as a gap. The whole card opens the lead.
  */
 export interface LeadListRowProps {
   lead: ListedLead;
   /** The source's word (`leadSourceWord`), spoken beside its glyph. */
   sourceLabel: TranslatedText;
+  /** "6 h ago" — the table's *Last activity*, worded (`leadsListWords().lastActivity`). */
+  lastActivity: TranslatedText;
   next: LeadNextMarkProps | null;
   /** The first row of its card draws no hairline above it. */
   first: boolean;

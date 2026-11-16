@@ -86,8 +86,9 @@
   border-radius: var(--r-sm);
 }
 
+/* The page in view: the control fill, its paper ringed in ink. */
 .hg-reader-thumb[aria-pressed="true"] {
-  background: var(--accent-subtle);
+  background: var(--hg-control-fill);
 }
 
 .hg-reader-thumb-paper {
@@ -100,7 +101,7 @@
 }
 
 .hg-reader-thumb[aria-pressed="true"] .hg-reader-thumb-paper {
-  box-shadow: 0 0 0 2px var(--accent);
+  box-shadow: 0 0 0 2px var(--text-primary);
 }
 
 .hg-reader-thumb-name {

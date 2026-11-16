@@ -1,6 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactElement, ReactNode } from 'react';
 import { isValidElement } from 'react';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { nearestGlyphSize } from '../AppShell/ShellGlyph.logic';
 import type {
   ActionReasonInput,
   ActionReasonSentence,
@@ -30,11 +32,11 @@ export function reasonPage(spec?: ActionReasonSentence | null): TranslatedText |
  */
 export function noteLineScale(size: number): {
   fontSize: number;
-  glyphSize: number;
+  glyphSize: ShellGlyphSize;
   large: boolean;
 } {
   const fontSize = Math.max(12, size);
-  return { fontSize, glyphSize: fontSize + 1, large: fontSize >= 13 };
+  return { fontSize, glyphSize: nearestGlyphSize(fontSize + 1), large: fontSize >= 13 };
 }
 
 /**

@@ -7,7 +7,7 @@
    "Fix 5 issues to share" cannot disagree with the list beneath it. The only fold is `readyMode`,
    it reaches READY items only, and they stay counted in the header in every mode.
 
-   The status word beside each check is the StatusMark primitive with `mark={false}`: the row's own
+   The status word beside each check is StatusMark with `mark={false}`: the row's own
    circle already carries the non-colour channel, so the pill keeps the words and drops the glyph.
 
    The list is a heading on the page and each finding one tile (F7-49): the frame has no fill, no

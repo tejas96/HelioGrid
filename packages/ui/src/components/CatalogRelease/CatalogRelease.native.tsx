@@ -7,6 +7,7 @@ import type { FocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { IconCircle } from '../Card/Card.native';
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
   body: { gap: theme.spacing['sp-4'] },
   cards: { gap: theme.layout['tile-gap'] },
   grow: { flex: 1, minWidth: 0 },
-  inForce: { backgroundColor: colors['success-bg'] },
+  inForce: { backgroundColor: TONE.success.tint },
   releaseCard: {
     gap: theme.spacing['sp-3'],
     padding: theme.spacing['sp-4'],

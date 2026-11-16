@@ -72,18 +72,28 @@ export function fillOf(holder: Locator): Promise<string> {
   return holder.evaluate((node) => getComputedStyle(node).backgroundColor);
 }
 
-/** A tile (`packages/ui/src/primitives/Ground/Ground.css`): glass — a light on its top edge, ringed in `--line-soft`, over `--e2`. */
-export const TILE_SHADOW = 'inset 0 1px 0 var(--glass-edge), 0 0 0 1px var(--line-soft), var(--e2)';
+/** A data or list tile (`packages/ui/src/primitives/Ground/Ground.css`, solid): ringed in `--line-soft`, no shadow. */
+export const TILE_SHADOW = '0 0 0 1px var(--line-soft)';
 
-/** A tile's fill (`primitives/Ground/Ground.css`'s tiles list): the card colour frosted — glass. */
-export const TILE_FILL = '--glass';
+/** A data or list tile's fill (`primitives/Ground/Ground.css`'s solid list): the card colour. */
+export const TILE_FILL = '--surface';
 
-/** The resting edge a field and a secondary button draw inside themselves: a `--line-strong` hairline. */
+/** A summary tile (`Ground.css`, glass): a light on its top edge, ringed in `--line-soft`, over `--e2`. */
+export const GLASS_TILE_SHADOW =
+  'inset 0 1px 0 var(--glass-edge), 0 0 0 1px var(--line-soft), var(--e2)';
+
+/** A summary tile's fill (`Ground.css`'s glass list): the card colour frosted — glass. */
+export const GLASS_TILE_FILL = '--glass';
+
+/** A secondary button at rest (`Button.css`): the `--line-strong` hairline inside it, on `--e1`. */
+export const SECONDARY_EDGE = 'inset 0 0 0 1px var(--line-strong), var(--e1)';
+
+/** The resting edge a field draws inside itself: a `--line-strong` hairline. */
 export const STRONG_EDGE = 'inset 0 0 0 1px var(--line-strong)';
 
-/** A focused field (`packages/ui/src/primitives/FieldBox/FieldBox.css`): the inset accent edge and its soft glow. */
+/** A focused field (`packages/ui/src/primitives/FieldBox/FieldBox.css`): the inset accent edge and OneOhm's 3 px halo. */
 export const FOCUS_RING =
-  'inset 0 0 0 2px var(--accent), 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent)';
+  'inset 0 0 0 1px var(--accent), 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent)';
 
 /**
  * A theme font token (`--font-*`, `--fw-*`) as the page resolves it — so a spec reads a face or a

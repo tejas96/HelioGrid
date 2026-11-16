@@ -1,4 +1,4 @@
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { ProposalStartSheetProps, StartMode } from './ProposalStart.types';
 
 const MODES: readonly StartMode[] = ['quick', 'full'];

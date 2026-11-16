@@ -7,8 +7,8 @@ import type {
   TranslatedText,
 } from '@heliogrid/contracts';
 import { daysFrom } from '@heliogrid/domain';
-import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import type { MarketFormat } from '../../utils/format';
+import type { StatusTone } from '../StatusMark/StatusMark.types';
 import type { TimelineItem, TimelineStatus } from '../Timeline/Timeline.types';
 import type { ProjectMoneyProps, ProjectMoneyWords } from './ProjectMoney.types';
 

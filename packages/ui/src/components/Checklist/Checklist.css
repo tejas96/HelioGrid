@@ -58,10 +58,6 @@
   text-wrap: pretty;
 }
 
-.hg-checklist-detail--warning {
-  color: var(--warning-text);
-}
-
 .hg-checklist-micro {
   margin: 0;
   font-size: var(--fs-caption);
@@ -129,7 +125,7 @@
 .hg-checklist-box {
   width: var(--hg-checklist-box);
   height: var(--hg-checklist-box);
-  border-radius: 7px;
+  border-radius: var(--rf-sm);
   flex-shrink: 0;
   display: grid;
   place-items: center;
@@ -148,11 +144,6 @@
 
 .hg-checklist-box[data-disabled="true"] {
   opacity: 0.55;
-}
-
-.hg-checklist-box > svg {
-  width: 13px;
-  height: 13px;
 }
 
 .hg-checklist-body {
@@ -208,30 +199,3 @@
 }
 
 /* ── the non-ready states ─────────────────────────────────────────────────── */
-
-.hg-checklist-note {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  align-items: flex-start;
-}
-
-.hg-checklist-state-title {
-  margin: 0;
-  font-size: var(--fs-body);
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.hg-checklist-skeleton {
-  height: 90px;
-  border-radius: var(--rf-md);
-  background: linear-gradient(
-    90deg,
-    var(--canvas) 25%,
-    var(--canvas-sunken) 50%,
-    var(--canvas) 75%
-  );
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
-}

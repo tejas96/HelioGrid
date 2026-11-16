@@ -1,46 +1,21 @@
-/* Global Search on the web (`SCR-SHELL-02`): the desktop's palette over the blurred page — the
-   field, the results scrolling under it and the keys at its foot — and the page `/search` draws
-   below the desktop width. The results themselves are `SearchResults`'. */
-
-/* One above `SheetBackdrop`'s layer, which `SearchPalette` raises to the modal family's 60. */
-.hg-search-palette-layer {
-  position: fixed;
-  inset: 0;
-  z-index: 61;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: var(--sp-16) var(--sp-4) var(--sp-4);
-  pointer-events: none;
-}
+/* Global Search on the web (`SCR-SHELL-02`): the desktop's palette is `Modal`'s frame placed under
+   the top of the page; this lays out only what it holds — the field staying in view over the
+   results, and the keys at its foot — and the page `/search` draws below the desktop width. The
+   results themselves are `SearchResults`'. */
 
 .hg-search-palette {
-  pointer-events: auto;
   display: flex;
   flex-direction: column;
-  width: min(var(--content-max), 100%);
-  max-height: 100%;
-  overflow: hidden;
-  outline: none;
-  border-radius: var(--r-2xl);
-  /* A pane of frosted glass over the page, as every overlay of the family is. */
-  background: var(--glass-strong);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  box-shadow: var(--e5);
-  animation: hg-modal-in var(--dur-standard) var(--ease-enter);
+  gap: var(--sp-1);
 }
 
+/* The field stays in view while the results scroll under it, on the panel's own ground. */
 .hg-search-palette-field {
-  flex-shrink: 0;
-  padding: var(--sp-4) var(--sp-4) var(--sp-3);
-}
-
-.hg-search-palette-body {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: var(--sp-1) var(--sp-4) var(--sp-5);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-bottom: var(--sp-3);
+  background: var(--hg-ground);
 }
 
 .hg-search-palette-foot {
@@ -48,8 +23,6 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-2) var(--sp-4);
-  padding: var(--sp-3) var(--sp-5);
-  background: var(--canvas-sunken);
   font-size: var(--fs-caption);
   line-height: var(--lh-caption);
   color: var(--text-secondary);

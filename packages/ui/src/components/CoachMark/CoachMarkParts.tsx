@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Pressable } from '../../primitives/Pressable';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { CoachMarkFootProps, CoachMarkHeadProps } from './CoachMark.types';
 import type { PlacedCoachMark } from './coach-mark-place';
 import { counterDots, forwardAct, ringBox } from './coach-mark-place';
@@ -28,7 +28,9 @@ export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: Coach
   return (
     <div className="hg-coach-mark-head">
       <div className="hg-coach-mark-heading">
-        {counter === null ? null : <div className="hg-coach-mark-counter">{counter}</div>}
+        {counter === null ? null : (
+          <div className="hg-coach-mark-counter hg-overline">{counter}</div>
+        )}
         <div className="hg-coach-mark-title" data-counted={counter === null ? undefined : 'true'}>
           {title}
         </div>
@@ -39,18 +41,7 @@ export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: Coach
           accessibilityLabel={dismissLabel}
           onPress={onDismiss}
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <ShellGlyphMarks name="close" />
-          </svg>
+          <ShellGlyph name="close" size="sm" tone="current" />
         </Pressable>
       )}
     </div>

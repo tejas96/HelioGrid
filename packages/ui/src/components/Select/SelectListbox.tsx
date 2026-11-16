@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { renderActionReason } from '../ActionReason';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { SelectOption } from './Select.types';
 
 interface SelectListboxProps {
@@ -74,20 +74,9 @@ export function SelectListbox({
             <span className="hg-select-option-line">
               <span className="hg-select-option-label">{option.label}</span>
               {selected ? (
-                <svg
-                  className="hg-select-tick"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <ShellGlyphMarks name="tick-long" />
-                </svg>
+                <span className="hg-select-tick">
+                  <ShellGlyph name="check" size="sm" tone="current" />
+                </span>
               ) : null}
             </span>
             {/* The reason is the second line — never the label, and never a tooltip. */}

@@ -3,7 +3,6 @@ import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
@@ -14,6 +13,7 @@ import { LeadStateBadge } from '../LeadStateBadge/LeadStateBadge.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
 import { StageTrack } from '../StageTrack/StageTrack.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import type { LeadHeroProps } from './LeadHero.types';
 
 /**
@@ -126,7 +126,7 @@ function OwnerRow({
     <View style={styles.owner}>
       {ownerName === null ? (
         <View style={styles.ownerNone}>
-          <ShellGlyph name="person-plus" size="sm" tone="secondary" />
+          <ShellGlyph name="user-plus" size="sm" tone="secondary" />
         </View>
       ) : (
         <Avatar name={ownerName} size={32} />
@@ -238,12 +238,12 @@ function OwnerChip({
       spokenName={words.ownerSpoken}
       icon={
         ownerName === null ? (
-          <ShellGlyph name="person-plus" size="sm" tone="accent" />
+          <ShellGlyph name="user-plus" size="sm" tone="accent" />
         ) : (
           <Avatar name={ownerName} size={24} />
         )
       }
-      iconRight={<ShellGlyph name="caret-down" size="sm" tone="secondary" />}
+      iconRight={<ShellGlyph name="chevron" size="sm" tone="secondary" />}
       onClick={onOwner}
     >
       {words.owner}

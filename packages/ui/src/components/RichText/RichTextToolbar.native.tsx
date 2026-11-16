@@ -1,14 +1,13 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE } from '../../primitives/FieldBox/FieldBox.native';
-import { Icon } from '../../primitives/Icon/Icon.native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { ToolCommand } from './RichText.commands';
 import { CMD, LINK_GLYPH } from './RichText.commands';
 import type { RichTextTemplate, RichTextWords } from './RichText.types';
@@ -31,7 +30,6 @@ const styles = StyleSheet.create({
   },
   tool: { minWidth: 44, height: 44, borderRadius: theme.radius['r-pill'] },
   toolWide: { paddingHorizontal: theme.spacing['sp-3'] },
-  toolActive: { backgroundColor: colors['accent-subtle'] },
   divider: {
     width: 1,
     height: 24,
@@ -52,11 +50,13 @@ interface ToolButtonProps {
 
 /** Every toolbar target is a Pressable, so every one of them is 44px. */
 function ToolButton({ active = false, label, glyph, word, onPress }: ToolButtonProps) {
-  const tint = active ? colors.accent : colors['text-secondary'];
+  const tint = active ? colors['text-primary'] : colors['text-secondary'];
+  /* A mark that is on: the control fill and ink, as the web's toolbar toggle. */
+  const { controlFill } = useGround();
   return (
     <Pressable
       accessibilityLabel={label}
-      /* WHETHER THE MARK IS ON, said rather than tinted (F7-12): the accent-subtle pill is the
+      /* WHETHER THE MARK IS ON, said rather than tinted (F7-12): the filled pill is the
          sighted channel and `selected` is the spoken one — the web half's `aria-pressed={active}`,
          which the primitive maps to `accessibilityState.selected` here. */
       accessibilityState={{ selected: active }}
@@ -64,24 +64,15 @@ function ToolButton({ active = false, label, glyph, word, onPress }: ToolButtonP
       style={[
         styles.tool,
         word !== undefined ? styles.toolWide : null,
-        active ? styles.toolActive : null,
+        active ? { backgroundColor: controlFill } : null,
       ]}
     >
       {word === undefined ? (
-        <Icon size="sm" color={tint}>
-          <Svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {glyph === undefined ? null : <ShellGlyphMarks name={glyph} />}
-          </Svg>
-        </Icon>
+        glyph === undefined ? null : (
+          <ShellGlyph name={glyph} size="sm" ink={tint} />
+        )
       ) : (
-        <Text variant="body-sm" color={active ? 'accent' : 'secondary'}>
+        <Text variant="body-sm" color={active ? 'primary' : 'secondary'}>
           {word}
         </Text>
       )}

@@ -16,7 +16,7 @@ export function HeroPanel({ label, labelAside, name, menu, edit, children }: Her
       </span>
       {label === undefined && labelAside === undefined ? null : (
         <div className="hg-hero-head">
-          {label === undefined ? null : <span className="hg-hero-label">{label}</span>}
+          {label === undefined ? null : <span className="hg-hero-label hg-overline">{label}</span>}
           {labelAside}
         </div>
       )}

@@ -1,5 +1,4 @@
 import { type ReactNode, type Ref, useEffect, useRef } from 'react';
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { HeroPanel } from '../HeroPanel';
@@ -10,6 +9,7 @@ import { NamedGap } from '../NamedGap';
 import { PendingAction } from '../PendingAction';
 import { ProgressRing } from '../ProgressRing';
 import { ProvenanceTier } from '../Provenance';
+import { StatusMark } from '../StatusMark';
 import { ageShareOf, DECK_KEY_CAPS, isPastDay, peeksOf } from './LeadDeckCard.logic';
 import type {
   LeadDeckCardLayout,
@@ -155,7 +155,7 @@ function Bill({
 }) {
   return (
     <div className="hg-lead-deck-bill">
-      <span className="hg-lead-deck-overline">{words.bill}</span>
+      <span className="hg-lead-deck-overline hg-overline">{words.bill}</span>
       {lead.bill === null ? (
         <NamedGap gap={words.noBill} scale="headline" />
       ) : (
@@ -221,7 +221,7 @@ function GiveHead({
   if (!hasTeam) return null;
   return (
     <div className="hg-lead-deck-givehead">
-      <span className="hg-lead-deck-overline">{words.give}</span>
+      <span className="hg-lead-deck-overline hg-overline">{words.give}</span>
       {layout === 'stage' ? (
         <>
           <span className="hg-lead-deck-note">{words.giveHint}</span>

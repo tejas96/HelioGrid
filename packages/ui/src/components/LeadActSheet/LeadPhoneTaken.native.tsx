@@ -1,7 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { FactRow } from '../FactRow/FactRow.native';
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     padding: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-card-functional'],
     borderWidth: 1,
-    borderColor: colors['warning-text'],
+    borderColor: TONE.warning.ink,
   },
   head: { flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
   words: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },

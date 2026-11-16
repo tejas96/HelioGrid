@@ -1,11 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, glassTileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import type { BrandShortVerdictProps, BrandVerdictKind } from './BrandColorField.types';
 import { VERDICT_GLYPH } from './BrandVerdictLine.logic';
@@ -25,18 +25,11 @@ export function BrandShortVerdict({
     <View style={styles.column}>
       <View style={styles.line}>
         <View style={[styles.disc, { backgroundColor: DISC[verdict.kind].ground }]}>
-          <Svg
-            width={15}
-            height={15}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={DISC[verdict.kind].ink}
-            strokeWidth={1.9}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <ShellGlyphMarks name={VERDICT_GLYPH[verdict.kind]} />
-          </Svg>
+          <ShellGlyph
+            name={VERDICT_GLYPH[verdict.kind]}
+            size="dense"
+            ink={DISC[verdict.kind].ink}
+          />
         </View>
         <View style={styles.words}>
           <Text variant="body-sm">{verdict.sentence}</Text>
@@ -57,7 +50,7 @@ function InkRow({
 }: Pick<BrandShortVerdictProps, 'words' | 'onUse' | 'disabled'> & { hex: string }) {
   const { before, after } = words.inkWords(hex);
   return (
-    <View style={[tileSurface, styles.ink]}>
+    <View style={[glassTileSurface, styles.ink]}>
       <GroundProvider ground="tile">
         {/* The ink is tenant DATA — inline is the only honest place for it. */}
         <View style={[styles.inkSwatch, { backgroundColor: hex }]} />
@@ -82,8 +75,8 @@ function InkRow({
 }
 
 const DISC: Record<BrandVerdictKind, { ink: ThemeColor; ground: ThemeColor }> = {
-  pass: { ink: colors['success-text'], ground: colors['success-bg'] },
-  warn: { ink: colors['warning-text'], ground: colors['warning-bg'] },
+  pass: { ink: TONE.success.ink, ground: TONE.success.tint },
+  warn: { ink: TONE.warning.ink, ground: TONE.warning.tint },
   info: { ink: colors['text-secondary'], ground: colors.fill },
 };
 

@@ -1,4 +1,4 @@
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { CategoryHue } from '../Avatar/Avatar.types';
 
 /**
@@ -20,6 +20,4 @@ export interface HueTileProps {
   glyph: ShellGlyphName;
   hue: CategoryHue | HueTileTone;
   size: HueTileSize;
-  /** The glyph's stroke as its board draws it. */
-  stroke: number;
 }

@@ -7,17 +7,16 @@
 import { theme } from '@heliogrid/theme';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextVariant } from '../../primitives/Text/Text.types';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import { isPriceWithheld, noPriceSentence } from './MoneySummary.sentences';
 import type { MoneySummaryProps, MoneySummaryWords, ResolvedMoney } from './MoneySummary.types';
 
-/* THE DOCUMENT STEPS ARE PRINT TOKENS. `--doc-fs-figure` (22px) is emitted to CSS only — the RN
-   theme object carries no `doc` family — so the payable maps to the NEAREST theme type role rather
-   than hand-transcribing a px value the generator owns. */
+/* The payable is one size on both surfaces here: the nearest screen role to `doc-fs-figure`, as the
+   rows take `Text`'s screen variants. */
 const figureStyle: TextStyle = {
   fontSize: theme.type.roles.h2.fontSize,
   lineHeight: theme.type.roles.h2.lineHeight,
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingTop: theme.spacing['sp-3'],
     borderTopWidth: 1,
-    borderTopColor: colors['neutral-bg'],
+    borderTopColor: TONE.neutral.tint,
   },
   payable: {
     flexDirection: 'row',

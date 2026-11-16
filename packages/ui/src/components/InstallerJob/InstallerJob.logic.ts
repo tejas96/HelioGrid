@@ -1,5 +1,5 @@
 import type { ProjectJob } from '@heliogrid/contracts';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { HueTileTone } from '../HueTile/HueTile.types';
 import type { InstallerJobSite, InstallerPhotoPlace, InstallerStep } from './InstallerJob.types';
 
@@ -84,7 +84,7 @@ export const STEP_TILE: Record<
   InstallerStepState,
   { readonly glyph: ShellGlyphName; readonly hue: HueTileTone }
 > = {
-  done: { glyph: 'tick', hue: 'success' },
+  done: { glyph: 'check', hue: 'success' },
   failed: { glyph: 'retry', hue: 'warning' },
   todo: { glyph: 'camera', hue: 'neutral' },
 };

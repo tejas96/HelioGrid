@@ -3,11 +3,12 @@ import type { ReactNode } from 'react';
 import { useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { focusAfterFirst, NO_FOCUS_AFTER, useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { IndeterminateRail } from './IndeterminateRail.native';
@@ -22,21 +23,8 @@ type NativePendingActionProps = PendingActionProps & {
  * An arrow curving back to where it came from: the act was returned. Not error's exclamation
  * (nothing is broken) and not UnavailableNote's slashed circle (this was going to be here).
  */
-function ReturnGlyph({ size }: { size: number }) {
-  return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={colors['warning-text']}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name="undo-step" />
-    </Svg>
-  );
+function ReturnGlyph({ size }: { size: ShellGlyphSize }) {
+  return <ShellGlyph name="undo" size={size} ink={TONE.warning.ink} />;
 }
 
 /** A ReactNode that is a bare string or number takes the line's own type treatment. */
@@ -73,7 +61,7 @@ export function PendingAction(props: NativePendingActionProps) {
   const line: TextStyle = {
     fontSize,
     lineHeight: Math.round(fontSize * 1.45),
-    color: returned ? colors['warning-text'] : colors['text-secondary'],
+    color: returned ? TONE.warning.ink : colors['text-secondary'],
   };
   return (
     <View

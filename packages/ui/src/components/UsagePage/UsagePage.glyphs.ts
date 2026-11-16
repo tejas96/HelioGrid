@@ -3,8 +3,8 @@ import type { UsageRowKey } from './UsagePage.types';
 
 /** The glyph beside each row's label in its tile, the same on both halves. */
 export const USAGE_ROW_GLYPH: Record<UsageRowKey, ShellGlyphName> = {
-  proposals: 'file-text',
-  projects: 'kanban',
+  proposals: 'document',
+  projects: 'board',
   design: 'solar-panel',
   voice: 'headset',
   storage: 'layers',

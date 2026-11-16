@@ -58,7 +58,7 @@
   box-shadow:
     var(--e4),
     0 0 0 1px var(--line-soft);
-  animation: hg-pop-in var(--dur-standard) var(--ease-enter);
+  animation: hg-pop-in var(--dur-standard) var(--ease-out-quint);
 }
 
 .hg-menu-list[data-rises="true"] {
@@ -131,6 +131,7 @@
 }
 
 .hg-menu-item-glyph {
+  display: inline-flex;
   flex-shrink: 0;
 }
 

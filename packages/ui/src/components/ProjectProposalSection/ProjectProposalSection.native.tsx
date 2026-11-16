@@ -23,7 +23,7 @@ export function ProjectProposalSection<Missing>({
             onOpen={rows.openVersions}
           />
         ) : (
-          <AfterRow glyph="file-text" hue="neutral" title={version.title} line={version.line} />
+          <AfterRow glyph="document" hue="neutral" title={version.title} line={version.line} />
         )}
         {crew === null ? null : (
           <AfterRow

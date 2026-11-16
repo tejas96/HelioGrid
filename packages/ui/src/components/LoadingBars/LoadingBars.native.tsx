@@ -2,19 +2,21 @@ import { theme } from '@heliogrid/theme';
 import type { DimensionValue, StyleProp, ViewStyle } from 'react-native';
 import { Animated, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { usePulse } from '../../primitives/use-pulse.native';
 import type { LoadingBarSize, LoadingBarsProps } from './LoadingBars.types';
-import { useLoadingPulse } from './use-loading-pulse.native';
 
 type NativeLoadingBarsProps = LoadingBarsProps & {
   style?: StyleProp<ViewStyle>;
 };
 
-type BlockSize = Exclude<LoadingBarSize, 'line' | 'option' | 'count'>;
+type BlockSize = Exclude<LoadingBarSize, 'line' | 'option' | 'count' | 'text'>;
 
 /** The web half's heights: a closed section's header, an open section, one control row. */
 const BAR_HEIGHT: Record<BlockSize, number> = { row: 56, panel: 188, control: 40 };
 /** The web half's six line lengths, taken in turn. */
 const LINE_LENGTHS: readonly DimensionValue[] = ['64%', '38%', '30%', '86%', '62%', '50%'];
+/** The web half's paragraph lengths, taken in turn. */
+const TEXT_LENGTHS: readonly DimensionValue[] = ['70%', '92%', '54%'];
 
 const styles = StyleSheet.create({
   bars: { gap: theme.spacing['sp-2'] },
@@ -36,6 +38,11 @@ const styles = StyleSheet.create({
     height: theme.spacing['sp-5'],
     borderRadius: theme.radius['rf-md'],
     backgroundColor: colors.canvas,
+  },
+  text: {
+    height: theme.spacing['sp-3'],
+    borderRadius: theme.radius['rf-md'],
+    backgroundColor: colors['canvas-sunken'],
   },
   lineBar: {
     height: theme.spacing['sp-3'],
@@ -124,6 +131,13 @@ function Bar({
       </Animated.View>
     );
   }
+  if (size === 'text') {
+    return (
+      <Animated.View
+        style={[styles.text, { width: TEXT_LENGTHS[index % TEXT_LENGTHS.length], opacity }]}
+      />
+    );
+  }
   if (size === 'line') {
     return (
       <Animated.View style={[styles.line, { opacity }]}>
@@ -142,7 +156,7 @@ function Bar({
  * already made busy, the bars are hidden from the reader.
  */
 export function LoadingBars({ label, bars, style, inBusyRegion }: NativeLoadingBarsProps) {
-  const opacity = useLoadingPulse();
+  const opacity = usePulse();
   const lines = bars.every((size) => size === 'line');
   const frame = [lines ? styles.lines : styles.bars, style];
   const drawn = bars.map((size, index) => (

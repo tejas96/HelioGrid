@@ -71,7 +71,7 @@ export function StatCard({
   /* A BAND is a verdict on the FIGURE; deltaSentiment is a verdict on the CHANGE. Two axes, one
      pill, so a screen never invents a second way for a number to carry a verdict word. */
   const bandNode = gapNode ? null : renderBand(band, { size: 12 });
-  const overline = <div className="hg-stat-card-overline">{label}</div>;
+  const overline = <div className="hg-stat-card-overline hg-overline">{label}</div>;
 
   /* Every non-ready state returns here, and none of them prints a figure. */
   if (state !== 'ready') {

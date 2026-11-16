@@ -4,10 +4,10 @@ import { type ReactNode, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { CARD_RADIUS, raisedCard } from '../Import/Import.surfaces.native';
-import { ImportGlyph } from '../Import/ImportGlyph.native';
 import { NumberField } from '../NumberField/NumberField.native';
 import { Select } from '../Select/Select.native';
 import type { ImportCardView } from './CatalogImport.logic';
@@ -197,7 +197,7 @@ export function ImportFixedCard({
   const target = useFocusOnMount(focus);
   return (
     <View ref={target} style={styles.fixed}>
-      <ImportGlyph name="tick" size="md" stroke={2.2} color={colors['success-text']} />
+      <ShellGlyph name="check" size="md" ink={TONE.success.ink} />
       <View style={styles.fixedWords}>
         <Text variant="body-sm" bold oneLine>
           {title}
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-3'],
     paddingHorizontal: 14,
     borderRadius: CARD_RADIUS,
-    backgroundColor: colors['success-bg'],
+    backgroundColor: TONE.success.tint,
   },
   fixedWords: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
   undo: { flexShrink: 0 },

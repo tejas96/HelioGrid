@@ -19,7 +19,7 @@ export function ItemCard({
   return (
     <section className="hg-item-card" data-wide={wide} aria-labelledby={titleId}>
       <div className="hg-item-card-head">
-        <HueTile glyph={glyph} hue={hue} size={32} stroke={1.6} />
+        <HueTile glyph={glyph} hue={hue} size={32} />
         <h3 className="hg-item-card-title" id={titleId}>
           {title}
         </h3>

@@ -1,16 +1,11 @@
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 
 /** The overflow trigger's three dots. */
 export function OverflowGlyph() {
-  return (
-    <Svg width={16} height={16} viewBox="0 0 24 24" fill={colors['text-secondary']}>
-      <ShellGlyphMarks name="dots-small" />
-    </Svg>
-  );
+  return <ShellGlyph name="dots" size="sm" ink={colors['text-secondary']} />;
 }
 
 /**
@@ -18,20 +13,7 @@ export function OverflowGlyph() {
  * what keeps the meaning alive in greyscale and for a colourblind reader.
  */
 export function TrashGlyph({ color }: { color: ThemeColor }) {
-  return (
-    <Svg
-      width={16}
-      height={16}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name="trash" />
-    </Svg>
-  );
+  return <ShellGlyph name="trash" size="sm" ink={color} />;
 }
 
 /** A destructive row's leading glyph, and nothing at all for an ordinary one. */
@@ -53,20 +35,7 @@ export function MenuTick({ checked, twoLine }: { checked: boolean; twoLine: bool
 
 /** The switcher's tick — `selection="single"`'s non-colour channel beside the checked state. */
 export function TickGlyph() {
-  return (
-    <Svg
-      width={15}
-      height={15}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={colors.accent}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name="tick" />
-    </Svg>
-  );
+  return <ShellGlyph name="check" size="dense" ink={colors.accent} />;
 }
 
 const styles = StyleSheet.create({

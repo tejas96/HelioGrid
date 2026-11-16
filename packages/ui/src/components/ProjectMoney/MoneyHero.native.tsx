@@ -2,12 +2,12 @@ import type { ProjectPayments } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { HeroPanel } from '../HeroPanel/HeroPanel.native';
 import { useFormat } from '../MarketProvider';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import {
   barOf,
   dueForOf,

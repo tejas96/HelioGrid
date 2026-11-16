@@ -56,9 +56,10 @@
   padding: 0 var(--sp-3);
 }
 
+/* A mark that is on: the control fill and ink, OneOhm's toolbar toggle. */
 .hg-rich-text-tool[data-active="true"] {
-  background: var(--accent-subtle);
-  color: var(--accent);
+  background: var(--hg-control-fill);
+  color: var(--text-primary);
 }
 
 .hg-rich-text-tool:focus-visible {
@@ -124,7 +125,7 @@
   background: var(--action-primary);
   color: var(--text-inverse);
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
   cursor: pointer;
 }

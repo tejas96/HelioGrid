@@ -55,7 +55,7 @@
 }
 .hg-stepper-connector,
 .hg-stepper-line {
-  border-radius: 2px;
+  border-radius: var(--r-pill);
   background: var(--hg-control-fill);
 }
 .hg-stepper-connector[data-done="true"],
@@ -82,8 +82,9 @@
 .hg-stepper-node[data-clickable="true"] {
   cursor: pointer;
 }
+/* The step in view is a chosen row: the control fill, as OneOhm's quiet choice. */
 .hg-stepper-row[aria-current="step"] {
-  background: var(--accent-subtle);
+  background: var(--hg-control-fill);
 }
 .hg-stepper-row:focus-visible,
 .hg-stepper-nav:focus-visible,
@@ -99,7 +100,7 @@
 /* Tertiary type says NOT STARTED, not "unreachable": untouched is quiet and still clickable. */
 .hg-stepper-name,
 .hg-stepper-current {
-  font-size: 14px;
+  font-size: var(--fs-body-sm);
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
@@ -129,15 +130,12 @@
   color: var(--success-text);
 }
 .hg-stepper-chevron {
+  display: inline-flex;
   flex-shrink: 0;
   color: var(--text-tertiary);
 }
 .hg-stepper-rail-heading,
 .hg-stepper-overline {
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 .hg-stepper-rail-heading {
@@ -223,16 +221,6 @@
 }
 .hg-stepper-track {
   margin-top: 10px;
-  height: 6px;
-  border-radius: var(--r-pill);
-  background: var(--hg-control-fill);
-  overflow: hidden;
-}
-.hg-stepper-fill {
-  height: 100%;
-  border-radius: var(--r-pill);
-  background: var(--accent);
-  transition: width var(--dur-emphasised) var(--ease-standard);
 }
 .hg-stepper-dots {
   display: flex;

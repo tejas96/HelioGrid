@@ -1,7 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode, Ref } from 'react';
+import type { ThemeColor } from '../../primitives/Color/colors';
 import type { FocusHandle } from '../../primitives/FocusAfter/FocusAfter.types';
-import type { ShellGlyphName } from './ShellGlyph.shapes';
+import type { ShellGlyphName } from './ShellGlyph.icons';
 
 /**
  * Which semantic pair the pill uses. The numeral is **words**, so the fill is the `-bg` tint and
@@ -161,15 +162,15 @@ export interface MobileTopBarProps {
 
 export type { ShellGlyphName };
 
-export type ShellGlyphSize = 'sm' | 'md' | 'lg' | 'xl';
+/** The size ladder, after OneOhm's web: 12 · 14 · 16 · 18 · 20 · 24 · 32 (`GLYPH_SIZE`). */
+export type ShellGlyphSize = 'xs' | 'dense' | 'sm' | 'nav' | 'md' | 'lg' | 'xl';
 
 export interface ShellGlyphProps {
   name: ShellGlyphName;
-  /** The filled form, for the pill's item in view only (`F7-19`). Outlined otherwise. */
-  filled?: boolean;
   /**
-   * `lg` (24) on the pill, `md` (20) in a menu, `xl` (32) on a full-screen state, `sm` (16) in a
-   * row act's `Button`. The stroke follows the size (`glyphStroke`).
+   * `lg` (24) on the pill, `md` (20) in a menu or a field, `nav` (18) on a sidebar row, `sm` (16) in a row act's `Button`,
+   * `dense` (14) beside small words (a chip, a badge, a meta line, a checkbox's tick), `xs` (12) in
+   * a dot or a tiny mark, `xl` (32) on a full-screen state. The stroke is the same at every size.
    */
   size?: ShellGlyphSize;
   /**
@@ -177,9 +178,28 @@ export interface ShellGlyphProps {
    * round shell button, `accent` in a settings row's icon circle (`SCR-SHELL-01`, *More*), `danger`
    * on a `Button` whose `tone` is `danger`, so the glyph matches its words, `info` in an info icon
    * circle (`SCR-M01-06`'s demo door), `success` on a granted line (`SCR-M01-10`'s role card),
-   * `warning` on the billing strip's `Paused` mark (`SCR-M12-02`).
+   * `warning` on the billing strip's `Paused` mark (`SCR-M12-02`). `current` takes the colour of
+   * what holds it — the words beside it on the web, `GlyphInkContext` on the phone.
    */
-  tone?: 'primary' | 'secondary' | 'inverse' | 'accent' | 'info' | 'danger' | 'success' | 'warning';
+  tone?:
+    | 'primary'
+    | 'secondary'
+    | 'inverse'
+    | 'accent'
+    | 'info'
+    | 'danger'
+    | 'success'
+    | 'warning'
+    | 'current';
+  /** A colour its holder already chose (a chip's words, a state's tint); wins over `tone`. */
+  ink?: ThemeColor;
+  /** The inside of a closed shape: `ink`, its own colour (a preferred star); a colour (a map pin over the tiles). */
+  fill?: 'ink' | ThemeColor;
+  /**
+   * Its spoken name, only when the glyph alone carries a meaning the words around it do not (a
+   * chosen chip's tick). Omitted, it is decoration and hidden from assistive tech.
+   */
+  label?: TranslatedText;
 }
 
 export interface AppShellProps {

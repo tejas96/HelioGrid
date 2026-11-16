@@ -42,7 +42,7 @@ function CoverStrip({ view }: { view: CompanyStepView }) {
               </View>
               {on ? (
                 <View style={styles.check}>
-                  <ShellGlyph name="tick-small" size="sm" tone="inverse" />
+                  <ShellGlyph name="check" size="sm" tone="inverse" />
                 </View>
               ) : null}
             </Pressable>

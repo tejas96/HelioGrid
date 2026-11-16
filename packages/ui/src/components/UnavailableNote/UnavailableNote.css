@@ -24,20 +24,10 @@
   margin-top: 1px;
 }
 
-.hg-unavailable-note-mark[data-size="note"] > svg {
-  width: 15px;
-  height: 15px;
-}
-
 .hg-unavailable-note-mark[data-size="region"] {
   width: 48px;
   height: 48px;
   margin-bottom: var(--sp-1);
-}
-
-.hg-unavailable-note-mark[data-size="region"] > svg {
-  width: 22px;
-  height: 22px;
 }
 
 /* ── region: the centred body of a whole surface ───────────────────────────── */
@@ -53,7 +43,7 @@
 }
 
 .hg-unavailable-note-title {
-  font-size: 16px;
+  font-size: var(--fs-card-head);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tr-h4);
   color: var(--text-primary);

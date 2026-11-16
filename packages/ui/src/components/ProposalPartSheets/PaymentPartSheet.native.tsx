@@ -31,7 +31,7 @@ function PartFields({
       </View>
       <Select {...fields.due} />
       <View style={sheetLayout.hint}>
-        <ShellGlyph name="info-circle" size="sm" />
+        <ShellGlyph name="info" size="sm" />
         <View style={sheetLayout.words}>
           <Text variant="caption" color="secondary">
             {hint}

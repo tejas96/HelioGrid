@@ -1,5 +1,5 @@
 import type { DURATION, EASING } from '@heliogrid/theme';
-import { circle, type GlyphMark, path, rect } from '../AppShell/ShellGlyph.marks';
+import { circle, path, rect, type SceneMark } from './EmptyScene.marks';
 import type { EmptySceneName } from './EmptyScene.types';
 
 /**
@@ -19,7 +19,7 @@ export const SCENE_SCALE = { regular: 1, compact: 0.5 } as const;
 export type ScenePace = 'rise' | 'drop' | 'glide';
 
 export interface SceneLayer {
-  readonly marks: readonly GlyphMark[];
+  readonly marks: readonly SceneMark[];
   readonly pace: ScenePace;
   readonly step: number;
   readonly faint?: boolean;
@@ -34,11 +34,11 @@ interface PaceMotion {
 
 export const PACES: Readonly<Record<ScenePace, PaceMotion>> = {
   rise: { from: { x: 0, y: 8 }, duration: 'data', easing: 'enter' },
-  drop: { from: { x: 0, y: -24 }, duration: 'scene', easing: 'spring' },
+  drop: { from: { x: 0, y: -24 }, duration: 'scene', easing: 'out-quint' },
   glide: { from: { x: 28, y: 10 }, duration: 'scene', easing: 'enter' },
 };
 
-const row = (y: number, line: number): GlyphMark[] => [
+const row = (y: number, line: number): SceneMark[] => [
   rect(14, y, 70, 16, 5),
   path(`M22 ${y + 8}h${line}`),
 ];

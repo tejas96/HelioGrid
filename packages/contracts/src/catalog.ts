@@ -25,7 +25,7 @@ import {
   percentSchema,
   uuidSchema,
 } from './common';
-import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED } from './error';
+import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED, unauthenticatedEnvelope } from './error';
 import { calendarDateSchema } from './tenant-settings';
 
 export {
@@ -158,7 +158,6 @@ export const rateEntrySchema = z.object({
 });
 export type RateEntryWire = z.infer<typeof rateEntrySchema>;
 
-const unauthenticated = errorEnvelope(baseError('UNAUTHENTICATED'));
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 const conflict = errorEnvelope(baseError('CONFLICT'));
 const ruleBroken = errorEnvelope(baseError('DOMAIN_RULE_VIOLATION'));
@@ -166,7 +165,7 @@ const ruleBrokenOrKeyReused = errorEnvelope(
   z.enum([baseError('DOMAIN_RULE_VIOLATION').value, IDEMPOTENCY_KEY_REUSED]),
 );
 
-const guarded = { 401: unauthenticated } as const;
+const guarded = { 401: unauthenticatedEnvelope } as const;
 const itemParams = z.object({ id: uuidSchema });
 
 export const catalogContract = c.router({

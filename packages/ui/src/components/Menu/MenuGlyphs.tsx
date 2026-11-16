@@ -1,12 +1,8 @@
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 
 /** The overflow trigger's three dots. */
 export function OverflowGlyph() {
-  return (
-    <svg aria-hidden="true" fill="currentColor" height="16" viewBox="0 0 24 24" width="16">
-      <ShellGlyphMarks name="dots-small" />
-    </svg>
-  );
+  return <ShellGlyph name="dots" size="sm" tone="current" />;
 }
 
 /**
@@ -15,20 +11,9 @@ export function OverflowGlyph() {
  */
 export function TrashGlyph() {
   return (
-    <svg
-      aria-hidden="true"
-      className="hg-menu-item-glyph"
-      fill="none"
-      height="16"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.5"
-      viewBox="0 0 24 24"
-      width="16"
-    >
-      <ShellGlyphMarks name="trash" />
-    </svg>
+    <span className="hg-menu-item-glyph">
+      <ShellGlyph name="trash" size="sm" tone="current" />
+    </span>
   );
 }
 
@@ -51,19 +36,5 @@ export function MenuTick({ checked }: { checked: boolean }) {
 
 /** The switcher's tick — `selection="single"`'s non-colour channel beside `aria-checked`. */
 export function TickGlyph() {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      height="15"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-      width="15"
-    >
-      <ShellGlyphMarks name="tick" />
-    </svg>
-  );
+  return <ShellGlyph name="check" size="dense" tone="current" />;
 }

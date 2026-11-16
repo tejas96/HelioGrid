@@ -12,7 +12,7 @@
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { darkModules, drawableCode, quietZonedSide, wordsWidth } from './QRCode.logic';
 import type { QRCodeProps } from './QRCode.types';
 
@@ -55,19 +55,7 @@ export function QRCode({
       >
         {/* `size` is caller data, not a design value — the only reason a dimension is inline. */}
         <div className="hg-qrcode-failed" style={{ width: size, height: size }}>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <ShellGlyphMarks name="alert-circle" />
-          </svg>
+          <ShellGlyph name="alert-circle" size="lg" tone="current" />
           <span className="hg-qrcode-failed-title">{errorTitle}</span>
         </div>
         <p className="hg-qrcode-note" style={{ maxWidth: wordsWidth(size) }}>

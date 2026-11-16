@@ -6,6 +6,7 @@ import { Text } from '../../primitives/Text/Text.native';
 import { Card } from '../Card/Card.native';
 import { FoldHead } from '../FoldHead/FoldHead.native';
 import { useFormat } from '../MarketProvider';
+import { projectCard } from '../ProjectDetail/ProjectDetailParts.native';
 import { amountsOf } from './ProjectMoney.logic';
 import type { EarlierPlansProps } from './ProjectMoney.parts.types';
 
@@ -15,7 +16,7 @@ export function EarlierPlans({ plans, words }: EarlierPlansProps) {
   const [open, setOpen] = useState(false);
   if (plans.length === 0) return null;
   return (
-    <Card density="functional" style={styles.card}>
+    <Card density="functional" style={projectCard}>
       <FoldHead
         title={words.title}
         meta={words.count(plans.length)}
@@ -50,7 +51,6 @@ export function EarlierPlans({ plans, words }: EarlierPlansProps) {
 }
 
 const styles = StyleSheet.create({
-  card: { padding: theme.spacing['sp-1'], gap: theme.spacing['sp-1'] },
   plan: { paddingBottom: theme.spacing['sp-2'] },
   head: { paddingHorizontal: theme.spacing['sp-3'], paddingTop: theme.spacing['sp-2'] },
   row: {

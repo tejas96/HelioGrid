@@ -1,4 +1,5 @@
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
+import { nearestGlyphSize } from '../AppShell/ShellGlyph.logic';
 import { activityGlyphOf, agentObjectSize } from './ActivityGlyph.logic';
 
 /**
@@ -15,20 +16,5 @@ export function ActivityGlyph({ name, size = 16 }: { name: string; size?: number
       />
     );
   }
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      role="presentation"
-    >
-      <ShellGlyphMarks name={activityGlyphOf(name)} />
-    </svg>
-  );
+  return <ShellGlyph name={activityGlyphOf(name)} size={nearestGlyphSize(size)} tone="current" />;
 }

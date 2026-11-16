@@ -130,14 +130,14 @@ function PersonPick({
     >
       <Avatar name={person.name} size={32} />
       <View style={styles.personWords}>
-        <Text variant="body" bold color={on ? 'accent' : 'primary'}>
+        <Text variant="body" bold color="primary">
           {person.name}
         </Text>
         <Text variant="body-sm" color="secondary">
           {line}
         </Text>
       </View>
-      {on ? <ShellGlyph name="tick" size="md" tone="accent" /> : null}
+      {on ? <ShellGlyph name="check" size="md" tone="accent" /> : null}
     </Pressable>
   );
 }
@@ -214,7 +214,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     paddingVertical: theme.spacing['sp-2'],
     borderRadius: theme.radius['r-tile'],
+    borderWidth: 1.5,
+    borderColor: 'transparent',
   },
-  personOn: { backgroundColor: colors['accent-subtle'] },
+  /* The chosen person: the ink ring, as every chosen option is. */
+  personOn: { borderColor: colors['text-primary'] },
   personWords: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
 });

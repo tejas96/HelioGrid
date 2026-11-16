@@ -58,6 +58,7 @@
 }
 
 .hg-date-picker-glyph {
+  display: inline-flex;
   color: var(--text-tertiary);
   flex-shrink: 0;
 }
@@ -85,5 +86,5 @@
   background: var(--surface);
   border-radius: var(--r-lg);
   box-shadow: var(--e4);
-  animation: hg-pop-in var(--dur-standard) var(--ease-enter);
+  animation: hg-pop-in var(--dur-standard) var(--ease-out-quint);
 }

@@ -115,7 +115,7 @@
 .hg-pb-trio-value {
   font-family: var(--font-display);
   font-weight: var(--fw-regular);
-  font-size: 20px;
+  font-size: var(--fs-h2);
   line-height: 26px;
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums lining-nums;
@@ -134,17 +134,17 @@
 
 .hg-pb[data-mode="paper"] .hg-pb-bill-row {
   grid-template-columns: minmax(110px, auto) 1fr minmax(90px, auto);
-  font-size: 16px;
+  font-size: var(--doc-fs);
 }
 .hg-pb[data-mode="paper"] .hg-pb-bill-track {
   height: 16px;
 }
 .hg-pb[data-mode="paper"] .hg-pb-trio-value {
-  font-size: 30px;
+  font-size: var(--doc-fs-stat);
   line-height: 36px;
 }
 .hg-pb[data-mode="paper"] .hg-pb-trio-name {
-  font-size: 14px;
+  font-size: var(--doc-fs-small);
   line-height: 20px;
 }
 .hg-pb[data-mode="paper"] .hg-pb-payback {
@@ -152,7 +152,7 @@
 }
 .hg-pb[data-mode="paper"] .hg-pb-payback-net-word,
 .hg-pb[data-mode="paper"] .hg-pb-payback-axis {
-  font-size: 15px;
+  font-size: var(--doc-fs);
   line-height: 20px;
 }
 .hg-pb[data-mode="paper"] .hg-pb-trio {
@@ -171,17 +171,17 @@
 .hg-pb-split-gap {
   flex-basis: 0;
   min-width: 6px;
-  border-radius: 5px;
+  border-radius: var(--rf-sm);
   transform-origin: left;
   animation: hg-pb-grow-across var(--dur-data) var(--ease-enter) backwards;
 }
 .hg-pb-split-bar > :first-child {
-  border-start-start-radius: 14px;
-  border-end-start-radius: 14px;
+  border-start-start-radius: var(--r-pill);
+  border-end-start-radius: var(--r-pill);
 }
 .hg-pb-split-bar > :last-child {
-  border-start-end-radius: 14px;
-  border-end-end-radius: 14px;
+  border-start-end-radius: var(--r-pill);
+  border-end-end-radius: var(--r-pill);
 }
 /* What is not shared out yet: hatched in the warning tint, with an edge, and said in words above. */
 .hg-pb-split-gap {
@@ -214,7 +214,7 @@
 .hg-pb-split-share {
   font-family: var(--font-display);
   font-weight: var(--fw-regular);
-  font-size: 20px;
+  font-size: var(--fs-h2);
   line-height: 24px;
   font-variant-numeric: tabular-nums lining-nums;
   white-space: nowrap;
@@ -247,17 +247,17 @@
   padding: 14px 0;
 }
 .hg-pb[data-mode="paper"] .hg-pb-split-share {
-  font-size: 26px;
+  font-size: var(--doc-fs-stat);
   line-height: 30px;
 }
 .hg-pb[data-mode="paper"] .hg-pb-split-words b {
-  font-size: 16px;
+  font-size: var(--doc-fs);
   line-height: 22px;
 }
 .hg-pb[data-mode="paper"] .hg-pb-split-words span {
-  font-size: 14px;
+  font-size: var(--doc-fs-small);
   line-height: 20px;
 }
 .hg-pb[data-mode="paper"] .hg-pb-split-amount {
-  font-size: 17px;
+  font-size: var(--doc-fs-lead);
 }

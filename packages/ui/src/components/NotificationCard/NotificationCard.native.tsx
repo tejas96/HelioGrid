@@ -191,7 +191,7 @@ export const styles = StyleSheet.create({
   card: {
     gap: theme.spacing['sp-3'],
     padding: theme.layout['tile-pad'],
-    borderRadius: theme.radius['r-tile'],
+    borderRadius: theme.radius['r-lg'],
   },
   top: { flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing['sp-3'] },
   inert: { flex: 1, flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing['sp-3'] },
@@ -201,7 +201,7 @@ export const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    borderRadius: theme.radius['r-tile'],
+    borderRadius: theme.radius['r-lg'],
   },
   glyphSlot: {
     width: theme.spacing['sp-10'],

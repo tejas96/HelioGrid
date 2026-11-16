@@ -3,7 +3,6 @@ import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { FocusHandle } from '../../primitives/FocusAfter';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFocusRequest } from '../../primitives/use-focus-request';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -14,6 +13,7 @@ import { Input } from '../Input/Input.native';
 import { PendingAction } from '../PendingAction/PendingAction.native';
 import { PhoneField } from '../PhoneField/PhoneField.native';
 import { SegmentedControl } from '../SegmentedControl/SegmentedControl.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { CHECK_TONE, segmentOf, segmentOptionsOf } from './QuickAddForm.logic';
 import type { QuickAddFormProps, QuickAddKnownLead } from './QuickAddForm.types';
 
@@ -81,7 +81,7 @@ export function QuickAddForm(props: QuickAddFormProps) {
                 size="lg"
                 fullWidth
                 loading={saving}
-                icon={<ShellGlyph name="tick" size="md" tone="inverse" />}
+                icon={<ShellGlyph name="check" size="md" tone="inverse" />}
                 onClick={saving ? undefined : props.onSave}
               >
                 {words.save}

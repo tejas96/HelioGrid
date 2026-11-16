@@ -91,7 +91,7 @@ function UpNext(props: LeadInboxProps) {
   return (
     <section className="hg-lead-inbox-next" aria-label={words.upNext}>
       <div className="hg-lead-inbox-next-head">
-        <h2 className="hg-lead-inbox-over">{words.upNext}</h2>
+        <h2 className="hg-lead-inbox-over hg-overline">{words.upNext}</h2>
         <span className="hg-lead-inbox-grow" />
         <span className="hg-lead-inbox-column">
           {words.billColumn}

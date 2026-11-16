@@ -22,7 +22,7 @@
   align-items: center;
   gap: 14px;
   padding: 10px 18px 10px 10px;
-  border-radius: 18px;
+  border-radius: var(--r-tile);
   /* biome-ignore lint/plugin/raw-white-css: paper — the cover's chip is the document's own white over the picture */
   background: color-mix(in srgb, var(--surface) 94%, transparent);
   box-shadow: var(--e3);
@@ -36,11 +36,11 @@
 }
 .hg-pp-cover-brand-words b {
   font-weight: var(--fw-semibold);
-  font-size: 16px;
+  font-size: var(--doc-fs);
   line-height: 20px;
 }
 .hg-pp-cover-brand-words span {
-  font-size: 12px;
+  font-size: var(--doc-fs-small);
   line-height: 16px;
   color: var(--text-secondary);
 }
@@ -48,9 +48,9 @@
 .hg-pp-cover-number {
   flex: none;
   padding: 8px 14px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: color-mix(in srgb, var(--ink) 64%, transparent);
-  font-size: 12px;
+  font-size: var(--doc-fs-small);
 }
 
 .hg-pp-cover-words {
@@ -59,7 +59,7 @@
 }
 .hg-pp-cover-over {
   font-weight: var(--fw-semibold);
-  font-size: 13px;
+  font-size: var(--doc-fs-small);
   line-height: 16px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -68,7 +68,7 @@
   margin: 12px 0 0;
   font-family: var(--font-display);
   font-weight: var(--fw-regular);
-  font-size: 84px;
+  font-size: var(--doc-fs-cover);
   line-height: 84px;
   letter-spacing: -0.03em;
   text-wrap: balance;
@@ -78,7 +78,7 @@
   max-width: 30ch;
   font-family: var(--font-display);
   font-weight: var(--fw-regular);
-  font-size: 24px;
+  font-size: var(--doc-fs-subtitle);
   line-height: 32px;
 }
 
@@ -87,7 +87,7 @@
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
-  border-radius: 22px;
+  border-radius: var(--r-lg);
   /* biome-ignore lint/plugin/raw-white-css: glass — a frost of white over the picture's shade, holding the cover's three figures */
   background: color-mix(in srgb, var(--text-inverse) 13%, transparent);
   -webkit-backdrop-filter: blur(18px);
@@ -107,7 +107,7 @@
   display: block;
   font-family: var(--font-display);
   font-weight: var(--fw-regular);
-  font-size: 30px;
+  font-size: var(--doc-fs-stat);
   line-height: 36px;
   letter-spacing: -0.015em;
   font-variant-numeric: tabular-nums lining-nums;
@@ -121,7 +121,7 @@
   align-items: flex-start;
   gap: 2px;
   margin-top: 4px;
-  font-size: 13px;
+  font-size: var(--doc-fs-small);
   line-height: 18px;
 }
 /* The tier in the label's own ink: a page's quiet ink fails AA on the picture's shade. */
@@ -134,5 +134,5 @@
   justify-content: space-between;
   gap: 16px;
   padding: 26px 56px 40px;
-  font-size: 13px;
+  font-size: var(--doc-fs-small);
 }

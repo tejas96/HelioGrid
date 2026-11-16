@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { HeroPanelMenu } from '../HeroPanel/HeroPanel.types';
 import { STATE_ACT_GLYPH } from '../LeadActionDock/LeadActionDock.glyphs';
 import type { MenuItem } from '../Menu/Menu.types';
@@ -22,7 +22,7 @@ const RECORD_ACT_GLYPH: Record<Exclude<LeadRecordAct, 'junk'>, ShellGlyphName> =
   disqualify: STATE_ACT_GLYPH.disqualify,
   'mark-won': 'circle-check',
   'mark-lost': 'trend-down',
-  'add-referral': 'person-plus',
+  'add-referral': 'user-plus',
   merge: 'layers',
 };
 

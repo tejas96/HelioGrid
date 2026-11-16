@@ -13,9 +13,10 @@ import type {
 
 /**
  * The lead's five actions (`M02-32`). The `dock` draws them as one row of equal circles, Call the
- * one ocean circle — a `tel:` link, or off with why — and a closed lead's Reopen in their place;
+ * one ocean circle — a `tel:` link, or off with why;
  * the `grid` stands Call across the column and the four as pills under it, the state acts below.
- * Junk and the record's other acts are the record menu's.
+ * Junk and the record's other acts are the record menu's. A closed lead draws neither layout:
+ * its Reopen stands alone.
  */
 export function LeadActionDock({
   layout,
@@ -29,7 +30,7 @@ export function LeadActionDock({
   const waiting = standing?.kind === 'waiting';
   return (
     <div className="hg-lead-dock" data-layout={layout}>
-      {layout === 'grid' ? (
+      {closed ? null : layout === 'grid' ? (
         <div className="hg-lead-dock-acts">
           <CallAct call={call} label={callLabel} />
           <div className="hg-lead-dock-grid">
@@ -38,7 +39,7 @@ export function LeadActionDock({
             ))}
           </div>
         </div>
-      ) : closed ? null : (
+      ) : (
         <div className="hg-lead-dock-rounds">
           <CallRound call={call} label={callLabel} />
           {acts.map((act) => (

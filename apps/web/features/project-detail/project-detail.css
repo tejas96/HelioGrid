@@ -4,14 +4,6 @@
 
 .hg-project-page-head {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--sp-3) var(--sp-4);
-}
-
-.hg-project-page-title {
-  display: flex;
   flex-direction: column;
   gap: var(--sp-3);
   min-width: 0;

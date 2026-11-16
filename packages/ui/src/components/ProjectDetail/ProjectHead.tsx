@@ -1,6 +1,6 @@
 import { firstNameOf } from '@heliogrid/domain';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { Avatar } from '../Avatar';
 import { IconButton } from '../IconButton';
 import { Menu } from '../Menu';

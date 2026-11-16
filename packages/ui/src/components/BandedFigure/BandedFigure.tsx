@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { useFormat } from '../MarketProvider';
 import { renderProvenance } from '../Provenance';
 import { BAND_TONES, BandChip } from './BandChip';
@@ -16,20 +16,9 @@ interface WebBandedFigureProps extends BandedFigureProps {
 
 function RemedyGlyph() {
   return (
-    <svg
-      className="hg-banded-remedy-glyph"
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="arrow-right" />
-    </svg>
+    <span className="hg-banded-remedy-glyph">
+      <ShellGlyph name="arrow-right" size="dense" tone="current" />
+    </span>
   );
 }
 
@@ -93,7 +82,7 @@ export function BandedFigure({
     >
       {big ? <span aria-hidden="true" className="hg-banded-edge" /> : null}
       <div className="hg-banded-head">
-        <span className="hg-banded-label">{label}</span>
+        <span className="hg-banded-label hg-overline">{label}</span>
       </div>
       <div className="hg-banded-figure-row">
         <div className="hg-banded-figure">

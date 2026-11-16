@@ -1,4 +1,4 @@
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { FieldSave, ProposalStepView } from './ProposalSteps.types';
 import type {
   ModelOf,
@@ -17,7 +17,7 @@ const FACT_GLYPH: Readonly<Record<string, ShellGlyphName>> = {
   company: 'building',
   phone: 'phone',
   address: 'pin',
-  tax: 'file-text',
+  tax: 'document',
 };
 
 function companyView(

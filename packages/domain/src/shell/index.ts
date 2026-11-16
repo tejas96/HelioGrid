@@ -80,7 +80,16 @@ export type {
 export { SETUP_STEPS, setupReadiness } from './setup-readiness';
 export type { ShellView } from './shell-view';
 export { shellViewFor } from './shell-view';
-export { moreWorkLists, sidebarWorkLists, workListLanded } from './sidebar';
+export {
+  moreWorkLists,
+  SIDEBAR_GROUPS,
+  type SidebarGroup,
+  type SidebarGroupLists,
+  sidebarGroupsOf,
+  sidebarWorkLists,
+  WORK_DESTINATION_GROUP,
+  workListLanded,
+} from './sidebar';
 export type {
   StandingDestination,
   StandingDestinationSet,

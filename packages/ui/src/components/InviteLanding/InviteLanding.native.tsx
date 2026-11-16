@@ -206,7 +206,7 @@ function LandingPlace({ words, frame, onSignIn, actRef }: InviteLandingProps & A
   return (
     <View style={styles.place}>
       <EmptyState
-        icon={<ShellGlyph name={gone ? 'link-off' : 'tick'} size="xl" tone="primary" />}
+        icon={<ShellGlyph name={gone ? 'link-off' : 'check'} size="xl" tone="primary" />}
         title={place.title}
         description={place.line}
         action={

@@ -61,7 +61,7 @@ export function FilterSet({
       ))}
       {flags.length === 0 ? null : (
         <section className="hg-filter-section">
-          <h3 className="hg-filter-dimension-label">{words.show}</h3>
+          <h3 className="hg-filter-dimension-label hg-overline">{words.show}</h3>
           <div className="hg-filter-flags">
             {flags.map((dim) => (
               <div key={dim.key} className="hg-filter-flag-row">

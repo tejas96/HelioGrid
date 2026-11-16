@@ -1,17 +1,17 @@
 import type { ComposedMessage } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import {
   AfterHint,
   AfterSummary,
   MessageBubble,
 } from '../ProposalAfterParts/ProposalAfterParts.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import { copyGlyphOf, messageActsOf, messageSheetOf } from './MessageSheet.logic';
 import type { MessageSheetProps } from './MessageSheet.types';
 
@@ -23,7 +23,7 @@ function Body(props: MessageSheetProps & { readonly composed: ComposedMessage })
     <View style={styles.body}>
       {notice === undefined || notice === null ? null : (
         <View style={styles.notice}>
-          <HueTile glyph="shield-check" hue="warning" size={40} stroke={1.7} />
+          <HueTile glyph="shield-check" hue="warning" size={40} />
           <View style={styles.grow}>
             <Text variant="body" bold color="warning">
               {notice.title}
@@ -78,9 +78,9 @@ function Body(props: MessageSheetProps & { readonly composed: ComposedMessage })
 export function MessageSheet(props: MessageSheetProps) {
   const { open, message } = props;
   return (
-    <Sheet {...messageSheetOf(props)} showClose>
+    <EditorSurface {...messageSheetOf(props)} showClose desktop="modal">
       {open && message.kind === 'ready' ? <Body {...props} composed={message.value} /> : null}
-    </Sheet>
+    </EditorSurface>
   );
 }
 
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     padding: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-lg'],
-    backgroundColor: colors['warning-bg'],
+    backgroundColor: TONE.warning.tint,
   },
   two: { flexDirection: 'row', gap: theme.spacing['sp-3'] },
 });

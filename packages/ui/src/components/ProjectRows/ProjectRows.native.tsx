@@ -2,7 +2,6 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { useFocusAfter } from '../../primitives/FocusAfter';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
@@ -10,6 +9,7 @@ import { Button } from '../Button/Button.native';
 import { CardRow, CardRows, useCardRowAsideRoom } from '../CardRows/CardRows.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { KIND_TILE, rowActOf, rowOpenOf } from './ProjectRows.logic';
 import type {
   ProjectRowGroupProps,

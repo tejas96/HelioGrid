@@ -1,7 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import {
   FIELD_BOX_EDGE,
@@ -12,7 +11,7 @@ import {
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { isInDanger } from './TimeField.logic';
 import type { TimeFieldProps } from './TimeField.types';
@@ -93,18 +92,7 @@ export function TimeField({
           }),
         ]}
       >
-        <Svg
-          width={18}
-          height={18}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={colors['text-tertiary']}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <ShellGlyphMarks name="clock" />
-        </Svg>
+        <ShellGlyph name="clock" size="sm" ink={colors['text-tertiary']} />
         <TextInput
           style={[styles.input, fieldBoxText(disabled)]}
           value={entry.draft}

@@ -20,34 +20,6 @@
   gap: var(--sp-5);
 }
 
-.hg-role-card-head {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-}
-
-.hg-role-card-names {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-0-5);
-  min-width: 0;
-}
-
-.hg-role-card-presets {
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
-  font-weight: var(--fw-bold);
-  color: var(--text-primary);
-  text-wrap: pretty;
-}
-
-.hg-role-card-credit {
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-body-sm);
-  color: var(--text-secondary);
-  text-wrap: pretty;
-}
-
 .hg-role-card-region {
   flex: 1 1 auto;
   min-height: 0;
@@ -78,10 +50,6 @@
 
 .hg-role-card-overline {
   margin: 0;
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-secondary);
 }
 

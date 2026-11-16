@@ -18,7 +18,7 @@ export function BuilderSaveMark({
   if (save.kind === 'saved' || save.kind === 'saving') {
     return (
       <View style={styles.mark} accessibilityLiveRegion="polite">
-        {save.kind === 'saved' ? <ShellGlyph name="tick-small" size="sm" tone="success" /> : null}
+        {save.kind === 'saved' ? <ShellGlyph name="check" size="sm" tone="success" /> : null}
         <Text variant="caption" color="success">
           {save.kind === 'saved' ? words.saved : words.saving}
         </Text>

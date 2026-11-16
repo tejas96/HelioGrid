@@ -19,7 +19,7 @@ function Verdict({ split, words }: { split: SplitView; words: ProposalSplitWords
   if (split.state === 'met') {
     return (
       <span className="hg-pb-verdict" data-state="met">
-        <ShellGlyph name="tick-small" size="sm" tone="success" />
+        <ShellGlyph name="check" size="sm" tone="success" />
         {percentText(WHOLE)}
       </span>
     );

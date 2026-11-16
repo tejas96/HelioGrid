@@ -1,5 +1,5 @@
-import { AttentionGlyph, Icon } from '../../primitives/Icon';
 import { Text } from '../../primitives/Text/Text';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button/Button';
 import type { DoorSwitchProps } from './DoorSwitch.types';
 
@@ -9,9 +9,7 @@ export function DoorSwitch({ words, onConfirm }: DoorSwitchProps) {
     <section className="hg-door-switch" aria-live="assertive">
       <div className="hg-door-switch-head">
         <span className="hg-door-switch-mark">
-          <Icon size="md">
-            <AttentionGlyph />
-          </Icon>
+          <ShellGlyph name="alert" size="md" tone="current" />
         </span>
         <Text variant="h3" align="center">
           {words.title}

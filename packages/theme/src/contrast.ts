@@ -43,6 +43,7 @@ const TEXT_BACKGROUNDS = [
   'surface-alt',
   'fill',
   'fill-hover',
+  'surface-raised',
 ] as const satisfies readonly ColorToken[];
 const SEMANTIC = ['success', 'warning', 'danger', 'info', 'neutral'] as const;
 const MARK_BACKGROUNDS = [
@@ -99,6 +100,12 @@ export const DECLARED_PAIRS: readonly DeclaredPair[] = [
   { fg: 'text-inverse', bg: 'accent-hover', role: 'a label on a hovered accent', floor: 4.5 },
   { fg: 'on-ink', bg: 'ink', role: 'a tooltip', floor: 7 },
   { fg: 'on-nav-active', bg: 'nav-active', role: 'the sidebar item in view', floor: 7 },
+  {
+    fg: 'nav-active-mark',
+    bg: 'nav-active',
+    role: "the sidebar item in view's icon (non-text)",
+    floor: 3,
+  },
   { fg: 'accent', bg: 'surface', role: 'links, focus and selection on a card', floor: 4.5 },
   { fg: 'accent', bg: 'canvas', role: 'links on the page', floor: 4.5 },
   { fg: 'accent', bg: 'canvas-sunken', role: 'a focus ring in a well (non-text)', floor: 3 },

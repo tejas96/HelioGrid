@@ -1,12 +1,17 @@
 import { theme } from '@heliogrid/theme';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import { SegmentedControl } from '../SegmentedControl/SegmentedControl.native';
 import { SettingsSection, SettingsSectionRow } from '../SettingsSection/SettingsSection.native';
-import { APPEARANCE_GLYPH, appearanceOptions, nextAppearance } from './AppearanceSwitch.logic';
+import {
+  APPEARANCE_GLYPH,
+  appearanceOf,
+  appearanceOptions,
+  nextAppearance,
+} from './AppearanceSwitch.logic';
 import type { AppearanceSwitchProps } from './AppearanceSwitch.types';
 
 export function AppearanceSwitch({
@@ -25,30 +30,17 @@ export function AppearanceSwitch({
   );
 }
 
-/**
- * The three icons on one track, the chosen one raised and edged so it shows in dark as in light.
- * Each is named by its word; the phone has no hover, so its name is what a reader hears.
- */
+/** The three icons on `SegmentedControl`'s track across their holder's width; each is named by its word, which a reader hears. */
 function AppearanceIcons({ words, value, onChange }: Omit<AppearanceSwitchProps, 'form'>) {
-  const { controlFill } = useGround();
   return (
-    <View accessibilityRole="radiogroup" aria-label={words.label} style={styles.track}>
-      {appearanceOptions(words).map((option) => {
-        const chosen = option.value === value;
-        return (
-          <Pressable
-            key={option.value}
-            accessibilityRole="radio"
-            accessibilityLabel={option.label}
-            accessibilityState={{ checked: chosen }}
-            onPress={() => onChange(option.value)}
-            style={[styles.icon, chosen ? [styles.chosen, { backgroundColor: controlFill }] : null]}
-          >
-            <ShellGlyph name={option.glyph} size="md" tone={chosen ? 'primary' : 'secondary'} />
-          </Pressable>
-        );
-      })}
-    </View>
+    <SegmentedControl
+      iconOnly
+      fill
+      ariaLabel={words.label}
+      options={appearanceOptions(words)}
+      value={value}
+      onChange={(next) => onChange(appearanceOf(next))}
+    />
   );
 }
 
@@ -71,29 +63,18 @@ function AppearanceStep({ words, value, onChange }: Omit<AppearanceSwitchProps, 
 }
 
 const styles = StyleSheet.create({
-  track: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing['sp-0-5'],
-    padding: theme.spacing['sp-0-5'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: colors['canvas-sunken'],
-  },
   icon: {
     width: MIN_TOUCH_TARGET,
     height: MIN_TOUCH_TARGET,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: theme.radius['r-pill'],
+    borderRadius: theme.radius['rf-sm'],
     borderWidth: 1,
     borderColor: 'transparent',
   },
   step: {
     alignSelf: 'center',
+    borderRadius: theme.radius['r-pill'],
     backgroundColor: colors['canvas-sunken'],
-  },
-  chosen: {
-    borderColor: colors['line-strong'],
-    ...theme.elevation.e1,
   },
 });

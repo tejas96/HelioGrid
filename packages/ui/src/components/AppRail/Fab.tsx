@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { FabProps } from './AppRail.types';
 
 type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
@@ -27,17 +27,5 @@ export function Fab({ label, icon, onClick, size = 56, className, style }: WebFa
 }
 
 function PlusIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      aria-hidden="true"
-      className="hg-fab-glyph"
-    >
-      <ShellGlyphMarks name="plus" />
-    </svg>
-  );
+  return <ShellGlyph name="plus" size="lg" tone="current" />;
 }

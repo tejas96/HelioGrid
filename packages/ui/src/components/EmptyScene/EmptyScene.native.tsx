@@ -4,9 +4,9 @@ import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { useReducedMotion } from '../../primitives/use-reduced-motion';
-import { GlyphMarkList } from '../AppShell/ShellGlyphMarks.native';
 import { PACES, SCENE_BOX, SCENE_SCALE, SCENES, type SceneLayer } from './EmptyScene.shapes';
 import type { EmptySceneProps, EmptySceneSize } from './EmptyScene.types';
+import { SceneMarks } from './SceneMarks';
 
 /**
  * The scene, in the quiet text colour. Each layer is its own drawing on a view that moves in once
@@ -78,7 +78,7 @@ function SceneLayerView({ layer, size }: { layer: SceneLayer; size: EmptySceneSi
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <GlyphMarkList marks={layer.marks} />
+        <SceneMarks marks={layer.marks} />
       </Svg>
     </Animated.View>
   );

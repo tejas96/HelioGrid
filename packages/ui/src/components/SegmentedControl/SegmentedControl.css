@@ -1,6 +1,7 @@
-/* SegmentedControl — the track takes the control fill (the well on the page, white in a tile);
-   the active pill is the accent wash, as every chosen filter is, and springs between positions.
-   Its hairline keeps it plain on the track in sunlight, where the wash and the well are close.
+/* SegmentedControl — OneOhm's: a sunken track, radius 12, with a hairline and a 2 px inset; the
+   choice in view is a white raised thumb (radius 6, a hairline and the first lift) that springs
+   between positions, its words ink at medium weight, the others muted. Quiet, as every chosen
+   option is: no accent wash.
 
    THE TRACK IS A THIRD BACKGROUND AND THE NUMERALS ARE MEASURED ON IT. The well is not
    one of the two backgrounds colors.css certifies text tokens on, and --text-tertiary lands at
@@ -23,10 +24,11 @@
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
   gap: 0;
-  border-radius: var(--r-pill);
-  padding: var(--sp-1);
-  /* Recessed on every ground, so the pill in view reads on it. */
+  border-radius: var(--r-control);
+  padding: var(--sp-0-5);
+  /* Recessed on every ground, so the thumb in view reads on it. */
   background: var(--canvas-sunken);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
 }
 
 .hg-segmented-control-pill[data-error="true"] {
@@ -35,20 +37,23 @@
 
 .hg-segmented-control-indicator {
   position: absolute;
-  top: var(--sp-1);
-  bottom: var(--sp-1);
-  left: var(--sp-1);
-  width: calc((100% - calc(2 * var(--sp-1))) / var(--hg-segmented-control-count));
-  border-radius: var(--r-pill);
-  background: var(--accent-subtle);
-  box-shadow: 0 0 0 1px var(--line-soft);
+  top: var(--sp-0-5);
+  bottom: var(--sp-0-5);
+  left: var(--sp-0-5);
+  width: calc((100% - calc(2 * var(--sp-0-5))) / var(--hg-segmented-control-count));
+  border-radius: var(--rf-sm);
+  /* The raised step on the well: white in light, a step lighter than the well in dark. */
+  background: var(--surface-raised);
+  box-shadow:
+    0 0 0 1px var(--line-soft),
+    var(--e1);
   /* It slides by its own width: a transform, so the move never lays the row out again. */
   transform: translateX(calc(var(--hg-segmented-control-index) * 100%));
-  transition: transform var(--dur-emphasised) var(--ease-spring);
+  transition: transform var(--dur-spring-snappy) var(--ease-spring-snappy);
 }
 
-/* The 44px target around the 32px pill: the extra 12px is borrowed back as negative margin,
-   so the control still renders 40px tall and the indicator above is untouched. */
+/* The 44px target around the 40px thumb: the track's 2px inset is borrowed back as negative
+   margin, so the control renders 44px tall and the indicator above is untouched. */
 .hg-segmented-control-segment {
   position: relative;
   z-index: 1;
@@ -57,11 +62,11 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  height: 44px;
-  margin: -6px 0;
+  height: var(--touch-min);
+  margin: calc(-1 * var(--sp-0-5)) 0;
   border: none;
-  border-radius: var(--r-pill);
-  padding: 0 18px;
+  border-radius: var(--rf-sm);
+  padding: 0 var(--sp-3);
   background: transparent;
   color: var(--text-secondary);
   font-family: var(--font-sans);
@@ -73,8 +78,7 @@
 }
 
 .hg-segmented-control-segment[data-active="true"] {
-  color: var(--accent-text);
-  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
 }
 
 .hg-segmented-control-segment[aria-disabled="true"],
@@ -88,9 +92,8 @@
 }
 
 .hg-segmented-control-off-glyph {
+  display: inline-flex;
   flex-shrink: 0;
-  width: 13px;
-  height: 13px;
 }
 
 .hg-segmented-control-count {
@@ -98,9 +101,9 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* A count on the wash is the wash's words: --text-secondary is not measured on the accent tint. */
+/* A count on the thumb is the thumb's words. */
 .hg-segmented-control-segment[data-active="true"] .hg-segmented-control-count {
-  color: var(--accent-text);
+  color: var(--text-primary);
 }
 
 .hg-segmented-control-label {
@@ -143,4 +146,24 @@
     min-width: 0;
     padding-inline: var(--sp-0-5);
   }
+}
+
+/* Icon segments: square, each tipped with its words (`Tip`) — the words are its name. */
+.hg-segmented-control-segment[data-icon="true"] {
+  width: var(--touch-min);
+  padding: 0;
+}
+
+/* `fill`: the track runs its holder's width, and every segment, icon or word, takes an equal share. */
+.hg-segmented-control[data-fill="true"] {
+  align-items: stretch;
+}
+
+.hg-segmented-control-pill[data-fill="true"] {
+  display: grid;
+  box-sizing: border-box;
+}
+
+.hg-segmented-control-pill[data-fill="true"] > .hg-segmented-control-segment[data-icon="true"] {
+  width: auto;
 }

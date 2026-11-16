@@ -1,6 +1,7 @@
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import type { TextColor } from '../../primitives/Text/Text.types';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { chartSlot } from './chart-palette';
 import type { ProvenanceColorKey } from './chart-provenance';
 
@@ -29,9 +30,9 @@ export const CHART_GRIDLINE = colors['chart-gridline'];
 
 export const PROVENANCE_MARK: Record<ProvenanceColorKey, ThemeColor> = {
   success: colors.success,
-  'success-text': colors['success-text'],
-  'info-text': colors['info-text'],
-  'warning-text': colors['warning-text'],
+  'success-text': TONE.success.ink,
+  'info-text': TONE.info.ink,
+  'warning-text': TONE.warning.ink,
   'text-tertiary': colors['text-tertiary'],
   'mark-subtle': colors['mark-subtle'],
 };

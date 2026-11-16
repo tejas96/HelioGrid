@@ -34,7 +34,7 @@ export function WonCard(
   const share = targetShareOf(view);
   const editable = view.canSetTarget && !target.editing;
   return (
-    <Card>
+    <Card tile="glass">
       <View
         style={styles.body}
         accessibilityLabel={words.wonSoFar}

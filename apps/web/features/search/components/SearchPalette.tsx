@@ -5,11 +5,10 @@ import { useTranslate } from '@heliogrid/i18n/react';
 import {
   Badge,
   type FocusHandle,
+  Modal,
   SearchField,
   SearchResults,
-  SheetBackdrop,
   ShellGlyph,
-  useOverlayDismiss,
 } from '@heliogrid/ui';
 import { type KeyboardEvent, useEffect, useRef } from 'react';
 import { paletteKeyCaps } from '../constants';
@@ -34,14 +33,13 @@ interface SearchPaletteProps {
  */
 export function SearchPalette({ screen, words, onOpen, onClose }: SearchPaletteProps) {
   const t = useTranslate();
-  const panel = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
   const field = useRef<FocusHandle>(null);
-  useOverlayDismiss({ open: true, panelRef: panel, dismissible: true, onClose, inset: false });
   useEffect(() => field.current?.focus({ preventScroll: true }), []);
   /* The cursor's row stays in view as the keys walk past the list's edge. */
   useEffect(() => {
     if (screen.cursor === null) return;
-    panel.current?.querySelector('[aria-current="true"]')?.scrollIntoView({ block: 'nearest' });
+    body.current?.querySelector('[aria-current="true"]')?.scrollIntoView({ block: 'nearest' });
   }, [screen.cursor]);
 
   /* Only the field's own keys: Enter on a row's link or on Reopen is that control's. */
@@ -57,67 +55,70 @@ export function SearchPalette({ screen, words, onOpen, onClose }: SearchPaletteP
   };
 
   return (
-    <>
-      <SheetBackdrop onClick={onClose} zIndex={PALETTE_LAYER} />
-      <div className="hg-search-palette-layer">
-        <div
-          ref={panel}
-          role="dialog"
-          aria-modal="true"
-          aria-label={words.title}
-          tabIndex={-1}
-          className="hg-search-palette"
-          onKeyDown={walk}
-        >
-          <div className="hg-search-palette-field">
-            <SearchField
-              ref={field}
-              value={screen.query}
-              onChange={screen.type}
-              onClear={screen.clear}
-              clearLabel={t(SEARCH_FIELD.clear)}
-              placeholder={words.placeholder}
-              ariaLabel={words.title}
-            />
-          </div>
-          <div className="hg-search-palette-body">
-            <SearchResults
-              read={screen.read}
-              searching={screen.searching}
-              cursor={screen.cursor}
-              onOpen={onOpen}
-              onReopen={screen.reopen}
-              words={words}
-            />
-          </div>
-          <div className="hg-search-palette-foot">
-            <span className="hg-search-palette-keys" aria-hidden="true">
-              <span>
-                <Badge tone="neutral" density="functional">
-                  <ShellGlyph name="chevron-up" size="sm" tone="secondary" />
-                </Badge>
-                <Badge tone="neutral" density="functional">
-                  <ShellGlyph name="chevron" size="sm" tone="secondary" />
-                </Badge>
-                {words.keys.move}
-              </span>
-              <span>
-                <Badge tone="neutral" density="functional">
-                  {paletteKeyCaps.open}
-                </Badge>
-                {words.keys.open}
-              </span>
-              <span>
-                <Badge tone="neutral" density="functional">
-                  {paletteKeyCaps.close}
-                </Badge>
-                {words.keys.close}
-              </span>
-            </span>
-            <span className="hg-search-palette-scope">{words.onlyYours}</span>
-          </div>
+    <Modal
+      size="wide"
+      place="top"
+      label={words.title}
+      closeLabel={words.keys.close}
+      showClose={false}
+      onClose={onClose}
+      zIndex={PALETTE_LAYER}
+      footer={<PaletteKeys words={words} />}
+    >
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: the keys are the field's, caught as they bubble from it */}
+      <div ref={body} className="hg-search-palette" onKeyDown={walk}>
+        <div className="hg-search-palette-field">
+          <SearchField
+            ref={field}
+            value={screen.query}
+            onChange={screen.type}
+            onClear={screen.clear}
+            clearLabel={t(SEARCH_FIELD.clear)}
+            placeholder={words.placeholder}
+            ariaLabel={words.title}
+          />
         </div>
+        <SearchResults
+          read={screen.read}
+          searching={screen.searching}
+          cursor={screen.cursor}
+          onOpen={onOpen}
+          onReopen={screen.reopen}
+          words={words}
+        />
       </div>
-    </>
+    </Modal>
+  );
+}
+
+/** The keys the palette answers, and whose records it searches. */
+function PaletteKeys({ words }: { words: SearchWords }) {
+  return (
+    <div className="hg-search-palette-foot">
+      <span className="hg-search-palette-keys" aria-hidden="true">
+        <span>
+          <Badge tone="neutral" density="functional">
+            <ShellGlyph name="chevron-up" size="sm" tone="secondary" />
+          </Badge>
+          <Badge tone="neutral" density="functional">
+            <ShellGlyph name="chevron" size="sm" tone="secondary" />
+          </Badge>
+          {words.keys.move}
+        </span>
+        <span>
+          <Badge tone="neutral" density="functional">
+            {paletteKeyCaps.open}
+          </Badge>
+          {words.keys.open}
+        </span>
+        <span>
+          <Badge tone="neutral" density="functional">
+            {paletteKeyCaps.close}
+          </Badge>
+          {words.keys.close}
+        </span>
+      </span>
+      <span>{words.onlyYours}</span>
+    </div>
   );
 }

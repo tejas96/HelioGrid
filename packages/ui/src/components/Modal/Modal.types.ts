@@ -2,8 +2,8 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
 
-/** sm 400 · md 520 · lg 720 (capped at 100%). */
-export type ModalSize = 'sm' | 'md' | 'lg';
+/** sm 400 · md 520 · lg 720 · wide the page's content width — a palette over the page (capped at 100%). */
+export type ModalSize = 'sm' | 'md' | 'lg' | 'wide';
 
 export type ModalDensity = 'expressive' | 'functional';
 
@@ -19,8 +19,15 @@ export interface ModalProps extends OverlayCloseWords {
   description?: TranslatedText;
   overline?: TranslatedText;
   children?: ReactNode;
-  /** sm 400 · md 520 · lg 720 (capped at 100%). */
+  /** sm 400 · md 520 · lg 720 · wide the page's content width (capped at 100%). */
   size?: ModalSize;
+  /** `centre` (default) a decision; `top` a palette under the top of the page, in reach of the keys. */
+  place?: 'centre' | 'top';
+  /**
+   * The dialog's name when it draws no title — a palette whose field says what it is. Web:
+   * `aria-label`. The phone has no dialog to name (RN has no dialog role); its field is read.
+   */
+  label?: TranslatedText;
   density?: ModalDensity;
   /** Draws the leading circular icon tint. neutral = no icon unless `icon` is given. */
   tone?: ModalTone;

@@ -7,11 +7,13 @@
   gap: var(--sp-3);
 }
 
+/* A data card: OneOhm's paper card's radius 24, as a project card's (its solid look is Ground's). */
 .hg-card.hg-money-card {
   display: flex;
   flex-direction: column;
   gap: var(--sp-1);
   padding: var(--sp-1);
+  border-radius: var(--r-lg);
 }
 
 .hg-money-hero-now,

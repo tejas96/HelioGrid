@@ -1,5 +1,6 @@
 import { Pressable } from '../../primitives/Pressable/Pressable';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
+import { BrandBloom } from '../BrandBloom/BrandBloom';
 import { Button } from '../Button/Button';
 import { labelRunsOf } from '../Button/Button.logic';
 import { Badge } from '../Chip/Chip';
@@ -13,13 +14,14 @@ export function ProposalReady(props: ProposalReadyProps) {
   return (
     <div className="hg-prdy" data-form={wide ? 'desktop' : 'phone'}>
       <div className="hg-prdy-art">
+        <BrandBloom placement="centre" />
         <div className="hg-prdy-paper">{props.cover}</div>
         <span className="hg-prdy-mark">
           <LottieMoment name="published" size={96} label={words.moment} />
         </span>
       </div>
       <div className="hg-prdy-words">
-        <Badge tone="success" glyph="tick-small">
+        <Badge tone="success" glyph="check">
           {words.status}
         </Badge>
         <h1 className="hg-prdy-title">{words.title}</h1>

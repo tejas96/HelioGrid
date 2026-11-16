@@ -38,7 +38,7 @@ export function DateSetList({
   const list = useRef<HTMLDivElement>(null);
   return (
     <div ref={list} tabIndex={-1} className="hg-date-set-list hg-focus-target">
-      <p className="hg-date-set-overline">{listLabel}</p>
+      <p className="hg-date-set-overline hg-overline">{listLabel}</p>
       {entries.length === 0 ? (
         <p className="hg-date-set-empty">{emptyMessage}</p>
       ) : (

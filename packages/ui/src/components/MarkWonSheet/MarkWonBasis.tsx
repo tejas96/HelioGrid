@@ -11,7 +11,7 @@ export function MarkWonProof({ basis }: { basis: MarkWonBasisView }) {
       {basis.locked ? (
         <LottieMoment name="success" size={48} />
       ) : (
-        <HueTile glyph="alert-triangle" hue="warning" size={40} stroke={1.7} />
+        <HueTile glyph="alert-triangle" hue="warning" size={40} />
       )}
       <span className="hg-mark-won-proof-words">
         <b>{basis.proofTitle}</b>

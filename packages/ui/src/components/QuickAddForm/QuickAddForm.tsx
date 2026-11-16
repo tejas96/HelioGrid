@@ -1,7 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { useRef } from 'react';
 import type { FocusHandle } from '../../primitives/FocusAfter';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark';
 import { Text } from '../../primitives/Text/Text';
 import { useFocusRequest } from '../../primitives/use-focus-request';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
@@ -12,6 +11,7 @@ import { Input } from '../Input/Input';
 import { PendingAction } from '../PendingAction/PendingAction';
 import { PhoneField } from '../PhoneField/PhoneField';
 import { SegmentedControl } from '../SegmentedControl/SegmentedControl';
+import { StatusMark } from '../StatusMark/StatusMark';
 import { CHECK_TONE, segmentOf, segmentOptionsOf } from './QuickAddForm.logic';
 import type { QuickAddFormProps, QuickAddKnownLead } from './QuickAddForm.types';
 import './QuickAddForm.css';
@@ -80,7 +80,7 @@ export function QuickAddForm(props: QuickAddFormProps) {
               size="lg"
               fullWidth
               loading={saving}
-              icon={<ShellGlyph name="tick" size="md" tone="inverse" />}
+              icon={<ShellGlyph name="check" size="md" tone="inverse" />}
               onClick={saving ? undefined : props.onSave}
             >
               {words.save}

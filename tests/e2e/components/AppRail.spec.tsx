@@ -44,7 +44,8 @@ for (const scheme of ['light', 'dark'] as const) {
     await expect(inView).toHaveAttribute('aria-current', 'page');
     const ink = await resolvedColour(page, '--on-nav-active');
     await expect(inView).toHaveCSS('color', ink);
-    expect(await iconColour(inView)).toBe(ink);
+    // Its icon is the pill's mark: the words' ink on light paper, the accent in the dark.
+    expect(await iconColour(inView)).toBe(await resolvedColour(page, '--nav-active-mark'));
     // The others keep the glyph a step fainter than its name, so only the pill changes.
     const other = rail.getByRole('button', { name: destinationLabel(en.t, 'leads') });
     expect(await iconColour(other)).toBe(await resolvedColour(page, '--text-tertiary'));

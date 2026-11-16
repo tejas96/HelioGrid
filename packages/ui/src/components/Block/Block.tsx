@@ -3,10 +3,10 @@ import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider';
 import { renderProvenance } from '../Provenance';
+import { StateBody } from '../StateBody';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { shownCountOf } from './Block.logic';
 import type { BlockProps } from './Block.types';
-import { BlockBody } from './BlockBody';
 import { BlockGrid } from './BlockGrid';
 import { BlockHeader } from './BlockHeader';
 
@@ -77,7 +77,7 @@ export function Block({
         shownCount={shownCount}
       />
 
-      <BlockBody
+      <StateBody
         state={state}
         loadingLabel={loadingLabel}
         emptyMessage={emptyMessage}
@@ -92,7 +92,7 @@ export function Block({
         unavailableMessage={unavailableMessage}
       >
         {children}
-      </BlockBody>
+      </StateBody>
 
       {prov !== null || footer !== undefined ? (
         <footer className="hg-block-foot">

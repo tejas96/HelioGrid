@@ -1,37 +1,24 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { OperationState } from './OperationProgress.types';
 import { messageGlyph } from './operation-progress-model';
 
-const TONE: Record<OperationState, ThemeColor> = {
+const STATE_INK: Record<OperationState, ThemeColor> = {
   running: colors['text-secondary'],
-  done: colors['success-text'],
-  failed: colors['warning-text'],
+  done: TONE.success.ink,
+  failed: TONE.warning.ink,
   cancelled: colors['text-secondary'],
 };
 
 function MessageGlyph({ state }: { state: OperationState }) {
-  const stroke = TONE[state];
-  return (
-    <Svg
-      width={15}
-      height={15}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={stroke}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name={messageGlyph(state)} />
-    </Svg>
-  );
+  const stroke = STATE_INK[state];
+  return <ShellGlyph name={messageGlyph(state)} size="dense" ink={stroke} />;
 }
 
 /**
@@ -53,7 +40,7 @@ export function OperationMessage({
       </View>
       <View style={styles.words}>
         {words ? (
-          <Text variant="body-sm" style={{ color: TONE[state] }}>
+          <Text variant="body-sm" style={{ color: STATE_INK[state] }}>
             {message}
           </Text>
         ) : (

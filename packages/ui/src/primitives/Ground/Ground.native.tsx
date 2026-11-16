@@ -47,17 +47,27 @@ export function useGround(): GroundColors {
 }
 
 /**
- * The tile's look at rest: the card colour on the page, a hairline edge and a soft lift — the web half's tiles
- * list. The ONE place a phone tile is drawn: a tile spreads it first and keeps only its own radius,
- * padding and rings, and wraps its content in `GroundProvider ground="tile"`.
+ * The tile's look at rest — the web half's two tiles lists. The ONE place a phone tile is drawn: a
+ * tile spreads one of these first and keeps only its own radius, padding and rings, and wraps its
+ * content in `GroundProvider ground="tile"`.
+ *
+ * `tileSurface` is a data or list tile — OneOhm's paper card: the card colour, a hairline edge, no
+ * shadow and no lift.
  */
 export const tileSurface = {
   // biome-ignore lint/plugin/raw-white: ground — a tile is the white card on the page
   backgroundColor: colors.surface,
   borderWidth: 1,
   borderColor: colors['line-soft'],
-  /* The web's glass lift: a soft shadow under the pane. The phone draws no frost — a static
-     style cannot mix a system colour — so the lift alone carries the depth. */
+} satisfies ViewStyle;
+
+/**
+ * `glassTileSurface` is a summary tile — a figure, a meter, a teaching card, a choice: the card
+ * colour, a hairline edge and a soft lift, the web's glass. The phone draws no frost — a static
+ * style cannot mix a system colour — so the lift alone carries the depth.
+ */
+export const glassTileSurface = {
+  ...tileSurface,
   shadowColor: colors.ink,
   shadowOpacity: 0.07,
   shadowRadius: 16,

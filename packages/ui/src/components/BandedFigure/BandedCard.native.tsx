@@ -3,18 +3,17 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { GroundProvider, glassTileSurface } from '../../primitives/Ground/Ground.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { BandChip } from './BandChip.native';
 import type { BandSpec, BandToneStyle } from './BandedFigure.types';
 
 const type = theme.type.roles;
 
 const styles = StyleSheet.create({
-  /* Both variants are tiles: their look is `tileSurface` (`F7-49`), spread first in the frame. */
+  /* Both variants are tiles: their look is `glassTileSurface` (`F7-49`), spread first in the frame. */
   card: {
     borderRadius: theme.radius['r-card-expressive'],
     overflow: 'hidden',
@@ -59,19 +58,9 @@ const styles = StyleSheet.create({
 
 function RemedyGlyph({ color }: { color: ThemeColor }) {
   return (
-    <Svg
-      width={15}
-      height={15}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={1.8}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{ marginTop: 2 }}
-    >
-      <ShellGlyphMarks name="arrow-right" />
-    </Svg>
+    <View style={{ marginTop: 2 }}>
+      <ShellGlyph name="arrow-right" size="dense" ink={color} />
+    </View>
   );
 }
 
@@ -102,8 +91,12 @@ const SIZES = {
 };
 
 const VALUE_TYPE: Record<'card' | 'box', TextStyle> = {
-  card: { fontSize: 32, lineHeight: 34 },
-  box: { fontFamily: theme.type.families.mono, fontSize: 44, lineHeight: 46 },
+  card: { fontSize: theme.type.roles.h1.fontSize, lineHeight: 34 },
+  box: {
+    fontFamily: theme.type.families.mono,
+    fontSize: theme.type.roles['hero-phone'].fontSize,
+    lineHeight: 46,
+  },
 };
 
 /** The `card` and `box` variants — the standalone block, and the inspector's instrument. */
@@ -132,7 +125,7 @@ export function BandedCard({
     <View
       accessible
       accessibilityLabel={accessibilityLabel}
-      style={[tileSurface, styles.card, size.pad, style]}
+      style={[glassTileSurface, styles.card, size.pad, style]}
     >
       <GroundProvider ground="tile">
         {big ? <View style={[styles.edge, { backgroundColor: tone.mark }]} /> : null}

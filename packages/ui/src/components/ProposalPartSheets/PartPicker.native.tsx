@@ -8,11 +8,13 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { categoryHueOf, hueTintOf } from '../Avatar/Avatar.logic';
 import { Button } from '../Button/Button.native';
 import { ShowMore } from '../CatalogItems/ShowMore.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { SearchField } from '../SearchField/SearchField.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import type { PartOption, ProposalPartPickerProps } from './ProposalPartSheets.types';
 import { sheetLayout } from './sheet-layout.native';
+
+// web-only part: ProposalBuilder — the web takes only riseOrder for its CSS stagger; the phone uses Rising.
 
 /** A brand's letter mark: the first letter on the hue its name earns. */
 export function BrandMark({ brand }: { brand: string; large?: boolean }) {
@@ -57,7 +59,7 @@ function Option({ option, props }: { option: PartOption; props: ProposalPartPick
           </View>
         )}
         <View style={[sheetLayout.check, option.picked ? sheetLayout.checkOn : undefined]}>
-          {option.picked ? <ShellGlyph name="tick-small" size="sm" tone="inverse" /> : null}
+          {option.picked ? <ShellGlyph name="check" size="sm" tone="inverse" /> : null}
         </View>
       </GroundProvider>
     </Pressable>
@@ -100,10 +102,11 @@ export function ProposalPartPicker(props: ProposalPartPickerProps) {
   const { words, options } = props;
   const picked = options?.filter((option) => option.picked) ?? [];
   return (
-    <Sheet
+    <EditorSurface
       open={props.open}
       onClose={props.onClose}
       closeLabel={words.closeLabel}
+      desktop="modal"
       showClose
       title={words.title}
       footer={
@@ -122,11 +125,7 @@ export function ProposalPartPicker(props: ProposalPartPickerProps) {
         />
         {props.refusal || props.full ? (
           <View style={sheetLayout.hint} accessibilityLiveRegion="polite">
-            <ShellGlyph
-              name={props.refusal ? 'alert-circle' : 'info-circle'}
-              size="sm"
-              tone="warning"
-            />
+            <ShellGlyph name={props.refusal ? 'alert-circle' : 'info'} size="sm" tone="warning" />
             <View style={sheetLayout.words}>
               <Text variant="body-sm" color="warning">
                 {props.refusal || words.full}
@@ -171,7 +170,7 @@ export function ProposalPartPicker(props: ProposalPartPickerProps) {
           </Pressable>
         )}
       </View>
-    </Sheet>
+    </EditorSurface>
   );
 }
 

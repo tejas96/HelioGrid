@@ -116,31 +116,11 @@
   border-radius: var(--r-pill);
   background: var(--hg-control-fill);
   box-shadow: var(--e2);
-  transition: transform var(--dur-standard) var(--ease-spring);
+  transition: transform var(--dur-spring-snappy) var(--ease-spring-snappy);
 }
 
 .hg-pressable.hg-settings-person:hover .hg-settings-person-chevron {
   transform: translateX(var(--sp-1));
-}
-
-/* A row's icon chip: a soft accent pane lit from its top edge — the row's mark, never a control. */
-.hg-settings-row-icon {
-  position: relative;
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--r-sm);
-  background: linear-gradient(
-    150deg,
-    var(--accent-subtle),
-    color-mix(in srgb, var(--brand-teal) 16%, var(--accent-subtle))
-  );
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--hg-ground) 70%, transparent),
-    var(--e1);
 }
 
 /* A group's tile: its rows inset by the record's 8, a hairline between them. */
@@ -148,25 +128,18 @@
   display: flex;
   flex-direction: column;
   padding: var(--sp-2);
-  border-radius: var(--r-tile);
+  border-radius: var(--r-lg);
 }
 
-.hg-pressable.hg-settings-row {
-  justify-content: flex-start;
-  gap: var(--sp-3);
-  width: 100%;
-  min-height: 64px;
+.hg-list-row.hg-settings-row {
+  position: relative;
   padding: var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-2);
   border-radius: var(--rf-lg);
   text-align: start;
 }
 
-/* The hairline between two rows starts at the name, under the icon chip's column. */
-.hg-pressable.hg-settings-row {
-  position: relative;
-}
-
-.hg-pressable.hg-settings-row + .hg-pressable.hg-settings-row::before {
+/* The hairline between two rows starts at the name, under the icon tile's column. */
+.hg-list-row.hg-settings-row + .hg-list-row.hg-settings-row::before {
   content: "";
   position: absolute;
   top: 0;
@@ -176,23 +149,15 @@
   background: var(--hairline);
 }
 
-.hg-pressable.hg-settings-row > .hg-shell-glyph {
+.hg-list-row.hg-settings-row > .hg-shell-glyph {
   flex-shrink: 0;
-  transition: transform var(--dur-standard) var(--ease-spring);
+  transition: transform var(--dur-spring-snappy) var(--ease-spring-snappy);
 }
 
 @media (hover: hover) {
-  .hg-pressable.hg-settings-row:hover > .hg-shell-glyph {
+  .hg-list-row.hg-settings-row:hover > .hg-shell-glyph {
     transform: translateX(var(--sp-1));
   }
-}
-
-.hg-settings-row-words {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-0-5);
 }
 
 .hg-settings-row-name {

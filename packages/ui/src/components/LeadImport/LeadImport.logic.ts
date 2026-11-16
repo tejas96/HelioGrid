@@ -1,8 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
-import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import type { ImportAct } from '../Import/Import.types';
 import type { ShareFilterItem } from '../ShareFilter/ShareFilter.types';
+import type { StatusTone } from '../StatusMark/StatusMark.types';
 import type { LeadImportProps, LeadImportRow, LeadImportWords } from './LeadImport.types';
 
 /**

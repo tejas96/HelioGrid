@@ -8,18 +8,16 @@
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
-import type { ThemeColor } from '../../primitives/Color/colors';
-import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE, type Tone } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { StatCardDeltaProps, StatCardSentiment } from './StatCard.types';
 import { DELTA_DIR_GLYPH, deltaChipOf } from './StatCardDelta.logic';
 
-const SENTIMENT_TONE: Record<StatCardSentiment, { bg: ThemeColor; fg: ThemeColor }> = {
-  good: { bg: colors['success-bg'], fg: colors['success-text'] },
-  bad: { bg: colors['danger-bg'], fg: colors['danger-text'] },
-  neutral: { bg: colors['neutral-bg'], fg: colors['neutral-text'] },
+const SENTIMENT_TONE: Record<StatCardSentiment, Tone> = {
+  good: 'success',
+  bad: 'danger',
+  neutral: 'neutral',
 };
 
 const styles = StyleSheet.create({
@@ -42,7 +40,7 @@ export function StatCardDelta({ dir, ...chipFacts }: StatCardDeltaProps) {
   if (chip === null) return null;
   const { sentiment, words } = chipFacts;
   const { delta, verdict: sentWord } = chip;
-  const tone = SENTIMENT_TONE[sentiment];
+  const tone = TONE[SENTIMENT_TONE[sentiment]];
   /* The two phrases a sighted reader sees either side of the dot: the move, then the verdict. */
   const moved = words.moved(dir, delta);
   const spoken = sentWord ? [moved, sentWord].join(' · ') : moved;
@@ -50,30 +48,19 @@ export function StatCardDelta({ dir, ...chipFacts }: StatCardDeltaProps) {
     <View
       accessible
       accessibilityLabel={spoken}
-      style={[styles.delta, { backgroundColor: tone.bg }]}
+      style={[styles.delta, { backgroundColor: tone.tint }]}
     >
       {/* Direction's channel: the arrow. Sentiment's: the tint AND the word after it. */}
-      <Svg
-        width={12}
-        height={12}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={tone.fg}
-        strokeWidth={2.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={DELTA_DIR_GLYPH[dir]} />
-      </Svg>
-      <Text variant="caption" style={[styles.deltaWord, { color: tone.fg }]}>
+      <ShellGlyph name={DELTA_DIR_GLYPH[dir]} size="xs" ink={tone.ink} />
+      <Text variant="caption" style={[styles.deltaWord, { color: tone.ink }]}>
         {delta}
       </Text>
       {sentWord ? (
         <>
-          <Text variant="caption" style={[styles.deltaSep, { color: tone.fg }]}>
+          <Text variant="caption" style={[styles.deltaSep, { color: tone.ink }]}>
             {'·'}
           </Text>
-          <Text variant="caption" style={[styles.deltaWord, { color: tone.fg }]}>
+          <Text variant="caption" style={[styles.deltaWord, { color: tone.ink }]}>
             {sentWord}
           </Text>
         </>

@@ -21,7 +21,7 @@ import {
   timelineTemplateSchema,
   trancheTemplateWriteSchema,
 } from './document-templates';
-import { baseError, errorEnvelope } from './error';
+import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
 import { uiLanguageResponseSchema, uiLanguageSchema } from './locale';
 import { promptPointFactSchema } from './onboarding';
 import { trancheTemplateErrorCodes, trancheTemplateRoutes } from './tranche-templates';
@@ -136,9 +136,7 @@ export const tenantSettingsErrorCodes = [
 export const tenantSettingsErrorCodeSchema = z.enum(tenantSettingsErrorCodes);
 export type TenantSettingsErrorCode = z.infer<typeof tenantSettingsErrorCodeSchema>;
 
-const unauthenticated = errorEnvelope(baseError('UNAUTHENTICATED'));
-
-const guarded = { 401: unauthenticated } as const;
+const guarded = { 401: unauthenticatedEnvelope } as const;
 
 export const tenantSettingsContract = c.router({
   effective: {

@@ -4,20 +4,20 @@
    44px floor (Pressable owns it) and the pill drawn inside keeps its own height — 28px
    expressive, 24px functional. The difference is transparent padding owned by the target, taken
    back as negative margin so no row grows. A label's height is a floor instead, so larger words
-   grow it rather than clip. Neither the pill height nor the 44px floor has a spacing token, so
-   both are named local custom properties rather than loose numbers. A filter chip carries the
-   count of what it holds; the chip in force is the accent wash. */
+   grow it rather than clip. A filter chip carries the count of what it holds; the chip in force is
+   OneOhm's quiet choice: ink words inside an ink outline, on the fill it had. A badge is a label a
+   record has: radius 8, 24 tall. */
 
 .hg-chip,
 .hg-badge,
 .hg-chip-target {
-  /* The DS pill heights, the dot and the product's touch floor. No token carries any of them,
-     so they are named here and scoped to this component rather than left as loose numbers. */
-  --hg-chip-h-expressive: 28px;
-  --hg-chip-h-functional: 24px;
+  /* The pill heights and the product's touch floor are tokens; the dot and the gap are this
+     component's own, named here rather than left as loose numbers. */
+  --hg-chip-h-expressive: var(--chip-h);
+  --hg-chip-h-functional: var(--badge-h);
   --hg-chip-dot: 6px;
   --hg-chip-gap: 6px;
-  --hg-chip-touch: 44px;
+  --hg-chip-touch: var(--touch-min);
 }
 
 .hg-chip,
@@ -32,23 +32,40 @@
   white-space: nowrap;
 }
 
-.hg-chip[data-density="expressive"],
-.hg-badge[data-density="expressive"] {
+.hg-chip[data-density="expressive"] {
   min-height: var(--hg-chip-h-expressive);
   font-size: var(--fs-body-sm);
 }
 
-.hg-chip[data-density="functional"],
-.hg-badge[data-density="functional"] {
+.hg-chip[data-density="functional"] {
   min-height: var(--hg-chip-h-functional);
   font-size: var(--fs-caption);
 }
 
-/* A pick: a quick choice a form offers a thumb — taller, a strong hairline, the accent ring in force. */
+/* OneOhm's badge: one height and the label's size at either density, radius 8. */
+.hg-badge {
+  min-height: var(--badge-h);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-badge);
+  font-size: var(--fs-caption);
+}
+
+/* A pick: a quick choice a form offers a thumb — taller, a strong hairline, the ink ring in force. */
 .hg-chip[data-density="pick"] {
   min-height: 36px;
   padding: 0 var(--sp-4);
   font-size: var(--fs-body-sm);
+}
+
+/* A list's kind, stage or facet chip: the filter bar's height. */
+.hg-chip[data-density="filter"] {
+  min-height: var(--filter-chip-h);
+  font-size: var(--fs-body-sm);
+}
+
+/* A mark before the words takes two of the leading edge back. */
+.hg-chip[data-lead="true"] {
+  padding-inline-start: var(--sp-2);
 }
 
 /* ── Chip ─────────────────────────────────────────────────────────────────── */
@@ -73,18 +90,17 @@
   transform: scale(var(--press-scale));
 }
 
-/* The chip in force is the accent wash, as every chosen filter is. */
+/* The chip in force is OneOhm's quiet choice: ink words inside an ink outline, on the fill it had. */
 .hg-chip[data-active="true"] {
-  background: var(--accent-subtle);
-  color: var(--accent-text);
-  box-shadow: none;
+  color: var(--text-primary);
+  box-shadow: inset 0 0 0 1px var(--text-primary);
 }
 
 .hg-chip[data-density="pick"]:not([data-active="true"]) {
   box-shadow: inset 0 0 0 1px var(--line-strong);
 }
 .hg-chip[data-density="pick"][data-active="true"] {
-  box-shadow: inset 0 0 0 1.5px var(--accent);
+  box-shadow: inset 0 0 0 1.5px var(--text-primary);
 }
 
 /* A kind with nothing in it stays, quiet: its words step down, its count reads 0. */
@@ -98,21 +114,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: var(--sp-5);
-  height: var(--sp-5);
-  margin-inline-end: calc(var(--sp-1) * -1);
-  padding: 0 var(--sp-1);
-  border-radius: var(--r-pill);
   font-family: var(--font-mono);
   font-size: var(--fs-caption);
   font-variant-numeric: tabular-nums;
-  background: color-mix(in srgb, var(--text-primary) 7%, transparent);
+  /* A count is information, so it never takes the quiet role. */
+  color: var(--text-secondary);
 }
 
-/* On the wash the slot is an outline in the accent, as the phone draws it. */
 .hg-chip[data-active="true"] .hg-chip-count {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--text-primary);
 }
 
 .hg-chip-dot {
@@ -139,10 +149,6 @@
 }
 .hg-chip[data-tone="accent"] .hg-chip-dot {
   background: var(--accent);
-}
-
-.hg-chip[data-active="true"] .hg-chip-dot {
-  background: var(--accent-text);
 }
 
 /* ── the 44px target around the pill ──────────────────────────────────────── */
@@ -173,31 +179,12 @@
 /* ── Badge — the -text partner sets the words, the -bg sets the tint ──────── */
 
 /* Neutral has no tint to carry it: --neutral-bg on a tile is ~1.01:1, so it takes the control
-   fill and reads white inside a tile, the well on the page. */
+   fill and reads white inside a tile, the well on the page — inside OneOhm's outline badge's hairline. */
 .hg-badge[data-tone="neutral"] {
   color: var(--neutral-text);
   background: var(--hg-control-fill);
-}
-.hg-badge[data-tone="success"] {
-  color: var(--success-text);
-  background: var(--success-bg);
-}
-.hg-badge[data-tone="warning"] {
-  color: var(--warning-text);
-  background: var(--warning-bg);
-}
-.hg-badge[data-tone="danger"] {
-  color: var(--danger-text);
-  background: var(--danger-bg);
-}
-.hg-badge[data-tone="info"] {
-  color: var(--info-text);
-  background: var(--info-bg);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
 }
 /* --accent stays plain: it measures 4.65:1 on --accent-subtle and clears the floor unaided. */
-.hg-badge[data-tone="accent"] {
-  color: var(--accent);
-  background: var(--accent-subtle);
-}
 /* `violet`, `blue` and `magenta` label a KIND and take the brand iris rule, `.hg-hue` in
    Avatar.css, so a role badge and a face mix their hue the same way. */

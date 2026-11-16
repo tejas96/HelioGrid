@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors.native';
 import type { FocusAfter } from '../../primitives/FocusAfter/FocusAfter.types';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import type { PerformanceStepView } from './ProposalSteps.types';
 import type { ProposalStepWords } from './ProposalSteps.words.types';
@@ -22,7 +23,6 @@ function FilledCard({ view }: { view: PerformanceStepView }) {
         glyph={fill === 'built_in' ? 'cloud-off' : 'sun'}
         hue={fallback ? 'neutral' : 'teal'}
         size={36}
-        stroke={1.7}
       />
       <View style={styles.words}>
         <Text variant="body" bold>
@@ -79,6 +79,6 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-lg'],
     backgroundColor: colors['hue-teal-bg'],
   },
-  autoFallback: { backgroundColor: colors['neutral-bg'] },
+  autoFallback: { backgroundColor: TONE.neutral.tint },
   words: { flex: 1, minWidth: 0 },
 });

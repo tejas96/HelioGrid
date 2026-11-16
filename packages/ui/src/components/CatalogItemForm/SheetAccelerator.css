@@ -9,7 +9,7 @@
   gap: var(--sp-3);
   padding: var(--sp-3) 14px;
   text-align: left;
-  border-radius: 18px;
+  border-radius: var(--r-tile);
   background: var(--hg-ground);
   box-shadow: var(--e2);
 }

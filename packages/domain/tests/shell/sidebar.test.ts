@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import type { RolePreset } from '../../src/authz/roles';
 import { shellViewFor } from '../../src/shell/shell-view';
-import { moreWorkLists, sidebarWorkLists, workListLanded } from '../../src/shell/sidebar';
+import {
+  moreWorkLists,
+  sidebarGroupsOf,
+  sidebarWorkLists,
+  workListLanded,
+} from '../../src/shell/sidebar';
 import {
   type StandingDestination,
   standingDestinationsFor,
@@ -63,5 +68,26 @@ describe('moreWorkLists — More on the phone offers each landed list the pill h
     ['A person with no list slot gets none', 'field_technician', []],
   ])('%s', (_case, preset, lists) => {
     expect(moreWorkLists(shellViewFor([preset], null))).toEqual(lists);
+  });
+});
+
+describe('sidebarGroupsOf — the sidebar groups its lists the way the business works', () => {
+  it('puts what is sold, then delivered, then the people, each in the order it was given', () => {
+    expect(sidebarGroupsOf(['projects', 'leads', 'people', 'proposals'])).toEqual([
+      { group: 'sales', lists: ['leads', 'proposals'] },
+      { group: 'delivery', lists: ['projects'] },
+      { group: 'team', lists: ['people'] },
+    ]);
+  });
+
+  it('keeps Campaigns under Sales, beside the lists its slot holder reads', () => {
+    expect(sidebarGroupsOf(sidebarWorkLists(standingDestinationsFor('marketing')))).toEqual([
+      { group: 'sales', lists: ['campaigns', 'leads', 'proposals'] },
+    ]);
+  });
+
+  it('leaves out a group with no list', () => {
+    expect(sidebarGroupsOf(['projects'])).toEqual([{ group: 'delivery', lists: ['projects'] }]);
+    expect(sidebarGroupsOf([])).toEqual([]);
   });
 });

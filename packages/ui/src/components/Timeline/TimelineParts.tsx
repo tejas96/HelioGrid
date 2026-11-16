@@ -9,9 +9,10 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties, ReactNode } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { RetryButton } from '../Button/RetryButton';
-import { messageGlyphOf, nodeGlyphSize } from './Timeline.logic';
+import { StateRegion } from '../StateBody';
+import { messageGlyphOf, NODE_GLYPH, nodeGlyphSize } from './Timeline.logic';
 import type { TimelineStatus } from './Timeline.types';
 
 /**
@@ -36,6 +37,7 @@ export function TimelineNode({
 }) {
   const inner = nodeGlyphSize(compact);
   const own = status === 'current' && icon !== undefined;
+  const mark = status === undefined ? undefined : NODE_GLYPH[status];
   return (
     <span
       aria-hidden="true"
@@ -43,66 +45,9 @@ export function TimelineNode({
       data-status={status}
       data-icon={own ? 'true' : undefined}
     >
-      {status === 'done' ? (
-        <svg
-          width={inner}
-          height={inner}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="4.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name="tick-small" />
-        </svg>
-      ) : null}
+      {mark === undefined ? null : <ShellGlyph name={mark} size={inner} tone="current" />}
       {own ? icon : null}
       {status === 'current' && !own ? <span className="hg-timeline-node-core" /> : null}
-      {status === 'skipped' ? (
-        <svg
-          width={inner}
-          height={inner}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name="chevron-right" />
-        </svg>
-      ) : null}
-      {status === 'blocked' ? (
-        <svg
-          width={inner}
-          height={inner}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="4"
-          strokeLinecap="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name="alert-small" />
-        </svg>
-      ) : null}
-      {status === 'failed' ? (
-        <svg
-          width={inner}
-          height={inner}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="4"
-          strokeLinecap="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name="close-small" />
-        </svg>
-      ) : null}
     </span>
   );
 }
@@ -119,8 +64,8 @@ export function TimelineSkeleton({ label, root }: { label?: TranslatedText; root
         <div key={row} className="hg-timeline-skeleton-row">
           <span className="hg-timeline-skeleton-node" />
           <div className="hg-timeline-skeleton-lines">
-            <div className="hg-timeline-skeleton-bar" data-bar="title" />
-            <div className="hg-timeline-skeleton-bar" data-bar="meta" />
+            <div className="hg-timeline-skeleton-bar hg-skeleton" data-bar="title" />
+            <div className="hg-timeline-skeleton-bar hg-skeleton" data-bar="meta" />
           </div>
         </div>
       ))}
@@ -146,25 +91,14 @@ export function TimelineMessage({
   root: TimelineRoot;
 }) {
   return (
-    <div className={classNames('hg-timeline-message', root.className)} style={root.style}>
-      <span className="hg-timeline-message-mark" data-tone={tone ?? 'neutral'}>
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name={messageGlyphOf(tone)} />
-        </svg>
-      </span>
-      {title ? <div className="hg-timeline-message-title">{title}</div> : null}
-      {message ? <div className="hg-timeline-message-body">{message}</div> : null}
-      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
-    </div>
+    <StateRegion
+      tone={tone}
+      glyph={messageGlyphOf(tone)}
+      title={title}
+      message={message}
+      action={<RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />}
+      className={classNames('hg-timeline-message', root.className)}
+      style={root.style}
+    />
   );
 }

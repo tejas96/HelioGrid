@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ActionReasonInput } from '../ActionReason/ActionReason.types';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 
 export interface SegmentedOption {
   value: string;
@@ -11,6 +12,11 @@ export interface SegmentedOption {
    * inherits the document's language.
    */
   lang?: string;
+  /**
+   * The segment's icon. In an `iconOnly` control it stands for the words, which still name the
+   * segment and, on the web, tip it on hover and focus.
+   */
+  glyph?: ShellGlyphName;
   /**
    * A tabular numeral inside the segment — no pill: a pill inside a 32px pill is mush. It takes
    * `--text-secondary`, because the track is `--canvas-sunken` — a third background, where
@@ -65,4 +71,14 @@ export interface SegmentedControlProps {
    * failure while the plain view-switcher form (a row of buttons, no role) is right as it is.
    */
   error?: TranslatedText;
+  /**
+   * Each segment shows its `glyph` alone — the appearance's monitor, sun and moon — named by its
+   * words, a square segment on the same track.
+   */
+  iconOnly?: boolean;
+  /**
+   * The track takes its holder's whole width and its segments share it equally — the sidebar foot's
+   * theme switch, as wide as the account under it. Without it the track hugs its segments.
+   */
+  fill?: boolean;
 }

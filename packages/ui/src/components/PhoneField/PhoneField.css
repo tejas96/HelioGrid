@@ -78,11 +78,6 @@
 }
 
 .hg-phone-value-label {
-  font-family: var(--font-sans);
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 

@@ -25,7 +25,7 @@ import type {
 function Chosen() {
   return (
     <View style={styles.check}>
-      <ShellGlyph name="tick-small" size="sm" tone="inverse" />
+      <ShellGlyph name="check" size="sm" tone="inverse" />
     </View>
   );
 }

@@ -117,6 +117,7 @@ export {
   importReadyCount,
   importStepGate,
   importWizardFrame,
+  importWizardGoesBack,
   importWizardStepIndex,
   importWizardViewAfter,
   mappingForHeader,

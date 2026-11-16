@@ -137,11 +137,3 @@
   padding-inline: var(--sp-1);
   color: var(--text-secondary);
 }
-
-.hg-money-due-head-label {
-  font-size: var(--fs-overline);
-  line-height: var(--lh-overline);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
-}

@@ -20,11 +20,6 @@
 
 .hg-charts-overline {
   margin-bottom: var(--sp-2);
-  font-family: var(--font-sans);
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 
@@ -116,14 +111,7 @@
 /* ── states ─────────────────────────────────────────────────────────────── */
 .hg-charts-skeleton {
   border-radius: var(--r-md);
-  background: linear-gradient(
-    90deg,
-    var(--canvas) 25%,
-    var(--canvas-sunken) 50%,
-    var(--canvas) 75%
-  );
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
+  --hg-skeleton-ground: var(--canvas);
 }
 
 .hg-charts-note {

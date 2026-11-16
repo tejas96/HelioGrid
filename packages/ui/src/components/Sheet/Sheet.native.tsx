@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, BackHandler, PanResponder, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
+import { Portal, SlidingPanel, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { OverlayBody } from './OverlayBody.native';
 import { isBodyScrolled } from './Sheet.logic';
@@ -14,7 +14,7 @@ import { SheetSkeleton } from './SheetSkeleton.native';
 import { SheetTop } from './SheetTop.native';
 import { sheetHeadOf } from './sheet-head.native';
 import { percentOf, SHEET_HEIGHT, useKeyboardLift } from './use-keyboard-lift.native';
-import { useSheetEntry } from './use-sheet-entry.native';
+import { springHome, useSheetEntry } from './use-sheet-entry.native';
 import { useSheetTuck } from './use-sheet-tuck.native';
 
 type NativeSheetProps = SheetProps & {
@@ -127,7 +127,7 @@ export function Sheet({
             offset.setValue(0);
             return;
           }
-          Animated.spring(offset, { toValue: 0, useNativeDriver: true }).start();
+          springHome(offset).start();
         },
       }),
     [draggable, onClose, offset, reducedMotion],
@@ -201,39 +201,41 @@ export function Sheet({
             style,
           ]}
         >
-          <SheetTop
-            handle={handle}
-            pan={pan}
-            closeLabel={closeLabel}
-            onClose={close}
-            header={head.ownRow}
-            tucked={head.tucked}
-            hasHeaderRow={head.row}
-            meta={meta}
-            density={density}
-          />
+          <SlidingPanel panel={panelRef}>
+            <SheetTop
+              handle={handle}
+              pan={pan}
+              closeLabel={closeLabel}
+              onClose={close}
+              header={head.ownRow}
+              tucked={head.tucked}
+              hasHeaderRow={head.row}
+              meta={meta}
+              density={density}
+            />
 
-          {bodyScrolls ? (
-            <SheetScrollBody
-              flex={BODY_FLEX[size]}
-              lifted={head.lifted}
-              tuck={tuck}
-              onScrollOffset={(top) => {
-                scrollTop.current = top;
-                setScrolled(isBodyScrolled(top));
-              }}
-              contentContainerStyle={bodyPad}
-              foot={footerView}
-            >
-              {content}
-            </SheetScrollBody>
-          ) : (
-            <>
-              {/* A held body: its content bounds itself and scrolls its own part. */}
-              <View style={[BODY_FLEX[size], styles.bodyHeld, bodyPad]}>{content}</View>
-              {footerView}
-            </>
-          )}
+            {bodyScrolls ? (
+              <SheetScrollBody
+                flex={BODY_FLEX[size]}
+                lifted={head.lifted}
+                tuck={tuck}
+                onScrollOffset={(top) => {
+                  scrollTop.current = top;
+                  setScrolled(isBodyScrolled(top));
+                }}
+                contentContainerStyle={bodyPad}
+                foot={footerView}
+              >
+                {content}
+              </SheetScrollBody>
+            ) : (
+              <>
+                {/* A held body: its content bounds itself and scrolls its own part. */}
+                <View style={[BODY_FLEX[size], styles.bodyHeld, bodyPad]}>{content}</View>
+                {footerView}
+              </>
+            )}
+          </SlidingPanel>
         </Animated.View>
       </View>
     </Portal>

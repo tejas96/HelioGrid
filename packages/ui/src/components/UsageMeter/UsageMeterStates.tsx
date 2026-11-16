@@ -25,7 +25,7 @@ export function Shimmer({
     '--hg-usage-meter-shimmer-h': height,
     '--hg-usage-meter-shimmer-r': radius,
   };
-  return <span className="hg-usage-meter-shimmer" style={vars} />;
+  return <span className="hg-usage-meter-shimmer hg-skeleton" style={vars} />;
 }
 
 function Head({ label, period }: { label: TranslatedText; period?: string }) {

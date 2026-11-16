@@ -13,6 +13,8 @@ import { brandLetter } from './ProposalBlocks.logic';
 import type { ProposalPartsWords } from './ProposalBlocks.parts.types';
 import type { ProposalBlockMode, ProposalPartsBlockProps } from './ProposalBlocks.types';
 
+// web-only parts: AppShell, HueTile — glyphs and tiles come through BlockParts.native.
+
 /** A brand's letter on its hue: the scheme's pair on a screen, the light palette's on paper. */
 function BrandMark({ mode, name }: { mode: ProposalBlockMode; name: string }) {
   const hue = categoryHueOf(name);
@@ -248,7 +250,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     paddingVertical: 14,
     paddingHorizontal: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-tile'],
+    borderRadius: theme.radius['r-lg'],
   },
   row: {
     flexDirection: 'row',
@@ -259,7 +261,7 @@ const styles = StyleSheet.create({
   rowPaper: { paddingVertical: 20 },
   rowFirst: { paddingTop: 0 },
   words: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
-  kindPaper: { fontSize: 13, lineHeight: 18 },
+  kindPaper: { fontSize: theme.type.document['doc-fs-small'], lineHeight: 18 },
   brands: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -270,11 +272,17 @@ const styles = StyleSheet.create({
   /* Held to the words' column: a long name wraps beside its letter, never under the flag. */
   brand: { flexDirection: 'row', alignItems: 'center', gap: 7, flexShrink: 1, maxWidth: '100%' },
   brandName: { flexShrink: 1, fontWeight: '600' },
-  brandPaper: { fontSize: 19, lineHeight: 26 },
-  specPaper: { fontSize: 15, lineHeight: 22 },
+  brandPaper: { fontSize: theme.type.document['doc-fs-lead'], lineHeight: 26 },
+  specPaper: { fontSize: theme.type.document['doc-fs'], lineHeight: 22 },
   none: { fontWeight: '500' },
   nonePaper: { fontStyle: 'italic' },
-  mark: { width: 22, height: 22, borderRadius: 7, alignItems: 'center', justifyContent: 'center' },
+  mark: {
+    width: 22,
+    height: 22,
+    borderRadius: theme.radius['rf-md'],
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   markLetter: { fontWeight: '600', lineHeight: 16 },
   flag: {
     flexShrink: 0,

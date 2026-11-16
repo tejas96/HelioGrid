@@ -5,8 +5,8 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { useFormat } from '../MarketProvider';
+import { SegmentBar } from '../SegmentBar/SegmentBar.native';
 import { HUE_INK, HUE_WASH } from './ShareFilter.inks';
-import { drawnSegments, isThinSegment, totalOf } from './ShareFilter.logic';
 import type { ShareFilterItem, ShareFilterProps } from './ShareFilter.types';
 
 type ShareBarProps = Pick<ShareFilterProps, 'label' | 'barLabel' | 'items' | 'pressed' | 'onPress'>;
@@ -33,26 +33,13 @@ function rowsOf(items: readonly ShareFilterItem[]): ShareFilterItem[][] {
 export function ShareBar({ label, barLabel, items, pressed, onPress }: ShareBarProps) {
   const { number } = useFormat();
   const { controlFill } = useGround();
-  const total = totalOf(items);
   return (
     <View role="group" accessibilityLabel={label} style={styles.shell}>
-      <View
-        accessibilityRole={barLabel === undefined ? undefined : 'image'}
-        accessibilityLabel={barLabel}
-        accessibilityElementsHidden={barLabel === undefined}
-        importantForAccessibility={barLabel === undefined ? 'no-hide-descendants' : 'auto'}
-        style={styles.bar}
-      >
-        {drawnSegments(items).map((item) => (
-          <View
-            key={item.id}
-            style={[
-              { flex: item.count, backgroundColor: HUE_INK[item.hue] },
-              isThinSegment(item.count, total) ? styles.thin : undefined,
-            ]}
-          />
-        ))}
-      </View>
+      <SegmentBar
+        parts={items.map((item) => ({ key: item.id, count: item.count, ink: HUE_INK[item.hue] }))}
+        size="lg"
+        label={barLabel}
+      />
       {rowsOf(items).map((row) => (
         <View key={row.map((item) => item.id).join(' ')} style={styles.row}>
           {row.map((item) => {
@@ -63,6 +50,7 @@ export function ShareBar({ label, barLabel, items, pressed, onPress }: ShareBarP
                 key={item.id}
                 accessibilityLabel={item.accessibleLabel}
                 accessibilityState={{ selected: on }}
+                accessibilityHint={label}
                 onPress={() => onPress(item.id)}
                 style={[
                   styles.count,
@@ -100,16 +88,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: theme.spacing['sp-3'],
   },
-  bar: {
-    flexDirection: 'row',
-    gap: theme.spacing['sp-0-5'],
-    height: 12,
-    borderRadius: 6,
-    overflow: 'hidden',
-  },
-  thin: {
-    minWidth: 10,
-  },
   row: {
     flexDirection: 'row',
     gap: 10,
@@ -122,7 +100,7 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 10,
     paddingHorizontal: theme.spacing['sp-3'],
-    borderRadius: 14,
+    borderRadius: theme.radius['r-control'],
     /* The web half's inset 1.5px ring: a border kept clear at rest, so pressing moves nothing. */
     borderWidth: 1.5,
     borderColor: 'transparent',

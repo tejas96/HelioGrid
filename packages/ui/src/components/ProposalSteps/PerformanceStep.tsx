@@ -15,7 +15,6 @@ function FilledCard({ view }: { view: PerformanceStepView }) {
         glyph={fill === 'built_in' ? 'cloud-off' : 'sun'}
         hue={fallback ? 'neutral' : 'teal'}
         size={36}
-        stroke={1.7}
       />
       <span className="hg-pst-auto-words">
         <span className="hg-pst-auto-title">{words.fillTitle}</span>

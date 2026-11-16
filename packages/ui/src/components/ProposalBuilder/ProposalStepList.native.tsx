@@ -1,13 +1,14 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors.native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Rising } from '../../primitives/rising.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { HueTile } from '../HueTile/HueTile.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import { Switch } from '../Switch/Switch.native';
 import type { BuilderStep, ProposalStepListProps } from './ProposalBuilder.types';
 
@@ -24,18 +25,14 @@ function StepRow({
   /* A step Quick mode hides stands on its default, whatever its own standing says. */
   const standing = step.quiet === true && step.standing !== 'to_do' ? 'default' : step.standing;
   const tone = standing === 'to_do' ? 'warning' : standing === 'done' ? 'success' : 'secondary';
+  const { controlFill } = useGround();
   return (
     <Pressable
-      style={[styles.row, now ? styles.rowNow : undefined]}
+      style={[styles.row, now ? [styles.rowNow, { backgroundColor: controlFill }] : undefined]}
       accessibilityState={{ current: now }}
       onPress={() => props.onStep(step.key)}
     >
-      <HueTile
-        glyph={step.glyph}
-        hue={step.standing === 'to_do' ? 'warning' : 'ocean'}
-        size={36}
-        stroke={1.7}
-      />
+      <HueTile glyph={step.glyph} hue={step.standing === 'to_do' ? 'warning' : 'ocean'} size={36} />
       <View style={styles.words}>
         <Text variant="body" bold color={step.quiet === true ? 'secondary' : 'primary'}>
           {step.heading}
@@ -47,11 +44,7 @@ function StepRow({
         )}
       </View>
       <View style={styles.stand}>
-        <ShellGlyph
-          name={standing === 'to_do' ? 'alert-circle' : 'tick-small'}
-          size="sm"
-          tone={tone}
-        />
+        <ShellGlyph name={standing === 'to_do' ? 'alert-circle' : 'check'} size="sm" tone={tone} />
         <Text variant="caption" color={tone} bold>
           {words.standing[standing]}
         </Text>
@@ -67,10 +60,11 @@ function StepRow({
 export function ProposalStepList(props: ProposalStepListProps) {
   const { words, quick } = props;
   return (
-    <Sheet
+    <EditorSurface
       open={props.open}
       onClose={props.onClose}
       closeLabel={words.closeLabel}
+      desktop="modal"
       showClose
       title={words.title}
       footer={
@@ -103,7 +97,7 @@ export function ProposalStepList(props: ProposalStepListProps) {
           ))}
         </View>
       </View>
-    </Sheet>
+    </EditorSurface>
   );
 }
 
@@ -119,11 +113,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing['sp-3'],
-    paddingVertical: 10,
-    paddingHorizontal: theme.spacing['sp-2'],
+    /* The web's 10 and sp-2, less the 1 the ring's border takes, so the row keeps its size. */
+    paddingVertical: 9,
+    paddingHorizontal: theme.spacing['sp-2'] - 1,
     borderRadius: theme.radius['r-md'],
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
-  rowNow: { backgroundColor: colors['accent-subtle'] },
+  /* The step in view: the control fill inside an ink ring, so it never reads as a pressed row. */
+  rowNow: { borderColor: colors['text-primary'] },
   words: { flex: 1, minWidth: 0 },
   stand: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   foot: { gap: theme.spacing['sp-2'] },

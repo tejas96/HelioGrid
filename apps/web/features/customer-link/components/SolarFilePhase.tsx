@@ -11,6 +11,7 @@ import {
   type FocusAfter,
   ProposalPicture,
   ShellGlyph,
+  Text,
   useFormat,
   useToasts,
 } from '@heliogrid/ui';
@@ -78,7 +79,7 @@ export function SolarFilePhase({
           </ProposalPicture>
           <PageCard title={words.documents}>
             {handover.documents.length === 0 ? (
-              <p className="hg-cust-quiet">{words.none}</p>
+              <Text color="secondary">{words.none}</Text>
             ) : (
               <AfterRows>
                 {handover.documents.map((file) => (
@@ -97,11 +98,11 @@ export function SolarFilePhase({
                 ))}
               </AfterRows>
             )}
-            <AfterHint glyph="info-circle">{words.keep}</AfterHint>
+            <AfterHint glyph="info">{words.keep}</AfterHint>
           </PageCard>
           {referTo === null ? null : (
             <PageCard title={words.referTitle} glass>
-              <p className="hg-cust-quiet">{words.referLine}</p>
+              <Text color="secondary">{words.referLine}</Text>
               <div className="hg-cust-refer">
                 <span className="hg-cust-mono">{format.phone(referTo)}</span>
                 <Button

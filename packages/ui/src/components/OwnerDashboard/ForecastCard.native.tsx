@@ -43,7 +43,7 @@ export function ForecastCard({ view, words, onForecastStage }: DashboardPartProp
   if (forecast === undefined) return <ForecastTile words={words} />;
   const rows = forecastRowsOf(forecast, words, format);
   return (
-    <Card>
+    <Card tile="glass">
       <View
         style={styles.body}
         accessibilityLabel={words.forecastTitle}
@@ -90,7 +90,7 @@ export function ForecastCard({ view, words, onForecastStage }: DashboardPartProp
           </>
         )}
         <View style={styles.note}>
-          <ShellGlyph name="info-circle" size="sm" tone="secondary" />
+          <ShellGlyph name="info" size="sm" tone="secondary" />
           <Text variant="caption" color="secondary" style={styles.noteWords}>
             {words.forecastHonest}
           </Text>

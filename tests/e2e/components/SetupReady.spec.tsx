@@ -101,7 +101,7 @@ test.describe('at 375', () => {
     const pad = await resolvedLength(page, '--screen-pad-mobile');
     for (const name of [en.lead.act, en.demo.act]) {
       const act = await settledBox(root.getByRole('button', { name }));
-      expect(act?.height).toBe(await resolvedLength(page, '--field-h'));
+      expect(act?.height).toBe(await resolvedLength(page, '--button-h-lg'));
       expect(act?.width).toBeLessThan(375 - 2 * pad);
       expect(act?.width).toBeGreaterThan(
         375 - 2 * pad - 2 * (await resolvedLength(page, '--tile-pad')) - 1,
@@ -133,7 +133,7 @@ test.describe('at 375', () => {
     mount,
   }) => {
     const root = await mount(<SetupReadyAsHeld reader="en" demo="unavailable" company={COMPANY} />);
-    await expect(root.locator('.hg-card-message-text')).toHaveText(en.demo.failed);
+    await expect(root.locator('.hg-state-message-text')).toHaveText(en.demo.failed);
     await expect(root.getByRole('button')).toHaveCount(2);
     await expect(root.getByRole('button', { name: en.lead.act })).toBeEnabled();
     await root.getByRole('button', { name: en.tryAgain }).click();

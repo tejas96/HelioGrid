@@ -21,6 +21,7 @@ import { runTenancyInvariants } from './tenancy-rls';
 import { runTenantIdOnTheWire } from './tenant-id-on-the-wire';
 import { runTenantPin, runTenantPinCallSites } from './tenant-pin';
 import { runUiColourPairs } from './ui-colour-pairs';
+import { runUiHalvesShareParts } from './ui-halves-share-parts';
 import { runVocabularyCopies } from './vocabulary-copies';
 
 /**
@@ -55,6 +56,7 @@ async function main() {
   runCapabilityIdsCited(REPO_ROOT); // static — every capability a task names is in the matrix
   runScreensRegisterWhole(REPO_ROOT); // static — every screen has its task, every row landed once
   runUiColourPairs(REPO_ROOT); // static — every colour ui sets on a background is a declared pair
+  runUiHalvesShareParts(REPO_ROOT); // static — a phone half draws the shared parts its web half does
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {
     // Fail CLOSED in CI: a skipped invariant that reports success is worse than no

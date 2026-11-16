@@ -27,7 +27,7 @@ export function TranscriptHeader({
 }: TranscriptHeaderProps) {
   return (
     <div className="hg-transcript-header">
-      <p className="hg-transcript-title">{title}</p>
+      <p className="hg-transcript-title hg-overline">{title}</p>
       {meta ? <p className="hg-transcript-meta">{meta}</p> : null}
       {/* The language label — one per transcript, saying the whole shape of what happened. */}
       {sentence ? (

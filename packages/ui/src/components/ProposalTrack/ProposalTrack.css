@@ -28,7 +28,7 @@
 .hg-track-words h2 {
   margin: var(--sp-1) 0 0;
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: var(--fs-display-phone);
   font-weight: var(--fw-regular);
   line-height: 34px;
   letter-spacing: var(--tr-display);
@@ -156,7 +156,7 @@
   }
 
   .hg-track-words h2 {
-    font-size: 40px;
+    font-size: var(--fs-display);
     line-height: 46px;
   }
 

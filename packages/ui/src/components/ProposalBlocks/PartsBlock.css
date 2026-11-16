@@ -18,7 +18,7 @@
 
 .hg-pb-part-tile {
   padding: 14px var(--sp-4);
-  border-radius: var(--r-tile);
+  border-radius: var(--r-lg);
   animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
   animation-delay: calc(var(--i) * var(--stagger-step));
 }
@@ -106,7 +106,7 @@
   flex: none;
   width: 22px;
   height: 22px;
-  border-radius: 7px;
+  border-radius: var(--rf-md);
   display: inline-grid;
   place-items: center;
   font-family: var(--font-sans);
@@ -147,13 +147,13 @@
   padding-top: 0;
 }
 .hg-pb-parts[data-mode="paper"] .hg-pb-part-kind {
-  font-size: 13px;
+  font-size: var(--doc-fs-small);
 }
 .hg-pb-parts[data-mode="paper"] .hg-pb-part-brand {
-  font-size: 19px;
+  font-size: var(--doc-fs-lead);
 }
 .hg-pb-parts[data-mode="paper"] .hg-pb-part-spec {
-  font-size: 15px;
+  font-size: var(--doc-fs);
   line-height: 22px;
 }
 .hg-pb-parts[data-mode="paper"] .hg-pb-part-none {

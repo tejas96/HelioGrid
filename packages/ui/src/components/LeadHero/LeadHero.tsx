@@ -1,4 +1,3 @@
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { Button } from '../Button';
@@ -8,6 +7,7 @@ import { LeadStateBadge } from '../LeadStateBadge';
 import { NamedGap } from '../NamedGap';
 import { ProvenanceTier } from '../Provenance';
 import { StageTrack } from '../StageTrack';
+import { StatusMark } from '../StatusMark';
 import type { LeadHeroIdentity, LeadHeroProps } from './LeadHero.types';
 
 /**
@@ -81,7 +81,7 @@ function OwnerRow({
     <div className="hg-lead-hero-owner">
       {ownerName === null ? (
         <span className="hg-lead-hero-owner-none" aria-hidden="true">
-          <ShellGlyph name="person-plus" size="sm" tone="secondary" />
+          <ShellGlyph name="user-plus" size="sm" tone="secondary" />
         </span>
       ) : (
         <Avatar name={ownerName} size={32} />
@@ -121,12 +121,12 @@ function Chips({
         spokenName={words.ownerSpoken}
         icon={
           ownerName === null ? (
-            <ShellGlyph name="person-plus" size="sm" tone="accent" />
+            <ShellGlyph name="user-plus" size="sm" tone="accent" />
           ) : (
             <Avatar name={ownerName} size={24} />
           )
         }
-        iconRight={<ShellGlyph name="caret-down" size="sm" tone="secondary" />}
+        iconRight={<ShellGlyph name="chevron" size="sm" tone="secondary" />}
         onClick={onOwner}
       >
         {words.owner}
@@ -166,7 +166,7 @@ function Value({ value, project, words }: Pick<LeadHeroProps, 'value' | 'project
   if (project !== null) {
     return (
       <div className="hg-lead-hero-value">
-        <span className="hg-lead-hero-overline">{words.projectLabel}</span>
+        <span className="hg-lead-hero-overline hg-overline">{words.projectLabel}</span>
         <Button
           variant="secondary"
           size="sm"
@@ -180,7 +180,7 @@ function Value({ value, project, words }: Pick<LeadHeroProps, 'value' | 'project
   }
   return (
     <div className="hg-lead-hero-value">
-      <span className="hg-lead-hero-overline">{words.valueLabel}</span>
+      <span className="hg-lead-hero-overline hg-overline">{words.valueLabel}</span>
       {value === null ? (
         <NamedGap gap={words.noValue} scale="headline" />
       ) : (

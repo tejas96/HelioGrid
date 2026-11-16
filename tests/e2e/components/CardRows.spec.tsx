@@ -33,7 +33,7 @@ test('a highlighted row and a hovered row beside it keep a gap between their fil
 
   const chosenFill = await fillOf(chosen);
   const hoveredFill = await fillOf(hovered);
-  expect(chosenFill.background).toBe(await resolvedColour(page, '--accent-subtle'));
+  expect(chosenFill.background).toBe(await resolvedColour(page, '--fill'));
   expect(hoveredFill.background).not.toBe('rgba(0, 0, 0, 0)');
   for (const fill of [chosenFill, hoveredFill]) {
     expect(fill.top).toBe('2px');

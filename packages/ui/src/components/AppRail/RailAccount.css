@@ -1,24 +1,11 @@
-/* RailAccount — the sidebar's foot: who is signed in, their role and company, and the theme's
-   three icons, straight on the rail as OneOhm draws it — no tile of its own. The row that opens the
+/* RailAccount — the sidebar's foot: the theme's three icons across the rail, and under them who is
+   signed in, their role and company, straight on the rail as OneOhm draws it — no tile of its own. The row that opens the
    account's menu is `AccountMenu`'s (`AccountMenu.css`). */
 
 .hg-app-rail-account {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
-}
-
-/* The theme's three icons run the tile's width under the person, one tidy row. */
-.hg-app-rail-account .hg-appearance-icons {
-  align-self: stretch;
-  justify-content: space-between;
-}
-
-@media (pointer: fine) {
-  .hg-app-rail-account .hg-appearance-icon {
-    width: var(--sp-8);
-    height: var(--sp-8);
-  }
+  gap: var(--sp-3);
 }
 
 /* The sidebar's list fades under this foot while rows wait below its fold (`useMoreBelow`). */

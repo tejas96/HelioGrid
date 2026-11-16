@@ -101,10 +101,9 @@
   margin-bottom: var(--sp-1);
 }
 
-/* 16px has no type token — --fs-body is 15 and --fs-body-lg is 17. It is the reference's value. */
 .hg-overlay-state-title {
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: var(--fs-card-head);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tr-h4);
   color: var(--text-primary);

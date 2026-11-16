@@ -2,13 +2,12 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import type { SliderProps } from './Slider.types';
 import { SliderTrack } from './SliderTrack.native';
@@ -37,17 +36,11 @@ function StepButton({ disabled, glyph, label, onPress }: StepButtonProps) {
       onPress={onPress}
       style={[styles.step, { backgroundColor: fill }]}
     >
-      <Svg
-        width={16}
-        height={16}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={disabled ? colors['text-disabled'] : colors['text-primary']}
-        strokeWidth={2}
-        strokeLinecap="round"
-      >
-        <ShellGlyphMarks name={glyph} />
-      </Svg>
+      <ShellGlyph
+        name={glyph}
+        size="sm"
+        ink={disabled ? colors['text-disabled'] : colors['text-primary']}
+      />
     </Pressable>
   );
 }

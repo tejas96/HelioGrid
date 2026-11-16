@@ -3,7 +3,7 @@ import { brandingWords, createTranslator, pagedDocumentWords, SIGN_IN } from '@h
 import { Surface } from '@heliogrid/ui';
 import { PagedDocument } from '@heliogrid/ui/print';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedBoxShadow, resolvedColour, STRONG_EDGE } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, SECONDARY_EDGE } from '../support/token';
 
 const en = await createTranslator('en');
 const tryAgain = en.t(SIGN_IN.tryAgain);
@@ -33,5 +33,5 @@ test("an errored document's card on a grey desk is white paper and its retry is 
 
   await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
   await expect(retry).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
-  await expect(retry).toHaveCSS('box-shadow', await resolvedBoxShadow(page, STRONG_EDGE));
+  await expect(retry).toHaveCSS('box-shadow', await resolvedBoxShadow(page, SECONDARY_EDGE));
 });

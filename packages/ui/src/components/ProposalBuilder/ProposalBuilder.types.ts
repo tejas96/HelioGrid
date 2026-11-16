@@ -2,7 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { StepStanding } from '@heliogrid/domain';
 import type { ReactNode, Ref } from 'react';
 import type { FocusHandle } from '../../primitives/FocusAfter';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
 
 /**

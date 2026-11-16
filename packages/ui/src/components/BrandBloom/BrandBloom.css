@@ -5,12 +5,6 @@
   pointer-events: none;
 }
 
-.hg-brand-bloom[data-mode="page"] {
-  inset: 0 0 auto;
-  height: 26rem;
-  background: var(--glow-page);
-}
-
 .hg-brand-bloom[data-mode="fill"] {
   inset: 0;
   background: var(--glow-mark);

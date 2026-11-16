@@ -4,9 +4,9 @@ import type { Finding, FindingListWords, FindingStatus } from './FindingList.typ
 
 /** The glyph each status draws, the same on both halves. */
 export const FINDING_MARK_GLYPH: Record<FindingStatus, ShellGlyphName> = {
-  ready: 'tick',
-  blocking: 'alert-long',
-  attention: 'alert-mid',
+  ready: 'check',
+  blocking: 'alert',
+  attention: 'alert',
 };
 
 /** The finding's own jump wins; otherwise the list's jump, aimed at this finding; otherwise none. */

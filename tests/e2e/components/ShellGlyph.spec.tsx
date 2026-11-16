@@ -1,65 +1,69 @@
+import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { ShellGlyph } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 
+const en = await createTranslator('en');
+const word = en.t(COMPANY_SIGNUP.city);
+
 /**
- * Every icon in `@heliogrid/ui` is a named shape drawn through `ShellGlyphMarks` (`F7-19`): a
- * glyph's box sets the size and the stroke, and its marks are the shape's paths, circles and
- * rounded rectangles — each kind drawn, none dropped.
+ * Every icon in `@heliogrid/ui` is a named Lucide shape drawn by `ShellGlyph` (`F7-19`): the size
+ * is a step of the ladder, the stroke is Lucide's 2 at every size, and the two shapes Lucide lacks
+ * are drawn in its style.
  */
-test('a glyph draws each kind of mark its shape holds, inside the box its size sets', async ({
+test('a glyph draws on the ladder at the one stroke, Lucide or drawn here', async ({ mount }) => {
+  const screen = await mount(
+    <div>
+      <span data-glyph="dense">
+        <ShellGlyph name="check" size="dense" />
+      </span>
+      <span data-glyph="md">
+        <ShellGlyph name="alert-circle" size="md" />
+      </span>
+      <span data-glyph="custom">
+        <ShellGlyph name="inverter" />
+      </span>
+    </div>,
+  );
+
+  const dense = screen.locator('[data-glyph="dense"] svg');
+  await expect(dense).toHaveAttribute('viewBox', '0 0 24 24');
+  await expect(dense).toHaveAttribute('width', '14');
+  await expect(dense).toHaveAttribute('stroke-width', '2');
+  await expect(dense).toHaveAttribute('aria-hidden', 'true');
+
+  const md = screen.locator('[data-glyph="md"] svg');
+  await expect(md).toHaveAttribute('width', '20');
+  await expect(md).toHaveAttribute('stroke-width', '2');
+  await expect(md.locator('circle')).toHaveCount(1);
+
+  const custom = screen.locator('[data-glyph="custom"] svg');
+  await expect(custom).toHaveAttribute('width', '24');
+  await expect(custom).toHaveAttribute('stroke-width', '2');
+  await expect(custom).toHaveAttribute('stroke-linecap', 'round');
+  await expect(custom.locator('rect')).toHaveCount(1);
+});
+
+test('a glyph takes its holder’s colour, fills in its ink, and speaks only when labelled', async ({
   mount,
 }) => {
   const screen = await mount(
-    <div>
-      <span data-glyph="pause">
-        <ShellGlyph name="pause" size="sm" />
+    <div style={{ color: 'var(--danger-text)' }}>
+      <span data-glyph="current">
+        <ShellGlyph name="star" tone="current" fill="ink" />
       </span>
-      <span data-glyph="alert-circle">
-        <ShellGlyph name="alert-circle" size="md" />
-      </span>
-      <span data-glyph="close">
-        <ShellGlyph name="close" />
+      <span data-glyph="labelled">
+        <ShellGlyph name="check" tone="current" label={word} />
       </span>
     </div>,
   );
 
-  const pause = screen.locator('[data-glyph="pause"] svg');
-  await expect(pause).toHaveAttribute('viewBox', '0 0 24 24');
-  await expect(pause).toHaveAttribute('width', '16');
-  await expect(pause).toHaveAttribute('stroke-width', '1.8');
-  await expect(pause.locator('rect')).toHaveCount(2);
-  await expect(pause.locator('path, circle')).toHaveCount(0);
+  const current = screen.locator('[data-glyph="current"] svg');
+  const holder = await screen.evaluate((node) => getComputedStyle(node).color);
+  await expect(current).toHaveCSS('color', holder);
+  await expect(current).toHaveAttribute('fill', 'currentColor');
 
-  const alert = screen.locator('[data-glyph="alert-circle"] svg');
-  await expect(alert).toHaveAttribute('width', '20');
-  await expect(alert).toHaveAttribute('stroke-width', '1.5');
-  await expect(alert.locator('circle')).toHaveCount(1);
-  await expect(alert.locator('path')).toHaveCount(1);
-
-  const close = screen.locator('[data-glyph="close"] svg');
-  await expect(close).toHaveAttribute('width', '24');
-  await expect(close.locator('path')).toHaveCount(1);
-  await expect(close.locator('circle, rect')).toHaveCount(0);
-});
-
-test('the filled form replaces the outline and fills in the current colour', async ({ mount }) => {
-  const screen = await mount(
-    <div>
-      <span data-glyph="outline">
-        <ShellGlyph name="people" />
-      </span>
-      <span data-glyph="filled">
-        <ShellGlyph name="people" filled />
-      </span>
-    </div>,
-  );
-
-  const outline = screen.locator('[data-glyph="outline"] svg');
-  await expect(outline).toHaveAttribute('fill', 'none');
-  await expect(outline.locator('path')).toHaveCount(4);
-
-  const filled = screen.locator('[data-glyph="filled"] svg');
-  await expect(filled).toHaveAttribute('fill', 'currentColor');
-  await expect(filled.locator('circle')).toHaveCount(1);
-  await expect(filled.locator('path')).toHaveCount(1);
+  const labelled = screen.locator('[data-glyph="labelled"] svg');
+  await expect(labelled).toHaveAttribute('role', 'img');
+  await expect(labelled).toHaveAttribute('aria-label', word);
+  await expect(labelled).not.toHaveAttribute('aria-hidden', 'true');
 });

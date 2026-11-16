@@ -15,10 +15,8 @@ interface NativeMoneySummaryProps extends MoneySummaryProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/* THE DOCUMENT STEPS ARE PRINT TOKENS. `--doc-fs` (16px) and `--doc-fs-small` (14px) are emitted to
-   CSS only — packages/theme's RN object carries no `doc` family — so the document surface maps to
-   the NEAREST theme type role rather than hand-transcribing a px value the generator owns. Same
-   answer Disclosure's native half gives. */
+/* A row is drawn through `Text`'s variants, which are the screen roles, so the document surface
+   takes the nearest of them to `doc-fs` and `doc-fs-small`. Same answer Disclosure's native half gives. */
 const LINE: Record<'screen' | 'document', TextVariant> = { screen: 'body', document: 'body-lg' };
 const SMALL: Record<'screen' | 'document', TextVariant> = {
   screen: 'body-sm',

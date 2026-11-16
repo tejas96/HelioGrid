@@ -1,11 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import { Sheet } from '../Sheet/Sheet.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { DedupeChoice } from './DedupeChoice.native';
 import { DedupeKeepBoth } from './DedupeKeepBoth.native';
 import { DedupeRecord } from './DedupeRecord.native';
-import { choicesOf, isActWaiting } from './DedupeSheet.logic';
+import { choicesOf, DEDUPE_LAYER, isActWaiting } from './DedupeSheet.logic';
 import type { DedupeSheetProps } from './DedupeSheet.types';
 import { useKeepBoth } from './use-keep-both';
 
@@ -18,10 +18,13 @@ export function DedupeSheet(props: DedupeSheetProps) {
   const { open, onClose, record, ownerName, stage, canKeepBoth, act, onKeepBoth, words } = props;
   const keepBoth = useKeepBoth(open);
   return (
-    <Sheet
+    <EditorSurface
       open={open}
       onClose={onClose}
       closeLabel={words.close}
+      showClose
+      desktop="modal"
+      zIndex={DEDUPE_LAYER}
       title={words.heading}
       subtitle={words.intro}
       dismissible={!isActWaiting(act)}
@@ -46,7 +49,7 @@ export function DedupeSheet(props: DedupeSheetProps) {
           {words.nothingCreated}
         </Text>
       </View>
-    </Sheet>
+    </EditorSurface>
   );
 }
 

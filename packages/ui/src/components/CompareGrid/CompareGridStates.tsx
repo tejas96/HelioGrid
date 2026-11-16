@@ -1,8 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
+import { StateRegion } from '../StateBody';
 
 /** Six shimmer bars — the loading form. Never a placeholder value presented as a real one. */
 export function CompareSkeleton({ label }: { label: TranslatedText }) {
@@ -10,7 +10,7 @@ export function CompareSkeleton({ label }: { label: TranslatedText }) {
     <div className="hg-compare-skeleton" role="status" aria-label={label}>
       {['title', 'a', 'b', 'c', 'd', 'e'].map((row) => (
         <span
-          className="hg-compare-shimmer"
+          className="hg-compare-shimmer hg-skeleton"
           data-lead={row === 'title' ? 'true' : undefined}
           key={row}
         />
@@ -43,23 +43,12 @@ export function CompareMessage({
   focusAfter: FocusAfter;
 }) {
   return (
-    <div className="hg-compare-message">
-      <span className="hg-compare-message-mark" data-tone={tone}>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'columns'} />
-        </svg>
-      </span>
-      <div className="hg-compare-message-title">{title}</div>
-      {message === undefined ? null : <div className="hg-compare-message-body">{message}</div>}
-      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
-    </div>
+    <StateRegion
+      tone={tone}
+      glyph="columns"
+      title={title}
+      message={message}
+      action={<RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />}
+    />
   );
 }

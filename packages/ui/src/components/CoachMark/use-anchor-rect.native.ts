@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Dimensions } from 'react-native';
+import { useMeasureForLayer } from '../../primitives/Portal/Portal.native';
 import type { CoachMarkAnchor } from './CoachMark.types';
 import type { CoachMarkRect } from './coach-mark-place';
 
@@ -51,6 +52,7 @@ export function useAnchorRect(
   const [rect, setRect] = useState<CoachMarkRect | null>(null);
   const tries = useRef(0);
   const missingRef = useRef(onMissing);
+  const measure = useMeasureForLayer();
 
   useEffect(() => {
     missingRef.current = onMissing;
@@ -75,7 +77,7 @@ export function useAnchorRect(
         }
         return;
       }
-      node.measureInWindow((x, y, width, height) => {
+      measure(node, ({ x, y, w: width, h: height }) => {
         if (!live) {
           return;
         }
@@ -102,7 +104,7 @@ export function useAnchorRect(
       live = false;
       clearInterval(timer);
     };
-  }, [anchor, active]);
+  }, [anchor, active, measure]);
 
   return rect;
 }

@@ -1,9 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import type { FocusHandle } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { Card } from '../Card/Card.native';
@@ -26,7 +26,7 @@ export function MergeDone({ words, onOpenCustomer, onBackToLeads }: MergeDonePro
       <HeroPanel name={words.title}>
         <View style={styles.done}>
           <View style={styles.tick}>
-            <ShellGlyph name="tick" size="lg" tone="success" />
+            <ShellGlyph name="check" size="lg" tone="success" />
           </View>
           <Text variant="display">{words.title}</Text>
           <Text variant="body-lg">{words.line}</Text>
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   tick: {
     padding: theme.spacing['sp-2'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: colors['success-bg'],
+    backgroundColor: TONE.success.tint,
   },
   acts: { alignSelf: 'stretch', gap: theme.spacing['sp-2'], paddingTop: theme.spacing['sp-2'] },
 });

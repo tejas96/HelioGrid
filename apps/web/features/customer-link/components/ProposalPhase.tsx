@@ -14,9 +14,11 @@ import { useTranslate } from '@heliogrid/i18n/react';
 import {
   AfterSummary,
   Button,
+  Card,
   Provenance,
   ProvenanceTier,
   ShellGlyph,
+  Text,
   useFormat,
 } from '@heliogrid/ui';
 import { type Ref, useRef } from 'react';
@@ -50,7 +52,7 @@ export function ProposalPhase({
   const { company, person } = page;
   const { document } = proposal;
   const { taxName } = screen.market;
-  const note = useRef<HTMLElement>(null);
+  const note = useRef<HTMLDivElement>(null);
   const pages = useProposalReaderDocument({ document }, format, taxName, (input) =>
     proposalDocumentReadWords(t, { ...input, format }),
   );
@@ -186,14 +188,18 @@ function SideCard({
   const years = savings?.paybackYears ?? null;
   const incentive = money.figures.incentive;
   return (
-    <section className="hg-cust-sidecard">
+    <Card as="section" surface="raised" className="hg-cust-sidecard">
       <div className="hg-cust-over-row">
-        <span className="hg-cust-over">{words.side.over}</span>
+        <Text variant="overline" color="secondary" as="span">
+          {words.side.over}
+        </Text>
         <ProvenanceTier tier={money.figures.payable.tier} />
       </div>
-      <b className="hg-cust-price">{format.moneyPlain(money.figures.payable.value)}</b>
+      <Text variant="display" as="p" className="hg-cust-price">
+        {format.moneyPlain(money.figures.payable.value)}
+      </Text>
       {incentive === null ? null : (
-        <span className="hg-cust-quiet">
+        <Text color="secondary">
           {words.side.afterSubsidy(
             format.moneyPlain(incentive.value),
             format.moneyPlain(money.figures.netCost.value),
@@ -202,7 +208,7 @@ function SideCard({
           {money.figures.netCost.tier === incentive.tier ? null : (
             <ProvenanceTier tier={money.figures.netCost.tier} />
           )}
-        </span>
+        </Text>
       )}
       {generation === null ? null : (
         <span className="hg-cust-facts">
@@ -218,7 +224,7 @@ function SideCard({
       <div className="hg-cust-acts">
         <AnswerActs screen={screen} answering={answering} wide words={words} />
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -235,8 +241,10 @@ function PdfLine({
   const { kind } = screen.pdf.file;
   if (kind !== 'late' && kind !== 'unread') return null;
   return (
-    <p className="hg-cust-failure" role="status">
-      {kind === 'late' ? late : failed}
-    </p>
+    <div role="status">
+      <Text variant="body-sm" color="danger">
+        {kind === 'late' ? late : failed}
+      </Text>
+    </div>
   );
 }

@@ -1,8 +1,8 @@
-import { StatusMark } from '../../primitives/StatusMark';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { Card } from '../Card';
+import { StatusMark } from '../StatusMark';
 import { type HandoverMessageAct, messageActsOf } from './HandoverPanel.logic';
 import type { HandoverMessageProps } from './HandoverPanel.types';
 
@@ -16,7 +16,7 @@ export function HandoverMessage(props: HandoverMessageProps) {
   const acts = sendable ? messageActsOf(props) : [];
   return (
     <Card className="hg-handover-message">
-      <span className="hg-handover-overline">{words.message(message.language)}</span>
+      <span className="hg-handover-overline hg-overline">{words.message(message.language)}</span>
       <p lang={message.language} className="hg-handover-message-text">
         {message.text}
       </p>

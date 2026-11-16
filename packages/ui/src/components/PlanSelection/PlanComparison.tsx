@@ -37,7 +37,7 @@ export function PlanComparison({ view, words, layout, compareOpen, acts }: PlanS
         density="expressive"
         title={words.compareAll}
         subtitle={compare.line}
-        trailing={<ShellGlyph name={compareOpen ? 'caret-up' : 'caret-down'} tone="secondary" />}
+        trailing={<ShellGlyph name={compareOpen ? 'chevron-up' : 'chevron'} tone="secondary" />}
         onClick={acts.onCompare}
       />
       {compareOpen ? (

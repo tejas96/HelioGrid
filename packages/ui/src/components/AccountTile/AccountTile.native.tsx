@@ -25,6 +25,6 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     gap: theme.spacing['sp-1'],
     padding: theme.layout['tile-pad'],
-    borderRadius: theme.radius['r-tile'],
+    borderRadius: theme.radius['r-lg'],
   },
 });

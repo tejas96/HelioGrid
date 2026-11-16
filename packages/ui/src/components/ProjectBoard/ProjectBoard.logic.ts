@@ -12,14 +12,14 @@ import type {
 import { daysFrom } from '@heliogrid/domain';
 import type { RefObject } from 'react';
 import type { FocusHandle } from '../../primitives/FocusAfter';
-import type { StatusTone } from '../../primitives/StatusMark';
 import type { MarketFormat } from '../../utils/format';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type {
   ProjectRowItem,
   ProjectRowKind,
   ProjectRowMark,
 } from '../ProjectRows/ProjectRows.types';
+import type { StatusTone } from '../StatusMark';
 import type { ProjectBoardProps, ProjectBoardWords } from './ProjectBoard.types';
 
 /** The room the board lays itself out for: the phone's one column, or the desk's two. */
@@ -55,7 +55,7 @@ export const TODO_TILE: Readonly<Record<TodoKind, ProjectRowKind>> = {
 /** Who a wait is on, as its group's glyph: the company's building, a person, the grid, the goods. */
 export const PARTY_GLYPH: Readonly<Record<BlockerParty, ShellGlyphName>> = {
   company: 'building',
-  customer: 'person',
+  customer: 'user',
   utility: 'bolt',
   material: 'package',
 };

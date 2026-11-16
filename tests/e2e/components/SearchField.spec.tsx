@@ -11,7 +11,7 @@ import {
 import { FacetChips, FilterChips, SearchField } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
-import { resolvedBoxShadow, resolvedColour, STRONG_EDGE } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, resolvedLength, STRONG_EDGE } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { FilterCircleStory, FocusHandlesStory } from './SearchField.story';
 
@@ -30,7 +30,7 @@ const delivery = en.t(TYPE_GROUP_NAME.delivery);
 
 test.use({ viewport: { width: 375, height: 300 } });
 
-test('the one search pill is 50 tall at --r-pill, the field box, its clear button on --fill', async ({
+test('the one search field is 50 tall at the field radius, the field box, its clear button on --fill', async ({
   mount,
   page,
 }) => {
@@ -47,9 +47,10 @@ test('the one search pill is 50 tall at --r-pill, the field box, its clear butto
   expect(box?.height).toBe(50);
   await expect(field).toHaveCSS('background-color', await resolvedColour(page, '--surface-form'));
   await expect(field).toHaveCSS('box-shadow', await resolvedBoxShadow(page, STRONG_EDGE));
-  expect(
-    Number.parseFloat(await field.evaluate((node) => getComputedStyle(node).borderTopLeftRadius)),
-  ).toBeGreaterThanOrEqual(25);
+  await expect(field).toHaveCSS(
+    'border-radius',
+    `${await resolvedLength(page, '--r-input-expressive')}px`,
+  );
   await expect(field.locator('.hg-search-field-clear-pill')).toHaveCSS(
     'background-color',
     await resolvedColour(page, '--fill'),
@@ -104,7 +105,7 @@ test('with onFilterClick the 50 circle rides beside the pill, round as it is, na
   expect((pill?.x ?? 0) + (pill?.width ?? 0)).toBeLessThan(box?.x ?? 0);
 });
 
-test('a kind chip is 44 tall; the chosen one is the accent wash with accent words and its count', async ({
+test('a kind chip is 32 tall in a 44 target; the chosen one is ink words in an ink outline on the fill', async ({
   mount,
   page,
 }) => {
@@ -121,11 +122,15 @@ test('a kind chip is 44 tall; the chosen one is the accent wash with accent word
   );
   const chosen = chips.getByRole('tab', { name: `${sales} 4` });
   await expect(chosen).toHaveAttribute('aria-selected', 'true');
-  const pill = chosen.locator('.hg-filter-pill');
-  expect((await settledBox(pill))?.height).toBe(44);
-  await expect(pill).toHaveCSS('background-color', await resolvedColour(page, '--accent-subtle'));
-  await expect(pill).toHaveCSS('color', await resolvedColour(page, '--accent-text'));
-  const rest = chips.getByRole('tab', { name: `${delivery} 2` }).locator('.hg-filter-pill');
+  const pill = chosen.locator('.hg-chip');
+  expect((await settledBox(pill))?.height).toBe(await resolvedLength(page, '--filter-chip-h'));
+  await expect(pill).toHaveCSS('background-color', await resolvedColour(page, '--hg-control-fill'));
+  await expect(pill).toHaveCSS('color', await resolvedColour(page, '--text-primary'));
+  await expect(pill).toHaveCSS(
+    'box-shadow',
+    await resolvedBoxShadow(page, 'inset 0 0 0 1px var(--text-primary)'),
+  );
+  const rest = chips.getByRole('tab', { name: `${delivery} 2` }).locator('.hg-chip');
   await expect(rest).toHaveCSS('background-color', await resolvedColour(page, '--hg-control-fill'));
   await expectTouchFloor(await chips.getByRole('tab').all());
 });
@@ -151,15 +156,15 @@ test('a kind chip draws its 18 glyph before the label, in the chip’s ink', asy
       value="sales"
     />,
   );
-  const glyph = chips.locator('.hg-filter-pill svg').first();
+  const glyph = chips.locator('.hg-chip svg').first();
   const box = await settledBox(glyph);
   expect(box?.width).toBe(18);
-  const pill = await settledBox(chips.locator('.hg-filter-pill'));
+  const pill = await settledBox(chips.locator('.hg-chip'));
   expect((box?.x ?? 0) - (pill?.x ?? 0)).toBeLessThan((pill?.width ?? 0) / 2);
-  await expect(glyph).toHaveCSS('color', await resolvedColour(page, '--accent-text'));
+  await expect(glyph).toHaveCSS('color', await resolvedColour(page, '--text-primary'));
 });
 
-test('a chosen facet is the accent wash with its tick; the others stay on the control fill', async ({
+test('a chosen facet is the ink outline with its tick; the others keep the hairline', async ({
   mount,
   page,
 }) => {
@@ -176,11 +181,18 @@ test('a chosen facet is the accent wash with its tick; the others stay on the co
   );
   const chosen = facets.getByRole('button', { name: sales });
   await expect(chosen).toHaveAttribute('aria-pressed', 'true');
-  const pill = chosen.locator('.hg-filter-pill');
-  await expect(pill).toHaveCSS('background-color', await resolvedColour(page, '--accent-subtle'));
+  const pill = chosen.locator('.hg-chip');
+  await expect(pill).toHaveCSS(
+    'box-shadow',
+    await resolvedBoxShadow(page, 'inset 0 0 0 1px var(--text-primary)'),
+  );
   await expect(pill.locator('svg')).toHaveCount(1);
-  const rest = facets.getByRole('button', { name: delivery }).locator('.hg-filter-pill');
+  const rest = facets.getByRole('button', { name: delivery }).locator('.hg-chip');
   await expect(rest).toHaveCSS('background-color', await resolvedColour(page, '--hg-control-fill'));
+  await expect(rest).toHaveCSS(
+    'box-shadow',
+    await resolvedBoxShadow(page, 'inset 0 0 0 1px var(--line-soft)'),
+  );
 });
 
 test('the search field and the chosen chip each take focus through their handle (D286)', async ({

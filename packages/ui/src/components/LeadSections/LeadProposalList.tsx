@@ -57,7 +57,7 @@ function Row({ proposal, panel }: { proposal: LeadProposal; panel: LeadProposals
   }
   return (
     <Pressable className="hg-lead-proposal" onPress={() => panel.onOpen(proposal.id)}>
-      <HueTile glyph="file-text" hue="ocean" size={44} stroke={1.6} />
+      <HueTile glyph="document" hue="ocean" size={44} />
       <Words proposal={proposal} words={words} />
       <ProposalStatus
         standing={proposal.standing}
@@ -73,7 +73,7 @@ function CollisionRow({ proposal, panel }: { proposal: LeadProposal; panel: Lead
   const { words } = panel;
   return (
     <div className="hg-lead-proposal" data-still="">
-      <HueTile glyph="file-text" hue="ocean" size={44} stroke={1.6} />
+      <HueTile glyph="document" hue="ocean" size={44} />
       <span className="hg-lead-proposal-words">
         <b>
           {proposal.number === null
@@ -109,7 +109,7 @@ export function LeadProposalList({ panel }: { panel: LeadProposalsPanel }) {
   if (state === 'closed') {
     return (
       <div className="hg-lead-proposals-empty">
-        <HueTile glyph="lock" hue="neutral" size={48} stroke={1.6} />
+        <HueTile glyph="lock" hue="neutral" size={48} />
         <span className="hg-lead-proposal-words">
           <b>{words.closedTitle}</b>
           <span>{words.closedLine}</span>
@@ -158,7 +158,7 @@ export function LeadProposalList({ panel }: { panel: LeadProposalsPanel }) {
       ) : null}
       {section.sibling === null ? null : (
         <div className="hg-lead-proposal" data-still="">
-          <HueTile glyph="people" hue="warning" size={44} stroke={1.6} />
+          <HueTile glyph="people" hue="warning" size={44} />
           <span className="hg-lead-proposal-words">
             <span>{words.siblingLine(section.sibling.number)}</span>
           </span>

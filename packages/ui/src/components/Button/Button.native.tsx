@@ -8,6 +8,7 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
 import { ReasonExplainer } from '../ActionReason/ReasonExplainer.native';
 import { GlyphInkContext } from '../AppShell/ShellGlyph.native';
@@ -25,43 +26,38 @@ interface VariantVisual {
   elevation?: ViewStyle;
 }
 
-/* Primary is the ocean accent with a soft glow of itself; secondary the card colour in a hairline. */
+/* Primary is the ocean accent on the first lift, no glow; secondary the card colour in a hairline on
+   the same lift — OneOhm's button. */
 const VARIANT: Record<ButtonVariant, VariantVisual> = {
   primary: {
     background: colors['action-primary'],
     color: colors['text-inverse'],
-    elevation: {
-      shadowColor: colors['action-primary'],
-      shadowOffset: { width: 0, height: 6 },
-      shadowRadius: 10,
-      shadowOpacity: 0.35,
-      elevation: 3,
-    },
+    elevation: theme.elevation.e1,
   },
   secondary: {
     // biome-ignore lint/plugin/raw-white: control — the secondary is the card colour on every ground
     background: colors.surface,
     color: colors['text-primary'],
-    elevation: { borderWidth: 1, borderColor: colors['line-strong'] },
+    elevation: { borderWidth: 1, borderColor: colors['line-strong'], ...theme.elevation.e1 },
   },
   ghost: { background: 'transparent', color: colors['text-secondary'] },
-  destructive: { background: colors['danger-text'], color: colors['text-inverse'] },
+  destructive: { background: TONE.danger.ink, color: colors['text-inverse'] },
 };
 
 /* The pills with a fill of their own, whose glyphs take the words' ink (`GlyphInkContext`). */
 const FILLED: ReadonlySet<ButtonVariant> = new Set<ButtonVariant>(['primary', 'destructive']);
 
 /* The words a tone gives a secondary or ghost pill; the white pill keeps its own ground. */
-const TONE: Record<ButtonTone, ThemeColor> = {
-  danger: colors['danger-text'],
+const TONED_INK: Record<ButtonTone, ThemeColor> = {
+  danger: TONE.danger.ink,
   inverse: colors['on-ink'],
 };
 
 const SIZE: Record<ButtonSize, ViewStyle> = {
   prominent: { height: theme.spacing['sp-16'], paddingHorizontal: theme.spacing['sp-8'] },
-  lg: { height: theme.layout['field-h'], paddingHorizontal: theme.spacing['sp-6'] },
-  md: { height: theme.spacing['sp-10'], paddingHorizontal: theme.spacing['sp-5'] },
-  sm: { height: theme.spacing['sp-8'], paddingHorizontal: theme.spacing['sp-4'] },
+  lg: { height: theme.layout['button-h-lg'], paddingHorizontal: theme.spacing['sp-5'] },
+  md: { height: theme.layout['button-h-md'], paddingHorizontal: theme.spacing['sp-4'] },
+  sm: { height: theme.layout['button-h-sm'], paddingHorizontal: theme.spacing['sp-3'] },
 };
 
 const LABEL_SIZE: Record<ButtonSize, TextStyle> = {
@@ -79,15 +75,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: theme.spacing['sp-2'],
-    borderRadius: theme.radius['r-pill'],
+    borderRadius: theme.radius['r-control'],
   },
   fullWidth: { alignSelf: 'stretch' },
-  prominentGlow: {
-    shadowOffset: { width: 0, height: 12 },
-    shadowRadius: 20,
-    shadowOpacity: 0.45,
-    elevation: 6,
-  },
   label: {
     fontFamily: theme.type.families.sans,
     fontWeight: '500',
@@ -135,7 +125,7 @@ export function Button({
   /* A spec with no sentence opens nothing and states nothing — see the web half. */
   const stated = isStatedOff(disabled, disabledReason);
   const toned = toneOf(variant, tone);
-  const restColor = toned === undefined ? visual.color : TONE[toned];
+  const restColor = toned === undefined ? visual.color : TONED_INK[toned];
   /* A stated disabled label is information, not chrome — see the web half. */
   const labelColor = disabled ? colors[stated ? 'text-secondary' : 'text-disabled'] : restColor;
   /* Named by its words even while the spinner stands in for them, so a button that is working
@@ -170,10 +160,6 @@ export function Button({
           SIZE[size],
           { backgroundColor: visual.background },
           disabled ? undefined : visual.elevation,
-          // The screen's one main verb carries the deepest glow of the accent (see the web half).
-          size === 'prominent' && variant === 'primary' && !disabled
-            ? styles.prominentGlow
-            : undefined,
           // A ghost has no ground, and being unavailable does not give it one — see the web half.
           // Sunk below the page and the tile alike — see the web half.
           disabled && variant !== 'ghost' ? { backgroundColor: controlFillDisabled } : undefined,

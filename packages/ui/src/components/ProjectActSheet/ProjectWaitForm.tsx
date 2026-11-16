@@ -98,7 +98,7 @@ export function WaitForm({ form, sending, refusal, words }: ProjectFormOf<'wait'
       ) : null}
       {party === null || reason === null || since === null ? null : (
         <div className="hg-project-act-sees">
-          <span className="hg-project-act-overline">{words.wait.customerSees}</span>
+          <span className="hg-project-act-overline hg-overline">{words.wait.customerSees}</span>
           <span className="hg-project-act-sees-line">
             {words.wait.customerSeesLine(party, reason, since)}
           </span>

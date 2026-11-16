@@ -44,7 +44,7 @@ export function LeadsList(props: LeadsListProps) {
           <Button
             variant="ghost"
             loading={props.loadingMore}
-            icon={<ShellGlyph name="caret-down" size="sm" />}
+            icon={<ShellGlyph name="chevron" size="sm" />}
             onClick={props.onShowMore}
           >
             {props.loadingMore ? words.loadingMore : words.showMore(view.unread)}
@@ -130,6 +130,7 @@ function Rows({ rows, words, onOpen }: LeadsListProps & { rows: LeadsListRows })
           key={row.lead.id}
           lead={listedLeadOf(row.lead, format.pack)}
           sourceLabel={words.sourceWord(row.lead.source)}
+          lastActivity={words.lastActivity(row.sinceActivityMs)}
           next={leadNextMarkOf(row.next, words.next(row.next))}
           first={index === 0}
           onOpen={() => onOpen(row.lead.id)}

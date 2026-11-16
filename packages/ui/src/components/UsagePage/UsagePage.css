@@ -39,7 +39,7 @@
   gap: var(--sp-3);
   min-width: 0;
   padding: var(--tile-pad);
-  border-radius: var(--r-tile);
+  border-radius: var(--r-lg);
 }
 
 /* The extra charges' total closes the region across its whole row. */
@@ -163,7 +163,7 @@
 
 /* `Bigger plans` and a ledger event are tiles (`Ground.css` paints them); they keep the tile's radius. */
 .hg-list-row.hg-usage-tile {
-  border-radius: var(--r-tile);
+  border-radius: var(--r-lg);
 }
 
 .hg-usage-scope {
@@ -214,11 +214,6 @@
 }
 
 .hg-usage-overline {
-  font-size: var(--fs-overline);
-  line-height: var(--lh-caption);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 

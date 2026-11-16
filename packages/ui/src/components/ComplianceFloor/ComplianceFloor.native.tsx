@@ -2,12 +2,13 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { noteLineScale } from '../ActionReason/ActionReason.logic';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { complianceFloorFor } from './ComplianceFloor.logic';
 import type { ComplianceFloorSpec } from './ComplianceFloor.types';
 import { complianceFloorSentences } from './ComplianceFloor.words';
@@ -17,21 +18,8 @@ interface NativeComplianceFloorProps extends ComplianceFloorSpec {
 }
 
 /* A statute, not a padlock: the owner is not shut out of this row, they may edit and move it. */
-function ShieldGlyph({ size, color }: { size: number; color: ThemeColor }) {
-  return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name="shield-check" />
-    </Svg>
-  );
+function ShieldGlyph({ size, color }: { size: ShellGlyphSize; color: ThemeColor }) {
+  return <ShellGlyph name="shield-check" size={size} ink={color} />;
 }
 
 /** A floor named on the row it protects, or the save it refused. */
@@ -44,7 +32,7 @@ export function ComplianceFloor(props: NativeComplianceFloorProps) {
     return (
       <View accessibilityRole="alert" style={[styles.refusal, style]}>
         <View style={styles.refusalGlyph}>
-          <ShieldGlyph size={18} color={colors['warning-text']} />
+          <ShieldGlyph size="sm" color={TONE.warning.ink} />
         </View>
         <View style={styles.refusalBody}>
           <Text variant="body-sm" style={styles.refusalHead}>
@@ -125,7 +113,7 @@ const styles = StyleSheet.create({
     gap: 10,
     padding: 14,
     borderRadius: theme.radius['r-sm'],
-    backgroundColor: colors['warning-bg'],
+    backgroundColor: TONE.warning.tint,
   },
   refusalGlyph: {
     flexShrink: 0,
@@ -137,6 +125,6 @@ const styles = StyleSheet.create({
   },
   refusalHead: {
     fontWeight: '700',
-    color: colors['warning-text'],
+    color: TONE.warning.ink,
   },
 });

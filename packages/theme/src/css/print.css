@@ -6,13 +6,13 @@
    the small set of print rules that make one DOM render identically on screen and on paper
    (M06-50, SCR-M06-15: "pixel-for-content identical to what the customer's rendering will show").
 
-   THE TYPE ON PAPER (its tokens are `PRINT` in src/tokens/layout.ts) IS NOT THE TYPE ON SCREEN. Screen tokens are px at 96dpi; a sheet is real
+   THE TYPE ON PAPER (its tokens are `DOCUMENT_TYPE` in src/tokens/typography.ts) IS NOT THE TYPE ON SCREEN. Screen tokens are px at 96dpi; a sheet is real
    paper, so these are stated in pt as well and the reading floor is 12pt. 96dpi → 1pt = 1.333px.
      --doc-fs        16px = 12pt   reading copy: the body of a proposal, a term, a table cell
      --doc-fs-small  14px = 10.5pt title-block metadata, the foot of a sheet, a legend row
      --doc-fs-figure 22px = 16.5pt a money figure a customer looks for first
-   Nothing on a sheet goes below --doc-fs-small, and DocumentPreview's 9–11px are a SCALED preview
-   of a 480px design, not paper. */
+   Nothing on a sheet goes below --doc-fs-small. DocumentPreview draws the same roles times
+   --doc-preview-scale: a 480px picture of the page, not paper. */
 
 /* PRINT SCOPING RUNS IN BOTH DIRECTIONS, and this is the whole contract (SCR-M06-13's details that
    "save but will not print"; MS9-16's staleness warning that prints and is never print-suppressed).

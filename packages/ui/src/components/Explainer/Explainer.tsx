@@ -9,6 +9,7 @@ import { ExplainerBubble } from './ExplainerBubble';
 import { InfoGlyph } from './ExplainerParts';
 import { useExplainer } from './use-explainer';
 import { useExplainerPlace } from './use-explainer-place';
+import { useHoverDelay } from './use-hover-delay';
 
 type WebExplainerProps = ExplainerProps & {
   className?: string;
@@ -39,6 +40,7 @@ export function Explainer(props: WebExplainerProps) {
   const reopenGuard = useRef(false);
   const canHover = useMemo(pointerCanHover, []);
   const hoverOpens = hover === 'auto' ? canHover : hover;
+  const hovering = useHoverDelay(() => !ask.isOpen && ask.show('hover'));
 
   const trigger = () =>
     props.trigger === undefined
@@ -130,8 +132,11 @@ export function Explainer(props: WebExplainerProps) {
       data-density={density}
       data-inset={inset ? 'true' : undefined}
       style={props.style}
-      onMouseEnter={() => hoverOpens && !ask.isOpen && ask.show('hover')}
-      onMouseLeave={() => ask.isOpen && ask.openedBy.current === 'hover' && close('hover-out')}
+      onMouseEnter={() => hoverOpens && !ask.isOpen && hovering.enter()}
+      onMouseLeave={() => {
+        hovering.leave();
+        if (ask.isOpen && ask.openedBy.current === 'hover') close('hover-out');
+      }}
       onFocus={onFocus}
       onKeyDown={(event) => {
         if (event.key === 'Escape' && ask.isOpen) {

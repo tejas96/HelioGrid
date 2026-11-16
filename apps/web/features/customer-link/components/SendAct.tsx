@@ -20,7 +20,7 @@ export function SendAct({
   focusAfter,
 }: {
   label: TranslatedText;
-  glyph?: 'tick' | 'phone';
+  glyph?: 'check' | 'phone';
   quiet: boolean;
   disabled: boolean;
   loading: boolean;

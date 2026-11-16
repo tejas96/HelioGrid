@@ -4,14 +4,13 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
-import type { ThemeColor } from '../../primitives/Color/colors';
-import { colors } from '../../primitives/Color/colors';
+import { colors, type ThemeColor } from '../../primitives/Color/colors';
 import { NO_FOCUS_AFTER, useFocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE, type Tone, type ToneColors } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { bannerKind } from './Banner.kinds';
 import {
   ACTION_BELOW,
@@ -21,42 +20,14 @@ import {
   useDisclaimerWarning,
   useFormReport,
 } from './Banner.logic';
-import type { BannerGlyph, BannerProps, BannerTone } from './Banner.types';
+import type { BannerGlyph, BannerProps } from './Banner.types';
 
 type NativeBannerProps = BannerProps & {
   style?: StyleProp<ViewStyle>;
 };
 
-interface TonePair {
-  text: ThemeColor;
-  bg: ThemeColor;
-}
-
-/* Every tone is a -text token on its -bg partner: the tint is the mark, the words are the message. */
-const TONES: Record<BannerTone, TonePair> = {
-  danger: { text: colors['danger-text'], bg: colors['danger-bg'] },
-  warning: { text: colors['warning-text'], bg: colors['warning-bg'] },
-  info: { text: colors['info-text'], bg: colors['info-bg'] },
-  success: { text: colors['success-text'], bg: colors['success-bg'] },
-  accent: { text: colors.accent, bg: colors['accent-subtle'] },
-  neutral: { text: colors['text-secondary'], bg: colors['neutral-bg'] },
-};
-
-function Glyph({ name, size, color }: { name: BannerGlyph; size: number; color: ThemeColor }) {
-  return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name={BANNER_GLYPH[name]} />
-    </Svg>
-  );
+function Glyph({ name, color }: { name: BannerGlyph; color: ThemeColor }) {
+  return <ShellGlyph name={BANNER_GLYPH[name]} size="sm" ink={color} />;
 }
 
 /**
@@ -128,17 +99,7 @@ function Dismiss({
 }) {
   return (
     <Pressable accessibilityLabel={label} onPress={onDismiss} style={styles.dismiss}>
-      <Svg
-        width={15}
-        height={15}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={tone}
-        strokeWidth={2}
-        strokeLinecap="round"
-      >
-        <ShellGlyphMarks name="close" />
-      </Svg>
+      <ShellGlyph name="close" size="dense" ink={tone} />
     </Pressable>
   );
 }
@@ -162,7 +123,7 @@ export function Banner({
   style,
 }: NativeBannerProps) {
   const meta = bannerKind(kind);
-  const pair = TONES[tone ?? meta.tone];
+  const pair = bannerPair(tone ?? meta.tone);
   const dismissal = bannerDismissal({ dismissible, kind, onDismiss, dismissLabel });
   const leaving = useFocusAfter(focusAfter ?? NO_FOCUS_AFTER);
   const [width, setWidth] = useState<number | null>(null);
@@ -187,10 +148,10 @@ export function Banner({
 
   if (variant === 'pill') {
     return (
-      <View {...a11y} style={[styles.pill, { backgroundColor: pair.bg }, style]}>
+      <View {...a11y} style={[styles.pill, { backgroundColor: pair.tint }, style]}>
         <GroundProvider ground="tile">
-          {icon ?? <Glyph name={meta.icon} size={16} color={pair.text} />}
-          <Text variant="body-sm" style={[styles.pillWords, { color: pair.text }]}>
+          {icon ?? <Glyph name={meta.icon} color={pair.ink} />}
+          <Text variant="body-sm" style={[styles.pillWords, { color: pair.ink }]}>
             {title ?? children}
           </Text>
           {action}
@@ -206,22 +167,20 @@ export function Banner({
       style={[
         styles.block,
         density === 'functional' ? styles.blockFunctional : styles.blockExpressive,
-        { backgroundColor: pair.bg },
+        { backgroundColor: pair.tint },
         style,
       ]}
     >
       {/* The tint is a tile ground: a control inside it takes the white fill (`F7-15`). */}
       <GroundProvider ground="tile">
-        <View style={styles.glyph}>
-          {icon ?? <Glyph name={meta.icon} size={17} color={pair.text} />}
-        </View>
-        <Content title={title} tone={pair.text} actionBelowBody={stacked ? action : undefined}>
+        <View style={styles.glyph}>{icon ?? <Glyph name={meta.icon} color={pair.ink} />}</View>
+        <Content title={title} tone={pair.ink} actionBelowBody={stacked ? action : undefined}>
           {children}
         </Content>
         {action === undefined || stacked ? null : <View style={styles.actionSlot}>{action}</View>}
         {dismissal === null ? null : (
           <Dismiss
-            tone={pair.text}
+            tone={pair.ink}
             label={dismissal.label}
             onDismiss={leaving(dismissal.onDismiss)}
           />
@@ -229,6 +188,11 @@ export function Banner({
       </GroundProvider>
     </View>
   );
+}
+
+/** A tone's tint and ink; a neutral banner's words read secondary, as `Banner.css` sets them. */
+function bannerPair(tone: Tone): ToneColors {
+  return tone === 'neutral' ? { ...TONE.neutral, ink: colors['text-secondary'] } : TONE[tone];
 }
 
 const styles = StyleSheet.create({

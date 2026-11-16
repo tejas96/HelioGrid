@@ -89,7 +89,7 @@ function GettingIn({ job, words, onDirections, onCall }: InstallerJobProps & { j
               // biome-ignore lint/suspicious/noArrayIndexKey: two lines of a note may read the same
               <View key={index} style={styles.line}>
                 <View style={styles.mark}>
-                  <ShellGlyph name="tick" size="sm" tone="success" />
+                  <ShellGlyph name="check" size="sm" tone="success" />
                 </View>
                 <Text variant="body" style={styles.lineWords}>
                   {line}

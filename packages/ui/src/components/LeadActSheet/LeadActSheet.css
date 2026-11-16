@@ -197,11 +197,10 @@
   transform: scale(var(--press-scale));
 }
 
-/* The chosen reason is the accent wash with the accent ring, as every chosen option is. */
+/* The chosen reason is the ink ring around ink words, as every chosen option is. */
 .hg-pressable.hg-lead-lost-reason[aria-checked="true"] {
-  background: var(--accent-subtle);
-  color: var(--accent-text);
-  box-shadow: 0 0 0 2px var(--accent);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--text-primary);
 }
 
 .hg-pressable.hg-lead-lost-reason:focus-visible {

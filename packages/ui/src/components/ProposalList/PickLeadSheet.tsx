@@ -62,7 +62,7 @@ export function PickLeadSheet(props: PickLeadSheetProps) {
           <div className="hg-pick-lead-rows">
             <Leads {...props} />
             <Pressable className="hg-pick-lead-row" disabled={out} onPress={props.onNewCustomer}>
-              <HueTile glyph="plus" hue="ocean" size={40} stroke={1.7} />
+              <HueTile glyph="plus" hue="ocean" size={40} />
               <span className="hg-pick-lead-words">
                 <b>{words.newCustomer}</b>
                 <span>{words.newCustomerLine}</span>

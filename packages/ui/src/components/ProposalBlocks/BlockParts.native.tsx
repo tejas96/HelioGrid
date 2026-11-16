@@ -3,12 +3,12 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
+import { TIER_MARK } from '../Provenance/Provenance.tiers';
 import { useProvenanceWords } from '../Provenance/Provenance.words';
 import { RollingNumber } from '../RollingNumber/RollingNumber.native';
 import { type BlockInk, paperTileTint, useBlockInk } from './block-ink.native';
@@ -21,17 +21,33 @@ const mono = theme.type.families.mono;
 
 /** The paper's own type sizes — print geometry against the 794 dp page, as the web half's are. */
 export const PAPER_TYPE = {
-  hero: { fontSize: 64, lineHeight: 68 },
-  display: { fontSize: 46, lineHeight: 52 },
-  sub: { fontSize: 15, lineHeight: 22 },
+  hero: { fontSize: theme.type.document['doc-fs-hero'], lineHeight: 68 },
+  display: { fontSize: theme.type.document['doc-fs-title'], lineHeight: 52 },
+  sub: { fontSize: theme.type.document['doc-fs'], lineHeight: 22 },
 } as const;
 
 /** The mono face for a figure set inside a sentence. */
 export const MONO: TextStyle = { fontFamily: mono, fontVariant: ['tabular-nums'] };
 
 /**
+ * A tier's mark in the page's ink — the screen's `TIER_MARK`, read from the paper's fixed palette:
+ * a measured figure green, a derived one blue, an estimate amber, an assumption grey.
+ */
+const MARK_INK = {
+  'success-text': 'successText',
+  'info-text': 'infoText',
+  'warning-text': 'warningText',
+  'text-tertiary': 'tertiary',
+} as const satisfies Record<(typeof TIER_MARK)[Tier], keyof BlockInk>;
+
+function paperTierMark(ink: BlockInk, tier: Tier) {
+  return ink[MARK_INK[TIER_MARK[tier]]];
+}
+
+/**
  * A figure's tier (`F8-01`) in its quietest form. On paper it is the same word in the page's fixed
- * ink, since the label's own colours follow the phone's scheme and a page does not.
+ * ink, since the label's own colours follow the phone's scheme and a page does not; its mark
+ * keeps the tier's own colour, as the web's paper does.
  */
 export function BlockTier({ mode, tier }: { mode: ProposalBlockMode; tier: Tier }) {
   const ink = useBlockInk(mode);
@@ -39,7 +55,7 @@ export function BlockTier({ mode, tier }: { mode: ProposalBlockMode; tier: Tier 
   if (mode !== 'paper') return <ProvenanceTier tier={tier} />;
   return (
     <View style={styles.tier}>
-      <View style={[styles.tierDot, { backgroundColor: ink.warningText }]} />
+      <View style={[styles.tierDot, { backgroundColor: paperTierMark(ink, tier) }]} />
       <Text variant="caption" style={{ color: ink.secondary }}>
         {words.tier(tier)}
       </Text>
@@ -156,7 +172,7 @@ export function BlockTile({
   hue: 'ocean' | 'teal' | 'success' | 'neutral' | 'danger';
   size: 36 | 40 | 44;
 }) {
-  if (mode !== 'paper') return <HueTile glyph={glyph} hue={hue} size={size} stroke={1.6} />;
+  if (mode !== 'paper') return <HueTile glyph={glyph} hue={hue} size={size} />;
   const tint = paperTileTint(hue);
   return (
     <View
@@ -164,38 +180,14 @@ export function BlockTile({
       importantForAccessibility="no-hide-descendants"
       style={[styles.tile, { width: size, height: size, backgroundColor: tint.bg }]}
     >
-      <Svg
-        width={20}
-        height={20}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={tint.fg}
-        strokeWidth={1.6}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={glyph} />
-      </Svg>
+      <ShellGlyph name={glyph} size="md" ink={tint.fg} />
     </View>
   );
 }
 
 /** A small glyph in a stated colour — a verdict's mark, a source's sun — in any mode's ink. */
 export function InkGlyph({ name, color }: { name: ShellGlyphName; color: BlockInk['text'] }) {
-  return (
-    <Svg
-      width={16}
-      height={16}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={1.8}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name={name} />
-    </Svg>
-  );
+  return <ShellGlyph name={name} size="sm" ink={color} />;
 }
 
 const styles = StyleSheet.create({
@@ -208,7 +200,7 @@ const styles = StyleSheet.create({
   },
   over: { flexShrink: 1 },
   tier: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-1'] },
-  tierDot: { width: 5, height: 5, borderRadius: 5 },
+  tierDot: { width: 5, height: 5, borderRadius: theme.radius['r-pill'] },
   figureBold: { fontWeight: '500' },
   tile: {
     flexShrink: 0,

@@ -32,7 +32,7 @@ export function WonCard(
   const share = targetShareOf(view);
   const editable = view.canSetTarget && !target.editing;
   return (
-    <Card className="hg-owner-card">
+    <Card className="hg-owner-card" tile="glass">
       <section className="hg-owner-card-body" aria-label={words.wonSoFar}>
         <div className="hg-owner-card-head">
           <Text as="h2" variant="h3">

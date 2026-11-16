@@ -1,8 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
-import { glyphStroke } from '../AppShell/ShellGlyph.logic';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import type { FileChipProps } from './FileChip.types';
 import './FileChip.css';
@@ -30,19 +28,7 @@ export function FileChip({
   return (
     <div className={classNames('hg-file-chip', className)} data-layout={layout} style={style}>
       <span className="hg-file-chip-glyph">
-        <svg
-          viewBox="0 0 24 24"
-          width={ICON_SIZE.md}
-          height={ICON_SIZE.md}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={glyphStroke('md')}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name="board" />
-        </svg>
+        <ShellGlyph name="board" size="md" tone="current" />
       </span>
       <span className="hg-file-chip-words">
         <span className="hg-file-chip-name">{name}</span>

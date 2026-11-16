@@ -50,7 +50,7 @@ function PriceBody(props: ProposalPageProps) {
       {emi && <ProposalEmiBlock {...emi} />}
       {!sheet.included || words.includedLines.length === 0 ? null : (
         <div className="hg-pp-included">
-          <span className="hg-pb-over">{words.included}</span>
+          <span className="hg-pb-over hg-overline">{words.included}</span>
           <ul>
             {words.includedLines.map((line) => (
               <li key={line}>{line}</li>

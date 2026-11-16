@@ -28,12 +28,16 @@ export function PanelSkeleton({ label }: PanelSkeletonProps) {
   return (
     <div aria-label={label} className="hg-detail-panel-skeleton" role="status">
       <div className="hg-detail-panel-skeleton-pair">
-        <div className="hg-detail-panel-skeleton-bar" style={bar('50%', 72)} />
-        <div className="hg-detail-panel-skeleton-bar" style={bar('50%', 72)} />
+        <div className="hg-detail-panel-skeleton-bar hg-skeleton" style={bar('50%', 72)} />
+        <div className="hg-detail-panel-skeleton-bar hg-skeleton" style={bar('50%', 72)} />
       </div>
-      <div className="hg-detail-panel-skeleton-bar" style={bar('40%', 12)} />
+      <div className="hg-detail-panel-skeleton-bar hg-skeleton" style={bar('40%', 12)} />
       {PANEL_SKELETON_ROWS.map((row) => (
-        <div className="hg-detail-panel-skeleton-bar" key={row} style={bar('100%', 40)} />
+        <div
+          className="hg-detail-panel-skeleton-bar hg-skeleton"
+          key={row}
+          style={bar('100%', 40)}
+        />
       ))}
     </div>
   );

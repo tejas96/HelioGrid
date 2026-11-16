@@ -129,7 +129,7 @@
   box-shadow: var(--e5);
   cursor: pointer;
   transform: scale(1);
-  transition: transform var(--dur-micro) var(--ease-spring);
+  transition: transform var(--dur-spring-snappy) var(--ease-spring-snappy);
 }
 
 .hg-fab:active {
@@ -139,9 +139,4 @@
 .hg-fab:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
-}
-
-.hg-fab-glyph {
-  width: 24px;
-  height: 24px;
 }

@@ -1,13 +1,11 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
-import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { zoomStepsOf } from './MapSurface.logic';
 import type { MapControlsProps } from './MapSurface.types';
 
@@ -49,18 +47,11 @@ interface CtrlProps {
 function Ctrl({ label, onPress, glyph, disabled = false }: CtrlProps) {
   return (
     <Pressable accessibilityLabel={label} onPress={onPress} disabled={disabled} style={styles.ctrl}>
-      <Icon size="md" color={disabled ? colors['text-disabled'] : colors['text-primary']}>
-        <Svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <ShellGlyphMarks name={glyph} />
-        </Svg>
-      </Icon>
+      <ShellGlyph
+        name={glyph}
+        size="md"
+        ink={disabled ? colors['text-disabled'] : colors['text-primary']}
+      />
     </Pressable>
   );
 }

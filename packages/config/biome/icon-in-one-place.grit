@@ -1,0 +1,17 @@
+// Every icon is Lucide's, reached in one place: packages/ui's AppShell/ShellGlyph.lucide halves,
+// read only by the name map SHELL_GLYPHS (AppShell/ShellGlyph.icons.ts) that ShellGlyph draws from.
+// An icon package imported, re-exported, required or loaded by import() anywhere else is a second
+// set — a name the map does not hold, a size off the ladder, a stroke of its own.
+or {
+  JsImport(),
+  JsExport(),
+  JsImportCallExpression(),
+  JsCallExpression()
+} as $import where {
+  $import <: includes "lucide",
+  $import <: or {
+    r"(?s).*from\s*['\x22]lucide-react(?:-native)?(?:/[^'\x22]*)?['\x22].*",
+    r"(?s)\s*(?:require|import)\s*\(\s*['\x22`]lucide-react(?:-native)?(?:/[^'\x22`]*)?['\x22`].*"
+  },
+  register_diagnostic(span=$import, message="Draw an icon by name with ShellGlyph (@heliogrid/ui). Only AppShell/ShellGlyph.lucide imports Lucide; a new icon joins SHELL_GLYPHS in AppShell/ShellGlyph.icons.ts.")
+}

@@ -4,10 +4,10 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useChosenInView } from '../../primitives/use-chosen-in-view.native';
+import { Card } from '../Card/Card.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { LeadFileList } from './LeadFileList.native';
 import { LeadProposalList } from './LeadProposalList.native';
@@ -114,12 +114,12 @@ function Panel(props: LeadSectionsProps) {
   }
 }
 
-/** A panel's white card, holding its controls on the tile's ground. */
+/** A panel's card — the shared `Card`, as the web's panel is — its parts spaced inside it. */
 function Tile({ children }: { children: ReactNode }) {
   return (
-    <View style={[tileSurface, styles.tile]}>
-      <GroundProvider ground="tile">{children}</GroundProvider>
-    </View>
+    <Card>
+      <View style={styles.tile}>{children}</View>
+    </Card>
   );
 }
 
@@ -164,9 +164,5 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   chosen: { borderBottomColor: colors['text-primary'] },
-  tile: {
-    gap: theme.spacing['sp-2'],
-    padding: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-card-expressive'],
-  },
+  tile: { gap: theme.spacing['sp-3'] },
 });

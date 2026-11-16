@@ -81,7 +81,7 @@ function GettingIn({ job, words, onDirections, onCall }: InstallerJobProps & { j
           {lines.map((line, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: two lines of a note may read the same
             <li key={index} className="hg-installer-job-line">
-              <ShellGlyph name="tick" size="sm" tone="success" />
+              <ShellGlyph name="check" size="sm" tone="success" />
               <span>{line}</span>
             </li>
           ))}

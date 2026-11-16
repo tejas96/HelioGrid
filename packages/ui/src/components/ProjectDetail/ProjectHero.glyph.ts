@@ -1,5 +1,5 @@
 import type { NextStep } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 
 /** The glyph each next act carries (the picked design); a plain move carries none. */
 export function nextGlyphOf(step: NextStep): ShellGlyphName | null {

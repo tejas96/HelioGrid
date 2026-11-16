@@ -8,10 +8,13 @@ import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFocusRequest } from '../../primitives/use-focus-request';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { CurrencyMark } from './CurrencyMark.native';
 import { EMPTY_PLAIN_FIGURE } from './NumberField.logic';
 import type { NumberDraftState } from './NumberField.state';
 import type { NumberFieldWords } from './NumberField.types';
+
+// web-only part: MarketProvider — the currency symbol is drawn by its child CurrencyMark.native.
 
 const styles = StyleSheet.create({
   /* The well and its edge ring are FieldBox's; the padding gives up the edge's width so the
@@ -50,10 +53,13 @@ const styles = StyleSheet.create({
   /* An amount is money, and money is mono wherever it is read (`F7-09`). */
   inputCurrency: { fontFamily: theme.type.families.mono },
   /* After the money face, so a hero amount reads in the display face as a hero figure does (§9). */
-  inputHero: { fontFamily: theme.type.families.display, fontSize: 24 },
-  inputPlain: { marginVertical: 0, fontSize: 34, letterSpacing: -0.5 },
+  inputHero: {
+    fontFamily: theme.type.families.display,
+    fontSize: theme.type.roles['card-title'].fontSize,
+  },
+  inputPlain: { marginVertical: 0, fontSize: theme.type.roles.h1.fontSize, letterSpacing: -0.5 },
   /* A plain figure in a dense row — a payment part's share — reads at the row's size. */
-  inputPlainDense: { fontSize: 22, letterSpacing: 0, textAlign: 'right' },
+  inputPlainDense: { fontSize: theme.type.roles.h2.fontSize, letterSpacing: 0, textAlign: 'right' },
   step: { width: 44, flexShrink: 0, alignSelf: 'stretch' },
   unit: { paddingRight: theme.spacing['sp-1'] },
   figureFill: {
@@ -88,7 +94,7 @@ const styles = StyleSheet.create({
     /* Never a target narrower than a thumb; a short figure keeps its digits against the unit. */
     minWidth: theme.layout['touch-min'],
     textAlign: 'right',
-    fontSize: 44,
+    fontSize: theme.type.roles.display.fontSize,
     letterSpacing: -1.3,
   },
   /* The 44 figure's descent over the unit's: their baselines meet. */
@@ -153,13 +159,13 @@ function StepButton({
   disabled,
   label,
   onPress,
-  children,
+  glyph,
 }: {
   disc: boolean;
   disabled: boolean;
   label: TranslatedText;
   onPress: () => void;
-  children: string;
+  glyph: 'minus' | 'plus';
 }) {
   /* The well is white wherever the field stands (`GroundProvider` below), so a disc is the fill. */
   const { controlFill } = useGround();
@@ -170,9 +176,11 @@ function StepButton({
       accessibilityLabel={label}
       onPress={onPress}
     >
-      <Text variant="field-value" color={disabled ? 'disabled' : 'secondary'}>
-        {children}
-      </Text>
+      <ShellGlyph
+        name={glyph}
+        size="sm"
+        ink={disabled ? colors['text-disabled'] : colors['text-secondary']}
+      />
     </Pressable>
   );
 }
@@ -234,9 +242,8 @@ export function NumberFieldBox({
             disabled={disabled}
             label={words.decrease(name)}
             onPress={() => draft.nudge(-1)}
-          >
-            {'−'}
-          </StepButton>
+            glyph="minus"
+          />
         ) : null}
         {currency ? <CurrencyMark side="before" /> : null}
         <View style={hug ? styles.figureRow : styles.figureFill}>
@@ -270,9 +277,8 @@ export function NumberFieldBox({
             disabled={disabled}
             label={words.increase(name)}
             onPress={() => draft.nudge(1)}
-          >
-            {'+'}
-          </StepButton>
+            glyph="plus"
+          />
         ) : null}
       </View>
     </GroundProvider>

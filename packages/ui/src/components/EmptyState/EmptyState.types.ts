@@ -39,3 +39,6 @@ export interface FailedReadProps {
   onRetry: () => void;
   focusAfter: FocusAfter;
 }
+
+/** The bloom behind the icon disc: 180 across, an art dimension off the scale on purpose. */
+export const EMPTY_STATE_BLOOM = 180;

@@ -1,7 +1,6 @@
-/* A focus screen's one page ground (`lib/focus-screen.tsx`): it owns the whole window, on the
-   page's canvas with its glow — the builder and Proposal defaults alike. Its own part scrolls
-   inside; a room that only grows would push a frame's foot below the window. */
+/* A focus screen's one page ground (`lib/focus-screen.tsx`): it owns the whole window — the builder
+   and Proposal defaults alike — over the body, which draws the canvas and its glow (`base.css`).
+   Its own part scrolls inside; a room that only grows would push a frame's foot below the window. */
 .hg-focus-ground {
   height: 100dvh;
-  background: var(--glow-page), var(--canvas);
 }

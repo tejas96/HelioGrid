@@ -5,12 +5,12 @@ import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { CARD_RADIUS, raisedCard, rowDivider } from '../Import/Import.surfaces.native';
 import type { ImportFormats } from '../Import/Import.types';
-import { ImportGlyph } from '../Import/ImportGlyph.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
 import { type ImportListRowView, listRowOf } from './CatalogImport.logic';
 import type { CatalogImportWords, ImportGroupId, ImportRowList } from './CatalogImport.types';
@@ -52,18 +52,17 @@ export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
         onPress={props.onToggle}
         style={styles.line}
       >
-        <HueTile glyph={tile.glyph} hue={tile.hue} size={36} stroke={1.7} />
+        <HueTile glyph={tile.glyph} hue={tile.hue} size={36} />
         <View style={styles.words}>
           <Text variant="body-sm" bold>
             {words.groupTitle(words.groups[group.id], group.total)}
           </Text>
           <Sample items={sample} more={group.total > sample.length} words={words} />
         </View>
-        <ImportGlyph
+        <ShellGlyph
           name={open ? 'chevron-up' : 'chevron'}
           size="sm"
-          stroke={1.7}
-          color={colors['text-secondary']}
+          ink={colors['text-secondary']}
         />
       </Pressable>
       {open ? (

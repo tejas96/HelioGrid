@@ -96,3 +96,18 @@ test('a reader without the grant meets not found', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: en.t(SHELL.notFound) })).toBeAttached();
   await expect(page.getByRole('heading', { level: 1, name: WORDS.title })).toHaveCount(0);
 });
+
+test('the owner discards a typed UPI ID: the field is empty again and the focus stays on the page', async ({
+  page,
+}) => {
+  await openCollections(page);
+  await upiField(page).fill(UPI_ID);
+  const discard = page.getByRole('button', { name: WORDS.discard, exact: true });
+  await discard.focus();
+  await page.keyboard.press('Enter');
+  await expect(upiField(page)).toHaveValue('');
+  await expect(discard).toHaveCount(0);
+  await expect
+    .poll(() => page.evaluate(() => document.activeElement?.classList.contains('hg-shell-page')))
+    .toBe(true);
+});

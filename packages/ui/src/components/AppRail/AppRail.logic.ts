@@ -8,7 +8,7 @@ export function spokenItemName(item: RailItem): TranslatedText {
   return item.name ?? item.label;
 }
 
-/** The item in view shows its filled icon, where it has one. */
+/** The item in view shows its in-view icon (the pill's ink), where it has one. */
 export function navItemIcon(item: RailItem, inView: boolean): ReactNode {
   return inView ? (item.activeIcon ?? item.icon) : item.icon;
 }

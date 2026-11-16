@@ -17,6 +17,20 @@
   outline: none;
 }
 
+/* The phone's page title, under the shell's phone layout (`--bp-desktop`): OneOhm's 28/34. */
+@media (max-width: 967.98px) {
+  .hg-large-title-name {
+    font-size: var(--fs-display-phone);
+    line-height: var(--lh-display-phone);
+    letter-spacing: var(--tr-display-phone);
+  }
+}
+
+/* A record's number as the title: the mono face, as an ID reads everywhere. */
+.hg-large-title-name[data-mono="true"] {
+  font-family: var(--font-mono);
+}
+
 /* The name and the page's own acts at its end; a long name wraps under itself, the acts keep theirs. */
 .hg-large-title-row {
   display: flex;

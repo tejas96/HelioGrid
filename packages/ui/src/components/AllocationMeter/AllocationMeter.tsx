@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { AllocationModel } from './AllocationMeter.model';
 import {
   allocationFigure,
@@ -34,19 +34,7 @@ function Mark({ state }: { state: AllocationState }) {
   const met = state === 'met';
   return (
     <span aria-hidden="true" className="hg-allocation-mark" data-state={state}>
-      <svg
-        aria-hidden="true"
-        width="9"
-        height="9"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={met ? '4.8' : '3'}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={met ? 'tick-small' : 'plus-small'} />
-      </svg>
+      <ShellGlyph name={met ? 'check' : 'plus'} size="xs" tone="current" />
     </span>
   );
 }

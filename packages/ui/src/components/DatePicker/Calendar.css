@@ -101,7 +101,7 @@
   background: transparent;
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: var(--fs-body-sm);
   font-weight: var(--fw-regular);
   font-variant-numeric: tabular-nums;
   cursor: pointer;
@@ -145,7 +145,7 @@
   transform: translateX(-50%);
   width: 14px;
   height: 2.5px;
-  border-radius: 2px;
+  border-radius: var(--r-pill);
   background: var(--text-tertiary);
 }
 
@@ -203,14 +203,7 @@
 .hg-calendar-skeleton-cell {
   height: 44px;
   border-radius: var(--r-sm);
-  background: linear-gradient(
-    90deg,
-    var(--canvas) 25%,
-    var(--canvas-sunken) 50%,
-    var(--canvas) 75%
-  );
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
+  --hg-skeleton-ground: var(--canvas);
 }
 
 .hg-calendar-footer {

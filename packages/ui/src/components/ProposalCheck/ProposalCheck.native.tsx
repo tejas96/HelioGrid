@@ -6,14 +6,15 @@ import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.nati
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Rising } from '../../primitives/rising.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { labelRunsOf } from '../Button/Button.logic';
 import { Button } from '../Button/Button.native';
 import { Badge } from '../Chip/Chip.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { IndeterminateRail } from '../PendingAction/IndeterminateRail.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import { Textarea } from '../Textarea/Textarea.native';
 import { type CheckFound, checkActOf, checkFoundOf } from './ProposalCheck.logic';
 import type {
@@ -22,6 +23,8 @@ import type {
   ProposalCheckSheetProps,
   ProposalCheckWords,
 } from './ProposalCheck.types';
+
+// web-only part: ProposalBuilder — the web takes only riseOrder for its CSS stagger; the phone uses Rising.
 
 function Findings({
   findings,
@@ -42,7 +45,6 @@ function Findings({
                 glyph={tone === 'danger' ? 'alert-circle' : 'alert-triangle'}
                 hue={tone}
                 size={40}
-                stroke={1.7}
               />
               <View style={styles.words}>
                 <Text variant="body" bold>
@@ -93,7 +95,7 @@ function Limit({ words }: { words: ProposalCheckWords }) {
   return (
     <>
       <View style={styles.used}>
-        <HueTile glyph="gauge" hue="warning" size={40} stroke={1.7} />
+        <HueTile glyph="gauge" hue="warning" size={40} />
         <View style={styles.words}>
           <Text variant="body" color="warning" bold>
             {limit.used}
@@ -107,7 +109,7 @@ function Limit({ words }: { words: ProposalCheckWords }) {
         <GroundProvider ground="tile">
           {limit.works.map((work, index) => (
             <View key={work} style={[styles.work, index > 0 ? styles.divided : undefined]}>
-              <Badge tone="success" glyph="tick-small">
+              <Badge tone="success" glyph="check">
                 {limit.stillWorks}
               </Badge>
               <View style={styles.words}>
@@ -120,7 +122,7 @@ function Limit({ words }: { words: ProposalCheckWords }) {
         </GroundProvider>
       </View>
       <View style={styles.hint}>
-        <ShellGlyph name="info-circle" size="sm" />
+        <ShellGlyph name="info" size="sm" />
         <View style={styles.words}>
           <Text variant="body-sm" color="secondary">
             {limit.who}
@@ -159,7 +161,7 @@ function Found({ found }: { found: CheckFound }) {
       ))}
       {hint === undefined ? null : (
         <View style={styles.hint}>
-          <ShellGlyph name="info-circle" size="sm" />
+          <ShellGlyph name="info" size="sm" />
           <View style={styles.words}>
             <Text variant="body-sm" color="secondary">
               {hint}
@@ -177,12 +179,13 @@ export function ProposalCheckSheet({ open, onClose, words, state }: ProposalChec
   const act = checkActOf(state, words, onClose);
   const found = checkFoundOf(state, words);
   return (
-    <Sheet
+    <EditorSurface
       open={open}
       onClose={() => {
         if (!generating) onClose();
       }}
       closeLabel={words.closeLabel}
+      desktop="modal"
       showClose
       dismissible={!generating}
       title={words.title}
@@ -226,7 +229,7 @@ export function ProposalCheckSheet({ open, onClose, words, state }: ProposalChec
         {state.kind === 'limit' ? <Limit words={words} /> : null}
         {found === null ? null : <Found found={found} />}
       </View>
-    </Sheet>
+    </EditorSurface>
   );
 }
 
@@ -241,7 +244,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-3'],
     paddingLeft: theme.spacing['sp-3'],
     paddingRight: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-tile'],
+    borderRadius: theme.radius['r-lg'],
   },
   words: { flex: 1, minWidth: 0 },
   summary: {
@@ -256,7 +259,7 @@ const styles = StyleSheet.create({
   },
   thumb: { transform: [{ rotate: '-3deg' }] },
   // The name in the display face at the web's `.hg-pchk-name` size.
-  name: { fontSize: 22, lineHeight: 28 },
+  name: { fontSize: theme.type.roles.h2.fontSize, lineHeight: 28 },
   used: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -264,7 +267,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-3'],
     paddingHorizontal: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-md'],
-    backgroundColor: colors['warning-bg'],
+    backgroundColor: TONE.warning.tint,
   },
   works: { borderRadius: theme.radius['r-lg'], overflow: 'hidden' },
   work: {

@@ -1,10 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
 import type { BrandVerdictKind } from './BrandColorField.types';
 import { VERDICT_GLYPH } from './BrandVerdictLine.logic';
@@ -18,21 +18,11 @@ interface BrandVerdictLineProps {
 export function BrandVerdictLine({ kind, children }: BrandVerdictLineProps) {
   return (
     <View style={styles.row}>
-      <Svg
-        width={15}
-        height={15}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={COLOR[kind]}
-        strokeWidth={1.9}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        style={styles.glyph}
-      >
-        <ShellGlyphMarks name={VERDICT_GLYPH[kind]} />
-      </Svg>
+      <View style={styles.glyph}>
+        <ShellGlyph name={VERDICT_GLYPH[kind]} size="dense" ink={COLOR[kind]} />
+      </View>
       <View style={styles.words}>
-        <Text variant="caption" color={TONE[kind]}>
+        <Text variant="caption" color={VERDICT_COLOR[kind]}>
           {children}
         </Text>
         <ProvenanceTier tier="derived" />
@@ -42,12 +32,12 @@ export function BrandVerdictLine({ kind, children }: BrandVerdictLineProps) {
 }
 
 const COLOR: Record<BrandVerdictKind, ThemeColor> = {
-  pass: colors['success-text'],
-  warn: colors['warning-text'],
+  pass: TONE.success.ink,
+  warn: TONE.warning.ink,
   info: colors['text-secondary'],
 };
 
-const TONE: Record<BrandVerdictKind, 'success' | 'warning' | 'secondary'> = {
+const VERDICT_COLOR: Record<BrandVerdictKind, 'success' | 'warning' | 'secondary'> = {
   pass: 'success',
   warn: 'warning',
   info: 'secondary',

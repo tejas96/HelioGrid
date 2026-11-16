@@ -5,7 +5,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, glassTileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ActorGlyph } from '../ActorClass/ActorClass.native';
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   seek: { width: 44, marginVertical: -8, borderRadius: theme.radius['r-sm'] },
   face: { fontFamily: theme.type.families.mono },
   faceCurrent: { fontWeight: '700', color: colors.accent },
-  /* Every turn is a tile (`tileSurface`), whichever party spoke it: the speaker line tells the two
+  /* Every turn is a tile (`glassTileSurface`), whichever party spoke it: the speaker line tells the two
      apart, never a fill. */
   bubble: { flex: 1, minWidth: 0, borderRadius: theme.radius['r-md'] },
   bubbleFunctional: { borderRadius: theme.radius['r-card-functional'] },
@@ -95,7 +95,7 @@ export function TranscriptTurnRow({
       />
       <View
         style={[
-          tileSurface,
+          glassTileSurface,
           styles.bubble,
           density === 'functional' ? styles.bubbleFunctional : null,
           current ? styles.bubbleCurrent : null,

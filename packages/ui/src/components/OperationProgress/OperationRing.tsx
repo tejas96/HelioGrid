@@ -1,11 +1,11 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { type CSSProperties, type ReactNode, useId } from 'react';
+import { colors } from '../../primitives/Color/colors';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider';
+import { ProgressRing } from '../ProgressRing';
 import type { OperationCount } from './OperationProgress.types';
-import { ringSpokenName } from './operation-progress-model';
-import { ProgressRing } from './ProgressRing';
-import { countShare, RUN_RING } from './progress-ring';
+import { countShare, ringSpokenName } from './operation-progress-model';
 
 interface OperationRingProps {
   label: ReactNode;
@@ -46,15 +46,14 @@ export function OperationRing({
           {label}
         </span>
       ) : null}
-      <ProgressRing geometry={RUN_RING} share={countShare(count)} />
-      <span className="hg-operation-ring-centre">
+      <ProgressRing size="run" share={countShare(count)} ink={colors.accent}>
         {count === null ? null : (
           <span className="hg-operation-ring-figure">{number(count.done)}</span>
         )}
         {countCaption === undefined ? null : (
           <span className="hg-operation-ring-caption">{countCaption}</span>
         )}
-      </span>
+      </ProgressRing>
     </div>
   );
 }

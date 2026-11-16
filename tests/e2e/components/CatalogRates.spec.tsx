@@ -46,24 +46,25 @@ test('every rates frame at 375 and 1536', async ({ mount, page }) => {
     /* A chip's fill fades on press; the contrast check reads the settled frame, not the fade. */
     await page.emulateMedia({ reducedMotion: 'reduce' });
 
-    /* The version in force: groups at 375, one table at 1536 with its search and charge chips. */
+    /* The version in force: groups at 375, one table at 1536; the search and the charge chips at both. */
     let frame = await mount(<CatalogRatesAsRead reader="en" frame="rates" />);
     await expect(page.getByText(t(PRICE_BOOK.version, { number: 7 }))).toBeVisible();
     await expect(page.getByText(ENGINEERING, { exact: true })).toBeVisible();
     if (wide) {
       await expect(page.getByText(en.charged, { exact: true })).toBeVisible();
-      await page.getByRole('searchbox', { name: en.searchRates }).fill('survey');
-      await expect(page.getByText(SURVEY, { exact: true })).toBeVisible();
-      await expect(page.getByText(ENGINEERING, { exact: true })).toHaveCount(0);
-      await page.getByRole('searchbox', { name: en.searchRates }).fill('');
-      await page.getByRole('button', { name: en.bases.per_kw, exact: true }).click();
-      await expect(page.getByText(SURVEY, { exact: true })).toHaveCount(0);
-      await expect(page.getByText('Elevated structure surcharge', { exact: true })).toBeVisible();
     } else {
       await expect(page.getByRole('region', { name: en.bases.per_job })).toBeVisible();
       await expect(page.getByRole('region', { name: en.bases.per_metre })).toBeVisible();
-      await expect(page.getByRole('searchbox', { name: en.searchRates })).toHaveCount(0);
     }
+    await page.getByRole('searchbox', { name: en.searchRates }).fill('survey');
+    await expect(page.getByText(SURVEY, { exact: true })).toBeVisible();
+    await expect(page.getByText(ENGINEERING, { exact: true })).toHaveCount(0);
+    await page.getByRole('searchbox', { name: en.searchRates }).fill('nothing like it');
+    await expect(page.getByText(en.noMatch, { exact: true })).toBeVisible();
+    await page.getByRole('searchbox', { name: en.searchRates }).fill('');
+    await page.getByRole('button', { name: en.bases.per_kw, exact: true }).click();
+    await expect(page.getByText(SURVEY, { exact: true })).toHaveCount(0);
+    await expect(page.getByText('Elevated structure surcharge', { exact: true })).toBeVisible();
     await expectNoSidewaysScroll(page);
     await expectNoSeriousViolations(page);
     await frame.unmount();

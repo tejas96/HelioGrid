@@ -1639,7 +1639,7 @@ msgid "{label}, {summary}"
 msgstr "{label}, {summary}"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:12
+#: src/copy/sidebar.ts:16
 msgid "{label}, coming soon"
 msgstr "{label}, coming soon"
 
@@ -2807,7 +2807,7 @@ msgstr "{remainder}% too much"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:32
-#: src/copy/sidebar.ts:16
+#: src/copy/sidebar.ts:20
 msgid "{role} · {company}"
 msgstr "{role} · {company}"
 
@@ -6634,7 +6634,7 @@ msgid "Code limits"
 msgstr "Code limits"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:13
+#: src/copy/sidebar.ts:17
 msgid "Collapse the sidebar"
 msgstr "Collapse the sidebar"
 
@@ -7432,7 +7432,7 @@ msgid "CSV or Excel file"
 msgstr "CSV or Excel file"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:10
+#: src/copy/sidebar.ts:14
 msgid "Ctrl K"
 msgstr "Ctrl K"
 
@@ -7834,6 +7834,7 @@ msgstr "Delete phase"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:71
+#: src/copy/sidebar.ts:26
 msgid "Delivery"
 msgstr "Delivery"
 
@@ -8834,7 +8835,7 @@ msgid "Existing leads left as they were."
 msgstr "Existing leads left as they were."
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:14
+#: src/copy/sidebar.ts:18
 msgid "Expand the sidebar"
 msgstr "Expand the sidebar"
 
@@ -10972,7 +10973,7 @@ msgid "Junk this lead"
 msgstr "Junk this lead"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:9
+#: src/copy/sidebar.ts:13
 msgid "K"
 msgstr "K"
 
@@ -18351,6 +18352,7 @@ msgstr "Runs until"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:70
+#: src/copy/sidebar.ts:25
 msgid "Sales"
 msgstr "Sales"
 
@@ -18773,7 +18775,7 @@ msgid "Search leads"
 msgstr "Search leads"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:6
+#: src/copy/sidebar.ts:10
 msgid "Search or jump to…"
 msgstr "Search or jump to…"
 
@@ -19814,7 +19816,7 @@ msgid "Something went wrong on our side. Try again."
 msgstr "Something went wrong on our side. Try again."
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:11
+#: src/copy/sidebar.ts:15
 msgid "Soon"
 msgstr "Soon"
 
@@ -20551,6 +20553,7 @@ msgstr "Tax registration"
 #: src/copy/notifications.ts:73
 #: src/copy/role-matrix.ts:98
 #: src/copy/settings.ts:42
+#: src/copy/sidebar.ts:27
 msgid "Team"
 msgstr "Team"
 

@@ -78,7 +78,7 @@ function MarkWonForm(props: MarkWonSheetProps) {
             {form.failure}
           </Text>
         )}
-        <Button {...form.send} icon={<ShellGlyph name="tick" size="md" tone="inverse" />}>
+        <Button {...form.send} icon={<ShellGlyph name="check" size="md" tone="inverse" />}>
           {props.words.send}
         </Button>
       </div>

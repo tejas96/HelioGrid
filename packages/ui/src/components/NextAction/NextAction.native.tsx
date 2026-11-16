@@ -9,6 +9,7 @@ import { colors } from '../../primitives/Color/colors';
    spellings to the same module, so this is the same import, correctly typed. */
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { renderActorClass } from '../ActorClass/ActorClass.native';
 import { renderOverride } from '../FieldOverride/FieldOverride.native';
 import type { NextActionInk } from './NextAction.logic';
@@ -21,9 +22,9 @@ interface NativeNextActionProps extends NextActionProps {
 
 /* EVERY WARNING MARK TAKES warning-text: `warning` itself clears no contrast floor anywhere. */
 const DOT: Record<NextActionTone, ThemeColor> = {
-  due: colors['success-text'],
-  overdue: colors['danger-text'],
-  soon: colors['warning-text'],
+  due: TONE.success.ink,
+  overdue: TONE.danger.ink,
+  soon: TONE.warning.mark,
   scheduled: colors.accent,
   snoozed: colors['text-tertiary'],
   done: colors['text-tertiary'],
@@ -80,6 +81,6 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
     minWidth: 0,
   },
-  dot: { width: 6, height: 6, borderRadius: 3, flexShrink: 0 },
+  dot: { width: 6, height: 6, borderRadius: theme.radius['r-pill'], flexShrink: 0 },
   indent: { paddingLeft: 14 },
 });

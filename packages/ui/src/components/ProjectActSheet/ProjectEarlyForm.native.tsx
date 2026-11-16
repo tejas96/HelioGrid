@@ -7,6 +7,8 @@ import { earlyStepsOf, footOf, keepOf } from './ProjectActSheet.logic';
 import type { ProjectFormOf } from './ProjectActSheet.types';
 import { ProjectSheetSend } from './ProjectSheetSend.native';
 
+// web-only part: HueTile — the phone marks the moment in the sheet header or the dialog mark instead.
+
 /**
  * A proof that came early on the phone (ruling 1) — its spark is the sheet's own header — where it
  * stands now, the stages that count as passed and the stage the file moves it to — then *Move*, or

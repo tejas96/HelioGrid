@@ -1,10 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { UnavailableNoteProps } from './UnavailableNote.types';
 import { isBlockedState, SURFACE_STATES } from './UnavailableNote.types';
 
@@ -16,20 +17,8 @@ interface NativeUnavailableNoteProps extends UnavailableNoteProps {
  * A slashed circle: "not applicable here". Deliberately NOT the warning triangle/exclamation that
  * `error` uses — the mark is the second channel and it must not read as a fault.
  */
-function Glyph({ size }: { size: number }) {
-  return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={colors['text-tertiary']}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-    >
-      <ShellGlyphMarks name="blocked" />
-    </Svg>
-  );
+function Glyph({ size }: { size: ShellGlyphSize }) {
+  return <ShellGlyph name="blocked" size={size} ink={colors['text-tertiary']} />;
 }
 
 /**
@@ -53,7 +42,7 @@ function UnavailableNoteBase({
   if (region) {
     return (
       <View style={[styles.region, style]}>
-        <View style={[styles.mark, styles.markRegion]}>{icon ?? <Glyph size={22} />}</View>
+        <View style={[styles.mark, styles.markRegion]}>{icon ?? <Glyph size="lg" />}</View>
         <Text align="center" style={regionTitle}>
           {title}
         </Text>
@@ -71,7 +60,7 @@ function UnavailableNoteBase({
 
   return (
     <View style={[styles.note, centred ? styles.noteCentred : styles.noteStart, style]}>
-      <View style={[styles.mark, styles.markNote]}>{icon ?? <Glyph size={15} />}</View>
+      <View style={[styles.mark, styles.markNote]}>{icon ?? <Glyph size="dense" />}</View>
       <View style={styles.lines}>
         <Text variant="body-sm" color="secondary" align={centred ? 'center' : 'start'}>
           <Text variant="body-sm" style={subject}>
@@ -108,8 +97,11 @@ export const UnavailableNote = Object.assign(UnavailableNoteBase, {
   isBlockedState,
 });
 
-/* 16px sits between --fs-body (15) and --fs-h4 (17) and has no token; -0.01em of it in points. */
-const regionTitle: TextStyle = { fontSize: 16, fontWeight: '700', letterSpacing: -0.16 };
+const regionTitle: TextStyle = {
+  fontSize: theme.type.roles['card-head'].fontSize,
+  fontWeight: '700',
+  letterSpacing: -0.16,
+};
 const subject: TextStyle = { fontWeight: '700', color: colors['text-primary'] };
 
 const styles = StyleSheet.create({
@@ -118,7 +110,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexShrink: 0,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: colors['neutral-bg'],
+    backgroundColor: TONE.neutral.tint,
   },
   markNote: { width: 24, height: 24, marginTop: 1 },
   markRegion: { width: 48, height: 48, marginBottom: theme.spacing['sp-1'] },

@@ -4,6 +4,7 @@ import { colors } from '../../primitives/Color/colors';
 import { tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { bubbleLines } from './ProposalAfterParts.logic';
@@ -15,7 +16,7 @@ import type {
   MessageBubbleProps,
 } from './ProposalAfterParts.types';
 
-export function AfterHint({ glyph = 'info-circle', children }: AfterHintProps) {
+export function AfterHint({ glyph = 'info', children }: AfterHintProps) {
   return (
     <View style={styles.hint}>
       <ShellGlyph name={glyph} size="sm" tone="secondary" />
@@ -58,8 +59,7 @@ export function AfterRows({ children }: AfterRowsProps) {
 function RowFace({ glyph, hue = 'ocean', title, line, leading, aside, onOpen }: AfterRowProps) {
   return (
     <View style={styles.row}>
-      {leading ??
-        (glyph === undefined ? null : <HueTile glyph={glyph} hue={hue} size={36} stroke={1.7} />)}
+      {leading ?? (glyph === undefined ? null : <HueTile glyph={glyph} hue={hue} size={36} />)}
       <View style={styles.grow}>
         <Text variant="body" bold>
           {title}
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-lg'],
     borderTopStartRadius: theme.radius['r-xs'],
-    backgroundColor: colors['success-bg'],
+    backgroundColor: TONE.success.tint,
   },
   note: {
     paddingTop: theme.spacing['sp-1'],

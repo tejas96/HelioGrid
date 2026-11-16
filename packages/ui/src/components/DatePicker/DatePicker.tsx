@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { useFormat } from '../MarketProvider/market-context';
 import { useOverlayLayer } from '../Sheet/use-overlay-dismiss';
 import { Calendar } from './Calendar';
@@ -90,20 +90,9 @@ export function DatePicker({
         onClick={() => setOpen((o) => !o)}
       >
         <span className="hg-date-picker-value">{text === '' ? placeholder : text}</span>
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-          className="hg-date-picker-glyph"
-        >
-          <ShellGlyphMarks name="calendar" />
-        </svg>
+        <span className="hg-date-picker-glyph">
+          <ShellGlyph name="calendar" size="sm" tone="current" />
+        </span>
       </button>
       {helper === undefined && error === undefined ? null : (
         <p className="hg-date-picker-note" data-error={error === undefined ? undefined : 'true'}>

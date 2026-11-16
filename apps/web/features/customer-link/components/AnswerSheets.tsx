@@ -18,6 +18,7 @@ import {
   type FocusAfter,
   OptionCardGroup,
   ShellGlyph,
+  Text,
   Textarea,
   useFormat,
 } from '@heliogrid/ui';
@@ -57,7 +58,7 @@ export function AnswerSheets({
   const busy = acting !== null;
   const failure = failureLine(screen, t);
 
-  const send = (label: TranslatedText, glyph?: 'tick' | 'phone', quiet = false) => (
+  const send = (label: TranslatedText, glyph?: 'check' | 'phone', quiet = false) => (
     <SendAct
       label={label}
       quiet={quiet}
@@ -82,9 +83,9 @@ export function AnswerSheets({
       <InSheet company={company}>
         {body}
         {failure === null ? null : (
-          <p className="hg-cust-failure" role="alert">
+          <Text variant="body-sm" color="danger" live>
             {failure}
-          </p>
+          </Text>
         )}
       </InSheet>
     </EditorSurface>
@@ -117,8 +118,10 @@ export function AnswerSheets({
         words.accept.title,
         accept,
         <>
-          {send(words.accept.confirm, 'tick')}
-          <span className="hg-cust-foot-note">{words.accept.note}</span>
+          {send(words.accept.confirm, 'check')}
+          <Text variant="body-sm" color="secondary" align="center" as="span">
+            {words.accept.note}
+          </Text>
         </>,
       )}
       {surface(
@@ -156,7 +159,7 @@ export function AnswerSheets({
               icon: <ShellGlyph name="clock" />,
             }))}
           />
-          <AfterHint glyph="info-circle">{words.call.hint}</AfterHint>
+          <AfterHint glyph="info">{words.call.hint}</AfterHint>
         </>,
         send(words.call.send, 'phone'),
       )}
@@ -173,12 +176,16 @@ export function AnswerSheets({
         sheet === 'decline',
         words.decline.title,
         <>
-          <span className="hg-cust-label">{words.decline.why}</span>
+          <Text variant="field-label" color="secondary">
+            {words.decline.why}
+          </Text>
           {suggestions(words.decline.reasons)}
         </>,
         <>
           {send(words.decline.confirm, undefined, true)}
-          <span className="hg-cust-foot-note">{words.decline.note}</span>
+          <Text variant="body-sm" color="secondary" align="center" as="span">
+            {words.decline.note}
+          </Text>
         </>,
       )}
     </>

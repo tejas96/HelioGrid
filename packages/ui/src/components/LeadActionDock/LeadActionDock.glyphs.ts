@@ -1,5 +1,5 @@
 import type { LeadDetailAction, LeadStateAct } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 
 /** Each of the five actions' glyph: a phone, a speech bubble, a pencil, a calendar, a panel. */
 export const DOCK_ACTION_GLYPH: Record<LeadDetailAction, ShellGlyphName> = {

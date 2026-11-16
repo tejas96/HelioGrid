@@ -19,7 +19,7 @@ export function MergeMoves({
   const format = useFormat();
   return (
     <div className="hg-merge-moves">
-      <span className="hg-merge-over">{heading}</span>
+      <span className="hg-merge-over hg-overline">{heading}</span>
       <ul className="hg-merge-move-rows">
         {rows.map((row) => (
           <li key={row.key} className="hg-merge-move">

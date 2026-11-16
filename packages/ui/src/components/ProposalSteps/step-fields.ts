@@ -5,7 +5,7 @@ import {
   type ProposalType,
   termsFitTheirPages,
 } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { NumberFieldProps } from '../NumberField/NumberField.types';
 import type { RichTextProps } from '../RichText/RichText.types';
 import type {

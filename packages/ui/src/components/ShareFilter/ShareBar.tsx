@@ -3,7 +3,8 @@ import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { useFormat } from '../MarketProvider';
-import { drawnSegments, isThinSegment, totalOf } from './ShareFilter.logic';
+import { SegmentBar } from '../SegmentBar';
+import { HUE_INK } from './ShareFilter.inks';
 import type { ShareFilterProps } from './ShareFilter.types';
 
 interface ShareBarProps
@@ -27,7 +28,6 @@ export function ShareBar({
   style,
 }: ShareBarProps) {
   const { number } = useFormat();
-  const total = totalOf(items);
   return (
     <fieldset
       className={classNames('hg-share-filter', className)}
@@ -35,21 +35,11 @@ export function ShareBar({
       aria-label={label}
       style={style}
     >
-      <div
-        className="hg-share-filter-bar"
-        {...(barLabel === undefined
-          ? { 'aria-hidden': true }
-          : { role: 'img', 'aria-label': barLabel })}
-      >
-        {drawnSegments(items).map((item) => (
-          <span
-            key={item.id}
-            className={`hg-share-filter-segment hg-share-hue-${item.hue}`}
-            data-thin={isThinSegment(item.count, total)}
-            style={{ flex: item.count }}
-          />
-        ))}
-      </div>
+      <SegmentBar
+        parts={items.map((item) => ({ key: item.id, count: item.count, ink: HUE_INK[item.hue] }))}
+        size="lg"
+        label={barLabel}
+      />
       <div className="hg-share-filter-counts">
         {items.map((item) => (
           <Pressable

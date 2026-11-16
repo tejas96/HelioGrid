@@ -4,7 +4,7 @@ import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
-import { Portal } from '../../primitives/Portal/Portal.native';
+import { Portal, SlidingPanel } from '../../primitives/Portal/Portal.native';
 import { OverlayBody } from '../Sheet/OverlayBody.native';
 import { isBodyScrolled } from '../Sheet/Sheet.logic';
 import { SheetBackdrop } from '../Sheet/SheetBackdrop.native';
@@ -124,59 +124,61 @@ export function DetailPanel({
             style,
           ]}
         >
-          <PanelHeader
-            leading={leading}
-            closeLabel={closeLabel}
-            onClose={onClose}
-            overline={overline}
-            pad={pad}
-            scrolled={scrolled}
-            showClose={showClose}
-            status={status}
-            subtitle={subtitle}
-            subtitleFace={subtitleFace}
-            title={title}
-          />
+          <SlidingPanel panel={panelRef}>
+            <PanelHeader
+              leading={leading}
+              closeLabel={closeLabel}
+              onClose={onClose}
+              overline={overline}
+              pad={pad}
+              scrolled={scrolled}
+              showClose={showClose}
+              status={status}
+              subtitle={subtitle}
+              subtitleFace={subtitleFace}
+              title={title}
+            />
 
-          {meta === null ? null : (
-            <View style={{ paddingHorizontal: pad, paddingBottom: theme.spacing['sp-2'] }}>
-              {meta}
-            </View>
-          )}
+            {meta === null ? null : (
+              <View style={{ paddingHorizontal: pad, paddingBottom: theme.spacing['sp-2'] }}>
+                {meta}
+              </View>
+            )}
 
-          {/* A panel can hold a form: its focused field, its line and the footer stay above the
+            {/* A panel can hold a form: its focused field, its line and the footer stay above the
               keyboard. */}
-          <KeyboardFrame
-            onScrollOffset={(top) => setScrolled(isBodyScrolled(top))}
-            style={styles.body}
-            foot={footerView}
-            contentContainerStyle={{
-              paddingTop: theme.spacing['sp-1'],
-              paddingHorizontal: pad,
-              paddingBottom: footer === null ? pad : theme.spacing['sp-2'],
-            }}
-          >
-            <OverlayBody
-              emptyAction={emptyAction}
-              emptyMessage={emptyMessage}
-              emptyScene={emptyScene}
-              emptyTitle={emptyTitle}
-              errorMessage={errorMessage}
-              errorTitle={errorTitle}
-              onRetry={onRetry}
-              retryLabel={retryLabel}
-              focusAfter={panelRef}
-              skeleton={<PanelSkeleton label={loadingLabel} />}
-              state={state}
-              unavailableAction={unavailableAction}
-              unavailableMessage={unavailableMessage}
-              unavailableStyle={styles.unavailable}
-              unavailableTitle={unavailableTitle}
-              variant="panel"
+            <KeyboardFrame
+              onScrollOffset={(top) => setScrolled(isBodyScrolled(top))}
+              style={styles.body}
+              foot={footerView}
+              contentContainerStyle={{
+                paddingTop: theme.spacing['sp-1'],
+                paddingHorizontal: pad,
+                paddingBottom: footer === null ? pad : theme.spacing['sp-2'],
+              }}
             >
-              {children}
-            </OverlayBody>
-          </KeyboardFrame>
+              <OverlayBody
+                emptyAction={emptyAction}
+                emptyMessage={emptyMessage}
+                emptyScene={emptyScene}
+                emptyTitle={emptyTitle}
+                errorMessage={errorMessage}
+                errorTitle={errorTitle}
+                onRetry={onRetry}
+                retryLabel={retryLabel}
+                focusAfter={panelRef}
+                skeleton={<PanelSkeleton label={loadingLabel} />}
+                state={state}
+                unavailableAction={unavailableAction}
+                unavailableMessage={unavailableMessage}
+                unavailableStyle={styles.unavailable}
+                unavailableTitle={unavailableTitle}
+                variant="panel"
+              >
+                {children}
+              </OverlayBody>
+            </KeyboardFrame>
+          </SlidingPanel>
         </Animated.View>
       </View>
     </Portal>

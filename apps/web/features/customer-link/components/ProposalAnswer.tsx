@@ -2,7 +2,7 @@
 import type { CustomerPage } from '@heliogrid/contracts';
 import type { CustomerProposalWords } from '@heliogrid/i18n';
 import { theme } from '@heliogrid/theme';
-import { AfterHint, LottieMoment, StatusChip, useFormat } from '@heliogrid/ui';
+import { AfterHint, LottieMoment, StatusChip, Text, useFormat } from '@heliogrid/ui';
 import type { Ref } from 'react';
 import { PageCard, PageNote } from './CustomerFrame';
 
@@ -24,7 +24,7 @@ export function AnswerNote({
   payable: string;
   words: CustomerProposalWords;
   /** The note's focus handle: where focus lands once the answer's sheet has gone. */
-  noteRef: Ref<HTMLElement>;
+  noteRef: Ref<HTMLDivElement>;
 }) {
   const format = useFormat();
   const { answer, advance, document } = proposal;
@@ -38,7 +38,9 @@ export function AnswerNote({
         noteRef={noteRef}
         moment={<LottieMoment name="celebrate" size={theme.spacing['sp-24']} />}
       >
-        <p>{words.answer.acceptedMeta(when, document.version ?? 1, payable)}</p>
+        <Text color="secondary">
+          {words.answer.acceptedMeta(when, document.version ?? 1, payable)}
+        </Text>
         <ol className="hg-cust-steps">
           {words.answer.steps(advance === null ? null : format.moneyPlain(advance)).map((step) => (
             <li key={step}>{step}</li>
@@ -50,7 +52,7 @@ export function AnswerNote({
   if (answer.kind === 'decline') {
     return (
       <PageNote tone="neutral" title={words.answer.declinedTitle} noteRef={noteRef}>
-        <p>{words.answer.declinedLine(when)}</p>
+        <Text color="secondary">{words.answer.declinedLine(when)}</Text>
       </PageNote>
     );
   }
@@ -59,7 +61,7 @@ export function AnswerNote({
       {answer.words === null ? null : (
         <p className="hg-cust-said">{words.answer.changeWords(answer.words)}</p>
       )}
-      <p>{words.answer.changeLine}</p>
+      <Text color="secondary">{words.answer.changeLine}</Text>
     </PageNote>
   );
 }
@@ -78,7 +80,7 @@ export function CallNote({
   const when = words.when(format.date(call.dueAt), format.clockAt(call.dueAt));
   return (
     <PageNote tone="info" title={words.answer.callTitle}>
-      <p>{words.answer.callLine(when)}</p>
+      <Text color="secondary">{words.answer.callLine(when)}</Text>
     </PageNote>
   );
 }
@@ -109,7 +111,7 @@ export function QuestionsCard({
           </li>
         ))}
       </ul>
-      <AfterHint glyph="info-circle">{words.question.willCall}</AfterHint>
+      <AfterHint glyph="info">{words.question.willCall}</AfterHint>
     </PageCard>
   );
 }

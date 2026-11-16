@@ -32,6 +32,8 @@ export interface BlockInk {
   readonly sun: ThemeColor;
   readonly successBg: ThemeColor;
   readonly successText: ThemeColor;
+  /** A derived figure's tier mark (`Provenance.tiers.ts` `TIER_MARK`). */
+  readonly infoText: ThemeColor;
   readonly warning: ThemeColor;
   readonly warningBg: ThemeColor;
   readonly warningText: ThemeColor;
@@ -66,6 +68,7 @@ function inkFrom(palette: Palette): BlockInk {
     sun: palette.sun,
     successBg: palette['success-bg'],
     successText: palette['success-text'],
+    infoText: palette['info-text'],
     warning: palette.warning,
     warningBg: palette['warning-bg'],
     warningText: palette['warning-text'],

@@ -1,6 +1,6 @@
 /* ShareFilter — how a whole splits, and the filter onto each part (SCR-M01-17's overview).
-   A part's hue is `--hg-share-hue`, set by its `hg-share-hue-*` class; a ring's arc reads it as
-   `--hg-ring-ink`. A pressed part takes its hue's tint, `--hg-share-wash`. The 64px dial,
+   A part's hue is `--hg-share-hue`, set by its `hg-share-hue-*` class; a ring takes its hue's ink
+   (`ShareFilter.inks.ts`). A pressed part takes its hue's tint, `--hg-share-wash`. The 64px dial,
    the 10px dot and segment floor and the 12px bar are the board's own dimensions.
 
    The phone takes each hue's tint token for the same washes (`ShareFilter.inks.ts`). Toggles are `Pressable`s, whose reset loads later, so each look here is
@@ -50,7 +50,6 @@
 /* ── rings ───────────────────────────────────────────────────────────────── */
 
 .hg-pressable.hg-share-filter-ring {
-  --hg-ring-ink: var(--hg-share-hue);
   flex: 1;
   min-width: 0;
   flex-direction: column;
@@ -63,17 +62,7 @@
 .hg-pressable.hg-share-filter-ring[aria-pressed="true"] {
   background: var(--hg-share-wash);
 }
-.hg-share-filter-dial {
-  position: relative;
-  flex-shrink: 0;
-  width: 64px;
-  height: 64px;
-}
 .hg-share-filter-dial-count {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
   font-size: var(--fs-body);
   font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
@@ -93,20 +82,6 @@
 
 /* ── bar ─────────────────────────────────────────────────────────────────── */
 
-.hg-share-filter-bar {
-  display: flex;
-  gap: var(--sp-0-5);
-  height: 12px;
-  border-radius: 6px;
-  overflow: hidden;
-}
-.hg-share-filter-segment {
-  min-width: 0;
-  background: var(--hg-share-hue);
-}
-.hg-share-filter-segment[data-thin="true"] {
-  min-width: 10px;
-}
 .hg-share-filter-counts {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -117,7 +92,7 @@
   justify-content: flex-start;
   gap: 10px;
   padding: 10px var(--sp-3);
-  border-radius: 14px;
+  border-radius: var(--r-control);
   background: var(--hg-control-fill);
   text-align: left;
 }

@@ -7,13 +7,14 @@ import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { resetName, resetWords, takeName } from './FieldOverride.names';
 import type { FieldOverrideSpec, FieldOverrideWords } from './FieldOverride.types';
 
 const MARK_TONE: Record<'overridden' | 'stale', { color: ThemeColor; background: ThemeColor }> = {
-  overridden: { color: colors['neutral-text'], background: colors['neutral-bg'] },
+  overridden: { color: TONE.neutral.ink, background: TONE.neutral.tint },
   /* `stale` tints warning — "the design has moved on since you edited this". */
-  stale: { color: colors['warning-text'], background: colors['warning-bg'] },
+  stale: { color: TONE.warning.ink, background: TONE.warning.tint },
 };
 
 /* Values off the 4px scale (6, 10) are the design system's own; no theme token carries them. */

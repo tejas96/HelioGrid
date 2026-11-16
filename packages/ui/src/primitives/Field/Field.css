@@ -12,6 +12,8 @@
 .hg-field-label {
   font-family: var(--font-sans);
   font-size: var(--fs-field-label);
+  line-height: var(--lh-label);
+  letter-spacing: var(--tr-label);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
 }

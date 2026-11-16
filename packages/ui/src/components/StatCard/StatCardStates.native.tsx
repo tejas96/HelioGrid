@@ -1,40 +1,16 @@
-/* StatCard's four unresolved states (native). None of them prints a figure.
-
-   The shimmer keyframe has no RN equivalent, so `loading` keeps the same footprint in still bars:
-   nothing reflows when the figure lands, which is what the shimmer was for. */
+/* StatCard's four unresolved states (native). None of them prints a figure: `loading` keeps the
+   value's footprint in pulsing bars, so nothing reflows when the figure lands; the rest are
+   `StateBody`. */
 
 import { theme } from '@heliogrid/theme';
-import { StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { Text } from '../../primitives/Text/Text.native';
-import { RetryButton } from '../Button/RetryButton.native';
-import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
+import { usePulse } from '../../primitives/use-pulse.native';
+import { StateBody } from '../StateBody/StateBody.native';
 import type { StatCardStatesProps } from './StatCard.types';
 
-const styles = StyleSheet.create({
-  loading: { marginTop: 10, gap: theme.spacing['sp-2'] },
-  shimmer: {
-    borderRadius: theme.radius['rf-md'],
-    /* Drawn in --surface, as `Card`'s: a grey bar on the grey tile would not show. */
-    // biome-ignore lint/plugin/raw-white: shimmer — a loading bar's shimmer
-    backgroundColor: colors.surface,
-  },
-  error: { marginTop: 10, alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
-  errorBody: { color: colors['warning-text'] },
-  block: { marginTop: 10 },
-});
-
-export function StatCardStates({
-  state,
-  loadingLabel,
-  emptyMessage,
-  errorMessage,
-  onRetry,
-  retryLabel,
-  focusAfter,
-  unavailableTitle,
-  unavailableMessage,
-}: StatCardStatesProps) {
+export function StatCardStates({ state, loadingLabel, ...words }: StatCardStatesProps) {
+  const opacity = usePulse(state === 'loading');
   if (state === 'loading') {
     return (
       /* The role is a figure too, and this state prints none: web's `role="status"` has no RN
@@ -46,38 +22,23 @@ export function StatCardStates({
         accessibilityLiveRegion="polite"
         style={styles.loading}
       >
-        <View style={[styles.shimmer, { width: 132, height: 34 }]} />
-        <View style={[styles.shimmer, { width: 84, height: 12 }]} />
+        <Animated.View style={[styles.shimmer, styles.value, { opacity }]} />
+        <Animated.View style={[styles.shimmer, styles.meta, { opacity }]} />
       </View>
     );
   }
-  if (state === 'error') {
-    return (
-      <View style={styles.error}>
-        <Text variant="body-sm" style={styles.errorBody}>
-          {errorMessage}
-        </Text>
-        <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
-      </View>
-    );
-  }
-  if (state === 'unavailable') {
-    return (
-      <View style={styles.block}>
-        {unavailableTitle !== undefined ? (
-          <UnavailableNote title={unavailableTitle} message={unavailableMessage} />
-        ) : null}
-      </View>
-    );
-  }
-  if (state === 'empty') {
-    return (
-      <View style={styles.block}>
-        <Text variant="body-sm" color="secondary">
-          {emptyMessage}
-        </Text>
-      </View>
-    );
-  }
-  return null;
+  if (state === 'ready') return null;
+  return (
+    <View style={styles.state}>
+      <StateBody state={state} {...words} />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  loading: { marginTop: 10, gap: theme.spacing['sp-2'] },
+  shimmer: { borderRadius: theme.radius['rf-md'], backgroundColor: colors['canvas-sunken'] },
+  value: { width: 132, height: 34 },
+  meta: { width: 84, height: theme.spacing['sp-3'] },
+  state: { marginTop: 10 },
+});

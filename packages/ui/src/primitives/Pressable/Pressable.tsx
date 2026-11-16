@@ -116,6 +116,7 @@ export function Pressable({
   accessibilityRole = 'button',
   accessibilityState,
   ripple = 'bounded',
+  sink = 'control',
   focusGroup,
   className,
   style,
@@ -128,6 +129,7 @@ export function Pressable({
       /* `button` is the element's own role — naming it again is the redundancy lint's whole point. */
       role={accessibilityRole === 'button' ? undefined : accessibilityRole}
       className={classNames('hg-pressable', className)}
+      data-sink={sink === 'icon' ? sink : undefined}
       style={style}
       disabled={disabled}
       aria-label={accessibilityLabel}

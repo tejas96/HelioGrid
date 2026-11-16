@@ -1,11 +1,11 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { CalendarCellProps, DayMarker, DayMarkerTone } from './DatePicker.types';
 import { spokenDayOf } from './date-text';
 
@@ -14,13 +14,12 @@ const GAP = 2;
 /** Seven 44dp cells plus the six 2dp gaps — the same 320 the web grid takes as its min-width. */
 export const GRID_WIDTH = CELL * 7 + GAP * 6;
 
-/* A marker's label is read out with the date, so the tone is never the only channel. --warning is
-   not a legal mark anywhere in this system; a leave dot takes --warning-text. */
+/* A marker's label is read out with the date, so the tone is never the only channel. */
 const MARKER_TONE: Record<DayMarkerTone, ThemeColor> = {
-  present: colors['success-text'],
-  absent: colors['danger-text'],
-  leave: colors['warning-text'],
-  holiday: colors['info-text'],
+  present: TONE.success.ink,
+  absent: TONE.danger.ink,
+  leave: TONE.warning.mark,
+  holiday: TONE.info.ink,
   scheduled: colors.accent,
   neutral: colors['text-tertiary'],
 };
@@ -55,7 +54,7 @@ export const styles = StyleSheet.create({
   cellToday: { borderWidth: 1.5, borderColor: colors['canvas-sunken'] },
   numeral: {
     fontFamily: theme.type.families.sans,
-    fontSize: 14,
+    fontSize: theme.type.roles['body-sm'].fontSize,
     fontWeight: '400',
     color: colors['text-primary'],
   },
@@ -67,10 +66,16 @@ export const styles = StyleSheet.create({
     bottom: theme.spacing['sp-1'],
     width: 14,
     height: 2.5,
-    borderRadius: 2,
+    borderRadius: theme.radius['r-pill'],
     backgroundColor: colors['text-tertiary'],
   },
-  marker: { position: 'absolute', bottom: 5, width: 5, height: 5, borderRadius: 2.5 },
+  marker: {
+    position: 'absolute',
+    bottom: 5,
+    width: 5,
+    height: 5,
+    borderRadius: theme.radius['r-pill'],
+  },
   // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
   onSelected: { backgroundColor: colors['text-inverse'] },
 });
@@ -85,18 +90,11 @@ interface CalendarNavProps {
 export function CalendarNav({ dir, label, onPress }: CalendarNavProps) {
   return (
     <Pressable accessibilityLabel={label} onPress={onPress} style={styles.nav}>
-      <Svg
-        width={18}
-        height={18}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={colors['text-secondary']}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={dir < 0 ? 'chevron-left' : 'chevron-right'} />
-      </Svg>
+      <ShellGlyph
+        name={dir < 0 ? 'chevron-left' : 'chevron-right'}
+        size="sm"
+        ink={colors['text-secondary']}
+      />
     </Pressable>
   );
 }

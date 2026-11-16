@@ -125,6 +125,6 @@ const styles = StyleSheet.create({
   head: { gap: theme.spacing['sp-2'] },
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
   lede: { flex: 1, minWidth: 0 },
-  card: { borderRadius: theme.radius['r-tile'] },
-  rows: { borderRadius: theme.radius['r-tile'], overflow: 'hidden' },
+  card: { borderRadius: theme.radius['r-lg'] },
+  rows: { borderRadius: theme.radius['r-lg'], overflow: 'hidden' },
 });

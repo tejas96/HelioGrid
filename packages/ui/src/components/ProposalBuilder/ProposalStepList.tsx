@@ -38,7 +38,6 @@ function StepRow({
           glyph={step.glyph}
           hue={step.standing === 'to_do' ? 'warning' : 'ocean'}
           size={36}
-          stroke={1.7}
         />
         <span className="hg-pbf-steprow-words">
           <span className="hg-pbf-steprow-name">{step.heading}</span>
@@ -47,7 +46,7 @@ function StepRow({
           )}
         </span>
         <span className="hg-pbf-stand" data-stand={standing}>
-          <ShellGlyph name={standing === 'to_do' ? 'alert-circle' : 'tick-small'} size="sm" />
+          <ShellGlyph name={standing === 'to_do' ? 'alert-circle' : 'check'} size="sm" />
           {words.standing[standing]}
         </span>
       </span>

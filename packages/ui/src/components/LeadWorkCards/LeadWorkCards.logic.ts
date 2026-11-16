@@ -1,7 +1,7 @@
 import { leadValueShownOf } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { MarketFormat } from '../../utils/format';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { HeroPanelMenu } from '../HeroPanel/HeroPanel.types';
 import {
   type LeadDockPresses,

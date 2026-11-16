@@ -46,7 +46,7 @@
   min-width: 0;
   padding: 14px;
   background: var(--hg-ground);
-  border-radius: 18px;
+  border-radius: var(--r-tile);
   box-shadow: var(--e2);
   border-left: var(--sp-1) solid var(--warning);
 }
@@ -128,11 +128,12 @@
   align-items: center;
   gap: 10px;
   padding: var(--sp-3) 14px;
-  border-radius: 18px;
+  border-radius: var(--r-tile);
   background: color-mix(in srgb, var(--success) 10%, var(--hg-ground));
 }
 
 .hg-import-fixed-mark {
+  display: inline-flex;
   flex-shrink: 0;
   color: var(--success-text);
 }

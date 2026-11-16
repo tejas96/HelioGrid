@@ -1,4 +1,4 @@
-/* StatusChip — the density layer over the StatusMark primitive. The pill, the tone pair and the
+/* StatusChip — the density layer over StatusMark. The pill, the tone pair and the
    second channel are the primitive's; only the chip's two heights and its two type steps are here.
    Selectors are doubled (.hg-status-mark.hg-status-chip-*) so they win over StatusMark.css without
    !important. */
@@ -8,11 +8,11 @@
 }
 
 .hg-status-mark.hg-status-chip-expressive {
-  min-height: 28px;
+  min-height: var(--status-h);
   font-size: var(--fs-body-sm);
 }
 
 .hg-status-mark.hg-status-chip-functional {
-  min-height: 24px;
+  min-height: var(--badge-h);
   font-size: var(--fs-caption);
 }

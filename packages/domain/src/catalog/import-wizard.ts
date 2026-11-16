@@ -116,6 +116,11 @@ const BACK_FROM: Partial<Record<ImportWizardFrame, ImportWizardView['at']>> = {
   preview: 'columns',
 };
 
+/** A frame with a step behind it, so *Back* is offered: the columns, the wait and the preview. */
+export function importWizardGoesBack(frame: ImportWizardFrame): boolean {
+  return frame in BACK_FROM;
+}
+
 export function importWizardViewAfter(
   view: ImportWizardView,
   frame: ImportWizardFrame,

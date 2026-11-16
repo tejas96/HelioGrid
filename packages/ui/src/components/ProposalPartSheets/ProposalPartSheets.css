@@ -13,7 +13,7 @@
   gap: var(--sp-2);
 }
 .hg-pps-tile {
-  border-radius: var(--r-tile);
+  border-radius: var(--r-lg);
 }
 .hg-pps-option,
 .hg-pps-add,
@@ -178,7 +178,7 @@
 .hg-pps-brand-name {
   flex: 1;
   min-width: 0;
-  font: var(--fw-regular) 22px / 28px var(--font-display);
+  font: var(--fw-regular) var(--fs-h2) / var(--lh-h2) var(--font-display);
 }
 .hg-pps-lock,
 .hg-pps-field-tag {

@@ -2,9 +2,9 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { type RefObject, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { CardRow, CardRows } from '../CardRows/CardRows.native';
@@ -100,7 +100,7 @@ function Checks({
         <View style={styles.status}>
           <View style={[styles.mark, ready ? styles.markReady : styles.markWaiting]}>
             <ShellGlyph
-              name={ready ? 'tick' : 'alert-circle'}
+              name={ready ? 'check' : 'alert-circle'}
               size="md"
               tone={ready ? 'success' : 'warning'}
             />
@@ -187,8 +187,8 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     borderRadius: theme.radius['r-sm'],
   },
-  markReady: { backgroundColor: colors['success-bg'] },
-  markWaiting: { backgroundColor: colors['warning-bg'] },
+  markReady: { backgroundColor: TONE.success.tint },
+  markWaiting: { backgroundColor: TONE.warning.tint },
   statusWords: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
   rowName: { flex: 1, minWidth: 0 },

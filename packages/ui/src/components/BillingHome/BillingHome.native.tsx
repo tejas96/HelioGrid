@@ -182,6 +182,6 @@ const styles = StyleSheet.create({
   /** The board's column: regions `sp-5` apart; the shell pads the sides and scrolls it. */
   page: { gap: theme.spacing['sp-5'] },
   records: { gap: theme.layout['tile-gap'] },
-  recordRow: { ...tileSurface, borderRadius: theme.radius['r-tile'] },
+  recordRow: { ...tileSurface, borderRadius: theme.radius['r-lg'] },
   start: { flexDirection: 'row' },
 });

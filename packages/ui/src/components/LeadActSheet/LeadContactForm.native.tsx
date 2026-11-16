@@ -1,3 +1,4 @@
+import { phoneDigitsMismatch } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -5,6 +6,7 @@ import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
 import { Input } from '../Input/Input.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
+import { useFormat } from '../MarketProvider/market-context';
 import { PhoneField } from '../PhoneField/PhoneField.native';
 import { Select } from '../Select/Select.native';
 import { LeadActSend, type LeadFormFrame } from './LeadActSend.native';
@@ -23,6 +25,7 @@ const NO_ROLE = '';
  */
 export function LeadContactForm({ form, frame }: { form: ContactForm; frame: LeadFormFrame }) {
   const { words, start, labels } = form;
+  const { pack } = useFormat();
   const [name, setName] = useState(start?.name ?? '');
   const [phoneE164, setPhoneE164] = useState(start?.phoneE164 ?? '');
   const [roleLabelId, setRoleLabelId] = useState(start?.roleLabelId ?? NO_ROLE);
@@ -35,7 +38,8 @@ export function LeadContactForm({ form, frame }: { form: ContactForm; frame: Lea
     }
   }, [form.addedLabelId]);
   const typed = name.trim();
-  const ready = typed !== '' && phoneE164 !== '';
+  /* The market's full number, as the web's Send asks — a short number is not sent. */
+  const ready = typed !== '' && phoneE164 !== '' && phoneDigitsMismatch(pack, phoneE164) === null;
   return (
     <View style={styles.form}>
       <Input label={words.name} value={name} onChange={setName} disabled={frame.pending} />

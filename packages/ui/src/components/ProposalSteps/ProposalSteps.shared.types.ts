@@ -1,6 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { BankDetails, CoverCount } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { ProposalPictureName } from '../ProposalPicture/ProposalPicture.types';
 
 /** What the steps' views and their words both stand on: the small shapes neither owns. */

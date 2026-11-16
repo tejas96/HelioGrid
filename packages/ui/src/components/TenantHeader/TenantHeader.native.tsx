@@ -2,8 +2,8 @@ import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import type { ImageLoadEventData, NativeSyntheticEvent, StyleProp, ViewStyle } from 'react-native';
 import { Image, StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { useTenantScope } from '../CustomerSurface/tenant-scope';
 import type { TenantHeaderProps, TenantMarkProps } from './TenantHeader.types';
 import { isLogoUrl, tenantInitials } from './tenant-initials';
@@ -78,7 +78,7 @@ function Monogram({ name, size, radius, showName }: MonogramProps) {
           width: size,
           height: size,
           borderRadius: radius ?? Math.round(size * 0.3),
-          backgroundColor: scope?.['--tenant-mark'] ?? colors['neutral-bg'],
+          backgroundColor: scope?.['--tenant-mark'] ?? TONE.neutral.tint,
         },
       ]}
     >
@@ -88,7 +88,7 @@ function Monogram({ name, size, radius, showName }: MonogramProps) {
           fontWeight: '700',
           fontSize: Math.round(size * 0.42),
           letterSpacing: theme.type.roles.h2.letterSpacing,
-          color: scope?.['--tenant-mark-on'] ?? colors['neutral-text'],
+          color: scope?.['--tenant-mark-on'] ?? TONE.neutral.ink,
         }}
       >
         {tenantInitials(name)}

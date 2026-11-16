@@ -7,13 +7,14 @@ import { StreamEntries } from '../ActivityStream/ActivityStreamEntries.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Card } from '../Card/Card.native';
+import { CardHeader } from '../Card/CardHeader.native';
 import { leadActivityKinds } from '../LeadTimeline/LeadTimeline.logic';
 import { useFormat } from '../MarketProvider';
 import { Timeline } from '../Timeline/Timeline.native';
 import { projectEventsOf } from './ProjectDetail.activity';
 import { journeyItemsOf } from './ProjectDetail.logic';
 import type { ProjectDetailProps } from './ProjectDetail.types';
-import { CardHead } from './ProjectDetailParts.native';
+import { projectCard, projectHead } from './ProjectDetailParts.native';
 
 /** Every stage of the deal's chain with its date and who or what moved it — never a % bar. */
 export function ProjectJourney(props: ProjectDetailProps) {
@@ -21,8 +22,8 @@ export function ProjectJourney(props: ProjectDetailProps) {
   const { words } = props;
   const sun = <ShellGlyph name="sun" size="sm" tone="inverse" />;
   return (
-    <Card density="functional" style={styles.card}>
-      <CardHead title={words.journey} aside={words.journeyNote} />
+    <Card density="functional" style={projectCard}>
+      <CardHeader title={words.journey} description={words.journeyNote} style={projectHead} />
       <View style={styles.pad}>
         <Timeline variant="page" density="functional" items={journeyItemsOf(props, format, sun)} />
       </View>
@@ -76,8 +77,8 @@ export function ProjectDeal({ project, words }: ProjectDetailProps) {
     },
   ];
   return (
-    <Card density="functional" style={styles.card}>
-      <CardHead title={words.deal} aside={null} />
+    <Card density="functional" style={projectCard}>
+      <CardHeader title={words.deal} style={projectHead} />
       {facts.map((fact, index) => (
         <View key={fact.key} style={[styles.fact, index === 0 ? undefined : styles.rule]}>
           <Text variant="body-sm" color="secondary">
@@ -104,8 +105,8 @@ function Quiet({ children }: { children: ProjectDetailProps['words']['noneLinked
  */
 export function ProjectActivity({ project, words }: ProjectDetailProps) {
   return (
-    <Card density="functional" style={styles.card}>
-      <CardHead title={words.activity} aside={words.activityNote} />
+    <Card density="functional" style={projectCard}>
+      <CardHeader title={words.activity} description={words.activityNote} style={projectHead} />
       <View style={styles.stream}>
         <StreamEntries
           entries={projectEventsOf(project, words, PROJECT_STAGE_CHAIN)}
@@ -120,7 +121,6 @@ export function ProjectActivity({ project, words }: ProjectDetailProps) {
 }
 
 const styles = StyleSheet.create({
-  card: { padding: theme.spacing['sp-1'], gap: theme.spacing['sp-1'] },
   pad: { paddingHorizontal: theme.spacing['sp-3'], paddingBottom: theme.spacing['sp-2'] },
   rule: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors['line-soft'] },
   stream: { paddingHorizontal: theme.spacing['sp-3'], paddingBottom: theme.spacing['sp-2'] },

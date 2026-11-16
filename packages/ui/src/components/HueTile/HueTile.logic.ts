@@ -1,18 +1,18 @@
 import { colors } from '../../primitives/Color/colors';
-import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
 import { type HueTint, hueTintOf, isCategoryHue } from '../Avatar/Avatar.logic';
 import type { HueTileProps, HueTileSize, HueTileTone } from './HueTile.types';
 
 /** The glyph's side in each tile: small on a group head, large on a hero or a sheet's moment. */
-export const HUE_TILE_GLYPH: Readonly<Record<HueTileSize, number>> = {
-  24: ICON_SIZE.sm,
-  32: ICON_SIZE.md,
-  34: ICON_SIZE.md,
-  36: ICON_SIZE.md,
-  40: ICON_SIZE.md,
-  44: ICON_SIZE.md,
-  48: ICON_SIZE.lg,
-  56: ICON_SIZE.xl,
+export const HUE_TILE_GLYPH: Readonly<Record<HueTileSize, ShellGlyphSize>> = {
+  24: 'sm',
+  32: 'md',
+  34: 'md',
+  36: 'md',
+  40: 'md',
+  44: 'md',
+  48: 'lg',
+  56: 'xl',
 };
 
 const TONE_TINT: Readonly<Record<HueTileTone, HueTint>> = {

@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     marginVertical: -FIELD_BOX_EDGE,
     // `Input`'s face, as `NumberField`'s: a typed end reads as what was typed.
     fontFamily: theme.type.families.sans,
-    fontSize: 14,
+    fontSize: theme.type.roles.body.fontSize,
     fontWeight: '400',
     fontVariant: ['tabular-nums'],
     color: colors['text-primary'],

@@ -1,7 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { Ref } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter/FocusAfter.types';
-import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import type {
   BillingStripView,
@@ -10,6 +9,7 @@ import type {
 } from '../BillingStrip/BillingStrip.types';
 import type { DataTableWords } from '../DataTable/DataTable.types';
 import type { DerivationKindWords } from '../Derivation/Derivation.types';
+import type { StatusTone } from '../StatusMark/StatusMark.types';
 import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 import type { UsageMeterWords } from '../UsageMeter/UsageMeter.types';
 

@@ -12,8 +12,9 @@ import type { LeadActionDockProps, LeadDockAct, LeadDockCall } from './LeadActio
 /**
  * The lead's five actions on the phone (`M02-32`). The `dock` draws them as one row of equal
  * circles, Call the one ocean circle — the dialler opens on its number, never for one that may not
- * be called — and a closed lead's Reopen in their place; the `grid` stands Call across and the four
+ * be called; the `grid` stands Call across and the four
  * as pills two by two. Under them the state acts this layout keeps; the rest are the record menu's.
+ * A closed lead draws neither layout: its Reopen stands alone.
  */
 export function LeadActionDock({
   layout,
@@ -27,7 +28,7 @@ export function LeadActionDock({
   const waiting = standing?.kind === 'waiting';
   return (
     <View style={styles.dock}>
-      {layout === 'grid' ? (
+      {closed ? null : layout === 'grid' ? (
         <View style={styles.grid}>
           <CallPill call={call} label={callLabel} />
           <View style={styles.pairs}>
@@ -50,7 +51,7 @@ export function LeadActionDock({
             ))}
           </View>
         </View>
-      ) : closed ? null : (
+      ) : (
         <View style={styles.rounds}>
           <CallRound call={call} label={callLabel} />
           {acts.map((act) => (

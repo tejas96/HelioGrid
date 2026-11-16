@@ -44,7 +44,7 @@ function IncentivePair({
   return (
     <div className="hg-pb-pair">
       <div className="hg-pb-fact">
-        <HueTile glyph="download" hue="success" size={36} stroke={1.7} />
+        <HueTile glyph="download" hue="success" size={36} />
         <span className="hg-pb-fact-words">
           <span className="hg-pb-fact-name">{words.incentive}</span>
           <span className="hg-pb-fact-value hg-pb-mono">{incentive.amount.text}</span>
@@ -52,7 +52,7 @@ function IncentivePair({
         </span>
       </div>
       <div className="hg-pb-fact">
-        <HueTile glyph="house" hue="ocean" size={36} stroke={1.7} />
+        <HueTile glyph="house" hue="ocean" size={36} />
         <span className="hg-pb-fact-words">
           <span className="hg-pb-fact-name">{words.netCost}</span>
           <span className="hg-pb-fact-value hg-pb-mono">{incentive.netCost.text}</span>

@@ -2,7 +2,6 @@ import { theme } from '@heliogrid/theme';
 import { type ReactNode, type RefObject, useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
@@ -15,6 +14,7 @@ import { NamedGap } from '../NamedGap/NamedGap.native';
 import { PendingAction } from '../PendingAction/PendingAction.native';
 import { ProgressRing } from '../ProgressRing/ProgressRing.native';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { ageShareOf, isPastDay, peeksOf } from './LeadDeckCard.logic';
 import type {
   LeadDeckCardLayout,
@@ -23,6 +23,8 @@ import type {
   LeadDeckPlace,
   WaitingLead,
 } from './LeadDeckCard.types';
+
+// web-only part: Button — the worded button is the web desk keyboard hint; both draw IconButton.
 
 const ENTER = Easing.bezier(...theme.motion.easings.enter);
 const EXIT = Easing.bezier(...theme.motion.easings.exit);

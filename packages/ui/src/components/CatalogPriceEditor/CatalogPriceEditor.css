@@ -160,9 +160,9 @@
   transform: scale(var(--press-scale));
 }
 
-/* On: the accent wash, as every chosen option is — never colour alone, the button also says it is
-   pressed. */
+/* On: the ink outline around ink words, as every chosen option is — never colour alone, the button
+   also says it is pressed. */
 .hg-cat-pick-face[data-on="true"] {
-  background: var(--accent-subtle);
-  color: var(--accent-text);
+  color: var(--text-primary);
+  box-shadow: inset 0 0 0 1px var(--text-primary);
 }

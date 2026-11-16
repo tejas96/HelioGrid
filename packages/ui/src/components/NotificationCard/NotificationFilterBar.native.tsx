@@ -69,21 +69,21 @@ interface FilterButtonProps {
   name: string;
   on: boolean;
   onPress: () => void;
-  /** The mark, drawn in the button's ink: grey off, the accent words' colour on. */
+  /** The mark, drawn in the button's ink: grey off, ink on. */
   icon: (ink: ThemeColor) => ReactNode;
 }
 
-/** On, the accent wash with its name, as every chosen filter is; off, a 44 circle with its icon. */
+/** On, an ink outline with its name, as every chosen filter is; off, a 44 circle with its icon. */
 function FilterButton({ label, name, on, onPress, icon }: FilterButtonProps) {
   const { controlFill } = useGround();
-  const ink = on ? colors['accent-text'] : colors['text-secondary'];
+  const ink = on ? colors['text-primary'] : colors['text-secondary'];
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={name}
       accessibilityState={{ selected: on }}
       onPress={onPress}
-      style={[styles.button, on ? styles.buttonOn : { backgroundColor: controlFill }]}
+      style={[styles.button, { backgroundColor: controlFill }, on ? styles.buttonOn : undefined]}
     >
       <View style={styles.icon}>{icon(ink)}</View>
       {on ? (
@@ -111,13 +111,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 44,
     minWidth: 44,
-    paddingLeft: 13,
-    paddingRight: 13,
+    paddingLeft: 12,
+    paddingRight: 12,
     borderRadius: theme.radius['r-pill'],
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
   buttonOn: {
-    paddingRight: theme.spacing['sp-4'],
-    backgroundColor: colors['accent-subtle'],
+    paddingRight: theme.spacing['sp-4'] - 1,
+    borderColor: colors['text-primary'],
   },
   icon: { width: 18, height: 18, alignItems: 'center', justifyContent: 'center' },
   dot: { width: 9, height: 9, borderRadius: theme.radius['r-pill'] },

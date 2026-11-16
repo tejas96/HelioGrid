@@ -1,24 +1,10 @@
-import { Icon } from '../../primitives/Icon';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { axisFootOf } from './CompareGrid.logic';
 import type { CompareGridFooterProps } from './CompareGrid.types';
 
 function Chevron({ back }: { back?: boolean }) {
   return (
-    <Icon size="md">
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-        style={back === true ? { transform: 'rotate(180deg)' } : undefined}
-      >
-        <ShellGlyphMarks name="chevron-right" />
-      </svg>
-    </Icon>
+    <ShellGlyph name={back === true ? 'chevron-left' : 'chevron-right'} size="md" tone="current" />
   );
 }
 

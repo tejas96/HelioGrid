@@ -4,6 +4,7 @@ import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { AccessibilityInfo, findNodeHandle, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { Button } from '../Button/Button.native';
 import type { NoConnectionProps } from './NoConnection.types';
 import { SunCloudMark } from './SunCloudMark.native';
@@ -95,7 +96,7 @@ export function NoConnection({
 
 const outcomeText: TextStyle = {
   fontWeight: '500',
-  color: colors['danger-text'],
+  color: TONE.danger.ink,
 };
 
 const styles = StyleSheet.create({

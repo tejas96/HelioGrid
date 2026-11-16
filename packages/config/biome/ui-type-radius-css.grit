@@ -1,0 +1,15 @@
+language css
+
+// A ui stylesheet types no font size and no corner: a non-zero px, rem or em in a `font-size` or a
+// `border-*-radius`. A size is a screen role (var(--fs-<role>)) or, on a page drawn at a document's
+// scale, a document role (var(--doc-fs-<role>)); a corner is a named radius (var(--r-*),
+// var(--rf-*)) — each from @heliogrid/theme's tokens. 0 and % pass; comments are never read.
+CssGenericProperty() as $declaration where {
+  $declaration <: or {
+    includes "font-size",
+    includes "radius"
+  },
+  $declaration <: r"(?s)\s*(?:font-size|border(?:-[a-z]+)*-radius)\s*:.*",
+  $declaration <: r"(?s).*?(?:^|[^\w.#-])(?:\d*[1-9]\d*|\d*\.\d*[1-9]\d*|\d*[1-9]\d*\.\d+)(?:px|rem|em)\b.*",
+  register_diagnostic(span=$declaration, message="Raw type size or radius in packages/ui — use var(--fs-<role>), var(--doc-fs-<role>) or a named radius var(--r-*) from @heliogrid/theme.")
+}

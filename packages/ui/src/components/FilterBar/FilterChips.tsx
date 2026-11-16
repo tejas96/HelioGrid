@@ -31,9 +31,9 @@ export function OptionIcon({ icon }: { icon: ReactNode }) {
 }
 
 /**
- * Kind and stage chips: 44px pills — the pill is the target — in the control fill, flat, with an
- * optional 18px glyph before the label; the chosen one is the accent wash with
- * accent words. Roving tabindex: one stop in the tab order, arrow keys move between chips.
+ * Kind and stage chips: 32px hairline pills in a 44px target, in the control fill, with an
+ * optional 18px glyph before the label; the chosen one is OneOhm's quiet choice, an ink outline
+ * around ink words. Roving tabindex: one stop in the tab order, arrow keys move between chips.
  *
  * **One-of-N by construction**: `role="tablist"` + `aria-selected`, and its arrow keys change the
  * selection as they move, because in a stage strip moving the highlight *is* choosing. A dimension
@@ -105,7 +105,7 @@ export function FilterChips({
             role="tab"
             aria-selected={active}
             tabIndex={index === selectedIndex ? 0 : -1}
-            className="hg-filter-target"
+            className="hg-filter-target hg-chip-target"
             onKeyDown={(event) => onKeyDown(index, event)}
             onClick={() => onChange?.(optValue)}
           >
@@ -137,24 +137,14 @@ function ChipFace({
   label: string;
   count: number | undefined;
 }) {
-  if (look === 'outlined') {
-    return (
-      <Chip active={active} {...(count === undefined ? {} : { count })}>
-        <OptionIcon icon={icon} />
-        {label}
-      </Chip>
-    );
-  }
   return (
-    <span
-      className="hg-filter-pill"
-      data-pill="chip"
-      data-active={active ? 'true' : undefined}
-      data-lead={icon ? 'true' : undefined}
+    <Chip
+      density={look === 'outlined' ? 'expressive' : 'filter'}
+      active={active}
+      leading={icon ? <OptionIcon icon={icon} /> : undefined}
+      {...(count === undefined ? {} : { count })}
     >
-      <OptionIcon icon={icon} />
       {label}
-      {count === undefined ? null : <span className="hg-filter-count">{count}</span>}
-    </span>
+    </Chip>
   );
 }

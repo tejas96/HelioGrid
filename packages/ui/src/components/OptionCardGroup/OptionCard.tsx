@@ -3,9 +3,9 @@
 
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { KeyboardEvent, Ref } from 'react';
-import { StatusMark } from '../../primitives/StatusMark';
 import { renderActionReason } from '../ActionReason';
 import { CheckboxTick } from '../Checkbox/CheckboxTick';
+import { StatusMark } from '../StatusMark';
 import { currentWord, optionRole } from './OptionCardGroup.logic';
 import type { OptionCardGroupMode, OptionCardItem } from './OptionCardGroup.types';
 
@@ -25,8 +25,8 @@ interface OptionCardProps {
 }
 
 /**
- * One card: its icon in a chip at the start, the words, and the pick's mark at the end; picked, the
- * card turns to solar glass. The card IS the radio (or, in a multiple group, the checkbox), which is
+ * One card: its icon in a chip at the start, the words, and the pick's mark at the end; picked, an
+ * ink outline round the fill it had. The card IS the radio (or, in a multiple group, the checkbox), which is
  * why `content` is static by contract: a focusable child would be a button inside a button.
  */
 export function OptionCard({
@@ -97,7 +97,7 @@ export function OptionCard({
           <span className="hg-option-card-content">{option.content}</span>
         ) : null}
         {option.meta !== undefined ? (
-          <span className="hg-option-card-meta">{option.meta}</span>
+          <span className="hg-option-card-meta hg-overline">{option.meta}</span>
         ) : null}
       </span>
       <OptionMark selected={selected} mode={mode} />

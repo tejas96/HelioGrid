@@ -37,11 +37,6 @@
   background: var(--gradient-mark);
   color: var(--text-inverse);
 }
-.hg-logo-tile-sun {
-  width: 56%;
-  height: 56%;
-}
-
 .hg-product-mark {
   display: inline-flex;
   align-items: center;

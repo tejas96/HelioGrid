@@ -1,6 +1,6 @@
 import { DEAL_SEGMENTS, type DealSegment } from '@heliogrid/domain';
-import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import type { SegmentedOption } from '../SegmentedControl/SegmentedControl.types';
+import type { StatusTone } from '../StatusMark/StatusMark.types';
 import type {
   QuickAddCheckLine,
   QuickAddFormProps,

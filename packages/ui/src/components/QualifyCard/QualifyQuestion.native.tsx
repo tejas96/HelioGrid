@@ -4,12 +4,13 @@ import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { useGround } from '../../primitives/Ground/Ground.native';
+import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
+import { Chip } from '../Chip/Chip.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { NumberField } from '../NumberField/NumberField.native';
@@ -74,7 +75,7 @@ export function QualifyQuestion({ view, onAnswer, onRetry, words }: QualifyQuest
 function SavedMark({ word }: { word: TranslatedText }) {
   return (
     <View style={styles.saved}>
-      <ShellGlyph name="tick" size="sm" tone="success" />
+      <ShellGlyph name="check" size="sm" tone="success" />
       <Text variant="caption" color="success">
         {word}
       </Text>
@@ -108,9 +109,12 @@ interface ChoicesProps extends Omit<QualifyQuestionProps, 'onRetry'> {
   readonly failedValue: string | null;
 }
 
-/** The answers as chips, one chosen: a tap saves it at once (`M02-39`, no submit). */
+/**
+ * The answers as the shared chips, one chosen: a tap saves it at once (`M02-39`, no submit). Each
+ * pill sits in its 44 target as the web's does, and says its question after its answer — a phone
+ * reads no group's name, where the web's radiogroup carries it.
+ */
 function Choices({ question, view, failedValue, onAnswer, words }: ChoicesProps) {
-  const { controlFill } = useGround();
   return (
     <View style={styles.choices} accessibilityRole="radiogroup">
       {view.choices.map((value) => {
@@ -122,18 +126,18 @@ function Choices({ question, view, failedValue, onAnswer, words }: ChoicesProps)
             accessibilityRole="radio"
             accessibilityState={{ checked: chosen }}
             accessibilityLabel={words.choice(question, value)}
+            accessibilityHint={words.question[question]}
+            haptic="selection"
             onPress={() => onAnswer(question, value)}
-            style={[
-              styles.choice,
-              { backgroundColor: controlFill },
-              chosen ? styles.chosen : undefined,
-              failed ? styles.failedChoice : undefined,
-            ]}
+            style={styles.target}
           >
-            {failed ? <ShellGlyph name="alert" size="sm" tone="danger" /> : null}
-            <Text variant="body-sm" style={chosen ? styles.chosenWords : undefined}>
+            <Chip
+              active={chosen}
+              tone={failed ? 'danger' : 'neutral'}
+              leading={failed ? <ShellGlyph name="alert" size="sm" tone="danger" /> : undefined}
+            >
               {words.choice(question, value)}
-            </Text>
+            </Chip>
           </Pressable>
         );
       })}
@@ -155,18 +159,20 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
   },
   saved: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-0-5'] },
-  choices: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing['sp-2'] },
-  choice: {
+  /* The web's row: 4 between lines, 8 between chips. */
+  choices: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing['sp-1'],
-    paddingHorizontal: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-pill'],
+    flexWrap: 'wrap',
+    rowGap: theme.spacing['sp-1'],
+    columnGap: theme.spacing['sp-2'],
   },
-  /* The chosen answer is the accent wash, as the web's chosen Chip is. */
-  chosen: { backgroundColor: colors['accent-subtle'] },
-  chosenWords: { color: colors['accent-text'] },
-  failedChoice: { borderWidth: 1, borderColor: colors['danger-text'] },
+  /* The 44 target around the pill gives back what it adds, so a line keeps the pill's height. */
+  target: {
+    flexShrink: 0,
+    justifyContent: 'center',
+    borderRadius: theme.radius['r-pill'],
+    marginVertical: (theme.layout['chip-h'] - MIN_TOUCH_TARGET) / 2,
+  },
   fail: {
     flexDirection: 'row',
     flexWrap: 'wrap',

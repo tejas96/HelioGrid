@@ -1,8 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { HueTile } from '../HueTile/HueTile.native';
-import { TILE_STROKE } from '../ProjectDetail/ProjectDetail.logic';
-import { Sheet } from '../Sheet/Sheet.native';
 import { AccessForm, FileNameForm, NotNeededForm } from './ProjectActForms.native';
 import { formOf, type ProjectForms } from './ProjectActSheet.forms';
 import { headOf } from './ProjectActSheet.logic';
@@ -26,16 +26,20 @@ export function ProjectActSheet({ form, onClose, sending, refusal, words }: Proj
   // A proof that came early is a moment (the picked design): its spark above, the title centred.
   const moment = form?.kind === 'earlyProof';
   return (
-    <Sheet
+    <EditorSurface
       open={form !== null}
       onClose={close}
       closeLabel={words.close}
+      showClose
+      desktop="modal"
       title={head?.title}
       subtitle={head?.line ?? undefined}
-      leading={
-        moment ? <HueTile glyph="spark" hue="teal" size={56} stroke={TILE_STROKE} /> : undefined
-      }
-      headerLook={moment ? 'moment' : 'row'}
+      leading={moment ? <HueTile glyph="spark" hue="teal" size={56} /> : undefined}
+      sheetProps={{ headerLook: moment ? 'moment' : 'row' }}
+      /* A centred dialog (an iPad) has no header tile: the spark rides the dialog's own mark. */
+      modalProps={{
+        icon: moment ? <ShellGlyph name="spark" size="md" tone="accent" /> : undefined,
+      }}
       dismissible={!sending}
     >
       {form === null ? null : (
@@ -43,7 +47,7 @@ export function ProjectActSheet({ form, onClose, sending, refusal, words }: Proj
           {formOf(FORMS, form, { sending, refusal, words, onClose: close })}
         </View>
       )}
-    </Sheet>
+    </EditorSurface>
   );
 }
 

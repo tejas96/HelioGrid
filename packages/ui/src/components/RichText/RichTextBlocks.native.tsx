@@ -4,6 +4,7 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { fieldBoxPlaceholder } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import type { RichTextAt } from './RichText.edit';
 import { isListBlock, keyed, textOf } from './RichText.model';
 import type { RichTextSpan, RichTextValue, RichTextWords } from './RichText.types';
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: theme.radius['rf-lg'],
-    backgroundColor: colors['neutral-bg'],
+    backgroundColor: TONE.neutral.tint,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,

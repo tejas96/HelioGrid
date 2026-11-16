@@ -10,6 +10,8 @@ import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
 import { logoCapture, type ProfileFieldSpec, profileSet, sizeField } from './CompanyProfile.logic';
 import type { CompanyProfileProps } from './CompanyProfile.types';
 
+// web-only part: MapSurface — the web asks it whether a drop is offered; a phone is always touch.
+
 type SetProps = Pick<
   CompanyProfileProps,
   | 'words'

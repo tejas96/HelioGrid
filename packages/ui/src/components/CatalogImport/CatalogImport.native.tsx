@@ -18,6 +18,8 @@ import { ImportRows } from './ImportRows.native';
 import { ImportSkeleton } from './ImportSkeleton.native';
 import { ImportStepList } from './ImportStepList.native';
 
+// web-only part: Stepper — its children ImportHead.native and ImportStepList.native draw it.
+
 /** The layer width under which the wizard is a sheet: every phone. */
 const PANEL_ABOVE = 720;
 

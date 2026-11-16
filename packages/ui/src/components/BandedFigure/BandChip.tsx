@@ -51,7 +51,7 @@ function ChipFace({ words, tone, size, className, style }: ChipFaceProps) {
   } as CSSProperties;
   return (
     <span
-      className={classNames('hg-band-chip', className)}
+      className={classNames('hg-band-chip', 'hg-tone', className)}
       data-tone={tone}
       style={{ ...vars, ...style }}
     >

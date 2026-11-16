@@ -37,8 +37,6 @@
    it on; a tile there would vanish, and without this entry a control on them would read the desk. */
 .hg-paged-document-card,
 .hg-paged-document-unavailable,
-/* A settings page's raised card (`SettingsCard`): a page ground over the page. */
-.hg-settings-card,
 /* The act bar a settings form raises (`FormActionBar`): white over the page it stands on. */
 .hg-form-action-bar,
 /* Branding's editor card at width (`BrandingSettings`, `EDITOR-1536`): a page ground over the page. */
@@ -77,50 +75,35 @@
   }
 }
 
-/* The tiles (F7-49): one record, or one item of a list — a pane of frosted glass on the page, and a
-   tile ground, so a control inside takes the fill. The ONE place a tile is drawn, in one list, so a
-   tile's fill and its ground cannot part. Loaded before every component, so a tile's own state rule — an off
-   option, a played turn — still wins over this fill at rest. */
+/* The tiles (F7-49): one record, or one item of a list, and a tile ground, so a control inside takes
+   the fill. The ONE place a tile is drawn, in two lists, so a tile's fill and its ground cannot part.
+   Loaded before every component, so a tile's own state rule — an off option, a played turn — still
+   wins over this fill at rest.
+
+   SOLID — a data or list tile: OneOhm's paper card. The card colour, a 1 px hairline, no shadow and
+   no lift; a list of records reads as rows of paper, never panes of glass. */
 .hg-card,
-/* The business profile's parts on the settings page (`CompanyProfile`): one glass tile. */
+/* A settings page's section card (`SettingsCard`): a list of settings, one tile. */
+.hg-settings-card,
+/* The business profile's parts on the settings page (`CompanyProfile`): one tile. */
 .hg-company-profile-list[data-life="settings"],
-/* Catalog's first-day card (`CatalogItems`). */
-.hg-cat-teach,
-/* The brand colour field's offered ink (`BrandColorField`, the short verdict). */
-.hg-brand-color-ink,
 .hg-account-tile,
-/* Billing's empty regions and its usage meters, each a small tile (`BillingHome`); each row of
-   the usage page's regions (`UsagePage`). */
-.hg-billing-quiet,
+/* Each row of the usage page's regions (`UsagePage`). */
 .hg-usage-tile-row,
-.hg-billing-meter,
-.hg-stat-card,
 /* A tappable tile is a `Pressable`, whose reset loads later and clears a one-class fill. */
-.hg-pressable.hg-stat-card-button,
 .hg-pressable.hg-settings-person,
 .hg-pressable.hg-role-tile,
-/* A reason to mark a lead lost (`LeadActSheet`): one tile of the sheet's grid. */
-.hg-pressable.hg-lead-lost-reason,
 .hg-settings-tile,
 .hg-record-card,
 .hg-member-loading-card,
 .hg-notification-card,
 .hg-notification-member,
-.hg-banded[data-variant="card"],
-.hg-banded[data-variant="box"],
-.hg-kanban-message,
 .hg-checklist-row:not(.hg-checklist-row--document),
 .hg-finding-row,
 .hg-reorder-row,
 .hg-date-set-row,
-.hg-option-card:not([data-off="true"]),
-.hg-transcript-bubble,
-/* What a coming page will hold (`OnItsWay`): one tile, its points split by hairlines. */
-.hg-on-its-way-points,
 /* A lead waiting under the inbox's deck, one tile of the desktop grid (`LeadTile`). */
 .hg-lead-tile,
-/* The pipeline by stage over the Leads list (`StageMeter`). */
-.hg-stage-meter,
 /* The catalog's price editor docked beside the list on desktop (`PriceEditorDock`, apps/web). */
 .hg-catalog-dock,
 /* One card holding a list's rows (`CardRows`): the catalog's narrow list, the Team list — or, in
@@ -134,6 +117,10 @@
 .hg-list-row.hg-plans-rest,
 /* The usage screen's `Bigger plans` row and its ledger events (`SCR-M12-04`). */
 .hg-list-row.hg-usage-tile,
+/* The first proposal's next step inside Home's hero, and its checklist of steps under it
+   (`ProposalReadiness`): records, not figures. */
+.hg-readiness-next,
+.hg-readiness-steps,
 /* A builder step's records (`ProposalSteps`): its facts, its rows, its folded rows — one tile each. */
 .hg-pst-tile,
 .hg-pdf-tile,
@@ -152,6 +139,37 @@
 .hg-plist-card:not([data-quiet]),
 .hg-pressable.hg-plist-card:not([data-quiet]),
 .hg-dt-card:not([data-editable="true"]) {
+  /* biome-ignore lint/plugin/raw-white-css: ground — a tile is the white card on the page */
+  --hg-ground-fill: var(--surface);
+  background: var(--hg-ground-fill);
+  box-shadow: 0 0 0 1px var(--line-soft);
+  /* biome-ignore lint/plugin/raw-white-css: ground — a tile is the white card on the page */
+  --hg-ground: var(--surface);
+  --hg-control-fill: var(--fill);
+}
+
+/* GLASS — a summary tile: a figure, a meter, a teaching card, a choice to make. */
+.hg-card[data-tile="glass"],
+/* Catalog's first-day card (`CatalogItems`). */
+.hg-cat-teach,
+/* The brand colour field's offered ink (`BrandColorField`, the short verdict). */
+.hg-brand-color-ink,
+/* Billing's empty regions and its usage meters, each a small tile (`BillingHome`). */
+.hg-billing-quiet,
+.hg-billing-meter,
+.hg-stat-card,
+.hg-pressable.hg-stat-card-button,
+/* A reason to mark a lead lost (`LeadActSheet`): one tile of the sheet's grid. */
+.hg-pressable.hg-lead-lost-reason,
+.hg-banded[data-variant="card"],
+.hg-banded[data-variant="box"],
+.hg-kanban-message,
+.hg-option-card:not([data-off="true"]),
+.hg-transcript-bubble,
+/* What a coming page will hold (`OnItsWay`): one tile, its points split by hairlines. */
+.hg-on-its-way-points,
+/* The pipeline by stage over the Leads list (`StageMeter`). */
+.hg-stage-meter {
   /* Glass: the card colour let through over the page's glow, a 1 px light on its top edge, a
      hairline and a soft lift — the tile reads as a pane of the page, never a flat box. No frost on the
      tile itself: what lies behind a tile is the page's smooth glow, which a blur would not change, and

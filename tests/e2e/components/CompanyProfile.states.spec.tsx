@@ -66,7 +66,7 @@ test('a profile that could not be read says so in the list’s place, with the r
   expect(await bottomOf(retry)).toBeLessThan((await settledBox(onward))?.y ?? 0);
   expect(await settledBox(onward)).toMatchObject({
     width: COLUMN,
-    height: await resolvedLength(page, '--field-h'),
+    height: await resolvedLength(page, '--button-h-lg'),
   });
   expect(await bottomOf(onward)).toBeLessThanOrEqual(HEIGHT);
   await expect(profile.getByRole('button')).toHaveCount(2);
@@ -117,7 +117,7 @@ test('a failed save keeps everything typed and the same part open, and says so o
   for (const act of [retry, onward]) {
     expect(await settledBox(act)).toMatchObject({
       width: COLUMN,
-      height: await resolvedLength(page, '--field-h'),
+      height: await resolvedLength(page, '--button-h-lg'),
     });
   }
   expect(await bottomOf(onward)).toBeLessThanOrEqual(HEIGHT);

@@ -42,7 +42,7 @@ export function ChartFrame(props: WebChartFrameProps) {
       {hasCaption ? (
         <figcaption className="hg-charts-caption">
           <div className="hg-charts-caption-head">
-            {overline ? <div className="hg-charts-overline">{overline}</div> : null}
+            {overline ? <div className="hg-charts-overline hg-overline">{overline}</div> : null}
             {title ? <div className="hg-charts-title">{title}</div> : null}
             {value ? <div className="hg-charts-value">{value}</div> : null}
             <ChartProvenance facts={facts} />

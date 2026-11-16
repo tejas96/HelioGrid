@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { progressPercent, refusalLine, takesImages } from './Dropzone.logic';
 import type { DropzoneProps } from './Dropzone.types';
 import { CameraGlyph, DropzoneSpinner, FileGlyph } from './DropzoneGlyphs.native';
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
   },
   surfaceError: {
     borderColor: colors.danger,
-    backgroundColor: colors['danger-bg'],
+    backgroundColor: TONE.danger.tint,
   },
   track: {
     marginTop: theme.spacing['sp-2'],

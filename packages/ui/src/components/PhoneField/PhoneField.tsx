@@ -125,7 +125,7 @@ export function PhoneValue({ label, value, note, id, className, style }: WebPhon
   return (
     <div className={classNames('hg-phone-value', className)} style={style} id={id}>
       {/* Label and number are adjacent text, read in order — no ARIA plumbing earns its place. */}
-      <span className="hg-phone-value-label">{label}</span>
+      <span className="hg-phone-value-label hg-overline">{label}</span>
       <span className="hg-phone-value-number">{mkt.phone(value)}</span>
       {note === undefined ? null : <p className="hg-phone-value-note">{note}</p>}
     </div>

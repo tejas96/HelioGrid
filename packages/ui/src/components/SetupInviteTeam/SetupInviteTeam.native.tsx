@@ -10,6 +10,8 @@ import { DoorFrame } from '../DoorFrame/DoorFrame.native';
 import { InviteForm } from '../InviteForm/InviteForm.native';
 import type { SetupInviteTeamProps } from './SetupInviteTeam.types';
 
+// web-only parts: AppShell, Card — the glyph and its circle sit in the web wide-only steps after sending.
+
 /**
  * The invite step in the phone's one column (`SCR-M01-07` m-default): the title, the form, and
  * the acts held under the scrolling column with the expiry under them. At the cap the pressed

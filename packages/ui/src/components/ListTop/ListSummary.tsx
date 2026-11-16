@@ -2,8 +2,8 @@ import { Pressable } from '../../primitives/Pressable';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { HeroPanel } from '../HeroPanel';
 import { HueTile } from '../HueTile';
+import { SegmentBar } from '../SegmentBar';
 import { StageMeter } from '../StageMeter/StageMeter';
-import { ListStageBar } from './ListStageBar';
 import { FIGURE_TILE } from './ListTop.logic';
 import type { ListFigure, ListRoom, ListSummaryProps } from './ListTop.types';
 
@@ -75,7 +75,11 @@ export function ListSummary({ summary, room }: { summary: ListSummaryProps; room
             <StageMeter {...summary.stages} />
           </div>
         ) : (
-          <ListStageBar stages={summary.stages} />
+          <SegmentBar
+            parts={summary.stages.stages.map((one) => ({ key: one.stage, count: one.count }))}
+            fade
+            label={summary.stages.words.heading}
+          />
         )}
       </div>
     </HeroPanel>

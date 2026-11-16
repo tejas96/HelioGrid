@@ -15,5 +15,5 @@ export function skeletonColumnsOf(stacked: boolean): string[] {
 
 /** The mark on the board's own message: the alert on a failed read, the board itself when empty. */
 export function boardMarkOf(tone: 'warning' | undefined): ShellGlyphName {
-  return tone === 'warning' ? 'alert-circle' : 'kanban';
+  return tone === 'warning' ? 'alert-circle' : 'board';
 }

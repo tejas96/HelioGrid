@@ -3,6 +3,7 @@ import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Text as RNText, View } from 'react-native';
 import { colors } from '../Color/colors';
 import { roleOf } from '../Text/Text.logic';
+import { TONE } from '../Tone/tone.native';
 import type { FieldProps } from './Field.types';
 
 const sans = theme.type.families.sans;
@@ -16,11 +17,12 @@ const labelStyle: TextStyle = {
   fontFamily: sans,
   fontWeight: '500',
   ...roleOf('field-label'),
+  letterSpacing: theme.type.roles.label.letterSpacing,
   color: colors['text-secondary'],
 };
 
 const requiredStyle: TextStyle = {
-  color: colors['danger-text'],
+  color: TONE.danger.ink,
 };
 
 const hintStyle: TextStyle = {
@@ -32,7 +34,7 @@ const hintStyle: TextStyle = {
 const errorStyle: TextStyle = {
   fontFamily: sans,
   ...roleOf('field-helper'),
-  color: colors['danger-text'],
+  color: TONE.danger.ink,
 };
 
 interface NativeFieldProps extends FieldProps {

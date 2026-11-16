@@ -1,9 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { ListRow } from '../ListRow/ListRow.native';
 import { Sheet } from '../Sheet/Sheet.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { AssigneeLoad } from './AssigneeLoad.native';
 import { isAssignWaiting, loadSharesOf, pickOf } from './AssignPicker.logic';
 import type { AssignPickerProps } from './AssignPicker.types';

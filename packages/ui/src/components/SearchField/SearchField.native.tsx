@@ -2,7 +2,6 @@ import { theme } from '@heliogrid/theme';
 import { useImperativeHandle, useRef, useState } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import {
   FIELD_BOX_EDGE,
@@ -14,7 +13,7 @@ import { closingPress } from '../../primitives/FocusAfter';
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { FiltersButton } from '../FilterBar/FilterBar.native';
 import { clearActOf, searchName } from './SearchField.logic';
 import type { SearchFieldProps } from './SearchField.types';
@@ -80,18 +79,7 @@ function SearchPill({
       ]}
     >
       {/* 18dp is the DS glyph size; it is off the Icon primitive's ladder, so the Svg is direct. */}
-      <Svg
-        width={18}
-        height={18}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={colors['text-tertiary']}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name="search" />
-      </Svg>
+      <ShellGlyph name="search" size="sm" ink={colors['text-tertiary']} />
       <TextInput
         ref={input}
         style={[styles.input, fieldBoxText(disabled)]}
@@ -129,17 +117,7 @@ function ClearPill() {
   const { controlFill } = useGround();
   return (
     <View style={[styles.clearPill, { backgroundColor: controlFill }]}>
-      <Svg
-        width={14}
-        height={14}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={colors['text-secondary']}
-        strokeWidth={2}
-        strokeLinecap="round"
-      >
-        <ShellGlyphMarks name="close" />
-      </Svg>
+      <ShellGlyph name="close" size="dense" ink={colors['text-secondary']} />
     </View>
   );
 }
@@ -167,11 +145,11 @@ const input: TextStyle = {
 
 const styles = StyleSheet.create({
   box,
-  /* After `fieldBox`, so the pill's radius replaces the well's own. */
+  /* A field's radius, as FieldBox draws it: OneOhm's search is a field. */
   pill: {
     height: 50,
     paddingHorizontal: 18 - FIELD_BOX_EDGE,
-    borderRadius: theme.radius['r-pill'],
+    borderRadius: theme.radius['r-input-expressive'],
   },
   input,
   row: {

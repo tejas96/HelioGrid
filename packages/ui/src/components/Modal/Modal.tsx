@@ -4,6 +4,7 @@ import { classNames } from '../../primitives/class-names';
 import { OverlayClose } from '../Sheet/OverlayClose';
 import { SheetBackdrop } from '../Sheet/SheetBackdrop';
 import { useOverlayDismiss } from '../Sheet/use-overlay-dismiss';
+import { drawsModalMark } from './Modal.logic';
 import type { ModalProps } from './Modal.types';
 import { ModalMark } from './ModalMark';
 
@@ -39,6 +40,8 @@ export function Modal({
   overline,
   children,
   size = 'md',
+  place = 'centre',
+  label,
   density = 'expressive',
   tone = 'neutral',
   icon,
@@ -65,9 +68,15 @@ export function Modal({
   return (
     <>
       <SheetBackdrop inset={inset} onClick={dismissible ? onClose : undefined} zIndex={zIndex} />
-      <div className="hg-modal-layer" data-inset={inset ? 'true' : 'false'} style={vars}>
+      <div
+        className="hg-modal-layer"
+        data-inset={inset ? 'true' : 'false'}
+        data-place={place}
+        style={vars}
+      >
         <div
           aria-labelledby={labelId ?? (title === undefined ? undefined : autoId)}
+          aria-label={labelId === undefined && title === undefined ? label : undefined}
           aria-modal="true"
           className={classNames('hg-modal', className)}
           data-density={density}
@@ -77,23 +86,15 @@ export function Modal({
           style={style}
           tabIndex={-1}
         >
-          <div className="hg-modal-header">
-            <ModalMark icon={icon} tone={tone} />
-            <div className="hg-modal-heading">
-              {overline === undefined ? null : <div className="hg-modal-overline">{overline}</div>}
-              {title === undefined ? null : (
-                <h2 className="hg-modal-title" id={autoId}>
-                  {title}
-                </h2>
-              )}
-              {description === undefined ? null : (
-                <p className="hg-modal-description">{description}</p>
-              )}
-            </div>
-            {showClose ? (
-              <OverlayClose label={closeLabel} offset="modal" onClick={onClose} />
-            ) : null}
-          </div>
+          <ModalHead
+            titleId={autoId}
+            title={title}
+            overline={overline}
+            description={description}
+            icon={icon}
+            tone={tone}
+            close={showClose && dismissible ? { label: closeLabel, onClose } : null}
+          />
 
           {children === undefined ? null : <div className="hg-modal-body">{children}</div>}
 
@@ -105,5 +106,42 @@ export function Modal({
         </div>
       </div>
     </>
+  );
+}
+
+/** The dialog's head: its mark, overline, title, sentence and close — no box around nothing. */
+function ModalHead({
+  titleId,
+  title,
+  overline,
+  description,
+  icon,
+  tone,
+  close,
+}: Pick<ModalProps, 'title' | 'overline' | 'description' | 'icon'> & {
+  titleId: string;
+  tone: NonNullable<ModalProps['tone']>;
+  close: { label: ModalProps['closeLabel']; onClose: ModalProps['onClose'] } | null;
+}) {
+  const worded = title !== undefined || overline !== undefined || description !== undefined;
+  if (close === null && !worded && !drawsModalMark(icon, tone)) return null;
+  return (
+    <div className="hg-modal-header">
+      <ModalMark icon={icon} tone={tone} />
+      <div className="hg-modal-heading">
+        {overline === undefined ? null : (
+          <div className="hg-modal-overline hg-overline">{overline}</div>
+        )}
+        {title === undefined ? null : (
+          <h2 className="hg-modal-title" id={titleId}>
+            {title}
+          </h2>
+        )}
+        {description === undefined ? null : <p className="hg-modal-description">{description}</p>}
+      </div>
+      {close === null ? null : (
+        <OverlayClose label={close.label} offset="modal" onClick={close.onClose} />
+      )}
+    </div>
   );
 }

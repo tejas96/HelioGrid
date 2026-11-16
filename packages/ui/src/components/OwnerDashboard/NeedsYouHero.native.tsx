@@ -38,7 +38,7 @@ export function NeedsYouHero(props: DashboardPartProps) {
     return (
       <HeroPanel label={words.needsYouNow}>
         <View style={styles.head}>
-          <HueTile glyph="check-check" hue="success" size={48} stroke={1.75} />
+          <HueTile glyph="check-check" hue="success" size={48} />
           <View style={styles.words}>
             <Text variant="h3">{words.allClearTitle}</Text>
             <Text variant="body-sm" color="secondary">
@@ -107,7 +107,7 @@ function NeedCard({
   return (
     <View style={styles.need}>
       <View style={styles.head}>
-        <HueTile glyph={item.glyph} hue={item.hue} size={44} stroke={1.75} />
+        <HueTile glyph={item.glyph} hue={item.hue} size={44} />
         <View style={styles.words}>
           <Text variant="h3">{item.title}</Text>
           <Text variant="body-sm" color="secondary">

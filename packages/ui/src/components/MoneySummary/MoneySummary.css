@@ -4,9 +4,8 @@
    `data-keep-together` attributes pair with tokens/print.css's `[data-keep-together]{
    break-inside:avoid}` so the equation is never split across two sheets.
 
-   Two sizes have no type token and are the design system's own figures: the 14px line and the
-   26px payable. Everything else — every colour, rule, radius and duration — is a token, and the
-   `document` surface swaps the screen steps for the print ones (--doc-fs*, --doc-rule). */
+   Every size, colour, rule, radius and duration is a token, and the `document` surface swaps the
+   screen roles for the document's own (--doc-fs*, --doc-rule). */
 
 .hg-money-summary {
   font-family: var(--font-sans);
@@ -14,10 +13,6 @@
 
 .hg-money-summary-overline {
   margin: 0 0 6px;
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 
@@ -41,7 +36,7 @@
 
 .hg-money-summary-label {
   min-width: 0;
-  font-size: 14px;
+  font-size: var(--fs-body-sm);
   color: var(--text-primary);
   text-wrap: pretty;
 }
@@ -55,7 +50,7 @@
 .hg-money-summary-amount {
   flex-shrink: 0;
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: var(--fs-body-sm);
   font-variant-numeric: tabular-nums;
   font-weight: var(--fw-regular);
   color: var(--text-primary);
@@ -93,7 +88,7 @@
 }
 
 .hg-money-summary-payable-label {
-  font-size: 14px;
+  font-size: var(--fs-body-sm);
   font-weight: var(--fw-bold);
   letter-spacing: -0.01em;
   color: var(--text-primary);
@@ -101,7 +96,7 @@
 
 .hg-money-summary-payable-value {
   font-family: var(--font-mono);
-  font-size: 26px;
+  font-size: var(--fs-figure);
   font-weight: var(--fw-bold);
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
@@ -113,7 +108,7 @@
    the sentence names the gap instead of leaving a reader to spot it. */
 .hg-money-summary-defect {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
   line-height: 1.5;
   color: var(--danger-text);

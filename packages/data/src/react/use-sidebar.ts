@@ -4,7 +4,9 @@ import {
   billingStripAudienceOf,
   billingStripFactOf,
   opensSettingsRow,
+  type SidebarGroupLists,
   type StandingDestination,
+  sidebarGroupsOf,
   sidebarWorkLists,
   type WorkDestination,
   workListLanded,
@@ -28,6 +30,8 @@ export interface Sidebar {
    * pill keeps `F7-48`'s two, the sidebar has the room (`sidebarWorkLists`).
    */
   lists(destinations: readonly StandingDestination[]): readonly WorkDestination[];
+  /** Those lists by group, each under its overline (Sales, Delivery, Team), a group with none left out. */
+  groups(destinations: readonly StandingDestination[]): readonly SidebarGroupLists[];
   readonly counts: ShellCounts;
 }
 
@@ -50,6 +54,7 @@ export function useSidebar(): Sidebar {
   return {
     soon: (destination) => isWork(destination) && !workListLanded(destination),
     lists: sidebarWorkLists,
+    groups: (destinations) => sidebarGroupsOf(sidebarWorkLists(destinations)),
     counts,
   };
 }

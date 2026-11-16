@@ -1,35 +1,29 @@
-import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import type { ShellGlyphProps } from './AppShell.types';
-import { glyphMarks, glyphStroke } from './ShellGlyph.logic';
-import { ShellGlyphMarks } from './ShellGlyphMarks';
+import { SHELL_GLYPHS } from './ShellGlyph.icons';
+import { GLYPH_SIZE, GLYPH_STROKE } from './ShellGlyph.logic';
 
 /**
- * One of the shell's own glyphs. Decorative — the control that holds it carries the name — so it
- * is hidden from assistive tech. `tone` sets the colour; the stroke follows it.
+ * One of the design system's glyphs, hidden from assistive tech unless it has a `label`. `tone`
+ * sets the colour from `ShellGlyph.css`; `ink` wins.
  */
 export function ShellGlyph({
   name,
-  filled = false,
   size = 'lg',
   tone = 'secondary',
+  ink,
+  fill,
+  label,
 }: ShellGlyphProps) {
-  const { solid } = glyphMarks(name, filled);
-  const px = ICON_SIZE[size];
+  const Glyph = SHELL_GLYPHS[name];
   return (
-    <svg
-      viewBox="0 0 24 24"
-      width={px}
-      height={px}
-      fill={solid ? 'currentColor' : 'none'}
-      stroke="currentColor"
-      strokeWidth={glyphStroke(size)}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
+    <Glyph
+      size={GLYPH_SIZE[size]}
+      strokeWidth={GLYPH_STROKE}
+      fill={fill === 'ink' ? 'currentColor' : (fill ?? 'none')}
+      {...(label === undefined ? { 'aria-hidden': true } : { role: 'img', 'aria-label': label })}
       className="hg-shell-glyph"
-      data-tone={tone}
-    >
-      <ShellGlyphMarks name={name} filled={filled} />
-    </svg>
+      data-tone={ink === undefined ? tone : undefined}
+      style={ink === undefined ? undefined : { color: ink }}
+    />
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
-import { Avatar, IconButton, ShellGlyph, useFormat } from '@heliogrid/ui';
+import { Avatar, Card, IconButton, ShellGlyph, Text, useFormat } from '@heliogrid/ui';
 
 /**
  * The person to call (`F5-55`, `F5-73`): on every page of the link and on every failure, a name
@@ -20,16 +20,22 @@ export function PersonCard({
 }) {
   const format = useFormat();
   return (
-    <section className="hg-cust-person">
+    <Card as="section" surface="raised" className="hg-cust-person">
       <Avatar name={name} size={theme.spacing['sp-10']} hue="accent" />
       <span className="hg-cust-person-words">
-        <b>{name}</b>
-        <span>{role}</span>
-        <span className="hg-cust-mono">{format.phone(phoneE164)}</span>
+        <Text as="span" bold>
+          {name}
+        </Text>
+        <Text variant="body-sm" color="secondary" as="span">
+          {role}
+        </Text>
+        <Text variant="mono" as="span">
+          {format.phone(phoneE164)}
+        </Text>
       </span>
       <IconButton label={callLabel} href={`tel:${phoneE164}`} variant="surface">
         <ShellGlyph name="phone" />
       </IconButton>
-    </section>
+    </Card>
   );
 }

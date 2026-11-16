@@ -270,7 +270,7 @@ export {
   updateOnStoreLabel,
   verbLabel,
 } from './copy/shell';
-export { SIDEBAR } from './copy/sidebar';
+export { SIDEBAR, sidebarGroupLabel } from './copy/sidebar';
 export type { SignInCopyKey } from './copy/sign-in';
 export { SIGN_IN } from './copy/sign-in';
 export type { SignInFacts, SignInLabels, SignInWords } from './copy/sign-in-frames';

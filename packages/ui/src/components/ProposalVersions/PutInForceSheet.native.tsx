@@ -3,13 +3,13 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import {
   AfterHint,
   AfterRow,
   AfterRows,
   AfterSummary,
 } from '../ProposalAfterParts/ProposalAfterParts.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
 import { inForcePartOf, inForceSheetOf } from './ProposalVersions.logic';
 import type { PutInForceSheetProps } from './ProposalVersions.types';
@@ -60,9 +60,9 @@ function Body(props: PutInForceSheetProps & { readonly facts: VersionInForcePrev
 export function PutInForceSheet(props: PutInForceSheetProps) {
   const { open, preview } = props;
   return (
-    <Sheet {...inForceSheetOf(props)} showClose>
+    <EditorSurface {...inForceSheetOf(props)} showClose desktop="modal">
       {open && preview.kind === 'ready' ? <Body {...props} facts={preview.value} /> : null}
-    </Sheet>
+    </EditorSurface>
   );
 }
 

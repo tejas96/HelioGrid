@@ -1,5 +1,5 @@
 import type { CustomerLink, CustomerLinks } from '@heliogrid/contracts';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { NewLinkSheetProps, ProposalLinkAct, ProposalLinksProps } from './ProposalLinks.types';
 
 /** The acts a live link offers, in the order drawn; a link that is off offers none. */

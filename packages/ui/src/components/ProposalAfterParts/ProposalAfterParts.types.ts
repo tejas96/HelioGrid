@@ -1,6 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { HueTileProps } from '../HueTile/HueTile.types';
 
 /**

@@ -1,11 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { ResolvedStep } from './resolve-steps';
 import { rowStateWord, spokenStep } from './resolve-steps';
 import { isLastStep, isStepClickable } from './Stepper.logic';
@@ -52,7 +51,7 @@ export function StepperRow({
         accessibilityLabel={spokenStep(step, index, total, words)}
         disabled={!clickable}
         onPress={clickable ? () => onStepClick?.(index) : undefined}
-        style={[styles.row, active ? styles.rowActive : undefined]}
+        style={[styles.row, active ? { backgroundColor: controlFill } : undefined]}
       >
         <StepperMarker index={index} step={step} />
         <View style={styles.body}>
@@ -69,18 +68,7 @@ export function StepperRow({
           </Text>
         </View>
         {clickable && !active ? (
-          <Svg
-            width={16}
-            height={16}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={colors['text-tertiary']}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <ShellGlyphMarks name="chevron-right" />
-          </Svg>
+          <ShellGlyph name="chevron-right" size="sm" ink={colors['text-tertiary']} />
         ) : null}
       </Pressable>
     </View>
@@ -104,12 +92,13 @@ const styles = StyleSheet.create({
     top: 42,
     bottom: -6,
     width: 2,
-    borderRadius: 2,
+    borderRadius: theme.radius['r-pill'],
   },
   connectorDone: {
     backgroundColor: colors.success,
     opacity: 0.35,
   },
+  /* The step in view is a chosen row: the control fill, as OneOhm's quiet choice. */
   row: {
     width: '100%',
     minHeight: 52,
@@ -121,19 +110,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: theme.radius['r-md'],
   },
-  rowActive: {
-    backgroundColor: colors['accent-subtle'],
-  },
   body: {
     flex: 1,
     minWidth: 0,
   },
-  /* 14 is off the DS type ladder; body-sm (13) is the nearest role and carries the step name. */
   name: {
-    fontSize: 14,
+    fontSize: theme.type.roles['body-sm'].fontSize,
   },
   nameActive: {
-    fontSize: 14,
+    fontSize: theme.type.roles['body-sm'].fontSize,
     fontWeight: '700',
     letterSpacing: theme.type.roles.button.letterSpacing,
   },

@@ -7,7 +7,7 @@ export const MODAL_TONE_GLYPH: Record<ModalTone, ShellGlyphName | null> = {
   neutral: null,
   danger: 'alert-circle',
   warning: 'alert-circle',
-  success: 'tick-long',
+  success: 'check',
 };
 
 /**

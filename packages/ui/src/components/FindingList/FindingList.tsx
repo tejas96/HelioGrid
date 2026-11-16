@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
-import { StatusMark } from '../../primitives/StatusMark';
+import { StatusMark } from '../StatusMark';
 import type { FindingListProps, FindingStatus, FindingStatusMeta } from './FindingList.types';
 import { countSentence, FINDING_RANK, findingVerdict } from './FindingList.verdict';
 import { FINDING_TONE, FindingListRow } from './FindingListRow';

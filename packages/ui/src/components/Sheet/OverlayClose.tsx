@@ -1,4 +1,4 @@
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { OverlayCloseProps } from './OverlayClose.types';
 
 /**
@@ -15,19 +15,7 @@ export function OverlayClose({ onClick, offset = 'sheet', label }: OverlayCloseP
       onClick={onClick}
       type="button"
     >
-      <svg
-        aria-hidden="true"
-        fill="none"
-        height="20"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-        viewBox="0 0 24 24"
-        width="20"
-      >
-        <ShellGlyphMarks name="close" />
-      </svg>
+      <ShellGlyph name="close" size="md" tone="current" />
     </button>
   );
 }

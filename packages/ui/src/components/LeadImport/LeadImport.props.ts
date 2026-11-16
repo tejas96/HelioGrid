@@ -1,4 +1,4 @@
-import { LEAD_IMPORT_FIELDS, type LeadImportField } from '@heliogrid/domain';
+import { importWizardGoesBack, LEAD_IMPORT_FIELDS, type LeadImportField } from '@heliogrid/domain';
 import type { DataTableProps } from '../DataTable/DataTable.types';
 import type {
   ImportColumnsProps,
@@ -161,4 +161,15 @@ export function rowsTableOf(props: LeadImportProps, phase: 'preview' | 'report')
     retryLabel: words.tryAgain,
     unavailableTitle: words.rowsFailed,
   };
+}
+
+/**
+ * The narrow room's way back a step — the catalog import's head offers the same — with the step
+ * itself and its act still in view; null where nothing is behind, or the wide foot already
+ * offers *Back*. The page's own back leaves the import.
+ */
+export function backOf(props: LeadImportProps, wide: boolean): (() => void) | null {
+  /* While the run is out every other way out waits for its answer. */
+  const steady = props.jobFailed === null && !props.opening && !props.runOut;
+  return !wide && steady && importWizardGoesBack(props.frame) ? props.onBack : null;
 }

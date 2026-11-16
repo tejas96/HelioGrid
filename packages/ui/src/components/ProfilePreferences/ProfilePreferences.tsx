@@ -87,7 +87,7 @@ function PhonePage({
   return (
     <>
       <section className="hg-profile-preferences-section" data-gap="wide">
-        <h2 className="hg-profile-preferences-overline">{words.languageAndUnits}</h2>
+        <h2 className="hg-profile-preferences-overline hg-overline">{words.languageAndUnits}</h2>
         <div className="hg-profile-preferences-control">
           <OptionCardGroup
             label={words.language.label}
@@ -123,7 +123,7 @@ function PhonePage({
       </section>
       <section className="hg-profile-preferences-section">
         <div className="hg-profile-preferences-heading">
-          <h2 className="hg-profile-preferences-overline">{words.push.title}</h2>
+          <h2 className="hg-profile-preferences-overline hg-overline">{words.push.title}</h2>
           <AboutPush words={words} />
         </div>
         <div className="hg-profile-preferences-switches">

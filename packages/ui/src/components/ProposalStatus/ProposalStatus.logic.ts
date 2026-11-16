@@ -1,7 +1,7 @@
 import type { ProposalStanding } from '@heliogrid/domain';
-import type { StatusTone } from '../../primitives/StatusMark';
 import type { ShellGlyphProps } from '../AppShell/AppShell.types';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
+import type { StatusTone } from '../StatusMark';
 
 /**
  * Each standing's tone (`M06-48`): waiting on a person is info or neutral, the customer's yes
@@ -31,11 +31,11 @@ export function proposalStandingTone(standing: string): StatusTone {
  */
 const PROPOSAL_STANDING_GLYPH: Record<ProposalStanding, ShellGlyphName> = {
   draft: 'pencil',
-  ready: 'file-text',
+  ready: 'document',
   shared: 'send',
   opened: 'eye',
   negotiating: 'chat',
-  accepted: 'tick',
+  accepted: 'check',
   declined: 'close',
   won: 'star',
   replaced: 'layers',

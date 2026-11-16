@@ -6,8 +6,8 @@ import type { ExplainerBox, ExplainerPlacement, ExplainerTriggerProps } from './
 /* The design system's own measures (`components/feedback/Explainer.jsx`), shared by both halves so
    the bubble sits in the same place on either platform. */
 const GEOMETRY = {
-  expressive: { gap: 12, edge: 16, glyph: 19, visual: 28 },
-  functional: { gap: 10, edge: 12, glyph: 17, visual: 24 },
+  expressive: { gap: 12, edge: 16, glyph: 'md', visual: 28 },
+  functional: { gap: 10, edge: 12, glyph: 'sm', visual: 24 },
 } as const;
 /** A box narrower than this is a phone's, and takes the narrow cap. */
 const NARROW_BOX = 600;

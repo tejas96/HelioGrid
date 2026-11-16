@@ -2,14 +2,13 @@ import { PROJECT_STAGE_CHAIN } from '@heliogrid/domain';
 import { StreamEntries } from '../ActivityStream/ActivityStreamEntries';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
-import { Card } from '../Card';
+import { Card, CardHeader } from '../Card';
 import { leadActivityKinds } from '../LeadTimeline/LeadTimeline.logic';
 import { useFormat } from '../MarketProvider';
 import { Timeline } from '../Timeline';
 import { projectEventsOf } from './ProjectDetail.activity';
 import { journeyItemsOf } from './ProjectDetail.logic';
 import type { ProjectDetailProps } from './ProjectDetail.types';
-import { CardHead } from './ProjectDetailParts';
 
 /** Every stage of the deal's chain with its date and who or what moved it — never a % bar. */
 export function ProjectJourney(props: ProjectDetailProps) {
@@ -19,7 +18,11 @@ export function ProjectJourney(props: ProjectDetailProps) {
   return (
     <section aria-label={words.journey}>
       <Card density="functional" className="hg-project-detail-card">
-        <CardHead title={words.journey} aside={words.journeyNote} />
+        <CardHeader
+          title={words.journey}
+          description={words.journeyNote}
+          className="hg-project-detail-card-head"
+        />
         <Timeline
           variant="page"
           density="functional"
@@ -42,7 +45,7 @@ export function ProjectDeal({ project, words }: ProjectDetailProps) {
   return (
     <section aria-label={words.deal}>
       <Card density="functional" className="hg-project-detail-card">
-        <CardHead title={words.deal} aside={null} />
+        <CardHeader title={words.deal} className="hg-project-detail-card-head" />
         <dl className="hg-project-detail-facts-list">
           <dt>{words.customer}</dt>
           <dd>
@@ -83,7 +86,11 @@ export function ProjectActivity({ project, words }: ProjectDetailProps) {
   return (
     <section aria-label={words.activity}>
       <Card density="functional" className="hg-project-detail-card">
-        <CardHead title={words.activity} aside={words.activityNote} />
+        <CardHeader
+          title={words.activity}
+          description={words.activityNote}
+          className="hg-project-detail-card-head"
+        />
         <div className="hg-project-detail-stream">
           <StreamEntries
             entries={projectEventsOf(project, words, PROJECT_STAGE_CHAIN)}

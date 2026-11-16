@@ -9,10 +9,10 @@ import {
   fieldBoxPlaceholder,
   fieldBoxText,
 } from '../../primitives/FieldBox/FieldBox.native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFocusRequest } from '../../primitives/use-focus-request';
 import { renderOverride } from '../FieldOverride/FieldOverride.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
 import { useCommitDraft } from './commit-draft';
 import { inputNote, ringTone } from './Input.logic';

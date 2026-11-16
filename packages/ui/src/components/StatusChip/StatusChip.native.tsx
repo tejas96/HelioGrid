@@ -5,13 +5,13 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet } from 'react-native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { STATUS_CHIP_STATUSES, statusChipTone } from './StatusChip.registry';
 import type { StatusChipDensity, StatusChipProps } from './StatusChip.types';
 
 const styles = StyleSheet.create({
-  expressive: { minHeight: 28, paddingHorizontal: theme.spacing['sp-3'] },
-  functional: { minHeight: 24, paddingHorizontal: theme.spacing['sp-3'] },
+  expressive: { minHeight: theme.layout['status-h'], paddingHorizontal: theme.spacing['sp-3'] },
+  functional: { minHeight: theme.layout['badge-h'], paddingHorizontal: theme.spacing['sp-3'] },
 });
 
 const DENSITY: Record<StatusChipDensity, ViewStyle> = {

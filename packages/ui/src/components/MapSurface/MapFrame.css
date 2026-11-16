@@ -12,14 +12,7 @@
 .hg-map-surface-skeleton {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    90deg,
-    var(--canvas) 25%,
-    var(--canvas-sunken) 50%,
-    var(--canvas) 75%
-  );
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
+  --hg-skeleton-ground: var(--canvas);
 }
 
 /* No key, no tiles: a neutral grid so a layout can be reviewed without a provider. */
@@ -109,16 +102,11 @@
 }
 
 /* ── states ─────────────────────────────────────────────────────────────── */
+/* The plate a map's empty or error region (`StateRegion`) is centred on. */
 .hg-map-surface-note {
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-2);
   padding: var(--sp-6);
-  text-align: center;
   background: var(--surface-alt);
 }
 
@@ -131,38 +119,4 @@
   display: grid;
   place-items: center;
   background: var(--surface-alt);
-}
-
-.hg-map-surface-mark {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--r-pill);
-}
-
-.hg-map-surface-mark[data-tone="warning"] {
-  background: var(--warning-bg);
-  color: var(--warning-text);
-}
-
-.hg-map-surface-mark[data-tone="neutral"] {
-  background: var(--neutral-bg);
-  color: var(--text-tertiary);
-}
-
-.hg-map-surface-note-title {
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-h4);
-  color: var(--text-primary);
-}
-
-.hg-map-surface-note-message {
-  max-width: 320px;
-  font-family: var(--font-sans);
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-body-sm);
-  color: var(--text-secondary);
 }

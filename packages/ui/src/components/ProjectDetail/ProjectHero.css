@@ -59,11 +59,6 @@
 }
 
 .hg-project-detail-overline {
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--tr-overline);
-  line-height: var(--lh-overline);
-  text-transform: uppercase;
   color: var(--on-panel-muted);
 }
 

@@ -4,10 +4,9 @@
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { TimelineItem, TimelineStatus } from './Timeline.types';
 import { TimelineRailCell } from './TimelineRailCell.native';
 
@@ -20,8 +19,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     columnGap: theme.spacing['sp-3'],
   },
-  /* The DS's page step is 16px; the type scale has no 16, so it is written out with this note. */
-  labelPage: { fontSize: 16 },
+  labelPage: { fontSize: theme.type.roles['card-head'].fontSize },
   labelCurrent: { fontWeight: '700', letterSpacing: theme.type.roles.h4.letterSpacing },
   description: { marginTop: theme.spacing['sp-1'], maxWidth: 560 },
   actor: {
@@ -98,20 +96,7 @@ export function TimelineStep({
         </View>
         {item.description ? (
           <View style={[styles.description, styles.descriptionRow]}>
-            {system ? (
-              <Svg
-                width={13}
-                height={13}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke={colors['hue-teal-text']}
-                strokeWidth={1.8}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <ShellGlyphMarks name="spark" />
-              </Svg>
-            ) : null}
+            {system ? <ShellGlyph name="spark" size="dense" ink={colors['hue-teal-text']} /> : null}
             <Text
               variant="body-sm"
               color="secondary"
@@ -123,17 +108,7 @@ export function TimelineStep({
         ) : null}
         {item.actor ? (
           <View style={styles.actor}>
-            <Svg
-              width={13}
-              height={13}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={colors['text-tertiary']}
-              strokeWidth={1.5}
-              strokeLinecap="round"
-            >
-              <ShellGlyphMarks name="person-slim" />
-            </Svg>
+            <ShellGlyph name="user" size="dense" ink={colors['text-tertiary']} />
             <Text variant="caption" color="tertiary">
               {item.actor}
             </Text>

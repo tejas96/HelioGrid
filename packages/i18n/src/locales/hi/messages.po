@@ -1639,7 +1639,7 @@ msgid "{label}, {summary}"
 msgstr "{label}, {summary}"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:12
+#: src/copy/sidebar.ts:16
 msgid "{label}, coming soon"
 msgstr "{label}, जल्द आ रहा है"
 
@@ -2807,7 +2807,7 @@ msgstr "{remainder}% ज़्यादा"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:32
-#: src/copy/sidebar.ts:16
+#: src/copy/sidebar.ts:20
 msgid "{role} · {company}"
 msgstr "{role} · {company}"
 
@@ -6634,7 +6634,7 @@ msgid "Code limits"
 msgstr "कोड की सीमा"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:13
+#: src/copy/sidebar.ts:17
 msgid "Collapse the sidebar"
 msgstr "साइडबार छोटा करें"
 
@@ -7432,7 +7432,7 @@ msgid "CSV or Excel file"
 msgstr "CSV या Excel फ़ाइल"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:10
+#: src/copy/sidebar.ts:14
 msgid "Ctrl K"
 msgstr "Ctrl K"
 
@@ -7834,6 +7834,7 @@ msgstr "चरण हटाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:71
+#: src/copy/sidebar.ts:26
 msgid "Delivery"
 msgstr "डिलीवरी"
 
@@ -8834,7 +8835,7 @@ msgid "Existing leads left as they were."
 msgstr "मौजूदा लीड्स जैसी थीं वैसी ही रहीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:14
+#: src/copy/sidebar.ts:18
 msgid "Expand the sidebar"
 msgstr "साइडबार बड़ा करें"
 
@@ -10972,7 +10973,7 @@ msgid "Junk this lead"
 msgstr "यह लीड बेकार में डालें"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:9
+#: src/copy/sidebar.ts:13
 msgid "K"
 msgstr "K"
 
@@ -18351,6 +18352,7 @@ msgstr "कब तक चलेगा"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:70
+#: src/copy/sidebar.ts:25
 msgid "Sales"
 msgstr "सेल्स"
 
@@ -18773,7 +18775,7 @@ msgid "Search leads"
 msgstr "लीड्स खोजें"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:6
+#: src/copy/sidebar.ts:10
 msgid "Search or jump to…"
 msgstr "खोजें या सीधे जाएँ…"
 
@@ -19814,7 +19816,7 @@ msgid "Something went wrong on our side. Try again."
 msgstr "हमारी ओर से कुछ गड़बड़ हो गई। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:11
+#: src/copy/sidebar.ts:15
 msgid "Soon"
 msgstr "जल्द"
 
@@ -20551,6 +20553,7 @@ msgstr "कर पंजीकरण"
 #: src/copy/notifications.ts:73
 #: src/copy/role-matrix.ts:98
 #: src/copy/settings.ts:42
+#: src/copy/sidebar.ts:27
 msgid "Team"
 msgstr "टीम"
 

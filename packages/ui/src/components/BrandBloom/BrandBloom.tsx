@@ -11,10 +11,13 @@ interface WebBrandBloomProps extends BrandBloomProps {
 
 /** The brand's light, absolutely placed inside a relative parent. */
 export function BrandBloom({ placement, size, className, style }: WebBrandBloomProps) {
+  /* The web's page glow has one owner, the body (`--glow-page`, theme `base.css`): drawn here too
+     it would be the same light twice. */
+  if (placement === 'page') return null;
   const side = placement === 'centre' ? CENTRE_BLOOM_SIZE : size;
   const vars: CssVars = { ...style };
   if (side !== undefined) vars['--hg-bloom-size'] = `${side}px`;
-  const mode = placement === 'page' ? 'page' : side === undefined ? 'fill' : 'art';
+  const mode = side === undefined ? 'fill' : 'art';
   return (
     <span
       aria-hidden="true"

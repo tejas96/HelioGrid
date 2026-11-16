@@ -20,6 +20,8 @@ interface WebProgressBarProps extends ProgressBarProps {
 export function ProgressBar({
   value = 0,
   gradient = false,
+  label,
+  steps,
   className,
   style,
 }: WebProgressBarProps) {
@@ -28,9 +30,10 @@ export function ProgressBar({
   return (
     <div
       role="progressbar"
-      aria-valuenow={pct}
-      aria-valuemin={0}
-      aria-valuemax={100}
+      aria-valuenow={steps === undefined ? pct : steps.now}
+      aria-valuemin={steps === undefined ? 0 : 1}
+      aria-valuemax={steps === undefined ? 100 : steps.total}
+      aria-label={label}
       className={classNames('hg-progress-bar', className)}
       style={style}
     >

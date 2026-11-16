@@ -13,7 +13,7 @@ export interface ButtonFigures {
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'destructive';
 
 /**
- * `prominent` is a screen's one main verb (Home's *Add lead*): the largest pill, its glow deepest,
+ * `prominent` is a screen's one main verb (Home's *Add lead*): the largest button,
  * read before anything else on the page. At most one per screen, and only on `primary`.
  */
 export type ButtonSize = 'prominent' | 'lg' | 'md' | 'sm';

@@ -2,7 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { Read } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { AllocationMeterWords } from '../AllocationMeter/AllocationMeter.types';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { BrandingDocumentFacts } from '../BrandingSettings/BrandingSettings.types';
 import type { DocumentTranche } from '../DocumentPreview/DocumentPreview.types';
 import type { NumberFieldWords } from '../NumberField/NumberField.types';

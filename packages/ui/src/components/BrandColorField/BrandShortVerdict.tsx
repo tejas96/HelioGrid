@@ -1,4 +1,4 @@
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import type { BrandShortVerdictProps } from './BrandColorField.types';
 import { VERDICT_GLYPH } from './BrandVerdictLine.logic';
@@ -19,19 +19,7 @@ export function BrandShortVerdict({
     <div className="hg-brand-color-short">
       <p className="hg-brand-color-short-line" data-kind={verdict.kind}>
         <span className="hg-brand-color-short-disc" aria-hidden="true">
-          <svg
-            aria-hidden="true"
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.9"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <ShellGlyphMarks name={VERDICT_GLYPH[verdict.kind]} />
-          </svg>
+          <ShellGlyph name={VERDICT_GLYPH[verdict.kind]} size="dense" tone="current" />
         </span>
         <span>{verdict.sentence}</span>
       </p>

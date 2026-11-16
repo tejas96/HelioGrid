@@ -18,7 +18,7 @@ import { styles, underPill } from '../styles';
 import { ShellBillingStrip } from './ShellBillingStrip';
 
 /** Past the large title, the bar takes the page's name over (`LargeTitle`). */
-const LARGE_TITLE_HEIGHT = theme.type.roles.display.lineHeight;
+const LARGE_TITLE_HEIGHT = theme.type.roles['display-phone'].lineHeight;
 /** The distance over which the pinned band comes in: the bar's own height, as the bar's band. */
 const FROST_DISTANCE = theme.layout['topbar-h-mobile'];
 

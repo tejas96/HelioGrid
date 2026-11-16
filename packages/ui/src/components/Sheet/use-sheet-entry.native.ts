@@ -1,7 +1,16 @@
 import { theme } from '@heliogrid/theme';
 import { type RefObject, useEffect, useRef } from 'react';
-import { Animated, Easing } from 'react-native';
+import { Animated } from 'react-native';
 import { useReducedMotion } from '../../primitives/use-reduced-motion';
+
+/** The sheet springing to its place — as it opens, and when a drag lets it go — on the layout spring. */
+export function springHome(offset: Animated.Value): Animated.CompositeAnimation {
+  return Animated.spring(offset, {
+    toValue: 0,
+    ...theme.motion.springs.layout,
+    useNativeDriver: true,
+  });
+}
 
 /**
  * The phone sheet's rise as it opens, once per opening, and whether reduced motion is on — read
@@ -37,12 +46,7 @@ export function useSheetEntry(
       return;
     }
     offset.setValue(panelHeight);
-    entry.current = Animated.timing(offset, {
-      toValue: 0,
-      duration: theme.motion.durations.emphasised,
-      easing: Easing.bezier(...theme.motion.easings.spring),
-      useNativeDriver: true,
-    });
+    entry.current = springHome(offset);
     entry.current.start();
   }, [open, panelHeight, offset]);
   useEffect(() => () => entry.current?.stop(), []);

@@ -54,10 +54,6 @@
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
   padding: 6px 0 10px;
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-secondary);
 }
 
@@ -91,60 +87,9 @@
 .hg-stream-shimmer {
   display: block;
   border-radius: var(--rf-md);
-  background: linear-gradient(
-    90deg,
-    var(--canvas) 25%,
-    var(--canvas-sunken) 50%,
-    var(--canvas) 75%
-  );
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
   width: var(--hg-stream-shimmer-w);
   height: var(--hg-stream-shimmer-h);
-}
-
-.hg-stream-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--sp-2);
-  padding: 40px var(--sp-4);
-}
-
-.hg-stream-message-mark {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--r-pill);
-  display: grid;
-  place-items: center;
-  background: var(--neutral-bg);
-  color: var(--text-tertiary);
-  margin-bottom: 4px;
-}
-
-.hg-stream-message-mark[data-tone="warning"] {
-  background: var(--warning-bg);
-  color: var(--warning-text);
-}
-
-.hg-stream-message-title {
-  font-size: 16px;
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
-
-.hg-stream-message-text {
-  font-size: var(--fs-body-sm);
-  color: var(--text-secondary);
-  max-width: 320px;
-  line-height: 1.5;
-  text-wrap: pretty;
-}
-
-.hg-stream-message-extra {
-  margin-top: 10px;
+  --hg-skeleton-ground: var(--canvas);
 }
 
 .hg-stream-more {

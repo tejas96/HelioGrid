@@ -1,70 +1,13 @@
-/* The customer's page — its cards, the note of an answer, the person, the foot, the bar and what a
-   sheet lays out. Tokens only. */
+/* The customer's page — what its cards lay out, the person, the foot, the bar and what a sheet lays
+   out. A card's frame is `Card`'s, its title `CardHeader`'s, a note `TintedBlock`'s. Tokens only. */
 
-/* ── cards and notes ─────────────────────────────────────────────────────── */
+/* ── what a card lays out ────────────────────────────────────────────────── */
 .hg-cust-card,
-.hg-cust-note,
-.hg-cust-person,
 .hg-cust-sidecard {
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
-  padding: var(--sp-5);
-  border-radius: var(--r-lg);
-  /* biome-ignore lint/plugin/raw-white-css: the customer's page card — the white card on the page's canvas, as the product's tile is */
-  background: var(--surface);
-  box-shadow:
-    var(--e1),
-    inset 0 0 0 var(--hg-cust-line) var(--line-soft);
   min-width: 0;
-}
-
-.hg-cust-card[data-glass] {
-  /* biome-ignore lint/plugin/raw-white-css: the same card, lit from its corner by the company's colour */
-  background:
-    radial-gradient(
-      90% 120% at 100% 0%,
-      color-mix(in srgb, var(--accent) 14%, transparent),
-      transparent 60%
-    ),
-    var(--surface);
-}
-
-.hg-cust-card-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: var(--fw-regular);
-  font-size: var(--fs-card-title);
-  line-height: var(--lh-card-title);
-  letter-spacing: var(--tr-card-title);
-  color: var(--text-primary);
-}
-
-.hg-cust-note {
-  gap: var(--sp-2);
-  box-shadow: none;
-  /* An answer just given rises into place once, as the design draws it. */
-  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
-}
-
-.hg-cust-note[data-tone="success"] {
-  background: var(--success-bg);
-}
-
-.hg-cust-note[data-tone="neutral"] {
-  background: var(--neutral-bg);
-}
-
-.hg-cust-note[data-tone="info"] {
-  background: var(--accent-subtle);
-}
-
-.hg-cust-note p,
-.hg-cust-quiet {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
 }
 
 .hg-cust-said {
@@ -133,32 +76,11 @@
   font-variant-numeric: tabular-nums;
 }
 
-.hg-cust-over {
-  font-size: var(--fs-overline);
-  line-height: var(--lh-overline);
-  letter-spacing: var(--tr-overline);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.hg-cust-label {
-  font-size: var(--fs-field-label);
-  color: var(--text-secondary);
-}
-
-.hg-cust-failure {
-  margin: 0;
-  color: var(--danger-text);
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-body-sm);
-}
-
 /* ── the person, the foot, the bar ───────────────────────────────────────── */
 .hg-cust-person {
-  flex-direction: row;
+  display: flex;
   align-items: center;
-  padding: var(--sp-4);
+  gap: var(--sp-3);
 }
 
 .hg-cust-person-words {
@@ -166,16 +88,6 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-}
-
-.hg-cust-person-words > b {
-  font-weight: var(--fw-semibold);
-}
-
-.hg-cust-person-words > span {
-  color: var(--text-secondary);
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-body-sm);
 }
 
 .hg-cust-foot {
@@ -229,16 +141,10 @@
 
 .hg-cust-sidecard {
   gap: var(--sp-1);
-  padding: var(--sp-6);
-  box-shadow: var(--e2);
 }
 
+/* The price is one token: wrapping it is worse than any overflow. */
 .hg-cust-price {
-  font-family: var(--font-display);
-  font-weight: var(--fw-regular);
-  font-size: var(--fs-display);
-  line-height: var(--lh-display);
-  letter-spacing: var(--tr-display);
   font-variant-numeric: tabular-nums lining-nums;
   white-space: nowrap;
 }
@@ -281,13 +187,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-2);
-}
-
-.hg-cust-foot-note {
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-body-sm);
 }
 
 /* At the desktop's room the acts sit in the card beside the content, and the person with them. */

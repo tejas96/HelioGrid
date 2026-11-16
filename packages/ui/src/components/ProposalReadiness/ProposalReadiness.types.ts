@@ -1,5 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 
 /** One setup step: its name, what it fills in, whether it is done, and where it is done. */
 export interface ReadinessStep {

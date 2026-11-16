@@ -10,14 +10,11 @@
   gap: var(--sp-6);
   padding: var(--sp-8) var(--sp-6);
   text-align: center;
-  background: var(--glow-mark) center 22% / 560px 560px no-repeat;
 }
 .hg-prdy[data-form="desktop"] {
   flex-direction: row;
   gap: var(--sp-20);
   text-align: start;
-  background-position: 30% 50%;
-  background-size: 900px 900px;
 }
 .hg-prdy-art {
   position: relative;
@@ -47,13 +44,14 @@
 }
 .hg-prdy-title {
   margin: 0;
-  font: var(--fw-regular) 34px / 40px var(--font-display);
+  font: var(--fw-regular) var(--fs-h1) / var(--lh-h1) var(--font-display);
   letter-spacing: var(--tr-display);
   text-wrap: balance;
 }
+/* The approved design's wide title: the cover's wide role, its line height with it. */
 .hg-prdy[data-form="desktop"] .hg-prdy-title {
-  font-size: 52px;
-  line-height: 58px;
+  font-size: var(--fs-cover-wide);
+  line-height: var(--lh-cover-wide);
 }
 .hg-prdy-line {
   margin: 0;

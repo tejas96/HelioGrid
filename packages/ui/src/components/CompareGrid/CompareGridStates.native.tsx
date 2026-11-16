@@ -2,12 +2,10 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
+import { StateRegion } from '../StateBody/StateRegion.native';
 
 const styles = StyleSheet.create({
   skeleton: { padding: theme.spacing['sp-4'], gap: theme.spacing['sp-3'] },
@@ -17,23 +15,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors['canvas-sunken'],
   },
   lead: { width: '60%', height: theme.spacing['sp-4'] },
-  message: {
-    alignItems: 'center',
-    gap: theme.spacing['sp-2'],
-    paddingVertical: 48,
-    paddingHorizontal: theme.spacing['sp-6'],
-  },
-  mark: {
-    width: 48,
-    height: 48,
-    borderRadius: theme.radius['r-pill'],
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: theme.spacing['sp-1'],
-    backgroundColor: colors['neutral-bg'],
-  },
-  markWarning: { backgroundColor: colors['warning-bg'] },
-  body: { maxWidth: 340 },
 });
 
 /**
@@ -78,31 +59,13 @@ export function CompareMessage({
   /** Where focus lands once *Try again* has gone with this message. */
   focusAfter: FocusAfter;
 }) {
-  const stroke = tone === 'warning' ? colors['warning-text'] : colors['text-tertiary'];
   return (
-    <View style={styles.message}>
-      <View style={[styles.mark, tone === 'warning' ? styles.markWarning : null]}>
-        <Svg
-          width={22}
-          height={22}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={stroke}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-        >
-          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'columns'} />
-        </Svg>
-      </View>
-      <Text variant="h4" align="center">
-        {title}
-      </Text>
-      {message === undefined ? null : (
-        <Text variant="body-sm" color="secondary" align="center" style={styles.body}>
-          {message}
-        </Text>
-      )}
-      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
-    </View>
+    <StateRegion
+      tone={tone}
+      glyph="columns"
+      title={title}
+      message={message}
+      action={<RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />}
+    />
   );
 }

@@ -5,8 +5,8 @@ import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Button } from '../Button/Button.native';
 import type {
   CatalogEditorOwnActs,
@@ -83,7 +83,7 @@ export function CatalogPickerActs({
   );
 }
 
-/** One glass toggle: its glyph and word, pressed while on, the accent wash when on. */
+/** One glass toggle: its glyph and word, pressed while on, an ink outline when on. */
 function PickToggle({
   glyph,
   word,
@@ -103,14 +103,14 @@ function PickToggle({
       accessibilityLabel={spoken}
       accessibilityState={{ selected: on }}
       onPress={onToggle}
-      style={[styles.face, on ? styles.on : { backgroundColor: ground.controlFill }]}
+      style={[styles.face, { backgroundColor: ground.controlFill }, on ? styles.on : undefined]}
     >
       <View style={styles.faceRow}>
         <ShellGlyph
           name={glyph}
           size="sm"
-          filled={glyph === 'star' && on}
-          tone={on ? 'accent' : 'primary'}
+          fill={glyph === 'star' && on ? 'ink' : undefined}
+          tone="primary"
         />
         <Text variant="body-sm" bold style={on ? styles.onWord : undefined}>
           {word}
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     borderColor: colors['line-soft'],
   },
   faceRow: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
-  /* On: the accent wash, as every chosen option is; the toggle also says it is pressed. */
-  on: { backgroundColor: colors['accent-subtle'], borderColor: colors['accent-subtle'] },
-  onWord: { color: colors['accent-text'] },
+  /* On: the ink outline, as every chosen option is; the toggle also says it is pressed. */
+  on: { borderColor: colors['text-primary'] },
+  onWord: { color: colors['text-primary'] },
 });

@@ -13,6 +13,8 @@ import { TileActions } from '../TileActions/TileActions.native';
 import type { RecordCardProps } from './NextAction.types';
 import { RecordFace, RecordSlots } from './RecordCardSlots.native';
 
+// web-only parts: ChipGroup, Provenance — the marks and the tier are drawn by its child RecordCardSlots.native.
+
 interface NativeRecordCardProps extends RecordCardProps {
   style?: StyleProp<ViewStyle>;
 }

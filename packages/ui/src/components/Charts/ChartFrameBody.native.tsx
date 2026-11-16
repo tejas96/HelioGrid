@@ -1,13 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Svg } from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { ChartSkeleton } from './ChartSkeleton.native';
@@ -26,8 +25,8 @@ interface ChartFrameBodyProps {
 }
 
 const MARK: Record<ChartNoteTone, { bg: ThemeColor; fg: ThemeColor }> = {
-  warning: { bg: colors['warning-bg'], fg: colors['warning-text'] },
-  neutral: { bg: colors['neutral-bg'], fg: colors['text-tertiary'] },
+  warning: { bg: TONE.warning.tint, fg: TONE.warning.ink },
+  neutral: { bg: TONE.neutral.tint, fg: colors['text-tertiary'] },
 };
 
 const styles = StyleSheet.create({
@@ -62,20 +61,6 @@ const styles = StyleSheet.create({
 
 /* The exclamation-in-a-circle `error` and `empty` share. The fourth state's slashed circle is
    NOT drawn here — `UnavailableNote` owns that mark, and this frame composes it. */
-function AlertGlyph() {
-  return (
-    <Svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-    >
-      <ShellGlyphMarks name="alert-circle" />
-    </Svg>
-  );
-}
-
 /**
  * The plot area, or the state that replaces it. Loading shimmers, `unavailable` states the
  * absence with no retry, and error / empty / not-enough-data share one note.
@@ -112,9 +97,7 @@ export function ChartFrameBody({
     return (
       <View style={[styles.note, { height }]}>
         <View style={[styles.mark, { backgroundColor: MARK[note.tone].bg }]}>
-          <Icon size="md" color={MARK[note.tone].fg}>
-            <AlertGlyph />
-          </Icon>
+          <ShellGlyph name="alert-circle" size="md" ink={MARK[note.tone].fg} />
         </View>
         <Text variant="body-sm" align="center">
           {note.title}

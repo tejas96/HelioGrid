@@ -41,6 +41,7 @@ export function CollectionsSettingsScreen() {
         onEdit={screen.edit}
         changed={screen.changed}
         onSave={() => void screen.save()}
+        onDiscard={screen.discard}
         onEditBank={() => router.push(settingsRowPath(SETTINGS_SEGMENT.company_profile))}
         focusAfter={room}
       />

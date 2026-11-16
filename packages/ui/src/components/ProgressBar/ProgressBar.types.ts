@@ -1,3 +1,5 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+
 /**
  * **The 6px pill rail, and nothing else.** Accent fill, or brand gradient for AI work.
  *
@@ -12,4 +14,11 @@ export interface ProgressBarProps {
   value?: number;
   /** brand-gradient fill for AI / long-running operations */
   gradient?: boolean;
+  /** What the rail measures, for a screen reader — a wizard's name. None leaves it to its holder. */
+  label?: TranslatedText;
+  /**
+   * A rail that counts steps (a wizard's) is said as its step and the count, never a percent: the
+   * holder draws the "n of m" words, and this is only the spoken position. None says the percent.
+   */
+  steps?: { readonly now: number; readonly total: number };
 }

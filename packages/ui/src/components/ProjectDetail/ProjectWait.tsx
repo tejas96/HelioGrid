@@ -5,7 +5,7 @@ import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { Card } from '../Card';
 import { HueTile } from '../HueTile';
-import { PARTY_GLYPH, TILE_STROKE, waitDaysOf } from './ProjectDetail.logic';
+import { PARTY_GLYPH, waitDaysOf } from './ProjectDetail.logic';
 import type { ProjectDetailProps } from './ProjectDetail.types';
 
 type OpenWait = NonNullable<ProjectDetailFacts['wait']>;
@@ -31,7 +31,7 @@ export function ProjectWait(props: ProjectDetailProps) {
         if (!sending) onWait();
       }}
     >
-      <HueTile glyph="clock" hue="neutral" size={40} stroke={TILE_STROKE} />
+      <HueTile glyph="clock" hue="neutral" size={40} />
       <span className="hg-project-detail-ask-words">
         <span className="hg-project-detail-ask-title">{words.noWaitTitle}</span>
         <span className="hg-project-detail-row-sub">{words.noWaitLine}</span>
@@ -59,12 +59,7 @@ function WaitCard({
   return (
     <Card density="functional" className="hg-project-detail-wait">
       <div className="hg-project-detail-wait-head">
-        <HueTile
-          glyph={PARTY_GLYPH[wait.party] ?? 'clock'}
-          hue="warning"
-          size={40}
-          stroke={TILE_STROKE}
-        />
+        <HueTile glyph={PARTY_GLYPH[wait.party] ?? 'clock'} hue="warning" size={40} />
         <div className="hg-project-detail-wait-words">
           <span className="hg-project-detail-wait-title">{words.waitTitle(wait.party)}</span>
           <span className="hg-project-detail-row-sub">
@@ -79,7 +74,7 @@ function WaitCard({
           <Button
             variant="secondary"
             size="sm"
-            icon={<ShellGlyph name="tick" size="sm" tone="primary" />}
+            icon={<ShellGlyph name="check" size="sm" tone="primary" />}
             onClick={leaving(() => {
               if (!sending) onWaitOver();
             })}

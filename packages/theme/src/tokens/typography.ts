@@ -76,13 +76,14 @@ export interface TypeRole {
 
 /**
  * The type scale. `hero` is the one figure a screen is about; `display` the large page title;
- * `figure` a hero's secondary numbers; `cover` / `cover-wide` the title written on a cover picture,
+ * `display-phone` the page title on a phone; `figure` a hero's secondary numbers; `label` a field's label; `card-head` a card's own title in the sans face; `cover` / `cover-wide` the title written on a cover picture,
  * phone and desktop; `card-title` a card's own serif heading on the customer's page. Line heights leave room for matras and conjuncts.
  */
 export const TYPE_ROLES = {
   hero: { size: 72, lineHeight: 76, tracking: -0.03 },
   'hero-phone': { size: 46, lineHeight: 52, tracking: -0.03 },
-  display: { size: 40, lineHeight: 46, tracking: -0.015 },
+  display: { size: 40, lineHeight: 44, tracking: -0.015 },
+  'display-phone': { size: 28, lineHeight: 34, tracking: -0.01 },
   cover: { size: 36, lineHeight: 42, tracking: -0.02 },
   'cover-wide': { size: 52, lineHeight: 58, tracking: -0.02 },
   'card-title': { size: 24, lineHeight: 30, tracking: -0.01 },
@@ -95,6 +96,8 @@ export const TYPE_ROLES = {
   body: { size: 15, lineHeight: 22, tracking: 0 },
   'body-sm': { size: 13, lineHeight: 20, tracking: 0 },
   caption: { size: 12, lineHeight: 16, tracking: 0 },
+  label: { size: 12, lineHeight: 16, tracking: 0.02 },
+  'card-head': { size: 16, lineHeight: 24, tracking: -0.005 },
   overline: { size: 11, lineHeight: 16, tracking: 0.08 },
   button: { size: 15, lineHeight: 20, tracking: -0.005 },
   table: { size: 13, lineHeight: 19, tracking: 0 },
@@ -102,5 +105,48 @@ export const TYPE_ROLES = {
 
 export type TypeRoleName = keyof typeof TYPE_ROLES;
 
+/**
+ * The document's own type scale: a proposal page, a print surface and the document preview draw at
+ * a sheet's size, not the screen's, and take a role from here — never a screen role and never a
+ * number. Paper's reading floor is `doc-fs-small` (10.5pt). Web: `var(--doc-fs-<role>)`; phone:
+ * `theme.type.document['doc-fs-<role>']`.
+ */
+export const DOCUMENT_TYPE = {
+  /** A page's head and foot, a label, a legend row, title-block metadata. */
+  'doc-fs-small': 14,
+  /** Reading copy: the body of a proposal, a term, a table cell. */
+  'doc-fs': 16,
+  /** A lead paragraph, a part's brand, a step's title. */
+  'doc-fs-lead': 18,
+  /** A money figure a customer looks for first; a fact's value. */
+  'doc-fs-figure': 22,
+  /** A cover's line under its title. */
+  'doc-fs-subtitle': 24,
+  /** A sheet's own name in its title block. */
+  'doc-fs-heading': 26,
+  /** A block's headline figure, a closing word. */
+  'doc-fs-stat': 30,
+  /** A page's title. */
+  'doc-fs-title': 44,
+  /** The one figure a page is about. */
+  'doc-fs-hero': 64,
+  /** The cover's title. */
+  'doc-fs-cover': 84,
+} as const;
+
+export type DocumentTypeRole = keyof typeof DOCUMENT_TYPE;
+
+/**
+ * The document preview draws an A4 page at its 480 px design width: the document's own scale times
+ * this (480 / 794), so the preview is the page made smaller, never a scale of its own.
+ */
+export const DOCUMENT_PREVIEW_SCALE = 480 / 794;
+
 /** The three sizes every field shares: its label, its value, its helper or error line. */
-export const FIELD_TYPE = { label: 13, value: 16, helper: 12 } as const;
+export const FIELD_TYPE = { label: 12, value: 15, helper: 12 } as const;
+
+/**
+ * A field's value under a touch pointer on the web: a phone browser zooms the page into any field
+ * whose words are smaller than 16 px, and leaves it zoomed after.
+ */
+export const FIELD_VALUE_TOUCH = 16;

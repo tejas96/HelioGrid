@@ -26,7 +26,11 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     marginBottom: theme.spacing['sp-2'],
   },
-  readout: { fontSize: 14, fontWeight: '700', letterSpacing: -0.14 },
+  readout: {
+    fontSize: theme.type.roles['body-sm'].fontSize,
+    fontWeight: '700',
+    letterSpacing: -0.14,
+  },
   boxes: {
     flexDirection: 'row',
     flexWrap: 'wrap',

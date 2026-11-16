@@ -95,7 +95,7 @@ for (const width of [335, 456]) {
       expect(text.x + text.width).toBeLessThanOrEqual(box.x + box.width);
     });
 
-    test('the card is a tile: its fill and ring, padding 16, the tile radius, a 10 dot, the foot past the glyph', async ({
+    test('the card is a tile: its fill and ring, padding 16, the r-lg data-card radius, a 10 dot, the foot past the glyph', async ({
       mount,
       page,
     }) => {
@@ -126,7 +126,7 @@ for (const width of [335, 456]) {
         fill: await resolvedColour(page, TILE_FILL),
         ring: await resolvedBoxShadow(page, TILE_SHADOW),
         padding: '16px',
-        radius: `${await resolvedLength(page, '--r-tile')}px`,
+        radius: `${await resolvedLength(page, '--r-lg')}px`,
       });
       const dot = await settledBox(card.locator('.hg-notification-dot'));
       expect([dot?.width, dot?.height]).toEqual([10, 10]);

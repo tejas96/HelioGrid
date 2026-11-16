@@ -1,9 +1,9 @@
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { IconButton } from '../IconButton';
 import { NamedGap } from '../NamedGap';
 import { PendingAction } from '../PendingAction';
+import { StatusMark } from '../StatusMark';
 import type { LeadSectionsProps, LeadTaskActs, LeadTaskRow } from './LeadSections.types';
 
 interface LeadTaskListProps {
@@ -69,7 +69,7 @@ function TaskRow({ task, acts, words }: { task: LeadTaskRow } & Omit<LeadTaskLis
           disabled={acts.pendingId !== null}
           onClick={() => acts.onDone(task.id)}
         >
-          <ShellGlyph name="tick" size="md" tone="primary" />
+          <ShellGlyph name="check" size="md" tone="primary" />
         </IconButton>
       )}
     </div>

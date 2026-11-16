@@ -74,7 +74,7 @@
   background: var(--surface);
   border-radius: var(--r-md);
   box-shadow: var(--e4);
-  animation: hg-pop-in var(--dur-standard) var(--ease-enter);
+  animation: hg-pop-in var(--dur-standard) var(--ease-out-quint);
 }
 
 .hg-job-tray-panel[data-align="right"] {
@@ -94,10 +94,6 @@
 }
 
 .hg-job-tray-panel-label {
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 

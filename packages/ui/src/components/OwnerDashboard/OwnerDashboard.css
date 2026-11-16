@@ -35,7 +35,7 @@
    dashboard's content starts. */
 .hg-owner-export {
   align-self: flex-start;
-  margin-inline-start: calc(-1 * var(--sp-5));
+  margin-inline-start: calc(-1 * var(--sp-4));
 }
 
 /* ── the cards ────────────────────────────────────────────────────────────────────────── */

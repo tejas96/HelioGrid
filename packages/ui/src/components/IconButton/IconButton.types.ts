@@ -26,6 +26,11 @@ export interface IconButtonProps {
    * on or off (`aria-pressed`, the phone's selected state); unset, a plain act.
    */
   pressed?: boolean;
+  /**
+   * This circle's act is out — a row's *Done* saving. Stated as `true` or `false` while it can be
+   * out, never dropped (`aria-busy`, the phone's busy state); unset, it never is.
+   */
+  busy?: boolean;
   onClick?: () => void;
   /**
    * A link the circle opens in place of `onClick` — a `tel:` number to call. The web draws it as a

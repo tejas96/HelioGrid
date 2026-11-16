@@ -109,12 +109,12 @@ export function scriptFloorFor(
 
 /**
  * A field's three parts take the design system's field sizes (`--fs-field-*`) on the line box of
- * the role each stands in for — the label a small line, the value a body line, the helper a caption.
+ * the role each stands in for — the label OneOhm's label line, the value a body line, the helper a caption.
  */
 const FIELD_ROLES = {
   'field-label': {
     fontSize: theme.type.field.label,
-    lineHeight: theme.type.roles['body-sm'].lineHeight,
+    lineHeight: theme.type.roles.label.lineHeight,
   },
   'field-value': { fontSize: theme.type.field.value, lineHeight: theme.type.roles.body.lineHeight },
   'field-helper': {

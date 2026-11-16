@@ -1,7 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, glassTileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { HeroPanel } from '../HeroPanel/HeroPanel.native';
@@ -30,7 +30,7 @@ export function OnItsWay({ title, badge, line, points, meanwhile, action }: OnIt
           </Text>
         </View>
       </HeroPanel>
-      <View style={[tileSurface, styles.points]}>
+      <View style={[glassTileSurface, styles.points]}>
         <GroundProvider ground="tile">
           {points.map((point, index) => (
             <View key={point} style={[styles.point, index === 0 ? undefined : styles.pointAfter]}>

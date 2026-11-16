@@ -1,6 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, glassTileSurface } from '../../primitives/Ground/Ground.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Block } from '../Block/Block.native';
 import { Button } from '../Button/Button.native';
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
      which wraps under it in a narrow tile rather than running into its edge. */
   meters: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.layout['tile-gap'] },
   meterTile: {
-    ...tileSurface,
+    ...glassTileSurface,
     flexGrow: 1,
     flexBasis: theme.spacing['sp-24'] + theme.spacing['sp-12'],
     padding: theme.layout['tile-pad'],

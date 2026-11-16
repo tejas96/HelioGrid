@@ -4,7 +4,7 @@ import { classNames } from '../../primitives/class-names';
 import { rovingTargetOf } from '../../primitives/press-keys';
 import { clampCount } from '../../utils/count';
 import { renderActionReason } from '../ActionReason';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { renderMarks } from '../ChipGroup';
 import {
   hasReason,
@@ -20,6 +20,11 @@ type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
 interface WebSegmentedControlProps extends SegmentedControlProps {
   className?: string;
   style?: CSSProperties;
+}
+
+/** `fill` as the attribute its CSS keys on: present only when the track runs its holder's width. */
+function fillMark(fill: boolean): 'true' | undefined {
+  return fill ? 'true' : undefined;
 }
 
 /** Arrow keys skip the natively-disabled segments — those are not focusable to land on. */
@@ -49,6 +54,8 @@ export function SegmentedControl({
   label,
   ariaLabel,
   error,
+  iconOnly = false,
+  fill = false,
   className,
   style,
 }: WebSegmentedControlProps) {
@@ -87,6 +94,7 @@ export function SegmentedControl({
       aria-invalid={error === undefined ? undefined : true}
       aria-describedby={error === undefined ? undefined : `${autoId}-err`}
       className={classNames('hg-segmented-control-pill', wrapped ? undefined : className)}
+      data-fill={fillMark(fill)}
       data-error={error === undefined ? undefined : 'true'}
       style={pillStyle}
     >
@@ -97,6 +105,7 @@ export function SegmentedControl({
           option={option}
           active={option.value === value}
           isField={isField}
+          iconOnly={iconOnly}
           roving={position === index}
           reasonId={
             option.disabled === true && hasReason(option)
@@ -117,7 +126,11 @@ export function SegmentedControl({
     return pill;
   }
   return (
-    <div className={classNames('hg-segmented-control', className)} style={style}>
+    <div
+      className={classNames('hg-segmented-control', className)}
+      data-fill={fillMark(fill)}
+      style={style}
+    >
       {label === undefined ? null : (
         <span id={`${autoId}-lbl`} className="hg-segmented-control-label">
           {label}
@@ -142,6 +155,7 @@ interface SegmentProps {
   option: SegmentedOption;
   active: boolean;
   isField: boolean;
+  iconOnly: boolean;
   roving: boolean;
   reasonId: string | undefined;
   buttonRef: (element: HTMLButtonElement | null) => void;
@@ -149,10 +163,19 @@ interface SegmentProps {
   onSelect: () => void;
 }
 
+/** An icon segment: named by its words, and tipped with them (`Tip`). */
+const ICON_SEGMENT = (words: string) => ({
+  className: 'hg-segmented-control-segment hg-tip',
+  'aria-label': words,
+  'data-tip': words,
+  'data-icon': 'true',
+});
+
 function Segment({
   option,
   active,
   isField,
+  iconOnly,
   roving,
   reasonId,
   buttonRef,
@@ -160,7 +183,6 @@ function Segment({
   onSelect,
 }: SegmentProps) {
   const off = option.disabled === true;
-  const count = option.count;
   return (
     // biome-ignore lint/a11y/useAriaPropsSupportedByRole: runtime radio owns aria-checked
     <button
@@ -173,8 +195,8 @@ function Segment({
       disabled={off && !hasReason(option)}
       aria-disabled={off ? true : undefined}
       aria-describedby={reasonId}
-      className="hg-segmented-control-segment"
       data-active={active ? 'true' : undefined}
+      {...(iconOnly ? ICON_SEGMENT(option.label) : { className: 'hg-segmented-control-segment' })}
       onClick={() => {
         if (!off) {
           onSelect();
@@ -182,12 +204,36 @@ function Segment({
       }}
     >
       {off ? <OffGlyph /> : null}
-      {option.lang === undefined ? option.label : <span lang={option.lang}>{option.label}</span>}
-      {count === undefined ? null : (
-        <span className="hg-segmented-control-count">{clampCount(count, option.countMax)}</span>
+      <SegmentFace option={option} active={active} iconOnly={iconOnly} />
+    </button>
+  );
+}
+
+/** What a segment shows: its icon, its words unless the icon stands for them, its count, its marks. */
+function SegmentFace({
+  option,
+  active,
+  iconOnly,
+}: {
+  option: SegmentedOption;
+  active: boolean;
+  iconOnly: boolean;
+}) {
+  const words =
+    option.lang === undefined ? option.label : <span lang={option.lang}>{option.label}</span>;
+  return (
+    <>
+      {option.glyph === undefined ? null : (
+        <ShellGlyph name={option.glyph} size="md" tone={active ? 'primary' : 'secondary'} />
+      )}
+      {iconOnly ? null : words}
+      {option.count === undefined ? null : (
+        <span className="hg-segmented-control-count">
+          {clampCount(option.count, option.countMax)}
+        </span>
       )}
       {renderMarks(option.marks)}
-    </button>
+    </>
   );
 }
 
@@ -198,16 +244,8 @@ function Segment({
  */
 function OffGlyph() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      aria-hidden="true"
-      className="hg-segmented-control-off-glyph"
-    >
-      <ShellGlyphMarks name="minus-circle-short" />
-    </svg>
+    <span className="hg-segmented-control-off-glyph">
+      <ShellGlyph name="minus-circle" size="dense" tone="current" />
+    </span>
   );
 }

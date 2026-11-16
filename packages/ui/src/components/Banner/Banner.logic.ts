@@ -29,9 +29,9 @@ export function actionStacks(
 /** The shape each banner glyph draws. */
 export const BANNER_GLYPH: Record<BannerGlyph, ShellGlyphName> = {
   alert: 'alert-circle',
-  info: 'info-circle',
-  rupee: 'rupee-wide',
-  review: 'warning-triangle',
+  info: 'info',
+  rupee: 'rupee',
+  review: 'alert-triangle',
   spark: 'spark',
 };
 

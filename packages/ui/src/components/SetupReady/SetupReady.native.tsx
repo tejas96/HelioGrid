@@ -40,7 +40,7 @@ export function SetupReady({
     return (
       <DoorFrame>
         <EmptyState
-          icon={<ShellGlyph name="alert-ring" size="xl" tone="primary" />}
+          icon={<ShellGlyph name="alert-circle" size="xl" tone="primary" />}
           title={words.wall.title}
           description={words.wall.line}
           action={
@@ -73,7 +73,7 @@ export function SetupReady({
       <View style={styles.doors}>
         <Card>
           <Door
-            glyph="person-plus"
+            glyph="user-plus"
             circle={colors.accent}
             tone="accent"
             words={words.lead}
@@ -95,7 +95,7 @@ export function SetupReady({
           demo={demo}
           door={
             <Door
-              glyph="house-door"
+              glyph="house"
               circle={colors.info}
               tone="info"
               words={words.demo}

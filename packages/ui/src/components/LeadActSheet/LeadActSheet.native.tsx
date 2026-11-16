@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { Sheet } from '../Sheet/Sheet.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import type { LeadFormFrame } from './LeadActSend.native';
 import type { LeadActForm, LeadActSheetProps } from './LeadActSheet.types';
 import { LeadContactForm } from './LeadContactForm.native';
@@ -44,10 +44,12 @@ export function LeadActSheet({
 }: LeadActSheetProps) {
   const frame: LeadFormFrame = { pending, failure, fields };
   return (
-    <Sheet
+    <EditorSurface
       open={form !== null}
       onClose={onClose}
       closeLabel={closeLabel}
+      showClose
+      desktop="modal"
       title={form === null ? undefined : titleOf(form)}
       subtitle={form === null ? undefined : form.words.line}
       dismissible={!pending}
@@ -57,7 +59,7 @@ export function LeadActSheet({
           <FormOf key={draftKeyOf(form)} form={form} frame={frame} />
         </View>
       )}
-    </Sheet>
+    </EditorSurface>
   );
 }
 

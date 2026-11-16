@@ -1,11 +1,13 @@
 import { firstNameOf } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
+import { colors } from '../../primitives/Color/colors';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { loadSharesOf } from '../AssignPicker/AssignPicker.logic';
 import type { AssignPickerPerson } from '../AssignPicker/AssignPicker.types';
 import { Avatar } from '../Avatar';
+import { ProgressRing } from '../ProgressRing';
 import { dockColumnsOf, dockedOf, KEYED_FACES } from './TeamDock.logic';
 import type { TeamDockLayout, TeamDockProps, TeamDockWords } from './TeamDock.types';
 
@@ -77,7 +79,6 @@ interface FaceProps {
 
 /** One person: the ring of their load round their face, their name, open and overdue counts. */
 function Face({ person, share, you, keyCap, layout, waiting, onGive, words }: FaceProps) {
-  const ring: DockVars = { '--hg-team-dock-share': String(share) };
   const late = person.overdueCount > 0;
   return (
     <Pressable
@@ -88,9 +89,14 @@ function Face({ person, share, you, keyCap, layout, waiting, onGive, words }: Fa
       onPress={() => onGive(person.userId)}
     >
       {keyCap === null ? null : <kbd className="hg-team-dock-key">{keyCap}</kbd>}
-      <span className="hg-team-dock-ring" style={ring}>
+      <ProgressRing
+        size="face"
+        share={share}
+        ink={late ? colors.warning : colors.accent}
+        className="hg-team-dock-ring"
+      >
         <Avatar name={person.name} size={layout === 'tiles' ? 56 : 40} />
-      </span>
+      </ProgressRing>
       <span className="hg-team-dock-name">{you ? words.you : firstNameOf(person.name)}</span>
       <span className="hg-team-dock-open">{words.open(person.openCount)}</span>
       {late || layout === 'tiles' ? (

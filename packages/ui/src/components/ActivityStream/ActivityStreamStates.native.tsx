@@ -1,15 +1,13 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, Text, View } from 'react-native';
-import Svg from 'react-native-svg';
-import type { ThemeColor } from '../../primitives/Color/colors';
+import { Animated, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { usePulse } from '../../primitives/use-pulse.native';
+import { StateRegion } from '../StateBody/StateRegion.native';
 import { STREAM_SKELETON } from './ActivityStream.logic';
 
-const type = theme.type.roles;
+// web-only part: Button — its retry is a slot ActivityStream.native fills with RetryButton.
 
 const styles = StyleSheet.create({
   shimmer: { borderRadius: theme.radius['rf-md'], backgroundColor: colors['canvas-sunken'] },
@@ -18,59 +16,15 @@ const styles = StyleSheet.create({
   skeletonMark: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: theme.radius['r-tile'],
     backgroundColor: colors['canvas-sunken'],
   },
   skeletonLines: { flex: 1, gap: theme.spacing['sp-2'] },
-  message: {
-    alignItems: 'center',
-    gap: theme.spacing['sp-2'],
-    paddingVertical: 40,
-    paddingHorizontal: theme.spacing['sp-4'],
-  },
-  messageMark: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-    backgroundColor: colors['neutral-bg'],
-  },
-  messageMarkWarning: { backgroundColor: colors['warning-bg'] },
-  title: {
-    fontFamily: theme.type.families.sans,
-    fontSize: 16,
-    fontWeight: '700',
-    letterSpacing: -0.16,
-    textAlign: 'center',
-    color: colors['text-primary'],
-  },
-  text: {
-    fontFamily: theme.type.families.sans,
-    fontSize: type['body-sm'].fontSize,
-    lineHeight: 19.5,
-    textAlign: 'center',
-    maxWidth: 320,
-    color: colors['text-secondary'],
-  },
-  extra: { marginTop: 10 },
 });
 
-/** The web half animates a gradient sweep; RN has no CSS gradient loop, so it pulses opacity. */
+/** One waiting bar, pulsing as every phone skeleton does (`usePulse`). */
 export function StreamShimmer({ width, height }: { width: `${number}%`; height: number }) {
-  const value = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(value, { toValue: 1, duration: 700, useNativeDriver: true }),
-        Animated.timing(value, { toValue: 0, duration: 700, useNativeDriver: true }),
-      ]),
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [value]);
-  const opacity = value.interpolate({ inputRange: [0, 1], outputRange: [0.45, 1] });
+  const opacity = usePulse();
   return <Animated.View style={[styles.shimmer, { width, height, opacity }]} />;
 }
 
@@ -102,23 +56,6 @@ export function StreamSkeleton({ label }: { label: TranslatedText }) {
   );
 }
 
-function MessageGlyph({ warning, color }: { warning: boolean; color: ThemeColor }) {
-  return (
-    <Svg
-      width={22}
-      height={22}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name={warning ? 'alert-circle' : 'lines'} />
-    </Svg>
-  );
-}
-
 /**
  * The centred sentence the empty and error states share. A filtered stream with nothing in it is
  * NOT "no activity yet" — the record is not empty, the filter is narrow.
@@ -136,19 +73,18 @@ export function StreamMessage({
   action?: ReactNode;
   retry?: ReactNode;
 }) {
-  const warning = tone === 'warning';
   return (
-    <View style={styles.message}>
-      <View style={[styles.messageMark, warning ? styles.messageMarkWarning : null]}>
-        <MessageGlyph
-          warning={warning}
-          color={warning ? colors['warning-text'] : colors['text-tertiary']}
-        />
-      </View>
-      <Text style={styles.title}>{title}</Text>
-      {message !== undefined ? <Text style={styles.text}>{message}</Text> : null}
-      {retry}
-      {action !== undefined && action !== null ? <View style={styles.extra}>{action}</View> : null}
-    </View>
+    <StateRegion
+      tone={tone}
+      glyph="lines"
+      title={title}
+      message={message}
+      action={
+        <>
+          {retry}
+          {action}
+        </>
+      }
+    />
   );
 }

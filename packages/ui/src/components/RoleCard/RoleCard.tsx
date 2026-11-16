@@ -3,6 +3,7 @@ import { classNames } from '../../primitives/class-names';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Card, IconCircle } from '../Card/Card';
+import { CardHeader } from '../Card/CardHeader';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
 import { ScopeNote, scopeNotePanelFrame } from '../ScopeNote/ScopeNote';
 import type { RoleCardLine, RoleCardProps, RoleCardWords } from './RoleCard.types';
@@ -12,7 +13,7 @@ import type { RoleCardLine, RoleCardProps, RoleCardWords } from './RoleCard.type
  * with the error card, so focus goes to the presets' name, which the card draws while it reloads.
  */
 export function RoleCard({ words, layout, read }: RoleCardProps) {
-  const presets = useRef<HTMLSpanElement>(null);
+  const presets = useRef<HTMLHeadingElement>(null);
   const frame = classNames(
     'hg-role-card',
     layout === 'bounded' ? 'hg-role-card-bounded' : undefined,
@@ -33,19 +34,17 @@ export function RoleCard({ words, layout, read }: RoleCardProps) {
   return (
     <Card className={frame}>
       <div className="hg-role-card-body">
-        <div className="hg-role-card-head">
-          <IconCircle size={40}>
-            <ShellGlyph name="briefcase" size="md" tone="accent" />
-          </IconCircle>
-          <div className="hg-role-card-names">
-            <span ref={presets} tabIndex={-1} className="hg-role-card-presets">
-              {words.presets}
-            </span>
-            {words.credit === null ? null : (
-              <span className="hg-role-card-credit">{words.credit}</span>
-            )}
-          </div>
-        </div>
+        <CardHeader
+          level={3}
+          headingRef={presets}
+          title={words.presets}
+          description={words.credit}
+          lead={
+            <IconCircle size={40}>
+              <ShellGlyph name="briefcase" size="md" tone="accent" />
+            </IconCircle>
+          }
+        />
         {read.kind === 'loading' ? (
           <Waiting words={words} />
         ) : (
@@ -72,7 +71,7 @@ function Rows({ words, layout }: { words: RoleCardWords; layout: RoleCardProps['
     );
   const lists = (
     <div className="hg-role-card-lists">
-      <Section title={words.canDo} lines={words.grants} glyph="tick-long" tone="success">
+      <Section title={words.canDo} lines={words.grants} glyph="check" tone="success">
         {words.limits.length === 0 ? note : null}
       </Section>
       {words.limits.length === 0 ? null : (
@@ -108,7 +107,7 @@ function Section({
 }) {
   return (
     <section className="hg-role-card-section">
-      <h3 className="hg-role-card-overline">{title}</h3>
+      <h3 className="hg-role-card-overline hg-overline">{title}</h3>
       <ul className="hg-role-card-lines">
         {lines.map((line) => (
           <li key={line.key} className="hg-role-card-line">
@@ -143,13 +142,13 @@ function Waiting({ words }: { words: RoleCardWords }) {
     <div className="hg-role-card-region" role="status" aria-busy="true" aria-label={words.loading}>
       <div className="hg-role-card-lists">
         <section className="hg-role-card-section">
-          <h3 className="hg-role-card-overline">{words.canDo}</h3>
+          <h3 className="hg-role-card-overline hg-overline">{words.canDo}</h3>
           <LoadingBars inBusyRegion bars={words.grants.map(() => 'line')} />
           {words.limits.length === 0 ? note : null}
         </section>
         {words.limits.length === 0 ? null : (
           <section className="hg-role-card-section">
-            <h3 className="hg-role-card-overline">{words.cannotDo}</h3>
+            <h3 className="hg-role-card-overline hg-overline">{words.cannotDo}</h3>
             <LoadingBars inBusyRegion bars={words.limits.map(() => 'line')} />
             {note}
           </section>

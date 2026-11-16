@@ -1,12 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { useFocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { ComplianceFloor } from '../ComplianceFloor/ComplianceFloor.native';
@@ -23,10 +23,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-md'],
+    borderRadius: theme.radius['r-lg'],
   },
   rowFunctional: { borderRadius: theme.radius['r-card-functional'] },
-  rowBlocked: { backgroundColor: colors['warning-bg'] },
+  rowBlocked: { backgroundColor: TONE.warning.tint },
   body: { flex: 1, minWidth: 0, gap: theme.spacing['sp-1'] },
   head: {
     flexDirection: 'row',
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: theme.type.families.sans,
-    fontSize: 14,
+    fontSize: theme.type.roles['body-sm'].fontSize,
     fontWeight: '500',
     color: colors['text-primary'],
   },
@@ -96,18 +96,7 @@ export function DateSetRow({
             onPress={leaving(row.remove)}
             style={styles.delete}
           >
-            <Svg
-              width={18}
-              height={18}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={colors['text-secondary']}
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <ShellGlyphMarks name="trash" />
-            </Svg>
+            <ShellGlyph name="trash" size="sm" ink={colors['text-secondary']} />
           </Pressable>
         )}
       </GroundProvider>

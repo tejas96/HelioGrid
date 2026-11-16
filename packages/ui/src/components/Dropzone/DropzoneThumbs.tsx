@@ -1,5 +1,5 @@
 import { closingPress, type FocusAfter } from '../../primitives/FocusAfter';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { isStillUploading, progressPercent, thumbName } from './Dropzone.logic';
 import type { DropzoneFile, DropzoneWords } from './Dropzone.types';
 import { FileGlyph } from './DropzoneGlyphs';
@@ -41,18 +41,7 @@ export function DropzoneThumbs({ files, onRemove, words, focusAfter }: DropzoneT
               onClick={closingPress(focusAfter)(() => onRemove(file, index))}
             >
               <span className="hg-dropzone-thumb-remove-circle">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  aria-hidden="true"
-                >
-                  <ShellGlyphMarks name="close" />
-                </svg>
+                <ShellGlyph name="close" size="dense" tone="current" />
               </span>
             </button>
           )}

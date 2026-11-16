@@ -38,10 +38,6 @@
    accessible name are THE SAME STRING, which `aria-labelledby` points the tablist at. Words on
    the sunken track take --text-secondary; --text-tertiary measures 4.48 there, under the floor. */
 .hg-kanban-stage-label {
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-secondary);
 }
 
@@ -194,43 +190,7 @@
 /* The board's message is a tile (F7-49): its fill, no shadow and its ground are drawn by the
    tiles' list (primitives/Ground/Ground.css). */
 .hg-kanban-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--sp-2);
-  padding: 56px var(--sp-6);
   border-radius: var(--r-card-functional);
-}
-
-.hg-kanban-message-mark {
-  width: var(--sp-12);
-  height: var(--sp-12);
-  border-radius: var(--r-pill);
-  display: grid;
-  place-items: center;
-  background: var(--neutral-bg);
-  color: var(--text-tertiary);
-  margin-bottom: var(--sp-1);
-}
-
-.hg-kanban-message-mark[data-tone="warning"] {
-  background: var(--warning-bg);
-  color: var(--warning-text);
-}
-
-.hg-kanban-message-title {
-  font-size: var(--fs-h4);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
-
-.hg-kanban-message-text {
-  font-size: var(--fs-body-sm);
-  color: var(--text-secondary);
-  max-width: 320px;
-  line-height: 1.5;
 }
 
 .hg-kanban-skeleton {
@@ -255,10 +215,7 @@
    through --canvas. */
 .hg-kanban-skeleton-bar {
   border-radius: var(--rf-lg);
-  /* biome-ignore lint/plugin/raw-white-css: shimmer — a loading bar's shimmer */
-  background: linear-gradient(90deg, var(--canvas) 25%, var(--surface) 50%, var(--canvas) 75%);
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
+  --hg-skeleton-ground: var(--canvas);
 }
 
 .hg-kanban-skeleton-head {

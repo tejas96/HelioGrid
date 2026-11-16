@@ -97,7 +97,7 @@
   border-radius: var(--r-pill);
   background: var(--glow-brand);
   pointer-events: none;
-  animation: hg-nc-breathe 8s var(--ease-standard) infinite;
+  animation: hg-nc-breathe var(--amb-swell) var(--ease-standard) infinite;
 }
 
 .hg-no-connection-sun {
@@ -118,7 +118,7 @@
   width: calc(118px * var(--hg-nc-s));
   height: calc(46px * var(--hg-nc-s));
   filter: drop-shadow(0 8px 20px var(--hairline));
-  animation: hg-nc-drift 9s var(--ease-standard) infinite alternate;
+  animation: hg-nc-drift var(--amb-sway) var(--ease-standard) infinite alternate;
 }
 
 .hg-no-connection-cloud > span {

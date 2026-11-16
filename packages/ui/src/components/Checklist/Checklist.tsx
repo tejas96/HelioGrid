@@ -2,12 +2,12 @@ import type { CSSProperties } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ProgressBar } from '../ProgressBar';
+import { StateBody } from '../StateBody';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { buildChecklist, NO_PHASE } from './Checklist.groups';
 import { checklistNameOf, countLineOf, rowKeyOf } from './Checklist.logic';
 import type { ChecklistProps } from './Checklist.types';
 import { ChecklistRow } from './ChecklistRow';
-import { ChecklistStateBody } from './ChecklistState';
 
 interface WebChecklistProps extends ChecklistProps {
   className?: string;
@@ -65,7 +65,7 @@ export function Checklist({
         style={style}
       >
         {label === undefined ? null : <p className="hg-checklist-overline">{label}</p>}
-        <ChecklistStateBody
+        <StateBody
           state={state}
           loadingLabel={words.loading}
           emptyTitle={emptyTitle}

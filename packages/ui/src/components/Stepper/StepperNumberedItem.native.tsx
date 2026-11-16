@@ -133,12 +133,11 @@ const styles = StyleSheet.create({
     minWidth: 0,
     flexShrink: 1,
   },
-  /* 14 is off the DS type ladder; body-sm (13) is the nearest role and carries the step name. */
   nameWords: {
-    fontSize: 14,
+    fontSize: theme.type.roles['body-sm'].fontSize,
   },
   nameActive: {
-    fontSize: 14,
+    fontSize: theme.type.roles['body-sm'].fontSize,
     fontWeight: '700',
     letterSpacing: theme.type.roles.button.letterSpacing,
   },
@@ -146,7 +145,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 16,
     height: 2,
-    borderRadius: 2,
+    borderRadius: theme.radius['r-pill'],
     marginRight: theme.spacing['sp-2'],
   },
   lineDone: {

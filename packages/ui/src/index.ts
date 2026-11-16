@@ -183,6 +183,7 @@ export * from './components/RollingNumber';
 export * from './components/ScopeNote';
 export * from './components/SearchField';
 export * from './components/SearchResults';
+export * from './components/SegmentBar';
 export * from './components/SegmentedControl';
 export * from './components/Select';
 export * from './components/SettingsList';
@@ -202,7 +203,10 @@ export * from './components/SolarSky';
 export * from './components/StageMeter';
 export * from './components/StageTrack';
 export * from './components/StatCard';
+export * from './components/StateBody';
 export * from './components/StatusChip';
+export type { StatusMarkProps, StatusTone } from './components/StatusMark';
+export { STATUS_GLYPH, StatusMark } from './components/StatusMark';
 export * from './components/Stepper';
 export * from './components/SuccessDwell';
 export * from './components/Switch';
@@ -238,8 +242,6 @@ export type { FieldCommits } from './primitives/FieldCommits';
 export { FieldCommitsProvider, useFieldCommits } from './primitives/FieldCommits';
 export type { FocusAfter, FocusHandle, LeavingPress } from './primitives/FocusAfter';
 export { landFocusOn, useFocusAfter } from './primitives/FocusAfter';
-export type { IconProps, IconSize } from './primitives/Icon';
-export { AttentionGlyph, ICON_SIZE, Icon } from './primitives/Icon';
 export type { KeyboardFrameProps, KeyboardHostProps } from './primitives/Keyboard';
 export {
   closeKeyboard,
@@ -252,8 +254,6 @@ export type { PortalHostProps, PortalProps } from './primitives/Portal';
 export { Portal, PortalHost } from './primitives/Portal';
 export type { PressableHaptic, PressableProps, PressableRipple } from './primitives/Pressable';
 export { MIN_TOUCH_TARGET, Pressable } from './primitives/Pressable';
-export type { StatusMarkProps, StatusTone } from './primitives/StatusMark';
-export { STATUS_GLYPH, StatusMark } from './primitives/StatusMark';
 export type {
   Density,
   Elevation,

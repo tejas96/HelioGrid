@@ -1,10 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { FabProps } from './AppRail.types';
 
 interface NativeFabProps extends FabProps {
@@ -30,18 +29,12 @@ export function Fab({ label, icon, onClick, size = 56, style }: NativeFabProps) 
 
 function PlusIcon() {
   return (
-    <Svg
-      width={24}
-      height={24}
-      viewBox="0 0 24 24"
-      fill="none"
+    <ShellGlyph
+      name="plus"
+      size="lg"
       // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-      stroke={colors['text-inverse']}
-      strokeWidth={1.75}
-      strokeLinecap="round"
-    >
-      <ShellGlyphMarks name="plus" />
-    </Svg>
+      ink={colors['text-inverse']}
+    />
   );
 }
 

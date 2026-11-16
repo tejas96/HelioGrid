@@ -95,14 +95,6 @@
 }
 
 /* A section: its heading with its count, then its card. */
-.hg-installer-job-section-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--sp-1) var(--sp-3);
-}
-
 .hg-installer-job-heading {
   margin: 0;
   font-size: var(--fs-h3);

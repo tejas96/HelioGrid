@@ -1,17 +1,17 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
-import { Animated, Easing, StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
+import { Animated, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { Text } from '../../primitives/Text/Text.native';
+import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
 import { clampCount } from '../../utils/count';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { renderActionReason } from '../ActionReason/ActionReason.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
 import {
   isChosen,
@@ -25,20 +25,25 @@ interface NativeSegmentedControlProps extends SegmentedControlProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const PAD = theme.spacing['sp-1'];
+/* The track's inset (OneOhm's 2 px) and its hairline: the edge is a real border on the phone, so the
+   thumb sits one edge in from the padding box to stand where the web's does. */
+const PAD = theme.spacing['sp-0-5'];
+const EDGE = 1;
+const INSET = PAD - EDGE;
 
 /**
- * Pill segmented control on a sunken track; the active accent wash springs between segments.
+ * OneOhm's segmented control: a sunken track with a hairline, and a white raised thumb that springs
+ * between segments; the chosen words are ink, the others muted.
  *
  * A NAMED OR ERRORED CONTROL IS A FIELD HERE TOO: the group is a `radiogroup` and each segment a
  * `radio` carrying `accessibilityState.checked`, so the chosen one is announced and not left to
- * the wash alone.
+ * the thumb alone.
  *
  * THREE WEB BEHAVIOURS MAP DIFFERENTLY ON TOUCH. Arrow-key roving has no equivalent — selection
  * is a tap, and the field form's one-tab-stop rule is a keyboard concept. `aria-describedby`
  * has none either, so a reasoned segment's sentence is a sibling the screen reader reaches by
- * swipe. And the error ring is a real 1.5px border rather than an inset box-shadow, which RN
- * does not have; the track's padding absorbs it so the pill geometry is unchanged.
+ * swipe. And the hairline and the error ring are a real border rather than an inset box-shadow,
+ * which RN does not have; the track's padding absorbs it so the thumb's geometry is unchanged.
  */
 export function SegmentedControl({
   options,
@@ -47,31 +52,40 @@ export function SegmentedControl({
   label,
   ariaLabel,
   error,
+  iconOnly = false,
+  fill = false,
   style,
 }: NativeSegmentedControlProps) {
   const index = selectedIndex(options, value);
   const [trackWidth, setTrackWidth] = useState(0);
-  /* The track is recessed and the pill in view the accent wash, on every ground. */
+  /* The track is recessed and the thumb in view white and raised, on every ground. */
   const slide = useRef(new Animated.Value(0)).current;
+  const reduced = useReducedMotion();
   const segmentWidth = options.length > 0 ? Math.max(0, trackWidth - PAD * 2) / options.length : 0;
   const reasoned = reasonedOptions(options);
   const isField = isFieldControl({ label, ariaLabel, error });
 
   useEffect(() => {
-    Animated.timing(slide, {
-      toValue: PAD + index * segmentWidth,
-      duration: theme.motion.durations.emphasised,
-      easing: Easing.bezier(...theme.motion.easings.spring),
+    const to = INSET + index * segmentWidth;
+    if (reduced) {
+      slide.setValue(to);
+      return;
+    }
+    const move = Animated.spring(slide, {
+      toValue: to,
+      ...theme.motion.springs.snappy,
       useNativeDriver: true,
-    }).start();
-  }, [index, segmentWidth, slide]);
+    });
+    move.start();
+    return () => move.stop();
+  }, [index, segmentWidth, slide, reduced]);
 
   const onLayout = (event: LayoutChangeEvent) => {
     setTrackWidth(event.nativeEvent.layout.width);
   };
 
   return (
-    <View style={[styles.wrapper, style]}>
+    <View style={[styles.wrapper, fill ? styles.wrapperFill : null, style]}>
       {label !== undefined ? (
         <Text variant="body-sm" color="secondary" style={styles.label}>
           {label}
@@ -83,6 +97,7 @@ export function SegmentedControl({
         onLayout={onLayout}
         style={[
           styles.track,
+          fill ? styles.trackFill : null,
           { backgroundColor: colors['canvas-sunken'] },
           error !== undefined ? styles.trackError : undefined,
         ]}
@@ -93,7 +108,6 @@ export function SegmentedControl({
               styles.indicator,
               {
                 width: segmentWidth,
-                backgroundColor: colors['accent-subtle'],
                 transform: [{ translateX: slide }],
               },
             ]}
@@ -105,6 +119,7 @@ export function SegmentedControl({
             option={option}
             active={option.value === value}
             isField={isField}
+            iconOnly={iconOnly}
             onSelect={() => onChange?.(option.value)}
           />
         ))}
@@ -125,6 +140,7 @@ interface SegmentProps {
   option: SegmentedOption;
   active: boolean;
   isField: boolean;
+  iconOnly: boolean;
   onSelect: () => void;
 }
 
@@ -135,7 +151,7 @@ interface SegmentProps {
  * Both go through the `Pressable` primitive, which is where the 44dp floor and the pressed
  * treatment come from as well.
  */
-function Segment({ option, active, isField, onSelect }: SegmentProps) {
+function Segment({ option, active, isField, iconOnly, onSelect }: SegmentProps) {
   const off = option.disabled === true;
   return (
     <Pressable
@@ -151,19 +167,24 @@ function Segment({ option, active, isField, onSelect }: SegmentProps) {
       style={styles.segment}
     >
       {off ? <OffGlyph /> : null}
-      <Text
-        variant="body-sm"
-        color="secondary"
-        lang={option.lang}
-        style={active ? [styles.word, onWash] : styles.word}
-      >
-        {option.label}
-      </Text>
+      {option.glyph === undefined ? null : (
+        <ShellGlyph name={option.glyph} size="md" tone={active ? 'primary' : 'secondary'} />
+      )}
+      {iconOnly ? null : (
+        <Text
+          variant="body-sm"
+          color="secondary"
+          lang={option.lang}
+          style={active ? [styles.word, inView] : styles.word}
+        >
+          {option.label}
+        </Text>
+      )}
       {option.count !== undefined ? (
         <Text
           variant="body-sm"
           color="secondary"
-          style={active ? [styles.count, onWash] : styles.count}
+          style={active ? [styles.count, inView] : styles.count}
         >
           {clampCount(option.count, option.countMax)}
         </Text>
@@ -178,29 +199,20 @@ function Segment({ option, active, isField, onSelect }: SegmentProps) {
  * still reading as "off", and the label stays `--text-secondary`.
  */
 function OffGlyph() {
-  return (
-    <Svg
-      width={13}
-      height={13}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={colors['text-secondary']}
-      strokeWidth={1.8}
-      strokeLinecap="round"
-    >
-      <ShellGlyphMarks name="minus-circle-short" />
-    </Svg>
-  );
+  return <ShellGlyph name="minus-circle" size="dense" ink={colors['text-secondary']} />;
 }
 
-/* The segment in view's words and count: the accent words on the accent wash. */
-const onWash = { color: colors['accent-text'] };
+/* The segment in view's words and count: ink on the white thumb. */
+const inView = { color: colors['text-primary'] };
 
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: 'flex-start',
     gap: 6,
   },
+  /* `fill`: the track runs its holder's width, its segments sharing it equally. */
+  wrapperFill: { alignItems: 'stretch' },
+  trackFill: { alignSelf: 'stretch' },
   label: {
     fontWeight: '500',
   },
@@ -208,8 +220,10 @@ const styles = StyleSheet.create({
     position: 'relative',
     flexDirection: 'row',
     alignSelf: 'flex-start',
-    borderRadius: theme.radius['r-pill'],
-    padding: PAD,
+    borderRadius: theme.radius['r-control'],
+    borderWidth: EDGE,
+    borderColor: colors['line-soft'],
+    padding: INSET,
   },
   trackError: {
     borderWidth: 1.5,
@@ -218,15 +232,18 @@ const styles = StyleSheet.create({
   },
   indicator: {
     position: 'absolute',
-    top: PAD,
-    bottom: PAD,
+    top: INSET,
+    bottom: INSET,
     left: 0,
-    borderRadius: theme.radius['r-pill'],
-    borderWidth: 1,
+    borderRadius: theme.radius['rf-sm'],
+    borderWidth: EDGE,
     borderColor: colors['line-soft'],
+    /* The raised step on the well: white in light, a step lighter than the well in dark. */
+    backgroundColor: colors['surface-raised'],
+    ...theme.elevation.e1,
   },
-  /* The 44dp target around the 32dp pill: the extra 12dp is taken back as negative margin, so the
-     control still renders 40dp tall and the sliding indicator is untouched. */
+  /* The 44dp target around the 40dp thumb: the track's inset is taken back as negative margin, so
+     the control renders 44dp tall and the sliding indicator is untouched. */
   segment: {
     flex: 1,
     flexDirection: 'row',
@@ -235,8 +252,8 @@ const styles = StyleSheet.create({
     gap: 7,
     minWidth: MIN_TOUCH_TARGET,
     height: MIN_TOUCH_TARGET,
-    marginVertical: -6,
-    borderRadius: theme.radius['r-pill'],
+    marginVertical: -PAD,
+    borderRadius: theme.radius['rf-sm'],
     /* The phone's segments share the width equally, so a word gets only what the segment leaves:
        at the web's 18 a four-part switch broke *Sections* in two at 402 (`SCR-M01-19`). A phone
        label wraps where the web's stays on one line, and caller text is never cut. */

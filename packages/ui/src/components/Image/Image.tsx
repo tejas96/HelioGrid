@@ -124,8 +124,8 @@ export function Image({
         )}
         <div className="hg-image-sheen" aria-hidden="true" />
         {referenceOnly ? (
-          <span className="hg-image-ref">
-            <Glyph name="eye" size={13} />
+          <span className="hg-image-ref hg-overline">
+            <Glyph name="eye" size="dense" />
             {compact ? words.referenceShort : referenceLabel}
           </span>
         ) : null}

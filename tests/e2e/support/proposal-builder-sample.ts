@@ -44,8 +44,8 @@ const GLYPH: Readonly<Record<ProposalStep, BuilderStep['glyph']>> = {
   timeline: 'calendar-clock',
   payment: 'wallet',
   components: 'package',
-  terms: 'file-text',
-  client: 'person',
+  terms: 'document',
+  client: 'user',
   bank: 'credit-card',
 };
 

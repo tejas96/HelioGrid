@@ -1,7 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import type { ShellActionProps } from './AppShell.types';
@@ -16,7 +15,7 @@ interface NativeShellActionProps extends ShellActionProps {
  * A 44×44 shell button with an optional count badge riding its corner — the grey circle when
  * `round`, otherwise transparent at `--r-md`. The Pressable primitive owns the target. The web's
  * hover tint has no touch equivalent; the primitive's pressed state is the feedback here, and
- * `active` still paints the accent-subtle tile.
+ * `active` still paints the filled tile.
  */
 export function ShellAction({
   label,
@@ -41,8 +40,8 @@ export function ShellAction({
       ripple="borderless"
       style={[
         styles.action,
-        round ? [styles.round, { backgroundColor: controlFill }] : undefined,
-        active ? styles.active : undefined,
+        round ? styles.round : undefined,
+        round || active ? { backgroundColor: controlFill } : undefined,
         style,
       ]}
     >
@@ -66,9 +65,6 @@ const styles = StyleSheet.create({
   },
   round: {
     borderRadius: theme.radius['r-pill'],
-  },
-  active: {
-    backgroundColor: colors['accent-subtle'],
   },
   /* The count rides the button's top-right corner, half outside it, so it never covers the glyph. */
   badge: {

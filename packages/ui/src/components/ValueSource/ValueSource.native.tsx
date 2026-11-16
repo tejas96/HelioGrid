@@ -8,13 +8,11 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
-import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import {
   attributionFor,
   overrideActOf,
@@ -60,20 +58,7 @@ interface NativeValueSourceProps extends ValueSourceSpec {
 }
 
 function Glyph({ name, color }: { name: 'own' | 'inherited'; color: ThemeColor }) {
-  return (
-    <Icon size="xs" color={color}>
-      <Svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={VALUE_SOURCE_GLYPH[name]} />
-      </Svg>
-    </Icon>
-  );
+  return <ShellGlyph name={VALUE_SOURCE_GLYPH[name]} size="xs" ink={color} />;
 }
 
 export function ValueSource({

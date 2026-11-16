@@ -94,10 +94,6 @@
 
 /* The overline role — the system's one sanctioned appearance below the 12px floor. */
 .hg-derivation-part-label {
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 

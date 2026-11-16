@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { LottieMoment } from '../LottieMoment/LottieMoment';
 import type { ToastProps } from './Toast.types';
 
@@ -11,19 +11,7 @@ interface WebToastProps extends ToastProps {
 
 /** The default mark: a check. The DS draws one glyph for every tone — the words carry the tone. */
 function CheckGlyph() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="tick-long" />
-    </svg>
-  );
+  return <ShellGlyph name="check" size="sm" tone="current" />;
 }
 
 /**
@@ -44,7 +32,7 @@ export function Toast({
   return (
     <div role="status" className={classNames('hg-toast', className)} style={style}>
       {moment === undefined ? (
-        <span className="hg-toast-mark" data-tone={tone}>
+        <span className="hg-toast-mark hg-tone" data-tone={tone}>
           {icon ?? <CheckGlyph />}
         </span>
       ) : (

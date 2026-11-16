@@ -1,11 +1,11 @@
 import { Text } from '../../primitives/Text/Text';
 import { Accordion } from '../Accordion/Accordion';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button/Button';
 import { DoorFrame } from '../DoorFrame/DoorFrame';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
-import { openedPart, PARTS_DENSITY, profileItems, UNREAD_GLYPH_SIZE } from './CompanyProfile.logic';
+import { openedPart, PARTS_DENSITY, profileItems } from './CompanyProfile.logic';
 import type { CompanyProfileProps, CompanyProfileWords } from './CompanyProfile.types';
 import { Letterhead } from './CompanyProfileLetterhead';
 import { ProfileSet } from './CompanyProfileSets';
@@ -247,19 +247,5 @@ function Unread({
 
 /** Decorative: the message beside it carries the meaning. */
 function UnreadGlyph() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width={UNREAD_GLYPH_SIZE}
-      height={UNREAD_GLYPH_SIZE}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="alert-ring" />
-    </svg>
-  );
+  return <ShellGlyph name="alert-circle" size="xl" tone="current" />;
 }

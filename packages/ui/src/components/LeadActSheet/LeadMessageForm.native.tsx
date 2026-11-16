@@ -50,7 +50,7 @@ export function LeadMessageForm({
       )}
       {form.handedOn ? (
         <View style={styles.handed} accessibilityLiveRegion="polite">
-          <ShellGlyph name="tick" size="sm" tone="success" />
+          <ShellGlyph name="check" size="sm" tone="success" />
           <Text variant="body-sm" color="success" style={styles.handedWords}>
             {words.handedOn}
           </Text>

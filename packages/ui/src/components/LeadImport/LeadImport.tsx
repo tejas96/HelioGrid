@@ -17,7 +17,7 @@ import { useImportFormats } from '../Import/use-import-formats';
 import { LoadingBars } from '../LoadingBars';
 import { Stepper } from '../Stepper';
 import { WIDE_FROM } from './LeadImport.logic';
-import { columnsStepOf, fileStepOf, footOf, stepperOf } from './LeadImport.props';
+import { backOf, columnsStepOf, fileStepOf, footOf, stepperOf } from './LeadImport.props';
 import type { LeadImportProps } from './LeadImport.types';
 import { LeadImportPreview } from './LeadImportPreview';
 import { LeadImportReport } from './LeadImportReport';
@@ -34,8 +34,16 @@ export function LeadImport(props: LeadImportProps) {
   const wide = width !== null && width >= WIDE_FROM;
   const formats = useImportFormats();
   const { main, below } = stepOf(props, wide, formats);
+  const back = backOf(props, wide);
   return (
     <div ref={room} className="hg-lead-import" data-wide={wide ? 'true' : 'false'}>
+      {back === null ? null : (
+        <span className="hg-lead-import-back">
+          <Button variant="ghost" size="sm" onClick={back}>
+            {props.words.back}
+          </Button>
+        </span>
+      )}
       <Stepper {...stepperOf(props, wide)} />
       {props.notice === null ? null : (
         <Banner kind="state" title={props.notice.title} dismissible={false} density="functional">

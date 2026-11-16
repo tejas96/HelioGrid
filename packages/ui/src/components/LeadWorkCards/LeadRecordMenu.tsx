@@ -1,5 +1,5 @@
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { Menu } from '../Menu';
 import { leadPageMenuOf } from './LeadWorkCards.logic';
 import type { LeadRecordMenuProps } from './LeadWorkCards.types';

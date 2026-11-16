@@ -33,7 +33,7 @@
 .hg-dt-card {
   position: relative;
   padding: var(--sp-4);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
 }
 
 /* The card just added: the same accent tint, before selection. */
@@ -50,7 +50,7 @@
 }
 
 .hg-dt-card[data-selected="true"] {
-  background: var(--accent-subtle);
+  background: var(--fill);
 }
 
 .hg-dt-card[data-muted="true"] {

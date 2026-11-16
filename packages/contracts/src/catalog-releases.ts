@@ -15,7 +15,7 @@ import {
   percentSchema,
   uuidSchema,
 } from './common';
-import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED } from './error';
+import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED, unauthenticatedEnvelope } from './error';
 
 const c = initContract();
 
@@ -106,7 +106,7 @@ export const catalogReleaseWriteSchema = z.object({ label: z.string().trim().min
 export type CatalogReleaseWrite = z.infer<typeof catalogReleaseWriteSchema>;
 
 const guarded = {
-  401: errorEnvelope(baseError('UNAUTHENTICATED')),
+  401: unauthenticatedEnvelope,
 } as const;
 
 export const catalogReleasesContract = c.router({

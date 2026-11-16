@@ -5,8 +5,8 @@ import { Text } from '../../primitives/Text/Text.native';
 import { importFileOf } from '../Import/Import.logic';
 import { CARD_RADIUS, raisedCard, rowDivider } from '../Import/Import.surfaces.native';
 import type { ImportFormats } from '../Import/Import.types';
-import { ProgressRing } from '../OperationProgress/ProgressRing.native';
-import { SHARE_RING } from '../OperationProgress/progress-ring';
+import { RING_SIDE } from '../ProgressRing/ProgressRing.logic';
+import { ProgressRing } from '../ProgressRing/ProgressRing.native';
 import type { CatalogImportProps } from './CatalogImport.types';
 import { ImportFind } from './ImportOverview.native';
 
@@ -68,7 +68,7 @@ function Block({ style }: { style: StyleProp<ViewStyle> }) {
 
 /** A ring's track alone, at the share rings' own size: the run ring part with nothing drawn. */
 function RingTrack() {
-  return <ProgressRing geometry={SHARE_RING} share={0} ink={colors['canvas-sunken']} />;
+  return <ProgressRing size="dial" share={0} ink={colors['canvas-sunken']} />;
 }
 
 function SkeletonList({ rows }: { rows: readonly string[] }) {
@@ -91,7 +91,7 @@ function SkeletonList({ rows }: { rows: readonly string[] }) {
 
 /* The board's m17-j blocks: every block radius 6 on the sunken well, at the sizes it draws them. */
 /** The share rings' box: the skeleton's labels and chips are as wide as a ring. */
-const RING = SHARE_RING.box;
+const RING = RING_SIDE.dial;
 
 const styles = StyleSheet.create({
   step: { gap: theme.spacing['sp-3'] },

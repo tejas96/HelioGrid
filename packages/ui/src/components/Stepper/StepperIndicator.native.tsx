@@ -2,12 +2,11 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { ResolvedStep } from './resolve-steps';
 import { indicatorFacts } from './Stepper.logic';
 import type { StepperWords } from './Stepper.types';
@@ -22,18 +21,11 @@ interface NavButtonProps {
 function NavButton({ direction, disabled, name, onPress }: NavButtonProps) {
   return (
     <Pressable accessibilityLabel={name} disabled={disabled} onPress={onPress} style={styles.nav}>
-      <Svg
-        width={18}
-        height={18}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={disabled ? colors['text-disabled'] : colors['text-primary']}
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={direction < 0 ? 'chevron-left' : 'chevron-right'} />
-      </Svg>
+      <ShellGlyph
+        name={direction < 0 ? 'chevron-left' : 'chevron-right'}
+        size="sm"
+        ink={disabled ? colors['text-disabled'] : colors['text-primary']}
+      />
     </Pressable>
   );
 }
@@ -100,18 +92,7 @@ export function StepperIndicator({
             {words.toFix(errors)}
           </Text>
         ) : null}
-        <Svg
-          width={15}
-          height={15}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={colors['text-tertiary']}
-          strokeWidth={1.6}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <ShellGlyphMarks name="chevron" />
-        </Svg>
+        <ShellGlyph name="chevron" size="dense" ink={colors['text-tertiary']} />
       </Pressable>
       <NavButton
         direction={1}
@@ -162,7 +143,7 @@ const styles = StyleSheet.create({
   },
   current: {
     flexShrink: 1,
-    fontSize: 14,
+    fontSize: theme.type.roles['body-sm'].fontSize,
   },
   errors: {
     flexShrink: 0,

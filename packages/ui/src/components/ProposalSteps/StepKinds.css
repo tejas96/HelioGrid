@@ -130,7 +130,7 @@
   flex-direction: column;
 }
 .hg-pst-client-name {
-  font: var(--fw-regular) 22px / 28px var(--font-display);
+  font: var(--fw-regular) var(--fs-h2) / var(--lh-h2) var(--font-display);
 }
 .hg-pst-client-phone {
   font: var(--fs-body-sm) / var(--lh-body-sm) var(--font-mono);

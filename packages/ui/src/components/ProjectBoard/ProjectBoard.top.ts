@@ -48,7 +48,7 @@ export function projectBoardTopOf(
           value: String(view.todoCount),
           label: top.toDo,
           spoken: top.toDoSpoken(view.todoCount),
-          glyph: { name: 'tick', hue: 'warning' },
+          glyph: { name: 'check', hue: 'warning' },
         },
         {
           value: String(view.waitCount),

@@ -45,3 +45,11 @@ export function matchingRates<
 /** A typed decimal as a field's figure; `''` is unset, never `0`. */
 export const figureOf = (typed: string): number | undefined =>
   typed === '' ? undefined : Number(typed);
+
+/** The charge chips after one is pressed: a chosen basis leaves, any other joins. */
+export function basesToggled(
+  bases: readonly PriceBookRateBasis[],
+  basis: PriceBookRateBasis,
+): PriceBookRateBasis[] {
+  return bases.includes(basis) ? bases.filter((each) => each !== basis) : [...bases, basis];
+}

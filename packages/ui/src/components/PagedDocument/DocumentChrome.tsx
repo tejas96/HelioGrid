@@ -33,7 +33,7 @@ export function Annotations({
     >
       {items.map((a) => (
         <div key={a.id} className="hg-paged-document-annotation">
-          <p className="hg-paged-document-annotation-label">
+          <p className="hg-paged-document-annotation-label hg-overline">
             {words.savedNotPrinted(a.label || words.internalNote)}
           </p>
           {a.content}
@@ -66,12 +66,12 @@ export function SheetSkeleton({
       className="hg-paged-document-skeleton"
       style={{ width: geometry.width, height: geometry.height, padding: geometry.margin.top }}
     >
-      <div className="hg-paged-document-skeleton-bar" data-bar="title" />
-      <div className="hg-paged-document-skeleton-bar" data-bar="a" />
-      <div className="hg-paged-document-skeleton-bar" data-bar="b" />
-      <div className="hg-paged-document-skeleton-bar" data-bar="c" />
+      <div className="hg-paged-document-skeleton-bar hg-skeleton" data-bar="title" />
+      <div className="hg-paged-document-skeleton-bar hg-skeleton" data-bar="a" />
+      <div className="hg-paged-document-skeleton-bar hg-skeleton" data-bar="b" />
+      <div className="hg-paged-document-skeleton-bar hg-skeleton" data-bar="c" />
       <div className="hg-paged-document-skeleton-spacer" />
-      <div className="hg-paged-document-skeleton-bar" data-bar="foot" />
+      <div className="hg-paged-document-skeleton-bar hg-skeleton" data-bar="foot" />
     </div>
   );
 }

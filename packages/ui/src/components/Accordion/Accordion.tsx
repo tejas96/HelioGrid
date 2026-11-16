@@ -1,7 +1,7 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
 import { standingWordAt } from './Accordion.logic';
@@ -16,21 +16,9 @@ interface WebAccordionProps extends AccordionProps {
 
 function Chevron({ open }: { open: boolean }) {
   return (
-    <svg
-      className="hg-accordion-chevron"
-      data-open={open ? 'true' : undefined}
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="chevron" />
-    </svg>
+    <span className="hg-accordion-chevron" data-open={open ? 'true' : undefined}>
+      <ShellGlyph name="chevron" size="sm" tone="current" />
+    </span>
   );
 }
 

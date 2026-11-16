@@ -1,16 +1,17 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import { Sheet } from '../Sheet/Sheet.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import type { ProposalPreviewSheetProps } from './ProposalBuilder.types';
 
 /** The page the customer gets, over the step that feeds it (`T-M06-015`): one renderer, so it cannot differ. */
 export function ProposalPreviewSheet(props: ProposalPreviewSheetProps) {
   return (
-    <Sheet
+    <EditorSurface
       open={props.open}
       onClose={props.onClose}
       closeLabel={props.closeLabel}
+      desktop="modal"
       showClose
       title={props.title}
     >
@@ -20,7 +21,7 @@ export function ProposalPreviewSheet(props: ProposalPreviewSheetProps) {
           {props.pageLine}
         </Text>
       </View>
-    </Sheet>
+    </EditorSurface>
   );
 }
 

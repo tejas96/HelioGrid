@@ -21,27 +21,6 @@
   min-width: 0;
 }
 
-.hg-proposal-head-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--sp-3) var(--sp-4);
-  min-width: 0;
-}
-
-/* A proposal's number is a record's own name: the mono face, as an ID reads everywhere. */
-.hg-proposal-head-row[data-mono="true"] h1 {
-  font-family: var(--font-mono);
-}
-
-.hg-proposal-head-acts {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-2);
-}
-
 /* The document reader measures its own room: its pages are drawn to it. */
 .hg-proposal-document {
   min-width: 0;

@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import { Icon } from '../../primitives/Icon';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 import type { ChartWords } from './Charts.types';
@@ -20,19 +19,6 @@ interface ChartFrameBodyProps {
 
 /* The exclamation-in-a-circle `error` and `empty` share. The fourth state's slashed circle is
    NOT drawn here — `UnavailableNote` owns that mark, and this frame composes it. */
-const AlertGlyph = (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    aria-hidden="true"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <ShellGlyphMarks name="alert-circle" />
-  </svg>
-);
 
 /**
  * The plot area, or the state that replaces it. Loading shimmers, `unavailable` states the
@@ -52,7 +38,7 @@ export function ChartFrameBody({
       <div
         role="status"
         aria-label={words.loading}
-        className="hg-charts-skeleton"
+        className="hg-charts-skeleton hg-skeleton"
         style={{ height }}
       />
     );
@@ -77,7 +63,7 @@ export function ChartFrameBody({
     return (
       <div className="hg-charts-note" style={{ height }}>
         <span className="hg-charts-mark" data-tone={note.tone}>
-          <Icon size="md">{AlertGlyph}</Icon>
+          <ShellGlyph name="alert-circle" size="md" tone="current" />
         </span>
         <div className="hg-charts-note-title">{note.title}</div>
         {note.message === undefined ? null : (

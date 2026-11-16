@@ -1,7 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { noteLineScale } from '../ActionReason/ActionReason.logic';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { complianceFloorFor } from './ComplianceFloor.logic';
 import type { ComplianceFloorSpec } from './ComplianceFloor.types';
 import { complianceFloorSentences } from './ComplianceFloor.words';
@@ -14,22 +15,8 @@ interface WebComplianceFloorProps extends ComplianceFloorSpec {
 /* A statute, not a padlock. A padlock says "you are shut out" — the ScopeNote reading, and false:
    the owner is not shut out of this row, they may edit and move it. The shield says the row is
    protected. */
-function ShieldGlyph({ size }: { size: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="shield-check" />
-    </svg>
-  );
+function ShieldGlyph({ size }: { size: ShellGlyphSize }) {
+  return <ShellGlyph name="shield-check" size={size} tone="current" />;
 }
 
 /** A floor named on the row it protects, or the save it refused. */
@@ -46,7 +33,7 @@ export function ComplianceFloor(props: WebComplianceFloorProps) {
         style={style}
       >
         <span className="hg-compliance-floor-refusal-glyph">
-          <ShieldGlyph size={18} />
+          <ShieldGlyph size="sm" />
         </span>
         <div className="hg-compliance-floor-refusal-body">
           <p className="hg-compliance-floor-refusal-head">{head}</p>

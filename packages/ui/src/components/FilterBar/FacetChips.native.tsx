@@ -1,22 +1,14 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
-import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import { Chip } from '../Chip/Chip.native';
 import { facetGlyph, toggledFacets } from './FilterBar.logic';
 import type { FacetChipsProps } from './FilterBar.types';
 import { optionLabel, optionValue } from './FilterBar.types';
-import {
-  FilterPill,
-  filterStyles,
-  OptionGlyph,
-  PillCount,
-  PillLabel,
-  pillInkColor,
-} from './FilterPill.native';
+import { CHIP_INK, filterStyles, OptionGlyph } from './FilterPill.native';
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
@@ -25,20 +17,7 @@ const styles = StyleSheet.create({
 
 /** The tick is the second, non-colour channel — a set has to be readable without hue. */
 function Tick({ color }: { color: ThemeColor }) {
-  return (
-    <Icon size="sm" color={color}>
-      <Svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={color}
-        strokeWidth={2.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name="tick" />
-      </Svg>
-    </Icon>
-  );
+  return <ShellGlyph name="check" size="sm" ink={color} />;
 }
 
 interface NativeFacetChipsProps extends FacetChipsProps {
@@ -46,14 +25,15 @@ interface NativeFacetChipsProps extends FacetChipsProps {
 }
 
 /**
- * **Multi-select chips — how a dimension holds several values.** The kind chips' 44dp pill — the
- * pill is the target. Selected chips take the accent wash *and a tick*, so a set is
+ * **Multi-select chips — how a dimension holds several values.** The kind chips' 32dp pill in a 44dp
+ * target. Selected chips take the ink outline *and a tick*, so a set is
  * readable without hue; an option's 18dp glyph shows only while it is not selected, where the tick
  * takes its place.
  *
  * The web half is a `<fieldset aria-label>`, which IS `role="group"`; RN spells the same role
  * `role="group"`, so that is what the container takes — never `accessible`, which would fold every
- * chip and its tick into one target.
+ * chip and its tick into one target. iOS does not speak a plain group's name, so each chip
+ * also says it as its hint, after its own name.
  *
  * **A CHIP IS A TOGGLE BUTTON THAT IS ON, and both halves say it with one word.** The design
  * system's reading is `role="group"` + pressed, not a checkbox: the web `<button aria-pressed>`
@@ -85,23 +65,30 @@ export function FacetChips({
     const on = selected.has(optValue);
     const count = counts?.[optValue];
     const icon = facetGlyph(option, on);
-    const ink = pillInkColor('chip', on);
     return (
       <Pressable
         key={optValue}
         accessibilityState={{ selected: on }}
         accessibilityLabel={optionLabel(option)}
+        accessibilityHint={label}
         onPress={() => toggle(optValue)}
         style={filterStyles.target}
       >
-        <FilterPill kind="chip" active={on} lead={on || Boolean(icon)}>
-          {on ? <Tick color={ink} /> : null}
-          <OptionGlyph icon={icon} color={ink} />
-          <PillLabel kind="chip" active={on}>
-            {optionLabel(option)}
-          </PillLabel>
-          {count === undefined ? null : <PillCount kind="chip" active={on} count={count} />}
-        </FilterPill>
+        <Chip
+          density="filter"
+          active={on}
+          leading={
+            on || icon ? (
+              <>
+                {on ? <Tick color={CHIP_INK} /> : null}
+                <OptionGlyph icon={icon} color={CHIP_INK} />
+              </>
+            ) : undefined
+          }
+          {...(count === undefined ? {} : { count })}
+        >
+          {optionLabel(option)}
+        </Chip>
       </Pressable>
     );
   });

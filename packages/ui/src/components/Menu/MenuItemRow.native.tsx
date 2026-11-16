@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { renderActionReason } from '../ActionReason/ActionReason.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
 import type { MenuItem } from './Menu.types';
@@ -34,7 +35,7 @@ export function MenuItemRow({ item, onSelect, radio }: MenuItemRowProps) {
   const { checked, destructive, disabled, inert } = shape;
   const reason: ReactNode = disabled ? renderActionReason(item.disabledReason) : null;
   const twoLine = reason !== null;
-  const glyphColour = disabled ? colors['text-tertiary'] : colors['danger-text'];
+  const glyphColour = disabled ? colors['text-tertiary'] : TONE.danger.ink;
 
   return (
     <Pressable

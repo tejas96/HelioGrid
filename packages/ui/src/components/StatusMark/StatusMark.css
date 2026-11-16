@@ -1,0 +1,29 @@
+/* StatusMark — label + mark, never colour alone (F7-12, docs/17 §4). The words come from
+   the caller; the glyph is the non-colour channel. Colours are the semantic -text/-bg
+   partners: the -text tokens are the only semantic colours allowed to set words, and every
+   warning MARK takes --warning-text because --warning itself clears no contrast floor
+   (packages/theme colors). Weight is --fw-medium, the DS chip weight (StatusChip.jsx). */
+
+.hg-status-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-0-5) var(--sp-3);
+  border-radius: var(--r-pill);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.hg-status-mark-glyph {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Bare: the tone's ink alone, on the card that holds it. */
+.hg-status-mark[data-bare="true"] {
+  padding: 0;
+  background: transparent;
+}

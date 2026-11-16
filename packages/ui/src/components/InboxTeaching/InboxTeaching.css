@@ -48,11 +48,6 @@
 .hg-inbox-teaching-over {
   margin: var(--sp-3) 0 0;
   padding-inline: var(--sp-1);
-  font-size: var(--fs-overline);
-  line-height: var(--lh-overline);
-  letter-spacing: var(--tr-overline);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
   color: var(--text-secondary);
 }
 

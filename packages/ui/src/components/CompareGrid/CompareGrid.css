@@ -28,10 +28,6 @@
 
 .hg-compare-caption {
   padding: var(--sp-4) var(--sp-4) 0;
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 
@@ -223,10 +219,6 @@ tr[data-zebra="true"] > .hg-compare-cell:not([data-selected="true"]) {
 /* The overline role — a mark that carries meaning never relies on colour alone. */
 .hg-compare-best {
   margin-left: 6px;
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--success-text);
   white-space: nowrap;
 }

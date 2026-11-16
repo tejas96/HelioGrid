@@ -9,7 +9,7 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { Card } from '../Card/Card.native';
 import { HueTile } from '../HueTile/HueTile.native';
-import { PARTY_GLYPH, TILE_STROKE, waitDaysOf } from './ProjectDetail.logic';
+import { PARTY_GLYPH, waitDaysOf } from './ProjectDetail.logic';
 import type { ProjectDetailProps } from './ProjectDetail.types';
 
 type OpenWait = NonNullable<ProjectDetailFacts['wait']>;
@@ -34,7 +34,7 @@ export function ProjectWait(props: ProjectDetailProps) {
       }}
       style={styles.ask}
     >
-      <HueTile glyph="clock" hue="neutral" size={40} stroke={TILE_STROKE} />
+      <HueTile glyph="clock" hue="neutral" size={40} />
       <View style={styles.words}>
         <Text variant="body" bold>
           {words.noWaitTitle}
@@ -63,12 +63,7 @@ function WaitCard({
     <Card density="functional">
       <View style={styles.card}>
         <View style={styles.head}>
-          <HueTile
-            glyph={PARTY_GLYPH[wait.party] ?? 'clock'}
-            hue="warning"
-            size={40}
-            stroke={TILE_STROKE}
-          />
+          <HueTile glyph={PARTY_GLYPH[wait.party] ?? 'clock'} hue="warning" size={40} />
           <View style={styles.words}>
             <Text variant="body" bold>
               {words.waitTitle(wait.party)}
@@ -91,7 +86,7 @@ function WaitCard({
             <Button
               variant="secondary"
               size="sm"
-              icon={<ShellGlyph name="tick" size="sm" tone="primary" />}
+              icon={<ShellGlyph name="check" size="sm" tone="primary" />}
               onClick={leaving(() => {
                 if (!sending) onWaitOver();
               })}

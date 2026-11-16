@@ -9,9 +9,9 @@ import {
   type MinorUnits,
   minorUnitsOfDecimal,
 } from '@heliogrid/domain';
-import type { StatusTone } from '../../primitives/StatusMark';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { LEAD_STATE_TONE } from '../LeadStateBadge/LeadStateBadge.logic';
+import type { StatusTone } from '../StatusMark';
 import type { LeadNextMarkProps, ListedLead } from './LeadListRow.types';
 
 /**
@@ -68,10 +68,10 @@ export function leadNextMarkOf(
 export const LEAD_STAGE_GLYPH: Record<LeadStage, ShellGlyphName> = {
   new: 'spark',
   contacted: 'phone',
-  qualified: 'tick',
+  qualified: 'check',
   survey: 'pin',
   design: 'grid',
-  proposal: 'file-text',
+  proposal: 'document',
   negotiating: 'chat',
   won: 'circle-check',
 };

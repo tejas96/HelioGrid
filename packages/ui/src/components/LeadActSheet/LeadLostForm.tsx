@@ -147,7 +147,7 @@ function LostReasons({
               focusGroup={{ tabbable: each === tabbable, onKey: keyFrom(at) }}
               onPress={() => onChange(each)}
             >
-              <HueTile glyph={look.glyph} hue={look.hue} size={36} stroke={1.7} />
+              <HueTile glyph={look.glyph} hue={look.hue} size={36} />
               <span>{form.words.reason[each]}</span>
             </Pressable>
           );

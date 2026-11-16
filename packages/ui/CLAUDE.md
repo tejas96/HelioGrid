@@ -12,11 +12,27 @@ with this folder.
   `var(--hg-control-fill)` on the web, `useGround()` on the phone. On the page (the canvas) a
   control is the card colour; inside a card or tile it is `--fill`. A surface that holds controls
   joins `Ground.css`'s list and, on the phone, wraps its content in `GroundProvider`. **A tile is
-  drawn only by `Ground`**: the white card on the page with a hairline edge — its class joins
-  `Ground.css`'s tiles list; on the phone it spreads `tileSurface` and wraps
-  `GroundProvider ground="tile"`. A tile keeps only its radius, padding and ring states. The one
+  drawn only by `Ground`**, in one of two kinds: a data or list tile (a record, a row, a settings
+  list, a data card) is **solid** — the card colour, a hairline, no shadow and no lift; a summary
+  tile (a figure, a meter, a dashboard block, a choice) is **glass**. Its class joins the kind's list
+  in `Ground.css`; on the phone it spreads `tileSurface` (solid) or `glassTileSurface` and wraps
+  `GroundProvider ground="tile"`; a `Card` says its kind by `tile`. A tile keeps only its radius,
+  padding and ring states, and nothing on it lifts under the pointer. The one
   hero a screen has is `HeroPanel` (solar glass); a page's large title is `LargeTitle`; a moment
   that matters is `LottieMoment`; a place with nothing in it is `EmptyScene`'s grey line drawing.
+- **One part per job, never a copy.** A read's five states inside a frame are `StateBody` (its
+  sentence `StateMessage`; a roomy surface's centred form `StateRegion`); a waiting box is the class
+  `hg-skeleton` (`primitives/Skeleton`) on the web and `usePulse` on the phone; a tone's tint and
+  ink is the class `hg-tone` beside `data-tone` (`primitives/Tone`) on the web and `TONE`
+  (`primitives/Tone/tone.native.ts`) on the phone, never a map of a component's own; an overline is
+  `Text variant="overline"`, or the class `hg-overline` on an element that cannot be a Text; a
+  control's undrawn words on hover and focus are `hg-tip` with `data-tip` (`primitives/Tip`); a
+  page's top glow is the web's `body` and the phone's `BrandBloom placement="page"`; a share of a whole round a centre
+  is `ProgressRing`, in a row `SegmentBar`; a list row with a mark is `ListRow`. A type size is a
+  screen role (`TYPE_ROLES`), the nearest one that does the same job; a part drawn at a document's
+  scale (a proposal page, a paper block, `DocumentPreview`) takes a document role (`DOCUMENT_TYPE`,
+  the preview times `--doc-preview-scale`). A corner is a named radius; a dot, a line's end or a
+  thumb is `r-pill`.
 - The keyboard is answered only by `primitives/Keyboard` (`KeyboardFrame`): a field-bearing sheet or
   editor is wrapped in it.
 - **Every colour comes from the `Color` primitive**; phone colours and arithmetic:
@@ -60,11 +76,14 @@ part there fails it.
 
 ## Local conventions
 
-- **An icon is drawn here, never imported**, and **only by name**: its shape is one entry of
-  `SHELL_GLYPHS` (`AppShell/ShellGlyph*.shapes.ts`), reused before a new one is drawn. `ShellGlyph` draws it on
-  the size ladder; a component that keeps its own box puts `<ShellGlyphMarks name="…" />` inside
-  its `<svg>` and sets the size, stroke and colour there. Biome's `inline-glyph` and
-  `inline-svg-mark` refuse path data and marks written anywhere else.
+- **An icon is Lucide's, drawn only by name with `ShellGlyph`**: `SHELL_GLYPHS`
+  (`AppShell/ShellGlyph.icons.ts`) maps each name to a Lucide icon, one name per meaning, reused
+  before a new one joins; the two Lucide lacks (`alert`'s bare mark, `inverter`) are drawn there in
+  its style. Only `AppShell/ShellGlyph.lucide(.native)` imports Lucide. Size is a `ShellGlyphSize`
+  step (12 · 14 · 16 · 18 · 20 · 24 · 32, OneOhm's web steps; 18, `nav`, is the sidebar row's), the stroke Lucide's 2 at every size;
+  colour is `tone`, `current` (the holder's) or a chosen `ink`. A component never keeps its own
+  `<svg>` box around an icon: a rotation or a margin goes on a wrapping span or view. Biome's
+  `icon-in-one-place`, `inline-glyph` and `inline-svg-mark` refuse the rest.
 - No check compares the two halves' behaviour → a change to one half is looked at live on the other (`qa-live`).
 - **No English lives here** (`T-SHELL-016`): every copy prop takes `TranslatedText` with no default,
   and words a component says itself — a counter, an announcement, an error line — arrive as a
@@ -78,6 +97,7 @@ part there fails it.
 
 ## Traps
 
+- Metro tries every platform form of one extension (`.android.ts`, `.native.ts`, `.ts`) before it tries the next extension, so a `.native.tsx` half beside a `.ts` web half is never picked and the phone silently runs the web half (the icon bridge bundled the whole of `lucide-react`) → give both halves the same extension, or import the native half by its full name as `ChartTokens.native` is.
 - The word guards read types and JSX only, so English a `.ts` helper builds — a counter, a plural, `` `${n} dates` `` — passes them and reaches a Hindi reader → build it in `packages/i18n` and take it as a words function, as `DatePicker`'s `datesChosen` does.
 - On touch a tap on a button never leaves the focused field first, so a field that commits on blur has not reported its edit when a ✕, *Cancel*, Back or *Save* in the same press reads the draft, and the edit is lost with no ask → a field in a form with a way out commits as typed (`NumberField` `commits="as-typed"`, `Input` `onChange`), as `PaymentTermsEditor` does.
 - On Fabric, a `zIndex` that changes with state re-orders the parent's native children, so a sibling holding a focused field is taken out and put back, and Android drops the keyboard → set a `zIndex` once in the base style and toggle only the look.
@@ -86,6 +106,8 @@ part there fails it.
 - A web layout sized from the window (`vw`, `@media` widths) assumes it owns the page, but inside the shell a side list or a panel takes part of it, so a two-column component squeezes a column to nothing at mid widths → size it from its own room (`container` + `cqw`, `@container`), as `CompanyProfile`'s settings life does.
 - A page's `data-layout="narrow"` holds every width under its wide breakpoint (a 673 px editor at 1280), not only 375, so a squeeze written for 375 under it — 2 px segment sides — shows on a roomy editor once the part stops stretching → size a tight-room rule from the part's own room (`@container`), as `hg-segmented-control-hug` does.
 - A category wash with its words (a hue tile, a kind badge, a face) mixed by hand is a pair `ui-colour-pairs` cannot measure and a colour dark mode cannot follow → take the token pair: `hg-hue` with `data-hue` on the web (`Avatar.css`), `hueTintOf` on native.
+- A layer anchored to a control (a list, a menu, a bubble) measured with `measureInWindow` inside a sheet still sliding in on the native driver reads the panel where its slide began, and the layer opened below the screen; `measureLayout` reads no scroll at all → measure an anchor only through `useMeasureForLayer` (`primitives/Portal/Portal.native.tsx`), and wrap a sliding panel's content in `SlidingPanel`, as `Sheet`, `DetailPanel` and `Modal` do.
+- A phone `Text` draws its words as script runs that each set their own face, so a `fontFamily` given in `style` (a mono figure at a heading's size) never reached the glyphs → `Text` keeps a caller's mono face whole (numbers and codes need no script runs); any other face a style names still splits into runs, so Devanagari keeps its face.
 - A percentage-sized phone SVG measured before its content grows stops short → an SVG behind content takes its parent's measured size (`HeroPanel.native.tsx`).
 - A phone layer drawn through `Portal` (a menu, a bubble) is not a screen, so Android's Back passed it by and left the app with the menu still open → a layer that opens over the page closes on Back through `useCloseOnBack` (`primitives/use-close-on-back.native.ts`), as `Menu` and `Explainer` do.
 - Android draws a bounded ripple square, and clips neither it nor a shadow to round corners, so `Pressable` ripples only a target with no `borderRadius`; a target whose round shape sits on an inner view rippled a square box over its pill → put the pill's radius on the target too (`Chip`, `FilterPill`).
@@ -97,7 +119,7 @@ part there fails it.
 - The web spaces a frame's parts with its container's `gap`; the phone's slot is a bare `View`, so a part moved into it — a title wrapped in `HeroPanel`, a large title sharing the shell's lead with a switch — sits flush, its old padding now inside, and no check measures phone spacing → give the phone slot its own gap (`SetupReady.native.tsx` `doors`, `apps/mobile` shell `lead`) and look at the phone after the move.
 - A focus handle that returns what it calls (a timer id, `focus()`'s result) becomes an effect's cleanup when a caller writes `useEffect(() => ref.focus())`, and React crashes the page on unmount (the merge's done page) → a focus handle returns nothing.
 - On the phone a growing child inside a flex item sized to its content takes the whole row and crushes its siblings (the import stepper's last step hid the first three) → give the growing child a bounded basis, or lay the row out as equal cells.
-- `backdrop-filter` on a host that holds fixed overlays makes it their containing block, so the overlays move with it → put the blur on a `::before` layer.
+- `backdrop-filter`, a `transform` or a `filter` on a host that holds fixed overlays — even for the length of an entrance animation — makes it their containing block, so the overlays move with it or open inside it → put the blur on a `::before` layer, and animate a host of overlays (the shell page) by opacity only.
 - A hand-written arrow-key walk in a one-tab-stop group (radios, tabs, chips) is too short for jscpd to catch, and five copies had drifted on Home, End and disabled options → walk the keys through `rovingTargetOf` (`primitives/press-keys.ts`); a `Pressable` option joins the group through `focusGroup`.
 - A bundled picture (`require`d jpg) hands `Image` its own size, applied before the caller's style, so a picture given only the four edges (`StyleSheet.absoluteFill`) draws at the file's size and leaves the box's ground showing → state `width: '100%'` and `height: '100%'` beside the edges (`ProposalPicture.native.tsx`).
 - A phone colour from `colors` is a system colour, which an SVG gradient's `stopColor` cannot read, so a fade built on one drew nothing and no check saw it → a gradient stop takes `usePalette()`'s hex (`SheetFade.native.tsx`).

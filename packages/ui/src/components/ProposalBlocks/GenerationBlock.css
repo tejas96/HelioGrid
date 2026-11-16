@@ -49,7 +49,7 @@
   right: 14%;
   bottom: 0;
   height: var(--hg-pb-bar);
-  border-radius: 6px 6px 3px 3px;
+  border-radius: var(--rf-sm) var(--rf-sm) var(--rf-xs) var(--rf-xs);
   background: linear-gradient(180deg, var(--chart-2), var(--chart-1));
   opacity: 0.42;
   transform-origin: bottom;
@@ -57,7 +57,7 @@
   animation-delay: calc(var(--i) * var(--stagger-step));
 }
 .hg-pb[data-mode="paper"] .hg-pb-bar-fill {
-  border-radius: 9px 9px 4px 4px;
+  border-radius: var(--r-xs) var(--r-xs) var(--rf-xs) var(--rf-xs);
 }
 .hg-pb-bar[data-peak] .hg-pb-bar-fill {
   opacity: 1;
@@ -85,7 +85,7 @@
   }
 }
 .hg-pb[data-mode="paper"] .hg-pb-bar-name {
-  font-size: 13px;
+  font-size: var(--doc-fs-small);
   line-height: 16px;
 }
 .hg-pb-bar-value {
@@ -102,6 +102,6 @@
   animation: hg-fade-in var(--dur-data) var(--ease-enter) backwards;
 }
 .hg-pb[data-mode="paper"] .hg-pb-bar-value {
-  font-size: 15px;
+  font-size: var(--doc-fs);
   line-height: 18px;
 }

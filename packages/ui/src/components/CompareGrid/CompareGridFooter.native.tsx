@@ -1,12 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
-import { Icon } from '../../primitives/Icon/Icon.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { axisFootOf } from './CompareGrid.logic';
 import type { CompareGridFooterProps } from './CompareGrid.types';
 
@@ -34,20 +32,7 @@ const styles = StyleSheet.create({
 function Chevron({ back, disabled }: { back?: boolean; disabled: boolean }) {
   const stroke = disabled ? colors['text-disabled'] : colors['text-primary'];
   return (
-    <View style={back === true ? { transform: [{ rotate: '180deg' }] } : undefined}>
-      <Icon size="lg" color={stroke}>
-        <Svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={stroke}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <ShellGlyphMarks name="chevron-right" />
-        </Svg>
-      </Icon>
-    </View>
+    <ShellGlyph name={back === true ? 'chevron-left' : 'chevron-right'} size="md" ink={stroke} />
   );
 }
 

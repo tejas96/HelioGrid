@@ -182,7 +182,7 @@ export function sortStateOf<Row>(
 
 /** The header's sort arrow: down for a descending column, up otherwise. */
 export function sortGlyphOf(dir: DataTableSort['dir'] | null): ShellGlyphName {
-  return dir === 'desc' ? 'caret-down' : 'caret-up';
+  return dir === 'desc' ? 'chevron' : 'chevron-up';
 }
 
 /** The select-all tick's name: what a press does — clear the lot, or select every row. */

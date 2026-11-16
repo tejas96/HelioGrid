@@ -71,7 +71,7 @@ function SearchResultGroup<Failure>(
   return (
     <section className="hg-search-group" aria-labelledby={heading}>
       <div className="hg-search-group-head">
-        <h2 id={heading} className="hg-search-group-title">
+        <h2 id={heading} className="hg-search-group-title hg-overline">
           {words.group(group.group)}
         </h2>
         <span className="hg-search-group-count">{count}</span>

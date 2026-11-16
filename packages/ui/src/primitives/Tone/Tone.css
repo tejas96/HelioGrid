@@ -1,0 +1,30 @@
+/* Tone — the one place a tone becomes its tint and its ink, on the web. A toned part (a status
+   mark, a badge, a banner, a mark in a disc) takes the class `hg-tone` beside its `data-tone` and
+   writes no pair of its own; a part whose tone reads differently overrides only that tone. The ink
+   is the tone's -text partner, the only semantic colour allowed to set words (packages/theme
+   colors); the accent stays plain, measuring 4.65:1 on --accent-subtle unaided. */
+
+.hg-tone[data-tone="neutral"] {
+  color: var(--neutral-text);
+  background: var(--neutral-bg);
+}
+.hg-tone[data-tone="info"] {
+  color: var(--info-text);
+  background: var(--info-bg);
+}
+.hg-tone[data-tone="success"] {
+  color: var(--success-text);
+  background: var(--success-bg);
+}
+.hg-tone[data-tone="warning"] {
+  color: var(--warning-text);
+  background: var(--warning-bg);
+}
+.hg-tone[data-tone="danger"] {
+  color: var(--danger-text);
+  background: var(--danger-bg);
+}
+.hg-tone[data-tone="accent"] {
+  color: var(--accent);
+  background: var(--accent-subtle);
+}

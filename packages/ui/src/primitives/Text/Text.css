@@ -92,7 +92,8 @@
 
 .hg-text[data-variant="field-label"] {
   font-size: var(--fs-field-label);
-  line-height: var(--lh-body-sm);
+  line-height: var(--lh-label);
+  letter-spacing: var(--tr-label);
   font-weight: var(--fw-medium);
 }
 
@@ -106,7 +107,14 @@
   line-height: var(--lh-caption);
 }
 
-.hg-text[data-variant="overline"] {
+/* The overline is Text's alone. An element that cannot be a Text — a table head, a legend, a label
+   inside a control — takes the class `hg-overline` and writes no overline of its own. */
+.hg-overline {
+  font-family: var(--font-sans);
+}
+
+.hg-text[data-variant="overline"],
+.hg-overline {
   font-size: var(--fs-overline);
   /* The overline and mono name no line height of their own: like every board, the body's. */
   line-height: var(--lh-body);

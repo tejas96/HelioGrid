@@ -10,6 +10,7 @@ import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { useFormat } from '../MarketProvider/market-context';
 import {
   isProvenanceEmpty,
@@ -34,15 +35,15 @@ import { useProvenanceWords } from './Provenance.words';
    background), so a warning mark lands on --warning-text, exactly as the web half maps it. */
 const MARK: Record<ProvenanceMarkToken, ThemeColor> = {
   success: colors.success,
-  'success-text': colors['success-text'],
+  'success-text': TONE.success.ink,
   info: colors.info,
-  'info-text': colors['info-text'],
-  warning: colors['warning-text'],
-  'warning-text': colors['warning-text'],
+  'info-text': TONE.info.ink,
+  warning: TONE.warning.ink,
+  'warning-text': TONE.warning.ink,
   danger: colors.danger,
-  'danger-text': colors['danger-text'],
+  'danger-text': TONE.danger.ink,
   neutral: colors.neutral,
-  'neutral-text': colors['neutral-text'],
+  'neutral-text': TONE.neutral.ink,
   accent: colors.accent,
   'text-tertiary': colors['text-tertiary'],
   'text-secondary': colors['text-secondary'],

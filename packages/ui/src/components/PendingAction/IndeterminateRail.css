@@ -21,7 +21,7 @@
   width: 34%;
   border-radius: var(--r-pill);
   background: var(--hg-indeterminate-rail-tone, var(--accent));
-  animation: hg-indeterminate 1.15s var(--ease-standard) infinite;
+  animation: hg-indeterminate var(--amb-indeterminate) var(--ease-standard) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

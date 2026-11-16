@@ -1,9 +1,9 @@
 import type { ProjectPayments } from '@heliogrid/contracts';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { HeroPanel } from '../HeroPanel';
 import { useFormat } from '../MarketProvider';
+import { StatusMark } from '../StatusMark/StatusMark';
 import {
   barOf,
   dueForOf,

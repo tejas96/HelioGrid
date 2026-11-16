@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import type { UsageFill, UsageScale } from './usage-meter-model';
 import { usageTrackMarks } from './usage-meter-model';
 
@@ -10,7 +11,7 @@ const FILL: Record<UsageFill, ThemeColor> = {
   accent: colors.accent,
   info: colors.info,
   /* --warning-text, not --warning: the plain token measures 2.17:1 as a mark, under the 3:1 floor. */
-  warning: colors['warning-text'],
+  warning: TONE.warning.ink,
   neutral: colors.neutral,
 };
 

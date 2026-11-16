@@ -249,13 +249,13 @@ const styles = StyleSheet.create({
   fields: { flexDirection: 'row', alignItems: 'flex-end', gap: theme.spacing['sp-2'] },
   grow: { flex: 1, minWidth: 0 },
   share: { width: SHARE_WIDTH, flexShrink: 0 },
-  /** A ghost button's words sit 16 into its pill: the pill steps out so its words line up. */
+  /** A small ghost button's words sit 12 into it: the button steps out so its words line up. */
   due: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: theme.spacing['sp-2'],
-    marginLeft: -theme.spacing['sp-4'],
+    marginLeft: -theme.spacing['sp-3'],
   },
   start: { flexDirection: 'row' },
   acts: {

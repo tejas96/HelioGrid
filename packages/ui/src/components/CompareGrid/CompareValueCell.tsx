@@ -8,7 +8,7 @@ import type { CompareAttribute, CompareGridWords, CompareOption } from './Compar
 
 /** The best value in a row is marked with a WORD — a mark never relies on colour alone. */
 function Best({ word }: { word: TranslatedText }) {
-  return <span className="hg-compare-best">{word}</span>;
+  return <span className="hg-compare-best hg-overline">{word}</span>;
 }
 
 /** The cell's words: the row's NAMED GAP, the pack's formatting of a figure, or the caller's node. */

@@ -30,7 +30,7 @@ const wordsFor = (roles: readonly RolePreset[]) => roleCardWords(en.t, roleCard(
 const SALES = wordsFor(['sales_executive']);
 const STACKED = wordsFor(['sales_executive', 'design_engineer']);
 const TEXT =
-  'h1, .hg-role-card-presets, .hg-role-card-credit, .hg-role-card-overline, .hg-role-card-phrase, .hg-scope-note, .hg-button, .hg-role-explainer-act .hg-text';
+  'h1, .hg-role-card .hg-card-header-title, .hg-role-card .hg-card-header-description, .hg-role-card-overline, .hg-role-card-phrase, .hg-scope-note, .hg-button, .hg-role-explainer-act .hg-text';
 const PICTURES = join(import.meta.dirname, '../../../.qa/components/role-explainer');
 
 /** The vertical gap from `above`'s bottom to `below`'s top. */
@@ -51,8 +51,10 @@ test.describe('at 375', () => {
   }) => {
     const screen = await mount(<RoleExplainerAsHeld reader="en" names={BOARD} />);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(SALES.title);
-    await expect(page.locator('.hg-role-card-presets')).toHaveText(SALES.presets);
-    await expect(page.locator('.hg-role-card-credit')).toHaveText(SALES.credit ?? '');
+    await expect(page.locator('.hg-role-card .hg-card-header-title')).toHaveText(SALES.presets);
+    await expect(page.locator('.hg-role-card .hg-card-header-description')).toHaveText(
+      SALES.credit ?? '',
+    );
     await expect(page.getByRole('region', { name: SALES.region })).toBeVisible();
     await expect(page.getByRole('note')).toContainText(SALES.note?.title ?? '');
     const act = page.getByRole('button', { name: SALES.act });
@@ -100,11 +102,11 @@ test.describe('at 375', () => {
     expect(await region.evaluate((node) => node.scrollHeight > node.clientHeight)).toBe(true);
     const [heading, head] = await Promise.all([
       settledBox(page.getByRole('heading', { level: 1 })),
-      settledBox(page.locator('.hg-role-card-presets')),
+      settledBox(page.locator('.hg-role-card .hg-card-header-title')),
     ]);
     await region.evaluate((node) => node.scrollTo({ top: node.scrollHeight }));
     expect(await settledBox(page.getByRole('heading', { level: 1 }))).toEqual(heading);
-    expect(await settledBox(page.locator('.hg-role-card-presets'))).toEqual(head);
+    expect(await settledBox(page.locator('.hg-role-card .hg-card-header-title'))).toEqual(head);
     await expect(page.getByRole('note')).toBeInViewport();
     await expect(page.getByRole('button', { name: STACKED.act })).toBeInViewport();
     await page.screenshot({ path: `${PICTURES}/m-stacked-end.png` });
@@ -112,7 +114,7 @@ test.describe('at 375', () => {
 
   test('m-loading: the head and the act draw while the rows wait', async ({ mount, page }) => {
     await mount(<RoleExplainerAsHeld reader="en" names={BOARD} surface="loading" />);
-    await expect(page.locator('.hg-role-card-presets')).toHaveText(SALES.presets);
+    await expect(page.locator('.hg-role-card .hg-card-header-title')).toHaveText(SALES.presets);
     await expect(page.getByRole('status', { name: SALES.loading })).toHaveAttribute(
       'aria-busy',
       'true',
@@ -127,8 +129,8 @@ test.describe('at 375', () => {
   }) => {
     await mount(<RoleExplainerAsHeld reader="en" names={BOARD} pending />);
     await expect(page.getByRole('heading', { level: 1 })).toHaveCount(0);
-    await expect(page.locator('.hg-role-card-credit')).toHaveCount(0);
-    await expect(page.locator('.hg-role-card-presets')).toHaveText(SALES.presets);
+    await expect(page.locator('.hg-role-card .hg-card-header-description')).toHaveCount(0);
+    await expect(page.locator('.hg-role-card .hg-card-header-title')).toHaveText(SALES.presets);
     await expect(page.getByRole('status', { name: SALES.loading })).toBeVisible();
     await expect(page.getByRole('button', { name: SALES.act })).toBeEnabled();
   });
@@ -139,12 +141,12 @@ test.describe('at 375', () => {
   }) => {
     const screen = await mount(<RoleExplainerAsHeld reader="en" names={BOARD} surface="failed" />);
     await expect(page.locator('.hg-role-explainer')).toContainText(SALES.error.title);
-    await expect(page.locator('.hg-role-card-presets')).toHaveCount(0);
+    await expect(page.locator('.hg-role-card .hg-card-header-title')).toHaveCount(0);
     await expect(page.getByRole('button', { name: SALES.act })).toBeEnabled();
     await page.screenshot({ path: `${PICTURES}/m-error.png` });
     await page.getByRole('button', { name: SALES.error.retry }).click();
     await expect(screen).toHaveAttribute('data-retried', 'true');
-    await expect(page.locator('.hg-role-card-presets')).toBeVisible();
+    await expect(page.locator('.hg-role-card .hg-card-header-title')).toBeVisible();
   });
 
   for (const reader of ['hi', 'mr'] as const) {

@@ -1,5 +1,5 @@
 import type { LeadPostponeDays, LostReason } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { ISODate } from '../DatePicker/DatePicker.types';
 import type { HueTileProps } from '../HueTile/HueTile.types';
 import type { LeadPostponeSpan } from './LeadActSheet.parts.types';

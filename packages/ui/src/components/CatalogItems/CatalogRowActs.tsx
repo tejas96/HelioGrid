@@ -52,7 +52,7 @@ function RowActs({ row, stacked, acts }: { row: CatalogRow; stacked: boolean; ac
         <ShellGlyph
           name="star"
           size="sm"
-          filled={row.preferred}
+          fill={row.preferred ? 'ink' : undefined}
           tone={row.preferred ? 'inverse' : 'secondary'}
         />
       </IconButton>

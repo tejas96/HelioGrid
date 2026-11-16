@@ -174,11 +174,6 @@
   gap: var(--sp-2);
 }
 
-/* A figure's tier after the sentence that holds it: one quiet mark at the line's end. */
-.hg-cust-quiet .hg-provenance-tier {
-  vertical-align: middle;
-}
-
 /* ── the desktop's room: two columns, the acts beside the content ───────── */
 @media (min-width: 968px) {
   .hg-cust-column {

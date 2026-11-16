@@ -1,11 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
-import { Icon } from '../../primitives/Icon/Icon.native';
-import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
+import { StateRegion } from '../StateBody/StateRegion.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { MapSkeleton } from './MapSkeleton.native';
 import { mapNoteOf } from './MapSurface.logic';
@@ -18,14 +15,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-6'],
     backgroundColor: colors['surface-alt'],
   },
-  mark: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
-  message: { maxWidth: 320 },
   /* The `unavailable` plate. It holds NOTHING but a centred UnavailableNote — the fourth state
      has one renderer and this surface does not draw a second one. */
   region: {
@@ -40,62 +32,24 @@ const styles = StyleSheet.create({
   },
 });
 
-const ALERT = (
-  <Svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={1.5}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <ShellGlyphMarks name="alert-circle" />
-  </Svg>
-);
-
-const EMPTY = (
-  <Svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={1.5}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <ShellGlyphMarks name="map" />
-  </Svg>
-);
-
 /**
  * A failed tile fetch is `error` and offers a retry; nothing to show yet is `empty` and does
  * not. Neither ever leaves blank space that reads as "no sites".
  */
 export function MapNote({ kind, title, message, onRetry, retry }: MapNoteProps) {
-  const empty = kind === 'empty';
   return (
-    <View style={styles.note}>
-      <View
-        style={[
-          styles.mark,
-          {
-            backgroundColor: empty ? colors['neutral-bg'] : colors['warning-bg'],
-          },
-        ]}
-      >
-        <Icon size="lg" color={empty ? colors['text-tertiary'] : colors['warning-text']}>
-          {empty ? EMPTY : ALERT}
-        </Icon>
-      </View>
-      <Text variant="h4" align="center">
-        {title}
-      </Text>
-      <Text variant="body-sm" color="secondary" align="center" style={styles.message}>
-        {message}
-      </Text>
-      {retry === undefined ? null : (
-        <RetryButton onRetry={onRetry} label={retry.label} focusAfter={retry.focusAfter} />
-      )}
-    </View>
+    <StateRegion
+      tone={kind === 'empty' ? undefined : 'warning'}
+      glyph="map"
+      title={title}
+      message={message}
+      action={
+        retry === undefined ? null : (
+          <RetryButton onRetry={onRetry} label={retry.label} focusAfter={retry.focusAfter} />
+        )
+      }
+      style={styles.note}
+    />
   );
 }
 

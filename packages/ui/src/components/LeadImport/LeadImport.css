@@ -8,6 +8,11 @@
   min-width: 0;
 }
 
+/* The narrow room's way back a step, at the start of the column above the track. */
+.hg-lead-import-back {
+  align-self: flex-start;
+}
+
 .hg-lead-import-preview,
 .hg-lead-import-report {
   display: flex;

@@ -11,7 +11,7 @@ import type {
 } from './ProposalAfterParts.types';
 import './ProposalAfterParts.css';
 
-export function AfterHint({ glyph = 'info-circle', children }: AfterHintProps) {
+export function AfterHint({ glyph = 'info', children }: AfterHintProps) {
   return (
     <p className="hg-after-hint">
       <ShellGlyph name={glyph} size="sm" tone="secondary" />
@@ -48,8 +48,7 @@ export function AfterRows({ children }: AfterRowsProps) {
 function RowFace({ glyph, hue = 'ocean', title, line, leading }: AfterRowProps) {
   return (
     <>
-      {leading ??
-        (glyph === undefined ? null : <HueTile glyph={glyph} hue={hue} size={36} stroke={1.7} />)}
+      {leading ?? (glyph === undefined ? null : <HueTile glyph={glyph} hue={hue} size={36} />)}
       <span className="hg-after-row-words">
         <b>{title}</b>
         {line === undefined ? null : <span>{line}</span>}

@@ -61,7 +61,7 @@ function NextBlock(props: ProjectDetailProps & { refs: HeroRefs }) {
   return (
     <>
       <div ref={refs.line} tabIndex={-1} className="hg-project-detail-hero-next hg-focus-target">
-        <span className="hg-project-detail-overline">{words.next}</span>
+        <span className="hg-project-detail-overline hg-overline">{words.next}</span>
         <span className="hg-project-detail-hero-next-title">
           {words.nextTitle(view.next, proofRowOf(project, view.next))}
         </span>

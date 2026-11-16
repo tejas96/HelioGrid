@@ -27,7 +27,7 @@ function RailNode({
   if (now) return <span className="hg-pbf-rail-node">{number}</span>;
   return (
     <span className="hg-pbf-rail-node">
-      <ShellGlyph name={step.standing === 'to_do' ? 'alert-small' : 'tick-small'} size="sm" />
+      <ShellGlyph name={step.standing === 'to_do' ? 'alert' : 'check'} size="sm" />
     </span>
   );
 }
@@ -115,7 +115,7 @@ function BuilderBar({ props }: { props: ProposalBuilderProps }) {
         <Button
           variant="primary"
           size="md"
-          iconRight={<ShellGlyph name="file-text" size="sm" tone="inverse" />}
+          iconRight={<ShellGlyph name="document" size="sm" tone="inverse" />}
           onClick={props.onGenerate}
         >
           {words.generate}
@@ -136,7 +136,7 @@ export function BuilderDesktop(props: ProposalBuilderProps) {
   const toFix = props.toFix ?? 0;
   const forward = place.last ? props.onGenerate : () => next && props.onStep(next.key);
   const lastWord = toFix > 0 ? words.lastToFix(toFix) : words.last;
-  const lastGlyph = props.parts === undefined ? 'file-text' : 'tick';
+  const lastGlyph = props.parts === undefined ? 'document' : 'check';
   return (
     <div className="hg-pbf" data-form="desktop">
       <BuilderBar props={props} />
@@ -145,7 +145,9 @@ export function BuilderDesktop(props: ProposalBuilderProps) {
         {stage === undefined ? null : <BuilderStageView stage={stage} />}
         <section className="hg-pbf-editor">
           <div className="hg-pbf-editor-head" key={step.key}>
-            <span className="hg-pbf-over">{words.stepOf(place.index + 1, place.total)}</span>
+            <span className="hg-pbf-over hg-overline">
+              {words.stepOf(place.index + 1, place.total)}
+            </span>
             <h1 ref={heading} tabIndex={-1} className="hg-pbf-editor-heading hg-focus-target">
               {step.heading}
             </h1>

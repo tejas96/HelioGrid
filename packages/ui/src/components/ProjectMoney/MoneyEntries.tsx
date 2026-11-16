@@ -1,10 +1,9 @@
 import type { ProjectPaymentEntry, ProjectPayments } from '@heliogrid/contracts';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark';
-import { Card } from '../Card';
+import { Card, CardHeader } from '../Card';
 import { HueTile } from '../HueTile';
 import { useFormat } from '../MarketProvider';
 import { Menu } from '../Menu';
-import { CardHead } from '../ProjectDetail/ProjectDetailParts';
+import { StatusMark } from '../StatusMark/StatusMark';
 import { entriesNewestFirst, entryActsOf, paymentsAmountOf } from './ProjectMoney.logic';
 import type { ProjectMoneyProps } from './ProjectMoney.types';
 
@@ -18,7 +17,7 @@ export function MoneyEntries(props: ProjectMoneyProps & { readonly payments: Pro
   return (
     <section aria-label={words.received}>
       <Card density="functional" className="hg-money-card">
-        <CardHead title={words.received} aside={null} />
+        <CardHeader title={words.received} className="hg-project-detail-card-head" />
         {entries.length === 0 ? (
           <p className="hg-money-quiet">{words.nothingReceived}</p>
         ) : (
@@ -54,7 +53,6 @@ function EntryLine({
         glyph={isReversal ? 'undo' : 'rupee'}
         hue={isReversal || entry.reversed ? 'neutral' : 'success'}
         size={40}
-        stroke={1.8}
       />
       <div className="hg-money-entry-text">
         <span className="hg-money-entry-title">

@@ -17,7 +17,9 @@
     "@heliogrid/contracts": "workspace:*",
     "@heliogrid/domain": "workspace:*",
     "@heliogrid/theme": "workspace:*",
-    "lottie-web": "5.13.0"
+    "lottie-web": "5.13.0",
+    "lucide-react": "1.60.0",
+    "lucide-react-native": "1.60.0"
   },
   "peerDependencies": {
     "lottie-react-native": "7.5.0",

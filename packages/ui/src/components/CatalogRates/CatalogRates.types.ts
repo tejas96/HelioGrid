@@ -5,8 +5,8 @@ import type { NumberFieldWords } from '../NumberField/NumberField.types';
 
 /**
  * **Catalog settings' Rates panel** (`SCR-M01-15`, `M01-48`): the price book's version in force —
- * its strip, then its rates, grouped by how each is charged at 375 and one searchable table at
- * 1536. Versions are immutable: browsing one is read-only, and a change is a whole new version
+ * its strip, then *Search rates* and the charge chips over its rates, grouped by how each is
+ * charged at 375 and one table at 1536. Versions are immutable: browsing one is read-only, and a change is a whole new version
  * (`CatalogVersion`). Words are the caller's.
  */
 export interface CatalogRatesProps {

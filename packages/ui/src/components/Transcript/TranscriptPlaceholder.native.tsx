@@ -10,6 +10,7 @@ import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { placeholderOf, TRANSCRIPT_SKELETON_BARS } from './Transcript.logic';
@@ -26,15 +27,16 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-md'],
-    backgroundColor: colors['warning-bg'],
+    backgroundColor: TONE.warning.tint,
   },
-  errorBody: { color: colors['warning-text'] },
+  errorBody: { color: TONE.warning.ink },
   empty: {
     padding: theme.spacing['sp-5'],
     borderRadius: theme.radius['r-md'],
     backgroundColor: colors['canvas-sunken'],
   },
-  emptyTitle: { fontWeight: '700', letterSpacing: theme.type.roles.h4.letterSpacing },
+  /* The web's `h4` role, bold. */
+  emptyTitle: { fontWeight: '700' },
   emptyBody: { marginTop: 6 },
 });
 
@@ -93,7 +95,7 @@ export function TranscriptPlaceholder({
   if (kind === 'empty') {
     return (
       <View style={styles.empty}>
-        <Text variant="body-sm" style={styles.emptyTitle}>
+        <Text variant="h4" style={styles.emptyTitle}>
           {emptyTitle}
         </Text>
         {emptyDescription === undefined ? null : (

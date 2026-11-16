@@ -10,6 +10,8 @@ import { ListRow } from '../ListRow/ListRow.native';
 import { COMPARE_COLUMNS } from './PlanSelection.measures';
 import type { PlanCompareView, PlanSelectionProps, PlanSet } from './PlanSelection.types';
 
+// web-only part: Block — the blocks are the web wide columns; the phone draws the narrow rows.
+
 /**
  * The comparison on the phone (decision 4): a `Compare all plans` row opens it in place — my plan
  * against ONE other, chosen by a chip strip, then the set by a second — never a four-plan matrix.
@@ -27,7 +29,7 @@ export function PlanComparison({ view, words, compareOpen, acts }: PlanSelection
         title={words.compareAll}
         subtitle={compare.line}
         trailing={
-          <ShellGlyph name={compareOpen ? 'caret-up' : 'caret-down'} size="md" tone="secondary" />
+          <ShellGlyph name={compareOpen ? 'chevron-up' : 'chevron'} size="md" tone="secondary" />
         }
         onClick={acts.onCompare}
       />
@@ -118,7 +120,7 @@ function TierChips({
 
 const styles = StyleSheet.create({
   region: { gap: theme.spacing['sp-4'] },
-  rest: { ...tileSurface, borderRadius: theme.radius['r-tile'] },
+  rest: { ...tileSurface, borderRadius: theme.radius['r-lg'] },
   chips: { gap: theme.spacing['sp-2'], alignItems: 'flex-start' },
   chipsLabel: { fontWeight: '500' },
 });

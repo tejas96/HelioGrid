@@ -12,7 +12,7 @@ export function FilterDimensionBlock({ dim, value, onChange, words }: FilterDime
   return (
     <div className="hg-filter-dimension">
       <div className="hg-filter-dimension-head">
-        <h3 className="hg-filter-dimension-label">{dim.label}</h3>
+        <h3 className="hg-filter-dimension-label hg-overline">{dim.label}</h3>
         {summary === null ? null : <span className="hg-filter-dimension-summary">{summary}</span>}
       </div>
       <FilterDimensionControl dim={dim} value={value[dim.key]} onChange={onChange} words={words} />

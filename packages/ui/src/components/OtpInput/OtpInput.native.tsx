@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     minWidth: 44,
     textAlign: 'center',
     fontFamily: theme.type.families.mono,
-    fontSize: 22,
+    fontSize: theme.type.roles.h2.fontSize,
     fontWeight: '700',
     color: colors['text-primary'],
     padding: 0,

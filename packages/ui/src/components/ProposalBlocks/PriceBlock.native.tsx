@@ -17,6 +17,8 @@ import type { ProposalPriceWords } from './ProposalBlocks.parts.types';
 import type { ProposalBlockMode, ProposalPriceBlockProps } from './ProposalBlocks.types';
 import { type PriceView, priceView } from './ProposalBlocks.views';
 
+// web-only parts: AppShell, HueTile, Provenance — glyphs, tiles and tiers come through BlockParts.native, in the paper ink.
+
 /** The middle dot between two facts of one line: a mark, not a word. */
 const DOT = ' · ';
 
@@ -209,9 +211,9 @@ const styles = StyleSheet.create({
   },
   factPaper: { paddingVertical: 16, paddingHorizontal: 18 },
   factWords: { flexShrink: 1, minWidth: 0 },
-  factNamePaper: { fontSize: 14, lineHeight: 20 },
+  factNamePaper: { fontSize: theme.type.document['doc-fs-small'], lineHeight: 20 },
   factValue: { marginTop: theme.spacing['sp-0-5'], fontWeight: '500' },
-  factValuePaper: { fontSize: 20, lineHeight: 28 },
+  factValuePaper: { fontSize: theme.type.document['doc-fs-figure'], lineHeight: 28 },
   margin: {
     marginTop: theme.spacing['sp-3'],
     flexDirection: 'row',

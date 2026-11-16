@@ -12,15 +12,16 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import { useGround } from '../../primitives/Ground/Ground.native';
-import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { GLYPH_SIZE } from '../AppShell/ShellGlyph.logic';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { RetryButton } from '../Button/RetryButton.native';
-import { messageGlyphOf, nodeGlyphSize } from './Timeline.logic';
+import { StateRegion } from '../StateBody/StateRegion.native';
+import { messageGlyphOf, NODE_GLYPH, nodeGlyphSize } from './Timeline.logic';
 import type { TimelineStatus } from './Timeline.types';
 
 export const NODE_SIZE = { page: 28, compact: 20 } as const;
@@ -47,29 +48,13 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-sm'],
     backgroundColor: colors['canvas-sunken'],
   },
-  message: {
-    alignItems: 'center',
-    gap: theme.spacing['sp-2'],
-    paddingVertical: theme.spacing['sp-10'],
-    paddingHorizontal: theme.spacing['sp-4'],
-  },
-  messageMark: {
-    width: 48,
-    height: 48,
-    borderRadius: theme.radius['r-pill'],
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: theme.spacing['sp-1'],
-  },
-  messageTitle: { fontWeight: '700', letterSpacing: theme.type.roles.h4.letterSpacing },
-  messageBody: { maxWidth: 300 },
 });
 
 /* Current and upcoming take the control fill, read from `Ground` where the node renders. */
 const NODE_FILL: Record<TimelineStatus, ThemeColor | undefined> = {
   done: colors.success,
   /* A warning MARK takes --warning-text; --warning itself clears no contrast floor. */
-  blocked: colors['warning-text'],
+  blocked: TONE.warning.ink,
   failed: colors.danger,
   current: undefined,
   upcoming: undefined,
@@ -89,6 +74,7 @@ export function TimelineNode({
   const own = status === 'current' && icon !== undefined;
   const size = compact ? NODE_SIZE.compact : NODE_SIZE.page;
   const inner = nodeGlyphSize(compact);
+  const mark = status === undefined ? undefined : NODE_GLYPH[status];
   const ring = compact ? 4 : 5;
   const tick = colors['text-inverse'];
   const { controlFill } = useGround();
@@ -114,62 +100,17 @@ export function TimelineNode({
         ]}
       >
         {own ? icon : null}
-        {status === 'done' ? (
-          <Svg
-            width={inner}
-            height={inner}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={tick}
-            strokeWidth={4.4}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <ShellGlyphMarks name="tick-small" />
-          </Svg>
-        ) : null}
+        {mark === undefined ? null : (
+          <ShellGlyph
+            name={mark}
+            size={inner}
+            ink={status === 'skipped' ? colors['text-secondary'] : tick}
+          />
+        )}
         {status === 'current' && !own ? (
-          <View style={[styles.core, { width: inner - 2, height: inner - 2 }]} />
-        ) : null}
-        {status === 'skipped' ? (
-          <Svg
-            width={inner}
-            height={inner}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={colors['text-secondary']}
-            strokeWidth={3}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <ShellGlyphMarks name="chevron-right" />
-          </Svg>
-        ) : null}
-        {status === 'blocked' ? (
-          <Svg
-            width={inner}
-            height={inner}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={tick}
-            strokeWidth={4}
-            strokeLinecap="round"
-          >
-            <ShellGlyphMarks name="alert-small" />
-          </Svg>
-        ) : null}
-        {status === 'failed' ? (
-          <Svg
-            width={inner}
-            height={inner}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={tick}
-            strokeWidth={4}
-            strokeLinecap="round"
-          >
-            <ShellGlyphMarks name="close-small" />
-          </Svg>
+          <View
+            style={[styles.core, { width: GLYPH_SIZE[inner] - 2, height: GLYPH_SIZE[inner] - 2 }]}
+          />
         ) : null}
       </View>
     </View>
@@ -218,41 +159,13 @@ export function TimelineMessage({
   retryLabel?: TranslatedText;
   focusAfter: FocusAfter;
 }) {
-  const warning = tone === 'warning';
   return (
-    <View style={styles.message}>
-      <View
-        style={[
-          styles.messageMark,
-          {
-            backgroundColor: warning ? colors['warning-bg'] : colors['neutral-bg'],
-          },
-        ]}
-      >
-        <Svg
-          width={22}
-          height={22}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={warning ? colors['warning-text'] : colors['text-tertiary']}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <ShellGlyphMarks name={messageGlyphOf(tone)} />
-        </Svg>
-      </View>
-      {title ? (
-        <Text variant="body-lg" align="center" style={styles.messageTitle}>
-          {title}
-        </Text>
-      ) : null}
-      {message ? (
-        <Text variant="body-sm" color="secondary" align="center" style={styles.messageBody}>
-          {message}
-        </Text>
-      ) : null}
-      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
-    </View>
+    <StateRegion
+      tone={tone}
+      glyph={messageGlyphOf(tone)}
+      title={title}
+      message={message}
+      action={<RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />}
+    />
   );
 }

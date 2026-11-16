@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-1'],
     paddingStart: theme.spacing['sp-3'],
     paddingEnd: theme.spacing['sp-1'],
-    borderRadius: theme.radius['r-tile'],
+    borderRadius: theme.radius['r-lg'],
   },
   selected: { borderWidth: 2, borderColor: colors.accent },
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

@@ -1,10 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
-import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { EmptyScene } from '../EmptyScene/EmptyScene.native';
 import type { OverlayEmptyProps, OverlayErrorProps } from './Sheet.types';
@@ -50,18 +49,7 @@ export function OverlayError({
   return (
     <View style={[styles.state, variant === 'panel' ? styles.panelPad : styles.sheetPad]}>
       <View style={styles.mark}>
-        <Svg
-          width={22}
-          height={22}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={colors['warning-text']}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <ShellGlyphMarks name="alert-circle" />
-        </Svg>
+        <ShellGlyph name="alert-circle" size="lg" ink={TONE.warning.ink} />
       </View>
       {title === undefined ? null : <Text style={titleStyle}>{title}</Text>}
       {message === undefined ? null : (
@@ -79,8 +67,11 @@ export function OverlayError({
   );
 }
 
-/* 16px and -0.01em of it in points — neither has a type token, and both come from the reference. */
-const titleStyle: TextStyle = { fontSize: 16, fontWeight: '700', letterSpacing: -0.16 };
+const titleStyle: TextStyle = {
+  fontSize: theme.type.roles['card-head'].fontSize,
+  fontWeight: '700',
+  letterSpacing: -0.16,
+};
 
 const styles = StyleSheet.create({
   state: {
@@ -105,7 +96,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors['warning-bg'],
+    backgroundColor: TONE.warning.tint,
     marginBottom: theme.spacing['sp-1'],
   },
 });

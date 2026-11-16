@@ -1,16 +1,12 @@
-import type { Ref } from 'react';
-import type {
-  AccessibilityRole,
-  PressableStateCallbackType,
-  StyleProp,
-  View,
-  ViewStyle,
-} from 'react-native';
-import { Pressable as RNPressable, StyleSheet } from 'react-native';
+import { theme } from '@heliogrid/theme';
+import { type Ref, useRef } from 'react';
+import type { AccessibilityRole, StyleProp, View, ViewStyle } from 'react-native';
+import { Animated, Easing, Pressable as RNPressable, StyleSheet } from 'react-native';
 import { usePalette } from '../Color/use-palette.native';
 import { tapHaptic } from '../haptic.native';
+import { useReducedMotion } from '../use-reduced-motion.native';
 import { hapticOf } from './Pressable.logic';
-import type { PressableProps, PressableRole } from './Pressable.types';
+import type { PressableProps, PressableRole, PressableSink } from './Pressable.types';
 import { MIN_TOUCH_TARGET } from './Pressable.types';
 
 interface NativePressableProps extends PressableProps {
@@ -33,7 +29,34 @@ const base: ViewStyle = {
   justifyContent: 'center',
 };
 
-const pressedStyle: ViewStyle = { transform: [{ scale: 0.97 }] };
+const AnimatedPressable = Animated.createAnimatedComponent(RNPressable);
+
+const SUNK: Record<PressableSink, number> = {
+  control: theme.motion.press.scale,
+  icon: theme.motion.press.iconScale,
+};
+
+/**
+ * The press sinking and rising, on the UI thread over `fast`, as the web's `:active` does; under
+ * reduced motion the sunk scale shows at once. The press itself never waits on it.
+ */
+function useSink(sink: PressableSink) {
+  const scale = useRef(new Animated.Value(1)).current;
+  const reduced = useReducedMotion();
+  const to = (value: number) => {
+    if (reduced) {
+      scale.setValue(value);
+      return;
+    }
+    Animated.timing(scale, {
+      toValue: value,
+      duration: theme.motion.durations.fast,
+      easing: Easing.bezier(...theme.motion.easings.standard),
+      useNativeDriver: true,
+    }).start();
+  };
+  return { scale, sinkIn: () => to(SUNK[sink]), sinkOut: () => to(1) };
+}
 
 /**
  * The DS role vocabulary as React Native's. Identity except for the two menu roles: RN has
@@ -72,10 +95,12 @@ export function Pressable({
   accessibilityState,
   ripple = 'bounded',
   haptic,
+  sink = 'control',
   style,
   hostRef,
 }: NativePressableProps) {
   const palette = usePalette();
+  const { scale, sinkIn, sinkOut } = useSink(sink);
   const felt = hapticOf(accessibilityRole, haptic);
   /* The ripple is the words' own ink, faint: it reads on any ground the target sits on. Android
      draws it under the children; iOS ignores it. */
@@ -89,7 +114,7 @@ export function Pressable({
           onPress();
         };
   return (
-    <RNPressable
+    <AnimatedPressable
       ref={hostRef}
       accessibilityRole={NATIVE_ROLE[accessibilityRole]}
       /* An omitted `state.disabled` follows the prop — today's behaviour exactly. Stating it
@@ -110,14 +135,12 @@ export function Pressable({
          `false` here would erase a stated-off control's "disabled" for the screen reader. */
       disabled={disabled ? true : undefined}
       onPress={press}
+      onPressIn={sinkIn}
+      onPressOut={sinkOut}
       android_ripple={ripples && !disabled ? ink : undefined}
-      style={(state: PressableStateCallbackType) => [
-        base,
-        state.pressed && !disabled ? pressedStyle : undefined,
-        style,
-      ]}
+      style={[base, { transform: [{ scale }] }, style]}
     >
       {children}
-    </RNPressable>
+    </AnimatedPressable>
   );
 }

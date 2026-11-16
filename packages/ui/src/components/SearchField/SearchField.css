@@ -1,6 +1,6 @@
 /* SearchField — a well (the FieldBox primitive owns its ground and its focus ring), NEVER a border.
-   One look on every screen, the sidebar's included: the pill, 50 tall, --r-pill, 18 of side
-   padding. The height, the side padding and the 10px gaps are the design system's own and sit off
+   One look on every screen, the sidebar's included: a field (OneOhm's search is one), its radius
+   FieldBox's, 50 tall, 18 of side padding. The height, the side padding and the 10px gaps are the design system's own and sit off
    the 4px spacing scale, so no token carries them.
 
    With `onFilterClick` the pill and the 50 filter circle ride side by side in
@@ -14,11 +14,6 @@
   min-height: 44px;
   flex-shrink: 0;
   padding: 0 18px;
-}
-
-/* Two attributes, so this outranks FieldBox's one-attribute radius whatever order the sheets load. */
-.hg-search-field[data-field-box] {
-  border-radius: var(--r-pill);
 }
 
 .hg-search-field-row {
@@ -37,6 +32,7 @@
    input's own focus, and the clear button carries its own focus ring. */
 
 .hg-search-field-glyph {
+  display: inline-flex;
   color: var(--text-tertiary);
   flex-shrink: 0;
 }

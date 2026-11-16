@@ -62,9 +62,6 @@ export function openedPart(reported: string | string[] | null): CompanyProfilePa
   return COMPANY_PROFILE_PARTS.find((part) => part === key) ?? null;
 }
 
-/** The glyph's drawn size, as `m-error` draws it inside the message's disc. */
-export const UNREAD_GLYPH_SIZE = 28;
-
 /** The bloom behind the letterhead's sheet (`d-default`): art, never layout. */
 export const LETTERHEAD_BLOOM_SIZE = 760;
 /** The lines of a letter under the letterhead, as `d-default` draws them: two paragraphs of bars. */

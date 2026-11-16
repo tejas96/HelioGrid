@@ -1,9 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import type { LeadSectionsProps } from './LeadSections.types';
 
 type LeadSitePanelProps = Pick<LeadSectionsProps, 'site' | 'visit' | 'words'>;

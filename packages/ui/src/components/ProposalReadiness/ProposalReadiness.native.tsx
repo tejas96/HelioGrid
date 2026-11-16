@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Rising } from '../../primitives/rising.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -49,20 +50,22 @@ export function ProposalReadiness({
       </HeroPanel>
       {loading ? null : (
         <View accessibilityRole="list" accessibilityLabel={words.stepsName} style={styles.steps}>
-          {steps.map((step, index) => (
-            <Rising key={step.key} order={index}>
-              <View style={index === 0 ? null : styles.rule}>
-                <ListRow
-                  icon={<ShellGlyph name={step.icon} size="md" tone="accent" />}
-                  title={step.label}
-                  subtitle={step.detail}
-                  subtitleWrap
-                  trailing={<StepMark step={step} doneWord={words.done} />}
-                  onClick={step.onOpen}
-                />
-              </View>
-            </Rising>
-          ))}
+          <GroundProvider ground="tile">
+            {steps.map((step, index) => (
+              <Rising key={step.key} order={index}>
+                <View style={index === 0 ? null : styles.rule}>
+                  <ListRow
+                    icon={<ShellGlyph name={step.icon} size="md" tone="accent" />}
+                    title={step.label}
+                    subtitle={step.detail}
+                    subtitleWrap
+                    trailing={<StepMark step={step} doneWord={words.done} />}
+                    onClick={step.onOpen}
+                  />
+                </View>
+              </Rising>
+            ))}
+          </GroundProvider>
         </View>
       )}
     </View>
@@ -78,25 +81,27 @@ function NextStep({
 }) {
   return (
     <View style={styles.next}>
-      <View style={styles.nextRow}>
-        <View style={styles.nextIcon}>
-          <ShellGlyph name={step.icon} size="md" tone="accent" />
+      <GroundProvider ground="tile">
+        <View style={styles.nextRow}>
+          <View style={styles.nextIcon}>
+            <ShellGlyph name={step.icon} size="md" tone="accent" />
+          </View>
+          <View style={styles.nextWords}>
+            <Text variant="overline" color="secondary">
+              {words.next}
+            </Text>
+            <Text variant="body" bold>
+              {step.label}
+            </Text>
+            <Text variant="body-sm" color="secondary">
+              {step.detail}
+            </Text>
+          </View>
         </View>
-        <View style={styles.nextWords}>
-          <Text variant="overline" color="secondary">
-            {words.next}
-          </Text>
-          <Text variant="body" bold>
-            {step.label}
-          </Text>
-          <Text variant="body-sm" color="secondary">
-            {step.detail}
-          </Text>
-        </View>
-      </View>
-      <Button variant="primary" size="md" fullWidth onClick={step.onOpen}>
-        {words.continueLabel}
-      </Button>
+        <Button variant="primary" size="md" fullWidth onClick={step.onOpen}>
+          {words.continueLabel}
+        </Button>
+      </GroundProvider>
     </View>
   );
 }
@@ -118,13 +123,11 @@ const styles = StyleSheet.create({
   },
   words: { flex: 1, minWidth: 0, gap: theme.spacing['sp-2'] },
   next: {
+    ...tileSurface,
     alignSelf: 'stretch',
     gap: theme.spacing['sp-3'],
     padding: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-tile'],
-    borderWidth: 1,
-    borderColor: colors.hairline,
-    backgroundColor: colors['accent-subtle'],
+    borderRadius: theme.radius['r-lg'],
   },
   nextRow: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
   nextIcon: {
@@ -133,18 +136,9 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-md'],
     alignItems: 'center',
     justifyContent: 'center',
-    // biome-ignore lint/plugin/raw-white: the glyph's chip is the card colour on the tinted band
-    backgroundColor: colors.surface,
+    backgroundColor: colors['accent-subtle'],
   },
   nextWords: { flex: 1, minWidth: 0 },
-  steps: {
-    padding: theme.spacing['sp-1'],
-    borderRadius: theme.radius['r-card-expressive'],
-    borderWidth: 1,
-    borderColor: colors['line-soft'],
-    // biome-ignore lint/plugin/raw-white: the steps sit on the card colour over the page (redesign direction A)
-    backgroundColor: colors.surface,
-    ...theme.elevation.e2,
-  },
+  steps: { ...tileSurface, padding: theme.spacing['sp-1'], borderRadius: theme.radius['r-lg'] },
   rule: { borderTopWidth: 1, borderTopColor: colors.hairline },
 });

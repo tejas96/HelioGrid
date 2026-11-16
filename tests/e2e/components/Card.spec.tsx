@@ -1,12 +1,15 @@
 import { CARD, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Button, Card, DataTable } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import {
+  GLASS_TILE_FILL,
+  GLASS_TILE_SHADOW,
   resolvedBoxShadow,
   resolvedColour,
   resolvedLength,
   resolvedShadow,
-  STRONG_EDGE,
+  SECONDARY_EDGE,
   TILE_FILL,
   TILE_SHADOW,
 } from '../support/token';
@@ -30,7 +33,7 @@ test('an errored card draws its retry as the white ringed secondary, since a car
   const retry = card.getByRole('button', { name: tryAgain });
 
   await expect(retry).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
-  await expect(retry).toHaveCSS('box-shadow', await resolvedBoxShadow(page, STRONG_EDGE));
+  await expect(retry).toHaveCSS('box-shadow', await resolvedBoxShadow(page, SECONDARY_EDGE));
   await retry.click();
   expect(retries).toBe(1);
 });
@@ -55,7 +58,7 @@ test('an errored card with no message says its title alone, with no separator', 
     />,
   );
 
-  await expect(card.locator('.hg-card-message-text')).toHaveText(title);
+  await expect(card.locator('.hg-state-message-text')).toHaveText(title);
 });
 
 test('a failed read always carries its retry: the types refuse a surface state written any other way', () => {
@@ -70,14 +73,14 @@ test('a failed read always carries its retry: the types refuse a surface state w
   expect([noRetry, handState, looseRetry, noRead]).toHaveLength(4);
 });
 
-test("a card is the open page's tile: the card colour, the tile's radius, padding and ring", async ({
+test("a card is the open page's solid tile: the card colour, OneOhm's radius 24, the tile's padding and a hairline", async ({
   mount,
   page,
 }) => {
   const card = await mount(<Card>{tryAgain}</Card>);
 
   await expect(card).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
-  await expect(card).toHaveCSS('border-radius', `${await resolvedLength(page, '--r-tile')}px`);
+  await expect(card).toHaveCSS('border-radius', `${await resolvedLength(page, '--r-lg')}px`);
   await expect(card).toHaveCSS('padding', `${await resolvedLength(page, '--tile-pad')}px`);
   await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
 });
@@ -94,7 +97,7 @@ test('a selected card is ringed inside in the accent, as a focused field is', as
   );
 });
 
-test('a tappable card lifts under the pointer: it keeps its glass and its ring firms a step', async ({
+test('a tappable card firms its ring a step under the pointer and never moves', async ({
   mount,
   page,
 }) => {
@@ -103,16 +106,23 @@ test('a tappable card lifts under the pointer: it keeps its glass and its ring f
       {tryAgain}
     </Card>,
   );
+  const resting = await settledBox(card);
 
   await card.hover();
   await expect(card).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
   await expect(card).toHaveCSS(
     'box-shadow',
-    await resolvedBoxShadow(
-      page,
-      'inset 0 1px 0 var(--glass-edge), 0 0 0 1px var(--line-strong), var(--e3)',
-    ),
+    await resolvedBoxShadow(page, '0 0 0 1px var(--line-strong)'),
   );
+  expect((await settledBox(card)).y).toBe(resting.y);
+});
+
+test('a summary card is glass, at the tile radius', async ({ mount, page }) => {
+  const card = await mount(<Card tile="glass">{tryAgain}</Card>);
+
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, GLASS_TILE_FILL));
+  await expect(card).toHaveCSS('border-radius', `${await resolvedLength(page, '--r-tile')}px`);
+  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, GLASS_TILE_SHADOW));
 });
 
 test('a disabled control in a card sinks below the tile', async ({ mount, page }) => {

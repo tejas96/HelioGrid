@@ -1,10 +1,8 @@
 /* A settings page's section card (`SCR-SHELL-01`): a raised white card, a title row, and rows of
    label and control split by hairlines — the owner's settings-page ruling, drawn on the M01 board. */
-/* The card's look, once: a page ground (`Ground.css`) raised over the page. */
+/* A solid tile, drawn by `Ground.css`; the card keeps only its radius. */
 .hg-settings-card {
-  border-radius: var(--r-tile);
-  background: var(--hg-ground);
-  box-shadow: var(--e2);
+  border-radius: var(--r-lg);
 }
 
 .hg-settings-section {

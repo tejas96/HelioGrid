@@ -8,6 +8,8 @@ import type { BandedFigureProps } from './BandedFigure.types';
 import { resolveBand } from './BandedFigure.types';
 import { BandedLine } from './BandedLine.native';
 
+// web-only part: AppShell — the remedy arrow is drawn by its child BandedCard.native.
+
 interface NativeBandedFigureProps extends BandedFigureProps {
   style?: StyleProp<ViewStyle>;
 }

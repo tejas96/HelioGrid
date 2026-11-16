@@ -1,28 +1,15 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { IndeterminateRail } from '../PendingAction/IndeterminateRail.native';
 import type { OperationProgressWords, OperationStage } from './OperationProgress.types';
 import { stageStateAt } from './operation-progress-model';
 
 function DoneGlyph() {
-  return (
-    <Svg
-      width={13}
-      height={13}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={colors['success-text']}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name="tick" />
-    </Svg>
-  );
+  return <ShellGlyph name="check" size="dense" ink={TONE.success.ink} />;
 }
 
 /**
