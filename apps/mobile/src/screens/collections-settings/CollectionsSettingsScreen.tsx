@@ -65,6 +65,7 @@ export function CollectionsSettingsScreen() {
           onEdit={screen.edit}
           changed={screen.changed}
           onSave={() => void screen.save()}
+          onDiscard={screen.discard}
           onEditBank={() =>
             navigation.navigate('SettingsRow', { segment: SETTINGS_SEGMENT.company_profile })
           }

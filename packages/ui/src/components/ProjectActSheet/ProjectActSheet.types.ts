@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { BlockerParty, BlockerReason, CancelReason, Read } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { DatePickerWords, ISODate } from '../DatePicker/DatePicker.types';
 import type { NumberFieldWords } from '../NumberField/NumberField.types';
 import type { TimeFieldWords } from '../TimeField/TimeField.types';

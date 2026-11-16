@@ -24,10 +24,6 @@
 
 .hg-profile-preferences-overline {
   margin: 0;
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-secondary);
 }
 

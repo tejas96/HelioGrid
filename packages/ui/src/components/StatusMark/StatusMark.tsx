@@ -1,0 +1,42 @@
+import type { CSSProperties } from 'react';
+import { classNames } from '../../primitives/class-names';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
+import type { StatusMarkProps } from './StatusMark.types';
+import { STATUS_GLYPH } from './StatusMark.types';
+
+interface WebStatusMarkProps extends StatusMarkProps {
+  className?: string;
+  /** Mirrors `StatusMark.native.tsx`, which merges a caller style onto the container. */
+  style?: CSSProperties;
+}
+
+/**
+ * Status as label + mark, never colour alone (F7-12, docs/engineering/17 §4). A component that tints
+ * a state without composing this primitive is a defect.
+ */
+export function StatusMark({
+  tone,
+  label,
+  mark = true,
+  bare = false,
+  glyph,
+  className,
+  style,
+}: WebStatusMarkProps) {
+  return (
+    <span
+      className={classNames('hg-status-mark', 'hg-tone', className)}
+      data-tone={tone}
+      data-bare={bare ? 'true' : undefined}
+      style={style}
+    >
+      {mark ? (
+        <span className="hg-status-mark-glyph" aria-hidden="true">
+          {glyph ?? <ShellGlyph name={STATUS_GLYPH[tone]} size="xs" tone="current" />}
+        </span>
+      ) : null}
+      {/* The word is its own element, as the phone's own `Text`: found and read as the word alone. */}
+      <span className="hg-status-mark-label">{label}</span>
+    </span>
+  );
+}

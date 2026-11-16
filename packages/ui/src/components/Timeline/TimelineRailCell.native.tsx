@@ -1,3 +1,4 @@
+import { theme } from '@heliogrid/theme';
 /* Where one step sits on the rail (native) — its node, and the segment of rail that runs on to the
    next step. Lit as far as the last done-or-current step, dim beyond it; the last step draws no
    segment at all, because a rail that runs past the end says there is more sequence.
@@ -13,7 +14,7 @@ import { TimelineNode } from './TimelineParts.native';
 
 const styles = StyleSheet.create({
   railCell: { position: 'relative', alignItems: 'center' },
-  rail: { position: 'absolute', width: 2, borderRadius: 2 },
+  rail: { position: 'absolute', width: 2, borderRadius: theme.radius['r-pill'] },
 });
 
 export function TimelineRailCell({

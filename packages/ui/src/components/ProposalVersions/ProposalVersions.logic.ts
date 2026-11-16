@@ -1,5 +1,5 @@
 import type { ProposalVersionSummary, VersionInForcePreview } from '@heliogrid/contracts';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { ProposalVersionsProps, PutInForceSheetProps } from './ProposalVersions.types';
 
 /** Each fact's mark on its change row; a fact a newer server learned takes the plain layers mark. */
@@ -17,13 +17,13 @@ const FACT_GLYPH: Readonly<Record<string, ShellGlyphName | undefined>> = {
   yearly_saving: 'trend-up',
   payment_plan: 'wallet',
   timeline: 'calendar-clock',
-  terms: 'file-text',
+  terms: 'document',
   maintenance: 'wrench',
   emi_example: 'credit-card',
   cover: 'building',
   proposal_type: 'briefcase',
   about: 'star',
-  client: 'person',
+  client: 'user',
   bank: 'credit-card',
 };
 

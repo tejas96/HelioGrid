@@ -1,14 +1,15 @@
 import { daysFrom } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { Card } from '../Card/Card.native';
+import { CardHeader } from '../Card/CardHeader.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { useFormat } from '../MarketProvider';
-import { CardHead } from '../ProjectDetail/ProjectDetailParts.native';
+import { projectCard, projectHead } from '../ProjectDetail/ProjectDetailParts.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { moneyCardAmountsOf } from './ProjectMoney.logic';
 import type { MoneyCardProps } from './ProjectMoney.types';
 
@@ -22,11 +23,11 @@ export function MoneyCard({ money, today, words, onShare, onOpen }: MoneyCardPro
   const due = money.duePart;
   const amounts = moneyCardAmountsOf(money, format);
   return (
-    <Card density="functional" style={styles.card}>
-      <CardHead
+    <Card density="functional" style={projectCard}>
+      <CardHeader
         title={words.money}
-        aside={null}
-        act={
+        style={projectHead}
+        action={
           <IconButton label={words.openPayments} variant="ghost" onClick={onOpen}>
             <ShellGlyph name="chevron-right" size="md" />
           </IconButton>
@@ -77,7 +78,6 @@ export function MoneyCard({ money, today, words, onShare, onOpen }: MoneyCardPro
 }
 
 const styles = StyleSheet.create({
-  card: { padding: theme.spacing['sp-1'], gap: theme.spacing['sp-1'] },
   glance: {
     gap: theme.spacing['sp-2'],
     paddingHorizontal: theme.spacing['sp-3'],

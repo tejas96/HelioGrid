@@ -1,11 +1,13 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
+import { IconButton } from '../IconButton/IconButton.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
+import { PendingAction } from '../PendingAction/PendingAction.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import type { LeadSectionsProps, LeadTaskActs, LeadTaskRow } from './LeadSections.types';
 
 interface LeadTaskListProps {
@@ -16,8 +18,8 @@ interface LeadTaskListProps {
 
 /**
  * The Tasks section (`M07-05`): each open task with what it asks, when it is due and the overdue
- * mark, done or reopened in place — the row's act inert and loading while it is out, its failure
- * said under it — and *Add a call-back* at the foot.
+ * mark, done or reopened in place by its icon, as the web's — every row's act inert while one is
+ * out, its failure said under it as the shared returned line — and *Add a call-back* at the foot.
  */
 export function LeadTaskList({ tasks, acts, words }: LeadTaskListProps) {
   return (
@@ -41,8 +43,9 @@ export function LeadTaskList({ tasks, acts, words }: LeadTaskListProps) {
 }
 
 function TaskRow({ task, acts, words }: { task: LeadTaskRow } & Omit<LeadTaskListProps, 'tasks'>) {
-  const out = acts.pendingId === task.id;
   const failure = acts.failure?.taskId === task.id ? acts.failure.reason : null;
+  /* Which task's act is out, on the circle the reader lands on — the web row's `aria-busy`. */
+  const out = acts.pendingId === task.id;
   return (
     <View style={styles.row}>
       <View style={styles.line}>
@@ -59,22 +62,29 @@ function TaskRow({ task, acts, words }: { task: LeadTaskRow } & Omit<LeadTaskLis
             {task.done ? <StatusMark tone="success" label={words.doneMark} /> : null}
           </View>
         </View>
-        <Button
-          variant={task.done ? 'ghost' : 'secondary'}
-          size="sm"
-          loading={out}
-          disabled={acts.pendingId !== null && !out}
-          spokenName={task.done ? words.reopen(task.title) : words.markDone(task.title)}
-          onClick={() => (task.done ? acts.onReopen(task.id) : acts.onDone(task.id))}
-        >
-          {task.done ? words.reopen(task.title) : words.doneMark}
-        </Button>
+        {task.done ? (
+          <IconButton
+            label={words.reopen(task.title)}
+            variant="ghost"
+            busy={out}
+            disabled={acts.pendingId !== null}
+            onClick={() => acts.onReopen(task.id)}
+          >
+            <ShellGlyph name="undo" size="md" tone="secondary" />
+          </IconButton>
+        ) : (
+          <IconButton
+            label={words.markDone(task.title)}
+            variant="ghost"
+            busy={out}
+            disabled={acts.pendingId !== null}
+            onClick={() => acts.onDone(task.id)}
+          >
+            <ShellGlyph name="check" size="md" tone="primary" />
+          </IconButton>
+        )}
       </View>
-      {failure === null ? null : (
-        <Text variant="body-sm" color="danger" live>
-          {failure}
-        </Text>
-      )}
+      {failure === null ? null : <PendingAction state="returned" reason={failure} />}
     </View>
   );
 }

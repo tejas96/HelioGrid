@@ -1,17 +1,14 @@
-import type { ImportWizardFrame } from '@heliogrid/domain';
+import { type ImportWizardFrame, importWizardGoesBack } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { IconButton } from '../IconButton/IconButton.native';
-import { ImportGlyph } from '../Import/ImportGlyph.native';
 import { Stepper } from '../Stepper/Stepper.native';
 import type { CatalogImportWords } from './CatalogImport.types';
-
-/** The frames whose head offers *Back*: steps 2 and 3, and the matching wait between them. */
-const BACK_FRAMES: readonly ImportWizardFrame[] = ['columns', 'matching', 'preview'];
 
 interface ImportHeadProps {
   words: CatalogImportWords;
@@ -32,7 +29,7 @@ export function ImportHead({ words, frame, step, onClose, onBack, onSteps }: Imp
     <View style={styles.head}>
       <View style={styles.row}>
         <IconButton label={words.close} size={40} variant="surface" onClick={onClose}>
-          <ImportGlyph name="close" size="sm" stroke={2} color={colors['text-primary']} />
+          <ShellGlyph name="close" size="sm" ink={colors['text-primary']} />
         </IconButton>
         <Pressable
           accessibilityLabel={words.locationLabel(step)}
@@ -46,10 +43,10 @@ export function ImportHead({ words, frame, step, onClose, onBack, onSteps }: Imp
             <Text variant="caption" color="secondary">
               {words.location(step)}
             </Text>
-            <ImportGlyph name="chevron" size="xs" stroke={2} color={colors['text-secondary']} />
+            <ShellGlyph name="chevron" size="xs" ink={colors['text-secondary']} />
           </View>
         </Pressable>
-        {BACK_FRAMES.includes(frame) ? (
+        {importWizardGoesBack(frame) ? (
           <View style={styles.back}>
             <Button variant="ghost" size="sm" onClick={onBack}>
               {words.back}

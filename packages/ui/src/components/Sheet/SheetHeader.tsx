@@ -59,7 +59,9 @@ export function SheetHeader({
     >
       <Lead leading={leading}>
         <div className="hg-sheet-heading">
-          {overline === undefined ? null : <div className="hg-sheet-overline">{overline}</div>}
+          {overline === undefined ? null : (
+            <div className="hg-sheet-overline hg-overline">{overline}</div>
+          )}
           {title === undefined ? null : (
             <div className="hg-overlay-title-line">
               <h2 className="hg-sheet-title" id={titleId}>

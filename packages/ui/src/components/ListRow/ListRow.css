@@ -114,3 +114,17 @@
 .hg-list-row-pending {
   margin-top: var(--sp-1);
 }
+
+/* The tile mark (`iconShape="tile"`): a soft accent pane — the row's mark, never a control. The
+   phone's `iconTile` draws the same pane. */
+.hg-list-row-icon-tile {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--sp-10);
+  height: var(--sp-10);
+  border-radius: var(--r-sm);
+  background: var(--accent-subtle);
+  box-shadow: var(--e1);
+}

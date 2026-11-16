@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { ScopeNoteProps, ScopeNoteSpec } from './ScopeNote.types';
 import { composeScopeLine, scopeNoteFor, scopeNoteSize } from './scope-note-line';
 
@@ -17,19 +17,7 @@ type WebScopeNoteProps = ScopeNoteProps & {
  * out of anything they can see.
  */
 function Glyph() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="person" />
-    </svg>
-  );
+  return <ShellGlyph name="user" size="sm" tone="current" />;
 }
 
 /**

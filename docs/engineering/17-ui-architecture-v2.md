@@ -66,7 +66,7 @@ packages/
 │       │       ├── Button.css          # web only
 │       │       └── index.ts
 │       └── index.ts
-# Icons: one SVG source for RN + web is SHELL_GLYPHS (ui/src/components/AppShell/ShellGlyph.shapes.ts).
+# Icons: one name map for RN + web is SHELL_GLYPHS (ui/src/components/AppShell/ShellGlyph.icons.ts), over Lucide.
 ```
 
 **Dependency direction:** `theme → ui → apps`. Nothing flows back up. No app imports

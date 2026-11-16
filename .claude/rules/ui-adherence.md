@@ -14,16 +14,21 @@ paths:
 ## Visual values
 
 - **No raw values and no inline style on a screen** (Biome `raw-colour*`, `raw-white*`,
-  `screen-size*` hold the raw values; review holds the inline style): a size or colour the
+  `screen-size*` hold the raw values, and `ui-type-radius*` a type size or a radius in
+  `packages/ui`; review holds the inline style): a size or colour the
   tokens lack is added to `packages/theme/src/tokens/` first, in light and dark, with its contrast
   pair, never typed into the app.
-- A chosen filter or option —
-  a stage, a segment, a filter pill, a chip — is the accent wash, `accent-text` on `accent-subtle`,
-  however wide it grows; the ink pill is the sidebar's and a tooltip's alone. The logo gradient is spent once per screen — the hero's top line, a progress fill, the
-  brand mark — and is never information.
+- A chosen option is OneOhm's quiet choice, never the accent wash: a segment or a scope is the
+  raised thumb on the sunken track (`SegmentedControl`) — `--surface-raised`, white in light and a
+  step lighter than the track in dark; a chip, a filter pill or a stage is ink words
+  inside an ink outline on the fill it had; a chosen row is the control fill. The ink pill is the
+  sidebar's and a tooltip's alone. The logo gradient is spent once per screen — the hero's top line,
+  a progress fill, the brand mark — and is never information.
 - **Every colour works in light, dark and field mode** — how each platform reads it:
   `packages/theme/CLAUDE.md`.
-- **Text is never smaller than 12px**; the 11px uppercase overline is the one exception.
+- **Text is never smaller than 12px**; the 11px uppercase overline is the one exception. A size is a
+  role of the short screen scale (`TYPE_ROLES`), never a size of its own; only a part drawn at a
+  document's scale takes the document's roles (`DOCUMENT_TYPE`) — `packages/ui/CLAUDE.md`.
 - **An icon-only control is an `IconButton`**; a `Button` always has words.
 - **An icon replaces a word only where the glyph alone says the act** — edit (pencil), close,
   more (⋯), search, add, delete, call. A card's edit is a pencil `IconButton` in its top-right
@@ -38,11 +43,12 @@ The app shell draws the top bar, nav and sidebar; the words come from the catalo
 
 ## Compose from the primitives, don't re-answer them
 
-Every component is built from `packages/ui/src/primitives/`. Two of them hold product law, not
+Every component is built from `packages/ui/src/primitives/`. Two parts hold product law, not
 style, and a component that re-implements either is a defect:
 
 - **`Pressable` owns the 44px minimum touch target.** Never re-implement a pressable.
-- **`StatusMark` owns "status is never carried by colour alone"** — always a label plus a mark.
+- **`StatusMark` owns "status is never carried by colour alone"** — always a label plus a Lucide
+  mark (`components/StatusMark`, a component because it draws through `ShellGlyph`).
 
 **Semantics go through `Pressable`:** a checkbox, radio, tab or menu row passes `accessibilityRole`
 and `accessibilityState` to it; reaching for the platform pressable loses the 44px floor and focus
@@ -75,9 +81,9 @@ Every list page opens with `ListTop` (`packages/ui`), filled by its screen's log
 the page's one `HeroPanel`, whose list when there is a choice, the search — its hint names what it
 finds — with the filter beside it, then the quick chips in one row that scrolls, a chip with nothing
 in it left out. In the narrow room the order is the filter sheet's first choice, so the search keeps
-one circle, whose list is a small switch under the chips, and a summary figure that presses is a
-pill ending in a chevron; where the room is wide the order is a named menu beside the filter's side
-panel. On the phone each row is its own card (`CardRows` `separate`).
+one circle, whose list is a switch across the width above the search, and a summary figure that
+presses is a pill ending in a chevron; where the room is wide the order is a named menu beside the
+filter's side panel. On the phone each row is its own card (`CardRows` `separate`).
 
 ## States, saves and focus — decided before the markup
 
@@ -101,7 +107,10 @@ screen turns it on by a prop and never animates by hand, a move between screens 
 navigator's, and a 3D scene animates in its own code under the same floors. Build it so:
 
 - **Durations and easings come from `theme.motion`** (web: `var(--dur-*)`, `var(--ease-*)`) — never a
-  typed `ms` or a bezier.
+  typed `ms` or a bezier (Biome `raw-motion`, `raw-motion-css`). A spring is a `SPRING` token:
+  `Animated.spring` with it spread in on the phone, `var(--dur-spring-*) var(--ease-spring-*)` (the
+  same spring sampled into `linear()`) on the web. `fade` is opacity alone and the one duration
+  reduced motion keeps.
 - **Animate only `transform` and `opacity`** (and a shader's uniforms). A width, height, top, left,
   margin or padding that animates lays the page out again on every frame. A colour may fade once,
   over one token's duration — on the phone on the JS driver, which alone can carry it — never in a
@@ -109,8 +118,9 @@ navigator's, and a 3D scene animates in its own code under the same floors. Buil
 - **On the phone all other motion runs on the UI thread** — `useNativeDriver: true`, or a Reanimated
   worklet. No `setState` per frame.
 - **Reduced motion is read through one shared hook** in `packages/ui`, with a web and a phone half —
-  never a new `AccessibilityInfo` or `matchMedia` call: it is `useReducedMotion`
-  (`packages/ui/src/primitives/use-reduced-motion{,.native}.ts`). A one-shot CSS motion needs no
+  never a new `AccessibilityInfo` or `matchMedia` call for it (Biome `reduced-motion-in-one-place`;
+  a query held in a constant, review): it is
+  `useReducedMotion` (`packages/ui/src/primitives/use-reduced-motion{,.native}.ts`). A one-shot CSS motion needs no
   hook: its duration tokens fall to `1ms` on their own. A CSS loop does — at `1ms` it spins a thousand times a
   second — unless the design system's `keyframes.css` gives it a reduced keyframe, as `hg-spin` has.
   With it on, the end state shows at once.

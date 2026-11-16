@@ -44,13 +44,13 @@ test('a new owner opens the card: every grant, no limits, no note; the act goes 
   await page.goto('/welcome/role');
 
   await expect(page.getByRole('heading', { level: 1, name: words.title })).toBeVisible();
-  await expect(page.locator('.hg-role-card-presets')).toHaveText(words.presets);
+  await expect(page.locator('.hg-role-card .hg-card-header-title')).toHaveText(words.presets);
   await expect(page.locator('.hg-role-card-phrase')).toHaveText(
     words.grants.map((line) => line.text),
   );
   await expect(page.locator('.hg-role-card-section')).toHaveCount(1);
   await expect(page.getByRole('note')).toHaveCount(0);
-  await expect(page.locator('.hg-role-card-credit')).toHaveCount(0);
+  await expect(page.locator('.hg-role-card .hg-card-header-description')).toHaveCount(0);
   await expectNoSidewaysScroll(page);
   await expectNoSeriousViolations(page);
 

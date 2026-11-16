@@ -25,8 +25,11 @@ const words = brandingWords(en.t, {
 /** The board's stage window at 375: a 480×679 sheet, cut at 186. */
 const STAGE = { designWidth: 480, designHeight: 679, minScale: 0.6, maxHeight: 186 } as const;
 
-const backgroundPosition = (selector: string) =>
-  `getComputedStyle(document.querySelector('${selector}')).backgroundPosition`;
+/* The sweep is the skeleton's light layer (`hg-skeleton::after`) moving: read its transform. */
+const lightTransform = (selector: string) =>
+  `getComputedStyle(document.querySelector('${selector}'), '::after').transform`;
+const lightAnimation = (selector: string) =>
+  `getComputedStyle(document.querySelector('${selector}'), '::after').animationName`;
 
 test('loading names what it loads', async ({ mount, page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
@@ -42,7 +45,7 @@ test('loading names what it loads', async ({ mount, page }) => {
   );
   const wait = page.getByRole('status', { name: words.loadingCover });
   await expect(wait).toHaveAttribute('aria-busy', 'true');
-  await expect(wait).toHaveCSS('animation-name', 'hg-sheet-shimmer');
+  await expect(wait).toHaveClass(/\bhg-skeleton\b/);
   await expect(wait).toHaveCSS('box-shadow', 'none');
   expect((await settledBox(wait))?.height).toBe(STAGE.maxHeight);
   /* No subject is drawn, or read out, while it waits. */
@@ -51,15 +54,16 @@ test('loading names what it loads', async ({ mount, page }) => {
 
   /* The sweep runs … */
   const stage = '.hg-preview-frame-window';
-  const first = await page.evaluate(backgroundPosition(stage));
+  expect(await page.evaluate(lightAnimation(stage))).toBe('hg-shimmer');
+  const first = await page.evaluate(lightTransform(stage));
   await page.waitForTimeout(200);
-  expect(await page.evaluate(backgroundPosition(stage))).not.toBe(first);
+  expect(await page.evaluate(lightTransform(stage))).not.toBe(first);
 
   /* … and reduced motion stills it. */
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  const still = await page.evaluate(backgroundPosition(stage));
+  const still = await page.evaluate(lightTransform(stage));
   await page.waitForTimeout(200);
-  expect(await page.evaluate(backgroundPosition(stage))).toBe(still);
+  expect(await page.evaluate(lightTransform(stage))).toBe(still);
 
   /* The wait ends, the loop with it, and the subject is drawn. */
   await frame.update(
@@ -73,6 +77,6 @@ test('loading names what it loads', async ({ mount, page }) => {
     </PreviewFrame>,
   );
   await expect(page.getByRole('status')).toHaveCount(0);
-  await expect(page.locator(stage)).toHaveCSS('animation-name', 'none');
+  expect(await page.evaluate(lightAnimation(stage))).toBe('none');
   await expect(frame.getByText(COMPANY)).toBeVisible();
 });

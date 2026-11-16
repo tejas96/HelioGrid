@@ -1,6 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { CategoryHue } from '../Avatar/Avatar.types';
 import type { HueTileTone } from '../HueTile/HueTile.types';
 import type { InputProps } from '../Input/Input.types';

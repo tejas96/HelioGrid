@@ -134,12 +134,12 @@ msgid "{amount} will no longer be asked for. It never counts as collected, and t
 msgstr "{amount} अब नहीं माँगे जाएँगे। यह कभी वसूल नहीं गिना जाएगा, और इसे वापस नहीं किया जा सकता।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:56
+#: src/copy/lead-detail-parts.ts:58
 msgid "{answered} of {total}"
 msgstr "{total} में से {answered}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:66
+#: src/copy/catalog-import.ts:68
 msgid "{applied, plural, one {# price applied} other {# prices applied}} · {created, plural, one {# product created} other {# products created}}"
 msgstr "{applied, plural, one {# कीमत लागू} other {# कीमतें लागू}} · {created, plural, one {# प्रोडक्ट बना} other {# प्रोडक्ट बने}}"
 
@@ -417,7 +417,7 @@ msgid "{count, plural, one {# character} other {# characters}}"
 msgstr "{count, plural, one {# अक्षर} other {# अक्षर}}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-inbox-acts.ts:32
+#: src/copy/lead-inbox-acts.ts:37
 msgid "{count, plural, one {# couldn't be given — it stays, with the reason} other {# couldn't be given — they stay, with the reason}}"
 msgstr "{count, plural, one {# नहीं सौंपी जा सकी — वह कारण के साथ यहीं है} other {# नहीं सौंपी जा सकीं — वे कारण के साथ यहीं हैं}}"
 
@@ -452,7 +452,7 @@ msgid "{count, plural, one {# design returned} other {# designs returned}}"
 msgstr "{count, plural, one {# डिज़ाइन लौटाया गया} other {# डिज़ाइन लौटाए गए}}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:80
+#: src/copy/lead-detail-parts.ts:82
 msgid "{count, plural, one {# design} other {# designs}}"
 msgstr "{count, plural, one {# डिज़ाइन} other {# डिज़ाइन}}"
 
@@ -729,7 +729,7 @@ msgid "{count, plural, one {# proposal opened} other {# proposals opened}}"
 msgstr "{count, plural, one {# प्रस्ताव खोला गया} other {# प्रस्ताव खोले गए}}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:83
+#: src/copy/lead-detail-parts.ts:85
 msgid "{count, plural, one {# proposal} other {# proposals}}"
 msgstr "{count, plural, one {# प्रस्ताव} other {# प्रस्ताव}}"
 
@@ -754,7 +754,7 @@ msgid "{count, plural, one {# row not imported} other {# rows not imported}}"
 msgstr "{count, plural, one {# पंक्ति इम्पोर्ट नहीं हुई} other {# पंक्तियाँ इम्पोर्ट नहीं हुईं}}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:74
+#: src/copy/catalog-import.ts:76
 msgid "{count, plural, one {# row} other {# rows}}"
 msgstr "{count, plural, one {# पंक्ति} other {# पंक्तियाँ}}"
 
@@ -1007,8 +1007,8 @@ msgid "{count} · {total} × {likelihood}%"
 msgstr "{count} · {total} × {likelihood}%"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:72
-#: src/copy/lead-import.ts:91
+#: src/copy/catalog-import.ts:74
+#: src/copy/lead-import.ts:93
 msgid "{count} {label}"
 msgstr "{count} {label}"
 
@@ -1164,7 +1164,7 @@ msgid "{day}, {time}"
 msgstr "{day}, {time}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:102
+#: src/copy/lead-detail-parts.ts:107
 msgid "{day}, {time} · {surveyor}"
 msgstr "{day}, {time} · {surveyor}"
 
@@ -1296,7 +1296,7 @@ msgid "{done} of {total} steps done"
 msgstr "{total} में से {done} चरण पूरे"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:92
+#: src/copy/lead-import.ts:94
 msgid "{duplicates, plural, one {The duplicate} other {The # duplicates}} · one choice for all"
 msgstr "{duplicates, plural, one {दोहराई गई पंक्ति} other {# दोहराई गई पंक्तियाँ}} · सबके लिए एक ही चुनाव"
 
@@ -1476,7 +1476,7 @@ msgid "{fix} · {step}"
 msgstr "{fix} · {step}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:82
+#: src/copy/catalog-import.ts:84
 msgid "{fixed} of {of} fixed"
 msgstr "{of} में से {fixed} ठीक"
 
@@ -1486,7 +1486,7 @@ msgid "{flow} · Step {current} of {total}"
 msgstr "{flow} · {total} में से चरण {current}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:79
+#: src/copy/catalog-import.ts:81
 msgid "{found} of {rows} rows match “{query}”"
 msgstr "{rows} में से {found} पंक्तियाँ “{query}” से मेल खाती हैं"
 
@@ -1532,7 +1532,7 @@ msgid "{from}–{to} of {total}"
 msgstr "{total} में से {from}–{to}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:73
+#: src/copy/catalog-import.ts:75
 #: src/copy/money-due.ts:17
 msgid "{group} · {count}"
 msgstr "{group} · {count}"
@@ -1608,8 +1608,8 @@ msgid "{label} totals {amount} and {against} is {target} — {gap} apart. A disa
 msgstr "{label} का जोड़ {amount} है और {against} {target} है — {gap} का अंतर। यह अंतर एक गड़बड़ी है, इसलिए दोनों के मिलने तक कोई कीमत नहीं दिखाई जाती।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:71
-#: src/copy/lead-import.ts:90
+#: src/copy/catalog-import.ts:73
+#: src/copy/lead-import.ts:92
 msgid "{label}, {count, plural, one {# row} other {# rows}}"
 msgstr "{label}, {count, plural, one {# पंक्ति} other {# पंक्तियाँ}}"
 
@@ -1639,7 +1639,7 @@ msgid "{label}, {summary}"
 msgstr "{label}, {summary}"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:12
+#: src/copy/sidebar.ts:16
 msgid "{label}, coming soon"
 msgstr "{label}, जल्द आ रहा है"
 
@@ -2061,6 +2061,16 @@ msgid "{name} can change the plan."
 msgstr "{name} प्लान बदल सकते हैं।"
 
 #. js-lingui-explicit-id
+#: src/copy/lead-detail-parts.ts:96
+msgid "{name} can’t be added. A lead takes {types} files."
+msgstr "{name} नहीं जुड़ सकती। लीड में {types} फ़ाइलें जुड़ती हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/project-toast.ts:31
+msgid "{name} can’t be added. A project takes {types} files."
+msgstr "{name} नहीं जुड़ सकती। प्रोजेक्ट में {types} फ़ाइलें जुड़ती हैं।"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:44
 msgid "{name} couldn't be restored. It is still archived — restore it from the Archived filter."
 msgstr "{name} वापस नहीं लाया जा सका। यह अभी भी आर्काइव में है — इसे 'आर्काइव किया गया' फ़िल्टर से वापस लाएँ।"
@@ -2156,6 +2166,16 @@ msgid "{name} is no longer active on this team, so nothing changed."
 msgstr "{name} अब इस टीम में सक्रिय नहीं हैं, इसलिए कुछ नहीं बदला।"
 
 #. js-lingui-explicit-id
+#: src/copy/lead-detail-parts.ts:95
+msgid "{name} is too large. A lead takes files up to {size} MB."
+msgstr "{name} बहुत बड़ी है। लीड में {size} MB तक की फ़ाइलें जुड़ती हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/project-toast.ts:30
+msgid "{name} is too large. A project takes files up to {size} MB."
+msgstr "{name} बहुत बड़ी है। प्रोजेक्ट में {size} MB तक की फ़ाइलें जुड़ती हैं।"
+
+#. js-lingui-explicit-id
 #: src/copy/project-notices.ts:18
 msgid "{name} moved to {stage}"
 msgstr "{name} — अब {stage} में"
@@ -2243,7 +2263,7 @@ msgid "{name} was handed over"
 msgstr "{name} — प्रोजेक्ट सौंप दिया"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:92
+#: src/copy/lead-detail-parts.ts:94
 msgid "{name} was not added to the lead."
 msgstr "{name} लीड में नहीं जुड़ी।"
 
@@ -2338,7 +2358,7 @@ msgid "{note} · saved, not printed"
 msgstr "{note} · सहेजा गया, प्रिंट नहीं होगा"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:29
+#: src/copy/payments-sheet.ts:38
 msgid "{number} · {count, plural, one {# part} other {# parts}}"
 msgstr "{number} · {count, plural, one {# हिस्सा} other {# हिस्से}}"
 
@@ -2479,7 +2499,7 @@ msgid "{part} · {amount} due"
 msgstr "{part} · {amount} देय"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:22
+#: src/copy/payments-sheet.ts:28
 msgid "{part} · {amount} left"
 msgstr "{part} · {amount} बाकी"
 
@@ -2755,12 +2775,12 @@ msgid "{rate} win rate"
 msgstr "{rate} जीत दर"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:64
+#: src/copy/catalog-import.ts:66
 msgid "{ready} ready"
 msgstr "{ready} तैयार"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:65
+#: src/copy/catalog-import.ts:67
 msgid "{ready} ready to import · {needYou} need you"
 msgstr "{ready} इम्पोर्ट के लिए तैयार · {needYou} को आपकी ज़रूरत"
 
@@ -2791,7 +2811,7 @@ msgid "{recorder} reversed {amount}: {reason}"
 msgstr "{recorder} ने {amount} वापस किए: {reason}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:86
+#: src/copy/lead-import.ts:88
 msgid "{rejected, plural, one {# row can’t be read and will be listed with why} other {# rows can’t be read and will be listed with why}}"
 msgstr "{rejected, plural, one {# पंक्ति पढ़ी नहीं जा सकती, वह कारण के साथ सूची में आएगी} other {# पंक्तियाँ पढ़ी नहीं जा सकतीं, वे कारण के साथ सूची में आएँगी}}"
 
@@ -2807,7 +2827,7 @@ msgstr "{remainder}% ज़्यादा"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:32
-#: src/copy/sidebar.ts:16
+#: src/copy/sidebar.ts:20
 msgid "{role} · {company}"
 msgstr "{role} · {company}"
 
@@ -2820,13 +2840,13 @@ msgstr "{row} पहले आ गया"
 
 #. js-lingui-explicit-id
 #: src/copy/project-timeline.ts:40
-#: src/copy/project-toast.ts:18
+#: src/copy/project-toast.ts:20
 msgid "{row} done"
 msgstr "{row} पूरा"
 
 #. js-lingui-explicit-id
 #: src/copy/project-timeline.ts:41
-#: src/copy/project-toast.ts:19
+#: src/copy/project-toast.ts:21
 msgid "{row} not needed"
 msgstr "{row} ज़रूरी नहीं"
 
@@ -2836,7 +2856,7 @@ msgid "{row} waiting again"
 msgstr "{row} फिर से बाकी"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:63
+#: src/copy/catalog-import.ts:65
 msgid "{rows, plural, one {# row} other {# rows}}"
 msgstr "{rows, plural, one {# पंक्ति} other {# पंक्तियाँ}}"
 
@@ -2847,7 +2867,7 @@ msgid "{rows, plural, one {# row} other {# rows}} · {columns, plural, one {# co
 msgstr "{rows, plural, one {# पंक्ति} other {# पंक्तियाँ}} · {columns, plural, one {# कॉलम} other {# कॉलम}}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:83
+#: src/copy/lead-import.ts:85
 msgid "{rows, plural, one {# row} other {# rows}} · {duplicates, plural, one {# duplicate by phone} other {# duplicates by phone}}"
 msgstr "{rows, plural, one {# पंक्ति} other {# पंक्तियाँ}} · {duplicates, plural, one {फ़ोन से # दोहराव} other {फ़ोन से # दोहराव}}"
 
@@ -3025,7 +3045,7 @@ msgstr "{step} का टिक हटाया"
 
 #. js-lingui-explicit-id
 #: src/copy/project-timeline.ts:43
-#: src/copy/project-toast.ts:20
+#: src/copy/project-toast.ts:22
 msgid "{step} ticked"
 msgstr "{step} टिक किया"
 
@@ -3435,7 +3455,7 @@ msgid "% a year"
 msgstr "% सालाना"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:70
+#: src/copy/lead-detail-sheets.ts:75
 msgid "1 month"
 msgstr "1 महीना"
 
@@ -3445,7 +3465,7 @@ msgid "1 panel"
 msgstr "1 पैनल"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:69
+#: src/copy/lead-detail-sheets.ts:74
 msgid "1 week"
 msgstr "1 हफ़्ता"
 
@@ -3471,7 +3491,7 @@ msgid "12, Shivtirth Nagar, Kothrud, Pune 411038"
 msgstr "12, शिवतीर्थ नगर, कोथरूड, पुणे 411038"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:71
+#: src/copy/lead-detail-sheets.ts:76
 msgid "3 months"
 msgstr "3 महीने"
 
@@ -3523,11 +3543,11 @@ msgstr "बड़ा सिस्टम"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-import-rows.ts:77
-msgid "A bill that is not an amount, or a type that is not Home or Business."
-msgstr "बिल कोई रक़म नहीं है, या प्रकार घर या व्यवसाय नहीं है।"
+msgid "A bill that is not an amount, a type that is not Home or Business, or a name or city that is too long."
+msgstr "बिल कोई रक़म नहीं है, प्रकार घर या व्यवसाय नहीं है, या नाम या शहर बहुत लंबा है।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:84
+#: src/copy/lead-detail-sheets.ts:89
 msgid "A call task for the lead’s owner, due when you say."
 msgstr "लीड के ज़िम्मेदार के लिए कॉल का काम, आपके बताए समय पर।"
 
@@ -3592,7 +3612,7 @@ msgid "A courtesy, not the proof: the customer’s page already shows the accept
 msgstr "यह शिष्टाचार है, सबूत नहीं: ग्राहक के पेज पर स्वीकृति पहले से दिखती है। आप चैट चुनकर भेजें।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:111
+#: src/copy/lead-detail-sheets.ts:116
 msgid "A customer outside your list"
 msgstr "आपकी सूची से बाहर का ग्राहक"
 
@@ -3780,7 +3800,7 @@ msgid "A proposal for a factory can use another picture. The rep picks it in ste
 msgstr "फ़ैक्टरी के प्रस्ताव में दूसरी फ़ोटो लग सकती है। सेल्स प्रतिनिधि इसे चरण 1 में चुनता है।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:85
+#: src/copy/lead-detail-parts.ts:87
 msgid "A proposal is made from a design."
 msgstr "प्रस्ताव डिज़ाइन से बनता है।"
 
@@ -3800,12 +3820,12 @@ msgid "A real site of yours works best"
 msgstr "आपकी किसी असली साइट की फ़ोटो सबसे अच्छी रहती है"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:61
+#: src/copy/lead-detail-sheets.ts:66
 msgid "A reason is needed. It stays on the record."
 msgstr "कारण ज़रूरी है। यह रिकॉर्ड पर रहता है।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:65
+#: src/copy/lead-detail-sheets.ts:70
 msgid "A reason is needed. You can reopen the lead later."
 msgstr "कारण ज़रूरी है। आप लीड बाद में फिर खोल सकते हैं।"
 
@@ -3826,17 +3846,17 @@ msgid "A rep can still change the split on one proposal when a customer asks."
 msgstr "ग्राहक के कहने पर सेल्स प्रतिनिधि किसी एक प्रस्ताव पर बँटवारा अब भी बदल सकता है।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:38
+#: src/copy/lead-detail-sheets.ts:43
 msgid "A retry is set inside the calling window."
 msgstr "कॉल करने के तय समय में दोबारा कोशिश रखी जाती है।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:107
+#: src/copy/lead-detail-sheets.ts:112
 msgid "A role of your own"
 msgstr "आपकी अपनी भूमिका"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:75
+#: src/copy/catalog-import.ts:77
 msgid "A row that matches a product you carry becomes a price override — never a second copy."
 msgstr "जो पंक्ति कैटलॉग के किसी प्रोडक्ट से मेल खाती है, वह कीमत ओवरराइड बनती है — दूसरी कॉपी कभी नहीं।"
 
@@ -4213,14 +4233,14 @@ msgid "Add a battery"
 msgstr "बैटरी जोड़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:96
-#: src/copy/lead-detail-sheets.ts:83
+#: src/copy/lead-detail-parts.ts:101
+#: src/copy/lead-detail-sheets.ts:88
 msgid "Add a call-back"
 msgstr "कॉल-बैक जोड़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:64
-#: src/copy/lead-detail-sheets.ts:97
+#: src/copy/lead-detail-parts.ts:66
+#: src/copy/lead-detail-sheets.ts:102
 msgid "Add a contact"
 msgstr "संपर्क जोड़ें"
 
@@ -4364,7 +4384,7 @@ msgid "Add as a lead"
 msgstr "लीड के रूप में जोड़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:85
+#: src/copy/lead-detail-sheets.ts:90
 msgid "Add call-back"
 msgstr "कॉल-बैक जोड़ें"
 
@@ -4410,7 +4430,7 @@ msgid "Add many at once from a spreadsheet"
 msgstr "स्प्रेडशीट से एक साथ कई जोड़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:40
+#: src/copy/lead-detail-sheets.ts:45
 msgid "Add note"
 msgstr "नोट जोड़ें"
 
@@ -4440,7 +4460,7 @@ msgid "Add receipt photo"
 msgstr "रसीद की फ़ोटो जोड़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:108
+#: src/copy/lead-detail-sheets.ts:113
 msgid "Add role"
 msgstr "भूमिका जोड़ें"
 
@@ -4496,7 +4516,7 @@ msgid "Added by {name}"
 msgstr "{name} ने जोड़ी"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:90
+#: src/copy/lead-detail-parts.ts:92
 msgid "Added by {name} · {day}"
 msgstr "{name} ने जोड़ी · {day}"
 
@@ -4516,7 +4536,7 @@ msgid "Added when your account was created · not changed since"
 msgstr "आपका खाता बनते समय जोड़ी गईं · तब से नहीं बदलीं"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:91
+#: src/copy/lead-detail-parts.ts:93
 msgid "Adding {name}"
 msgstr "{name} जोड़ी जा रही है"
 
@@ -4704,7 +4724,7 @@ msgid "Already here"
 msgstr "पहले से मौजूद"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:127
+#: src/copy/lead-import.ts:129
 msgid "Already here, by phone"
 msgstr "फ़ोन से पहले से मौजूद"
 
@@ -5002,7 +5022,7 @@ msgid "As soon as possible"
 msgstr "जितनी जल्दी हो सके"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:56
+#: src/copy/lead-detail-sheets.ts:61
 msgid "As the customer confirmed it on the call."
 msgstr "जैसा ग्राहक ने कॉल पर पक्का किया।"
 
@@ -5085,7 +5105,7 @@ msgid "Ask on the first call"
 msgstr "पहली कॉल पर पूछें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:112
+#: src/copy/lead-import.ts:114
 msgid "Ask one of them to bring the spreadsheet in. You can still add leads one by one."
 msgstr "उनमें से किसी से स्प्रेडशीट इम्पोर्ट करने को कहें। आप लीड्स अब भी एक-एक करके जोड़ सकते हैं।"
 
@@ -5335,7 +5355,7 @@ msgstr "होम पर वापस"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:83
-#: src/copy/lead-import.ts:110
+#: src/copy/lead-import.ts:112
 #: src/copy/lead-inbox.ts:26
 msgid "Back to leads"
 msgstr "लीड्स पर वापस"
@@ -5462,7 +5482,7 @@ msgid "Battery size, kWh"
 msgstr "बैटरी का आकार, kWh"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:96
+#: src/copy/catalog-import.ts:98
 msgid "becomes"
 msgstr "बदलकर"
 
@@ -5472,7 +5492,7 @@ msgid "Before {tax} {amount}"
 msgstr "{tax} से पहले {amount}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:82
+#: src/copy/lead-import.ts:84
 msgid "Before anything runs"
 msgstr "कुछ भी चलने से पहले"
 
@@ -5539,7 +5559,7 @@ msgid "Biggest design"
 msgstr "सबसे बड़ा डिज़ाइन"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:67
+#: src/copy/lead-detail-sheets.ts:72
 #: src/copy/my-day.ts:22
 msgid "Bill {amount} a month"
 msgstr "बिल {amount} प्रति माह"
@@ -5611,7 +5631,7 @@ msgid "Bills on"
 msgstr "बिल की तारीख़"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:78
+#: src/copy/lead-detail-sheets.ts:83
 msgid "Bin this lead as junk?"
 msgstr "इस लीड को बेकार मानें?"
 
@@ -5651,7 +5671,7 @@ msgid "Bold"
 msgstr "बोल्ड"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:41
+#: src/copy/lead-detail-sheets.ts:46
 msgid "Book a site visit"
 msgstr "साइट विज़िट बुक करें"
 
@@ -5714,7 +5734,7 @@ msgid "Breadcrumb"
 msgstr "नेविगेशन पथ"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:68
+#: src/copy/lead-detail-sheets.ts:73
 msgid "Bring it back in"
 msgstr "वापस लाएँ"
 
@@ -5874,7 +5894,7 @@ msgid "Call {name} on {phone} first. A person confirms a win, not a tap."
 msgstr "पहले {name} को {phone} पर कॉल करें। जीत कोई व्यक्ति पक्की करता है, टैप नहीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:66
+#: src/copy/lead-detail-parts.ts:68
 msgid "Call {who}"
 msgstr "{who} को कॉल करें"
 
@@ -5899,7 +5919,7 @@ msgid "Call me with the code"
 msgstr "कोड के साथ मुझे कॉल करें"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:190
+#: src/copy/crm-vocabulary.ts:191
 #: src/copy/customer-page-proposal.ts:80
 msgid "Call requested"
 msgstr "कॉल माँगी गई"
@@ -5989,7 +6009,7 @@ msgid "Can’t · {count}"
 msgstr "नहीं कर सकते · {count}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:128
+#: src/copy/lead-import.ts:130
 msgid "Can’t be read"
 msgstr "पढ़ी नहीं जा सकती"
 
@@ -6214,7 +6234,7 @@ msgid "Change plan"
 msgstr "प्लान बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:187
+#: src/copy/crm-vocabulary.ts:188
 msgid "Change requested"
 msgstr "बदलाव माँगा गया"
 
@@ -6360,8 +6380,8 @@ msgid "Choose a date"
 msgstr "तारीख चुनें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:58
-#: src/copy/lead-import.ts:67
+#: src/copy/catalog-import.ts:60
+#: src/copy/lead-import.ts:69
 msgid "Choose a field"
 msgstr "फ़ील्ड चुनें"
 
@@ -6371,7 +6391,7 @@ msgid "Choose a file or drop one here"
 msgstr "फ़ाइल चुनें या यहाँ छोड़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:92
+#: src/copy/catalog-import.ts:94
 msgid "Choose a kind"
 msgstr "प्रकार चुनें"
 
@@ -6392,13 +6412,13 @@ msgid "Choose a plan"
 msgstr "प्लान चुनें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:90
+#: src/copy/catalog-import.ts:92
 msgid "Choose a product"
 msgstr "प्रोडक्ट चुनें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:131
-#: src/copy/lead-import.ts:132
+#: src/copy/catalog-import.ts:133
+#: src/copy/lead-import.ts:134
 msgid "Choose a spreadsheet first."
 msgstr "पहले स्प्रेडशीट चुनें।"
 
@@ -6413,10 +6433,9 @@ msgid "Choose an option"
 msgstr "एक विकल्प चुनें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:52
-#: src/copy/lead-import.ts:59
-msgid "Choose another file to import."
-msgstr "इम्पोर्ट के लिए दूसरी फ़ाइल चुनें।"
+#: src/copy/lead-detail-parts.ts:97
+msgid "Choose another file"
+msgstr "दूसरी फ़ाइल चुनें"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-builder-steps.ts:150
@@ -6472,8 +6491,8 @@ msgstr "सेवा वाले शहर"
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:46
 #: src/copy/customer-merge.ts:107
-#: src/copy/lead-detail-sheets.ts:30
-#: src/copy/lead-import.ts:120
+#: src/copy/lead-detail-sheets.ts:35
+#: src/copy/lead-import.ts:122
 #: src/copy/lead-timeline.ts:67
 #: src/copy/quick-add.ts:31
 msgid "City"
@@ -6634,7 +6653,7 @@ msgid "Code limits"
 msgstr "कोड की सीमा"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:13
+#: src/copy/sidebar.ts:17
 msgid "Collapse the sidebar"
 msgstr "साइडबार छोटा करें"
 
@@ -6695,12 +6714,12 @@ msgid "Columns left out are named here, never dropped quietly."
 msgstr "छोड़े गए कॉलम यहाँ लिखे हैं, चुपचाप हटाए नहीं जाते।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:73
+#: src/copy/lead-detail-sheets.ts:78
 msgid "Comes back on"
 msgstr "वापस आने का दिन"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:74
+#: src/copy/lead-detail-sheets.ts:79
 msgid "Comes back to Today on {day} · {time} with a follow-up."
 msgstr "{day} · {time} को फ़ॉलो-अप के साथ ‘आज’ में वापस आएगी।"
 
@@ -6823,18 +6842,18 @@ msgid "Confirm your mobile number"
 msgstr "अपना मोबाइल नंबर पक्का करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:77
+#: src/copy/lead-detail-parts.ts:79
 #: src/copy/provenance.ts:24
 msgid "Confirmed"
 msgstr "पुष्टि हुई"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:55
+#: src/copy/lead-detail-sheets.ts:60
 msgid "Confirmed address"
 msgstr "पक्का पता"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:76
+#: src/copy/lead-detail-parts.ts:78
 msgid "Confirmed when a visit is booked"
 msgstr "विज़िट बुक होने पर पक्का होता है"
 
@@ -6859,14 +6878,14 @@ msgid "Contacts"
 msgstr "संपर्क"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:63
+#: src/copy/lead-detail-parts.ts:65
 msgid "Contacts · {count}"
 msgstr "संपर्क · {count}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:101
+#: src/copy/catalog-import.ts:103
 #: src/copy/home-today.ts:19
-#: src/copy/lead-import.ts:74
+#: src/copy/lead-import.ts:76
 #: src/copy/proposal-after-lead.ts:26
 #: src/copy/setup-language.ts:27
 msgid "Continue"
@@ -6933,7 +6952,7 @@ msgid "Coordinator"
 msgstr "कोऑर्डिनेटर"
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:26
+#: src/copy/project-toast.ts:28
 msgid "Copied — paste it in your chat"
 msgstr "कॉपी हो गया — इसे अपनी चैट में पेस्ट करें"
 
@@ -6958,12 +6977,12 @@ msgid "Copied from the selected item."
 msgstr "चुने गए आइटम से कॉपी किया गया।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:95
+#: src/copy/lead-detail-sheets.ts:100
 msgid "Copied. Paste it in your own app."
 msgstr "कॉपी हो गया। अपने ऐप में पेस्ट करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:93
+#: src/copy/lead-detail-sheets.ts:98
 #: src/copy/project-handover.ts:41
 #: src/copy/proposal-after-list.ts:31
 msgid "Copy"
@@ -6991,12 +7010,12 @@ msgid "Copy number"
 msgstr "नंबर कॉपी करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:94
+#: src/copy/lead-detail-sheets.ts:99
 msgid "Copy or share"
 msgstr "कॉपी या शेयर करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:79
+#: src/copy/lead-detail-parts.ts:81
 msgid "Copy the confirmation"
 msgstr "पुष्टि संदेश कॉपी करें"
 
@@ -7063,7 +7082,7 @@ msgid "Couldn't load the comparison"
 msgstr "तुलना लोड नहीं हो सकी"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:94
+#: src/copy/lead-detail-parts.ts:99
 msgid "Couldn’t load the files"
 msgstr "फ़ाइलें लोड नहीं हो सकीं"
 
@@ -7083,7 +7102,7 @@ msgid "Couldn’t load the prices"
 msgstr "कीमतें लोड नहीं हो सकीं"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:106
+#: src/copy/lead-detail-sheets.ts:111
 msgid "Couldn’t load the roles"
 msgstr "भूमिकाएँ लोड नहीं हो सकीं"
 
@@ -7128,7 +7147,7 @@ msgid "Couldn't load this record"
 msgstr "यह रिकॉर्ड लोड नहीं हो सका"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:53
+#: src/copy/lead-detail-sheets.ts:58
 msgid "Couldn’t load who can survey"
 msgstr "सर्वे कौन कर सकता है, यह लोड नहीं हो सका"
 
@@ -7193,7 +7212,7 @@ msgid "Couldn't read this figure. Try again — nothing here is a stale number."
 msgstr "यह आँकड़ा पढ़ा नहीं जा सका। फिर से कोशिश करें — यहाँ कोई पुराना आँकड़ा नहीं दिखाया गया है।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:77
+#: src/copy/lead-import.ts:79
 msgid "Couldn’t read this import"
 msgstr "यह इम्पोर्ट पढ़ा नहीं जा सका"
 
@@ -7228,7 +7247,7 @@ msgid "Couldn’t work out what this change costs"
 msgstr "पता नहीं चल सका कि इस बदलाव की कीमत क्या है"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:92
+#: src/copy/lead-detail-sheets.ts:97
 msgid "Couldn’t write the message"
 msgstr "संदेश नहीं लिखा जा सका"
 
@@ -7243,7 +7262,7 @@ msgid "Counted from the charge that failed on {date}, which is day 0 of the 7-da
 msgstr "{date} को विफल हुए चार्ज से गिना गया, जो 7 दिन की छूट का दिन 0 है।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:71
+#: src/copy/lead-import.ts:73
 msgid "Counting your rows and the duplicates by phone"
 msgstr "आपकी पंक्तियाँ और फ़ोन से दोहराव गिने जा रहे हैं"
 
@@ -7432,7 +7451,7 @@ msgid "CSV or Excel file"
 msgstr "CSV या Excel फ़ाइल"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:10
+#: src/copy/sidebar.ts:14
 msgid "Ctrl K"
 msgstr "Ctrl K"
 
@@ -7520,7 +7539,7 @@ msgid "Customer declined proposal {number}"
 msgstr "ग्राहक ने प्रस्ताव {number} अस्वीकार किया"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:191
+#: src/copy/crm-vocabulary.ts:192
 msgid "Customer link changed"
 msgstr "ग्राहक लिंक बदला गया"
 
@@ -7545,7 +7564,7 @@ msgid "Customer opened proposal {number}"
 msgstr "ग्राहक ने प्रस्ताव {number} खोला"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:189
+#: src/copy/crm-vocabulary.ts:190
 msgid "Customer question"
 msgstr "ग्राहक का सवाल"
 
@@ -7575,7 +7594,7 @@ msgid "Customers"
 msgstr "ग्राहक"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:176
+#: src/copy/crm-vocabulary.ts:177
 #: src/copy/lead-timeline.ts:65
 msgid "Customers merged"
 msgstr "ग्राहक मिलाए गए"
@@ -7619,7 +7638,7 @@ msgstr "डेटा अधिकार"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:127
-#: src/copy/lead-detail-sheets.ts:48
+#: src/copy/lead-detail-sheets.ts:53
 msgid "Date"
 msgstr "तारीख"
 
@@ -7790,7 +7809,7 @@ msgstr "मान घटाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:27
-#: src/copy/lead-import.ts:101
+#: src/copy/lead-import.ts:103
 #: src/copy/payment-terms.ts:28
 #: src/copy/proposal-builder-frame.ts:43
 msgid "Default"
@@ -7834,6 +7853,7 @@ msgstr "चरण हटाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:71
+#: src/copy/sidebar.ts:26
 msgid "Delivery"
 msgstr "डिलीवरी"
 
@@ -7897,7 +7917,7 @@ msgid "Design Queue"
 msgstr "डिज़ाइन क्यू"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:108
+#: src/copy/lead-detail-parts.ts:113
 msgid "Designs"
 msgstr "डिज़ाइन"
 
@@ -7912,7 +7932,7 @@ msgid "Designs are made in the design studio, which arrives in a later release."
 msgstr "डिज़ाइन डिज़ाइन स्टूडियो में बनते हैं, जो अगली रिलीज़ में आएगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:82
+#: src/copy/lead-detail-parts.ts:84
 msgid "Designs are made in the design studio, which arrives later."
 msgstr "डिज़ाइन डिज़ाइन स्टूडियो में बनते हैं, जो बाद में आएगा।"
 
@@ -7954,6 +7974,7 @@ msgstr "रास्ता देखें"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:85
+#: src/copy/lead-detail-sheets.ts:29
 msgid "Discard"
 msgstr "छोड़ दें"
 
@@ -7967,7 +7988,7 @@ msgstr "हटाएँ और जाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:61
-#: src/copy/payments-sheet.ts:26
+#: src/copy/payments-sheet.ts:32
 #: src/copy/proposal-defaults-words.ts:60
 #: src/copy/proposal-template.ts:70
 msgid "Discard changes"
@@ -8060,7 +8081,7 @@ msgid "District"
 msgstr "ज़िला"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:70
+#: src/copy/lead-detail-parts.ts:72
 #: src/copy/lead-timeline.ts:70
 msgid "Do not call"
 msgstr "कॉल न करें"
@@ -8109,7 +8130,7 @@ msgid "Does {name} know someone who wants solar?"
 msgstr "क्या {name} किसी ऐसे को जानते हैं जिसे सोलर चाहिए?"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:70
+#: src/copy/lead-import.ts:72
 msgid "Don’t import"
 msgstr "इम्पोर्ट न करें"
 
@@ -8121,7 +8142,7 @@ msgstr "हो गया"
 #. js-lingui-explicit-id
 #: src/copy/filter-panel.ts:16
 #: src/copy/home-today.ts:21
-#: src/copy/lead-detail-parts.ts:98
+#: src/copy/lead-detail-parts.ts:103
 #: src/copy/lead-inbox.ts:30
 #: src/copy/my-day.ts:32
 #: src/copy/name-and-photo-editor.ts:16
@@ -8247,7 +8268,7 @@ msgid "Due {day}"
 msgstr "{day} तक"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:101
+#: src/copy/lead-detail-parts.ts:106
 msgid "Due {day}, {time}"
 msgstr "{day}, {time} तक"
 
@@ -8352,7 +8373,7 @@ msgid "Each person’s role, contact and documents"
 msgstr "हर व्यक्ति की भूमिका, संपर्क और दस्तावेज़"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:98
+#: src/copy/lead-import.ts:100
 msgid "Each row goes on that lead’s timeline as a new enquiry. Its owner is told."
 msgstr "हर पंक्ति उस लीड की टाइमलाइन पर नई पूछताछ बनकर जाती है। उसके मालिक को बताया जाता है।"
 
@@ -8404,7 +8425,7 @@ msgid "Edit {phase}"
 msgstr "{phase} बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:67
+#: src/copy/lead-detail-parts.ts:69
 msgid "Edit {who}"
 msgstr "{who} बदलें"
 
@@ -8419,12 +8440,12 @@ msgid "Edit bank details"
 msgstr "बैंक विवरण बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:98
+#: src/copy/lead-detail-sheets.ts:103
 msgid "Edit contact"
 msgstr "संपर्क बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:27
+#: src/copy/lead-detail-sheets.ts:32
 #: src/copy/lead-detail.ts:37
 msgid "Edit details"
 msgstr "विवरण बदलें"
@@ -8834,7 +8855,7 @@ msgid "Existing leads left as they were."
 msgstr "मौजूदा लीड्स जैसी थीं वैसी ही रहीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:14
+#: src/copy/sidebar.ts:18
 msgid "Expand the sidebar"
 msgstr "साइडबार बड़ा करें"
 
@@ -8916,8 +8937,8 @@ msgstr "फ़ैक्टरी"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:34
-#: src/copy/catalog-import.ts:119
-#: src/copy/catalog-import.ts:127
+#: src/copy/catalog-import.ts:121
+#: src/copy/catalog-import.ts:129
 msgid "Failed"
 msgstr "विफल"
 
@@ -8969,7 +8990,7 @@ msgstr "फ़ाइल का नाम"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:119
-#: src/copy/lead-detail-parts.ts:111
+#: src/copy/lead-detail-parts.ts:116
 msgid "Files"
 msgstr "फ़ाइलें"
 
@@ -9058,7 +9079,7 @@ msgstr "एक ही बॉक्स से कोई भी लीड, ग्�
 
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:30
-#: src/copy/catalog-import.ts:78
+#: src/copy/catalog-import.ts:80
 #: src/copy/team.ts:11
 msgid "Find in this list"
 msgstr "इस सूची में खोजें"
@@ -9099,6 +9120,11 @@ msgid "First cycle"
 msgstr "पहला चक्र"
 
 #. js-lingui-explicit-id
+#: src/copy/lead-detail-sheets.ts:31
+msgid "First fill in: {field}"
+msgstr "पहले यह भरें: {field}"
+
+#. js-lingui-explicit-id
 #: src/copy/customer-page-sheets.ts:18
 msgid "First payment, after the call"
 msgstr "पहला भुगतान, कॉल के बाद"
@@ -9119,7 +9145,7 @@ msgid "Fix in {step}"
 msgstr "{step} में ठीक करें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:106
+#: src/copy/catalog-import.ts:108
 msgid "Fix the {count, plural, one {# row} other {# rows}}"
 msgstr "{count, plural, one {# पंक्ति} other {# पंक्तियाँ}} ठीक करें"
 
@@ -9130,7 +9156,7 @@ msgstr "ठीक हो गया।"
 
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:137
-#: src/copy/lead-detail-sheets.ts:89
+#: src/copy/lead-detail-sheets.ts:94
 #: src/copy/lead-timeline.ts:71
 msgid "Follow-up"
 msgstr "फ़ॉलो-अप"
@@ -9157,7 +9183,7 @@ msgid "For a home-rooftop team of 1 to 5 people."
 msgstr "1 से 5 लोगों की घरेलू छत टीम के लिए।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:44
+#: src/copy/lead-detail-sheets.ts:49
 msgid "For a no-show: a new visit replaces this one, and one reminder is ready to copy."
 msgstr "ग्राहक न मिले तो: नई विज़िट इसकी जगह लेती है, और एक रिमाइंडर कॉपी के लिए तैयार है।"
 
@@ -9696,7 +9722,7 @@ msgid "Ground mount"
 msgstr "ग्राउंड माउंट"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:66
+#: src/copy/lead-import.ts:68
 msgid "Guessed from the header — check them"
 msgstr "हेडर से अनुमान — इन्हें जाँच लें"
 
@@ -9731,12 +9757,12 @@ msgstr "सौंपें"
 #: src/copy/project-detail.ts:94
 #: src/copy/project-handover.ts:45
 #: src/copy/project-next.ts:14
-#: src/copy/project-toast.ts:23
+#: src/copy/project-toast.ts:25
 msgid "Handed over"
 msgstr "सौंप दिया"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:96
+#: src/copy/lead-detail-sheets.ts:101
 msgid "Handed to your phone. Nothing is sent from here."
 msgstr "आपके फ़ोन को दिया गया। यहाँ से कुछ नहीं भेजा जाता।"
 
@@ -10131,7 +10157,7 @@ msgid "How customers pay you"
 msgstr "ग्राहक आपको कैसे भुगतान करते हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:37
+#: src/copy/lead-detail-sheets.ts:42
 msgid "How did the call end?"
 msgstr "कॉल कैसे खत्म हुआ?"
 
@@ -10299,12 +10325,12 @@ msgid "Import"
 msgstr "इम्पोर्ट"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:104
+#: src/copy/lead-import.ts:106
 msgid "Import {count, plural, one {# lead} other {# leads}}"
 msgstr "{count, plural, one {# लीड} other {# लीड्स}} इम्पोर्ट करें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:97
+#: src/copy/catalog-import.ts:99
 msgid "Import {count, plural, one {# row} other {# rows}}"
 msgstr "{count, plural, one {# पंक्ति} other {# पंक्तियाँ}} इम्पोर्ट करें"
 
@@ -10326,7 +10352,7 @@ msgid "Import another file"
 msgstr "दूसरी फ़ाइल इम्पोर्ट करें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:87
+#: src/copy/catalog-import.ts:89
 msgid "Import as your own SKU"
 msgstr "अपने SKU के रूप में इम्पोर्ट करें"
 
@@ -10347,13 +10373,13 @@ msgid "Import steps"
 msgstr "इम्पोर्ट के चरण"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:59
-#: src/copy/lead-import.ts:68
+#: src/copy/catalog-import.ts:61
+#: src/copy/lead-import.ts:70
 msgid "Import the column “{header}” as"
 msgstr "कॉलम “{header}” को इस रूप में इम्पोर्ट करें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:115
+#: src/copy/catalog-import.ts:117
 msgid "Imported"
 msgstr "इम्पोर्ट किए गए"
 
@@ -10364,13 +10390,13 @@ msgid "Imported {date}, {time}"
 msgstr "{date}, {time} को इम्पोर्ट किया गया"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:102
-#: src/copy/lead-import.ts:72
+#: src/copy/catalog-import.ts:104
+#: src/copy/lead-import.ts:74
 msgid "Importing"
 msgstr "इम्पोर्ट हो रहा है"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:111
+#: src/copy/lead-import.ts:113
 msgid "Importing leads is for an owner or a sales manager"
 msgstr "लीड्स इम्पोर्ट करना मालिक या सेल्स मैनेजर का काम है"
 
@@ -10550,7 +10576,7 @@ msgid "Install start time changed"
 msgstr "इंस्टॉलेशन शुरू होने का समय बदला गया"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:180
+#: src/copy/crm-vocabulary.ts:181
 msgid "Install step"
 msgstr "इंस्टॉलेशन का कदम"
 
@@ -10765,7 +10791,7 @@ msgid "It already moved to {stage}. Nothing changed twice."
 msgstr "यह पहले ही {stage} में जा चुका है। कुछ भी दो बार नहीं बदला।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:58
+#: src/copy/lead-detail-sheets.ts:63
 msgid "It comes back at 09:00 that day, with a follow-up task."
 msgstr "यह उस दिन 09:00 बजे फ़ॉलो-अप काम के साथ लौटती है।"
 
@@ -10790,12 +10816,12 @@ msgid "It is written for you"
 msgstr "यह आपके लिए लिखा हुआ है"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:78
+#: src/copy/lead-import.ts:80
 msgid "It keeps going on our side. Try again to see where it stands."
 msgstr "यह हमारी तरफ़ चलता रहता है। यह कहाँ तक पहुँचा, देखने के लिए फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:79
+#: src/copy/lead-detail-sheets.ts:84
 msgid "It leaves every list and queue. Search still finds it, and it can be reopened."
 msgstr "यह हर सूची और कतार से हट जाती है। खोज में फिर भी मिलती है, और फिर से खोली जा सकती है।"
 
@@ -10820,6 +10846,12 @@ msgid "It may have moved to another manager."
 msgstr "हो सकता है यह किसी और मैनेजर के पास चला गया हो।"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-import.ts:52
+#: src/copy/lead-import.ts:59
+msgid "It may have no rows, or be damaged. Choose another file to import."
+msgstr "इसमें कोई पंक्ति नहीं है, या यह ख़राब है। आयात के लिए दूसरी फ़ाइल चुनें।"
+
+#. js-lingui-explicit-id
 #: src/copy/project-next.ts:49
 msgid "It moves the project to {stage} by itself."
 msgstr "यह प्रोजेक्ट को अपने आप {stage} में ले जाता है।"
@@ -10835,7 +10867,7 @@ msgid "It now points to another customer, so there is nothing left to merge here
 msgstr "अब वह दूसरे ग्राहक की ओर ले जाता है, इसलिए यहाँ मिलाने को कुछ नहीं बचा।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:107
+#: src/copy/lead-import.ts:109
 msgid "It runs on our side. Come back here to see where it got to, or the report."
 msgstr "यह हमारी तरफ़ चलता है। यह कहाँ तक पहुँचा या इसकी रिपोर्ट देखने के लिए यहाँ लौटें।"
 
@@ -10845,7 +10877,7 @@ msgid "It stops at once and cannot be turned on again. You can make a new link."
 msgstr "यह तुरंत बंद हो जाएगा और फिर चालू नहीं होगा। आप नया लिंक बना सकते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import-notes.ts:11
+#: src/copy/catalog-import-notes.ts:12
 msgid "It was run or changed elsewhere. Here is where it stands now."
 msgstr "इसे कहीं और चलाया या बदला गया। अभी की स्थिति यह है।"
 
@@ -10962,7 +10994,7 @@ msgid "Junk {name}"
 msgstr "{name} की लीड बेकार में डालें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:82
+#: src/copy/lead-detail-sheets.ts:87
 msgid "Junk it"
 msgstr "बेकार मानें"
 
@@ -10972,7 +11004,7 @@ msgid "Junk this lead"
 msgstr "यह लीड बेकार में डालें"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:9
+#: src/copy/sidebar.ts:13
 msgid "K"
 msgstr "K"
 
@@ -10988,6 +11020,7 @@ msgstr "दोनों लीड रखें"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:74
+#: src/copy/lead-detail-sheets.ts:30
 #: src/copy/payment-terms.ts:81
 #: src/copy/proposal-builder-leave.ts:10
 #: src/copy/proposal-template.ts:80
@@ -11025,12 +11058,12 @@ msgid "Keep my plan"
 msgstr "मेरा प्लान रखें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:87
+#: src/copy/lead-detail-parts.ts:89
 msgid "Keep the bill, roof photos and ID here. The project won from this lead shows them too."
 msgstr "बिल, छत की फ़ोटो और पहचान पत्र यहाँ रखें। इस लीड से बना प्रोजेक्ट भी इन्हें दिखाता है।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:86
+#: src/copy/catalog-import.ts:88
 msgid "Keep the catalog’s spec, set the price"
 msgstr "कैटलॉग का स्पेसिफ़िकेशन रखें, कीमत तय करें"
 
@@ -11050,7 +11083,7 @@ msgid "Kept"
 msgstr "सुरक्षित"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:107
+#: src/copy/catalog-import.ts:109
 msgid "Kept — reopen it from Import a file."
 msgstr "रख ली गई — इसे फ़ाइल इम्पोर्ट से फिर खोलें।"
 
@@ -11088,7 +11121,7 @@ msgstr "चाबी, गेट, कुत्ते, सीढ़ी, किस�
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:29
 #: src/copy/catalog-import-fields.ts:11
-#: src/copy/catalog-import.ts:91
+#: src/copy/catalog-import.ts:93
 msgid "Kind"
 msgstr "प्रकार"
 
@@ -11135,7 +11168,7 @@ msgstr "मकान मालिक"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-page-proposal.ts:57
-#: src/copy/lead-detail-parts.ts:72
+#: src/copy/lead-detail-parts.ts:74
 #: src/copy/lead-timeline.ts:69
 #: src/copy/profile-preferences.ts:31
 #: src/copy/setup-language.ts:21
@@ -11169,7 +11202,7 @@ msgstr "आख़िरी गतिविधि"
 
 #. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:21
-#: src/copy/lead-detail-sheets.ts:114
+#: src/copy/lead-detail-sheets.ts:119
 msgid "Last contact"
 msgstr "आख़िरी संपर्क"
 
@@ -11235,6 +11268,16 @@ msgid "Lead assigned to you: {name}"
 msgstr "आपको लीड सौंपी गई: {name}"
 
 #. js-lingui-explicit-id
+#: src/copy/lead-inbox-acts.ts:34
+msgid "Lead back in the inbox"
+msgstr "लीड वापस इनबॉक्स में है"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-inbox-acts.ts:33
+msgid "Lead binned as junk"
+msgstr "लीड बेकार में डाली गई"
+
+#. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:162
 msgid "Lead created"
 msgstr "लीड बनी"
@@ -11245,14 +11288,24 @@ msgid "Lead created · {source}"
 msgstr "लीड बनी · {source}"
 
 #. js-lingui-explicit-id
+#: src/copy/lead-inbox-acts.ts:32
+msgid "Lead given to {name}"
+msgstr "लीड {name} को सौंपी गई"
+
+#. js-lingui-explicit-id
 #: src/copy/quick-add.ts:43
 msgid "Lead saved"
 msgstr "लीड सहेज ली गई"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:74
+#: src/copy/lead-detail-parts.ts:76
 msgid "Lead sections"
 msgstr "लीड के हिस्से"
+
+#. js-lingui-explicit-id
+#: src/copy/crm-vocabulary.ts:167
+msgid "Lead status"
+msgstr "लीड की स्थिति"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:15
@@ -11295,17 +11348,18 @@ msgid "Leave {schemes} off and the item shows no badges."
 msgstr "{schemes} बंद रखें तो आइटम पर कोई बैज नहीं दिखता।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:85
+#: src/copy/catalog-import.ts:87
 msgid "Leave out"
 msgstr "छोड़ दें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:61
+#: src/copy/catalog-import.ts:63
 msgid "Leave this column out"
 msgstr "यह कॉलम छोड़ दें"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:71
+#: src/copy/lead-detail-sheets.ts:27
 #: src/copy/payment-terms.ts:78
 #: src/copy/proposal-builder-leave.ts:7
 #: src/copy/proposal-template.ts:77
@@ -11318,8 +11372,8 @@ msgid "Left"
 msgstr "बाकी"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:118
-#: src/copy/catalog-import.ts:126
+#: src/copy/catalog-import.ts:120
+#: src/copy/catalog-import.ts:128
 msgid "Left out"
 msgstr "छोड़ा गया"
 
@@ -11600,7 +11654,7 @@ msgid "Loading more leads"
 msgstr "और लीड्स लोड हो रही हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:24
+#: src/copy/payments-sheet.ts:30
 msgid "Loading payment settings"
 msgstr "भुगतान सेटिंग्स लोड हो रही हैं"
 
@@ -11655,7 +11709,7 @@ msgid "Loading the dashboard"
 msgstr "डैशबोर्ड लोड हो रहा है"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:93
+#: src/copy/lead-detail-parts.ts:98
 msgid "Loading the files"
 msgstr "फ़ाइलें लोड हो रही हैं"
 
@@ -11755,7 +11809,7 @@ msgid "Loading what your role can and cannot do"
 msgstr "आपकी भूमिका क्या कर सकती है और क्या नहीं, लोड हो रहा है"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:52
+#: src/copy/lead-detail-sheets.ts:57
 msgid "Loading who can survey"
 msgstr "सर्वे कौन कर सकता है, लोड हो रहा है"
 
@@ -11857,7 +11911,7 @@ msgid "Log"
 msgstr "दर्ज करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:105
+#: src/copy/lead-import.ts:107
 msgid "Log {count, plural, one {# enquiry} other {# enquiries}}"
 msgstr "{count, plural, one {# पूछताछ} other {# पूछताछ}} दर्ज करें"
 
@@ -11867,12 +11921,12 @@ msgid "Log activity"
 msgstr "गतिविधि दर्ज करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:97
+#: src/copy/lead-import.ts:99
 msgid "Log as enquiry on the existing lead"
 msgstr "मौजूदा लीड पर पूछताछ के रूप में दर्ज करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:33
+#: src/copy/lead-detail-sheets.ts:38
 msgid "Log call"
 msgstr "कॉल दर्ज करें"
 
@@ -11998,7 +12052,7 @@ msgid "Maintenance"
 msgstr "रखरखाव"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:68
+#: src/copy/lead-detail-parts.ts:70
 msgid "Make {who} the primary contact"
 msgstr "{who} को मुख्य संपर्क बनाएँ"
 
@@ -12038,7 +12092,7 @@ msgid "Make version {version}"
 msgstr "वर्शन {version} बनाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:69
+#: src/copy/lead-detail-parts.ts:71
 msgid "Making primary…"
 msgstr "मुख्य बनाया जा रहा है…"
 
@@ -12100,7 +12154,7 @@ msgid "Margin {margin} · since {date}"
 msgstr "मार्जिन {margin} · {date} से"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:99
+#: src/copy/lead-detail-parts.ts:104
 msgid "Mark “{task}” done"
 msgstr "“{task}” पूरा करें"
 
@@ -12126,7 +12180,7 @@ msgid "Mark lost"
 msgstr "हारी हुई चिह्नित करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:77
+#: src/copy/lead-detail-sheets.ts:82
 msgid "Mark lost · {reason}"
 msgstr "हारी हुई चिह्नित करें · {reason}"
 
@@ -12141,7 +12195,7 @@ msgid "Mark one’s own day start and day end"
 msgstr "अपने दिन की शुरुआत और अंत दर्ज करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:61
+#: src/copy/lead-detail-parts.ts:63
 msgid "Mark qualified"
 msgstr "योग्य चिह्नित करें"
 
@@ -12197,7 +12251,7 @@ msgid "Marketing sends"
 msgstr "मार्केटिंग संदेश"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:57
+#: src/copy/catalog-import.ts:59
 msgid "Matched automatically — check them"
 msgstr "अपने-आप मिलाए गए — इन्हें जाँच लें"
 
@@ -12207,7 +12261,7 @@ msgid "Matches what is left — this part becomes received"
 msgstr "बाकी के बराबर — यह हिस्सा मिला हुआ हो जाएगा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:62
+#: src/copy/catalog-import.ts:64
 msgid "Matching your rows to products we carry"
 msgstr "आपकी पंक्तियों को हमारे प्रोडक्ट से मिला रहे हैं"
 
@@ -12273,7 +12327,7 @@ msgstr "मिलाना उपलब्ध नहीं"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:68
-#: src/copy/lead-detail-sheets.ts:115
+#: src/copy/lead-detail-sheets.ts:120
 msgid "Merge the two customers"
 msgstr "दोनों ग्राहकों को मिलाएँ"
 
@@ -12309,7 +12363,6 @@ msgid "Message · in {language}"
 msgstr "संदेश · {language} में"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:172
 #: src/copy/proposal-after-messages.ts:49
 msgid "Message copied"
 msgstr "संदेश कॉपी हुआ"
@@ -12320,12 +12373,17 @@ msgid "Message copied — paste it in WhatsApp or SMS"
 msgstr "संदेश कॉपी हुआ — WhatsApp या SMS में पेस्ट करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-timeline.ts:59
-msgid "Message copied · {template}"
-msgstr "संदेश कॉपी हुआ · {template}"
+#: src/copy/crm-vocabulary.ts:173
+msgid "Message ready to send"
+msgstr "संदेश भेजने के लिए तैयार"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:86
+#: src/copy/lead-timeline.ts:59
+msgid "Message ready to send · {template}"
+msgstr "संदेश भेजने के लिए तैयार · {template}"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-detail-sheets.ts:91
 msgid "Message to copy"
 msgstr "कॉपी करने के लिए संदेश"
 
@@ -12457,7 +12515,7 @@ msgstr "मासिक"
 
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:63
-#: src/copy/lead-import.ts:122
+#: src/copy/lead-import.ts:124
 #: src/copy/lead-inbox.ts:37
 #: src/copy/leads-list.ts:58
 #: src/copy/proposal-builder-steps-rest.ts:15
@@ -12624,7 +12682,7 @@ msgid "Move to tomorrow"
 msgstr "कल पर डालें"
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:14
+#: src/copy/project-toast.ts:16
 msgid "Move undone"
 msgstr "बदलाव पहले जैसा किया"
 
@@ -12649,7 +12707,7 @@ msgid "Moved back · {stage}"
 msgstr "वापस ले जाया गया · {stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:13
+#: src/copy/project-toast.ts:15
 msgid "Moved back to {stage}"
 msgstr "वापस {stage} में ले जाया गया"
 
@@ -12823,8 +12881,8 @@ msgstr "आज की मेरी विज़िट"
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:172
 #: src/copy/customer-merge.ts:106
-#: src/copy/lead-detail-sheets.ts:101
-#: src/copy/lead-import.ts:118
+#: src/copy/lead-detail-sheets.ts:106
+#: src/copy/lead-import.ts:120
 #: src/copy/lead-timeline.ts:66
 #: src/copy/payment-terms.ts:51
 #: src/copy/project-handover.ts:51
@@ -12897,7 +12955,7 @@ msgid "name@bank — the one your bank or UPI app shows"
 msgstr "name@bank — जो आपका बैंक या UPI ऐप दिखाता है"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:69
+#: src/copy/lead-import.ts:71
 msgid "Named in the report, never dropped quietly."
 msgstr "रिपोर्ट में लिखा जाता है, चुपचाप हटाया नहीं जाता।"
 
@@ -12922,8 +12980,8 @@ msgid "Nearing a limit"
 msgstr "सीमा के करीब"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:80
-#: src/copy/catalog-import.ts:114
+#: src/copy/catalog-import.ts:82
+#: src/copy/catalog-import.ts:116
 msgid "Need you"
 msgstr "आपकी ज़रूरत"
 
@@ -13101,7 +13159,7 @@ msgid "New lead"
 msgstr "नई लीड"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:126
+#: src/copy/lead-import.ts:128
 msgid "New leads"
 msgstr "नई लीड्स"
 
@@ -13111,7 +13169,7 @@ msgid "New leads created"
 msgstr "नई लीड्स बनीं"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:102
+#: src/copy/lead-import.ts:104
 msgid "New leads land in the Inbox, unassigned."
 msgstr "नई लीड्स बिना सौंपे इनबॉक्स में आती हैं।"
 
@@ -13157,17 +13215,17 @@ msgid "New plan for what is left"
 msgstr "बाकी राशि के लिए नई योजना"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:124
+#: src/copy/catalog-import.ts:126
 msgid "New price on your item"
 msgstr "आपके आइटम पर नई कीमत"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:125
+#: src/copy/catalog-import.ts:127
 msgid "New product"
 msgstr "नया प्रोडक्ट"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:113
+#: src/copy/catalog-import.ts:115
 msgid "New products"
 msgstr "नए प्रोडक्ट"
 
@@ -13349,17 +13407,17 @@ msgid "Next, {stage}"
 msgstr "आगे, {stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:99
+#: src/copy/catalog-import.ts:101
 msgid "Next: match columns to catalog fields."
 msgstr "आगे: कॉलम को कैटलॉग फ़ील्ड से मिलाएँ।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:75
+#: src/copy/lead-import.ts:77
 msgid "Next: match the columns to lead fields."
 msgstr "आगे: कॉलम को लीड के फ़ील्ड से मिलाएँ।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:100
+#: src/copy/catalog-import.ts:102
 msgid "Next: see what happens to each row."
 msgstr "आगे: देखें कि हर पंक्ति का क्या होगा।"
 
@@ -13442,7 +13500,7 @@ msgid "No bundle on this plan to measure against — this is a count, not a rate
 msgstr "इस प्लान में मापने के लिए कोई बंडल नहीं — यह गिनती है, दर नहीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:75
+#: src/copy/lead-detail-sheets.ts:80
 msgid "No call task is raised for this lead for six months."
 msgstr "छह महीने तक इस लीड के लिए कॉल का काम नहीं बनेगा।"
 
@@ -13521,7 +13579,7 @@ msgid "No deals lost in this time."
 msgstr "इस दौरान कोई डील नहीं हारी।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:81
+#: src/copy/lead-detail-parts.ts:83
 msgid "No design yet"
 msgstr "अभी डिज़ाइन नहीं"
 
@@ -13571,7 +13629,7 @@ msgid "No files to put in a pack"
 msgstr "पैक में डालने के लिए कोई फ़ाइल नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:86
+#: src/copy/lead-detail-parts.ts:88
 msgid "No files yet"
 msgstr "अभी फ़ाइलें नहीं"
 
@@ -13694,7 +13752,7 @@ msgid "No one can manage a project yet. Invite a project manager from Team."
 msgstr "अभी कोई प्रोजेक्ट नहीं संभाल सकता। टीम से किसी प्रोजेक्ट मैनेजर को आमंत्रित करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:54
+#: src/copy/lead-detail-sheets.ts:59
 msgid "No one can survey yet. Give someone a survey role in Team."
 msgstr "अभी कोई सर्वे नहीं कर सकता। टीम में किसी को सर्वे की भूमिका दें।"
 
@@ -13709,7 +13767,7 @@ msgid "No one deactivated"
 msgstr "कोई निष्क्रिय नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:71
+#: src/copy/lead-detail-parts.ts:73
 msgid "No one is offered a call to this customer."
 msgstr "इस ग्राहक को कॉल करने का विकल्प किसी को नहीं मिलता।"
 
@@ -13724,7 +13782,7 @@ msgid "No one matches “{query}”"
 msgstr "“{query}” से कोई मेल नहीं खाता"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:63
+#: src/copy/lead-detail-sheets.ts:68
 msgid "No one will be offered a call to this number again."
 msgstr "इस नंबर पर कॉल का विकल्प अब किसी को नहीं मिलेगा।"
 
@@ -13739,7 +13797,7 @@ msgid "No open leads to move."
 msgstr "हटाने के लिए कोई खुली लीड नहीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:95
+#: src/copy/lead-detail-parts.ts:100
 msgid "No open tasks"
 msgstr "कोई खुला काम नहीं"
 
@@ -13787,7 +13845,7 @@ msgid "No pipeline here"
 msgstr "यहाँ कोई पाइपलाइन नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:94
+#: src/copy/catalog-import.ts:96
 msgid "No price"
 msgstr "कोई कीमत नहीं"
 
@@ -13837,7 +13895,7 @@ msgid "No proposal here yet"
 msgstr "यहाँ अभी कोई प्रस्ताव नहीं है"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:84
+#: src/copy/lead-detail-parts.ts:86
 #: src/copy/proposal-after-lead.ts:19
 msgid "No proposal yet"
 msgstr "अभी प्रस्ताव नहीं"
@@ -13858,8 +13916,8 @@ msgid "No rates yet"
 msgstr "अभी कोई दर नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:133
-#: src/copy/lead-import.ts:134
+#: src/copy/catalog-import.ts:135
+#: src/copy/lead-import.ts:136
 msgid "No readable file"
 msgstr "पढ़ने लायक फ़ाइल नहीं"
 
@@ -13889,12 +13947,12 @@ msgid "No results for “{query}”"
 msgstr "“{query}” के लिए कोई नतीजा नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:105
+#: src/copy/lead-detail-sheets.ts:110
 msgid "No role"
 msgstr "कोई भूमिका नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:137
+#: src/copy/catalog-import.ts:139
 msgid "No row is ready to import yet."
 msgstr "अभी कोई पंक्ति इम्पोर्ट के लिए तैयार नहीं है।"
 
@@ -13904,7 +13962,7 @@ msgid "No row of the file is in this part."
 msgstr "फ़ाइल की कोई पंक्ति इस हिस्से में नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:138
+#: src/copy/lead-import.ts:140
 msgid "No row would make a lead or log an enquiry."
 msgstr "कोई भी पंक्ति न लीड बनाएगी, न पूछताछ दर्ज करेगी।"
 
@@ -14041,7 +14099,7 @@ msgid "not added yet · from Business profile"
 msgstr "अभी जोड़ा नहीं गया · व्यवसाय प्रोफ़ाइल से"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:57
+#: src/copy/lead-detail-parts.ts:59
 msgid "Not asked yet"
 msgstr "अभी पूछा नहीं"
 
@@ -14149,7 +14207,7 @@ msgid "Not copied. Copy it by hand."
 msgstr "कॉपी नहीं हुआ। इसे खुद कॉपी करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:27
+#: src/copy/project-toast.ts:29
 msgid "Not copied. Try again."
 msgstr "कॉपी नहीं हुआ। फिर से कोशिश करें।"
 
@@ -14475,18 +14533,18 @@ msgid "Not saved. Try again."
 msgstr "सेव नहीं हुआ। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:60
+#: src/copy/lead-detail-parts.ts:62
 msgid "Not saved. Your other answers are kept."
 msgstr "सहेजा नहीं गया। आपके बाकी जवाब सुरक्षित हैं।"
 
 #. js-lingui-explicit-id
 #: src/copy/project-detail.ts:27
-#: src/copy/project-toast.ts:25
+#: src/copy/project-toast.ts:27
 msgid "Not sent · Retry"
 msgstr "नहीं भेजा गया · फिर से कोशिश करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:73
+#: src/copy/lead-detail-parts.ts:75
 #: src/copy/lead-timeline.ts:52
 msgid "Not set"
 msgstr "तय नहीं"
@@ -14530,6 +14588,11 @@ msgstr "बताया नहीं गया"
 #: src/copy/proposal-builder-system.ts:93
 msgid "Not typed · never printed"
 msgstr "नहीं लिखा · कभी नहीं छपता"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-inbox-acts.ts:35
+msgid "Not undone — the lead stays in junk. Try from the lead itself."
+msgstr "पहले जैसा नहीं हुआ — लीड बेकार में ही है। लीड खोलकर फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-act-failure.ts:20
@@ -14580,7 +14643,7 @@ msgstr "आप नहीं हैं? दूसरा Google खाता इ�
 #: src/copy/activity-stream.ts:48
 #: src/copy/crm-vocabulary.ts:163
 #: src/copy/derivation.ts:13
-#: src/copy/lead-detail-sheets.ts:35
+#: src/copy/lead-detail-sheets.ts:40
 #: src/copy/lead-timeline.ts:35
 #: src/copy/owner-dashboard-csv.ts:18
 #: src/copy/project-sheets.ts:89
@@ -14639,7 +14702,7 @@ msgid "Nothing changed. Try again in a moment."
 msgstr "कुछ नहीं बदला। थोड़ी देर में फिर कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import-notes.ts:13
+#: src/copy/catalog-import-notes.ts:14
 msgid "Nothing changed. Try again."
 msgstr "कुछ नहीं बदला। फिर से कोशिश करें।"
 
@@ -14705,7 +14768,7 @@ msgid "Nothing here yet."
 msgstr "यहाँ अभी कुछ नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:60
+#: src/copy/catalog-import.ts:62
 msgid "Nothing in it reaches your catalog."
 msgstr "इसका कुछ भी आपके कैटलॉग में नहीं जाता।"
 
@@ -14725,12 +14788,12 @@ msgid "Nothing is imported until you press Import."
 msgstr "जब तक आप इम्पोर्ट नहीं दबाते, कुछ भी इम्पोर्ट नहीं होता।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:103
+#: src/copy/lead-import.ts:105
 msgid "Nothing is imported yet."
 msgstr "अभी कुछ भी इम्पोर्ट नहीं हुआ।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:76
+#: src/copy/lead-import.ts:78
 msgid "Nothing is imported yet. Next, the counts."
 msgstr "अभी कुछ भी इम्पोर्ट नहीं हुआ। आगे, गिनती।"
 
@@ -14870,7 +14933,7 @@ msgid "Nothing was lost — press Save and continue to try again."
 msgstr "कुछ नहीं खोया — फिर से कोशिश करने के लिए सहेजें और आगे बढ़ें दबाएँ।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:110
+#: src/copy/lead-detail-sheets.ts:115
 msgid "Nothing was saved. If they are one family, merge the two customers."
 msgstr "कुछ भी सहेजा नहीं गया। अगर वे एक ही परिवार हैं, तो दोनों ग्राहकों को मिलाएँ।"
 
@@ -14950,8 +15013,8 @@ msgid "of {target}"
 msgstr "{target} में से"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:103
-#: src/copy/lead-import.ts:73
+#: src/copy/catalog-import.ts:105
+#: src/copy/lead-import.ts:75
 msgid "of {total, plural, one {# row} other {# rows}}"
 msgstr "{total, plural, one {# पंक्ति में से} other {# पंक्तियों में से}}"
 
@@ -15445,7 +15508,7 @@ msgid "Opening the document"
 msgstr "दस्तावेज़ खुल रहा है"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:81
+#: src/copy/lead-import.ts:83
 msgid "Opening the import"
 msgstr "इम्पोर्ट खुल रहा है"
 
@@ -15455,7 +15518,7 @@ msgid "Opening the lead…"
 msgstr "लीड खुल रही है…"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:108
+#: src/copy/catalog-import.ts:110
 msgid "Opening the report you kept."
 msgstr "आपकी रखी हुई रिपोर्ट खुल रही है।"
 
@@ -15558,7 +15621,7 @@ msgid "Over {plan}’s limits"
 msgstr "{plan} की सीमाओं से ऊपर"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:97
+#: src/copy/lead-detail-parts.ts:102
 #: src/copy/my-day.ts:23
 msgid "Overdue"
 msgstr "समय निकल गया"
@@ -15625,7 +15688,7 @@ msgstr "अपनी"
 
 #. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:19
-#: src/copy/lead-detail-sheets.ts:112
+#: src/copy/lead-detail-sheets.ts:117
 #: src/copy/leads-list.ts:59
 msgid "Owner"
 msgstr "ज़िम्मेदार"
@@ -15771,11 +15834,6 @@ msgstr "पैनल"
 #: src/copy/document-defaults.ts:38
 msgid "Panels, inverter and structure are ordered for your site."
 msgstr "आपकी साइट के लिए पैनल, इन्वर्टर और स्ट्रक्चर ऑर्डर किए जाते हैं।"
-
-#. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:167
-msgid "Parked or closed"
-msgstr "रोकी या बंद की गई"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-defaults-words.ts:31
@@ -16067,7 +16125,7 @@ msgid "Payment received"
 msgstr "भुगतान मिला"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:25
+#: src/copy/payments-sheet.ts:31
 msgid "Payment recorded"
 msgstr "भुगतान दर्ज हुआ"
 
@@ -16092,7 +16150,7 @@ msgid "Payment schedule"
 msgstr "भुगतान अनुसूची"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:23
+#: src/copy/payments-sheet.ts:29
 msgid "Payment settings did not load"
 msgstr "भुगतान सेटिंग्स लोड नहीं हुईं"
 
@@ -16236,8 +16294,8 @@ msgid "phone"
 msgstr "फ़ोन"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:102
-#: src/copy/lead-import.ts:119
+#: src/copy/lead-detail-sheets.ts:107
+#: src/copy/lead-import.ts:121
 #: src/copy/proposal-builder-steps.ts:65
 #: src/copy/quick-add.ts:29
 msgid "Phone"
@@ -16366,7 +16424,7 @@ msgid "Pick a project manager or the owner."
 msgstr "कोई प्रोजेक्ट मैनेजर या मालिक चुनें।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:104
+#: src/copy/lead-detail-sheets.ts:109
 msgid "Pick a role"
 msgstr "भूमिका चुनें"
 
@@ -16391,7 +16449,7 @@ msgid "Pick at least one role. Someone invited with no role would sign in to an 
 msgstr "कम से कम एक भूमिका चुनें। बिना भूमिका के आमंत्रित व्यक्ति खाली ऐप में साइन इन करेगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:72
+#: src/copy/lead-detail-sheets.ts:77
 msgid "Pick date"
 msgstr "तारीख चुनें"
 
@@ -16462,7 +16520,7 @@ msgid "Pick who manages the project"
 msgstr "प्रोजेक्ट कौन संभालेगा, चुनें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:51
+#: src/copy/lead-detail-sheets.ts:56
 msgid "Pick who visits"
 msgstr "कौन जाएगा, चुनें"
 
@@ -16502,13 +16560,13 @@ msgid "Pipeline by stage"
 msgstr "चरण के अनुसार पाइपलाइन"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:134
+#: src/copy/catalog-import.ts:136
 msgid "Place brand, model and price on a column each."
 msgstr "ब्रांड, मॉडल और कीमत को अलग-अलग कॉलम पर रखें।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:135
-#: src/copy/lead-import.ts:136
+#: src/copy/catalog-import.ts:137
+#: src/copy/lead-import.ts:138
 msgid "Place each field on one column only."
 msgstr "हर फ़ील्ड को सिर्फ़ एक कॉलम पर रखें।"
 
@@ -16518,7 +16576,7 @@ msgid "Place of supply"
 msgstr "आपूर्ति का स्थान"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:135
+#: src/copy/lead-import.ts:137
 msgid "Place Phone on one column."
 msgstr "फ़ोन को एक कॉलम पर रखें।"
 
@@ -16758,12 +16816,12 @@ msgid "Price comes from"
 msgstr "कीमत कहाँ से"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:123
+#: src/copy/catalog-import.ts:125
 msgid "Price override"
 msgstr "कीमत ओवरराइड"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:112
+#: src/copy/catalog-import.ts:114
 msgid "Price overrides"
 msgstr "कीमत ओवरराइड"
 
@@ -16808,7 +16866,7 @@ msgid "Prices and subsidy move"
 msgstr "कीमतें और सब्सिडी बदलती हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:116
+#: src/copy/catalog-import.ts:118
 msgid "Prices applied"
 msgstr "लागू की गई कीमतें"
 
@@ -16818,7 +16876,7 @@ msgid "Prices exclude {scheme}"
 msgstr "कीमतों में {scheme} शामिल नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:65
+#: src/copy/lead-detail-parts.ts:67
 msgid "Primary"
 msgstr "मुख्य"
 
@@ -16863,7 +16921,7 @@ msgid "Product and performance warranty"
 msgstr "प्रोडक्ट और परफ़ॉर्मेंस वारंटी"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:117
+#: src/copy/catalog-import.ts:119
 msgid "Products created"
 msgstr "बनाए गए प्रोडक्ट"
 
@@ -16906,17 +16964,17 @@ msgstr "प्रोजेक्ट बोर्ड"
 #. js-lingui-explicit-id
 #: src/copy/project-page.ts:39
 #: src/copy/project-timeline.ts:34
-#: src/copy/project-toast.ts:22
+#: src/copy/project-toast.ts:24
 msgid "Project cancelled"
 msgstr "प्रोजेक्ट रद्द हुआ"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:181
+#: src/copy/crm-vocabulary.ts:182
 msgid "Project changed"
 msgstr "प्रोजेक्ट में बदलाव"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:179
+#: src/copy/crm-vocabulary.ts:180
 msgid "Project document"
 msgstr "प्रोजेक्ट दस्तावेज़"
 
@@ -16947,7 +17005,7 @@ msgstr "प्रोजेक्ट वापस {stage} में गया"
 
 #. js-lingui-explicit-id
 #: src/copy/project-timeline.ts:28
-#: src/copy/project-toast.ts:12
+#: src/copy/project-toast.ts:14
 msgid "Project moved to {stage}"
 msgstr "प्रोजेक्ट {stage} में गया"
 
@@ -16957,7 +17015,7 @@ msgid "Project phases"
 msgstr "प्रोजेक्ट के चरण"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:177
+#: src/copy/crm-vocabulary.ts:178
 msgid "Project stage"
 msgstr "प्रोजेक्ट का चरण"
 
@@ -16993,7 +17051,7 @@ msgid "Project visibility scope"
 msgstr "प्रोजेक्ट कितने दिखते हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:178
+#: src/copy/crm-vocabulary.ts:179
 msgid "Project wait"
 msgstr "प्रोजेक्ट का इंतज़ार"
 
@@ -17071,7 +17129,7 @@ msgid "Proposal {number} withdrawn"
 msgstr "प्रस्ताव {number} वापस लिया गया"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:186
+#: src/copy/crm-vocabulary.ts:187
 msgid "Proposal accepted"
 msgstr "प्रस्ताव स्वीकार हुआ"
 
@@ -17081,7 +17139,7 @@ msgid "Proposal cover"
 msgstr "प्रस्ताव का कवर"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:188
+#: src/copy/crm-vocabulary.ts:189
 msgid "Proposal declined"
 msgstr "प्रस्ताव अस्वीकार हुआ"
 
@@ -17108,7 +17166,7 @@ msgid "Proposal for {name}"
 msgstr "{name} के लिए प्रस्ताव"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:182
+#: src/copy/crm-vocabulary.ts:183
 #: src/copy/proposal-ready-words.ts:15
 msgid "Proposal generated"
 msgstr "प्रस्ताव बनाया गया"
@@ -17124,12 +17182,12 @@ msgid "Proposal number"
 msgstr "प्रस्ताव नंबर"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:185
+#: src/copy/crm-vocabulary.ts:186
 msgid "Proposal opened"
 msgstr "प्रस्ताव खोला गया"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:183
+#: src/copy/crm-vocabulary.ts:184
 msgid "Proposal shared"
 msgstr "प्रस्ताव शेयर किया गया"
 
@@ -17150,7 +17208,7 @@ msgid "Proposal type"
 msgstr "प्रस्ताव का प्रकार"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:184
+#: src/copy/crm-vocabulary.ts:185
 msgid "Proposal withdrawn"
 msgstr "प्रस्ताव वापस लिया गया"
 
@@ -17161,7 +17219,7 @@ msgstr "प्रस्ताव वापस लिया गया। इस�
 
 #. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:97
-#: src/copy/lead-detail-parts.ts:109
+#: src/copy/lead-detail-parts.ts:114
 #: src/copy/pricing.ts:73
 #: src/copy/proposal-after-list.ts:19
 #: src/copy/search.ts:66
@@ -17263,7 +17321,7 @@ msgid "Qualified"
 msgstr "योग्य"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:55
+#: src/copy/lead-detail-parts.ts:57
 msgid "Qualify"
 msgstr "योग्यता जाँचें"
 
@@ -17486,7 +17544,7 @@ msgid "Ready to generate"
 msgstr "बनाने के लिए तैयार"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:81
+#: src/copy/catalog-import.ts:83
 msgid "Ready to import"
 msgstr "इम्पोर्ट के लिए तैयार"
 
@@ -17511,7 +17569,7 @@ msgid "Real · PVGIS ({database})"
 msgstr "वास्तविक · PVGIS ({database})"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:62
+#: src/copy/lead-detail-sheets.ts:67
 #: src/copy/project-sheets.ts:83
 msgid "Reason"
 msgstr "कारण"
@@ -17832,7 +17890,7 @@ msgid "Reopen"
 msgstr "फिर से खोलें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:100
+#: src/copy/lead-detail-parts.ts:105
 msgid "Reopen “{task}”"
 msgstr "“{task}” फिर से खोलें"
 
@@ -17981,17 +18039,17 @@ msgid "Required by law — cannot be widened"
 msgstr "क़ानून के अनुसार ज़रूरी — बढ़ाया नहीं जा सकता"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:47
+#: src/copy/lead-detail-sheets.ts:52
 msgid "Reschedule"
 msgstr "समय बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:78
+#: src/copy/lead-detail-parts.ts:80
 msgid "Reschedule a no-show"
 msgstr "ग्राहक न मिले तो समय बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:43
+#: src/copy/lead-detail-sheets.ts:48
 msgid "Reschedule the visit"
 msgstr "विज़िट का समय बदलें"
 
@@ -18172,7 +18230,7 @@ msgid "rising {value}% a year"
 msgstr "हर साल {value}% बढ़ते हुए"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:103
+#: src/copy/lead-detail-sheets.ts:108
 msgid "Role"
 msgstr "भूमिका"
 
@@ -18351,6 +18409,7 @@ msgstr "कब तक चलेगा"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:70
+#: src/copy/sidebar.ts:25
 msgid "Sales"
 msgstr "सेल्स"
 
@@ -18406,7 +18465,7 @@ msgid "Sanctioned load check skipped"
 msgstr "स्वीकृत लोड की जाँच नहीं हुई"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:29
+#: src/copy/lead-detail-sheets.ts:34
 #: src/copy/name-and-photo-editor.ts:15
 #: src/copy/payments-screen.ts:141
 #: src/copy/project-sheets.ts:106
@@ -18461,7 +18520,7 @@ msgid "Save changes to your business profile"
 msgstr "अपनी व्यवसाय प्रोफ़ाइल के बदलाव सहेजें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:100
+#: src/copy/lead-detail-sheets.ts:105
 msgid "Save contact"
 msgstr "संपर्क सहेजें"
 
@@ -18516,8 +18575,8 @@ msgid "Save your company profile and continue setting up HelioGrid"
 msgstr "अपनी कंपनी प्रोफ़ाइल सहेजें और आगे बढ़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:58
-#: src/copy/project-toast.ts:21
+#: src/copy/lead-detail-parts.ts:60
+#: src/copy/project-toast.ts:23
 #: src/copy/proposal-builder-frame.ts:61
 #: src/copy/proposal-builder-steps.ts:17
 msgid "Saved"
@@ -18652,7 +18711,7 @@ msgid "Saving the lead…"
 msgstr "लीड सहेजी जा रही है…"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:59
+#: src/copy/lead-detail-parts.ts:61
 msgid "Saving…"
 msgstr "सहेजा जा रहा है…"
 
@@ -18773,7 +18832,7 @@ msgid "Search leads"
 msgstr "लीड्स खोजें"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:6
+#: src/copy/sidebar.ts:10
 msgid "Search or jump to…"
 msgstr "खोजें या सीधे जाएँ…"
 
@@ -19022,7 +19081,7 @@ msgid "Send it again"
 msgstr "फिर से भेजें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:87
+#: src/copy/lead-detail-sheets.ts:92
 msgid "Send it from your own phone. Nothing is sent from here."
 msgstr "इसे अपने फ़ोन से भेजें। यहाँ से कुछ नहीं भेजा जाता।"
 
@@ -19108,11 +19167,6 @@ msgid "Sent by SMS to"
 msgstr "SMS से इस नंबर पर भेजा"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-timeline.ts:60
-msgid "Sent from a person’s own phone. No delivery is claimed."
-msgstr "किसी के अपने फ़ोन से भेजा गया। पहुँचने का कोई दावा नहीं।"
-
-#. js-lingui-explicit-id
 #: src/copy/branding.ts:47
 msgid "Sent proposals keep their branding."
 msgstr "भेजे गए प्रस्ताव अपनी ब्रांडिंग रखते हैं।"
@@ -19158,7 +19212,7 @@ msgid "Set or change an employee’s manager mapping"
 msgstr "कर्मचारी का मैनेजर तय करें या बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:84
+#: src/copy/catalog-import.ts:86
 msgid "Set price"
 msgstr "कीमत तय करें"
 
@@ -19584,7 +19638,7 @@ msgid "Single phase"
 msgstr "सिंगल फ़ेज़"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:75
+#: src/copy/lead-detail-parts.ts:77
 msgid "Site"
 msgstr "साइट"
 
@@ -19632,7 +19686,7 @@ msgstr "आपके सिस्टम का आकार, प्रकार 
 
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:49
-#: src/copy/lead-import.ts:95
+#: src/copy/lead-import.ts:97
 msgid "Skip"
 msgstr "छोड़ें"
 
@@ -19677,7 +19731,7 @@ msgid "Snooze"
 msgstr "स्थगित करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:57
+#: src/copy/lead-detail-sheets.ts:62
 msgid "Snooze until"
 msgstr "कब तक स्थगित करें"
 
@@ -19814,7 +19868,7 @@ msgid "Something went wrong on our side. Try again."
 msgstr "हमारी ओर से कुछ गड़बड़ हो गई। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/sidebar.ts:11
+#: src/copy/sidebar.ts:15
 msgid "Soon"
 msgstr "जल्द"
 
@@ -19872,7 +19926,7 @@ msgstr "जीवनसाथी"
 #. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:20
 #: src/copy/kanban.ts:12
-#: src/copy/lead-detail-sheets.ts:113
+#: src/copy/lead-detail-sheets.ts:118
 #: src/copy/leads-list.ts:57
 #: src/copy/projects.ts:56
 msgid "Stage"
@@ -19945,7 +19999,7 @@ msgid "Start with a real lead"
 msgstr "एक असली लीड से शुरू करें"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:21
+#: src/copy/payments-sheet.ts:27
 msgid "Starts as what is left on this part"
 msgstr "इस हिस्से की बाकी रकम से शुरू होता है"
 
@@ -20117,7 +20171,7 @@ msgid "Stop preferring {name}"
 msgstr "{name} को पसंदीदा से हटाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:104
+#: src/copy/catalog-import.ts:106
 #: src/copy/operation-progress.ts:11
 msgid "Stop watching"
 msgstr "देखना बंद करें"
@@ -20258,7 +20312,7 @@ msgid "Surveyed remotely"
 msgstr "दूर से सर्वे किया गया"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:50
+#: src/copy/lead-detail-sheets.ts:55
 msgid "Surveyor"
 msgstr "सर्वेयर"
 
@@ -20494,7 +20548,7 @@ msgid "Task"
 msgstr "काम"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:175
+#: src/copy/crm-vocabulary.ts:176
 msgid "Task done"
 msgstr "काम पूरा"
 
@@ -20505,7 +20559,7 @@ msgstr "काम पूरा · {task}"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:118
-#: src/copy/lead-detail-parts.ts:110
+#: src/copy/lead-detail-parts.ts:115
 msgid "Tasks"
 msgstr "काम"
 
@@ -20551,6 +20605,7 @@ msgstr "कर पंजीकरण"
 #: src/copy/notifications.ts:73
 #: src/copy/role-matrix.ts:98
 #: src/copy/settings.ts:42
+#: src/copy/sidebar.ts:27
 msgid "Team"
 msgstr "टीम"
 
@@ -20735,7 +20790,7 @@ msgid "That day is before the material was ordered."
 msgstr "यह दिन सामग्री ऑर्डर होने से पहले का है।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import-notes.ts:12
+#: src/copy/catalog-import-notes.ts:13
 msgid "That did not go through"
 msgstr "यह नहीं हो पाया"
 
@@ -20769,6 +20824,11 @@ msgstr "यह दस्तावेज़ इस प्रोजेक्ट �
 #: src/copy/api-error.ts:72
 msgid "That does not read as a registration of this type. Check it against the format shown."
 msgstr "यह इस प्रकार के पंजीकरण जैसा नहीं दिखता। इसे दिखाए गए प्रारूप से मिलाकर जाँचें।"
+
+#. js-lingui-explicit-id
+#: src/copy/payments-sheet.ts:35
+msgid "That file is not a photo a receipt takes. Choose a {types} photo."
+msgstr "यह फ़ाइल रसीद की फ़ोटो नहीं है। {types} फ़ोटो चुनें।"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:96
@@ -20916,7 +20976,7 @@ msgid "The amount"
 msgstr "राशि"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:62
+#: src/copy/lead-detail-parts.ts:64
 msgid "The answers inform. You decide."
 msgstr "जवाब जानकारी देते हैं। फ़ैसला आपका है।"
 
@@ -21108,7 +21168,7 @@ msgid "The end date is not yet known"
 msgstr "पूरा होने की तारीख अभी तय नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:96
+#: src/copy/lead-import.ts:98
 msgid "The existing lead stays as it is. Nothing is added to it."
 msgstr "मौजूदा लीड जैसी है वैसी रहती है। उसमें कुछ नहीं जुड़ता।"
 
@@ -21123,7 +21183,7 @@ msgid "The file did not open. Try again."
 msgstr "फ़ाइल नहीं खुली। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import-notes.ts:9
+#: src/copy/catalog-import-notes.ts:10
 msgid "The file did not upload. Try again."
 msgstr "फ़ाइल अपलोड नहीं हुई। फिर से कोशिश करें।"
 
@@ -21133,8 +21193,8 @@ msgid "The file has not finished uploading. Try again."
 msgstr "फ़ाइल अभी पूरी अपलोड नहीं हुई। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:132
-#: src/copy/lead-import.ts:133
+#: src/copy/catalog-import.ts:134
+#: src/copy/lead-import.ts:135
 msgid "The file is still being read."
 msgstr "फ़ाइल अभी पढ़ी जा रही है।"
 
@@ -21196,7 +21256,7 @@ msgid "The import could not write this row."
 msgstr "आयात यह पंक्ति दर्ज नहीं कर सका।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:105
+#: src/copy/catalog-import.ts:107
 msgid "The import keeps running. Its report waits in Import a file."
 msgstr "इम्पोर्ट चलता रहेगा। इसकी रिपोर्ट फ़ाइल इम्पोर्ट में मिलेगी।"
 
@@ -21329,7 +21389,7 @@ msgid "The lead is marked as referred by them. No credits, no points."
 msgstr "लीड पर उनका रेफ़रल दर्ज होता है। कोई क्रेडिट या पॉइंट नहीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:42
+#: src/copy/lead-detail-sheets.ts:47
 msgid "The lead moves to Survey, and the confirmation is ready to copy."
 msgstr "लीड सर्वे चरण पर जाती है, और पुष्टि संदेश कॉपी के लिए तैयार है।"
 
@@ -21369,7 +21429,7 @@ msgid "The money cannot arrive after today."
 msgstr "पैसा आज के बाद की तारीख़ में नहीं आ सकता।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:28
+#: src/copy/lead-detail-sheets.ts:33
 msgid "The name and city, as the customer gives them."
 msgstr "नाम और शहर, जैसा ग्राहक बताएँ।"
 
@@ -21514,7 +21574,7 @@ msgid "The phone network turned it away"
 msgstr "फ़ोन नेटवर्क ने उसे लौटा दिया"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:28
+#: src/copy/payments-sheet.ts:34
 msgid "The photo did not open. Try again."
 msgstr "फ़ोटो नहीं खुली। फिर से कोशिश करें।"
 
@@ -21529,12 +21589,12 @@ msgid "The power your roof will make"
 msgstr "आपकी छत कितनी बिजली बनाएगी"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:136
+#: src/copy/catalog-import.ts:138
 msgid "The preview opens when matching ends."
 msgstr "मिलान पूरा होने पर प्रीव्यू खुलेगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:137
+#: src/copy/lead-import.ts:139
 msgid "The preview opens when the counting ends."
 msgstr "गिनती पूरी होने पर प्रीव्यू खुलता है।"
 
@@ -21674,7 +21734,7 @@ msgid "The proof moved it: {proof}."
 msgstr "प्रमाण से आगे बढ़ा: {proof}।"
 
 #. js-lingui-explicit-id
-#: src/copy/payments-sheet.ts:27
+#: src/copy/payments-sheet.ts:33
 msgid "The receipt did not load. Try again."
 msgstr "रसीद लोड नहीं हुई। फिर से कोशिश करें।"
 
@@ -21889,7 +21949,7 @@ msgid "Their name"
 msgstr "उनका नाम"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:99
+#: src/copy/lead-detail-sheets.ts:104
 msgid "Their number joins this customer, so it is found when they call."
 msgstr "उनका नंबर इस ग्राहक से जुड़ता है, ताकि उनके कॉल करने पर यह मिल जाए।"
 
@@ -22066,6 +22126,11 @@ msgid "This field is required."
 msgstr "यह फ़ील्ड ज़रूरी है।"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-import-notes.ts:9
+msgid "This file is empty. Choose a file with rows in it."
+msgstr "यह फ़ाइल ख़ाली है। पंक्तियों वाली फ़ाइल चुनें।"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import-notes.ts:7
 msgid "This file is over {size} MB. Choose a smaller one."
 msgstr "यह फ़ाइल {size} MB से बड़ी है। छोटी फ़ाइल चुनें।"
@@ -22086,7 +22151,7 @@ msgid "This image didn't load. Try again."
 msgstr "यह इमेज लोड नहीं हुई। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import-notes.ts:10
+#: src/copy/catalog-import-notes.ts:11
 msgid "This import moved on"
 msgstr "यह इम्पोर्ट आगे बढ़ चुका है"
 
@@ -22251,7 +22316,7 @@ msgid "This number is already a lead"
 msgstr "यह नंबर पहले से एक लीड है"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:109
+#: src/copy/lead-detail-sheets.ts:114
 msgid "This number is already another customer’s"
 msgstr "यह नंबर पहले से किसी दूसरे ग्राहक का है"
 
@@ -22526,12 +22591,12 @@ msgstr "टाइल"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-page-sheets.ts:49
-#: src/copy/lead-detail-sheets.ts:49
+#: src/copy/lead-detail-sheets.ts:54
 msgid "Time"
 msgstr "समय"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-parts.ts:106
+#: src/copy/lead-detail-parts.ts:111
 #: src/copy/proposal-after-versions.ts:76
 #: src/copy/proposal-builder-findings.ts:73
 #: src/copy/proposal-builder-frame.ts:19
@@ -22598,6 +22663,11 @@ msgstr "फिर से चालू करने के लिए"
 #: src/copy/billing-home.ts:72
 msgid "to renewal"
 msgstr "नवीनीकरण तक"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-timeline.ts:60
+msgid "To send from a person’s own phone. No delivery is claimed."
+msgstr "किसी के अपने फ़ोन से भेजने के लिए। पहुँचने का कोई दावा नहीं।"
 
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:15
@@ -22914,7 +22984,7 @@ msgid "Two proposals for one customer"
 msgstr "एक ग्राहक के लिए दो प्रस्ताव"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:121
+#: src/copy/lead-import.ts:123
 #: src/copy/lead-timeline.ts:68
 #: src/copy/quick-add.ts:32
 msgid "Type"
@@ -22951,7 +23021,7 @@ msgid "Typical system size"
 msgstr "सामान्य सिस्टम आकार"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:95
+#: src/copy/catalog-import.ts:97
 #: src/copy/plan-selection.ts:101
 msgid "Unchanged"
 msgstr "कोई बदलाव नहीं"
@@ -22963,15 +23033,16 @@ msgstr "आपकी फ़ाइल के अपने हेडर के न
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:43
-#: src/copy/catalog-import.ts:93
+#: src/copy/catalog-import.ts:95
+#: src/copy/lead-inbox-acts.ts:36
 #: src/copy/my-day.ts:54
-#: src/copy/project-toast.ts:15
+#: src/copy/project-toast.ts:17
 #: src/copy/remove-roles.ts:32
 msgid "Undo"
 msgstr "पहले जैसा करें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:98
+#: src/copy/catalog-import.ts:100
 msgid "Undo overrides and new SKUs in Catalog settings."
 msgstr "ओवरराइड और नए SKU कैटलॉग सेटिंग्स में पहले जैसे करें।"
 
@@ -23210,7 +23281,7 @@ msgstr "रोके गए फ़ोटो अपलोड करने की 
 
 #. js-lingui-explicit-id
 #: src/copy/dropzone.ts:10
-#: src/copy/project-toast.ts:24
+#: src/copy/project-toast.ts:26
 msgid "Uploading…"
 msgstr "अपलोड हो रहा है…"
 
@@ -23306,7 +23377,7 @@ msgid "Use this lead"
 msgstr "यह लीड चुनें"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:88
+#: src/copy/catalog-import.ts:90
 msgid "Use this row’s price"
 msgstr "इस पंक्ति की कीमत लें"
 
@@ -23508,7 +23579,7 @@ msgid "Version 1 goes in force at once."
 msgstr "वर्शन 1 तुरंत लागू होगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:192
+#: src/copy/crm-vocabulary.ts:193
 msgid "Version put in force"
 msgstr "वर्शन लागू किया गया"
 
@@ -23550,7 +23621,7 @@ msgstr "विज़िट"
 
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:152
-#: src/copy/crm-vocabulary.ts:173
+#: src/copy/crm-vocabulary.ts:174
 msgid "Visit booked"
 msgstr "विज़िट बुक हुई"
 
@@ -23565,13 +23636,13 @@ msgid "Visit bookings"
 msgstr "विज़िट बुकिंग"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:90
+#: src/copy/lead-detail-sheets.ts:95
 #: src/copy/lead-timeline.ts:72
 msgid "Visit confirmation"
 msgstr "विज़िट की पुष्टि"
 
 #. js-lingui-explicit-id
-#: src/copy/crm-vocabulary.ts:174
+#: src/copy/crm-vocabulary.ts:175
 msgid "Visit rescheduled"
 msgstr "विज़िट का समय बदला"
 
@@ -23634,7 +23705,7 @@ msgid "Voltage temperature coefficient (%/°C)"
 msgstr "वोल्टेज तापमान गुणांक (%/°C)"
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:17
+#: src/copy/project-toast.ts:19
 msgid "Wait closed · on the timeline"
 msgstr "इंतज़ार खत्म · टाइमलाइन पर दर्ज"
 
@@ -23688,7 +23759,7 @@ msgid "Waiting on {party} · {reason} · since {date}"
 msgstr "इंतज़ार: {party} · {reason} · {date} से"
 
 #. js-lingui-explicit-id
-#: src/copy/project-toast.ts:16
+#: src/copy/project-toast.ts:18
 msgid "Waiting on {party} · since {date}"
 msgstr "इंतज़ार: {party} · {date} से"
 
@@ -23734,7 +23805,7 @@ msgid "Waived: {reason}"
 msgstr "माफ़ किया: {reason}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:59
+#: src/copy/lead-detail-sheets.ts:64
 msgid "Wake on"
 msgstr "वापस लाने का दिन"
 
@@ -23903,12 +23974,12 @@ msgid "We did not hear back"
 msgstr "हमें जवाब नहीं मिला"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:60
+#: src/copy/lead-import.ts:62
 msgid "We guessed {matched} of your {columns} columns from their headers; {open, plural, one {# still needs you} other {# still need you}}. One column must be Phone."
 msgstr "हमने आपके {columns} में से {matched} कॉलम उनके हेडर से पहचाने; {open, plural, one {# को अभी आपकी ज़रूरत है} other {# को अभी आपकी ज़रूरत है}}। एक कॉलम फ़ोन होना चाहिए।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:63
+#: src/copy/lead-import.ts:65
 msgid "We guessed all {columns} of your columns from their headers. Tap a guess to fix it."
 msgstr "हमने आपके सभी {columns} कॉलम उनके हेडर से पहचाने। ठीक करने के लिए किसी अनुमान पर टैप करें।"
 
@@ -23923,12 +23994,12 @@ msgid "We have your request"
 msgstr "आपका अनुरोध हमें मिल गया है"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:53
+#: src/copy/catalog-import.ts:55
 msgid "We matched {matched} of your {columns} columns; {open, plural, one {# still needs you} other {# still need you}}."
 msgstr "हमने आपके {columns} में से {matched} कॉलम मिलाए; {open, plural, one {# को अभी आपकी ज़रूरत है} other {# को अभी आपकी ज़रूरत है}}।"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:56
+#: src/copy/catalog-import.ts:58
 msgid "We matched all {columns} of your columns."
 msgstr "हमने आपके सभी {columns} कॉलम मिला दिए।"
 
@@ -24099,7 +24170,7 @@ msgid "What happened"
 msgstr "क्या हुआ"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:32
+#: src/copy/lead-detail-sheets.ts:37
 msgid "What happened, while it is fresh. It goes on the timeline."
 msgstr "क्या हुआ, अभी याद रहते लिखें। यह टाइमलाइन पर जाता है।"
 
@@ -24196,13 +24267,13 @@ msgid "What the code does"
 msgstr "कोड क्या करता है"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:70
+#: src/copy/catalog-import.ts:72
 msgid "What the import did"
 msgstr "इम्पोर्ट ने क्या किया"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:69
-#: src/copy/lead-import.ts:89
+#: src/copy/catalog-import.ts:71
+#: src/copy/lead-import.ts:91
 msgid "What the import will do"
 msgstr "इम्पोर्ट क्या करेगा"
 
@@ -24238,12 +24309,12 @@ msgid "What to expect changed"
 msgstr "‘क्या होगा’ बदला गया"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:36
+#: src/copy/lead-detail-sheets.ts:41
 msgid "What to log"
 msgstr "क्या दर्ज करें"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:39
+#: src/copy/lead-detail-sheets.ts:44
 msgid "What was said"
 msgstr "क्या बात हुई"
 
@@ -24266,6 +24337,11 @@ msgstr "आप क्या कर सकते हैं"
 #: src/copy/role-card.ts:26
 msgid "What you cannot do"
 msgstr "आप क्या नहीं कर सकते"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-detail-sheets.ts:28
+msgid "What you entered here will be lost."
+msgstr "यहाँ आपने जो भरा है, वह मिट जाएगा।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:40
@@ -24477,7 +24553,7 @@ msgid "Which crew goes?"
 msgstr "कौन-सी टीम जाएगी?"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:88
+#: src/copy/lead-detail-sheets.ts:93
 msgid "Which message"
 msgstr "कौन-सा संदेश"
 
@@ -24487,7 +24563,7 @@ msgid "Which pages print"
 msgstr "कौन-से पेज छपेंगे"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-import.ts:89
+#: src/copy/catalog-import.ts:91
 msgid "Which product is it?"
 msgstr "यह कौन-सा प्रोडक्ट है?"
 
@@ -24601,7 +24677,7 @@ msgid "Why deals were lost"
 msgstr "डील क्यों हारे"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:60
+#: src/copy/lead-detail-sheets.ts:65
 msgid "Why disqualify?"
 msgstr "अयोग्य क्यों ठहराएँ?"
 
@@ -24616,7 +24692,7 @@ msgid "Why keep both?"
 msgstr "दोनों क्यों रखें?"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:64
+#: src/copy/lead-detail-sheets.ts:69
 msgid "Why was it lost?"
 msgstr "यह डील क्यों हारी?"
 
@@ -24820,7 +24896,7 @@ msgid "Write the final value."
 msgstr "अंतिम राशि लिखें।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:91
+#: src/copy/lead-detail-sheets.ts:96
 #: src/copy/proposal-after-messages.ts:36
 msgid "Writing the message"
 msgstr "संदेश लिखा जा रहा है"
@@ -25002,7 +25078,7 @@ msgid "You can hand over once the project reaches {stage}."
 msgstr "प्रोजेक्ट {stage} तक पहुँचने के बाद ही सौंप सकते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-import.ts:106
+#: src/copy/lead-import.ts:108
 msgid "You can leave — it keeps going."
 msgstr "आप जा सकते हैं — यह चलता रहेगा।"
 
@@ -25759,7 +25835,7 @@ msgstr "आपकी कीमत"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:18
-#: src/copy/catalog-import.ts:83
+#: src/copy/catalog-import.ts:85
 #: src/copy/customer-page-proposal.ts:38
 msgid "Your price"
 msgstr "आपकी कीमत"

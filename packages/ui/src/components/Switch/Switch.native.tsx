@@ -1,12 +1,14 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
-import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
+import { usePalette } from '../../primitives/Color/use-palette.native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
 import { hasErrorLine } from './Switch.logic';
 import type { SwitchProps } from './Switch.types';
 
@@ -43,20 +45,28 @@ export function Switch({
   style,
 }: NativeSwitchProps) {
   const offset = useRef(new Animated.Value(checked ? THUMB_TRAVEL : 0)).current;
+  const reduced = useReducedMotion();
   const hasError = hasErrorLine(error);
   const { ground, controlFill, controlFillDisabled } = useGround();
+  const dark = usePalette() === theme.palettes.dark;
   const on = checked && !disabled;
   const atEnd = toggleAt === 'end';
   const described = description !== undefined;
 
   useEffect(() => {
-    Animated.timing(offset, {
-      toValue: checked ? THUMB_TRAVEL : 0,
-      duration: theme.motion.durations.standard,
-      easing: Easing.bezier(...theme.motion.easings.spring),
+    const to = checked ? THUMB_TRAVEL : 0;
+    if (reduced) {
+      offset.setValue(to);
+      return;
+    }
+    const move = Animated.spring(offset, {
+      toValue: to,
+      ...theme.motion.springs.snappy,
       useNativeDriver: true,
-    }).start();
-  }, [checked, offset]);
+    });
+    move.start();
+    return () => move.stop();
+  }, [checked, offset, reduced]);
 
   const control = (
     <Pressable
@@ -83,7 +93,7 @@ export function Switch({
         <Animated.View
           style={[
             styles.thumb,
-            { backgroundColor: knobColor(on, disabled, ground) },
+            { backgroundColor: knobColor(on, disabled, dark ? colors['text-tertiary'] : ground) },
             disabled ? styles.thumbDisabled : undefined,
             { transform: [{ translateX: offset }] },
           ]}
@@ -143,7 +153,8 @@ function SwitchWords({
 const medium: TextStyle = { fontWeight: `${theme.type.weights.medium}` };
 
 /**
- * The knob is the opposite of its track: white on the accent, the ground on the control fill, and
+ * The knob is the opposite of its track: white on the accent, the ground on the control fill (in
+ * the dark a quiet grey, since the dark ground on the dark fill hides the knob), and
  * `--text-disabled` on the disabled fill, where the ground would hide which way it is set.
  */
 function knobColor(on: boolean, disabled: boolean, ground: ThemeColor): ThemeColor {

@@ -6,6 +6,7 @@
 import type { LeadDetail, TranslatedText } from '@heliogrid/contracts';
 import {
   type ContactRoleSeed,
+  FILE_SUBJECT_RULES,
   LANGUAGES,
   type LeadActFailure,
   type LeadDetailSection,
@@ -24,6 +25,7 @@ import {
   ROOF_TYPE_WORD,
   SHADING_WORD,
 } from './crm-vocabulary';
+import { fileLimitsOf } from './file-refusal';
 import { leadActFailureWords } from './lead-act-failure';
 import { LEAD_DETAIL, leadDockWords, leadHeroWords } from './lead-detail';
 import { type LeadSiteMarket, leadSiteFactWords } from './lead-site';
@@ -90,6 +92,9 @@ const PARTS = {
   fileLine: /*i18n*/ { id: 'Added by {name} · {day}' },
   addingFile: /*i18n*/ { id: 'Adding {name}' },
   fileNotAdded: /*i18n*/ { id: '{name} was not added to the lead.' },
+  fileTooLarge: /*i18n*/ { id: '{name} is too large. A lead takes files up to {size} MB.' },
+  fileTypeNotTaken: /*i18n*/ { id: '{name} can’t be added. A lead takes {types} files.' },
+  chooseAnother: /*i18n*/ { id: 'Choose another file' },
   loadingFiles: /*i18n*/ { id: 'Loading the files' },
   filesFailed: /*i18n*/ { id: 'Couldn’t load the files' },
   noTasks: /*i18n*/ { id: 'No open tasks' },
@@ -207,6 +212,13 @@ export function leadSectionsWords(t: T) {
     addFile: t(FILE_PICK.title),
     addingFile: (name: string) => t(PARTS.addingFile, { name }),
     fileNotAdded: (name: string) => t(PARTS.fileNotAdded, { name }),
+    fileRefused: {
+      'too-large': (name: string) =>
+        t(PARTS.fileTooLarge, { name, size: fileLimitsOf(FILE_SUBJECT_RULES.lead).size }),
+      'type-not-taken': (name: string) =>
+        t(PARTS.fileTypeNotTaken, { name, types: fileLimitsOf(FILE_SUBJECT_RULES.lead).types }),
+    },
+    chooseAnother: t(PARTS.chooseAnother),
     loadingFiles: t(PARTS.loadingFiles),
     filesFailed: t(PARTS.filesFailed),
     filesFailedLine: t(SHELL.keepsFailing),

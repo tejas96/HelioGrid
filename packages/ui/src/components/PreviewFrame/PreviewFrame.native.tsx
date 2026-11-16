@@ -5,7 +5,8 @@ import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { useLoadingPulse } from '../LoadingBars/use-loading-pulse.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { usePulse } from '../../primitives/use-pulse.native';
 import type {
   PreviewFrameGroupProps,
   PreviewFrameProps,
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
   },
   words: { flexShrink: 1, minWidth: 0 },
   action: { flexShrink: 0 },
-  note: { color: colors['warning-text'] },
+  note: { color: TONE.warning.ink },
   /* The web half's sweep is --canvas-sunken under --fill; the phone pulses the sunken ground. */
   loading: { backgroundColor: colors['canvas-sunken'], shadowOpacity: 0, elevation: 0 },
   hidden: { opacity: 0 },
@@ -88,7 +89,7 @@ export function PreviewFrame({
   children,
   style,
 }: NativePreviewFrameProps) {
-  const pulse = useLoadingPulse(loading);
+  const pulse = usePulse(loading);
   const [ownWidth, setOwnWidth] = useState<number | null>(null);
   const [subjectHeight, setSubjectHeight] = useState<number | null>(null);
   const { scale, cropped, boxHeight } = previewGeometry(

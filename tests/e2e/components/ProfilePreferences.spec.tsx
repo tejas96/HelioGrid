@@ -9,7 +9,7 @@ import {
 import { expect, test } from '@playwright/experimental-ct-react';
 import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { pngOf } from '../support/png';
-import { resolvedColour, resolvedLength, resolvedShadow } from '../support/token';
+import { resolvedColour, resolvedLength } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { ProfilePreferencesAsHeld } from './ProfilePreferences.story';
 
@@ -184,10 +184,14 @@ test.describe('at 1536', () => {
     await expect(card.getByRole('heading', { level: 1, name: TITLE })).toBeVisible();
     const sections = card.locator('.hg-settings-section');
     await expect(sections).toHaveCount(2);
-    await expect(sections.first()).toHaveCSS('box-shadow', await resolvedShadow(page, '--e2'));
+    /* A settings card is a solid tile (`Ground.css`): the card colour inside its hairline, no lift. */
+    await expect(sections.first()).toHaveCSS(
+      'box-shadow',
+      `${await resolvedColour(page, '--line-soft')} 0px 0px 0px 1px`,
+    );
     await expect(sections.first()).toHaveCSS(
       'border-top-left-radius',
-      `${await resolvedLength(page, '--r-tile')}px`,
+      `${await resolvedLength(page, '--r-lg')}px`,
     );
     const page760 = await settledBox(card.locator('.hg-profile-preferences'));
     expect(page760?.width).toBeLessThanOrEqual(760);

@@ -9,6 +9,7 @@ import {
   draftWithinWholeDigits,
   nudgeValue,
   restingMoney,
+  typedFigureOf,
   wholeDigitsOf,
 } from './NumberField.logic';
 import type {
@@ -140,8 +141,9 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
 
   useCommitOnUnmount(focus, commit);
 
-  const type = (edited: string) => {
+  const type = (typed: string) => {
     const previous = latestDraft.current;
+    const edited = typedFigureOf(typed, opts.min === undefined || opts.min < 0);
     const next =
       opts.wholeDigits === undefined
         ? edited

@@ -5,6 +5,8 @@ import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { PageTrailProps } from './PageTrail.types';
 
+// web-only part: Button — the web Back is its narrow room; on a phone the top bar goes back.
+
 /**
  * The trail on a wide phone surface (a tablet's page). A phone screen does not mount it: its way
  * back is the top bar's, from the same facts (`backCrumbOf`).

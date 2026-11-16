@@ -1,3 +1,4 @@
+import { PERSON_NAME_CAP, phoneDigitsMismatch } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -5,11 +6,14 @@ import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
 import { Input } from '../Input/Input.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
+import { useFormat } from '../MarketProvider/market-context';
 import { PhoneField } from '../PhoneField/PhoneField.native';
 import { Select } from '../Select/Select.native';
 import { LeadActSend, type LeadFormFrame } from './LeadActSend.native';
 import type { LeadActForm } from './LeadActSheet.types';
 import { LeadPhoneTakenNote } from './LeadPhoneTaken.native';
+import { firstMissing } from './missing-field';
+import { useReportHolds } from './use-form-holds';
 
 type ContactForm = Extract<LeadActForm, { kind: 'contact' }>;
 
@@ -27,6 +31,10 @@ export function LeadContactForm({ form, frame }: { form: ContactForm; frame: Lea
   const [phoneE164, setPhoneE164] = useState(start?.phoneE164 ?? '');
   const [roleLabelId, setRoleLabelId] = useState(start?.roleLabelId ?? NO_ROLE);
   const [newRole, setNewRole] = useState('');
+  useReportHolds(
+    frame.holds,
+    name !== (start?.name ?? '') || phoneE164 !== (start?.phoneE164 ?? '') || newRole !== '',
+  );
   /* A label just added is the one picked: the person added it to use it. */
   useEffect(() => {
     if (form.addedLabelId !== null) {
@@ -34,11 +42,22 @@ export function LeadContactForm({ form, frame }: { form: ContactForm; frame: Lea
       setNewRole('');
     }
   }, [form.addedLabelId]);
+  const { pack } = useFormat();
   const typed = name.trim();
-  const ready = typed !== '' && phoneE164 !== '';
+  const waitingFor = firstMissing(frame.fields.needs, [
+    [typed === '', words.name],
+    [phoneE164 === '' || phoneDigitsMismatch(pack, phoneE164) !== null, words.phone],
+  ]);
+  const ready = waitingFor === null;
   return (
     <View style={styles.form}>
-      <Input label={words.name} value={name} onChange={setName} disabled={frame.pending} />
+      <Input
+        label={words.name}
+        value={name}
+        onChange={setName}
+        disabled={frame.pending}
+        maxLength={PERSON_NAME_CAP}
+      />
       <PhoneField
         label={words.phone}
         words={frame.fields.phone}
@@ -95,6 +114,7 @@ export function LeadContactForm({ form, frame }: { form: ContactForm; frame: Lea
       <LeadActSend
         label={words.send}
         ready={ready}
+        waitingFor={waitingFor}
         pending={frame.pending}
         failure={frame.failure}
         onSend={() => {

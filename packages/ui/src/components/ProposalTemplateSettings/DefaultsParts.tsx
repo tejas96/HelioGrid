@@ -27,7 +27,7 @@ type WallVars = CSSProperties & Record<`--${string}`, number>;
 function Chosen({ on }: { on: boolean }) {
   return (
     <span className="hg-pdf-check" data-on={on ? '' : undefined}>
-      {on ? <ShellGlyph name="tick-small" size="sm" tone="inverse" /> : null}
+      {on ? <ShellGlyph name="check" size="sm" tone="inverse" /> : null}
     </span>
   );
 }

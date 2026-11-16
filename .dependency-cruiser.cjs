@@ -543,11 +543,8 @@ module.exports = {
       name: 'ui-primitives-below-components',
       severity: 'error',
       comment:
-        "A primitive is built before any component, so primitives/ never imports components/ — save AttentionGlyph, which draws from the design system's one glyph set (ShellGlyphMarks).",
-      from: {
-        path: '^packages/ui/src/primitives/',
-        pathNot: '^packages/ui/src/primitives/Icon/AttentionGlyph(\\.native)?\\.tsx$',
-      },
+        'A primitive is built before any component, so primitives/ never imports components/.',
+      from: { path: '^packages/ui/src/primitives/' },
       to: { path: '^packages/ui/src/components/' },
     },
     {

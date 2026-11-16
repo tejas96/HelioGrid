@@ -45,7 +45,7 @@ export function MoneySummary({
       data-density={density}
       style={style}
     >
-      <p className="hg-money-summary-overline">{overline}</p>
+      <p className="hg-money-summary-overline hg-overline">{overline}</p>
       <div>
         {equation.lines.map((l) => (
           <MoneySummaryRow key={moneyLineKey(l)} line={l} unresolved={words.unresolvedLine} />

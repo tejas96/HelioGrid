@@ -77,7 +77,7 @@ export function MergeCompare({
         ))}
         {same === null ? null : (
           <View style={[styles.line, fields.length === 0 ? null : styles.sameRule]}>
-            <ShellGlyph name="tick" size="sm" tone="success" />
+            <ShellGlyph name="check" size="sm" tone="success" />
             <View style={styles.lineWords}>
               <Text variant="body-sm" color="secondary">
                 {same}
@@ -166,7 +166,7 @@ function FieldPick({
           <NamedGap gap={words.pickOne} scale="cell" />
         ) : (
           <View style={styles.labelWords}>
-            <ShellGlyph name="tick" size="sm" tone="success" />
+            <ShellGlyph name="check" size="sm" tone="success" />
             <Text variant="body-sm" color="success">
               {words.picked}
             </Text>
@@ -198,7 +198,7 @@ function FieldPick({
       </View>
       {field.note === null ? null : (
         <View style={styles.line}>
-          <ShellGlyph name="tick" size="sm" tone="success" />
+          <ShellGlyph name="check" size="sm" tone="success" />
           <View style={styles.lineWords}>
             <Text variant="body-sm" color="secondary">
               {field.note}

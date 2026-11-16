@@ -43,7 +43,7 @@ function CoverStrip({ view }: { view: CompanyStepView }) {
                 <ProposalPicture name={choice.picture} src={choice.src} />
                 {on ? (
                   <span className="hg-pst-check" data-on="">
-                    <ShellGlyph name="tick-small" size="sm" tone="inverse" />
+                    <ShellGlyph name="check" size="sm" tone="inverse" />
                   </span>
                 ) : null}
               </span>

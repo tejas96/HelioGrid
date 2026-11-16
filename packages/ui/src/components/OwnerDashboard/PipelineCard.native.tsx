@@ -19,7 +19,7 @@ export function PipelineCard({ view, words }: DashboardPartProps) {
   /* Once a stage carries a value the gap's line has nothing left to say. */
   const priced = bars.some((bar) => bar.note !== undefined);
   return (
-    <Card>
+    <Card tile="glass">
       <View
         style={styles.body}
         accessibilityLabel={words.pipelineTitle}

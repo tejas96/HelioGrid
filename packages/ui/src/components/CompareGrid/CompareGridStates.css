@@ -64,62 +64,10 @@
   width: 100%;
   height: var(--sp-3);
   border-radius: var(--rf-md);
-  background: linear-gradient(
-    90deg,
-    var(--canvas) 25%,
-    var(--canvas-sunken) 50%,
-    var(--canvas) 75%
-  );
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
+  --hg-skeleton-ground: var(--canvas);
 }
 
 .hg-compare-shimmer[data-lead="true"] {
   width: 60%;
   height: var(--sp-4);
-}
-
-.hg-compare-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--sp-2);
-  padding: 48px var(--sp-6);
-}
-
-.hg-compare-message-mark {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--r-pill);
-  display: grid;
-  place-items: center;
-  margin-bottom: var(--sp-1);
-  background: var(--neutral-bg);
-  color: var(--text-tertiary);
-}
-
-.hg-compare-message-mark[data-tone="warning"] {
-  background: var(--warning-bg);
-  color: var(--warning-text);
-}
-
-.hg-compare-message-mark > svg {
-  width: 22px;
-  height: 22px;
-}
-
-.hg-compare-message-title {
-  font-size: var(--fs-h4);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
-
-.hg-compare-message-body {
-  font-size: var(--fs-body-sm);
-  color: var(--text-secondary);
-  max-width: 340px;
-  line-height: 1.5;
-  text-wrap: pretty;
 }

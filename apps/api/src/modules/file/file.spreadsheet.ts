@@ -30,7 +30,8 @@ export async function readSpreadsheet(
   const opened = await openWorkbook(bytes, contentType, unpackedLimit);
   if (!opened.readable) return opened;
   const sheets = opened.workbook.worksheets.map(sheetOf);
-  if (sheets.every((sheet) => sheet.rowCount === 0)) return { readable: false, reason: 'no_rows' };
+  // A header alone is no row to import: one filled row cannot be both the header and a record.
+  if (sheets.every((sheet) => sheet.rowCount <= 1)) return { readable: false, reason: 'no_rows' };
   return { readable: true, sheets };
 }
 
@@ -126,8 +127,16 @@ function countFilledRows(sheet: Worksheet): number {
 /** A date cell reads as its day: the ISO form's first part. */
 const ISO_DAY = 'yyyy-mm-dd';
 
-/** A cell as the text a person reads in it: a formula's result, a link's words, a date's day. */
+/** No stored row can hold this character, and no person reads it: a cell drops it. */
+const NUL = '\u0000';
+
+/** A cell as the text a person reads in it, without the one character no row can store. */
 function textOf(value: CellValue | undefined): string {
+  return cellTextOf(value).replaceAll(NUL, '');
+}
+
+/** A cell as the text a person reads in it: a formula's result, a link's words, a date's day. */
+function cellTextOf(value: CellValue | undefined): string {
   if (value === null || value === undefined) return '';
   if (typeof value === 'string') return value;
   if (typeof value === 'number') return String(value);
@@ -135,8 +144,8 @@ function textOf(value: CellValue | undefined): string {
   if (value instanceof Date) return value.toISOString().slice(0, ISO_DAY.length);
   if ('richText' in value) return value.richText.map((run) => run.text).join('');
   if ('error' in value) return '';
-  if ('result' in value) return textOf(value.result as CellValue);
-  if ('text' in value) return typeof value.text === 'string' ? value.text : textOf(value.text);
+  if ('result' in value) return cellTextOf(value.result as CellValue);
+  if ('text' in value) return typeof value.text === 'string' ? value.text : cellTextOf(value.text);
   return '';
 }
 

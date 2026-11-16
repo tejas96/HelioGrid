@@ -155,10 +155,26 @@ describe('saving a capture (M02-01, M02-03, M02-66)', () => {
     expect(writesSent()).toEqual([]);
   });
 
-  it('closing sends nothing and hands the route its way out', async () => {
+  it('closing with nothing typed sends nothing and hands the route its way out at once', async () => {
+    const quick = await mounted();
+    act(() => quick.screen().close());
+    expect(quick.screen().open).toBe(false);
+    expect(quick.closed).toEqual([true]);
+    expect(writesSent()).toEqual([]);
+  });
+
+  it('closing over typing asks first: Keep editing keeps it, Discard leaves (M02-01)', async () => {
     const quick = await mounted();
     act(() => quick.screen().setPhone(TYPED));
     act(() => quick.screen().close());
+    expect(quick.screen().leave.asking).toBe(true);
+    expect(quick.screen().open).toBe(true);
+    act(() => quick.screen().leave.stay());
+    expect(quick.screen().leave.asking).toBe(false);
+    expect(quick.screen().draft.phoneE164).toBe(TYPED);
+
+    act(() => quick.screen().close());
+    act(() => quick.screen().leave.leave());
     expect(quick.screen().open).toBe(false);
     expect(quick.closed).toEqual([true]);
     expect(writesSent()).toEqual([]);

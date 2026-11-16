@@ -2,16 +2,16 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { RetryButton } from '../Button/RetryButton.native';
-import { EmptyScene } from '../EmptyScene/EmptyScene.native';
 import type { EmptySceneName } from '../EmptyScene/EmptyScene.types';
+import { StateRegion } from '../StateBody/StateRegion.native';
 import { rowNoteOf, TABLE_SKELETON_ROWS, tableMessageMarkOf } from './DataTableChrome.logic';
 
 /* DataTable — the loading skeleton, the blocked-state message and the row's own line. Split out
@@ -21,22 +21,6 @@ const styles = StyleSheet.create({
   note: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 10 },
   noteText: { flexShrink: 1 },
   noteAction: { marginLeft: 'auto' },
-  message: {
-    alignItems: 'center',
-    gap: theme.spacing['sp-2'],
-    paddingVertical: 56,
-    paddingHorizontal: theme.spacing['sp-6'],
-  },
-  mark: {
-    width: 48,
-    height: 48,
-    borderRadius: theme.radius['r-pill'],
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: theme.spacing['sp-1'],
-    backgroundColor: colors['neutral-bg'],
-  },
-  markWarning: { backgroundColor: colors['warning-bg'] },
   skeletonStack: { padding: theme.spacing['sp-2'] },
   skeletonHead: { height: MIN_TOUCH_TARGET, backgroundColor: colors.canvas },
   skeletonRow: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-5'] },
@@ -130,37 +114,20 @@ export function TableMessage({
   /** Where the reader lands once *Try again* has gone with this message. */
   focusAfter: FocusAfter;
 }) {
-  const stroke = tone === 'warning' ? colors['warning-text'] : colors['text-tertiary'];
   return (
-    <View style={styles.message}>
-      {scene === undefined ? (
-        <View style={[styles.mark, tone === 'warning' ? styles.markWarning : null]}>
-          <Svg
-            width={22}
-            height={22}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={stroke}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-          >
-            <ShellGlyphMarks name={tableMessageMarkOf(tone)} />
-          </Svg>
-        </View>
-      ) : (
-        <EmptyScene name={scene} />
-      )}
-      <Text variant="h4" align="center">
-        {title}
-      </Text>
-      {message === undefined ? null : (
-        <Text variant="body-sm" color="secondary" align="center" style={{ maxWidth: 320 }}>
-          {message}
-        </Text>
-      )}
-      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
-      {action}
-    </View>
+    <StateRegion
+      tone={tone}
+      glyph={tableMessageMarkOf(tone)}
+      scene={scene}
+      title={title}
+      message={message}
+      action={
+        <>
+          <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
+          {action}
+        </>
+      }
+    />
   );
 }
 
@@ -178,21 +145,10 @@ export function RowNote({
   fixedLine: TranslatedText;
 }) {
   const { warn, text, glyph } = rowNoteOf(issue, fixed, fixedLine);
-  const stroke = warn ? colors['warning-text'] : colors['success-text'];
+  const stroke = warn ? TONE.warning.ink : TONE.success.ink;
   return (
     <View style={styles.note}>
-      <Svg
-        width={16}
-        height={16}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={stroke}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={glyph} />
-      </Svg>
+      <ShellGlyph name={glyph} size="sm" ink={stroke} />
       <Text variant="body-sm" color={warn ? 'warning' : 'success'} style={styles.noteText}>
         {text}
       </Text>

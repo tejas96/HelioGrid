@@ -1,13 +1,13 @@
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { Banner } from '../Banner';
-import { Card } from '../Card';
+import { Card, CardHeader } from '../Card';
 import { IconButton } from '../IconButton';
 import { InstallerSteps } from '../InstallerJob/InstallerSteps';
 import { useFormat } from '../MarketProvider';
 import { NamedGap } from '../NamedGap';
 import type { ProjectStepsProps } from './ProjectDetail.parts.types';
-import { CardHead, DetailCard } from './ProjectDetailParts';
+import { DetailCard } from './ProjectDetailParts';
 import { installerStepsOf, isClosedProject, stepsReadOf } from './ProjectInstallSteps.logic';
 import '../InstallerJob/InstallerJob.css';
 import './ProjectDetail.css';
@@ -28,7 +28,7 @@ export function ProjectInstallSteps(props: ProjectStepsProps) {
       )}
       <section aria-label={words.crew}>
         <Card density="functional" className="hg-project-detail-card">
-          <CardHead title={words.crew} aside={null} />
+          <CardHeader title={words.crew} className="hg-project-detail-card-head" />
           {project.crew.length === 0 ? (
             <p className="hg-project-detail-none">{words.noCrew}</p>
           ) : (
@@ -47,10 +47,10 @@ export function ProjectInstallSteps(props: ProjectStepsProps) {
       </section>
       <section aria-label={words.accessNote}>
         <Card density="functional" className="hg-project-detail-card">
-          <CardHead
+          <CardHeader
             title={words.accessNote}
-            aside={null}
-            act={
+            className="hg-project-detail-card-head"
+            action={
               mayEdit ? (
                 <IconButton
                   label={words.changeAccess}

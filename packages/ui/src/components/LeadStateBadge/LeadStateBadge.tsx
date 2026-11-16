@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { StatusMark } from '../../primitives/StatusMark';
+import { StatusChip } from '../StatusChip';
 import { LEAD_STATE_TONE } from './LeadStateBadge.logic';
 import type { LeadStateBadgeProps } from './LeadStateBadge.types';
 
@@ -8,9 +8,15 @@ interface WebLeadStateBadgeProps extends LeadStateBadgeProps {
   style?: CSSProperties;
 }
 
-/** A lead's R9 state as glyph, word and tint — through `StatusMark`, never colour alone. */
+/** A lead's R9 state as glyph, word and tint — a `StatusChip`, as a proposal's standing is, never colour alone. */
 export function LeadStateBadge({ state, label, className, style }: WebLeadStateBadgeProps) {
   return (
-    <StatusMark tone={LEAD_STATE_TONE[state]} label={label} className={className} style={style} />
+    <StatusChip
+      status={state}
+      tone={LEAD_STATE_TONE[state]}
+      label={label}
+      className={className}
+      style={style}
+    />
   );
 }

@@ -8,10 +8,6 @@
   margin-top: var(--sp-3);
   padding-bottom: var(--sp-2);
   border-bottom: 1px solid var(--line-soft);
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 
@@ -58,10 +54,6 @@
 }
 
 .hg-grant-card-overline {
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-secondary);
 }
 

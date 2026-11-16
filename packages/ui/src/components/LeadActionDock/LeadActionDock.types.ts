@@ -54,8 +54,8 @@ export interface LeadActionDockProps {
   /** A state act without a sheet (wake, reopen): out, or back undone with why; null otherwise. */
   readonly standing: LeadDockStateStanding | null;
   /**
-   * The lead is disqualified or junk: in the `dock` the five acts step aside and Reopen stands
-   * alone, so nobody calls or books a closed lead by mistake. The `grid` keeps its acts.
+   * The lead is disqualified or junk: in both layouts the five acts step aside and Reopen stands
+   * alone, so nobody calls or books a closed lead by mistake.
    */
   readonly closed: boolean;
 }

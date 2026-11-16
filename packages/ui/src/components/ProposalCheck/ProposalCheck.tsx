@@ -37,7 +37,6 @@ function Findings({
               glyph={tone === 'danger' ? 'alert-circle' : 'alert-triangle'}
               hue={tone}
               size={40}
-              stroke={1.7}
             />
             <span className="hg-pchk-words">
               <span className="hg-pchk-find-title">{finding.title}</span>
@@ -79,7 +78,7 @@ function Limit({ words }: { words: ProposalCheckWords }) {
   return (
     <>
       <div className="hg-pchk-used">
-        <HueTile glyph="gauge" hue="warning" size={40} stroke={1.7} />
+        <HueTile glyph="gauge" hue="warning" size={40} />
         <span className="hg-pchk-words">
           <span className="hg-pchk-find-title">{limit.used}</span>
           <span className="hg-pchk-used-line">{limit.resets}</span>
@@ -88,7 +87,7 @@ function Limit({ words }: { words: ProposalCheckWords }) {
       <div className="hg-pchk-works hg-pchk-tile">
         {limit.works.map((work) => (
           <div className="hg-pchk-work" key={work}>
-            <Badge tone="success" glyph="tick-small">
+            <Badge tone="success" glyph="check">
               {limit.stillWorks}
             </Badge>
             <span className="hg-pchk-work-words">{work}</span>
@@ -96,7 +95,7 @@ function Limit({ words }: { words: ProposalCheckWords }) {
         ))}
       </div>
       <p className="hg-pchk-hint">
-        <ShellGlyph name="info-circle" size="sm" />
+        <ShellGlyph name="info" size="sm" />
         <span>{limit.who}</span>
       </p>
     </>
@@ -121,13 +120,15 @@ function Found({ found }: { found: CheckFound }) {
       )}
       {groups.map((group) => (
         <Fragment key={group.tone}>
-          {group.over === undefined ? null : <span className="hg-pchk-over">{group.over}</span>}
+          {group.over === undefined ? null : (
+            <span className="hg-pchk-over hg-overline">{group.over}</span>
+          )}
           <Findings findings={group.findings} tone={group.tone} from={group.from} />
         </Fragment>
       ))}
       {hint === undefined ? null : (
         <p className="hg-pchk-hint">
-          <ShellGlyph name="info-circle" size="sm" />
+          <ShellGlyph name="info" size="sm" />
           <span>{hint}</span>
         </p>
       )}

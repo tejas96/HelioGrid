@@ -97,7 +97,7 @@ export function ProposalCompanyBlock({ mode, company, words }: ProposalCompanyBl
       </div>
       <div className="hg-pb-company-foot">
         <span className="hg-pb-company-for">
-          <span className="hg-pb-over">{words.proposalOverline}</span>
+          <span className="hg-pb-over hg-overline">{words.proposalOverline}</span>
           <b>{company.customerName}</b>
           {company.siteAddress === undefined ? null : <span>{company.siteAddress}</span>}
         </span>
@@ -138,7 +138,7 @@ export function ProposalBankBlock({
   const off = mode === 'app' && notPrinted;
   return (
     <div className="hg-pb hg-pb-bank" data-mode={mode} data-off={off ? '' : undefined}>
-      <HueTile glyph="credit-card" hue="teal" size={44} stroke={1.6} />
+      <HueTile glyph="credit-card" hue="teal" size={44} />
       <div className="hg-pb-bank-words">
         <b>{bank.bankName}</b>
         <span>{bank.accountName}</span>

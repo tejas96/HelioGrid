@@ -92,6 +92,7 @@
 }
 
 .hg-import-map-arrow {
+  display: inline-flex;
   flex-shrink: 0;
   color: var(--text-tertiary);
 }
@@ -104,7 +105,7 @@
 .hg-import[data-wide="true"] .hg-import-map {
   gap: var(--sp-3);
   padding: 10px var(--sp-3) 10px var(--sp-4);
-  border-radius: 18px;
+  border-radius: var(--r-tile);
 }
 
 .hg-import[data-wide="true"] .hg-import-map-header {

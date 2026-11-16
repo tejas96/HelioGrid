@@ -1,12 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
-import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { FacetChips } from './FacetChips.native';
 import { filtersButtonName } from './FilterBar.logic';
 import type { FiltersButtonProps, ScopeToggleProps, SortPillsProps } from './FilterBar.types';
@@ -20,11 +18,25 @@ import { FilterPill, filterStyles, PillLabel } from './FilterPill.native';
    where the web's outer ring puts it. */
 const BADGE = 20;
 const BADGE_RING = 2;
+const TRACK_INSET = theme.spacing['sp-0-5'];
+const TRACK_EDGE = 1;
 const BADGE_OFFSET = -3;
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-1'] },
   sortLabel: { marginRight: theme.spacing['sp-1'] },
+  /* `SegmentedControl`'s track: its hairline a real border, the inset the rest of its 2dp. */
+  track: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    padding: TRACK_INSET - TRACK_EDGE,
+    borderWidth: TRACK_EDGE,
+    borderColor: colors['line-soft'],
+    borderRadius: theme.radius['r-control'],
+    backgroundColor: colors['canvas-sunken'],
+  },
+  segment: { marginVertical: -TRACK_INSET, borderRadius: theme.radius['rf-sm'] },
   circle: {
     width: PILL_HEIGHT.filters,
     height: PILL_HEIGHT.filters,
@@ -63,10 +75,13 @@ interface NativeFiltersButtonProps extends FiltersButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/** Two-or-three-way scope switch. Active = the accent wash, as every chosen filter is. */
+/**
+ * Two-or-three-way scope switch, in `SegmentedControl`'s look: a sunken track with a hairline, the
+ * choice in view a white raised thumb; each target takes the track's inset back as negative margin.
+ */
 export function ScopeToggle({ options, value, onChange, style }: NativeScopeToggleProps) {
   return (
-    <View accessibilityRole="tablist" style={[styles.row, style]}>
+    <View accessibilityRole="tablist" style={[styles.track, style]}>
       {options.map((option) => {
         const optValue = optionValue(option);
         const active = optValue === value;
@@ -76,12 +91,10 @@ export function ScopeToggle({ options, value, onChange, style }: NativeScopeTogg
             accessibilityRole="tab"
             accessibilityState={{ selected: active }}
             onPress={() => onChange?.(optValue)}
-            style={filterStyles.target}
+            style={[filterStyles.target, styles.segment]}
           >
             <FilterPill kind="scope" active={active}>
-              <PillLabel kind="scope" active={active}>
-                {optionLabel(option)}
-              </PillLabel>
+              <PillLabel active={active}>{optionLabel(option)}</PillLabel>
             </FilterPill>
           </RNPressable>
         );
@@ -90,7 +103,7 @@ export function ScopeToggle({ options, value, onChange, style }: NativeScopeTogg
   );
 }
 
-/** "Sort" label + inline pills. Active = accent fill. */
+/** "Sort" label + inline pills. Active = the raised white control. */
 export function SortPills({ options, value, onChange, label, style }: NativeSortPillsProps) {
   return (
     <View style={[styles.row, style]}>
@@ -109,9 +122,7 @@ export function SortPills({ options, value, onChange, label, style }: NativeSort
             style={filterStyles.target}
           >
             <FilterPill kind="sort" active={active}>
-              <PillLabel kind="sort" active={active}>
-                {optionLabel(option)}
-              </PillLabel>
+              <PillLabel active={active}>{optionLabel(option)}</PillLabel>
             </FilterPill>
           </RNPressable>
         );
@@ -145,17 +156,7 @@ export function FiltersButton({
       onPress={onClick}
       style={({ pressed }) => [styles.circle, pressed ? styles.circlePressed : undefined, style]}
     >
-      <Icon size="md" color={SQUARE_INK}>
-        <Svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={SQUARE_INK}
-          strokeWidth={1.75}
-          strokeLinecap="round"
-        >
-          <ShellGlyphMarks name="sliders" />
-        </Svg>
-      </Icon>
+      <ShellGlyph name="sliders" size="md" ink={SQUARE_INK} />
       {count > 0 ? (
         <View style={[styles.badge, { borderColor: ground }]}>
           <Text variant="caption" color="inverse" bold style={styles.badgeWords}>

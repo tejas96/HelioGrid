@@ -17,9 +17,9 @@ interface WebAppRailProps extends AppRailProps {
 
 /**
  * The desktop sidebar, a frosted column over the page's glow: the wordmark, the bell and the fold
- * at the head, the company under it, the search, the work destinations, then the settings list and
- * the account at the foot. The item in view is a solid ink pill. Folded, the column keeps its
- * icons, each named and tipped with its label.
+ * at the head, the company under it, the search, the work destinations and their groups, then the
+ * settings list and the account at the foot. The item in view is the `nav-active` pill. Folded, the
+ * column keeps its icons, each named and tipped with its label.
  */
 export function AppRail(props: WebAppRailProps) {
   const { label, collapsed = false, width = 'var(--sidebar-w)', className, style } = props;
@@ -66,7 +66,11 @@ function RailHead({ brand, bell, fold, collapsed }: Folded) {
         />
       )}
       {fold === undefined ? null : (
-        <span className="hg-app-rail-tip" data-tip={collapsed ? fold.expand : fold.collapse}>
+        <span
+          className="hg-app-rail-tip hg-tip"
+          data-tip={collapsed ? fold.expand : fold.collapse}
+          data-tip-side="end"
+        >
           <ShellAction
             label={collapsed ? fold.expand : fold.collapse}
             expanded={!collapsed}
@@ -79,8 +83,8 @@ function RailHead({ brand, bell, fold, collapsed }: Folded) {
   );
 }
 
-/** The work destinations; folded, the search and the bell join them. */
-function RailBody({ items, value, onChange, bell, searchItem, collapsed }: Folded) {
+/** The work destinations, then each group under its overline; folded, the search and the bell join them. */
+function RailBody({ items, groups = [], value, onChange, bell, searchItem, collapsed }: Folded) {
   const row = (item: RailItem, onClick?: () => void) => (
     <RailButton
       key={item.key}
@@ -98,6 +102,19 @@ function RailBody({ items, value, onChange, bell, searchItem, collapsed }: Folde
       <div className="hg-app-rail-items">
         {lifted.map((item) => row(item, item.onClick))}
         {items.map((item) => row(item))}
+        {groups.map((group) => (
+          // biome-ignore lint/a11y/useSemanticElements: a fieldset is a form's group, not a list of links
+          <div key={group.key} role="group" aria-label={group.label} className="hg-app-rail-group">
+            {collapsed ? (
+              <span className="hg-app-rail-rule" aria-hidden="true" />
+            ) : (
+              <span className="hg-app-rail-overline" aria-hidden="true">
+                {group.label}
+              </span>
+            )}
+            {group.items.map((item) => row(item))}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -141,7 +158,8 @@ function RailButton({ item, active, onClick, tipped }: RailButtonProps) {
       aria-current={active ? 'page' : undefined}
       aria-expanded={item.open}
       onClick={onClick}
-      className="hg-app-rail-button"
+      className="hg-app-rail-button hg-tip"
+      data-tip-side="end"
       data-active={active ? 'true' : undefined}
       data-open={item.open === true ? 'true' : undefined}
       data-tip={tipped ? item.label : undefined}

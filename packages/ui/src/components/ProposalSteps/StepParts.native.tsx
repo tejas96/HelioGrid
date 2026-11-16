@@ -7,20 +7,15 @@ import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.nati
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Rising } from '../../primitives/rising.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import type { CategoryHue } from '../Avatar/Avatar.types';
 import { HueTile } from '../HueTile/HueTile.native';
 import type { HueTileTone } from '../HueTile/HueTile.types';
 import type { FieldSave, StepFact, StepNotice } from './ProposalSteps.types';
 import type { ProposalStepWords } from './ProposalSteps.words.types';
 import { saveActOf, saveFaultOf } from './step-controls';
-
-const TONE = {
-  danger: { bg: colors['danger-bg'], fg: 'danger' },
-  warning: { bg: colors['warning-bg'], fg: 'warning' },
-  info: { bg: colors['info-bg'], fg: 'info' },
-} as const;
 
 /** One record of a step — its facts, its rows — as a tile on the page. */
 export function StepTile({ children, style }: { children: ReactNode; style?: ViewStyle }) {
@@ -41,20 +36,19 @@ export function StepNote({
   tone: 'danger' | 'warning' | 'info';
   glyph: ShellGlyphName;
 }) {
-  const ink = TONE[tone];
   const body = (
-    <View style={[styles.note, { backgroundColor: ink.bg }]}>
-      <ShellGlyph name={glyph} size="md" tone={ink.fg} />
+    <View style={[styles.note, { backgroundColor: TONE[tone].tint }]}>
+      <ShellGlyph name={glyph} size="md" tone={tone} />
       <View style={styles.grow}>
-        <Text variant="body" color={ink.fg} bold>
+        <Text variant="body" color={tone} bold>
           {notice.title}
         </Text>
-        <Text variant="body-sm" color={ink.fg}>
+        <Text variant="body-sm" color={tone}>
           {notice.line}
         </Text>
       </View>
       {notice.act === undefined ? null : (
-        <Text variant="body-sm" color={ink.fg} bold>
+        <Text variant="body-sm" color={tone} bold>
           {notice.act.label}
         </Text>
       )}
@@ -71,7 +65,7 @@ export function StepNote({
 
 /** A quiet line under a step's controls: who may change something, or where a change reaches. */
 export function StepHint({
-  glyph = 'info-circle',
+  glyph = 'info',
   children,
 }: {
   glyph?: ShellGlyphName;
@@ -144,7 +138,7 @@ export function FieldSaveLine({
   if (save.kind === 'saved' || save.kind === 'saving') {
     return (
       <View style={styles.saved} accessibilityLiveRegion="polite">
-        {save.kind === 'saved' ? <ShellGlyph name="tick-small" size="sm" tone="success" /> : null}
+        {save.kind === 'saved' ? <ShellGlyph name="check" size="sm" tone="success" /> : null}
         <Text variant="caption" color="success">
           {save.kind === 'saved' ? (save.reason ?? words.saved) : words.saving}
         </Text>
@@ -194,7 +188,7 @@ export function FoldRow({
 }) {
   const head = (
     <View style={styles.foldHead}>
-      <HueTile glyph={glyph} hue={hue} size={36} stroke={1.7} />
+      <HueTile glyph={glyph} hue={hue} size={36} />
       <View style={styles.grow}>
         <Text variant="body" bold>
           {title}
@@ -206,7 +200,7 @@ export function FoldRow({
       {onToggle === undefined ? (
         aside
       ) : (
-        <ShellGlyph name={open === true ? 'chevron-up' : 'caret-down'} size="sm" />
+        <ShellGlyph name={open === true ? 'chevron-up' : 'chevron'} size="sm" />
       )}
     </View>
   );
@@ -266,7 +260,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: theme.radius['r-xs'],
-    backgroundColor: colors['warning-bg'],
+    backgroundColor: TONE.warning.tint,
   },
   faultPress: { alignSelf: 'flex-start', justifyContent: 'center', minHeight: 44 },
   foldHead: {

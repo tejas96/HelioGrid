@@ -2,7 +2,7 @@ import { useImperativeHandle, useRef } from 'react';
 import { Text } from '../../primitives/Text/Text';
 import type { LargeTitleProps } from './LargeTitle.types';
 
-export function LargeTitle({ title, summary, titleRef, nameTitle, acts }: LargeTitleProps) {
+export function LargeTitle({ title, summary, titleRef, nameTitle, mono, acts }: LargeTitleProps) {
   const heading = useRef<HTMLHeadingElement>(null);
   useImperativeHandle(titleRef, () => ({ focus: () => heading.current?.focus() }));
   return (
@@ -13,6 +13,7 @@ export function LargeTitle({ title, summary, titleRef, nameTitle, acts }: LargeT
           tabIndex={-1}
           className="hg-large-title-name hg-focus-target"
           data-two-lines={nameTitle === true ? 'true' : undefined}
+          data-mono={mono === true ? 'true' : undefined}
         >
           {title}
         </h1>

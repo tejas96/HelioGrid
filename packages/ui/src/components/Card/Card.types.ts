@@ -2,7 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import type { SurfaceRead, SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 /** Everything a card takes but the read it shows. */
 export interface CardFrameProps {
@@ -19,6 +19,17 @@ export interface CardFrameProps {
    * page ground, not a tile, so a control inside it takes the page's fill.
    */
   surface?: 'tile' | 'raised';
+  /**
+   * Which tile a `tile` card is (`Ground`): `solid` (default) a data or list card — the card colour, a
+   * hairline, no shadow; `glass` a summary card — a figure or a block a home is about (the owner's
+   * dashboard). Ignored on `raised`.
+   */
+  tile?: 'solid' | 'glass';
+  /**
+   * The element the web draws the frame as: `section` for a card that is a titled part of a page
+   * (the customer's page). The phone draws a `View` either way.
+   */
+  as?: 'div' | 'section';
   /**
    * **Names the card as one control** — from `packages/i18n`. With `onClick` it is the card's
    * accessible name and `selected` reads as current. Opt-in, so a card that holds its own buttons
@@ -64,25 +75,27 @@ export type CardRead =
 
 export type CardProps = CardFrameProps & CardRead;
 
-/** The body both halves draw inside the frame — the one part that moves between states. */
-export type CardBodyProps = {
-  state: SurfaceState;
-  onRetry?: () => void;
-  loadingLabel?: TranslatedText;
-  /** The card's frame, where focus lands once its retry has left. */
-  focusAfter: FocusAfter;
-} & Pick<
-  CardFrameProps,
-  | 'children'
-  | 'emptyTitle'
-  | 'emptyMessage'
-  | 'emptyAction'
-  | 'errorTitle'
-  | 'errorMessage'
-  | 'retryLabel'
-  | 'unavailableTitle'
-  | 'unavailableMessage'
->;
+/**
+ * A card's head — OneOhm's card header: its title in the sans face (16/24, semibold), a quiet line
+ * under it, the card's one act at the end. The one head a card with a named job draws; a card never
+ * hand-rolls its own.
+ */
+export interface CardHeaderProps {
+  title: TranslatedText;
+  /** The quiet line under the title; none draws nothing. */
+  description?: TranslatedText | null;
+  /** The card's one act, at the head's end; none draws nothing. */
+  action?: ReactNode;
+  /** A mark before the words — an icon in its circle, a done tick; none draws nothing. */
+  lead?: ReactNode;
+  /** The heading's level: 2 for a card on the page (the default), 3 inside a titled section. */
+  level?: 2 | 3;
+  /**
+   * The title's face: `sans` (default) OneOhm's card head; `display` the serif card title a page
+   * read by a customer gives each card (`card-title`, Newsreader).
+   */
+  face?: 'sans' | 'display';
+}
 
 export interface IconCircleProps {
   children?: ReactNode;

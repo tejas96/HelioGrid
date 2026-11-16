@@ -20,12 +20,6 @@
   gap: var(--sp-2);
 }
 
-/* The title takes the row; its look is the one card title (`Text` h3). */
-.hg-lead-contacts-title {
-  flex: 1;
-  min-width: 0;
-}
-
 .hg-lead-contact {
   display: flex;
   align-items: center;

@@ -6,9 +6,9 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import { startModeChoice } from './ProposalStart.logic';
 import type { ProposalStartSheetProps } from './ProposalStart.types';
 
@@ -60,12 +60,13 @@ export function ProposalStartSheet(props: ProposalStartSheetProps) {
   const { words, starting } = props;
   const choice = startModeChoice(props);
   return (
-    <Sheet
+    <EditorSurface
       open={props.open}
       onClose={() => {
         if (!starting) props.onClose();
       }}
       closeLabel={words.closeLabel}
+      desktop="modal"
       showClose
       dismissible={!starting}
       title={words.title}
@@ -99,7 +100,7 @@ export function ProposalStartSheet(props: ProposalStartSheetProps) {
         />
         <Sources props={props} />
       </View>
-    </Sheet>
+    </EditorSurface>
   );
 }
 

@@ -15,7 +15,7 @@ export function WinLossCard({ view, words, winRate }: DashboardPartProps) {
   const { winLoss } = view;
   const lost = lostBarsOf(winLoss.lostReasons, words.lostReason);
   return (
-    <Card className="hg-owner-card">
+    <Card className="hg-owner-card" tile="glass">
       <section className="hg-owner-card-body" aria-label={words.winLossTitle}>
         <div className="hg-owner-card-head">
           <Text as="h2" variant="h3">

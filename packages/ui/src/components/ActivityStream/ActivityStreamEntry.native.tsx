@@ -1,28 +1,18 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ActorClass } from '../ActorClass';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
 import { ActivityGlyph } from './ActivityGlyph.native';
 import { kindOf } from './ActivityStream.kinds';
 import { entryClockOf, streamMarkOf } from './ActivityStream.logic';
-import type { ActivityTone, StreamEntryProps } from './ActivityStream.types';
+import type { StreamEntryProps } from './ActivityStream.types';
 
 const type = theme.type.roles;
-
-/** Both channels are certified pairs: the mark takes the tone's -bg, the glyph the tone's -text. */
-const TONES: Record<ActivityTone, { bg: ThemeColor; fg: ThemeColor }> = {
-  neutral: { bg: colors['neutral-bg'], fg: colors['neutral-text'] },
-  accent: { bg: colors['accent-subtle'], fg: colors.accent },
-  success: { bg: colors['success-bg'], fg: colors['success-text'] },
-  warning: { bg: colors['warning-bg'], fg: colors['warning-text'] },
-  danger: { bg: colors['danger-bg'], fg: colors['danger-text'] },
-  info: { bg: colors['info-bg'], fg: colors['info-text'] },
-};
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', columnGap: theme.spacing['sp-3'], alignItems: 'flex-start' },
@@ -73,7 +63,7 @@ const styles = StyleSheet.create({
 /** One entry: the kind's mark, the kind's word, the clock, the summary and the actor class. */
 export function StreamEntry({ entry, kinds, words, density, format }: StreamEntryProps) {
   const spec = kindOf(kinds, entry.kind, words.kind);
-  const tone = TONES[spec.tone];
+  const tone = TONE[spec.tone];
   const { circle, glyph } = streamMarkOf(density);
   const clock = entryClockOf(entry, format);
   const summaryType = { fontSize: density === 'functional' ? 14 : type.body.fontSize };
@@ -90,10 +80,10 @@ export function StreamEntry({ entry, kinds, words, density, format }: StreamEntr
       <View
         style={[
           styles.mark,
-          { width: circle, height: circle, borderRadius: circle / 2, backgroundColor: tone.bg },
+          { width: circle, height: circle, borderRadius: circle / 2, backgroundColor: tone.tint },
         ]}
       >
-        <ActivityGlyph name={spec.glyph} size={glyph} color={tone.fg} />
+        <ActivityGlyph name={spec.glyph} size={glyph} color={tone.ink} />
       </View>
       <View style={styles.body}>
         <View style={styles.head}>

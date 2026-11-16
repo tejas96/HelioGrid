@@ -2,6 +2,7 @@ import { IN_FORMATS } from '@heliogrid/domain';
 import {
   createTranslator,
   dedupeSheetWords,
+  formLeaveWords,
   leadsListWords,
   QUICK_ADD,
   SHELL,
@@ -126,10 +127,16 @@ test('the add action opens quick add in one tap and checks the number as it is t
   await asked;
   await expect(capture.getByText(en.t(QUICK_ADD.newNumber))).toBeVisible();
 
-  /* The check never blocks Save: closing creates nothing and the page behind is the leads page. */
+  /* The check never blocks Save: closing asks before it drops the number, then creates nothing
+     and the page behind is the leads page. */
   await capture
     .getByRole('button', { name: en.t(SHELL.close) })
     .first()
+    .click();
+  const leave = formLeaveWords(en.t);
+  await page
+    .getByRole('dialog', { name: leave.title })
+    .getByRole('button', { name: leave.discard })
     .click();
   await expect(capture).toBeHidden();
   await expect(page).toHaveURL(/\/leads$/);

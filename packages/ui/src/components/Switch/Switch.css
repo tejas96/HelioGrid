@@ -78,11 +78,19 @@
      a tile's white one. */
   background: var(--hg-ground);
   box-shadow: var(--e2);
-  transition: left var(--dur-standard) var(--ease-spring);
+  transition: transform var(--dur-spring-snappy) var(--ease-spring-snappy);
 }
 
+/* In the dark the ground on the dark fill hides the knob: an OFF knob is a quiet grey there. */
+:root[data-theme="dark"]
+  .hg-switch:not([data-checked="true"]):not([data-disabled="true"])
+  .hg-switch-thumb {
+  background: var(--text-tertiary);
+}
+
+/* It travels by transform, never `left`: a moved edge lays the row out again on every frame. */
 .hg-switch[data-checked="true"] .hg-switch-thumb {
-  left: var(--sp-6);
+  transform: translateX(calc(var(--sp-6) - var(--sp-1)));
 }
 
 /* White on the accent — which a disabled track never shows. */

@@ -75,7 +75,7 @@ function RowBody<Failure>(props: RowProps<Failure> & { opens: boolean }) {
       {row.kind === 'catalog_item' || row.kind === 'proposal' ? (
         <View style={styles.tile}>
           <ShellGlyph
-            name={row.kind === 'proposal' ? 'file-text' : CATALOG_GLYPH[row.componentKind]}
+            name={row.kind === 'proposal' ? 'document' : CATALOG_GLYPH[row.componentKind]}
             size="md"
             tone="secondary"
           />

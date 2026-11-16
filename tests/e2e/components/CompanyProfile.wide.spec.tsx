@@ -77,7 +77,7 @@ test.describe('at 1536', () => {
     expect(await settledBox(field)).toMatchObject({ x: EDITOR_LEFT, width: MEASURE });
 
     const actBox = await settledBox(act);
-    expect(actBox?.height).toBe(await resolvedLength(page, '--field-h'));
+    expect(actBox?.height).toBe(await resolvedLength(page, '--button-h-lg'));
     expect(actBox?.width).toBeLessThan(ACT_WIDEST);
 
     await expect(title).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-h1')}px`);

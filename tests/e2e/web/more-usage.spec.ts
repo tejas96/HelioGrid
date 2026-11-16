@@ -199,3 +199,29 @@ test('a person who is not the Owner sees the chip and whose screen it is, with n
   await expect(page.getByRole('button', { name: VIEW.biggerPlans })).toHaveCount(0);
   await expectNoSeriousViolations(page);
 });
+
+test('nothing used yet is said at every width, the desktop’s two lanes too', async ({ page }) => {
+  await startAsOwner(page);
+  await page.route('**/billing/usage', async (route) => {
+    const response = await route.fetch();
+    /* A paid cycle, so the desktop draws the Owner's two lanes; nothing on any meter. */
+    const real = proAt80((await response.json()) as BillingUsage);
+    const json = billingUsageSchema.parse({
+      ...real,
+      proposals: { ...real.proposals, used: 0 },
+      activeProjects: { ...real.activeProjects, used: 0 },
+      voice: { ...real.voice, usedMinutes: 0, usage: CLEAR },
+      storage: { ...real.storage, usedBytes: 0 },
+      otpCodes: 0,
+    });
+    await route.fulfill({ response, json });
+  });
+  for (const width of [375, 1920]) {
+    await page.setViewportSize({ width, height: 900 });
+    await openUsage(page);
+    /* 1920 is the Owner's two lanes, 375 the one column: the card stands in both. */
+    await expect(page.locator('.hg-usage-lanes')).toHaveCount(width === 1920 ? 1 : 0);
+    await expect(page.getByText(VIEW.nothingUsedTitle, { exact: true })).toBeVisible();
+    await expectNoSidewaysScroll(page);
+  }
+});

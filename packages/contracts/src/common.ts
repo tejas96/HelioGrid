@@ -193,10 +193,22 @@ export const REQUEST_ID_HEADER = 'x-request-id';
  */
 export const DEFAULT_PAGE_LIMIT = 25;
 export const MAX_PAGE_LIMIT = 100;
+/**
+ * The last page a list serves: past it the row offset outgrows what the database counts in, an
+ * opaque 500. A million rows at the largest page is far beyond any list a person pages through.
+ */
+const MAX_PAGE = 10_000;
 
 export const paginationQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(MAX_PAGE_LIMIT).default(DEFAULT_PAGE_LIMIT),
-  page: z.coerce.number().int().min(1).default(1),
+  page: z.coerce
+    .number()
+    .int()
+    .min(1)
+    // No screen ever asked for a page past this (each pages one "next" at a time), so refusing
+    // it breaks no reader; a refine keeps the emitted spec's shape for the clients already out.
+    .refine((page) => page <= MAX_PAGE, { message: `At most page ${MAX_PAGE}.` })
+    .default(1),
 });
 export type PaginationQuery = z.infer<typeof paginationQuerySchema>;
 

@@ -19,6 +19,7 @@ import {
   openProjectPage,
   ownerWithCompany,
   projectHeroOf,
+  qualifyThroughApi,
   readProject,
   type StartedProject,
   toastSaying,
@@ -73,6 +74,7 @@ function fifteenth(monthsAhead: number): { day: Date; stored: string } {
 test('Mark won on the lead starts its project and opens it at Won', async ({ page }) => {
   await ownerWithCompany(page, en);
   const leadId = await captureLead(page);
+  await qualifyThroughApi(page, leadId);
   await page.goto(`/leads/${leadId}`);
   await expect(page.getByRole('heading', { name: CUSTOMER.name }).first()).toBeVisible();
 

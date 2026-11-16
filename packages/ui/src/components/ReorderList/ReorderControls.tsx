@@ -17,7 +17,7 @@
 
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { Ref } from 'react';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { ReorderGlyph } from './ReorderList.defaults';
 import { REORDER_GLYPHS } from './ReorderList.defaults';
 
@@ -46,19 +46,7 @@ export function ReorderControl({
       aria-disabled={disabled ? 'true' : undefined}
       onClick={onClick}
     >
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <ShellGlyphMarks name={REORDER_GLYPHS[kind]} />
-      </svg>
+      <ShellGlyph name={REORDER_GLYPHS[kind]} size="sm" tone="current" />
     </button>
   );
 }

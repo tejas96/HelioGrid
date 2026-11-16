@@ -55,11 +55,10 @@ export function LandingModule({ module, index, fit, palette, reduced, glint }: L
       land.setValue(1);
       return;
     }
-    const anim = Animated.timing(land, {
+    const anim = Animated.spring(land, {
       toValue: 1,
-      duration: motion.durations.emphasised,
+      ...motion.springs.snappy,
       delay: motion.durations.emphasised + index * motion.ambient.install,
-      easing: Easing.bezier(...motion.easings.spring),
       useNativeDriver: true,
     });
     anim.start();

@@ -1,7 +1,6 @@
-/* AppRail — the desktop sidebar, as OneOhm draws it: on light paper it sits on the page's glow with
-   no panel; in the dark it floats as a raised card. The item in view is `nav-active` (the ink pill
-   in light, a soft accent wash in the dark), never a border and never a left accent bar. Folded, it
-   keeps its icons and tips each with its name. */
+/* AppRail — the desktop sidebar, as OneOhm draws it: on the page's glow in light, a raised card in
+   the dark; rows 34 tall to a mouse (44 to a finger), radius 16; the item in view `nav-active` (the
+   ink pill, or the dark's flat accent wash), never a border. Folded to 72, icons centred, tipped. */
 
 .hg-app-rail {
   position: relative;
@@ -55,22 +54,21 @@
   }
 }
 
-/* Folded, the rail is one circle wide: the circle and a small margin each side, and in the dark
-   the card's margin on top. */
+/* Folded, the rail is OneOhm's 72 wide, and in the dark the card's margin on top. */
 .hg-app-rail[data-collapsed="true"] {
-  width: var(--sp-16);
-  padding-inline: var(--sp-2);
+  width: var(--sidebar-w-folded);
+  padding-inline: var(--sp-3);
 }
 
 :root[data-theme="dark"] .hg-app-rail[data-collapsed="true"] {
-  width: calc(var(--sp-16) + var(--sp-2));
-  padding-inline-start: calc(var(--sp-2) * 2);
+  width: calc(var(--sidebar-w-folded) + var(--sp-2));
+  padding-inline-start: calc(var(--sp-3) + var(--sp-2));
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .hg-app-rail[data-collapsed="true"] {
-    width: calc(var(--sp-16) + var(--sp-2));
-    padding-inline-start: calc(var(--sp-2) * 2);
+    width: calc(var(--sidebar-w-folded) + var(--sp-2));
+    padding-inline-start: calc(var(--sp-3) + var(--sp-2));
   }
 }
 
@@ -142,8 +140,8 @@
   gap: var(--sp-2);
 }
 
-/* One destination: its glyph and its name in muted text, a pill that takes a soft well under the
-   pointer and `nav-active` when it is in view. */
+/* One destination: its glyph and its name in muted text, a radius-16 row that takes a soft well
+   under the pointer and `nav-active` when it is in view. */
 .hg-app-rail-button {
   position: relative;
   flex-shrink: 0;
@@ -156,7 +154,7 @@
   min-height: var(--touch-min);
   padding: var(--sp-2) var(--sp-3);
   border: none;
-  border-radius: var(--r-pill);
+  border-radius: var(--r-md);
   background: transparent;
   color: var(--text-secondary);
   font-family: var(--font-sans);
@@ -171,13 +169,9 @@
     transform var(--dur-micro) var(--ease-standard);
 }
 
-/* Folded, each item is a circle — width and height are one size, so the item in view is round. */
+/* Folded, each item is its icon centred across the rail's width, as OneOhm folds it. */
 .hg-app-rail[data-collapsed="true"] .hg-app-rail-button {
   justify-content: center;
-  align-self: center;
-  width: var(--sp-12);
-  height: var(--sp-12);
-  min-height: 0;
   padding: 0;
 }
 
@@ -205,6 +199,17 @@
   box-shadow: var(--e2);
 }
 
+/* In the dark the soft wash lies flat: no shadow under it. */
+:root[data-theme="dark"] .hg-app-rail-button[data-active="true"] {
+  box-shadow: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hg-app-rail-button[data-active="true"] {
+    box-shadow: none;
+  }
+}
+
 .hg-app-rail-icon {
   position: relative;
   flex-shrink: 0;
@@ -219,9 +224,13 @@
   color: var(--text-tertiary);
 }
 
-.hg-app-rail-button:is([data-active="true"], [data-open="true"], :hover)
-  .hg-shell-glyph[data-tone] {
+.hg-app-rail-button:is([data-open="true"], :hover) .hg-shell-glyph[data-tone] {
   color: inherit;
+}
+
+/* In view, the icon is the pill's mark: the words' ink on light paper, the accent in the dark. */
+.hg-app-rail-button[data-active="true"] .hg-shell-glyph[data-tone] {
+  color: var(--nav-active-mark);
 }
 
 .hg-app-rail-label {
@@ -284,12 +293,7 @@
   }
 
   .hg-app-rail-button {
-    min-height: calc(var(--sp-8) + var(--sp-1));
-    padding-block: var(--sp-1);
-  }
-
-  .hg-app-rail[data-collapsed="true"] .hg-app-rail-button {
-    width: var(--sp-10);
-    height: var(--sp-10);
+    min-height: var(--nav-row-h);
+    padding-block: 0;
   }
 }

@@ -4,7 +4,7 @@
    `actor` is a free string and that is the limit of what this component claims about it; an entry
    whose actor is not a person belongs in `ActivityStream` (M07-03). */
 
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { TimelineItem } from './Timeline.types';
 import { TimelineRailCell } from './TimelineRailCell';
 
@@ -42,38 +42,14 @@ export function TimelineStep({
         {item.description ? (
           <p className="hg-timeline-description" data-tone={item.descriptionTone}>
             {item.descriptionTone === 'system' ? (
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <ShellGlyphMarks name="spark" />
-              </svg>
+              <ShellGlyph name="spark" size="dense" tone="current" />
             ) : null}
             {item.description}
           </p>
         ) : null}
         {item.actor ? (
           <div className="hg-timeline-actor">
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <ShellGlyphMarks name="person-slim" />
-            </svg>
+            <ShellGlyph name="user" size="dense" tone="current" />
             {item.actor}
           </div>
         ) : null}

@@ -2,7 +2,7 @@
 import type { CustomerPage } from '@heliogrid/contracts';
 import { customerBusyWords, customerOffWords, customerProposalWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, EmptyScene, ShellGlyph, useFormat } from '@heliogrid/ui';
+import { Button, EmptyScene, ShellGlyph, Text, useFormat } from '@heliogrid/ui';
 import { CustomerFrame } from './CustomerFrame';
 import { PersonCard } from './PersonCard';
 
@@ -30,8 +30,8 @@ export function LinkOffPage({ page, onRetry }: { page: CustomerPage; onRetry: ()
       main={
         <div className="hg-cust-off">
           <EmptyScene name={reason === 'busy' ? 'filter' : 'search'} />
-          <h1>{words.title}</h1>
-          <p>{words.line}</p>
+          <Text variant="h1">{words.title}</Text>
+          <Text color="secondary">{words.line}</Text>
           {words.retry === null ? null : (
             <Button variant="secondary" icon={<ShellGlyph name="retry" />} onClick={onRetry}>
               {words.retry}
@@ -61,8 +61,8 @@ export function LinkBusyPage({ onRetry }: { onRetry: () => void }) {
       main={
         <div className="hg-cust-off">
           <EmptyScene name="filter" />
-          <h1>{words.title}</h1>
-          <p>{words.line}</p>
+          <Text variant="h1">{words.title}</Text>
+          <Text color="secondary">{words.line}</Text>
           <Button variant="secondary" icon={<ShellGlyph name="retry" />} onClick={onRetry}>
             {words.retry}
           </Button>

@@ -28,7 +28,7 @@ type NativeExplainerProps = ExplainerProps & {
  *   closes it as an outside touch.
  * · Escape is the Android back button and VoiceOver's escape gesture. DOM focus is the screen reader's: it moves into the bubble
  *   on a tap and back to the trigger on closing; iOS hears each new page announced.
- * · `position: absolute` beside the trigger becomes `measureInWindow` plus the `Portal`, so nothing
+ * · `position: absolute` beside the trigger becomes the trigger measured where it rests plus the `Portal`, so nothing
  *   above the ask can clip it; `within` is measured the same way.
  * · A host's control given as `trigger` sits in the same measured wrapper the "i" does, so it opens,
  *   closes and places the bubble exactly as the "i"; the screen reader's focus returns to the

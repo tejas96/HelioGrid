@@ -69,3 +69,19 @@ test('a dialog opens at its end state with reduced motion', async ({ mount, page
   expect(longest).toBeLessThanOrEqual(1);
   await expect(page.getByRole('dialog')).toHaveCSS('opacity', '1');
 });
+
+test('a dialog that may not close yet draws no close', async ({ mount, page }) => {
+  await mount(
+    <Modal
+      open
+      dismissible={false}
+      closeLabel={en.t(SHELL.close)}
+      title={en.t(SHELL.grievanceOfficer)}
+      size="sm"
+    >
+      <p>{en.t(SHELL.grievanceNotPublished)}</p>
+    </Modal>,
+  );
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByRole('button', { name: en.t(SHELL.close), exact: true })).toHaveCount(0);
+});

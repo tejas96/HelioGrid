@@ -67,7 +67,7 @@ function Steps({ detail, words }: Ready) {
         return (
           <li key={node.name} className="hg-track-step" data-at={at}>
             <span className="hg-track-dot" aria-hidden="true">
-              {at === 'ahead' ? null : <ShellGlyph name="tick-small" size="sm" tone="inverse" />}
+              {at === 'ahead' ? null : <ShellGlyph name="check" size="sm" tone="inverse" />}
             </span>
             <b>{node.name}</b>
             <span>{node.when}</span>
@@ -127,7 +127,7 @@ export function ProposalTrack(props: ProposalTrackProps) {
         </div>
         <Steps {...ready} />
         <p className="hg-track-note">
-          <ShellGlyph name="info-circle" size="sm" tone="secondary" />
+          <ShellGlyph name="info" size="sm" tone="secondary" />
           <span>{words.neverDelivered}</span>
         </p>
       </HeroPanel>

@@ -77,7 +77,7 @@ export function useRecordForm({ form, words, sending, failure, failureField }: R
           receivedOn,
         });
       },
-      glyph: 'tick' as const,
+      glyph: 'check' as const,
       destructive: false,
     },
   };

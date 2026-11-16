@@ -6,12 +6,13 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Banner } from '../Banner/Banner.native';
 import { Card } from '../Card/Card.native';
+import { CardHeader } from '../Card/CardHeader.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { InstallerSteps } from '../InstallerJob/InstallerSteps.native';
 import { useFormat } from '../MarketProvider';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import type { ProjectStepsProps } from './ProjectDetail.parts.types';
-import { CardHead, DetailCard } from './ProjectDetailParts.native';
+import { DetailCard, projectCard, projectHead } from './ProjectDetailParts.native';
 import { installerStepsOf, isClosedProject, stepsReadOf } from './ProjectInstallSteps.logic';
 
 /**
@@ -27,8 +28,8 @@ export function ProjectInstallSteps(props: ProjectStepsProps) {
       {props.refusal === null ? null : (
         <Banner kind="validation" tone="warning" title={props.refusal} density="functional" />
       )}
-      <Card density="functional" style={styles.card}>
-        <CardHead title={words.crew} aside={null} />
+      <Card density="functional" style={projectCard}>
+        <CardHeader title={words.crew} style={projectHead} />
         {project.crew.length === 0 ? (
           <View style={styles.pad}>
             <Text variant="body-sm" color="secondary">
@@ -46,11 +47,11 @@ export function ProjectInstallSteps(props: ProjectStepsProps) {
           ))
         )}
       </Card>
-      <Card density="functional" style={styles.card}>
-        <CardHead
+      <Card density="functional" style={projectCard}>
+        <CardHeader
           title={words.accessNote}
-          aside={null}
-          act={
+          style={projectHead}
+          action={
             mayEdit ? (
               <IconButton
                 label={words.changeAccess}
@@ -83,7 +84,6 @@ export function ProjectInstallSteps(props: ProjectStepsProps) {
 
 const styles = StyleSheet.create({
   page: { gap: theme.spacing['sp-4'] },
-  card: { padding: theme.spacing['sp-1'], gap: theme.spacing['sp-1'] },
   pad: { paddingHorizontal: theme.spacing['sp-3'], paddingBottom: theme.spacing['sp-3'] },
   row: {
     flexDirection: 'row',

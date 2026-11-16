@@ -126,6 +126,9 @@ function Lanes({ view, words, acts, firstCard }: PartProps) {
   return (
     <div className="hg-usage-lanes" data-lanes="two">
       <div ref={firstCard} tabIndex={-1} className="hg-usage-lane hg-focus-target">
+        {view.teaching === null ? null : (
+          <BillingQuiet art="none-yet" title={view.teaching.title} message={view.teaching.body} />
+        )}
         {regions.map((region) => (
           <UsageRegion
             key={region.title}

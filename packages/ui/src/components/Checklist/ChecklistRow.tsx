@@ -1,7 +1,6 @@
-import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
 import { renderActorClass } from '../ActorClass';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { renderPending } from '../PendingAction';
 import { materialsLineOf, stepStateOf } from './Checklist.logic';
 import type { ChecklistItem, ChecklistRowProps, ChecklistWords } from './Checklist.types';
@@ -24,19 +23,7 @@ function TickBox({
       data-done={filled ? 'true' : undefined}
       data-disabled={disabled === true ? 'true' : undefined}
     >
-      {filled ? (
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="4.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name="tick-small" />
-        </svg>
-      ) : null}
+      {filled ? <ShellGlyph name="check" size="dense" tone="current" /> : null}
     </span>
   );
 }
@@ -76,19 +63,7 @@ function Body({
           onClick={item.evidence.onOpen}
         >
           {item.evidence.label ?? words.evidence}
-          <Icon size="sm">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <ShellGlyphMarks name="arrow-up-right" />
-            </svg>
-          </Icon>
+          <ShellGlyph name="arrow-up-right" size="sm" tone="current" />
         </a>
       )}
       {attribution !== null || item.doneAt !== undefined ? (

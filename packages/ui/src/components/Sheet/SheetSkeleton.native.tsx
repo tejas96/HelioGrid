@@ -1,9 +1,9 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
-import { useEffect, useRef } from 'react';
 import type { DimensionValue } from 'react-native';
 import { Animated, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { usePulse } from '../../primitives/use-pulse.native';
 import type { SheetDensity } from './Sheet.types';
 
 interface SheetSkeletonProps {
@@ -18,18 +18,7 @@ interface SheetSkeletonProps {
 
 /** The web half sweeps a gradient; RN has no CSS gradient loop, so it pulses opacity instead. */
 export function ShimmerBar({ width, height }: { width: DimensionValue; height: number }) {
-  const value = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(value, { toValue: 1, duration: 700, useNativeDriver: true }),
-        Animated.timing(value, { toValue: 0, duration: 700, useNativeDriver: true }),
-      ]),
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [value]);
-  const opacity = value.interpolate({ inputRange: [0, 1], outputRange: [0.45, 1] });
+  const opacity = usePulse();
   return <Animated.View style={[styles.bar, { width, height, opacity }]} />;
 }
 

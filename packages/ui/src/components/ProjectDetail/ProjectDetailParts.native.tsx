@@ -1,50 +1,36 @@
 import type { ProjectFile, TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
-import { type ReactNode, type Ref, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useRef } from 'react';
+import { StyleSheet, View, type ViewStyle } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { type FocusAfter, useFocusAfter } from '../../primitives/FocusAfter';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { Card } from '../Card/Card.native';
+import { CardHeader } from '../Card/CardHeader.native';
 import { FileLink as NamedFileLink } from '../FileLink/FileLink.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { IconButton } from '../IconButton/IconButton.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { Switch } from '../Switch/Switch.native';
 import type { ProjectBlock } from './ProjectDetail.blocks';
 import type { DetailRow, DetailRowAct } from './ProjectDetail.rows';
 
-/** A card's head on the phone, inside its tile: its name, a quiet note, its one act at the end. */
-export function CardHead({
-  title,
-  aside,
-  act = null,
-  headingRef,
-}: {
-  title: TranslatedText;
-  aside: TranslatedText | null;
-  act?: ReactNode;
-  /** Where focus lands when one of the card's acts leaves after its press. */
-  headingRef?: Ref<View>;
-}) {
-  return (
-    <View style={styles.head}>
-      <View style={styles.headWords}>
-        <View ref={headingRef} accessible accessibilityRole="header">
-          <Text variant="h3">{title}</Text>
-        </View>
-        {aside === null ? null : (
-          <Text variant="caption" color="secondary">
-            {aside}
-          </Text>
-        )}
-      </View>
-      {act === null ? null : <View style={styles.headAct}>{act}</View>}
-    </View>
-  );
-}
+/** A project card — a data card, so OneOhm's paper card's radius 24 (`Card` draws its solid look);
+ * its head and rows sit just in from its edge. */
+export const projectCard: ViewStyle = {
+  padding: theme.spacing['sp-1'],
+  gap: theme.spacing['sp-1'],
+  borderRadius: theme.radius['r-lg'],
+};
+
+/** A project card's head sits in from the card's edge, as the rows under it do. */
+export const projectHead: ViewStyle = {
+  paddingHorizontal: theme.spacing['sp-3'],
+  paddingTop: theme.spacing['sp-3'],
+  paddingBottom: theme.spacing['sp-1'],
+};
 
 /** The files on a row, each its own name, opened with a tap. None draws nothing. */
 export function FileLinks({
@@ -109,12 +95,13 @@ export function DetailCard({
   const { title, aside, act, rows, none, more } = block;
   const heading = useRef<View>(null);
   return (
-    <Card density="functional" style={styles.card}>
-      <CardHead
+    <Card density="functional" style={projectCard}>
+      <CardHeader
         title={title}
-        aside={aside}
-        act={act === null ? null : <RowAct act={act} focusAfter={heading} />}
+        description={aside}
+        action={act === null ? null : <RowAct act={act} focusAfter={heading} />}
         headingRef={heading}
+        style={projectHead}
       />
       <View style={styles.pad}>
         <NotSent shown={block.notSent} words={words.notSent} onRetry={act?.onPress ?? null} />
@@ -238,24 +225,6 @@ export function RowAct({ act, focusAfter }: { act: DetailRowAct; focusAfter: Foc
 
 const styles = StyleSheet.create({
   notSent: { alignItems: 'flex-start' },
-  card: { padding: theme.spacing['sp-1'], gap: theme.spacing['sp-1'] },
-  head: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing['sp-2'],
-    paddingHorizontal: theme.spacing['sp-3'],
-    paddingTop: theme.spacing['sp-3'],
-    paddingBottom: theme.spacing['sp-1'],
-  },
-  headWords: {
-    flex: 1,
-    minWidth: 0,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'baseline',
-    gap: theme.spacing['sp-2'],
-  },
-  headAct: { flexShrink: 0 },
   pad: { paddingHorizontal: theme.spacing['sp-3'] },
   none: { paddingHorizontal: theme.spacing['sp-3'], paddingBottom: theme.spacing['sp-3'] },
   more: { flexDirection: 'row', paddingHorizontal: theme.spacing['sp-1'] },

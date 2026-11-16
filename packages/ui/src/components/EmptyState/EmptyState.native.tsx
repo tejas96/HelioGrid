@@ -6,7 +6,7 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import { EmptyScene } from '../EmptyScene/EmptyScene.native';
-import type { EmptyStateProps } from './EmptyState.types';
+import { EMPTY_STATE_BLOOM, type EmptyStateProps } from './EmptyState.types';
 
 interface NativeEmptyStateProps extends EmptyStateProps {
   style?: StyleProp<ViewStyle>;
@@ -27,7 +27,7 @@ export function EmptyState({
   return (
     <View style={[styles.root, style]}>
       <View style={styles.art}>
-        {glow && scene === undefined ? <BrandBloom size={BLOOM_SIZE} /> : null}
+        {glow && scene === undefined ? <BrandBloom size={EMPTY_STATE_BLOOM} /> : null}
         {/* No glyph, no circle — see the web half. */}
         {scene === undefined ? null : <EmptyScene name={scene} />}
         {icon && scene === undefined ? (
@@ -46,9 +46,6 @@ export function EmptyState({
     </View>
   );
 }
-
-/** The web half's 180px bloom — an art dimension, off the scale on purpose. */
-const BLOOM_SIZE = 180;
 
 const styles = StyleSheet.create({
   /* `flexGrow` centres the state in the room its page gives it; in a list's content, which does

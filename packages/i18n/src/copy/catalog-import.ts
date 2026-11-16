@@ -49,7 +49,9 @@ const WORDS = {
   showMore: /*i18n*/ { id: 'Show more' },
   tryAgain: /*i18n*/ { id: 'Try again' },
   unreadableTitle: /*i18n*/ { id: 'We could not open this file' },
-  unreadableMessage: /*i18n*/ { id: 'Choose another file to import.' },
+  unreadableMessage: /*i18n*/ {
+    id: 'It may have no rows, or be damaged. Choose another file to import.',
+  },
   matchedIntro: /*i18n*/ {
     id: 'We matched {matched} of your {columns} columns; {open, plural, one {# still needs you} other {# still need you}}.',
   },

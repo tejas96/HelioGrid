@@ -15,7 +15,7 @@ export function ItemCard({ glyph, hue, title, trailing, children }: ItemCardProp
     <View style={styles.card}>
       <GroundProvider ground="page">
         <View style={styles.head}>
-          <HueTile glyph={glyph} hue={hue} size={32} stroke={1.6} />
+          <HueTile glyph={glyph} hue={hue} size={32} />
           <View style={styles.title} accessibilityRole="header">
             <Text variant="body" bold>
               {title}
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     ...raisedCard,
     gap: theme.spacing['sp-4'],
     padding: theme.spacing['sp-4'],
-    borderRadius: 20,
+    borderRadius: theme.radius['r-lg'],
   },
   head: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
   title: { flex: 1, minWidth: 0 },

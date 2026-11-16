@@ -4,6 +4,7 @@ import type { StyleProp, TextStyle } from 'react-native';
 import { Platform, Text as RNText, StyleSheet } from 'react-native';
 import type { ThemeColor } from '../Color/colors';
 import { colors } from '../Color/colors';
+import { TONE } from '../Tone/tone.native';
 import { isBrandRun, isMono, lineHeightFor, roleOf, runsOfString } from './Text.logic';
 import type { TextAlign, TextColor, TextProps, TextVariant } from './Text.types';
 
@@ -93,6 +94,7 @@ const VARIANT: Record<TextVariant, TextStyle> = {
     fontWeight: '500',
     fontSize: roleOf('field-label').fontSize,
     lineHeight: roleOf('field-label').lineHeight,
+    letterSpacing: R.label.letterSpacing,
   },
   'field-value': {
     fontFamily: sans,
@@ -135,10 +137,10 @@ const COLOR: Record<TextColor, ThemeColor> = {
   disabled: colors['text-disabled'],
   inverse: colors['text-inverse'],
   accent: colors.accent,
-  success: colors['success-text'],
-  warning: colors['warning-text'],
-  danger: colors['danger-text'],
-  info: colors['info-text'],
+  success: TONE.success.ink,
+  warning: TONE.warning.ink,
+  danger: TONE.danger.ink,
+  info: TONE.info.ink,
 };
 
 const BOLD: TextStyle = { fontWeight: '700' };
@@ -170,8 +172,16 @@ function runTracking(tracked: boolean, runCount: number): TextStyle | undefined 
  * An element child draws its own text and keeps its own box; only words this `Text` holds
  * directly are split.
  */
-function drawRuns(children: ReactNode, variant: TextVariant, tracked: boolean): ReactNode {
-  if (isMono(variant)) return children;
+function drawRuns(
+  children: ReactNode,
+  variant: TextVariant,
+  tracked: boolean,
+  ownMono: boolean,
+): ReactNode {
+  /* A run sets its own face, which would override a mono face the caller named (a figure at a
+     heading's size). Mono carries numbers and codes, never a script that needs its own face, so it
+     is kept whole; any other face a caller names still splits into runs for Devanagari. */
+  if (isMono(variant) || ownMono) return children;
   return Children.map(children, (child) => {
     if (isValidElement(child) || (typeof child !== 'string' && typeof child !== 'number')) {
       return child;
@@ -239,7 +249,7 @@ export function Text({
       numberOfLines={oneLine === true ? 1 : twoLines === true ? 2 : undefined}
       ellipsizeMode={oneLine === true || twoLines === true ? 'tail' : undefined}
     >
-      {drawRuns(children, variant, tracked)}
+      {drawRuns(children, variant, tracked, own?.fontFamily === theme.type.families.mono)}
     </RNText>
   );
 }

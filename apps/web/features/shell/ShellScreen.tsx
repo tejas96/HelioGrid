@@ -76,15 +76,20 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
   /* Leaving the page the centre stands beside closes it — an item's subject, or a rail press. A
      page holding a change asks first (`useLeaveGuard`). */
   const goTo = (path: string) => move(path, centre.close);
+  const search = useSearchScreen({ pack: useFormat().pack });
+  /* The sidebar's field shows the palette's query, so a closed palette takes its words with it. */
+  const closeSearch = () => {
+    search.clear();
+    screen.search.close();
+  };
   /* A result opened from the palette leaves both overlays behind with the page they stood over. */
   const closeOverlays = () => {
     centre.close();
-    screen.search.close();
+    closeSearch();
   };
   const nav = useRailItems(shell, useSidebar(), useSettingsScreen(), goTo);
   const [appearance, chooseAppearance] = useAppearance();
   const [folded, toggleFold] = useRailFolded();
-  const search = useSearchScreen({ pack: useFormat().pack });
   useSearchKeys(screen.search.open);
   // A page holding a change asks first, as every in-app move does (D1 A).
   const signOut = () => guarded(screen.signOut);
@@ -129,7 +134,7 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
   const searchItem: RailItem = {
     key: 'search',
     label: t(SHELL.search),
-    icon: <ShellGlyph name="search" size="md" />,
+    icon: <ShellGlyph name="search" size="nav" />,
     onClick: screen.search.open,
   };
   const role = shell.home === null ? null : presetName(t, shell.home.home);
@@ -162,6 +167,7 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
           }
           searchItem={searchItem}
           items={nav.rail.items}
+          groups={nav.rail.groups}
           footer={nav.rail.footer}
           value={nav.rail.value}
           onChange={nav.choose}
@@ -209,7 +215,7 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
           screen={search}
           words={searchWords(t)}
           onOpen={(address) => move(`/${address}`, closeOverlays)}
-          onClose={screen.search.close}
+          onClose={closeSearch}
         />
       ) : null}
       {note}

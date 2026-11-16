@@ -21,7 +21,7 @@ export function ComparedWith({ comparisons, listSource, benchmarkSources }: Comp
   );
   return (
     <section className="hg-pricing-compared" aria-label={t(PRICING.comparedWith)}>
-      <span className="hg-pricing-overline">{t(PRICING.comparedWith)}</span>
+      <span className="hg-pricing-overline hg-overline">{t(PRICING.comparedWith)}</span>
       <FactRows label={t(PRICING.comparedWith)} density="expressive" form="pair" measure={40}>
         {comparisons.flatMap((row) => {
           const capacity = words.power(row.power);

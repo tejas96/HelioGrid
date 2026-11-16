@@ -160,7 +160,7 @@
 .hg-allocation-swatch {
   width: var(--sp-2);
   height: var(--sp-2);
-  border-radius: 2px;
+  border-radius: var(--rf-xs);
   background: var(--accent);
   flex-shrink: 0;
 }

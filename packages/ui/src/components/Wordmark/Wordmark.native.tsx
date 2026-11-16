@@ -10,8 +10,9 @@ import { colors } from '../../primitives/Color/colors';
    identically, and no web bundler ever reads a .native.tsx. */
 import { Text } from '../../primitives/Text/Text.native';
 import { BrandGradientDefs } from '../../utils/brand-gradient.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import { GRID, HELIO, PRODUCT_NAME } from './Wordmark.name';
+import { nearestGlyphSize } from '../AppShell/ShellGlyph.logic';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import { GRID, HELIO, PRODUCT_NAME, SUN_SHARE } from './Wordmark.name';
 import type { LogoTileProps, ProductMarkProps, WordmarkProps } from './Wordmark.types';
 
 /** −0.03em, the system's own display tracking, expressed against the caller's size. */
@@ -117,7 +118,6 @@ const styles = StyleSheet.create({
 export function LogoTile({ size = 40, radius, style }: NativeLogoTileProps) {
   const gradientId = `hg-logo-tile-${useId()}`;
   const corner = radius ?? size / 2;
-  const sun = Math.round(size * 0.56);
   const frame: ViewStyle = {
     width: size,
     height: size,
@@ -145,18 +145,12 @@ export function LogoTile({ size = 40, radius, style }: NativeLogoTileProps) {
           fill={`url(#${gradientId})`}
         />
       </Svg>
-      <Svg
-        width={sun}
-        height={sun}
-        viewBox="0 0 24 24"
-        fill="none"
+      <ShellGlyph
+        name="sun"
+        size={nearestGlyphSize(size * SUN_SHARE)}
         // biome-ignore lint/plugin/raw-white: brand — the sun on the logo disc reads light on its gradient
-        stroke={colors['text-inverse']}
-        strokeWidth={2}
-        strokeLinecap="round"
-      >
-        <ShellGlyphMarks name="sun" />
-      </Svg>
+        ink={colors['text-inverse']}
+      />
     </View>
   );
 }

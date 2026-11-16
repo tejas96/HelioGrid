@@ -1,11 +1,11 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { RefObject } from 'react';
-import { useEffect, useRef } from 'react';
 import type { DimensionValue, TextStyle } from 'react-native';
-import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { usePulse } from '../../primitives/use-pulse.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { UsageMeterProps } from './UsageMeter.types';
@@ -14,9 +14,8 @@ import { usageLoadingLine } from './usage-meter-model';
 /**
  * A shimmer in the figure's OWN footprint — never a numeral, never a dash dressed as a value.
  *
- * The web half sweeps a gradient across the block (`hg-sheet-shimmer`); RN has no animatable
- * background-position, so the same "still being read" signal is a breathing tint over the same
- * footprint. The footprint is what carries the meaning; the sweep was only its motion.
+ * The web half sweeps light across the block (`hg-skeleton`); the phone pulses it (`usePulse`). The
+ * footprint is what carries the meaning; the motion only says it is still being read.
  */
 export function Shimmer({
   width,
@@ -27,28 +26,7 @@ export function Shimmer({
   height: number;
   radius: number;
 }) {
-  const pulse = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulse, {
-          toValue: 1,
-          duration: 700,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulse, {
-          toValue: 0,
-          duration: 700,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-      ]),
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [pulse]);
-  const opacity = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.45, 1] });
+  const opacity = usePulse();
   return (
     <Animated.View
       style={[
@@ -63,7 +41,7 @@ export function Shimmer({
 type Frame = RefObject<View | null>;
 
 const label: TextStyle = {
-  fontSize: 14,
+  fontSize: theme.type.roles['body-sm'].fontSize,
   fontWeight: '500',
   letterSpacing: -0.14,
   color: colors['text-primary'],

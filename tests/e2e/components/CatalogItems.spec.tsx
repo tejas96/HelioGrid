@@ -256,3 +256,18 @@ test('a pack with no schemes draws no compliance column', async ({ mount, page }
     await frame.unmount();
   }
 });
+
+test('at 375 the order is the filter sheet’s first choice, as the wide menu’s is', async ({
+  mount,
+  page,
+}) => {
+  await at(page, 375);
+  await mount(<CatalogItemsAsRead reader="en" frame="normal" />);
+  await expect(page.getByRole('button', { name: en.sortLabel })).toHaveCount(0);
+  await page.getByRole('button', { name: en.filters }).first().click();
+  await animationsSettled(page);
+  const panel = page.getByRole('dialog');
+  await expect(panel.getByText(en.sortLabel, { exact: true })).toBeVisible();
+  await panel.getByText(en.sorts.price, { exact: true }).click();
+  await expect(page.locator('[data-acted="sort:price"]')).toHaveCount(1);
+});

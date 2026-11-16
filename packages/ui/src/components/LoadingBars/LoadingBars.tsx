@@ -42,37 +42,37 @@ function Bar({ size }: { size: LoadingBarSize }) {
   if (size === 'count') {
     return (
       <span aria-hidden="true" className="hg-loading-count">
-        <span />
+        <span className="hg-skeleton" />
       </span>
     );
   }
   if (size === 'line') {
     return (
       <span aria-hidden="true" className="hg-loading-line">
-        <span className="hg-loading-line-mark" />
-        <span className="hg-loading-line-bar" />
+        <span className="hg-loading-line-mark hg-skeleton" />
+        <span className="hg-loading-line-bar hg-skeleton" />
       </span>
     );
   }
   if (size === 'option') {
     return (
       <span aria-hidden="true" className="hg-loading-option">
-        <span className="hg-loading-option-mark" />
+        <span className="hg-loading-option-mark hg-skeleton" />
         <span className="hg-loading-option-text">
           <span className="hg-loading-option-title">
-            <span />
+            <span className="hg-skeleton" />
           </span>
           <span className="hg-loading-option-description">
             <span className="hg-loading-option-line">
-              <span />
+              <span className="hg-skeleton" />
             </span>
             <span className="hg-loading-option-line">
-              <span />
+              <span className="hg-skeleton" />
             </span>
           </span>
         </span>
       </span>
     );
   }
-  return <span aria-hidden="true" className="hg-loading-bar" data-size={size} />;
+  return <span aria-hidden="true" className="hg-loading-bar hg-skeleton" data-size={size} />;
 }

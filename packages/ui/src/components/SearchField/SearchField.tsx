@@ -3,7 +3,7 @@ import { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { closingPress, type FocusHandle } from '../../primitives/FocusAfter';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { FiltersButton } from '../FilterBar';
 import { clearActOf, searchName } from './SearchField.logic';
 import type { SearchFieldProps } from './SearchField.types';
@@ -74,20 +74,9 @@ function SearchPill({
       {...fieldBox({ focused: focus, disabled, density: 'expressive' })}
       style={style}
     >
-      <svg
-        className="hg-search-field-glyph"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <ShellGlyphMarks name="search" />
-      </svg>
+      <span className="hg-search-field-glyph">
+        <ShellGlyph name="search" size="sm" tone="current" />
+      </span>
       <input
         ref={(element) => {
           input.current = element;
@@ -110,18 +99,7 @@ function SearchPill({
           onClick={closingPress(input)(clearAct.clear)}
         >
           <span className="hg-search-field-clear-pill">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              aria-hidden="true"
-            >
-              <ShellGlyphMarks name="close" />
-            </svg>
+            <ShellGlyph name="close" size="dense" tone="current" />
           </span>
         </button>
       ) : null}

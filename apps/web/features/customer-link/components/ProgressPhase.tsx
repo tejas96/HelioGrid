@@ -15,6 +15,10 @@ import {
   HueTile,
   ProvenanceTier,
   ShellGlyph,
+  Text,
+  Timeline,
+  type TimelineItem,
+  type TimelineStatus,
   useFormat,
   useToasts,
 } from '@heliogrid/ui';
@@ -25,7 +29,6 @@ import { ProgressPayments } from './ProgressPayments';
 import { QuestionsCard } from './ProposalAnswer';
 
 type Progress = NonNullable<CustomerPage['progress']>;
-const GLYPH_STROKE = 1.7;
 
 /**
  * The customer's page after the deal is won (`SCR-F5-02`, `F5-61`): where the work stands, who is
@@ -80,7 +83,7 @@ export function ProgressPhase({
             </>
           ) : (
             <PageNote tone="neutral" title={words.cancelled.title(format.date(cancelled))}>
-              <p>{words.cancelled.line}</p>
+              <Text color="secondary">{words.cancelled.line}</Text>
             </PageNote>
           )}
           <ProgressPayments
@@ -108,25 +111,20 @@ function StagesCard({ progress, words }: { progress: Progress; words: CustomerPr
   const { stages, wait } = progress;
   const at = stages.findIndex((stage) => stage.state !== 'done');
   const size = progress.capacityKw === null ? null : format.number(progress.capacityKw);
+  const items = stages.map((stage, index) =>
+    stageItem(stage, index === at || stage.state === 'waiting' ? wait : null, words, format),
+  );
   return (
     <PageCard glass>
       <div className="hg-cust-over-row">
-        <span className="hg-cust-over">{words.over(size)}</span>
+        <Text variant="overline" color="secondary" as="span">
+          {words.over(size)}
+        </Text>
         {/* The size the rep typed, carried onto the customer's page, states its tier (`F8-01`). */}
         {size === null ? null : <ProvenanceTier tier={STATED_FIGURE_TIER} />}
       </div>
-      <h1 className="hg-cust-progress-title">{headlineOf(progress, at, words, format.word)}</h1>
-      <ol className="hg-cust-stages">
-        {stages.map((stage, index) => (
-          <StageRow
-            key={stage.stage}
-            stage={stage}
-            step={index + 1}
-            wait={index === at || stage.state === 'waiting' ? wait : null}
-            words={words}
-          />
-        ))}
-      </ol>
+      <Text variant="h1">{headlineOf(progress, at, words, format.word)}</Text>
+      <Timeline items={items} />
     </PageCard>
   );
 }
@@ -146,65 +144,49 @@ function headlineOf(
     : words.headline.waiting(at + 1, stages.length, word('party', wait.party));
 }
 
-function StageRow({
-  stage,
-  step,
-  wait,
-  words,
-}: {
-  stage: Progress['stages'][number];
-  step: number;
-  /** The open wait, on the stage it holds up; `null` on every other stage. */
-  wait: Progress['wait'];
-  words: CustomerProgressWords;
-}) {
-  const format = useFormat();
-  const done = stage.state === 'done';
-  const waiting = !done && wait !== null;
-  return (
-    <li data-at={waiting ? 'waiting' : stage.state}>
-      <span className="hg-cust-stage-dot" aria-hidden="true">
-        {done ? <ShellGlyph name="tick-small" size="sm" /> : null}
-        {waiting ? <ShellGlyph name="clock" size="sm" /> : null}
-        {done || waiting ? null : step}
-      </span>
-      <span className="hg-cust-stage-words">
-        <b>{stage.label}</b>
-        {waiting ? <WaitLines wait={wait} words={words} /> : null}
-        {!waiting && stage.on !== null ? <span>{format.date(stage.on)}</span> : null}
-        {!waiting && stage.on === null && stage.state === 'current' ? (
-          <span>{words.stage.inProgress}</span>
-        ) : null}
-      </span>
-    </li>
-  );
+/**
+ * One stage on the rail: done, the current one (a clock in its node while it waits on someone), or
+ * ahead. A wait says who, why and since when (`F5-63`), then its usual length or that none is known.
+ */
+function stageItem(
+  stage: Progress['stages'][number],
+  wait: Progress['wait'],
+  words: CustomerProgressWords,
+  format: ReturnType<typeof useFormat>,
+): TimelineItem {
+  const waiting = stage.state !== 'done' && wait !== null;
+  const base = {
+    id: stage.stage,
+    label: stage.label,
+    status: waiting ? 'current' : railStatusOf(stage.state),
+  };
+  if (waiting) {
+    return {
+      ...base,
+      icon: <ShellGlyph name="clock" size="sm" tone="current" />,
+      description: words.stage.waitingSince(
+        format.word('party', wait.party),
+        format.date(wait.since),
+        format.word('reason', wait.reason),
+      ),
+      content: (
+        <Text variant="body-sm" color="secondary">
+          {wait.typicalDays === null
+            ? words.stage.endNotKnown
+            : words.stage.usually(wait.typicalDays)}
+        </Text>
+      ),
+    };
+  }
+  if (stage.on !== null) return { ...base, description: format.date(stage.on) };
+  if (stage.state === 'current') return { ...base, description: words.stage.inProgress };
+  return base;
 }
 
-/** The wait as published (`F5-63`): who, why and since when; its usual length, or that none is known. */
-function WaitLines({
-  wait,
-  words,
-}: {
-  wait: NonNullable<Progress['wait']>;
-  words: CustomerProgressWords;
-}) {
-  const format = useFormat();
-  return (
-    <>
-      <span>
-        {words.stage.waitingSince(
-          format.word('party', wait.party),
-          format.date(wait.since),
-          format.word('reason', wait.reason),
-        )}
-      </span>
-      <span>
-        {wait.typicalDays === null
-          ? words.stage.endNotKnown
-          : words.stage.usually(wait.typicalDays)}
-      </span>
-    </>
-  );
+/** A stage's place on the rail: done, ahead, and every other state the one at work now. */
+function railStatusOf(state: Progress['stages'][number]['state']): TimelineStatus {
+  if (state === 'done') return 'done';
+  return state === 'ahead' ? 'upcoming' : 'current';
 }
 
 /** The installation day's four facts (`F5-68`): each as told, and "not yet known" where none was. */
@@ -220,7 +202,7 @@ function InstallationCard({
   if (day.on === null) {
     return (
       <PageCard title={words.day.title}>
-        <p className="hg-cust-quiet">{words.day.notScheduled}</p>
+        <Text color="secondary">{words.day.notScheduled}</Text>
       </PageCard>
     );
   }
@@ -248,12 +230,7 @@ function InstallationCard({
       <dl className="hg-cust-four">
         {facts.map((fact) => (
           <div key={fact.glyph}>
-            <HueTile
-              glyph={fact.glyph}
-              hue="accent"
-              size={theme.spacing['sp-10']}
-              stroke={GLYPH_STROKE}
-            />
+            <HueTile glyph={fact.glyph} hue="accent" size={theme.spacing['sp-10']} />
             <span>
               <dt>{fact.label}</dt>
               <dd>{fact.value}</dd>

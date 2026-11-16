@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
+import { StatusMark } from '../StatusMark';
 import { leadAgeStandingOf } from './LeadAge.logic';
 import type { LeadAgeProps } from './LeadAge.types';
 

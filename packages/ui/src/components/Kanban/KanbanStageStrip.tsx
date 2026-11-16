@@ -34,7 +34,7 @@ export function KanbanStageStrip({
   return (
     <>
       {label ? (
-        <span id={`${autoId}-stage`} className="hg-kanban-stage-label">
+        <span id={`${autoId}-stage`} className="hg-kanban-stage-label hg-overline">
           {label}
         </span>
       ) : null}

@@ -47,6 +47,18 @@ export function nationalNumber(pack: FormatPack, value: string): string {
   return carriesCode ? digits.slice(code.length) : digits;
 }
 
+/**
+ * What a phone box sends for what was typed beside its dial code: E.164, or `''` when nothing is
+ * typed. A number written whole reads as the stored number does (`phoneE164Of`), so a bare `91…`
+ * loses its code; a number not yet whole is sent as typed, so the field can say what is wrong.
+ */
+export function phoneFieldE164Of(pack: FormatPack, typed: string): string {
+  const whole = phoneE164Of(pack, typed);
+  if (whole !== null) return whole;
+  const entered = nationalNumber(pack, typed);
+  return entered.length === 0 ? '' : `${pack.phone.dialCode}${entered}`;
+}
+
 export interface PhoneOptions {
   /**
    * Render the national number alone — `98450 27746` — for a field that shows its dial code as

@@ -1,6 +1,7 @@
-/* ProgressRing — a figure in a ring that shows its share of a whole. The arc is a conic sweep in
-   the ocean accent and the logo's teal, masked to a 12px ring (`--sp-3`) over a soft track; it
-   turns in once from a quarter back, transform and opacity only. */
+/* ProgressRing — the one ring that shows a share of a whole. The arc is a conic sweep in the ocean
+   accent and the logo's teal (or one flat `--hg-ring-ink` on a well track), masked to a ring over a
+   soft track; it turns in once from a quarter back, transform and opacity only. Each size's side
+   and stroke are `ProgressRing.logic.ts`'s, which the phone draws from. */
 
 .hg-ring {
   --hg-ring-side: calc(var(--sp-24) + var(--sp-8));
@@ -21,6 +22,21 @@
 .hg-ring[data-size="sm"] {
   --hg-ring-side: calc(var(--sp-12) + var(--sp-2));
   --hg-ring-stroke: calc(var(--sp-1) + 1px);
+}
+
+.hg-ring[data-size="face"] {
+  --hg-ring-side: var(--sp-12);
+  --hg-ring-stroke: var(--sp-1);
+}
+
+.hg-ring[data-size="dial"] {
+  --hg-ring-side: var(--sp-16);
+  --hg-ring-stroke: calc(var(--sp-1) + var(--sp-0-5));
+}
+
+.hg-ring[data-size="run"] {
+  --hg-ring-side: calc(var(--sp-24) + var(--sp-8) + var(--sp-1));
+  --hg-ring-stroke: calc(var(--sp-2) + var(--sp-0-5));
 }
 
 .hg-ring-count {
@@ -60,8 +76,18 @@
   animation: hg-ring-in var(--dur-data) var(--ease-enter) backwards;
 }
 
-.hg-ring[data-size="sm"] .hg-ring-arc {
+.hg-ring[data-size="sm"] .hg-ring-arc,
+.hg-ring[data-ink="true"] .hg-ring-arc {
   filter: none;
+}
+
+/* One flat ink — a part's hue, a late load — on the well, where the colour says which. */
+.hg-ring[data-ink="true"] .hg-ring-track {
+  background: var(--canvas-sunken);
+}
+
+.hg-ring[data-ink="true"] .hg-ring-arc {
+  background: conic-gradient(var(--hg-ring-ink) calc(var(--hg-ring-share) * 1turn), transparent 0);
 }
 
 .hg-ring[data-on-panel="true"] .hg-ring-track {

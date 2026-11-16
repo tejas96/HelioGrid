@@ -1,0 +1,61 @@
+/* StateBody — the one body a frame draws for its read's states, and the centred region form. */
+
+.hg-state-message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+
+.hg-state-message-text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-state-message-text[data-tone="warning"] {
+  color: var(--warning-text);
+}
+
+.hg-state-message-title {
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-state-message-text[data-tone="warning"] .hg-state-message-title {
+  color: var(--warning-text);
+}
+
+/* ── the region form: a mark in a tinted disc, a title, a sentence and one act, centred ── */
+
+.hg-state-region {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--sp-2);
+  padding: var(--sp-12) var(--sp-6);
+  font-family: var(--font-sans);
+}
+
+.hg-state-region-mark {
+  display: grid;
+  place-items: center;
+  width: var(--sp-12);
+  height: var(--sp-12);
+  margin-bottom: var(--sp-1);
+  border-radius: var(--r-pill);
+}
+
+/* Its tint and ink are `hg-tone`'s; a neutral mark is the quiet tertiary ink. */
+.hg-state-region-mark.hg-tone[data-tone="neutral"] {
+  color: var(--text-tertiary);
+}
+
+.hg-state-region-message {
+  max-width: calc(var(--form-max) * 0.75);
+}

@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { doneShare } from '../ProgressRing/ProgressRing.logic';
 import type {
   CancelEffect,
   CancelWords,
@@ -126,7 +127,7 @@ export function offeredCancel(
 
 /** The finishing sentence's mark: a fault, a stop, or a tick for work that finished. */
 export function messageGlyph(state: OperationState): ShellGlyphName {
-  return state === 'failed' ? 'alert-circle' : state === 'cancelled' ? 'minus-circle' : 'tick';
+  return state === 'failed' ? 'alert-circle' : state === 'cancelled' ? 'minus-circle' : 'check';
 }
 
 /**
@@ -153,4 +154,9 @@ export function stageStateAt(stage: OperationStage, index: number): OperationSta
 /** A label is the ring's own spoken name only when it is words; anything else is named by its id. */
 export function ringSpokenName(label: ReactNode): string | undefined {
   return typeof label === 'string' ? label : undefined;
+}
+
+/** How much of the run's ring a count has filled; no count fills none. */
+export function countShare(count: { done: number; total: number } | null): number {
+  return count === null ? 0 : doneShare(count.done, count.total);
 }

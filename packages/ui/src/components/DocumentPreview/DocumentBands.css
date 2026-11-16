@@ -16,7 +16,7 @@
   height: 2px;
   background: linear-gradient(90deg, var(--hg-doc-brand) 0 40px, var(--hairline) 40px 100%);
   opacity: var(--hg-doc-rule-opacity);
-  border-radius: 2px;
+  border-radius: var(--r-pill);
 }
 
 .hg-doc-table {
@@ -31,7 +31,7 @@
 
 .hg-doc-cell {
   padding: 8px 0;
-  font-size: 11px;
+  font-size: calc(var(--doc-fs-lead) * var(--doc-preview-scale));
   color: var(--text-primary);
   vertical-align: top;
   border-bottom: 1px solid var(--hairline);
@@ -50,7 +50,7 @@
 .hg-doc-total-row {
   margin-top: 12px;
   padding: 11px 14px;
-  border-radius: 8px;
+  border-radius: var(--rf-md);
   /* biome-ignore lint/plugin/raw-white-css: paper — the brand's wash over the white sheet */
   background: color-mix(in srgb, var(--hg-doc-brand) 7%, var(--surface));
   display: flex;
@@ -66,7 +66,7 @@
 }
 
 .hg-doc-total-value {
-  font-size: 17px;
+  font-size: calc(var(--doc-fs-stat) * var(--doc-preview-scale));
   font-weight: var(--fw-bold);
   letter-spacing: var(--tr-h2);
   font-family: var(--font-mono);
@@ -76,7 +76,7 @@
 
 .hg-doc-subsidy {
   margin: 6px 0 0;
-  font-size: 10px;
+  font-size: calc(var(--doc-fs) * var(--doc-preview-scale));
   color: var(--text-secondary);
   text-align: right;
 }
@@ -94,13 +94,13 @@
   display: flex;
   align-items: baseline;
   gap: 8px;
-  font-size: 11px;
+  font-size: calc(var(--doc-fs-lead) * var(--doc-preview-scale));
 }
 
 /* Each section's number on a small bead of the brand's wash. */
 .hg-doc-section-index {
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: calc(var(--doc-fs-small) * var(--doc-preview-scale));
   color: var(--hg-doc-ink);
   width: 16px;
   height: 16px;
@@ -117,7 +117,7 @@
 }
 
 .hg-doc-section-meta {
-  font-size: 9px;
+  font-size: calc(var(--doc-fs-small) * var(--doc-preview-scale));
   color: var(--text-tertiary);
 }
 
@@ -127,7 +127,7 @@
   vertical-align: top;
   width: 26px;
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: calc(var(--doc-fs-small) * var(--doc-preview-scale));
   color: var(--hg-doc-ink);
 }
 
@@ -144,7 +144,7 @@
 .hg-doc-tranche-cell {
   padding: 8px 0;
   border-bottom: 1px solid var(--hairline);
-  font-size: 11px;
+  font-size: calc(var(--doc-fs-lead) * var(--doc-preview-scale));
   vertical-align: top;
 }
 
@@ -155,14 +155,14 @@
 
 .hg-doc-tranche-when {
   display: block;
-  font-size: 10px;
+  font-size: calc(var(--doc-fs) * var(--doc-preview-scale));
   color: var(--text-secondary);
 }
 
 .hg-doc-tranche-share {
   padding: 8px 0;
   border-bottom: 1px solid var(--hairline);
-  font-size: 10px;
+  font-size: calc(var(--doc-fs) * var(--doc-preview-scale));
   text-align: right;
   color: var(--text-secondary);
   vertical-align: top;
@@ -171,7 +171,7 @@
 .hg-doc-tranche-amount {
   padding: 8px 0;
   border-bottom: 1px solid var(--hairline);
-  font-size: 11px;
+  font-size: calc(var(--doc-fs-lead) * var(--doc-preview-scale));
   text-align: right;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;

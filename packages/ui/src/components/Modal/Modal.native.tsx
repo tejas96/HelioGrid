@@ -1,10 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
-import { Animated, Easing, ScrollView, StyleSheet, View } from 'react-native';
+import { Animated, ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
-import { Portal } from '../../primitives/Portal/Portal.native';
+import { useKeyboardHeight } from '../../primitives/Keyboard/use-keyboard.native';
+import { Portal, SlidingPanel } from '../../primitives/Portal/Portal.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useCloseOnBack } from '../../primitives/use-close-on-back.native';
 import { useReducedMotion } from '../../primitives/use-reduced-motion';
@@ -18,12 +19,22 @@ interface NativeModalProps extends ModalProps {
 }
 
 /** sm 400 · md 520 · lg 720, each capped at the layer's own width. */
-const WIDTH: Record<ModalSize, number> = { sm: 400, md: 520, lg: 720 };
+const WIDTH: Record<ModalSize, number> = {
+  sm: 400,
+  md: 520,
+  lg: 720,
+  wide: theme.layout['content-max'],
+};
 
 /** 1.3 line-height on the reference's 20/18 title sizes; RN takes points, not a ratio. */
 const TITLE: Record<ModalDensity, TextStyle> = {
   expressive: { fontWeight: '700', letterSpacing: -0.4, lineHeight: 26 },
-  functional: { fontSize: 18, fontWeight: '700', letterSpacing: -0.36, lineHeight: 23 },
+  functional: {
+    fontSize: theme.type.roles.h3.fontSize,
+    fontWeight: '700',
+    letterSpacing: -0.36,
+    lineHeight: 23,
+  },
 };
 
 /**
@@ -46,6 +57,7 @@ export function Modal({
   overline,
   children,
   size = 'md',
+  place = 'centre',
   density = 'expressive',
   tone = 'neutral',
   icon,
@@ -55,7 +67,10 @@ export function Modal({
   style,
 }: NativeModalProps) {
   const enter = useRef(new Animated.Value(0)).current;
+  const panelRef = useRef<View>(null);
   const reduced = useReducedMotion();
+  /* The panel centres in the room above the keyboard, so a field and the footer stay in view. */
+  const keyboardHeight = useKeyboardHeight();
   // A Portal layer is no screen: Android's Back closes it first, before the page or sheet under it.
   useCloseOnBack(open, () => {
     if (dismissible) onClose?.();
@@ -71,10 +86,9 @@ export function Modal({
       return;
     }
     enter.setValue(0);
-    const animation = Animated.timing(enter, {
+    const animation = Animated.spring(enter, {
       toValue: 1,
-      duration: theme.motion.durations.emphasised,
-      easing: Easing.bezier(...theme.motion.easings.spring),
+      ...theme.motion.springs.layout,
       useNativeDriver: true,
     });
     animation.start();
@@ -90,7 +104,14 @@ export function Modal({
 
   return (
     <Portal>
-      <View style={styles.layer} pointerEvents="box-none">
+      <View
+        style={[
+          styles.layer,
+          place === 'top' ? styles.layerTop : undefined,
+          keyboardHeight > 0 ? { paddingBottom: keyboardHeight } : undefined,
+        ]}
+        pointerEvents="box-none"
+      >
         <SheetBackdrop onClick={dismissible ? onClose : undefined} />
         {/* NO `accessibilityRole` HERE, AND `alert` WAS THE WRONG ONE. The web half is
             `role="dialog"`, and ARIA's `dialog` has no React Native partner at all — RN's role
@@ -102,6 +123,7 @@ export function Modal({
             `aria-modal` buys on the other half. */}
         <Animated.View
           accessibilityViewIsModal
+          ref={panelRef}
           style={[
             styles.panel,
             density === 'functional' ? styles.panelFunctional : styles.panelExpressive,
@@ -116,66 +138,102 @@ export function Modal({
             style,
           ]}
         >
-          <View style={[styles.header, { paddingTop: pad, paddingHorizontal: pad }]}>
-            <ModalMark icon={icon} tone={tone} />
-            <View style={styles.heading}>
-              {overline === undefined ? null : (
-                <Text variant="overline" color="tertiary" style={styles.overline}>
-                  {overline}
-                </Text>
-              )}
-              {title === undefined ? null : (
-                <Text variant="h3" style={TITLE[density]}>
-                  {title}
-                </Text>
-              )}
-              {description === undefined ? null : (
-                <Text color="secondary" style={descriptionStyle}>
-                  {description}
-                </Text>
-              )}
-            </View>
-            {showClose ? (
-              <OverlayClose label={closeLabel} offset="modal" onClick={onClose} />
-            ) : null}
-          </View>
+          <SlidingPanel panel={panelRef}>
+            <ModalHead
+              pad={pad}
+              density={density}
+              title={title}
+              overline={overline}
+              description={description}
+              icon={icon}
+              tone={tone}
+              close={showClose && dismissible ? { label: closeLabel, onClose } : null}
+            />
 
-          {children === undefined ? null : (
-            <ScrollView
-              style={styles.body}
-              contentContainerStyle={{
-                paddingTop: theme.spacing['sp-4'],
-                paddingHorizontal: pad,
-                /* With no footer the body is the panel's last part and keeps its padding. */
-                paddingBottom: footer === null ? pad : 0,
-              }}
-            >
-              <GroundProvider ground="tile">{children}</GroundProvider>
-            </ScrollView>
-          )}
+            {children === undefined ? null : (
+              <ScrollView
+                style={styles.body}
+                contentContainerStyle={{
+                  paddingTop: theme.spacing['sp-4'],
+                  paddingHorizontal: pad,
+                  /* With no footer the body is the panel's last part and keeps its padding. */
+                  paddingBottom: footer === null ? pad : 0,
+                }}
+              >
+                <GroundProvider ground="tile">{children}</GroundProvider>
+              </ScrollView>
+            )}
 
-          {footer === null ? null : (
-            <View
-              style={{
-                flexShrink: 0,
-                paddingTop: roomy ? theme.spacing['sp-5'] : theme.spacing['sp-4'],
-                paddingHorizontal: pad,
-                paddingBottom: pad,
-              }}
-            >
-              {footer}
-            </View>
-          )}
+            {footer === null ? null : (
+              <View
+                style={{
+                  flexShrink: 0,
+                  paddingTop: roomy ? theme.spacing['sp-5'] : theme.spacing['sp-4'],
+                  paddingHorizontal: pad,
+                  paddingBottom: pad,
+                }}
+              >
+                {footer}
+              </View>
+            )}
+          </SlidingPanel>
         </Animated.View>
       </View>
     </Portal>
   );
 }
 
-/* 14px and 1.55 of it in points — neither has a type token, and both come from the reference. */
-const descriptionStyle: TextStyle = { marginTop: 6, fontSize: 14, lineHeight: 22 };
+const descriptionStyle: TextStyle = {
+  marginTop: 6,
+  fontSize: theme.type.roles['body-sm'].fontSize,
+  lineHeight: 22,
+};
+
+/** The dialog's head: its mark, overline, title, sentence and close. */
+function ModalHead({
+  pad,
+  density,
+  title,
+  overline,
+  description,
+  icon,
+  tone,
+  close,
+}: Pick<ModalProps, 'title' | 'overline' | 'description' | 'icon'> & {
+  pad: number;
+  density: ModalDensity;
+  tone: NonNullable<ModalProps['tone']>;
+  close: { label: ModalProps['closeLabel']; onClose: ModalProps['onClose'] } | null;
+}) {
+  return (
+    <View style={[styles.header, { paddingTop: pad, paddingHorizontal: pad }]}>
+      <ModalMark icon={icon} tone={tone} />
+      <View style={styles.heading}>
+        {overline === undefined ? null : (
+          <Text variant="overline" color="tertiary" style={styles.overline}>
+            {overline}
+          </Text>
+        )}
+        {title === undefined ? null : (
+          <Text variant="h3" style={TITLE[density]}>
+            {title}
+          </Text>
+        )}
+        {description === undefined ? null : (
+          <Text color="secondary" style={descriptionStyle}>
+            {description}
+          </Text>
+        )}
+      </View>
+      {close === null ? null : (
+        <OverlayClose label={close.label} offset="modal" onClick={close.onClose} />
+      )}
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
+  layerTop: { justifyContent: 'flex-start', paddingTop: theme.spacing['sp-16'] },
   layer: {
     position: 'absolute',
     top: 0,

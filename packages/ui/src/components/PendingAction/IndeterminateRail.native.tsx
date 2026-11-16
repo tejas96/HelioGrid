@@ -44,8 +44,8 @@ function useTravel(trackWidth: number, reduce: boolean) {
     const loop = Animated.loop(
       Animated.timing(progress, {
         toValue: 1,
-        duration: 1150,
-        easing: Easing.bezier(0.4, 0, 0.2, 1),
+        duration: theme.motion.ambient.indeterminate,
+        easing: Easing.bezier(...theme.motion.easings.standard),
         useNativeDriver: true,
       }),
     );

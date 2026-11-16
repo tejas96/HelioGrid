@@ -1,7 +1,7 @@
 import { leadValueShownOf } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { MarketFormat } from '../../utils/format';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { HeroPanelMenu } from '../HeroPanel/HeroPanel.types';
 import {
   type LeadDockPresses,
@@ -79,11 +79,11 @@ export function leadPageMenuOf(
  * and the record menu in its corner; the narrow page draws that menu in its top bar.
  */
 export function leadHeroOf(props: LeadWorkCardsProps, format: MarketFormat): LeadHeroProps {
-  const { screen, lead, identity, layout, onOpenProject, words } = props;
+  const { screen, view, lead, identity, layout, onOpenProject, words } = props;
   const { lead: summary } = lead;
   return {
     form: layout === 'dock' ? 'narrow' : 'wide',
-    onEditDetails: () => screen.acts.open({ kind: 'details' }),
+    onEditDetails: view.acts.editable ? () => screen.acts.open({ kind: 'details' }) : null,
     identity: identity
       ? { name: summary.name, phone: format.phone(summary.phoneE164), city: summary.city }
       : null,
@@ -146,6 +146,7 @@ export function leadQualifyOf({
     answered: view.qualify.answered,
     onAnswer: qualify.answer,
     onRetry: qualify.retry,
+    locked: !view.acts.editable,
     markQualified: view.acts.markQualified
       ? {
           onPress: mark.run,

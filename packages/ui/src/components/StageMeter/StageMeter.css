@@ -19,11 +19,6 @@
   gap: var(--sp-1) var(--sp-3);
 }
 
-.hg-stage-meter-bar {
-  display: flex;
-  gap: var(--sp-0-5);
-}
-
 .hg-stage-meter-share {
   display: block;
   flex: var(--hg-stage-meter-share) 1 0;
@@ -68,10 +63,12 @@
   }
 }
 
-/* The chosen stage is the accent wash, as every chosen filter is — calm however wide its share. */
+/* The chosen stage is OneOhm's quiet choice, as every chosen filter is: the control fill inside an
+   ink outline — calm however wide its share. */
 .hg-pressable.hg-stage-meter-stage[aria-pressed="true"] {
-  background: var(--accent-subtle);
-  color: var(--accent-text);
+  background: var(--hg-control-fill);
+  color: var(--text-primary);
+  box-shadow: inset 0 0 0 1px var(--text-primary);
 }
 
 .hg-stage-meter-count {
@@ -89,7 +86,7 @@
 }
 
 .hg-pressable.hg-stage-meter-stage[aria-pressed="true"] .hg-stage-meter-word {
-  color: var(--accent-text);
+  color: var(--text-primary);
 }
 
 /* The band: each stage stands over its own share of the bar, wider as it holds more. */

@@ -1,15 +1,12 @@
-import { Pressable } from '../../primitives/Pressable/Pressable';
 import { Text } from '../../primitives/Text/Text';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { DESTINATION_GLYPH } from '../AppShell/ShellGlyph.logic';
+import { ListRow } from '../ListRow';
 import type { SettingsListProps, SettingsWorkList } from './SettingsList.types';
 
-/**
- * One row of a tile — a `Pressable` (a keyboard control with the 44 px floor; `ListRow` of the
- * record is a plain div) with its icon chip, its name over what it is for, and a chevron.
- */
-export function ListRow({
+/** One row of a tile — the shared `ListRow` with its icon tile, its name over what it is for, a chevron. */
+export function SettingsRow({
   glyph,
   name,
   hint,
@@ -21,24 +18,22 @@ export function ListRow({
   onPress: () => void;
 }) {
   return (
-    <Pressable className="hg-settings-row" onPress={onPress}>
-      <span className="hg-settings-row-icon">
-        <ShellGlyph name={glyph} size="md" tone="accent" />
-      </span>
-      <span className="hg-settings-row-words">
+    <ListRow
+      className="hg-settings-row"
+      icon={<ShellGlyph name={glyph} size="md" tone="accent" />}
+      iconShape="tile"
+      title={
         <span className="hg-settings-row-name">
           <Text variant="body" bold>
             {name}
           </Text>
         </span>
-        {hint === undefined ? null : (
-          <Text variant="body-sm" color="secondary">
-            {hint}
-          </Text>
-        )}
-      </span>
-      <ShellGlyph name="chevron-right" size="md" />
-    </Pressable>
+      }
+      subtitle={hint}
+      subtitleWrap
+      trailing={<ShellGlyph name="chevron-right" size="md" />}
+      onClick={onPress}
+    />
   );
 }
 
@@ -53,7 +48,7 @@ export function WorkLists({
   return (
     <div className="hg-settings-tile">
       {items.map((list) => (
-        <ListRow
+        <SettingsRow
           key={list.key}
           glyph={DESTINATION_GLYPH[list.key]}
           name={list.name}

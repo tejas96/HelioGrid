@@ -5,8 +5,7 @@
    A node not yet done — current and upcoming — takes the control fill, the opposite of what holds
    it (F7-15): the well on the page, white inside a tile. Never an outline ring.
 
-   The node ladder (28 page / 20 compact) is the DS's own, and the type scale has no 16px step, so
-   the page label's 16px is written out here rather than borrowed from a wrong token. */
+   The node sizes (28 page / 20 compact) are the DS's own; the page label is the card-head role. */
 
 @import "./TimelinePick.css";
 @import "./TimelineTones.css";
@@ -52,7 +51,7 @@
   left: 50%;
   width: 2px;
   margin-left: -1px;
-  border-radius: 2px;
+  border-radius: var(--r-pill);
   background: var(--canvas-sunken);
 }
 
@@ -155,8 +154,7 @@
 }
 
 .hg-timeline-label {
-  /* The DS's page step is 16px and the type scale has no 16 — see the file header. */
-  font-size: 16px;
+  font-size: var(--fs-card-head);
   font-weight: var(--fw-regular);
   letter-spacing: normal;
   color: var(--text-primary);
@@ -231,14 +229,7 @@
 
 .hg-timeline-skeleton-bar {
   border-radius: var(--r-sm);
-  background: linear-gradient(
-    90deg,
-    var(--canvas) 25%,
-    var(--canvas-sunken) 50%,
-    var(--canvas) 75%
-  );
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
+  --hg-skeleton-ground: var(--canvas);
 }
 
 .hg-timeline-skeleton-bar[data-bar="title"] {
@@ -251,43 +242,3 @@
 }
 
 /* ── empty / error ─────────────────────────────────────────────────────────── */
-
-.hg-timeline-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--sp-2);
-  padding: var(--sp-10) var(--sp-4);
-  font-family: var(--font-sans);
-}
-
-.hg-timeline-message-mark {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--r-pill);
-  display: grid;
-  place-items: center;
-  margin-bottom: var(--sp-1);
-  background: var(--neutral-bg);
-  color: var(--text-tertiary);
-}
-
-.hg-timeline-message-mark[data-tone="warning"] {
-  background: var(--warning-bg);
-  color: var(--warning-text);
-}
-
-.hg-timeline-message-title {
-  font-size: 16px;
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-h4);
-  color: var(--text-primary);
-}
-
-.hg-timeline-message-body {
-  font-size: var(--fs-body-sm);
-  color: var(--text-secondary);
-  max-width: 300px;
-  line-height: var(--lh-body-sm);
-}

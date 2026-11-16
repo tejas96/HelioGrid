@@ -59,7 +59,7 @@ function Option({
           </span>
         )}
         <span className="hg-pps-check" data-on={option.picked ? '' : undefined}>
-          {option.picked ? <ShellGlyph name="tick-small" size="sm" tone="inverse" /> : null}
+          {option.picked ? <ShellGlyph name="check" size="sm" tone="inverse" /> : null}
         </span>
       </span>
     </Pressable>
@@ -123,7 +123,7 @@ export function ProposalPartPicker(props: ProposalPartPickerProps) {
           </p>
         ) : props.full ? (
           <p className="hg-pps-hint" data-tone="warning" role="status">
-            <ShellGlyph name="info-circle" size="sm" tone="warning" />
+            <ShellGlyph name="info" size="sm" tone="warning" />
             <span>{words.full}</span>
           </p>
         ) : null}

@@ -11,7 +11,7 @@ import {
   uuidSchema,
 } from './common';
 import { labelSchema, lineSchema } from './document-content';
-import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED } from './error';
+import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED, unauthenticatedEnvelope } from './error';
 
 const c = initContract();
 
@@ -97,7 +97,7 @@ export const priceBookPublishSchema = z.object({
 export type PriceBookPublish = z.infer<typeof priceBookPublishSchema>;
 
 const guarded = {
-  401: errorEnvelope(baseError('UNAUTHENTICATED')),
+  401: unauthenticatedEnvelope,
 } as const;
 
 export const priceBookContract = c.router({

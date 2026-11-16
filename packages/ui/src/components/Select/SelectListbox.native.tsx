@@ -1,12 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { renderActionReason } from '../ActionReason/ActionReason.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { SelectOption } from './Select.types';
 
 interface NativeSelectListboxProps {
@@ -97,20 +97,7 @@ function OptionRow({ active, onPress, option, selected }: OptionRowProps) {
           >
             {option.label}
           </Text>
-          {selected ? (
-            <Svg
-              width={16}
-              height={16}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={colors.accent}
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <ShellGlyphMarks name="tick-long" />
-            </Svg>
-          ) : null}
+          {selected ? <ShellGlyph name="check" size="sm" ink={colors.accent} /> : null}
         </View>
         {/* The second line — never the label, and never a tooltip. */}
         {reason}
@@ -136,7 +123,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-2'],
   },
   optionActive: {
-    backgroundColor: colors['neutral-bg'],
+    backgroundColor: TONE.neutral.tint,
   },
   line: {
     flexDirection: 'row',

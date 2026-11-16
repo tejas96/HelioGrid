@@ -1,0 +1,13 @@
+// Reduced motion is read in one place, packages/ui's primitives/use-reduced-motion: its web half asks
+// matchMedia once, its phone half asks React Native once, and each follows every change. A component
+// that asks AccessibilityInfo or prefers-reduced-motion itself is a second answer, and seven of them
+// had drifted — some never stilled, some never woke.
+JsCallExpression() as $call where {
+  $call <: or {
+    includes "ReduceMotion",
+    includes "reduceMotion",
+    includes "reduced-motion"
+  },
+  $call <: r"(?s).*(?:\bisReduceMotionEnabled\s*\(|['\x22]reduceMotionChanged['\x22]|\bmatchMedia\s*\(\s*['\x22`][^'\x22`]*prefers-reduced-motion).*",
+  register_diagnostic(span=$call, message="Read reduced motion through useReducedMotion (packages/ui/src/primitives/use-reduced-motion), never AccessibilityInfo or matchMedia itself.")
+}

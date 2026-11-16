@@ -99,7 +99,7 @@ function AppTile({
   const vars: TileVars = { '--i': riseOrder(order) };
   const inside = (
     <>
-      <HueTile glyph={kind.glyph} hue={empty ? 'danger' : 'ocean'} size={40} stroke={1.6} />
+      <HueTile glyph={kind.glyph} hue={empty ? 'danger' : 'ocean'} size={40} />
       <KindWords kind={kind} words={words} empty={empty ? words.pick : undefined} />
       {onPick === undefined ? (
         kind.flag === null ? null : (
@@ -170,12 +170,7 @@ export function ProposalPartsBlock({
               className={classNames('hg-pb-part', empty ? 'hg-pb-part-empty' : undefined)}
               key={kind.category}
             >
-              <HueTile
-                glyph={kind.glyph}
-                hue={empty ? 'neutral' : 'ocean'}
-                size={40}
-                stroke={1.6}
-              />
+              <HueTile glyph={kind.glyph} hue={empty ? 'neutral' : 'ocean'} size={40} />
               <KindWords kind={kind} words={words} empty={empty ? words.notPicked : undefined} />
               {empty || kind.flag === null ? null : <Flag flag={kind.flag} />}
             </div>

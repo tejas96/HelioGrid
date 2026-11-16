@@ -2,7 +2,6 @@ import { theme } from '@heliogrid/theme';
 import { type RefObject, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useFocusAfter } from '../../primitives/FocusAfter';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
@@ -10,6 +9,7 @@ import { HeroPanel } from '../HeroPanel/HeroPanel.native';
 import { Input } from '../Input/Input.native';
 import { useFormat } from '../MarketProvider';
 import { PhoneField } from '../PhoneField/PhoneField.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { referralOf } from './HandoverPanel.logic';
 import type { HandoverReferralProps } from './HandoverPanel.types';
 

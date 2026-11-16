@@ -1,6 +1,6 @@
 import type { ProposalDetail, ProposalTracking } from '@heliogrid/contracts';
 import { proposalSheetsOf, versionAwaitingShare } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { HueTileProps } from '../HueTile/HueTile.types';
 import type { ProposalTrackProps, TrackAct, TrackRowKind } from './ProposalTrack.types';
 
@@ -56,7 +56,7 @@ export const TRACK_ACT_GLYPH: Record<TrackAct, ShellGlyphName> = {
   share_ready: 'send',
   call: 'phone',
   new_version: 'pencil',
-  confirm_won: 'tick',
+  confirm_won: 'check',
   open_project: 'arrow-right',
 };
 
@@ -101,7 +101,7 @@ export function trackRowsOf(
     ...(crewMessageDue ? [{ kind: 'crew', glyph: 'truck', hue: 'warning' } as const] : []),
     { kind: 'version', glyph: 'layers', hue: 'ocean' },
     { kind: 'links', glyph: 'link', hue: 'ocean' },
-    { kind: 'document', glyph: 'file-text', hue: 'ocean' },
+    { kind: 'document', glyph: 'document', hue: 'ocean' },
   ];
 }
 

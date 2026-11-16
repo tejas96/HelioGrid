@@ -1,6 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { checkableNumberOf, type FormatPack, type HandoverOpening } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { LoadingBarsProps } from '../LoadingBars/LoadingBars.types';
 import type {
   HandoverMessageProps,

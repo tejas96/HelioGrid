@@ -2,7 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, glassTileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { EmptyScene } from '../EmptyScene/EmptyScene.native';
@@ -55,7 +55,7 @@ function QuietArt({ art }: { art: QuietArtName }) {
 
 const styles = StyleSheet.create({
   tile: {
-    ...tileSurface,
+    ...glassTileSurface,
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing['sp-4'],

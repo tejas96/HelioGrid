@@ -1,10 +1,10 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { RetryButton } from '../Button/RetryButton';
-import { EmptyScene } from '../EmptyScene/EmptyScene';
 import type { EmptySceneName } from '../EmptyScene/EmptyScene.types';
+import { StateRegion } from '../StateBody';
 import type { DataTableWords, PaginationProps } from './DataTable.types';
 import type { PageStep } from './DataTableChrome.logic';
 import {
@@ -44,16 +44,7 @@ export function SelectionBar({
         className="hg-dt-selection-clear"
         onClick={onClear}
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name="close" />
-        </svg>
+        <ShellGlyph name="close" size="sm" tone="current" />
       </button>
       <span className="hg-dt-selection-count">{words.selected(count)}</span>
       <span className="hg-dt-selection-actions">{actions}</span>
@@ -73,18 +64,11 @@ export function Pagination(props: PaginationProps) {
       aria-label={label}
       onClick={() => onPageChange?.(page + direction)}
     >
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-        style={direction < 0 ? { transform: 'rotate(180deg)' } : undefined}
-      >
-        <ShellGlyphMarks name="chevron-right" />
-      </svg>
+      <ShellGlyph
+        name={direction < 0 ? 'chevron-left' : 'chevron-right'}
+        size="sm"
+        tone="current"
+      />
     </button>
   );
   return (
@@ -109,10 +93,10 @@ export function TableSkeleton({ stacked, label }: { stacked: boolean; label: Tra
       {!stacked ? <div className="hg-dt-skeleton-head" /> : null}
       {TABLE_SKELETON_ROWS.map((row) => (
         <div className="hg-dt-skeleton-row" key={row}>
-          <span className="hg-dt-shimmer" data-w="lead" />
-          <span className="hg-dt-shimmer" data-w="mid" />
+          <span className="hg-dt-shimmer hg-skeleton" data-w="lead" />
+          <span className="hg-dt-shimmer hg-skeleton" data-w="mid" />
           <span className="hg-dt-skeleton-spacer" />
-          <span className="hg-dt-shimmer" data-w="tail" />
+          <span className="hg-dt-shimmer hg-skeleton" data-w="tail" />
         </div>
       ))}
     </div>
@@ -142,29 +126,19 @@ export function TableMessage({
   focusAfter: FocusAfter;
 }) {
   return (
-    <div className="hg-dt-message">
-      {scene === undefined ? (
-        <span className="hg-dt-message-mark" data-tone={tone}>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <ShellGlyphMarks name={tableMessageMarkOf(tone)} />
-          </svg>
-        </span>
-      ) : (
-        <EmptyScene name={scene} />
-      )}
-      <div className="hg-dt-message-title">{title}</div>
-      {message === undefined ? null : <div className="hg-dt-message-body">{message}</div>}
-      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
-      {action === undefined ? null : <div className="hg-dt-message-action">{action}</div>}
-    </div>
+    <StateRegion
+      tone={tone}
+      glyph={tableMessageMarkOf(tone)}
+      scene={scene}
+      title={title}
+      message={message}
+      action={
+        <>
+          <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
+          {action === undefined ? null : <div className="hg-dt-message-action">{action}</div>}
+        </>
+      }
+    />
   );
 }
 
@@ -185,17 +159,7 @@ export function RowNote({
   return (
     <div className="hg-dt-row-note" data-tone={warn ? 'warning' : 'success'}>
       <span className="hg-dt-row-note-mark" aria-hidden="true">
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <ShellGlyphMarks name={glyph} />
-        </svg>
+        <ShellGlyph name={glyph} size="sm" tone="current" />
       </span>
       <span className="hg-dt-row-note-text">{text}</span>
       {action === undefined || action === null ? null : (

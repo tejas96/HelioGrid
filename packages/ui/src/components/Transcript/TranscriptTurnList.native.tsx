@@ -36,7 +36,7 @@ export function TranscriptTurnList({
         <Fragment key={key}>
           {switchLine === null ? null : (
             <View style={styles.switchRow}>
-              <GlobeGlyph size={13} />
+              <GlobeGlyph />
               <Text variant="caption" color="secondary" style={styles.switchWord}>
                 {switchLine}
               </Text>

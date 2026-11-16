@@ -9,6 +9,8 @@ import './StepperBars.css';
 interface BarsProps {
   steps: (StepperStep | TranslatedText)[];
   index: number;
+  /** The bar in view fills from its start once (`StepperProps.fillIn`). */
+  fillIn: boolean;
   className?: string;
   style?: CSSProperties;
 }
@@ -17,13 +19,24 @@ interface BarsProps {
  * `variant="bars"`: one thin bar per step, those done and the current one filled. The location
  * only — hidden from a screen reader, because the head above it names the step.
  */
-function PlainBars({ steps, index, className, style }: BarsProps) {
+function PlainBars({ steps, index, fillIn, className, style }: BarsProps) {
   return (
     <div className={classNames('hg-stepper-bars', className)} style={style} aria-hidden="true">
       {steps.map((step, position) => (
-        <span key={stepLabel(step)} className="hg-stepper-bar" data-filled={position <= index} />
+        <Bar key={stepLabel(step)} position={position} index={index} fillIn={fillIn} />
       ))}
     </div>
+  );
+}
+
+/** One bar: filled when done or in view; the one in view, when it fills in, grows from its start. */
+function Bar({ position, index, fillIn }: { position: number; index: number; fillIn: boolean }) {
+  return (
+    <span
+      className="hg-stepper-bar"
+      data-filled={position <= index}
+      data-fill-in={fillIn && position === index ? 'true' : undefined}
+    />
   );
 }
 
@@ -35,7 +48,7 @@ interface NumberedBarsProps extends BarsProps {
  * `variant="numbered-bars"`: the same bars with each step's number and name under its bar — a
  * panel's step location. The current step is `aria-current="step"`, bold and primary.
  */
-function NumberedBars({ steps, index, label, className, style }: NumberedBarsProps) {
+function NumberedBars({ steps, index, fillIn, label, className, style }: NumberedBarsProps) {
   return (
     <nav
       className={classNames('hg-stepper-numbered-bars', className)}
@@ -48,7 +61,7 @@ function NumberedBars({ steps, index, label, className, style }: NumberedBarsPro
           className="hg-stepper-bar-step"
           aria-current={position === index ? 'step' : undefined}
         >
-          <span className="hg-stepper-bar" data-filled={position <= index} />
+          <Bar position={position} index={index} fillIn={fillIn} />
           <span className="hg-stepper-bar-caption" data-current={position === index}>
             <span className="hg-stepper-bar-number">{position + 1}</span>
             <span>{stepLabel(step)}</span>

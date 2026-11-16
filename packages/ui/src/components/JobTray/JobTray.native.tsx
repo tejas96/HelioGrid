@@ -2,13 +2,13 @@ import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { closingPress } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { OperationProgress } from '../OperationProgress/OperationProgress.native';
 import { IndeterminateRail } from '../PendingAction/IndeterminateRail.native';
 import { offersClear, summariseJobs } from './JobTray.summary';
@@ -20,8 +20,8 @@ type NativeJobTrayProps = JobTrayProps & {
 };
 
 const TONE_COLOUR = {
-  warning: colors['warning-text'],
-  success: colors['success-text'],
+  warning: TONE.warning.ink,
+  success: TONE.success.ink,
 };
 
 /**
@@ -70,18 +70,7 @@ export function JobTray({
         {summary.busy ? (
           <IndeterminateRail width={18} />
         ) : (
-          <Svg
-            width={16}
-            height={16}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={tone}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <ShellGlyphMarks name="clock" />
-          </Svg>
+          <ShellGlyph name="clock" size="sm" ink={tone} />
         )}
         <Text variant="body-sm" style={[styles.words, { color: tone }]}>
           {summary.words}

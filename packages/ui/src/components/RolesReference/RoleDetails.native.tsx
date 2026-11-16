@@ -90,7 +90,7 @@ export function RoleDetails({
             {lines.map((line) => (
               <View key={line.key} style={styles.line}>
                 <ShellGlyph
-                  name={side === 'can' ? 'tick' : 'minus'}
+                  name={side === 'can' ? 'check' : 'minus'}
                   size="md"
                   tone={side === 'can' ? 'success' : 'secondary'}
                 />

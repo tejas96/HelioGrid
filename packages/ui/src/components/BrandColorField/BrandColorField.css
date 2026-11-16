@@ -60,11 +60,6 @@
 
 .hg-brand-color-overline {
   display: block;
-  font-family: var(--font-sans);
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
   margin-bottom: var(--sp-2);
 }
@@ -85,13 +80,13 @@
 }
 
 .hg-brand-color-specimen-name {
-  font-size: 14px;
+  font-size: var(--fs-body-sm);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tr-button);
 }
 
 .hg-brand-color-specimen-kind {
-  font-size: var(--fs-overline);
+  font-size: var(--fs-caption);
   font-weight: var(--fw-medium);
   opacity: 0.85;
 }

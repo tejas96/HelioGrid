@@ -21,13 +21,13 @@ function useAlternatingLoop(active: boolean, halfDuration: number) {
         Animated.timing(progress, {
           toValue: 1,
           duration: halfDuration,
-          easing: Easing.bezier(0.4, 0, 0.2, 1),
+          easing: Easing.bezier(...theme.motion.easings.standard),
           useNativeDriver: true,
         }),
         Animated.timing(progress, {
           toValue: 0,
           duration: halfDuration,
-          easing: Easing.bezier(0.4, 0, 0.2, 1),
+          easing: Easing.bezier(...theme.motion.easings.standard),
           useNativeDriver: true,
         }),
       ]),
@@ -47,8 +47,8 @@ function useAlternatingLoop(active: boolean, halfDuration: number) {
 export function SunCloudMark({ animate = true }: { animate?: boolean }) {
   const reduce = useReducedMotion();
   const moving = animate && !reduce;
-  const drift = useAlternatingLoop(moving, 9000);
-  const breathe = useAlternatingLoop(moving, 4000);
+  const drift = useAlternatingLoop(moving, theme.motion.ambient.sway);
+  const breathe = useAlternatingLoop(moving, theme.motion.ambient.swell / 2);
 
   const driftX = drift.interpolate({ inputRange: [0, 1], outputRange: [-34, 34] });
   const breatheScale = breathe.interpolate({ inputRange: [0, 1], outputRange: [1, 1.09] });

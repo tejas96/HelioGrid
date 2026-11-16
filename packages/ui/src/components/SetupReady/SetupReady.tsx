@@ -40,7 +40,7 @@ export function SetupReady({
       <DoorFrame taskMeasure="list">
         <div className="hg-setup-ready-wall">
           <EmptyState
-            icon={<ShellGlyph name="alert-ring" size="xl" tone="primary" />}
+            icon={<ShellGlyph name="alert-circle" size="xl" tone="primary" />}
             title={words.wall.title}
             description={words.wall.line}
             action={
@@ -75,7 +75,7 @@ export function SetupReady({
       <div className="hg-setup-ready-doors">
         <Card>
           <Door
-            glyph="person-plus"
+            glyph="user-plus"
             circle="var(--accent)"
             tone="accent"
             words={words.lead}
@@ -97,7 +97,7 @@ export function SetupReady({
           demo={demo}
           door={
             <Door
-              glyph="house-door"
+              glyph="house"
               circle="var(--info)"
               tone="info"
               words={words.demo}

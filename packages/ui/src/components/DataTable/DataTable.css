@@ -55,10 +55,6 @@
    only when the table did, so it vanished on every phone and in every narrow panel. */
 .hg-dt-caption {
   padding: 14px var(--sp-4) 0;
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 
@@ -92,10 +88,6 @@
 .hg-dt-th {
   padding: 0;
   vertical-align: middle;
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-secondary);
   /* Sticky: it paints its holder's own fill, frosted, so it reads as the tile while rows run under it. */
   background: var(--hg-ground-fill, var(--hg-ground));
@@ -170,8 +162,7 @@
 }
 
 .hg-dt-sort-glyph {
-  width: var(--sp-3);
-  height: var(--sp-3);
+  display: inline-flex;
   flex-shrink: 0;
   opacity: 0.35;
 }
@@ -227,9 +218,11 @@
   background: var(--success-bg);
 }
 
+/* The row chosen is OneOhm's quiet choice: the control fill, never the accent wash; its checkbox
+   says it is chosen. */
 .hg-dt-row[data-selected="true"],
 .hg-dt-row-line[data-selected="true"] {
-  background: var(--accent-subtle);
+  background: var(--fill);
 }
 
 .hg-dt-row[data-muted="true"] {

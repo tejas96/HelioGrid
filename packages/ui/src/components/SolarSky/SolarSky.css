@@ -158,7 +158,7 @@
 /* A module lands on the frame, one after another: the installation, once. */
 .hg-sky-module {
   transform-box: fill-box;
-  animation: hg-sky-land var(--dur-emphasised) var(--ease-spring) backwards;
+  animation: hg-sky-land var(--dur-spring-snappy) var(--ease-spring-snappy) backwards;
   animation-delay: calc(var(--dur-emphasised) + var(--i) * var(--amb-install));
 }
 

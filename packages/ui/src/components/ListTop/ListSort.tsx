@@ -27,7 +27,7 @@ export function ListSort({ sort }: { sort: ListSortProps }) {
           variant="secondary"
           size="md"
           icon={<ShellGlyph name="sort" size="sm" />}
-          iconRight={<ShellGlyph name="caret-down" size="sm" />}
+          iconRight={<ShellGlyph name="chevron" size="sm" />}
           spokenName={sort.spokenName(chosen)}
         >
           {chosen}

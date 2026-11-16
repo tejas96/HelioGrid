@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexBasis: theme.spacing['sp-24'] + theme.spacing['sp-12'],
     padding: theme.layout['tile-pad'],
-    borderRadius: theme.radius['r-tile'],
+    borderRadius: theme.radius['r-lg'],
   },
   wholeRow: { flexBasis: '100%' },
   parts: { gap: theme.spacing['sp-3'] },
@@ -262,5 +262,5 @@ const styles = StyleSheet.create({
   },
   start: { flexDirection: 'row' },
   sources: { gap: theme.spacing['sp-0-5'] },
-  plans: { ...tileSurface, borderRadius: theme.radius['r-tile'] },
+  plans: { ...tileSurface, borderRadius: theme.radius['r-lg'] },
 });

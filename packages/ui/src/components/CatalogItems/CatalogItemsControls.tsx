@@ -12,13 +12,7 @@ import { FilterPanel } from '../FilterPanel';
 import { LoadingBars } from '../LoadingBars';
 import { Menu } from '../Menu';
 import { SearchField } from '../SearchField';
-import {
-  catalogFilterDimensions,
-  catalogFilterOf,
-  catalogFilterValue,
-  catalogKindChips,
-  catalogKindsChosen,
-} from './CatalogItems.logic';
+import { catalogFilterBodyOf, catalogKindChips, catalogKindsChosen } from './CatalogItems.logic';
 import type { CatalogItemsProps } from './CatalogItems.types';
 
 type ControlProps = Pick<
@@ -55,6 +49,7 @@ export function CatalogItemsControls(props: ControlProps) {
   const { words, filter, onFilter, sort, wide } = props;
   const chips = catalogKindChips(words, filter, props.kindCounts);
   const [filtering, setFiltering] = useState(false);
+  const body = catalogFilterBodyOf(props, !wide);
   return (
     <div className="hg-cat-controls">
       <div className="hg-cat-search-row">
@@ -94,7 +89,7 @@ export function CatalogItemsControls(props: ControlProps) {
                 variant="secondary"
                 size="md"
                 icon={<ShellGlyph name="sort" size="sm" />}
-                iconRight={<ShellGlyph name="caret-down" size="sm" />}
+                iconRight={<ShellGlyph name="chevron" size="sm" />}
                 spokenName={words.sortNamed(words.sorts[sort])}
               >
                 {words.sorts[sort]}
@@ -122,9 +117,10 @@ export function CatalogItemsControls(props: ControlProps) {
         /* The catalog's words carry no close of their own; the footer's *Done* names the same act. */
         closeLabel={words.closeFilters}
         words={words.filterPanel}
-        dimensions={catalogFilterDimensions(words, props.schemes)}
-        value={catalogFilterValue(filter)}
-        onChange={(value) => onFilter(catalogFilterOf(value))}
+        dimensions={body.dimensions}
+        value={body.value}
+        onChange={body.onChange}
+        onClear={body.onClear}
         resultCount={props.resultCount}
         resultNoun={words.filterPanel.resultNoun}
         zIndex={60}

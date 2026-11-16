@@ -1,31 +1,17 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { type KeyboardEvent, useRef } from 'react';
 import { fieldBox } from '../../primitives/FieldBox';
-import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
 import { useFocusRequest } from '../../primitives/use-focus-request';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { useFormat } from '../MarketProvider/market-context';
 import { EMPTY_PLAIN_FIGURE } from './NumberField.logic';
 import type { NumberDraftState } from './NumberField.state';
 import type { NumberFieldWords } from './NumberField.types';
 
 function StepIcon({ glyph }: { glyph: ShellGlyphName }) {
-  return (
-    <Icon size="sm">
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        aria-hidden="true"
-      >
-        <ShellGlyphMarks name={glyph} />
-      </svg>
-    </Icon>
-  );
+  return <ShellGlyph name={glyph} size="sm" tone="current" />;
 }
 
 /** Enter commits, Escape cancels, and the arrows nudge only where a nudge is the grammar. */

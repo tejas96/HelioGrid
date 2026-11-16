@@ -3,10 +3,10 @@ import type { ReactNode } from 'react';
 import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { nearestGlyphSize } from '../AppShell/ShellGlyph.logic';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { ACTOR_GLYPH } from './ActorClass.logic';
 import type {
   ActorClassName,
@@ -55,18 +55,7 @@ export function ActorGlyph({
     return <View style={[styles.agent, object]} />;
   }
   return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={ink}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name={ACTOR_GLYPH[descriptor.glyph]} />
-    </Svg>
+    <ShellGlyph name={ACTOR_GLYPH[descriptor.glyph]} size={nearestGlyphSize(size)} ink={ink} />
   );
 }
 

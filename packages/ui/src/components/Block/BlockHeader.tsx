@@ -51,7 +51,10 @@ export function BlockHeader({
     <header className="hg-block-head">
       <div className="hg-block-head-main">
         {overline !== undefined ? (
-          <div className="hg-block-overline" data-spaced={titleRow ? 'true' : undefined}>
+          <div
+            className="hg-block-overline hg-overline"
+            data-spaced={titleRow ? 'true' : undefined}
+          >
             {overline}
           </div>
         ) : null}

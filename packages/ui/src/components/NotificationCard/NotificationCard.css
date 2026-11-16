@@ -7,7 +7,7 @@
   flex-direction: column;
   gap: var(--sp-3);
   padding: var(--tile-pad);
-  border-radius: var(--r-tile);
+  border-radius: var(--r-lg);
 }
 
 /* The face: a sibling button under the content, so a control in a slot is its own target. */
@@ -147,7 +147,7 @@
   gap: var(--sp-3);
   min-height: 44px;
   padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--tile-pad);
-  border-radius: var(--r-tile);
+  border-radius: var(--r-lg);
 }
 
 .hg-notification-member-words {

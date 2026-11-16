@@ -2,7 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { Children, Fragment, isValidElement } from 'react';
 import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type {
   SettingsCardProps,
@@ -16,7 +16,7 @@ export function SettingsCard({
 }: SettingsCardProps & { style?: StyleProp<ViewStyle> }) {
   return (
     <View style={[styles.card, style]}>
-      <GroundProvider ground="page">{children}</GroundProvider>
+      <GroundProvider ground="tile">{children}</GroundProvider>
     </View>
   );
 }
@@ -70,12 +70,7 @@ export function SettingsSectionRow({
 }
 
 const styles = StyleSheet.create({
-  card: {
-    borderRadius: theme.radius['r-tile'],
-    // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
-    backgroundColor: colors.surface,
-    ...theme.elevation.e2,
-  },
+  card: { ...tileSurface, borderRadius: theme.radius['r-lg'] },
   section: { paddingVertical: theme.spacing['sp-2'] },
   head: {
     flexDirection: 'row',

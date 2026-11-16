@@ -6,7 +6,7 @@ import type {
   MergeRecordView,
   MergeView,
 } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type {
   MergeCompareOption,
   MergeCompareProps,
@@ -16,7 +16,7 @@ import type {
 
 /** The mark beside each field the compare asks a pick for. */
 export const MERGE_FIELD_GLYPH: Record<MergeField, ShellGlyphName> = {
-  name: 'person',
+  name: 'user',
   city: 'pin',
   primary_contact: 'phone',
 };

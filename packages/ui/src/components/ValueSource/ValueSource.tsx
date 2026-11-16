@@ -7,9 +7,8 @@
 
 import type { CSSProperties, ReactNode } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import {
   attributionFor,
   overrideActOf,
@@ -25,21 +24,7 @@ interface WebValueSourceProps extends ValueSourceSpec {
 }
 
 function Glyph({ name }: { name: 'own' | 'inherited' }) {
-  return (
-    <Icon size="xs">
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <ShellGlyphMarks name={VALUE_SOURCE_GLYPH[name]} />
-      </svg>
-    </Icon>
-  );
+  return <ShellGlyph name={VALUE_SOURCE_GLYPH[name]} size="xs" tone="current" />;
 }
 
 export function ValueSource({

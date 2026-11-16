@@ -1,9 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
-import type { FocusAfter } from '../../primitives/FocusAfter';
 import type { ActorClassSpec } from '../ActorClass';
 import type { PendingActionSpec } from '../PendingAction';
-import type { SurfaceRead, SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 export interface ChecklistItem {
   id?: string | number;
@@ -99,24 +98,6 @@ export interface ChecklistWords {
   /** A tick box's name — the item's title, and whether it is done. */
   tick(title: string, done: boolean): TranslatedText;
 }
-
-/** The four non-ready faces' words and acts, as both halves draw them. */
-export type ChecklistStateProps = {
-  state: SurfaceState;
-  onRetry?: () => void;
-  loadingLabel: TranslatedText;
-  /** The list's frame, where focus lands once its retry has left. */
-  focusAfter: FocusAfter;
-} & Pick<
-  ChecklistProps,
-  | 'emptyTitle'
-  | 'emptyMessage'
-  | 'errorTitle'
-  | 'errorMessage'
-  | 'retryLabel'
-  | 'unavailableTitle'
-  | 'unavailableMessage'
->;
 
 /* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */
 

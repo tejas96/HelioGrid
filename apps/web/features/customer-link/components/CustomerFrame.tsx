@@ -2,7 +2,14 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { useLanguageChoice } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
-import { CustomerSurface, DoorLanguage, TenantHeader } from '@heliogrid/ui';
+import {
+  Card,
+  CardHeader,
+  CustomerSurface,
+  DoorLanguage,
+  TenantHeader,
+  TintedBlock,
+} from '@heliogrid/ui';
 import type { ReactNode, Ref } from 'react';
 
 /** The company as the page dresses itself (`F5-81`): its name, its mark and its colour. */
@@ -86,21 +93,23 @@ export function PageCard({
   children,
 }: {
   title?: TranslatedText;
-  /** The card the company's colour lights from its corner — the price, the next step. */
+  /** A summary card — the price, the next step: the glass tile, not the white card. */
   glass?: boolean;
   /** The section a view of this card is timed as (`LINK_SECTIONS`). */
   section?: string;
   children: ReactNode;
 }) {
   return (
-    <section
+    <Card
+      as="section"
+      surface={glass ? 'tile' : 'raised'}
+      tile={glass ? 'glass' : 'solid'}
       className="hg-cust-card"
-      data-glass={glass || undefined}
-      {...(section === undefined ? {} : { 'data-link-section': section })}
+      data-link-section={section}
     >
-      {title === undefined ? null : <h2 className="hg-cust-card-title">{title}</h2>}
+      {title === undefined ? null : <CardHeader title={title} face="display" />}
       {children}
-    </section>
+    </Card>
   );
 }
 
@@ -117,18 +126,12 @@ export function PageNote({
   children?: ReactNode;
   moment?: ReactNode;
   /** Where focus lands once the act this note answers has gone (`F7-23` N5). */
-  noteRef?: Ref<HTMLElement>;
+  noteRef?: Ref<HTMLDivElement>;
 }) {
   return (
-    <section
-      className="hg-cust-note"
-      data-tone={tone}
-      ref={noteRef}
-      {...(noteRef === undefined ? {} : { tabIndex: -1 })}
-    >
+    <TintedBlock tone={tone} title={title} face="display" rise blockRef={noteRef}>
       {moment}
-      <h2 className="hg-cust-card-title">{title}</h2>
       {children}
-    </section>
+    </TintedBlock>
   );
 }

@@ -19,7 +19,7 @@ export function CatalogEditedHead({ item, ask }: { item: CatalogEditedItem; ask:
   return (
     <View style={styles.root}>
       <View style={styles.head}>
-        <HueTile glyph={lead.glyph} hue={lead.hue} size={40} stroke={1.5} />
+        <HueTile glyph={lead.glyph} hue={lead.hue} size={40} />
         <View style={styles.title}>
           <View style={styles.whose}>
             <Text variant="caption" color="secondary">

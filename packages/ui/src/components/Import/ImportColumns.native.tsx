@@ -3,11 +3,11 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Select } from '../Select/Select.native';
 import { columnChoiceOf } from './Import.logic';
 import { raisedCard } from './Import.surfaces.native';
 import type { ImportColumnsProps, ImportColumnsWords } from './Import.types';
-import { ImportGlyph } from './ImportGlyph.native';
 import { useLeftOutColumns } from './use-left-out-columns';
 
 /**
@@ -86,7 +86,7 @@ function MappingRow<Field extends string>(props: MappingRowProps<Field>) {
       ) : (
         header
       )}
-      <ImportGlyph name="arrow-right-full" size="xs" stroke={1.7} color={colors['text-tertiary']} />
+      <ShellGlyph name="arrow-right" size="xs" ink={colors['text-tertiary']} />
       <View style={styles.field}>
         <Select
           {...columnChoiceOf(view, words, props.fields, left)}

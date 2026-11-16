@@ -1,34 +1,21 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
-import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
-import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { GroundProvider, glassTileSurface } from '../../primitives/Ground/Ground.native';
+import { usePulse } from '../../primitives/use-pulse.native';
 import { RetryButton } from '../Button/RetryButton.native';
+import { StateRegion } from '../StateBody/StateRegion.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { KanbanBoardState } from './Kanban.logic';
 import { boardMarkOf, KANBAN_SKELETON_BARS, skeletonColumnsOf } from './KanbanStates.logic';
 
 /** The web half sweeps a gradient keyframe; RN has no CSS loop, so the bar pulses. */
 function Bar({ style }: { style: object }) {
-  const value = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(value, { toValue: 1, duration: 700, useNativeDriver: true }),
-        Animated.timing(value, { toValue: 0, duration: 700, useNativeDriver: true }),
-      ]),
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [value]);
-  const opacity = value.interpolate({ inputRange: [0, 1], outputRange: [0.45, 1] });
+  const opacity = usePulse();
   return <Animated.View style={[styles.bar, style, { opacity }]} />;
 }
 
@@ -81,36 +68,17 @@ export function BoardMessage({
   retryLabel,
   focusAfter,
 }: BoardMessageProps) {
-  const warning = tone === 'warning';
-  const ink = warning ? colors['warning-text'] : colors['text-tertiary'];
   return (
-    <View style={[tileSurface, styles.message]}>
+    <View style={[glassTileSurface, styles.message]}>
       {/* The message is a tile: what it holds reads the tile's ground. */}
       <GroundProvider ground="tile">
-        <View style={[styles.mark, warning ? styles.markWarning : null]}>
-          <Svg
-            width={22}
-            height={22}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={ink}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-          >
-            <ShellGlyphMarks name={boardMarkOf(tone)} />
-          </Svg>
-        </View>
-        {title ? (
-          <Text variant="h4" align="center">
-            {title}
-          </Text>
-        ) : null}
-        {message ? (
-          <Text variant="body-sm" color="secondary" align="center" style={styles.messageText}>
-            {message}
-          </Text>
-        ) : null}
-        <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
+        <StateRegion
+          tone={tone}
+          glyph={boardMarkOf(tone)}
+          title={title}
+          message={message}
+          action={<RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />}
+        />
       </GroundProvider>
     </View>
   );
@@ -199,23 +167,8 @@ const styles = StyleSheet.create({
   },
   bars: { gap: theme.spacing['sp-2'] },
   cardBar: { height: 62 },
-  /* The tile's look is `tileSurface` (`F7-49`), spread first in the frame. */
+  /* The tile's look is `glassTileSurface` (`F7-49`), spread first in the frame. */
   message: {
-    alignItems: 'center',
-    gap: theme.spacing['sp-2'],
-    paddingVertical: 56,
-    paddingHorizontal: theme.spacing['sp-6'],
     borderRadius: theme.radius['r-card-functional'],
   },
-  mark: {
-    width: theme.spacing['sp-12'],
-    height: theme.spacing['sp-12'],
-    borderRadius: theme.radius['r-pill'],
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors['neutral-bg'],
-    marginBottom: theme.spacing['sp-1'],
-  },
-  markWarning: { backgroundColor: colors['warning-bg'] },
-  messageText: { maxWidth: 320 },
 });

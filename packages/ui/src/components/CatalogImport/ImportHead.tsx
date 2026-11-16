@@ -1,14 +1,11 @@
-import type { ImportWizardFrame } from '@heliogrid/domain';
+import { type ImportWizardFrame, importWizardGoesBack } from '@heliogrid/domain';
 import { Pressable } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { IconButton } from '../IconButton';
-import { ImportGlyph } from '../Import/ImportGlyph';
 import { Stepper } from '../Stepper';
 import type { CatalogImportWords } from './CatalogImport.types';
-
-/** The frames whose head offers *Back*: steps 2 and 3, and the matching wait between them. */
-const BACK_FRAMES: readonly ImportWizardFrame[] = ['columns', 'matching', 'preview'];
 
 interface ImportHeadProps {
   words: CatalogImportWords;
@@ -38,7 +35,7 @@ export function ImportHead({
     <div className="hg-import-head">
       <div className="hg-import-head-row">
         <IconButton label={words.close} size={40} variant="surface" onClick={onClose}>
-          <ImportGlyph name="close" size="sm" stroke={2} />
+          <ShellGlyph name="close" size="sm" tone="current" />
         </IconButton>
         <div className="hg-import-head-words">
           <span id={titleId} className="hg-import-head-title">
@@ -52,15 +49,12 @@ export function ImportHead({
             <Text as="span" variant="caption" color="secondary">
               {words.location(step)}
             </Text>
-            <ImportGlyph
-              name="chevron"
-              size="xs"
-              stroke={2}
-              className="hg-import-location-chevron"
-            />
+            <span className="hg-import-location-chevron">
+              <ShellGlyph name="chevron" size="xs" tone="current" />
+            </span>
           </Pressable>
         </div>
-        {BACK_FRAMES.includes(frame) ? (
+        {importWizardGoesBack(frame) ? (
           <Button variant="ghost" size="sm" onClick={onBack}>
             {words.back}
           </Button>

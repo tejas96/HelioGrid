@@ -25,10 +25,6 @@
   box-shadow: 0 0 0 2px var(--accent);
 }
 
-.hg-photo-field-mark[data-loading="true"] {
-  animation: hg-sheet-shimmer 1.4s var(--ease-standard) infinite;
-}
-
 /* A nameless circle is NEUTRAL — an empty tinted disc reads as a rendering fault rather than as
    "no name yet", and `F7-19` forbids inventing an image to fill it. The fill follows whatever is
    behind it, which is `--canvas-sunken` on a form card and on the page alike. */

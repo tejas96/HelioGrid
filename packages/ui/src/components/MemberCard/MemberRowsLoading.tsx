@@ -13,11 +13,11 @@ export function MemberRowsLoading({ label }: MemberRowsLoadingProps) {
       <div className="hg-member-loading-card" aria-hidden="true">
         {PLACEHOLDERS.map((row) => (
           <div key={row} className="hg-member-loading-row" data-row={row}>
-            <span className="hg-member-loading-bar" data-part="face" />
+            <span className="hg-member-loading-bar hg-skeleton" data-part="face" />
             <div className="hg-member-loading-words">
-              <span className="hg-member-loading-bar" data-part="name" />
-              <span className="hg-member-loading-bar" data-part="line" />
-              <span className="hg-member-loading-bar" data-part="roles" />
+              <span className="hg-member-loading-bar hg-skeleton" data-part="name" />
+              <span className="hg-member-loading-bar hg-skeleton" data-part="line" />
+              <span className="hg-member-loading-bar hg-skeleton" data-part="roles" />
             </div>
           </div>
         ))}

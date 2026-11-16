@@ -1,3 +1,4 @@
+import { useCloseOnBack } from '../../primitives/use-close-on-back.native';
 import { Button } from '../Button/Button.native';
 import { Modal } from '../Modal/Modal.native';
 import { SheetActions } from '../Sheet/SheetActions.native';
@@ -12,6 +13,9 @@ export function LeaveConfirm({
   onKeep,
   onLeave,
 }: LeaveConfirmProps) {
+  // Android's Back is the way back, never a third answer: it keeps the change, as *Keep* does. Set
+  // above the modal's own, which a dialog with no dismissal makes inert.
+  useCloseOnBack(open, onKeep);
   return (
     <Modal
       open={open}

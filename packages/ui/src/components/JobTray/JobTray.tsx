@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { closingPress } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { OperationProgress } from '../OperationProgress';
 import { IndeterminateRail } from '../PendingAction';
 import { offersClear, summariseJobs } from './JobTray.summary';
@@ -80,19 +80,7 @@ export function JobTray({
         {summary.busy ? (
           <IndeterminateRail width={18} />
         ) : (
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <ShellGlyphMarks name="clock" />
-          </svg>
+          <ShellGlyph name="clock" size="sm" tone="current" />
         )}
         <span className="hg-job-tray-words">{summary.words}</span>
       </button>
@@ -100,7 +88,7 @@ export function JobTray({
       {isOpen ? (
         <div role="dialog" aria-label={label} className="hg-job-tray-panel" data-align={align}>
           <div className="hg-job-tray-panel-head">
-            <span className="hg-job-tray-panel-label">{label}</span>
+            <span className="hg-job-tray-panel-label hg-overline">{label}</span>
             {offersClear(jobs, onClear, clearLabel) ? (
               <Pressable className="hg-job-tray-clear" onPress={closingPress(trigger)(onClear)}>
                 {clearLabel}

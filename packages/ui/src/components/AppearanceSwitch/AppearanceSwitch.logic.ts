@@ -23,3 +23,8 @@ export function nextAppearance(value: Appearance): Appearance {
   const next = APPEARANCES[(APPEARANCES.indexOf(value) + 1) % APPEARANCES.length];
   return next ?? value;
 }
+
+/** A segment's value back as the choice it names; anything else keeps the device's. */
+export function appearanceOf(value: string): Appearance {
+  return APPEARANCES.find((each) => each === value) ?? 'device';
+}

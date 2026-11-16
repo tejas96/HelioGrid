@@ -80,7 +80,7 @@
 .hg-mark-won-value b {
   color: var(--on-panel);
   font-family: var(--font-display);
-  font-size: 44px;
+  font-size: var(--fs-hero-phone);
   font-weight: var(--fw-regular);
   line-height: 50px;
   letter-spacing: var(--tr-display);

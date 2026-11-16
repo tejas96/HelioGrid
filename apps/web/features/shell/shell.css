@@ -7,7 +7,8 @@
 
 /* A shell page: its own column, at most --content-max wide, padded to the screen's edge — and, on
    a phone-width page, clear of the floating pill and the device's own bottom inset. Marks inside
-   it (a coach mark) are placed in and clamped to the page, never the sidebar. */
+   it (a coach mark) are placed in and clamped to the page, never the sidebar. It fades in with its
+   route, once, over content already drawn; under reduced motion it is simply there. */
 .hg-shell-page {
   position: relative;
   box-sizing: border-box;
@@ -19,7 +20,7 @@
   flex-grow: 1;
   padding: var(--sp-6) var(--screen-pad-mobile)
     calc(var(--bottomnav-h) + env(safe-area-inset-bottom) + var(--sp-6));
-  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+  animation: hg-page-enter var(--dur-emphasised) var(--ease-out-quint) backwards;
 }
 
 .hg-shell-page[data-pad="functional"] {

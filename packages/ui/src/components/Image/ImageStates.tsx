@@ -49,7 +49,9 @@ export interface ImagePhotoProps {
 export function ImagePhoto({ src, alt, state, lazy, load }: ImagePhotoProps) {
   return (
     <>
-      {state === 'loading' ? <div className="hg-image-skeleton" aria-hidden="true" /> : null}
+      {state === 'loading' ? (
+        <div className="hg-image-skeleton hg-skeleton" aria-hidden="true" />
+      ) : null}
       {src ? (
         <img
           ref={load.img}

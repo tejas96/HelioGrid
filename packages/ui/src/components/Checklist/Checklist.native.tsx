@@ -6,12 +6,12 @@ import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { ProgressBar } from '../ProgressBar/ProgressBar.native';
+import { StateBody } from '../StateBody/StateBody.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { buildChecklist, NO_PHASE } from './Checklist.groups';
 import { checklistNameOf, countLineOf, rowKeyOf } from './Checklist.logic';
 import type { ChecklistProps } from './Checklist.types';
 import { ChecklistRow } from './ChecklistRow.native';
-import { ChecklistStateBody } from './ChecklistState.native';
 
 /* The list is a heading on the page (`F7-49`): no fill, no shadow, no ground of its own. Each step
    is the tile, apart from the next by space. */
@@ -79,7 +79,7 @@ export function Checklist({
             {label}
           </Text>
         )}
-        <ChecklistStateBody
+        <StateBody
           state={state}
           loadingLabel={words.loading}
           emptyTitle={emptyTitle}

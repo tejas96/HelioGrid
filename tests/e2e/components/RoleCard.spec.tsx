@@ -24,7 +24,7 @@ const wordsFor = (roles: readonly RolePreset[], names: RoleCardNames = BOARD) =>
   roleCardWords(en.t, roleCard(roles), names);
 const SALES = wordsFor(['sales_executive']);
 const TEXT =
-  '.hg-sheet-title, .hg-detail-panel-title, .hg-role-card-presets, .hg-role-card-credit, .hg-role-card-overline, .hg-role-card-phrase, .hg-scope-note';
+  '.hg-sheet-title, .hg-detail-panel-title, .hg-role-card .hg-card-header-title, .hg-role-card .hg-card-header-description, .hg-role-card-overline, .hg-role-card-phrase, .hg-scope-note';
 const PICTURES = join(import.meta.dirname, '../../../.qa/components/role-card');
 
 test.describe('at 375', () => {
@@ -38,8 +38,13 @@ test.describe('at 375', () => {
     const sheet = page.getByRole('dialog', { name: SALES.surfaceTitle });
     await expect(sheet).toBeVisible();
     await expect(sheet.getByRole('button', { name: en.t(SHELL.close) })).toBeVisible();
-    await expect(sheet.locator('.hg-role-card-presets')).toHaveText(SALES.presets);
-    await expect(sheet.locator('.hg-role-card-credit')).toHaveText(SALES.credit ?? '');
+    await expect(sheet.locator('.hg-role-card .hg-card-header-title')).toHaveText(SALES.presets);
+    await expect(
+      sheet.getByRole('heading', { level: 3, name: SALES.presets, exact: true }),
+    ).toBeVisible();
+    await expect(sheet.locator('.hg-role-card .hg-card-header-description')).toHaveText(
+      SALES.credit ?? '',
+    );
     const sections = sheet.locator('.hg-role-card-section');
     await expect(sections.nth(0).locator('.hg-role-card-phrase')).toHaveText(
       SALES.grants.map((line) => line.text),
@@ -70,7 +75,7 @@ test.describe('at 375', () => {
   }) => {
     await mount(<RoleCardAsHeld reader="en" names={BOARD} surface="loading" />);
     const sheet = page.getByRole('dialog');
-    await expect(sheet.locator('.hg-role-card-presets')).toHaveText(SALES.presets);
+    await expect(sheet.locator('.hg-role-card .hg-card-header-title')).toHaveText(SALES.presets);
     const waiting = sheet.getByRole('status', { name: SALES.loading });
     await expect(waiting).toHaveAttribute('aria-busy', 'true');
     await expect(waiting.getByRole('status')).toHaveCount(0);
@@ -89,11 +94,11 @@ test.describe('at 375', () => {
     const sheet = page.getByRole('dialog');
     await expect(sheet).toContainText(SALES.error.title);
     await expect(sheet).toContainText(SALES.error.body);
-    await expect(sheet.locator('.hg-role-card-presets')).toHaveCount(0);
+    await expect(sheet.locator('.hg-role-card .hg-card-header-title')).toHaveCount(0);
     await page.screenshot({ path: `${PICTURES}/m-error.png` });
     await sheet.getByRole('button', { name: SALES.error.retry }).click();
     await expect(card).toHaveAttribute('data-retried', 'true');
-    await expect(sheet.locator('.hg-role-card-presets')).toBeFocused();
+    await expect(sheet.locator('.hg-role-card .hg-card-header-title')).toBeFocused();
   });
 
   test('the close closes it', async ({ mount, page }) => {
@@ -118,9 +123,9 @@ test.describe('at 375', () => {
       const sheet = page.getByRole('dialog');
       const region = sheet.getByRole('region');
       expect(await region.evaluate((node) => node.scrollHeight > node.clientHeight)).toBe(true);
-      const head = await settledBox(sheet.locator('.hg-role-card-presets'));
+      const head = await settledBox(sheet.locator('.hg-role-card .hg-card-header-title'));
       await region.evaluate((node) => node.scrollTo({ top: node.scrollHeight }));
-      expect(await settledBox(sheet.locator('.hg-role-card-presets'))).toEqual(head);
+      expect(await settledBox(sheet.locator('.hg-role-card .hg-card-header-title'))).toEqual(head);
       await expect(sheet.getByRole('note')).toBeInViewport();
       await region.evaluate((node) => node.scrollTo({ top: 0 }));
       await expectNothingClipped(page, TEXT);
@@ -157,7 +162,7 @@ test.describe('at 1536', () => {
     const panel = page.getByRole('dialog');
     await expect(panel.locator('.hg-role-card-section')).toHaveCount(1);
     await expect(panel.getByRole('note')).toHaveCount(0);
-    await expect(panel.locator('.hg-role-card-credit')).toHaveCount(0);
+    await expect(panel.locator('.hg-role-card .hg-card-header-description')).toHaveCount(0);
   });
 
   test('two and three owners read as the note names them', async ({ mount, page }) => {

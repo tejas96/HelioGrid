@@ -21,7 +21,7 @@ export function QuietSkeleton<Row>({ table }: { table: DataTableProps<Row> }) {
             {columns.map((column, index) => (
               <th
                 key={column.key}
-                className="hg-dt-th"
+                className="hg-dt-th hg-overline"
                 data-first={index === 0 ? 'true' : undefined}
                 data-last={index === last && rowActions === undefined ? 'true' : undefined}
                 data-align={alignOf(column)}
@@ -32,7 +32,9 @@ export function QuietSkeleton<Row>({ table }: { table: DataTableProps<Row> }) {
                 </span>
               </th>
             ))}
-            {rowActions === undefined ? null : <th className="hg-dt-th hg-dt-th--actions" />}
+            {rowActions === undefined ? null : (
+              <th className="hg-dt-th hg-overline hg-dt-th--actions" />
+            )}
           </tr>
         </thead>
         <tbody>
@@ -44,7 +46,10 @@ export function QuietSkeleton<Row>({ table }: { table: DataTableProps<Row> }) {
                   className="hg-dt-cell-shell"
                   data-first={index === 0 ? 'true' : undefined}
                 >
-                  <span className="hg-dt-shimmer" data-w={index === 0 ? 'lead' : 'mid'} />
+                  <span
+                    className="hg-dt-shimmer hg-skeleton"
+                    data-w={index === 0 ? 'lead' : 'mid'}
+                  />
                 </td>
               ))}
               {rowActions === undefined ? null : <td className="hg-dt-cell-shell" />}

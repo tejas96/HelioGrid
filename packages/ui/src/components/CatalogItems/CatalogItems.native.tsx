@@ -1,10 +1,11 @@
 import { catalogFiltersOn } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import { tileSurface } from '../../primitives/Ground/Ground.native';
+import { glassTileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
 import { RetryButton } from '../Button/RetryButton.native';
@@ -16,16 +17,12 @@ import { FilterPanel } from '../FilterPanel/FilterPanel.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { SearchField } from '../SearchField/SearchField.native';
 import { CatalogItemList } from './CatalogItemList.native';
-import {
-  catalogFilterDimensions,
-  catalogFilterOf,
-  catalogFilterValue,
-  catalogKindChips,
-  catalogKindsChosen,
-} from './CatalogItems.logic';
+import { catalogFilterBodyOf, catalogKindChips, catalogKindsChosen } from './CatalogItems.logic';
 import type { CatalogItemsProps, CatalogPaging } from './CatalogItems.types';
 import { ListEntries } from './CatalogItemsFoot.native';
 import { CatalogStripBar } from './CatalogStrip.native';
+
+// web-only part: MarketProvider — money is formatted by its child CatalogItemList.native.
 
 /** The placeholder cards while the list loads — the board's six. */
 const LOADING_ROWS = ['panel', 'panel', 'panel', 'panel', 'panel', 'panel'] as const;
@@ -37,9 +34,10 @@ const LOADING_ROWS = ['panel', 'panel', 'panel', 'panel', 'panel', 'panel'] as c
  * the app's.
  */
 export function CatalogItems(props: CatalogItemsProps) {
-  const { words, read, strip, query, onQuery, filter, onFilter, schemes } = props;
+  const { words, read, strip, query, onQuery, filter, onFilter } = props;
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const dimensions = useMemo(() => catalogFilterDimensions(words, schemes), [words, schemes]);
+  /* The phone is always the narrow room: the order is the sheet's first choice. */
+  const body = catalogFilterBodyOf(props, true);
   /* *Try again* leaves with the failure: the screen reader goes to the panel, which stays while it
      reloads. A dismissed row's line hands it to the strip's title, which stays. */
   const panel = useRef<View>(null);
@@ -49,6 +47,8 @@ export function CatalogItems(props: CatalogItemsProps) {
     return (
       <View ref={panel} style={styles.panel}>
         <EmptyState
+          glow={false}
+          icon={<ShellGlyph name="alert-circle" size="xl" />}
           title={words.loadFailed}
           description={words.loadFailedBody}
           action={
@@ -112,9 +112,10 @@ export function CatalogItems(props: CatalogItemsProps) {
         open={filtersOpen}
         onClose={() => setFiltersOpen(false)}
         closeLabel={words.closeFilters}
-        dimensions={dimensions}
-        value={catalogFilterValue(filter)}
-        onChange={(value) => onFilter(catalogFilterOf(value))}
+        dimensions={body.dimensions}
+        value={body.value}
+        onChange={body.onChange}
+        onClear={body.onClear}
         words={words.filterPanel}
         resultCount={props.paging.rowCount}
         resultNoun={words.filterPanel.resultNoun}
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
   more: { alignItems: 'center' },
   /* The first-day card is a tile: Ground's look, its moment beside the words. */
   teach: {
-    ...tileSurface,
+    ...glassTileSurface,
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing['sp-4'],

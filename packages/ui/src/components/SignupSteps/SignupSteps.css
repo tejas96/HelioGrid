@@ -1,6 +1,5 @@
-/* SignupSteps — the step said quietly: the counter and the step's name as one overline, then a rail
-   of three tracks. Done tracks are filled, the one in view fills as the step opens (transform only),
-   the next ones are bare; the fill is the logo's light. Names sit under the tracks from the door's
+/* SignupSteps — the step said quietly: the counter and the step's name as one overline, then the
+   `Stepper`'s numbered bars, the one in view filling once. Names sit under the bars from the door's
    breakpoint, where the column has room for them. */
 .hg-signup-steps {
   display: flex;
@@ -14,11 +13,6 @@
   flex-wrap: wrap;
   align-items: baseline;
   color: var(--text-secondary);
-  font-size: var(--fs-overline);
-  line-height: var(--lh-overline);
-  letter-spacing: var(--tr-overline);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
 }
 
 .hg-signup-steps-name::before {
@@ -26,71 +20,14 @@
   margin-inline: var(--sp-2);
 }
 
-.hg-signup-steps-rail {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--sp-2);
-}
-
-.hg-signup-steps-step {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  min-width: 0;
-}
-
-.hg-signup-steps-track {
-  position: relative;
-  display: block;
-  height: var(--sp-1);
-  overflow: hidden;
-  border-radius: var(--r-pill);
-  background: var(--line-soft);
-}
-
-.hg-signup-steps-fill {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--gradient-brand);
-  transform: scaleX(0);
-  transform-origin: left center;
-}
-
-.hg-signup-steps-step[data-state="done"] .hg-signup-steps-fill {
-  transform: none;
-}
-
-.hg-signup-steps-step[data-state="current"] .hg-signup-steps-fill {
-  transform: none;
-  animation: hg-signup-steps-fill var(--dur-ambient) var(--ease-enter) var(--dur-standard) backwards;
-}
-
-/* The names stay off the rail on a phone width: the overline already says the one in view. */
-.hg-signup-steps-label {
+/* The names stay off the bars on a phone width: the overline already says the one in view. */
+.hg-signup-steps-rail .hg-stepper-bar-caption {
   display: none;
-  overflow: hidden;
-  color: var(--text-tertiary);
-  font-size: var(--fs-caption);
-  line-height: var(--lh-caption);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.hg-signup-steps-step[data-state="current"] .hg-signup-steps-label {
-  color: var(--text-primary);
-  font-weight: var(--fw-medium);
-}
-
-@keyframes hg-signup-steps-fill {
-  from {
-    transform: scaleX(0);
-  }
 }
 
 /* --bp-desktop: @media cannot read a custom property, so its value is written here. */
 @media (min-width: 968px) {
-  .hg-signup-steps-label {
-    display: block;
+  .hg-signup-steps-rail .hg-stepper-bar-caption {
+    display: flex;
   }
 }

@@ -7,9 +7,9 @@ import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { DatePicker } from '../DatePicker/DatePicker.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import { NumberField } from '../NumberField/NumberField.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import { MarkWonLockedValue, MarkWonPlan, MarkWonProof } from './MarkWonBasis.native';
 import { MarkWonManagerField } from './MarkWonManager.native';
 import type { MarkWonSheetProps } from './MarkWonSheet.types';
@@ -23,12 +23,13 @@ import { useMarkWonForm } from './use-mark-won-form';
 export function MarkWonSheet(props: MarkWonSheetProps) {
   const { open, words, sending, started, onClose } = props;
   return (
-    <Sheet
+    <EditorSurface
       open={open}
       onClose={() => {
         if (!sending) onClose();
       }}
       closeLabel={words.close}
+      desktop="modal"
       showClose
       title={words.title}
       subtitle={started === null ? words.who : undefined}
@@ -39,7 +40,7 @@ export function MarkWonSheet(props: MarkWonSheetProps) {
       ) : (
         <MarkWonStarted {...props} number={started.number} />
       )}
-    </Sheet>
+    </EditorSurface>
   );
 }
 
@@ -70,7 +71,7 @@ function MarkWonForm(props: MarkWonSheetProps) {
             {form.failure}
           </Text>
         )}
-        <Button {...form.send} icon={<ShellGlyph name="tick" size="md" tone="inverse" />}>
+        <Button {...form.send} icon={<ShellGlyph name="check" size="md" tone="inverse" />}>
           {props.words.send}
         </Button>
       </View>

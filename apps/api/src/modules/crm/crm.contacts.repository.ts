@@ -200,7 +200,11 @@ export class CrmContactsRepository {
           .limit(1);
         if (made) return replayOf(await labelById(tx, tenantId, made.id), made.fingerprint, key);
       }
-      await tx
+      // One add at a time per company, so two sends of the same words in two cases make one label.
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`role-label:${tenantId}`}))`);
+      const held = await labelWithWords(tx, tenantId, text);
+      if (held !== null) return { outcome: 'created', row: await labelById(tx, tenantId, held) };
+      const [added] = await tx
         .insert(contactRoleLabel)
         .values({
           tenantId,
@@ -210,15 +214,31 @@ export class CrmContactsRepository {
           creationKey: key?.key,
           creationFingerprint: key?.fingerprint,
         })
-        .onConflictDoNothing();
-      const [held] = await tx
-        .select({ id: contactRoleLabel.id })
-        .from(contactRoleLabel)
-        .where(and(eq(contactRoleLabel.tenantId, tenantId), eq(contactRoleLabel.label, text)));
-      if (held === undefined) throw new Error('the role label is neither added nor held');
-      return { outcome: 'created', row: await labelById(tx, tenantId, held.id) };
+        .returning({ id: contactRoleLabel.id });
+      if (added === undefined) throw new Error('the role label insert returned no row');
+      return { outcome: 'created', row: await labelById(tx, tenantId, added.id) };
     });
   }
+}
+
+/** The company's own label with these words, whatever their case — the oldest, if two exist. */
+async function labelWithWords(
+  tx: DbTransaction,
+  tenantId: string,
+  text: string,
+): Promise<string | null> {
+  const [held] = await tx
+    .select({ id: contactRoleLabel.id })
+    .from(contactRoleLabel)
+    .where(
+      and(
+        eq(contactRoleLabel.tenantId, tenantId),
+        sql`lower(${contactRoleLabel.label}) = lower(${text})`,
+      ),
+    )
+    .orderBy(asc(contactRoleLabel.createdAt), asc(contactRoleLabel.id))
+    .limit(1);
+  return held?.id ?? null;
 }
 
 /** No label, or a label this company holds. */

@@ -1,10 +1,10 @@
 import type { MyDay, MyDayItem, TranslatedText } from '@heliogrid/contracts';
 import { daysLateOf, type MyDayBand } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
-import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import type { MarketFormat } from '../../utils/format';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { MenuItem } from '../Menu/Menu.types';
+import type { StatusTone } from '../StatusMark/StatusMark.types';
 import type { MyDayBandRows, MyDayProps, MyDayWords } from './MyDay.types';
 
 /** The name a task's lead goes by: its own, or "No name yet". */

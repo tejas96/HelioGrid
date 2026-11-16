@@ -17,7 +17,7 @@ export function SheetAccelerator({
 }: SheetAcceleratorProps & WideProps) {
   return (
     <Pressable className="hg-item-accelerator" disabled={disabled} onPress={onPress}>
-      <HueTile glyph="spreadsheet" hue="teal" size={40} stroke={1.6} />
+      <HueTile glyph="spreadsheet" hue="teal" size={40} />
       <span className="hg-item-accelerator-words">
         <span className="hg-item-accelerator-title">{title}</span>
         <span className="hg-item-accelerator-sub">{sub}</span>

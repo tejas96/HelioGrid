@@ -180,11 +180,6 @@
 }
 
 .hg-lead-deck-overline {
-  font-size: var(--fs-overline);
-  line-height: var(--lh-overline);
-  letter-spacing: var(--tr-overline);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
   color: var(--on-panel-muted);
 }
 

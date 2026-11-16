@@ -1,4 +1,4 @@
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { ResolvedStep } from './resolve-steps';
 import { rowStateWord, spokenStep } from './resolve-steps';
 import { isLastStep, isStepClickable } from './Stepper.logic';
@@ -56,20 +56,9 @@ export function StepperRow({
           </span>
         </span>
         {clickable && !active ? (
-          <svg
-            className="hg-stepper-chevron"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <ShellGlyphMarks name="chevron-right" />
-          </svg>
+          <span className="hg-stepper-chevron">
+            <ShellGlyph name="chevron-right" size="sm" tone="current" />
+          </span>
         ) : null}
       </button>
     </li>

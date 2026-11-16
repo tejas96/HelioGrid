@@ -191,6 +191,9 @@ export function useImportJob<Job extends ImportJobWire, Field extends string>(
     settle,
     /** Judged on the device first: a file the store would refuse is never sent. */
     choose(file: ChosenSpreadsheet) {
+      if (file.bytes.byteLength === 0) {
+        return setUpload({ state: 'refused', name: file.name, refusal: 'empty' });
+      }
       const contentType = SPREADSHEET_TYPES.find((taken) => taken === file.contentType);
       const verdict =
         contentType === undefined

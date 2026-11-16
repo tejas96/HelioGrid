@@ -173,13 +173,13 @@
   width: 92px;
 }
 
-/* A ghost button's words sit 16 into its pill: the pill steps out so its words line up with the fields. */
+/* A small ghost button's words sit 12 into it: the button steps out so its words line up with the fields. */
 .hg-pay-due {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--sp-2);
-  margin-left: calc(-1 * var(--sp-4));
+  margin-left: calc(-1 * var(--sp-3));
 }
 
 .hg-pay-start {

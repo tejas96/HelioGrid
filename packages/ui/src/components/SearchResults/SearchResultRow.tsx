@@ -78,7 +78,7 @@ function RowFace<Failure>({ row }: { row: SearchRow<Failure> }) {
     return (
       <span className="hg-search-tile" aria-hidden="true">
         <ShellGlyph
-          name={row.kind === 'proposal' ? 'file-text' : CATALOG_GLYPH[row.componentKind]}
+          name={row.kind === 'proposal' ? 'document' : CATALOG_GLYPH[row.componentKind]}
           size="md"
           tone="secondary"
         />

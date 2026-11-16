@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { drawsModalMark, MODAL_TONE_GLYPH } from './Modal.logic';
 import type { ModalTone } from './Modal.types';
 
@@ -21,23 +21,8 @@ export function ModalMark({ icon, tone }: ModalMarkProps) {
     return null;
   }
   return (
-    <span className="hg-modal-mark" data-tone={tone}>
-      {icon ??
-        (glyph === null ? null : (
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="20"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            viewBox="0 0 24 24"
-            width="20"
-          >
-            <ShellGlyphMarks name={glyph} />
-          </svg>
-        ))}
+    <span className="hg-modal-mark hg-tone" data-tone={tone}>
+      {icon ?? (glyph === null ? null : <ShellGlyph name={glyph} size="md" tone="current" />)}
     </span>
   );
 }

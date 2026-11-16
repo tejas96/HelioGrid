@@ -1,3 +1,4 @@
+import { classNames } from '../../primitives/class-names';
 import { Text } from '../../primitives/Text/Text';
 import { BrandBloom } from '../BrandBloom/BrandBloom';
 import { LETTER_PARAGRAPHS, LETTERHEAD_BLOOM_SIZE } from './CompanyProfile.logic';
@@ -36,14 +37,14 @@ export function Letterhead({
           </span>
           <div className="hg-company-profile-sheet-name">
             {words.name === '' ? (
-              <Bar />
+              <Bar loading={loading} />
             ) : (
               <Text variant="body" bold>
                 {words.name}
               </Text>
             )}
             {words.address === '' ? (
-              <Bar />
+              <Bar loading={loading} />
             ) : (
               <Text variant="caption" color="secondary">
                 {words.address}
@@ -57,7 +58,7 @@ export function Letterhead({
             {words.taxLabel}
           </Text>
           {words.tax === null ? (
-            <Bar />
+            <Bar loading={loading} />
           ) : (
             <Text variant="mono" color={words.tax.owed ? 'danger' : 'primary'}>
               {words.tax.value}
@@ -66,13 +67,17 @@ export function Letterhead({
           <Text variant="caption" color="secondary">
             {words.bank}
           </Text>
-          {words.bankLine === null ? <Bar /> : <Text variant="caption">{words.bankLine}</Text>}
+          {words.bankLine === null ? (
+            <Bar loading={loading} />
+          ) : (
+            <Text variant="caption">{words.bankLine}</Text>
+          )}
         </div>
         {LETTER_PARAGRAPHS.map((lines) => (
           <div key={lines} className="hg-company-profile-sheet-lines">
             {Array.from({ length: lines }, (_, line) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: identical bars that never reorder
-              <Bar key={line} />
+              <Bar key={line} loading={loading} />
             ))}
           </div>
         ))}
@@ -81,6 +86,9 @@ export function Letterhead({
   );
 }
 
-function Bar() {
-  return <span className="hg-company-profile-bar" />;
+/** A blank line of the letter — a skeleton while the record loads. */
+function Bar({ loading }: { loading: boolean }) {
+  return (
+    <span className={classNames('hg-company-profile-bar', loading ? 'hg-skeleton' : undefined)} />
+  );
 }

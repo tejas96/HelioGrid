@@ -1,15 +1,13 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider';
+import { ProgressRing } from '../ProgressRing/ProgressRing.native';
 import type { OperationCount } from './OperationProgress.types';
-import { ringSpokenName } from './operation-progress-model';
-import { ProgressRing } from './ProgressRing.native';
-import { countShare, RUN_RING } from './progress-ring';
+import { countShare, ringSpokenName } from './operation-progress-model';
 
 interface OperationRingProps {
   label: ReactNode;
@@ -34,8 +32,7 @@ export function OperationRing({ label, count, countCaption, style }: OperationRi
       }
       style={[styles.ring, style]}
     >
-      <ProgressRing geometry={RUN_RING} share={countShare(count)} ink={colors.accent} />
-      <View style={styles.centre} pointerEvents="none">
+      <ProgressRing size="run" share={countShare(count)} ink={colors.accent}>
         {count === null ? null : (
           <Text variant="h2" align="center" style={styles.figure}>
             {number(count.done)}
@@ -46,23 +43,13 @@ export function OperationRing({ label, count, countCaption, style }: OperationRi
             {countCaption}
           </Text>
         )}
-      </View>
+      </ProgressRing>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  ring: {
-    alignSelf: 'center',
-    width: RUN_RING.box,
-    height: RUN_RING.box,
-  },
-  centre: {
-    ...StyleSheet.absoluteFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: theme.spacing['sp-0-5'],
-  },
+  ring: { alignSelf: 'center' },
   figure: {
     letterSpacing: 0,
     fontVariant: ['tabular-nums'],

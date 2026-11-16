@@ -12,7 +12,7 @@ import { ImportMatching, ImportRunning } from '../Import/ImportWaits.native';
 import { useImportFormats } from '../Import/use-import-formats';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { Stepper } from '../Stepper/Stepper.native';
-import { columnsStepOf, fileStepOf, footOf, stepperOf } from './LeadImport.props';
+import { backOf, columnsStepOf, fileStepOf, footOf, stepperOf } from './LeadImport.props';
 import type { LeadImportProps } from './LeadImport.types';
 import { LeadImportPreview } from './LeadImportPreview.native';
 import { LeadImportReport } from './LeadImportReport.native';
@@ -27,8 +27,16 @@ import { LeadImportRows } from './LeadImportRows.native';
 export function LeadImport(props: LeadImportProps) {
   const formats = useImportFormats();
   const { main, below } = stepOf(props, formats);
+  const back = backOf(props, false);
   return (
     <View style={styles.wizard}>
+      {back === null ? null : (
+        <View style={styles.back}>
+          <Button variant="ghost" size="sm" onClick={back}>
+            {props.words.back}
+          </Button>
+        </View>
+      )}
       <Stepper {...stepperOf(props, false)} />
       {props.notice === null ? null : (
         <Banner kind="state" title={props.notice.title} dismissible={false} density="functional">
@@ -92,4 +100,5 @@ function stepOf(
 
 const styles = StyleSheet.create({
   wizard: { gap: theme.spacing['sp-5'], minWidth: 0 },
+  back: { alignSelf: 'flex-start' },
 });

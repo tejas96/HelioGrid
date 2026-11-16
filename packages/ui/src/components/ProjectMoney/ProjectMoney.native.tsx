@@ -4,13 +4,14 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Card } from '../Card/Card.native';
+import { CardHeader } from '../Card/CardHeader.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { FailedRead } from '../EmptyState/FailedRead.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { useFormat } from '../MarketProvider';
 import { Menu } from '../Menu/Menu.native';
 import { projectFailedOf, projectLoadingOf } from '../ProjectDetail/ProjectDetail.states';
-import { CardHead } from '../ProjectDetail/ProjectDetailParts.native';
+import { projectCard, projectHead } from '../ProjectDetail/ProjectDetailParts.native';
 import { Timeline } from '../Timeline/Timeline.native';
 import { EarlierPlans } from './EarlierPlans.native';
 import { MoneyEntries } from './MoneyEntries.native';
@@ -74,8 +75,8 @@ function MoneyParts(props: ProjectMoneyProps & { readonly payments: ProjectPayme
         },
   );
   return (
-    <Card density="functional" style={styles.card}>
-      <CardHead title={words.parts} aside={words.fromTerms} />
+    <Card density="functional" style={projectCard}>
+      <CardHeader title={words.parts} description={words.fromTerms} style={projectHead} />
       <View style={styles.pad}>
         <Timeline variant="page" density="functional" items={items} />
       </View>
@@ -85,7 +86,6 @@ function MoneyParts(props: ProjectMoneyProps & { readonly payments: ProjectPayme
 
 const styles = StyleSheet.create({
   page: { gap: theme.spacing['sp-4'] },
-  card: { padding: theme.spacing['sp-1'], gap: theme.spacing['sp-1'] },
   pad: { paddingHorizontal: theme.spacing['sp-3'], paddingBottom: theme.spacing['sp-2'] },
   more: {
     flexDirection: 'row',

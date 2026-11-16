@@ -1,10 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { StageTrack } from '../StageTrack/StageTrack.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { fateLineOf, fateMarkOf } from './LeadImport.logic';
 import type { LeadImportRow, LeadImportWords } from './LeadImport.types';
 

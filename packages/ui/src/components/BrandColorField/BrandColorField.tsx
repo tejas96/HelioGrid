@@ -97,7 +97,7 @@ export function BrandColorField({
       {/* Document context only — this specimen is the ONLY thing the tenant colour paints. */}
       {reading !== null && specimen ? (
         <div>
-          <span className="hg-brand-color-overline">{shown.specimenLabel}</span>
+          <span className="hg-brand-color-overline hg-overline">{shown.specimenLabel}</span>
           <BrandColorSpecimen
             hex={reading.hex}
             textOn={reading.on.color}

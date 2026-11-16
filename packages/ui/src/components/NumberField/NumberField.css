@@ -35,7 +35,7 @@
 
 .hg-number-field-box[data-hero]
   :is(.hg-number-field-input, .hg-number-field-input[data-currency="true"]) {
-  font: var(--fw-regular) 24px / 1 var(--font-display);
+  font: var(--fw-regular) var(--fs-card-title) / 1 var(--font-display);
   font-variant-numeric: tabular-nums lining-nums;
   letter-spacing: var(--tr-display);
 }
@@ -144,7 +144,7 @@
   box-shadow: none;
 }
 .hg-number-field-box[data-plain] .hg-number-field-input {
-  font-size: 34px;
+  font-size: var(--fs-h1);
   letter-spacing: -0.015em;
 }
 /* A plain figure in a dense row — a payment part's share — reads at the row's size. */
@@ -152,7 +152,7 @@
   height: 32px;
 }
 .hg-number-field-box[data-plain][data-density="functional"] .hg-number-field-input {
-  font-size: 22px;
+  font-size: var(--fs-h2);
   letter-spacing: 0;
   text-align: end;
 }
@@ -171,7 +171,7 @@
      its digits against the unit. */
   min-width: var(--touch-min);
   margin-inline-start: auto;
-  font-size: 44px;
+  font-size: var(--fs-display);
   letter-spacing: -0.03em;
   text-align: end;
 }

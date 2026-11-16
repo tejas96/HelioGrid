@@ -29,6 +29,7 @@ interface WebListRowProps extends ListRowProps {
 export function ListRow({
   icon,
   iconColor = 'var(--accent)',
+  iconShape = 'circle',
   avatar,
   title,
   subtitle,
@@ -65,12 +66,9 @@ export function ListRow({
       style={style}
       {...act}
     >
-      {avatar ||
-        (icon ? (
-          <IconCircle color={iconColor} size={leadingCircleSize(density)}>
-            {icon}
-          </IconCircle>
-        ) : null)}
+      {avatar || (
+        <Leading icon={icon} iconColor={iconColor} iconShape={iconShape} density={density} />
+      )}
       <div className="hg-list-row-body">
         <div className="hg-list-row-title">{title}</div>
         {gapNode ? (
@@ -91,5 +89,22 @@ export function ListRow({
       </div>
       {trailing}
     </div>
+  );
+}
+
+/** The row's leading mark: the icon in its circle, or in its tile; none without an icon. */
+function Leading({
+  icon,
+  iconColor,
+  iconShape,
+  density,
+}: Required<Pick<ListRowProps, 'iconColor' | 'iconShape' | 'density'>> &
+  Pick<ListRowProps, 'icon'>) {
+  if (icon === undefined || icon === null) return null;
+  if (iconShape === 'tile') return <span className="hg-list-row-icon-tile">{icon}</span>;
+  return (
+    <IconCircle color={iconColor} size={leadingCircleSize(density)}>
+      {icon}
+    </IconCircle>
   );
 }

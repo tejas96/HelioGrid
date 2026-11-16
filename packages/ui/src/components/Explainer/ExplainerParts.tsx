@@ -1,28 +1,12 @@
 import { Pressable } from '../../primitives/Pressable/Pressable';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { arrowOffset, type ExplainerPagerModel, type PlacedExplainer } from './Explainer.logic';
 import type { ExplainerAction } from './Explainer.types';
 
 /** The default "i" — `currentColor`, so the trigger owns its colour and its accessible name. */
-export function InfoGlyph({ size }: { size: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="info-open" />
-      <g fill="currentColor" stroke="none">
-        <ShellGlyphMarks name="info-dot" />
-      </g>
-    </svg>
-  );
+export function InfoGlyph({ size }: { size: ShellGlyphSize }) {
+  return <ShellGlyph name="info" size={size} tone="current" />;
 }
 
 export function ExplainerArrow({ placed }: { placed: PlacedExplainer }) {

@@ -24,6 +24,8 @@ import type {
   ProposalTrackRecordBlockProps,
 } from './ProposalBlocks.types';
 
+// web-only parts: HueTile, Provenance — tiles and tiers come through BlockParts.native.
+
 const display = theme.type.families.display;
 const mono = theme.type.families.mono;
 
@@ -272,16 +274,21 @@ const styles = StyleSheet.create({
   stepPaper: { gap: 18 },
   rail: { alignItems: 'center', alignSelf: 'stretch' },
   number: { borderRadius: theme.radius['r-pill'], alignItems: 'center', justifyContent: 'center' },
-  numberWord: { fontFamily: mono, fontWeight: '500', fontSize: 13, lineHeight: 16 },
-  numberWordPaper: { fontSize: 16, lineHeight: 20 },
-  line: { flex: 1, width: 2, borderRadius: 2, marginVertical: 2 },
+  numberWord: {
+    fontFamily: mono,
+    fontWeight: '500',
+    fontSize: theme.type.roles['body-sm'].fontSize,
+    lineHeight: 16,
+  },
+  numberWordPaper: { fontSize: theme.type.document['doc-fs'], lineHeight: 20 },
+  line: { flex: 1, width: 2, borderRadius: theme.radius['r-pill'], marginVertical: 2 },
   stepWords: { flex: 1, minWidth: 0 },
   stepGap: { paddingBottom: theme.spacing['sp-4'] },
   stepTitle: { fontWeight: '500' },
-  titlePaper: { fontSize: 19, lineHeight: 26 },
-  notePaper: { fontSize: 15, lineHeight: 22 },
+  titlePaper: { fontSize: theme.type.document['doc-fs-lead'], lineHeight: 26 },
+  notePaper: { fontSize: theme.type.document['doc-fs'], lineHeight: 22 },
   days: { fontFamily: mono, lineHeight: 28 },
-  daysPaper: { fontSize: 14, lineHeight: 40 },
+  daysPaper: { fontSize: theme.type.document['doc-fs-small'], lineHeight: 40 },
   record: { flexDirection: 'row', gap: theme.spacing['sp-3'] },
   recordPaper: { gap: 24 },
   recordCell: { flex: 1, flexBasis: 0, minWidth: 0, gap: theme.spacing['sp-0-5'] },
@@ -294,24 +301,34 @@ const styles = StyleSheet.create({
     padding: theme.spacing['sp-5'],
   },
   bandWords: { flex: 1, minWidth: 0 },
-  companyName: { fontFamily: display, fontWeight: '400', fontSize: 20, lineHeight: 24 },
+  companyName: {
+    fontFamily: display,
+    fontWeight: '400',
+    fontSize: theme.type.roles.h2.fontSize,
+    lineHeight: 24,
+  },
   foot: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
     padding: theme.spacing['sp-5'],
   },
-  customer: { fontFamily: display, fontWeight: '400', fontSize: 22, lineHeight: 28 },
+  customer: {
+    fontFamily: display,
+    fontWeight: '400',
+    fontSize: theme.type.roles.h2.fontSize,
+    lineHeight: 28,
+  },
   meta: { flexShrink: 0, alignItems: 'flex-end' },
   number2: { fontWeight: '500', lineHeight: 28 },
   metaWords: { textAlign: 'right' },
   bank: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-4'] },
-  bankPaper: { padding: 28, borderRadius: 20 },
+  bankPaper: { padding: 28, borderRadius: theme.radius['r-lg'] },
   bankMain: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-4'] },
   dim: { opacity: 0.45 },
   bankName: { fontWeight: '600' },
-  bankNamePaper: { fontSize: 20, lineHeight: 28 },
-  bankLinePaper: { fontSize: 16, lineHeight: 26 },
+  bankNamePaper: { fontSize: theme.type.document['doc-fs-figure'], lineHeight: 28 },
+  bankLinePaper: { fontSize: theme.type.document['doc-fs'], lineHeight: 26 },
   pill: {
     flexShrink: 0,
     height: theme.spacing['sp-6'],

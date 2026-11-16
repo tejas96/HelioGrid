@@ -1,11 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import { type RefObject, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { RetryButton } from '../Button/RetryButton.native';
+import { Card } from '../Card/Card.native';
 import { ShowMore } from '../CatalogItems/ShowMore.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
@@ -85,26 +84,16 @@ function VersionList(props: CatalogVersionList & { frame: RefObject<View | null>
   );
 }
 
-/** A version's tile: its number, its note and byline; in force says so, a past one its margin. */
+/** A version's tile — the shared `Card`, as the web's is: its number, its note and byline; in force says so, a past one its margin. */
 function VersionTile({
   version,
   words,
   onOpen,
 }: { version: CatalogVersionSummary } & Pick<CatalogVersionList, 'words' | 'onOpen'>) {
-  /* The disc takes the ground the list lies on — the tile's opposite, read here, outside the
-     tile's own provider. */
-  const fill = { backgroundColor: useGround().ground };
   return (
-    <Pressable
-      onPress={() => onOpen(version.id)}
-      style={[version.inForce ? styles.live : tileSurface, styles.tile]}
-    >
-      <GroundProvider ground="tile">
-        <View style={[styles.disc, fill]}>
-          <Text variant="caption" bold color={version.inForce ? 'success' : 'primary'}>
-            {version.tag}
-          </Text>
-        </View>
+    <Card density="functional" onClick={() => onOpen(version.id)}>
+      <View style={styles.tile}>
+        <VersionDisc tag={version.tag} inForce={version.inForce} />
         <View style={styles.grow}>
           <Text variant="body-sm" bold>
             {version.note}
@@ -120,8 +109,20 @@ function VersionTile({
             {version.margin}
           </Text>
         )}
-      </GroundProvider>
-    </Pressable>
+      </View>
+    </Card>
+  );
+}
+
+/** The number's disc in the control fill of the card it sits in, read inside the card's ground. */
+function VersionDisc({ tag, inForce }: { tag: string; inForce: boolean }) {
+  const fill = { backgroundColor: useGround().controlFill };
+  return (
+    <View style={[styles.disc, fill]}>
+      <Text variant="mono" bold color={inForce ? 'success' : 'primary'}>
+        {tag}
+      </Text>
+    </View>
   );
 }
 
@@ -138,12 +139,16 @@ function VersionRead(props: CatalogVersionRead & { frame: RefObject<View | null>
             [props.rateCount, words.rates],
           ] as const
         ).map(([figure, word]) => (
-          <View key={word} style={[tileSurface, styles.stat]}>
-            <Text variant="h3">{figure}</Text>
-            <Text variant="caption" color="secondary">
-              {word}
-            </Text>
-          </View>
+          <Card key={word} density="functional" style={styles.stat}>
+            <View style={styles.statWords}>
+              <Text variant="h3" bold style={styles.figure}>
+                {figure}
+              </Text>
+              <Text variant="caption" color="secondary">
+                {word}
+              </Text>
+            </View>
+          </Card>
         ))}
       </View>
       <Text variant="body-sm">{props.note}</Text>
@@ -161,13 +166,8 @@ const styles = StyleSheet.create({
   tile: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
     gap: theme.spacing['sp-3'],
-    paddingVertical: theme.layout['tile-gap'],
-    paddingHorizontal: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-md'],
   },
-  live: { backgroundColor: colors['success-bg'] },
   disc: {
     width: DISC,
     height: DISC,
@@ -178,11 +178,8 @@ const styles = StyleSheet.create({
   stats: { flexDirection: 'row', gap: theme.spacing['sp-2'] },
   /* The sheet's head ends on *Read-only*; the tiles keep a step clear of it. */
   readBody: { paddingTop: theme.spacing['sp-3'] },
-  stat: {
-    flex: 1,
-    gap: theme.spacing['sp-0-5'],
-    paddingVertical: theme.spacing['sp-3'],
-    paddingHorizontal: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-tile'],
-  },
+  stat: { flex: 1 },
+  statWords: { gap: theme.spacing['sp-0-5'] },
+  /* A figure in the face numbers take, as the web's (`.hg-cat-version-figure`). */
+  figure: { fontFamily: theme.type.families.mono, fontVariant: ['tabular-nums'] },
 });

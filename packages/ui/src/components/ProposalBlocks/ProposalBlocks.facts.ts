@@ -9,7 +9,7 @@ import {
   STATED_FIGURE_TIER,
 } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type {
   ProposalPartsWords,
   ProposalTimelineWords,

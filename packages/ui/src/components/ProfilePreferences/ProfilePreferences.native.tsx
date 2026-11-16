@@ -22,6 +22,8 @@ import {
 } from './ProfilePreferences.logic';
 import type { ProfilePreferencesProps } from './ProfilePreferences.types';
 
+// web-only part: SettingsSection — the sections are the web wide page; the phone draws its own page.
+
 /**
  * The phone's page (`m-default`): the account tile, the language and the units, each with the line
  * that says where its value comes from, then a push switch per group. Until the push read answers

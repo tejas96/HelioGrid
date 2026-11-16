@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
+import { StateRegion } from '../StateBody';
 import { UnavailableNote } from '../UnavailableNote';
 import type { KanbanBoardState } from './Kanban.logic';
 import { boardMarkOf, KANBAN_SKELETON_BARS, skeletonColumnsOf } from './KanbanStates.logic';
@@ -18,10 +18,10 @@ export function ColumnSkeleton({ stacked, label }: { stacked: boolean; label: Tr
       role="status"
       aria-label={label}
     >
-      <div className="hg-kanban-skeleton-bar hg-kanban-skeleton-head" />
+      <div className="hg-kanban-skeleton-bar hg-skeleton hg-kanban-skeleton-head" />
       <div className="hg-kanban-skeleton-bars">
         {KANBAN_SKELETON_BARS.map((k) => (
-          <div key={k} className="hg-kanban-skeleton-bar hg-kanban-skeleton-card" />
+          <div key={k} className="hg-kanban-skeleton-bar hg-skeleton hg-kanban-skeleton-card" />
         ))}
       </div>
     </div>
@@ -49,24 +49,13 @@ export function BoardMessage({
 }: BoardMessageProps) {
   return (
     <div className="hg-kanban-message">
-      <span className="hg-kanban-message-mark" data-tone={tone}>
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name={boardMarkOf(tone)} />
-        </svg>
-      </span>
-      {title ? <div className="hg-kanban-message-title">{title}</div> : null}
-      {message ? <div className="hg-kanban-message-text">{message}</div> : null}
-      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
+      <StateRegion
+        tone={tone}
+        glyph={boardMarkOf(tone)}
+        title={title}
+        message={message}
+        action={<RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />}
+      />
     </div>
   );
 }

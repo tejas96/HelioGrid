@@ -58,7 +58,7 @@ export function DedupeRecord({ record, ownerName, stage, words }: DedupeRecordPr
       <FactRows density="functional">
         <FactRow
           label={words.ownerLabel}
-          mark={<ShellGlyph name="person" size="sm" tone="secondary" />}
+          mark={<ShellGlyph name="user" size="sm" tone="secondary" />}
           value={
             ownerName === null ? (
               words.noOwner

@@ -21,7 +21,7 @@ function AddFields({ props, add }: { props: ProposalPartAddProps; add: PartAddin
       ))}
       {words.certified === undefined || certifiedChoice === null ? null : (
         <div className="hg-pps-certified hg-pps-tile">
-          <HueTile glyph="shield-check" hue="success" size={36} stroke={1.7} />
+          <HueTile glyph="shield-check" hue="success" size={36} />
           <span className="hg-pps-option-words">
             <span className="hg-pps-add-title">{words.certified.title}</span>
             <span className="hg-pps-option-line">{words.certified.line}</span>

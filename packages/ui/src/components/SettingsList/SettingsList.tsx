@@ -8,7 +8,7 @@ import { BrandBloom } from '../BrandBloom/BrandBloom';
 import { LargeTitle } from '../LargeTitle/LargeTitle';
 import { personRow, SETTINGS_ROW_GLYPH } from './SettingsList.logic';
 import type { SettingsListPerson, SettingsListProps } from './SettingsList.types';
-import { ListRow, WorkLists } from './SettingsListRow';
+import { SettingsRow, WorkLists } from './SettingsListRow';
 import { SettingsSideList } from './SettingsSideList';
 
 /** The person's avatar diameter in their hero tile, on a phone and on a wide screen. */
@@ -50,9 +50,8 @@ function PersonTile({
 
 /**
  * The settings list: the title as the page's heading; the person's tile; then each group an
- * overline heading on the page over one grey tile holding its rows — each row a `Pressable` (a
- * keyboard control with the 44 px floor; `ListRow` is a plain div) with its icon circle, its name
- * and a chevron. Functional density, one column in page order.
+ * overline heading on the page over one grey tile holding its rows — each row the shared
+ * `ListRow` with its icon tile, its name and a chevron. Functional density, one column in page order.
  */
 export function SettingsList({
   title,
@@ -91,7 +90,7 @@ export function SettingsList({
             <Block key={group.key} overline={group.name} density="functional">
               <div className="hg-settings-tile">
                 {group.rows.map((row) => (
-                  <ListRow
+                  <SettingsRow
                     key={row.key}
                     glyph={SETTINGS_ROW_GLYPH[row.key]}
                     name={row.name}

@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ProgressBar } from '../ProgressBar/ProgressBar.native';
 import { resolveSteps, stepLabel } from './resolve-steps';
 import { progressCounter, stepperPosition } from './Stepper.logic';
 import type { StepperProps } from './Stepper.types';
@@ -31,6 +32,7 @@ export function Stepper({
   onStepClick,
   onOpenStepList,
   reachability = 'free',
+  fillIn = false,
   style,
 }: NativeStepperProps) {
   const { total, index, percent, stepName } = stepperPosition(steps, current);
@@ -39,7 +41,14 @@ export function Stepper({
 
   if (isBarsVariant(variant)) {
     return (
-      <StepperBars index={index} label={label} steps={steps} style={style} variant={variant} />
+      <StepperBars
+        fillIn={fillIn}
+        index={index}
+        label={label}
+        steps={steps}
+        style={style}
+        variant={variant}
+      />
     );
   }
 
@@ -101,14 +110,12 @@ export function Stepper({
             {stepName}
           </Text>
         </View>
-        <View
-          style={[styles.track, { backgroundColor: controlFill }]}
-          accessibilityRole="progressbar"
-          accessibilityLabel={label ?? words.progress}
-          accessibilityValue={{ min: 1, max: total, now: index + 1 }}
-        >
-          <View style={[styles.fill, { width: `${percent}%` }]} />
-        </View>
+        <ProgressBar
+          value={percent}
+          label={label ?? words.progress}
+          steps={{ now: index + 1, total }}
+          style={styles.track}
+        />
       </View>
     );
   }
@@ -171,17 +178,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
   },
-  track: {
-    marginTop: 10,
-    height: 6,
-    borderRadius: theme.radius['r-pill'],
-    overflow: 'hidden',
-  },
-  fill: {
-    height: '100%',
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: colors.accent,
-  },
+  track: { marginTop: 10 },
   dots: {
     flexDirection: 'row',
     alignItems: 'center',

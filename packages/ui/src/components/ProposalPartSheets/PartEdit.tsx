@@ -49,7 +49,7 @@ function EditFields({ edit, words }: { edit: PartEditing; words: ProposalPartEdi
         <Textarea {...description.props} />
       </div>
       <p className="hg-pps-hint">
-        <ShellGlyph name="info-circle" size="sm" />
+        <ShellGlyph name="info" size="sm" />
         <span>{words.staysHere}</span>
       </p>
     </div>

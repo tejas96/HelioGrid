@@ -1,6 +1,6 @@
 import type { MyDayItem } from '@heliogrid/contracts';
 import { type ReactNode, useEffect, useState } from 'react';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { MenuItem } from '../Menu/Menu.types';
 import { leadActOf, type MyDayLeadAct, nameOf, rowMenuItemsOf } from './MyDay.logic';
 import type { MyDayProps } from './MyDay.types';

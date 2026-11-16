@@ -6,6 +6,7 @@ import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Checkbox } from '../Checkbox/Checkbox.native';
@@ -23,9 +24,10 @@ import { needsRoom, resolveRow, rowOpenOf } from './DataTableRow.logic';
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
   zebra: { backgroundColor: colors['surface-alt'] },
-  issue: { backgroundColor: colors['warning-bg'] },
-  fixed: { backgroundColor: colors['success-bg'] },
-  selected: { backgroundColor: colors['accent-subtle'] },
+  issue: { backgroundColor: TONE.warning.tint },
+  fixed: { backgroundColor: TONE.success.tint },
+  /* OneOhm's quiet choice: the control fill; the checkbox says it is chosen. */
+  selected: { backgroundColor: colors.fill },
   muted: { opacity: 0.55 },
   highlighted: { backgroundColor: ROW_HIGHLIGHT },
   actions: { flexDirection: 'row', gap: 6, justifyContent: 'flex-end' },

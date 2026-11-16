@@ -2,10 +2,10 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { Input } from '../Input/Input.native';
 import { useFormat } from '../MarketProvider';
 import { ProjectSheetSend } from '../ProjectActSheet/ProjectSheetSend.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import { CollectForm } from './CollectForm.native';
 import { sheetHeadOf } from './MoneySheet.logic';
 import type { MoneySheetForm, MoneySheetProps } from './ProjectMoney.parts.types';
@@ -31,10 +31,12 @@ export function MoneySheet(props: MoneySheetProps) {
     if (!sending) onClose();
   };
   return (
-    <Sheet
+    <EditorSurface
       open={form !== null}
       onClose={close}
       closeLabel={words.close}
+      showClose
+      desktop="modal"
       title={head?.title}
       subtitle={head?.line ?? undefined}
       dismissible={!sending}
@@ -44,7 +46,7 @@ export function MoneySheet(props: MoneySheetProps) {
           <FormOf {...props} form={form} />
         </View>
       )}
-    </Sheet>
+    </EditorSurface>
   );
 }
 

@@ -74,6 +74,12 @@ export type PressableRipple = 'bounded' | 'borderless' | 'none';
  */
 export type PressableHaptic = 'impact' | 'selection' | 'none';
 
+/**
+ * How far a press sinks the target: a `control` to `--press-scale` (0.98), a round `icon` control
+ * further, to `--press-scale-icon` (0.95) — OneOhm's button and icon button.
+ */
+export type PressableSink = 'control' | 'icon';
+
 export interface PressableProps {
   children?: ReactNode;
   onPress?: () => void;
@@ -103,6 +109,8 @@ export interface PressableProps {
   ripple?: PressableRipple;
   /** The tap the phone gives as the press lands (`PressableHaptic`). Default by role (`hapticOf`). */
   haptic?: PressableHaptic;
+  /** How far a press sinks it (`PressableSink`). Default `control`. */
+  sink?: PressableSink;
   /**
    * One option of a radio group: the group is ONE tab stop — the chosen option, else the first —
    * and the arrows move between its options (WAI-ARIA radio group). A phone has no tab order, so

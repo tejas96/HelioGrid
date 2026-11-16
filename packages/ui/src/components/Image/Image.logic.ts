@@ -1,4 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
 import type { ImageGlyphName, ImageMissingSpec } from './Image.missing';
 import {
   IMAGE_COMPACT_BELOW,
@@ -139,7 +140,7 @@ export interface MissingFace {
   label: TranslatedText;
   /** The picture's accessible name: the photo's own name with the words, or the words alone. */
   name: TranslatedText;
-  glyphSize: number;
+  glyphSize: ShellGlyphSize;
   showsLabel: boolean;
   /** The sentence under the mark — none on a compact frame, and `""` draws none. */
   detail: TranslatedText | undefined;
@@ -166,7 +167,7 @@ export function missingFaceOf({
     compact,
     label,
     name: alt ? words.missingNamed(alt, label) : label,
-    glyphSize: compact ? 20 : 24,
+    glyphSize: compact ? 'md' : 'lg',
     showsLabel: showsMissingLabel(width),
     detail: !compact && detail ? detail : undefined,
     offersRetry: !compact && reason === 'unavailable',

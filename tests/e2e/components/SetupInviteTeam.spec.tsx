@@ -56,7 +56,7 @@ test.describe('at 375', () => {
     await expect(onward).toBeFocused();
     const act = await settledBox(onward);
     expect(act?.width).toBe(375 - 2 * (await resolvedLength(step.page(), '--screen-pad-mobile')));
-    expect(act?.height).toBe(await resolvedLength(step.page(), '--field-h'));
+    expect(act?.height).toBe(await resolvedLength(step.page(), '--button-h-lg'));
     await onward.click();
     await expect(step.getByTestId('pressed')).toHaveText('skip');
   });

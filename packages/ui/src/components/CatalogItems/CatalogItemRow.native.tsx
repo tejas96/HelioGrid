@@ -1,12 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { CardRow, useCardRowAsideRoom } from '../CardRows/CardRows.native';
 import { Badge } from '../Chip/Chip.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { Provenance } from '../Provenance/Provenance.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { CATALOG_KIND_LEADING } from './CatalogItems.rows';
 import type { CatalogItemsProps, CatalogRow } from './CatalogItems.types';
 import { CatalogRowActs } from './CatalogRowActs.native';
@@ -54,7 +54,7 @@ export function CatalogItemRow({
       busy={waiting}
     >
       <RowTop>
-        <HueTile glyph={lead.glyph} hue={lead.hue} size={40} stroke={1.5} />
+        <HueTile glyph={lead.glyph} hue={lead.hue} size={40} />
         <View style={styles.words}>
           <Text variant="body" bold oneLine>
             {row.name}

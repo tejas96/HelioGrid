@@ -33,9 +33,11 @@ export function Chip({
   tone = 'neutral',
   density = 'expressive',
   glyph,
+  leading,
   className,
   style,
 }: WebChipProps) {
+  const lead = glyph !== undefined || (leading !== undefined && leading !== null);
   const pill = (
     <span
       className={classNames('hg-chip', className)}
@@ -43,10 +45,12 @@ export function Chip({
       data-empty={count === 0 ? 'true' : undefined}
       data-tone={tone}
       data-density={density}
+      data-lead={lead ? 'true' : undefined}
       style={style}
     >
       {dot ? <span className="hg-chip-dot" aria-hidden="true" /> : null}
       {glyph === undefined ? null : <ShellGlyph name={glyph} size="sm" />}
+      {leading}
       {children}
       {count === undefined ? null : <span className="hg-chip-count">{count}</span>}
     </span>
@@ -80,7 +84,7 @@ export function Badge({
   const ink = iris || tone === 'neutral' ? 'secondary' : tone;
   return (
     <span
-      className={classNames('hg-badge', iris ? 'hg-hue' : undefined, className)}
+      className={classNames('hg-badge', iris ? 'hg-hue' : 'hg-tone', className)}
       data-hue={iris ? tone : undefined}
       data-tone={tone}
       data-density={density}

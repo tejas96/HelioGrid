@@ -28,7 +28,7 @@ export function TableCaption({
 }) {
   if (caption === undefined) return null;
   return (
-    <div className={spokenOnly ? 'hg-spoken-only' : 'hg-dt-caption'} id={id}>
+    <div className={spokenOnly ? 'hg-spoken-only' : 'hg-dt-caption hg-overline'} id={id}>
       {captionTextOf(caption, continued, words)}
     </div>
   );

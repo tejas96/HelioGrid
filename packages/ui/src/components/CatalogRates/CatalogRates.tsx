@@ -14,13 +14,14 @@ import { EmptyState } from '../EmptyState';
 import { LoadingBars } from '../LoadingBars';
 import { useFormat } from '../MarketProvider';
 import { SearchField } from '../SearchField';
-import { matchingRates, RATE_BASIS_TONE, ratesByBasis } from './CatalogRates.logic';
+import { basesToggled, matchingRates, RATE_BASIS_TONE, ratesByBasis } from './CatalogRates.logic';
 import type { CatalogRate, CatalogRatesProps, CatalogRatesWords } from './CatalogRates.types';
 import './CatalogRates.css';
 
 /**
- * Catalog settings' *Rates* panel on the web: the price book's strip, then its rates — grouped by
- * how each is charged in a narrow room, one searchable table in a wide one. Before the first
+ * Catalog settings' *Rates* panel on the web: the price book's strip, then *Search rates* and the
+ * charge chips over its rates — grouped by how each is charged in a narrow room, one table in a wide
+ * one. Before the first
  * version it teaches that the first set becomes version 1.
  */
 export function CatalogRates(props: CatalogRatesProps) {
@@ -78,10 +79,59 @@ function RatesReady({ props, wide }: { props: CatalogRatesProps; wide: boolean }
             )
           }
         />
-      ) : wide ? (
-        <RatesTable read={props.read} rates={props.rates} words={words} />
       ) : (
-        <RateGroups rates={props.rates} bases={words.bases} />
+        <RatesFound props={props} wide={wide} />
+      )}
+    </>
+  );
+}
+
+/**
+ * *Search rates* and the charge chips at every width, over the rates they leave: the groups in a
+ * narrow room, the table in a wide one — what the phone draws too.
+ */
+function RatesFound({ props, wide }: { props: CatalogRatesProps; wide: boolean }) {
+  const { words } = props;
+  const [query, setQuery] = useState('');
+  const [bases, setBases] = useState<PriceBookRateBasis[]>([]);
+  const found = matchingRates(props.rates, query, bases);
+  return (
+    <>
+      <div className="hg-cat-rates-controls">
+        <span className="hg-cat-rates-search">
+          <SearchField
+            placeholder={words.searchRates}
+            ariaLabel={words.searchRates}
+            value={query}
+            onChange={setQuery}
+            onClear={() => setQuery('')}
+            clearLabel={words.clearSearch}
+          />
+        </span>
+        <fieldset className="hg-cat-rates-bases" aria-label={words.chargedLabel}>
+          <Chip density="functional" active={bases.length === 0} onClick={() => setBases([])}>
+            {words.allBases}
+          </Chip>
+          {PRICE_BOOK_RATE_BASES.map((basis) => (
+            <Chip
+              key={basis}
+              density="functional"
+              active={bases.includes(basis)}
+              onClick={() => setBases(basesToggled(bases, basis))}
+            >
+              {words.bases[basis]}
+            </Chip>
+          ))}
+        </fieldset>
+      </div>
+      {wide ? (
+        <RatesTable read={props.read} rates={found} words={words} />
+      ) : found.length === 0 ? (
+        <Text variant="body-sm" color="secondary">
+          {words.noMatch}
+        </Text>
+      ) : (
+        <RateGroups rates={found} bases={words.bases} />
       )}
     </>
   );
@@ -128,7 +178,7 @@ export function RateGroups({
   );
 }
 
-/** The 1536 table: *Search rates* and the charge chips over Rate · Charged · Amount, filtered here. */
+/** The 1536 table: Rate · Charged · Amount, over the rates the search and the chips left. */
 function RatesTable({
   read,
   rates,
@@ -139,72 +189,39 @@ function RatesTable({
   words: CatalogRatesWords;
 }) {
   const format = useFormat();
-  const [query, setQuery] = useState('');
-  const [bases, setBases] = useState<PriceBookRateBasis[]>([]);
-  const toggle = (basis: PriceBookRateBasis) =>
-    setBases(bases.includes(basis) ? bases.filter((each) => each !== basis) : [...bases, basis]);
   return (
-    <>
-      <div className="hg-cat-rates-controls">
-        <span className="hg-cat-rates-search">
-          <SearchField
-            placeholder={words.searchRates}
-            ariaLabel={words.searchRates}
-            value={query}
-            onChange={setQuery}
-            onClear={() => setQuery('')}
-            clearLabel={words.clearSearch}
-          />
-        </span>
-        <fieldset className="hg-cat-rates-bases" aria-label={words.chargedLabel}>
-          <Chip density="functional" active={bases.length === 0} onClick={() => setBases([])}>
-            {words.allBases}
-          </Chip>
-          {PRICE_BOOK_RATE_BASES.map((basis) => (
-            <Chip
-              key={basis}
-              density="functional"
-              active={bases.includes(basis)}
-              onClick={() => toggle(basis)}
-            >
-              {words.bases[basis]}
-            </Chip>
-          ))}
-        </fieldset>
-      </div>
-      <DataTable<CatalogRate>
-        {...words.table}
-        read={read}
-        rows={matchingRates(rates, query, bases)}
-        rowKey="key"
-        head="quiet"
-        density="compact"
-        stackBelow={0}
-        caption={words.ratesInForce}
-        emptyTitle={words.noMatch}
-        columns={[
-          { key: 'name', label: words.rate, primary: true },
-          {
-            key: 'basis',
-            label: words.charged,
-            render: (rate) => (
-              <Badge tone={RATE_BASIS_TONE[rate.basis]} density="functional">
-                {words.bases[rate.basis]}
-              </Badge>
-            ),
-          },
-          {
-            key: 'amount',
-            label: words.amount,
-            numeric: true,
-            render: (rate) => (
-              <Text as="span" variant="mono" bold>
-                {format.money(rate.amount)}
-              </Text>
-            ),
-          },
-        ]}
-      />
-    </>
+    <DataTable<CatalogRate>
+      {...words.table}
+      read={read}
+      rows={[...rates]}
+      rowKey="key"
+      head="quiet"
+      density="compact"
+      stackBelow={0}
+      caption={words.ratesInForce}
+      emptyTitle={words.noMatch}
+      columns={[
+        { key: 'name', label: words.rate, primary: true },
+        {
+          key: 'basis',
+          label: words.charged,
+          render: (rate) => (
+            <Badge tone={RATE_BASIS_TONE[rate.basis]} density="functional">
+              {words.bases[rate.basis]}
+            </Badge>
+          ),
+        },
+        {
+          key: 'amount',
+          label: words.amount,
+          numeric: true,
+          render: (rate) => (
+            <Text as="span" variant="mono" bold>
+              {format.money(rate.amount)}
+            </Text>
+          ),
+        },
+      ]}
+    />
   );
 }

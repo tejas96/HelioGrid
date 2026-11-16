@@ -5,6 +5,9 @@ export interface PickedFile {
   readonly contentType: 'image/png' | 'image/jpeg' | 'application/pdf';
 }
 
+/** Why a pick never went up: bigger than the record takes, or a type it does not take. */
+export type PickRefusal = 'too-large' | 'type-not-taken';
+
 /**
  * What a device's file chooser hands its pick to — a lead's files, a project's place for one. The
  * pick that came back undone is sent again before a new one is chosen, so a person who taps *Add*
@@ -12,6 +15,8 @@ export interface PickedFile {
  */
 export interface FilePickTarget {
   upload(file: PickedFile): void;
+  /** A chosen file the chooser could not read as one the record takes — said, never dropped. */
+  refusePick(name: string, why: PickRefusal): void;
   /** The last pick came back undone and waits to be sent again. */
   readonly uploadFailed: boolean;
   retryUpload(): void;

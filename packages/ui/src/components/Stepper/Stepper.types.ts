@@ -136,6 +136,11 @@ export interface StepperProps {
   reachability?: StepReachability;
   /** `variant="indicator"` only: opens the step-list sheet. Without it the centre button is inert. */
   onOpenStepList?: () => void;
+  /**
+   * `bars` and `numbered-bars` only: the bar in view fills from its start once as the step opens
+   * (a wizard's door); it stands filled at once under reduced motion.
+   */
+  fillIn?: boolean;
 }
 
 export interface StepListProps {

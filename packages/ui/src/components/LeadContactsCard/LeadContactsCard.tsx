@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import { StatusMark } from '../../primitives/StatusMark';
-import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
-import { Card } from '../Card';
+import { Card, CardHeader } from '../Card';
 import { FoldHead } from '../FoldHead';
 import { IconButton } from '../IconButton';
 import { NamedGap } from '../NamedGap';
 import { PendingAction } from '../PendingAction';
 import { Select } from '../Select';
+import { StatusMark } from '../StatusMark';
 import { Switch } from '../Switch';
 import type { LeadContactRow, LeadContactsCardProps } from './LeadContactsCard.types';
 
@@ -35,8 +34,8 @@ export function LeadContactsCard({
   return (
     <div className="hg-lead-contacts">
       <Card className="hg-lead-contacts-card">
-        <div className="hg-lead-contacts-head">
-          {foldable ? (
+        {foldable ? (
+          <div className="hg-lead-contacts-head">
             <span className="hg-lead-contacts-fold">
               <FoldHead
                 title={words.title(contacts.length)}
@@ -44,15 +43,20 @@ export function LeadContactsCard({
                 onToggle={() => setOpen(!open)}
               />
             </span>
-          ) : (
-            <span className="hg-lead-contacts-title">
-              <Text variant="h3">{words.title(contacts.length)}</Text>
-            </span>
-          )}
-          <IconButton label={words.add} variant="ghost" onClick={onAdd}>
-            <ShellGlyph name="user-plus" size="md" tone="primary" />
-          </IconButton>
-        </div>
+            <IconButton label={words.add} variant="ghost" onClick={onAdd}>
+              <ShellGlyph name="user-plus" size="md" tone="primary" />
+            </IconButton>
+          </div>
+        ) : (
+          <CardHeader
+            title={words.title(contacts.length)}
+            action={
+              <IconButton label={words.add} variant="ghost" onClick={onAdd}>
+                <ShellGlyph name="user-plus" size="md" tone="primary" />
+              </IconButton>
+            }
+          />
+        )}
         {shown.map((contact) => (
           <ContactRow
             key={contact.id ?? 'customer'}
@@ -87,7 +91,7 @@ export function LeadContactsCard({
               placeholder={words.languageUnset}
               closeLabel={words.close}
               density="functional"
-              disabled={language.pending}
+              disabled={language.pending || language.locked}
               value={language.value ?? ''}
               options={[{ value: '', label: words.languageUnset }, ...language.options]}
               onChange={(value) => language.onChange(value === '' ? null : value)}

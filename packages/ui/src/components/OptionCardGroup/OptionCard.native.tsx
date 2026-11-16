@@ -4,17 +4,15 @@ import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, glassTileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { scriptFloorFor } from '../../primitives/Text/Text.logic';
 import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { renderActionReason } from '../ActionReason/ActionReason.native';
-import { GlyphInkContext } from '../AppShell/ShellGlyph.native';
 import { CheckboxTick } from '../Checkbox/CheckboxTick.native';
-import { BrandGradientFill } from '../ProgressBar/BrandGradientFill.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { currentWord, optionRole } from './OptionCardGroup.logic';
 import type { OptionCardGroupMode, OptionCardItem } from './OptionCardGroup.types';
 
@@ -41,9 +39,9 @@ interface OptionCardProps {
  */
 const TITLE_LINE = theme.type.roles['body-sm'].lineHeight;
 
-/** The functional card's padding, and the selection ring's width the picked card takes out of it. */
+/** The functional card's padding, and the ink outline's width the picked card takes out of it. */
 const FUNCTIONAL_PAD = 14;
-const RING = 2;
+const RING = 1.5;
 
 const styles = StyleSheet.create({
   card: {
@@ -56,15 +54,13 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-lg'],
   },
   cardFunctional: { padding: FUNCTIONAL_PAD, borderRadius: theme.radius['r-card-functional'] },
-  /* RN has no box-shadow ring: the 2px accent selection ring is a border of the same weight, taken
-     back out of the padding so a pick never grows the card and the list below never jumps. */
+  /* Picked, OneOhm's quiet choice, as a chosen chip is: the fill it had inside an ink outline — no
+     glow, no tint. RN has no box-shadow ring, so the outline is a border of the web ring's weight,
+     taken back out of the padding so a pick never grows the card and the list below never jumps. */
   cardSelected: {
     borderWidth: RING,
-    borderColor: colors.accent,
+    borderColor: colors['text-primary'],
     padding: theme.spacing['sp-4'] - RING,
-    /* Picked, the card is lit in the accent's tint — the phone's solar glass — and lifts. */
-    backgroundColor: colors['accent-subtle'],
-    ...theme.elevation.e3,
   },
   cardSelectedFunctional: { padding: FUNCTIONAL_PAD - RING },
   /* Not a tile: it lies on the page with no fill, and its reason line says why. A selected off
@@ -106,14 +102,16 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   title: { fontWeight: '700', letterSpacing: -0.15 },
-  price: { fontFamily: theme.type.families.mono, fontWeight: '700', fontSize: 14 },
+  price: {
+    fontFamily: theme.type.families.mono,
+    fontWeight: '700',
+    fontSize: theme.type.roles['body-sm'].fontSize,
+  },
   description: { marginTop: 3 },
   reason: { marginTop: 5 },
   content: { marginTop: 10 },
   meta: { marginTop: 6 },
   /* The option's icon in a chip at the card's start. */
-  /* The disc is clipped to the chip's own corners. */
-  iconPicked: { overflow: 'hidden' },
   icon: {
     flexShrink: 0,
     width: theme.spacing['sp-12'],
@@ -129,15 +127,15 @@ const styles = StyleSheet.create({
   },
 });
 
-/** An available option is a tile, selected by the 2px accent border plus the filled dot; an off
-    option is not a tile and lies on the page. */
+/** An available option is a tile, selected by the ink outline plus the filled dot; an off option
+    is not a tile and lies on the page. */
 function cardStyle(
   density: 'expressive' | 'functional',
   selected: boolean,
   off: boolean,
 ): StyleProp<ViewStyle> {
   return [
-    off ? null : tileSurface,
+    off ? null : glassTileSurface,
     styles.card,
     density === 'functional' ? styles.cardFunctional : null,
     /* An off option has no ring (`cardOff`), so it keeps its whole padding even when picked. */
@@ -164,6 +162,7 @@ function Dot({
   if (selected && mode === 'multiple') {
     return (
       <View style={[styles.dot, styles.dotSelected, shape]}>
+        {/* biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill */}
         <CheckboxTick ink={colors['text-inverse']} />
       </View>
     );
@@ -184,34 +183,20 @@ function Dot({
   );
 }
 
-/**
- * The icon's chip: the control fill at rest; picked, the logo's disc (`--gradient-mark`) with the
- * icon in the inverse ink, as the web half draws it.
- */
-function IconChip({
-  selected,
-  functional,
-  children,
-}: {
-  selected: boolean;
-  functional: boolean;
-  children: ReactNode;
-}) {
+/** The icon's chip, on the control fill, picked or not — as the web half draws it. */
+function IconChip({ functional, children }: { functional: boolean; children: ReactNode }) {
   const ground = useGround();
   return (
     <View
       style={[
         styles.icon,
         functional ? styles.iconFunctional : null,
-        selected ? styles.iconPicked : { backgroundColor: ground.controlFill },
+        { backgroundColor: ground.controlFill },
       ]}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
-      {selected ? <BrandGradientFill diagonal /> : null}
-      <GlyphInkContext.Provider value={selected ? colors['text-inverse'] : null}>
-        {children}
-      </GlyphInkContext.Provider>
+      {children}
     </View>
   );
 }
@@ -222,18 +207,9 @@ function OptionGround({ off, children }: { off: boolean; children: ReactNode }) 
 }
 
 /** The option's icon in its chip, where the option has one. */
-function OptionChip({
-  option,
-  selected,
-  off,
-  density,
-}: Pick<OptionCardProps, 'option' | 'selected' | 'off' | 'density'>) {
+function OptionChip({ option, density }: Pick<OptionCardProps, 'option' | 'density'>) {
   if (option.icon === undefined) return null;
-  return (
-    <IconChip selected={selected && !off} functional={density === 'functional'}>
-      {option.icon}
-    </IconChip>
-  );
+  return <IconChip functional={density === 'functional'}>{option.icon}</IconChip>;
 }
 
 /** The option's words: its title with its marks and price, its line, its reason, what it holds. */
@@ -324,7 +300,7 @@ export function OptionCard({
       onPress={off ? undefined : onSelect}
       disabled={inert}
       /* WHICH PLAN THE CUSTOMER CHOSE, SAID RATHER THAN RINGED. The web half is `role="radio"`
-         plus `aria-checked`; the accent ring and the filled dot are the sighted channel and this
+         plus `aria-checked`; the ink outline and the filled dot are the sighted channel and this
          is the spoken one (F7-12).
          NO `accessibilityLabel`: the web `<button>` carries no `aria-label`, so it announces the
          title, the current pill, the price, the description and the reason. An explicit label
@@ -343,11 +319,11 @@ export function OptionCard({
       <OptionGround off={off}>
         {stacked ? (
           <View style={styles.stackTop}>
-            <OptionChip option={option} selected={selected} off={off} density={density} />
+            <OptionChip option={option} density={density} />
             <Dot selected={selected} mode={mode} off={off} />
           </View>
         ) : (
-          <OptionChip option={option} selected={selected} off={off} density={density} />
+          <OptionChip option={option} density={density} />
         )}
         <OptionWords
           option={option}

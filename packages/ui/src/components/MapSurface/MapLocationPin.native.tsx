@@ -2,10 +2,9 @@ import { theme } from '@heliogrid/theme';
 import { useMemo, useRef } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import { PanResponder, StyleSheet, View } from 'react-native';
-import { G, Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import type { MapPin, MapSurfaceWords } from './MapSurface.types';
 import { MAP_PIN_COLOR } from './MapTokens.native';
 import { pinReadingOf } from './map-placement';
@@ -32,7 +31,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 30,
     height: 30,
-    borderRadius: 15,
+    borderRadius: theme.radius['r-pill'],
     backgroundColor: colors.accent,
     opacity: 0.16,
   },
@@ -92,31 +91,13 @@ export function MapLocationPin({
           {...(draggable ? responder.panHandlers : {})}
         >
           {confirmed ? null : <View style={styles.halo} />}
-          <Svg width={26} height={26} viewBox="0 0 24 24" fill="none">
-            <G
-              // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-              fill={confirmed ? colour : colors.surface}
-              stroke={colour}
-              strokeWidth={1.8}
-            >
-              <ShellGlyphMarks name="pin" />
-            </G>
-            {confirmed ? (
-              <G
-                // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-                stroke={colors.surface}
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <ShellGlyphMarks name="pin-tick" />
-              </G>
-            ) : (
-              <G stroke={colour} strokeWidth={1.8}>
-                <ShellGlyphMarks name="pin-hole" />
-              </G>
-            )}
-          </Svg>
+          <ShellGlyph
+            name={confirmed ? 'pin-check' : 'pin'}
+            size="lg"
+            ink={colour}
+            // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
+            fill={colors.surface}
+          />
         </View>
       </View>
     </View>

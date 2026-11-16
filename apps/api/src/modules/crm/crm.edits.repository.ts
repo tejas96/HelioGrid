@@ -1,13 +1,13 @@
 import type { LeadDetail } from '@heliogrid/contracts';
 import { customer, type DbTransaction, lead, type TenantPool } from '@heliogrid/db';
-import { minorUnitsOfDecimal } from '@heliogrid/domain';
+import { isClosed, minorUnitsOfDecimal } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { leadCustomerJoin } from './crm.lead-columns.repository';
 import { loadLeadDetail } from './crm.lead-detail.repository';
-import { lockLead } from './crm.lead-lock.repository';
+import { lockLeadInScope } from './crm.lead-lock.repository';
 import { leadScopeWhere } from './crm.scope.repository';
 import { recordActivity } from './crm.timeline.repository';
 import {
@@ -20,6 +20,11 @@ import {
 import type { LeadMoney } from './internal/lead-wire';
 import type { LeadReader } from './internal/reader';
 
+export type LeadEditOutcome =
+  | { readonly outcome: 'done'; readonly detail: LeadDetail }
+  | { readonly outcome: 'not-found' }
+  | { readonly outcome: 'closed' };
+
 /**
  * Lead edits (`M02-36`, `F4-16`) on the runtime pool. The lead and then its customer are locked for
  * the edit (`lockLead`'s order), so two edits apply one after the other in the server's order —
@@ -31,7 +36,11 @@ export class CrmEditsRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
-  /** The fields sent, applied; `null` when the lead is not one the reader may act on. */
+  /**
+   * The fields sent, applied; `not-found` when the lead is not one the reader may act on, and
+   * `closed` when it is closed and the edit sends more than do-not-call — a person can always stop
+   * the calls (`M02-44`), but a closed lead's facts wait for a reopen.
+   */
   async edit(
     reader: LeadReader,
     leadId: string,
@@ -39,12 +48,15 @@ export class CrmEditsRepository {
     capturedAt: Date,
     money: LeadMoney,
     act: Act,
-  ): Promise<LeadDetail | null> {
-    const { tenantId } = reader;
-    return this.db.withTenantTransaction(tenantId, async (tx) => {
-      await lockLead(tx, tenantId, leadId);
+  ): Promise<LeadEditOutcome> {
+    return this.db.withTenantTransaction(reader.tenantId, async (tx): Promise<LeadEditOutcome> => {
+      const locked = await lockLeadInScope(tx, reader, leadId);
+      if (locked === null) return { outcome: 'not-found' };
+      const onlyStopsCalls = Object.keys(edit).every((field) => field === 'doNotCall');
+      if (isClosed(locked.lifecycle) && !onlyStopsCalls) return { outcome: 'closed' };
       const applied = await applyLeadEdit(tx, reader, leadId, edit, capturedAt, money, act);
-      return applied ? loadLeadDetail(tx, reader, leadId, money) : null;
+      const detail = applied ? await loadLeadDetail(tx, reader, leadId, money) : null;
+      return detail === null ? { outcome: 'not-found' } : { outcome: 'done', detail };
     });
   }
 }

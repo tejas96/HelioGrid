@@ -1,5 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { SKELETON_CELLS } from './calendar-grid';
 import type { CalendarCellProps } from './DatePicker.types';
 import { spokenDayOf } from './date-text';
@@ -21,19 +21,7 @@ export function CalendarNav({ dir, label, onClick }: CalendarNavProps) {
       aria-label={label}
       onClick={onClick}
     >
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <ShellGlyphMarks name="chevron-right" />
-      </svg>
+      <ShellGlyph name="chevron-right" size="sm" tone="current" />
     </button>
   );
 }
@@ -91,7 +79,7 @@ export function CalendarSkeleton({ label }: { label: TranslatedText }) {
     <div className="hg-calendar-skeleton" role="status" aria-label={label}>
       {Array.from({ length: SKELETON_CELLS }, (_, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: skeleton cells have no identity but their slot.
-        <span key={`skeleton-${i}`} className="hg-calendar-skeleton-cell" />
+        <span key={`skeleton-${i}`} className="hg-calendar-skeleton-cell hg-skeleton" />
       ))}
     </div>
   );

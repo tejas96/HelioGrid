@@ -1,13 +1,13 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { PendingAction } from '../PendingAction/PendingAction.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import type { LeadContactRow, LeadContactsCardProps } from './LeadContactsCard.types';
 
 interface LeadContactRowProps

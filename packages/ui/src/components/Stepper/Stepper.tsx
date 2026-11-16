@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ProgressBar } from '../ProgressBar';
 import { resolveSteps, stepLabel } from './resolve-steps';
 import { progressCounter, stepperPosition } from './Stepper.logic';
 import type { StepperProps } from './Stepper.types';
@@ -28,6 +29,7 @@ export function Stepper({
   onStepClick,
   onOpenStepList,
   reachability = 'free',
+  fillIn = false,
   className,
   style,
 }: WebStepperProps) {
@@ -37,6 +39,7 @@ export function Stepper({
     return (
       <StepperBars
         className={className}
+        fillIn={fillIn}
         index={index}
         label={label}
         steps={steps}
@@ -50,7 +53,9 @@ export function Stepper({
     const resolved = resolveSteps(steps, current, reachability);
     return (
       <nav className={className} aria-label={label ?? words.steps} style={style}>
-        {label !== undefined ? <p className="hg-stepper-rail-heading">{label}</p> : null}
+        {label !== undefined ? (
+          <p className="hg-stepper-rail-heading hg-overline">{label}</p>
+        ) : null}
         <ol className="hg-stepper-list">
           {resolved.map((step, position) => (
             <StepperRow
@@ -87,19 +92,17 @@ export function Stepper({
     return (
       <div className={className} style={style}>
         <div className="hg-stepper-head">
-          <span className="hg-stepper-overline">{progressCounter(words, index, total, label)}</span>
+          <span className="hg-stepper-overline hg-overline">
+            {progressCounter(words, index, total, label)}
+          </span>
           <span className="hg-stepper-step-name">{stepName}</span>
         </div>
-        <div
+        <ProgressBar
           className="hg-stepper-track"
-          role="progressbar"
-          aria-valuenow={index + 1}
-          aria-valuemin={1}
-          aria-valuemax={total}
-          aria-label={label ?? words.progress}
-        >
-          <div className="hg-stepper-fill" style={{ width: `${percent}%` }} />
-        </div>
+          value={percent}
+          label={label ?? words.progress}
+          steps={{ now: index + 1, total }}
+        />
       </div>
     );
   }

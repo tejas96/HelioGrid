@@ -24,13 +24,9 @@
   background: none;
   text-align: left;
   cursor: pointer;
-  border-radius: calc(var(--hg-image-radius) + 2px);
+  border-radius: calc(var(--hg-image-radius) + var(--sp-0-5));
   break-inside: avoid;
   transition: transform var(--dur-micro) var(--ease-standard);
-}
-
-.hg-image-button:hover {
-  transform: translateY(-1px);
 }
 
 /* THE FOOTPRINT. Fixed the moment this renders — never derived from the image. */
@@ -129,14 +125,6 @@
 .hg-image-skeleton {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    90deg,
-    var(--canvas-sunken) 0%,
-    var(--canvas) 50%,
-    var(--canvas-sunken) 100%
-  );
-  background-size: 640px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
 }
 
 .hg-image-img {
@@ -170,15 +158,12 @@
   /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   background: var(--surface);
   box-shadow: var(--e2);
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-secondary);
   white-space: nowrap;
 }
 
 .hg-image-glyph {
+  display: inline-flex;
   flex-shrink: 0;
 }
 

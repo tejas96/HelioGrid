@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   chipsLabel: { fontWeight: '500' },
   /* The one way on, under the cards and on the page itself, as the web's. */
   act: { alignItems: 'stretch' },
-  rest: { ...tileSurface, borderRadius: theme.radius['r-tile'] },
+  rest: { ...tileSurface, borderRadius: theme.radius['r-lg'] },
   sources: {
     flexDirection: 'row',
     flexWrap: 'wrap',

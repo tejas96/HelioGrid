@@ -1,19 +1,23 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
-import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
+import { Animated, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE, fieldBox, fieldWords } from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useCloseOnBack } from '../../primitives/use-close-on-back.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { usePopIn } from '../../primitives/use-pop-in.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { Calendar } from './Calendar.native';
 import { closesPicker } from './calendar-selection';
 import type { DatePickerProps } from './DatePicker.types';
 import { triggerText } from './date-text';
+
+// web-only part: Sheet — the web takes only its Escape stacking; the phone closes on Back instead.
 
 interface NativeDatePickerProps extends DatePickerProps {
   style?: StyleProp<ViewStyle>;
@@ -98,17 +102,7 @@ export function DatePicker({
         <View style={styles.value}>
           <Text color={fieldWords(text === '', disabled)}>{text === '' ? placeholder : text}</Text>
         </View>
-        <Svg
-          width={18}
-          height={18}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={colors['text-tertiary']}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-        >
-          <ShellGlyphMarks name="calendar" />
-        </Svg>
+        <ShellGlyph name="calendar" size="sm" ink={colors['text-tertiary']} />
       </Pressable>
       {helper === undefined && error === undefined ? null : (
         <View style={styles.note}>
@@ -121,7 +115,7 @@ export function DatePicker({
         /* The web half's popover is `role="dialog" aria-label`, so the native one is a `dialog`
            too: a ROLE, never `accessible` — folding this View would swallow every day cell, the
            month arrows and the footer into one unreachable blob. */
-        <View role="dialog" accessibilityLabel={label ?? words.chooseDate} style={styles.popover}>
+        <Popover label={label ?? words.chooseDate}>
           <Calendar
             words={words}
             value={value}
@@ -140,8 +134,17 @@ export function DatePicker({
             onBlocked={onBlocked}
             density={density}
           />
-        </View>
+        </Popover>
       ) : null}
     </View>
+  );
+}
+
+/** The calendar's popover: it pops in each time it opens (`usePopIn`), as `Menu`'s list does. */
+function Popover({ label, children }: { label: TranslatedText; children: ReactNode }) {
+  return (
+    <Animated.View role="dialog" accessibilityLabel={label} style={[styles.popover, usePopIn()]}>
+      {children}
+    </Animated.View>
   );
 }

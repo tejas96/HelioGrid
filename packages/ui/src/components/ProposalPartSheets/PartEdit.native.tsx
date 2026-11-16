@@ -61,7 +61,7 @@ function EditFields({ edit, words }: { edit: PartEditing; words: ProposalPartEdi
         <Textarea {...description.props} />
       </View>
       <View style={sheetLayout.hint}>
-        <ShellGlyph name="info-circle" size="sm" />
+        <ShellGlyph name="info" size="sm" />
         <View style={sheetLayout.words}>
           <Text variant="body-sm" color="secondary">
             {words.staysHere}

@@ -20,6 +20,7 @@ import {
   type LockedLead,
   lockLeadInScope,
   personOf,
+  todayOf,
 } from './crm.lead-lock.repository';
 import { activeMembersHolding } from './crm.member-roles.repository';
 import { cancelOpenTasks, raiseTask } from './crm.raised-tasks.repository';
@@ -42,6 +43,7 @@ export type VisitRefusal =
   | { readonly outcome: 'already-booked' }
   | { readonly outcome: 'already-rescheduled' }
   | { readonly outcome: 'surveyor-unavailable' }
+  | { readonly outcome: 'day-past' }
   | { readonly outcome: 'refused'; readonly refusal: LeadActRefusal };
 
 export type VisitOutcome = Keyed<LeadDetail> | VisitRefusal;
@@ -168,6 +170,8 @@ async function writeVisit(
   key: CreationKey | null,
 ): Promise<VisitWrite> {
   const { tenantId, leadId } = locked;
+  // A visit is booked for today or later on the company's clock, as the sheet offers (`F1-10`).
+  if (slot.date < todayOf(locked, act)) return { outcome: 'day-past' };
   const surveyor = await surveyorOf(tx, tenantId, slot.surveyorId ?? previous?.surveyorUserId);
   if (surveyor === null) return { outcome: 'surveyor-unavailable' };
   const result = visitBooked(locked.lifecycle);

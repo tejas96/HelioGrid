@@ -60,7 +60,7 @@ test.describe('at 375', () => {
 
     const act = profile.getByRole('button', { name: SAVE });
     await expect(act).toHaveText(en.t(COMPANY_PROFILE.saveChanges));
-    expect((await settledBox(act))?.height).toBe(await resolvedLength(page, '--field-h'));
+    expect((await settledBox(act))?.height).toBe(await resolvedLength(page, '--button-h-lg'));
     expect((await settledBox(act))?.y).toBeGreaterThan(await bottomOf(headers.last()));
     const line = profile.getByText(en.t(COMPANY_PROFILE.reseedScope));
     expect((await settledBox(line))?.y).toBeGreaterThan(await bottomOf(act));
@@ -160,7 +160,7 @@ test.describe('at 1536', () => {
     }
     const act = profile.getByRole('button', { name: SAVE });
     const actBox = await settledBox(act);
-    expect(actBox?.height).toBe(await resolvedLength(page, '--field-h'));
+    expect(actBox?.height).toBe(await resolvedLength(page, '--button-h-lg'));
     expect(actBox?.width).toBeLessThan(300);
     expect(actBox?.y).toBeGreaterThan(await bottomOf(headers.last()));
     const line = await settledBox(profile.getByText(en.t(COMPANY_PROFILE.reseedScope)));

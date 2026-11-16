@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { Card } from '../Card';
 import { renderPending } from '../PendingAction';
@@ -36,19 +36,7 @@ function MoveControls({ columns, column, item, onMove, words }: MoveControlsProp
         if (target) onMove(item.id, target.key, column.key);
       }}
     >
-      <svg
-        width="15"
-        height="15"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <ShellGlyphMarks name={glyph} />
-      </svg>
+      <ShellGlyph name={glyph} size="dense" tone="current" />
     </button>
   );
   return (

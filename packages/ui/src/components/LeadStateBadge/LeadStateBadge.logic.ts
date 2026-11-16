@@ -1,5 +1,5 @@
 import type { LeadLifecycleState } from '@heliogrid/domain';
-import type { StatusTone } from '../../primitives/StatusMark';
+import type { StatusTone } from '../StatusMark';
 
 /**
  * Each state's meaning as a tone: a snooze is a plan, dormancy and junk are quiet, a

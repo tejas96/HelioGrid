@@ -1,10 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import { Image, StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { closingPress, type FocusAfter } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { isStillUploading, progressPercent, thumbName } from './Dropzone.logic';
 import type { DropzoneFile, DropzoneWords } from './Dropzone.types';
 import { FileGlyph } from './DropzoneGlyphs.native';
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
   removeCircle: {
     width: 28,
     height: 28,
-    borderRadius: 14,
+    borderRadius: theme.radius['r-pill'],
     alignItems: 'center',
     justifyContent: 'center',
     // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
@@ -103,17 +102,7 @@ export function DropzoneThumbs({ files, onRemove, words, focusAfter }: DropzoneT
               style={styles.remove}
             >
               <View style={styles.removeCircle}>
-                <Svg
-                  width={14}
-                  height={14}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke={colors['text-secondary']}
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                >
-                  <ShellGlyphMarks name="close" />
-                </Svg>
+                <ShellGlyph name="close" size="dense" ink={colors['text-secondary']} />
               </View>
             </Pressable>
           )}

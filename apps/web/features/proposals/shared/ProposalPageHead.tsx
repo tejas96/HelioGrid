@@ -42,10 +42,13 @@ export function ProposalPageHead({
         narrow={!wide}
         acts={wide ? null : barActs}
       />
-      <div className="hg-proposal-head-row" data-mono={mono ? 'true' : undefined}>
-        <LargeTitle title={title} summary={summary} nameTitle />
-        {wide && acts !== undefined ? <div className="hg-proposal-head-acts">{acts}</div> : null}
-      </div>
+      <LargeTitle
+        title={title}
+        summary={summary}
+        nameTitle
+        mono={mono}
+        {...(wide && acts !== undefined ? { acts } : {})}
+      />
     </div>
   );
 }

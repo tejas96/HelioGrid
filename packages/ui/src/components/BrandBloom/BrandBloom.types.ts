@@ -1,6 +1,7 @@
 /**
- * Where the brand's light sits. `page` is the soft logo-colour glow along the top of a page (the
- * web's body draws it, so a phone screen draws this); `centre` an art bloom behind a centred moment;
+ * Where the brand's light sits. `page` is the soft logo-colour glow along the top of a page — one
+ * owner per platform: the web's `body` draws it (`--glow-page`, theme `base.css`) and this web half
+ * draws nothing for it; a phone screen draws this; `centre` an art bloom behind a centred moment;
  * `size` an art bloom behind a mark (an empty state, the no-connection sun); nothing set fills the
  * parent's box. It is atmosphere and never carries information; field mode turns it off.
  */

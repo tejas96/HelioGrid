@@ -19,10 +19,10 @@
    the reader's language, so no status renders English on a Hindi or Marathi row.
 
    F7-12 holds throughout: this chip is always label-plus-mark, never a colour on its own — which is
-   why both halves render it through the StatusMark primitive rather than re-answering it. */
+   why both halves render it through StatusMark rather than re-answering it. */
 
 import type { LeadStage } from '@heliogrid/domain';
-import type { StatusTone } from '../../primitives/StatusMark';
+import type { StatusTone } from '../StatusMark';
 import type { SolarStatus } from './StatusChip.types';
 
 /* The leads funnel, read from domain's `LEAD_STAGES` — a stage domain adds fails to compile here

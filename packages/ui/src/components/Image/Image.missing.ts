@@ -7,7 +7,7 @@ export type ImageGlyphName = 'no-image' | 'no-cloud' | 'eye';
 export const IMAGE_GLYPH: Record<ImageGlyphName, ShellGlyphName> = {
   'no-image': 'image-off',
   'no-cloud': 'cloud-off',
-  eye: 'eye-wide',
+  eye: 'eye',
 };
 
 /** How one kind of missing looks; its words are `ImageWords.missing`. */

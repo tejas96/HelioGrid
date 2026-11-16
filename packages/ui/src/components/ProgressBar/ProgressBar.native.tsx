@@ -16,12 +16,23 @@ interface NativeProgressBarProps extends ProgressBarProps {
  * gradient string RN cannot use, so the gradient fill is drawn as a real SVG gradient with the
  * same three stops (BrandGradientFill.native).
  */
-export function ProgressBar({ value = 0, gradient = false, style }: NativeProgressBarProps) {
+export function ProgressBar({
+  value = 0,
+  gradient = false,
+  label,
+  steps,
+  style,
+}: NativeProgressBarProps) {
   const pct = Math.max(0, Math.min(100, value));
   return (
     <View
       accessibilityRole="progressbar"
-      accessibilityValue={{ now: pct, min: 0, max: 100 }}
+      accessibilityLabel={label}
+      accessibilityValue={
+        steps === undefined
+          ? { now: pct, min: 0, max: 100 }
+          : { now: steps.now, min: 1, max: steps.total }
+      }
       style={[styles.track, style]}
     >
       <View style={[styles.fill, { width: `${pct}%` }, gradient ? styles.gradient : null]}>

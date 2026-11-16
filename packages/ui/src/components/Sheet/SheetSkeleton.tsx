@@ -29,13 +29,13 @@ export function SheetSkeleton({ density = 'expressive', label }: SheetSkeletonPr
   }
   return (
     <div aria-label={label} className="hg-sheet-skeleton" data-density={density} role="status">
-      <div className="hg-sheet-skeleton-bar" style={bar('62%', 20)} />
+      <div className="hg-sheet-skeleton-bar hg-skeleton" style={bar('62%', 20)} />
       <div className="hg-sheet-skeleton-pair">
-        <div className="hg-sheet-skeleton-bar" style={bar('50%', 68)} />
-        <div className="hg-sheet-skeleton-bar" style={bar('50%', 68)} />
+        <div className="hg-sheet-skeleton-bar hg-skeleton" style={bar('50%', 68)} />
+        <div className="hg-sheet-skeleton-bar hg-skeleton" style={bar('50%', 68)} />
       </div>
-      <div className="hg-sheet-skeleton-bar" style={bar('100%', 14)} />
-      <div className="hg-sheet-skeleton-bar" style={bar('76%', 14)} />
+      <div className="hg-sheet-skeleton-bar hg-skeleton" style={bar('100%', 14)} />
+      <div className="hg-sheet-skeleton-bar hg-skeleton" style={bar('76%', 14)} />
     </div>
   );
 }

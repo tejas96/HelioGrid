@@ -32,6 +32,8 @@ export interface CollectionsSettingsWords {
   readonly waysLine: TranslatedText;
   readonly mode: (mode: string) => TranslatedText;
   readonly save: TranslatedText;
+  /** "Discard changes" — puts the saved values back. */
+  readonly discard: TranslatedText;
   readonly malformed: TranslatedText;
   readonly failed: TranslatedText;
   readonly ownerOnly: TranslatedText;
@@ -51,9 +53,14 @@ export interface CollectionsSettingsProps {
   /** What the two fields hold — the saved values until the owner types (the screen's draft). */
   readonly draft: { readonly upiId: string; readonly payee: string };
   readonly onEdit: (next: { readonly upiId?: string; readonly payee?: string }) => void;
-  /** Something typed may be saved. On the phone the save rides the page's act bar, above the keyboard. */
+  /**
+   * Something typed may be saved or discarded. On the phone both ride the page's act bar, above the
+   * keyboard; on the web they stand under the fields.
+   */
   readonly changed: boolean;
   readonly onSave: () => void;
+  /** Puts the saved values back in the fields. */
+  readonly onDiscard: () => void;
   readonly onEditBank: () => void;
   readonly focusAfter: FocusAfter;
 }

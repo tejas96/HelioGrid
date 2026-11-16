@@ -1,6 +1,11 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedBoxShadow, resolvedColour, TILE_FILL, TILE_SHADOW } from '../support/token';
+import {
+  GLASS_TILE_FILL,
+  GLASS_TILE_SHADOW,
+  resolvedBoxShadow,
+  resolvedColour,
+} from '../support/token';
 import { WordedKanban } from './Kanban.story';
 
 const en = await createTranslator('en');
@@ -20,8 +25,8 @@ test("an errored board's message is a tile and its controls are white", async ({
   const message = board.locator('.hg-kanban-message');
   const retry = message.getByRole('button', { name: tryAgain });
 
-  await expect(message).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
-  await expect(message).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
+  await expect(message).toHaveCSS('background-color', await resolvedColour(page, GLASS_TILE_FILL));
+  await expect(message).toHaveCSS('box-shadow', await resolvedBoxShadow(page, GLASS_TILE_SHADOW));
   await expect(retry).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
   await retry.click();
   expect(retries).toBe(1);

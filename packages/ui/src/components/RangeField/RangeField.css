@@ -18,7 +18,7 @@
 }
 
 .hg-range-readout {
-  font-size: 14px;
+  font-size: var(--fs-body-sm);
   font-weight: var(--fw-bold);
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
@@ -209,7 +209,7 @@
   background: transparent;
   /* `Input`'s face, as `NumberField`'s: a typed end reads as what was typed. */
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: var(--fs-body);
   font-weight: var(--fw-regular);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);

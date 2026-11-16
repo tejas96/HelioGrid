@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { useOverlayLayer } from '../Sheet/use-overlay-dismiss';
 import type { SelectProps } from './Select.types';
 import { SelectListbox } from './SelectListbox';
@@ -118,20 +118,9 @@ export function Select({
         <span className="hg-select-value">
           {current === undefined ? placeholder : current.label}
         </span>
-        <svg
-          className="hg-select-chevron"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name="chevron" />
-        </svg>
+        <span className="hg-select-chevron">
+          <ShellGlyph name="chevron" size="sm" tone="current" />
+        </span>
       </button>
       {helper !== undefined || error !== undefined ? (
         <p className="hg-select-message" data-error={error !== undefined}>

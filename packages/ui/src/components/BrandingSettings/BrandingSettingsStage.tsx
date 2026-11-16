@@ -1,6 +1,4 @@
-import { Icon } from '../../primitives/Icon/Icon';
-import { glyphStroke } from '../AppShell/ShellGlyph.logic';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button/Button';
 import { DocumentPreview } from '../DocumentPreview/DocumentPreview';
 import { IconButton } from '../IconButton/IconButton';
@@ -69,19 +67,7 @@ function SwitchRow({ wide, words, preview, onPreview, onOpenFullSize }: StagePro
         </Button>
       ) : (
         <IconButton label={words.openFullSize} size={40} variant="surface" onClick={onOpenFullSize}>
-          <Icon size="sm">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={glyphStroke('sm')}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <ShellGlyphMarks name="expand" />
-            </svg>
-          </Icon>
+          <ShellGlyph name="expand" size="sm" tone="current" />
         </IconButton>
       )}
     </div>

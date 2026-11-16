@@ -1,5 +1,15 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useId, useMemo, useState } from 'react';
+import {
+  createContext,
+  type RefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { PortalHostProps, PortalProps } from './Portal.types';
 
@@ -18,6 +28,8 @@ const PortalContext = createContext<PortalRegistry | null>(null);
 const CoveredContext = createContext(false);
 /** Apart from the registry, so a changed inset never remounts every open portal. */
 const BottomInsetContext = createContext(0);
+/** The host's own view: the box every layer is laid out in, so a layer measures against it. */
+const HostViewContext = createContext<RefObject<View | null> | null>(null);
 
 /**
  * Mount ONE PortalHost at the app root (above navigation). Every Portal below it renders
@@ -26,6 +38,7 @@ const BottomInsetContext = createContext(0);
  */
 export function PortalHost({ children, bottomInset = 0 }: PortalHostProps) {
   const [portals, setPortals] = useState<readonly PortalEntry[]>([]);
+  const hostView = useRef<View>(null);
   const registry = useMemo<PortalRegistry>(
     () => ({
       mount: (key, node) => {
@@ -48,16 +61,18 @@ export function PortalHost({ children, bottomInset = 0 }: PortalHostProps) {
   return (
     <PortalContext.Provider value={registry}>
       <BottomInsetContext.Provider value={bottomInset}>
-        <View style={styles.host}>
-          {children}
-          {portals.map((entry, index) => (
-            <View key={entry.key} style={StyleSheet.absoluteFill} pointerEvents="box-none">
-              <CoveredContext.Provider value={index < portals.length - 1}>
-                {entry.node}
-              </CoveredContext.Provider>
-            </View>
-          ))}
-        </View>
+        <HostViewContext.Provider value={hostView}>
+          <View ref={hostView} style={styles.host}>
+            {children}
+            {portals.map((entry, index) => (
+              <View key={entry.key} style={StyleSheet.absoluteFill} pointerEvents="box-none">
+                <CoveredContext.Provider value={index < portals.length - 1}>
+                  {entry.node}
+                </CoveredContext.Provider>
+              </View>
+            ))}
+          </View>
+        </HostViewContext.Provider>
       </BottomInsetContext.Provider>
     </PortalContext.Provider>
   );
@@ -102,6 +117,77 @@ export function useCoveredByLaterLayer(): boolean {
 /** The home-indicator band a float docked to the bottom edge must clear; 0 without a host. */
 export function usePortalBottomInset(): number {
   return useContext(BottomInsetContext);
+}
+
+/** Where a box stands, in the coordinates a layer drawn into the host is placed by. */
+export interface LayerRect {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/** What a layer can be anchored to: a view, or anything that measures as one. */
+export type LayerTarget = Pick<View, 'measureInWindow'>;
+
+/**
+ * The panel a sheet or a side panel slides in on, given to what it holds. Its slide runs on the
+ * native driver, and React Native's layout keeps the panel where the slide began until it ends.
+ */
+const SlidingPanelContext = createContext<RefObject<View | null> | null>(null);
+
+/** A sliding panel's content: what it holds is measured where the panel comes to rest. */
+export function SlidingPanel({
+  panel,
+  children,
+}: {
+  panel: RefObject<View | null>;
+  children: ReactNode;
+}) {
+  return <SlidingPanelContext.Provider value={panel}>{children}</SlidingPanelContext.Provider>;
+}
+
+/**
+ * Measure `target` for a layer drawn over it — a list, a menu, a bubble — where it will REST.
+ * `measureInWindow` gives the place with every scroll and transform in it, but a sheet sliding in
+ * on the native driver leaves its panel's transform where the slide began until the slide ends, so
+ * a list opened while the sheet came in hung below the screen. Inside a sliding panel, the panel's
+ * own slide and scale are taken back out: from its place in the window to its laid-out place in the
+ * host. Every scroll inside the panel stays in.
+ */
+export function useMeasureForLayer(): (
+  target: LayerTarget | null,
+  done: (rect: LayerRect) => void,
+) => void {
+  const host = useContext(HostViewContext);
+  const sliding = useContext(SlidingPanelContext);
+  return useCallback(
+    (target: LayerTarget | null, done: (rect: LayerRect) => void) => {
+      if (target === null) return;
+      target.measureInWindow((x, y, w, h) => {
+        const panel = sliding?.current ?? null;
+        const hostView = host?.current ?? null;
+        if (panel === null || hostView === null) return done({ x, y, w, h });
+        panel.measureInWindow((shownX, shownY, shownW) => {
+          panel.measureLayout(
+            hostView,
+            (restX, restY, restW) => {
+              /* The panel may grow as it opens (`Modal`): its scale maps the target back too. */
+              const scale = shownW > 0 && restW > 0 ? shownW / restW : 1;
+              done({
+                x: restX + (x - shownX) / scale,
+                y: restY + (y - shownY) / scale,
+                w: w / scale,
+                h: h / scale,
+              });
+            },
+            () => done({ x, y, w, h }),
+          );
+        });
+      });
+    },
+    [host, sliding],
+  );
 }
 
 const styles = StyleSheet.create({

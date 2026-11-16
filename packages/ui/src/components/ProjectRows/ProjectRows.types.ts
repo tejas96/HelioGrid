@@ -1,8 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { Ref } from 'react';
 import type { FocusAfter, FocusHandle } from '../../primitives/FocusAfter';
-import type { StatusTone } from '../../primitives/StatusMark';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
+import type { StatusTone } from '../StatusMark';
 
 /** The rows' own words: how a row is opened, and the name a customer without one reads as. */
 export interface ProjectRowsWords {

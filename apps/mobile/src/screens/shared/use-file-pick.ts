@@ -63,6 +63,7 @@ export function useProjectFilePick(screen: ProjectScreen): (place: FilePlace) =>
         uploadFailed:
           failed !== null && failed.slot === place.slot && failed.slotKey === place.slotKey,
         retryUpload: screen.retryUpload,
+        refusePick: screen.refusePick,
       },
       place.slot === 'step',
     );

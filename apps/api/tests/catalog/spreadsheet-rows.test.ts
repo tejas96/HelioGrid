@@ -33,6 +33,18 @@ describe('reading one sheet whole for the matching pass (`T-M01-030d`)', () => {
     expect(read).toEqual({ readable: true, rows: [['Brand', 'Model', 'Rate'], [], ...products] });
   });
 
+  it('drops a NUL character from a cell, which no row could store', async () => {
+    const read = await readSheetRows(utf8('Name,Phone\nRa\u0000vi,98450 27746'), CSV, 0);
+
+    expect(read).toEqual({
+      readable: true,
+      rows: [
+        ['Name', 'Phone'],
+        ['Ravi', '98450 27746'],
+      ],
+    });
+  });
+
   it('gives the sheet the mapping names, and nothing for a sheet the file does not hold', async () => {
     const workbook = await aWorkbookOf({
       Panels: [['Brand', 'Model', 'Rate']],

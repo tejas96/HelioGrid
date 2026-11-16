@@ -37,7 +37,7 @@ export function InboxTeaching({ onAdd, onWay, ways, words, headingRef }: InboxTe
           {words.add}
         </Button>
       </HeroPanel>
-      <h3 className="hg-inbox-teaching-over">{words.waysTitle}</h3>
+      <h3 className="hg-inbox-teaching-over hg-overline">{words.waysTitle}</h3>
       <CardRows form="joined">
         {ways.map((way, index) => (
           <CardRow

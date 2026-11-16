@@ -1,19 +1,18 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect } from 'react';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { closeKeyboard } from '../../primitives/Keyboard/use-keyboard.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Accordion } from '../Accordion/Accordion.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { DoorFrame } from '../DoorFrame/DoorFrame.native';
 import { DoorTitle } from '../DoorFrame/DoorTitle.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
-import { openedPart, PARTS_DENSITY, profileItems, UNREAD_GLYPH_SIZE } from './CompanyProfile.logic';
+import { openedPart, PARTS_DENSITY, profileItems } from './CompanyProfile.logic';
 import type { CompanyProfileProps, CompanyProfileWords } from './CompanyProfile.types';
 import { ProfileSet } from './CompanyProfileSets.native';
 
@@ -229,22 +228,7 @@ function Unread({
 /** Decorative: the message beside it carries the meaning. react-native-svg has no currentColor. */
 function UnreadGlyph() {
   const color = colors['text-tertiary'];
-  return (
-    <Svg
-      width={UNREAD_GLYPH_SIZE}
-      height={UNREAD_GLYPH_SIZE}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      accessibilityElementsHidden
-      importantForAccessibility="no-hide-descendants"
-    >
-      <ShellGlyphMarks name="alert-ring" />
-    </Svg>
-  );
+  return <ShellGlyph name="alert-circle" size="xl" ink={color} />;
 }
 
 const styles = StyleSheet.create({

@@ -76,22 +76,21 @@ test.describe('at 375', () => {
     { name: 'while the stored answers are read', props: { checking: true } },
     { name: 'after a failed save', props: { failed: true } },
   ]) {
-    test(`${state.name}, an undeclared size is an empty box beside its unit, under its tier line in the secondary role`, async ({
+    test(`${state.name}, an undeclared size is an empty box beside its unit, with no tier line — there is no figure to say it of`, async ({
       mount,
-      page,
     }) => {
       const step = await mount(<WhatYouSellStepAsHeld reader="en" {...state.props} />);
       const { size, tier } = partsOf(step);
       await expect(size).toHaveValue('');
       await expect(step.locator('.hg-number-field').getByText('0', { exact: true })).toHaveCount(0);
       await expect(step.getByText(UNIT, { exact: true })).toBeVisible();
-      for (const word of TIER_LINE) await expect(tier).toContainText(word);
-      await expect(tier).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
+      await expect(tier).toHaveCount(0);
     });
   }
 
   test('a size is reported as it is typed, once, before the field is left, and a tap on a card reports its kind', async ({
     mount,
+    page,
   }) => {
     const step = await mount(<WhatYouSellStepAsHeld reader="en" />);
     const { cards, size, tier } = partsOf(step);
@@ -101,6 +100,7 @@ test.describe('at 375', () => {
     await expect(step.getByTestId('declarations')).toHaveText('1');
     await expect(size).toHaveValue('5');
     for (const word of TIER_LINE) await expect(tier).toContainText(word);
+    await expect(tier).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
 
     await cards.nth(1).click();
     await expect(step.getByTestId('segment')).toHaveText('ci');
@@ -129,7 +129,6 @@ test.describe('at 375', () => {
 
   test('a refused Continue rings both questions, says each fix, drops the line at the act, and moves focus to the first card', async ({
     mount,
-    page,
   }) => {
     const step = await mount(<WhatYouSellStepAsHeld reader="en" />);
     const { cards, group, size, tier } = partsOf(step);
@@ -137,8 +136,7 @@ test.describe('at 375', () => {
 
     await expect(group).toHaveAttribute('aria-invalid', 'true');
     await expect(size).toHaveAttribute('aria-invalid', 'true');
-    for (const word of TIER_LINE) await expect(tier).toContainText(word);
-    await expect(tier).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
+    await expect(tier).toHaveCount(0);
     await expect(step.getByText(en.t(SETUP_WHAT_YOU_SELL.pickOne))).toBeVisible();
     await expect(step.getByText(en.t(SETUP_WHAT_YOU_SELL.addSize))).toBeVisible();
     await expect(step.getByText(SAVES_BOTH)).toHaveCount(0);

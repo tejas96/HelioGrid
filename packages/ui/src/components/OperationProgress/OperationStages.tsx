@@ -1,23 +1,14 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { IndeterminateRail } from '../PendingAction/IndeterminateRail';
 import type { OperationStage, OperationStageState } from './OperationProgress.types';
 import { stageStateAt } from './operation-progress-model';
 
 function DoneGlyph() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className="hg-operation-progress-stage-check"
-    >
-      <ShellGlyphMarks name="tick" />
-    </svg>
+    <span className="hg-operation-progress-stage-check">
+      <ShellGlyph name="check" size="dense" tone="current" />
+    </span>
   );
 }
 

@@ -3,6 +3,7 @@ import type { FormatPack } from '../format/pack';
 import type { ProvenanceTier } from '../format/qualified';
 import { isOverdue } from '../tasks/overdue';
 import type { DealSegment } from '../tenancy/segment';
+import type { DialOffer, LeadDetailSection, LeadStateAct } from './lead-detail-vocabulary';
 import {
   type QualifyAnswers,
   type QualifyCardView,
@@ -25,32 +26,6 @@ import {
  * actions and the state acts the lead's standing offers, the qualify card, the contacts, the open
  * tasks and the six sections. Pure — the lead read comes in as facts, the clock as an epoch.
  */
-
-/** The five actions on every lead (`M02-32`), in the order they stand: Call first. */
-export const LEAD_DETAIL_ACTIONS = ['call', 'message', 'log', 'visit', 'design'] as const;
-export type LeadDetailAction = (typeof LEAD_DETAIL_ACTIONS)[number];
-
-/** The six sections (`M02-32`), in the order their tabs stand. */
-export const LEAD_DETAIL_SECTIONS = [
-  'timeline',
-  'site',
-  'designs',
-  'proposals',
-  'tasks',
-  'files',
-] as const;
-export type LeadDetailSection = (typeof LEAD_DETAIL_SECTIONS)[number];
-
-/** The R9 acts a person takes on a lead (`M02-51`…`M02-56`); Mark qualified sits on the qualify card. */
-export const LEAD_STATE_ACTS = ['snooze', 'wake', 'disqualify', 'junk', 'reopen'] as const;
-export type LeadStateAct = (typeof LEAD_STATE_ACTS)[number];
-
-/** Why no call is offered for the customer's number (`M02-44`). */
-export type DialBlock = 'do_not_call' | 'wrong_number';
-
-export type DialOffer =
-  | { readonly kind: 'dial'; readonly phoneE164: string }
-  | { readonly kind: 'blocked'; readonly reason: DialBlock };
 
 /** A member as the lead names them — its owner, a surveyor, a task's assignee. */
 export interface LeadMember {
@@ -140,6 +115,8 @@ export interface LeadActsView {
   readonly markWon: boolean;
   /** A first booking, the no-show reschedule of the one booked, or none while the lead is closed. */
   readonly visit: 'book' | 'reschedule' | 'closed';
+  /** Its details and qualifying answers may change — not on a closed lead, until a reopen. */
+  readonly editable: boolean;
 }
 
 /** One person to reach on the lead: the customer themself (`id` null) or one of their contacts. */
@@ -236,8 +213,13 @@ export function leadActsOf(facts: LeadDetailFacts): LeadActsView {
   return {
     stateActs: leadStateActsOf(state, stage),
     markQualified: !closed && LEAD_STAGES.indexOf(stage) < LEAD_STAGES.indexOf('qualified'),
-    markWon: !closed && LEAD_STAGES.indexOf(stage) < LEAD_STAGES.indexOf('won'),
+    // Offered from Qualified on: a lead no one has qualified is not a deal to win yet.
+    markWon:
+      !closed &&
+      LEAD_STAGES.indexOf(stage) >= LEAD_STAGES.indexOf('qualified') &&
+      LEAD_STAGES.indexOf(stage) < LEAD_STAGES.indexOf('won'),
     visit: closed ? 'closed' : facts.visit === null ? 'book' : 'reschedule',
+    editable: !closed,
   };
 }
 

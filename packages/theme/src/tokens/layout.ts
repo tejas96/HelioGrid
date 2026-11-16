@@ -25,14 +25,29 @@ export const LAYOUT = {
   'screen-pad-desktop': 32,
   'screen-pad-mobile-fn': 16,
   'screen-pad-desktop-fn': 24,
-  'sidebar-w': 248,
+  /** The sidebar open, and folded to its icons. */
+  'sidebar-w': 256,
+  'sidebar-w-folded': 72,
+  /** One sidebar row: OneOhm's packed nav row; the 44 px touch floor is the phone's, not the rail's. */
+  'nav-row-h': 34,
   'header-h': 64,
   'topbar-h-mobile': 56,
   'bottomnav-pill-h': 64,
   'bottomnav-inset': 16,
   'bottomnav-gap': 20,
   'bottomnav-h': 84,
-  'field-h': 52,
+  'field-h': 44,
+  /** A button's three heights, OneOhm's `h-9` · `h-11` · `h-12`; a small one keeps the 44 px hit area. */
+  'button-h-sm': 36,
+  'button-h-md': 44,
+  'button-h-lg': 48,
+  /** A segment of a segmented control. */
+  'segment-h': 40,
+  /** A quick chip in a filter row, a choice chip, a status pill and a badge. */
+  'filter-chip-h': 32,
+  'chip-h': 28,
+  'status-h': 28,
+  'badge-h': 24,
   'section-gap': 24,
   'tile-gap': 10,
   'tile-pad': 16,
@@ -63,10 +78,14 @@ export const RADIUS = {
   'r-card-expressive': 24,
   'r-card-functional': 16,
   'r-sheet-top': 28,
-  'r-input-expressive': 14,
-  'r-field': 14,
+  'r-input-expressive': 12,
+  'r-field': 12,
   'r-tile': 18,
-  'r-input-functional': 10,
+  'r-input-functional': 12,
+  /** Every control a person presses or types in: a button, a field, a select, a segmented track. */
+  'r-control': 12,
+  /** A badge: a quiet label with a hairline, never a pill. */
+  'r-badge': 8,
 } as const;
 
 export interface Shadow {
@@ -134,7 +153,4 @@ export const PRINT = {
   'page-margin-tight': 32,
   'sheet-gap': 24,
   'sheet-radius': 4,
-  'doc-fs': 16,
-  'doc-fs-small': 14,
-  'doc-fs-figure': 22,
 } as const;

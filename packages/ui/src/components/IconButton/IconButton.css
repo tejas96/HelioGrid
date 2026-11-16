@@ -18,7 +18,7 @@
   cursor: pointer;
   transition:
     box-shadow var(--dur-standard) var(--ease-standard),
-    transform var(--dur-micro) var(--ease-standard);
+    transform var(--dur-fast) var(--ease-standard);
 }
 
 .hg-icon-button:focus-visible {
@@ -62,7 +62,8 @@
 }
 
 .hg-icon-button:active:not(:disabled):not([aria-disabled="true"]) {
-  transform: scale(var(--press-scale));
+  /* A round icon control sinks further than a worded button, as OneOhm's does. */
+  transform: scale(var(--press-scale-icon));
 }
 
 /* SUNK below the fill, as a disabled field is: --canvas-sunken on the page and in a tile alike. */

@@ -185,8 +185,16 @@ describe.skipIf(skip)('contacts, over HTTP against a migrated database', () => {
       { text: 'Site manager' },
       retryKey(),
     );
+    const otherCase = await owner().call<ContactRoleLabel>(
+      'POST',
+      '/contact-role-labels',
+      { text: 'site MANAGER' },
+      retryKey(),
+    );
     expect(first.status).toBe(HttpStatus.CREATED);
     expect(again.body).toEqual(first.body);
+    // The same words in another case are the same label, never a second one.
+    expect(otherCase.body).toEqual(first.body);
     const labels = await owner().call<ContactRoleLabels>('GET', '/contact-role-labels');
     expect(labels.body.items.map((label) => label.seed ?? label.text)).toEqual([
       ...CONTACT_ROLE_SEEDS,

@@ -31,7 +31,7 @@ export function timelineControls(view: TimelineStepView): StepControl[] {
           {
             kind: 'act',
             key: 'down',
-            glyph: 'caret-down',
+            glyph: 'chevron',
             label: words.moveDown(phase.name),
             disabled: index === phases.length - 1,
             leaves: index === phases.length - 2,

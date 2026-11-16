@@ -2,8 +2,8 @@ import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
 import { useFormat } from '../MarketProvider';
-import { ProgressRing } from '../OperationProgress/ProgressRing';
-import { SHARE_RING } from '../OperationProgress/progress-ring';
+import { ProgressRing } from '../ProgressRing';
+import { HUE_INK } from './ShareFilter.inks';
 import { arcShare, totalOf } from './ShareFilter.logic';
 import type { ShareFilterProps } from './ShareFilter.types';
 
@@ -32,10 +32,9 @@ export function ShareRings({ label, items, pressed, onPress, className, style }:
           accessibilityState={{ selected: pressed === item.id }}
           onPress={() => onPress(item.id)}
         >
-          <span className="hg-share-filter-dial">
-            <ProgressRing geometry={SHARE_RING} share={arcShare(item.count, total)} />
+          <ProgressRing size="dial" share={arcShare(item.count, total)} ink={HUE_INK[item.hue]}>
             <span className="hg-share-filter-dial-count">{number(item.count)}</span>
-          </span>
+          </ProgressRing>
           <span className="hg-share-filter-ring-label" data-asks={item.asks === true}>
             {item.label}
           </span>

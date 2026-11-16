@@ -52,6 +52,7 @@ export function IconButton({
   disabledReason,
   reasonOpen,
   pressed,
+  busy,
   onClick,
   href,
   style,
@@ -73,11 +74,15 @@ export function IconButton({
       accessibilityLabel={
         reason?.spokenReason === undefined ? label : `${label}, ${reason.spokenReason}`
       }
-      accessibilityState={
-        reason === undefined ? toggleState(pressed) : { disabled: true, expanded: reason.expanded }
-      }
+      accessibilityState={{
+        ...(reason === undefined
+          ? toggleState(pressed)
+          : { disabled: true, expanded: reason.expanded }),
+        ...(busy === undefined ? {} : { busy }),
+      }}
       disabled={disabled && reason === undefined}
       onPress={reason === undefined ? press : reason.onPress}
+      sink="icon"
       style={[
         styles.circle,
         {

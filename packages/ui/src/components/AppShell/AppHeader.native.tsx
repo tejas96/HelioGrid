@@ -121,9 +121,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     maxHeight: 22,
   },
-  /* 18px / -0.02em — the header title size the DS states directly; no type token lands on 18. */
   title: {
-    fontSize: 18,
+    fontSize: theme.type.roles.h3.fontSize,
     lineHeight: 22,
     fontWeight: '700',
     letterSpacing: -0.36,

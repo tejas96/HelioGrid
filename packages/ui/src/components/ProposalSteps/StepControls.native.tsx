@@ -121,6 +121,7 @@ function Chips({ control }: { control: HeldControl<'chips'> }) {
             active={chip.active === true}
             {...(chip.glyph === undefined ? {} : { glyph: chip.glyph })}
             onClick={chip.onPress}
+            groupName={control.name}
           >
             {chip.label}
           </Chip>

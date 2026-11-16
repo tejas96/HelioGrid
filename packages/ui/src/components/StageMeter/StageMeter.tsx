@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { Pressable } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text';
-import { stageSharesOf } from './StageMeter.logic';
+import { SegmentBar, segmentSharesOf } from '../SegmentBar';
 import type { StageMeterProps } from './StageMeter.types';
 
 type ShareVars = CSSProperties & { '--hg-stage-meter-share': string };
@@ -13,7 +13,7 @@ const shareOf = (share: number): ShareVars => ({ '--hg-stage-meter-share': `${sh
  * each stage over its own share of it. Each count is a button that filters to its stage.
  */
 export function StageMeter({ stages, chosen, onPick, form, words }: StageMeterProps) {
-  const shares = stageSharesOf(stages);
+  const shares = segmentSharesOf(stages, true);
   return (
     <section className="hg-stage-meter" data-form={form} aria-label={words.heading}>
       {form === 'card' ? (
@@ -26,15 +26,11 @@ export function StageMeter({ stages, chosen, onPick, form, words }: StageMeterPr
               {words.hint}
             </Text>
           </div>
-          <div className="hg-stage-meter-bar" aria-hidden="true">
-            {stages.map((one, index) => (
-              <span
-                key={one.stage}
-                className="hg-stage-meter-share"
-                style={shareOf(shares[index] ?? 0)}
-              />
-            ))}
-          </div>
+          <SegmentBar
+            parts={stages.map((one) => ({ key: one.stage, count: one.count }))}
+            size="sm"
+            keepEmpty
+          />
         </>
       ) : null}
       <div className="hg-stage-meter-stages">

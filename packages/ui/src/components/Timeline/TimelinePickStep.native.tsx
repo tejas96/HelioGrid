@@ -11,6 +11,7 @@ import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { TimelineDensity, TimelineItem } from './Timeline.types';
 
@@ -81,7 +82,7 @@ export function TimelinePickStep({
         importantForAccessibility="no-hide-descendants"
       >
         <View style={[styles.check, checked ? styles.checkChecked : null]}>
-          {checked ? <ShellGlyph name="tick" size="sm" tone="inverse" /> : null}
+          {checked ? <ShellGlyph name="check" size="sm" tone="inverse" /> : null}
         </View>
       </View>
     </Pressable>
@@ -99,8 +100,11 @@ const styles = StyleSheet.create({
     marginHorizontal: -theme.spacing['sp-3'],
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-md'],
+    /* The outline is always there and only takes ink when picked, so the step never moves. */
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
-  stepChecked: { backgroundColor: colors['accent-subtle'] },
+  stepChecked: { borderColor: colors['text-primary'] },
   railCell: { width: NODE, alignItems: 'center', flexShrink: 0 },
   rail: { width: 2, flexShrink: 0, backgroundColor: colors['line-soft'] },
   railAfter: { flex: 1 },
@@ -114,7 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors['canvas-sunken'],
   },
-  nodeWarning: { backgroundColor: colors['warning-bg'] },
+  nodeWarning: { backgroundColor: TONE.warning.tint },
   nodeChecked: { backgroundColor: colors.accent },
   body: { flex: 1, minWidth: 0, rowGap: 1 },
   head: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6 },

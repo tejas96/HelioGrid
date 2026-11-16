@@ -36,8 +36,11 @@
 .hg-pbf-steprow:hover .hg-pbf-steprow-in {
   background: var(--fill);
 }
+/* The step in view is a chosen row: the control fill inside an ink ring, so it never reads as the
+   hover's fill in a sheet. */
 .hg-pbf-steprow-in[data-now] {
-  background: var(--accent-subtle);
+  background: var(--hg-control-fill);
+  box-shadow: inset 0 0 0 1px var(--text-primary);
 }
 .hg-pbf-steprow-words {
   flex: 1;

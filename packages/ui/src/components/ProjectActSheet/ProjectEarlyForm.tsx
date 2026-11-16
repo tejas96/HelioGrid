@@ -1,6 +1,5 @@
 import { Button } from '../Button';
 import { HueTile } from '../HueTile';
-import { TILE_STROKE } from '../ProjectDetail/ProjectDetail.logic';
 import { Timeline } from '../Timeline';
 import { earlyStepsOf, footOf, keepOf } from './ProjectActSheet.logic';
 import type { ProjectFormOf } from './ProjectActSheet.types';
@@ -15,7 +14,7 @@ export function EarlyForm({ form, words, ...frame }: ProjectFormOf<'earlyProof'>
   return (
     <>
       <span className="hg-project-act-moment">
-        <HueTile glyph="spark" hue="teal" size={56} stroke={TILE_STROKE} />
+        <HueTile glyph="spark" hue="teal" size={56} />
       </span>
       <div className="hg-project-act-sees">
         <Timeline variant="page" density="functional" items={earlyStepsOf(form, words)} />

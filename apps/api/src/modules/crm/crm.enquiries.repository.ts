@@ -163,10 +163,10 @@ export class CrmEnquiriesRepository {
 }
 
 /**
- * The lead an enquiry lands on, with its owner's name: one in the reader's scope, or one outside
- * it only when the typed number is its customer's or a contact's — the lead the dedupe sheet
- * showed for that number. Any other id answers `null`, as one that does not exist, so neither
- * route lands on a lead its sender never met nor tells which ids exist.
+ * The lead an enquiry lands on, with its owner's name: only the one the dedupe sheet showed for
+ * the typed number — its customer's or a contact's — in the reader's scope or out of it. Any other
+ * id answers `null`, as one that does not exist, so neither route lands on a lead its sender never
+ * met nor tells which ids exist.
  */
 async function leadTheSheetShowed(
   tx: DbTransaction,
@@ -176,9 +176,9 @@ async function leadTheSheetShowed(
 ) {
   const target = await leadWithOwner(tx, reader.tenantId, leadId);
   if (target === null) return null;
-  if ((await findLeadInScope(tx, reader, leadId)) !== null) return { ...target, inScope: true };
   const match = await phoneMatchOf(tx, reader, phoneE164);
-  return match?.customerIds.includes(target.customerId) ? { ...target, inScope: false } : null;
+  if (!match?.customerIds.includes(target.customerId)) return null;
+  return { ...target, inScope: (await findLeadInScope(tx, reader, leadId)) !== null };
 }
 
 /** Any lead of the company with its owner's name; `null` for another company's or none. */

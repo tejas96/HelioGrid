@@ -1,7 +1,7 @@
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { StageTrack } from '../StageTrack';
+import { StatusMark } from '../StatusMark';
 import { fateLineOf, fateMarkOf } from './LeadImport.logic';
 import type { LeadImportRow, LeadImportWords } from './LeadImport.types';
 

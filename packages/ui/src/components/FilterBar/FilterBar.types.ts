@@ -1,13 +1,14 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import { theme } from '@heliogrid/theme';
 import type { ReactNode, Ref } from 'react';
 import type { FocusHandle } from '../../primitives/FocusAfter';
 
 /* THE TOUCH TARGET AND THE VISIBLE PILL ARE TWO DIFFERENT RECTANGLES (N2 / F7-29 / F7-32).
 
    All four parts appear unchanged on a 375px phone, so every one clears 44×44. Each control's
-   target is 44px and the pill drawn inside it keeps its own height: scope 36, sort 32. The kind
-   and stage chips are 44 — the pill IS the target — and the filter circle is 50 across, above the
-   floor. Where a pill is shorter, the difference is transparent padding owned by the target.
+   target is 44px and the pill drawn inside it keeps its own height: scope 40 (the segmented
+   control's segment), chip and sort 32. The filter circle is 50 across, above the floor. Where a
+   pill is shorter, the difference is transparent padding owned by the target.
 
    This is expressed once, in the component, rather than left to twenty records screens to
    remember. Callers get the floor for free and cannot opt out of it. */
@@ -23,9 +24,9 @@ export type FilterOption = string | { value: string; label: TranslatedText; icon
 
 /** The pill heights and the filter circle's side, one declaration for both platforms. */
 export const PILL_HEIGHT = {
-  scope: 36,
-  chip: 44,
-  sort: 32,
+  scope: theme.layout['segment-h'],
+  chip: theme.layout['filter-chip-h'],
+  sort: theme.layout['filter-chip-h'],
   filters: 50,
 } as const;
 

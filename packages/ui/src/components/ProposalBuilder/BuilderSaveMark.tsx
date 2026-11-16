@@ -16,7 +16,7 @@ export function BuilderSaveMark({
   if (save.kind === 'saved' || save.kind === 'saving') {
     return (
       <span className="hg-pbf-save" role="status">
-        {save.kind === 'saved' ? <ShellGlyph name="tick-small" size="sm" tone="success" /> : null}
+        {save.kind === 'saved' ? <ShellGlyph name="check" size="sm" tone="success" /> : null}
         {save.kind === 'saved' ? words.saved : words.saving}
       </span>
     );

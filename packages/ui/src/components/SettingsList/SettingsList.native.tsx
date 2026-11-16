@@ -13,7 +13,7 @@ import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import { LargeTitle } from '../LargeTitle/LargeTitle.native';
 import { personRow, SETTINGS_ROW_GLYPH } from './SettingsList.logic';
 import type { SettingsListPerson, SettingsListProps } from './SettingsList.types';
-import { ListRow, tileStyle, WorkLists } from './SettingsListRow.native';
+import { SettingsRow, tileStyle, WorkLists } from './SettingsListRow.native';
 import { SettingsSideList } from './SettingsSideList.native';
 
 /** The person's avatar diameter in their hero tile, and the ring's 3px around it. */
@@ -147,7 +147,7 @@ export function SettingsList({
             <View style={tileStyle}>
               <GroundProvider ground="tile">
                 {group.rows.map((row, index) => (
-                  <ListRow
+                  <SettingsRow
                     key={row.key}
                     first={index === 0}
                     glyph={SETTINGS_ROW_GLYPH[row.key]}
@@ -197,11 +197,11 @@ const styles = StyleSheet.create({
   circle: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: theme.radius['r-pill'],
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chevron: { width: 36, height: 36, borderRadius: 18 },
+  chevron: { width: 36, height: 36, borderRadius: theme.radius['r-tile'] },
   raised: { ...theme.elevation.e2 },
   flat: { ...theme.elevation.e1 },
   icon: {},

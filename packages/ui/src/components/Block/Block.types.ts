@@ -1,6 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
-import type { FocusAfter } from '../../primitives/FocusAfter';
 import { clampCount } from '../../utils/count';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { SurfaceRead, SurfaceState } from '../UnavailableNote';
@@ -83,26 +82,6 @@ export type BlockRead =
   | { read: SurfaceRead; loadingLabel: TranslatedText };
 
 export type BlockProps = BlockFrameProps & BlockRead;
-
-/** The body both halves draw under the header — the one part that moves between states. */
-export type BlockBodyProps = {
-  state: SurfaceState;
-  onRetry?: () => void;
-  loadingLabel?: TranslatedText;
-  /** The block's frame, where focus lands once its retry has left. */
-  focusAfter: FocusAfter;
-} & Pick<
-  BlockFrameProps,
-  | 'children'
-  | 'emptyMessage'
-  | 'emptyTitle'
-  | 'emptyAction'
-  | 'errorTitle'
-  | 'errorMessage'
-  | 'retryLabel'
-  | 'unavailableTitle'
-  | 'unavailableMessage'
->;
 
 export interface BlockGridProps {
   children?: ReactNode;

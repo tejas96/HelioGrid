@@ -14,7 +14,7 @@ import {
   trancheTemplateSchema,
   trancheTemplateWriteSchema,
 } from './document-templates';
-import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED } from './error';
+import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED, unauthenticatedEnvelope } from './error';
 
 const c = initContract();
 
@@ -55,7 +55,7 @@ export const trancheSchedulePreviewSchema = z.object({
 });
 export type TrancheSchedulePreview = z.infer<typeof trancheSchedulePreviewSchema>;
 
-const guarded = { 401: errorEnvelope(baseError('UNAUTHENTICATED')) } as const;
+const guarded = { 401: unauthenticatedEnvelope } as const;
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 const conflict = errorEnvelope(baseError('CONFLICT'));
 /** The refusal only a tranche write raises; `tenantSettingsErrorCodes` enrols it with the others. */

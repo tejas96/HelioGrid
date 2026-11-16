@@ -3,7 +3,9 @@
  * taken back (ruling 16) — the project page, the steps and the handover say them.
  */
 import type { TranslatedText } from '@heliogrid/contracts';
+import { FILE_SUBJECT_RULES } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
+import { fileLimitsOf } from './file-refusal';
 import type { PackWord } from './projects';
 
 type T = Translator['t'];
@@ -25,6 +27,8 @@ const TOAST = {
   notSent: /*i18n*/ { id: 'Not sent · Retry' },
   copied: /*i18n*/ { id: 'Copied — paste it in your chat' },
   notCopied: /*i18n*/ { id: 'Not copied. Try again.' },
+  fileTooLarge: /*i18n*/ { id: '{name} is too large. A project takes files up to {size} MB.' },
+  fileTypeNotTaken: /*i18n*/ { id: '{name} can’t be added. A project takes {types} files.' },
 } satisfies Record<string, MessageRef>;
 
 /** What an act's toast says, with its *Undo* where the move can be taken back. */
@@ -43,7 +47,12 @@ export type ProjectToastFacts =
     }
   | { readonly kind: 'waitSaved'; readonly party: string; readonly date: string }
   | { readonly kind: 'documentDone' | 'notNeeded'; readonly row: string }
-  | { readonly kind: 'stepTicked'; readonly step: string };
+  | { readonly kind: 'stepTicked'; readonly step: string }
+  | {
+      readonly kind: 'fileRefused';
+      readonly why: 'too-large' | 'type-not-taken';
+      readonly name: string;
+    };
 
 /** What an act's toast says, with its *Undo* where the move can be taken back. */
 export function projectToastWords(t: T, word: PackWord, day: (date: string) => string) {
@@ -65,10 +74,19 @@ export function projectToastWords(t: T, word: PackWord, day: (date: string) => s
           });
         case 'stepTicked':
           return t(TOAST.stepTicked, { step: word('step', toast.step) });
+        case 'fileRefused': {
+          const { size, types } = fileLimitsOf(FILE_SUBJECT_RULES.project);
+          return toast.why === 'too-large'
+            ? t(TOAST.fileTooLarge, { name: toast.name, size })
+            : t(TOAST.fileTypeNotTaken, { name: toast.name, types });
+        }
         default:
           return t(TOAST[toast.kind]);
       }
     },
+    /** A toast that says something did not happen is a warning, never a success. */
+    tone: (toast: ProjectToastFacts): 'warning' | 'success' =>
+      toast.kind === 'fileRefused' || toast.kind === 'notCopied' ? 'warning' : 'success',
     undo: t(TOAST.undo),
     uploading: t(TOAST.uploading),
     notSent: t(TOAST.notSent),

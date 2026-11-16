@@ -1,19 +1,27 @@
 import { theme } from '@heliogrid/theme';
 import type { ProgressRingSize } from './ProgressRing.types';
 
-/** The ring's side and stroke, px/dp, from the spacing scale: 56, 128 and 160 across. */
-export const RING_SIDE: Readonly<Record<ProgressRingSize, number>> = {
-  sm: theme.spacing['sp-12'] + theme.spacing['sp-2'],
-  md: theme.spacing['sp-24'] + theme.spacing['sp-8'],
-  lg: theme.spacing['sp-24'] + theme.spacing['sp-16'],
-};
-export const RING_STROKE = theme.spacing['sp-3'];
-/** The small ring's stroke: a 12 stroke would close a 56 ring's centre. */
-export const RING_STROKE_SMALL = theme.spacing['sp-1'] + 1;
+const sp = theme.spacing;
 
-export function ringStrokeOf(size: ProgressRingSize): number {
-  return size === 'sm' ? RING_STROKE_SMALL : RING_STROKE;
-}
+/** The ring's side, px/dp, from the spacing scale. The web half's `ProgressRing.css` holds the same. */
+export const RING_SIDE: Readonly<Record<ProgressRingSize, number>> = {
+  face: sp['sp-12'],
+  sm: sp['sp-12'] + sp['sp-2'],
+  dial: sp['sp-16'],
+  md: sp['sp-24'] + sp['sp-8'],
+  run: sp['sp-24'] + sp['sp-8'] + sp['sp-1'],
+  lg: sp['sp-24'] + sp['sp-16'],
+};
+
+/** The ring's stroke: thin enough at each side to leave its centre open. */
+export const RING_STROKE: Readonly<Record<ProgressRingSize, number>> = {
+  face: sp['sp-1'],
+  sm: sp['sp-1'] + 1,
+  dial: sp['sp-1'] + sp['sp-0-5'],
+  md: sp['sp-3'],
+  run: sp['sp-2'] + sp['sp-0-5'],
+  lg: sp['sp-3'],
+};
 
 /** A share held between 0 and 1, so a figure past its whole still draws a closed ring. */
 export function ringShare(share: number): number {
@@ -32,4 +40,9 @@ export function ringArcOf(side: number, stroke: number, share: number): RingArc 
   const radius = (side - stroke) / 2;
   const length = 2 * Math.PI * radius;
   return { radius, length, arc: length * ringShare(share) };
+}
+
+/** How much of a count is done, 0–1; nothing to count is nothing done. */
+export function doneShare(done: number, total: number): number {
+  return total > 0 ? done / total : 0;
 }

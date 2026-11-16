@@ -132,12 +132,12 @@ test('the info kind draws the i glyph and no dismiss', async ({ mount, page }) =
         dismissLabel={bannerWords(en.t).dismissLabel}
         focusAfter={{ current: null }}
       />
-      <ShellGlyph name="info-circle" />
+      <ShellGlyph name="info" />
     </div>,
   );
   const info = screen.getByRole('status');
   const drawn = await info.locator('svg').first().innerHTML();
-  const glyph = await screen.locator('.hg-shell-glyph').innerHTML();
+  const glyph = await screen.locator(':scope > .hg-shell-glyph').innerHTML();
 
   /* The design system's own "i" — never the "!" a state banner on the info tone draws (D267). */
   expect(drawn).toBe(glyph);

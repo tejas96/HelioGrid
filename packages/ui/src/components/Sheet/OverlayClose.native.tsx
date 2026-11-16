@@ -1,10 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { ViewStyle } from 'react-native';
 import { StyleSheet } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { OverlayCloseOffset, OverlayCloseProps } from './OverlayClose.types';
 
 /**
@@ -15,18 +14,7 @@ import type { OverlayCloseOffset, OverlayCloseProps } from './OverlayClose.types
 export function OverlayClose({ onClick, offset = 'sheet', label }: OverlayCloseProps) {
   return (
     <Pressable accessibilityLabel={label} onPress={onClick} style={[styles.button, OFFSET[offset]]}>
-      <Svg
-        width={20}
-        height={20}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={colors['text-secondary']}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name="close" />
-      </Svg>
+      <ShellGlyph name="close" size="md" ink={colors['text-secondary']} />
     </Pressable>
   );
 }

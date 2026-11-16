@@ -41,7 +41,10 @@ appId: com.heliogrid.app
     visible:
       text: "${NO_CALLS}.*"
     timeout: 15000
-- tapOn: ${USAGE_CLOSE}
+# Android's Back closes the events: the sheet's handle is named Close for a screen reader, but a
+# plain tap on it closes nothing.
+- waitForAnimationToEnd
+- back
 - extendedWaitUntil:
     notVisible:
       text: "${NO_CALLS}.*"

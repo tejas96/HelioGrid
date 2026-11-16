@@ -59,7 +59,7 @@
   flex-direction: column;
   overflow: hidden;
   background: var(--hg-ground);
-  border-radius: 18px;
+  border-radius: var(--r-tile);
   box-shadow: var(--e2);
 }
 

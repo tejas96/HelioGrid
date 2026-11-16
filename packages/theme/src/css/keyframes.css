@@ -44,22 +44,23 @@
     transform: translateY(0) scale(1);
   }
 }
+/* A shell page arriving with its route fades in. Opacity only: a transform, even for 320ms, makes
+   the page the box every `position: fixed` overlay inside it measures against, so a sheet or menu
+   opened as the page lands opens inside the page, not the window. */
+@keyframes hg-page-enter {
+  from {
+    opacity: 0;
+  }
+}
+/* A menu or a popover arriving: up from a little below, from a touch smaller (OneOhm's pop). */
 @keyframes hg-pop-in {
   from {
     opacity: 0;
-    transform: translateY(-4px);
+    transform: translateY(var(--pop-rise)) scale(var(--pop-scale));
   }
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-@keyframes hg-sheet-shimmer {
-  0% {
-    background-position: -320px 0;
-  }
-  100% {
-    background-position: 320px 0;
   }
 }
 @keyframes hg-spin {
@@ -87,15 +88,6 @@
   }
   to {
     opacity: 1;
-  }
-}
-@keyframes hg-skeleton-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.55;
   }
 }
 @keyframes hg-indeterminate {
@@ -182,14 +174,6 @@
       opacity: 1;
     }
   }
-  @keyframes hg-sheet-shimmer {
-    0% {
-      background-position: 0 0;
-    }
-    100% {
-      background-position: 0 0;
-    }
-  }
   @keyframes hg-spin {
     to {
       transform: none;
@@ -208,15 +192,6 @@
       opacity: 0;
     }
     to {
-      opacity: 1;
-    }
-  }
-  @keyframes hg-skeleton-pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
       opacity: 1;
     }
   }

@@ -1,5 +1,5 @@
 /* AmbientSky — the one loop that runs on: fields of the logo's light drifting slowly behind a door
-   or a page's top glow. Transform only; paused off-screen, in a hidden tab and under reduced motion
+   (a page's top glow is still: `body` on the web). Transform only; paused off-screen, in a hidden tab and under reduced motion
    (`data-running`), gone in field mode. */
 
 .hg-ambient {

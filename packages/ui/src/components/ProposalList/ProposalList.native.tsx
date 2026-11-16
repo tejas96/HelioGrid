@@ -5,7 +5,6 @@ import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Rising } from '../../primitives/rising.native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
@@ -16,8 +15,12 @@ import { IconButton } from '../IconButton/IconButton.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { failedReadOf } from '../ProposalAfterParts/ProposalAfterParts.logic';
 import { ProposalStatus } from '../ProposalStatus/ProposalStatus.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { filterChips, isQuietStanding } from './ProposalList.logic';
 import type { ProposalListProps } from './ProposalList.types';
+
+// web-only part: DataTable — the table is the web wide room; the phone draws the narrow cards.
+// web-only part: ProposalBlocks — the web takes only riseOrder for its CSS stagger; the phone uses Rising.
 
 function Card({ row, ...props }: ProposalListProps & { row: ProposalRow }) {
   const { words, onCopy } = props;
@@ -178,7 +181,7 @@ const styles = StyleSheet.create({
   card: {
     gap: theme.spacing['sp-3'],
     padding: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-tile'],
+    borderRadius: theme.radius['r-lg'],
   },
   cardRow: { flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
   stale: { flexDirection: 'row' },

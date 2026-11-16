@@ -1,39 +1,11 @@
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 
 export function CameraGlyph() {
-  return (
-    <svg
-      width="28"
-      height="28"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="camera" />
-    </svg>
-  );
+  return <ShellGlyph name="camera" size="xl" tone="current" />;
 }
 
 export function FileGlyph() {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="file" />
-    </svg>
-  );
+  return <ShellGlyph name="file" size="lg" tone="current" />;
 }
 
 /** The upload's progress channel — beside the label, never in place of it. */

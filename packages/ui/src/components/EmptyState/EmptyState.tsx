@@ -1,7 +1,8 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { BrandBloom } from '../BrandBloom';
 import { EmptyScene } from '../EmptyScene/EmptyScene';
-import type { EmptyStateProps } from './EmptyState.types';
+import { EMPTY_STATE_BLOOM, type EmptyStateProps } from './EmptyState.types';
 
 interface WebEmptyStateProps extends EmptyStateProps {
   className?: string;
@@ -22,7 +23,7 @@ export function EmptyState({
   return (
     <div className={classNames('hg-empty-state', className)} style={style}>
       <div className="hg-empty-state-art">
-        {glow && scene === undefined ? <span className="hg-empty-state-glow" /> : null}
+        {glow && scene === undefined ? <BrandBloom size={EMPTY_STATE_BLOOM} /> : null}
         {/* No glyph, no circle. `F7-19` forbids inventing imagery, so a caller with no honest icon
             must be able to omit it — an unguarded container renders a blank 72px disc. */}
         {scene === undefined ? null : <EmptyScene name={scene} />}

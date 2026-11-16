@@ -15,7 +15,7 @@ export function WinLossCard({ view, words, winRate }: DashboardPartProps) {
   const { winLoss } = view;
   const lost = lostBarsOf(winLoss.lostReasons, words.lostReason);
   return (
-    <Card>
+    <Card tile="glass">
       <View
         style={styles.body}
         accessibilityLabel={words.winLossTitle}

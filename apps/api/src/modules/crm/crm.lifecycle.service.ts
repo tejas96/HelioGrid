@@ -26,6 +26,7 @@ import {
   closeLost,
   type LeadActPlan,
   nextStepAfterReopen,
+  wakeDayMoved,
 } from './crm.lifecycle.repository';
 import { moneyOf } from './internal/lead-wire';
 import type { LeadReader } from './internal/reader';
@@ -52,6 +53,7 @@ export class CrmLifecycleService {
   snooze(reader: LeadReader, leadId: string, body: SnoozeLead, act: Act) {
     return this.run(reader, leadId, body, act, {
       decide: (lead, context) => snooze(lead, body.wakeOn, context.today),
+      follows: wakeDayMoved(body.wakeOn),
     });
   }
 

@@ -26,7 +26,7 @@ export function MergeAct({
         variant="primary"
         size="prominent"
         fullWidth
-        icon={<ShellGlyph name="tick" size="md" tone="inverse" />}
+        icon={<ShellGlyph name="check" size="md" tone="inverse" />}
         disabled={!awake}
         loading={merging}
         onClick={onMerge}

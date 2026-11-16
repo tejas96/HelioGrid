@@ -46,7 +46,12 @@ export {
   raiseTask,
   type TaskToRaise,
 } from './crm.raised-tasks.repository';
-export { activeLead, leadReadableBy, leadScopeWhere } from './crm.scope.repository';
+export {
+  activeLead,
+  awaitingTriage,
+  leadReadableBy,
+  leadScopeWhere,
+} from './crm.scope.repository';
 export {
   type ActivityActorRef,
   type ActivityBody,

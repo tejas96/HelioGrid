@@ -66,7 +66,7 @@ export function TimelinePickStep({
       </span>
       <span aria-hidden="true" className="hg-timeline-pick-end">
         <span className="hg-timeline-pick-check" data-checked={checked}>
-          {checked ? <ShellGlyph name="tick" size="sm" tone="inverse" /> : null}
+          {checked ? <ShellGlyph name="check" size="sm" tone="inverse" /> : null}
         </span>
       </span>
     </button>

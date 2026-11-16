@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { Input } from '../Input/Input.native';
 import { AfterHint } from '../ProposalAfterParts/ProposalAfterParts.native';
 import { Select } from '../Select/Select.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import { newLinkFormOf } from './ProposalLinks.logic';
 import type { NewLinkSheetProps } from './ProposalLinks.types';
 
@@ -20,7 +20,7 @@ export function NewLinkSheet(props: NewLinkSheetProps) {
     if (!form.missing) props.onMake({ ...draft, label: draft.label.trim() });
   };
   return (
-    <Sheet {...form.sheet} showClose>
+    <EditorSurface {...form.sheet} showClose desktop="modal">
       {open ? (
         <View style={styles.body}>
           {contacts.length === 0 ? null : <Select {...form.who} />}
@@ -36,7 +36,7 @@ export function NewLinkSheet(props: NewLinkSheetProps) {
           </Button>
         </View>
       ) : null}
-    </Sheet>
+    </EditorSurface>
   );
 }
 

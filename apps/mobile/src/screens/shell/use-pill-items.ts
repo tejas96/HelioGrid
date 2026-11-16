@@ -9,11 +9,10 @@ import { createElement, type RefObject } from 'react';
 import type { View } from 'react-native';
 import { doorRoute } from './doors';
 
-const glyph = (destination: StandingDestination, filled: boolean) =>
+const glyph = (destination: StandingDestination, inView: boolean) =>
   createElement(ShellGlyph, {
     name: DESTINATION_GLYPH[destination],
-    filled,
-    tone: filled ? 'inverse' : 'secondary',
+    tone: inView ? 'inverse' : 'secondary',
   });
 
 /**

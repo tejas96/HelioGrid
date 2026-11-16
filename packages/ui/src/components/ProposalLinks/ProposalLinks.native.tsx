@@ -9,16 +9,18 @@ import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Button } from '../Button/Button.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { FailedRead } from '../EmptyState/FailedRead.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { failedReadOf } from '../ProposalAfterParts/ProposalAfterParts.logic';
 import { AfterHint } from '../ProposalAfterParts/ProposalAfterParts.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
 import { linkActsOf, revokeConfirmOf } from './ProposalLinks.logic';
 import type { ProposalLinksProps } from './ProposalLinks.types';
+
+// web-only part: ProposalBlocks — the web takes only riseOrder for its CSS stagger; the phone uses Rising.
 
 function LinkCard(props: ProposalLinksProps & { link: CustomerLink; mayRevoke: boolean }) {
   const { link, words, failure } = props;
@@ -92,7 +94,7 @@ function ConfirmYes(
 function Confirm(props: ProposalLinksProps & { links: CustomerLinks['links'] }) {
   const confirm = revokeConfirmOf(props, props.links);
   return (
-    <Sheet {...confirm.sheet} showClose>
+    <EditorSurface {...confirm.sheet} showClose desktop="modal">
       {confirm.link === undefined ? null : (
         <View style={styles.confirm}>
           <Text variant="body" color="secondary">
@@ -102,7 +104,7 @@ function Confirm(props: ProposalLinksProps & { links: CustomerLinks['links'] }) 
           <Button {...confirm.no}>{props.words.confirmNo}</Button>
         </View>
       )}
-    </Sheet>
+    </EditorSurface>
   );
 }
 
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
   card: {
     gap: theme.spacing['sp-3'],
     padding: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-tile'],
+    borderRadius: theme.radius['r-lg'],
   },
   off: { borderWidth: 1, borderColor: colors['line-soft'] },
   dim: { opacity: 0.5 },

@@ -5,6 +5,7 @@ import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
+import { TONE } from '../../primitives/Tone/tone.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Checkbox } from '../Checkbox/Checkbox.native';
@@ -23,13 +24,14 @@ import type { StackedColumns } from './DataTableStacked.logic';
 import { hasLead, holdsEditor, rowNameOf } from './DataTableStacked.logic';
 
 const styles = StyleSheet.create({
-  card: { borderRadius: theme.radius['r-md'] },
+  card: { borderRadius: theme.radius['r-lg'] },
   /* The card's inset rides on the node BELOW the ground, so a clickable card's target covers the
      whole card and not just its content box — the web half's target is `inset: 0`. */
   pad: { padding: theme.spacing['sp-4'] },
-  issue: { backgroundColor: colors['warning-bg'] },
-  fixed: { backgroundColor: colors['success-bg'] },
-  selected: { backgroundColor: colors['accent-subtle'] },
+  issue: { backgroundColor: TONE.warning.tint },
+  fixed: { backgroundColor: TONE.success.tint },
+  /* OneOhm's quiet choice: the control fill; the checkbox says it is chosen. */
+  selected: { backgroundColor: colors.fill },
   muted: { opacity: 0.55 },
   highlighted: { backgroundColor: ROW_HIGHLIGHT },
   body: {

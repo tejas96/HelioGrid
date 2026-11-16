@@ -1,9 +1,9 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { Button } from '../Button';
 import { NamedGap } from '../NamedGap';
+import { StatusMark } from '../StatusMark';
 import { LeadFileList } from './LeadFileList';
 import { LeadProposalList } from './LeadProposalList';
 import type { LeadSectionsProps, LeadSitePanelFacts, LeadSiteVisit } from './LeadSections.types';
@@ -53,7 +53,7 @@ function Site({
   return (
     <div className="hg-lead-section-site">
       <div className="hg-lead-section-head">
-        <span className="hg-lead-section-overline">{words.site}</span>
+        <span className="hg-lead-section-overline hg-overline">{words.site}</span>
         {site.confirmed ? <StatusMark tone="success" label={words.confirmed} /> : null}
       </div>
       {site.address === null && site.facts.length === 0 ? <NamedGap gap={words.siteGap} /> : null}

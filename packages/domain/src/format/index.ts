@@ -123,6 +123,7 @@ export {
   type PhoneOptions,
   phoneDigitsMismatch,
   phoneE164Of,
+  phoneFieldE164Of,
 } from './phone';
 export { type PowerUnit, type ScaledPower, scaledPower } from './power';
 export {

@@ -1,6 +1,7 @@
 import { DEAL_SEGMENTS, type DealSegment } from '@heliogrid/domain';
-import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
+import type { LeaveConfirmProps } from '../LeaveConfirm/LeaveConfirm.types';
 import type { SegmentedOption } from '../SegmentedControl/SegmentedControl.types';
+import type { StatusTone } from '../StatusMark/StatusMark.types';
 import type {
   QuickAddCheckLine,
   QuickAddFormProps,
@@ -67,5 +68,18 @@ export function quickAddFormPropsOf(
     onRetry: screen.save,
     onDismissReturned: screen.dismissSaveFailure,
     words: words.form,
+  };
+}
+
+/** The ask over a close that would drop the typing — both screens draw it alike (`M02-01`). */
+export function quickAddLeaveOf(
+  screen: QuickAddScreenFacts,
+  words: Pick<LeaveConfirmProps, 'title' | 'body' | 'discard' | 'keep'>,
+): LeaveConfirmProps {
+  return {
+    open: screen.leave.asking,
+    ...words,
+    onKeep: screen.leave.stay,
+    onLeave: screen.leave.leave,
   };
 }

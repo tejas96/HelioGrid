@@ -31,11 +31,6 @@
   border-radius: var(--r-sm);
 }
 
-.hg-handover-mark[data-tone="success"] {
-  background: var(--success-bg);
-}
-
-.hg-handover-mark[data-tone="warning"],
 .hg-handover-row-mark {
   background: var(--warning-bg);
 }
@@ -122,11 +117,6 @@
 }
 
 .hg-handover-overline {
-  font-size: var(--fs-overline);
-  line-height: var(--lh-overline);
-  letter-spacing: var(--tr-overline);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
   color: var(--text-secondary);
 }
 

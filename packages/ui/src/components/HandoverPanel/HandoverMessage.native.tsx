@@ -1,11 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { Card } from '../Card/Card.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { type HandoverMessageAct, messageActsOf } from './HandoverPanel.logic';
 import type { HandoverMessageProps } from './HandoverPanel.types';
 

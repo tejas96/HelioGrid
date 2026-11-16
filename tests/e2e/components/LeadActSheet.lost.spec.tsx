@@ -10,7 +10,8 @@ import { LeadLostSheet } from './LeadActSheet.lost.story';
 
 const en = await createTranslator('en');
 const provenance = provenanceWords(en.t);
-const words = leadDetailSheetWords(en.t, 'copy').forms.lost;
+const sheetWords = leadDetailSheetWords(en.t, 'copy');
+const words = sheetWords.forms.lost;
 
 test.use({ viewport: { width: 375, height: 812 } });
 
@@ -86,7 +87,9 @@ test('postponed opens on a month: each chip names the day it comes back, and the
   await spans.getByRole('radio', { name: words.span.pick }).click();
   await expect(send).toBeDisabled();
   // The field the chip opens says what the day is, not the chip's own words again.
-  await expect(sheet.getByText(words.dayLabel)).toBeVisible();
+  await expect(sheet.getByText(words.dayLabel, { exact: true })).toBeVisible();
+  // The sleeping send says what it still needs (`F7-23`).
+  await expect(send).toHaveAccessibleDescription(sheetWords.fields.needs(words.dayLabel));
   await spans.getByRole('radio', { name: words.span.month }).click();
   await send.click();
   await expect(page.locator('[data-sent]')).toHaveAttribute(

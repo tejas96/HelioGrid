@@ -6,8 +6,8 @@ import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { HeroPanel } from '../HeroPanel/HeroPanel.native';
 import { HueTile } from '../HueTile/HueTile.native';
+import { SegmentBar } from '../SegmentBar/SegmentBar.native';
 import { StageMeter } from '../StageMeter/StageMeter.native';
-import { ListStageBar } from './ListStageBar.native';
 import { FIGURE_TILE } from './ListTop.logic';
 import type { ListFigure, ListRoom, ListSummaryProps } from './ListTop.types';
 
@@ -107,7 +107,11 @@ export function ListSummary({ summary, room }: { summary: ListSummaryProps; room
         {summary.stages === null ? null : room === 'wide' ? (
           <StageMeter {...summary.stages} />
         ) : (
-          <ListStageBar stages={summary.stages} />
+          <SegmentBar
+            parts={summary.stages.stages.map((one) => ({ key: one.stage, count: one.count }))}
+            fade
+            label={summary.stages.words.heading}
+          />
         )}
       </View>
     </HeroPanel>
@@ -131,9 +135,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-2'],
     marginHorizontal: -theme.spacing['sp-2'],
     borderRadius: theme.radius['r-pill'],
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
-  /* A figure whose filter is on is the chosen accent wash, as a chosen chip is. */
-  pressed: { backgroundColor: colors['accent-subtle'] },
+  /* A figure whose filter is on is drawn in an ink outline, as a chosen chip is. */
+  pressed: { borderWidth: 1, borderColor: colors['text-primary'] },
   rule: {
     alignSelf: 'stretch',
     width: StyleSheet.hairlineWidth,

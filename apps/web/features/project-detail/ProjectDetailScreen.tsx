@@ -123,22 +123,16 @@ function ProjectPageHead({
   const all = documents === 'all';
   return (
     <div className="hg-project-page-head">
-      <div className="hg-project-page-title">
-        <LargeTitle
-          title={all ? words.documents : heading.title}
-          summary={
-            all
-              ? words.docsSummary(
-                  heading.title,
-                  shown.view.documentsDone,
-                  shown.view.documentsTotal,
-                )
-              : heading.summary
-          }
-        />
-        {all ? null : <ProjectFacts project={shown.project} words={words} />}
-      </div>
-      {acts}
+      <LargeTitle
+        title={all ? words.documents : heading.title}
+        summary={
+          all
+            ? words.docsSummary(heading.title, shown.view.documentsDone, shown.view.documentsTotal)
+            : heading.summary
+        }
+        {...(acts === null ? {} : { acts })}
+      />
+      {all ? null : <ProjectFacts project={shown.project} words={words} />}
     </div>
   );
 }

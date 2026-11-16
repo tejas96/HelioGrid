@@ -99,6 +99,24 @@ export function draftFigureOf(draft: string): number {
   return plain === '' ? Number.NaN : Number(plain);
 }
 
+/**
+ * What a figure field keeps of what was typed: digits, grouping, one point, and a leading minus
+ * only where the field takes a figure below zero. A letter or a second point is not taken, so the
+ * box never holds a draft that can only be refused.
+ */
+export function typedFigureOf(edited: string, takesNegative: boolean): string {
+  let pointSeen = false;
+  let kept = '';
+  for (const character of edited) {
+    if (/[0-9,\s\u00a0\u202f]/.test(character)) kept += character;
+    else if (character === '.' && !pointSeen) {
+      pointSeen = true;
+      kept += character;
+    } else if (character === '-' && takesNegative && kept === '') kept += character;
+  }
+  return kept;
+}
+
 /** How many digits a figure or a draft holds before its point, leading zeros and grouping left out. */
 export function wholeDigitsOf(draft: string): number {
   const [whole = ''] = draft.replace(/[,\s\u00a0\u202f]/g, '').split('.');

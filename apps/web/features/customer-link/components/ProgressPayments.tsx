@@ -2,7 +2,7 @@
 import type { CustomerPage } from '@heliogrid/contracts';
 import type { CustomerPageScreen } from '@heliogrid/data/react';
 import type { CustomerProgressWords } from '@heliogrid/i18n';
-import { Button, ShellGlyph, StatusChip, useFormat } from '@heliogrid/ui';
+import { AfterSummary, Button, ShellGlyph, StatusChip, useFormat } from '@heliogrid/ui';
 import { usePageMoves } from '../hooks/use-page-moves';
 import { PageCard } from './CustomerFrame';
 
@@ -159,29 +159,29 @@ function PayTo({
   const { payments } = words;
   if (payTo.upiId === null && payTo.bank === null) return null;
   return (
-    <dl className="hg-cust-payto">
-      <div>
-        <dt>{payments.payee}</dt>
-        <dd>{payTo.payee}</dd>
-      </div>
-      {payTo.upiId === null ? null : (
-        <div>
-          <dt>{payments.upi}</dt>
-          <dd className="hg-cust-mono">{payTo.upiId}</dd>
-        </div>
-      )}
-      {payTo.bank === null ? null : (
-        <div>
-          <dt>{payments.bank}</dt>
-          <dd className="hg-cust-mono">
-            {payments.bankValue(payTo.bank.bankName, payTo.bank.accountNumber, payTo.bank.routing)}
-          </dd>
-        </div>
-      )}
-      <div>
-        <dt>{payments.payExactly}</dt>
-        <dd className="hg-cust-mono">{format.moneyPlain(due.amount)}</dd>
-      </div>
-    </dl>
+    <div className="hg-cust-payto">
+      <AfterSummary
+        rows={[
+          { label: payments.payee, value: payTo.payee },
+          ...(payTo.upiId === null
+            ? []
+            : [{ label: payments.upi, value: payTo.upiId, mono: true }]),
+          ...(payTo.bank === null
+            ? []
+            : [
+                {
+                  label: payments.bank,
+                  value: payments.bankValue(
+                    payTo.bank.bankName,
+                    payTo.bank.accountNumber,
+                    payTo.bank.routing,
+                  ),
+                  mono: true,
+                },
+              ]),
+          { label: payments.payExactly, value: format.moneyPlain(due.amount), mono: true },
+        ]}
+      />
+    </div>
   );
 }

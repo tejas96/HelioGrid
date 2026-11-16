@@ -1,11 +1,11 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark';
 import { Text } from '../../primitives/Text/Text';
 import { CardRow } from '../CardRows';
 import { Badge } from '../Chip';
 import { HueTile } from '../HueTile/HueTile';
 import type { renderPending } from '../PendingAction';
 import { Provenance } from '../Provenance';
+import { StatusMark } from '../StatusMark/StatusMark';
 import { CATALOG_KIND_LEADING } from './CatalogItems.rows';
 import type { CatalogItemsProps, CatalogRow } from './CatalogItems.types';
 import { CatalogRowActs } from './CatalogRowActs';
@@ -67,7 +67,7 @@ export function CatalogItemRow({
       muted={row.archived}
       busy={waiting}
     >
-      <HueTile glyph={lead.glyph} hue={lead.hue} size={40} stroke={1.5} />
+      <HueTile glyph={lead.glyph} hue={lead.hue} size={40} />
       <span className="hg-cat-row-words">
         <span className="hg-cat-row-name" title={row.name}>
           {row.name}

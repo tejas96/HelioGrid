@@ -1,5 +1,6 @@
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
+import { TONE } from '../../primitives/Tone/tone.native';
 import type { MapMarkerTone } from './MapSurface.types';
 
 /**
@@ -11,7 +12,7 @@ import type { MapMarkerTone } from './MapSurface.types';
 export const MAP_TONE: Record<MapMarkerTone, ThemeColor> = {
   accent: colors.accent,
   success: colors.success,
-  warning: colors['warning-text'],
+  warning: TONE.warning.ink,
   danger: colors.danger,
   info: colors.info,
   neutral: colors['text-secondary'],

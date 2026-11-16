@@ -1,10 +1,10 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { Pressable } from '../../primitives/Pressable';
-import type { StatusTone } from '../../primitives/StatusMark';
-import { StatusMark } from '../../primitives/StatusMark';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button/Button';
 import { renderPending } from '../PendingAction';
+import type { StatusTone } from '../StatusMark';
+import { StatusMark } from '../StatusMark';
 import type { Finding, FindingListWords, FindingStatus } from './FindingList.types';
 import { jumpWords, statusOf } from './FindingList.verdict';
 import { FINDING_MARK_GLYPH, findingJump, findingStatusLabel } from './FindingListRow.logic';
@@ -20,19 +20,7 @@ export const FINDING_TONE: Record<FindingStatus, StatusTone> = {
 function Mark({ status }: { status: FindingStatus }) {
   return (
     <span aria-hidden="true" className="hg-finding-mark" data-status={status}>
-      <svg
-        aria-hidden="true"
-        width="11"
-        height="11"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={FINDING_MARK_GLYPH[status]} />
-      </svg>
+      <ShellGlyph name={FINDING_MARK_GLYPH[status]} size="xs" tone="current" />
     </span>
   );
 }
@@ -78,21 +66,7 @@ export function FindingListRow({ finding, words, onJump, jumpLabel }: FindingLis
                 variant="secondary"
                 size="md"
                 onClick={jump}
-                iconRight={
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <ShellGlyphMarks name="arrow-right" />
-                  </svg>
-                }
+                iconRight={<ShellGlyph name="arrow-right" size="dense" tone="current" />}
               >
                 {jumpName}
               </Button>

@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { UnavailableNoteProps } from './UnavailableNote.types';
 import { isBlockedState, SURFACE_STATES } from './UnavailableNote.types';
 
@@ -13,20 +14,8 @@ interface WebUnavailableNoteProps extends UnavailableNoteProps {
  * A slashed circle: "not applicable here". Deliberately NOT the warning triangle/exclamation that
  * `error` uses — the mark is the second channel and it must not read as a fault.
  */
-function Glyph() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="blocked" />
-    </svg>
-  );
+function Glyph({ size }: { size: ShellGlyphSize }) {
+  return <ShellGlyph name="blocked" size={size} tone="current" />;
 }
 
 /**
@@ -53,7 +42,7 @@ function UnavailableNoteBase({
     return (
       <div className={classNames('hg-unavailable-note-region', className)} style={style}>
         <span className="hg-unavailable-note-mark" data-size="region">
-          {icon ?? <Glyph />}
+          {icon ?? <Glyph size="lg" />}
         </span>
         <div className="hg-unavailable-note-title">{title}</div>
         {message !== undefined ? (
@@ -73,7 +62,7 @@ function UnavailableNoteBase({
       style={style}
     >
       <span className="hg-unavailable-note-mark" data-size="note">
-        {icon ?? <Glyph />}
+        {icon ?? <Glyph size="dense" />}
       </span>
       <div className="hg-unavailable-note-lines">
         <p className="hg-unavailable-note-line">

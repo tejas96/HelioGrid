@@ -61,7 +61,7 @@ test.describe('at 375', () => {
       const box = await settledBox(row);
       expect(box?.height).toBeGreaterThanOrEqual(ROW);
     }
-    await expect(list.locator('.hg-settings-row-icon')).toHaveCount(OWNER_ROWS.length - 1);
+    await expect(list.locator('.hg-list-row-icon-tile')).toHaveCount(OWNER_ROWS.length - 1);
     await expectTouchFloor(all);
     await expectNoSidewaysScroll(page);
     await page.screenshot({ path: `${PICTURES}/more-owner-375.png`, fullPage: true });

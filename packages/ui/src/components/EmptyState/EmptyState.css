@@ -1,10 +1,10 @@
 /* EmptyState — the empty/error state, centred on a page and at the start in a list. A soft brand bloom behind a circular icon, a
    headline, an encouraging description and one primary action. Never leave a screen blank.
 
-   The bloom is --glow-mark: the logo's light as atmosphere, never as information. The icon well
+   The bloom is `BrandBloom`: the logo's light as atmosphere, never as information. The icon well
    takes the control fill, flat — the well on the page, white in a tile — the opposite of what
-   holds it (F7-15), as every round control on the page is. The 180px bloom and the 72px well are off the 4px scale on purpose — they are
-   art dimensions, not layout, and the scale has no step for either. */
+   holds it (F7-15), as every round control on the page is. The 72px well is off the 4px scale on purpose — they are
+   art dimensions, not layout, and the scale has no step for it. */
 
 .hg-empty-state {
   display: flex;
@@ -22,15 +22,6 @@
   margin-bottom: var(--sp-3);
   display: grid;
   place-items: center;
-}
-
-.hg-empty-state-glow {
-  position: absolute;
-  width: 180px;
-  height: 180px;
-  background: var(--glow-mark);
-  border-radius: var(--r-pill);
-  pointer-events: none;
 }
 
 .hg-empty-state-icon {

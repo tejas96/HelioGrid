@@ -1,3 +1,4 @@
+import { phoneFieldE164Of } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useImperativeHandle, useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -7,7 +8,6 @@ import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBo
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/MarketProvider.native';
-import { e164Of } from './PhoneField.logic';
 import type { PhoneFieldDensity, PhoneFieldProps, PhoneValueProps } from './PhoneField.types';
 
 interface NativePhoneFieldProps extends PhoneFieldProps {
@@ -88,7 +88,7 @@ export function PhoneField({
 
   const shown = mkt.phone(value, { nsn: true });
 
-  const commit = (typed: string): void => onChange?.(e164Of(mkt.pack, typed));
+  const commit = (typed: string): void => onChange?.(phoneFieldE164Of(mkt.pack, typed));
 
   const message = error ?? helper;
 

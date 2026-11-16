@@ -1,20 +1,28 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
+import type { ReactNode } from 'react';
 import { useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
-import { Dimensions, StyleSheet, View } from 'react-native';
-import { Svg } from 'react-native-svg';
+import { Animated, Dimensions, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE, fieldBox, fieldWords } from '../../primitives/FieldBox/FieldBox.native';
 import { useKeyboardHeight } from '../../primitives/Keyboard/use-keyboard.native';
-import { Portal } from '../../primitives/Portal/Portal.native';
+import {
+  Portal,
+  useMeasureForLayer,
+  usePortalBottomInset,
+} from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { useCloseOnBack } from '../../primitives/use-close-on-back.native';
+import { usePopIn } from '../../primitives/use-pop-in.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { listPlacement } from './Select.logic';
 import type { SelectDensity, SelectOption, SelectProps } from './Select.types';
 import { SelectListbox } from './SelectListbox.native';
 import { committableOption, normaliseOptions, openingIndex, pickedOption } from './select-options';
+
+// web-only part: Sheet — the web takes only its Escape stacking; the phone closes on Back instead.
 
 interface NativeSelectProps extends SelectProps {
   style?: StyleProp<ViewStyle>;
@@ -104,18 +112,7 @@ function SelectTrigger({
       >
         {current === undefined ? placeholder : current.label}
       </Text>
-      <Svg
-        width={18}
-        height={18}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={colors['text-tertiary']}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={open ? 'chevron-up' : 'chevron'} />
-      </Svg>
+      <ShellGlyph name={open ? 'chevron-up' : 'chevron'} size="sm" ink={colors['text-tertiary']} />
     </Pressable>
   );
 }
@@ -142,21 +139,27 @@ export function Select({
   style,
 }: NativeSelectProps) {
   const [anchor, setAnchor] = useState<Anchor | null>(null);
+  /* The open list is a layer: Android's Back closes it first, never the sheet beneath (`Menu`). */
+  useCloseOnBack(anchor !== null, () => setAnchor(null));
   const wrapRef = useRef<View>(null);
   const opts = normaliseOptions(options);
   const current = pickedOption(opts, value);
 
   const keyboardHeight = useKeyboardHeight();
+  const bottomInset = usePortalBottomInset();
+  const measure = useMeasureForLayer();
   const toggle = () => {
     if (anchor !== null) {
       setAnchor(null);
       return;
     }
-    // The room it opens into ends at the keyboard: measured against the whole window, a list
-    // opened from a sheet with a field focused fell under the keyboard.
+    // The room it opens into ends at the keyboard, or with the keyboard down at the home-indicator
+    // band: measured against the whole window, a list opened from a sheet with a field focused fell
+    // under the keyboard, and one with it down ran under the band and the sheet's own acts.
     const windowHeight = Dimensions.get('window').height;
-    wrapRef.current?.measureInWindow((x, y, w, h) => {
-      setAnchor(anchorFor({ x, y, w, h }, windowHeight - keyboardHeight, windowHeight));
+    const visibleBottom = windowHeight - (keyboardHeight > 0 ? keyboardHeight : bottomInset);
+    measure(wrapRef.current, (rect) => {
+      setAnchor(anchorFor(rect, visibleBottom, windowHeight));
     });
   };
 
@@ -205,7 +208,7 @@ export function Select({
             >
               <View />
             </Pressable>
-            <View
+            <PoppedList
               style={[
                 styles.list,
                 {
@@ -224,7 +227,7 @@ export function Select({
                 options={opts}
                 value={value}
               />
-            </View>
+            </PoppedList>
           </View>
         </Portal>
       ) : null}
@@ -263,3 +266,9 @@ const styles = StyleSheet.create({
     ...theme.elevation.e4,
   },
 });
+
+/** The open list: it pops in each time it opens (`usePopIn`), as `Menu`'s does; its options are
+ *  pressable at once. */
+function PoppedList({ style, children }: { style: StyleProp<ViewStyle>; children: ReactNode }) {
+  return <Animated.View style={[style, usePopIn()]}>{children}</Animated.View>;
+}

@@ -89,7 +89,7 @@ export function ProposalStep({
   const notes = listed === null ? markNotes(marks) : [];
   return (
     <View style={stepLayout.column} key={view.step}>
-      {moved === undefined ? null : <StepNote notice={moved} tone="warning" glyph="person" />}
+      {moved === undefined ? null : <StepNote notice={moved} tone="warning" glyph="user" />}
       {hero === null ? null : (
         <View style={stepLayout.hero}>
           <View style={updating === undefined ? undefined : stepLayout.stale}>

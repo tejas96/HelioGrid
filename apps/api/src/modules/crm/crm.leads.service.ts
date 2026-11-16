@@ -45,8 +45,10 @@ export class CrmLeadsService {
       billMaxMinor: boundOf(query.billMax, money.minorUnitDigits, 'billMax'),
       sort: query.sort,
       order: query.order,
-      words: asked?.terms ?? [],
-      phonePrefix: asked?.phone?.e164Prefix ?? null,
+      query:
+        asked === null
+          ? null
+          : { words: asked.terms, phonePrefix: asked.phone?.e164Prefix ?? null },
     };
     const page = await this.leads.list(reader, filters, pageOf(query), money);
     return { ...page, currencyCode: money.currencyCode };

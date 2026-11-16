@@ -25,7 +25,7 @@ function leavingField(press: () => void): () => void {
   };
 }
 
-/** A settings page's parts as one scrolling row (`T-M01-030`): the one in view is the accent wash. */
+/** A settings page's parts as one scrolling row (`T-M01-030`): the one in view is ink words in an ink outline. */
 function PartTabs({ props, at }: { props: ProposalBuilderProps; at: number }) {
   const { strip, placed } = useChosenInView(at);
   return (
@@ -48,8 +48,8 @@ function PartTabs({ props, at }: { props: ProposalBuilderProps; at: number }) {
               accessibilityState={{ selected: now }}
               onPress={leavingField(() => props.onStep(item.key))}
             >
-              <ShellGlyph name={item.glyph} size="sm" tone={now ? 'accent' : 'primary'} />
-              <Text variant="body-sm" color={now ? 'accent' : 'primary'} bold={now}>
+              <ShellGlyph name={item.glyph} size="sm" tone="primary" />
+              <Text variant="body-sm" color="primary" bold={now}>
                 {item.title}
               </Text>
             </Pressable>
@@ -97,7 +97,7 @@ export function ProposalBuilder(props: ProposalBuilderProps) {
             {next === undefined ? words.last : words.next(next.title)}
           </Text>
           <ShellGlyph
-            name={place.last ? (parts === undefined ? 'file-text' : 'tick') : 'arrow-right'}
+            name={place.last ? (parts === undefined ? 'document' : 'check') : 'arrow-right'}
             size="md"
             tone="inverse"
           />
@@ -229,14 +229,20 @@ const styles = StyleSheet.create({
     // biome-ignore lint/plugin/raw-white: a control set straight on the page is the card colour (Ground)
     backgroundColor: colors.surface,
   },
-  tabNow: { borderColor: colors.accent, backgroundColor: colors['accent-subtle'] },
+  /* The part in view: an ink outline, OneOhm's quiet choice. */
+  tabNow: { borderColor: colors['text-primary'] },
   track: {
     flexDirection: 'row',
     gap: theme.spacing['sp-1'],
     paddingTop: theme.spacing['sp-3'],
     paddingHorizontal: theme.spacing['sp-5'],
   },
-  part: { flex: 1, height: 4, borderRadius: 4, backgroundColor: colors['line-strong'] },
+  part: {
+    flex: 1,
+    height: 4,
+    borderRadius: theme.radius['rf-xs'],
+    backgroundColor: colors['line-strong'],
+  },
   partDone: { backgroundColor: colors['text-primary'] },
   partNow: { flex: 2.2, backgroundColor: colors.accent },
   partTodo: { backgroundColor: colors.warning },

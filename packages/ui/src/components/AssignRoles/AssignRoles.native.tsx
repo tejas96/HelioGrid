@@ -3,7 +3,6 @@ import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import type { FocusHandle } from '../../primitives/FocusAfter';
-import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellAction } from '../AppShell/ShellAction.native';
 import { Banner } from '../Banner/Banner.native';
@@ -67,7 +66,7 @@ export function AssignRoles({
               round
               label={words.reference}
               onClick={onReference}
-              icon={<InfoGlyph size={ICON_SIZE.md} color={colors['text-primary']} />}
+              icon={<InfoGlyph size="md" color={colors['text-primary']} />}
             />
           </View>
         )}

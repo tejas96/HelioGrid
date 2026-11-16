@@ -2,7 +2,7 @@ import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { amountSchema } from './common';
 import { settingsChangedSchema } from './document-templates';
-import { baseError, errorEnvelope } from './error';
+import { errorEnvelope, unauthenticatedEnvelope } from './error';
 
 const c = initContract();
 
@@ -54,7 +54,7 @@ export type CollectionsSettingsWrite = z.infer<typeof collectionsSettingsWriteSc
 /** The refusal only this write raises: the UPI ID does not read as `name@bank`. */
 export const collectionsSettingsErrorCodes = ['UPI_ID_MALFORMED'] as const;
 const malformed = errorEnvelope(z.enum(collectionsSettingsErrorCodes));
-const guarded = { 401: errorEnvelope(baseError('UNAUTHENTICATED')) } as const;
+const guarded = { 401: unauthenticatedEnvelope } as const;
 
 export const collectionsSettingsRoutes = c.router({
   collections: {

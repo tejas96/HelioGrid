@@ -2,20 +2,12 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode, RefObject } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import type { ThemeColor } from '../../primitives/Color/colors';
-import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import type { UsageMeterProps } from './UsageMeter.types';
 import { UsageMeterHead } from './UsageMeterHead.native';
 import { UsageMeterTrack } from './UsageMeterTrack.native';
-import type { UsageLineTone } from './usage-meter-model';
 import { meteredReading, type UsageMeterMeteredFacts } from './usage-meter-model';
-
-const LINE_TONE: Record<UsageLineTone, ThemeColor> = {
-  danger: colors['danger-text'],
-  warning: colors['warning-text'],
-  info: colors['info-text'],
-};
 
 export interface UsageMeterMeteredProps
   extends UsageMeterMeteredFacts,
@@ -89,7 +81,7 @@ export function UsageMeterMetered({
       {provenance}
 
       {saysStatus && line !== null ? (
-        <Text variant="caption" style={[statusLine, { color: LINE_TONE[line.tone] }]}>
+        <Text variant="caption" style={[statusLine, { color: TONE[line.tone].ink }]}>
           {line.words}
         </Text>
       ) : null}

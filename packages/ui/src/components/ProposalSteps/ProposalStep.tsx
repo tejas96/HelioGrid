@@ -93,7 +93,7 @@ export function ProposalStep({
   const notes = listed === null ? markNotes(marks) : [];
   return (
     <div className="hg-pst-step" key={view.step}>
-      {moved === undefined ? null : <StepNote notice={moved} tone="warning" glyph="person" />}
+      {moved === undefined ? null : <StepNote notice={moved} tone="warning" glyph="user" />}
       {hero === null ? null : (
         <div className="hg-pst-hero" data-updating={updating === undefined ? undefined : 'true'}>
           <HeroPanel>{hero}</HeroPanel>

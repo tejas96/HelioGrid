@@ -26,8 +26,9 @@
   cursor: pointer;
 }
 
+/* A picked step is OneOhm's quiet choice: an ink outline on the fill it had. */
 .hg-timeline-pick-step[data-checked="true"] {
-  background: var(--accent-subtle);
+  box-shadow: inset 0 0 0 1px var(--text-primary);
 }
 
 .hg-timeline-pick-step:focus-visible {

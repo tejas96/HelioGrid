@@ -11,7 +11,7 @@
 .hg-versions-why {
   margin: var(--sp-2) 0 0;
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: var(--fs-card-title);
   font-weight: var(--fw-regular);
   line-height: 32px;
   letter-spacing: var(--tr-display);

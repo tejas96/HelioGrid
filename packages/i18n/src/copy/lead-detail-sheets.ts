@@ -3,7 +3,7 @@
  * Snooze, Disqualify, Mark lost, Junk, a call-back, the message to copy and a contact, with the field words
  * every form shares and how a send that came back undone says why.
  */
-import type { ContactRoleLabel } from '@heliogrid/contracts';
+import type { ContactRoleLabel, TranslatedText } from '@heliogrid/contracts';
 import type { LeadActFailure, LeadStage, LostReason } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import {
@@ -24,6 +24,11 @@ import { timeFieldWords } from './time-field';
 type T = Translator['t'];
 
 const SHEETS = {
+  leaveTitle: /*i18n*/ { id: 'Leave without saving?' },
+  leaveBody: /*i18n*/ { id: 'What you entered here will be lost.' },
+  leaveDiscard: /*i18n*/ { id: 'Discard' },
+  leaveKeep: /*i18n*/ { id: 'Keep editing' },
+  needs: /*i18n*/ { id: 'First fill in: {field}' },
   detailsTitle: /*i18n*/ { id: 'Edit details' },
   detailsLine: /*i18n*/ { id: 'The name and city, as the customer gives them.' },
   detailsSend: /*i18n*/ { id: 'Save' },
@@ -272,6 +277,22 @@ export function leadDetailSheetWords(t: T, handOn: 'copy' | 'share') {
     role: (label: ContactRoleLabel) => contactRoleWord(t, label),
     lastContact: (elapsedMs: number | null) => lastContactWord(t, elapsedMs),
     close: t(SHELL.close),
-    fields: { date: datePickerWords(t), time: timeFieldWords(t), phone: phoneFieldWords(t) },
+    leave: formLeaveWords(t),
+    fields: {
+      date: datePickerWords(t),
+      time: timeFieldWords(t),
+      phone: phoneFieldWords(t),
+      needs: (field: TranslatedText) => t(SHEETS.needs, { field }),
+    },
+  };
+}
+
+/** The ask before a way out drops a form's typing — a lead sheet's, a quick add's (`M02-32`). */
+export function formLeaveWords(t: T) {
+  return {
+    title: t(SHEETS.leaveTitle),
+    body: t(SHEETS.leaveBody),
+    discard: t(SHEETS.leaveDiscard),
+    keep: t(SHEETS.leaveKeep),
   };
 }

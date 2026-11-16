@@ -1,7 +1,7 @@
 import { BLOCK, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Block } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedBoxShadow, resolvedColour, STRONG_EDGE } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, SECONDARY_EDGE } from '../support/token';
 
 const en = await createTranslator('en');
 const tryAgain = en.t(SIGN_IN.tryAgain);
@@ -22,7 +22,7 @@ test('an errored block on the page draws its retry white inside a strong hairlin
   const retry = block.getByRole('button', { name: tryAgain });
 
   await expect(retry).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
-  await expect(retry).toHaveCSS('box-shadow', await resolvedBoxShadow(page, STRONG_EDGE));
+  await expect(retry).toHaveCSS('box-shadow', await resolvedBoxShadow(page, SECONDARY_EDGE));
   await retry.click();
   expect(retries).toBe(1);
 });

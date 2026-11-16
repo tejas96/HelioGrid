@@ -24,7 +24,7 @@ export function TranscriptTurnList({
           {switchLine === null ? null : (
             <li className="hg-transcript-switch">
               <span className="hg-transcript-globe">
-                <GlobeGlyph size={13} />
+                <GlobeGlyph />
               </span>
               <span>{switchLine}</span>
             </li>

@@ -1,4 +1,6 @@
 // @vitest-environment happy-dom
+
+import { FILE_SUBJECT_RULES } from '@heliogrid/domain';
 import { useQuery } from '@tanstack/react-query';
 import { act, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
@@ -155,4 +157,27 @@ describe('Lead files — adding one', () => {
       expect(declared[1]).toEqual(declared[0]);
     },
   );
+});
+
+describe('Lead files — a pick the lead cannot take', () => {
+  it('a file over the size a lead takes is refused before it goes up, naming why', async () => {
+    const view = await mountedFiles();
+    const big = { ...BILL, bytes: new Uint8Array(FILE_SUBJECT_RULES.lead.maxBytes + 1) };
+    act(() => view.result.current.upload(big));
+    expect(view.result.current.refused).toBe('too-large');
+    expect(view.result.current.picked).toBe('Electricity bill.pdf');
+    expect(view.result.current.uploading).toBe(false);
+    expect(origin.writes).toEqual([]);
+  });
+
+  it('a file of a type the lead does not take is refused, and a good pick clears it', async () => {
+    const view = await mountedFiles();
+    act(() => view.result.current.refusePick('setup.exe', 'type-not-taken'));
+    expect(view.result.current.refused).toBe('type-not-taken');
+    expect(view.result.current.picked).toBe('setup.exe');
+
+    act(() => view.result.current.upload(BILL));
+    expect(view.result.current.refused).toBeNull();
+    await waitFor(() => expect(namesOf(view)).toEqual(['Electricity bill.pdf']));
+  });
 });

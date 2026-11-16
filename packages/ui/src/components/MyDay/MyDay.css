@@ -139,7 +139,7 @@
    tomorrow* at the far end, its own inline padding pulled back so its words end where the hero's
    content ends. */
 .hg-my-day-later > .hg-button[data-variant="ghost"] {
-  margin-inline-end: calc(-1 * var(--sp-4));
+  margin-inline-end: calc(-1 * var(--sp-3));
 }
 
 /* Why this task leads — the footer's quiet line, taking the room the move leaves. */
@@ -187,11 +187,6 @@
 .hg-my-day-band-title {
   flex: 1;
   margin: 0;
-  font-size: var(--fs-overline);
-  line-height: var(--lh-overline);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
 }
 
 .hg-my-day-band[data-band="overdue"] .hg-my-day-band-head {
@@ -224,7 +219,7 @@
 
 /* The tick draws in as the box fills — transform and opacity only. */
 .hg-my-day-check .hg-checkbox-box svg {
-  animation: hg-pop-in var(--dur-micro) var(--ease-spring);
+  animation: hg-pop-in var(--dur-standard) var(--ease-out-quint);
 }
 
 .hg-my-day-row-words {

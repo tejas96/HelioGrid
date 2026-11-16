@@ -1,7 +1,12 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Button } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedBoxShadow, resolvedColour, TILE_FILL, TILE_SHADOW } from '../support/token';
+import {
+  GLASS_TILE_FILL,
+  GLASS_TILE_SHADOW,
+  resolvedBoxShadow,
+  resolvedColour,
+} from '../support/token';
 import { WordedStatCard } from './StatCard.story';
 
 const en = await createTranslator('en');
@@ -19,8 +24,8 @@ test('an errored stat card is a tile and draws its retry white', async ({ mount,
   );
   const retry = card.getByRole('button', { name: tryAgain });
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
-  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, GLASS_TILE_FILL));
+  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, GLASS_TILE_SHADOW));
   await expect(retry).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
   await retry.click();
   expect(retries).toBe(1);
@@ -35,8 +40,8 @@ test('a stat card is a tile and its controls are white', async ({ mount, page })
     </WordedStatCard>,
   );
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
-  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, GLASS_TILE_FILL));
+  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, GLASS_TILE_SHADOW));
   await expect(card.getByRole('button', { name: tryAgain })).toHaveCSS(
     'background-color',
     await resolvedColour(page, '--surface'),
@@ -57,8 +62,8 @@ test('a tappable stat card is a tile, ringed under the pointer and never lifted'
     />,
   );
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
-  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, GLASS_TILE_FILL));
+  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, GLASS_TILE_SHADOW));
   await card.hover();
   await expect(card).toHaveCSS(
     'box-shadow',

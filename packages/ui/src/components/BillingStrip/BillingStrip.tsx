@@ -16,7 +16,7 @@ import { BillingValueText } from './BillingValue';
 /** Each row's mark: the word beside it carries the fact, the mark only repeats it (decision 2). */
 const MARK: Record<BillingStripMark, ReactNode> = {
   paused: <ShellGlyph name="pause" size="sm" tone="warning" />,
-  works: <ShellGlyph name="tick" size="sm" tone="success" />,
+  works: <ShellGlyph name="check" size="sm" tone="success" />,
   until: <ShellGlyph name="clock" size="sm" tone="secondary" />,
   amount: <ShellGlyph name="rupee" size="sm" tone="secondary" />,
 };

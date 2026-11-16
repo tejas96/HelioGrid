@@ -3,9 +3,10 @@ import { theme } from '@heliogrid/theme';
 import type { RefObject } from 'react';
 import { useRef } from 'react';
 import type { LayoutChangeEvent } from 'react-native';
-import { StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { usePopIn } from '../../primitives/use-pop-in.native';
 import {
   type ExplainerDensity,
   type ExplainerPagerModel,
@@ -42,8 +43,9 @@ export function ExplainerBubble(props: BubbleProps) {
   const { placed, pager, title, action, cap } = props;
   const touchX = useRef<number | null>(null);
   const functional = props.density === 'functional';
+  const pop = usePopIn();
   return (
-    <View
+    <Animated.View
       ref={props.bubbleRef}
       role="dialog"
       accessibilityLabel={title ?? props.label}
@@ -61,6 +63,8 @@ export function ExplainerBubble(props: BubbleProps) {
         styles.bubble,
         functional ? styles.bubbleFunctional : undefined,
         cap === null ? undefined : { maxWidth: cap },
+        pop,
+        /* After the pop, so a bubble not yet measured stays unseen. */
         placed === null ? styles.unplaced : { left: placed.left, top: placed.top },
       ]}
     >
@@ -81,7 +85,7 @@ export function ExplainerBubble(props: BubbleProps) {
         </View>
       ) : null}
       {pager === null ? null : <ExplainerPager pager={pager} onMove={props.onMove} />}
-    </View>
+    </Animated.View>
   );
 }
 
@@ -121,8 +125,16 @@ const styles = StyleSheet.create({
   bubbleFunctional: { minWidth: 192, padding: 14, borderRadius: theme.radius['rf-lg'] },
   /* Measured before it is placed, so the first frame never shows it in the wrong spot. */
   unplaced: { opacity: 0, left: 0, top: 0 },
-  title: { fontSize: 15, fontWeight: '700', color: colors['text-primary'] },
-  titleFunctional: { fontSize: 14, fontWeight: '700', color: colors['text-primary'] },
+  title: {
+    fontSize: theme.type.roles.h4.fontSize,
+    fontWeight: '700',
+    color: colors['text-primary'],
+  },
+  titleFunctional: {
+    fontSize: theme.type.roles['body-sm'].fontSize,
+    fontWeight: '700',
+    color: colors['text-primary'],
+  },
   bodyAfterTitle: { marginTop: 6 },
   body: { lineHeight: 21 },
   action: { marginTop: 14, flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing['sp-2'] },

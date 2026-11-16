@@ -110,15 +110,6 @@
 .hg-member-loading-bar {
   display: block;
   border-radius: var(--r-pill);
-  /* biome-ignore lint/plugin/raw-white-css: shimmer — a placeholder's sweep on the grey tile */
-  background: linear-gradient(
-    90deg,
-    var(--canvas-sunken) 25%,
-    var(--surface) 50%,
-    var(--canvas-sunken) 75%
-  );
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
 }
 
 .hg-member-loading-bar[data-part="face"] {

@@ -60,7 +60,7 @@ export function UsageMeterHead({
 }
 
 const labelStyle: TextStyle = {
-  fontSize: 14,
+  fontSize: theme.type.roles['body-sm'].fontSize,
   fontWeight: '500',
   letterSpacing: -0.14,
   color: colors['text-primary'],

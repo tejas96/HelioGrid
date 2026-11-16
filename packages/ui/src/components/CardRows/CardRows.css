@@ -13,7 +13,7 @@
 .hg-card-row {
   position: relative;
   isolation: isolate;
-  border-radius: var(--r-tile);
+  border-radius: var(--r-lg);
 }
 
 /* Each row is its own stacking context, so a menu opened in one would draw under the next row's
@@ -68,9 +68,9 @@
 }
 
 /* The row just added, and the row whose detail is open beside the list, read as the chosen one —
-   hovered or not. */
+   hovered or not: OneOhm's quiet choice, the control fill. */
 .hg-card-row[data-highlighted="true"]::after {
-  background: var(--accent-subtle);
+  background: var(--fill);
 }
 
 .hg-card-row[data-highlighted="true"]::before,

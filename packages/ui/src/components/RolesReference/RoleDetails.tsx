@@ -87,7 +87,7 @@ export function RoleDetails({
             {lines.map((line) => (
               <li key={line.key} className="hg-role-details-line" data-side={side}>
                 <ShellGlyph
-                  name={side === 'can' ? 'tick' : 'minus'}
+                  name={side === 'can' ? 'check' : 'minus'}
                   size="md"
                   tone={side === 'can' ? 'success' : 'secondary'}
                 />

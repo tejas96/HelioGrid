@@ -28,6 +28,7 @@ import { useAction } from './action';
 import { useRepositories } from './context';
 import { readOf } from './read';
 import { companyRead } from './shell-reads';
+import { type LeaveAsk, useLeaveAsk } from './use-leave-ask';
 import { type QuickAddAct, useQuickAddSheetActs } from './use-quick-add-sheet-acts';
 import { useSession } from './use-session';
 import { useSettled } from './use-settled';
@@ -92,9 +93,11 @@ export interface QuickAddScreen {
   dismissSaveFailure(): void;
   /**
    * ✕, Esc, the backdrop, Back: nothing is created. Does nothing while a save or an act is out, or
-   * while the duplicate sheet stands over the capture.
+   * while the duplicate sheet stands over the capture; over typing it asks first (`leave`).
    */
   close(): void;
+  /** The ask a close over typing raises: the capture closes only once the person chose to leave. */
+  readonly leave: LeaveAsk;
   /** Opens a fresh capture over the page the last one closed on. */
   reopen(): void;
   /** Opens a lead the capture named — the saved toast's *Open*. */
@@ -221,6 +224,13 @@ export function useQuickAddScreen(options: QuickAddOptions): QuickAddScreen {
     setSaveMatch(null);
   };
 
+  /* Discarding is the close itself: the typing goes with the capture. */
+  const leave = useLeaveAsk(() => undefined);
+  const closeNow = () => {
+    setOpen(false);
+    fresh();
+    latest.current.onClosed();
+  };
   return {
     allowed: can(roles, 'crm.add_edit_leads'),
     open,
@@ -256,10 +266,11 @@ export function useQuickAddScreen(options: QuickAddOptions): QuickAddScreen {
     close: () => {
       /* The sheet stands over the capture: its own close answers first, and the capture waits. */
       if (busy() || duplicate !== null) return;
-      setOpen(false);
-      fresh();
-      latest.current.onClosed();
+      const holds = typed.phoneE164 !== '' || typed.name.trim() !== '' || typed.city.trim() !== '';
+      if (holds) leave.ask(closeNow);
+      else closeNow();
     },
+    leave,
     openLead,
     reopen: () => {
       fresh();

@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: 14,
     paddingHorizontal: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-md'],
+    borderRadius: theme.radius['r-lg'],
   },
   head: {
     flexDirection: 'row',

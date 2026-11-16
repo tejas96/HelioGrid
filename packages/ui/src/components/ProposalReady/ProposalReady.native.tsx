@@ -5,6 +5,7 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import { labelRunsOf } from '../Button/Button.logic';
 import { Button } from '../Button/Button.native';
 import { Badge } from '../Chip/Chip.native';
@@ -54,13 +55,14 @@ export function ProposalReady(props: ProposalReadyProps) {
       ]}
     >
       <View>
+        <BrandBloom placement="centre" />
         <Animated.View style={landing}>{props.cover}</Animated.View>
         <View style={styles.mark}>
           <LottieMoment name="published" size={96} label={words.moment} />
         </View>
       </View>
       <View style={styles.words}>
-        <Badge tone="success" glyph="tick-small" style={styles.badge}>
+        <Badge tone="success" glyph="check" style={styles.badge}>
           {words.status}
         </Badge>
         <Text variant="display" align="center" style={styles.title}>
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
   words: { alignSelf: 'stretch', alignItems: 'center', gap: theme.spacing['sp-3'] },
   badge: { alignSelf: 'center' },
   // The web's `.hg-prdy-title` size on the phone.
-  title: { fontSize: 34, lineHeight: 40 },
+  title: { fontSize: theme.type.roles.h1.fontSize, lineHeight: theme.type.roles.h1.lineHeight },
   acts: { alignSelf: 'stretch', gap: theme.spacing['sp-2'], marginTop: theme.spacing['sp-4'] },
   back: { minHeight: 44, justifyContent: 'center', paddingHorizontal: theme.spacing['sp-3'] },
 });

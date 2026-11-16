@@ -1,7 +1,7 @@
 import type { MoneyDue, MoneyDueRow, TranslatedText } from '@heliogrid/contracts';
 import { daysFrom, MONEY_DUE_GROUPS, type MoneyDueGroup } from '@heliogrid/domain';
-import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import type { MarketFormat } from '../../utils/format';
+import type { StatusTone } from '../StatusMark/StatusMark.types';
 import type { MoneyDueProps, MoneyDueWords } from './MoneyDue.types';
 
 /**

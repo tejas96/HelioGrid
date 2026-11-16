@@ -1,14 +1,14 @@
 import type { ProjectFile } from '@heliogrid/contracts';
 import { Pressable } from '../../primitives/Pressable';
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import { glyphStroke } from '../AppShell/ShellGlyph.logic';
 import { Button } from '../Button';
+import { CardHeader } from '../Card';
 import { CardRow, CardRows } from '../CardRows';
 import { FileLink } from '../FileLink';
 import { HueTile } from '../HueTile';
 import { Input } from '../Input';
 import { LoadingBars } from '../LoadingBars';
+import { StatusMark } from '../StatusMark';
 import { hasPhoto, progressOf, STEP_TILE } from './InstallerJob.logic';
 import type {
   InstallerJobWords,
@@ -30,12 +30,14 @@ export function InstallerSteps(props: InstallerStepsProps) {
   if (rows.length === 0) return null;
   return (
     <section className="hg-installer-job-section" aria-label={words.steps}>
-      <div className="hg-installer-job-section-head">
-        <h2 className="hg-installer-job-heading">{words.steps}</h2>
-        <span className="hg-installer-job-count">
-          {words.stepsCount(progress.ticked, progress.total)}
-        </span>
-      </div>
+      <CardHeader
+        title={words.steps}
+        action={
+          <span className="hg-installer-job-count">
+            {words.stepsCount(progress.ticked, progress.total)}
+          </span>
+        }
+      />
       <CardRows form="joined">
         {rows.map((row) => (
           <StepRow key={row.key} row={row} words={words} onOpenFile={props.onOpenFile} />
@@ -58,7 +60,7 @@ export function InstallerSteps(props: InstallerStepsProps) {
 }
 
 function StepTile({ row }: { row: InstallerStepRow }) {
-  const tile = <HueTile {...STEP_TILE[row.state]} size={44} stroke={glyphStroke('md')} />;
+  const tile = <HueTile {...STEP_TILE[row.state]} size={44} />;
   if (row.tile === null) return <span className="hg-installer-step-tap">{tile}</span>;
   return (
     <Pressable className="hg-installer-step-tap" haptic="impact" {...row.tile}>
@@ -128,12 +130,14 @@ export function InstallerPhotos({ words, steps, known }: InstallerPhotosProps) {
       aria-label={words.photosTitle}
       aria-busy={known ? undefined : true}
     >
-      <div className="hg-installer-job-section-head">
-        <h2 className="hg-installer-job-heading">{words.photosTitle}</h2>
-        {known ? (
-          <span className="hg-installer-job-count">{words.count(photographed, total)}</span>
-        ) : null}
-      </div>
+      <CardHeader
+        title={words.photosTitle}
+        action={
+          known ? (
+            <span className="hg-installer-job-count">{words.count(photographed, total)}</span>
+          ) : null
+        }
+      />
       {known ? (
         <ul className="hg-installer-job-photos">
           {steps.map((step) => (

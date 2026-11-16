@@ -3,6 +3,8 @@
  * device's setting or `data-theme="dark"` turns on; field mode is a light variant that wins over
  * dark. Nothing here is a value: every value is read from `tokens/`.
  */
+
+import { springCurve } from './spring-curve';
 import { BRAND } from './tokens/brand';
 import {
   COLOR_TOKENS,
@@ -26,12 +28,24 @@ import {
   AMBIENT,
   DURATION,
   EASING,
+  ENTER,
   PRESS,
   REDUCED_DURATION,
   SKELETON_DELAY_MS,
+  SPRING,
   STAGGER,
+  TIP_DELAY_MS,
 } from './tokens/motion';
-import { BUNDLED_FACES, FIELD_TYPE, FONT_STACKS, TYPE_ROLES, WEIGHTS } from './tokens/typography';
+import {
+  BUNDLED_FACES,
+  DOCUMENT_PREVIEW_SCALE,
+  DOCUMENT_TYPE,
+  FIELD_TYPE,
+  FIELD_VALUE_TOUCH,
+  FONT_STACKS,
+  TYPE_ROLES,
+  WEIGHTS,
+} from './tokens/typography';
 
 type Declarations = Readonly<Record<string, string | number>>;
 
@@ -50,6 +64,7 @@ const ALIASES: Readonly<Record<string, ColorToken>> = {
 };
 
 const px = (n: number): string => (n === 0 ? '0' : `${n}px`);
+const bezier = (points: readonly number[]): string => `cubic-bezier(${points.join(',')})`;
 const stack = (families: readonly string[]): string =>
   families.map((f) => (/^[a-z-]+$/.test(f) ? f : `"${f}"`)).join(',');
 const shadow = (layers: readonly Shadow[]): string =>
@@ -106,6 +121,8 @@ function rootDeclarations(): Declarations {
     type[`tr-${role}`] = `${r.tracking}em`;
   }
   for (const [part, size] of Object.entries(FIELD_TYPE)) type[`fs-field-${part}`] = px(size);
+  for (const [role, size] of Object.entries(DOCUMENT_TYPE)) type[role] = px(size);
+  type['doc-preview-scale'] = DOCUMENT_PREVIEW_SCALE;
 
   const sizes: Record<string, string> = {};
   for (const group of [SPACING, LAYOUT, RADIUS, PRINT]) {
@@ -115,8 +132,16 @@ function rootDeclarations(): Declarations {
   const motion: Record<string, string | number> = {};
   for (const [k, v] of Object.entries(DURATION)) motion[`dur-${k}`] = `${v}ms`;
   for (const [k, v] of Object.entries(AMBIENT)) motion[`amb-${k}`] = `${v}ms`;
-  for (const [k, v] of Object.entries(EASING)) motion[`ease-${k}`] = `cubic-bezier(${v.join(',')})`;
+  for (const [k, v] of Object.entries(EASING)) motion[`ease-${k}`] = bezier(v);
+  for (const [k, v] of Object.entries(SPRING)) {
+    motion[`dur-spring-${k}`] = `${springCurve(v).durationMs}ms`;
+    motion[`ease-spring-${k}`] = bezier(EASING['out-quint']);
+  }
   motion['press-scale'] = PRESS.scale;
+  motion['press-scale-icon'] = PRESS.iconScale;
+  motion['pop-rise'] = px(ENTER.popPx);
+  motion['pop-scale'] = ENTER.popScale;
+  motion['tip-delay'] = `${TIP_DELAY_MS}ms`;
   motion['stagger-step'] = `${STAGGER.stepMs}ms`;
   motion.rise = px(STAGGER.risePx);
   motion['skeleton-delay'] = `${SKELETON_DELAY_MS}ms`;
@@ -187,8 +212,14 @@ function fontFaces(): string {
   ).join('\n');
 }
 
-const reducedMotion = Object.fromEntries(
-  Object.entries(REDUCED_DURATION).map(([k, v]) => [`dur-${k}`, `${v}ms`]),
+const reducedMotion = Object.fromEntries([
+  ...Object.entries(REDUCED_DURATION).map(([k, v]) => [`dur-${k}`, `${v}ms`]),
+  ...Object.keys(SPRING).map((k) => [`dur-spring-${k}`, `${REDUCED_DURATION.emphasised}ms`]),
+]);
+
+/* A browser without `linear()` keeps the out-quint curve the root declares, at the spring's length. */
+const springEasings = Object.fromEntries(
+  Object.entries(SPRING).map(([k, v]) => [`ease-spring-${k}`, springCurve(v).easing]),
 );
 
 /** `dist/tokens.css`: the faces, every token in light, dark and field, and reduced motion. */
@@ -206,7 +237,9 @@ export function renderTokensCss(keyframes: string, fieldRules: string): string {
     ),
     block('[data-paper]', PAPER_DECLS).replace('{\n', '{\n  color-scheme:light;\n'),
     `@media print{\n${block(':root,:root[data-theme="dark"],:root:not([data-theme="light"])', PAPER_DECLS).replace('{\n', '{\n  color-scheme:light;\n')}}\n`,
+    `@supports (transition-timing-function:linear(0,1)){\n${block(':root', springEasings)}}\n`,
     `@media (prefers-reduced-motion:reduce){\n${block(':root', reducedMotion)}}\n`,
+    `@media (pointer:coarse){\n${block(':root', { 'fs-field-value': px(FIELD_VALUE_TOUCH) })}}\n`,
     keyframes,
     fieldRules,
   ].join('\n');

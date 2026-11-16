@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { blockHeaderOf, spokenCountOf } from './Block.logic';
 import type { BlockFrameProps } from './Block.types';
 
@@ -45,13 +46,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     justifyContent: 'center',
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: colors['neutral-bg'],
+    backgroundColor: TONE.neutral.tint,
   },
   countText: {
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
     fontWeight: '500',
-    color: colors['neutral-text'],
+    color: TONE.neutral.ink,
   },
   meta: {
     marginTop: 3,

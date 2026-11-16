@@ -266,6 +266,8 @@ const served = listeningOrigin((req, res) => {
   if (req.method === 'OPTIONS') return send(res, req, 204);
   origin.sent.push(`${req.method} ${path}${url.search}`);
   if (path === '/auth/session') return send(res, req, 200, projection());
+  /* The token renewed from the session cookie; its answer is read for its status alone. */
+  if (path === '/auth/refresh') return send(res, req, 200, {});
   if (answerMoney(req, res, path) || answerReceipts(req, res, path)) return;
   if (answeredFile(req, res, path)) return;
   send(res, req, 404, refusal('NOT_FOUND'));

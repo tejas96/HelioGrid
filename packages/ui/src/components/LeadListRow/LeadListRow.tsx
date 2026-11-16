@@ -1,10 +1,10 @@
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { CardRow } from '../CardRows';
 import { LeadSourceMark } from '../LeadSourceMark';
 import { ProvenanceTier } from '../Provenance';
 import { LEAD_STAGE_TONE } from '../StatusChip/StatusChip.registry';
+import { StatusMark } from '../StatusMark';
 import { LEAD_STAGE_GLYPH, leadNextToneOf, MARK_GLYPH_TONE } from './LeadListRow.logic';
 import type { LeadListRowProps, LeadNextMarkProps } from './LeadListRow.types';
 
@@ -27,7 +27,15 @@ function NextLine(props: LeadNextMarkProps) {
 }
 
 /** One lead of the list, its own card in three lines: the whole card opens it. */
-export function LeadListRow({ lead, sourceLabel, next, first, onOpen, words }: LeadListRowProps) {
+export function LeadListRow({
+  lead,
+  sourceLabel,
+  lastActivity,
+  next,
+  first,
+  onOpen,
+  words,
+}: LeadListRowProps) {
   const stage = { glyph: LEAD_STAGE_GLYPH[lead.stage], tone: LEAD_STAGE_TONE[lead.stage] };
   return (
     <CardRow
@@ -56,6 +64,9 @@ export function LeadListRow({ lead, sourceLabel, next, first, onOpen, words }: L
           />
         </span>
         <span className="hg-lead-list-row-facts">
+          {lead.name === null ? null : (
+            <span className="hg-lead-list-row-number">{lead.phone}</span>
+          )}
           <LeadSourceMark
             source={lead.source}
             label={sourceLabel}
@@ -68,6 +79,10 @@ export function LeadListRow({ lead, sourceLabel, next, first, onOpen, words }: L
               <ProvenanceTier tier="assumed" />
             </span>
           )}
+          <span className="hg-lead-list-row-since">
+            <ShellGlyph name="clock" size="xs" tone="secondary" />
+            {lastActivity}
+          </span>
         </span>
         <span className="hg-lead-list-row-foot">
           <span className="hg-lead-list-row-next">
@@ -76,7 +91,10 @@ export function LeadListRow({ lead, sourceLabel, next, first, onOpen, words }: L
           {lead.owner === null ? (
             <span className="hg-lead-list-row-unowned">{words.noOwner}</span>
           ) : (
-            <Avatar name={lead.owner} size={24} />
+            <span className="hg-lead-list-row-owner">
+              <Avatar name={lead.owner} size={24} />
+              <span className="hg-lead-list-row-owner-name">{lead.owner}</span>
+            </span>
           )}
         </span>
       </span>

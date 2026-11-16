@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { PhoneValue } from '../PhoneField/PhoneField.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     paddingLeft: theme.spacing['sp-3'],
     paddingRight: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-tile'],
-    backgroundColor: colors['success-bg'],
+    backgroundColor: TONE.success.tint,
   },
   glyph: {
     width: theme.spacing['sp-10'],

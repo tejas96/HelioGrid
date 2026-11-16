@@ -147,7 +147,7 @@ test('the tier line is quiet by default and takes the secondary role when load-b
   mount,
   page,
 }) => {
-  const quiet = await mount(<HeldNumberField label={LABEL} unit={UNIT} tier />);
+  const quiet = await mount(<HeldNumberField label={LABEL} unit={UNIT} tier initial={5} />);
   const quietLine = quiet.locator('.hg-provenance');
   await expect(quietLine).toHaveCSS('color', await resolvedColour(page, '--text-tertiary'));
   const quietDot = await quiet
@@ -156,11 +156,22 @@ test('the tier line is quiet by default and takes the secondary role when load-b
   await quiet.unmount();
 
   const loadBearing = await mount(
-    <HeldNumberField label={LABEL} unit={UNIT} tier emphasis="load-bearing" />,
+    <HeldNumberField label={LABEL} unit={UNIT} tier initial={5} emphasis="load-bearing" />,
   );
   const line = loadBearing.locator('.hg-provenance');
   await expect(line).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
   await expect(loadBearing.locator('.hg-provenance-dot')).toHaveCSS('background-color', quietDot);
+});
+
+test('an empty field says no tier — there is no figure to say it of — and a figure brings it', async ({
+  mount,
+}) => {
+  const field = await mount(<HeldNumberField label={LABEL} unit={UNIT} tier />);
+  await expect(field.locator('.hg-provenance')).toHaveCount(0);
+  const input = field.getByRole('textbox', { name: LABEL });
+  await input.fill('5');
+  await input.blur();
+  await expect(field.locator('.hg-provenance')).toHaveCount(1);
 });
 
 test('the value starts at the left in the sans face', async ({ mount, page }) => {

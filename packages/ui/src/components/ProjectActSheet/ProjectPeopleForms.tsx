@@ -123,7 +123,7 @@ function PersonPick({
         <span className="hg-project-act-person-name">{person.name}</span>
         <span className="hg-project-act-note">{line}</span>
       </span>
-      {on ? <ShellGlyph name="tick" size="md" tone="accent" /> : null}
+      {on ? <ShellGlyph name="check" size="md" tone="accent" /> : null}
     </Pressable>
   );
 }

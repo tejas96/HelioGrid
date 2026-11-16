@@ -4,6 +4,7 @@ import { Input } from '../Input';
 import type { FormFrame } from './LeadActForms';
 import { ActSend } from './LeadActParts';
 import type { LeadActForm } from './LeadActSheet.types';
+import { useReportHolds } from './use-form-holds';
 
 type DetailsForm = Extract<LeadActForm, { kind: 'details' }>;
 
@@ -12,7 +13,12 @@ type DetailsForm = Extract<LeadActForm, { kind: 'details' }>;
  * customer gives them. An emptied field goes back to its named gap; only a changed field is
  * sent, each within its limit.
  */
-export function LeadDetailsForm({ form, pending, failure }: FormFrame & { form: DetailsForm }) {
+export function LeadDetailsForm({
+  form,
+  pending,
+  failure,
+  holds,
+}: FormFrame & { form: DetailsForm }) {
   const { words, start } = form;
   const [name, setName] = useState(start.name ?? '');
   const [city, setCity] = useState(start.city ?? '');
@@ -21,6 +27,7 @@ export function LeadDetailsForm({ form, pending, failure }: FormFrame & { form: 
     ...(draft.name === start.name ? {} : { name: draft.name }),
     ...(draft.city === start.city ? {} : { city: draft.city }),
   };
+  useReportHolds(holds, Object.keys(changed).length > 0);
   return (
     <>
       <Input

@@ -1,4 +1,3 @@
-import { glyphStroke } from '../AppShell/ShellGlyph.logic';
 import type { ButtonProps } from '../Button/Button.types';
 import type { CardRowOpen } from '../CardRows/CardRows.types';
 import type { HueTileSize } from '../HueTile/HueTile.types';
@@ -19,11 +18,10 @@ export function rowActOf(act: ProjectRowAct): Omit<ButtonProps, 'children'> {
   };
 }
 
-/** A kind tile's sides: a hero's 48, a row's 40, a group head's 24 — `HueTile`'s, with its glyph's stroke. */
-export const KIND_TILE: Readonly<
-  Record<'hero' | 'row' | 'head', { readonly size: HueTileSize; readonly stroke: number }>
-> = {
-  hero: { size: 48, stroke: glyphStroke('lg') },
-  row: { size: 40, stroke: glyphStroke('md') },
-  head: { size: 24, stroke: glyphStroke('sm') },
-};
+/** A kind tile's sides: a hero's 48, a row's 40, a group head's 24 — `HueTile`'s. */
+export const KIND_TILE: Readonly<Record<'hero' | 'row' | 'head', { readonly size: HueTileSize }>> =
+  {
+    hero: { size: 48 },
+    row: { size: 40 },
+    head: { size: 24 },
+  };

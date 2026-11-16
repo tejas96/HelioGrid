@@ -1,5 +1,13 @@
 import type { Task, TaskKind } from '@heliogrid/contracts';
-import { type DbTransaction, lead, type TenantPool, task, userAccount } from '@heliogrid/db';
+import {
+  type DbTransaction,
+  lead,
+  type TenantPool,
+  task,
+  tenant,
+  userAccount,
+} from '@heliogrid/db';
+import { isClosed, localDate } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, or } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
@@ -7,7 +15,7 @@ import { type CreationKey, type Keyed, replayOf } from '../../common/creation-ke
 import { lockCreationKey } from '../../common/db/creation-key-lock';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberNameOf } from './crm.lead-columns.repository';
-import { lockLead, lockLeadInScope, personOf } from './crm.lead-lock.repository';
+import { lockLead, lockLeadInScope, personOf, todayOf } from './crm.lead-lock.repository';
 import { activeMemberOf } from './crm.member-roles.repository';
 import { raiseTask } from './crm.raised-tasks.repository';
 import { leadScopeWhere } from './crm.scope.repository';
@@ -26,13 +34,16 @@ export type TaskCreateOutcome =
   | Keyed<Task>
   | { readonly outcome: 'not-found' }
   | { readonly outcome: 'assignee-unavailable' }
-  | { readonly outcome: 'not-diallable' };
+  | { readonly outcome: 'not-diallable' }
+  | { readonly outcome: 'lead-closed' }
+  | { readonly outcome: 'day-past' };
 
 export type TaskActOutcome =
   | { readonly outcome: 'done'; readonly task: Task }
   | { readonly outcome: 'not-found' }
   | { readonly outcome: 'cancelled' }
-  | { readonly outcome: 'not-open' };
+  | { readonly outcome: 'not-open' }
+  | { readonly outcome: 'day-past' };
 
 /**
  * Follow-up tasks on a lead (`M07-05`) on the runtime pool. A task goes to the
@@ -53,17 +64,12 @@ export class CrmTasksRepository {
   ): Promise<TaskCreateOutcome> {
     const { tenantId } = reader;
     return this.db.withTenantTransaction(tenantId, async (tx) => {
-      if (key !== null) {
-        await lockCreationKey(tx, key);
-        const [made] = await tx
-          .select({ id: task.id, fingerprint: task.creationFingerprint })
-          .from(task)
-          .where(and(eq(task.tenantId, tenantId), eq(task.creationKey, key.key)));
-        if (made) return replayOf(await taskWireOf(tx, tenantId, made.id), made.fingerprint, key);
-      }
+      const replayed = key === null ? null : await replayedTask(tx, tenantId, key);
+      if (replayed !== null) return replayed;
       const target = await lockLeadInScope(tx, reader, leadId);
       if (target === null) return { outcome: 'not-found' };
-      if (input.kind === 'call' && !target.canDial) return { outcome: 'not-diallable' };
+      const refused = taskRefusalOf(target, input, act);
+      if (refused !== null) return refused;
       const assigneeId = input.assigneeId ?? target.lifecycle.ownerId ?? act.actorUserId;
       if ((await activeMemberOf(tx, tenantId, assigneeId)) === null) {
         return { outcome: 'assignee-unavailable' };
@@ -124,7 +130,12 @@ export class CrmTasksRepository {
    * Move (`M07-05`): an open task takes its new due moment, and overdue follows it at once; the
    * same moment again writes nothing, and no timeline entry is written — it is the person's plan.
    */
-  async move(reader: LeadReader, taskId: string, dueAt: Date): Promise<TaskActOutcome> {
+  async move(
+    reader: LeadReader,
+    taskId: string,
+    dueAt: Date,
+    now: number,
+  ): Promise<TaskActOutcome> {
     const moveOpen = async (tx: DbTransaction, held: HeldTask) => {
       if (held.dueAt.getTime() === dueAt.getTime()) return;
       await tx
@@ -132,7 +143,10 @@ export class CrmTasksRepository {
         .set({ dueAt })
         .where(and(eq(task.tenantId, reader.tenantId), eq(task.id, taskId)));
     };
-    return this.closeOrOpen(reader, taskId, moveOpen, 'open');
+    // Due today or later on the company's clock, as a new task is (`F1-10`).
+    const dayPast = (held: HeldTask) =>
+      localDate(dueAt.getTime(), held.timeZone) < localDate(now, held.timeZone);
+    return this.closeOrOpen(reader, taskId, moveOpen, 'open', dayPast);
   }
 
   /**
@@ -146,6 +160,8 @@ export class CrmTasksRepository {
     change: (tx: DbTransaction, held: HeldTask) => Promise<void>,
     /** The one status the act is for; any other answers `not-open`. */
     acts?: 'open',
+    /** Whether the act's day has passed on the company's clock: refused before anything is written. */
+    dayPast?: (held: HeldTask) => boolean,
   ): Promise<TaskActOutcome> {
     const { tenantId } = reader;
     return this.db.withTenantTransaction(tenantId, async (tx) => {
@@ -163,9 +179,11 @@ export class CrmTasksRepository {
           title: task.title,
           status: task.status,
           dueAt: task.dueAt,
+          timeZone: tenant.timezone,
         })
         .from(task)
         .innerJoin(lead, and(eq(lead.id, task.leadId), eq(lead.tenantId, task.tenantId)))
+        .innerJoin(tenant, eq(tenant.id, task.tenantId))
         .where(
           and(
             eq(task.tenantId, tenantId),
@@ -180,6 +198,7 @@ export class CrmTasksRepository {
       if (held === undefined || held.leadId === null) return { outcome: 'not-found' };
       if (held.status === 'cancelled') return { outcome: 'cancelled' };
       if (acts !== undefined && held.status !== acts) return { outcome: 'not-open' };
+      if (dayPast?.({ ...held, leadId: held.leadId })) return { outcome: 'day-past' };
       await change(tx, { ...held, leadId: held.leadId });
       return { outcome: 'done', task: await taskWireOf(tx, tenantId, taskId) };
     });
@@ -193,6 +212,8 @@ interface HeldTask {
   readonly title: string | null;
   readonly status: Task['status'];
   readonly dueAt: Date;
+  /** The company's zone: its clock decides which day a moment falls on. */
+  readonly timeZone: string;
 }
 
 /** The columns a task's wire shape is read with: `from task`, its assignee joined as `user_account`. */
@@ -253,4 +274,33 @@ export async function taskWireOf(
     throw new Error(`task ${taskId} is not a lead's task in its own company`);
   }
   return taskOfRow({ ...row, leadId: row.leadId });
+}
+
+/** The task a creation key already made, answered as the first answer was; null when none. */
+async function replayedTask(
+  tx: DbTransaction,
+  tenantId: string,
+  key: CreationKey,
+): Promise<TaskCreateOutcome | null> {
+  await lockCreationKey(tx, key);
+  const [made] = await tx
+    .select({ id: task.id, fingerprint: task.creationFingerprint })
+    .from(task)
+    .where(and(eq(task.tenantId, tenantId), eq(task.creationKey, key.key)));
+  return made ? replayOf(await taskWireOf(tx, tenantId, made.id), made.fingerprint, key) : null;
+}
+
+/** Why a task cannot be set on this lead now; null when it can. */
+function taskRefusalOf(
+  target: NonNullable<Awaited<ReturnType<typeof lockLeadInScope>>>,
+  input: TaskInput,
+  act: Act,
+): TaskCreateOutcome | null {
+  if (isClosed(target.lifecycle)) return { outcome: 'lead-closed' };
+  // Due today or later on the company's clock, as the sheet offers (`F1-10`).
+  if (localDate(input.dueAt.getTime(), target.timeZone) < todayOf(target, act)) {
+    return { outcome: 'day-past' };
+  }
+  if (input.kind === 'call' && !target.canDial) return { outcome: 'not-diallable' };
+  return null;
 }

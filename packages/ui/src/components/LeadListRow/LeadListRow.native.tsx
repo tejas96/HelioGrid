@@ -1,7 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
@@ -9,6 +8,7 @@ import { CardRow } from '../CardRows/CardRows.native';
 import { LeadSourceMark } from '../LeadSourceMark/LeadSourceMark.native';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
 import { LEAD_STAGE_TONE } from '../StatusChip/StatusChip.registry';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { LEAD_STAGE_GLYPH, leadNextToneOf, MARK_GLYPH_TONE } from './LeadListRow.logic';
 import type { LeadListRowProps, LeadNextMarkProps } from './LeadListRow.types';
 
@@ -32,7 +32,15 @@ function NextLine(props: LeadNextMarkProps) {
 }
 
 /** One lead of the list on the phone, its own card in three lines: the whole card opens it. */
-export function LeadListRow({ lead, sourceLabel, next, first, onOpen, words }: LeadListRowProps) {
+export function LeadListRow({
+  lead,
+  sourceLabel,
+  lastActivity,
+  next,
+  first,
+  onOpen,
+  words,
+}: LeadListRowProps) {
   const stage = { glyph: LEAD_STAGE_GLYPH[lead.stage], tone: LEAD_STAGE_TONE[lead.stage] };
   return (
     <CardRow first={first} open={{ name: words.open(lead.name), onOpen }}>
@@ -65,6 +73,7 @@ export function LeadListRow({ lead, sourceLabel, next, first, onOpen, words }: L
             />
           </View>
           <View style={styles.facts}>
+            {lead.name === null ? null : <Text variant="mono">{lead.phone}</Text>}
             <LeadSourceMark
               source={lead.source}
               label={sourceLabel}
@@ -81,6 +90,12 @@ export function LeadListRow({ lead, sourceLabel, next, first, onOpen, words }: L
                 <ProvenanceTier tier="assumed" />
               </View>
             )}
+            <View style={styles.since}>
+              <ShellGlyph name="clock" size="xs" tone="secondary" />
+              <Text variant="body-sm" color="secondary">
+                {lastActivity}
+              </Text>
+            </View>
           </View>
           <View style={styles.foot}>
             <View style={styles.nextBox}>{next === null ? null : <NextLine {...next} />}</View>
@@ -89,8 +104,11 @@ export function LeadListRow({ lead, sourceLabel, next, first, onOpen, words }: L
                 {words.noOwner}
               </Text>
             ) : (
-              <View accessible accessibilityRole="image" accessibilityLabel={lead.owner}>
+              <View style={styles.owner}>
                 <Avatar name={lead.owner} size={24} />
+                <Text variant="caption" color="secondary" style={styles.ownerName}>
+                  {lead.owner}
+                </Text>
               </View>
             )}
           </View>
@@ -126,6 +144,16 @@ const styles = StyleSheet.create({
     rowGap: theme.spacing['sp-0-5'],
   },
   bill: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
+  since: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-1'] },
+  /* The owner's face and name: a long name wraps under itself, never past half the line. */
+  owner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing['sp-2'],
+    flexShrink: 1,
+    maxWidth: '50%',
+  },
+  ownerName: { flexShrink: 1 },
   foot: {
     flexDirection: 'row',
     alignItems: 'center',

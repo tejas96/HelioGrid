@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import { COMPANY_PROFILE_FIELD_CAP, PERSON_NAME_CAP } from '@heliogrid/domain';
 import { useRef } from 'react';
 import type { FocusHandle } from '../../primitives/FocusAfter';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark';
 import { Text } from '../../primitives/Text/Text';
 import { useFocusRequest } from '../../primitives/use-focus-request';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
@@ -12,6 +12,7 @@ import { Input } from '../Input/Input';
 import { PendingAction } from '../PendingAction/PendingAction';
 import { PhoneField } from '../PhoneField/PhoneField';
 import { SegmentedControl } from '../SegmentedControl/SegmentedControl';
+import { StatusMark } from '../StatusMark/StatusMark';
 import { CHECK_TONE, segmentOf, segmentOptionsOf } from './QuickAddForm.logic';
 import type { QuickAddFormProps, QuickAddKnownLead } from './QuickAddForm.types';
 import './QuickAddForm.css';
@@ -29,7 +30,20 @@ export function QuickAddForm(props: QuickAddFormProps) {
   useFocusRequest(phone, props.phoneFocus);
   const known = props.knownLead ?? null;
   return (
-    <div className="hg-quick-add">
+    // Enter in a field saves, as a form does on the web; a button keeps its own Enter.
+    // biome-ignore lint/a11y/noStaticElementInteractions: the fields inside take the keys; this only hears Enter bubble up from them
+    <div
+      className="hg-quick-add"
+      onKeyDown={(event) => {
+        if (event.key !== 'Enter' || !(event.target instanceof HTMLInputElement)) return;
+        // Enter that finishes a word an input method is still forming (Hindi, Marathi) is not Save;
+        // Safari ends the composition first and marks that Enter with key code 229 instead.
+        const composing = event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229;
+        if (composing || saving || known !== null) return;
+        event.preventDefault();
+        props.onSave();
+      }}
+    >
       {props.cameFrom === null ? null : (
         <span className="hg-quick-add-came-from">
           <Chip tone="info">{props.cameFrom}</Chip>
@@ -56,12 +70,19 @@ export function QuickAddForm(props: QuickAddFormProps) {
         <KnownLead known={known} />
       ) : (
         <>
-          <Input label={words.name} value={props.name} onChange={props.onName} disabled={saving} />
+          <Input
+            label={words.name}
+            value={props.name}
+            onChange={props.onName}
+            disabled={saving}
+            maxLength={PERSON_NAME_CAP}
+          />
           <Input
             label={words.city}
             value={props.city}
             onChange={props.onCity}
             disabled={saving}
+            maxLength={COMPANY_PROFILE_FIELD_CAP.city}
             leading={<ShellGlyph name="pin" size="sm" />}
           />
           <SegmentedControl
@@ -80,7 +101,7 @@ export function QuickAddForm(props: QuickAddFormProps) {
               size="lg"
               fullWidth
               loading={saving}
-              icon={<ShellGlyph name="tick" size="md" tone="inverse" />}
+              icon={<ShellGlyph name="check" size="md" tone="inverse" />}
               onClick={saving ? undefined : props.onSave}
             >
               {words.save}

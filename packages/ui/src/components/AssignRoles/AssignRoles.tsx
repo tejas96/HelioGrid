@@ -1,4 +1,3 @@
-import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import { Text } from '../../primitives/Text/Text';
 import { ShellAction } from '../AppShell/ShellAction';
 import { Banner } from '../Banner/Banner';
@@ -52,13 +51,16 @@ export function AssignRoles({
         sheetProps={{ size: 'full', subtitle: person.phone }}
         panelProps={{ subtitle: person.phone }}
         meta={({ panel }) => (
-          <div className="hg-assign-roles-heading" data-form={panel ? 'panel' : 'sheet'}>
+          <div
+            className="hg-assign-roles-heading hg-overline"
+            data-form={panel ? 'panel' : 'sheet'}
+          >
             <span>{words.presets}</span>
             <ShellAction
               round
               label={words.reference}
               onClick={onReference}
-              icon={<InfoGlyph size={ICON_SIZE.md} />}
+              icon={<InfoGlyph size="md" />}
             />
           </div>
         )}

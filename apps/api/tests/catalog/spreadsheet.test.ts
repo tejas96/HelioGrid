@@ -93,6 +93,7 @@ describe('reading a CSV price list', () => {
   it.each([
     ['nothing at all', ''],
     ['blank lines only', '\n\n,,\n'],
+    ['a header row alone', 'Name,Phone\n'],
   ])('reads no rows from %s', async (_case, text) => {
     expect(await readSpreadsheet(utf8(text), CSV)).toEqual({ readable: false, reason: 'no_rows' });
   });

@@ -1,32 +1,19 @@
 import type { StandingDestination } from '@heliogrid/domain';
 import type { ShellGlyphName, ShellGlyphSize } from './AppShell.types';
-import type { GlyphMark } from './ShellGlyph.marks';
-import { SHELL_GLYPHS, SHELL_GLYPHS_FILLED } from './ShellGlyph.shapes';
 
-/** A stable React key for a mark: no glyph draws the same mark twice. */
-export function markKey(mark: GlyphMark): string {
-  if (mark.kind === 'path') return mark.d;
-  if (mark.kind === 'circle') return `c${mark.cx}-${mark.cy}-${mark.r}`;
-  return `r${mark.x}-${mark.y}-${mark.width}-${mark.height}`;
-}
+/** Each size in px/dp — OneOhm's web steps (`size-3` … `size-8`), one table for both halves. */
+export const GLYPH_SIZE: Record<ShellGlyphSize, number> = {
+  xs: 12,
+  dense: 14,
+  sm: 16,
+  nav: 18,
+  md: 20,
+  lg: 24,
+  xl: 32,
+};
 
-/** The stroke each size is drawn at: a 16 glyph at the system's 1.5 reads faint beside its words. */
-const GLYPH_STROKE: Record<ShellGlyphSize, number> = { sm: 1.8, md: 1.5, lg: 1.5, xl: 1.5 };
-
-export function glyphStroke(size: ShellGlyphSize): number {
-  return GLYPH_STROKE[size];
-}
-
-/** The marks to draw, and whether they are filled. */
-export function glyphMarks(
-  name: ShellGlyphName,
-  filled: boolean,
-): { marks: readonly GlyphMark[]; solid: boolean } {
-  const solid = filled ? SHELL_GLYPHS_FILLED[name] : undefined;
-  return solid === undefined
-    ? { marks: SHELL_GLYPHS[name], solid: false }
-    : { marks: solid, solid: true };
-}
+/** Lucide's own stroke, on its 24 box, at every size: one weight across the product. */
+export const GLYPH_STROKE = 2;
 
 /** Which shape stands for which standing destination — the export's choice, drawn by both shells. */
 export const DESTINATION_GLYPH: Record<StandingDestination, ShellGlyphName> = {
@@ -39,9 +26,15 @@ export const DESTINATION_GLYPH: Record<StandingDestination, ShellGlyphName> = {
   more: 'dots',
 };
 
-/** One glyph's marks, for a component that draws its own box (`ShellGlyphMarks`). */
-export interface ShellGlyphMarksProps {
-  name: ShellGlyphName;
-  /** The filled form, where the glyph has one; outlined otherwise. */
-  filled?: boolean;
+/**
+ * The step nearest a size in px — for a part whose glyph follows its own type size; a tie goes down.
+ * `nav` is the sidebar's own step, never a type size's.
+ */
+export function nearestGlyphSize(px: number): ShellGlyphSize {
+  const steps = (Object.entries(GLYPH_SIZE) as [ShellGlyphSize, number][]).filter(
+    ([step]) => step !== 'nav',
+  );
+  return steps.reduce((best, step) =>
+    Math.abs(step[1] - px) < Math.abs(best[1] - px) ? step : best,
+  )[0];
 }

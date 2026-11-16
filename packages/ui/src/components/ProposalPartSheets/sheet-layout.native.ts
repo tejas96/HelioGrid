@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet } from 'react-native';
 import { colors } from '../../primitives/Color/colors.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 
 /** The part sheets' shared layout on the phone: a column of fields, a field with its head, a row. */
 export const sheetLayout = StyleSheet.create({
@@ -45,7 +46,7 @@ export const sheetLayout = StyleSheet.create({
     height: 24,
     paddingHorizontal: theme.spacing['sp-2'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: colors['success-bg'],
+    backgroundColor: TONE.success.tint,
   },
   link: { flexDirection: 'row', alignItems: 'center', gap: 5, minHeight: 44 },
 });

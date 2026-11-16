@@ -1,6 +1,5 @@
 import { type RefObject, useRef, useState } from 'react';
 import { useFocusAfter } from '../../primitives/FocusAfter';
-import { StatusMark } from '../../primitives/StatusMark';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
@@ -8,6 +7,7 @@ import { HeroPanel } from '../HeroPanel';
 import { Input } from '../Input';
 import { useFormat } from '../MarketProvider';
 import { PhoneField } from '../PhoneField';
+import { StatusMark } from '../StatusMark';
 import { referralOf } from './HandoverPanel.logic';
 import type { HandoverReferralProps } from './HandoverPanel.types';
 

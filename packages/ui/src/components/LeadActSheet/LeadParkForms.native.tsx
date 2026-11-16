@@ -9,6 +9,8 @@ import { TimeField } from '../TimeField/TimeField.native';
 import { LeadActSend, type LeadFormFrame } from './LeadActSend.native';
 import type { LeadActForm } from './LeadActSheet.types';
 import { LeadChoiceChips } from './LeadChoiceChips.native';
+import { firstMissing } from './missing-field';
+import { useReportHolds } from './use-form-holds';
 
 type FormOf<K extends LeadActForm['kind']> = {
   form: Extract<LeadActForm, { kind: K }>;
@@ -23,6 +25,7 @@ export function dayOf(value: CalendarValue): ISODate | null {
 /** Snooze (`M02-51`): the wake day is required — the send sleeps until one is picked. */
 export function LeadSnoozeForm({ form, frame }: FormOf<'snooze'>) {
   const [wakeOn, setWakeOn] = useState<ISODate | null>(null);
+  useReportHolds(frame.holds, wakeOn !== null);
   return (
     <View style={styles.form}>
       <DatePicker
@@ -36,6 +39,7 @@ export function LeadSnoozeForm({ form, frame }: FormOf<'snooze'>) {
       <LeadActSend
         label={form.words.send}
         ready={wakeOn !== null}
+        waitingFor={firstMissing(frame.fields.needs, [[wakeOn === null, form.words.wakeOn]])}
         pending={frame.pending}
         failure={frame.failure}
         onSend={() => {
@@ -49,6 +53,7 @@ export function LeadSnoozeForm({ form, frame }: FormOf<'snooze'>) {
 /** Disqualify (`M02-42`): one of the six reasons is required, and the act cannot leave without it. */
 export function LeadDisqualifyForm({ form, frame }: FormOf<'disqualify'>) {
   const [reason, setReason] = useState<DisqualifyReason | null>(null);
+  useReportHolds(frame.holds, reason !== null);
   return (
     <View style={styles.form}>
       <LeadChoiceChips
@@ -67,6 +72,7 @@ export function LeadDisqualifyForm({ form, frame }: FormOf<'disqualify'>) {
       <LeadActSend
         label={form.words.send}
         ready={reason !== null}
+        waitingFor={firstMissing(frame.fields.needs, [[reason === null, form.words.reasonLabel]])}
         pending={frame.pending}
         failure={frame.failure}
         variant="destructive"
@@ -98,6 +104,7 @@ export function LeadJunkForm({ form, frame }: FormOf<'junk'>) {
 export function LeadCallBackForm({ form, frame }: FormOf<'callBack'>) {
   const [date, setDate] = useState<ISODate | null>(null);
   const [time, setTime] = useState('');
+  useReportHolds(frame.holds, date !== null || time !== '');
   return (
     <View style={styles.form}>
       <DatePicker
@@ -118,6 +125,10 @@ export function LeadCallBackForm({ form, frame }: FormOf<'callBack'>) {
       <LeadActSend
         label={form.words.send}
         ready={date !== null && time !== ''}
+        waitingFor={firstMissing(frame.fields.needs, [
+          [date === null, form.words.date],
+          [time === '', form.words.time],
+        ])}
         pending={frame.pending}
         failure={frame.failure}
         onSend={() => {

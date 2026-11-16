@@ -1,0 +1,36 @@
+// A UI script types no motion value: a `duration` or `delay` opened by a non-zero number, an
+// `Easing.bezier(` given numbers (or renamed, so a later call hides them), or a string holding a cubic-bezier() of numbers or a non-zero `ms`.
+// Every one is theme.motion's (durations, ambient, easings, springs, stagger). 0 passes; comments
+// are trivia and never read. Each regex sits behind `includes` checks that are cheaper and never
+// narrower.
+or {
+  JsPropertyObjectMember() as $pair where {
+    $pair <: or {
+      includes "duration",
+      includes "delay"
+    },
+    $pair <: r"(?s)[\x22\x27]?(?:duration|delay)[\x22\x27]?\s*:\s*[0-9.]*[1-9].*",
+    register_diagnostic(span=$pair, message="Raw motion in a UI path — a duration or delay is theme.motion's (durations, ambient, stagger).")
+  },
+  JsCallExpression() as $call where {
+    $call <: includes "bezier",
+    $call <: r"(?s)(?:[\w$]+\.)*bezier\(\s*(?:\d|\.\d).*",
+    register_diagnostic(span=$call, message="Raw motion in a UI path — a curve is theme.motion.easings, spread into Easing.bezier(...), or a spring is theme.motion.springs.")
+  },
+  JsVariableDeclarator() as $alias where {
+    $alias <: includes "bezier",
+    $alias <: r"(?s)[\w$]+\s*(?::[^=]*)?=\s*(?:[\w$]+\.)*bezier\s*",
+    register_diagnostic(span=$alias, message="Raw motion in a UI path — Easing.bezier is called with theme.motion.easings spread in, never renamed.")
+  },
+  or {
+    JsStringLiteralExpression(),
+    JsTemplateChunkElement()
+  } as $text where {
+    $text <: or {
+      includes "bezier",
+      includes "ms"
+    },
+    $text <: r"(?s).*(?:cubic-bezier\(\s*(?:\d|\.\d)|(?:^|[^\w.])(?:\d*[1-9]\d*(?:\.\d+)?|\d*\.\d*[1-9]\d*)ms\b).*",
+    register_diagnostic(span=$text, message="Raw motion in a UI path — a duration or curve is theme.motion's, or var(--dur-*) / var(--ease-*) in CSS.")
+  }
+}

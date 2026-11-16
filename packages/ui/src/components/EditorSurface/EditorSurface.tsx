@@ -3,6 +3,7 @@ import { DetailPanel } from '../DetailPanel/DetailPanel';
 import { Modal } from '../Modal/Modal';
 import { Sheet } from '../Sheet/Sheet';
 import { SheetActions } from '../Sheet/SheetActions';
+
 import type { EditorSurfaceProps } from './EditorSurface.types';
 import {
   isDecision,
@@ -13,6 +14,7 @@ import {
   resolveForForm,
   sheetFormProps,
 } from './editor-form-props';
+import { ModalStateBody } from './ModalStateBody';
 import { probeStyleFor, useEditorForm, useLayerWidth } from './use-editor-form';
 
 type WebEditorSurfaceProps = EditorSurfaceProps & {
@@ -65,7 +67,7 @@ export function EditorSurface(props: WebEditorSurfaceProps) {
       <>
         {probe}
         <Modal {...modalFormProps(props)} inset={inset} style={style} {...modalProps}>
-          {body}
+          {props.read === undefined ? body : <ModalStateBody props={props}>{body}</ModalStateBody>}
         </Modal>
       </>
     );

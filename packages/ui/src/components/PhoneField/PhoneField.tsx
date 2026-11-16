@@ -1,10 +1,11 @@
 // biome-ignore-all lint/a11y/noAutofocus: `autoFocus` is the caller's contract (.d.ts) — the desktop door has one task, the number.
+
+import { phoneFieldE164Of } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
 import { useEffect, useId, useImperativeHandle, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { useFormat } from '../MarketProvider';
-import { e164Of } from './PhoneField.logic';
 import type { PhoneFieldProps, PhoneValueProps } from './PhoneField.types';
 
 interface WebPhoneFieldProps extends PhoneFieldProps {
@@ -59,7 +60,7 @@ export function PhoneField({
      in the caller is what stops two screens grouping one number two ways. */
   const shown = mkt.phone(value, { nsn: true });
 
-  const commit = (typed: string): void => onChange?.(e164Of(mkt.pack, typed));
+  const commit = (typed: string): void => onChange?.(phoneFieldE164Of(mkt.pack, typed));
 
   const message = error ?? helper;
 
@@ -125,7 +126,7 @@ export function PhoneValue({ label, value, note, id, className, style }: WebPhon
   return (
     <div className={classNames('hg-phone-value', className)} style={style} id={id}>
       {/* Label and number are adjacent text, read in order — no ARIA plumbing earns its place. */}
-      <span className="hg-phone-value-label">{label}</span>
+      <span className="hg-phone-value-label hg-overline">{label}</span>
       <span className="hg-phone-value-number">{mkt.phone(value)}</span>
       {note === undefined ? null : <p className="hg-phone-value-note">{note}</p>}
     </div>

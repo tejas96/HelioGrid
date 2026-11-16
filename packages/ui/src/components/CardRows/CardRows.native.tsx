@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   card: { padding: theme.spacing['sp-1'], borderRadius: theme.radius['r-card-expressive'] },
   separate: { gap: theme.spacing['sp-2'] },
   ownCard: { borderRadius: theme.radius['r-card-expressive'] },
-  row: { borderRadius: theme.radius['r-tile'] },
+  row: { borderRadius: theme.radius['r-lg'] },
   /* A clear line between two rows: a hairline all but vanished on the phone. */
   hairline: { borderTopWidth: 1, borderTopColor: colors['line-soft'] },
   /* The highlight inset from the row's top and bottom, as the web's: a filled row beside another
@@ -122,8 +122,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: theme.spacing['sp-0-5'],
     bottom: theme.spacing['sp-0-5'],
-    borderRadius: theme.radius['r-tile'],
-    backgroundColor: colors['accent-subtle'],
+    borderRadius: theme.radius['r-lg'],
+    backgroundColor: colors.fill,
   },
   frame: { position: 'relative' },
   /* `Pressable`'s base centres a target; a row lays its parts out from the start. */
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
     paddingVertical: theme.spacing['sp-4'],
     paddingHorizontal: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-tile'],
+    borderRadius: theme.radius['r-lg'],
   },
   muted: { opacity: 0.55 },
   /* Level with the body's first line, as the web's grid sets it. */

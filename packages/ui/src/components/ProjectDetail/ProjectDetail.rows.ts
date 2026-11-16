@@ -3,13 +3,13 @@ import type {
   ProjectFile,
   TranslatedText,
 } from '@heliogrid/contracts';
-import type { StatusTone } from '../../primitives/StatusMark';
 import type { MarketFormat } from '../../utils/format';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { ButtonVariant } from '../Button/Button.types';
 import type { HueTileProps } from '../HueTile/HueTile.types';
+import type { StatusTone } from '../StatusMark';
 import type { SwitchProps } from '../Switch/Switch.types';
-import { documentToneOf, samePlace, TILE_STROKE } from './ProjectDetail.logic';
+import { documentToneOf, samePlace } from './ProjectDetail.logic';
 import type { ProjectDetailProps, ProjectFilePlace } from './ProjectDetail.types';
 
 type ProjectDocument = ProjectDetailFacts['documents'][number];
@@ -108,7 +108,7 @@ export function documentRowOf(
   return {
     key: document.row,
     name: words.row(document.row),
-    tile: { glyph: 'file', hue: documentToneOf(document), size: 36, stroke: TILE_STROKE },
+    tile: { glyph: 'file', hue: documentToneOf(document), size: 36 },
     sub: documentSubOf(document, waiting, props, format),
     files: props.documents === 'all' ? document.files : [],
     mark: markOf(document, props),
@@ -189,7 +189,7 @@ export function fileRowsOf(
     return {
       key: file.id,
       name: file,
-      tile: { glyph: fileGlyphOf(file), hue: 'neutral', size: 36, stroke: TILE_STROKE },
+      tile: { glyph: fileGlyphOf(file), hue: 'neutral', size: 36 },
       sub: fromLead ? words.fromLead : addedBy,
       files: [],
       mark: null,

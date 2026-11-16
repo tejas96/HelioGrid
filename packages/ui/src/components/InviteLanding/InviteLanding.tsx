@@ -217,7 +217,7 @@ function LandingPlace({ words, frame, onSignIn, actRef }: InviteLandingProps & A
   return (
     <div className="hg-invite-landing-place">
       <EmptyState
-        icon={<ShellGlyph name={gone ? 'link-off' : 'tick'} size="xl" tone="primary" />}
+        icon={<ShellGlyph name={gone ? 'link-off' : 'check'} size="xl" tone="primary" />}
         title={place.title}
         description={place.line}
         action={
@@ -250,15 +250,15 @@ function LandingSkeleton({ words }: { words: InviteLandingWords }) {
       aria-label={words.loading}
     >
       <div className="hg-invite-landing-skeleton-row" aria-hidden="true">
-        <span className="hg-invite-landing-bar" data-shape="disc" />
+        <span className="hg-invite-landing-bar hg-skeleton" data-shape="disc" />
         <div className="hg-invite-landing-skeleton-lines">
-          <span className="hg-invite-landing-bar" data-shape="name" />
-          <span className="hg-invite-landing-bar" data-shape="label" />
+          <span className="hg-invite-landing-bar hg-skeleton" data-shape="name" />
+          <span className="hg-invite-landing-bar hg-skeleton" data-shape="label" />
         </div>
       </div>
       <div className="hg-invite-landing-skeleton-lines" aria-hidden="true">
-        <span className="hg-invite-landing-bar" data-shape="title" />
-        <span className="hg-invite-landing-bar" data-shape="title-end" />
+        <span className="hg-invite-landing-bar hg-skeleton" data-shape="title" />
+        <span className="hg-invite-landing-bar hg-skeleton" data-shape="title-end" />
       </div>
       <Card
         read={{ kind: 'loading' }}

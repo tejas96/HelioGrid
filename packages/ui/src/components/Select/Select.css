@@ -58,6 +58,7 @@
 }
 
 .hg-select-chevron {
+  display: inline-flex;
   color: var(--text-tertiary);
   flex-shrink: 0;
   transition: transform var(--dur-standard) var(--ease-standard);
@@ -92,7 +93,7 @@
   background: var(--surface);
   border-radius: var(--r-md);
   box-shadow: var(--e4);
-  animation: hg-pop-in var(--dur-standard) var(--ease-enter);
+  animation: hg-pop-in var(--dur-standard) var(--ease-out-quint);
 }
 
 .hg-select-list[data-up="true"] {
@@ -149,6 +150,7 @@
 }
 
 .hg-select-tick {
+  display: inline-flex;
   flex-shrink: 0;
   color: var(--accent);
 }

@@ -39,7 +39,7 @@ export function CountBadge({
   const shown = badgeDigits(count, max);
   return (
     <span
-      className={classNames('hg-app-shell-badge', className)}
+      className={classNames('hg-app-shell-badge', 'hg-tone', className)}
       data-tone={tone}
       data-dot={shown === null ? 'true' : undefined}
       style={style}

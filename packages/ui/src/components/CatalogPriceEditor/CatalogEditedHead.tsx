@@ -15,7 +15,7 @@ export function CatalogEditedHead({ item, ask }: { item: CatalogEditedItem; ask:
   return (
     <div className="hg-cat-edited">
       <div className="hg-cat-edited-head">
-        <HueTile glyph={lead.glyph} hue={lead.hue} size={40} stroke={1.5} />
+        <HueTile glyph={lead.glyph} hue={lead.hue} size={40} />
         <div className="hg-cat-edited-title">
           <span className="hg-cat-edited-whose">
             <Text as="span" variant="caption" color="secondary">

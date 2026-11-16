@@ -82,7 +82,7 @@ export function PreviewFrame({
           reach, so the box is the size it will be, and the box is the sunken shimmer — a wait,
           never a blank sheet of the subject's paper. */}
       <div
-        className="hg-preview-frame-window"
+        className={classNames('hg-preview-frame-window', loading ? 'hg-skeleton' : undefined)}
         data-surface={surface}
         {...waitOf(loading, loadingLabel)}
       >

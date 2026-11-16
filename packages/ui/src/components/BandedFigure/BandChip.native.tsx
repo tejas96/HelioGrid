@@ -3,7 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { bandChipBox, bandChipFace, bandChipFor } from './BandedFigure.logic';
 import type { BandSpec, BandTone, BandToneStyle } from './BandedFigure.types';
 
@@ -12,28 +12,18 @@ import type { BandSpec, BandTone, BandToneStyle } from './BandedFigure.types';
  * guess. success 3.28 · danger 3.43 · info 3.26 · neutral 3.93 all pass; `warning` measures 1.99
  * on `warning-bg`, so the warning mark takes `warning-text` (6.53 on tint).
  */
+const bandTone = (tone: BandTone): BandToneStyle => ({
+  fg: TONE[tone].ink,
+  bg: TONE[tone].tint,
+  mark: TONE[tone].mark,
+});
+
 export const BAND_TONES: Record<BandTone, BandToneStyle> = {
-  success: {
-    fg: colors['success-text'],
-    bg: colors['success-bg'],
-    mark: colors.success,
-  },
-  warning: {
-    fg: colors['warning-text'],
-    bg: colors['warning-bg'],
-    mark: colors['warning-text'],
-  },
-  danger: {
-    fg: colors['danger-text'],
-    bg: colors['danger-bg'],
-    mark: colors.danger,
-  },
-  info: { fg: colors['info-text'], bg: colors['info-bg'], mark: colors.info },
-  neutral: {
-    fg: colors['neutral-text'],
-    bg: colors['neutral-bg'],
-    mark: colors.neutral,
-  },
+  success: bandTone('success'),
+  warning: bandTone('warning'),
+  danger: bandTone('danger'),
+  info: bandTone('info'),
+  neutral: bandTone('neutral'),
 };
 
 interface NativeBandChipProps {
@@ -57,7 +47,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     alignSelf: 'flex-start',
   },
-  dot: { width: 8, height: 8, borderRadius: 4, flexShrink: 0 },
+  dot: { width: 8, height: 8, borderRadius: theme.radius['rf-xs'], flexShrink: 0 },
   label: {
     fontFamily: theme.type.families.sans,
     fontWeight: '700',

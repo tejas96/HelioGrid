@@ -1,7 +1,6 @@
 import type { ProposalRow } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { Pressable } from '../../primitives/Pressable';
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { Chip } from '../Chip';
@@ -13,6 +12,7 @@ import { LoadingBars } from '../LoadingBars';
 import { failedReadOf } from '../ProposalAfterParts';
 import { riseOrder } from '../ProposalBlocks/ProposalBlocks.logic';
 import { ProposalStatus } from '../ProposalStatus';
+import { StatusMark } from '../StatusMark';
 import { filterChips, isQuietStanding } from './ProposalList.logic';
 import type { ProposalListProps } from './ProposalList.types';
 import './ProposalList.css';

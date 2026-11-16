@@ -71,12 +71,6 @@
 }
 
 .hg-lead-section-overline {
-  font-family: var(--font-sans);
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--tr-overline);
-  line-height: var(--lh-overline);
-  text-transform: uppercase;
   color: var(--text-secondary);
 }
 

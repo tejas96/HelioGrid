@@ -3,7 +3,6 @@ import { isClosedStage, isProjectStage } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
 import type { InstallerStepsProps } from '../InstallerJob/InstallerJob.types';
 import type { ProjectBlock } from './ProjectDetail.blocks';
-import { TILE_STROKE } from './ProjectDetail.logic';
 import type { ProjectStepsProps } from './ProjectDetail.parts.types';
 import type { DetailRow } from './ProjectDetail.rows';
 
@@ -55,10 +54,9 @@ export function stepsReadOf(
       key: step.step,
       name: words.step(step.step),
       tile: {
-        glyph: done ? 'tick' : 'camera',
+        glyph: done ? 'check' : 'camera',
         hue: done ? 'success' : 'neutral',
         size: 36,
-        stroke: TILE_STROKE,
       },
       sub: by,
       files: step.files,

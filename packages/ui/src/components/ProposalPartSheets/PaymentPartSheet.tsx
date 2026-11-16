@@ -25,7 +25,7 @@ function PartFields({
       </div>
       <Select {...fields.due} />
       <p className="hg-pps-hint">
-        <ShellGlyph name="info-circle" size="sm" />
+        <ShellGlyph name="info" size="sm" />
         <span>{hint}</span>
       </p>
     </div>

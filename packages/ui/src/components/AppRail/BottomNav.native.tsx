@@ -54,7 +54,7 @@ interface NavItemProps {
 }
 
 /**
- * In view: the near-black pill with its filled icon and its label. The role's action: a lit accent
+ * In view: the near-black pill with its icon in the pill's ink and its label. The role's action: a lit accent
  * circle, the one thing on the pill that acts rather than goes. Otherwise the icon alone.
  */
 function NavItem({ item, inView, onPress }: NavItemProps) {

@@ -16,7 +16,7 @@ import {
   type TrancheRefusals,
   type UiLanguage,
 } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { brandingCoverProps, brandingDocumentOf } from '../BrandingSettings/BrandingSettings.logic';
 import type { DocumentPreviewProps } from '../DocumentPreview/DocumentPreview.types';
 import type {
@@ -46,7 +46,7 @@ const STAGE_GLYPH: Record<ProjectChainStage, ShellGlyphName> = {
   electrical_metering: 'bolt',
   utility_inspection: 'shield-check',
   commissioned: 'sun',
-  incentive_claimed: 'file-text',
+  incentive_claimed: 'document',
   handed_over: 'key',
 };
 

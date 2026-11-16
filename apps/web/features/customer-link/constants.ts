@@ -10,7 +10,7 @@ type Glyph = ComponentProps<typeof AfterRow>['glyph'];
  */
 const DOCUMENT_GLYPHS: Readonly<Record<string, Glyph>> = {
   warranty_documents: 'shield-check',
-  commissioning_certificate: 'file-text',
+  commissioning_certificate: 'document',
   utility_approval: 'bolt',
   net_metering_application: 'bolt',
   electrical_inspector_approval: 'bolt',

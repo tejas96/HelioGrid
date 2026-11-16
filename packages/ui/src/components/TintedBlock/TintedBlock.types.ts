@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { BlockAnnouncement, BlockTone } from '@heliogrid/domain';
+import type { ReactNode } from 'react';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
 
 /**
@@ -7,7 +8,8 @@ import type { ExplainerProps } from '../Explainer/Explainer.types';
  * tint is the second channel — never colour alone (`F7-12`).
  */
 export interface TintedBlockProps {
-  tone: BlockTone;
+  /** A reason's tone, or a calm note's: `success` an answer given, `neutral` what happened. */
+  tone: BlockTone | 'success' | 'neutral';
   title: TranslatedText;
   /** What to do next, when the controls under the block do not already say it; omitted, the title stands alone. */
   body?: TranslatedText;
@@ -27,4 +29,13 @@ export interface TintedBlockProps {
   heading?: boolean;
   /** The one ask about the block, at the far end of the title's row, inset so the row keeps the title's height. */
   explainer?: ExplainerProps;
+  /**
+   * The title's face: `sans` (default) the tone's ink at the small bold size; `display` a note's
+   * serif card title in the primary ink, as `CardHeader`'s `display` face (a page a customer reads).
+   */
+  face?: 'sans' | 'display';
+  /** What the note holds under its words — a list, a moment; drawn after `body`. */
+  children?: ReactNode;
+  /** The block rises into place once, as an answer just given does; under reduced motion it stands. */
+  rise?: boolean;
 }

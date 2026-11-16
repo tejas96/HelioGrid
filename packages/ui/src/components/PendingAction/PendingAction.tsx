@@ -2,7 +2,8 @@ import type { CSSProperties, ReactNode } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { focusAfterFirst, NO_FOCUS_AFTER, useFocusAfter } from '../../primitives/FocusAfter';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button/Button';
 import { RetryButton } from '../Button/RetryButton';
 import { IndeterminateRail } from './IndeterminateRail';
@@ -20,20 +21,11 @@ type WebPendingActionProps = PendingActionProps & {
  * An arrow curving back to where it came from: the act was returned. Not error's exclamation
  * (nothing is broken) and not UnavailableNote's slashed circle (this was going to be here).
  */
-function ReturnGlyph() {
+function ReturnGlyph({ size }: { size: ShellGlyphSize }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className="hg-pending-action-glyph"
-    >
-      <ShellGlyphMarks name="undo-step" />
-    </svg>
+    <span className="hg-pending-action-glyph">
+      <ShellGlyph name="undo" size={size} tone="current" />
+    </span>
   );
 }
 
@@ -66,7 +58,6 @@ export function PendingAction(props: WebPendingActionProps) {
   const { returned, words, fontSize } = shown;
   const vars: NoteVars = {
     '--hg-pending-action-size': `${fontSize}px`,
-    '--hg-pending-action-glyph-size': `${shown.glyphSize}px`,
     '--hg-pending-action-rail-offset': `${shown.railOffset}px`,
   };
   return (
@@ -80,7 +71,11 @@ export function PendingAction(props: WebPendingActionProps) {
       className={classNames('hg-pending-action', 'hg-focus-target', className)}
       style={{ ...vars, ...style }}
     >
-      {returned ? <ReturnGlyph /> : <IndeterminateRail className="hg-pending-action-rail" />}
+      {returned ? (
+        <ReturnGlyph size={shown.glyphSize} />
+      ) : (
+        <IndeterminateRail className="hg-pending-action-rail" />
+      )}
       <span className="hg-pending-action-words">
         {words}
         {/* M02-24's budget, said in words rather than by the rail getting slower. */}

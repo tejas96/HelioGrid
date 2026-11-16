@@ -1,11 +1,10 @@
 import { daysFrom } from '@heliogrid/domain';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
-import { Card } from '../Card';
+import { Card, CardHeader } from '../Card';
 import { IconButton } from '../IconButton';
 import { useFormat } from '../MarketProvider';
-import { CardHead } from '../ProjectDetail/ProjectDetailParts';
+import { StatusMark } from '../StatusMark/StatusMark';
 import { moneyCardAmountsOf } from './ProjectMoney.logic';
 import type { MoneyCardProps } from './ProjectMoney.types';
 
@@ -21,10 +20,10 @@ export function MoneyCard({ money, today, words, onShare, onOpen }: MoneyCardPro
   return (
     <section aria-label={words.money}>
       <Card density="functional" className="hg-money-card">
-        <CardHead
+        <CardHeader
           title={words.money}
-          aside={null}
-          act={
+          className="hg-project-detail-card-head"
+          action={
             <IconButton label={words.openPayments} variant="ghost" onClick={onOpen}>
               <ShellGlyph name="chevron-right" size="md" />
             </IconButton>

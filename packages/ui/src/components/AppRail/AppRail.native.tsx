@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { usePalette } from '../../primitives/Color/use-palette.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { showsBadge } from '../AppShell/AppShell.types';
@@ -18,14 +19,16 @@ interface NativeAppRailProps extends AppRailProps {
 
 /**
  * The sidebar a tablet draws: the wordmark, the bell and the fold at the head, the company, the
- * search, the work destinations, the settings list and the account at the foot. The item in view is `nav-active`: the ink pill in light, a soft accent wash in the dark. Folded, the column keeps its icons,
- * each named by its label; the phone has no hover, so there is no tip. React Native models no
+ * search, the work destinations and their groups under overlines, the settings list and the
+ * account at the foot. The item in view is `nav-active`: the ink pill in light, a soft accent wash
+ * in the dark. Folded, the column keeps its icons, centred across its width, each named by its
+ * label, a hairline between the groups; the phone has no hover, so there is no tip. React Native models no
  * landmark roles, so the web's `<nav>` is a plain View here.
  */
 export function AppRail(props: NativeAppRailProps) {
   const { collapsed = false, width, style } = props;
   const railWidth = collapsed
-    ? theme.spacing['sp-16']
+    ? theme.layout['sidebar-w-folded']
     : typeof width === 'number'
       ? width
       : theme.layout['sidebar-w'];
@@ -91,8 +94,8 @@ function RailHead({ brand, bell, fold, collapsed }: Folded) {
   );
 }
 
-/** The work destinations; folded, the search and the bell join them. */
-function RailBody({ items, value, onChange, bell, searchItem, collapsed }: Folded) {
+/** The work destinations, then each group under its overline; folded, the search and the bell join them. */
+function RailBody({ items, groups = [], value, onChange, bell, searchItem, collapsed }: Folded) {
   const row = (item: RailItem, onPress?: () => void) => (
     <RailButton
       key={item.key}
@@ -109,6 +112,26 @@ function RailBody({ items, value, onChange, bell, searchItem, collapsed }: Folde
       <View style={styles.items}>
         {lifted.map((item) => row(item, item.onClick))}
         {items.map((item) => row(item))}
+        {groups.map((group) => (
+          <View key={group.key} style={styles.group}>
+            {collapsed ? (
+              // Folded, the rule still speaks the group's name, as the web's labelled group does.
+              <View
+                accessible
+                accessibilityRole="header"
+                accessibilityLabel={group.label}
+                style={styles.rule}
+              />
+            ) : (
+              <View accessible accessibilityRole="header">
+                <Text variant="overline" color="tertiary" style={styles.overline}>
+                  {group.label}
+                </Text>
+              </View>
+            )}
+            {group.items.map((item) => row(item))}
+          </View>
+        ))}
       </View>
     </ScrollView>
   );
@@ -122,6 +145,8 @@ interface RailButtonProps {
 }
 
 function RailButton({ item, active, onPress, folded }: RailButtonProps) {
+  // In the dark the soft wash lies flat, as on the web: the lift is the light's ink pill's alone.
+  const dark = usePalette() === theme.palettes.dark;
   return (
     <Pressable
       accessibilityLabel={spokenItemName(item)}
@@ -131,6 +156,7 @@ function RailButton({ item, active, onPress, folded }: RailButtonProps) {
         styles.button,
         folded ? styles.buttonFolded : undefined,
         active ? styles.buttonActive : item.open === true ? styles.buttonOpen : undefined,
+        active && !dark ? styles.buttonLifted : undefined,
       ]}
     >
       {active && item.activeIcon !== undefined ? item.activeIcon : item.icon}
@@ -175,7 +201,7 @@ const styles = StyleSheet.create({
     borderRightColor: colors.hairline,
   },
   railFolded: {
-    paddingHorizontal: theme.spacing['sp-2'],
+    paddingHorizontal: theme.spacing['sp-3'],
   },
   head: {
     flexDirection: 'row',
@@ -207,6 +233,20 @@ const styles = StyleSheet.create({
   items: {
     gap: theme.spacing['sp-0-5'],
   },
+  group: {
+    gap: theme.spacing['sp-0-5'],
+    marginTop: theme.spacing['sp-3'],
+  },
+  overline: {
+    paddingHorizontal: theme.spacing['sp-3'],
+    paddingBottom: theme.spacing['sp-0-5'],
+  },
+  rule: {
+    marginHorizontal: theme.spacing['sp-2'],
+    marginBottom: theme.spacing['sp-1'],
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.hairline,
+  },
   foot: {
     gap: theme.spacing['sp-2'],
     paddingTop: theme.spacing['sp-2'],
@@ -220,19 +260,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing['sp-3'],
-    minHeight: theme.spacing['sp-10'],
+    minHeight: theme.layout['touch-min'],
     paddingHorizontal: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-pill'],
+    borderRadius: theme.radius['r-md'],
   },
   buttonFolded: {
-    alignSelf: 'center',
     justifyContent: 'center',
-    width: theme.spacing['sp-12'],
-    height: theme.spacing['sp-12'],
     paddingHorizontal: 0,
   },
   buttonActive: {
     backgroundColor: colors['nav-active'],
+  },
+  buttonLifted: {
     ...theme.elevation.e2,
   },
   buttonOpen: {

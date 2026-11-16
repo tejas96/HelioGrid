@@ -1,4 +1,5 @@
 import type { CollectionsSettings as Settings } from '@heliogrid/contracts';
+import { useFocusAfter } from '../../primitives/FocusAfter';
 import { Button } from '../Button';
 import { Chip } from '../Chip';
 import { FailedRead } from '../EmptyState';
@@ -78,15 +79,18 @@ function UpiSection(props: CollectionsSettingsProps & { readonly settings: Setti
             disabled={saving || !editable}
           />
           {editable ? (
-            <Button
-              variant="primary"
-              size="md"
-              loading={saving}
-              disabled={!props.changed}
-              onClick={props.onSave}
-            >
-              {words.save}
-            </Button>
+            <div className="hg-collections-acts">
+              <Button
+                variant="primary"
+                size="md"
+                loading={saving}
+                disabled={!props.changed}
+                onClick={props.onSave}
+              >
+                {words.save}
+              </Button>
+              {props.changed ? <DiscardAct {...props} /> : null}
+            </div>
           ) : null}
         </div>
         {settings.testUri === null ? null : (
@@ -138,5 +142,18 @@ function BankSection({
         ) : null}
       </div>
     </SettingsSection>
+  );
+}
+
+/**
+ * *Discard changes*: it leaves with the change it discards, so it lands the focus where the page
+ * says — the hook acts as this part leaves, which is why the button is a part of its own.
+ */
+function DiscardAct(props: CollectionsSettingsProps) {
+  const leaving = useFocusAfter(props.focusAfter);
+  return (
+    <Button variant="ghost" size="md" disabled={props.saving} onClick={leaving(props.onDiscard)}>
+      {props.words.discard}
+    </Button>
   );
 }

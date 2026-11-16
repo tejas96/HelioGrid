@@ -18,6 +18,7 @@ export function QualifyCard({
   answered,
   onAnswer,
   onRetry,
+  locked,
   markQualified,
   foldable,
   words,
@@ -67,6 +68,7 @@ export function QualifyCard({
               view={view}
               onAnswer={onAnswer}
               onRetry={onRetry}
+              locked={locked}
               words={words}
             />
           ))
@@ -83,7 +85,7 @@ function MarkQualified({ act, words }: { act: QualifyMarkAct; words: QualifyCard
         variant="secondary"
         size="md"
         loading={act.pending}
-        icon={<ShellGlyph name="tick" size="sm" tone="secondary" />}
+        icon={<ShellGlyph name="check" size="sm" tone="secondary" />}
         onClick={act.onPress}
       >
         {words.markQualified}

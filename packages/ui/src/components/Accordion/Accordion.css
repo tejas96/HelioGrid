@@ -54,6 +54,7 @@
 }
 
 .hg-accordion-chevron {
+  display: inline-flex;
   flex-shrink: 0;
   color: var(--text-primary);
   transition: transform var(--dur-standard) var(--ease-standard);

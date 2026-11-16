@@ -41,6 +41,7 @@
 }
 
 .hg-time-field-glyph {
+  display: inline-flex;
   flex-shrink: 0;
   color: var(--text-tertiary);
 }

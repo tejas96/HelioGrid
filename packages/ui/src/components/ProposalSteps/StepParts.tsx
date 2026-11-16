@@ -2,7 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { Pressable } from '../../primitives/Pressable/Pressable';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { CategoryHue } from '../Avatar/Avatar.types';
 import { HueTile } from '../HueTile/HueTile';
 import type { HueTileTone } from '../HueTile/HueTile.types';
@@ -47,7 +47,7 @@ export function StepNote({
 
 /** A quiet line under a step's controls: who may change something, or where a change reaches. */
 export function StepHint({
-  glyph = 'info-circle',
+  glyph = 'info',
   children,
 }: {
   glyph?: ShellGlyphName;
@@ -112,7 +112,7 @@ export function FieldSaveLine({
   if (save.kind === 'saved' || save.kind === 'saving') {
     return (
       <span className="hg-pst-saved" role="status">
-        {save.kind === 'saved' ? <ShellGlyph name="tick-small" size="sm" tone="success" /> : null}
+        {save.kind === 'saved' ? <ShellGlyph name="check" size="sm" tone="success" /> : null}
         {save.kind === 'saved' ? (save.reason ?? words.saved) : words.saving}
       </span>
     );
@@ -156,7 +156,7 @@ export function FoldRow({
 }) {
   const head = (
     <>
-      <HueTile glyph={glyph} hue={hue} size={36} stroke={1.7} />
+      <HueTile glyph={glyph} hue={hue} size={36} />
       <span className="hg-pst-fold-words">
         <span className="hg-pst-fold-title">{title}</span>
         <span className="hg-pst-fold-value">{value}</span>
@@ -183,7 +183,7 @@ export function FoldRow({
         <span className="hg-pst-fold-head">
           {head}
           <span className="hg-pst-fold-chevron">
-            <ShellGlyph name="caret-down" size="sm" />
+            <ShellGlyph name="chevron" size="sm" />
           </span>
         </span>
       </Pressable>

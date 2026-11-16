@@ -1,12 +1,13 @@
 import { theme } from '@heliogrid/theme';
 import { type ReactNode, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 /* Cross-component imports in a native half point at the NATIVE file (see ListRow.native.tsx). */
 import { Card, IconCircle } from '../Card/Card.native';
+import { CardHeader } from '../Card/CardHeader.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { ScopeNote, scopeNotePanelFrame } from '../ScopeNote/ScopeNote.native';
 import type { RoleCardLine, RoleCardProps, RoleCardWords } from './RoleCard.types';
@@ -37,23 +38,16 @@ export function RoleCard({ words, layout, read }: RoleCardProps) {
   return (
     <Card style={bounded ? styles.bounded : undefined}>
       <View style={[styles.body, bounded ? styles.fill : undefined]}>
-        <View style={styles.head}>
-          <IconCircle size={40}>
-            <ShellGlyph name="briefcase" size="md" tone="accent" />
-          </IconCircle>
-          <View style={styles.names}>
-            <View ref={presets} accessible>
-              <Text variant="body" bold>
-                {words.presets}
-              </Text>
-            </View>
-            {words.credit === null ? null : (
-              <Text variant="body-sm" color="secondary">
-                {words.credit}
-              </Text>
-            )}
-          </View>
-        </View>
+        <CardHeader
+          headingRef={presets}
+          title={words.presets}
+          description={words.credit}
+          lead={
+            <IconCircle size={40}>
+              <ShellGlyph name="briefcase" size="md" tone="accent" />
+            </IconCircle>
+          }
+        />
         {read.kind === 'loading' ? (
           <Waiting words={words} />
         ) : bounded ? (
@@ -85,7 +79,7 @@ function Rows({ words }: { words: RoleCardWords }) {
     );
   return (
     <View style={styles.lists}>
-      <Section title={words.canDo} lines={words.grants} glyph="tick-long" tone="success">
+      <Section title={words.canDo} lines={words.grants} glyph="check" tone="success">
         {words.limits.length === 0 ? note : null}
       </Section>
       {words.limits.length === 0 ? null : (
@@ -174,14 +168,12 @@ const styles = StyleSheet.create({
   bounded: { flexShrink: 1, minHeight: 0, overflow: 'hidden' },
   fill: { flexShrink: 1, minHeight: 0 },
   body: { gap: theme.spacing['sp-5'] },
-  head: { flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing['sp-3'] },
-  names: { flexShrink: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
   lists: { gap: theme.spacing['sp-5'] },
   waiting: { overflow: 'hidden' },
   section: { gap: theme.spacing['sp-3'] },
   lines: { gap: theme.spacing['sp-3'] },
   line: { flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing['sp-3'] },
   phrase: { flexShrink: 1 },
-  note: { marginTop: theme.spacing['sp-2'], backgroundColor: colors['info-bg'] },
+  note: { marginTop: theme.spacing['sp-2'], backgroundColor: TONE.info.tint },
   noteLines: { flex: 1, minWidth: 0 },
 });

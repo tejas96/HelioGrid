@@ -1,27 +1,13 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { LottieMoment } from '../LottieMoment/LottieMoment.native';
-import type { ToastProps, ToastTone } from './Toast.types';
-
-interface TonePair {
-  text: ThemeColor;
-  bg: ThemeColor;
-}
-
-/** The semantic `-text` on `-bg` partner pairs — the same ones StatusMark resolves. */
-const TONE: Record<ToastTone, TonePair> = {
-  success: { text: colors['success-text'], bg: colors['success-bg'] },
-  warning: { text: colors['warning-text'], bg: colors['warning-bg'] },
-  danger: { text: colors['danger-text'], bg: colors['danger-bg'] },
-  info: { text: colors['info-text'], bg: colors['info-bg'] },
-  neutral: { text: colors['neutral-text'], bg: colors['neutral-bg'] },
-};
+import type { ToastProps } from './Toast.types';
 
 interface NativeToastProps extends ToastProps {
   style?: StyleProp<ViewStyle>;
@@ -29,20 +15,7 @@ interface NativeToastProps extends ToastProps {
 
 /** The default mark: a check. One glyph for every tone — the words carry the tone. */
 function CheckGlyph({ color }: { color: ThemeColor }) {
-  return (
-    <Svg
-      width={18}
-      height={18}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <ShellGlyphMarks name="tick-long" />
-    </Svg>
-  );
+  return <ShellGlyph name="check" size="sm" ink={color} />;
 }
 
 /**
@@ -63,8 +36,8 @@ export function Toast({
   return (
     <View accessibilityLiveRegion="polite" style={[styles.card, style]}>
       {moment === undefined ? (
-        <View style={[styles.mark, { backgroundColor: pair.bg }]}>
-          {icon ?? <CheckGlyph color={pair.text} />}
+        <View style={[styles.mark, { backgroundColor: pair.tint }]}>
+          {icon ?? <CheckGlyph color={pair.ink} />}
         </View>
       ) : (
         <View style={styles.moment}>

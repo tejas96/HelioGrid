@@ -8,7 +8,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { skipWithoutDatabase } from '../support/fixture';
 import { holdLock } from '../support/held-lock';
 import { assignOne } from './assign-support';
-import { aVisit, booked, tasksOf } from './lead-work';
+import { aVisit, booked, dayFromToday, onTheClock, tasksOf } from './lead-work';
 import {
   aCapture,
   aPhone,
@@ -224,5 +224,35 @@ describe.skipIf(skip)('follow-up tasks, over HTTP against a migrated database', 
     await owner().call('POST', `/tasks/${id}/done`, { capturedAt: now() });
     const done = await owner().call('PATCH', `/tasks/${id}`, body);
     expect(done.status).toBe(HttpStatus.CONFLICT);
+  });
+
+  it.each([
+    ['yesterday late on the company clock', -1, '23:59', HttpStatus.BAD_REQUEST],
+    ['today early on the company clock', 0, '00:01', HttpStatus.CREATED],
+  ])(
+    'a task due %s is held to today or later, as the sheet offers',
+    async (_when, days, hhmm, status) => {
+      const made = await captured(owner(), aCapture(aPhone()));
+      const dueAt = new Date(onTheClock(dayFromToday(days), hhmm)).toISOString();
+      const reply = await add(made.lead.id, { kind: 'follow_up', dueAt });
+      expect(reply.status).toBe(status);
+      if (status === HttpStatus.BAD_REQUEST) {
+        expect(reply.body).toMatchObject({ error: { details: [{ path: 'dueAt' }] } });
+      }
+    },
+  );
+
+  it('a task moved to a day before today is refused at its due field, and nothing moves', async () => {
+    const made = await captured(owner(), aCapture(aPhone()));
+    const added = await add(made.lead.id, { kind: 'follow_up' });
+    const yesterday = new Date(onTheClock(dayFromToday(-1), '23:59')).toISOString();
+    const moved = await owner().call('PATCH', `/tasks/${added.body.id}`, {
+      dueAt: yesterday,
+      capturedAt: now(),
+    });
+    expect(moved.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(moved.body).toMatchObject({ error: { details: [{ path: 'dueAt' }] } });
+    const [kept] = (await tasksOf(world, made.lead.id)).filter((one) => one.id === added.body.id);
+    expect(kept?.dueAt.toISOString()).toBe(added.body.dueAt);
   });
 });

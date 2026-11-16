@@ -33,7 +33,7 @@
 .hg-doc-company {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: calc(var(--doc-fs-stat) * var(--doc-preview-scale));
   line-height: 1.15;
   font-weight: var(--fw-regular);
   letter-spacing: -0.01em;
@@ -41,19 +41,19 @@
 
 .hg-doc-tagline {
   margin: 2px 0 0;
-  font-size: 10px;
+  font-size: calc(var(--doc-fs) * var(--doc-preview-scale));
   font-weight: var(--fw-medium);
 }
 
 .hg-doc-address {
   margin: 3px 0 0;
-  font-size: 10px;
+  font-size: calc(var(--doc-fs) * var(--doc-preview-scale));
   line-height: 1.4;
 }
 
 .hg-doc-lines {
   margin: 2px 0 0;
-  font-size: 9px;
+  font-size: calc(var(--doc-fs-small) * var(--doc-preview-scale));
   line-height: 1.45;
 }
 
@@ -100,7 +100,7 @@
 
 .hg-doc-slot-label {
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: calc(var(--doc-fs-small) * var(--doc-preview-scale));
   letter-spacing: 0.04em;
   color: var(--text-tertiary);
   text-align: center;
@@ -118,7 +118,7 @@
 
 .hg-doc-overline {
   margin: 0;
-  font-size: 9px;
+  font-size: calc(var(--doc-fs-small) * var(--doc-preview-scale));
   font-weight: var(--fw-bold);
   letter-spacing: var(--tr-overline);
   text-transform: uppercase;
@@ -132,7 +132,7 @@
 .hg-doc-customer-name {
   margin: 5px 0 0;
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: calc(var(--doc-fs-stat) * var(--doc-preview-scale));
   line-height: 1.2;
   font-weight: var(--fw-regular);
   letter-spacing: -0.01em;
@@ -140,7 +140,7 @@
 
 .hg-doc-customer-meta {
   margin: 2px 0 0;
-  font-size: 10px;
+  font-size: calc(var(--doc-fs) * var(--doc-preview-scale));
   color: var(--text-secondary);
 }
 
@@ -151,7 +151,7 @@
 .hg-doc-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: calc(var(--doc-fs-stat) * var(--doc-preview-scale));
   line-height: 1.2;
   font-weight: var(--fw-regular);
   letter-spacing: -0.01em;
@@ -161,13 +161,13 @@
 .hg-doc-number {
   margin: 4px 0 0;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: calc(var(--doc-fs) * var(--doc-preview-scale));
   color: var(--text-secondary);
 }
 
 .hg-doc-date {
   margin: 2px 0 0;
-  font-size: 10px;
+  font-size: calc(var(--doc-fs) * var(--doc-preview-scale));
   color: var(--text-tertiary);
 }
 
@@ -180,7 +180,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  font-size: 9px;
+  font-size: calc(var(--doc-fs-small) * var(--doc-preview-scale));
   color: var(--text-tertiary);
 }
 

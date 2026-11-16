@@ -4,10 +4,10 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { Input } from '../Input/Input.native';
 import { SegmentedControl } from '../SegmentedControl/SegmentedControl.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import type { ProposalPartAddProps } from './ProposalPartSheets.types';
 import { sheetLayout } from './sheet-layout.native';
 import { usePartAdd } from './use-part-add';
@@ -25,7 +25,7 @@ function AddFields({ props, add }: { props: ProposalPartAddProps; add: PartAddin
       {words.certified === undefined || certifiedChoice === null ? null : (
         <View style={[tileSurface, sheetLayout.row]}>
           <GroundProvider ground="tile">
-            <HueTile glyph="shield-check" hue="success" size={36} stroke={1.7} />
+            <HueTile glyph="shield-check" hue="success" size={36} />
             <View style={sheetLayout.words}>
               <Text variant="body" bold>
                 {words.certified.title}
@@ -88,18 +88,19 @@ export function ProposalPartAdd(props: ProposalPartAddProps) {
   const { open, saving, words } = props;
   const add = usePartAdd(props);
   return (
-    <Sheet
+    <EditorSurface
       open={open}
       onClose={() => {
         if (!saving) props.onClose();
       }}
       closeLabel={words.closeLabel}
+      desktop="modal"
       showClose
       dismissible={!saving}
       title={words.title}
       footer={<AddFoot props={props} add={add} />}
     >
       {open ? <AddFields props={props} add={add} /> : null}
-    </Sheet>
+    </EditorSurface>
   );
 }

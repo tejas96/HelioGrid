@@ -25,7 +25,9 @@ export function ActivityStreamList(props: ActivityStreamListProps) {
       <ol className="hg-stream-list">
         {view.groups.map((group) => (
           <Fragment key={group.key}>
-            {group.heading === null ? null : <li className="hg-stream-day">{group.heading}</li>}
+            {group.heading === null ? null : (
+              <li className="hg-stream-day hg-overline">{group.heading}</li>
+            )}
             {group.items.map((entry, index) => (
               <StreamEntry
                 key={entry.id ?? `${group.key}-${index}`}

@@ -29,34 +29,19 @@
   display: contents;
 }
 
-/* ── a card: its head inside the tile, its rows with a hairline between two ── */
+/* ── a card: its head inside the tile, its rows with a hairline between two; a data card, so
+   OneOhm's paper card's radius 24 (its solid look is Ground's) ── */
 .hg-card.hg-project-detail-card {
   display: flex;
   flex-direction: column;
   gap: var(--sp-1);
   padding: var(--sp-1);
+  border-radius: var(--r-lg);
 }
 
+/* A project card's head (`CardHeader`) sits in from the card's edge, as the rows under it do. */
 .hg-project-detail-card-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-1) var(--sp-3);
   padding: var(--sp-3) var(--sp-3) var(--sp-1);
-}
-
-.hg-project-detail-card-title {
-  margin: 0;
-  font-size: var(--fs-h3);
-  line-height: var(--lh-h3);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--tr-h3);
-  color: var(--text-primary);
-}
-
-.hg-project-detail-card-act {
-  display: inline-flex;
-  margin-inline-start: auto;
 }
 
 .hg-project-detail-quiet {

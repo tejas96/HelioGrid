@@ -4,13 +4,13 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
+import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { FailedRead } from '../EmptyState/FailedRead.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { failedReadOf } from '../ProposalAfterParts/ProposalAfterParts.logic';
 import { AfterHint } from '../ProposalAfterParts/ProposalAfterParts.native';
 import { SearchField } from '../SearchField/SearchField.native';
-import { Sheet } from '../Sheet/Sheet.native';
 import { pickLeadSheetOf } from './ProposalList.logic';
 import type { PickLeadSheetProps } from './ProposalList.types';
 
@@ -62,7 +62,7 @@ export function PickLeadSheet(props: PickLeadSheetProps) {
   const frame = pickLeadSheetOf(props);
   const { out } = frame;
   return (
-    <Sheet {...frame.sheet} showClose>
+    <EditorSurface {...frame.sheet} showClose desktop="modal">
       {open ? (
         <View style={styles.body}>
           <SearchField {...frame.search} />
@@ -70,7 +70,7 @@ export function PickLeadSheet(props: PickLeadSheetProps) {
             <Leads {...props} />
             <Pressable disabled={out} onPress={props.onNewCustomer}>
               <View style={styles.row}>
-                <HueTile glyph="plus" hue="ocean" size={40} stroke={1.7} />
+                <HueTile glyph="plus" hue="ocean" size={40} />
                 <View style={styles.grow}>
                   <Text variant="body" bold>
                     {words.newCustomer}
@@ -91,7 +91,7 @@ export function PickLeadSheet(props: PickLeadSheetProps) {
           <AfterHint>{words.hint}</AfterHint>
         </View>
       ) : null}
-    </Sheet>
+    </EditorSurface>
   );
 }
 

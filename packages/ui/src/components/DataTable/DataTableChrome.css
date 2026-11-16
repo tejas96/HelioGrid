@@ -28,11 +28,6 @@
   cursor: pointer;
 }
 
-.hg-dt-selection-clear > svg {
-  width: var(--sp-4);
-  height: var(--sp-4);
-}
-
 .hg-dt-selection-count {
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
@@ -99,11 +94,6 @@
   cursor: not-allowed;
 }
 
-.hg-dt-page > svg {
-  width: 18px;
-  height: 18px;
-}
-
 /* ── loading and blocked states ───────────────────────────────────────────── */
 
 .hg-dt-skeleton[data-stacked="true"] {
@@ -144,14 +134,7 @@
   display: block;
   height: var(--sp-3);
   border-radius: var(--rf-md);
-  background: linear-gradient(
-    90deg,
-    var(--canvas) 25%,
-    var(--canvas-sunken) 50%,
-    var(--canvas) 75%
-  );
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
+  --hg-skeleton-ground: var(--canvas);
 }
 
 .hg-dt-shimmer[data-w="lead"] {
@@ -162,48 +145,4 @@
 }
 .hg-dt-shimmer[data-w="tail"] {
   width: 14%;
-}
-
-.hg-dt-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--sp-2);
-  padding: 56px var(--sp-6);
-}
-
-.hg-dt-message-mark {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--r-pill);
-  display: grid;
-  place-items: center;
-  margin-bottom: var(--sp-1);
-  background: var(--neutral-bg);
-  color: var(--text-tertiary);
-}
-
-.hg-dt-message-mark[data-tone="warning"] {
-  background: var(--warning-bg);
-  color: var(--warning-text);
-}
-
-.hg-dt-message-mark > svg {
-  width: 22px;
-  height: 22px;
-}
-
-.hg-dt-message-title {
-  font-size: var(--fs-h4);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
-
-.hg-dt-message-body {
-  font-size: var(--fs-body-sm);
-  color: var(--text-secondary);
-  max-width: 320px;
-  line-height: 1.5;
 }

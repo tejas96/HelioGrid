@@ -2,7 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { Pressable } from '../../primitives/Pressable/Pressable';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { Button } from '../Button';
 import type {
   CatalogEditorOwnActs,
@@ -94,7 +94,7 @@ function PickToggle({
       onPress={onToggle}
     >
       <span className="hg-cat-pick-face" data-on={on ? 'true' : undefined}>
-        <ShellGlyph name={glyph} size="sm" filled={glyph === 'star' && on} />
+        <ShellGlyph name={glyph} size="sm" fill={glyph === 'star' && on ? 'ink' : undefined} />
         {word}
       </span>
     </Pressable>

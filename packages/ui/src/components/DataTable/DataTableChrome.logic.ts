@@ -18,7 +18,7 @@ export function captionTextOf(
 
 /** The mark on a blocked table's message: the alert on a failed read, the empty table otherwise. */
 export function tableMessageMarkOf(tone: 'warning' | undefined): ShellGlyphName {
-  return tone === 'warning' ? 'alert-circle' : 'lines-wide';
+  return tone === 'warning' ? 'alert-circle' : 'lines';
 }
 
 /**
@@ -31,7 +31,7 @@ export function rowNoteOf(
   fixedLine: TranslatedText,
 ): { warn: boolean; text: TranslatedText; glyph: ShellGlyphName } {
   if (issue !== null) return { warn: true, text: issue, glyph: 'alert-circle' };
-  return { warn: false, text: typeof fixed === 'string' ? fixed : fixedLine, glyph: 'tick' };
+  return { warn: false, text: typeof fixed === 'string' ? fixed : fixedLine, glyph: 'check' };
 }
 
 /** One pager step: which way it goes, its name, and whether it sits at its end. */

@@ -16,6 +16,8 @@ import { monthBars } from './ProposalBlocks.logic';
 import type { ProposalGenerationBlockProps } from './ProposalBlocks.types';
 import { generationView } from './ProposalBlocks.views';
 
+// web-only part: AppShell — its glyphs come through InkGlyph in BlockParts.native.
+
 /**
  * A year of generation (`M06-10`): the annual figure with its tier and its source label (`F8-08`),
  * twelve bars with the best month marked and named, and the average month in words. The bars are a
@@ -129,10 +131,20 @@ const styles = StyleSheet.create({
   barsPaper: { height: 330, gap: 12, marginTop: 44 },
   bar: { flex: 1, flexBasis: 0, minWidth: 0, alignItems: 'center', gap: 6 },
   column: { flex: 1, alignSelf: 'stretch', justifyContent: 'flex-end', alignItems: 'center' },
-  fill: { width: '72%', borderTopLeftRadius: 6, borderTopRightRadius: 6, borderRadius: 3 },
+  fill: {
+    width: '72%',
+    borderTopLeftRadius: theme.radius['rf-sm'],
+    borderTopRightRadius: theme.radius['rf-sm'],
+    borderRadius: theme.radius['rf-xs'],
+  },
   quiet: { opacity: 0.42 },
-  value: { marginBottom: 6, fontWeight: '500', fontSize: 12, lineHeight: 16 },
-  valuePaper: { fontSize: 15, lineHeight: 18 },
-  namePaper: { fontSize: 13, lineHeight: 16 },
+  value: {
+    marginBottom: 6,
+    fontWeight: '500',
+    fontSize: theme.type.roles.caption.fontSize,
+    lineHeight: 16,
+  },
+  valuePaper: { fontSize: theme.type.document['doc-fs'], lineHeight: 18 },
+  namePaper: { fontSize: theme.type.document['doc-fs-small'], lineHeight: 16 },
   sub: { marginTop: 6 },
 });

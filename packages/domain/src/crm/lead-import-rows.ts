@@ -5,6 +5,7 @@ import type { FormatPack } from '../format/pack';
 import { phoneE164Of } from '../format/phone';
 import { importTextKey, isBlank } from '../import/text';
 import { type MinorUnits, minorUnitsOfDecimal } from '../money/minor-units';
+import { COMPANY_PROFILE_FIELD_CAP, PERSON_NAME_CAP } from '../tenancy/company-profile-draft';
 import type { DealSegment } from '../tenancy/segment';
 import type { LeadImportCells, LeadImportMappedRow } from './lead-import-fields';
 
@@ -88,6 +89,12 @@ function textOf(cell: string | undefined): string | null {
 
 type CellRead<T> = { readonly read: true; readonly value: T | null } | { readonly read: false };
 
+/** A name or city as quick add bounds it (`personNameSchema`, `citySchema`): longer is unreadable. */
+function boundedTextOf(cell: string | undefined, cap: number): CellRead<string> {
+  const text = textOf(cell);
+  return text !== null && text.length > cap ? { read: false } : { read: true, value: text };
+}
+
 function segmentOf(cell: string | undefined): CellRead<DealSegment> {
   if (isBlank(cell)) return { read: true, value: null };
   const segment = SEGMENT_BY_KEY.get(importTextKey(cell));
@@ -107,19 +114,22 @@ export function readLeadImportRow(cells: LeadImportCells, formats: FormatPack): 
   const phoneE164 = isBlank(cells.phone) ? null : phoneE164Of(formats, cells.phone);
   const segment = segmentOf(cells.segment);
   const bill = billOf(cells.monthly_bill, formats);
+  const name = boundedTextOf(cells.name, PERSON_NAME_CAP);
+  const city = boundedTextOf(cells.city, COMPANY_PROFILE_FIELD_CAP.city);
   const problems: LeadImportProblem[] = [];
   if (isBlank(cells.phone)) problems.push('missing_number');
   else if (phoneE164 === null) problems.push('unreadable_number');
-  if (!segment.read || !bill.read) problems.push('malformed_row');
-  if (phoneE164 === null || !segment.read || !bill.read) {
+  const cellsRead = segment.read && bill.read && name.read && city.read;
+  if (!cellsRead) problems.push('malformed_row');
+  if (phoneE164 === null || !cellsRead) {
     return { landable: false, phoneE164, problems };
   }
   return {
     landable: true,
     phoneE164,
     lead: {
-      name: textOf(cells.name),
-      city: textOf(cells.city),
+      name: name.value,
+      city: city.value,
       segment: segment.value,
       monthlyBill: bill.value,
     },

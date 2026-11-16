@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { IN_FORMATS } from '../../src/format/pack';
-import { phoneE164Of } from '../../src/format/phone';
+import { phoneE164Of, phoneFieldE164Of } from '../../src/format/phone';
 
 describe('phoneE164Of — one number, however it is written, is one E.164 string (M02-02)', () => {
   it.each([
@@ -45,5 +45,20 @@ describe('phoneE164Of — one number, however it is written, is one E.164 string
     '+0 98450 27746',
   ])('%j is no number this market can store', (typed) => {
     expect(phoneE164Of(IN_FORMATS, typed)).toBeNull();
+  });
+});
+
+describe('phoneFieldE164Of — what the phone box sends for what was typed beside its +91', () => {
+  it.each([
+    ['', ''],
+    ['98450', '+9198450'],
+    ['9845027746', '+919845027746'],
+    ['919845027746', '+919845027746'],
+    ['0919845027746', '+919845027746'],
+    ['+91 98450 27746', '+919845027746'],
+    ['9123456789', '+919123456789'],
+    ['98450277461', '+9198450277461'],
+  ])('%j sends %j', (typed, sent) => {
+    expect(phoneFieldE164Of(IN_FORMATS, typed)).toBe(sent);
   });
 });

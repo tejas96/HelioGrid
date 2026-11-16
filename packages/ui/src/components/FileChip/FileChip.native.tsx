@@ -1,12 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
-import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import { Text } from '../../primitives/Text/Text.native';
-import { glyphStroke } from '../AppShell/ShellGlyph.logic';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import type { FileChipProps } from './FileChip.types';
 
@@ -32,22 +29,7 @@ export function FileChip({
   style,
 }: NativeFileChipProps) {
   const wide = layout === 'wide';
-  const glyph = (
-    <Svg
-      width={ICON_SIZE.md}
-      height={ICON_SIZE.md}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={GLYPH_INK}
-      strokeWidth={glyphStroke('md')}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      accessibilityElementsHidden
-      importantForAccessibility="no-hide-descendants"
-    >
-      <ShellGlyphMarks name="board" />
-    </Svg>
-  );
+  const glyph = <ShellGlyph name="board" size="md" ink={GLYPH_INK} />;
   return (
     <View
       style={[
@@ -87,7 +69,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-3'],
     paddingLeft: 14,
     paddingRight: theme.spacing['sp-3'],
-    borderRadius: 14,
+    borderRadius: theme.radius['r-md'],
   },
   chipWide: {
     paddingRight: 14,

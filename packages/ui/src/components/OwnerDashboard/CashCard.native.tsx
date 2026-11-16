@@ -19,7 +19,7 @@ export function CashCard({ view, words }: DashboardPartProps) {
   const figures = cashFiguresOf(cash, format);
   const late = cash.late.count > 0;
   return (
-    <Card>
+    <Card tile="glass">
       <View
         style={styles.body}
         accessibilityLabel={words.cashTitle}

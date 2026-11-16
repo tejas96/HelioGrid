@@ -1,10 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { CoachMarkFootProps, CoachMarkHeadProps } from './CoachMark.types';
 import type { CoachMarkRect, PlacedCoachMark } from './coach-mark-place';
 import { counterDots, forwardAct, ringBox } from './coach-mark-place';
@@ -29,17 +28,7 @@ export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: Coach
       </View>
       {onDismiss === undefined ? null : (
         <Pressable accessibilityLabel={dismissLabel} onPress={onDismiss} style={styles.dismiss}>
-          <Svg
-            width={16}
-            height={16}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={colors['text-tertiary']}
-            strokeWidth={2}
-            strokeLinecap="round"
-          >
-            <ShellGlyphMarks name="close" />
-          </Svg>
+          <ShellGlyph name="close" size="sm" ink={colors['text-tertiary']} />
         </Pressable>
       )}
     </View>
@@ -149,7 +138,7 @@ const styles = StyleSheet.create({
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
     backgroundColor: colors.surface,
     transform: [{ rotate: '45deg' }],
-    borderRadius: 2,
+    borderRadius: theme.radius['rf-xs'],
   },
   arrowBottom: {
     top: -5,

@@ -1,25 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
-import type { ThemeColor } from '../../primitives/Color/colors';
-import { colors } from '../../primitives/Color/colors';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { drawsModalMark, MODAL_TONE_GLYPH } from './Modal.logic';
 import type { ModalTone } from './Modal.types';
-
-interface TonePaint {
-  bg: ThemeColor;
-  fg: ThemeColor;
-}
-
-/** The semantic `-text` on `-bg` partner pairs — the same ones StatusMark resolves. */
-const TONE: Record<ModalTone, TonePaint> = {
-  neutral: { bg: colors['neutral-bg'], fg: colors['text-secondary'] },
-  danger: { bg: colors['danger-bg'], fg: colors['danger-text'] },
-  warning: { bg: colors['warning-bg'], fg: colors['warning-text'] },
-  success: { bg: colors['success-bg'], fg: colors['success-text'] },
-};
 
 interface ModalMarkProps {
   icon?: ReactNode;
@@ -38,22 +23,8 @@ export function ModalMark({ icon, tone }: ModalMarkProps) {
     return null;
   }
   return (
-    <View style={[styles.mark, { backgroundColor: paint.bg }]}>
-      {icon ??
-        (glyph === null ? null : (
-          <Svg
-            width={20}
-            height={20}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={paint.fg}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <ShellGlyphMarks name={glyph} />
-          </Svg>
-        ))}
+    <View style={[styles.mark, { backgroundColor: paint.tint }]}>
+      {icon ?? (glyph === null ? null : <ShellGlyph name={glyph} size="md" ink={paint.ink} />)}
     </View>
   );
 }

@@ -8,9 +8,9 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { loadSharesOf } from '../AssignPicker/AssignPicker.logic';
 import type { AssignPickerPerson } from '../AssignPicker/AssignPicker.types';
 import { Avatar } from '../Avatar/Avatar.native';
+import { ProgressRing } from '../ProgressRing/ProgressRing.native';
 import { dockColumnsOf, dockedOf } from './TeamDock.logic';
 import type { TeamDockLayout, TeamDockProps, TeamDockWords } from './TeamDock.types';
-import { LoadRing } from './TeamDockRing.native';
 
 /**
  * The team under the lead on the phone (`M02-28`): a row of faces that scrolls when it overflows,
@@ -100,8 +100,9 @@ function Face({ person, share, you, layout, waiting, onGive, words, width }: Fac
       ]}
     >
       <View style={styles.ring} importantForAccessibility="no-hide-descendants">
-        <LoadRing share={share} late={late} />
-        <Avatar name={person.name} size={40} />
+        <ProgressRing size="face" share={share} ink={late ? colors.warning : colors.accent}>
+          <Avatar name={person.name} size={40} />
+        </ProgressRing>
       </View>
       <Text variant="body-sm" bold style={styles.name}>
         {you ? words.you : firstNameOf(person.name)}

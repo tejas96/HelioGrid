@@ -1,7 +1,7 @@
 import type { OwnerDashboard, TranslatedText } from '@heliogrid/contracts';
 import { firstNameOf, type LostReason, type NeedsYouKind } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { HueTileProps } from '../HueTile/HueTile.types';
 import type { NeedOpen, OwnerDashboardProps, OwnerDashboardWords } from './OwnerDashboard.types';
 

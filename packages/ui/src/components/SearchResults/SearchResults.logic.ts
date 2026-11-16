@@ -1,5 +1,5 @@
 import type { ComponentKind, SearchNumber, SearchRow } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { SearchResultsWords } from './SearchResults.types';
 
 /** A number in three runs — before the digits typed, the digits typed, after — for the mark. */

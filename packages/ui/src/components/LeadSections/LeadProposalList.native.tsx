@@ -66,7 +66,7 @@ function Row({ proposal, panel }: { proposal: LeadProposal; panel: LeadProposals
   return (
     <Pressable onPress={() => panel.onOpen(proposal.id)} style={styles.press}>
       <View style={[styles.row, styles.wrap, { backgroundColor: fill }]}>
-        <HueTile glyph="file-text" hue="ocean" size={44} stroke={1.6} />
+        <HueTile glyph="document" hue="ocean" size={44} />
         <RowWords proposal={proposal} words={words} />
         <ProposalStatus
           standing={proposal.standing}
@@ -83,7 +83,7 @@ function CollisionRow({ proposal, panel }: { proposal: LeadProposal; panel: Lead
   const fill = useGround().controlFill;
   return (
     <View style={[styles.row, styles.wrap, { backgroundColor: fill }]}>
-      <HueTile glyph="file-text" hue="ocean" size={44} stroke={1.6} />
+      <HueTile glyph="document" hue="ocean" size={44} />
       <View style={styles.grow}>
         <View style={styles.titleRow}>
           <Text variant={proposal.number === null ? 'body' : 'mono'} bold>
@@ -122,7 +122,7 @@ function Empty({ panel, closed }: { panel: LeadProposalsPanel; closed: boolean }
   return (
     <View style={styles.empty}>
       {closed ? (
-        <HueTile glyph="lock" hue="neutral" size={48} stroke={1.6} />
+        <HueTile glyph="lock" hue="neutral" size={48} />
       ) : (
         <EmptyScene name="settle" size="compact" />
       )}
@@ -173,7 +173,7 @@ export function LeadProposalList({ panel }: { panel: LeadProposalsPanel }) {
       ) : null}
       {section.sibling === null ? null : (
         <View style={[styles.row, styles.wrap, styles.sibling]}>
-          <HueTile glyph="people" hue="warning" size={44} stroke={1.6} />
+          <HueTile glyph="people" hue="warning" size={44} />
           <Text variant="body-sm" color="secondary" style={styles.grow}>
             {words.siblingLine(section.sibling.number)}
           </Text>

@@ -1,15 +1,29 @@
 import { theme } from '@heliogrid/theme';
-import { useRef, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
-import { Dimensions, Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Animated,
+  Dimensions,
+  Pressable as RNPressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
+import {
+  Portal,
+  useMeasureForLayer,
+  usePortalBottomInset,
+} from '../../primitives/Portal/Portal.native';
 import { useCloseOnBack } from '../../primitives/use-close-on-back.native';
+import { usePopIn } from '../../primitives/use-pop-in.native';
 import { actOnChoice, MENU_GAP, menuInSafeOrder } from './Menu.logic';
 import type { MenuItem, MenuProps } from './Menu.types';
 import { MenuItemRow } from './MenuItemRow.native';
 import { MenuTrigger } from './MenuTrigger.native';
 import { menuRowKey } from './menu-walk';
+
+// web-only part: Sheet — the web takes only its Escape stacking; the phone closes on Back instead.
 
 interface NativeMenuProps extends MenuProps {
   style?: StyleProp<ViewStyle>;
@@ -36,7 +50,8 @@ const MIN_BELOW = 160;
  *   Android's Back as the Escape.
  * · There is no hover, so the web half's `data-active` row tint is carried by the Pressable
  *   primitive's own pressed state instead.
- * · `position: absolute` under the trigger becomes `measureInWindow` plus the Portal primitive, so
+ * · `position: absolute` under the trigger becomes the trigger measured where it rests
+ *   (`useMeasureForLayer`) plus the Portal primitive, so
  *   nothing above the menu can clip it; the list rises instead of dropping when it would not fit.
  */
 export function Menu({
@@ -60,9 +75,10 @@ export function Menu({
      pill — opened over the pill, the menu's last rows sat under the nav. As the toasts, it clears
      the pill's band whether or not the page shows the pill. */
   const foot = usePortalBottomInset() + theme.layout['bottomnav-h'];
+  const measure = useMeasureForLayer();
 
   const openMenu = () => {
-    wrapRef.current?.measureInWindow((x, y, triggerWidth, height) => {
+    measure(wrapRef.current, ({ x, y, w: triggerWidth, h: height }) => {
       const windowSize = Dimensions.get('window');
       const below = windowSize.height - foot - (y + height) - MENU_GAP;
       const above = y - MENU_GAP;
@@ -109,10 +125,8 @@ export function Menu({
           />
           {/* Modal while open: a sheet's modal panel hides every other layer from a screen
               reader, this menu's own portal layer included. */}
-          <View
-            accessibilityRole="menu"
-            accessibilityLabel={label}
-            accessibilityViewIsModal
+          <PoppedList
+            label={label}
             style={[
               styles.list,
               { width, left: anchor.left, maxHeight: anchor.max, ...anchor.edge },
@@ -132,10 +146,32 @@ export function Menu({
                 ),
               )}
             </ScrollView>
-          </View>
+          </PoppedList>
         </Portal>
       )}
     </View>
+  );
+}
+
+/** The open list: it pops in each time it opens (`usePopIn`), its rows pressable at once. */
+function PoppedList({
+  label,
+  style,
+  children,
+}: {
+  label: MenuProps['label'];
+  style: StyleProp<ViewStyle>;
+  children: ReactNode;
+}) {
+  return (
+    <Animated.View
+      accessibilityRole="menu"
+      accessibilityLabel={label}
+      accessibilityViewIsModal
+      style={[style, usePopIn()]}
+    >
+      {children}
+    </Animated.View>
   );
 }
 

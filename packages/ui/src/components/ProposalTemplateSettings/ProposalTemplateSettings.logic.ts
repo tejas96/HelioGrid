@@ -7,7 +7,7 @@ import {
   proposalSheetsOf,
   sheetNumber,
 } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { BuilderStep } from '../ProposalBuilder/ProposalBuilder.types';
 import type { ProposalStepWords } from '../ProposalSteps/ProposalSteps.words.types';
 import { paymentControls } from '../ProposalSteps/payment-controls';
@@ -50,7 +50,7 @@ export const DEFAULTS_PART_GLYPH: Readonly<Record<DefaultsPartName, ShellGlyphNa
   pages: 'layers',
   timeline: 'calendar-clock',
   payment: 'wallet',
-  terms: 'file-text',
+  terms: 'document',
   bank: 'credit-card',
 };
 

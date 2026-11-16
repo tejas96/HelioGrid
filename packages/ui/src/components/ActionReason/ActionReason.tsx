@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { actionReasonFor, noteLineScale } from './ActionReason.logic';
 import type { ActionReasonInput, ActionReasonSpec } from './ActionReason.types';
 
@@ -12,21 +13,8 @@ interface WebActionReasonProps extends ActionReasonSpec {
 /* A barred circle: "not yet". Deliberately not UnavailableNote's SLASHED circle (that says "not a
    thing here"), and deliberately not error's exclamation — nothing has gone wrong. The px are SVG
    geometry, not layout: the glyph tracks the sentence at one step above its size. */
-function BarredCircle({ size }: { size: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="minus-circle" />
-    </svg>
-  );
+function BarredCircle({ size }: { size: ShellGlyphSize }) {
+  return <ShellGlyph name="minus-circle" size={size} tone="current" />;
 }
 
 /** The precondition sentence beside a control that is off. Renders nothing without a reason. */

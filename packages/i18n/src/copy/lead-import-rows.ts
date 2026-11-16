@@ -75,7 +75,7 @@ const PROBLEM_LINE: Readonly<Record<LeadImportProblem, { id: string }>> = {
   unreadable_number: /*i18n*/ { id: 'The phone cell does not read as a number.' },
   missing_number: /*i18n*/ { id: 'The phone cell is empty.' },
   malformed_row: /*i18n*/ {
-    id: 'A bill that is not an amount, or a type that is not Home or Business.',
+    id: 'A bill that is not an amount, a type that is not Home or Business, or a name or city that is too long.',
   },
   not_written: /*i18n*/ { id: 'The import could not write this row.' },
 };

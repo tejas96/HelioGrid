@@ -3,8 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider';
-import { ProgressRing } from '../OperationProgress/ProgressRing.native';
-import { SHARE_RING } from '../OperationProgress/progress-ring';
+import { ProgressRing } from '../ProgressRing/ProgressRing.native';
 import { HUE_INK, HUE_WASH, WARNING_WORDS } from './ShareFilter.inks';
 import { arcShare, totalOf } from './ShareFilter.logic';
 import type { ShareFilterProps } from './ShareFilter.types';
@@ -29,17 +28,15 @@ export function ShareRings({ label, items, pressed, onPress }: ShareRingsProps) 
             key={item.id}
             accessibilityLabel={item.accessibleLabel}
             accessibilityState={{ selected: on }}
+            accessibilityHint={label}
             onPress={() => onPress(item.id)}
             style={[styles.ring, on ? { backgroundColor: HUE_WASH[item.hue] } : undefined]}
           >
-            <View style={styles.dial}>
-              <ProgressRing geometry={SHARE_RING} share={arcShare(item.count, total)} ink={hue} />
-              <View style={styles.dialCount} pointerEvents="none">
-                <Text variant="body" bold style={styles.figure}>
-                  {number(item.count)}
-                </Text>
-              </View>
-            </View>
+            <ProgressRing size="dial" share={arcShare(item.count, total)} ink={hue}>
+              <Text variant="body" bold style={styles.figure}>
+                {number(item.count)}
+              </Text>
+            </ProgressRing>
             <Text
               variant="caption"
               color="secondary"
@@ -70,15 +67,6 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-2'],
     paddingHorizontal: theme.spacing['sp-1'],
     borderRadius: theme.radius['r-md'],
-  },
-  dial: {
-    width: SHARE_RING.box,
-    height: SHARE_RING.box,
-  },
-  dialCount: {
-    ...StyleSheet.absoluteFill,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   figure: {
     fontVariant: ['tabular-nums'],

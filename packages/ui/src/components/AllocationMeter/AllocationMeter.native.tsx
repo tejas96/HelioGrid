@@ -2,12 +2,12 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { AllocationLegend } from './AllocationLegend.native';
 import type { AllocationModel } from './AllocationMeter.model';
 import {
@@ -30,8 +30,8 @@ type NativeAllocationMeterProps = AllocationMeterProps & {
 
 const WORD_COLOUR: Record<AllocationState, ThemeColor> = {
   under: colors['text-secondary'],
-  met: colors['success-text'],
-  over: colors['warning-text'],
+  met: TONE.success.ink,
+  over: TONE.warning.ink,
 };
 
 /* The state's second channel. The OVER mark takes --warning-text — plain --warning measures
@@ -43,24 +43,14 @@ function Mark({ state }: { state: AllocationState }) {
   const met = state === 'met';
   return (
     <View
-      style={[
-        styles.markFilled,
-        { backgroundColor: met ? colors.success : colors['warning-text'] },
-      ]}
+      style={[styles.markFilled, { backgroundColor: met ? TONE.success.mark : TONE.warning.mark }]}
     >
-      <Svg
-        width={9}
-        height={9}
-        viewBox="0 0 24 24"
-        fill="none"
+      <ShellGlyph
+        name={met ? 'check' : 'plus'}
+        size="xs"
         // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-        stroke={colors['text-inverse']}
-        strokeWidth={met ? 4.8 : 3}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={met ? 'tick-small' : 'plus-small'} />
-      </Svg>
+        ink={colors['text-inverse']}
+      />
     </View>
   );
 }
@@ -252,7 +242,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent,
   },
   spanOver: {
-    backgroundColor: colors['warning-text'],
+    backgroundColor: TONE.warning.mark,
   },
   tick: {
     position: 'absolute',

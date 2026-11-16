@@ -93,6 +93,11 @@ describe.skipIf(skip)('calls on a lead, over HTTP against a migrated database', 
     const answered = await logged(rep(), made.lead.id, 'answered');
     expect(answered.unansweredCalls).toBe(0);
     expect(answered.lead.stage).toBe('contacted');
+    // The customer was reached, so the call-again task has nothing left to chase.
+    const stillOpen = (await tasksOf(world, made.lead.id)).filter(
+      (one) => one.provenance === 'retry_after_no_answer' && one.status === 'open',
+    );
+    expect(stillOpen).toEqual([]);
   });
 
   it('a wrong-number disqualification removes every dial offer for that number', async () => {

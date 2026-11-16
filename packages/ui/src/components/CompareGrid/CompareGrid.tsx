@@ -118,7 +118,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
   const shell = classNames('hg-compare', 'hg-focus-target', className);
   const captioned = caption !== undefined && caption !== '';
   const captionNode = captioned ? (
-    <div className="hg-compare-caption" id={captionId}>
+    <div className="hg-compare-caption hg-overline" id={captionId}>
       {caption}
     </div>
   ) : null;

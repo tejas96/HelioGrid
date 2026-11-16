@@ -1,6 +1,5 @@
 /* LoadingBars — the bars a list shows while its record loads (`SCR-M01-05`, `m-loading`): one per
-   part, a closed section's height or an open one's. The sweep is the theme's, which reduced motion
-   stills. */
+   part, a closed section's height or an open one's. Each part is a skeleton (`hg-skeleton`). */
 
 .hg-loading-bars {
   display: flex;
@@ -18,8 +17,6 @@
   /* Drawn in --surface on the white page: the shadow and the sweep are what show the bar. */
   /* biome-ignore lint/plugin/raw-white-css: shimmer — a loading bar's shimmer */
   background: var(--surface);
-  position: relative;
-  overflow: hidden;
 }
 
 .hg-loading-bar[data-size="row"] {
@@ -32,6 +29,23 @@
 
 .hg-loading-bar[data-size="control"] {
   height: 40px;
+}
+
+/* A paragraph waits as its lines: a text-high bar in a well, flat, the lengths a paragraph's in turn. */
+.hg-loading-bar[data-size="text"] {
+  height: var(--sp-3);
+  border-radius: var(--rf-md);
+  box-shadow: none;
+  background: var(--canvas-sunken);
+  width: 70%;
+}
+
+.hg-loading-bar[data-size="text"]:nth-child(3n + 2) {
+  width: 92%;
+}
+
+.hg-loading-bar[data-size="text"]:nth-child(3n) {
+  width: 54%;
 }
 
 /* A list of phrases waits as lines: a mark the size of a row's glyph and a text-high bar beside it,
@@ -54,8 +68,6 @@
   flex-shrink: 0;
   border-radius: var(--rf-md);
   background: var(--canvas);
-  position: relative;
-  overflow: hidden;
 }
 
 .hg-loading-line-mark {
@@ -110,8 +122,6 @@
   display: block;
   border-radius: var(--r-xs);
   background: var(--canvas);
-  position: relative;
-  overflow: hidden;
 }
 
 .hg-loading-option-mark {
@@ -196,24 +206,4 @@
   border-radius: var(--r-pill);
   /* biome-ignore lint/plugin/raw-white-css: shimmer — a loading bar's shimmer */
   background: var(--surface);
-  position: relative;
-  overflow: hidden;
-}
-
-/* The one shimmer: a band of light passing over each part while the read is out — a transform on
-   its own layer, never the background moving under it. Reduced motion stills it (`hg-shimmer`'s
-   reduced keyframe), and it stops when the wait ends because the bars leave. */
-.hg-loading-bar::after,
-.hg-loading-line-mark::after,
-.hg-loading-line-bar::after,
-.hg-loading-option-mark::after,
-.hg-loading-option-title > span::after,
-.hg-loading-option-line > span::after,
-.hg-loading-count > span::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, var(--glass-edge), transparent);
-  transform: translateX(-100%);
-  animation: hg-shimmer 1.4s var(--ease-standard) infinite;
 }

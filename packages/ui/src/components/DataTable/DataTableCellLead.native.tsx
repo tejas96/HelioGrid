@@ -42,9 +42,7 @@ export function CellLead<Row>({
 
   return (
     <View style={styles.lead}>
-      {leading === null ? null : (
-        <HueTile glyph={leading.glyph} hue={leading.hue} size={34} stroke={1.5} />
-      )}
+      {leading === null ? null : <HueTile glyph={leading.glyph} hue={leading.hue} size={34} />}
       <View style={styles.text}>
         {children}
         {sub === null ? null : <SubLine sub={sub} />}

@@ -3,8 +3,8 @@ import type { MoneyDueGroupView } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Button } from '../Button/Button.native';
@@ -14,6 +14,7 @@ import { FailedRead } from '../EmptyState/FailedRead.native';
 import { HeroPanel } from '../HeroPanel/HeroPanel.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { useFormat } from '../MarketProvider';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { dueFiguresOf, dueRowOf } from './MoneyDue.logic';
 import type { MoneyDueProps } from './MoneyDue.types';
 
@@ -237,15 +238,15 @@ const styles = StyleSheet.create({
  */
 const TILE = {
   late: StyleSheet.create({
-    wash: { backgroundColor: colors['danger-bg'] },
-    ink: { color: colors['danger-text'] },
+    wash: { backgroundColor: TONE.danger.tint },
+    ink: { color: TONE.danger.ink },
   }),
   due: StyleSheet.create({
     wash: { backgroundColor: colors['accent-subtle'] },
     ink: { color: colors['accent-text'] },
   }),
   part: StyleSheet.create({
-    wash: { backgroundColor: colors['success-bg'] },
-    ink: { color: colors['success-text'] },
+    wash: { backgroundColor: TONE.success.tint },
+    ink: { color: TONE.success.ink },
   }),
 };

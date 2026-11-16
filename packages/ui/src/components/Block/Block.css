@@ -38,10 +38,6 @@
 }
 
 .hg-block-overline {
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 
@@ -58,7 +54,7 @@
 
 .hg-block-title {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--fs-card-head);
   font-weight: var(--fw-bold);
   letter-spacing: -0.015em;
   color: var(--text-primary);
@@ -92,67 +88,6 @@
 
 .hg-block-action {
   flex-shrink: 0;
-}
-
-/* ── body states ─────────────────────────────────────────────────────────────── */
-
-.hg-block-loading {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.hg-block-shimmer {
-  display: block;
-  height: 12px;
-  border-radius: var(--rf-md);
-  background: linear-gradient(
-    90deg,
-    var(--canvas) 25%,
-    var(--canvas-sunken) 50%,
-    var(--canvas) 75%
-  );
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
-}
-
-.hg-block-shimmer[data-w="72"] {
-  width: 72%;
-}
-.hg-block-shimmer[data-w="94"] {
-  width: 94%;
-}
-.hg-block-shimmer[data-w="58"] {
-  width: 58%;
-}
-
-.hg-block-message {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--sp-2);
-  padding: 4px 0 2px;
-}
-
-.hg-block-message-text {
-  margin: 0;
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-body-sm);
-  color: var(--text-secondary);
-  text-wrap: pretty;
-}
-
-.hg-block-message-text[data-tone="warning"] {
-  color: var(--warning-text);
-}
-
-.hg-block-message-title {
-  font-weight: var(--fw-bold);
-  color: var(--text-primary);
-}
-
-.hg-block-message-text[data-tone="warning"] .hg-block-message-title {
-  color: var(--warning-text);
 }
 
 /* ── footer ──────────────────────────────────────────────────────────────────── */

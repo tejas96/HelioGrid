@@ -4,12 +4,12 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { useFormat } from '../MarketProvider';
 import { renderProvenance } from '../Provenance';
+import { StateBody } from '../StateBody/StateBody.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { shownCountOf } from './Block.logic';
 import type { BlockProps } from './Block.types';
 import { BlockGrid } from './BlockGrid.native';
 import { BlockHeader } from './BlockHeader.native';
-import { BlockBody } from './BlockMessage.native';
 
 type NativeBlockProps = BlockProps & {
   style?: StyleProp<ViewStyle>;
@@ -97,7 +97,7 @@ export function Block({
         shownCount={shownCount}
       />
 
-      <BlockBody
+      <StateBody
         state={state}
         loadingLabel={loadingLabel}
         emptyMessage={emptyMessage}
@@ -112,7 +112,7 @@ export function Block({
         unavailableMessage={unavailableMessage}
       >
         {children}
-      </BlockBody>
+      </StateBody>
 
       {prov !== null || footer !== undefined ? (
         <View style={styles.foot}>

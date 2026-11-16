@@ -7,17 +7,12 @@ import { Chip } from '../Chip/Chip.native';
 import { chosenChipIndex } from './FilterBar.logic';
 import type { FilterChipsProps } from './FilterBar.types';
 import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
-import {
-  FilterPill,
-  filterStyles,
-  OptionGlyph,
-  PillCount,
-  PillLabel,
-  pillInkColor,
-} from './FilterPill.native';
+import { CHIP_INK, filterStyles, OptionGlyph } from './FilterPill.native';
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
+  /* A row that does not scroll wraps, so a long chip never runs past the screen's edge. */
+  wrap: { flexWrap: 'wrap' },
 });
 
 interface NativeFilterChipsProps extends FilterChipsProps {
@@ -25,9 +20,9 @@ interface NativeFilterChipsProps extends FilterChipsProps {
 }
 
 /**
- * Kind and stage chips: 44dp pills — the pill is the target — in the control fill, flat, with an
- * optional 18dp glyph before the label; the chosen one is the accent wash with
- * accent words.
+ * Kind and stage chips: 32dp hairline pills in a 44dp target, in the control fill, with an
+ * optional 18dp glyph before the label; the chosen one is OneOhm's quiet choice, an ink outline
+ * around ink words.
  *
  * **One-of-N by construction** — `accessibilityRole="tablist"` with each chip a `tab` carrying
  * `selected`, the RN reading of the web half's `role="tablist"` + `aria-selected`. A dimension
@@ -74,23 +69,18 @@ export function FilterChips({
         }}
         accessibilityRole="tab"
         accessibilityState={{ selected: active }}
+        accessibilityHint={label}
         onPress={() => onChange?.(optValue)}
         style={filterStyles.target}
       >
-        {look === 'outlined' ? (
-          <Chip active={active} {...(count === undefined ? {} : { count })}>
-            <OptionGlyph icon={icon} color={pillInkColor('chip', active)} />
-            {optionLabel(option)}
-          </Chip>
-        ) : (
-          <FilterPill kind="chip" active={active} lead={Boolean(icon)}>
-            <OptionGlyph icon={icon} color={pillInkColor('chip', active)} />
-            <PillLabel kind="chip" active={active}>
-              {optionLabel(option)}
-            </PillLabel>
-            {count === undefined ? null : <PillCount kind="chip" active={active} count={count} />}
-          </FilterPill>
-        )}
+        <Chip
+          density={look === 'outlined' ? 'expressive' : 'filter'}
+          active={active}
+          leading={icon ? <OptionGlyph icon={icon} color={CHIP_INK} /> : undefined}
+          {...(count === undefined ? {} : { count })}
+        >
+          {optionLabel(option)}
+        </Chip>
       </RNPressable>
     );
   });
@@ -111,7 +101,11 @@ export function FilterChips({
   }
 
   return (
-    <View accessibilityRole="tablist" accessibilityLabel={label} style={[styles.row, style]}>
+    <View
+      accessibilityRole="tablist"
+      accessibilityLabel={label}
+      style={[styles.row, styles.wrap, style]}
+    >
       {chips}
     </View>
   );

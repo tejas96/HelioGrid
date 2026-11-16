@@ -2,16 +2,16 @@ import type { ProjectFile } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { glyphStroke } from '../AppShell/ShellGlyph.logic';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
+import { CardHeader } from '../Card/CardHeader.native';
 import { CardRow, CardRows } from '../CardRows/CardRows.native';
 import { FileLink } from '../FileLink/FileLink.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { Input } from '../Input/Input.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { hasPhoto, progressOf, STEP_TILE } from './InstallerJob.logic';
 import type {
   InstallerJobWords,
@@ -33,12 +33,14 @@ export function InstallerSteps(props: InstallerStepsProps) {
   if (rows.length === 0) return null;
   return (
     <View style={styles.section}>
-      <View style={styles.head}>
-        <Text variant="h3">{words.steps}</Text>
-        <Text variant="body-sm" color="secondary">
-          {words.stepsCount(progress.ticked, progress.total)}
-        </Text>
-      </View>
+      <CardHeader
+        title={words.steps}
+        action={
+          <Text variant="body-sm" color="secondary">
+            {words.stepsCount(progress.ticked, progress.total)}
+          </Text>
+        }
+      />
       <CardRows form="joined">
         {rows.map((row) => (
           <StepRow key={row.key} row={row} words={words} onOpenFile={props.onOpenFile} />
@@ -64,7 +66,7 @@ export function InstallerSteps(props: InstallerStepsProps) {
 
 /** The step's tile: pressed, it ticks or unticks the step; a photo not sent draws it still. */
 function StepTile({ row }: { row: InstallerStepRow }) {
-  const tile = <HueTile {...STEP_TILE[row.state]} size={44} stroke={glyphStroke('md')} />;
+  const tile = <HueTile {...STEP_TILE[row.state]} size={44} />;
   if (row.tile === null) return tile;
   return (
     <Pressable haptic="impact" {...row.tile}>
@@ -135,14 +137,16 @@ export function InstallerPhotos({ words, steps, known }: InstallerPhotosProps) {
   const { photographed, total } = progressOf(steps);
   return (
     <View style={styles.section}>
-      <View style={styles.head}>
-        <Text variant="h3">{words.photosTitle}</Text>
-        {known ? (
-          <Text variant="body-sm" color="secondary">
-            {words.count(photographed, total)}
-          </Text>
-        ) : null}
-      </View>
+      <CardHeader
+        title={words.photosTitle}
+        action={
+          known ? (
+            <Text variant="body-sm" color="secondary">
+              {words.count(photographed, total)}
+            </Text>
+          ) : null
+        }
+      />
       {known ? (
         <View style={styles.photos}>
           {steps.map((step) => (
@@ -163,13 +167,6 @@ export function InstallerPhotos({ words, steps, known }: InstallerPhotosProps) {
 
 const styles = StyleSheet.create({
   section: { gap: theme.spacing['sp-3'] },
-  head: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'baseline',
-    justifyContent: 'space-between',
-    columnGap: theme.spacing['sp-3'],
-  },
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
   main: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
   doneBy: { gap: theme.spacing['sp-2'], alignItems: 'flex-start' },

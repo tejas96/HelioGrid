@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { FacetChips } from './FacetChips';
 import { filtersButtonName } from './FilterBar.logic';
 import type { FiltersButtonProps, ScopeToggleProps, SortPillsProps } from './FilterBar.types';
@@ -22,7 +22,7 @@ interface WebFiltersButtonProps extends FiltersButtonProps {
   style?: CSSProperties;
 }
 
-/** Two-or-three-way scope switch. Active = the accent wash, as every chosen filter is. */
+/** Two-or-three-way scope switch, in `SegmentedControl`'s look: the choice in view a white raised thumb. */
 export function ScopeToggle({ options, value, onChange, className, style }: WebScopeToggleProps) {
   return (
     <div role="tablist" className={classNames('hg-scope-toggle', className)} style={style}>
@@ -52,7 +52,7 @@ export function ScopeToggle({ options, value, onChange, className, style }: WebS
   );
 }
 
-/** "Sort" label + inline pills. Active = accent fill. */
+/** "Sort" label + inline pills. Active = the raised white control. */
 export function SortPills({
   options,
   value,
@@ -113,18 +113,7 @@ export function FiltersButton({
       onClick={onClick}
       style={style}
     >
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-        aria-hidden="true"
-      >
-        <ShellGlyphMarks name="sliders" />
-      </svg>
+      <ShellGlyph name="sliders" size="md" tone="current" />
       {count > 0 ? (
         <span className="hg-filters-badge" aria-hidden="true">
           {count}

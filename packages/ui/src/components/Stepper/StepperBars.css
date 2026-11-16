@@ -10,7 +10,7 @@
 .hg-stepper-bar {
   display: block;
   height: 4px;
-  border-radius: 2px;
+  border-radius: var(--r-pill);
   background: var(--canvas-sunken);
 }
 .hg-stepper-bars > .hg-stepper-bar {
@@ -18,6 +18,27 @@
 }
 .hg-stepper-bar[data-filled="true"] {
   background: var(--accent);
+}
+/* The bar in view fills from its start once (`fillIn`), transform only; its duration tokens fall to
+   1ms under reduced motion, so it stands filled at once. */
+.hg-stepper-bar[data-fill-in="true"] {
+  position: relative;
+  overflow: hidden;
+  background: var(--canvas-sunken);
+}
+.hg-stepper-bar[data-fill-in="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--accent);
+  transform-origin: left center;
+  animation: hg-stepper-bar-fill var(--dur-ambient) var(--ease-enter) var(--dur-standard) backwards;
+}
+@keyframes hg-stepper-bar-fill {
+  from {
+    transform: scaleX(0);
+  }
 }
 .hg-stepper-numbered-bars {
   gap: 10px;

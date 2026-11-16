@@ -1,5 +1,5 @@
 import type { MyDay, Task } from '@heliogrid/contracts';
-import { customer, lead } from '@heliogrid/db';
+import { customer, lead, task } from '@heliogrid/db';
 import { FOUNDER_ROLE, MS_PER_DAY } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
@@ -58,18 +58,28 @@ describe.skipIf(skip)('My Day, over HTTP against a migrated database', () => {
     await ownLead(world, made.lead.id, here.people[who].userId);
     return made;
   };
+  /**
+   * A task due at `dueAt`. A person sets a task for today or later, so one already overdue is set
+   * for now and then aged on the admin path — as days passing would leave it.
+   */
   const aTask = async (leadId: string, who: Name, dueAt: number) => {
     const reply = await owner().call<Task>(
       'POST',
       `/leads/${leadId}/tasks`,
       {
         kind: 'follow_up',
-        dueAt: new Date(dueAt).toISOString(),
+        dueAt: new Date(Math.max(dueAt, Date.now())).toISOString(),
         assigneeId: here.people[who].userId,
       },
       retryKey(),
     );
     expect(reply.status).toBe(HttpStatus.CREATED);
+    if (dueAt < Date.now()) {
+      await world.pools.admin.db
+        .update(task)
+        .set({ dueAt: new Date(dueAt) })
+        .where(eq(task.id, reply.body.id));
+    }
     return reply.body.id;
   };
 

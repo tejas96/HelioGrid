@@ -1,10 +1,10 @@
 import { firstNameOf } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Avatar } from '../Avatar/Avatar.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { Menu } from '../Menu/Menu.native';
@@ -67,9 +67,9 @@ const styles = StyleSheet.create({
     paddingLeft: theme.spacing['sp-2'],
     paddingRight: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: colors['neutral-bg'],
+    backgroundColor: TONE.neutral.tint,
   },
   person: { paddingLeft: theme.spacing['sp-1'] },
-  factText: { color: colors['neutral-text'] },
+  factText: { color: TONE.neutral.ink },
   acts: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
 });

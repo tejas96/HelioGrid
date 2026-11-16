@@ -14,7 +14,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, glassTileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderBand } from '../BandedFigure/BandChip.native';
@@ -29,7 +29,7 @@ import { StatCardDelta } from './StatCardDelta.native';
 import { StatCardStates } from './StatCardStates.native';
 
 const styles = StyleSheet.create({
-  /* The tile's look is `tileSurface` (`F7-49`), spread first in every frame. */
+  /* The tile's look is `glassTileSurface` (`F7-49`), spread first in every frame. */
   card: {
     borderRadius: theme.radius['r-card-expressive'],
     padding: theme.spacing['sp-6'],
@@ -96,7 +96,7 @@ export function StatCard({
   /* Every non-ready state returns here, and none of them prints a figure. */
   if (state !== 'ready') {
     return (
-      <View ref={frame} style={[tileSurface, styles.card, style]}>
+      <View ref={frame} style={[glassTileSurface, styles.card, style]}>
         <GroundProvider ground="tile">
           {overline}
           <StatCardStates
@@ -155,14 +155,14 @@ export function StatCard({
         hostRef={frame}
         onPress={onClick}
         accessibilityLabel={ariaLabel}
-        style={[tileSurface, styles.card, styles.button, style]}
+        style={[glassTileSurface, styles.card, styles.button, style]}
       >
         {body}
       </Pressable>
     );
   }
   return (
-    <View ref={frame} style={[tileSurface, styles.card, style]}>
+    <View ref={frame} style={[glassTileSurface, styles.card, style]}>
       {body}
     </View>
   );

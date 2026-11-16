@@ -1,6 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ProposalStep, StepStanding } from '@heliogrid/domain';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { BuilderStep } from './ProposalBuilder.types';
 
 /** The glyph each of the eleven steps wears on the list of every step (`T-M06-002`). */
@@ -13,8 +13,8 @@ export const PROPOSAL_STEP_GLYPH: Readonly<Record<ProposalStep, ShellGlyphName>>
   timeline: 'calendar-clock',
   payment: 'wallet',
   components: 'package',
-  terms: 'file-text',
-  client: 'person',
+  terms: 'document',
+  client: 'user',
   bank: 'credit-card',
 };
 

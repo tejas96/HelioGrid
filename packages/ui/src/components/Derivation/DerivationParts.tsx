@@ -16,7 +16,9 @@ export function DerivationParts({
     <div className="hg-derivation-parts" data-size={size}>
       {parts.map((part, position) => (
         <div className="hg-derivation-part" key={derivationPartKey(part, position)}>
-          <span className="hg-derivation-part-label">{derivationPartHeading(part, kindWords)}</span>
+          <span className="hg-derivation-part-label hg-overline">
+            {derivationPartHeading(part, kindWords)}
+          </span>
           <p className="hg-derivation-part-text">{part.text}</p>
         </div>
       ))}

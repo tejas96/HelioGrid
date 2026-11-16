@@ -22,8 +22,16 @@
   gap: var(--sp-3);
 }
 
-.hg-collections-form > :not(button) {
+.hg-collections-form > :not(button, .hg-collections-acts) {
   align-self: stretch;
+}
+
+/* *Save*, and *Discard changes* beside it while something typed is held. */
+.hg-collections-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
 }
 
 .hg-collections-test {

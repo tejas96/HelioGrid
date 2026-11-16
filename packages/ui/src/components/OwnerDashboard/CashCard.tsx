@@ -15,7 +15,7 @@ export function CashCard({ view, words }: DashboardPartProps) {
   const { cash } = view;
   const figures = cashFiguresOf(cash, format);
   return (
-    <Card className="hg-owner-card">
+    <Card className="hg-owner-card" tile="glass">
       <section className="hg-owner-card-body" aria-label={words.cashTitle}>
         <div className="hg-owner-card-head">
           <Text as="h2" variant="h3">

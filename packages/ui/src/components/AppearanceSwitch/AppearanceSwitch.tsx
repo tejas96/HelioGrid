@@ -1,8 +1,13 @@
-import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable/Pressable';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
+import { SegmentedControl } from '../SegmentedControl/SegmentedControl';
 import { SettingsSection, SettingsSectionRow } from '../SettingsSection/SettingsSection';
-import { APPEARANCE_GLYPH, appearanceOptions, nextAppearance } from './AppearanceSwitch.logic';
+import {
+  APPEARANCE_GLYPH,
+  appearanceOf,
+  appearanceOptions,
+  nextAppearance,
+} from './AppearanceSwitch.logic';
 import type { AppearanceSwitchProps } from './AppearanceSwitch.types';
 
 export function AppearanceSwitch({
@@ -21,26 +26,17 @@ export function AppearanceSwitch({
   );
 }
 
-/** The three icons on one track: the chosen one raised on it, each named and tipped with its word. */
+/** The three icons on `SegmentedControl`'s track across their holder's width: the chosen one its raised thumb, each named and tipped with its word. */
 function AppearanceIcons({ words, value, onChange }: Omit<AppearanceSwitchProps, 'form'>) {
   return (
-    <fieldset aria-label={words.label} className="hg-appearance-icons">
-      {appearanceOptions(words).map((option) => {
-        const chosen = option.value === value;
-        return (
-          <span key={option.value} className="hg-appearance-tip" data-tip={option.label}>
-            <Pressable
-              accessibilityLabel={option.label}
-              accessibilityState={{ selected: chosen }}
-              onPress={() => onChange(option.value)}
-              className={classNames('hg-appearance-icon')}
-            >
-              <ShellGlyph name={option.glyph} size="md" tone={chosen ? 'primary' : 'secondary'} />
-            </Pressable>
-          </span>
-        );
-      })}
-    </fieldset>
+    <SegmentedControl
+      iconOnly
+      fill
+      ariaLabel={words.label}
+      options={appearanceOptions(words)}
+      value={value}
+      onChange={(next) => onChange(appearanceOf(next))}
+    />
   );
 }
 
@@ -50,7 +46,7 @@ function AppearanceIcons({ words, value, onChange }: Omit<AppearanceSwitchProps,
  */
 function AppearanceStep({ words, value, onChange }: Omit<AppearanceSwitchProps, 'form'>) {
   return (
-    <span className="hg-appearance-step" data-tip={words.options[value]}>
+    <span className="hg-appearance-step hg-tip" data-tip={words.options[value]} data-tip-side="end">
       <Pressable
         accessibilityLabel={words.label}
         accessibilityHint={words.options[value]}

@@ -45,8 +45,17 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-3'],
     paddingHorizontal: 14,
   },
-  name: { fontFamily: theme.type.families.sans, fontWeight: '700', fontSize: 14 },
-  kind: { fontFamily: theme.type.families.sans, fontWeight: '500', fontSize: 11, opacity: 0.85 },
+  name: {
+    fontFamily: theme.type.families.sans,
+    fontWeight: '700',
+    fontSize: theme.type.roles['body-sm'].fontSize,
+  },
+  kind: {
+    fontFamily: theme.type.families.sans,
+    fontWeight: '500',
+    fontSize: theme.type.roles.caption.fontSize,
+    opacity: 0.85,
+  },
   body: {
     paddingVertical: 10,
     paddingHorizontal: 14,

@@ -26,10 +26,6 @@
 
 .hg-search-group-title {
   margin: 0;
-  font-size: var(--fs-overline);
-  line-height: var(--lh-overline);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
   color: var(--text-secondary);
 }
 

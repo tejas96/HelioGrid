@@ -1,14 +1,16 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, RefObject } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { pressOnEnterOrSpace } from '../../primitives/press-keys';
+import { StateBody } from '../StateBody';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { CardProps, IconCircleProps } from './Card.types';
-import { CardBody } from './CardBody';
 
 type WebCardProps = CardProps & {
   className?: string;
   style?: CSSProperties;
+  /** A `data-*` attribute a page reads back (the customer page times a section by one). */
+  [data: `data-${string}`]: string | undefined;
 };
 
 interface WebIconCircleProps extends IconCircleProps {
@@ -17,8 +19,9 @@ interface WebIconCircleProps extends IconCircleProps {
 }
 
 /**
- * The tile (`F7-49`): one record, grey on the white page, no shadow — a control inside it turns
- * white. `--fill-hover` under the pointer, the inset accent ring when selected. `surface="raised"`
+ * The tile (`F7-49`): one record, the card colour inside a hairline — a summary card is glass
+ * (`tile="glass"`); a control inside it takes the fill. A stronger edge under the pointer, the inset
+ * accent ring when selected. `surface="raised"`
  * is the white card set on the page instead. Ships loading / empty / error / unavailable, like
  * every other surface (law 1).
  */
@@ -28,6 +31,7 @@ export function Card({
   interactive = false,
   selected = false,
   surface = 'tile',
+  tile = 'solid',
   label,
   read,
   loadingLabel,
@@ -41,14 +45,16 @@ export function Card({
   unavailableTitle,
   unavailableMessage,
   onClick,
+  as: Element = 'div',
   className,
   style,
+  ...data
 }: WebCardProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
   const body = (
-    <CardBody
+    <StateBody
       state={state}
       loadingLabel={loadingLabel}
       emptyTitle={emptyTitle}
@@ -63,16 +69,17 @@ export function Card({
       unavailableMessage={unavailableMessage}
     >
       {children}
-    </CardBody>
+    </StateBody>
   );
 
   /* A card that shows a read is where focus lands once its retry has left; a static card is no
      stop at all, so it takes no tabindex. */
   const frame = {
-    ref,
+    ...data,
     className: classNames('hg-card', read !== undefined ? 'hg-focus-target' : undefined, className),
     'data-density': density,
     'data-surface': surface === 'raised' ? 'raised' : undefined,
+    'data-tile': surface === 'tile' && tile === 'glass' ? 'glass' : undefined,
     'data-interactive': interactive ? 'true' : undefined,
     'data-selected': selected ? 'true' : undefined,
     style,
@@ -86,6 +93,7 @@ export function Card({
     return (
       // biome-ignore lint/a11y/useSemanticElements: a button cannot hold interactive content.
       <div
+        ref={ref as RefObject<HTMLDivElement>}
         {...frame}
         role="button"
         tabIndex={0}
@@ -99,9 +107,13 @@ export function Card({
     );
   }
   return (
-    <div {...frame} tabIndex={read !== undefined ? -1 : undefined}>
+    <Element
+      ref={ref as RefObject<HTMLDivElement>}
+      {...frame}
+      tabIndex={read !== undefined ? -1 : undefined}
+    >
       {body}
-    </div>
+    </Element>
   );
 }
 

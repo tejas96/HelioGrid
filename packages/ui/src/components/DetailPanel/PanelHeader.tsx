@@ -41,7 +41,7 @@ export function PanelHeader({
         {leading}
         <div className="hg-detail-panel-heading">
           {overline === undefined ? null : (
-            <div className="hg-detail-panel-overline">{overline}</div>
+            <div className="hg-detail-panel-overline hg-overline">{overline}</div>
           )}
           {title === undefined ? null : (
             <div className="hg-overlay-title-line">

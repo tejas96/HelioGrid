@@ -17,7 +17,7 @@ export function BlockOver({
 }) {
   return (
     <div className="hg-pb-over-row">
-      <span className="hg-pb-over">{overline}</span>
+      <span className="hg-pb-over hg-overline">{overline}</span>
       {tier === undefined ? null : <ProvenanceTier tier={tier} />}
       {aside}
     </div>

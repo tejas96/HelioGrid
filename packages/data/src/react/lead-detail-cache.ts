@@ -18,6 +18,10 @@ export function leadActFailureOf(error: unknown): LeadActFailure {
   if (error instanceof ApiError && error.code === taskErrorCodeSchema.enum.NUMBER_NOT_DIALLABLE) {
     return { kind: 'not_diallable' };
   }
+  // A task asked on a lead closed meanwhile: the lifecycle's own refusal says to reopen it first.
+  if (error instanceof ApiError && error.code === taskErrorCodeSchema.enum.LEAD_CLOSED) {
+    return { kind: 'refused', refusal: 'lead_closed' };
+  }
   return {
     kind: 'failed',
     failure: error instanceof DataError ? error.failure : 'unreadable_answer',

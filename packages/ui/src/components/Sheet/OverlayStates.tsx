@@ -1,4 +1,4 @@
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { RetryButton } from '../Button/RetryButton';
 import { EmptyScene } from '../EmptyScene/EmptyScene';
 import type { OverlayEmptyProps, OverlayErrorProps } from './Sheet.types';
@@ -35,19 +35,7 @@ export function OverlayError({
   return (
     <div className="hg-overlay-state" data-variant={variant}>
       <span className="hg-overlay-state-mark">
-        <svg
-          aria-hidden="true"
-          fill="none"
-          height="22"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-          width="22"
-        >
-          <ShellGlyphMarks name="alert-circle" />
-        </svg>
+        <ShellGlyph name="alert-circle" size="lg" tone="current" />
       </span>
       <div className="hg-overlay-state-title">{title}</div>
       {message !== undefined ? <div className="hg-overlay-state-message">{message}</div> : null}

@@ -1,0 +1,44 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { ReactNode } from 'react';
+import type { Tone } from '../../primitives/Tone/tone.types';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
+
+/** The six status tones — each resolves to a semantic token PAIR (`-text` on `-bg`): the one `Tone`. */
+export type StatusTone = Tone;
+
+/**
+ * The non-colour channel (F7-12): each tone carries its own GLYPH — a Lucide mark drawn by `ShellGlyph`, so two states never
+ * differ by hue alone — not for colourblind users, not in sunlight, not in grayscale print.
+ * One declaration for both platforms.
+ */
+export const STATUS_GLYPH: Record<StatusTone, ShellGlyphName> = {
+  neutral: 'dot',
+  info: 'info',
+  success: 'check',
+  warning: 'alert-triangle',
+  danger: 'close',
+  accent: 'spark',
+};
+
+export interface StatusMarkProps {
+  /** The MEANING — picks the token pair and the glyph. */
+  tone: StatusTone;
+  /** Required words. Status is never carried by colour alone (F7-12). */
+  label: TranslatedText;
+  /**
+   * Hide the glyph ONLY when a neighbouring mark already carries the state (e.g. a table
+   * row whose dot sits in another cell). The words always stay.
+   */
+  mark?: boolean;
+  /**
+   * The glyph and word in the tone's ink with no wash behind them — a quiet line that already
+   * sits on a card (a lead's stage on its list card). The mark and the words always stay.
+   */
+  bare?: boolean;
+  /**
+   * The state's own mark, drawn in place of the tone's glyph — a proposal's eye for *Opened*, its
+   * star for *Won*. The tone still picks the wash and the words still say the state (F7-12): this
+   * only makes the mark say more, never less.
+   */
+  glyph?: ReactNode;
+}

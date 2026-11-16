@@ -1,5 +1,5 @@
 import { Text } from '../../primitives/Text';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Checkbox } from '../Checkbox';
 import type { ProvenanceProps } from '../Provenance';
 import type { ColumnSortState } from './DataTable.logic';
@@ -10,19 +10,9 @@ import { ColumnTier } from './DataTableProvenance';
 
 function SortGlyph({ dir }: { dir: DataTableSort['dir'] | null }) {
   return (
-    <svg
-      className="hg-dt-sort-glyph"
-      data-active={dir === null ? undefined : 'true'}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name={sortGlyphOf(dir)} />
-    </svg>
+    <span className="hg-dt-sort-glyph" data-active={dir === null ? undefined : 'true'}>
+      <ShellGlyph name={sortGlyphOf(dir)} size="xs" tone="current" />
+    </span>
   );
 }
 
@@ -85,7 +75,7 @@ function HeadCell<Row>({
 }) {
   return (
     <th
-      className="hg-dt-th"
+      className="hg-dt-th hg-overline"
       scope="col"
       style={column.width === undefined ? undefined : { width: column.width }}
       data-align={alignOf(column)}
@@ -153,7 +143,7 @@ export function DataTableHead<Row>({
     <thead className="hg-dt-head">
       <tr>
         {selectable ? (
-          <th className="hg-dt-th hg-dt-th--select">
+          <th className="hg-dt-th hg-overline hg-dt-th--select">
             <Checkbox
               className="hg-dt-tick"
               checked={allSelected}
@@ -177,7 +167,7 @@ export function DataTableHead<Row>({
           />
         ))}
         {hasActions ? (
-          <th className="hg-dt-th hg-dt-th--actions">
+          <th className="hg-dt-th hg-overline hg-dt-th--actions">
             <span className="hg-spoken-only">{actionsLabel}</span>
           </th>
         ) : null}

@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { ResolvedStep } from './resolve-steps';
 import { indicatorFacts } from './Stepper.logic';
 import type { StepperWords } from './Stepper.types';
@@ -22,19 +22,11 @@ function NavButton({ direction, disabled, name, onPress }: NavButtonProps) {
       disabled={disabled}
       onClick={onPress}
     >
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <ShellGlyphMarks name={direction < 0 ? 'chevron-left' : 'chevron-right'} />
-      </svg>
+      <ShellGlyph
+        name={direction < 0 ? 'chevron-left' : 'chevron-right'}
+        size="sm"
+        tone="current"
+      />
     </button>
   );
 }
@@ -87,20 +79,9 @@ export function StepperIndicator({
         <span className="hg-stepper-dot-sep" aria-hidden="true" />
         <span className="hg-stepper-current">{name}</span>
         {errors > 0 ? <span className="hg-stepper-errors">{words.toFix(errors)}</span> : null}
-        <svg
-          className="hg-stepper-chevron"
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <ShellGlyphMarks name="chevron" />
-        </svg>
+        <span className="hg-stepper-chevron">
+          <ShellGlyph name="chevron" size="dense" tone="current" />
+        </span>
       </button>
       <NavButton
         direction={1}

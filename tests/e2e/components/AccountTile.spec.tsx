@@ -38,7 +38,7 @@ for (const account of [
       const style = getComputedStyle(tile);
       const probe = document.createElement('div');
       probe.style.padding = 'var(--tile-pad)';
-      probe.style.borderRadius = 'var(--r-tile)';
+      probe.style.borderRadius = 'var(--r-lg)';
       document.body.append(probe);
       const expected = getComputedStyle(probe);
       const want = { padding: expected.paddingTop, radius: expected.borderTopLeftRadius };

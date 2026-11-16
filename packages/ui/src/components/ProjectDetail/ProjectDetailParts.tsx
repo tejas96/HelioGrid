@@ -1,44 +1,16 @@
 import type { ProjectFile, TranslatedText } from '@heliogrid/contracts';
-import { type ReactNode, type Ref, useRef } from 'react';
+import { useRef } from 'react';
 import { type FocusAfter, useFocusAfter } from '../../primitives/FocusAfter';
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
-import { Card } from '../Card';
+import { Card, CardHeader } from '../Card';
 import { FileLink as NamedFileLink } from '../FileLink';
 import { HueTile } from '../HueTile';
 import { IconButton } from '../IconButton';
+import { StatusMark } from '../StatusMark';
 import { Switch } from '../Switch';
 import type { ProjectBlock } from './ProjectDetail.blocks';
 import type { DetailRow, DetailRowAct } from './ProjectDetail.rows';
-
-/** A card's head, inside its tile: its name, a quiet count or note beside it, its one act at the end. */
-export function CardHead({
-  title,
-  aside,
-  act = null,
-  headingRef,
-}: {
-  title: TranslatedText;
-  aside: TranslatedText | null;
-  act?: ReactNode;
-  /** Where focus lands when one of the card's acts leaves after its press. */
-  headingRef?: Ref<HTMLHeadingElement>;
-}) {
-  return (
-    <div className="hg-project-detail-card-head">
-      <h2
-        ref={headingRef}
-        tabIndex={headingRef === undefined ? undefined : -1}
-        className="hg-project-detail-card-title hg-focus-target"
-      >
-        {title}
-      </h2>
-      {aside === null ? null : <span className="hg-project-detail-quiet">{aside}</span>}
-      {act === null ? null : <span className="hg-project-detail-card-act">{act}</span>}
-    </div>
-  );
-}
 
 /** The files on a row, each its own name, opened with a tap. None draws nothing. */
 export function FileLinks({
@@ -105,11 +77,12 @@ export function DetailCard({
   return (
     <section aria-label={title}>
       <Card density="functional" className="hg-project-detail-card">
-        <CardHead
+        <CardHeader
           title={title}
-          aside={aside}
-          act={act === null ? null : <RowAct act={act} focusAfter={heading} />}
+          description={aside}
+          action={act === null ? null : <RowAct act={act} focusAfter={heading} />}
           headingRef={heading}
+          className="hg-project-detail-card-head"
         />
         <NotSent shown={block.notSent} words={words.notSent} onRetry={act?.onPress ?? null} />
         {rows.length === 0 ? (

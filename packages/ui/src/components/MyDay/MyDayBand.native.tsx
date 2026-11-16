@@ -3,16 +3,16 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { useFocusAfter } from '../../primitives/FocusAfter/use-focus-after.native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { GlyphInkContext, ShellGlyph } from '../AppShell/ShellGlyph.native';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Button } from '../Button/Button.native';
 import { CardRow, CardRows, useCardRowAsideRoom } from '../CardRows/CardRows.native';
 import { Checkbox } from '../Checkbox/Checkbox.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { useFormat } from '../MarketProvider';
 import { Menu } from '../Menu/Menu.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { BAND_HEAD, whenOf } from './MyDay.logic';
 import type { MyDayBandRows, MyDayProps } from './MyDay.types';
 import { useTaskRow } from './use-task-row';
@@ -54,7 +54,7 @@ export function MyDayBand(props: BandProps) {
           <Button
             variant="ghost"
             size="md"
-            iconRight={<ShellGlyph name="caret-down" size="sm" tone="secondary" />}
+            iconRight={<ShellGlyph name="chevron" size="sm" tone="secondary" />}
             onClick={() => props.onExpand(band.band)}
           >
             {words.showMore(band.hidden)}

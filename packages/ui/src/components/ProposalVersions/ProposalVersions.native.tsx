@@ -15,6 +15,8 @@ import { AfterHint, AfterRow, AfterRows } from '../ProposalAfterParts/ProposalAf
 import { versionActOf, versionFactGlyph } from './ProposalVersions.logic';
 import type { ProposalVersionsProps, ProposalVersionsView } from './ProposalVersions.types';
 
+// web-only part: ProposalBlocks — the web takes only riseOrder for its CSS stagger; the phone uses Rising.
+
 type Ready = ProposalVersionsProps & { readonly view: ProposalVersionsView };
 
 function Changed({ view, words, won }: Ready) {
@@ -37,7 +39,7 @@ function Changed({ view, words, won }: Ready) {
           return (
             <Rising key={change.fact} order={index}>
               <View style={[styles.change, index > 0 ? styles.ruled : undefined]}>
-                <HueTile glyph={versionFactGlyph(change.fact)} hue="ocean" size={36} stroke={1.7} />
+                <HueTile glyph={versionFactGlyph(change.fact)} hue="ocean" size={36} />
                 <View style={styles.grow}>
                   <Text variant="body" style={styles.name}>
                     {text.name}
@@ -59,7 +61,7 @@ function Changed({ view, words, won }: Ready) {
       </View>
       {latest.diff === null ? null : (
         <View style={styles.same}>
-          <ShellGlyph name="tick-small" size="sm" tone="secondary" />
+          <ShellGlyph name="check" size="sm" tone="secondary" />
           <Text variant="body-sm" color="secondary">
             {words.unchanged(latest.diff.pagesUnchanged)}
           </Text>
@@ -134,7 +136,12 @@ const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
   // The fact's name at medium weight, as the web's `.hg-versions-change-name`.
   name: { fontWeight: `${theme.type.weights.medium}` },
-  why: { fontFamily: theme.type.families.display, fontWeight: '400', fontSize: 24, lineHeight: 32 },
+  why: {
+    fontFamily: theme.type.families.display,
+    fontWeight: '400',
+    fontSize: theme.type.roles['card-title'].fontSize,
+    lineHeight: 32,
+  },
   changes: { marginTop: theme.spacing['sp-4'] },
   change: {
     flexDirection: 'row',

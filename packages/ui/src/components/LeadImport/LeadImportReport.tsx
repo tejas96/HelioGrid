@@ -58,7 +58,7 @@ export function LeadImportReport(props: LeadImportProps & { wide: boolean }) {
               {line(outcome.rejected, words.rejectedRows.title, words.rejectedRows.line)}
             </ul>
             <p className="hg-lead-import-stays">
-              <ShellGlyph name="tick" size="sm" tone="success" />
+              <ShellGlyph name="check" size="sm" tone="success" />
               <span>{words.notRolledBack}</span>
             </p>
           </div>

@@ -13,7 +13,7 @@ import {
   lockLeadInScope,
   personOf,
 } from './crm.lead-lock.repository';
-import { keepOneRetry } from './crm.raised-tasks.repository';
+import { closeTasksRaisedBy, keepOneRetry } from './crm.raised-tasks.repository';
 import { activityMadeWith, recordActivity, recordLeadMoves } from './crm.timeline.repository';
 import type { LeadMoney } from './internal/lead-wire';
 import type { LeadReader } from './internal/reader';
@@ -137,7 +137,8 @@ export class CrmCallsRepository {
 
 /**
  * An answered call: the lead as the call's entry left it — a dormant one already returned — moves
- * from `new` to `contacted`, and its failed tries start again from none.
+ * from `new` to `contacted`, its failed tries start again from none, and the call-again task a
+ * missed call left has nothing more to chase.
  */
 async function answered(
   tx: DbTransaction,
@@ -152,6 +153,7 @@ async function answered(
     .update(lead)
     .set({ unansweredCalls: 0 })
     .where(and(eq(lead.tenantId, locked.tenantId), eq(lead.id, locked.leadId)));
+  await closeTasksRaisedBy(tx, locked.tenantId, locked.leadId, ['retry_after_no_answer']);
 }
 
 /** One more failed try since the last answered call, shown to the lead's owner (`M02-43`). */

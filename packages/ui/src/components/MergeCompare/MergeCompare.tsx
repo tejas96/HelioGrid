@@ -31,7 +31,7 @@ export function MergeCompare({
     <div className="hg-merge-compare">
       <Card className="hg-merge-card">
         <div className="hg-merge-row">
-          <span className="hg-merge-over">{words.whichStays}</span>
+          <span className="hg-merge-over hg-overline">{words.whichStays}</span>
           <div className="hg-merge-pair" role="radiogroup" aria-label={words.whichStays}>
             {records.map((record) => (
               <RecordChoice
@@ -47,7 +47,7 @@ export function MergeCompare({
       </Card>
       {fields.length === 0 ? null : (
         <div className="hg-merge-fields-head">
-          <span className="hg-merge-over">{words.pickEach}</span>
+          <span className="hg-merge-over hg-overline">{words.pickEach}</span>
           <span className="hg-merge-count">{words.pickedCount}</span>
         </div>
       )}
@@ -63,7 +63,7 @@ export function MergeCompare({
         ))}
         {same === null ? null : (
           <p className="hg-merge-same">
-            <ShellGlyph name="tick" size="sm" tone="success" />
+            <ShellGlyph name="check" size="sm" tone="success" />
             <span>{same}</span>
           </p>
         )}
@@ -132,7 +132,7 @@ function FieldPick({
           <NamedGap gap={words.pickOne} scale="cell" />
         ) : (
           <span className="hg-merge-picked">
-            <ShellGlyph name="tick" size="sm" tone="success" />
+            <ShellGlyph name="check" size="sm" tone="success" />
             {words.picked}
           </span>
         )}
@@ -157,7 +157,7 @@ function FieldPick({
       </div>
       {field.note === null ? null : (
         <p className="hg-merge-note">
-          <ShellGlyph name="tick" size="sm" tone="success" />
+          <ShellGlyph name="check" size="sm" tone="success" />
           <span>{field.note}</span>
         </p>
       )}

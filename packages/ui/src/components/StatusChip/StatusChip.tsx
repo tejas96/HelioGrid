@@ -1,14 +1,14 @@
 /* StatusChip (web) — a lifecycle state: something a record IS, that changes over time. `Chip` is
    for a tag, a facet or a filter token, which is something a record HAS.
 
-   It renders THROUGH the StatusMark primitive rather than drawing its own pill: F7-12 —
+   It renders THROUGH StatusMark rather than drawing its own pill: F7-12 —
    label plus mark, never colour alone — is that primitive's law, and a component that re-implements
    it is the defect the primitive exists to prevent. Density is the only thing added on top, and it
    rides a class into StatusChip.css so no inline style is needed. */
 
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { StatusMark } from '../../primitives/StatusMark';
+import { StatusMark } from '../StatusMark';
 import { STATUS_CHIP_STATUSES, statusChipTone } from './StatusChip.registry';
 import type { StatusChipProps } from './StatusChip.types';
 

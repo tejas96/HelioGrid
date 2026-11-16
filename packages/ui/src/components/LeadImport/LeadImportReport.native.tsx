@@ -79,7 +79,7 @@ export function LeadImportReport(props: LeadImportProps & { wide: boolean }) {
             {tally(outcome.rejected, words.rejectedRows.title, words.rejectedRows.line)}
           </View>
           <View style={styles.line}>
-            <ShellGlyph name="tick" size="sm" tone="success" />
+            <ShellGlyph name="check" size="sm" tone="success" />
             <View style={styles.lineWords}>
               <Text variant="body-sm" style={styles.muted}>
                 {words.notRolledBack}

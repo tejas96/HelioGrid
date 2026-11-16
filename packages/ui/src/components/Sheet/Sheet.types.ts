@@ -1,8 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import type { StatusTone } from '../../primitives/StatusMark';
 import type { EmptySceneName } from '../EmptyScene/EmptyScene.types';
+import type { StatusTone } from '../StatusMark';
 import type { SurfaceRead, SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 import type { OverlayCloseWords } from './OverlayClose.types';
 

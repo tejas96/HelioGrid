@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ItemDraft, ItemDraftEvent, SchemeDraft } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { CategoryHue } from '../Avatar/Avatar.types';
 import type { CatalogItemFormProps, CatalogItemFormWords } from './CatalogItemForm.types';
 

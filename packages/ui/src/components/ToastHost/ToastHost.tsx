@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { landFocusOn } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button/Button';
 import { Toast } from '../Toast/Toast';
 import { shownToasts } from './ToastHost.logic';
@@ -18,18 +18,7 @@ type WebToastHostProps = ToastHostProps & {
 };
 
 function DismissGlyph() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name="close" />
-    </svg>
-  );
+  return <ShellGlyph name="close" size="dense" tone="current" />;
 }
 
 /**

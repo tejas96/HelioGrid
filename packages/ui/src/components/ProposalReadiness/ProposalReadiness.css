@@ -1,5 +1,5 @@
 /* ProposalReadiness — Home's hero (redesign direction A): solar glass holding the ring, what the
-   steps are for and the next step, then the steps as glass rows rising one after another. */
+   steps are for and the next step, then the steps as solid rows rising one after another. */
 
 .hg-readiness {
   container-type: inline-size;
@@ -28,18 +28,13 @@
   gap: var(--sp-2);
 }
 
-/* The next step: a glass band across the hero's foot, its one action at the end. */
+/* The next step: a solid tile (`Ground.css`) across the hero's foot, its one action at the end. */
 .hg-readiness-next {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
   padding: var(--sp-3);
-  border-radius: var(--r-tile);
-  /* biome-ignore lint/plugin/raw-white-css: glass — the card colour let through at an opacity over the hero (redesign direction A) */
-  background: color-mix(in srgb, var(--surface) 64%, transparent);
-  -webkit-backdrop-filter: saturate(1.4) blur(10px);
-  backdrop-filter: saturate(1.4) blur(10px);
-  box-shadow: 0 0 0 1px var(--hairline);
+  border-radius: var(--r-lg);
 }
 
 .hg-readiness-next-icon {
@@ -65,14 +60,8 @@
   margin: 0;
   padding: var(--sp-1);
   list-style: none;
-  border-radius: var(--r-card-expressive);
-  /* biome-ignore lint/plugin/raw-white-css: glass — the steps sit on a frosted pane over the page glow (redesign direction A) */
-  background: color-mix(in srgb, var(--surface) 72%, transparent);
-  -webkit-backdrop-filter: saturate(1.4) blur(14px);
-  backdrop-filter: saturate(1.4) blur(14px);
-  box-shadow:
-    0 0 0 1px var(--hairline),
-    var(--e2);
+  /* A solid tile, drawn by `Ground.css`: a checklist is records, not a summary. */
+  border-radius: var(--r-lg);
 }
 
 .hg-readiness-step {

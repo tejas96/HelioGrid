@@ -59,7 +59,7 @@ function Chevron({ open }: { open: boolean }) {
   const rotate = turn.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '180deg'] });
   return (
     <Animated.View style={{ transform: [{ rotate }] }}>
-      <ShellGlyph name="caret-down" size="sm" tone="secondary" />
+      <ShellGlyph name="chevron" size="sm" tone="secondary" />
     </Animated.View>
   );
 }

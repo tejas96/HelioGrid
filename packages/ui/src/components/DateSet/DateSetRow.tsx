@@ -1,5 +1,5 @@
 import { useFocusAfter } from '../../primitives/FocusAfter';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { ComplianceFloor } from '../ComplianceFloor';
 import { ValueSource } from '../ValueSource';
 import { dateRowReading } from './DateSet.logic';
@@ -51,19 +51,7 @@ export function DateSetRow({
           aria-label={words.remove(row.spoken)}
           onClick={leaving(row.remove)}
         >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <ShellGlyphMarks name="trash" />
-          </svg>
+          <ShellGlyph name="trash" size="sm" tone="current" />
         </button>
       )}
     </li>

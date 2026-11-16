@@ -73,7 +73,7 @@ function Steps({ detail, words }: Ready) {
             <View style={[styles.rail, at === 'done' ? styles.railDone : undefined]} />
             {at === 'now' ? <View style={styles.halo} /> : null}
             <View style={[styles.dot, lit ? styles.dotLit : { backgroundColor: ground }]}>
-              {lit ? <ShellGlyph name="tick-small" size="sm" tone="inverse" /> : null}
+              {lit ? <ShellGlyph name="check" size="sm" tone="inverse" /> : null}
             </View>
             <Text variant="body-sm" bold={lit} color={lit ? 'primary' : 'secondary'}>
               {node.name}
@@ -139,7 +139,7 @@ export function ProposalTrack(props: ProposalTrackProps) {
         <Acts {...ready} />
         <Steps {...ready} />
         <View style={styles.note}>
-          <ShellGlyph name="info-circle" size="sm" tone="secondary" />
+          <ShellGlyph name="info" size="sm" tone="secondary" />
           <Text variant="caption" color="secondary" style={styles.grow}>
             {words.neverDelivered}
           </Text>
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: theme.type.families.display,
     fontWeight: '400',
-    fontSize: 28,
+    fontSize: theme.type.roles['display-phone'].fontSize,
     lineHeight: 34,
   },
   cover: { transform: [{ rotate: '3deg' }] },

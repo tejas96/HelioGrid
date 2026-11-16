@@ -1,0 +1,70 @@
+/* Tip — the one tooltip on the web: a control whose words are not drawn (an icon segment, a folded
+   rail's item) shows them on hover and on focus. The element takes the class `hg-tip` and its words
+   in `data-tip`; `data-tip-side="end"` sets them beside it instead of above. Pointer-only help: the
+   words are already the control's accessible name, so a touch screen loses nothing. */
+
+.hg-tip {
+  position: relative;
+}
+
+.hg-tip[data-tip]:hover::after,
+.hg-tip[data-tip]:focus-visible::after,
+.hg-tip[data-tip]:has(:focus-visible)::after {
+  content: attr(data-tip);
+  position: absolute;
+  z-index: 40;
+  bottom: calc(100% + var(--sp-2));
+  left: 50%;
+  translate: -50% 0;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-xs);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-caption);
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: var(--e2);
+  animation: hg-fade-in var(--dur-fade) var(--ease-standard) var(--tip-delay) backwards;
+}
+
+.hg-tip[data-tip][data-tip-side="end"]::after {
+  bottom: auto;
+  left: auto;
+  inset-inline-start: calc(100% + var(--sp-2));
+  top: 50%;
+  translate: 0 -50%;
+}
+
+/* Where the browser can anchor, the words float `fixed` against the control itself, so a scrolling
+   list (the folded sidebar's) never clips them; only the control that shows its words names the
+   anchor, and each tip scopes it, so two tips never share one. */
+@supports (anchor-name: --hg-tip) {
+  .hg-tip {
+    anchor-scope: --hg-tip;
+  }
+
+  .hg-tip[data-tip]:hover,
+  .hg-tip[data-tip]:focus-visible,
+  .hg-tip[data-tip]:has(:focus-visible) {
+    anchor-name: --hg-tip;
+  }
+
+  .hg-tip[data-tip]:hover::after,
+  .hg-tip[data-tip]:focus-visible::after,
+  .hg-tip[data-tip]:has(:focus-visible)::after {
+    position: fixed;
+    position-anchor: --hg-tip;
+    bottom: calc(anchor(top) + var(--sp-2));
+    left: anchor(center);
+  }
+
+  .hg-tip[data-tip][data-tip-side="end"]::after {
+    bottom: auto;
+    left: auto;
+    inset-inline-start: calc(anchor(end) + var(--sp-2));
+    top: anchor(center);
+  }
+}

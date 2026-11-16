@@ -1,17 +1,17 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
-import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
+import type { StatusTone } from '../StatusMark/StatusMark.types';
 import type { Finding, FindingListWords, FindingStatus } from './FindingList.types';
 import { jumpWords, statusOf } from './FindingList.verdict';
 import { FINDING_MARK_GLYPH, findingJump, findingStatusLabel } from './FindingListRow.logic';
@@ -26,7 +26,7 @@ export const FINDING_TONE: Record<FindingStatus, StatusTone> = {
 /* The warning MARK takes --warning-text: plain --warning clears no contrast floor. */
 const MARK_FILL: Record<FindingStatus, ThemeColor> = {
   blocking: colors.danger,
-  attention: colors['warning-text'],
+  attention: TONE.warning.ink,
   ready: colors.success,
 };
 
@@ -34,19 +34,12 @@ const MARK_FILL: Record<FindingStatus, ThemeColor> = {
 function Mark({ status }: { status: FindingStatus }) {
   return (
     <View style={[styles.mark, { backgroundColor: MARK_FILL[status] }]}>
-      <Svg
-        width={11}
-        height={11}
-        viewBox="0 0 24 24"
-        fill="none"
+      <ShellGlyph
+        name={FINDING_MARK_GLYPH[status]}
+        size="xs"
         // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-        stroke={colors['text-inverse']}
-        strokeWidth={3}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={FINDING_MARK_GLYPH[status]} />
-      </Svg>
+        ink={colors['text-inverse']}
+      />
     </View>
   );
 }
@@ -103,18 +96,7 @@ export function FindingListRow({ finding, words, onJump, jumpLabel }: FindingLis
                   size="md"
                   onClick={jump}
                   iconRight={
-                    <Svg
-                      width={15}
-                      height={15}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke={colors['text-primary']}
-                      strokeWidth={1.8}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <ShellGlyphMarks name="arrow-right" />
-                    </Svg>
+                    <ShellGlyph name="arrow-right" size="dense" ink={colors['text-primary']} />
                   }
                 >
                   {jumpName}

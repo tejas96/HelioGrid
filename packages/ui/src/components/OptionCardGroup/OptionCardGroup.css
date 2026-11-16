@@ -1,8 +1,8 @@
 /* OptionCardGroup — a card-shaped radiogroup. One tab stop, arrow keys move the selection.
    Each available option is a glass tile (F7-49), drawn by Ground.css's tiles list; an off option is
-   not, and lies on the page. Picked, a card turns to solar glass — the logo's light and a faint
-   PV-cell grid in its lit corner — and keeps a 2px accent ring PLUS a filled mark, so the pick is
-   never carried by colour alone. `current` is a different fact from selected and takes a word in a
+   not, and lies on the page. Picked, a card is OneOhm's quiet choice, as a chosen chip is: the fill
+   it had inside an ink outline, PLUS a filled mark, so the pick is never carried by colour alone —
+   no glow, no gradient. `current` is a different fact from selected and takes a word in a
    neutral pill (StatusMark), never the accent. */
 
 .hg-option-card-group {
@@ -62,23 +62,6 @@
     transform var(--dur-micro) var(--ease-standard);
 }
 
-/* The faint PV-cell grid of solar glass, in the picked card's lit corner. */
-.hg-option-card::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(var(--panel-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--panel-line) 1px, transparent 1px);
-  background-size: var(--sp-8) var(--sp-8);
-  -webkit-mask-image: radial-gradient(70% 120% at 100% 0%, var(--text-primary) 0%, transparent 70%);
-  mask-image: radial-gradient(70% 120% at 100% 0%, var(--text-primary) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity var(--dur-emphasised) var(--ease-standard);
-}
-
 /* A card with only its title — a language — centres it on its chip, with no empty line under it. */
 .hg-option-card:not(:has(.hg-option-card-description, .hg-option-card-content)) {
   align-items: center;
@@ -100,18 +83,10 @@
 }
 
 .hg-option-card[data-selected="true"]:not([data-off="true"]) {
-  background: var(--panel-glow);
   box-shadow:
-    0 0 0 2px var(--accent),
-    var(--e3);
-}
-
-.hg-option-card[data-selected="true"]:not([data-off="true"])::before {
-  opacity: 1;
-}
-
-[data-field-mode="on"] .hg-option-card[data-selected="true"]:not([data-off="true"]) {
-  background: var(--hg-ground);
+    inset 0 1px 0 var(--glass-edge),
+    0 0 0 1.5px var(--text-primary),
+    var(--e2);
 }
 
 /* Off the tiles' list, so it reads the ground that holds it. No fill: a grey tile is what can be
@@ -197,7 +172,7 @@
 }
 
 .hg-option-card-price {
-  font-size: 14px;
+  font-size: var(--fs-body-sm);
   font-weight: var(--fw-bold);
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -232,15 +207,10 @@
 .hg-option-card-meta {
   display: block;
   margin-top: 6px;
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 
-/* The option's icon in a chip at the card's start: the control fill at rest; picked, the logo's
-   disc with the icon in the inverse ink. */
+/* The option's icon in a chip at the card's start, on the control fill, picked or not. */
 .hg-option-card-icon {
   display: grid;
   flex-shrink: 0;
@@ -259,14 +229,4 @@
   width: var(--sp-10);
   height: var(--sp-10);
   border-radius: var(--rf-lg);
-}
-
-.hg-option-card[data-selected="true"]:not([data-off="true"]) .hg-option-card-icon {
-  background: var(--gradient-mark);
-  box-shadow: var(--e2);
-}
-
-/* The icon's ink on the logo's disc: the inverse, as on every mark the gradient holds. */
-.hg-option-card[data-selected="true"]:not([data-off="true"]) .hg-option-card-icon > * {
-  color: var(--text-inverse);
 }

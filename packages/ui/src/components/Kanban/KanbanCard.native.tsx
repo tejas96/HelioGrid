@@ -1,7 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project —
@@ -9,7 +8,7 @@ import { colors } from '../../primitives/Color/colors';
    spellings to the same module, so this is the same import, correctly typed. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Card } from '../Card/Card.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
@@ -43,18 +42,11 @@ function MoveControls({ columns, column, item, onMove, words }: MoveControlsProp
       }}
       style={styles.moveButton}
     >
-      <Svg
-        width={15}
-        height={15}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={target ? colors['text-tertiary'] : colors['text-disabled']}
-        strokeWidth={1.75}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={glyph} />
-      </Svg>
+      <ShellGlyph
+        name={glyph}
+        size="dense"
+        ink={target ? colors['text-tertiary'] : colors['text-disabled']}
+      />
     </Pressable>
   );
   return (

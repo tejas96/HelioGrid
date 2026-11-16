@@ -2,9 +2,9 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { Icon } from '../../primitives/Icon';
 import { rovingTargetOf } from '../../primitives/press-keys';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
+import { Chip } from '../Chip/Chip';
 import { facetGlyph, toggledFacets } from './FilterBar.logic';
 import type { FacetChipsProps } from './FilterBar.types';
 import { optionLabel, optionValue } from './FilterBar.types';
@@ -24,26 +24,12 @@ type Focusable = { focus: () => void };
 
 /** The tick is the second, non-colour channel — a set has to be readable without hue. */
 function Tick({ title }: { title: TranslatedText }) {
-  return (
-    <Icon size="sm">
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <title>{title}</title>
-        <ShellGlyphMarks name="tick" />
-      </svg>
-    </Icon>
-  );
+  return <ShellGlyph name="check" size="sm" tone="current" label={title} />;
 }
 
 /**
- * **Multi-select chips — how a dimension holds several values.** The kind chips' 44px pill — the
- * pill is the target. Selected chips take the accent wash *and a tick*, so a set is
+ * **Multi-select chips — how a dimension holds several values.** The kind chips' 32px pill in a 44px
+ * target. Selected chips take the ink outline *and a tick*, so a set is
  * readable without hue; an option's 18px glyph shows only while it is not selected, where the tick
  * takes its place.
  *
@@ -105,21 +91,25 @@ export function FacetChips({
             type="button"
             aria-pressed={on}
             tabIndex={index === firstStop ? 0 : -1}
-            className="hg-filter-target"
+            className="hg-filter-target hg-chip-target"
             onKeyDown={(event) => onKeyDown(index, event)}
             onClick={() => toggle(optValue)}
           >
-            <span
-              className="hg-filter-pill"
-              data-pill="chip"
-              data-active={on ? 'true' : undefined}
-              data-lead={on || icon ? 'true' : undefined}
+            <Chip
+              density="filter"
+              active={on}
+              leading={
+                on || icon ? (
+                  <>
+                    {on ? <Tick title={selectedLabel} /> : null}
+                    <OptionIcon icon={icon} />
+                  </>
+                ) : undefined
+              }
+              {...(count === undefined ? {} : { count })}
             >
-              {on ? <Tick title={selectedLabel} /> : null}
-              <OptionIcon icon={icon} />
               {optionLabel(option)}
-              {count === undefined ? null : <span className="hg-filter-count">{count}</span>}
-            </span>
+            </Chip>
           </button>
         );
       })}

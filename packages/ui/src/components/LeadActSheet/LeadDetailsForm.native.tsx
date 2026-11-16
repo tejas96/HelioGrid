@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { Input } from '../Input/Input.native';
 import { LeadActSend, type LeadFormFrame } from './LeadActSend.native';
 import type { LeadActForm } from './LeadActSheet.types';
+import { useReportHolds } from './use-form-holds';
 
 type DetailsForm = Extract<LeadActForm, { kind: 'details' }>;
 
@@ -21,6 +22,7 @@ export function LeadDetailsForm({ form, frame }: { form: DetailsForm; frame: Lea
     ...(draft.name === start.name ? {} : { name: draft.name }),
     ...(draft.city === start.city ? {} : { city: draft.city }),
   };
+  useReportHolds(frame.holds, Object.keys(changed).length > 0);
   return (
     <View style={styles.form}>
       <Input

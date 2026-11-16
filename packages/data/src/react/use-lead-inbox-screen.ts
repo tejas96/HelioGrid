@@ -18,7 +18,7 @@ import { useEffect, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { useRepositories } from './context';
 import { type LeadAssignees, useLeadAssignees } from './use-lead-assignees';
-import { type InboxActs, useLeadInboxActs } from './use-lead-inbox-acts';
+import { type InboxActs, useLeadInboxActs, without } from './use-lead-inbox-acts';
 import { usePaginatedList } from './use-paginated-list';
 import { useSession } from './use-session';
 
@@ -76,6 +76,10 @@ export interface LeadInboxScreen {
   pick(userId: string): void;
   readonly bulkReport: InboxActs['bulkReport'];
   dismissBulkReport(): void;
+  /** The last confirmed give or junk, for its toast; a junk's carries its Undo. */
+  readonly note: InboxActs['note'];
+  undoJunk(): void;
+  dismissNote(): void;
 }
 
 const NOTHING: InboxView<LeadSummary> = inboxViewOf(
@@ -139,6 +143,17 @@ export function useLeadInboxScreen(): LeadInboxScreen {
     if (deckId === null || deckId === cursor?.leadId) return;
     setCursor({ leadId: deckId, index: view.position });
   }, [deckId, cursor?.leadId, view.position]);
+
+  /* An undone junk brings back the lead the person was deciding on: once the read lists it again,
+     the deck holds it — once, so a step away from it afterwards stands. */
+  const restored = acts.note?.kind === 'restored' ? acts.note.lead.id : null;
+  const backAt = useRef(-1);
+  backAt.current =
+    restored === null ? -1 : view.queue.findIndex((card) => card.lead.id === restored);
+  const listed = backAt.current >= 0;
+  useEffect(() => {
+    if (restored !== null && listed) setCursor({ leadId: restored, index: backAt.current });
+  }, [restored, listed]);
 
   const leadOf = (leadId: string) => view.queue.find((card) => card.lead.id === leadId)?.lead;
   const assigneeOf = (userId: string) => team.people.find((person) => person.userId === userId);
@@ -217,12 +232,8 @@ export function useLeadInboxScreen(): LeadInboxScreen {
     },
     bulkReport: acts.bulkReport,
     dismissBulkReport: acts.dismissBulkReport,
+    note: acts.note,
+    undoJunk: acts.undoJunk,
+    dismissNote: acts.dismissNote,
   };
-}
-
-function without(set: ReadonlySet<string>, member: string): ReadonlySet<string> {
-  if (!set.has(member)) return set;
-  const next = new Set(set);
-  next.delete(member);
-  return next;
 }

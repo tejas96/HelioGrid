@@ -2,13 +2,14 @@ import type { ProjectPaymentEntry, ProjectPayments } from '@heliogrid/contracts'
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Card } from '../Card/Card.native';
+import { CardHeader } from '../Card/CardHeader.native';
 import { HueTile } from '../HueTile/HueTile.native';
 import { useFormat } from '../MarketProvider';
 import { Menu } from '../Menu/Menu.native';
-import { CardHead } from '../ProjectDetail/ProjectDetailParts.native';
+import { projectCard, projectHead } from '../ProjectDetail/ProjectDetailParts.native';
+import { StatusMark } from '../StatusMark/StatusMark.native';
 import { entriesNewestFirst, entryActsOf, paymentsAmountOf } from './ProjectMoney.logic';
 import type { ProjectMoneyProps } from './ProjectMoney.types';
 
@@ -22,8 +23,8 @@ export function MoneyEntries(props: EntriesProps) {
   const { payments, words } = props;
   const entries = entriesNewestFirst(payments.entries);
   return (
-    <Card density="functional" style={styles.card}>
-      <CardHead title={words.received} aside={null} />
+    <Card density="functional" style={projectCard}>
+      <CardHeader title={words.received} style={projectHead} />
       {entries.length === 0 ? (
         <View style={styles.none}>
           <Text variant="body-sm" color="secondary">
@@ -57,7 +58,6 @@ function EntryLine({
         glyph={isReversal ? 'undo' : 'rupee'}
         hue={isReversal || entry.reversed ? 'neutral' : 'success'}
         size={40}
-        stroke={1.8}
       />
       <View style={styles.text}>
         <View style={styles.title}>
@@ -98,7 +98,6 @@ function EntryMenu(props: EntriesProps & { readonly entry: ProjectPaymentEntry }
 }
 
 const styles = StyleSheet.create({
-  card: { padding: theme.spacing['sp-1'], gap: theme.spacing['sp-1'] },
   none: { paddingHorizontal: theme.spacing['sp-3'], paddingBottom: theme.spacing['sp-3'] },
   row: {
     flexDirection: 'row',

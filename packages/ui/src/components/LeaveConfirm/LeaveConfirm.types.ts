@@ -3,7 +3,8 @@ import type { TranslatedText } from '@heliogrid/contracts';
  * LeaveConfirm — *Leave without saving?* (`SCR-M01-18` s18-w, `SCR-M01-19` m19-n10): the ask a
  * settings page raises when the person moves away holding an unsaved change. The move waits on an
  * answer — no close and no dismissal, or a stray click outside would leave the change neither kept
- * nor dropped. Every word comes from the page that asks, already in the reader's language (`D2`).
+ * nor dropped; Android's Back answers *Keep*, the way back it always is. Every word comes from the
+ * page that asks, already in the reader's language (`D2`).
  */
 export interface LeaveConfirmProps {
   open: boolean;

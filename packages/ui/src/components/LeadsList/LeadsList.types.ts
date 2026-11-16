@@ -37,6 +37,8 @@ export interface LeadsListReadWords {
   sourceWord: (source: string) => TranslatedText;
   /** What comes next on a row, on the reader's calendar; `null` draws no mark. */
   next: (next: LeadRowNext) => TranslatedText | null;
+  /** When a lead was last touched — "6 h ago" — from the time since it. */
+  lastActivity: (elapsedMs: number) => TranslatedText;
   showMore: (count: number) => TranslatedText;
   loadingMore: TranslatedText;
 }

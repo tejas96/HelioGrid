@@ -121,7 +121,8 @@ export interface LeadHeroProps {
    * The corner pencil: opens the lead's name and city to fill or change (`M02-03`: a capture's gaps
    * are filled on first contact). Always offered — a gap shows as its named gap in the title.
    */
-  readonly onEditDetails: () => void;
+  /** Opens the details sheet; `null` on a closed lead, whose details wait for a reopen. */
+  readonly onEditDetails: (() => void) | null;
   /** Opens the assign picker (`M02-29`). */
   readonly onOwner: () => void;
   /** The owner by name — a fact — for the chip's face; null while the lead waits unassigned. */

@@ -55,6 +55,15 @@ export async function captureLead(
   return ((await answer.json()) as LeadDetail).lead.id;
 }
 
+/** *Mark qualified* through the api: the lead page offers *Mark won* only from Qualified on. */
+export async function qualifyThroughApi(page: Page, leadId: string): Promise<void> {
+  const answer = await page.request.post(`${API}/leads/${leadId}/qualified`, {
+    data: { capturedAt: new Date().toISOString() },
+    headers: { [IDEMPOTENCY_KEY_HEADER]: crypto.randomUUID() },
+  });
+  expect(answer.status()).toBe(200);
+}
+
 /**
  * *Mark won* through the api, as the lead page's sheet sends it: the company's one project manager
  * — its owner — a final value and an install date a month ahead (`markWonBody`).

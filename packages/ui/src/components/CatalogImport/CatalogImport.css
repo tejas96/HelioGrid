@@ -69,6 +69,7 @@
 }
 
 .hg-import-location-chevron {
+  display: inline-flex;
   color: var(--text-secondary);
 }
 

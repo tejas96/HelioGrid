@@ -2,10 +2,10 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { actionReasonFor, noteLineScale } from './ActionReason.logic';
 import type { ActionReasonInput, ActionReasonSpec } from './ActionReason.types';
 
@@ -15,20 +15,8 @@ interface NativeActionReasonProps extends ActionReasonSpec {
 
 /* A barred circle: "not yet". Not UnavailableNote's slashed circle ("not a thing here"), not an
    exclamation — nothing has gone wrong. */
-function BarredCircle({ size }: { size: number }) {
-  return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={colors['text-tertiary']}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-    >
-      <ShellGlyphMarks name="minus-circle" />
-    </Svg>
-  );
+function BarredCircle({ size }: { size: ShellGlyphSize }) {
+  return <ShellGlyph name="minus-circle" size={size} ink={colors['text-tertiary']} />;
 }
 
 const ALIGN: Record<'left' | 'center' | 'right', ViewStyle['justifyContent']> = {

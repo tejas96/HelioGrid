@@ -9,9 +9,9 @@ import { filterWithSortOf } from './ListTop.logic';
 import type { ListTopProps } from './ListTop.types';
 
 /**
- * The top every list page shares, on the web. Narrow: the hero, the search with the filter
- * circle — the order is the filter sheet's first choice — the chips in one row that scrolls, then
- * whose list as a small switch. Wide: the hero with the stages,
+ * The top every list page shares, on the web. Narrow: the hero, whose list as a switch across the
+ * width, the search with the filter circle — the order is the filter sheet's first choice — then
+ * the chips in one row that scrolls. Wide: the hero with the stages,
  * then whose list, the search, the named order and the filter in one toolbar, the chips under it.
  */
 export function ListTop({ summary, scope, search, sort, filter, chips, room }: ListTopProps) {
@@ -21,7 +21,7 @@ export function ListTop({ summary, scope, search, sort, filter, chips, room }: L
     <div className="hg-list-top" data-room={room}>
       <ListSummary summary={summary} room={room} />
       <div className="hg-list-top-tools">
-        {scope === null || room === 'narrow' ? null : (
+        {scope === null ? null : (
           <div className="hg-list-top-scope">
             <SegmentedControl {...scope} />
           </div>
@@ -40,11 +40,6 @@ export function ListTop({ summary, scope, search, sort, filter, chips, room }: L
         </div>
       </div>
       <FilterChips {...chips} scroll look={room === 'narrow' ? 'outlined' : 'filled'} />
-      {scope === null || room === 'wide' ? null : (
-        <div className="hg-list-top-scope">
-          <SegmentedControl {...scope} />
-        </div>
-      )}
       <FilterPanel
         open={filtering}
         onClose={() => setFiltering(false)}

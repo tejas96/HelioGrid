@@ -17,7 +17,7 @@ function Body(props: MessageSheetProps & { readonly composed: ComposedMessage })
     <div className="hg-message-sheet" aria-busy={out ? true : undefined}>
       {notice === undefined || notice === null ? null : (
         <div className="hg-message-notice">
-          <HueTile glyph="shield-check" hue="warning" size={40} stroke={1.7} />
+          <HueTile glyph="shield-check" hue="warning" size={40} />
           <span className="hg-message-notice-words">
             <b>{notice.title}</b>
             <span>{notice.line}</span>

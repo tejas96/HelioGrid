@@ -3,9 +3,11 @@ import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
+import { Card } from '../Card/Card.native';
 import { FoldHead } from '../FoldHead/FoldHead.native';
 import type { QualifyCardProps } from './QualifyCard.types';
 import { QualifyQuestion } from './QualifyQuestion.native';
@@ -20,6 +22,7 @@ export function QualifyCard({
   answered,
   onAnswer,
   onRetry,
+  locked,
   markQualified,
   foldable,
   words,
@@ -46,8 +49,8 @@ export function QualifyCard({
     </View>
   );
   return (
-    <View style={[tileSurface, styles.card]}>
-      <GroundProvider ground="tile">
+    <Card>
+      <View style={styles.card}>
         {foldable ? (
           <FoldHead
             title={words.title}
@@ -72,6 +75,7 @@ export function QualifyCard({
                 view={view}
                 onAnswer={onAnswer}
                 onRetry={onRetry}
+                locked={locked}
                 words={words}
               />
             ))
@@ -82,6 +86,7 @@ export function QualifyCard({
               variant="secondary"
               size="md"
               loading={markQualified.pending}
+              icon={<ShellGlyph name="check" size="sm" tone="secondary" />}
               onClick={markQualified.onPress}
             >
               {words.markQualified}
@@ -96,17 +101,14 @@ export function QualifyCard({
             )}
           </View>
         ) : null}
-      </GroundProvider>
-    </View>
+      </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    gap: theme.spacing['sp-3'],
-    padding: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-card-expressive'],
-  },
+  /* The card is the shared `Card`; this is only the space between its parts. */
+  card: { gap: theme.spacing['sp-3'] },
   head: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
   dots: { flexDirection: 'row', gap: theme.spacing['sp-1'] },
   headDots: { marginLeft: 'auto' },
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     backgroundColor: colors['canvas-sunken'],
   },
-  dotOn: { backgroundColor: colors['success-text'] },
+  dotOn: { backgroundColor: TONE.success.mark },
   dotFailed: { backgroundColor: colors.danger },
   mark: { gap: theme.spacing['sp-2'], paddingTop: theme.spacing['sp-2'] },
 });

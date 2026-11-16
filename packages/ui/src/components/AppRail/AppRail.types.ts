@@ -11,8 +11,8 @@ export interface RailItem {
   label: TranslatedText;
   icon: ReactNode;
   /**
-   * Filled variant, shown only while this item is active — the one place this system mixes
-   * filled and outlined icons. Falls back to `icon`.
+   * The icon in the in-view ink, shown only while this item is active — the same outline, as
+   * OneOhm's sidebar draws it. Falls back to `icon`.
    */
   activeIcon?: ReactNode;
   /**
@@ -43,6 +43,14 @@ export interface RailItem {
   anchor?: CoachMarkAnchor;
 }
 
+/** A named run of the sidebar's lists, under its overline. */
+export interface RailGroup {
+  key: string;
+  /** The overline, in the reader's language; the group's spoken name too. */
+  label: TranslatedText;
+  items: RailItem[];
+}
+
 /** The account at the sidebar's foot: who is signed in, their menu, and the theme switch. */
 export interface RailAccount {
   /**
@@ -62,8 +70,13 @@ export interface RailAccount {
 export interface AppRailProps {
   /** The navigation landmark's name, in the reader's language. */
   label: TranslatedText;
-  /** The work destinations, at the top and with no overline: Home, then the person's lists. */
+  /** The work destinations at the top, under no overline: Home — and every list when no group is given. */
   items: RailItem[];
+  /**
+   * The person's lists by group, each under its overline (Sales, Delivery, Team), after `items`.
+   * Folded, a hairline stands between the groups and each keeps its words as its spoken name.
+   */
+  groups?: RailGroup[];
   value?: string;
   onChange?: (key: string) => void;
   /** Utility buttons pinned above the account (the settings list). */

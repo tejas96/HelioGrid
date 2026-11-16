@@ -1,9 +1,9 @@
 import type { ImportColumnView } from '@heliogrid/domain';
 import { Text } from '../../primitives/Text/Text';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Select } from '../Select';
 import { columnChoiceOf } from './Import.logic';
 import type { ImportColumnsProps, ImportColumnsWords } from './Import.types';
-import { ImportGlyph } from './ImportGlyph';
 import { useLeftOutColumns } from './use-left-out-columns';
 import './Import.css';
 import './ImportColumns.css';
@@ -74,12 +74,9 @@ function MappingRow<Field extends string>(props: MappingRowProps<Field>) {
       ) : (
         header
       )}
-      <ImportGlyph
-        name="arrow-right"
-        size={wide ? 'sm' : 'xs'}
-        stroke={1.7}
-        className="hg-import-map-arrow"
-      />
+      <span className="hg-import-map-arrow">
+        <ShellGlyph name="arrow-right" size={wide ? 'sm' : 'xs'} tone="current" />
+      </span>
       <div className="hg-import-map-field">
         <Select
           {...columnChoiceOf(view, words, props.fields, left)}

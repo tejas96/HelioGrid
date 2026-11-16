@@ -56,6 +56,16 @@ export class CrmTasksService {
         [{ path: 'assigneeId', issue: 'an active member of the company' }],
       );
     }
+    if (outcome.outcome === 'day-past') {
+      throw dueDayPast();
+    }
+    if (outcome.outcome === 'lead-closed') {
+      throw new ContractException(
+        'LEAD_CLOSED',
+        'This lead is closed. Reopen it to plan more work on it.',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
     if (outcome.outcome === 'not-diallable') {
       throw new ContractException(
         'NUMBER_NOT_DIALLABLE',
@@ -71,8 +81,8 @@ export class CrmTasksService {
     return taskOf(await this.tasks.done(reader, taskId, new Date(body.capturedAt), act));
   }
 
-  async move(reader: LeadReader, taskId: string, body: MoveTask): Promise<Task> {
-    return taskOf(await this.tasks.move(reader, taskId, new Date(body.dueAt)));
+  async move(reader: LeadReader, taskId: string, body: MoveTask, act: Act): Promise<Task> {
+    return taskOf(await this.tasks.move(reader, taskId, new Date(body.dueAt), act.now));
   }
 
   async reopen(reader: LeadReader, taskId: string): Promise<Task> {
@@ -85,8 +95,21 @@ function taskOf(outcome: TaskActOutcome): Task {
   if (outcome.outcome === 'cancelled') {
     throw new ConflictException('A cancelled task is history and cannot change.');
   }
+  if (outcome.outcome === 'day-past') {
+    throw dueDayPast();
+  }
   if (outcome.outcome === 'not-open') {
     throw new ConflictException('Only an open task moves; a done one is reopened first.');
   }
   return outcome.task;
+}
+
+/** A due day before today on the company's clock, refused at its field (`F1-10`). */
+function dueDayPast(): ContractException {
+  return new ContractException(
+    'VALIDATION_FAILED',
+    'A task is due today or later.',
+    HttpStatus.BAD_REQUEST,
+    [{ path: 'dueAt', issue: 'today or later' }],
+  );
 }

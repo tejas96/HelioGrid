@@ -4,7 +4,7 @@ import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, glassTileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -20,6 +20,8 @@ import type { LeadPostponeSpan } from './LeadActSheet.parts.types';
 import type { LeadActForm } from './LeadActSheet.types';
 import { LeadChoiceChips } from './LeadChoiceChips.native';
 import { dayOf } from './LeadParkForms.native';
+import { firstMissing } from './missing-field';
+import { useReportHolds } from './use-form-holds';
 
 type LostForm = Extract<LeadActForm, { kind: 'lost' }>;
 
@@ -34,8 +36,16 @@ export function LeadLostForm({ form, frame }: { form: LostForm; frame: LeadFormF
   const [reason, setReason] = useState<LostReason | null>(null);
   const [span, setSpan] = useState<LeadPostponeSpan | null>(null);
   const [picked, setPicked] = useState<ISODate | null>(null);
+  useReportHolds(frame.holds, reason !== null);
   const resurfaceOn = resurfaceOnOf(reason, span, picked, postpone);
   const ready = lostReady(reason, resurfaceOn);
+  const waitingFor = ready
+    ? null
+    : firstMissing(frame.fields.needs, [
+        [reason === null, words.reasonLabel],
+        [span === null, words.whenLabel],
+        [true, words.dayLabel],
+      ]);
   /* *Postponed* opens on a month, the commonest answer, so it sends in one more tap; any other
      span is one tap away. */
   const choose = (next: LostReason) => {
@@ -81,6 +91,7 @@ export function LeadLostForm({ form, frame }: { form: LostForm; frame: LeadFormF
       <LeadActSend
         label={words.send(reason)}
         ready={ready}
+        waitingFor={waitingFor}
         pending={frame.pending}
         failure={frame.failure}
         onSend={() => {
@@ -149,15 +160,15 @@ function LostReasons({
                 haptic="selection"
                 onPress={() => onChange(each)}
                 style={[
-                  tileSurface,
+                  glassTileSurface,
                   styles.reason,
                   wide ? styles.wide : styles.half,
                   on ? styles.chosen : undefined,
                 ]}
               >
-                <HueTile glyph={look.glyph} hue={look.hue} size={36} stroke={1.7} />
+                <HueTile glyph={look.glyph} hue={look.hue} size={36} />
                 <View style={styles.reasonWords}>
-                  <Text variant="body-sm" bold color={on ? 'accent' : 'primary'}>
+                  <Text variant="body-sm" bold color="primary">
                     {form.words.reason[each]}
                   </Text>
                 </View>
@@ -210,12 +221,11 @@ const styles = StyleSheet.create({
   /* Two across: each half takes its share of the row less half the gap between them. */
   half: { flexBasis: '47%', flexGrow: 1 },
   wide: { flexBasis: '100%' },
-  /* The chosen reason is the accent wash inside the accent ring, as every chosen option is. The
-     ring is one point wider than the resting edge, so the padding gives that point back and the
-     words do not move. */
+  /* The chosen reason is the ink ring around ink words, as every chosen option is. The ring is one
+     point wider than the resting edge, so the padding gives that point back and the words do not
+     move. */
   chosen: {
-    backgroundColor: colors['accent-subtle'],
-    borderColor: colors.accent,
+    borderColor: colors['text-primary'],
     borderWidth: 2,
     paddingVertical: theme.spacing['sp-2'] - 1,
     paddingStart: theme.spacing['sp-2'] - 1,

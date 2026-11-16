@@ -1,37 +1,8 @@
-import { Icon } from '../../primitives/Icon';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
+import { StateRegion } from '../StateBody';
 import { UnavailableNote } from '../UnavailableNote';
 import { mapNoteOf } from './MapSurface.logic';
 import type { MapNoteProps, MapStateLayerProps, MapUnavailableProps } from './MapSurface.types';
-
-const AlertGlyph = (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    aria-hidden="true"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <ShellGlyphMarks name="alert-circle" />
-  </svg>
-);
-
-const EmptyGlyph = (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    aria-hidden="true"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <ShellGlyphMarks name="map" />
-  </svg>
-);
 
 /**
  * A failed tile fetch is `error` and offers a retry; nothing to show yet is `empty` and does
@@ -39,16 +10,18 @@ const EmptyGlyph = (
  */
 export function MapNote({ kind, title, message, onRetry, retry }: MapNoteProps) {
   return (
-    <div className="hg-map-surface-note">
-      <span className="hg-map-surface-mark" data-tone={kind === 'empty' ? 'neutral' : 'warning'}>
-        <Icon size="lg">{kind === 'empty' ? EmptyGlyph : AlertGlyph}</Icon>
-      </span>
-      <div className="hg-map-surface-note-title">{title}</div>
-      <div className="hg-map-surface-note-message">{message}</div>
-      {retry === undefined ? null : (
-        <RetryButton onRetry={onRetry} label={retry.label} focusAfter={retry.focusAfter} />
-      )}
-    </div>
+    <StateRegion
+      tone={kind === 'empty' ? undefined : 'warning'}
+      glyph="map"
+      title={title}
+      message={message}
+      action={
+        retry === undefined ? null : (
+          <RetryButton onRetry={onRetry} label={retry.label} focusAfter={retry.focusAfter} />
+        )
+      }
+      className="hg-map-surface-note"
+    />
   );
 }
 
@@ -56,7 +29,11 @@ export function MapNote({ kind, title, message, onRetry, retry }: MapNoteProps) 
 export function MapStateLayer(props: MapStateLayerProps) {
   if (props.state === 'loading') {
     return (
-      <div role="status" aria-label={props.words.loading} className="hg-map-surface-skeleton" />
+      <div
+        role="status"
+        aria-label={props.words.loading}
+        className="hg-map-surface-skeleton hg-skeleton"
+      />
     );
   }
   if (props.state === 'unavailable') {

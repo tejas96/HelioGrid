@@ -1,3 +1,7 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { SidebarGroup } from '@heliogrid/domain';
+import type { Translator } from '../runtime';
+
 /**
  * The desktop sidebar's own words (direction A of the redesign): its search's prompt, the quiet
  * tag on a list whose module has not landed, the collapse control and the account's line.
@@ -15,3 +19,14 @@ export const SIDEBAR = {
   /** The account block's quiet line: the role in force and the company. */
   roleAt: /*i18n*/ { id: '{role} · {company}' },
 } as const;
+
+/** Each group's overline, the words another screen already shows for the same work. */
+const SIDEBAR_GROUP_LABEL: Record<SidebarGroup, { id: string }> = {
+  sales: /*i18n*/ { id: 'Sales' },
+  delivery: /*i18n*/ { id: 'Delivery' },
+  team: /*i18n*/ { id: 'Team' },
+};
+
+export function sidebarGroupLabel(translate: Translator['t'], group: SidebarGroup): TranslatedText {
+  return translate(SIDEBAR_GROUP_LABEL[group]);
+}

@@ -29,6 +29,11 @@ const ACTS = {
   bulkGiven: /*i18n*/ {
     id: '{count, plural, one {# lead given to {name}} other {# leads given to {name}}}',
   },
+  givenOne: /*i18n*/ { id: 'Lead given to {name}' },
+  binned: /*i18n*/ { id: 'Lead binned as junk' },
+  unbinned: /*i18n*/ { id: 'Lead back in the inbox' },
+  unbinFailed: /*i18n*/ { id: 'Not undone — the lead stays in junk. Try from the lead itself.' },
+  undo: /*i18n*/ { id: 'Undo' },
   bulkRefused: /*i18n*/ {
     id: "{count, plural, one {# couldn't be given — it stays, with the reason} other {# couldn't be given — they stay, with the reason}}",
   },
@@ -100,4 +105,39 @@ export function bulkAssignToasts(t: T, report: BulkAssignReportFacts | null) {
   if (report.refused === 0) return [{ id: 'bulk', tone: 'success' as const, title }];
   const description = t(ACTS.bulkRefused, { count: report.refused });
   return [{ id: 'bulk', tone: 'warning' as const, title, description }];
+}
+
+/** The last confirmed single act, as its toast tells it — `InboxActNote` in `@heliogrid/data`. */
+export type InboxNoteFacts =
+  | { readonly kind: 'given'; readonly lead: { readonly id: string }; readonly name: string }
+  | {
+      readonly kind: 'junked' | 'restored' | 'undo-failed';
+      readonly lead: { readonly id: string };
+    };
+
+/**
+ * A confirmed give or junk, said once (`M02-24`): a junk carries its *Undo*, the way back from a
+ * mistaken tap. The id names the act and its lead, so the same note keeps its toast's clock.
+ */
+export function inboxNoteToast<Focus>(
+  t: T,
+  note: InboxNoteFacts,
+  undo: { readonly onUndo: () => void; readonly focusAfter: Focus },
+) {
+  const id = `${note.kind}-${note.lead.id}`;
+  switch (note.kind) {
+    case 'given':
+      return { id, tone: 'success' as const, title: t(ACTS.givenOne, { name: note.name }) };
+    case 'junked':
+      return {
+        id,
+        tone: 'neutral' as const,
+        title: t(ACTS.binned),
+        undo: { label: t(ACTS.undo), ...undo },
+      };
+    case 'restored':
+      return { id, tone: 'success' as const, title: t(ACTS.unbinned) };
+    case 'undo-failed':
+      return { id, tone: 'danger' as const, title: t(ACTS.unbinFailed) };
+  }
 }

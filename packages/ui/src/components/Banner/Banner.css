@@ -28,6 +28,7 @@
 }
 
 .hg-banner-glyph {
+  display: inline-flex;
   flex-shrink: 0;
   margin-top: 1px;
 }
@@ -81,31 +82,6 @@
 
 /* ── the tone pairs ─────────────────────────────────────────────────────────── */
 
-.hg-banner[data-tone="danger"],
-.hg-banner-pill[data-tone="danger"] {
-  color: var(--danger-text);
-  background: var(--danger-bg);
-}
-.hg-banner[data-tone="warning"],
-.hg-banner-pill[data-tone="warning"] {
-  color: var(--warning-text);
-  background: var(--warning-bg);
-}
-.hg-banner[data-tone="info"],
-.hg-banner-pill[data-tone="info"] {
-  color: var(--info-text);
-  background: var(--info-bg);
-}
-.hg-banner[data-tone="success"],
-.hg-banner-pill[data-tone="success"] {
-  color: var(--success-text);
-  background: var(--success-bg);
-}
-.hg-banner[data-tone="accent"],
-.hg-banner-pill[data-tone="accent"] {
-  color: var(--accent);
-  background: var(--accent-subtle);
-}
 .hg-banner[data-tone="neutral"],
 .hg-banner-pill[data-tone="neutral"] {
   color: var(--text-secondary);

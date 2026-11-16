@@ -6,7 +6,7 @@
   flex-direction: column;
   gap: var(--sp-1);
   padding: var(--tile-pad);
-  border-radius: var(--r-tile);
+  border-radius: var(--r-lg);
 }
 
 /* An email has no spaces to break at; without this it runs past the tile. */

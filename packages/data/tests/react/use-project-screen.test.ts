@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+
 import { act, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { PickedFile } from '../../src/react/picked-file';

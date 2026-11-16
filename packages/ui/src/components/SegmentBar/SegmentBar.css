@@ -1,0 +1,28 @@
+/* SegmentBar — the one share bar: each part as wide as its share, a pill each, a hair between. */
+
+.hg-segment-bar {
+  display: flex;
+  gap: var(--sp-0-5);
+}
+
+.hg-segment-bar-part {
+  display: block;
+  flex-basis: 0;
+  min-width: var(--sp-1);
+  height: var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--accent);
+}
+
+.hg-segment-bar[data-size="sm"] > .hg-segment-bar-part {
+  height: var(--sp-1);
+}
+
+.hg-segment-bar[data-size="lg"] > .hg-segment-bar-part {
+  height: var(--sp-3);
+}
+
+/* A part too thin to see holds the floor. */
+.hg-segment-bar-part[data-thin="true"] {
+  min-width: var(--sp-2);
+}

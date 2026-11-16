@@ -5,8 +5,9 @@ import { AppearanceSwitch } from '../AppearanceSwitch/AppearanceSwitch.native';
 import type { RailAccount as RailAccountProps } from './AppRail.types';
 
 /**
- * The sidebar's foot: the person signed in — one row, avatar, name, role and company, that opens
- * their menu — and the theme switch under them. Folded, the theme's one button over the avatar.
+ * The sidebar's foot, as OneOhm's: the theme switch across the rail's width, and under it the person
+ * signed in — one row, avatar, name, role and company, that opens their menu. Folded, the theme's
+ * one button over the avatar.
  */
 export function RailAccount({ account, folded }: { account: RailAccountProps; folded: boolean }) {
   if (folded) {
@@ -21,13 +22,13 @@ export function RailAccount({ account, folded }: { account: RailAccountProps; fo
   }
   return (
     <View style={styles.account}>
+      {account.appearance === undefined ? null : (
+        <AppearanceSwitch {...account.appearance} form="icons" />
+      )}
       <AccountMenu
         {...account.menu}
         row={account.caption === undefined ? {} : { caption: account.caption }}
       />
-      {account.appearance === undefined ? null : (
-        <AppearanceSwitch {...account.appearance} form="icons" />
-      )}
     </View>
   );
 }
@@ -38,6 +39,6 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
   },
   account: {
-    gap: theme.spacing['sp-2'],
+    gap: theme.spacing['sp-3'],
   },
 });

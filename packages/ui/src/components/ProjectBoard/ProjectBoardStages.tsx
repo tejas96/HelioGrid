@@ -38,7 +38,7 @@ function Group(props: StagesProps & { group: StageGroup }) {
   return (
     <section className="hg-project-board-group" aria-labelledby={heading}>
       <div className="hg-project-board-group-head">
-        <h3 id={heading} className="hg-project-board-overline">
+        <h3 id={heading} className="hg-project-board-overline hg-overline">
           {words.stage(group.stage)}
         </h3>
         <span className="hg-project-board-count">{group.rows.length}</span>

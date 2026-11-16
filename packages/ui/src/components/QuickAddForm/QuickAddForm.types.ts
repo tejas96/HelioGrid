@@ -94,6 +94,8 @@ export interface QuickAddScreenFacts {
   dismissSaveFailure(): void;
   /** The duplicate sheet is up over the capture: the capture waits under it. */
   readonly duplicate: object | null;
+  /** The ask a close over typing raises; the capture closes only on *Discard*. */
+  readonly leave: { readonly asking: boolean; stay(): void; leave(): void };
 }
 
 /** The capture's words for this moment, built in `@heliogrid/i18n` (`quickAddWords`). */

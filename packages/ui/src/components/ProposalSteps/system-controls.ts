@@ -138,7 +138,7 @@ export function systemControls(view: SystemStepView, shared: ProposalStepWords):
     priceControl(view, shared),
     noTax === undefined
       ? null
-      : { kind: 'note', key: 'no-tax', notice: noTax, tone: 'info', glyph: 'info-circle' },
+      : { kind: 'note', key: 'no-tax', notice: noTax, tone: 'info', glyph: 'info' },
     { kind: 'folds', key: 'folds', rows: systemFolds(view, shared) },
   ]);
 }

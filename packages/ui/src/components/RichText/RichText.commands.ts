@@ -26,7 +26,7 @@ export const CMD: ToolCommand[] = [
   { key: 'ol', cmd: 'insertOrderedList', word: 'numberedList', glyph: 'list-number' },
 ];
 
-export const LINK_GLYPH: ShellGlyphName = 'link-wide';
+export const LINK_GLYPH: ShellGlyphName = 'link';
 
 /** The link field's hint: a scheme, read the same in every language. */
 export const LINK_SCHEME = 'https://';

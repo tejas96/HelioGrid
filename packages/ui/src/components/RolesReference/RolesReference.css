@@ -69,13 +69,13 @@
 }
 
 .hg-roles-reference-tile:first-child > .hg-role-tile {
-  border-start-start-radius: var(--r-tile);
-  border-start-end-radius: var(--r-tile);
+  border-start-start-radius: var(--r-lg);
+  border-start-end-radius: var(--r-lg);
 }
 
 .hg-roles-reference-tile:last-child > .hg-role-tile {
-  border-end-start-radius: var(--r-tile);
-  border-end-end-radius: var(--r-tile);
+  border-end-start-radius: var(--r-lg);
+  border-end-end-radius: var(--r-lg);
 }
 
 /* The room decides, the open panel's reserve taken out: tiles three across from 560, four from
@@ -95,7 +95,7 @@
     align-items: flex-start;
     gap: var(--sp-2);
     padding: var(--tile-pad);
-    border-radius: var(--r-tile);
+    border-radius: var(--r-lg);
   }
 
   .hg-pressable.hg-role-tile > :nth-child(2) {
@@ -111,7 +111,7 @@
 
 .hg-pressable.hg-role-tile {
   transition:
-    transform var(--dur-standard) var(--ease-spring),
+    transform var(--dur-spring-snappy) var(--ease-spring-snappy),
     box-shadow var(--dur-standard) var(--ease-standard);
 }
 

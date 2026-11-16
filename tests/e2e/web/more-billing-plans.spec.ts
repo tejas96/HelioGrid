@@ -227,7 +227,8 @@ test('a member sees the plans and whose act it is, with no price', async ({ page
   });
   await openPlans(page);
   await expect(page.getByText(en.t(P.changeThisPlan), { exact: false })).toBeVisible();
-  await expect(page.getByRole('radiogroup')).toHaveCount(0);
+  /* The plan choice; the sidebar's theme switch is a radiogroup of its own, outside the page. */
+  await expect(page.getByRole('main').getByRole('radiogroup')).toHaveCount(0);
   await expect(page.getByRole('button', { name: en.t(P.reviewChange) })).toHaveCount(0);
   await expect(page.getByText('₹')).toHaveCount(0);
   await expectNoSeriousViolations(page);

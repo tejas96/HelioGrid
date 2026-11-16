@@ -1,10 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, glassTileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { stageSharesOf } from './StageMeter.logic';
+import { segmentSharesOf } from '../SegmentBar/SegmentBar.logic';
+import { SegmentBar } from '../SegmentBar/SegmentBar.native';
 import type { StageMeterProps, StageMeterStage } from './StageMeter.types';
 
 /**
@@ -13,7 +14,7 @@ import type { StageMeterProps, StageMeterStage } from './StageMeter.types';
  * a button that filters to its stage.
  */
 export function StageMeter({ stages, chosen, onPick, form, words }: StageMeterProps) {
-  const shares = stageSharesOf(stages);
+  const shares = segmentSharesOf(stages, true);
   const stageButtons = stages.map((one, index) => (
     <StageButton
       key={one.stage}
@@ -25,7 +26,7 @@ export function StageMeter({ stages, chosen, onPick, form, words }: StageMeterPr
     />
   ));
   return (
-    <View style={[tileSurface, styles.meter]}>
+    <View style={[glassTileSurface, styles.meter]}>
       <GroundProvider ground="tile">
         {form === 'card' ? (
           <>
@@ -37,11 +38,11 @@ export function StageMeter({ stages, chosen, onPick, form, words }: StageMeterPr
                 {words.hint}
               </Text>
             </View>
-            <View style={styles.bar} importantForAccessibility="no-hide-descendants">
-              {stages.map((one, index) => (
-                <View key={one.stage} style={[styles.share, { flexGrow: shares[index] ?? 0 }]} />
-              ))}
-            </View>
+            <SegmentBar
+              parts={stages.map((one) => ({ key: one.stage, count: one.count }))}
+              size="sm"
+              keepEmpty
+            />
             <View style={styles.cardStages}>{stageButtons}</View>
           </>
         ) : (
@@ -66,6 +67,7 @@ function StageButton({
   onPick: StageMeterProps['onPick'];
   words: StageMeterProps['words'];
 }) {
+  const { controlFill } = useGround();
   return (
     <Pressable
       accessibilityLabel={words.spoken(one.stage, one.count)}
@@ -74,7 +76,7 @@ function StageButton({
       style={[
         styles.stage,
         share === null ? styles.cardStage : { flexGrow: share, flexBasis: 0 },
-        chosen ? styles.chosenStage : undefined,
+        chosen ? [styles.chosenStage, { backgroundColor: controlFill }] : undefined,
       ]}
     >
       {share === null ? null : <View style={[styles.share, styles.bandShare]} />}
@@ -101,7 +103,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
   },
-  bar: { flexDirection: 'row', gap: theme.spacing['sp-0-5'] },
   share: {
     flexBasis: 0,
     minWidth: theme.spacing['sp-1'],
@@ -127,8 +128,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-2'],
     paddingVertical: theme.spacing['sp-1'],
     borderRadius: theme.radius['r-tile'],
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
-  /* The chosen stage is the accent wash, as every chosen filter is — calm however wide its share. */
-  chosenStage: { backgroundColor: colors['accent-subtle'] },
-  chosenWords: { color: colors['accent-text'] },
+  /* The chosen stage is OneOhm's quiet choice, as every chosen filter is: the control fill inside an
+     ink outline — calm however wide its share. */
+  chosenStage: { borderColor: colors['text-primary'] },
+  chosenWords: { color: colors['text-primary'] },
 });

@@ -1,14 +1,14 @@
 import type { MyDay, MyDayItem } from '@heliogrid/contracts';
 import { useFocusAfter } from '../../primitives/FocusAfter';
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { Button } from '../Button';
 import { CardRow, CardRows } from '../CardRows';
 import { Checkbox } from '../Checkbox';
 import { IconButton } from '../IconButton';
 import { useFormat } from '../MarketProvider';
 import { Menu } from '../Menu';
+import { StatusMark } from '../StatusMark';
 import { BAND_HEAD, whenOf } from './MyDay.logic';
 import type { MyDayBandRows, MyDayProps } from './MyDay.types';
 import { useTaskRow } from './use-task-row';
@@ -26,7 +26,7 @@ export function MyDayBand(props: BandProps) {
     <section className="hg-my-day-band" data-band={band.band} aria-label={title}>
       <div className="hg-my-day-band-head">
         <ShellGlyph name={head.glyph} size="sm" tone={head.tone} />
-        <h3 className="hg-my-day-band-title">{title}</h3>
+        <h3 className="hg-my-day-band-title hg-overline">{title}</h3>
         <span className="hg-my-day-count">{band.count}</span>
       </div>
       <CardRows form="joined">
@@ -39,7 +39,7 @@ export function MyDayBand(props: BandProps) {
           <Button
             variant="ghost"
             size="md"
-            iconRight={<ShellGlyph name="caret-down" size="sm" tone="secondary" />}
+            iconRight={<ShellGlyph name="chevron" size="sm" tone="secondary" />}
             onClick={() => props.onExpand(band.band)}
           >
             {words.showMore(band.hidden)}

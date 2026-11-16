@@ -14,7 +14,7 @@ import type { SheetAcceleratorProps } from './CatalogItemForm.parts.types';
 export function SheetAccelerator({ title, sub, disabled, onPress }: SheetAcceleratorProps) {
   return (
     <Pressable disabled={disabled} onPress={onPress} style={styles.tile}>
-      <HueTile glyph="spreadsheet" hue="teal" size={40} stroke={1.6} />
+      <HueTile glyph="spreadsheet" hue="teal" size={40} />
       <View style={styles.words}>
         <Text variant="body-sm" bold>
           {title}
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     paddingVertical: theme.spacing['sp-3'],
     paddingHorizontal: 14,
-    borderRadius: 18,
+    borderRadius: theme.radius['r-tile'],
   },
   words: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
 });

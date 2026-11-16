@@ -27,7 +27,7 @@ export function PlanCard({ form, name, figure, gap, note, lines }: PlanCardProps
           <ul className="hg-plan-card-lines" aria-label={name}>
             {line.values.map((value) => (
               <li key={value} className="hg-plan-card-line">
-                <ShellGlyph name="tick-small" size="sm" tone="success" />
+                <ShellGlyph name="check" size="sm" tone="success" />
                 <span>{value}</span>
               </li>
             ))}

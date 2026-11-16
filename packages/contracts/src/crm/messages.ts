@@ -11,7 +11,7 @@ const c = initContract();
 /*
  * Customer messages as copy-paste text (`M02-33`, `M02-47`, `M02-48`): the
  * tenant's template filled for this lead, handed back to be sent from the person's own phone. The
- * timeline records "Message copied" and never claims a delivery.
+ * timeline records the message as ready to send (kind `message_copied`) and never claims a delivery.
  */
 
 /** The two messages the CRM composes: the visit confirmation, and the follow-up nudge. */
@@ -50,7 +50,7 @@ export const leadMessagesContract = c.router({
     headers: createHeadersSchema,
     body: composeMessageSchema,
     summary:
-      'Compose a customer message as text to copy — the timeline records it was copied and claims no delivery',
+      'Compose a customer message as text to copy — the timeline records it as ready to send and claims no delivery',
     responses: {
       201: composedMessageSchema,
       401: unauthenticatedEnvelope,

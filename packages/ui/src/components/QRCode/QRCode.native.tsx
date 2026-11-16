@@ -13,7 +13,8 @@ import { StyleSheet, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { darkModules, drawableCode, quietZonedSide, wordsWidth } from './QRCode.logic';
 import type { QRCodeProps } from './QRCode.types';
 
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-4'],
-    backgroundColor: colors['warning-bg'],
+    backgroundColor: TONE.warning.tint,
     borderRadius: theme.radius['r-md'],
   },
   failedTitle: { fontWeight: '700' },
@@ -80,17 +81,7 @@ export function QRCode({
       <View style={[styles.root, style]}>
         {/* `size` is caller data, not a design value — the only reason a dimension is inline. */}
         <View style={[styles.failed, { width: size, height: size }]}>
-          <Svg
-            width={24}
-            height={24}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={colors['warning-text']}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-          >
-            <ShellGlyphMarks name="alert-circle" />
-          </Svg>
+          <ShellGlyph name="alert-circle" size="lg" ink={TONE.warning.ink} />
           <Text variant="body-sm" style={styles.failedTitle}>
             {errorTitle}
           </Text>

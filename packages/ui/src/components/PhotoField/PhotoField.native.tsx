@@ -14,6 +14,8 @@ import type { PhotoRemoval } from './PhotoField.logic';
 import { actLabel, drawsNamelessMark, isDesktopComposition, removalOf } from './PhotoField.logic';
 import type { PhotoFieldProps } from './PhotoField.types';
 
+// web-only part: Dropzone — the web takes a dropped file; nothing is dropped on a phone.
+
 interface NativePhotoFieldProps extends PhotoFieldProps {
   style?: StyleProp<ViewStyle>;
 }

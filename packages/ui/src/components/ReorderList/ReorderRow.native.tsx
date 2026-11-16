@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
 /** The row's own density scale. The list reads `gap` off it so the rhythm between rows matches the
  *  padding inside them, and the empty message sits on the same vertical step. */
 export const REORDER_PADS = {
-  expressive: { padding: 14, gap: 10, radius: theme.radius['r-md'] },
+  expressive: { padding: 14, gap: 10, radius: theme.radius['r-lg'] },
   functional: {
     padding: 10,
     gap: theme.spacing['sp-2'],

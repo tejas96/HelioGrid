@@ -4,13 +4,17 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE } from '../../primitives/FieldBox/FieldBox.native';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
+import {
+  GroundProvider,
+  glassTileSurface,
+  tileSurface,
+} from '../../primitives/Ground/Ground.native';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Pressable`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { StateBody } from '../StateBody/StateBody.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { CardProps, IconCircleProps } from './Card.types';
-import { CardBody } from './CardBody.native';
 
 type NativeCardProps = CardProps & {
   style?: StyleProp<ViewStyle>;
@@ -29,7 +33,8 @@ const styles = StyleSheet.create({
        so the ring is the field's inset edge, always present and only changing colour — the frame
        must not move between selected and unselected. */
     borderWidth: FIELD_BOX_EDGE,
-    borderColor: 'transparent',
+    /* At rest the tile's own hairline (`tileSurface`), as the web's `0 0 0 1px var(--line-soft)`. */
+    borderColor: colors['line-soft'],
   },
   selected: { borderColor: colors.accent },
   /* Raised: a white card set on the page, not a tile — a page ground (`GroundProvider ground="page"`).
@@ -48,10 +53,12 @@ const styles = StyleSheet.create({
     outlineStyle: 'solid',
   },
   /* The edge sits inside the tile's padding, so the words start where the web's do. */
+  /* A solid tile is OneOhm's card, radius 24; a glass one keeps the tile's own radius. */
   expressive: {
-    borderRadius: theme.radius['r-tile'],
+    borderRadius: theme.radius['r-lg'],
     padding: theme.layout['tile-pad'] - FIELD_BOX_EDGE,
   },
+  glassExpressive: { borderRadius: theme.radius['r-tile'] },
   functional: {
     borderRadius: theme.radius['r-card-functional'],
     padding: theme.spacing['sp-4'],
@@ -64,8 +71,8 @@ const styles = StyleSheet.create({
 });
 
 /**
- * The tile (`F7-49`): one record, grey on the white page, no shadow; a control inside it turns
- * white. `surface="raised"` is the white card set on the page instead. Ships loading / empty /
+ * The tile (`F7-49`): one record, the card colour inside a hairline — a summary card is glass
+ * (`tile="glass"`); a control inside it takes the fill. `surface="raised"` is the white card set on the page instead. Ships loading / empty /
  * error / unavailable, like every surface (law 1).
  */
 export function Card({
@@ -74,6 +81,7 @@ export function Card({
   interactive = false,
   selected = false,
   surface = 'tile',
+  tile = 'solid',
   label,
   read,
   loadingLabel,
@@ -95,7 +103,7 @@ export function Card({
   const raised = surface === 'raised';
   const body = (
     <GroundProvider ground={raised ? 'page' : 'tile'}>
-      <CardBody
+      <StateBody
         state={state}
         loadingLabel={loadingLabel}
         emptyTitle={emptyTitle}
@@ -110,18 +118,14 @@ export function Card({
         unavailableMessage={unavailableMessage}
       >
         {children}
-      </CardBody>
+      </StateBody>
     </GroundProvider>
   );
 
+  /* Hover has no touch equivalent; Pressable owns the pressed feedback. */
   const frame: StyleProp<ViewStyle> = [
-    raised ? null : tileSurface,
-    raised ? null : styles.card,
-    density === 'functional' ? styles.functional : styles.expressive,
-    raised ? styles.raised : null,
-    raised && density !== 'functional' ? styles.raisedExpressive : null,
+    ...(raised ? raisedFrame(density) : tileFrame(density, tile)),
     selected ? (raised ? styles.raisedSelected : styles.selected) : null,
-    /* Hover has no touch equivalent; Pressable owns the pressed feedback. */
     style,
   ];
 
@@ -146,6 +150,27 @@ export function Card({
       {body}
     </View>
   );
+}
+
+/** A tile card's frame: its kind's surface, the field's edge, its density's radius and padding. */
+function tileFrame(
+  density: NonNullable<CardProps['density']>,
+  tile: NonNullable<CardProps['tile']>,
+): StyleProp<ViewStyle>[] {
+  const expressive = density !== 'functional';
+  return [
+    tile === 'glass' ? glassTileSurface : tileSurface,
+    styles.card,
+    expressive ? styles.expressive : styles.functional,
+    expressive && tile === 'glass' ? styles.glassExpressive : null,
+  ];
+}
+
+/** A raised card's frame: the white card on the page, the whole tile padding when expressive. */
+function raisedFrame(density: NonNullable<CardProps['density']>): StyleProp<ViewStyle>[] {
+  return density === 'functional'
+    ? [styles.functional, styles.raised]
+    : [styles.expressive, styles.raised, styles.raisedExpressive];
 }
 
 /**

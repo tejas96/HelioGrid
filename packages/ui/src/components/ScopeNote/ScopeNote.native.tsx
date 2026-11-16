@@ -2,10 +2,10 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { TONE } from '../../primitives/Tone/tone.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { ScopeNoteProps, ScopeNoteSpec } from './ScopeNote.types';
 import { composeScopeLine, scopeNoteFor, scopeNoteSize } from './scope-note-line';
 
@@ -17,20 +17,8 @@ type NativeScopeNoteProps = ScopeNoteProps & {
  * A person: whose act this is. Not a lock — the screen is not locked, and the reader is not shut
  * out of anything they can see.
  */
-function Glyph({ size }: { size: number }) {
-  return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={colors['text-tertiary']}
-      strokeWidth={1.5}
-      strokeLinecap="round"
-    >
-      <ShellGlyphMarks name="person" />
-    </Svg>
-  );
+function Glyph() {
+  return <ShellGlyph name="user" size="sm" ink={colors['text-tertiary']} />;
 }
 
 /**
@@ -60,7 +48,7 @@ export function ScopeNote(props: NativeScopeNoteProps) {
       ]}
     >
       <View style={styles.mark}>
-        <Glyph size={panel ? 18 : 16} />
+        <Glyph />
       </View>
       <View style={[styles.lines, centred ? styles.centredItems : styles.startItems]}>
         {line !== null ? (
@@ -103,7 +91,7 @@ const styles = StyleSheet.create({
   panel: {
     padding: 14,
     borderRadius: theme.radius['r-sm'],
-    backgroundColor: colors['neutral-bg'],
+    backgroundColor: TONE.neutral.tint,
   },
   start: { justifyContent: 'flex-start' },
   centred: { justifyContent: 'center' },

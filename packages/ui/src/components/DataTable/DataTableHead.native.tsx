@@ -1,9 +1,8 @@
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Checkbox } from '../Checkbox/Checkbox.native';
@@ -30,19 +29,9 @@ const styles = StyleSheet.create({
 
 function SortGlyph({ dir, active }: { dir: DataTableSort['dir'] | null; active: boolean }) {
   return (
-    <Svg
-      width={12}
-      height={12}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={colors['text-tertiary']}
-      strokeWidth={3}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      opacity={active ? 1 : 0.35}
-    >
-      <ShellGlyphMarks name={sortGlyphOf(dir)} />
-    </Svg>
+    <View style={{ opacity: active ? 1 : 0.35 }}>
+      <ShellGlyph name={sortGlyphOf(dir)} size="xs" ink={colors['text-tertiary']} />
+    </View>
   );
 }
 

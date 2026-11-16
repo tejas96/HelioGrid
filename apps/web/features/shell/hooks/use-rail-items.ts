@@ -1,9 +1,15 @@
 'use client';
 import type { SettingsScreen, Shell, Sidebar } from '@heliogrid/data/react';
 import { SETTINGS_SEGMENT, type StandingDestination } from '@heliogrid/domain';
-import { destinationLabel, SIDEBAR, settingsWords } from '@heliogrid/i18n';
+import { destinationLabel, SIDEBAR, settingsWords, sidebarGroupLabel } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { DESTINATION_GLYPH, type RailItem, ShellGlyph } from '@heliogrid/ui';
+import {
+  DESTINATION_GLYPH,
+  type RailGroup,
+  type RailItem,
+  ShellGlyph,
+  type ShellGlyphSize,
+} from '@heliogrid/ui';
 import { createElement } from 'react';
 import { usePrefetch, useShownPath } from '../../../lib/instant-move';
 import { HOME_ROUTE } from '../../auth';
@@ -15,9 +21,10 @@ const SETTINGS_KEY = 'settings';
 interface RailItems {
   /** The phone pill's items — every standing destination, More last — and the one in view. */
   readonly pill: { items: RailItem[]; inView: string | undefined };
-  /** The desktop sidebar: the work above, the settings list at the foot. */
+  /** The desktop sidebar: Home above, the work lists in their groups, the settings list at the foot. */
   readonly rail: {
     items: RailItem[];
+    groups: RailGroup[];
     footer: RailItem[];
     value: string | undefined;
   };
@@ -32,7 +39,7 @@ interface RailItems {
  */
 export function useRailItems(
   shell: Pick<Shell, 'destinations'>,
-  sidebar: Pick<Sidebar, 'soon' | 'lists'>,
+  sidebar: Pick<Sidebar, 'soon' | 'lists' | 'groups'>,
   settings: Pick<SettingsScreen, 'firstBeside'>,
   goTo: (path: string) => void,
 ): RailItems {
@@ -56,34 +63,38 @@ export function useRailItems(
       ? DOOR_PATH.more
       : settingsRowPath(SETTINGS_SEGMENT[settings.firstBeside]);
   usePrefetch([...pathOf.values(), settingsOpens]);
-  const destinationItem = (destination: StandingDestination): RailItem => {
+  const destinationItem = (
+    destination: StandingDestination,
+    size: ShellGlyphSize = 'md',
+  ): RailItem => {
     const label = destinationLabel(t, destination);
     const soon = sidebar.soon(destination);
     return {
       key: destination,
       label,
-      icon: createElement(ShellGlyph, { name: DESTINATION_GLYPH[destination], size: 'md' }),
-      activeIcon: createElement(ShellGlyph, {
-        name: DESTINATION_GLYPH[destination],
-        size: 'md',
-        filled: true,
-      }),
+      icon: createElement(ShellGlyph, { name: DESTINATION_GLYPH[destination], size }),
       ...(soon ? { tag: t(SIDEBAR.soon), name: t(SIDEBAR.soonNamed, { label }) } : {}),
     };
   };
-  const pillItems = destinations.map(destinationItem);
+  const pillItems = destinations.map((destination) => destinationItem(destination));
+  const railItem = (destination: StandingDestination) => destinationItem(destination, 'nav');
   const pillInView = destinations.find((destination) => under(pathname, pathOf.get(destination)));
 
   const settingsTitle = settingsWords(t).title;
   return {
     pill: { items: pillItems, inView: pillInView },
     rail: {
-      items: sidebarLists.map(destinationItem),
+      items: destinations.filter((d) => d === 'home').map(railItem),
+      groups: sidebar.groups(destinations).map(({ group, lists }) => ({
+        key: group,
+        label: sidebarGroupLabel(t, group),
+        items: lists.map(railItem),
+      })),
       footer: [
         {
           key: SETTINGS_KEY,
           label: settingsTitle,
-          icon: createElement(ShellGlyph, { name: 'cog', size: 'md' }),
+          icon: createElement(ShellGlyph, { name: 'cog', size: 'nav' }),
           onClick: () => goTo(settingsOpens),
         },
       ],

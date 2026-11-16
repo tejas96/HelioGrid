@@ -36,7 +36,7 @@ export function FoldHead({ title, meta, aside, open, onToggle }: FoldHeadProps) 
         </span>
       )}
       <span className="hg-fold-head-chevron" data-open={open ? 'true' : undefined}>
-        <ShellGlyph name="caret-down" size="sm" tone="secondary" />
+        <ShellGlyph name="chevron" size="sm" tone="secondary" />
       </span>
     </button>
   );

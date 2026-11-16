@@ -131,7 +131,7 @@ export function PhotoField({
       {/* The name is spoken, not shown: the circle and its act already say what this is on screen. */}
       <legend className="hg-spoken-only">{label}</legend>
       <div
-        className="hg-photo-field-mark"
+        className={classNames('hg-photo-field-mark', loading ? 'hg-skeleton' : undefined)}
         data-size={size}
         data-over={drop.over ? 'true' : undefined}
         data-loading={loading ? 'true' : undefined}

@@ -1,9 +1,8 @@
 import { StyleSheet, View } from 'react-native';
-import { Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import type { ResolvedStep } from './resolve-steps';
 
 interface NativeStepperMarkerProps {
@@ -27,34 +26,12 @@ export function StepperMarker({ index, size = 28, step }: NativeStepperMarkerPro
     const done = step.state === 'done';
     return (
       <View style={[styles.marker, shape, done ? styles.done : styles.errors]}>
-        {done ? (
-          <Svg
-            width={13}
-            height={13}
-            viewBox="0 0 24 24"
-            fill="none"
-            // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-            stroke={colors['text-inverse']}
-            strokeWidth={4.4}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <ShellGlyphMarks name="tick-small" />
-          </Svg>
-        ) : (
-          <Svg
-            width={13}
-            height={13}
-            viewBox="0 0 24 24"
-            fill="none"
-            // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-            stroke={colors['text-inverse']}
-            strokeWidth={2.4}
-            strokeLinecap="round"
-          >
-            <ShellGlyphMarks name="alert-bold" />
-          </Svg>
-        )}
+        <ShellGlyph
+          name={done ? 'check' : 'alert'}
+          size="dense"
+          // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
+          ink={colors['text-inverse']}
+        />
       </View>
     );
   }

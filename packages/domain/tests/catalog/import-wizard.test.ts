@@ -8,6 +8,7 @@ import {
   importContinueGate,
   importListStep,
   importWizardFrame,
+  importWizardGoesBack,
   importWizardStepIndex,
   importWizardViewAfter,
 } from '../../src/catalog/import-wizard';
@@ -53,6 +54,22 @@ describe('importWizardStepIndex — the four steps the head names', () => {
     ['report', 3],
   ] as const)('%s is step %i', (frame, step) => {
     expect(importWizardStepIndex(frame)).toBe(step);
+  });
+});
+
+describe('importWizardGoesBack — a step with one behind it offers *Back*', () => {
+  it.each([
+    ['empty', false],
+    ['reading', false],
+    ['unreadable', false],
+    ['file', false],
+    ['columns', true],
+    ['matching', true],
+    ['preview', true],
+    ['running', false],
+    ['report', false],
+  ] as const)('%s goes back: %s', (frame, back) => {
+    expect(importWizardGoesBack(frame)).toBe(back);
   });
 });
 

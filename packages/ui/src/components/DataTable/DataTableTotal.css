@@ -83,7 +83,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 14px var(--sp-4);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
 }
 
 .hg-dt-total-block-head {
@@ -102,7 +102,7 @@
 
 .hg-dt-total-block-figure {
   font-family: var(--font-mono);
-  font-size: 18px;
+  font-size: var(--fs-h3);
   font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;

@@ -13,6 +13,8 @@ import type { ProposalSplitWords } from './ProposalBlocks.parts.types';
 import type { ProposalBlockMode, ProposalSplitBlockProps } from './ProposalBlocks.types';
 import { type SplitView, splitView } from './ProposalBlocks.views';
 
+// web-only part: AppShell — its glyphs come through InkGlyph in BlockParts.native.
+
 const display = theme.type.families.display;
 const LIGHT = theme.palettes.light;
 
@@ -42,7 +44,7 @@ function Verdict({
   const color = met ? ink.successText : ink.warningText;
   return (
     <View style={styles.verdict} accessibilityLiveRegion={met ? 'none' : 'polite'}>
-      <InkGlyph name={met ? 'tick-small' : 'alert-circle'} color={color} />
+      <InkGlyph name={met ? 'check' : 'alert-circle'} color={color} />
       <Text variant="caption" style={[styles.verdictWords, { color }]}>
         {met ? percentText(WHOLE) : split.state === 'under' ? words.under(off) : words.over(off)}
       </Text>
@@ -170,7 +172,7 @@ const styles = StyleSheet.create({
   verdictWords: { fontWeight: '500' },
   bar: { marginTop: theme.spacing['sp-4'], flexDirection: 'row', gap: 3, height: 14 },
   barPaper: { height: 18 },
-  segment: { flexBasis: 0, minWidth: 6, borderRadius: 5 },
+  segment: { flexBasis: 0, minWidth: 6, borderRadius: theme.radius['rf-sm'] },
   gap: { borderWidth: 1 },
   rows: { marginTop: theme.spacing['sp-3'] },
   row: {
@@ -180,13 +182,18 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   rowPaper: { paddingVertical: 14 },
-  dot: { width: 10, height: 10, borderRadius: 10 },
-  share: { minWidth: 46, fontFamily: display, fontSize: 20, lineHeight: 24 },
-  sharePaper: { minWidth: 70, fontSize: 26, lineHeight: 30 },
+  dot: { width: 10, height: 10, borderRadius: theme.radius['r-pill'] },
+  share: {
+    minWidth: 46,
+    fontFamily: display,
+    fontSize: theme.type.roles.h2.fontSize,
+    lineHeight: 24,
+  },
+  sharePaper: { minWidth: 70, fontSize: theme.type.document['doc-fs-stat'], lineHeight: 30 },
   words: { flex: 1, minWidth: 0 },
   name: { fontWeight: '500' },
-  namePaper: { fontSize: 16, lineHeight: 22 },
-  stagePaper: { fontSize: 14, lineHeight: 20 },
+  namePaper: { fontSize: theme.type.document['doc-fs'], lineHeight: 22 },
+  stagePaper: { fontSize: theme.type.document['doc-fs-small'], lineHeight: 20 },
   amount: { fontWeight: '500' },
-  amountPaper: { fontSize: 17, lineHeight: 22 },
+  amountPaper: { fontSize: theme.type.document['doc-fs-lead'], lineHeight: 22 },
 });

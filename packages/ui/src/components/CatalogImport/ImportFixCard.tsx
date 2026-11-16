@@ -1,8 +1,8 @@
 import { COMPONENT_KINDS } from '@heliogrid/domain';
 import { type ReactNode, useState } from 'react';
 import { Text } from '../../primitives/Text/Text';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
-import { ImportGlyph } from '../Import/ImportGlyph';
 import { NumberField } from '../NumberField';
 import { Select } from '../Select';
 import type { ImportCardView } from './CatalogImport.logic';
@@ -50,7 +50,7 @@ function FixAct({ card, words }: { card: ImportCardView; words: CatalogImportWor
       variant="secondary"
       size="sm"
       tone="danger"
-      icon={<ImportGlyph name="minus-circle" size="sm" stroke={1.8} />}
+      icon={<ShellGlyph name="minus-circle" size="sm" tone="current" />}
       disabled={card.busy}
       onClick={() => card.choose({ act: 'leaveOut' })}
     >
@@ -194,7 +194,9 @@ export function ImportFixedCard({
   const target = useFocusOnMount<HTMLElement>(focus);
   return (
     <article ref={target} tabIndex={-1} className="hg-import-fixed">
-      <ImportGlyph name="tick" size="md" stroke={2.2} className="hg-import-fixed-mark" />
+      <span className="hg-import-fixed-mark">
+        <ShellGlyph name="check" size="md" tone="current" />
+      </span>
       <div className="hg-import-card-words">
         <span className="hg-import-line" data-weight="bold">
           {title}

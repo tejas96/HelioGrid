@@ -46,7 +46,7 @@ export function PlanCard({ form, figure, gap, note, lines }: PlanCardProps) {
           {line.values.map((value) => (
             <View key={value} style={styles.line}>
               <View style={styles.tick}>
-                <ShellGlyph name="tick-small" size="sm" tone="success" />
+                <ShellGlyph name="check" size="sm" tone="success" />
               </View>
               <Text variant="body-sm" style={styles.lineText}>
                 {value}

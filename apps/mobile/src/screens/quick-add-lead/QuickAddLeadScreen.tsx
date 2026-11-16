@@ -1,11 +1,13 @@
 import { useQuickAddScreen, useShell } from '@heliogrid/data/react';
-import { quickAddDoneToast, quickAddWords, toastHostWords } from '@heliogrid/i18n';
+import { formLeaveWords, quickAddDoneToast, quickAddWords, toastHostWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
 import {
   EditorSurface,
+  LeaveConfirm,
   QuickAddForm,
   quickAddFormPropsOf,
+  quickAddLeaveOf,
   quickAddSurfaceOf,
   ToastHost,
   useFormat,
@@ -75,6 +77,7 @@ export function QuickAddLeadScreen({ route }: Props) {
       <EditorSurface {...quickAddSurfaceOf(screen, words)}>
         <QuickAddForm {...quickAddFormPropsOf(screen, words)} />
       </EditorSurface>
+      <LeaveConfirm {...quickAddLeaveOf(screen, formLeaveWords(t))} />
       <QuickAddDuplicateSheet screen={screen} />
       <ToastHost
         toasts={toasts.toasts}

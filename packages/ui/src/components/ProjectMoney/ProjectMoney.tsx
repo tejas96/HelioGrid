@@ -1,12 +1,11 @@
 import type { ProjectPayments } from '@heliogrid/contracts';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import { Card } from '../Card';
+import { Card, CardHeader } from '../Card';
 import { EmptyState, FailedRead } from '../EmptyState';
 import { LoadingBars } from '../LoadingBars';
 import { useFormat } from '../MarketProvider';
 import { Menu } from '../Menu';
 import { projectFailedOf, projectLoadingOf } from '../ProjectDetail/ProjectDetail.states';
-import { CardHead } from '../ProjectDetail/ProjectDetailParts';
 import { Timeline } from '../Timeline';
 import { EarlierPlans } from './EarlierPlans';
 import { MoneyEntries } from './MoneyEntries';
@@ -73,7 +72,11 @@ function MoneyParts(props: ProjectMoneyProps & { readonly payments: ProjectPayme
   return (
     <section aria-label={words.parts}>
       <Card density="functional" className="hg-money-card">
-        <CardHead title={words.parts} aside={words.fromTerms} />
+        <CardHeader
+          title={words.parts}
+          description={words.fromTerms}
+          className="hg-project-detail-card-head"
+        />
         <Timeline variant="page" density="functional" items={items} />
       </Card>
     </section>

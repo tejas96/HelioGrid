@@ -1,5 +1,4 @@
 import type { MyDay, MyDayItem } from '@heliogrid/contracts';
-import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { Button } from '../Button';
@@ -7,6 +6,7 @@ import { HeroPanel } from '../HeroPanel';
 import { IconButton } from '../IconButton';
 import { useFormat } from '../MarketProvider';
 import { ProvenanceTier } from '../Provenance';
+import { StatusMark } from '../StatusMark';
 import { leadActOf, nameOf, positionOf, whenOf, whyFirstOf } from './MyDay.logic';
 import type { MyDayProps } from './MyDay.types';
 
@@ -88,7 +88,7 @@ function NextHero(props: HeroProps & { readonly item: MyDayItem }) {
           disabled={sending}
           onClick={() => props.onDone(item)}
         >
-          <ShellGlyph name="tick" size="md" tone="success" />
+          <ShellGlyph name="check" size="md" tone="success" />
         </IconButton>
       </div>
       <div className="hg-my-day-later">

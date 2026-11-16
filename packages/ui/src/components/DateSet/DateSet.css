@@ -36,10 +36,6 @@
 
 .hg-date-set-overline {
   margin: 0 0 var(--sp-2);
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-overline);
-  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 
@@ -66,7 +62,7 @@
   align-items: flex-start;
   gap: var(--sp-2);
   padding: var(--sp-3);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   transition: background var(--dur-emphasised) var(--ease-standard);
 }
 
@@ -107,7 +103,7 @@
 }
 
 .hg-date-set-row-name {
-  font-size: 14px;
+  font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
   letter-spacing: var(--tr-button);
   color: var(--text-primary);

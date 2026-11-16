@@ -161,7 +161,7 @@
 }
 
 .hg-list-row.hg-billing-record {
-  border-radius: var(--r-tile);
+  border-radius: var(--r-lg);
 }
 
 .hg-billing-sources {

@@ -94,4 +94,27 @@ describe('loggedRequest', () => {
     expect(written.join('')).toContain('/proposal-print/0190aa00-0000-7000-8000-000000000000');
     expect(written.join('')).not.toContain(GRANT);
   });
+
+  it.each(['/leads', '/search'])(
+    'a search on %s logs its path and never the words or digits typed',
+    (path) => {
+      const TYPED = '98450 27746 Priya';
+      const written: string[] = [];
+      const logger = pino(
+        { redact: pinoHttpOptions.redact, serializers: pinoHttpOptions.serializers },
+        { write: (line: string) => written.push(line) },
+      );
+      logger.info({
+        req: {
+          method: 'GET',
+          url: `${path}?q=${encodeURIComponent(TYPED)}`,
+          query: { q: TYPED },
+          params: {},
+          headers: {},
+        },
+      });
+      expect(written.join('')).toContain(path);
+      expect(written.join('')).not.toContain('98450');
+    },
+  );
 });

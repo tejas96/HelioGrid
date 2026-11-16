@@ -14,6 +14,8 @@ import type {
 import { BillingStatusChip } from './BillingNeeds.native';
 import { BillingQuiet } from './BillingQuiet.native';
 
+// web-only part: DataTable — the table is the web wide room; the phone lists invoices as rows.
+
 /**
  * One invoice at 375: the date and what it was for, its state as a chip; the PDF act, then the
  * amount in mono on the right edge. The row holds the PDF control, so the row itself is not one —

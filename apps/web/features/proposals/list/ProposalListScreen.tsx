@@ -52,19 +52,19 @@ export function ProposalListScreen() {
   const { flow } = screen;
   return (
     <div ref={room} tabIndex={-1} className="hg-shell-page hg-focus-target hg-proposal-page">
-      <div className="hg-proposal-head-row">
-        <LargeTitle
-          title={page.title}
-          summary={screen.waiting === null ? undefined : page.summary}
-        />
-        {screen.canStart ? (
-          <div className="hg-proposal-head-acts">
-            <Button icon={<ShellGlyph name="plus" size="sm" />} onClick={flow.openNew}>
-              {page.newProposal}
-            </Button>
-          </div>
-        ) : null}
-      </div>
+      <LargeTitle
+        title={page.title}
+        summary={screen.waiting === null ? undefined : page.summary}
+        {...(screen.canStart
+          ? {
+              acts: (
+                <Button icon={<ShellGlyph name="plus" size="sm" />} onClick={flow.openNew}>
+                  {page.newProposal}
+                </Button>
+              ),
+            }
+          : {})}
+      />
       <ProposalList
         read={screen.read}
         room={wide ? 'wide' : 'narrow'}

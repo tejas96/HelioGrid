@@ -1,0 +1,14 @@
+language js
+
+// A ui style types no font size and no corner as a number: `fontSize: 14`, `borderRadius: 9`,
+// `borderTopLeftRadius: 2.5` — every spelling a style object, a JSX style or a quoted key takes. A
+// size is theme.type.roles[…] or, at a document's scale, theme.type.document[…]; a corner is theme.radius[…] — each
+// from @heliogrid/theme. 0 passes, and so does a value worked out from tokens.
+JsPropertyObjectMember() as $pair where {
+  $pair <: or {
+    includes "fontSize",
+    includes "Radius"
+  },
+  $pair <: r"(?s)[\x22\x27]?(?:fontSize|border\w*Radius)[\x22\x27]?\s*:\s*-?(?:\d*[1-9]\d*|\d*\.\d*[1-9]\d*|\d*[1-9]\d*\.\d+)(?:[^\w.%].*)?",
+  register_diagnostic(span=$pair, message="Raw type size or radius in packages/ui — use theme.type.roles[…], theme.type.document[…] or theme.radius[…] from @heliogrid/theme.")
+}

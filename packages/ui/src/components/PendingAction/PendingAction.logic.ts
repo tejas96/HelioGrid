@@ -1,5 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import { isValidElement } from 'react';
+import type { ShellGlyphSize } from '../AppShell/AppShell.types';
+import { nearestGlyphSize } from '../AppShell/ShellGlyph.logic';
 import type { PendingActionProps, PendingActionSpec } from './PendingAction.types';
 
 /** What one pending line shows, and at what size — `null` when it has no words to say. */
@@ -9,7 +11,7 @@ export interface PendingLine {
   words: ReactNode;
   /** The type floor is 12px. */
   fontSize: number;
-  glyphSize: number;
+  glyphSize: ShellGlyphSize;
   /** The rail sits on the words' first line. */
   railOffset: number;
   /** The slow note is said only while waiting. */
@@ -39,7 +41,7 @@ export function pendingLine({
     returned,
     words,
     fontSize,
-    glyphSize: fontSize + 1,
+    glyphSize: nearestGlyphSize(fontSize + 1),
     railOffset: Math.round(fontSize * 0.62),
     showsSlowNote: !returned && slowNote !== undefined,
     offersActs: returned && (retrying || onDismiss !== undefined),

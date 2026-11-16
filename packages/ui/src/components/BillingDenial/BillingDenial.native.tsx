@@ -12,7 +12,7 @@ import type { BillingDenialProps } from './BillingDenial.types';
 /** The two lists' marks: the pause and the tick, as the strip draws them (decision 10). */
 const MARK = {
   paused: <ShellGlyph name="pause" size="sm" tone="warning" />,
-  works: <ShellGlyph name="tick" size="sm" tone="success" />,
+  works: <ShellGlyph name="check" size="sm" tone="success" />,
   until: <ShellGlyph name="clock" size="sm" tone="secondary" />,
   amount: <ShellGlyph name="rupee" size="sm" tone="secondary" />,
 } as const;

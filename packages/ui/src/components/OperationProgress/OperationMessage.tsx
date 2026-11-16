@@ -1,22 +1,10 @@
 import type { ReactNode } from 'react';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { OperationState } from './OperationProgress.types';
 import { messageGlyph } from './operation-progress-model';
 
 function MessageGlyph({ state }: { state: OperationState }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ShellGlyphMarks name={messageGlyph(state)} />
-    </svg>
-  );
+  return <ShellGlyph name={messageGlyph(state)} size="dense" tone="current" />;
 }
 
 /**

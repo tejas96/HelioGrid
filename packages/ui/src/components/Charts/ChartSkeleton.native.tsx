@@ -1,8 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
-import { useEffect, useRef } from 'react';
-import { AccessibilityInfo, Animated, Easing, StyleSheet } from 'react-native';
+import { Animated, StyleSheet } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { usePulse } from '../../primitives/use-pulse.native';
 
 interface ChartSkeletonProps {
   height: number;
@@ -16,40 +16,9 @@ const styles = StyleSheet.create({
   },
 });
 
-/**
- * The loading placeholder. The web half runs the `hg-sheet-shimmer` keyframe, which the token
- * stylesheet already drops under `prefers-reduced-motion`; RN has no media query, so the same
- * ruling is read from `AccessibilityInfo` and the loop simply never starts — the block stays,
- * dimmed and legible, so the surface never reads as content.
- */
+/** The loading placeholder: a well pulsing as every phone skeleton does (`usePulse`). */
 export function ChartSkeleton({ height, label }: ChartSkeletonProps) {
-  const pulse = useRef(new Animated.Value(0));
-
-  useEffect(() => {
-    const value = pulse.current;
-    const step = (toValue: number) =>
-      Animated.timing(value, {
-        toValue,
-        duration: theme.motion.durations.ambient,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      });
-    const loop = Animated.loop(Animated.sequence([step(1), step(0)]));
-    let cancelled = false;
-    const start = async () => {
-      const reduced = await AccessibilityInfo.isReduceMotionEnabled();
-      if (!reduced && !cancelled) {
-        loop.start();
-      }
-    };
-    void start();
-    return () => {
-      cancelled = true;
-      loop.stop();
-    };
-  }, []);
-
-  const opacity = pulse.current.interpolate({ inputRange: [0, 1], outputRange: [0.55, 1] });
+  const opacity = usePulse();
 
   return (
     /* The web half is `role="status"`. RN has no `status`, and `progressbar` would promise a

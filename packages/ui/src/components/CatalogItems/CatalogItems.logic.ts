@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import {
+  CATALOG_SORTS,
   type CatalogFilter,
   COMPONENT_KINDS,
   type ComponentKind,
@@ -8,8 +9,10 @@ import {
   type PanelTechnology,
   withKinds,
 } from '@heliogrid/domain';
+import { clearedFilterValue } from '../FilterPanel/FilterPanel.logic';
 import type { FilterDimension, FilterValue } from '../FilterPanel/FilterPanel.types';
-import type { CatalogItemsWords, CatalogRowStatus } from './CatalogItems.types';
+import { filterWithSortOf, type ListFilterBody } from '../ListTop/ListTop.logic';
+import type { CatalogItemsProps, CatalogItemsWords, CatalogRowStatus } from './CatalogItems.types';
 
 /** The filter panel's dimension keys; the panel's value is keyed by them. */
 const KEY = {
@@ -205,4 +208,33 @@ export function catalogKindsChosen(
   if (allPressed) return withKinds(filter, []);
   const kinds = COMPONENT_KINDS.filter((kind) => values.includes(kind));
   return withKinds(filter, kinds);
+}
+
+/**
+ * The filter sheet's body: the catalog's filters, and in the narrow room the order as its first
+ * choice — the list-page rule (`filterWithSortOf`), so the phone and a narrow panel sort as the
+ * wide one's menu does.
+ */
+export function catalogFilterBodyOf(
+  props: Pick<CatalogItemsProps, 'words' | 'schemes' | 'filter' | 'onFilter' | 'sort' | 'onSort'>,
+  narrow: boolean,
+): ListFilterBody {
+  const { words, onFilter } = props;
+  const dimensions = catalogFilterDimensions(words, props.schemes);
+  const body: ListFilterBody = {
+    dimensions,
+    value: catalogFilterValue(props.filter),
+    onChange: (value) => onFilter(catalogFilterOf(value)),
+    onClear: () => onFilter(catalogFilterOf(clearedFilterValue(dimensions))),
+  };
+  if (!narrow) return body;
+  return filterWithSortOf(body, {
+    title: words.sortLabel,
+    chosen: props.sort,
+    choices: CATALOG_SORTS.map((each) => ({ key: each, label: words.sorts[each] })),
+    onChoose: (key) => {
+      const next = CATALOG_SORTS.find((each) => each === key);
+      if (next !== undefined) props.onSort(next);
+    },
+  });
 }

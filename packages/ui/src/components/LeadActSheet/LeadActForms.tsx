@@ -12,24 +12,39 @@ import { Textarea } from '../Textarea';
 import { TimeField } from '../TimeField';
 import { ActSend, ChoiceChips, dayOf } from './LeadActParts';
 import type { LeadActForm, LeadActSheetProps } from './LeadActSheet.types';
+import { firstMissing } from './missing-field';
+import { useReportHolds } from './use-form-holds';
 
 /** What every form takes beside its own: whether its send is out, why it came back, field words. */
 export interface FormFrame {
   pending: boolean;
   failure: TranslatedText | null;
   fields: LeadActSheetProps['fields'];
+  /** Tells the sheet whether the form holds an answer a close would lose. */
+  holds: (holding: boolean) => void;
 }
 
 type FormOf<K extends LeadActForm['kind']> = Extract<LeadActForm, { kind: K }>;
 
 /** Log activity (`M02-43`): a call and how it ended, with an optional note — or a note alone. */
-export function LogForm({ form, pending, failure }: FormFrame & { form: FormOf<'log'> }) {
+export function LogForm({
+  form,
+  pending,
+  failure,
+  fields,
+  holds,
+}: FormFrame & { form: FormOf<'log'> }) {
   const { words } = form;
   const [kind, setKind] = useState<'call' | 'note'>('call');
   const [outcome, setOutcome] = useState<CallOutcome | null>(null);
   const [note, setNote] = useState('');
   const text = note.trim();
-  const ready = kind === 'call' ? outcome !== null : text !== '';
+  const waitingFor =
+    kind === 'call'
+      ? firstMissing(fields.needs, [[outcome === null, words.outcomeLabel]])
+      : firstMissing(fields.needs, [[text === '', words.noteLabel]]);
+  const ready = waitingFor === null;
+  useReportHolds(holds, outcome !== null || text !== '');
   return (
     <>
       <SegmentedControl
@@ -66,6 +81,7 @@ export function LogForm({ form, pending, failure }: FormFrame & { form: FormOf<'
       <ActSend
         label={kind === 'call' ? words.send : words.sendNote}
         ready={ready}
+        waitingFor={waitingFor}
         pending={pending}
         failure={failure}
         onSend={() => {
@@ -85,8 +101,10 @@ export function SnoozeForm({
   pending,
   failure,
   fields,
+  holds,
 }: FormFrame & { form: FormOf<'snooze'> }) {
   const [day, setDay] = useState<string | null>(null);
+  useReportHolds(holds, day !== null);
   return (
     <>
       <DatePicker
@@ -100,6 +118,7 @@ export function SnoozeForm({
       <ActSend
         label={form.words.send}
         ready={day !== null}
+        waitingFor={firstMissing(fields.needs, [[day === null, form.words.wakeOn]])}
         pending={pending}
         failure={failure}
         onSend={() => {
@@ -115,9 +134,12 @@ export function DisqualifyForm({
   form,
   pending,
   failure,
+  fields,
+  holds,
 }: FormFrame & { form: FormOf<'disqualify'> }) {
   const { words } = form;
   const [reason, setReason] = useState<DisqualifyReason | null>(null);
+  useReportHolds(holds, reason !== null);
   return (
     <>
       <ChoiceChips
@@ -133,6 +155,7 @@ export function DisqualifyForm({
       <ActSend
         label={words.send}
         ready={reason !== null}
+        waitingFor={firstMissing(fields.needs, [[reason === null, words.reasonLabel]])}
         pending={pending}
         failure={failure}
         onSend={() => {
@@ -163,9 +186,11 @@ export function CallBackForm({
   pending,
   failure,
   fields,
+  holds,
 }: FormFrame & { form: FormOf<'callBack'> }) {
   const [day, setDay] = useState<string | null>(null);
   const [time, setTime] = useState('');
+  useReportHolds(holds, day !== null || time !== '');
   return (
     <>
       <DatePicker
@@ -186,6 +211,10 @@ export function CallBackForm({
       <ActSend
         label={form.words.send}
         ready={day !== null && time !== ''}
+        waitingFor={firstMissing(fields.needs, [
+          [day === null, form.words.date],
+          [time === '', form.words.time],
+        ])}
         pending={pending}
         failure={failure}
         onSend={() => {

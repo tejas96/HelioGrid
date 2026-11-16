@@ -108,7 +108,7 @@ test('a new company meets five flat parts, the first open on its name, and a liv
   await expect(act).toHaveText(en.t(COMPANY_PROFILE.save));
   expect(await settledBox(act)).toMatchObject({
     width: COLUMN,
-    height: await resolvedLength(page, '--field-h'),
+    height: await resolvedLength(page, '--button-h-lg'),
   });
   expect(await bottomOf(act)).toBeLessThanOrEqual(HEIGHT);
   await expect(profile.getByText(en.t(COMPANY_PROFILE.reseedScope))).toHaveCount(0);
