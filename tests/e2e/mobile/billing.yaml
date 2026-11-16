@@ -53,6 +53,8 @@ appId: com.heliogrid.app
 - extendedWaitUntil:
     visible: ${WHAT_CHANGES}
     timeout: 15000
+# The sheet springs into place; a tap while it still moves lands beside the handle.
+- waitForAnimationToEnd
 - tapOn: ${CLOSE}
 - extendedWaitUntil:
     notVisible: ${WHAT_CHANGES}

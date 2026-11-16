@@ -68,7 +68,7 @@ export function EditorSurface(props: NativeEditorSurfaceProps) {
       <>
         {probe}
         <Modal {...modalFormProps(props)} style={style} {...modalProps}>
-          <ModalStateBody props={props}>{body}</ModalStateBody>
+          {props.read === undefined ? body : <ModalStateBody props={props}>{body}</ModalStateBody>}
         </Modal>
       </>
     );

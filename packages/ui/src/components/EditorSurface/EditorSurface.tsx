@@ -67,7 +67,7 @@ export function EditorSurface(props: WebEditorSurfaceProps) {
       <>
         {probe}
         <Modal {...modalFormProps(props)} inset={inset} style={style} {...modalProps}>
-          <ModalStateBody props={props}>{body}</ModalStateBody>
+          {props.read === undefined ? body : <ModalStateBody props={props}>{body}</ModalStateBody>}
         </Modal>
       </>
     );
