@@ -6,6 +6,7 @@ compatibility pointer and the code.
 | | |
 |---|---|
 | [`build-order.md`](build-order.md) | **Building.** The sequence engineering works in. |
+| [`feature-list.md`](feature-list.md) | **Built today.** A plain list of each built feature: its goal, forms and flow. Reference only: a snapshot, and where it and the code disagree the code wins. |
 
 ## The three trees
 
