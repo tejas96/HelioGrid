@@ -76,6 +76,9 @@ export default defineConfig({
   testMatch: '*.spec.ts',
   fullyParallel: true,
   retries: 0,
+  /* Local only: cap the browsers so the api keeps its cores — the note below measured seven workers
+     starving it into ten-second answers. CI is left on its default, untouched. */
+  workers: ON_CI ? undefined : 3,
   forbidOnly: true,
   reporter: [['list'], ['html', { open: 'never' }]],
   /* Reduced motion: the door's sky and every page's glow loop on (`ui-adherence.md`, *Motion*), and a
