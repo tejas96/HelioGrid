@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { nonNegativeAmountSchema, phoneE164Schema, uuidSchema } from '../common';
+import { areaRefSchema, nonNegativeAmountSchema, phoneE164Schema, uuidSchema } from '../common';
 import { dealSegmentSchema } from '../crm/vocabulary';
 import { compliantShadesSchema, hexColourSchema } from '../document-templates';
 import { uiLanguageResponseSchema } from '../locale';
@@ -20,13 +20,8 @@ import { basisLineSchema, proposalPageSchema, supplyPhaseSchema } from './vocabu
  * in a version's (`M06-09`).
  */
 
-/** The site's region and district as the lead holds them (`M06-09`). */
-export const areaRefSchema = z.object({
-  /** The market pack's region code — `IN-MH`. */
-  area: z.string().min(1).max(12),
-  district: z.string().min(1).max(120).nullable(),
-});
-export type AreaRefWire = z.infer<typeof areaRefSchema>;
+/** The site's region and district (`M06-09`) — shared with the studio's site, so its home is `common.ts`. */
+export { type AreaRefWire, areaRefSchema } from '../common';
 
 /** What the proposal reads of its lead and customer (`T-M06-032`) — the lead's own facts, never a copy. */
 export const proposalDealSchema = z.object({

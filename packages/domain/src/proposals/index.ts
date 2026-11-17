@@ -176,7 +176,6 @@ export {
   type InverterType,
   MAINTENANCE_KINDS,
   type MaintenanceKind,
-  PHASE_COUNT,
   PROPOSAL_ANSWERS,
   PROPOSAL_LIMITS,
   PROPOSAL_STATUSES,
@@ -187,8 +186,6 @@ export {
   type ProposalType,
   SHARE_CHANNELS,
   type ShareChannel,
-  SUPPLY_PHASES,
-  type SupplyPhase,
   VERSION_TRIGGERS,
   type VersionTrigger,
 } from './vocabulary';

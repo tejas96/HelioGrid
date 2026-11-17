@@ -50,6 +50,31 @@ export function extensibleEnum<const K extends readonly [string, ...string[]]>(
   return z.string().openapi({ 'x-extensible-enum': [...known] });
 }
 
+/**
+ * When the person did it, by their device's clock — shown and audited, never what orders a
+ * timeline: the server's apply order does (`F4-19`, `M02-36`).
+ */
+export const capturedAtSchema = z.string().datetime();
+
+/** A member as a record names them — an owner, an assignee, an author, an actor. */
+export const memberRefSchema = z.object({ userId: uuidSchema, name: z.string() });
+export type MemberRef = z.infer<typeof memberRefSchema>;
+
+/** A point on the ground, decimal degrees, WGS 84. */
+export const geoPointSchema = z.object({
+  latitude: z.number().min(-90).max(90),
+  longitude: z.number().min(-180).max(180),
+});
+export type GeoPoint = z.infer<typeof geoPointSchema>;
+
+/** A site's region and district, as the market pack names them (`M06-09`). */
+export const areaRefSchema = z.object({
+  /** The market pack's region code — `IN-MH`. */
+  area: z.string().min(1).max(12),
+  district: z.string().min(1).max(120).nullable(),
+});
+export type AreaRefWire = z.infer<typeof areaRefSchema>;
+
 /** E.164 — the only phone shape stored or transported (`T-M01-025`, the identity spine). */
 export const phoneE164Schema = z
   .string()

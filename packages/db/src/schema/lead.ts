@@ -100,6 +100,15 @@ export const lead = pgTable(
     siteDistrict: text('site_district'),
     sanctionedLoadKw: numeric('sanctioned_load_kw', { precision: 8, scale: 2, mode: 'number' }),
     supplyPhase: supplyPhase('supply_phase'),
+    /**
+     * What the studio's Site details adds beside them: the name a person gives the site, the exact
+     * point of the roof or the land (decimal degrees, WGS 84 — both or neither), and the network
+     * operator as the market's utility directory spells it.
+     */
+    siteName: text('site_name'),
+    siteLatitude: numeric('site_latitude', { precision: 9, scale: 6, mode: 'number' }),
+    siteLongitude: numeric('site_longitude', { precision: 9, scale: 6, mode: 'number' }),
+    siteUtility: text('site_utility'),
     /** The "came from" of a referrer who is not a customer (`M02-16`). */
     referredByName: text('referred_by_name'),
     snoozeWakeOn: day('snooze_wake_on'),
@@ -153,6 +162,15 @@ export const lead = pgTable(
       .where(sql`${table.creationKey} is not null`),
     check('lead_bill_not_negative', sql`${table.monthlyBillMinor} >= 0`),
     check('lead_sanctioned_load_above_zero', sql`${table.sanctionedLoadKw} > 0`),
+    // A pin is a point: both halves, each on the globe, or no pin at all.
+    check(
+      'lead_site_pin_whole',
+      sql`(${table.siteLatitude} is null) = (${table.siteLongitude} is null)`,
+    ),
+    check(
+      'lead_site_pin_on_globe',
+      sql`${table.siteLatitude} between -90 and 90 and ${table.siteLongitude} between -180 and 180`,
+    ),
     check(
       'lead_site_district_has_its_area',
       sql`${table.siteDistrict} is null or ${table.siteArea} is not null`,

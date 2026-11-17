@@ -65,6 +65,26 @@ module.exports = {
       },
     },
     {
+      name: 'studio-knows-no-host',
+      severity: 'error',
+      comment:
+        'The design studio is a box other products can use (docs/tasks/M05-design-studio.md, ' +
+        'The wall): its wire shapes and its pure logic name no lead, customer, proposal or ' +
+        'project. So its two folders may import only themselves, the market formats ' +
+        '(domain) and the shared wire conventions (contracts) — an allowlist, because a ' +
+        'host module added later must be refused without this rule learning its name. The ' +
+        'host turns its own records into the studio’s shapes; the studio never imports them.',
+      from: { path: '^packages/(domain|contracts)/src/studio/' },
+      to: {
+        path: '^packages/(domain|contracts)/src/',
+        pathNot: [
+          '^packages/(domain|contracts)/src/studio/',
+          '^packages/domain/src/format/',
+          '^packages/contracts/src/(common|error)\\.ts$',
+        ],
+      },
+    },
+    {
       name: 'contracts-lean',
       severity: 'error',
       comment: 'contracts depend on zod/ts-rest/domain types only — never db or apps',

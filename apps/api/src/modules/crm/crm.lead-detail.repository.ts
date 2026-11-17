@@ -19,12 +19,14 @@ import {
   leadSummaryColumns,
   memberNameOf,
 } from './crm.lead-columns.repository';
+import { designCountOf } from './crm.lead-designs.repository';
 import { projectOf } from './crm.lead-project.repository';
 import { leadProposalsOf } from './crm.lead-proposals.repository';
 import { visitOf } from './crm.lead-visit.repository';
 import { leadScopeWhere } from './crm.scope.repository';
 import { type LeadMoney, leadSummaryOf, memberRefOf } from './internal/lead-wire';
 import type { LeadReader } from './internal/reader';
+import { sitePinOf } from './internal/site-pin';
 
 /*
  * One lead as Lead Detail shows it (`M02-32`), read on the caller's transaction so a write and the
@@ -104,6 +106,10 @@ export async function loadLeadDetail(
       siteDistrict: lead.siteDistrict,
       sanctionedLoadKw: lead.sanctionedLoadKw,
       supplyPhase: lead.supplyPhase,
+      siteName: lead.siteName,
+      siteLatitude: lead.siteLatitude,
+      siteLongitude: lead.siteLongitude,
+      siteUtility: lead.siteUtility,
     })
     .from(lead)
     .innerJoin(customer, leadCustomerJoin)
@@ -150,7 +156,7 @@ export async function loadLeadDetail(
     visit: await visitOf(tx, tenantId, leadId),
     openTasks: await openTasksOf(tx, tenantId, leadId),
     sections: {
-      designs: 0,
+      designs: await designCountOf(tx, tenantId, leadId),
       proposals: proposals.items.length,
       files: await filesOf(tx, tenantId, leadId),
     },
@@ -160,6 +166,9 @@ export async function loadLeadDetail(
       area,
       sanctionedLoadKw: row.sanctionedLoadKw,
       supplyPhase: row.supplyPhase,
+      name: row.siteName,
+      pin: sitePinOf(row.siteLatitude, row.siteLongitude),
+      utilityOperator: row.siteUtility,
     },
     proposals,
   };

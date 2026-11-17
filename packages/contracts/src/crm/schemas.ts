@@ -8,6 +8,7 @@ import { z } from 'zod';
 import {
   amountSchema,
   extensibleEnum,
+  memberRefSchema,
   nonNegativeAmountSchema,
   phoneE164Schema,
   provenanceTierSchema,
@@ -28,11 +29,8 @@ import {
  * routes live beside them, one router per area.
  */
 
-/**
- * When the person did it, by their device's clock — shown and audited, never what orders the
- * timeline: the server's apply order does (`F4-19`, `M02-36`).
- */
-export const capturedAtSchema = z.string().datetime();
+/** Shared with every module that records a person's act — their one home is `common.ts`. */
+export { capturedAtSchema, type MemberRef, memberRefSchema } from '../common';
 
 /** A sentence a person types onto the record: a note, a reason, a custom task's title. */
 export const crmTextSchema = z.string().trim().min(1).max(2000);
@@ -42,10 +40,6 @@ export const crmReasonSchema = z.string().trim().min(1).max(500);
 
 /** The address a surveyor is sent to, as the customer confirmed it on the call (`M02-46`). */
 export const visitAddressSchema = z.string().trim().min(1).max(COMPANY_PROFILE_FIELD_CAP.address);
-
-/** A member as a CRM record names them — the owner, the assignee, the surveyor, an actor. */
-export const memberRefSchema = z.object({ userId: uuidSchema, name: z.string() });
-export type MemberRef = z.infer<typeof memberRefSchema>;
 
 /** The monthly bill as written: never below zero, in the tenant's currency (`M02-40`). */
 export const monthlyBillWriteSchema = nonNegativeAmountSchema;

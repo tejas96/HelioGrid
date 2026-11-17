@@ -9,6 +9,7 @@ import * as crmDailySweep from './crm-daily-sweep';
 import * as customer from './customer';
 import * as customerLink from './customer-link';
 import * as dashboard from './dashboard';
+import * as design from './design';
 import * as dunning from './dunning';
 import * as energyEstimate from './energy-estimate';
 import * as entitlement from './entitlement';
@@ -83,6 +84,7 @@ export const schema = {
   ...crmDailySweep,
   ...dashboard,
   ...proposal,
+  ...design,
   ...customerLink,
   ...energyEstimate,
 };
@@ -98,6 +100,7 @@ export * from './crm-daily-sweep';
 export * from './customer';
 export * from './customer-link';
 export * from './dashboard';
+export * from './design';
 export * from './dunning';
 export * from './energy-estimate';
 export * from './entitlement';

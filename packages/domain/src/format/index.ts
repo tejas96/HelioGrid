@@ -169,10 +169,12 @@ export {
   type SignOffRecord,
   signOffOf,
 } from './sign-off';
+export { PHASE_COUNT, SUPPLY_PHASES, type SupplyPhase } from './supply-phase';
 export { packOnTenantTime } from './tenant-pack';
 export { TRANSPORT_FAILURES, type TransportFailure } from './transport-failure';
 export {
   IN_UTILITIES,
+  operatorsForArea,
   operatorsForRegion,
   typicalWait,
   type UtilityDirectory,

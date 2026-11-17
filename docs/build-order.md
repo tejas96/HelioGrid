@@ -44,6 +44,7 @@ Block numbers are stable: other documents cite them, so a block that empties kee
 |---|---|---|---|
 | **6** | **Sales execution + owner home** | built: My Day, lost, reopen, follow-ups, the owner home; left: trial-to-paid (parked) and the V2 dashboards | `M13-dashboards` |
 | **8** | **Proposals + customer link** | built: the proposal built without a design, the link the homeowner opens and answers, Won from the accepted proposal, the proposal defaults, and the forecast the proposals price; left: the BOM detail, Path A, the design-wait update, the design on the link and the demo seed (parked until the studio), and the data-rights engine (parked) | `M06-proposals` · `F5-customer-link` · `F-core` · `M01-onboarding` |
+| **9** | **3D Design Studio** | open: a design opened from a lead or from Proposals, with its site details; the roof step and every later step get their tasks when their screens are approved | `M05-design-studio` |
 
 **Proposals ship before the studio (owner ruling 2026-11-13).** Block 8's tasks that need a
 design — `T-M06-014`, `T-M06-021`, `T-F5-010`, `T-F5-011` and `T-M01-029` — are `**Parked:**` and are built

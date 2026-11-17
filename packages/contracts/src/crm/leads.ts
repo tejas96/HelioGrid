@@ -11,6 +11,7 @@ import {
   amountSchema,
   currencyCodeSchema,
   extensibleEnum,
+  geoPointSchema,
   nonNegativeAmountSchema,
   paginated,
   paginationQuerySchema,
@@ -170,6 +171,10 @@ export const leadSiteSchema = z.object({
   area: z.object({ area: z.string(), district: z.string().nullable() }).nullable(),
   sanctionedLoadKw: z.number().positive().nullable(),
   supplyPhase: extensibleEnum(SUPPLY_PHASES).nullable(),
+  /** The site's own name, the roof's exact point and the network operator — the studio's Site details. */
+  name: z.string().nullable(),
+  pin: geoPointSchema.nullable(),
+  utilityOperator: z.string().nullable(),
 });
 
 /** One proposal on the lead: a draft shows its n/11 ring, a generated one its number and standing. */

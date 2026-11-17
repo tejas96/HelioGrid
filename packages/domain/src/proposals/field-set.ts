@@ -6,6 +6,7 @@ import type { RichTextValue } from '../commerce/rich-text';
 import type { AreaGrain, AreaRef } from '../format/areas';
 import type { EnergySource } from '../format/energy-source';
 import type { ProvenanceTier } from '../format/qualified';
+import type { SupplyPhase } from '../format/supply-phase';
 import type { BasisPoints } from '../money/basis-points';
 import type { MinorUnits } from '../money/minor-units';
 import type { DealSegment } from '../tenancy/segment';
@@ -18,7 +19,6 @@ import type {
   InverterType,
   MaintenanceKind,
   ProposalType,
-  SupplyPhase,
 } from './vocabulary';
 
 /**

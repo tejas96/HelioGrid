@@ -1,0 +1,80 @@
+import { placesContract, studioContract } from '@heliogrid/contracts';
+import { Controller, Inject, Req } from '@nestjs/common';
+import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
+import type { Request } from 'express';
+import { RouteAccessMap } from '../../common/auth/access';
+import { RouteBillingMap } from '../../common/auth/route-billing';
+import { actOf, tenantIdOf } from '../../common/auth/session-context';
+import { readerOf } from '../crm/crm.public';
+import { StudioPlacesService } from './studio.places.service';
+import { StudioService } from './studio.service';
+
+const DESIGN = { capability: 'studio.create_edit_designs' } as const;
+
+/**
+ * Designs (`T-M05-001`). Reading is every member's, narrowed to the leads their presets reach
+ * (`F2.M02.lead-visibility`); making and changing one is the create-and-edit grant's. In the
+ * billing matrix every write is the studio's own row, which pauses with the plan; reading never
+ * pauses.
+ */
+@Controller()
+export class StudioController {
+  // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
+  constructor(@Inject(StudioService) private readonly studio: StudioService) {}
+
+  // Topmost, so it is applied last: it serves each route from what the maps below declared.
+  @TsRestHandler(studioContract)
+  @RouteBillingMap(studioContract, {
+    create: 'studio_design_edit',
+    saveSite: 'studio_design_edit',
+    recommend: 'studio_design_edit',
+  })
+  @RouteAccessMap(studioContract, {
+    leadDesigns: 'member',
+    create: DESIGN,
+    detail: 'member',
+    saveSite: DESIGN,
+    recommend: DESIGN,
+  })
+  handler(@Req() req: Request) {
+    const reader = readerOf(req);
+    const act = actOf(req);
+    const ok = <Body>(body: Body) => ({ status: 200 as const, body });
+    return tsRestHandler(studioContract, {
+      leadDesigns: async ({ params }) => ok(await this.studio.designsOf(reader, params.id)),
+      create: async ({ params, body, headers }) => ({
+        status: 201 as const,
+        body: await this.studio.create(reader, params.id, body, headers, act),
+      }),
+      detail: async ({ params }) => ok(await this.studio.detail(reader, params.id)),
+      saveSite: async ({ params, body }) =>
+        ok(await this.studio.saveSite(reader, params.id, body, act)),
+      recommend: async ({ params, body }) =>
+        ok(await this.studio.recommend(reader, params.id, body.recommended)),
+    });
+  }
+}
+
+/**
+ * The place search of Site details. It reads no company record, but each ask can cost money at the
+ * map service, so it is the design grant's alone — the only people who fill that form.
+ */
+@Controller()
+export class PlacesController {
+  // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
+  constructor(@Inject(StudioPlacesService) private readonly places: StudioPlacesService) {}
+
+  @TsRestHandler(placesContract)
+  @RouteAccessMap(placesContract, { suggest: DESIGN, details: DESIGN, at: DESIGN })
+  handler(@Req() req: Request) {
+    const tenantId = tenantIdOf(req);
+    const ok = <Body>(body: Body) => ({ status: 200 as const, body });
+    return tsRestHandler(placesContract, {
+      suggest: async ({ query }) =>
+        ok(await this.places.suggest(tenantId, query.query, query.session)),
+      details: async ({ query }) =>
+        ok(await this.places.details(tenantId, query.placeId, query.session)),
+      at: async ({ query }) => ok(await this.places.at(tenantId, query)),
+    });
+  }
+}

@@ -26,6 +26,10 @@ export const noRepeatToProve: Readonly<Record<string, string>> = {
     'a commit sent again as stored writes nothing, records nothing and keeps its revision (tests/proposals/proposal-record.test.ts)',
   'PUT /saved-parts/:id':
     'records no entry; the same words again write nothing (tests/proposals/saved-parts.test.ts)',
+  'PUT /designs/:id/site':
+    'records no audit entry; the same details again write no timeline entry and leave the design as it was (tests/studio/site-details.test.ts)',
+  'PUT /designs/:id/recommended':
+    'records no entry; the same mark again writes nothing (tests/studio/design-record.test.ts)',
   'PUT /links/:id/label':
     'records no audit entry; the same name again writes no timeline entry (tests/customer-link/link-manager.test.ts)',
 };

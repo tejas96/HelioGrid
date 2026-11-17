@@ -86,7 +86,7 @@ this document may ever describe a customer (D5; `foundations/F5-customer-link.md
 | F2-05 | **Decision C — the Installation Team Member preset exists in V2.** R16 is honored verbatim for the v1-derived scope: in v1 the crew has no login, the coordinator runs the checklist, and "crew sees no money because crew sees no screen". R16's own consequence names the path this document takes: "v2 adds an Installer preset without schema change (roles are already M:N)" — and the owner's V2 brief lists Installation Teams as primary users. The preset's V2 name is **Installation Team Member**, per the fixed persona vocabulary. | `BRIEF` · preset-addition path per source `R16` (*retired: rulings ledger*) | P0 |
 | F2-06 | **No commercial figures, ever, on any surface the Installation Team Member preset grants.** No price, discount, tranche, margin or customer value appears on any screen this preset reaches. v1 achieved the property by giving crew no screen at all; where V2 gives them a screen, the surface itself must preserve it (`02-personas.md` `PS-27` carries the same law persona-side). | `SRC` — `R16` ("Crew sees no money because crew sees no screen"); `S8.rule.roles` (installer/crew: "the installation checklist only. Ticks steps. Nothing financial.") | P0 |
 | F2-07 | **The coordinator fallback survives the preset.** Where the checklist is run by a coordinator rather than the crew, ticks are attributed to the coordinator and an optional free-text "done by" per step records the crew member's name. This fallback is not removed when crew accounts exist, because mixed crews are the normal case (`02-personas.md` `PS-28`). | `SRC` — `R16` (ticks attributed to the coordinator; optional free-text "done by" per step) | P1 |
-| F2-08 | **Decision B — the v1 `Manager` preset fans out as: Sales Manager = direct successor; Project Manager and Operations = delivery re-grants.** (a) **Sales Manager** inherits every grant the v1 `Manager` preset held in the v1 capability matrix, unchanged — Team lead visibility; add/edit leads; assign leads; capture surveys; create/edit and send proposals; update project stages; record payments and upload documents; see agent performance; see company reports (team-scoped). (b) **Project Manager** re-grants the coordinator subset at single-project scope — update stages, upload/verify documents, record payments — and takes over the v1 coordinator's checklist duty (R16's "coordinator (Manager role) runs the checklist" becomes the Project Manager in V2). (c) **Operations** re-grants the coordinator subset at portfolio scope — stages, documents, blockers — plus the DD11 catalog grant and field-workforce team visibility. No v1 `Manager` grant is dropped; each is either carried by Sales Manager or additionally re-granted. | `SRC` — *retired: product journey* §ROLES & PERMISSIONS L1432 (v1 Manager grants) + `S8.rule.roles` ("= the Manager preset — there is no separate coordinator role", D27) · fan-out ruled per *retired: PRD design note* §2 DD3 + §12; `02-personas.md` §2 | P0 |
+| F2-08 | **Decision B — the v1 `Manager` preset fans out as: Sales Manager = direct successor; Project Manager and Operations = delivery re-grants.** (a) **Sales Manager** inherits every grant the v1 `Manager` preset held in the v1 capability matrix, unchanged — Team lead visibility; add/edit leads; assign leads; capture surveys; create and edit designs; create/edit and send proposals; update project stages; record payments and upload documents; see agent performance; see company reports (team-scoped). (b) **Project Manager** re-grants the coordinator subset at single-project scope — update stages, upload/verify documents, record payments — and takes over the v1 coordinator's checklist duty (R16's "coordinator (Manager role) runs the checklist" becomes the Project Manager in V2). (c) **Operations** re-grants the coordinator subset at portfolio scope — stages, documents, blockers — plus the DD11 catalog grant and field-workforce team visibility. No v1 `Manager` grant is dropped; each is either carried by Sales Manager or additionally re-granted. | `SRC` — *retired: product journey* §ROLES & PERMISSIONS L1432 (v1 Manager grants) + `S8.rule.roles` ("= the Manager preset — there is no separate coordinator role", D27) · fan-out ruled per *retired: PRD design note* §2 DD3 + §12; `02-personas.md` §2 | P0 |
 | F2-09 | **Field Technician and Installation Team Member are distinct presets.** Different jobs, different grants: the technician's grants are visits, routes, check-in/out and tasks (M09 rows); the installer's are the installation checklist and its photo evidence (M08 rows) under the F2-06 no-commercial-figures law. Merging them would put route and visit rights on a crew surface bound by R16's constraint, and checklist rights on every general field employee — both leaks. One person may of course hold both presets (F2-10). | `BRIEF` — *retired: PRD design note* §12 (the merge question F2 must record with rationale) | P0 |
 
 **Behavior detail — how thirteen candidates became twelve.** Design spec §12 seeded thirteen
@@ -146,15 +146,15 @@ knowledge, platform billing. A tenant always retains at least one EPC Owner (F2-
 #### Sales Manager
 
 The v1 `Manager` preset's direct successor (F2-08a): Team lead visibility; add/edit and assign
-leads; capture surveys; create/edit and send proposals; update project stages; record payments
+leads; capture surveys; create and edit designs; create/edit and send proposals; update project stages; record payments
 and upload documents; see agent performance including the per-rep view; see company reports,
 team-scoped. Not theirs: company settings, catalog and price book, agent configuration,
 billing, deleting anything.
 
 #### Sales Executive
 
-The v1 `Sales rep`: Own-lead visibility; add/edit leads; capture surveys; create/edit
-proposals including discounts; send proposals; mark won and lost. Not theirs: assigning to
+The v1 `Sales rep`: Own-lead visibility; add/edit leads; capture surveys; create and edit
+designs; create/edit proposals including discounts; send proposals; mark won and lost. Not theirs: assigning to
 others, deleting, project stages, recording payments, reports beyond their own step-back view.
 
 #### Survey Engineer
@@ -499,18 +499,18 @@ conflict.
 
 | Row key · capability | EPC Owner | Sales Manager | Sales Executive | Survey Engineer | Design Engineer | Project Manager | Field Technician | Installation Team Member | HR/Admin | Finance | Operations | Marketing | Source |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `F2.M05.create-edit-designs` · Create and edit designs | ✓ | — | — | — | ✓ | — | — | — | — | — | — | — | `SRC` `DOC08.matrix.create-edit-designs` (journey L1450) |
+| `F2.M05.create-edit-designs` · Create and edit designs | ✓ | ✓ | ✓ | — | ✓ | — | — | — | — | — | — | — | `SRC` `DOC08.matrix.create-edit-designs` (journey L1450); the two sales cells by owner ruling 2026-11-17 — a rep drafts a design at the customer's house, and sign-off stays `F2.M05.approve-designs`'s |
 | `F2.M05.approve-designs` · Approve designs (sign-off) — approval capability, F2-04 author rule applies | ✓ | — | — | — | ✓ | — | — | — | — | — | — | — | `SRC` `DOC08.matrix.approve-designs` (journey L1451); v1 grantee `Engineer` folded into Design Engineer per decision A (F2-03) |
 | ~~`F2.M05.run-roof-detection`~~ · **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection.** It read: *Run in-canvas AI roof detection on the studio canvas* | — | — | — | — | — | — | — | — | — | — | — | — | Appended by Task 15 (M05); struck with the Detect tool |
 
 Notes on §F2.5-M05 (recorded by Task 15): **design visibility is not a new permission
 domain.** Designs are children of leads, and reading them follows `F2.M02.lead-visibility`
-exactly as survey visibility does (§F2.5-M04 notes): sales roles (Sales Manager, Sales
-Executive) and other lead-visible readers open design cards, the variants compare and the
-**read-only** studio and 3D view through their existing lead scope, with no design grant of
-their own — `DOC08.matrix.create-edit-designs` (journey L1450) withholds editing from every
-sales role, and the read-only studio is a display state of `modules/M05` (its every mutating
-control absent), not a permission row. The engineer sign-off queue and approve/return remain
+exactly as survey visibility does (§F2.5-M04 notes): a lead-visible reader who holds no design
+grant opens design cards, the variants compare and the **read-only** studio and 3D view through
+their existing lead scope, with no design grant of their own. The Sales Manager and the Sales
+Executive hold `F2.M05.create-edit-designs` (owner ruling 2026-11-17): they draft on the leads
+they can see, and a draft reaches no customer before sign-off (`F5-34`). The read-only studio is
+a display state of the studio (its every mutating control absent), not a permission row. The engineer sign-off queue and approve/return remain
 `F2.M05.approve-designs`'s alone (author rule `F2-04`); the customer's read-only 3D share
 surface is `foundations/F5`'s no-login link, not a role grant. No placeholder remains for M05.
 

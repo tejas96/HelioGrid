@@ -72,3 +72,4 @@ export {
 export { type LeadMoney, leadSummaryOf, memberRefOf, moneyOf } from './internal/lead-wire';
 export { phoneLockKey } from './internal/phone-lock';
 export { actorNameOf, type LeadReader, readerOf } from './internal/reader';
+export { sitePinOf } from './internal/site-pin';
