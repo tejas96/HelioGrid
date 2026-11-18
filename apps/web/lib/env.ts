@@ -19,8 +19,11 @@ const ENV = loadWebEnv({
   // One key per line, written out. Do NOT rewrite as process.env[k] or a spread — neither is substituted.
   NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+  NEXT_PUBLIC_GOOGLE_MAPS_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY,
 });
 
 export const API_URL = ENV.NEXT_PUBLIC_API_URL;
 /** The web's Google client (`M01-02`); `undefined` means the door draws no Google control. */
 export const GOOGLE_WEB_CLIENT_ID = ENV.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+/** The browser key for the studio's pin map; `undefined` means the map draws its neutral grid. */
+export const GOOGLE_MAPS_KEY = ENV.NEXT_PUBLIC_GOOGLE_MAPS_KEY;

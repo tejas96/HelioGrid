@@ -3,7 +3,12 @@ import type { LeadTaskView } from '@heliogrid/domain';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import type { FailedReadProps } from '../EmptyState/EmptyState.types';
 import type { PendingActionSpec } from '../PendingAction/PendingAction.types';
-import type { LeadFilesPanel, LeadSectionsWords, LeadTaskRow } from './LeadSections.types';
+import type {
+  LeadDesignsWords,
+  LeadFilesPanel,
+  LeadSectionsWords,
+  LeadTaskRow,
+} from './LeadSections.types';
 
 /** The words a task row is drawn with: what it asks, and when it is due on the tenant's clock. */
 export interface LeadTaskRowWords {
@@ -65,6 +70,21 @@ export function leadFilesFailedOf(
   return {
     title: words.filesFailed,
     message: words.filesFailedLine,
+    retryLabel: words.retry,
+    onRetry: retry,
+    focusAfter,
+  };
+}
+
+/** The Designs section's read that failed, said with its retry; focus stays on the section's frame. */
+export function leadDesignsFailedOf(
+  retry: () => void,
+  words: LeadDesignsWords,
+  focusAfter: FocusAfter,
+): FailedReadProps {
+  return {
+    title: words.failedTitle,
+    message: words.failedLine,
     retryLabel: words.retry,
     onRetry: retry,
     focusAfter,

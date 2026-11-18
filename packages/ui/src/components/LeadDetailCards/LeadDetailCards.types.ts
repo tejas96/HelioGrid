@@ -8,6 +8,7 @@ import type {
 } from '../LeadContactsCard/LeadContactsCard.types';
 import type { LeadTaskRowWords } from '../LeadSections/LeadSections.logic';
 import type {
+  LeadDesignsPanel,
   LeadFileRefusal,
   LeadProposalsPanel,
   LeadSectionsWords,
@@ -128,5 +129,7 @@ export interface LeadDetailCardsProps<Failure> {
    * on an api built before proposals, where the section draws its count alone.
    */
   readonly proposals?: LeadProposalsPanel;
+  /** The Designs section, assembled by the screen's own hook (`useLeadDesignsSection`). */
+  readonly designs: LeadDesignsPanel;
   readonly words: LeadDetailCardsWords<Failure>;
 }

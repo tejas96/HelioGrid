@@ -7,7 +7,7 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { StatusMark } from '../StatusMark/StatusMark.native';
 import type { MapPin, MapSurfaceWords } from './MapSurface.types';
 import { MAP_PIN_COLOR } from './MapTokens.native';
-import { pinReadingOf } from './map-placement';
+import { MAP_PIN_TIP, pinReadingOf } from './map-placement';
 
 interface MapLocationPinProps {
   pin: MapPin;
@@ -20,12 +20,26 @@ interface MapLocationPinProps {
   words: Pick<MapSurfaceWords, 'pinPending' | 'pinConfirmed' | 'draggable'>;
 }
 
+/**
+ * The room the pin's column lays out in, centred on the point: a zero-wide anchor alone gave the
+ * label no width, and its words folded to nothing.
+ */
+const COLUMN_ROOM = 240;
+
 const styles = StyleSheet.create({
   /* Zero-box anchor: the web half uses translate(-50%,-100%), which RN has no equivalent for
-     on an auto-sized absolute view. */
-  anchor: { position: 'absolute', width: 0, height: 0, alignItems: 'center', zIndex: 2 },
-  column: { alignItems: 'center', gap: theme.spacing['sp-1'] },
-  label: { ...theme.elevation.e2 },
+     on an auto-sized absolute view. The column hangs from it by its foot, so the pin's tip — not
+     its box — stands on the point (`MAP_PIN_TIP`). */
+  anchor: { position: 'absolute', width: 0, height: 0, zIndex: 2 },
+  column: {
+    position: 'absolute',
+    bottom: -MAP_PIN_TIP,
+    left: -COLUMN_ROOM / 2,
+    width: COLUMN_ROOM,
+    alignItems: 'center',
+    gap: theme.spacing['sp-1'],
+  },
+  label: { alignSelf: 'center', ...theme.elevation.e2 },
   hit: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   halo: {
     position: 'absolute',

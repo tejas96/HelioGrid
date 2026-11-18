@@ -16,6 +16,7 @@ import {
   serviceAccountJsonBase64Schema,
   temporalAddressSchema,
   temporalNamespaceSchema,
+  WEB_PORT_DEFAULT,
 } from './fragments';
 
 /**
@@ -33,7 +34,7 @@ const apiEnvObject = z.object({
   DATABASE_URL: databaseUrlSchema,
   DATABASE_ADMIN_URL: adminDatabaseUrlSchema,
 
-  WEB_ORIGIN: originSchema.default('http://localhost:3002'),
+  WEB_ORIGIN: originSchema.default(`http://localhost:${WEB_PORT_DEFAULT}`),
 
   /**
    * Where a browser reaches this api — the same address the web's `NEXT_PUBLIC_API_URL` names. The

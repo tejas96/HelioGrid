@@ -8,9 +8,13 @@ import {
   type LeadDockQuickStanding,
   leadDockOf,
 } from '../LeadActionDock/LeadActionDock.logic';
-import type { LeadActionDockProps } from '../LeadActionDock/LeadActionDock.types';
+import type {
+  LeadActionDockProps,
+  LeadDockStateStanding,
+} from '../LeadActionDock/LeadActionDock.types';
 import { leadRecordMenuOf } from '../LeadHero/LeadHero.logic';
 import type { LeadHeroProps, LeadRecordActPress } from '../LeadHero/LeadHero.types';
+import type { LeadDesignsPanel } from '../LeadSections/LeadSections.types';
 import type { QualifyCardProps } from '../QualifyCard/QualifyCard.types';
 import type { LeadRecordMenuProps, LeadWorkCardsProps } from './LeadWorkCards.types';
 
@@ -98,6 +102,15 @@ export function leadHeroOf(props: LeadWorkCardsProps, format: MarketFormat): Lea
   };
 }
 
+/** *Create design* out, or come back undone with why: said in the dock, where it was pressed. */
+function designStandingOf(design: LeadDesignsPanel | null): LeadDockStateStanding | null {
+  if (design === null) return null;
+  if (design.createFailure !== null) {
+    return { kind: 'returned', act: 'design', reason: design.createFailure };
+  }
+  return design.creating ? { kind: 'waiting', act: 'design', line: design.words.creating } : null;
+}
+
 /**
  * The five actions and the state acts; a sheet-less act (wake, reopen) says where it stands. Only
  * wake and reopen stay under the actions: snooze and disqualify are the record menu's, so the
@@ -107,6 +120,7 @@ export function leadWorkDockOf({
   screen,
   view,
   layout,
+  dockDesign,
   words,
 }: LeadWorkCardsProps): LeadActionDockProps {
   const { acts } = screen;
@@ -119,6 +133,7 @@ export function leadWorkDockOf({
     message: () => acts.open({ kind: 'message', template: 'follow_up_nudge' }),
     log: () => acts.open({ kind: 'log' }),
     visit: () => acts.open({ kind: 'visit' }),
+    design: dockDesign?.onCreate ?? null,
     stateAct: (act) => {
       if (act === 'wake' || act === 'reopen') acts.quick(act);
       else acts.open({ kind: act });
@@ -128,6 +143,7 @@ export function leadWorkDockOf({
   return {
     layout,
     ...dock,
+    standing: dock.standing ?? designStandingOf(dockDesign),
     stateActs: dock.stateActs.filter((each) => !MENU_STATE_ACTS.some((act) => act === each.act)),
   };
 }

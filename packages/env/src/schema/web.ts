@@ -18,6 +18,13 @@ export const webEnvSchema = z.object({
   NEXT_PUBLIC_API_URL: originSchema.default(`http://localhost:${API_PORT_DEFAULT}`),
   /** The web's Google client (`M01-02`). Absent, the door draws no Google control — never a dead one. */
   NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID: googleClientIdSchema.optional(),
+  /**
+   * The browser key for the map under the pin on the studio's Site details (Maps JavaScript API).
+   * Public by construction, so it is restricted to this site's addresses in the provider's console,
+   * and it is never the server's key. Absent, the map draws its neutral grid and the pin is set by
+   * the address or the typed coordinates alone.
+   */
+  NEXT_PUBLIC_GOOGLE_MAPS_KEY: z.string().min(1).optional(),
 });
 
 export type WebEnv = z.infer<typeof webEnvSchema>;

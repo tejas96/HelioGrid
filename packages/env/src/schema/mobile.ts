@@ -13,6 +13,11 @@ import { googleClientIdSchema, originSchema } from './fragments';
 export const mobileEnvSchema = z.object({
   API_URL: originSchema,
   /**
+   * Where apps/web is served: the origin of the pages the app shows in a web view (the site map
+   * under the pin, `SCR-M05-01`). Per platform, as `API_URL` is.
+   */
+  WEB_URL: originSchema,
+  /**
    * Google sign-in (`M01-02`): the WEB client id, which the phone's ID token is issued for so the
    * api checks one audience on both platforms, and the iOS client the sheet opens through.
    */

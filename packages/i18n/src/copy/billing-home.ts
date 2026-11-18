@@ -126,7 +126,7 @@ export const BILLING_HOME = {
   minutes: /*i18n*/ { id: 'min' },
   colDate: /*i18n*/ { id: 'Date' },
   colFor: /*i18n*/ { id: 'For' },
-  colState: /*i18n*/ { id: 'State' },
+  colState: /*i18n*/ { id: 'Status' },
   colPdf: /*i18n*/ { id: 'PDF' },
   ownerAct: /*i18n*/ { id: 'pay or manage billing' },
   /** The plans page's way back (`SCR-M12-03`), opened from this page. */

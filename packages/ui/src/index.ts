@@ -198,6 +198,7 @@ export * from './components/SignupCompanyStep';
 export * from './components/SignupKnownNumber';
 export * from './components/SignupRequestSent';
 export * from './components/SignupSteps';
+export * from './components/SiteDetails';
 export * from './components/Slider';
 export * from './components/SolarSky';
 export * from './components/StageMeter';

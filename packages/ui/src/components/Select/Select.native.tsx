@@ -238,7 +238,7 @@ export function Select({
 const styles = StyleSheet.create({
   label: {
     fontWeight: '500',
-    marginBottom: 6,
+    marginBottom: theme.spacing['sp-2'],
   },
   trigger: {
     width: '100%',

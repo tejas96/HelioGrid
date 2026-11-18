@@ -13,7 +13,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: var(--sp-2);
 }
 
 /* Equal columns, each as wide as the widest word: the sliding pill is one column wide, so a

@@ -107,7 +107,7 @@ catalog freshness checks with the oasdiff breaking-change judge, the unit tests 
 | A phone answers the on-screen keyboard in one place: a page, door, sheet or panel holding fields sits in `KeyboardFrame` (`packages/ui/src/primitives/Keyboard/`), which keeps the focused field, its line and the act bar above the keyboard on both phones | Biome plugin `keyboard-in-one-place` · a field in a plain scroll view: review · the field above the keyboard: `qa-live` on each phone a change reaches |
 | On a phone nothing a person reads or presses sits under the status bar, the home indicator, the gesture bar or the floating pill | `qa-live` on each phone a change reaches · the rest: review |
 | Once a wait ends, no control still speaks busy | `qa-live` on each phone a change reaches (the cause: `packages/ui/CLAUDE.md` Traps) |
-| A built screen matches the frame the owner picked | the side-by-side check before `qa-live` (`CLAUDE.md` §3) · `qa-live`'s frame comparison · `code-reviewer` |
+| A built screen matches the frame the owner picked | `qa-live`'s frame comparison (`CLAUDE.md` §3) · `code-reviewer` |
 | A spec measures a box only once the element is drawn and still, and a box not drawn fails by name, never as 0 | Biome plugin `settled-box` (`settledBox`, `tests/e2e/support/layout.ts`) |
 | The web opens a page it does not draw only through `openExternal` (`apps/web/lib/open-external.ts`), which opens it in this tab when the browser blocks the new one | Biome plugin `open-tab-in-one-place` |
 

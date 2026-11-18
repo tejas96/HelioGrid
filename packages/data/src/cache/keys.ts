@@ -44,6 +44,16 @@ export const queryKeys = {
    * every chip's count and the forecast at once, so every act refreshes the lists under it. The
    * one detail read is written from each act's own answer, so the builder never waits to redraw.
    */
+  /** The design studio (`T-M05-001`): a lead's designs, one design, and the place search. */
+  studio: {
+    all: (tenantId: string) => ['studio', tenantId] as const,
+    leadDesigns: (tenantId: string, leadId: string) =>
+      ['studio', tenantId, 'lead', leadId] as const,
+    design: (tenantId: string, designId: string) =>
+      ['studio', tenantId, 'design', designId] as const,
+    placeSuggestions: (tenantId: string, query: string) =>
+      ['studio', tenantId, 'places', query] as const,
+  },
   proposals: {
     all: (tenantId: string) => ['proposals', tenantId] as const,
     lists: (tenantId: string) => ['proposals', tenantId, 'list'] as const,

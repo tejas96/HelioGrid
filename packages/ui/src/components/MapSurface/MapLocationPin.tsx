@@ -1,10 +1,10 @@
-import type { PointerEvent as ReactPointerEvent } from 'react';
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import { useState } from 'react';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { StatusMark } from '../StatusMark';
 import type { MapPin, MapSurfaceWords } from './MapSurface.types';
 import { MAP_PIN_COLOR, MAP_SURFACE } from './MapTokens';
-import { pinReadingOf } from './map-placement';
+import { MAP_PIN_TIP, pinReadingOf } from './map-placement';
 
 interface MapLocationPinProps {
   pin: MapPin;
@@ -15,6 +15,9 @@ interface MapLocationPinProps {
   onDrag: (event: ReactPointerEvent<HTMLElement>) => void;
   words: Pick<MapSurfaceWords, 'pinPending' | 'pinConfirmed' | 'draggable'>;
 }
+
+/** The pin's drop, handed to `MapMarkers.css`: the tip stands on the point (`MAP_PIN_TIP`). */
+const PIN_TIP = { '--hg-map-pin-tip': `${MAP_PIN_TIP}px` } as CSSProperties;
 
 /**
  * PENDING vs CONFIRMED, **in words first**. Pending is an accent pin with a hollow core, a soft
@@ -62,7 +65,7 @@ export function MapLocationPin({
     : {};
 
   return (
-    <div className="hg-map-surface-pin" style={{ left: `${x}%`, top: `${y}%` }}>
+    <div className="hg-map-surface-pin" style={{ left: `${x}%`, top: `${y}%`, ...PIN_TIP }}>
       <StatusMark
         className="hg-map-surface-pin-label"
         tone={confirmed ? 'success' : 'accent'}

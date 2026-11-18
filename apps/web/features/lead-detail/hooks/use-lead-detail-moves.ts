@@ -1,10 +1,22 @@
 'use client';
-import type { LeadDetailScreen, LeadFiles, LeadProposalsMoves } from '@heliogrid/data/react';
+import type {
+  LeadDesignsMoves,
+  LeadDetailScreen,
+  LeadFiles,
+  LeadProposalsMoves,
+} from '@heliogrid/data/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { openExternal } from '../../../lib/open-external';
 import { pickLeadFile } from '../../../lib/pick-file';
-import { leadPath, projectPath, proposalBuilderPath, proposalPath } from '../../shell';
+import {
+  designPath,
+  designSitePath,
+  leadPath,
+  projectPath,
+  proposalBuilderPath,
+  proposalPath,
+} from '../../shell';
 import { LEADS_PATH, mergePath, referralPath } from '../constants';
 
 /** The web's own moves off Lead Detail: the router, the dialler, the clipboard and the file chooser. */
@@ -26,6 +38,8 @@ export interface LeadDetailMoves {
   openFile(fileId: string): void;
   /** Where the lead's proposals lead: the builder, a proposal's own page, a sibling lead. */
   readonly proposals: LeadProposalsMoves;
+  /** Where the lead's designs lead: the Site details of a new one, a design's own page. */
+  readonly designs: LeadDesignsMoves;
 }
 
 export function useLeadDetailMoves(files: LeadFiles): LeadDetailMoves {
@@ -46,6 +60,10 @@ export function useLeadDetailMoves(files: LeadFiles): LeadDetailMoves {
       toBuilder: (proposalId) => router.push(proposalBuilderPath(proposalId)),
       toProposal: (proposalId) => router.push(proposalPath(proposalId)),
       toLead: (leadId) => router.push(leadPath(leadId)),
+    },
+    designs: {
+      toSiteDetails: (designId) => router.push(designSitePath(designId)),
+      toDesign: (designId) => router.push(designPath(designId)),
     },
     openFile: (fileId) => {
       void files.fileLink(fileId).then(

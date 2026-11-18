@@ -104,6 +104,8 @@
 .hg-date-set-row,
 /* A lead waiting under the inbox's deck, one tile of the desktop grid (`LeadTile`). */
 .hg-lead-tile,
+/* One design of a lead, a card of the Designs section's grid (`LeadDesignList`). */
+.hg-lead-design,
 /* The catalog's price editor docked beside the list on desktop (`PriceEditorDock`, apps/web). */
 .hg-catalog-dock,
 /* One card holding a list's rows (`CardRows`): the catalog's narrow list, the Team list — or, in

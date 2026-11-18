@@ -13,8 +13,8 @@ export interface LeadDockWords {
   readonly log: { readonly label: TranslatedText; readonly short: TranslatedText };
   readonly visit: { readonly label: TranslatedText; readonly short: TranslatedText };
   readonly design: { readonly label: TranslatedText; readonly short: TranslatedText };
-  readonly designLater: TranslatedText;
   readonly closedNoVisit: TranslatedText;
+  readonly closedNoDesign: TranslatedText;
   readonly stateAct: (act: LeadStateAct) => TranslatedText;
   readonly stateActWaiting: (act: Extract<LeadStateAct, 'wake' | 'reopen'>) => TranslatedText;
 }
@@ -24,6 +24,8 @@ export interface LeadDockPresses {
   readonly message: () => void;
   readonly log: () => void;
   readonly visit: () => void;
+  /** Create design; `null` for a reader without the design grant, who is not offered it. */
+  readonly design: (() => void) | null;
   readonly stateAct: (act: LeadStateAct) => void;
 }
 
@@ -37,8 +39,9 @@ export type LeadDockQuickStanding =
     };
 
 /**
- * The dock's props from domain's view of the lead: Call or why not, the four acts with why one is
- * off — Create design until the studio lands, Book visit while the lead is closed — the state acts
+ * The dock's props from domain's view of the lead: Call or why not, the acts with why one is off —
+ * Book visit and Create design while the lead is closed; Create design is left out for a reader
+ * without the design grant — the state acts
  * its standing offers but junk, which the hero's record menu holds.
  */
 export function leadDockOf(
@@ -53,6 +56,7 @@ export function leadDockOf(
       : quick.kind === 'waiting'
         ? { kind: 'waiting', act: quick.act, line: words.stateActWaiting(quick.act) }
         : quick;
+  const closed = view.acts.visit === 'closed';
   return {
     call:
       view.dial.kind === 'dial'
@@ -65,10 +69,19 @@ export function leadDockOf(
       {
         action: 'visit',
         ...words.visit,
-        disabledReason: view.acts.visit === 'closed' ? words.closedNoVisit : null,
+        disabledReason: closed ? words.closedNoVisit : null,
         onPress: presses.visit,
       },
-      { action: 'design', ...words.design, disabledReason: words.designLater, onPress: () => {} },
+      ...(presses.design === null
+        ? []
+        : [
+            {
+              action: 'design' as const,
+              ...words.design,
+              disabledReason: closed ? words.closedNoDesign : null,
+              onPress: presses.design,
+            },
+          ]),
     ],
     stateActs: view.acts.stateActs
       .filter((act) => act !== 'junk')
@@ -78,6 +91,6 @@ export function leadDockOf(
         onPress: () => presses.stateAct(act),
       })),
     standing,
-    closed: view.acts.visit === 'closed',
+    closed,
   };
 }

@@ -1,4 +1,4 @@
-import type { LeadProposals, TranslatedText } from '@heliogrid/contracts';
+import type { DesignWire, LeadProposals, TranslatedText } from '@heliogrid/contracts';
 import type { LeadDetailSection, Read } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 
@@ -50,10 +50,7 @@ export interface LeadSectionsWords {
   readonly confirmed: TranslatedText;
   readonly reschedule: TranslatedText;
   readonly confirmation: TranslatedText;
-  /** Designs and proposals arrive with their modules: their count, or their named gap and why. */
-  readonly designs: (count: number) => TranslatedText;
-  readonly noDesign: TranslatedText;
-  readonly designsLine: TranslatedText;
+  /** Proposals on an api built before them: their count, or their named gap and why. */
   readonly proposals: (count: number) => TranslatedText;
   readonly noProposal: TranslatedText;
   readonly proposalsLine: TranslatedText;
@@ -182,10 +179,76 @@ export interface LeadProposalsPanel {
   readonly onOpenSibling: () => void;
 }
 
+/** One design on the lead, as the server sends it. */
+export type LeadDesign = DesignWire;
+
+/** The Designs section's words (`T-M05-001`) — `leadDesignsWords`, by shape. */
+export interface LeadDesignsWords {
+  readonly noneTitle: TranslatedText;
+  /** "Start a design for this roof. The address and the connection come from this lead." */
+  readonly noneLine: TranslatedText;
+  readonly create: TranslatedText;
+  /** "Design 2". */
+  readonly named: (design: LeadDesign) => TranslatedText;
+  /** A status the app knows by its word, and one a newer server learned by a plain fallback. */
+  readonly status: (status: string) => TranslatedText;
+  readonly recommended: TranslatedText;
+  /** The card's cover and its facts until the design holds panels. */
+  readonly noPanels: TranslatedText;
+  /** "Asha Patil · 2 days ago" — "You" for the reader's own. */
+  readonly line: (design: LeadDesign) => TranslatedText;
+  readonly continue: TranslatedText;
+  readonly view: TranslatedText;
+  /** A card's spoken names, each with the design's own: "Open Design 2", "More for Design 2". */
+  readonly openNamed: (design: LeadDesign) => TranslatedText;
+  readonly moreNamed: (design: LeadDesign) => TranslatedText;
+  readonly copy: TranslatedText;
+  readonly recommend: TranslatedText;
+  readonly unrecommend: TranslatedText;
+  /** "You can view these designs. You cannot change them." */
+  readonly viewOnly: TranslatedText;
+  /** A closed lead: what it is marked as, and that reopening it brings designs back. */
+  readonly closedLine: TranslatedText;
+  readonly loading: TranslatedText;
+  /** *Create design* is out, said where it was pressed — "Creating the design". */
+  readonly creating: TranslatedText;
+  readonly failedTitle: TranslatedText;
+  readonly failedLine: TranslatedText;
+  readonly retry: TranslatedText;
+}
+
+/**
+ * The Designs section (`T-M05-001`): the lead's designs as cards, newest change first, or the
+ * empty scene with *Create design*. A reader without the design grant opens a card to view it and
+ * is offered nothing else; a closed lead takes no new design. Every act — a create, a copy, the
+ * recommended mark — waits for its answer, and one that came back undone says so here.
+ */
+export interface LeadDesignsPanel {
+  readonly read: Read<readonly LeadDesign[]>;
+  /** The reader holds the design grant. */
+  readonly canDesign: boolean;
+  /** The lead is lost, disqualified or junk: no design is made on it until it is reopened. */
+  readonly closed: boolean;
+  readonly words: LeadDesignsWords;
+  readonly onCreate: () => void;
+  readonly onOpen: (designId: string) => void;
+  readonly onCopy: (designId: string) => void;
+  readonly onRecommend: (designId: string, recommended: boolean) => void;
+  /** An act is out: every act is inert until it answers. */
+  readonly busy: boolean;
+  /** The act that came back undone, with the sentence saying why. */
+  readonly failure: TranslatedText | null;
+  /** *Create design* itself is out — never a copy or a recommend: the dock says so where it is pressed. */
+  readonly creating: boolean;
+  /** *Create design* itself came back undone, with the sentence saying why. */
+  readonly createFailure: TranslatedText | null;
+}
+
 /**
  * The lead's six sections as tabs (`M02-32`): Timeline, Site, Designs, Proposals, Tasks and Files,
  * each with its count where it has one. The timeline is the caller's `LeadTimeline`; the site is
- * its address — confirmed by a booked visit — and its supply, else its named gap; designs and proposals say none yet; tasks are
+ * its address — confirmed by a booked visit — and its supply, else its named gap; designs are the
+ * lead's design cards; tasks are
  * the open ones with their due time and overdue mark, each done or reopened in place; files are
  * the lead's papers, each opened with a tap, and a new one added.
  */
@@ -199,6 +262,7 @@ export interface LeadSectionsProps {
   readonly tasks: readonly LeadTaskRow[];
   readonly taskActs: LeadTaskActs;
   readonly files: LeadFilesPanel;
+  readonly designs: LeadDesignsPanel;
   /** The Proposals section; absent on an api built before proposals, which draws the count alone. */
   readonly proposals?: LeadProposalsPanel;
   readonly words: LeadSectionsWords;

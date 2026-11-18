@@ -49,6 +49,10 @@ already. This task adds the site name, the pin's coordinates and the utility ope
 Where the panels go (roof or ground) is the design's. The states and their operators are the
 market pack's utility directory (`F1-53`).
 
+**The map under the pin** is one page of the web app, `/embed/site-map`. The web draws it in
+place; the phone shows the same page in a web view, so the three platforms draw one map. It is
+Google's map now.
+
 **DONE WHEN — part a:**
 - Given a lead I can see and the right to design, when I tap Create design, then "Design N" is made with the next number for that lead, and Site details opens with the lead's address, state, phase and load filled. On web, iOS and Android.
 - When I pick a suggested address, or type or paste coordinates, then the map shows the place with a pin, State is filled from the place, and the DISCOM is picked when the state has only one. Wrong coordinates are refused with the reason.
@@ -74,3 +78,5 @@ how a design reaches its engineer (`F2.M02.lead-visibility`, `F2.M05.approve-des
 **Not in this task:** the canvas, the design document, undo, autosave and versions — they start
 with the roof step. The card's picture, kWp and kWh join it in the steps that make them; until
 then a card says "No panels yet". Sign-off and its three later statuses come with the result step.
+A second map beside Google's (Apple's, with "Use this map") is the owner's wish for later: it
+joins the one map page, after its own sample and the owner's Apple Maps keys.

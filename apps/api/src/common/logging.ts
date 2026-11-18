@@ -45,10 +45,12 @@ const REDACTED_PATHS = [
   'req.query.phone',
   // What a person typed into a search — a name, a number's digits — is theirs, not the log's.
   'req.query.q',
-  // The place search of Site details: an address as it is typed, and the point of a home.
+  // The place search of Site details: an address as it is typed, the point of a home, and the
+  // picked place's id, which names that address as surely as its words do.
   'req.query.query',
   'req.query.latitude',
   'req.query.longitude',
+  'req.query.placeId',
   // The print read's grant opens a frozen proposal version on its own (`/proposal-print/:versionId`).
   'req.query.grant',
   // A Temporal activity's task token completes or fails that activity; the SDK's lines carry

@@ -104,6 +104,8 @@ export { NO_HELD_WORK } from './session/held-work';
 export type { SessionApi, SessionStore } from './session/types';
 export type { UpdateRequired, UpgradeStore } from './session/upgrade';
 export type { SettingsRepository } from './settings/repository';
+export type { PlacesRepository, StudioRepository } from './studio/studio-repository';
+export { DesignActRefusedError } from './studio/studio-repository';
 export type { SimilarTenant, TenantRepository } from './tenant/repository';
 export type { TokenStorage } from './transport/storage';
 export type { UserRepository } from './user/repository';

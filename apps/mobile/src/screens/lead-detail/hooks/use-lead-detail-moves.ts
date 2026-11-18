@@ -1,4 +1,9 @@
-import type { LeadDetailScreen, LeadFiles, LeadProposalsMoves } from '@heliogrid/data/react';
+import type {
+  LeadDesignsMoves,
+  LeadDetailScreen,
+  LeadFiles,
+  LeadProposalsMoves,
+} from '@heliogrid/data/react';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { Linking, Share } from 'react-native';
@@ -9,7 +14,8 @@ import { useProposalMoves } from '../../shared/use-proposal-moves';
  * Lead Detail's ways out on the phone — the platform adapter: back to where it was opened from,
  * the leads list, the dialler, the system share sheet for a message to send from the person's own
  * apps, quick add naming this lead as the referrer (`M02-16`), the system's own chooser for a file
- * and its viewer for one stored (`M02-32`), and where the lead's proposals lead (`T-M06-001`).
+ * and its viewer for one stored (`M02-32`), and where the lead's proposals (`T-M06-001`) and designs
+ * (`T-M05-001`) lead.
  */
 export function useLeadDetailMoves(files: LeadFiles) {
   const navigation = useNavigation();
@@ -21,8 +27,14 @@ export function useLeadDetailMoves(files: LeadFiles) {
     toProposal: proposal.toProposal,
     toLead: proposal.toLead,
   };
+  /* Where the lead's designs lead: the Site details of a new one, a design's own page. */
+  const designs: LeadDesignsMoves = {
+    toSiteDetails: (designId) => navigation.navigate('SiteDetails', { designId }),
+    toDesign: (designId) => navigation.navigate('Design', { designId }),
+  };
   return {
     proposals,
+    designs,
     back: () => {
       if (navigation.canGoBack()) navigation.goBack();
       else navigation.navigate('Leads');

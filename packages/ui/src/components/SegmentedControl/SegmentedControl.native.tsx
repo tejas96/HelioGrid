@@ -208,7 +208,7 @@ const inView = { color: colors['text-primary'] };
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: 'flex-start',
-    gap: 6,
+    gap: theme.spacing['sp-2'],
   },
   /* `fill`: the track runs its holder's width, its segments sharing it equally. */
   wrapperFill: { alignItems: 'stretch' },

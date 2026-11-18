@@ -1,0 +1,17 @@
+# Design (`SCR-M05-02`, T-M05-001a): the design the api made on this company's lead opens at its
+# address; the title names it, the page says the studio opens here and asks for the site first —
+# no location is set yet — and its one button opens Site details.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://designs/${DESIGN_ID}
+- extendedWaitUntil:
+    visible: ${DESIGN_TITLE}
+    timeout: 15000
+- assertVisible: ${DESIGN_HOLDING}
+# The lead's address and the line under it are one run of text on the phone: the line ends it.
+- assertVisible: '[\s\S]*${DESIGN_NEEDS_SITE}'
+- tapOn: ${DESIGN_EDIT_SITE}
+# The button and the page it opens share their words, so the page is known by its own switch.
+- extendedWaitUntil:
+    visible: ${SITE_BY_COORDINATES}
+    timeout: 15000

@@ -1,9 +1,16 @@
-import { mapRead } from '@heliogrid/domain';
+import type { TranslatedText } from '@heliogrid/contracts';
+import { mapRead, type Read } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
 import { leadContactRowsOf } from '../LeadContactsCard/LeadContactsCard.logic';
 import type { LeadContactsCardProps } from '../LeadContactsCard/LeadContactsCard.types';
 import { leadTaskRowsOf } from '../LeadSections/LeadSections.logic';
-import type { LeadFilesPanel, LeadSectionsProps } from '../LeadSections/LeadSections.types';
+import type {
+  LeadDesign,
+  LeadDesignsPanel,
+  LeadDesignsWords,
+  LeadFilesPanel,
+  LeadSectionsProps,
+} from '../LeadSections/LeadSections.types';
 import type { LeadDetailCardsProps } from './LeadDetailCards.types';
 
 /** The contacts card from the lead's screen: who to reach, the primary, and the calling facts. */
@@ -46,10 +53,11 @@ export function leadSectionsOf<Failure>(
   props: LeadDetailCardsProps<Failure>,
   format: MarketFormat,
 ): LeadSectionsProps {
-  const { screen, view, visit, timeline, words, proposals } = props;
+  const { screen, view, visit, timeline, words, proposals, designs } = props;
   const { acts, tasks } = screen;
   return {
     ...(proposals === undefined ? {} : { proposals }),
+    designs,
     section: screen.section,
     onSection: screen.setSection,
     counts: view.counts,
@@ -120,5 +128,45 @@ function leadFilesPanelOf<Failure>(
         : null,
     onRetry: files.retryUpload,
     onOpen: onOpenFile,
+  };
+}
+
+/** What the Designs section reads and presses on the lead's screen; `useLeadDesignsSection` satisfies it. */
+export interface LeadDesignsSectionState<Failure> {
+  readonly read: Read<readonly LeadDesign[]>;
+  readonly canDesign: boolean;
+  readonly closed: boolean;
+  create(): void;
+  copy(designId: string): void;
+  open(designId: string): void;
+  recommend(designId: string, recommended: boolean): void;
+  readonly busy: boolean;
+  readonly failure: Failure | null;
+  readonly creating: boolean;
+  readonly createFailure: Failure | null;
+}
+
+/**
+ * The Designs section as `LeadSections` draws it (`T-M05-001`), from the screen's own hook — one
+ * assembly for the web and the phone, so the two cannot read the section differently.
+ */
+export function leadDesignsPanelOf<Failure>(
+  section: LeadDesignsSectionState<Failure>,
+  words: LeadDesignsWords,
+  failureWords: (failure: Failure) => TranslatedText,
+): LeadDesignsPanel {
+  return {
+    read: section.read,
+    canDesign: section.canDesign,
+    closed: section.closed,
+    words,
+    onCreate: section.create,
+    onOpen: section.open,
+    onCopy: section.copy,
+    onRecommend: section.recommend,
+    busy: section.busy,
+    failure: section.failure === null ? null : failureWords(section.failure),
+    creating: section.creating,
+    createFailure: section.createFailure === null ? null : failureWords(section.createFailure),
   };
 }
