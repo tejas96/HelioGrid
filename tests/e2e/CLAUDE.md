@@ -48,7 +48,7 @@ pnpm --filter @heliogrid/e2e test:mobile <serial>    # the phone flows on one An
 The phone flows run on Android; no one runs them on iOS. The whole phone suite is CI's `android`
 lane and is never run here: the local image differs from CI's, and a run holds the emulator and
 every app edit for half an hour. A flow a change adds or edits is run here once, alone, with
-Maestro and the words `mobile/run.sh` hands a flow, after the Android `qa-live` round (they share
+Maestro and the words `mobile/run.sh` hands a flow, after any Android `qa-live` round (they share
 the emulator). `test:mobile` needs Metro, the api and the app installed on the device, and drives
 one device per call; calls on different phones may run at once. Start the emulator only through the `android-emulator` launch configuration (2 cores,
 4 GB, host GPU; the AVD's `hw.ramSize` is ignored, and at 2 GB Maestro's on-device server dies
@@ -56,7 +56,7 @@ mid-suite).
 
 ## Running the app for QA
 
-`qa-live` checks a running app and starts nothing; the session runs it on `heliogrid_test` this way.
+`qa-live` checks a running app and starts nothing; the session runs the app on `heliogrid_test` this way.
 A change no screen shows and no route serves (worker or database only) is proven by its tests and
 skips this.
 
@@ -75,7 +75,7 @@ skips this.
    `com.heliogrid.app`, and `android-emulator` only when Android is in scope. Rebuild the phone app
    when the device lacks it, the change touches `apps/mobile/ios`, `apps/mobile/android` or a native
    dependency, or it opens on a red error naming a `NativeModule` (`apps/mobile/CLAUDE.md`).
-5. One `qa-live` on the api first when a route changed; fix its `FAIL`s before any screen. Then one
+5. When the owner asks for `qa-live`: one on the api first when a route changed; fix its `FAIL`s before any screen. Then one
    `qa-live` per screen surface, all at once: web for a web change, iOS for any phone change, Android
    only for what CI's `android` lane cannot show — native code or dependency, an `.android.*` file, a
    `Platform.OS` branch, the keyboard, Back, insets, a system picker or a permission. A change to

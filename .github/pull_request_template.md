@@ -16,10 +16,10 @@ flowchart LR
 
 ## Proof
 
-<!-- One line per DONE WHEN line: ✓ and its test by name, or the live check `qa-live` ran; a test
+<!-- One line per DONE WHEN line: ✓ and its test by name, or the live check that ran; a test
      seen failing on purpose adds its red line. -->
 
 ## Notes
 
 <!-- One line each, or "none": a decision taken, a mistake found (its kind and what now prevents
-     it), a deferred row met. -->
+     it). -->

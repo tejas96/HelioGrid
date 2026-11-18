@@ -21,13 +21,11 @@ reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and 
 declarations. A check you add or change is trusted only after it fires on a planted bad line
 (`.claude/rules/testing.md`).
 
-**A bug found is fixed in this change.** Whoever finds it — you, a reviewer, a check or the owner —
-it is fixed here, never deferred, and listed in the PR body by its kind; only what §4 keeps for the
-owner is raised to them. `docs/tasks/deferred.md` takes no new row; a change closes the rows it
-meets. A behaviour fix starts with a test that fails for the bug. A new check or rule line is added
+**A bug found in what this change touches is fixed in this change**, and listed in the PR body by
+its kind; only what §4 keeps for the owner is raised to them. A behaviour fix starts with a test that fails for the bug. A new check or rule line is added
 only when the same mistake can happen again and nothing that exists would catch it — a type, a lint
 rule or a test first; prose only when no machine can decide it, in the file that owns it
-(`.claude/agents/code-reviewer.md`, `qa-live.md`, a package `CLAUDE.md` Traps, a `.claude/rules/`
+(`.claude/agents/code-reviewer.md`, a package `CLAUDE.md` Traps, a `.claude/rules/`
 file). A new file or step only when none fits, and the PR says why.
 
 **No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. A script or
@@ -57,21 +55,19 @@ Law ids are stable — never reuse or renumber one.
     declared platform entry — ui's `.tsx`/`.native.tsx` halves, i18n's `./rn`, a `./server` entry.
 11. **Flows are authored once.** Shared state vocabulary and view-model types live in a shared
     package before either screen consumes them. Screens render; they don't hold policy.
-12. **A new fact joins its guard.** A brand, enum, token, route, table or error code you add is
-    enrolled with the check that holds its kind (`.claude/protections.md` names it) in the same
-    change; a kind no check holds is said out loud.
 
 ## 3. Workflow
 
 Product work follows ONE order, `docs/build-order.md`: one block — a module and the tasks its row
-names — per session and per PR. The session decides how to plan, build and prove it; the owner
-keeps what §4 lists. A change that adds or reshapes a screen shows the owner three strong samples in
+names — per PR. The session decides how to plan, build and prove it; the owner
+keeps what §4 lists. A change that adds or reshapes a screen no approved design (§6) is built to match shows the owner
+three strong samples in
 the approved design language (§10), each as good as the best product work on Dribbble, before it
 builds, at phone and desktop width; the owner picks one, the plan names the pick, and the build
 follows it. A fix that keeps a screen's parts and layout (spacing, alignment, copy, one part's
 colour swapped for another existing token, or a bug inside one part) skips the samples and shows the
-owner a before/after screenshot at phone and desktop width; its frame stays the sample the owner
-picked for that screen. A token's value is §10's and waits for the owner.
+owner a before/after screenshot at phone and desktop width; its frame stays the approved design or
+the sample the owner picked for that screen. A token's value is §10's and waits for the owner.
 
 A shared part is reused by importing it, extending its one contract (Law 7) or lifting it into its
 shared package first (Law 5) — never by copying it. The session decides when a helper agent or a
@@ -81,15 +77,10 @@ fork helps. Two agents never edit the same file at once; after each helper, read
 The plan names, for each new route, who may call it and what each other role gets; a tenant route
 also names its other-company 404. Each is an api test before a screen uses the route.
 
-`qa-live` compares each changed screen with the frame the owner picked, at phone and desktop width;
-every difference is fixed or named in the plan with its reason.
-
 **A PR is complete:** every acceptance line of its tasks is met and proven before it opens, or by
 its CI lane; `code-reviewer` has reviewed the change, every confirmed finding is fixed and every
 possible one is proven and fixed or closed with one reason in the PR's *Notes*, and a later fix
-that touches money, tenancy or permissions is reviewed again; when a screen or a route changed, `qa-live`
-has checked it on the running app (`tests/e2e/CLAUDE.md`, *Running the app for QA*); and CI is
-green — its `quality` job is the full gate, with no `SKIP ` line, `e2e-web` every web flow and
+that touches money, tenancy or permissions is reviewed again; and CI is green — its `quality` job is the full gate, with no `SKIP ` line, `e2e-web` every web flow and
 `android` every phone flow, run unless `PHONE_E2E` is `off`. The full gate and the full suites are
 CI's alone: before the push the session runs `pnpm check` and only the web specs and phone flows
 the change adds or edits.
@@ -105,8 +96,6 @@ delete the git-ignored `dist/` or `apps/web/.next`, then `pnpm turbo build --for
 - **The merge.** Every PR is merged by the owner. Never `--no-verify`, never force-push, never
   push to `main` (`.claude/settings.json` denies them).
 - **The plan:** a block is built only after the owner's yes to its plan.
-- **A split:** a block or a task is split into parts only on the owner's word
-  (`docs/tasks/README.md`).
 - **The look:** the owner picks one of the three samples (§3), and a change to the design
   language itself (§10) waits for their yes.
 - **Anything billable or external-account-shaped** (cloud, store accounts, paid APIs): stop and ask.
@@ -126,7 +115,7 @@ module's task in `docs/tasks/`, never built here.
 - `pnpm check` — the fast check on what differs from `origin/main`, with the unit tests of the
   changed packages; never the proof. Run it without the test-database prefix: the api's database
   tests are CI's, or one file at a time (`.claude/rules/testing.md`).
-- `pnpm check:all` — the full gate (`.claude/protections.md`, top). CI's `quality` job runs it; run
+- `pnpm check:all` — the full gate. CI's `quality` job runs it; run
   it here only to reproduce a red `quality` job, on the test database, with 3002 and 8084 free and
   no worker on `heliogrid_dev`.
 - `pnpm lint:fix` — format and auto-fix.

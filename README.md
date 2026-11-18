@@ -68,7 +68,7 @@ authoritative doc for that layer; this table is only the index.
 | `docs/` | How THIS REPO is built — architecture, tech stack, gates, ADRs | — |
 | `docs/prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the screens register | — |
 | `docs/tasks/` | Per-module build tasks, written to as work completes | — |
-| `.claude/` | The review and QA agents, rules, the protections map and the dev-server launch file | [CLAUDE.md](CLAUDE.md) §6 |
+| `.claude/` | The review and QA agents, rules and the dev-server launch file | [CLAUDE.md](CLAUDE.md) §6 |
 
 ## Prerequisites
 
@@ -226,7 +226,7 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm lint` | Biome with its plugins (zero warnings, zero errors), dependency-cruiser, sherif and `turbo boundaries` (the package-tag dependency allowlists) |
 | `pnpm lint:fix` | `biome check --write .` — formats and auto-fixes what Biome can fix |
 | `pnpm check` | **While building**, after each change — what it runs is `CLAUDE.md` §5. Fast, and never the proof |
-| `pnpm check:all` | **Once, when the build is done:** build → lint → typecheck → `check:dupes` → `check:openapi` → `check:catalogs` → `test:unit` → `test` (the invariants; the database ones skip loudly without `DATABASE_URL`). Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
+| `pnpm check:all` | **CI's `quality` job** (locally only to reproduce a red `quality` job): build → lint → typecheck → `check:dupes` → `check:openapi` → `check:catalogs` → `test:unit` → `test` (the invariants; the database ones skip loudly without `DATABASE_URL`). Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. |
 | `pnpm precommit` | What the git hook runs automatically: Biome on the staged files (zero warnings), gitleaks on the staged change (fails closed without gitleaks), and a typecheck of the packages the commit changes |
 | `pnpm check:openapi` | Re-emits `packages/contracts/openapi/openapi.json` and fails when it changed, then judges it with oasdiff (the version CI pins) against the branch's base on `origin/main` and fails on a breaking change — commit the fresh spec |
 | `pnpm check:catalogs` | Re-extracts the i18n catalogs and fails when they changed — commit the fresh catalogs |
@@ -241,8 +241,7 @@ web, the api, a package or the suite changes, `mobile-js` (the Metro bundle, whe
 changes), `android` (the native build and the phone flows on an emulator, whenever native files, the
 api, a package, `infra/postgres` or the phone flows change) and `ios` (the native build on pull
 requests, only when native files, the mobile `package.json` or the lockfile change). Markdown never counts. A skipped lane reports success, so
-every lane is safe to require on `main`. If `quality` is not green, `pnpm check:all` locally should
-already have told you.
+every lane is safe to require on `main`.
 
 ## Working with packages (add / update / remove)
 
@@ -340,7 +339,7 @@ committing:
   wrong, that's a conversation to have explicitly, not a flag to quietly drop.
 
 `pnpm check:all` is the full local check (build + lint + typecheck + duplication + freshness +
-every test) — run it once before considering any non-trivial change done. See
+every test) — CI's `quality` job runs it. See
 [Commands reference](#commands-reference).
 
 ## Schema, contract & cross-cutting changes
@@ -376,7 +375,6 @@ Claude then pushes and opens the PR; the owner merges. `main` is PR-only. A PR i
 | `docs/engineering/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
 | `docs/engineering/adr/` | Why each architecture choice was made — reference only |
 | [`docs/README.md`](docs/README.md) | **The docs map** — every file under `docs/`, and whether it is pinned or live |
-| [`.claude/protections.md`](.claude/protections.md) | Which tool, rule, test or CI step holds each protection |
 | each package's `CLAUDE.md` → `## Traps` | **Troubleshooting** — the live traps where they bite, each with its fix |
 | `packages/contracts/openapi/openapi.json` | The API surface as OpenAPI 3.0.2 — emitted from the contract and gate-checked; no Swagger UI is served |
 

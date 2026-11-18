@@ -3,7 +3,7 @@
  * catalog that no RLS-subject role holds UPDATE on any column, DELETE or TRUNCATE on them — a
  * privilege question that cannot be fooled by an unrelated error, where the older form ran an
  * `update` and accepted any exception. A table nobody built matches no catalog row and passes
- * silently, so a ledger joins this list in the change that lands it (Law 12), and the list is
+ * silently, so a ledger joins this list in the change that lands it, and the list is
  * asserted non-empty.
  */
 export const APPEND_ONLY_LEDGERS: Record<string, string> = {

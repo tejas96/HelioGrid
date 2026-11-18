@@ -22,9 +22,8 @@ compatibility pointer and the code.
 ## Inside `engineering/`
 
 `architecture.md` is stable and canonical. Each other file's first line names its current fate;
-those files shrink only through reviewed moves. What holds each protection is
-`.claude/protections.md`, and each package's live traps sit under `## Traps` in its own
-`CLAUDE.md`. External-account setup notes moved to `.ops/`.
+those files shrink only through reviewed moves. Each package's live traps sit under `## Traps` in
+its own `CLAUDE.md`. External-account setup notes moved to `.ops/`.
 
 | Path | What it is |
 |---|---|
@@ -44,7 +43,7 @@ convention `CLAUDE.md` §2 uses for the Laws and `engineering/adr/` uses for ADR
 Moving one of these breaks a tool silently.
 
 Two invariants read a PRD file: `matrix-mirrors-f2` reads `prd/foundations/F2-roles-and-permissions.md` and `template-keys-mirror-f6` reads
-`prd/foundations/F6-notifications-and-search.md`. The document invariants read `build-order.md`,
-`tasks/`, `prd/` and `prd/registers/screens.md` (`tests/invariants/src/`
-`task-ledger.ts`, `prd-rows.ts`, `screens-register.ts`). `.dependency-cruiser.cjs` cites
+`prd/foundations/F6-notifications-and-search.md`. The invariant `build-order-holds` reads
+`build-order.md`, `tasks/` and `prd/registers/screens.md` (`tests/invariants/src/` `task-ledger.ts`,
+`prd-rows.ts`, `screens-register.ts`). `.dependency-cruiser.cjs` cites
 `engineering/02`, `03`, `07` and `17`, and `biome.json`'s messages cite `engineering/03` and `17`.

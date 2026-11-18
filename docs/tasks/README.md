@@ -5,7 +5,7 @@ disposition index, which other task files point to), and `F-core.md` /
 `F5-customer-link.md` where a foundation still builds something itself. `UI.md` is the one
 file here that is a REGISTER rather than tasks — component gaps with no requirement rows behind
 them, so no `T-` ids and no task anatomy. `deferred.md` holds rows earlier tasks found
-outside their scope, each naming what reopens it (`CLAUDE.md` §1). No P0 requirement exists
+outside their scope, each naming what reopens it. No P0 requirement exists
 without a task (or an explicit `realized-by` pointer to the requirement that carries it); a task
 whose `PRD rows:` reads `none` builds what other tasks' rows need.
 
@@ -18,7 +18,7 @@ A task is its header lines, written when the task is:
 **Type:** screen · **Tier:** P0        (screen | engine | policy | integration · the highest tier among its rows)
 **Status:** planned                    (the one ledger; a task leaves the file when it ships)
 **PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
-**DESIGN:** SCR-<module>-<nn> · SCR-<module>-<nn>          — the screens this task builds; their look is picked in the task (rule 3)
+**DESIGN:** SCR-<module>-<nn> · SCR-<module>-<nn>          — the screens this task builds; their look is the approved design or is picked in the task (rule 3)
 **Design:** (instead of `DESIGN:`) `none — <reason>` for a task with no screen of its own, or `as <task id>` for one that changes the screens another task builds
 **Why:** one or two lines, in EPC terms — who gains what, and what breaks without it
 **Depends on:** task ids and migration numbers that must land first
@@ -53,12 +53,13 @@ its last part ships.
    `docs/prd/**`, `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
    task, where naming its entities or its first-migration row is clearer than restating them).
    The plan may additionally cite
-   implementation authorities its sections require: architecture, protections, CI and package
-   instructions, and the sample the owner picked. Anything else —
+   implementation authorities its sections require: architecture, CI and package
+   instructions, and the approved design or picked sample. Anything else —
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.
-3. **A screen's look is picked inside its own task** (`CLAUDE.md` §3), so no task
-   waits for a drawing. A screen's UI is not "done" until it follows the sample the owner picked.
+3. **A screen's look is the approved design, or is picked inside its own task** (`CLAUDE.md` §3),
+   so no task waits for a drawing. A screen's UI is not "done" until it follows that design or
+   sample.
 5. A task is complete when every DONE WHEN line passes and, for a screen task, `F7-43` holds.
 6. **Every row id shows its tier where it appears.** A verbatim row quote carries it after the
    id — `**M02-02** (P0) — …`; a task that does not quote its rows carries it on the

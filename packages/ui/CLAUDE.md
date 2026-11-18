@@ -84,7 +84,7 @@ part there fails it.
   colour is `tone`, `current` (the holder's) or a chosen `ink`. A component never keeps its own
   `<svg>` box around an icon: a rotation or a margin goes on a wrapping span or view. Biome's
   `icon-in-one-place`, `inline-glyph` and `inline-svg-mark` refuse the rest.
-- No check compares the two halves' behaviour → a change to one half is looked at live on the other (`qa-live`).
+- No check compares the two halves' behaviour → a change to one half is looked at live on the other.
 - **No English lives here** (`T-SHELL-016`): every copy prop takes `TranslatedText` with no default,
   and words a component says itself — a counter, an announcement, an error line — arrive as a
   `<Name>Words` prop built in `packages/i18n/src/copy/`. Biome plugins `copy-prop-type`,

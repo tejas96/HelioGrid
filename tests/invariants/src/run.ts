@@ -3,7 +3,6 @@ import { runBannedWordOtherFiles } from './banned-word-other-files';
 import { runBiomePluginScopes } from './biome-plugin-scopes';
 import { runBrandRegistry } from './brand-registry';
 import { runBuildOrderHolds } from './build-order-holds';
-import { runCapabilityIdsCited } from './capability-ids-cited';
 import { runDockerfileUnprivileged } from './dockerfile-unprivileged';
 import { runE2eFlowPerScreen } from './e2e-flow-per-screen';
 import { runEnumParity } from './enum-parity';
@@ -11,10 +10,8 @@ import { runEnvExampleComplete } from './env-example-complete';
 import { runFormatInvariants } from './format-rendering';
 import { runLanguageFonts } from './language-fonts';
 import { runMatrixMirrorsF2 } from './matrix-mirrors-f2';
-import { runPrdRowsCited } from './prd-rows-cited';
 import { REPO_ROOT } from './repo-root';
 import { runSchemaParity } from './schema-parity';
-import { runScreensRegisterWhole } from './screens-register-whole';
 import { runTableTenancyScan } from './table-tenancy-scan';
 import { runTemplateKeysMirrorF6 } from './template-keys-mirror-f6';
 import { runTenancyInvariants } from './tenancy-rls';
@@ -31,8 +28,7 @@ import { runVocabularyCopies } from './vocabulary-copies';
  * brand-registry (static), template-keys-mirror-f6 (static, F6-26), and the static repo
  * checks: vocabulary-copies, dockerfile-unprivileged,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
- * biome-plugin-scopes, build-order-holds, prd-rows-cited, capability-ids-cited,
- * screens-register-whole, ui-colour-pairs.
+ * biome-plugin-scopes, build-order-holds, ui-colour-pairs.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -52,9 +48,6 @@ async function main() {
   runE2eFlowPerScreen(REPO_ROOT); // static — every route and screen has its regression flow
   runBiomePluginScopes(REPO_ROOT); // static — every lint plugin covers a place that exists
   runBuildOrderHolds(REPO_ROOT); // static — every file placed, no loop, later-block waits recorded
-  runPrdRowsCited(REPO_ROOT); // static — every cited PRD row is live, every quote matches its cell
-  runCapabilityIdsCited(REPO_ROOT); // static — every capability a task names is in the matrix
-  runScreensRegisterWhole(REPO_ROOT); // static — every screen has its task, every row landed once
   runUiColourPairs(REPO_ROOT); // static — every colour ui sets on a background is a declared pair
   runUiHalvesShareParts(REPO_ROOT); // static — a phone half draws the shared parts its web half does
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;

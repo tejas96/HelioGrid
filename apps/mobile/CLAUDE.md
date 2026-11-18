@@ -56,8 +56,7 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 pod install
 
 ## Done means
 
-Runs on iOS, checked by `qa-live`; on Android, checked by CI's `android` lane, and by `qa-live`
-when `tests/e2e/CLAUDE.md` says · the per-screen DoD in `docs/prd/foundations/F7-design-language.md`
+Runs on iOS, checked by hand; on Android, checked by CI's `android` lane · the per-screen DoD in `docs/prd/foundations/F7-design-language.md`
 `F7-43`.
 
 ## Traps
