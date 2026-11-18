@@ -3,7 +3,7 @@
    native tsconfig's program, so it declares the lib it needs instead of failing there. */
 /// <reference lib="dom" />
 import type { RefObject } from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 
 const FOCUSABLE =
   'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
@@ -94,7 +94,9 @@ export function useOverlayDismiss({
   close.current = onClose;
   const canDismiss = useRef(dismissible);
   canDismiss.current = dismissible;
-  useEffect(() => {
+  /* A layout effect: the focus moves in the commit that draws the panel. A passive effect ran after
+     paint, so a focus or a click inside the open panel in its first frame was taken back. */
+  useLayoutEffect(() => {
     if (!open || typeof document === 'undefined') {
       return;
     }
