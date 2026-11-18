@@ -155,6 +155,7 @@ const DESIGN = {
   editSite: /*i18n*/ { id: 'Site details' },
   backToLead: /*i18n*/ { id: 'Back to the lead' },
   leads: /*i18n*/ { id: 'Leads' },
+  proposals: /*i18n*/ { id: 'Proposals' },
 } as const;
 
 /** One design's own page (`SCR-M05-02`): its name, and what stands where the studio will. */
@@ -199,6 +200,8 @@ export function siteDetailsPageWords(t: T) {
     /** The way-back row's name. */
     trail: t(SITE.trail),
     leads: t(DESIGN.leads),
+    /** The trail's start when the Proposals page opened the design (`T-M05-001b`). */
+    proposals: t(DESIGN.proposals),
     viewOnly: t(SITE.viewOnly),
     saveFailed: (refused: 'host_closed' | 'other') =>
       t(refused === 'host_closed' ? SITE.leadClosed : SITE.saveFailed),

@@ -3,6 +3,7 @@ import type {
   EditProposal,
   GenerateProposal,
   ProposalDetail,
+  ProposalEntries,
   ProposalList,
   ProposalVersion,
   ProposalVersionSummary,
@@ -28,6 +29,7 @@ import {
 type Routes = typeof proposalsContract;
 type Api = ApiClient['proposals'];
 export type ProposalListAsk = NonNullable<ClientInferRequest<Routes['list']>['query']>;
+export type ProposalEntriesAsk = NonNullable<ClientInferRequest<Routes['entries']>['query']>;
 export type FillEnergy = ClientInferRequest<Routes['fillEnergy']>['body'];
 export type ResetStep = ClientInferRequest<Routes['resetStep']>['body'];
 export type ShareProposal = ClientInferRequest<Routes['share']>['body'];
@@ -48,6 +50,8 @@ export interface StartedProposal {
  */
 export interface ProposalsRepository {
   list(query: ProposalListAsk, signal?: AbortSignal): Promise<ProposalList>;
+  /** The Proposals page: the proposals and each design with no proposal yet (`T-M05-001b`). */
+  entries(query: ProposalEntriesAsk, signal?: AbortSignal): Promise<ProposalEntries>;
   detail(id: string, signal?: AbortSignal): Promise<ProposalDetail>;
   /**
    * Start on a lead, or resume its open draft. The same body sent again — a second tap after a
@@ -113,6 +117,8 @@ export function createProposalsRepository(api: ApiClient): ProposalsRepository {
   const at = (id: string) => ({ params: { id } });
   return {
     list: (query, signal) => bodyAt(() => routes.list({ query, fetchOptions: { signal } }), 200),
+    entries: (query, signal) =>
+      bodyAt(() => routes.entries({ query, fetchOptions: { signal } }), 200),
     detail: (id, signal) =>
       bodyAt(() => routes.detail({ ...at(id), fetchOptions: { signal } }), 200),
     start: async (leadId, body) => {

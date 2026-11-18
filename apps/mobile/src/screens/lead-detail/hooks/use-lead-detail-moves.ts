@@ -26,6 +26,7 @@ export function useLeadDetailMoves(files: LeadFiles) {
     toBuilder: proposal.toBuilder,
     toProposal: proposal.toProposal,
     toLead: proposal.toLead,
+    toSiteDetails: (designId) => navigation.navigate('SiteDetails', { designId }),
   };
   /* Where the lead's designs lead: the Site details of a new one, a design's own page. */
   const designs: LeadDesignsMoves = {

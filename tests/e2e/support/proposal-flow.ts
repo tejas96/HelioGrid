@@ -32,13 +32,15 @@ export function startProposalBody(quickMode: boolean): StartProposal {
 export function proposalFlowWords(
   t: Awaited<ReturnType<typeof createTranslator>>,
 ): Record<string, string> {
-  const plain = { money: String, number: String, when: String, ago: String };
+  const plain = { money: String, number: String, when: String, ago: String, phone: String };
   const head = proposalPageHeadWords(t.t, plain);
   const page = proposalListPageWords(t.t, plain, { waiting: 0, waitingValue: '0' });
   return {
     PROPOSALS_TITLE: page.title,
     NEW_PROPOSAL: page.newProposal,
-    DRAFT_CHIP: proposalListWords(t.t, plain).filter('draft'),
+    DRAFT_CHIP: proposalListWords(t.t, plain, null).filter('draft'),
+    THREE_D_CHIP: proposalListWords(t.t, plain, null).filter('3d'),
+    NO_PANELS: proposalListWords(t.t, plain, null).design.noPanels,
     WHO_IS_IT_FOR: proposalQuickAddWords(t.t, null).title,
     PROPOSAL_DRAFT: head.name(null),
     NEVER_DELIVERED: proposalTrackWords(t.t, plain).neverDelivered,

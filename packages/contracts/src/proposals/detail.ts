@@ -6,6 +6,7 @@ import {
   extensibleEnum,
   paginated,
   paginationQuerySchema,
+  phoneE164Schema,
   queryFlagSchema,
   uuidSchema,
 } from '../common';
@@ -194,6 +195,8 @@ export const proposalRowSchema = z.object({
   id: uuidSchema,
   leadId: uuidSchema,
   customerName: z.string().nullable(),
+  /** The lead's number: what names the row while the customer has no name. */
+  customerPhone: phoneE164Schema,
   city: z.string().nullable(),
   /** `null` while it is a draft never generated. */
   number: z.string().nullable(),

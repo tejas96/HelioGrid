@@ -1,4 +1,5 @@
 import type { Translator } from '../runtime';
+import { leadDesignActFailure } from './lead-designs';
 import { proposalStartSources, proposalStartWords } from './proposal-builder-flow';
 import { type ProposalActFailureLike, proposalActFailureWords } from './proposal-screens-words';
 
@@ -7,7 +8,7 @@ type T = Translator['t'];
 /**
  * The start sheet in words (`T-M06-001`), wherever it opens — the lead and *New proposal* on both
  * platforms: its own words over the customer's name, the recent proposals it can copy, and why a
- * start was refused.
+ * start — or *With 3D design*'s new design — was refused.
  */
 export function proposalStartSheetSaid(
   t: T,
@@ -17,11 +18,16 @@ export function proposalStartSheetSaid(
     readonly segment: Parameters<typeof proposalStartWords>[1]['segment'];
     readonly recent: Parameters<typeof proposalStartSources>[2];
     readonly failure: ProposalActFailureLike | null;
+    /** *With 3D design* came back undone: the lead closed meanwhile, or anything else. */
+    readonly designFailure?: 'host_closed' | 'other' | null;
   },
 ) {
   return {
     words: proposalStartWords(t, { name: facts.name, segment: facts.segment }),
     sources: proposalStartSources(t, formats, facts.recent),
-    failure: proposalActFailureWords(t, facts.failure),
+    failure:
+      facts.designFailure == null
+        ? proposalActFailureWords(t, facts.failure)
+        : leadDesignActFailure(t, facts.designFailure),
   };
 }

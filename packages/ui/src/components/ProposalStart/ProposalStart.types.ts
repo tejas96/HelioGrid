@@ -1,14 +1,15 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import type { ProposalStartMode } from '@heliogrid/domain';
 import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
 
 /**
- * *New proposal* (`M06-05`, `M06-19`, `T-M06-001`): two option cards — Quick, four steps, and Full,
- * eleven — then *or start from* with the person's recent proposals. Quick is picked first for a
- * home lead and Full for any other; one tap changes it. No path question is asked while no studio
- * exists: a question with one answer is a wasted tap.
+ * *New proposal* (`M06-05`, `M06-19`, `T-M06-001`, `T-M05-001b`): option cards — Quick, four steps;
+ * Full, eleven; and With 3D design, for who may design — then *or start from* with the person's
+ * recent proposals. Quick is picked first for a home lead and Full for any other; one tap changes
+ * it.
  */
 
-export type StartMode = 'quick' | 'full';
+export type StartMode = ProposalStartMode;
 
 /** One of the person's recent proposals, to start from: every step arrives filled. */
 export interface StartSource {
@@ -25,6 +26,8 @@ export interface ProposalStartWords extends OverlayCloseWords {
   readonly modes: Readonly<
     Record<StartMode, { readonly title: TranslatedText; readonly line: TranslatedText }>
   >;
+  /** Where *With 3D design* will show a model: the placeholder until the studio draws one. */
+  readonly designPreview: TranslatedText;
   /** `or start from`. */
   readonly or: TranslatedText;
   /** A copy brings every step filled; the customer's details come from this lead. */
@@ -39,6 +42,8 @@ export interface ProposalStartSheetProps {
   readonly words: ProposalStartWords;
   readonly mode: StartMode;
   readonly onMode: (mode: StartMode) => void;
+  /** The reader may design (`studio.create_edit_designs`): *With 3D design* is offered. */
+  readonly canDesign: boolean;
   /** The recent proposals; `null` while they are read, empty where there is none. */
   readonly sources: readonly StartSource[] | null;
   /** Starts a copy of one of them on this lead. */

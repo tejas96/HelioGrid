@@ -1,5 +1,4 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { DesignStatus } from '@heliogrid/domain';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { LeadDesign, LeadDesignsPanel } from './LeadSections.types';
 
@@ -30,16 +29,6 @@ export function leadDesignsNoteOf(panel: LeadDesignsPanel): TranslatedText | nul
 export function leadDesignsNoneLineOf(panel: LeadDesignsPanel): TranslatedText | null {
   if (!panel.canDesign) return null;
   return panel.closed ? panel.words.closedLine : panel.words.noneLine;
-}
-
-/** Each status's own mark; a status domain adds fails to compile here until it has one. */
-const DESIGN_STATUS_GLYPH: Record<DesignStatus, ShellGlyphName> = {
-  draft: 'pencil',
-};
-
-/** A status's own mark; one this build does not know keeps its tone's glyph. */
-export function leadDesignStatusGlyph(status: string): ShellGlyphName | null {
-  return (DESIGN_STATUS_GLYPH as Record<string, ShellGlyphName | undefined>)[status] ?? null;
 }
 
 /** One act of a card's overflow menu. */

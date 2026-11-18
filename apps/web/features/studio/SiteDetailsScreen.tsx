@@ -53,7 +53,14 @@ function actsOf(screen: SiteDetailsView, onCancel: () => void): SiteDetailsActs 
  * button starts the design. What is read, decided and saved is `useSiteDetailsScreen`'s, the
  * phone's too; the web's own parts are the width, the router and the leave ask.
  */
-export function SiteDetailsScreen({ designId }: { designId: string }) {
+export function SiteDetailsScreen({
+  designId,
+  fromProposals = false,
+}: {
+  designId: string;
+  /** *With 3D design* on the Proposals page made it: Cancel returns there (`T-M05-001b`). */
+  fromProposals?: boolean;
+}) {
   const { locale } = useI18n();
   const format = useFormat();
   const moves = useStudioMoves();
@@ -61,7 +68,7 @@ export function SiteDetailsScreen({ designId }: { designId: string }) {
   const screen = useSiteDetailsScreen(
     designId,
     { formats: format.pack, language: locale },
-    { toDesign: moves.toDesign },
+    { toDesign: (id) => moves.toDesign(id, fromProposals) },
   );
   useLeaveGuard(screen.changed, screen.leave.ask);
   const [room, width] = useOwnWidth<HTMLDivElement>();
@@ -73,11 +80,12 @@ export function SiteDetailsScreen({ designId }: { designId: string }) {
   const locked = shown !== null && !shown.detail.canEdit;
   const { toDesign } = moves;
   useEffect(() => {
-    if (locked) toDesign(designId);
-  }, [locked, toDesign, designId]);
+    if (locked) toDesign(designId, fromProposals);
+  }, [locked, toDesign, designId, fromProposals]);
   const toLead = () => {
     if (shown !== null) guarded(() => moves.toLead(shown.detail.subject.leadId));
   };
+  const cancel = fromProposals ? () => guarded(moves.toProposals) : toLead;
   const head = (
     <StudioPageHead
       wide={wide}
@@ -88,6 +96,9 @@ export function SiteDetailsScreen({ designId }: { designId: string }) {
       summary={summary}
       onLeads={() => guarded(moves.toLeads)}
       onLead={toLead}
+      fromProposals={
+        fromProposals ? { label: page.proposals, onOpen: () => guarded(moves.toProposals) } : null
+      }
     />
   );
   return (
@@ -98,7 +109,7 @@ export function SiteDetailsScreen({ designId }: { designId: string }) {
           shown={read.value}
           wide={wide}
           head={head}
-          onCancel={toLead}
+          onCancel={cancel}
         />
       ) : (
         <>

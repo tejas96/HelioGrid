@@ -46,6 +46,7 @@ export class ProposalsController {
   })
   @RouteAccessMap(proposalsContract, {
     list: 'member',
+    entries: 'member',
     start: BUILD,
     detail: 'member',
     edit: BUILD,
@@ -67,6 +68,7 @@ export class ProposalsController {
     const ok = <Body>(body: Body) => ({ status: 200 as const, body });
     return tsRestHandler(proposalsContract, {
       list: async ({ query }) => ok(await this.lists.list(reader, query)),
+      entries: async ({ query }) => ok(await this.lists.entries(reader, query)),
       start: async ({ params, body, headers }) => {
         const { created, proposal } = await this.proposals.start(
           reader,

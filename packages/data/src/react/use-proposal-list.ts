@@ -1,5 +1,5 @@
 'use client';
-import type { ProposalList, ProposalListFilter, ProposalRow } from '@heliogrid/contracts';
+import type { ProposalEntries, ProposalEntry, ProposalEntryFilter } from '@heliogrid/contracts';
 import type { Read } from '@heliogrid/domain';
 import { type InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
@@ -13,22 +13,23 @@ const PROPOSALS_PAGE = 20;
 
 /** What rides on every page beside its rows: each chip's count and what the waiting ones are worth. */
 export type ProposalListHead = Pick<
-  ProposalList,
+  ProposalEntries,
   'counts' | 'waitingValue' | 'canStart' | 'currencyCode'
 >;
 
-type Page = ProposalList['rows'] & { readonly head: ProposalListHead };
+type Page = ProposalEntries['rows'] & { readonly head: ProposalListHead };
 
 /**
- * The proposals list (`SCR-M06-19`): the proposals of the leads the reader may see, under one
- * filter chip at a time, with every chip's count whatever chip is on. A chip swaps the rows in
+ * The Proposals page (`SCR-M06-19`, `T-M05-001b`): the proposals of the leads the reader may see,
+ * with each design that has no proposal yet between them, under one filter chip at a time, with
+ * every chip's count whatever chip is on. A chip swaps the rows in
  * place — the last ones stay until the new read lands.
  */
 export interface ProposalListRead {
-  readonly filter: ProposalListFilter;
-  setFilter(filter: ProposalListFilter): void;
+  readonly filter: ProposalEntryFilter;
+  setFilter(filter: ProposalEntryFilter): void;
   /** Loading, failed with its retry, or the rows of the pages in — none included. */
-  readonly read: Read<readonly ProposalRow[]>;
+  readonly read: Read<readonly ProposalEntry[]>;
   /** How many match the chip that is on. */
   readonly totalCount: number;
   /** The counts, the waiting value and whether *New proposal* is offered; `null` until a page is in. */
@@ -52,12 +53,12 @@ export function useProposalList(): ProposalListRead {
   const repositories = useRepositories();
   const queryClient = useQueryClient();
   const tenantId = useTenantId();
-  const [filter, setFilter] = useState<ProposalListFilter>('all');
-  const key = queryKeys.proposals.list(tenantId, { filter });
-  const list = usePaginatedList<ProposalRow>({
+  const [filter, setFilter] = useState<ProposalEntryFilter>('all');
+  const key = queryKeys.proposals.list(tenantId, { page: 'entries', filter });
+  const list = usePaginatedList<ProposalEntry>({
     queryKey: key,
     fetchPage: async (page): Promise<Page> => {
-      const { rows, ...head } = await repositories.proposals.list({
+      const { rows, ...head } = await repositories.proposals.entries({
         filter,
         limit: PROPOSALS_PAGE,
         page,

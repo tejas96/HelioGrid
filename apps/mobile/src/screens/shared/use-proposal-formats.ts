@@ -28,6 +28,8 @@ export function useProposalFormats() {
       /** A payment stage as the customer's document names it — "Before dispatch". */
       due: (stage: string) => format.word('stage', stage),
       day: (date: string) => format.date(date),
+      /** A number in the company's grouping — a row's name while its customer has none. */
+      phone: (e164: string) => format.phone(e164),
     },
   };
 }

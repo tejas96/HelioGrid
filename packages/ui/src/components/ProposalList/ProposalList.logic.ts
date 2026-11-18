@@ -1,12 +1,35 @@
-import type { ProposalList } from '@heliogrid/contracts';
-import { PROPOSAL_LIST_FILTERS, type ProposalListFilter } from '@heliogrid/domain';
-import type { PickLeadSheetProps } from './ProposalList.types';
+import type { ProposalEntries } from '@heliogrid/contracts';
+import { PROPOSAL_ENTRY_FILTERS, type ProposalEntryFilter } from '@heliogrid/domain';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
+import type { PickLeadSheetProps, ProposalListProps } from './ProposalList.types';
 
-/** The filter chips in order, each with how many proposals it holds — whatever filter is on. */
-export function filterChips(
-  counts: ProposalList['counts'] | null,
-): readonly { readonly filter: ProposalListFilter; readonly count: number | undefined }[] {
-  return PROPOSAL_LIST_FILTERS.map((filter) => ({ filter, count: counts?.[filter] }));
+/** The 3D chip's and the 3D mark's glyph: a model, boxed. */
+export const THREE_D_GLYPH: ShellGlyphName = 'package';
+
+/**
+ * The filter chips in order, each with how many rows it holds — whatever filter is on. The 3D chip
+ * is first and a rule stands after it: it filters by kind, the others by where a proposal stands.
+ */
+export function filterChips(counts: ProposalEntries['counts'] | null): readonly {
+  readonly filter: ProposalEntryFilter;
+  readonly count: number | undefined;
+  readonly glyph: ShellGlyphName | undefined;
+  readonly ruleAfter: boolean;
+}[] {
+  return PROPOSAL_ENTRY_FILTERS.map((filter) => ({
+    filter,
+    count: counts?.[filter],
+    glyph: filter === '3d' ? THREE_D_GLYPH : undefined,
+    ruleAfter: filter === '3d',
+  }));
+}
+
+/** What an empty read says: the 3D chip names how a design starts; any other chip the list's own. */
+export function emptyWordsOf(props: Pick<ProposalListProps, 'filter' | 'words'>) {
+  const { words } = props;
+  return props.filter === '3d'
+    ? { title: words.empty3dTitle, description: words.empty3dLine }
+    : { title: words.emptyTitle, description: words.emptyLine };
 }
 
 /** A proposal that was replaced or withdrawn sinks back: it is history, not work. */

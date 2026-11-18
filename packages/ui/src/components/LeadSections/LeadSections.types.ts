@@ -193,8 +193,10 @@ export interface LeadDesignsWords {
   /** A status the app knows by its word, and one a newer server learned by a plain fallback. */
   readonly status: (status: string) => TranslatedText;
   readonly recommended: TranslatedText;
-  /** The card's cover and its facts until the design holds panels. */
+  /** The card's facts until the design holds panels. */
   readonly noPanels: TranslatedText;
+  /** The cover's placeholder until the studio draws a model — "3D preview coming soon". */
+  readonly preview: TranslatedText;
   /** "Asha Patil · 2 days ago" — "You" for the reader's own. */
   readonly line: (design: LeadDesign) => TranslatedText;
   readonly continue: TranslatedText;

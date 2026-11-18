@@ -1,27 +1,20 @@
 import { theme } from '@heliogrid/theme';
-import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { Badge } from '../Chip/Chip.native';
+import { DesignCover } from '../DesignCover/DesignCover.native';
+import { DesignStatus } from '../DesignStatus/DesignStatus.native';
 import { Menu } from '../Menu/Menu.native';
-import { StatusChip } from '../StatusChip/StatusChip.native';
-import { leadDesignMenuOf, leadDesignStatusGlyph, mayChangeDesigns } from './LeadSections.designs';
+import { leadDesignMenuOf, mayChangeDesigns } from './LeadSections.designs';
 import type { LeadDesign, LeadDesignsPanel } from './LeadSections.types';
 
 interface LeadDesignCardProps {
   readonly design: LeadDesign;
   readonly panel: LeadDesignsPanel;
-}
-
-/** The mark on the cover: backed by the card colour, so it reads over whatever the cover shows. */
-function CoverMark({ children }: { children: ReactNode }) {
-  const { ground } = useGround();
-  return <View style={[styles.mark, { backgroundColor: ground }]}>{children}</View>;
 }
 
 /**
@@ -31,38 +24,33 @@ function CoverMark({ children }: { children: ReactNode }) {
  */
 export function LeadDesignCard({ design, panel }: LeadDesignCardProps) {
   const { words } = panel;
-  const glyph = leadDesignStatusGlyph(design.status);
   const open = () => panel.onOpen(design.id);
   return (
     <View style={[tileSurface, styles.card]}>
       {/* A tile's controls take the tile's fill, so the overflow and *View* show on the white card. */}
       <GroundProvider ground="tile">
         <Pressable accessibilityLabel={words.openNamed(design)} onPress={open} style={styles.open}>
-          <View style={[styles.cover, design.recommended ? styles.marked : undefined]}>
-            {design.recommended ? (
-              <CoverMark>
-                <Badge tone="accent" glyph="star">
-                  {words.recommended}
-                </Badge>
-              </CoverMark>
-            ) : null}
-            <Text variant="body-sm" color="secondary" align="center">
-              {words.noPanels}
-            </Text>
-          </View>
+          <DesignCover
+            word={words.preview}
+            {...(design.recommended
+              ? {
+                  mark: (
+                    <Badge tone="accent" glyph="star">
+                      {words.recommended}
+                    </Badge>
+                  ),
+                }
+              : {})}
+          />
         </Pressable>
         <View style={styles.top}>
           <Text variant="body-lg" bold style={styles.name}>
             {words.named(design)}
           </Text>
-          <StatusChip
+          <DesignStatus
             status={design.status}
             label={words.status(design.status)}
-            tone="neutral"
             density="functional"
-            {...(glyph === null
-              ? {}
-              : { glyph: <ShellGlyph name={glyph} size="sm" tone="secondary" /> })}
           />
         </View>
         <Text variant="body-sm">{words.noPanels}</Text>
@@ -114,28 +102,6 @@ const styles = StyleSheet.create({
   /* `Pressable` centres its content; the cover fills the card's width. Its corners are on the
      target too, so Android draws no square ripple over them. */
   open: { alignItems: 'stretch', borderRadius: theme.radius['r-sm'] },
-  cover: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: theme.spacing['sp-16'],
-    padding: theme.spacing['sp-2'],
-    borderRadius: theme.radius['r-sm'],
-    borderWidth: 1,
-    borderColor: colors['line-soft'],
-    backgroundColor: colors['canvas-sunken'],
-    overflow: 'hidden',
-  },
-  /* The mark lies on the cover's corner, so the words under it start below it. */
-  marked: {
-    paddingTop: theme.spacing['sp-2'] + theme.layout['badge-h'] + theme.spacing['sp-1'],
-  },
-  mark: {
-    position: 'absolute',
-    top: theme.spacing['sp-2'],
-    start: theme.spacing['sp-2'],
-    borderRadius: theme.radius['r-badge'],
-    ...theme.elevation.e1,
-  },
   top: {
     flexDirection: 'row',
     flexWrap: 'wrap',

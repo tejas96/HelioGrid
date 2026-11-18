@@ -60,7 +60,10 @@ export function SunCloudMark({ animate = true }: { animate?: boolean }) {
       importantForAccessibility="no-hide-descendants"
       style={styles.mark}
     >
+      {/* A new view when the motion stops: a native transform may never be taken off a view
+          (packages/ui/CLAUDE.md Traps). */}
       <Animated.View
+        key={moving ? 'glow-moving' : 'glow-still'}
         pointerEvents="none"
         style={[
           styles.glow,
@@ -73,6 +76,7 @@ export function SunCloudMark({ animate = true }: { animate?: boolean }) {
         <BrandGradientFill />
       </View>
       <Animated.View
+        key={moving ? 'cloud-moving' : 'cloud-still'}
         style={[styles.cloud, moving ? { transform: [{ translateX: driftX }] } : null]}
       >
         <View style={styles.cloudBase} />

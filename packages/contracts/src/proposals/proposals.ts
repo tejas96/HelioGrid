@@ -33,6 +33,7 @@ import {
   proposalVersionSchema,
   proposalVersionSummarySchema,
 } from './detail';
+import { proposalEntriesQuerySchema, proposalEntriesSchema } from './entries';
 
 const c = initContract();
 
@@ -60,6 +61,14 @@ export const proposalsContract = c.router({
     summary:
       'The proposals of the leads the reader may see, by where each stands, with every chip’s count',
     responses: { 200: proposalListSchema, 401: unauthenticatedEnvelope },
+  },
+  entries: {
+    method: 'GET',
+    path: '/proposal-entries',
+    query: proposalEntriesQuerySchema,
+    summary:
+      'The Proposals page: the proposals of the leads the reader may see and each design with no proposal yet, newest change first, with every chip’s count',
+    responses: { 200: proposalEntriesSchema, 401: unauthenticatedEnvelope },
   },
   start: {
     method: 'POST',

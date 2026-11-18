@@ -36,42 +36,6 @@
   border-radius: var(--r-sm);
 }
 
-.hg-lead-design-cover {
-  position: relative;
-  display: grid;
-  place-items: center;
-  box-sizing: border-box;
-  min-height: var(--sp-16);
-  padding: var(--sp-2);
-  border-radius: var(--r-sm);
-  background: var(--canvas-sunken);
-  box-shadow: inset 0 0 0 1px var(--line-soft);
-  color: var(--text-secondary);
-  overflow: hidden;
-}
-
-/* The mark lies on the cover's corner, so the words under it start below it. */
-.hg-lead-design-cover[data-marked] {
-  padding-top: calc(var(--sp-2) + var(--badge-h) + var(--sp-1));
-}
-
-.hg-lead-design-cover-word {
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-body-sm);
-  overflow-wrap: anywhere;
-}
-
-/* The mark on the cover: backed by the card colour, so it reads over whatever the cover shows. */
-.hg-lead-design-mark {
-  position: absolute;
-  inset-block-start: var(--sp-2);
-  inset-inline-start: var(--sp-2);
-  display: inline-flex;
-  border-radius: var(--r-badge);
-  background: var(--hg-ground);
-  box-shadow: var(--e1);
-}
-
 .hg-lead-design-top {
   display: flex;
   flex-wrap: wrap;

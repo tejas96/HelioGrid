@@ -2,7 +2,7 @@ import {
   formatMoneyPlainly,
   formatNumber,
   IN_FORMATS,
-  type ProposalListFilter,
+  type ProposalEntryFilter,
 } from '@heliogrid/domain';
 import {
   createTranslator,
@@ -26,7 +26,7 @@ import {
   PutInForceSheet,
 } from '@heliogrid/ui';
 import { useRef, useState } from 'react';
-import { LIST } from '../support/proposal-after-lists';
+import { ENTRIES } from '../support/proposal-after-lists';
 import {
   detailAt,
   IN_FORCE,
@@ -47,6 +47,7 @@ export const FORMATS = {
   ago: () => '2 hours ago',
   due: (stage: string) => stage,
   day: () => '14 Nov 2026',
+  phone: (e164: string) => e164,
 };
 
 /** What a story reports back to its spec: the last act, as an attribute on its frame. */
@@ -238,16 +239,19 @@ export function ListAsDrawn({
 }) {
   const { t } = READERS[reader];
   const [act, setAct] = useState('');
-  const [filter, setFilter] = useState<ProposalListFilter>('all');
+  const [filter, setFilter] = useState<ProposalEntryFilter>('all');
   const [query, setQuery] = useState('');
   const focus = useRef<HTMLDivElement>(null);
-  const [first, ...rest] = LIST.rows.items;
+  const [design, first, ...rest] = ENTRIES.rows.items;
   const items =
-    stale && first !== undefined ? [{ ...first, stale: true }, ...rest] : LIST.rows.items;
+    stale && first !== undefined && design !== undefined
+      ? [design, { ...first, stale: true }, ...rest]
+      : ENTRIES.rows.items;
+  const shown = filter === '3d' ? items.filter((row) => row.kind === 'design') : items;
   const value =
     frame === 'empty'
-      ? { ...LIST, rows: { items: [], totalCount: 0 } }
-      : { ...LIST, rows: { ...LIST.rows, items } };
+      ? { ...ENTRIES, rows: { items: [], totalCount: 0 } }
+      : { ...ENTRIES, rows: { items: shown, totalCount: shown.length } };
   return (
     <Frame act={act} reader={reader}>
       <div ref={focus} tabIndex={-1} data-filter={filter}>
@@ -256,8 +260,10 @@ export function ListAsDrawn({
           room={room}
           filter={filter}
           onFilter={setFilter}
-          words={proposalListWords(t, FORMATS)}
-          onOpen={(row) => setAct(`open:${row.number ?? 'draft'}`)}
+          words={proposalListWords(t, FORMATS, null)}
+          onOpen={(row) =>
+            setAct(row.kind === 'design' ? `design:${row.id}` : `open:${row.number ?? 'draft'}`)
+          }
           onCopy={(row) => setAct(`copy:${row.number ?? 'draft'}`)}
           onNewVersion={(row) => setAct(`new:${row.number ?? 'draft'}`)}
           focusAfter={focus}

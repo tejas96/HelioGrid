@@ -11,9 +11,10 @@ import { useProposalStart } from './use-proposal-start';
 import { type ProposalStartSheetState, useProposalStartSheet } from './use-proposal-start-sheet';
 import { useTenantId } from './use-tenant-id';
 
-/** Where a started proposal opens: the builder. */
+/** Where a start opens: the builder on a proposal, or the Site details of a design just made. */
 export interface NewProposalMoves {
   toBuilder(proposalId: string): void;
+  toSiteDetails(designId: string): void;
 }
 
 /**
@@ -95,15 +96,18 @@ export function useNewProposalFlow(moves: NewProposalMoves): NewProposalFlow {
   });
   const latestMoves = useRef(moves);
   latestMoves.current = moves;
-  const sheet = useProposalStartSheet(
-    captured?.leadId ?? null,
-    segment === 'residential',
-    (proposalId) => {
+  const sheet = useProposalStartSheet(captured?.leadId ?? null, segment === 'residential', {
+    toBuilder: (proposalId) => {
       setStage(null);
       setCaptured(null);
       latestMoves.current.toBuilder(proposalId);
     },
-  );
+    toSiteDetails: (designId) => {
+      setStage(null);
+      setCaptured(null);
+      latestMoves.current.toSiteDetails(designId);
+    },
+  });
   const clear = useRef(start.clear);
   clear.current = start.clear;
   const { started } = start;

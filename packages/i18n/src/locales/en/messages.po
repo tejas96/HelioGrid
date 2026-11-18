@@ -357,7 +357,7 @@ msgid "{count, plural, =0 {free} one {# live project} other {# live projects}}"
 msgstr "{count, plural, =0 {free} one {# live project} other {# live projects}}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:20
+#: src/copy/proposal-after-list.ts:21
 msgid "{count, plural, =0 {None waiting for an answer} one {# waiting for an answer} other {# waiting for an answer}} · {amount} in all"
 msgstr "{count, plural, =0 {None waiting for an answer} one {# waiting for an answer} other {# waiting for an answer}} · {amount} in all"
 
@@ -854,7 +854,7 @@ msgid "{count, plural, one {Fix # issue to share} other {Fix # issues to share}}
 msgstr "{count, plural, one {Fix # issue to share} other {Fix # issues to share}}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:51
+#: src/copy/proposal-builder-flow.ts:54
 msgid "{count, plural, one {Fix # thing first} other {Fix # things first}}"
 msgstr "{count, plural, one {Fix # thing first} other {Fix # things first}}"
 
@@ -1255,7 +1255,7 @@ msgid "{done} done · {notNeeded} not needed"
 msgstr "{done} done · {notNeeded} not needed"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:61
+#: src/copy/proposal-after-list.ts:70
 msgid "{done} of {of} steps · saved {when}"
 msgstr "{done} of {of} steps · saved {when}"
 
@@ -1922,6 +1922,7 @@ msgstr "{name} · {time}"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-designs.ts:25
+#: src/copy/proposal-after-list.ts:48
 msgid "{name} · {when}"
 msgstr "{name} · {when}"
 
@@ -2056,7 +2057,7 @@ msgid "{name} can add it. You can still send."
 msgstr "{name} can add it. You can still send."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:97
+#: src/copy/proposal-builder-flow.ts:100
 msgid "{name} can change the plan."
 msgstr "{name} can change the plan."
 
@@ -2131,7 +2132,7 @@ msgid "{name} has waited a day with no owner"
 msgstr "{name} has waited a day with no owner"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:205
+#: src/copy/proposal-after-list.ts:265
 msgid "{name} is already a lead"
 msgstr "{name} is already a lead"
 
@@ -2479,12 +2480,12 @@ msgid "{page} of {total}"
 msgstr "{page} of {total}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:85
+#: src/copy/proposal-builder-flow.ts:88
 msgid "{pages, plural, one {# page} other {# pages}} · {language} · version {version}"
 msgstr "{pages, plural, one {# page} other {# pages}} · {language} · version {version}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:67
+#: src/copy/proposal-builder-flow.ts:70
 msgid "{pages, plural, one {Making # page and a number…} other {Making # pages and a number…}}"
 msgstr "{pages, plural, one {Making # page and a number…} other {Making # pages and a number…}}"
 
@@ -2948,7 +2949,7 @@ msgstr "{shown} of {total} {noun} match these filters"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-lead.ts:28
-#: src/copy/proposal-after-list.ts:34
+#: src/copy/proposal-after-list.ts:35
 #: src/copy/proposal-after-versions.ts:59
 #: src/copy/proposal-builder-system.ts:28
 #: src/copy/proposal-document-head.ts:6
@@ -2958,7 +2959,7 @@ msgid "{size} kW"
 msgstr "{size} kW"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:84
+#: src/copy/proposal-builder-flow.ts:87
 msgid "{size} kW · {amount}"
 msgstr "{size} kW · {amount}"
 
@@ -3055,7 +3056,7 @@ msgid "{sum} of {target} — {remainder}"
 msgstr "{sum} of {target} — {remainder}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:26
+#: src/copy/proposal-builder-flow.ts:29
 msgid "{summary} · {standing, select, draft {saved {when}} ready {made {when}} accepted {accepted} declined {declined} won {won} withdrawn {withdrawn} replaced {replaced} other {sent {when}}}"
 msgstr "{summary} · {standing, select, draft {saved {when}} ready {made {when}} accepted {accepted} declined {declined} won {won} withdrawn {withdrawn} replaced {replaced} other {sent {when}}}"
 
@@ -3233,7 +3234,7 @@ msgid "{used} of {limit} minutes used"
 msgstr "{used} of {limit} minutes used"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:88
+#: src/copy/proposal-builder-flow.ts:91
 msgid "{used} of {limit} proposals made this month"
 msgstr "{used} of {limit} proposals made this month"
 
@@ -3509,6 +3510,16 @@ msgid "3–6 months"
 msgstr "3–6 months"
 
 #. js-lingui-explicit-id
+#: src/copy/proposal-after-list.ts:61
+msgid "3D"
+msgstr "3D"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-designs.ts:49
+msgid "3D preview coming soon"
+msgstr "3D preview coming soon"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:91
 msgid "7 days left in your trial"
 msgstr "7 days left in your trial"
@@ -3534,7 +3545,7 @@ msgid "A {size} kW {type} rooftop system for your site in {place}"
 msgstr "A {size} kW {type} rooftop system for your site in {place}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:96
+#: src/copy/proposal-builder-flow.ts:99
 msgid "A bigger plan lets you generate now."
 msgstr "A bigger plan lets you generate now."
 
@@ -3599,12 +3610,12 @@ msgid "A company name is needed — it goes on every proposal you send."
 msgstr "A company name is needed — it goes on every proposal you send."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:29
+#: src/copy/proposal-builder-flow.ts:32
 msgid "A copy brings every step filled. {name}’s details come from this lead."
 msgstr "A copy brings every step filled. {name}’s details come from this lead."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:170
+#: src/copy/proposal-after-list.ts:230
 msgid "A copy brings every step filled. The customer’s name, phone and address come from the lead you pick."
 msgstr "A copy brings every step filled. The customer’s name, phone and address come from the lead you pick."
 
@@ -3727,7 +3738,7 @@ msgid "A named contact"
 msgstr "A named contact"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:168
+#: src/copy/proposal-after-list.ts:228
 msgid "A new customer"
 msgstr "A new customer"
 
@@ -3812,7 +3823,7 @@ msgid "A proposal is made from a design."
 msgstr "A proposal is made from a design."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:45
+#: src/copy/proposal-after-list.ts:53
 msgid "A proposal starts on a lead, or with New proposal."
 msgstr "A proposal starts on a lead, or with New proposal."
 
@@ -4107,13 +4118,13 @@ msgstr "Accept this proposal?"
 
 #. js-lingui-explicit-id
 #: src/copy/owner-dashboard.ts:98
-#: src/copy/proposal-after-list.ts:56
+#: src/copy/proposal-after-list.ts:65
 #: src/copy/proposal-after-standing.ts:15
 msgid "Accepted"
 msgstr "Accepted"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:67
+#: src/copy/proposal-after-list.ts:76
 msgid "Accepted {when} · confirm won"
 msgstr "Accepted {when} · confirm won"
 
@@ -4548,7 +4559,7 @@ msgid "Adding {name}"
 msgstr "Adding {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:44
+#: src/copy/proposal-builder-flow.ts:47
 msgid "address"
 msgstr "address"
 
@@ -4635,7 +4646,7 @@ msgstr "Agent turn"
 #: src/copy/leads-list.ts:40
 #: src/copy/list-top.ts:29
 #: src/copy/price-book.ts:26
-#: src/copy/proposal-after-list.ts:53
+#: src/copy/proposal-after-list.ts:62
 #: src/copy/role-matrix.ts:97
 #: src/copy/team.ts:13
 msgid "All"
@@ -5153,7 +5164,7 @@ msgid "Asked for a change"
 msgstr "Asked for a change"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:66
+#: src/copy/proposal-after-list.ts:75
 msgid "Asked for a change {when}"
 msgstr "Asked for a change {when}"
 
@@ -5421,7 +5432,7 @@ msgid "Bank"
 msgstr "Bank"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:41
+#: src/copy/proposal-builder-flow.ts:44
 msgid "bank details"
 msgstr "bank details"
 
@@ -6306,7 +6317,7 @@ msgid "Charges"
 msgstr "Charges"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:23
+#: src/copy/proposal-builder-flow.ts:24
 msgid "Check every page yourself. Best for a factory or an office."
 msgstr "Check every page yourself. Best for a factory or an office."
 
@@ -6319,8 +6330,8 @@ msgstr "Check in and out of a site, and log a visit and its outcome"
 #: src/copy/lead-designs.ts:39
 #: src/copy/projects.ts:28
 #: src/copy/proposal-after-links.ts:37
-#: src/copy/proposal-after-list.ts:48
-#: src/copy/proposal-after-list.ts:176
+#: src/copy/proposal-after-list.ts:56
+#: src/copy/proposal-after-list.ts:236
 #: src/copy/proposal-after-messages.ts:38
 #: src/copy/proposal-after-versions.ts:54
 #: src/copy/site-details.ts:74
@@ -6365,7 +6376,7 @@ msgid "Checking the documents"
 msgstr "Checking the documents"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:55
+#: src/copy/proposal-builder-flow.ts:58
 msgid "Checking the proposal"
 msgstr "Checking the proposal"
 
@@ -6573,7 +6584,7 @@ msgid "Clear target"
 msgstr "Clear target"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:167
+#: src/copy/proposal-after-list.ts:227
 #: src/copy/proposal-builder-sheets.ts:39
 msgid "Clear the search"
 msgstr "Clear the search"
@@ -6605,10 +6616,10 @@ msgstr "close"
 #: src/copy/proposal-after-in-force.ts:16
 #: src/copy/proposal-after-lead.ts:111
 #: src/copy/proposal-after-links.ts:34
-#: src/copy/proposal-after-list.ts:164
+#: src/copy/proposal-after-list.ts:224
 #: src/copy/proposal-after-messages.ts:19
-#: src/copy/proposal-builder-flow.ts:34
-#: src/copy/proposal-builder-flow.ts:99
+#: src/copy/proposal-builder-flow.ts:37
+#: src/copy/proposal-builder-flow.ts:102
 #: src/copy/proposal-builder-frame.ts:84
 #: src/copy/proposal-builder-sheets.ts:54
 #: src/copy/proposal-defaults-words.ts:66
@@ -6647,7 +6658,7 @@ msgid "Close this and nothing is created."
 msgstr "Close this and nothing is created."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:57
+#: src/copy/proposal-after-list.ts:66
 msgid "Closed"
 msgstr "Closed"
 
@@ -7002,7 +7013,7 @@ msgid "Copied — rename it if your variant differs."
 msgstr "Copied — rename it if your variant differs."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:178
+#: src/copy/proposal-after-list.ts:238
 msgid "Copied for {name}. Every step is filled."
 msgstr "Copied for {name}. Every step is filled."
 
@@ -7019,7 +7030,7 @@ msgstr "Copied. Paste it in your own app."
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:98
 #: src/copy/project-handover.ts:41
-#: src/copy/proposal-after-list.ts:31
+#: src/copy/proposal-after-list.ts:32
 msgid "Copy"
 msgstr "Copy"
 
@@ -7029,7 +7040,7 @@ msgid "Copy as a variant"
 msgstr "Copy as a variant"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:163
+#: src/copy/proposal-after-list.ts:223
 msgid "Copy for which customer?"
 msgstr "Copy for which customer?"
 
@@ -7532,7 +7543,7 @@ msgstr "Custom"
 
 #. js-lingui-explicit-id
 #: src/copy/project-detail.ts:73
-#: src/copy/proposal-after-list.ts:25
+#: src/copy/proposal-after-list.ts:26
 msgid "Customer"
 msgstr "Customer"
 
@@ -7646,7 +7657,7 @@ msgid "Customers merged"
 msgstr "Customers merged"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:95
+#: src/copy/proposal-builder-flow.ts:98
 msgid "Customers open and answer their links"
 msgstr "Customers open and answer their links"
 
@@ -7832,7 +7843,7 @@ msgid "Declined"
 msgstr "Declined"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:68
+#: src/copy/proposal-after-list.ts:77
 msgid "Declined {when}"
 msgstr "Declined {when}"
 
@@ -7949,7 +7960,7 @@ msgid "Design {number}"
 msgstr "Design {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:47
+#: src/copy/lead-designs.ts:54
 msgid "Design draft"
 msgstr "Design draft"
 
@@ -8273,8 +8284,8 @@ msgid "Download PDF"
 msgstr "Download PDF"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:33
-#: src/copy/proposal-after-list.ts:55
+#: src/copy/proposal-after-list.ts:34
+#: src/copy/proposal-after-list.ts:64
 #: src/copy/proposal-after-standing.ts:10
 #: src/copy/proposal-builder-frame.ts:69
 #: src/copy/proposal-document-cover.ts:36
@@ -8291,6 +8302,11 @@ msgstr "Drag map to adjust"
 #: src/copy/site-details.ts:42
 msgid "Drag the map until the pin is on the right place."
 msgstr "Drag the map until the pin is on the right place."
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-builder-flow.ts:26
+msgid "Draw the roof. The system sizes it and fills the proposal."
+msgstr "Draw the roof. The system sizes it and fills the proposal."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:26
@@ -8488,7 +8504,7 @@ msgid "Edit {who}"
 msgstr "Edit {who}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:93
+#: src/copy/proposal-builder-flow.ts:96
 msgid "Edit and share the proposals you have"
 msgstr "Edit and share the proposals you have"
 
@@ -8812,7 +8828,7 @@ msgid "Every plan"
 msgstr "Every plan"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:90
+#: src/copy/proposal-builder-flow.ts:93
 msgid "Every proposal in this plan’s month is made."
 msgstr "Every proposal in this plan’s month is made."
 
@@ -9089,7 +9105,7 @@ msgid "Fills the first page"
 msgstr "Fills the first page"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:24
+#: src/copy/proposal-after-list.ts:25
 msgid "Filter"
 msgstr "Filter"
 
@@ -9478,7 +9494,7 @@ msgid "From your signup"
 msgstr "From your signup"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:22
+#: src/copy/proposal-builder-flow.ts:23
 msgid "Full · 11 steps"
 msgstr "Full · 11 steps"
 
@@ -9503,7 +9519,7 @@ msgid "Generate · {count} to fix"
 msgstr "Generate · {count} to fix"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:60
+#: src/copy/proposal-builder-flow.ts:63
 msgid "Generate anyway"
 msgstr "Generate anyway"
 
@@ -9523,7 +9539,7 @@ msgid "Generate makes version 1"
 msgstr "Generate makes version 1"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:59
+#: src/copy/proposal-builder-flow.ts:62
 #: src/copy/proposal-builder-frame.ts:57
 msgid "Generate proposal"
 msgstr "Generate proposal"
@@ -9535,13 +9551,13 @@ msgid "Generated"
 msgstr "Generated"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:62
+#: src/copy/proposal-after-list.ts:71
 #: src/copy/proposal-after-versions.ts:36
 msgid "Generated {when} · not shared yet"
 msgstr "Generated {when} · not shared yet"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:74
+#: src/copy/proposal-builder-flow.ts:77
 msgid "Generating"
 msgstr "Generating"
 
@@ -9638,7 +9654,7 @@ msgid "Go to {name}. What you typed is not saved."
 msgstr "Go to {name}. What you typed is not saved."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:58
+#: src/copy/proposal-builder-flow.ts:61
 msgid "Go to {step}"
 msgstr "Go to {step}"
 
@@ -10308,7 +10324,7 @@ msgid "How this is worked out"
 msgstr "How this is worked out"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:17
+#: src/copy/proposal-builder-flow.ts:18
 msgid "How to build it"
 msgstr "How to build it"
 
@@ -10879,7 +10895,7 @@ msgid "It comes back at 09:00 that day, with a follow-up task."
 msgstr "It comes back at 09:00 that day, with a follow-up task."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:70
+#: src/copy/proposal-builder-flow.ts:73
 msgid "It gets its number now. You can still make a new version later."
 msgstr "It gets its number now. You can still make a new version later."
 
@@ -11198,7 +11214,7 @@ msgid "Kept reports"
 msgstr "Kept reports"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:62
+#: src/copy/proposal-builder-flow.ts:65
 msgid "Kept with version {version}. The versions page shows it first."
 msgstr "Kept with version {version}. The versions page shows it first."
 
@@ -11328,7 +11344,7 @@ msgid "Later"
 msgstr "Later"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:30
+#: src/copy/proposal-after-list.ts:31
 msgid "Latest"
 msgstr "Latest"
 
@@ -11485,12 +11501,12 @@ msgid "Left out of the PDF · {title}"
 msgstr "Left out of the PDF · {title}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:81
+#: src/copy/proposal-builder-flow.ts:84
 msgid "Left out, as the company has not added them: {facts}. {owner} can add them."
 msgstr "Left out, as the company has not added them: {facts}. {owner} can add them."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:78
+#: src/copy/proposal-builder-flow.ts:81
 msgid "Left out, as the company has not added them: {facts}. Add them in Business profile."
 msgstr "Left out, as the company has not added them: {facts}. Add them in Business profile."
 
@@ -11871,7 +11887,7 @@ msgid "Loading the proposal preview"
 msgstr "Loading the proposal preview"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:46
+#: src/copy/proposal-after-list.ts:54
 msgid "Loading the proposals"
 msgstr "Loading the proposals"
 
@@ -11957,7 +11973,7 @@ msgstr "Loading your job"
 
 #. js-lingui-explicit-id
 #: src/copy/leads-list.ts:29
-#: src/copy/proposal-after-list.ts:174
+#: src/copy/proposal-after-list.ts:234
 msgid "Loading your leads"
 msgstr "Loading your leads"
 
@@ -11992,7 +12008,7 @@ msgid "Loading your proposal template"
 msgstr "Loading your proposal template"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:33
+#: src/copy/proposal-builder-flow.ts:36
 msgid "Loading your recent proposals"
 msgstr "Loading your recent proposals"
 
@@ -12053,7 +12069,7 @@ msgid "Logging the enquiry…"
 msgstr "Logging the enquiry…"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:42
+#: src/copy/proposal-builder-flow.ts:45
 msgid "logo"
 msgstr "logo"
 
@@ -12179,12 +12195,12 @@ msgid "Make a new address for {label}. The old one keeps working."
 msgstr "Make a new address for {label}. The old one keeps working."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:37
+#: src/copy/proposal-after-list.ts:38
 msgid "Make a new version"
 msgstr "Make a new version"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:38
+#: src/copy/proposal-after-list.ts:39
 msgid "Make a new version of {number}"
 msgstr "Make a new version of {number}"
 
@@ -13050,7 +13066,7 @@ msgid "Name only"
 msgstr "Name only"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:166
+#: src/copy/proposal-after-list.ts:226
 msgid "Name or number"
 msgstr "Name or number"
 
@@ -13377,8 +13393,8 @@ msgid "New projects pause"
 msgstr "New projects pause"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:23
-#: src/copy/proposal-builder-flow.ts:16
+#: src/copy/proposal-after-list.ts:24
+#: src/copy/proposal-builder-flow.ts:17
 msgid "New proposal"
 msgstr "New proposal"
 
@@ -13588,6 +13604,11 @@ msgstr "No {tax}"
 #: src/copy/proposal-document.ts:28
 msgid "No {tax}. {company} is not registered for {tax}."
 msgstr "No {tax}. {company} is not registered for {tax}."
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-after-list.ts:50
+msgid "No 3D design yet"
+msgstr "No 3D design yet"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-won.ts:56
@@ -13816,7 +13837,7 @@ msgid "No jobs in this pipeline"
 msgstr "No jobs in this pipeline"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:173
+#: src/copy/proposal-after-list.ts:233
 msgid "No lead matches."
 msgstr "No lead matches."
 
@@ -13883,7 +13904,7 @@ msgstr "No more codes for {windowMinutes} minutes"
 #: src/copy/lead-inbox.ts:34
 #: src/copy/my-day.ts:37
 #: src/copy/projects.ts:63
-#: src/copy/proposal-after-list.ts:32
+#: src/copy/proposal-after-list.ts:33
 #: src/copy/search.ts:41
 msgid "No name yet"
 msgstr "No name yet"
@@ -13973,6 +13994,7 @@ msgstr "No owner yet. Give the lead to someone"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-designs.ts:24
+#: src/copy/proposal-after-list.ts:47
 msgid "No panels yet"
 msgstr "No panels yet"
 
@@ -14058,7 +14080,7 @@ msgid "No proposal yet"
 msgstr "No proposal yet"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:44
+#: src/copy/proposal-after-list.ts:52
 msgid "No proposals here"
 msgstr "No proposals here"
 
@@ -14139,7 +14161,7 @@ msgid "No sites to show"
 msgstr "No sites to show"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:35
+#: src/copy/proposal-after-list.ts:36
 msgid "No size yet"
 msgstr "No size yet"
 
@@ -14369,7 +14391,7 @@ msgid "Not copied. Try again."
 msgstr "Not copied. Try again."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:36
+#: src/copy/proposal-after-list.ts:37
 msgid "Not current"
 msgstr "Not current"
 
@@ -15125,7 +15147,7 @@ msgid "Now"
 msgstr "Now"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:26
+#: src/copy/proposal-after-list.ts:27
 msgid "Number"
 msgstr "Number"
 
@@ -15585,6 +15607,11 @@ msgid "Open the demo project"
 msgstr "Open the demo project"
 
 #. js-lingui-explicit-id
+#: src/copy/proposal-after-list.ts:45
+msgid "Open the design for {name}"
+msgstr "Open the design for {name}"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-after-track-rows.ts:73
 #: src/copy/proposal-after-track.ts:22
 msgid "Open the document"
@@ -15606,7 +15633,7 @@ msgid "Open the project"
 msgstr "Open the project"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:39
+#: src/copy/proposal-after-list.ts:40
 msgid "Open the proposal for {name}"
 msgstr "Open the proposal for {name}"
 
@@ -15621,6 +15648,11 @@ msgid "Open this customer"
 msgstr "Open this customer"
 
 #. js-lingui-explicit-id
+#: src/copy/proposal-after-list.ts:46
+msgid "Open this design"
+msgstr "Open this design"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:47
 #: src/copy/leads-list.ts:63
 #: src/copy/search.ts:47
@@ -15628,7 +15660,7 @@ msgid "Open this lead"
 msgstr "Open this lead"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:40
+#: src/copy/proposal-after-list.ts:41
 #: src/copy/search.ts:49
 msgid "Open this proposal"
 msgstr "Open this proposal"
@@ -15645,7 +15677,7 @@ msgid "Opened"
 msgstr "Opened"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:64
+#: src/copy/proposal-after-list.ts:73
 msgid "Opened {when}"
 msgstr "Opened {when}"
 
@@ -15742,7 +15774,7 @@ msgid "or"
 msgstr "or"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:24
+#: src/copy/proposal-builder-flow.ts:27
 msgid "or start from"
 msgstr "or start from"
 
@@ -16708,6 +16740,11 @@ msgid "Pick who visits"
 msgstr "Pick who visits"
 
 #. js-lingui-explicit-id
+#: src/copy/proposal-after-list.ts:51
+msgid "Pick With 3D design in New proposal."
+msgstr "Pick With 3D design in New proposal."
+
+#. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:37
 msgid "Picked"
 msgstr "Picked"
@@ -17003,7 +17040,7 @@ msgstr "Previous step"
 #: src/copy/catalog-settings.ts:173
 #: src/copy/crm-vocabulary.ts:113
 #: src/copy/customer-page-sheets.ts:17
-#: src/copy/proposal-after-list.ts:28
+#: src/copy/proposal-after-list.ts:29
 #: src/copy/proposal-after-versions.ts:64
 msgid "Price"
 msgstr "Price"
@@ -17434,10 +17471,11 @@ msgstr "Proposal withdrawn. Its link now says it is no longer active."
 #: src/copy/billing-strip.ts:97
 #: src/copy/lead-detail-parts.ts:111
 #: src/copy/pricing.ts:73
-#: src/copy/proposal-after-list.ts:19
+#: src/copy/proposal-after-list.ts:20
 #: src/copy/search.ts:66
 #: src/copy/shell.ts:95
 #: src/copy/shell.ts:111
+#: src/copy/site-details.ts:158
 msgid "Proposals"
 msgstr "Proposals"
 
@@ -17457,7 +17495,7 @@ msgid "Proposals already sent keep what they were sent with."
 msgstr "Proposals already sent keep what they were sent with."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:47
+#: src/copy/proposal-after-list.ts:55
 msgid "Proposals did not load"
 msgstr "Proposals did not load"
 
@@ -17554,7 +17592,7 @@ msgid "Quick"
 msgstr "Quick"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:18
+#: src/copy/proposal-builder-flow.ts:19
 msgid "Quick · 4 steps"
 msgstr "Quick · 4 steps"
 
@@ -17575,7 +17613,7 @@ msgid "Quick mode runs the same checks at Generate."
 msgstr "Quick mode runs the same checks at Generate."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:75
+#: src/copy/proposal-builder-flow.ts:78
 msgid "Quick mode used your company’s timeline, payment terms, and terms and conditions."
 msgstr "Quick mode used your company’s timeline, payment terms, and terms and conditions."
 
@@ -17667,7 +17705,7 @@ msgid "Read (results)"
 msgstr "Read (results)"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:94
+#: src/copy/proposal-builder-flow.ts:97
 msgid "Read and download every proposal"
 msgstr "Read and download every proposal"
 
@@ -17682,7 +17720,7 @@ msgid "Read for {count} min"
 msgstr "Read for {count} min"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:65
+#: src/copy/proposal-after-list.ts:74
 msgid "Read for {count} min · {when}"
 msgstr "Read for {count} min · {when}"
 
@@ -17757,7 +17795,7 @@ msgid "Ready for {name}"
 msgstr "Ready for {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:53
+#: src/copy/proposal-builder-flow.ts:56
 msgid "Ready to generate"
 msgstr "Ready to generate"
 
@@ -17777,7 +17815,7 @@ msgid "Ready to share"
 msgstr "Ready to share"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:52
+#: src/copy/proposal-builder-flow.ts:55
 msgid "Ready. Check these first"
 msgstr "Ready. Check these first"
 
@@ -17921,7 +17959,7 @@ msgid "Recorded by {recorder}."
 msgstr "Recorded by {recorder}."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:66
+#: src/copy/proposal-builder-flow.ts:69
 msgid "Red items stop Generate. Amber items only warn."
 msgstr "Red items stop Generate. Amber items only warn."
 
@@ -18192,7 +18230,7 @@ msgid "Replaced"
 msgstr "Replaced"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:70
+#: src/copy/proposal-after-list.ts:79
 #: src/copy/proposal-after-track.ts:69
 msgid "Replaced by a newer proposal"
 msgstr "Replaced by a newer proposal"
@@ -18659,7 +18697,7 @@ msgid "Sales Manager"
 msgstr "Sales Manager"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:25
+#: src/copy/proposal-builder-flow.ts:28
 msgid "Same as {name}"
 msgstr "Same as {name}"
 
@@ -18715,7 +18753,7 @@ msgid "Save {amount}"
 msgstr "Save {amount}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:203
+#: src/copy/proposal-after-list.ts:263
 msgid "Save and build the proposal"
 msgstr "Save and build the proposal"
 
@@ -18968,7 +19006,7 @@ msgid "Savings pass the net cost after {years} years"
 msgstr "Savings pass the net cost after {years} years"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:65
+#: src/copy/proposal-builder-flow.ts:68
 msgid "Say what changed before you generate."
 msgstr "Say what changed before you generate."
 
@@ -19093,7 +19131,7 @@ msgid "Search the catalog"
 msgstr "Search the catalog"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:165
+#: src/copy/proposal-after-list.ts:225
 msgid "Search your leads"
 msgstr "Search your leads"
 
@@ -19165,7 +19203,7 @@ msgid "See it and share"
 msgstr "See it and share"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:98
+#: src/copy/proposal-builder-flow.ts:101
 msgid "See plans"
 msgstr "See plans"
 
@@ -19601,7 +19639,7 @@ msgid "Shared {when} · kept exactly as sent"
 msgstr "Shared {when} · kept exactly as sent"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:63
+#: src/copy/proposal-after-list.ts:72
 msgid "Shared {when} · not opened yet"
 msgstr "Shared {when} · not opened yet"
 
@@ -19704,7 +19742,7 @@ msgstr "Show full screen to the customer"
 #: src/copy/billing-records.ts:42
 #: src/copy/catalog-import.ts:49
 #: src/copy/lead-import.ts:56
-#: src/copy/proposal-after-list.ts:43
+#: src/copy/proposal-after-list.ts:44
 #: src/copy/proposal-builder-sheets.ts:56
 #: src/copy/usage-page.ts:93
 msgid "Show more"
@@ -19938,7 +19976,7 @@ msgid "Size, price, brand or payment plan"
 msgstr "Size, price, brand or payment plan"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:19
+#: src/copy/proposal-builder-flow.ts:20
 msgid "Size, price, parts and client. The rest uses your company defaults. Best for a home."
 msgstr "Size, price, parts and client. The rest uses your company defaults. Best for a home."
 
@@ -20227,7 +20265,7 @@ msgid "Standard {split}"
 msgstr "Standard {split}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:32
+#: src/copy/proposal-builder-flow.ts:35
 msgid "Start"
 msgstr "Start"
 
@@ -20302,7 +20340,7 @@ msgstr "State first"
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:129
 #: src/copy/projects.ts:61
-#: src/copy/proposal-after-list.ts:29
+#: src/copy/proposal-after-list.ts:30
 #: src/copy/team.ts:12
 msgid "Status"
 msgstr "Status"
@@ -20440,7 +20478,7 @@ msgstr "Still to collect"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:28
-#: src/copy/proposal-builder-flow.ts:92
+#: src/copy/proposal-builder-flow.ts:95
 msgid "Still works"
 msgstr "Still works"
 
@@ -20644,7 +20682,7 @@ msgstr "Switched to {language} · {time}"
 #: src/copy/activity-stream.ts:61
 #: src/copy/customer-messages.ts:103
 #: src/copy/customer-page-sheets.ts:13
-#: src/copy/proposal-after-list.ts:27
+#: src/copy/proposal-after-list.ts:28
 #: src/copy/proposal-builder-frame.ts:16
 msgid "System"
 msgstr "System"
@@ -20863,7 +20901,7 @@ msgid "Tax invoice"
 msgstr "Tax invoice"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:43
+#: src/copy/proposal-builder-flow.ts:46
 msgid "tax number"
 msgstr "tax number"
 
@@ -21321,12 +21359,12 @@ msgid "The company’s owner can add it. You can still send."
 msgstr "The company’s owner can add it. You can still send."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:89
+#: src/copy/proposal-builder-flow.ts:92
 msgid "The count starts again on {date}."
 msgstr "The count starts again on {date}."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:91
+#: src/copy/proposal-builder-flow.ts:94
 msgid "The count starts again with the next month of the plan."
 msgstr "The count starts again with the next month of the plan."
 
@@ -22324,7 +22362,7 @@ msgid "Theme"
 msgstr "Theme"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:56
+#: src/copy/proposal-builder-flow.ts:59
 msgid "Then check · {count}"
 msgstr "Then check · {count}"
 
@@ -22415,7 +22453,7 @@ msgid "Thin-film"
 msgstr "Thin-film"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:204
+#: src/copy/proposal-after-list.ts:264
 msgid "This also makes a lead, so nothing is typed twice."
 msgstr "This also makes a lead, so nothing is typed twice."
 
@@ -22642,7 +22680,7 @@ msgid "This market sets no rule for it"
 msgstr "This market sets no rule for it"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:54
+#: src/copy/proposal-builder-flow.ts:57
 msgid "This month’s proposals are used"
 msgstr "This month’s proposals are used"
 
@@ -22652,7 +22690,7 @@ msgid "This number already has an invite waiting"
 msgstr "This number already has an invite waiting"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:206
+#: src/copy/proposal-after-list.ts:266
 msgid "This number is already a lead"
 msgstr "This number is already a lead"
 
@@ -22969,7 +23007,7 @@ msgid "To"
 msgstr "To"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:57
+#: src/copy/proposal-builder-flow.ts:60
 msgid "To check · {count}"
 msgstr "To check · {count}"
 
@@ -23200,8 +23238,8 @@ msgstr "Try a part of the invoice number."
 #: src/copy/pricing.ts:118
 #: src/copy/proposal-after-in-force.ts:37
 #: src/copy/proposal-after-links.ts:38
-#: src/copy/proposal-after-list.ts:49
-#: src/copy/proposal-after-list.ts:177
+#: src/copy/proposal-after-list.ts:57
+#: src/copy/proposal-after-list.ts:237
 #: src/copy/proposal-after-messages.ts:39
 #: src/copy/proposal-after-track.ts:37
 #: src/copy/proposal-after-versions.ts:55
@@ -23374,7 +23412,7 @@ msgid "Type the specification"
 msgstr "Type the specification"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:169
+#: src/copy/proposal-after-list.ts:229
 msgid "Type their number first"
 msgstr "Type their number first"
 
@@ -23674,12 +23712,12 @@ msgid "Use {hex}"
 msgstr "Use {hex}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:207
+#: src/copy/proposal-after-list.ts:267
 msgid "Use {name}"
 msgstr "Use {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:41
+#: src/copy/proposal-after-list.ts:42
 msgid "Use {number} for another lead"
 msgstr "Use {number} for another lead"
 
@@ -23730,12 +23768,12 @@ msgid "Use this button to start a survey."
 msgstr "Use this button to start a survey."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:42
+#: src/copy/proposal-after-list.ts:43
 msgid "Use this draft for another lead"
 msgstr "Use this draft for another lead"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:208
+#: src/copy/proposal-after-list.ts:268
 msgid "Use this lead"
 msgstr "Use this lead"
 
@@ -24102,7 +24140,7 @@ msgstr "waiting"
 
 #. js-lingui-explicit-id
 #: src/copy/projects.ts:35
-#: src/copy/proposal-after-list.ts:54
+#: src/copy/proposal-after-list.ts:63
 msgid "Waiting"
 msgstr "Waiting"
 
@@ -24498,7 +24536,7 @@ msgid "What changed in version {version}"
 msgstr "What changed in version {version}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:61
+#: src/copy/proposal-builder-flow.ts:64
 msgid "What changed, and why"
 msgstr "What changed, and why"
 
@@ -24984,7 +25022,7 @@ msgstr "Who does what, by role"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-links.ts:111
-#: src/copy/proposal-after-list.ts:202
+#: src/copy/proposal-after-list.ts:262
 msgid "Who is it for?"
 msgstr "Who is it for?"
 
@@ -25112,6 +25150,11 @@ msgid "with {tax}"
 msgstr "with {tax}"
 
 #. js-lingui-explicit-id
+#: src/copy/proposal-builder-flow.ts:25
+msgid "With 3D design"
+msgstr "With 3D design"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:53
 msgid "with a {value}% margin"
 msgstr "with a {value}% margin"
@@ -25168,7 +25211,7 @@ msgid "Withdrawn"
 msgstr "Withdrawn"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:71
+#: src/copy/proposal-after-list.ts:80
 msgid "Withdrawn {when}"
 msgstr "Withdrawn {when}"
 
@@ -25205,7 +25248,7 @@ msgid "Won · project {number}"
 msgstr "Won · project {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:69
+#: src/copy/proposal-after-list.ts:78
 msgid "Won {when}"
 msgstr "Won {when}"
 
@@ -25386,6 +25429,7 @@ msgstr "Yesterday · {date}"
 #. js-lingui-explicit-id
 #: src/copy/lead-designs.ts:26
 #: src/copy/lead-inbox.ts:59
+#: src/copy/proposal-after-list.ts:49
 #: src/copy/search.ts:45
 #: src/copy/settings.ts:32
 #: src/copy/team.ts:14
@@ -25880,7 +25924,7 @@ msgid "Your documents"
 msgstr "Your documents"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:73
+#: src/copy/proposal-builder-flow.ts:76
 msgid "Your draft is saved. Nothing is lost."
 msgstr "Your draft is saved. Nothing is lost."
 
@@ -26000,7 +26044,7 @@ msgid "Your leads at a glance"
 msgstr "Your leads at a glance"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:175
+#: src/copy/proposal-after-list.ts:235
 msgid "Your leads did not load"
 msgstr "Your leads did not load"
 

@@ -1,9 +1,13 @@
 import {
   type CustomerPage,
   customerPageSchema,
+  type DesignDetail,
+  designDetailSchema,
   type ProposalDetail,
+  type ProposalEntryDesign,
   type ProposalRow,
   proposalDetailSchema,
+  proposalEntryDesignSchema,
 } from '@heliogrid/contracts';
 
 /**
@@ -191,6 +195,7 @@ export function proposalRow(id: string, standing: ProposalRow['standing']): Prop
     id,
     leadId: LEAD,
     customerName: 'Anil Sharma',
+    customerPhone: '+919876543210',
     city: 'Pune',
     number: standing === 'draft' ? null : 'PRP-0042',
     version: standing === 'draft' ? null : 1,
@@ -203,6 +208,53 @@ export function proposalRow(id: string, standing: ProposalRow['standing']): Prop
     stale: false,
     createdBy: null,
   };
+}
+
+/** The design *With 3D design* makes on the lead, as the studio answers it. */
+export const DESIGN = '01a30000-0000-7000-8000-00000000d001';
+
+/** A design with no proposal yet, as the Proposals page lists it. */
+export function designEntry(id: string = DESIGN): ProposalEntryDesign {
+  return proposalEntryDesignSchema.parse({
+    kind: 'design',
+    id,
+    leadId: LEAD,
+    customerName: 'Anil Sharma',
+    customerPhone: '+919876543210',
+    city: 'Pune',
+    ordinal: 1,
+    mount: 'roof',
+    status: 'draft',
+    changedAt: AT,
+    changedBy: null,
+  });
+}
+
+/** The design just made on the lead, as the studio's create answers it. */
+export function designMade(): DesignDetail {
+  return designDetailSchema.parse({
+    design: {
+      id: DESIGN,
+      ordinal: 1,
+      mount: 'roof',
+      status: 'draft',
+      recommended: false,
+      createdBy: null,
+      createdAt: AT,
+      updatedAt: AT,
+    },
+    site: {
+      name: null,
+      address: null,
+      pin: null,
+      area: null,
+      utilityOperator: null,
+      supplyPhase: null,
+      sanctionedLoadKw: null,
+    },
+    subject: { leadId: LEAD, customerName: 'Anil Sharma', customerPhone: null },
+    canEdit: true,
+  });
 }
 
 /** The id of the version the customer's page serves: what each answer names. */

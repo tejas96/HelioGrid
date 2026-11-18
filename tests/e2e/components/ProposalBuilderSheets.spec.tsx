@@ -180,6 +180,22 @@ test('the start sheet starts in the mode it shows, or copies a recent proposal',
   await expect(log(page)).toHaveText('copy:b');
 });
 
+test('the start sheet offers With 3D design only to who may design, and starts it', async ({
+  mount,
+  page,
+}) => {
+  const words = proposalStartWords(en.t, { name: FIRST_NAME, segment: 'residential' });
+  const designing = await mount(<SheetStory sheet="start" />);
+  const sheet = page.getByRole('dialog');
+  await sheet.getByRole('radio', { name: new RegExp(words.modes.design.title) }).click();
+  await sheet.getByRole('button', { name: words.start }).click();
+  await expect(log(page)).toHaveText('start:design');
+  await designing.unmount();
+  await mount(<SheetStory sheet="start" canDesign={false} />);
+  await expect(page.getByRole('dialog').getByRole('radio')).toHaveCount(2);
+  await expect(page.getByText(words.modes.design.title)).toHaveCount(0);
+});
+
 test('after Generate the cover lands with the number and the two ways on', async ({
   mount,
   page,

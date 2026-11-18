@@ -60,6 +60,7 @@ export function useLeadDetailMoves(files: LeadFiles): LeadDetailMoves {
       toBuilder: (proposalId) => router.push(proposalBuilderPath(proposalId)),
       toProposal: (proposalId) => router.push(proposalPath(proposalId)),
       toLead: (leadId) => router.push(leadPath(leadId)),
+      toSiteDetails: (designId) => router.push(designSitePath(designId)),
     },
     designs: {
       toSiteDetails: (designId) => router.push(designSitePath(designId)),

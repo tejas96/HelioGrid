@@ -67,8 +67,9 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "prev=''; restore() { if [ \"$prev\" = null ] || [ -z \"$prev\" ]; then adb -s emulator-5554 shell settings delete secure stylus_handwriting_enabled; else adb -s emulator-5554 shell settings put secure stylus_handwriting_enabled \"$prev\"; fi; adb -s emulator-5554 emu kill; }; trap restore EXIT; emulator -avd Pixel_8_API_36 -cores 2 -memory 4096 -gpu host & pid=$!; adb -s emulator-5554 wait-for-device; until [ \"$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d '\\r')\" = 1 ]; do sleep 2; done; prev=$(adb -s emulator-5554 shell settings get secure stylus_handwriting_enabled | tr -d '\\r'); echo \"stylus_handwriting_enabled was $prev; off for this run\"; adb -s emulator-5554 shell settings put secure stylus_handwriting_enabled 0; adb -s emulator-5554 shell am force-stop com.google.android.inputmethod.latin; adb -s emulator-5554 reverse tcp:9000 tcp:9000; echo 'emulator up: Gboard stylus handwriting off, port 9000 reversed'; wait $pid"
-      ]
+        "prev=''; restore() { if [ \"$prev\" = null ] || [ -z \"$prev\" ]; then adb -s emulator-5554 shell settings delete secure stylus_handwriting_enabled; else adb -s emulator-5554 shell settings put secure stylus_handwriting_enabled \"$prev\"; fi; adb -s emulator-5554 emu kill; }; trap restore EXIT; emulator -avd Pixel_8_API_36 -port 5554 -cores 2 -memory 4096 -gpu host & pid=$!; adb -s emulator-5554 wait-for-device; until [ \"$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d '\\r')\" = 1 ]; do sleep 2; done; prev=$(adb -s emulator-5554 shell settings get secure stylus_handwriting_enabled | tr -d '\\r'); echo \"stylus_handwriting_enabled was $prev; off for this run\"; adb -s emulator-5554 shell settings put secure stylus_handwriting_enabled 0; adb -s emulator-5554 shell am force-stop com.google.android.inputmethod.latin; adb -s emulator-5554 reverse tcp:9000 tcp:9000; echo 'emulator up: Gboard stylus handwriting off, port 9000 reversed'; wait $pid"
+      ],
+      "port": 5554
     }
   ]
 }

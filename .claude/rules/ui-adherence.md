@@ -39,6 +39,13 @@ paths:
 ## A screen follows the approved language
 
 The build follows the approved design or the sample the owner picked (`CLAUDE.md` §3) and the language of `CLAUDE.md` §10.
+Never drop a part silently.
+- A part whose feature is not built yet is a placeholder in its place that tells the user it is
+  coming (a 3D card's cover: "3D preview coming soon"; a thumb too small for words keeps the
+  design's glyph). The task that builds the feature replaces it.
+- A mistake in the design (a broken rule, a missing state, a misfit) is fixed in the UI, never in
+  the design, and named in the report (`CLAUDE.md` §3).
+
 The app shell draws the top bar, nav and sidebar; the words come from the catalog.
 
 ## Compose from the primitives, don't re-answer them

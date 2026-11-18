@@ -20,6 +20,7 @@ import {
 } from '@heliogrid/ui';
 import { notFound, useRouter } from 'next/navigation';
 import { QuickAddForProposal } from '../../quick-add-lead';
+import { designPath, designSitePath } from '../../shell';
 import { PROPOSALS_TABLE_FROM } from '../shared/constants';
 import { useProposalFormats } from '../shared/use-proposal-formats';
 import { useProposalMoves } from '../shared/use-proposal-moves';
@@ -40,6 +41,8 @@ export function ProposalListScreen() {
   const screen = useProposalListScreen({
     toProposal: moves.toProposal,
     toBuilder: moves.toBuilder,
+    toDesign: (designId) => router.push(designPath(designId, true)),
+    toSiteDetails: (designId) => router.push(designSitePath(designId, true)),
   });
   const [room, width] = useOwnWidth<HTMLDivElement>();
   /* A person offered neither Leads nor Proposals meets the page that does not exist (`F7-48`). */
@@ -70,7 +73,7 @@ export function ProposalListScreen() {
         room={wide ? 'wide' : 'narrow'}
         filter={screen.filter}
         onFilter={screen.setFilter}
-        words={proposalListWords(t, formats)}
+        words={proposalListWords(t, formats, screen.readerId)}
         onOpen={screen.open}
         {...(screen.canStart
           ? { onCopy: flow.openCopy, onNewVersion: (row) => moves.toBuilder(row.id) }

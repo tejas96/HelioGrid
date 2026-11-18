@@ -2,6 +2,7 @@ import type { MissingCompanyFact, TranslatedText } from '@heliogrid/contracts';
 import { customerShortNameOf, type DealSegment, FIGURE_SLOT, type Read } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { assembled } from './assembled';
+import { designPreviewWord } from './lead-designs';
 import { proposalPageHeadWords } from './proposal-screens-words';
 
 /**
@@ -21,6 +22,8 @@ const START = {
   },
   full: /*i18n*/ { id: 'Full · 11 steps' },
   fullLine: /*i18n*/ { id: 'Check every page yourself. Best for a factory or an office.' },
+  design: /*i18n*/ { id: 'With 3D design' },
+  designLine: /*i18n*/ { id: 'Draw the roof. The system sizes it and fills the proposal.' },
   or: /*i18n*/ { id: 'or start from' },
   sameAs: /*i18n*/ { id: 'Same as {name}' },
   sourceLine: /*i18n*/ {
@@ -111,7 +114,10 @@ export function proposalStartWords(
     modes: {
       quick: { title: t(START.quick), line: t(START.quickLine) },
       full: { title: t(START.full), line: t(START.fullLine) },
+      design: { title: t(START.design), line: t(START.designLine) },
     },
+    /** Where the 3D option will show a model: the placeholder until the studio draws one. */
+    designPreview: designPreviewWord(t),
     or: t(START.or),
     /** A recent proposal's row — `Same as Meena Deshpande`. */
     sameAs: (customer: string) => t(START.sameAs, { name: customer }),

@@ -14,6 +14,7 @@ import {
   PANEL_TECHNOLOGIES,
   PROPOSAL_ACT_REFUSALS,
   PROPOSAL_ANSWERS,
+  PROPOSAL_ENTRY_FILTERS,
   PROPOSAL_LIST_FILTERS,
   PROPOSAL_PAGES,
   PROPOSAL_STANDINGS,
@@ -48,6 +49,9 @@ export const proposalStandingReadSchema = extensibleEnum(PROPOSAL_STANDINGS);
 
 export const proposalListFilterSchema = z.enum(PROPOSAL_LIST_FILTERS);
 export type ProposalListFilter = z.infer<typeof proposalListFilterSchema>;
+/** The Proposals page's chips: `3d`, then the list's own (`T-M05-001b`). */
+export const proposalEntryFilterSchema = z.enum(PROPOSAL_ENTRY_FILTERS);
+export type ProposalEntryFilter = z.infer<typeof proposalEntryFilterSchema>;
 
 export const proposalTypeSchema = z.enum(PROPOSAL_TYPES);
 export const systemTypeSchema = z.enum(SYSTEM_TYPES);

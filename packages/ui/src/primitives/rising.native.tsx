@@ -14,7 +14,11 @@ export function Rising({ order, children }: { order: number; children: ReactNode
   const reduced = useReducedMotion();
   const rise = useRef(new Animated.Value(reduced ? 1 : 0)).current;
   useEffect(() => {
-    if (reduced) return;
+    // Reduced motion can arrive after the motion began: show the end state, never where it stopped.
+    if (reduced) {
+      rise.setValue(1);
+      return;
+    }
     const anim = Animated.timing(rise, {
       toValue: 1,
       duration: theme.motion.durations.emphasised,

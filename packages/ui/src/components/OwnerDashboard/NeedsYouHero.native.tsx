@@ -161,7 +161,11 @@ function Arriving({ children }: { children: ReactNode }) {
   const reduced = useReducedMotion();
   const enter = useRef(new Animated.Value(reduced ? 1 : 0)).current;
   useEffect(() => {
-    if (reduced) return;
+    // Reduced motion can arrive after the motion began: show the end state, never where it stopped.
+    if (reduced) {
+      enter.setValue(1);
+      return;
+    }
     const run = Animated.timing(enter, {
       toValue: 1,
       duration: theme.motion.durations.standard,

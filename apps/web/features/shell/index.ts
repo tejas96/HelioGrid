@@ -19,6 +19,7 @@ export {
   proposalLinksPath,
   proposalPath,
   proposalVersionsPath,
+  SITE_DETAILS_FROM_PROPOSALS,
   settingsRowPath,
 } from './constants';
 export { HomeScreen } from './HomeScreen';

@@ -12,6 +12,8 @@ import { useTenantId } from './use-tenant-id';
 /** Where the lead's proposals lead. */
 export interface LeadProposalsMoves {
   toBuilder(proposalId: string): void;
+  /** *With 3D design*: the design just made opens its Site details. */
+  toSiteDetails(designId: string): void;
   toProposal(proposalId: string): void;
   toLead(leadId: string): void;
 }
@@ -28,7 +30,7 @@ export interface LeadProposalsSection {
   continueDraft(proposalId: string): void;
   open(proposalId: string): void;
   openSibling(): void;
-  /** The start sheet (`T-M06-001`): Quick or Full, or the same as a recent proposal. */
+  /** The start sheet (`T-M06-001`): Quick, Full or With 3D design, or the same as a recent proposal. */
   readonly start: ProposalStartSheetState;
   /** *Withdraw* on one of two proposals (`M06-58`): the sheet's proposal, the send and its answer. */
   readonly withdraw: {
@@ -56,7 +58,7 @@ export function useLeadProposalsSection(
   const section = lead?.proposals ?? null;
   const homeLead = lead?.lead.segment === 'residential';
   const [withdrawId, setWithdrawId] = useState<string | null>(null);
-  const start = useProposalStartSheet(leadId, homeLead, moves.toBuilder);
+  const start = useProposalStartSheet(leadId, homeLead, moves);
   const withdraw = useProposalShare(withdrawId ?? '', { share: false, acceptance: false });
 
   const { withdrawn } = withdraw;
