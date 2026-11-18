@@ -5,6 +5,7 @@ import {
   memberRefSchema,
   paginated,
   paginationQuerySchema,
+  phoneE164Schema,
   uuidSchema,
 } from '../common';
 import { designMountReadSchema, designStatusReadSchema } from '../studio/vocabulary';
@@ -30,6 +31,8 @@ export const proposalEntryDesignSchema = z.object({
   id: uuidSchema,
   leadId: uuidSchema,
   customerName: z.string().nullable(),
+  /** The lead's number: what names the row while the customer has no name. */
+  customerPhone: phoneE164Schema,
   city: z.string().nullable(),
   /** The N of "Design N". */
   ordinal: z.number().int().positive(),

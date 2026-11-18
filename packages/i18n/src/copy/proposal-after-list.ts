@@ -121,14 +121,26 @@ function designLatestOf(
   return t(LIST.byWhen, { name, when });
 }
 
-/** A row's customer as the list names it: the name, or that the lead holds none yet. */
-type Named = Pick<ProposalRow, 'customerName'>;
+/** Who a row is for: the customer's name, and the lead's number for a row with no name. */
+interface Named {
+  readonly customerName: string | null;
+  readonly customerPhone: string | null;
+}
+
+/** The name; else the number in the company's grouping, so two unnamed rows read apart; else `null`. */
+const nameOrNumber = (row: Named, phone: (e164: string) => string): string | null =>
+  row.customerName ?? (row.customerPhone === null ? null : phone(row.customerPhone));
 
 /**
  * `ProposalList`'s words (`SCR-M06-19`, `T-M05-001b`); `readerId` is who reads, so their own
  * designs say "You".
  */
-export function proposalListWords(t: T, formats: ProposalListFormats, readerId: string | null) {
+export function proposalListWords(
+  t: T,
+  formats: ProposalListFormats & { readonly phone: (e164: string) => string },
+  readerId: string | null,
+) {
+  const named = (row: Named) => nameOrNumber(row, formats.phone);
   const table: ProposalTableWords = dataTableWords(t);
   return {
     filterLabel: t(LIST.filterLabel),
@@ -144,8 +156,10 @@ export function proposalListWords(t: T, formats: ProposalListFormats, readerId: 
     },
     caption: t(LIST.title),
     standing: (standing: ProposalStanding | (string & {})) => proposalStandingWord(t, standing),
-    customer: (row: Named) =>
-      row.customerName === null ? t(LIST.noName) : shownAsSent(row.customerName),
+    customer: (row: Named) => {
+      const name = named(row);
+      return name === null ? t(LIST.noName) : shownAsSent(name);
+    },
     number: (row: ProposalRow) => (row.number === null ? t(LIST.draft) : shownAsSent(row.number)),
     system: (row: ProposalRow) =>
       row.capacityKw === null
@@ -157,16 +171,18 @@ export function proposalListWords(t: T, formats: ProposalListFormats, readerId: 
     newVersion: t(LIST.newVersion),
     newVersionNamed: (row: ProposalRow) =>
       row.number === null ? t(LIST.newVersion) : t(LIST.newVersionNamed, { number: row.number }),
-    open: (row: ProposalRow) =>
-      row.customerName === null ? t(LIST.openPlain) : t(LIST.open, { name: row.customerName }),
+    open: (row: ProposalRow) => {
+      const name = named(row);
+      return name === null ? t(LIST.openPlain) : t(LIST.open, { name });
+    },
     copyNamed: (row: ProposalRow) =>
       row.number === null ? t(LIST.copyDraft) : t(LIST.copyNamed, { number: row.number }),
     /** A design with no proposal yet (`T-M05-001b`): its spoken name, size, status and last change. */
     design: {
-      open: (row: ProposalEntryDesign) =>
-        row.customerName === null
-          ? t(LIST.openDesignPlain)
-          : t(LIST.openDesign, { name: row.customerName }),
+      open: (row: ProposalEntryDesign) => {
+        const name = named(row);
+        return name === null ? t(LIST.openDesignPlain) : t(LIST.openDesign, { name });
+      },
       noPanels: t(LIST.noPanels),
       preview: designPreviewWord(t),
       /** A design's number and price cells: a dash, not yet — never an empty cell. */

@@ -20,6 +20,7 @@ const words = proposalListWords(
     number: String,
     when: (instant) => instant,
     ago: () => '2 hours ago',
+    phone: String,
   },
   null,
 );

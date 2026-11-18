@@ -2132,7 +2132,7 @@ msgid "{name} has waited a day with no owner"
 msgstr "{name} एक दिन से किसी को नहीं सौंपी गई"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:249
+#: src/copy/proposal-after-list.ts:265
 msgid "{name} is already a lead"
 msgstr "{name} पहले से एक लीड है"
 
@@ -3615,7 +3615,7 @@ msgid "A copy brings every step filled. {name}’s details come from this lead."
 msgstr "कॉपी में हर चरण भरा हुआ आता है। {name} की जानकारी इसी लीड से आती है।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:214
+#: src/copy/proposal-after-list.ts:230
 msgid "A copy brings every step filled. The customer’s name, phone and address come from the lead you pick."
 msgstr "कॉपी में हर चरण भरा हुआ आता है। ग्राहक का नाम, फ़ोन और पता आपकी चुनी लीड से आते हैं।"
 
@@ -3738,7 +3738,7 @@ msgid "A named contact"
 msgstr "एक तय संपर्क व्यक्ति"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:212
+#: src/copy/proposal-after-list.ts:228
 msgid "A new customer"
 msgstr "नया ग्राहक"
 
@@ -6331,7 +6331,7 @@ msgstr "साइट पर चेक-इन और चेक-आउट कर�
 #: src/copy/projects.ts:28
 #: src/copy/proposal-after-links.ts:37
 #: src/copy/proposal-after-list.ts:56
-#: src/copy/proposal-after-list.ts:220
+#: src/copy/proposal-after-list.ts:236
 #: src/copy/proposal-after-messages.ts:38
 #: src/copy/proposal-after-versions.ts:54
 #: src/copy/site-details.ts:74
@@ -6584,7 +6584,7 @@ msgid "Clear target"
 msgstr "लक्ष्य हटाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:211
+#: src/copy/proposal-after-list.ts:227
 #: src/copy/proposal-builder-sheets.ts:39
 msgid "Clear the search"
 msgstr "खोज साफ़ करें"
@@ -6616,7 +6616,7 @@ msgstr "बंद करें"
 #: src/copy/proposal-after-in-force.ts:16
 #: src/copy/proposal-after-lead.ts:111
 #: src/copy/proposal-after-links.ts:34
-#: src/copy/proposal-after-list.ts:208
+#: src/copy/proposal-after-list.ts:224
 #: src/copy/proposal-after-messages.ts:19
 #: src/copy/proposal-builder-flow.ts:37
 #: src/copy/proposal-builder-flow.ts:102
@@ -7013,7 +7013,7 @@ msgid "Copied — rename it if your variant differs."
 msgstr "कॉपी किया गया — आपका वेरिएंट अलग हो तो नाम बदलें।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:222
+#: src/copy/proposal-after-list.ts:238
 msgid "Copied for {name}. Every step is filled."
 msgstr "{name} के लिए कॉपी हुआ। हर चरण भरा है।"
 
@@ -7040,7 +7040,7 @@ msgid "Copy as a variant"
 msgstr "वेरिएंट के रूप में कॉपी करें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:207
+#: src/copy/proposal-after-list.ts:223
 msgid "Copy for which customer?"
 msgstr "किस ग्राहक के लिए कॉपी करें?"
 
@@ -11973,7 +11973,7 @@ msgstr "आपका काम लोड हो रहा है"
 
 #. js-lingui-explicit-id
 #: src/copy/leads-list.ts:29
-#: src/copy/proposal-after-list.ts:218
+#: src/copy/proposal-after-list.ts:234
 msgid "Loading your leads"
 msgstr "आपकी लीड्स लोड हो रही हैं"
 
@@ -13066,7 +13066,7 @@ msgid "Name only"
 msgstr "केवल नाम"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:210
+#: src/copy/proposal-after-list.ts:226
 msgid "Name or number"
 msgstr "नाम या नंबर"
 
@@ -13837,7 +13837,7 @@ msgid "No jobs in this pipeline"
 msgstr "इस पाइपलाइन में कोई काम नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:217
+#: src/copy/proposal-after-list.ts:233
 msgid "No lead matches."
 msgstr "कोई लीड नहीं मिली।"
 
@@ -18753,7 +18753,7 @@ msgid "Save {amount}"
 msgstr "{amount} सेव करें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:247
+#: src/copy/proposal-after-list.ts:263
 msgid "Save and build the proposal"
 msgstr "सहेजें और प्रस्ताव बनाएँ"
 
@@ -19131,7 +19131,7 @@ msgid "Search the catalog"
 msgstr "कैटलॉग में खोजें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:209
+#: src/copy/proposal-after-list.ts:225
 msgid "Search your leads"
 msgstr "अपनी लीड्स खोजें"
 
@@ -22453,7 +22453,7 @@ msgid "Thin-film"
 msgstr "थिन-फ़िल्म"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:248
+#: src/copy/proposal-after-list.ts:264
 msgid "This also makes a lead, so nothing is typed twice."
 msgstr "इससे लीड भी बन जाती है, ताकि कुछ भी दो बार न लिखना पड़े।"
 
@@ -22690,7 +22690,7 @@ msgid "This number already has an invite waiting"
 msgstr "इस नंबर का आमंत्रण पहले से बाकी है"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:250
+#: src/copy/proposal-after-list.ts:266
 msgid "This number is already a lead"
 msgstr "यह नंबर पहले से एक लीड है"
 
@@ -23239,7 +23239,7 @@ msgstr "इनवॉइस नंबर का कोई हिस्सा आ�
 #: src/copy/proposal-after-in-force.ts:37
 #: src/copy/proposal-after-links.ts:38
 #: src/copy/proposal-after-list.ts:57
-#: src/copy/proposal-after-list.ts:221
+#: src/copy/proposal-after-list.ts:237
 #: src/copy/proposal-after-messages.ts:39
 #: src/copy/proposal-after-track.ts:37
 #: src/copy/proposal-after-versions.ts:55
@@ -23412,7 +23412,7 @@ msgid "Type the specification"
 msgstr "विवरण लिखें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:213
+#: src/copy/proposal-after-list.ts:229
 msgid "Type their number first"
 msgstr "पहले उनका नंबर लिखें"
 
@@ -23712,7 +23712,7 @@ msgid "Use {hex}"
 msgstr "{hex} इस्तेमाल करें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:251
+#: src/copy/proposal-after-list.ts:267
 msgid "Use {name}"
 msgstr "{name} को चुनें"
 
@@ -23773,7 +23773,7 @@ msgid "Use this draft for another lead"
 msgstr "यह ड्राफ़्ट दूसरी लीड के लिए इस्तेमाल करें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:252
+#: src/copy/proposal-after-list.ts:268
 msgid "Use this lead"
 msgstr "यह लीड चुनें"
 
@@ -25022,7 +25022,7 @@ msgstr "कौन क्या करता है, भूमिका के �
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-links.ts:111
-#: src/copy/proposal-after-list.ts:246
+#: src/copy/proposal-after-list.ts:262
 msgid "Who is it for?"
 msgstr "यह किसके लिए है?"
 
@@ -26044,7 +26044,7 @@ msgid "Your leads at a glance"
 msgstr "आपकी लीड्स एक नज़र में"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:219
+#: src/copy/proposal-after-list.ts:235
 msgid "Your leads did not load"
 msgstr "आपकी लीड्स लोड नहीं हुईं"
 

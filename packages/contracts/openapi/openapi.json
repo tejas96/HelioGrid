@@ -194676,6 +194676,10 @@
                                 "type": "string",
                                 "nullable": true
                               },
+                              "customerPhone": {
+                                "type": "string",
+                                "pattern": "^\\+[1-9]\\d{6,14}$"
+                              },
                               "city": {
                                 "type": "string",
                                 "nullable": true
@@ -194801,6 +194805,7 @@
                               "id",
                               "leadId",
                               "customerName",
+                              "customerPhone",
                               "city",
                               "number",
                               "version",
@@ -195344,6 +195349,10 @@
                                     "type": "string",
                                     "nullable": true
                                   },
+                                  "customerPhone": {
+                                    "type": "string",
+                                    "pattern": "^\\+[1-9]\\d{6,14}$"
+                                  },
                                   "city": {
                                     "type": "string",
                                     "nullable": true
@@ -195475,6 +195484,7 @@
                                   "id",
                                   "leadId",
                                   "customerName",
+                                  "customerPhone",
                                   "city",
                                   "number",
                                   "version",
@@ -195509,6 +195519,10 @@
                                   "customerName": {
                                     "type": "string",
                                     "nullable": true
+                                  },
+                                  "customerPhone": {
+                                    "type": "string",
+                                    "pattern": "^\\+[1-9]\\d{6,14}$"
                                   },
                                   "city": {
                                     "type": "string",
@@ -195559,6 +195573,7 @@
                                   "id",
                                   "leadId",
                                   "customerName",
+                                  "customerPhone",
                                   "city",
                                   "ordinal",
                                   "mount",

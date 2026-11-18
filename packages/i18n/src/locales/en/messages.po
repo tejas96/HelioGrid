@@ -2132,7 +2132,7 @@ msgid "{name} has waited a day with no owner"
 msgstr "{name} has waited a day with no owner"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:249
+#: src/copy/proposal-after-list.ts:265
 msgid "{name} is already a lead"
 msgstr "{name} is already a lead"
 
@@ -3615,7 +3615,7 @@ msgid "A copy brings every step filled. {name}’s details come from this lead."
 msgstr "A copy brings every step filled. {name}’s details come from this lead."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:214
+#: src/copy/proposal-after-list.ts:230
 msgid "A copy brings every step filled. The customer’s name, phone and address come from the lead you pick."
 msgstr "A copy brings every step filled. The customer’s name, phone and address come from the lead you pick."
 
@@ -3738,7 +3738,7 @@ msgid "A named contact"
 msgstr "A named contact"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:212
+#: src/copy/proposal-after-list.ts:228
 msgid "A new customer"
 msgstr "A new customer"
 
@@ -6331,7 +6331,7 @@ msgstr "Check in and out of a site, and log a visit and its outcome"
 #: src/copy/projects.ts:28
 #: src/copy/proposal-after-links.ts:37
 #: src/copy/proposal-after-list.ts:56
-#: src/copy/proposal-after-list.ts:220
+#: src/copy/proposal-after-list.ts:236
 #: src/copy/proposal-after-messages.ts:38
 #: src/copy/proposal-after-versions.ts:54
 #: src/copy/site-details.ts:74
@@ -6584,7 +6584,7 @@ msgid "Clear target"
 msgstr "Clear target"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:211
+#: src/copy/proposal-after-list.ts:227
 #: src/copy/proposal-builder-sheets.ts:39
 msgid "Clear the search"
 msgstr "Clear the search"
@@ -6616,7 +6616,7 @@ msgstr "close"
 #: src/copy/proposal-after-in-force.ts:16
 #: src/copy/proposal-after-lead.ts:111
 #: src/copy/proposal-after-links.ts:34
-#: src/copy/proposal-after-list.ts:208
+#: src/copy/proposal-after-list.ts:224
 #: src/copy/proposal-after-messages.ts:19
 #: src/copy/proposal-builder-flow.ts:37
 #: src/copy/proposal-builder-flow.ts:102
@@ -7013,7 +7013,7 @@ msgid "Copied — rename it if your variant differs."
 msgstr "Copied — rename it if your variant differs."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:222
+#: src/copy/proposal-after-list.ts:238
 msgid "Copied for {name}. Every step is filled."
 msgstr "Copied for {name}. Every step is filled."
 
@@ -7040,7 +7040,7 @@ msgid "Copy as a variant"
 msgstr "Copy as a variant"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:207
+#: src/copy/proposal-after-list.ts:223
 msgid "Copy for which customer?"
 msgstr "Copy for which customer?"
 
@@ -11973,7 +11973,7 @@ msgstr "Loading your job"
 
 #. js-lingui-explicit-id
 #: src/copy/leads-list.ts:29
-#: src/copy/proposal-after-list.ts:218
+#: src/copy/proposal-after-list.ts:234
 msgid "Loading your leads"
 msgstr "Loading your leads"
 
@@ -13066,7 +13066,7 @@ msgid "Name only"
 msgstr "Name only"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:210
+#: src/copy/proposal-after-list.ts:226
 msgid "Name or number"
 msgstr "Name or number"
 
@@ -13837,7 +13837,7 @@ msgid "No jobs in this pipeline"
 msgstr "No jobs in this pipeline"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:217
+#: src/copy/proposal-after-list.ts:233
 msgid "No lead matches."
 msgstr "No lead matches."
 
@@ -18753,7 +18753,7 @@ msgid "Save {amount}"
 msgstr "Save {amount}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:247
+#: src/copy/proposal-after-list.ts:263
 msgid "Save and build the proposal"
 msgstr "Save and build the proposal"
 
@@ -19131,7 +19131,7 @@ msgid "Search the catalog"
 msgstr "Search the catalog"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:209
+#: src/copy/proposal-after-list.ts:225
 msgid "Search your leads"
 msgstr "Search your leads"
 
@@ -22453,7 +22453,7 @@ msgid "Thin-film"
 msgstr "Thin-film"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:248
+#: src/copy/proposal-after-list.ts:264
 msgid "This also makes a lead, so nothing is typed twice."
 msgstr "This also makes a lead, so nothing is typed twice."
 
@@ -22690,7 +22690,7 @@ msgid "This number already has an invite waiting"
 msgstr "This number already has an invite waiting"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:250
+#: src/copy/proposal-after-list.ts:266
 msgid "This number is already a lead"
 msgstr "This number is already a lead"
 
@@ -23239,7 +23239,7 @@ msgstr "Try a part of the invoice number."
 #: src/copy/proposal-after-in-force.ts:37
 #: src/copy/proposal-after-links.ts:38
 #: src/copy/proposal-after-list.ts:57
-#: src/copy/proposal-after-list.ts:221
+#: src/copy/proposal-after-list.ts:237
 #: src/copy/proposal-after-messages.ts:39
 #: src/copy/proposal-after-track.ts:37
 #: src/copy/proposal-after-versions.ts:55
@@ -23412,7 +23412,7 @@ msgid "Type the specification"
 msgstr "Type the specification"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:213
+#: src/copy/proposal-after-list.ts:229
 msgid "Type their number first"
 msgstr "Type their number first"
 
@@ -23712,7 +23712,7 @@ msgid "Use {hex}"
 msgstr "Use {hex}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:251
+#: src/copy/proposal-after-list.ts:267
 msgid "Use {name}"
 msgstr "Use {name}"
 
@@ -23773,7 +23773,7 @@ msgid "Use this draft for another lead"
 msgstr "Use this draft for another lead"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:252
+#: src/copy/proposal-after-list.ts:268
 msgid "Use this lead"
 msgstr "Use this lead"
 
@@ -25022,7 +25022,7 @@ msgstr "Who does what, by role"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-links.ts:111
-#: src/copy/proposal-after-list.ts:246
+#: src/copy/proposal-after-list.ts:262
 msgid "Who is it for?"
 msgstr "Who is it for?"
 
@@ -26044,7 +26044,7 @@ msgid "Your leads at a glance"
 msgstr "Your leads at a glance"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:219
+#: src/copy/proposal-after-list.ts:235
 msgid "Your leads did not load"
 msgstr "Your leads did not load"
 

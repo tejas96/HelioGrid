@@ -47,6 +47,7 @@ export const FORMATS = {
   ago: () => '2 hours ago',
   due: (stage: string) => stage,
   day: () => '14 Nov 2026',
+  phone: (e164: string) => e164,
 };
 
 /** What a story reports back to its spec: the last act, as an attribute on its frame. */

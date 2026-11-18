@@ -92,6 +92,8 @@ describe.skipIf(skip)('The Proposals page, over HTTP against a migrated database
       customerName: 'Kavita More',
       changedBy: { userId: here.people.seller.userId },
     });
+    // A row names its lead's number too, so two rows with no name still read apart.
+    for (const row of page.rows.items) expect(row.customerPhone).toMatch(/^\+91\d{10}$/);
   });
 
   it('the 3D chip holds the designs alone, and a status chip the proposals alone', async () => {
@@ -136,6 +138,7 @@ describe.skipIf(skip)('The Proposals page, over HTTP against a migrated database
     expect(reply.status).toBe(HttpStatus.OK);
     expect(reply.body.rows.items.map((row) => row.id)).toEqual([made.sellersDraft, made.shared]);
     expect(reply.body.counts.all).toBe(2);
+    for (const row of reply.body.rows.items) expect(row.customerPhone).toMatch(/^\+91\d{10}$/);
   });
 
   it('refuses a chip it does not know, naming the field', async () => {

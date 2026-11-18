@@ -32,7 +32,7 @@ export function startProposalBody(quickMode: boolean): StartProposal {
 export function proposalFlowWords(
   t: Awaited<ReturnType<typeof createTranslator>>,
 ): Record<string, string> {
-  const plain = { money: String, number: String, when: String, ago: String };
+  const plain = { money: String, number: String, when: String, ago: String, phone: String };
   const head = proposalPageHeadWords(t.t, plain);
   const page = proposalListPageWords(t.t, plain, { waiting: 0, waitingValue: '0' });
   return {

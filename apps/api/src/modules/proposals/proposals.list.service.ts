@@ -169,6 +169,7 @@ function entriesInOrder(read: ProposalEntriesRead, pack: MarketPack): ProposalEn
         id: row.id,
         leadId: row.leadId,
         customerName: row.customerName,
+        customerPhone: row.customerPhone,
         city: row.city,
         ordinal: row.ordinal,
         mount: row.mount,
@@ -197,6 +198,7 @@ function rowWire(row: ListRow, pack: MarketPack): ProposalRow {
     id: row.id,
     leadId: row.leadId,
     customerName: row.customerName,
+    customerPhone: row.customerPhone,
     city: row.city,
     number: row.number === null ? null : proposalNumberOf(row.number),
     // The version whose price the row shows: the one on the customer's link (`M06-45`).

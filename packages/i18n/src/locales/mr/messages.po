@@ -2132,7 +2132,7 @@ msgid "{name} has waited a day with no owner"
 msgstr "{name} एका दिवसापासून कोणालाही सोपवलेली नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:249
+#: src/copy/proposal-after-list.ts:265
 msgid "{name} is already a lead"
 msgstr "{name} आधीच लीड आहेत"
 
@@ -3615,7 +3615,7 @@ msgid "A copy brings every step filled. {name}’s details come from this lead."
 msgstr "कॉपीमध्ये प्रत्येक पायरी भरलेली येते. {name} यांची माहिती याच लीडमधून येते."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:214
+#: src/copy/proposal-after-list.ts:230
 msgid "A copy brings every step filled. The customer’s name, phone and address come from the lead you pick."
 msgstr "कॉपीमध्ये प्रत्येक पायरी भरलेली येते. ग्राहकाचे नाव, फोन आणि पत्ता तुम्ही निवडलेल्या लीडमधून येतात."
 
@@ -3738,7 +3738,7 @@ msgid "A named contact"
 msgstr "एक ठरलेली संपर्क व्यक्ती"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:212
+#: src/copy/proposal-after-list.ts:228
 msgid "A new customer"
 msgstr "नवीन ग्राहक"
 
@@ -6331,7 +6331,7 @@ msgstr "साइटवर चेक-इन आणि चेक-आउट कर
 #: src/copy/projects.ts:28
 #: src/copy/proposal-after-links.ts:37
 #: src/copy/proposal-after-list.ts:56
-#: src/copy/proposal-after-list.ts:220
+#: src/copy/proposal-after-list.ts:236
 #: src/copy/proposal-after-messages.ts:38
 #: src/copy/proposal-after-versions.ts:54
 #: src/copy/site-details.ts:74
@@ -6584,7 +6584,7 @@ msgid "Clear target"
 msgstr "लक्ष्य काढा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:211
+#: src/copy/proposal-after-list.ts:227
 #: src/copy/proposal-builder-sheets.ts:39
 msgid "Clear the search"
 msgstr "शोध साफ करा"
@@ -6616,7 +6616,7 @@ msgstr "बंद करा"
 #: src/copy/proposal-after-in-force.ts:16
 #: src/copy/proposal-after-lead.ts:111
 #: src/copy/proposal-after-links.ts:34
-#: src/copy/proposal-after-list.ts:208
+#: src/copy/proposal-after-list.ts:224
 #: src/copy/proposal-after-messages.ts:19
 #: src/copy/proposal-builder-flow.ts:37
 #: src/copy/proposal-builder-flow.ts:102
@@ -7013,7 +7013,7 @@ msgid "Copied — rename it if your variant differs."
 msgstr "कॉपी केले — तुमचा व्हेरियंट वेगळा असल्यास नाव बदला."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:222
+#: src/copy/proposal-after-list.ts:238
 msgid "Copied for {name}. Every step is filled."
 msgstr "{name} यांच्यासाठी कॉपी झाला. प्रत्येक पायरी भरलेली आहे."
 
@@ -7040,7 +7040,7 @@ msgid "Copy as a variant"
 msgstr "व्हेरिएंट म्हणून कॉपी करा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:207
+#: src/copy/proposal-after-list.ts:223
 msgid "Copy for which customer?"
 msgstr "कोणत्या ग्राहकासाठी कॉपी करायचा?"
 
@@ -11973,7 +11973,7 @@ msgstr "तुमचे काम लोड होत आहे"
 
 #. js-lingui-explicit-id
 #: src/copy/leads-list.ts:29
-#: src/copy/proposal-after-list.ts:218
+#: src/copy/proposal-after-list.ts:234
 msgid "Loading your leads"
 msgstr "तुमच्या लीड्स लोड होत आहेत"
 
@@ -13066,7 +13066,7 @@ msgid "Name only"
 msgstr "फक्त नाव"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:210
+#: src/copy/proposal-after-list.ts:226
 msgid "Name or number"
 msgstr "नाव किंवा नंबर"
 
@@ -13837,7 +13837,7 @@ msgid "No jobs in this pipeline"
 msgstr "या पाइपलाइनमध्ये कोणतेही काम नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:217
+#: src/copy/proposal-after-list.ts:233
 msgid "No lead matches."
 msgstr "कोणतीही लीड जुळली नाही."
 
@@ -18753,7 +18753,7 @@ msgid "Save {amount}"
 msgstr "{amount} सेव्ह करा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:247
+#: src/copy/proposal-after-list.ts:263
 msgid "Save and build the proposal"
 msgstr "जतन करा आणि प्रस्ताव तयार करा"
 
@@ -19131,7 +19131,7 @@ msgid "Search the catalog"
 msgstr "कॅटलॉगमध्ये शोधा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:209
+#: src/copy/proposal-after-list.ts:225
 msgid "Search your leads"
 msgstr "तुमच्या लीड्स शोधा"
 
@@ -22453,7 +22453,7 @@ msgid "Thin-film"
 msgstr "थिन-फिल्म"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:248
+#: src/copy/proposal-after-list.ts:264
 msgid "This also makes a lead, so nothing is typed twice."
 msgstr "यामुळे लीडही तयार होते, त्यामुळे काहीही दोनदा लिहावे लागत नाही."
 
@@ -22690,7 +22690,7 @@ msgid "This number already has an invite waiting"
 msgstr "या नंबरचे आमंत्रण आधीच बाकी आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:250
+#: src/copy/proposal-after-list.ts:266
 msgid "This number is already a lead"
 msgstr "हा नंबर आधीच एका लीडमध्ये आहे"
 
@@ -23239,7 +23239,7 @@ msgstr "इनव्हॉइस नंबरचा एखादा भाग �
 #: src/copy/proposal-after-in-force.ts:37
 #: src/copy/proposal-after-links.ts:38
 #: src/copy/proposal-after-list.ts:57
-#: src/copy/proposal-after-list.ts:221
+#: src/copy/proposal-after-list.ts:237
 #: src/copy/proposal-after-messages.ts:39
 #: src/copy/proposal-after-track.ts:37
 #: src/copy/proposal-after-versions.ts:55
@@ -23412,7 +23412,7 @@ msgid "Type the specification"
 msgstr "तपशील लिहा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:213
+#: src/copy/proposal-after-list.ts:229
 msgid "Type their number first"
 msgstr "आधी त्यांचा नंबर लिहा"
 
@@ -23712,7 +23712,7 @@ msgid "Use {hex}"
 msgstr "{hex} वापरा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:251
+#: src/copy/proposal-after-list.ts:267
 msgid "Use {name}"
 msgstr "{name} निवडा"
 
@@ -23773,7 +23773,7 @@ msgid "Use this draft for another lead"
 msgstr "हा ड्राफ्ट दुसऱ्या लीडसाठी वापरा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:252
+#: src/copy/proposal-after-list.ts:268
 msgid "Use this lead"
 msgstr "ही लीड निवडा"
 
@@ -25022,7 +25022,7 @@ msgstr "कोण काय करते, भूमिकेनुसार"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-links.ts:111
-#: src/copy/proposal-after-list.ts:246
+#: src/copy/proposal-after-list.ts:262
 msgid "Who is it for?"
 msgstr "ही कोणासाठी आहे?"
 
@@ -26044,7 +26044,7 @@ msgid "Your leads at a glance"
 msgstr "तुमच्या लीड्स एका नजरेत"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:219
+#: src/copy/proposal-after-list.ts:235
 msgid "Your leads did not load"
 msgstr "तुमच्या लीड्स लोड झाल्या नाहीत"
 

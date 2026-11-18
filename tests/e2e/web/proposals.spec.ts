@@ -25,7 +25,7 @@ import { withoutMapService } from '../support/studio';
  * here, where the 3D chip holds the new design and opens it.
  */
 const en = await createTranslator('en');
-const formats = { money: String, number: String, when: String, ago: String };
+const formats = { money: String, number: String, when: String, ago: String, phone: String };
 const LIST = proposalListWords(en.t, formats, null);
 const START = proposalStartWords(en.t, { name: CUSTOMER.name, segment: 'residential' });
 const ASK = proposalQuickAddWords(en.t, null);

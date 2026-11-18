@@ -26,8 +26,8 @@ export interface ProposalListWords {
   /** The table's caption — "Proposals". */
   readonly caption: TranslatedText;
   readonly standing: (standing: string) => TranslatedText;
-  /** The customer's name, or that the lead holds none. */
-  readonly customer: (row: Pick<ProposalRow, 'customerName'>) => TranslatedText;
+  /** The customer's name; else the lead's number; else that the lead holds neither. */
+  readonly customer: (row: Pick<ProposalRow, 'customerName' | 'customerPhone'>) => TranslatedText;
   /** The proposal's number, or "Draft" before it has one. */
   readonly number: (row: ProposalRow) => TranslatedText;
   /** "3 kW" — or nothing typed yet. */

@@ -67,6 +67,7 @@ function proposalRows(tx: TenantScopedDb) {
       createdBy: proposal.createdBy,
       creatorName: memberNameOf(userAccount),
       customerName: customer.name,
+      customerPhone: customer.phoneE164,
       city: customer.city,
       siteAddress: lead.siteAddress,
       siteArea: lead.siteArea,
@@ -217,6 +218,7 @@ export class ProposalsListRepository {
                 updatedBy: design.updatedBy,
                 updaterName: memberNameOf(userAccount),
                 customerName: customer.name,
+                customerPhone: customer.phoneE164,
                 city: customer.city,
               })
               .from(design)
