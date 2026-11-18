@@ -11,7 +11,7 @@
   font-size: var(--fs-field-label);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
-  margin-bottom: 6px;
+  margin-bottom: var(--sp-2);
 }
 
 .hg-select-trigger {

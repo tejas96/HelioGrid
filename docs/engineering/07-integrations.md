@@ -79,6 +79,7 @@ into pure domain functions.
 | OtpPort | MSG91 SMS → WhatsApp fallback | — | otp_sms (fair-use, not billed v1) |
 | MapsPort | Google Static/JS Maps | Esri, Mapbox | no (quota only) |
 | DemPort | Copernicus GLO-30 | SRTM, drone DTM import | no |
+| PlaceSource | Google Places (New) + Geocoding, called by the api | — | no |
 
 ---
 
@@ -390,6 +391,10 @@ No silent degradation on the front door.
 
 ## 13. MapsPort — satellite tiles
 
+**Status: not built.** No `MapsPort` exists in the code, and nothing fetches or stores a tile. The
+map under the pin is §15's page. What a roof is traced on is open until the studio's roof step
+(`docs/tasks/M05-design-studio.md`); the text below is the earlier direction, kept for that step.
+
 ```ts
 interface MapsPort {
   staticTile(pin: LatLng, zoom: number, sizePx: Size): Promise<PortResult<StoredTileRef>>;
@@ -431,6 +436,38 @@ only — D35 — but a proper photogrammetric DTM upload is a legitimate future 
 and a visible warning on ground-mount outputs. Rooftop work never touches this port.
 
 **Metering:** `dem_tile_fetch`, non-billable.
+
+---
+
+## 15. PlaceSource — the studio's place search
+
+```ts
+interface PlaceSource {
+  suggest(query: string, session: string, market: MarketCode): Promise<readonly SourceSuggestion[]>;
+  place(placeId: string, session: string): Promise<SourcePlace | null>;
+  at(point: Coordinate): Promise<SourcePlace | null>;
+}
+```
+
+Site details (`SCR-M05-01`) finds a site's place through three api routes
+(`apps/api/src/modules/studio/internal/place-source.ts`); the browser and the phone never call
+the map service for it.
+
+**v1: `GooglePlaceSource`.** Places API (New) for suggestions and a suggestion's place, the
+Geocoding API for a typed point. The key is the server's (`GOOGLE_MAPS_API_KEY`), sent in a
+header, never in an address. One search runs under one session token, from its first letter to
+the picked place.
+
+**Under test: `MemoryPlaceSource`.** A suite reaches no third party.
+
+**Failure/degradation:** with no key (`AbsentPlaceSource`), or when the service does not answer,
+a route answers `available: false` — a state, never an error. The form says the search is not
+available, and typed coordinates still set the place.
+
+**The map under the pin** is §13's Maps JS with the public key. It is one page of apps/web,
+`/embed/site-map`: the web draws its tiles in place, and the phone app shows that page in a web
+view, so web, iOS and Android draw one map and hold one key. The page and the app speak the
+versioned messages of `packages/contracts/src/studio/site-map-bridge.ts`.
 
 ---
 

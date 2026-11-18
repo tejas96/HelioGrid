@@ -16,6 +16,7 @@ import {
   serviceAccountJsonBase64Schema,
   temporalAddressSchema,
   temporalNamespaceSchema,
+  WEB_PORT_DEFAULT,
 } from './fragments';
 
 /**
@@ -33,7 +34,7 @@ const apiEnvObject = z.object({
   DATABASE_URL: databaseUrlSchema,
   DATABASE_ADMIN_URL: adminDatabaseUrlSchema,
 
-  WEB_ORIGIN: originSchema.default('http://localhost:3002'),
+  WEB_ORIGIN: originSchema.default(`http://localhost:${WEB_PORT_DEFAULT}`),
 
   /**
    * Where a browser reaches this api — the same address the web's `NEXT_PUBLIC_API_URL` names. The
@@ -124,6 +125,13 @@ const apiEnvObject = z.object({
    * secrets. Optional: unset, POST /auth/sign-in/google refuses every token and nothing else changes.
    */
   GOOGLE_CLIENT_IDS: googleClientIdsSchema.optional(),
+  /**
+   * The server key for the map service a site's place is found with: address suggestions, a
+   * suggested place and the address at a typed point. Held by the api alone — no app carries it.
+   * Optional: unset, the place search answers that it is not available, and a person sets the
+   * place with typed coordinates.
+   */
+  GOOGLE_MAPS_API_KEY: z.string().min(1).optional(),
 
   /**
    * The oldest phone build the api still serves, and where each store sells the new one

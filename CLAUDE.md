@@ -81,16 +81,18 @@ fork helps. Two agents never edit the same file at once; after each helper, read
 The plan names, for each new route, who may call it and what each other role gets; a tenant route
 also names its other-company 404. Each is an api test before a screen uses the route.
 
-Before `qa-live`, each changed screen is screenshotted at phone and desktop width beside the frame
-the owner picked; every difference is fixed or named in the plan with its reason.
+`qa-live` compares each changed screen with the frame the owner picked, at phone and desktop width;
+every difference is fixed or named in the plan with its reason.
 
 **A PR is complete:** every acceptance line of its tasks is met and proven before it opens, or by
 its CI lane; `code-reviewer` has reviewed the change, every confirmed finding is fixed and every
 possible one is proven and fixed or closed with one reason in the PR's *Notes*, and a later fix
 that touches money, tenancy or permissions is reviewed again; when a screen or a route changed, `qa-live`
-has checked it on the running app (`tests/e2e/CLAUDE.md`, *Running the app for QA*); the gate
-passes with no `SKIP ` line; and CI is green, its Android phone-flow step run unless `PHONE_E2E` is
-`off`.
+has checked it on the running app (`tests/e2e/CLAUDE.md`, *Running the app for QA*); and CI is
+green — its `quality` job is the full gate, with no `SKIP ` line, `e2e-web` every web flow and
+`android` every phone flow, run unless `PHONE_E2E` is `off`. The full gate and the full suites are
+CI's alone: before the push the session runs `pnpm check` and only the web specs and phone flows
+the change adds or edits.
 
 Stale build output keeps a check red on code that is gone after a delete or a branch switch →
 delete the git-ignored `dist/` or `apps/web/.next`, then `pnpm turbo build --force`.
@@ -121,10 +123,12 @@ module's task in `docs/tasks/`, never built here.
 ## 5. Commands
 
 - `pnpm infra:up` · `pnpm infra:down` — the local Docker stack.
-- `pnpm check` — the fast check on what differs from `origin/main`, while building; never the proof.
-- `pnpm check:all` — the full gate (`.claude/protections.md`, top), on the test database, with
-  3002 and 8084 free and no worker on `heliogrid_dev`; the web flows run after it
-  (`tests/e2e/CLAUDE.md`).
+- `pnpm check` — the fast check on what differs from `origin/main`, with the unit tests of the
+  changed packages; never the proof. Run it without the test-database prefix: the api's database
+  tests are CI's, or one file at a time (`.claude/rules/testing.md`).
+- `pnpm check:all` — the full gate (`.claude/protections.md`, top). CI's `quality` job runs it; run
+  it here only to reproduce a red `quality` job, on the test database, with 3002 and 8084 free and
+  no worker on `heliogrid_dev`.
 - `pnpm lint:fix` — format and auto-fix.
 - `pnpm db:migration:new` · `pnpm db:migrate` — every migration starts here; never hand-author one.
 

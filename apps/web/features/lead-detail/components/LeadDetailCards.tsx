@@ -5,6 +5,7 @@ import type { LeadDetailView } from '@heliogrid/domain';
 import { leadDetailCardsWords, leadTimelineWords, leadWorkCardsWords } from '@heliogrid/i18n';
 import { useI18n, useTranslate } from '@heliogrid/i18n/react';
 import {
+  type LeadDesignsPanel,
   LeadDetailCards,
   type LeadProposalsPanel,
   LeadTimeline,
@@ -31,7 +32,12 @@ export function LeadWork({
   view,
   moves,
   columns,
-}: LeadCardProps & { columns: boolean }) {
+  dockDesign,
+}: LeadCardProps & {
+  columns: boolean;
+  /** *Create design*; `null` for a reader without the design grant. */
+  dockDesign: LeadDesignsPanel | null;
+}) {
   const t = useTranslate();
   const format = useFormat();
   return (
@@ -45,6 +51,7 @@ export function LeadWork({
       onMerge={moves.merge}
       onMarkWon={screen.won.open}
       onOpenProject={moves.openProject}
+      dockDesign={dockDesign}
       words={leadWorkCardsWords(t, lead, view, format.date)}
     />
   );
@@ -62,7 +69,12 @@ export function LeadContactsAndSections({
   moves,
   first,
   proposals,
-}: LeadCardProps & { first: 'contacts' | 'sections'; proposals?: LeadProposalsPanel }) {
+  designs,
+}: LeadCardProps & {
+  first: 'contacts' | 'sections';
+  proposals?: LeadProposalsPanel;
+  designs: LeadDesignsPanel;
+}) {
   const { t, locale } = useI18n();
   const format = useFormat();
   return (
@@ -75,6 +87,7 @@ export function LeadContactsAndSections({
       onAddFile={moves.addFile}
       onOpenFile={moves.openFile}
       first={first}
+      designs={designs}
       {...(proposals === undefined ? {} : { proposals })}
       words={leadDetailCardsWords(t, { areas: format.pack.areas, language: locale })}
     />

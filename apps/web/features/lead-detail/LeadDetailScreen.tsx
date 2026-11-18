@@ -1,7 +1,9 @@
 'use client';
 import {
+  type LeadDesignsSection,
   type LeadDetailScreen as LeadDetailScreenView,
   type LeadProposalsSection,
+  useLeadDesignsSection,
   useLeadDetailScreen,
   useLeadProposalsSection,
 } from '@heliogrid/data/react';
@@ -32,6 +34,7 @@ import {
   useOwnWidth,
 } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
+import { useLeadDesignsPanel } from './components/LeadDesigns';
 import {
   type LeadCardProps,
   LeadContactsAndSections,
@@ -73,6 +76,12 @@ export function LeadDetailScreen({
     read.kind === 'ready' ? read.value.lead : null,
     moves.proposals,
   );
+  const designs = useLeadDesignsSection(
+    leadId,
+    read.kind === 'ready' ? read.value.lead : null,
+    screen.section === 'designs',
+    moves.designs,
+  );
   useWonOnArrival(won, screen);
   const [room, width] = useOwnWidth<HTMLDivElement>();
   const columns = width !== null && width >= LEAD_DETAIL_COLUMNS_FROM;
@@ -109,6 +118,7 @@ export function LeadDetailScreen({
           moves={moves}
           columns={columns}
           proposals={proposals}
+          designs={designs}
           focusAfter={room}
         />
       ) : (
@@ -164,18 +174,25 @@ function LeadDetailReady({
   screen: LeadDetailScreenView;
   columns: boolean;
   proposals: LeadProposalsSection;
+  designs: LeadDesignsSection;
   /** The page itself: where focus lands once a withdraw takes its row's act away. */
   focusAfter: FocusAfter;
 }) {
   const { t, locale } = useI18n();
   const format = useFormat();
-  const { proposals, ...shown } = card;
+  const { proposals, designs, ...shown } = card;
   const { screen, lead } = shown;
+  const designsPanel = useLeadDesignsPanel(designs);
+  const dockDesign = designsPanel.canDesign ? designsPanel : null;
   const reopen = shown.view.acts.stateActs.includes('reopen')
     ? () => screen.acts.quick('reopen')
     : null;
   const panel = useLeadProposalsPanel(lead, proposals, reopen);
-  const cards = { ...shown, ...(panel === null ? {} : { proposals: panel }) };
+  const cards = {
+    ...shown,
+    designs: designsPanel,
+    ...(panel === null ? {} : { proposals: panel }),
+  };
   const { basis } = screen.won;
   const moments = proposalMoments(t, { pack: format.pack, language: locale, now: Date.now() });
   const overlays = (
@@ -227,7 +244,7 @@ function LeadDetailReady({
     return (
       <div className="hg-lead-detail-column">
         <LargeTitle title={heading.title} summary={heading.summary} nameTitle />
-        <LeadWork {...shown} columns={false} />
+        <LeadWork {...shown} columns={false} dockDesign={dockDesign} />
         <LeadContactsAndSections {...cards} first="contacts" />
         {overlays}
       </div>
@@ -236,7 +253,7 @@ function LeadDetailReady({
   return (
     <div className="hg-lead-detail-columns">
       <div className="hg-lead-detail-column">
-        <LeadWork {...shown} columns />
+        <LeadWork {...shown} columns dockDesign={dockDesign} />
       </div>
       <div className="hg-lead-detail-column">
         <LeadContactsAndSections {...cards} first="sections" />

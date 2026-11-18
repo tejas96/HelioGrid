@@ -1,4 +1,4 @@
-import { API_PORT_DEFAULT } from '@heliogrid/env';
+import { API_PORT_DEFAULT, WEB_PORT_DEFAULT } from '@heliogrid/env';
 import { loadNativeEnv } from '@heliogrid/env/native';
 import { Platform } from 'react-native';
 
@@ -23,6 +23,10 @@ const ENV = loadNativeEnv({
     android: `http://10.0.2.2:${API_PORT_DEFAULT}`,
     default: `http://localhost:${API_PORT_DEFAULT}`,
   }),
+  WEB_URL: Platform.select({
+    android: `http://10.0.2.2:${WEB_PORT_DEFAULT}`,
+    default: `http://localhost:${WEB_PORT_DEFAULT}`,
+  }),
   // The development Google project's clients (`.ops/google-cloud.md`). Public ids, not secrets; the
   // production ones arrive with the native config module that a deployed build needs anyway.
   GOOGLE_WEB_CLIENT_ID: '349637662348-qtmdotp2qt6r9pc4qvks9b7u7705o844.apps.googleusercontent.com',
@@ -31,6 +35,9 @@ const ENV = loadNativeEnv({
 
 /** Validated origin of apps/api. Never a bare localhost fallback at a call site. */
 export const API_URL = ENV.API_URL;
+/** The site map page a web view shows under the pin (`SCR-M05-01`), and the one origin that view may load. */
+export const WEB_URL = ENV.WEB_URL;
+export const SITE_MAP_URL = `${ENV.WEB_URL}/embed/site-map`;
 /** Google sign-in's clients (`M01-02`): the id token's audience, and the iOS sheet's client. */
 export const GOOGLE_WEB_CLIENT_ID = ENV.GOOGLE_WEB_CLIENT_ID;
 export const GOOGLE_IOS_CLIENT_ID = ENV.GOOGLE_IOS_CLIENT_ID;

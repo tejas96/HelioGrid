@@ -10,6 +10,7 @@ import type {
 import type { LeadDockWords } from '../LeadActionDock/LeadActionDock.logic';
 import type { LeadActionDockLayout } from '../LeadActionDock/LeadActionDock.types';
 import type { LeadHeroWords } from '../LeadHero/LeadHero.types';
+import type { LeadDesignsPanel } from '../LeadSections/LeadSections.types';
 import type { QualifyCardWords } from '../QualifyCard/QualifyCard.types';
 
 /** The sheets these cards open; the screen's `acts.open` takes them among its others. */
@@ -74,6 +75,11 @@ export interface LeadWorkCardsProps {
   readonly onMarkWon: () => void;
   /** Opens the project a won lead became. */
   readonly onOpenProject: (projectId: string) => void;
+  /**
+   * *Create design* and how it stands — out, or come back undone — as the Designs section holds
+   * it; `null` for a reader without the design grant, who is not offered it.
+   */
+  readonly dockDesign: LeadDesignsPanel | null;
   readonly words: LeadWorkCardsWords;
 }
 

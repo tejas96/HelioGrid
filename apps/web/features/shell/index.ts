@@ -2,6 +2,8 @@ export { ComingPage } from './components/ComingPage';
 export { EmptyShellPage } from './components/EmptyShellPage';
 export {
   DOOR_PATH,
+  designPath,
+  designSitePath,
   EARLY_PROOF_ASK,
   LEAD_INBOX_PATH,
   leadPath,

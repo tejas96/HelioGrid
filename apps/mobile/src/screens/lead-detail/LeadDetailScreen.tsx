@@ -1,7 +1,9 @@
 import {
+  type LeadDesignsSection,
   type LeadDetailShown,
   type LeadDetailScreen as LeadDetailView,
   type LeadProposalsSection,
+  useLeadDesignsSection,
   useLeadDetailScreen,
   useLeadProposalsSection,
 } from '@heliogrid/data/react';
@@ -17,6 +19,7 @@ import type { StaticScreenProps } from '@react-navigation/native';
 import { useRef } from 'react';
 import { View } from 'react-native';
 import { ShellPage } from '../shell/components/ShellPage';
+import { useLeadDesignsPanel } from './components/LeadDesigns';
 import { LeadDetailBody } from './components/LeadDetailBody';
 import { LeadDetailOverlays } from './components/LeadDetailOverlays';
 import { useLeadProposalsPanel } from './components/LeadProposals';
@@ -50,6 +53,12 @@ export function LeadDetailScreen({ route }: Props) {
   const { read } = screen;
   const shown = read.kind === 'ready' ? read.value : null;
   const proposals = useLeadProposalsSection(leadId, shown?.lead ?? null, moves.proposals);
+  const designs = useLeadDesignsSection(
+    leadId,
+    shown?.lead ?? null,
+    screen.section === 'designs',
+    moves.designs,
+  );
   useWonOnArrival(won, screen);
   /* The page stays while a failed read is tried again: the screen reader lands on it. */
   const page = useRef<View>(null);
@@ -88,7 +97,13 @@ export function LeadDetailScreen({ route }: Props) {
     >
       <View ref={page} style={styles.page}>
         {read.kind === 'ready' ? (
-          <LeadReady screen={screen} shown={read.value} moves={moves} proposals={proposals} />
+          <LeadReady
+            screen={screen}
+            shown={read.value}
+            moves={moves}
+            proposals={proposals}
+            designs={designs}
+          />
         ) : (
           <LeadDetailStates
             read={read}
@@ -112,23 +127,35 @@ export function LeadDetailScreen({ route }: Props) {
 }
 
 /**
- * The lead once read, with its Proposals section filled: a closed lead offers *Reopen lead* there,
- * where its view allows the act.
+ * The lead once read, with its Proposals and Designs sections filled: a closed lead offers *Reopen
+ * lead* in the first, where its view allows the act.
  */
 function LeadReady({
   screen,
   shown,
   moves,
   proposals,
+  designs,
 }: {
   screen: LeadDetailView;
   shown: LeadDetailShown;
   moves: LeadDetailMoves;
   proposals: LeadProposalsSection;
+  designs: LeadDesignsSection;
 }) {
   const reopen = shown.view.acts.stateActs.includes('reopen')
     ? () => screen.acts.quick('reopen')
     : null;
   const panel = useLeadProposalsPanel(shown.lead, proposals, reopen);
-  return <LeadDetailBody screen={screen} shown={shown} moves={moves} proposals={panel} />;
+  const designsPanel = useLeadDesignsPanel(designs);
+  return (
+    <LeadDetailBody
+      screen={screen}
+      shown={shown}
+      moves={moves}
+      proposals={panel}
+      designs={designsPanel}
+      dockDesign={designsPanel.canDesign ? designsPanel : null}
+    />
+  );
 }

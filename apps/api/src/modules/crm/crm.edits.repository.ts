@@ -1,6 +1,6 @@
 import type { LeadDetail } from '@heliogrid/contracts';
 import { customer, type DbTransaction, lead, type TenantPool } from '@heliogrid/db';
-import { isClosed, minorUnitsOfDecimal } from '@heliogrid/domain';
+import { isClosed, minorUnitsOfDecimal, roundPin } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
@@ -96,6 +96,10 @@ export async function applyLeadEdit(
       siteDistrict: lead.siteDistrict,
       sanctionedLoadKw: lead.sanctionedLoadKw,
       supplyPhase: lead.supplyPhase,
+      siteName: lead.siteName,
+      siteLatitude: lead.siteLatitude,
+      siteLongitude: lead.siteLongitude,
+      utilityOperator: lead.siteUtility,
     })
     .from(lead)
     .innerJoin(customer, leadCustomerJoin)
@@ -168,6 +172,21 @@ function siteChanges(edit: LeadFieldEdit, changed: Changed) {
     }),
     ...(changed.has('sanctionedLoadKw') && { sanctionedLoadKw: edit.sanctionedLoadKw ?? null }),
     ...(changed.has('supplyPhase') && { supplyPhase: edit.supplyPhase ?? null }),
+    ...studioSiteChanges(edit, changed),
+  };
+}
+
+/** What the studio's Site details adds: the site's name, the roof's exact point and the operator. */
+function studioSiteChanges(edit: LeadFieldEdit, changed: Changed) {
+  // The pin is stored as it is recorded: rounded once, so what is saved is what is read back.
+  const sitePin = edit.sitePin == null ? null : roundPin(edit.sitePin);
+  return {
+    ...(changed.has('siteName') && { siteName: edit.siteName ?? null }),
+    ...(changed.has('sitePin') && {
+      siteLatitude: sitePin?.latitude ?? null,
+      siteLongitude: sitePin?.longitude ?? null,
+    }),
+    ...(changed.has('utilityOperator') && { siteUtility: edit.utilityOperator ?? null }),
   };
 }
 

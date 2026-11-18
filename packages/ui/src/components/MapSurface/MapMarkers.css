@@ -95,7 +95,8 @@
   flex-direction: column;
   align-items: center;
   gap: var(--sp-1);
-  transform: translate(-50%, -100%);
+  /* The pin's tip, not its target's foot, stands on the point: `MapLocationPin` hands the drop. */
+  transform: translate(-50%, calc(-100% + var(--hg-map-pin-tip, 0px)));
   pointer-events: none;
 }
 

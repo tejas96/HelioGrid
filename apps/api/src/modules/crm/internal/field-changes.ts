@@ -1,6 +1,7 @@
 import { type EditLead, type LeadField, leadFieldSchema } from '@heliogrid/contracts';
-import { minorUnits, minorUnitsOfDecimal } from '@heliogrid/domain';
+import { minorUnits, minorUnitsOfDecimal, pinRecordText } from '@heliogrid/domain';
 import { minorUnitsToDecimal } from '@heliogrid/domain/server';
+import { sitePinOf } from './site-pin';
 
 /**
  * A lead's editable facts (`M02-36`, `M02-37`, `M02-39`), each as the timeline records it — text,
@@ -26,6 +27,10 @@ export interface LeadFieldValues {
   readonly siteDistrict: string | null;
   readonly sanctionedLoadKw: number | null;
   readonly supplyPhase: string | null;
+  readonly siteName: string | null;
+  readonly siteLatitude: number | null;
+  readonly siteLongitude: number | null;
+  readonly utilityOperator: string | null;
 }
 
 /** A site's region and district as one timeline text — the district first, as a person says it. */
@@ -36,11 +41,21 @@ export function areaTextOf(area: string | null, district: string | null): string
 
 /** Each fact as its timeline text, the bill scaled to the tenant currency's digits. */
 export function fieldTextsOf(values: LeadFieldValues, minorUnitDigits: number): LeadFieldTexts {
-  const { monthlyBillMinor, doNotCall, siteArea, siteDistrict, sanctionedLoadKw, ...plain } =
-    values;
+  const {
+    monthlyBillMinor,
+    doNotCall,
+    siteArea,
+    siteDistrict,
+    sanctionedLoadKw,
+    siteLatitude,
+    siteLongitude,
+    ...plain
+  } = values;
+  const pin = sitePinOf(siteLatitude, siteLongitude);
   return {
     ...plain,
     area: areaTextOf(siteArea, siteDistrict),
+    sitePin: pin === null ? null : pinRecordText(pin),
     sanctionedLoadKw: sanctionedLoadKw === null ? null : String(sanctionedLoadKw),
     monthlyBill:
       monthlyBillMinor === null
@@ -58,7 +73,7 @@ export type LeadFieldEdit = Omit<EditLead, 'capturedAt'>;
  * The service has already refused a bill finer than the currency's minor unit.
  */
 export function sentTextsOf(edit: LeadFieldEdit, minorUnitDigits: number): Partial<LeadFieldTexts> {
-  const { monthlyBill, doNotCall, area, sanctionedLoadKw, ...plain } = edit;
+  const { monthlyBill, doNotCall, area, sanctionedLoadKw, sitePin, ...plain } = edit;
   const bill =
     monthlyBill === undefined
       ? {}
@@ -81,6 +96,7 @@ export function sentTextsOf(edit: LeadFieldEdit, minorUnitDigits: number): Parti
     ...(sanctionedLoadKw === undefined
       ? {}
       : { sanctionedLoadKw: sanctionedLoadKw === null ? null : String(sanctionedLoadKw) }),
+    ...(sitePin === undefined ? {} : { sitePin: sitePin === null ? null : pinRecordText(sitePin) }),
   };
 }
 

@@ -2,6 +2,7 @@ import type { ComposedMessage } from '@heliogrid/contracts';
 import { basisPoints, type ProjectionAssumptions } from '@heliogrid/domain';
 import {
   destinationLabel,
+  leadDesignsWords,
   leadProposalsWords,
   leadSectionsWords,
   markWonBasisWords,
@@ -76,6 +77,20 @@ export function LeadProposalsAsDrawn({
           pending: null,
           onRetry: () => undefined,
           onOpen: () => undefined,
+        }}
+        designs={{
+          read: { kind: 'empty' },
+          canDesign: false,
+          closed: false,
+          words: leadDesignsWords(t, { ago: () => '', readerId: null }),
+          onCreate: () => undefined,
+          onOpen: () => undefined,
+          onCopy: () => undefined,
+          onRecommend: () => undefined,
+          busy: false,
+          failure: null,
+          creating: false,
+          createFailure: null,
         }}
         proposals={{
           section,

@@ -161,3 +161,10 @@ export function pinReadingOf(
     y: fixed ? 50 : (pin.y ?? 50),
   };
 }
+
+/**
+ * How far the pin's tip stands above the foot of its 44 target: the 24 glyph is centred in it
+ * (10), and Lucide's pin ends 2 above its own box's foot. Both halves drop the pin by this much,
+ * so the tip — not the target's foot — stands on the point the surface reports.
+ */
+export const MAP_PIN_TIP = 12;

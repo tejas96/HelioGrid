@@ -1,7 +1,7 @@
 import type { ProposalMarketFacts } from '../format/proposal-facts';
+import { PHASE_COUNT } from '../format/supply-phase';
 import type { GenerateWarning, SkippedCheck } from './checklist-findings';
 import type { ComponentLine, ProposalDealFacts, ProposalFieldSet } from './field-set';
-import { PHASE_COUNT } from './vocabulary';
 
 /**
  * The size checks (`M06-23`, owner ruling 2026-11-13): the panels against the system size, the

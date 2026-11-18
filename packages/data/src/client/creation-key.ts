@@ -36,7 +36,7 @@ export function createCreationKeys(): CreationKeys {
  * A version-4 uuid. It needs no secrecy — the server binds a key to the person who sent it — so
  * `Math.random` serves both platforms, where `crypto.randomUUID` is absent from the phone's engine.
  */
-function aKey(): string {
+export function aKey(): string {
   const hex = (digits: number) =>
     Array.from({ length: digits }, () => Math.floor(Math.random() * 16).toString(16)).join('');
   const variant = (8 + Math.floor(Math.random() * 4)).toString(16);

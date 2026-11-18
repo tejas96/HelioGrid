@@ -35,8 +35,9 @@ flow -e "COMPANY=E2E $national" -e "OWNER=Owner $national" company-signup.yaml
 read -r owner_national owner_e164 < <(node ../support/mobile-cli.ts phone)
 # It also makes three leads given to the owner: one for Lead Detail, that customer and the same
 # family's second record for Customer Merge, and one it marks won, whose project the projects flows
-# open — and a proposal draft on the first lead, which the proposals flows open. Their ids come back.
-read -r lead_id survivor_id loser_id project_id proposal_id < <(node ../support/mobile-cli.ts company "$owner_national" "$owner_e164")
+# open — and a proposal draft and an empty design on the first lead, which the proposals and studio
+# flows open. Their ids come back.
+read -r lead_id survivor_id loser_id project_id proposal_id design_id < <(node ../support/mobile-cli.ts company "$owner_national" "$owner_e164")
 flow boot.yaml
 since="$(node -e 'console.log(Date.now())')"
 flow -e "PHONE=$owner_national" login.yaml
@@ -71,6 +72,10 @@ flow -e "LEAD_NAME=Lead $owner_national" leads-list.yaml
 # The import opens on its first step over the same list, and its way back returns to it.
 flow lead-import.yaml
 flow -e "LEAD_ID=$lead_id" -e "LEAD_NAME=Lead $owner_national" lead-detail.yaml
+# The first lead's design: its own page asks for the site first and leads to Site details, where
+# typed coordinates set the pin and *Start design* opens the design again.
+flow -e "DESIGN_ID=$design_id" design.yaml
+flow -e "DESIGN_ID=$design_id" site-details.yaml
 # The first lead's proposal draft: the list holds its card and opens *New proposal*'s capture, its
 # own page says where it stands, and its versions, links and document open under it.
 proposal=(-e "PROPOSAL_ID=$proposal_id" -e "LEAD_NAME=Lead $owner_national")

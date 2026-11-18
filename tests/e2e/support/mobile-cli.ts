@@ -25,7 +25,6 @@ import {
   SHELL,
   SIGN_IN,
   searchWords,
-  settingsRowName,
   settingsWords,
   setupInviteWords,
   setupWhatYouSellWords,
@@ -43,6 +42,8 @@ import { freshMobile } from './phone.ts';
 import { markWonBody } from './project-facts.ts';
 import { projectFlowWords } from './project-flow.ts';
 import { proposalFlowWords, startProposalBody } from './proposal-flow.ts';
+import { settingsFlowWords } from './settings-flow.ts';
+import { leadSiteBody, studioFlowWords } from './studio-flow.ts';
 import { usageWords } from './usage-flow.ts';
 
 /**
@@ -57,9 +58,10 @@ import { usageWords } from './usage-flow.ts';
  *                          inside Maestro (`D5`). It adds three leads given to the owner, so they
  *                          wait in no inbox — `Lead <national>`, the same family's second record,
  *                          `Family <national>`, and `Won <national>`, marked won so its project
- *                          stands at Won — and prints `<lead id> <its customer> <the family's
- *                          customer> <the project>` for the Lead Detail, Customer Merge and
- *                          projects flows
+ *                          stands at Won — with a proposal draft and an empty design on the
+ *                          first — and prints `<lead id> <its customer> <the family's customer>
+ *                          <the project> <the proposal> <the design>` for the Lead Detail,
+ *                          Customer Merge, projects, proposals and studio flows
  *   merge-from <name>  — Customer Merge's "From <name>" under each value that record holds
  */
 const [command, ...args] = process.argv.slice(2);
@@ -149,7 +151,8 @@ if (command === 'words') {
     /** `SCR-SHELL-06`: a fresh trial's quiet count, the day it starts. */
     TRIAL_CHIP: billingStripWords(t.t).trialDaysLeft(14),
     ...proposalFlowWords(t),
-    ...settingsRows(t),
+    ...studioFlowWords(t),
+    ...settingsFlowWords(t),
   };
   assertEveryFlowWordKnown(Object.keys(words));
   for (const [key, message] of Object.entries(words)) {
@@ -198,8 +201,11 @@ async function companyFor(national: string, phoneE164: string): Promise<void> {
   /* A proposal draft on the first lead, started as the start sheet sends it for a home lead: the
      proposals flows open it (`SCR-M06-16`…`SCR-M06-20`). */
   const proposalId = await draftFor(owned, lead.leadId);
+  /* An empty design on the first lead, as *Create design* sends it: the studio flows open it
+     (`SCR-M05-01`, `SCR-M05-02`). */
+  const designId = await designFor(owned, lead.leadId);
   process.stdout.write(
-    `${lead.leadId} ${lead.customerId} ${family.customerId} ${projectId} ${proposalId}\n`,
+    `${lead.leadId} ${lead.customerId} ${family.customerId} ${projectId} ${proposalId} ${designId}\n`,
   );
   /* The phone asks the same number for a code next, and the api sends none until the resend time
      it gave here has passed — a code asked for sooner never reaches the api log. */
@@ -239,6 +245,16 @@ async function draftFor(cookie: string, leadId: string): Promise<string> {
   return ((await started.json()) as { id: string }).id;
 }
 
+/** The lead's first design (`T-M05-001`), empty, on a lead that holds its site; answers the design's id. */
+async function designFor(cookie: string, leadId: string): Promise<string> {
+  // The lead holds its address, state, phase and load first: Site details opens with them filled.
+  await call(`/leads/${leadId}`, leadSiteBody(), cookie, {}, 'PATCH');
+  const key = { [IDEMPOTENCY_KEY_HEADER]: randomUUID() };
+  const body = { copyOf: null, capturedAt: new Date().toISOString() };
+  const started = await call(`/leads/${leadId}/designs`, body, cookie, key);
+  return ((await started.json()) as { design: { id: string } }).design.id;
+}
+
 /**
  * *Mark won* on that lead (`M07-62`), as the lead page's sheet sends it: the owner — the company's
  * one project manager — a final value and an install date a month ahead. Answers the project's id.
@@ -265,9 +281,10 @@ async function call(
   body: object,
   cookie?: string,
   headers: Record<string, string> = {},
+  method: 'POST' | 'PATCH' = 'POST',
 ): Promise<Response> {
   const answer = await fetch(`${API}${route}`, {
-    method: 'POST',
+    method,
     headers: {
       'content-type': 'application/json',
       ...(cookie === undefined ? {} : { cookie }),
@@ -303,22 +320,4 @@ function firstSegment(t: Awaited<ReturnType<typeof createTranslator>>): string {
   const first = words.options[0];
   if (first === undefined) throw new Error('What do you sell? offers no answer');
   return first.title;
-}
-
-/** Each settings row's name, `ROW_<row>`, as the settings list and the row's own header show it. */
-function settingsRows(t: Awaited<ReturnType<typeof createTranslator>>): Record<string, string> {
-  const rows = [
-    'profile',
-    'team',
-    'roles',
-    'branding',
-    'proposal_templates',
-    'payment_terms',
-    'collections',
-    'catalog',
-    'billing',
-  ] as const;
-  return Object.fromEntries(
-    rows.map((row) => [`ROW_${row.toUpperCase()}`, settingsRowName(t.t, row)]),
-  );
 }

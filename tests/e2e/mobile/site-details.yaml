@@ -1,0 +1,45 @@
+# Site details (`SCR-M05-01`, T-M05-001a): the design's site opens at its address with the lead's
+# address and state filled and no location yet, so *Start design* says why it is off; Coordinates takes the two numbers a rep types, the pin
+# stands under the map, and *Start design* saves the site and opens the design, which now names
+# its next step.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://designs/${DESIGN_ID}/site
+- extendedWaitUntil:
+    visible: ${SITE_BY_COORDINATES}
+    timeout: 15000
+# The lead's own facts are filled: its address in the search field, and its state further down.
+- assertVisible: ${SITE_LEAD_ADDRESS}
+- scrollUntilVisible:
+    element: ${SITE_LEAD_STATE}
+    direction: DOWN
+- scrollUntilVisible:
+    element: ${SITE_BY_COORDINATES}
+    direction: UP
+    centerElement: true
+- tapOn: ${SITE_BY_COORDINATES}
+# A field is the SECOND element its label's words name: the label first, the field after it.
+- tapOn:
+    text: "${SITE_LATITUDE}(, .*)?"
+    index: 1
+- waitForAnimationToEnd
+- inputText: ${SITE_LATITUDE_TYPED}
+- tapOn:
+    text: "${SITE_LONGITUDE}(, .*)?"
+    index: 1
+- waitForAnimationToEnd
+- inputText: ${SITE_LONGITUDE_TYPED}
+# Return reads the two numbers and closes the keyboard: while it is up, the next tap is spent on it.
+- pressKey: Enter
+- scrollUntilVisible:
+    element: ".*${SITE_PIN}.*"
+    direction: DOWN
+- scrollUntilVisible:
+    element: ${SITE_START}
+    direction: DOWN
+    centerElement: true
+- tapOn: ${SITE_START}
+# The design's page: the site's address and its next step are one run of text; the step ends it.
+- extendedWaitUntil:
+    visible: '[\s\S]*${DESIGN_NEXT_ROOF}'
+    timeout: 15000

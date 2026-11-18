@@ -55,10 +55,8 @@ export const LEAD_DETAIL = {
   design: /*i18n*/ { id: 'Design' },
   doNotCallOn: /*i18n*/ { id: 'Do not call is on for this customer.' },
   wrongNumber: /*i18n*/ { id: 'This number was marked wrong. No call goes to it.' },
-  designLater: /*i18n*/ {
-    id: 'Designs are made in the design studio, which arrives in a later release.',
-  },
   closedNoVisit: /*i18n*/ { id: 'Reopen the lead to book a visit.' },
+  closedNoDesign: /*i18n*/ { id: 'Reopen the lead to create a design.' },
   snooze: /*i18n*/ { id: 'Snooze' },
   wake: /*i18n*/ { id: 'Wake up now' },
   disqualify: /*i18n*/ { id: 'Disqualify' },
@@ -187,8 +185,8 @@ export function leadDockWords(t: T) {
     log: { label: t(LEAD_DETAIL.logActivity), short: t(LEAD_DETAIL.log) },
     visit: { label: t(LEAD_DETAIL.bookVisit), short: t(LEAD_DETAIL.visit) },
     design: { label: t(LEAD_DETAIL.createDesign), short: t(LEAD_DETAIL.design) },
-    designLater: t(LEAD_DETAIL.designLater),
     closedNoVisit: t(LEAD_DETAIL.closedNoVisit),
+    closedNoDesign: t(LEAD_DETAIL.closedNoDesign),
     stateAct: (act: LeadStateAct) => t(STATE_ACT[act]),
     /** The line a sheet-less act draws while it is out. */
     stateActWaiting: (act: Extract<LeadStateAct, 'wake' | 'reopen'>): TranslatedText =>

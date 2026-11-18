@@ -1,0 +1,40 @@
+/* The studio's entry pages (`SCR-M05-01`, `SCR-M05-02`): the page column and its head. */
+.hg-studio-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* The form's bar stands above what the shell floats at the page's foot (`shell.css`). */
+.hg-studio-page {
+  --hg-site-bar-bottom: var(--hg-shell-foot-clear);
+}
+
+.hg-studio-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* The site's address above what comes next, each on its own line. */
+.hg-studio-site {
+  display: block;
+  color: var(--text-primary);
+}
+
+/* The live map fills the frame that holds it; the frame draws the pin and the states over it. */
+.hg-studio-map-tiles {
+  position: absolute;
+  inset: 0;
+}
+
+/* The site map page fills the web view that shows it. It paints no ground of its own: the app's
+   map frame shows through until the tiles arrive, in the app's own light or dark. */
+.hg-studio-map-page {
+  position: fixed;
+  inset: 0;
+}
+
+body:has(.hg-studio-map-page) {
+  background: transparent;
+}

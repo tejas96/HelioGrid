@@ -16,6 +16,7 @@ export * from './proposal-hooks';
 export type { ProposalTemplateView } from './proposal-template-view';
 export { templateViewOf } from './proposal-template-view';
 export { DataProvider } from './provider';
+export * from './studio-screen-hooks';
 export type { AddCatalogItemOptions } from './use-add-catalog-item';
 export { useAddCatalogItem } from './use-add-catalog-item';
 export type { AssignRolesEditor, RolesRemoval, RolesRemovalNotes } from './use-assign-roles';
@@ -148,14 +149,7 @@ export type { LeadAssign, LeadAssignReturn } from './use-lead-assign';
 export type { LeadAssignees } from './use-lead-assignees';
 export { useLeadAssignees } from './use-lead-assignees';
 export type { LeadContactSave, LeadContacts } from './use-lead-contacts';
-export type {
-  LeadDetailRead,
-  LeadDetailScreen,
-  LeadDetailShown,
-  LeadTimeline,
-  LeadTimelineEntry,
-} from './use-lead-detail-screen';
-export { useLeadDetailScreen } from './use-lead-detail-screen';
+export * from './use-lead-detail-screen';
 export type { LeadFiles } from './use-lead-files';
 export type { LeadImportRow, LeadImportRowList } from './use-lead-import-rows';
 export type { LeadImportScreen } from './use-lead-import-screen';

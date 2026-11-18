@@ -70,6 +70,12 @@ import {
 } from './proposals/saved-parts-repository';
 import { createSearchRepository, type SearchRepository } from './search/repository';
 import { createSettingsRepository, type SettingsRepository } from './settings/repository';
+import {
+  createPlacesRepository,
+  createStudioRepository,
+  type PlacesRepository,
+  type StudioRepository,
+} from './studio/studio-repository';
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
 import type { TokenStorage } from './transport/storage';
 import {
@@ -122,6 +128,9 @@ export interface Repositories {
   visits: VisitsRepository;
   proposals: ProposalsRepository;
   savedParts: SavedPartsRepository;
+  /** The design studio (`T-M05-001`): a lead's designs, and the search that finds a site's place. */
+  studio: StudioRepository;
+  places: PlacesRepository;
   customerLinks: CustomerLinksRepository;
   /** The customer's own side of a link: signed-out, the token its whole authority (`F5-21`). */
   customerLinkPublic: CustomerLinkPublicRepository;
@@ -209,6 +218,8 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     visits: createVisitsRepository(api),
     proposals: createProposalsRepository(api),
     savedParts: createSavedPartsRepository(api),
+    studio: createStudioRepository(api),
+    places: createPlacesRepository(api),
     customerLinks: createCustomerLinksRepository(api),
     customerLinkPublic: createCustomerLinkPublicRepository(api),
   };

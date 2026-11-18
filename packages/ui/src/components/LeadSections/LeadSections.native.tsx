@@ -9,6 +9,7 @@ import { Text } from '../../primitives/Text/Text.native';
 import { useChosenInView } from '../../primitives/use-chosen-in-view.native';
 import { Card } from '../Card/Card.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
+import { LeadDesignList } from './LeadDesignList.native';
 import { LeadFileList } from './LeadFileList.native';
 import { LeadProposalList } from './LeadProposalList.native';
 import type { LeadSectionsProps } from './LeadSections.types';
@@ -18,7 +19,7 @@ import { LeadTaskList } from './LeadTaskList.native';
 /**
  * The lead's six sections as tabs on the phone (`M02-32`): the strip scrolls sideways, each tab
  * with its count where it has one, and the chosen section's panel under it — the caller's timeline,
- * the site, designs and proposals none yet, the tasks with their acts, the files with their add.
+ * the site, the designs' cards, the proposals, the tasks with their acts, the files with their add.
  */
 export function LeadSections(props: LeadSectionsProps) {
   const { section, onSection, counts, words } = props;
@@ -76,12 +77,9 @@ function Panel(props: LeadSectionsProps) {
       );
     case 'designs':
       return (
-        <CountPanel
-          count={counts.designs}
-          some={words.designs}
-          none={words.noDesign}
-          line={words.designsLine}
-        />
+        <Tile>
+          <LeadDesignList panel={props.designs} />
+        </Tile>
       );
     case 'proposals':
       if (props.proposals !== undefined) {

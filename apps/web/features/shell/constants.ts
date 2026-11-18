@@ -74,5 +74,11 @@ export const proposalVersionsPath = (proposalId: string): string =>
 export const proposalLinksPath = (proposalId: string): string =>
   `${proposalPath(proposalId)}/links`;
 
+/** A design's own page — where the studio opens (`SCR-M05-02`). */
+export const designPath = (designId: string): string => `/designs/${designId}`;
+
+/** The Site details a design starts with (`SCR-M05-01`). */
+export const designSitePath = (designId: string): string => `${designPath(designId)}/site`;
+
 /** One lead's page, opened on its *Mark won* sheet — a proposal's *Confirm won* (`M07-62`). */
 export const leadWonPath = (leadId: string): string => `${leadPath(leadId)}?won=1`;

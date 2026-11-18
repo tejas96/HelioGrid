@@ -22,7 +22,7 @@ export interface LeadDockAct {
   readonly label: TranslatedText;
   /** The word under the dock's round act — "Log". */
   readonly short: TranslatedText;
-  /** Why the act is off — the design studio arrives later, a closed lead takes no visit. */
+  /** Why the act is off — a closed lead takes no visit and no design. */
   readonly disabledReason: ActionReasonSentence | null;
   readonly onPress: () => void;
 }
@@ -34,10 +34,14 @@ export interface LeadDockStateAct {
   readonly onPress: () => void;
 }
 
-/** The state act out now — its pill says so and every state act waits — or the one come back undone. */
+/**
+ * The state act out now — its pill says so and every state act waits — or the one come back
+ * undone. *Create design* stands here too: it has no sheet, so the dock is where it was pressed.
+ */
+export type LeadDockStanding = LeadStateAct | 'design';
 export type LeadDockStateStanding =
-  | { readonly kind: 'waiting'; readonly act: LeadStateAct; readonly line: TranslatedText }
-  | { readonly kind: 'returned'; readonly act: LeadStateAct; readonly reason: TranslatedText };
+  | { readonly kind: 'waiting'; readonly act: LeadDockStanding; readonly line: TranslatedText }
+  | { readonly kind: 'returned'; readonly act: LeadDockStanding; readonly reason: TranslatedText };
 
 /**
  * The lead's five actions (`M02-32`), Call first and biggest: on the web Call is a `tel:` link,

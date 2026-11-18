@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { PanResponderInstance } from 'react-native';
 import { Animated, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 
 interface SheetHandleProps {
@@ -10,7 +11,7 @@ interface SheetHandleProps {
   hasHeader: boolean;
   /** The drag recogniser. Its handlers are spread onto the bar, which IS the drag target. */
   pan: PanResponderInstance;
-  /** The sheet's close, spoken: the phone draws no ✕, so a screen reader closes it here. */
+  /** The sheet's close, named: the phone draws no ✕, so a tap on the bar closes it here. */
   closeLabel: TranslatedText;
   onClose?: () => void;
   /** The title the header tucks into this row once the body scrolls, and how far it has come. */
@@ -23,26 +24,32 @@ export interface TuckedTitle {
 }
 
 /**
- * The 40×5 grab bar: the drag target, and the sheet's close for a screen reader — the phone has no
- * ✕, since a drag, a tap outside and Back all close it. A sheet that must be answered (no
- * `onClose`) offers no close here either. Once the body scrolls, the title rests in this row.
+ * The 40×5 grab bar: the drag target, and the sheet's close — the phone has no ✕, since a drag, a
+ * tap outside and Back all close it. A tap on the bar closes the sheet, as Android's own drag handle
+ * does, so a finger, TalkBack, VoiceOver and Voice Access all meet the one close it is named for.
+ * A sheet that must be answered (no `onClose`) offers no close here either. Once the body scrolls,
+ * the title rests in this row.
  */
 export function SheetHandle({ hasHeader, pan, closeLabel, onClose, tucked }: SheetHandleProps) {
-  const closes = onClose !== undefined;
   return (
     <View
       {...pan.panHandlers}
-      accessible={closes}
-      accessibilityRole={closes ? 'button' : undefined}
-      accessibilityLabel={closes ? closeLabel : undefined}
-      onAccessibilityTap={onClose}
       style={[
         styles.handle,
         hasHeader ? styles.handleWithHeader : undefined,
         tucked === undefined ? undefined : styles.handleTucks,
       ]}
     >
-      <View style={styles.handleBar} />
+      {/* Under the bar, filling the row: a tap lands here, a drag still moves to the pan above. */}
+      {onClose === undefined ? null : (
+        <Pressable
+          accessibilityLabel={closeLabel}
+          onPress={onClose}
+          ripple="none"
+          style={StyleSheet.absoluteFill}
+        />
+      )}
+      <View pointerEvents="none" style={styles.handleBar} />
       {tucked === undefined ? null : (
         <Animated.View
           accessibilityElementsHidden

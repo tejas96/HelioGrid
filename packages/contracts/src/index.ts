@@ -41,6 +41,7 @@ import { projectsContract } from './projects/projects';
 import { proposalsContract } from './proposals/proposals';
 import { savedPartsContract } from './proposals/saved-parts';
 import { searchContract } from './search';
+import { placesContract, studioContract } from './studio/studio';
 import { tenantContract } from './tenant';
 import { tenantSettingsContract } from './tenant-settings';
 import { userContract } from './user';
@@ -143,6 +144,12 @@ export * from './proposals/vocabulary';
 // Global search (`T-FPLAT-020`): leads, customers, people and catalog items in one read.
 export * from './search';
 export * from './session';
+export * from './studio/design';
+export * from './studio/places';
+export * from './studio/site';
+export * from './studio/site-map-bridge';
+export * from './studio/studio';
+export * from './studio/vocabulary';
 // The tenant (`T-M01-025`): signup, the tenant facts, the roster, the request-to-join steer.
 export * from './tenant';
 // Tenant settings (`T-M01-026`): every setting's one home, and the resolved read.
@@ -235,10 +242,14 @@ const proposalRouters = c.router(
   ROOT_OPTIONS,
 );
 
+/** The design studio (`M05`): a lead's designs and their site, and the search that finds a site's place. */
+const studioRouters = c.router({ places: placesContract, studio: studioContract }, ROOT_OPTIONS);
+
 export type ApiContract = typeof platformRouters &
   typeof crmRouters &
   typeof deliveryRouters &
-  typeof proposalRouters;
+  typeof proposalRouters &
+  typeof studioRouters;
 
 /**
  * The root API contract. Feature modules mount their routers here — contract FIRST,
@@ -249,4 +260,5 @@ export const apiContract: ApiContract = {
   ...crmRouters,
   ...deliveryRouters,
   ...proposalRouters,
+  ...studioRouters,
 };

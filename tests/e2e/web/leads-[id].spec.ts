@@ -112,16 +112,13 @@ test('lead detail shows the header facts, the timeline, the six sections and the
   await expect(page.getByText(VOCABULARY.stage.new, { exact: true }).first()).toBeVisible();
   await expect(page.getByRole('button', { name: hero.ownerSpoken })).toBeVisible();
 
-  /* The five actions, Call first: a dial link, and Create design off with its reason. */
+  /* The five actions, Call first: a dial link, and Create design ready to press. */
   const call = page.getByRole('link', { name: DOCK.call });
   await expect(call).toHaveAttribute('href', /^tel:\+91/);
   for (const act of [DOCK.message, DOCK.log, DOCK.visit]) {
     await expect(page.getByRole('button', { name: act.label }).first()).toBeEnabled();
   }
-  await expect(page.getByRole('button', { name: DOCK.design.label }).first()).toHaveAttribute(
-    'aria-disabled',
-    'true',
-  );
+  await expect(page.getByRole('button', { name: DOCK.design.label }).first()).toBeEnabled();
 
   /* The six sections as tabs, the timeline open on the entry the capture wrote. */
   for (const tab of Object.values(SECTIONS.tabs)) {

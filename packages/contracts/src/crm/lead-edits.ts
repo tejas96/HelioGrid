@@ -1,6 +1,7 @@
-import { SUPPLY_PHASES } from '@heliogrid/domain';
+import { SITE_NAME_MAX, SUPPLY_PHASES } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
+import { geoPointSchema } from '../common';
 import { baseError, errorEnvelope, unauthenticatedEnvelope } from '../error';
 import { uiLanguageSchema } from '../locale';
 import { citySchema, personNameSchema } from '../tenant';
@@ -45,6 +46,10 @@ export const leadFieldsSchema = z.object({
     .nullable(),
   sanctionedLoadKw: z.number().positive().max(100000).nullable(),
   supplyPhase: z.enum(SUPPLY_PHASES).nullable(),
+  /** What the studio's Site details adds: the site's name, the roof's exact point, the operator. */
+  siteName: z.string().trim().min(1).max(SITE_NAME_MAX).nullable(),
+  sitePin: geoPointSchema.nullable(),
+  utilityOperator: z.string().trim().min(1).max(120).nullable(),
 });
 
 /** Which field an edit changed — the keys of the edit, named once (`field_change` entries). */

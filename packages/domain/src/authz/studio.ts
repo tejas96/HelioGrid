@@ -2,17 +2,17 @@ import { type CapabilityRow, DENIED, GRANTED } from './cells';
 
 /**
  * F2 §F2.5-M05 — Design studio. Every cell is the PRD's, and
- * `tests/authz/matrix-mirrors-f2.test.ts` holds them equal; a placeholder row of this module is
+ * the invariant `matrix-mirrors-f2` holds them equal; a placeholder row of this module is
  * appended HERE by its first slice (Law 9), never typed into a screen or a handler.
  */
 export const STUDIO_ROWS = {
-  // Create and edit designs
+  // Create and edit designs — the two sales presets draft; sign-off stays the row below
   'studio.create_edit_designs': {
     rowKey: 'F2.M05.create-edit-designs',
     grants: {
       epc_owner: GRANTED,
-      sales_manager: DENIED,
-      sales_executive: DENIED,
+      sales_manager: GRANTED,
+      sales_executive: GRANTED,
       survey_engineer: DENIED,
       design_engineer: GRANTED,
       project_manager: DENIED,

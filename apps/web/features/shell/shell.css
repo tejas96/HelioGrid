@@ -18,8 +18,10 @@
   max-width: var(--content-max);
   /* The rest of the main's height, under the pinned top (`AppShell.css`). */
   flex-grow: 1;
-  padding: var(--sp-6) var(--screen-pad-mobile)
-    calc(var(--bottomnav-h) + env(safe-area-inset-bottom) + var(--sp-6));
+  /* What floats over the page's foot: the pill and the device's inset on a phone width, nothing
+     from the desktop width up. A page's own sticky bar stands this far up. */
+  --hg-shell-foot-clear: calc(var(--bottomnav-h) + env(safe-area-inset-bottom));
+  padding: var(--sp-6) var(--screen-pad-mobile) calc(var(--hg-shell-foot-clear) + var(--sp-6));
   animation: hg-page-enter var(--dur-emphasised) var(--ease-out-quint) backwards;
 }
 
@@ -73,6 +75,7 @@
      (`BillingStrip.css`), and the settings pair takes the same padding (`settings.css`). */
   .hg-shell-page,
   .hg-shell-page[data-pad="functional"] {
+    --hg-shell-foot-clear: 0px;
     padding: var(--sp-8) var(--screen-pad-desktop) var(--sp-12);
   }
   .hg-shell-page .hg-menu-list {

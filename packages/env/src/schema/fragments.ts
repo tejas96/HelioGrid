@@ -86,6 +86,12 @@ export const portSchema = z.coerce.number().int().min(1).max(65535).default(8080
  */
 export const API_PORT_DEFAULT = 8084;
 
+/**
+ * The port apps/web serves on when nothing says otherwise: the api's default web origin and the
+ * phone's two platform fallbacks for the pages it shows in a web view are one fact.
+ */
+export const WEB_PORT_DEFAULT = 3002;
+
 /** Node's conventional lifecycle switch. */
 export const nodeEnvSchema = z.enum(['development', 'test', 'production']).default('development');
 

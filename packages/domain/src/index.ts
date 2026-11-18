@@ -39,6 +39,7 @@ export * from './proposals';
 export * from './rails';
 export * from './search';
 export * from './shell';
+export * from './studio';
 export * from './subject';
 export * from './subsidy';
 export * from './tasks';

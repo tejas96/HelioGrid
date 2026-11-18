@@ -41,6 +41,7 @@ describe('roleCardWords — the board, word for word', () => {
       'Build and edit proposals, discounts included',
       'Send proposals to customers',
       'Mark a lead won or lost',
+      'Create and edit designs',
     ]);
     expect(words.limits.map((line) => line.text)).toEqual([
       'Assign leads to others',

@@ -74,7 +74,14 @@ export const FORMAT_PACK_SCHEMA: z.ZodType<FormatPack, z.ZodTypeDef, unknown> = 
   /** A pack stored before `M08` declares no steps: it reads as none until the next revision. */
   installSteps: z.array(z.object({ step: z.string(), label: packLabel })).default([]),
   utilities: z.object({
-    regions: z.array(z.object({ region: z.string(), operators: z.array(z.string()) })),
+    regions: z.array(
+      z.object({
+        region: z.string(),
+        /** A pack stored before the studio declares no area code: the region then serves no area. */
+        area: z.string().nullable().default(null),
+        operators: z.array(z.string()),
+      }),
+    ),
     waits: z.array(
       z.object({
         procedure: z.string(),

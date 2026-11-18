@@ -16,7 +16,7 @@ A screen's look is not recorded here: it is picked inside the task that builds i
 
 ### The V column — the scope lock
 
-**`V1` = 70 screens · `V2` = 58 · 128 total.** V1 is what ships first. V2 is real scope that is
+**`V1` = 72 screens · `V2` = 58 · 130 total.** V1 is what ships first. V2 is real scope that is
 deliberately not blocking the launch; no V2 screen is designed or built until V1 ships. Only an
 owner decision moves a screen between them.
 
@@ -114,6 +114,13 @@ only, and git holds what shipped.
 | SCR-F5-03 | **Customer Link — Handover Pack** | P0 | 9 | V1 | — |
 | SCR-F5-04 | **Link Failure Page** | P0 | 2 | V1 | — |
 | SCR-F5-05 | **Customer 3D View** | P0 | 2 | V1 | — |
+
+### M05 · Design studio
+
+| SCR | Screen | Tier | Rows | V | Merged from |
+|---|---|---|---|---|---|
+| SCR-M05-01 | **Site Details** | P0 | 0 | V1 | — |
+| SCR-M05-02 | **Design Studio** | P0 | 0 | V1 | — |
 
 ### M06 · Proposals
 

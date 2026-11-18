@@ -15,6 +15,7 @@ const SALES_EXECUTIVE_GRANTS: readonly RoleCardLineKey[] = [
   'proposals_edit',
   'proposals_send',
   'won_lost',
+  'designs_edit',
 ];
 const SALES_EXECUTIVE_LIMITS: readonly RoleCardLineKey[] = [
   'leads_assign',
@@ -30,7 +31,7 @@ const lineOf = (key: RoleCardLineKey) => ROLE_CARD_LINES.find((line) => line.key
 describe('SCR-M01-10 — the Sales Executive alone reads the board', () => {
   const card = roleCard(['sales_executive']);
 
-  it('six grants and six limits, in the board order', () => {
+  it('seven grants and six limits, in the board order', () => {
     expect(card.grants).toEqual(SALES_EXECUTIVE_GRANTS);
     expect(card.limits).toEqual(SALES_EXECUTIVE_LIMITS);
   });
@@ -48,8 +49,8 @@ describe('SCR-M01-10 — the Sales Executive alone reads the board', () => {
 describe('ruling 4 — stacked presets take the union, and a limit one preset lifts is no limit', () => {
   const card = roleCard(['design_engineer', 'sales_executive']);
 
-  it('eight grants: the Sales Executive six and the designs', () => {
-    expect(card.grants).toEqual([...SALES_EXECUTIVE_GRANTS, 'designs_edit', 'designs_approve']);
+  it('eight grants: the Sales Executive seven and the sign-off', () => {
+    expect(card.grants).toEqual([...SALES_EXECUTIVE_GRANTS, 'designs_approve']);
   });
 
   it('Design Engineer lists sending proposals, but the Sales Executive holds it', () => {

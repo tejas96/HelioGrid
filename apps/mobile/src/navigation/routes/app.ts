@@ -3,6 +3,7 @@ import { BillingPlansScreen } from '../../screens/billing';
 import { CompanyProfileScreen } from '../../screens/company-profile';
 import { CompanySignupScreen } from '../../screens/company-signup';
 import { CustomerMergeScreen } from '../../screens/customer-merge';
+import { DesignScreen } from '../../screens/design';
 import { FirstRunProfileScreen } from '../../screens/first-run-profile';
 import { LeadDetailScreen } from '../../screens/lead-detail';
 import { LeadImportScreen } from '../../screens/lead-import';
@@ -32,6 +33,7 @@ import { SetupReadyScreen } from '../../screens/setup-ready';
 import { SetupWhatYouSellScreen } from '../../screens/setup-what-you-sell';
 import { PlaceholderScreen, ShellScreen } from '../../screens/shell';
 import { doorRoute, placeholderRoutes } from '../../screens/shell/doors';
+import { SiteDetailsScreen } from '../../screens/site-details';
 import {
   firstRunRoute,
   roleExplainerRoute,
@@ -116,6 +118,21 @@ export const appScreens = {
     screen: LeadDetailScreen,
     if: useHasHome,
     linking: `${DOOR_SEGMENT.leads}/:leadId`,
+  },
+  /**
+   * One design's own page (`SCR-M05-02`) at `designs/<id>`, where the studio opens: a lead's
+   * Designs section and Site details open it.
+   */
+  Design: {
+    screen: DesignScreen,
+    if: useHasHome,
+    linking: 'designs/:designId',
+  },
+  /** The Site details a design starts with (`SCR-M05-01`) at `designs/<id>/site`, as the web's. */
+  SiteDetails: {
+    screen: SiteDetailsScreen,
+    if: useHasHome,
+    linking: 'designs/:designId/site',
   },
   /** The Projects board (`SCR-M08-01`), the pill's Projects door. */
   [doorRoute.projects]: {

@@ -39,19 +39,18 @@ Deps: `architecture.md` §2 tests/e2e.
 ## Commands
 
 ```
-pnpm --filter @heliogrid/e2e test:web [<spec files>]  # the web flows — locally only on heliogrid_test, after `pnpm check:all` (it builds the api and web they start); all of them in CI
+pnpm --filter @heliogrid/e2e test:web [<spec files>]  # the web flows — locally only the specs a change adds or edits, on heliogrid_test with 3002 and 8084 free, after `pnpm turbo build --filter=@heliogrid/api --filter=@heliogrid/web` (the run starts both built); all of them in CI
 pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100); while building, the changed part's spec and every spec that imports it — a change under `primitives/` or `packages/theme` runs them all; the whole suite is CI's
 pnpm --filter @heliogrid/e2e test:web --project qa-seed  # the QA companies (support/qa-accounts.ts), off CI, with the worker and Temporal up
 pnpm --filter @heliogrid/e2e test:mobile <serial>    # the phone flows on one Android device
 ```
 
-The phone flows run on Android; no one runs them on iOS. When a change touches a phone screen, a
-`mobile/*.yaml` or a `.native.tsx`, the session runs the whole phone suite once on the local
-emulator (`pnpm --filter @heliogrid/e2e test:mobile emulator-5554`, in the background, output to
-`.qa/`) after the Android `qa-live` round (they share the emulator) and before the push; the local
-image differs from CI's, so CI's `android` lane stays the proof. `test:mobile` needs Metro, the api
-and the app installed on the device, and drives one device per call; calls on different phones may
-run at once. Start the emulator only through the `android-emulator` launch configuration (2 cores,
+The phone flows run on Android; no one runs them on iOS. The whole phone suite is CI's `android`
+lane and is never run here: the local image differs from CI's, and a run holds the emulator and
+every app edit for half an hour. A flow a change adds or edits is run here once, alone, with
+Maestro and the words `mobile/run.sh` hands a flow, after the Android `qa-live` round (they share
+the emulator). `test:mobile` needs Metro, the api and the app installed on the device, and drives
+one device per call; calls on different phones may run at once. Start the emulator only through the `android-emulator` launch configuration (2 cores,
 4 GB, host GPU; the AVD's `hw.ramSize` is ignored, and at 2 GB Maestro's on-device server dies
 mid-suite).
 
@@ -115,3 +114,4 @@ skips this.
 - Android lists an overline in capitals, so only Maestro's pattern meets it (a pattern ignores case), and a pattern reads a word's own `?` or `.` as its sign → escape the word where it is written (`support/customer-merge-flow.ts`).
 - Android's Back closes the keyboard first, so one `back` on a sheet whose field opens in focus leaves the sheet up → `hideKeyboard`, then `back` (`mobile/proposals-list.yaml`).
 - A phone flow starts on whatever screen the flow before it left (setup's last door opens Leads, not Home), so a step that reads a screen the run never opened fails only on the android lane → a flow that checks a screen taps its way there first (`mobile/shell.yaml` taps `${HOME}`).
+- On the phone a frame that sets its message as one run of text (`StateRegion`) joins an address and the line under it into ONE element, so a flow that asserts the line alone finds nothing though the screen shows it → match it at the end of the run, `'[\s\S]*${WORD}'` (`mobile/design.yaml`).

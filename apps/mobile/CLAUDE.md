@@ -31,8 +31,9 @@ src/react-query-host.tsx  the ONE host-lifecycle adapter (AppState → focus, Ne
 
 ```
 pnpm --filter @heliogrid/mobile start | ios | android | typecheck
-cd apps/mobile/ios && LANG=en_US.UTF-8 bundle exec pod install
-    # after a native dep change; without the UTF-8 locale it fails on Unicode Normalization
+cd apps/mobile/ios && LANG=en_US.UTF-8 pod install
+    # after a native dep change, with Homebrew's CocoaPods; without the UTF-8 locale it fails on
+    # Unicode Normalization
 ```
 
 ## Rules
@@ -73,3 +74,5 @@ when `tests/e2e/CLAUDE.md` says · the per-screen DoD in `docs/prd/foundations/F
 - The first `pod install` after a native dependency with codegen (Reanimated, worklets, the keyboard controller) generates its spec headers after it has mapped the pods' headers, so the build stops on `'rnworklets/rnworklets.h' file not found` → run `pod install` a second time, then build.
 - Android's `Share.share` answers `sharedAction` even when the person backs out of the chooser, so a fact recorded on that answer ("Shared by") was recorded for a share that never happened → after a hand-off the screen asks, and records only the person's yes (`useProjectPayments`'s `handedOff`).
 - A picture bundled in a workspace package is a 404 in a dev build only (the dev server folds `/assets/../../packages/…` away; a release bundle copies it) → keep `metro.config.js`'s `rewriteRequestUrl`, which asks for it through `unstable_path`; a dev-build 404 on a package picture is that rewrite, never the file.
+- The system Ruby cannot build the Gemfile's native gems on this macOS, so `bundle exec pod install` stops on `Could not find json`, and `react-native run-ios` — which runs that same step itself after a dependency change — stops on "Something went wrong while installing CocoaPods" → install pods with Homebrew's `pod`, then build with `xcodebuild -workspace HelioGridMobile.xcworkspace -scheme HelioGridMobile -configuration Debug -sdk iphonesimulator -destination id=<udid> build` and launch the built `.app`.
+- The web view library types its props as `WebViewProps & P` with `P` defaulting to `undefined`, which leaves a `<WebView>` no props at all → write `WebView<object>` (`screens/site-details/components/SitePinTiles.tsx`).

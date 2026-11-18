@@ -4,6 +4,7 @@ import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import { Button } from '../Button';
 import { NamedGap } from '../NamedGap';
 import { StatusMark } from '../StatusMark';
+import { LeadDesignList } from './LeadDesignList';
 import { LeadFileList } from './LeadFileList';
 import { LeadProposalList } from './LeadProposalList';
 import type { LeadSectionsProps, LeadSitePanelFacts, LeadSiteVisit } from './LeadSections.types';
@@ -18,13 +19,7 @@ export function LeadSectionPanel(props: LeadSectionsProps) {
     case 'site':
       return <Site site={props.site} visit={props.visit} words={words} />;
     case 'designs':
-      return (
-        <Count
-          glyph="solar-panel"
-          count={counts.designs ?? 0}
-          words={{ some: words.designs, none: words.noDesign, line: words.designsLine }}
-        />
-      );
+      return <LeadDesignList panel={props.designs} />;
     case 'proposals':
       if (props.proposals !== undefined) return <LeadProposalList panel={props.proposals} />;
       return (
