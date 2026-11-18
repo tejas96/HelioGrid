@@ -89,7 +89,10 @@ export function IndeterminateRail({
       onLayout={onLayout}
       style={[styles.track, { width: asDimension(width), height: thickness }, style]}
     >
+      {/* A new view when reduced motion turns on: the travel's native transform may never be
+          taken off a view (packages/ui/CLAUDE.md Traps). */}
       <Animated.View
+        key={reduce ? 'still' : 'travel'}
         style={[
           styles.segment,
           gradient ? styles.gradient : { backgroundColor: tone },

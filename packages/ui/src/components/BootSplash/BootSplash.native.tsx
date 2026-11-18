@@ -15,7 +15,11 @@ export function BootSplash({ label }: BootSplashProps) {
   const reduced = useReducedMotion();
   const shown = useRef(new Animated.Value(reduced ? 1 : 0)).current;
   useEffect(() => {
-    if (reduced) return;
+    // Reduced motion can arrive after the fade began: show the end state, never where it stopped.
+    if (reduced) {
+      shown.setValue(1);
+      return;
+    }
     const appear = Animated.timing(shown, {
       toValue: 1,
       duration: theme.motion.durations.ambient,
