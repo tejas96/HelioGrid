@@ -25,7 +25,7 @@ check what they cannot. The invariants run later, in the gate.
    does what the plan says — every state (`.claude/rules/ui-adherence.md`, *States, saves and
    focus*), role and edge it names. A "decision recorded" in the PR that goes against a PRD row's
    own words (an order, a "never", a "must") is a finding, not a decision; and every part the
-   design draws is built, or a placeholder as `CLAUDE.md` §3 says. An owner ruling
+   design draws is built, or a placeholder as `.claude/rules/ui-adherence.md` says. An owner ruling
    the diff writes into a doc that the approved plan does not cite is a finding. Nothing is built
    that the plan
    does not need, and a part, dependency or file the plan does not name is searched for in the repo
