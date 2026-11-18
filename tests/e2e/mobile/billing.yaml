@@ -53,8 +53,7 @@ appId: com.heliogrid.app
 - extendedWaitUntil:
     visible: ${WHAT_CHANGES}
     timeout: 15000
-# Android's Back closes the review: the sheet's handle is named Close for a screen reader, but a
-# plain tap on it closes nothing, so a tap there only passed when it missed onto the backdrop.
+# Android's Back closes the review.
 - waitForAnimationToEnd
 - back
 - extendedWaitUntil:
