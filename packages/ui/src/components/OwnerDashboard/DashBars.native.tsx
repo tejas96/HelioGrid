@@ -50,7 +50,11 @@ function Fill({ bar, order }: { bar: DashBar; order: number }) {
   const reduced = useReducedMotion();
   const grow = useRef(new Animated.Value(reduced ? 1 : 0)).current;
   useEffect(() => {
-    if (reduced) return;
+    // Reduced motion can arrive after the motion began: show the end state, never where it stopped.
+    if (reduced) {
+      grow.setValue(1);
+      return;
+    }
     const run = Animated.timing(grow, {
       toValue: 1,
       delay: Math.min(order, maxItems) * stepMs,

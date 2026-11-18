@@ -129,7 +129,11 @@ interface PlacedProps {
 export function Rays({ fit, place, palette, reduced }: PlacedProps) {
   const show = useRef(new Animated.Value(reduced ? 1 : 0)).current;
   useEffect(() => {
-    if (reduced) return;
+    // Reduced motion can arrive after the motion began: show the end state, never where it stopped.
+    if (reduced) {
+      show.setValue(1);
+      return;
+    }
     const anim = Animated.timing(show, {
       toValue: 1,
       duration: motion.durations.ambient,
@@ -226,7 +230,11 @@ export function Sun({ fit, place, night, palette, reduced }: PlacedProps & { nig
   const id = `hg-sun-${useId().replaceAll(':', '')}`;
   const rise = useRef(new Animated.Value(reduced ? 1 : 0)).current;
   useEffect(() => {
-    if (reduced) return;
+    // Reduced motion can arrive after the motion began: show the end state, never where it stopped.
+    if (reduced) {
+      rise.setValue(1);
+      return;
+    }
     const anim = Animated.timing(rise, {
       toValue: 1,
       duration: motion.ambient.settle,
