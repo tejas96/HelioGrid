@@ -3,8 +3,7 @@ import type { LeadProposalsSection } from '@heliogrid/data/react';
 import {
   leadProposalsWords,
   proposalActFailureWords,
-  proposalStartSources,
-  proposalStartWords,
+  proposalStartSheetSaid,
   proposalWithdrawWords,
 } from '@heliogrid/i18n';
 import {
@@ -12,6 +11,7 @@ import {
   type LeadProposalsPanel,
   ProposalStartSheet,
   ProposalWithdrawSheet,
+  proposalStartSheetPropsOf,
 } from '@heliogrid/ui';
 import { useProposalFormats } from '../../shared/use-proposal-formats';
 
@@ -63,32 +63,20 @@ export function LeadProposalSheets({
 }) {
   const { t, formats } = useProposalFormats();
   const { start, withdraw, section } = proposals;
-  const words = proposalStartWords(t, {
+  const said = proposalStartSheetSaid(t, formats, {
     name: lead.lead.name ?? '',
     segment: lead.lead.segment,
+    ...start,
   });
-  const sources = proposalStartSources(t, formats, start.recent);
-  const startFailure = proposalActFailureWords(t, start.failure);
   const asked = section?.items.find((item) => item.id === withdraw.proposalId);
   const sheet = asked === undefined ? null : proposalWithdrawWords(t, formats, asked);
   return (
     <>
-      <ProposalStartSheet
-        open={start.open}
-        onClose={start.close}
-        words={words}
-        mode={start.mode}
-        onMode={start.setMode}
-        sources={sources}
-        onCopy={start.copy}
-        onStart={start.go}
-        starting={start.starting}
-        {...(startFailure === null ? {} : { failure: startFailure })}
-      />
+      <ProposalStartSheet {...proposalStartSheetPropsOf(start, said)} />
       <ProposalWithdrawSheet
         open={sheet !== null}
         onClose={withdraw.close}
-        close={words.closeLabel}
+        close={said.words.closeLabel}
         words={sheet?.words ?? null}
         sending={withdraw.sending}
         failure={proposalActFailureWords(t, withdraw.failure)}

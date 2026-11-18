@@ -1,6 +1,7 @@
 import { Pressable } from '../../primitives/Pressable/Pressable';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button/Button';
+import { DesignCover } from '../DesignCover';
 import { EditorSurface } from '../EditorSurface/EditorSurface';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup';
@@ -77,9 +78,10 @@ export function ProposalStartSheet(props: ProposalStartSheetProps) {
       <div className="hg-pstart" aria-busy={starting ? true : undefined}>
         <OptionCardGroup
           {...choice.group}
-          options={choice.options.map(({ glyph, ...option }) => ({
+          options={choice.options.map(({ glyph, preview, ...option }) => ({
             ...option,
             icon: <ShellGlyph name={glyph} size="md" />,
+            ...(preview === null ? {} : { content: <DesignCover word={preview} /> }),
           }))}
         />
         <Sources props={props} />

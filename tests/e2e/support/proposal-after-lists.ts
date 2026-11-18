@@ -1,4 +1,10 @@
-import type { LeadProposals, ProposalList, WonBasisWire } from '@heliogrid/contracts';
+import type {
+  LeadProposals,
+  ProposalEntries,
+  ProposalEntryDesign,
+  ProposalList,
+  WonBasisWire,
+} from '@heliogrid/contracts';
 import { ID, RAHUL } from './proposal-after-sample';
 
 /**
@@ -73,6 +79,30 @@ export const LIST: ProposalList = {
   counts: { all: 7, waiting: 4, draft: 1, accepted: 1, closed: 2 },
   waitingValue: '1828575.00',
   canStart: true,
+};
+
+/** A design with no proposal yet, made by Rahul (`T-M05-001b`). */
+export const DESIGN_ROW: ProposalEntryDesign = {
+  kind: 'design',
+  id: ID('d1'),
+  leadId: ID('a7'),
+  customerName: 'Kavita More',
+  city: 'Sangli',
+  ordinal: 1,
+  mount: 'roof',
+  status: 'draft',
+  changedAt: '2026-11-13T13:30:00.000Z',
+  changedBy: RAHUL,
+};
+
+/** The Proposals page: the design first, newest change first, then the seven proposals. */
+export const ENTRIES: ProposalEntries = {
+  ...LIST,
+  rows: {
+    items: [DESIGN_ROW, ...LIST_ROWS.map((row) => ({ kind: 'proposal' as const, ...row }))],
+    totalCount: LIST_ROWS.length + 1,
+  },
+  counts: { '3d': 1, ...LIST.counts, all: LIST.counts.all + 1 },
 };
 
 const LEAD_PROPOSAL = {

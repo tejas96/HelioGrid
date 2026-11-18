@@ -106,6 +106,7 @@ export {
   stepStandings,
   type TemplateFilledSteps,
 } from './standing';
+export { PROPOSAL_START_MODES, type ProposalStartMode } from './start-mode';
 export {
   answerProposal,
   liveOnItsLead,
@@ -145,8 +146,10 @@ export {
   forecastStageOf,
   listFilterOf,
   matchesListFilter,
+  PROPOSAL_ENTRY_FILTERS,
   PROPOSAL_LIST_FILTERS,
   PROPOSAL_STANDINGS,
+  type ProposalEntryFilter,
   type ProposalListFilter,
   type ProposalStanding,
   proposalStandingOf,

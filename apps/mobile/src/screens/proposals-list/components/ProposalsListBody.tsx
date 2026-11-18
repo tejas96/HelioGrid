@@ -70,7 +70,7 @@ export function ProposalsListBody({
         room="narrow"
         filter={screen.filter}
         onFilter={screen.setFilter}
-        words={proposalListWords(t, formats)}
+        words={proposalListWords(t, formats, screen.readerId)}
         onOpen={screen.open}
         {...(screen.canStart ? { onCopy: flow.openCopy, onNewVersion } : {})}
         {...(screen.hasMore ? { onMore: screen.showMore } : {})}

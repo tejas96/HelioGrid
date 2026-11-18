@@ -1,7 +1,8 @@
-# Proposals list (`SCR-M06-19`, `M06-48`): the pill's Proposals door opens the list — its large
-# title, *New proposal* under it, the chips and one card per proposal. The draft the api started on
-# the owner's lead is there under its customer's name and stays under the Draft chip; *New proposal*
-# asks who it is for first, and closing that capture creates nothing.
+# Proposals list (`SCR-M06-19`, `M06-48`, `T-M05-001b`): the pill's Proposals door opens the list —
+# its large title, *New proposal* under it, the chips and one card per row. The draft the api
+# started on the owner's lead is there under its customer's name and stays under the Draft chip;
+# the 3D chip holds that lead's design, which has no panels yet; *New proposal* asks who it is for
+# first, and closing that capture creates nothing.
 appId: com.heliogrid.app
 ---
 - openLink: heliogrid://proposals
@@ -23,6 +24,17 @@ appId: com.heliogrid.app
     element: ${LEAD_NAME}
     timeout: 15000
     centerElement: true
+- scrollUntilVisible:
+    element: ${THREE_D_CHIP}
+    direction: UP
+    timeout: 15000
+    centerElement: true
+- tapOn: ${THREE_D_CHIP}
+- scrollUntilVisible:
+    element: ${LEAD_NAME}
+    timeout: 15000
+    centerElement: true
+- assertVisible: ${NO_PANELS}
 - scrollUntilVisible:
     element: ${NEW_PROPOSAL}
     direction: UP

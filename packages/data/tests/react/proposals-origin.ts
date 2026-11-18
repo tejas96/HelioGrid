@@ -25,6 +25,7 @@ import {
   proposalRow,
 } from './proposals-fixtures';
 import { actedOn, originActs, pdfAsked } from './proposals-origin-acts';
+import { answeredEntriesOf } from './proposals-origin-entries';
 
 export { refusal } from './origin-wire';
 
@@ -59,6 +60,7 @@ interface SellOrigin {
   page: 'open' | 'answered' | 'newer' | 'off' | 'gone';
   /** Every list read's query, in order. */
   listAsks: URLSearchParams[];
+  entryAsks: URLSearchParams[]; // each Proposals page read's ask
   /** The lead already holds an open draft: a start resumes it (200) instead of making one (201). */
   hasDraft: boolean;
   /** A version's PDF: `null` while it is being made. */
@@ -89,6 +91,7 @@ const fresh = (): SellOrigin => ({
   signedIn: true,
   page: 'open',
   listAsks: [],
+  entryAsks: [],
   hasDraft: false,
   pdf: null,
   leadSegment: 'residential',
@@ -105,6 +108,7 @@ const fresh = (): SellOrigin => ({
 });
 
 export const sell: SellOrigin = fresh();
+const answeredPage = answeredEntriesOf(sell);
 
 async function answered(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
   const answer = sell.writes.shift() ?? { status: 200 };
@@ -261,7 +265,7 @@ function answer(req: IncomingMessage, res: ServerResponse) {
   if (path === '/auth/session' && !sell.signedIn) return send(res, req, 200, { signedIn: false });
   if (answeredCompanyFacts(req, res)) return;
   if (path.startsWith('/customer-link/')) return void answerLink(req, res, path);
-  if (answeredLinks(req, res, path, answered)) return;
+  if ([answeredLinks, answeredPage].some((route) => route(req, res, path, answered))) return;
   if (path === `/leads/${LEAD}/proposals`) return void answerStart(req, res, path);
   if (path === `/leads/${LEAD}`) {
     const lead = priya();

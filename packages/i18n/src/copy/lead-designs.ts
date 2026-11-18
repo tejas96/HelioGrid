@@ -42,6 +42,13 @@ const SECTION = {
   leadClosed: /*i18n*/ { id: 'This lead is closed. Reopen it to change its designs.' },
 } as const;
 
+/**
+ * The placeholder where a design's 3D model picture will be (`CLAUDE.md` §3): the studio draws no
+ * model yet, so it says the preview is coming.
+ */
+const PREVIEW = /*i18n*/ { id: '3D preview coming soon' };
+export const designPreviewWord = (t: T): TranslatedText => t(PREVIEW);
+
 /** A design's status in words — a `Record`, so a status domain adds fails to compile here. */
 const STATUS_WORD: Readonly<Record<DesignStatus, MessageRef>> = {
   draft: /*i18n*/ { id: 'Design draft' },
@@ -64,6 +71,7 @@ export function leadDesignsWords(t: T, formats: LeadDesignsFormats) {
     status: (status: string) => designStatusWord(t, status),
     recommended: t(SECTION.recommended),
     noPanels: t(SECTION.noPanels),
+    preview: designPreviewWord(t),
     line: (design: DesignWire) => {
       const by = design.createdBy;
       const when = formats.ago(design.updatedAt);

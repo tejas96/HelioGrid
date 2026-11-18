@@ -1,8 +1,9 @@
-import type { ProposalRow, TranslatedText } from '@heliogrid/contracts';
-import type { ProposalListFilter, ProposalStanding } from '@heliogrid/domain';
+import type { ProposalEntryDesign, ProposalRow, TranslatedText } from '@heliogrid/contracts';
+import type { ProposalEntryFilter, ProposalStanding } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import { dataTableWords } from './data-table';
+import { designPreviewWord, designStatusWord } from './lead-designs';
 import { proposalStandingWord } from './proposal-after-standing';
 
 type T = Translator['t'];
@@ -41,6 +42,13 @@ const LIST = {
   copyNamed: /*i18n*/ { id: 'Use {number} for another lead' },
   copyDraft: /*i18n*/ { id: 'Use this draft for another lead' },
   more: /*i18n*/ { id: 'Show more' },
+  openDesign: /*i18n*/ { id: 'Open the design for {name}' },
+  openDesignPlain: /*i18n*/ { id: 'Open this design' },
+  noPanels: /*i18n*/ { id: 'No panels yet' },
+  byWhen: /*i18n*/ { id: '{name} · {when}' },
+  you: /*i18n*/ { id: 'You' },
+  empty3dTitle: /*i18n*/ { id: 'No 3D design yet' },
+  empty3dLine: /*i18n*/ { id: 'Pick With 3D design in New proposal.' },
   emptyTitle: /*i18n*/ { id: 'No proposals here' },
   emptyLine: /*i18n*/ { id: 'A proposal starts on a lead, or with New proposal.' },
   loading: /*i18n*/ { id: 'Loading the proposals' },
@@ -49,7 +57,8 @@ const LIST = {
   retry: /*i18n*/ { id: 'Try again' },
 } as const;
 
-const FILTER: Record<ProposalListFilter, MessageRef> = {
+const FILTER: Record<ProposalEntryFilter, MessageRef> = {
+  '3d': /*i18n*/ { id: '3D' },
   all: /*i18n*/ { id: 'All' },
   waiting: /*i18n*/ { id: 'Waiting' },
   draft: /*i18n*/ { id: 'Draft' },
@@ -98,12 +107,32 @@ function latestOf(t: T, formats: ProposalListFormats, row: ProposalRow): Transla
 /** The table's own words, named so the list's words can be typed without reaching into them. */
 export interface ProposalTableWords extends ReturnType<typeof dataTableWords> {}
 
-/** `ProposalList`'s words (`SCR-M06-19`). */
-export function proposalListWords(t: T, formats: ProposalListFormats) {
+/** A design's last change: who and when — "You · just now" for the reader's own. */
+function designLatestOf(
+  t: T,
+  formats: ProposalListFormats,
+  readerId: string | null,
+  row: ProposalEntryDesign,
+): TranslatedText {
+  const when = formats.ago(row.changedAt);
+  const by = row.changedBy;
+  if (by === null) return shownAsSent(when);
+  const name = by.userId === readerId ? t(LIST.you) : by.name;
+  return t(LIST.byWhen, { name, when });
+}
+
+/** A row's customer as the list names it: the name, or that the lead holds none yet. */
+type Named = Pick<ProposalRow, 'customerName'>;
+
+/**
+ * `ProposalList`'s words (`SCR-M06-19`, `T-M05-001b`); `readerId` is who reads, so their own
+ * designs say "You".
+ */
+export function proposalListWords(t: T, formats: ProposalListFormats, readerId: string | null) {
   const table: ProposalTableWords = dataTableWords(t);
   return {
     filterLabel: t(LIST.filterLabel),
-    filter: (filter: ProposalListFilter) => t(FILTER[filter]),
+    filter: (filter: ProposalEntryFilter) => t(FILTER[filter]),
     columns: {
       customer: t(LIST.customer),
       number: t(LIST.number),
@@ -115,7 +144,7 @@ export function proposalListWords(t: T, formats: ProposalListFormats) {
     },
     caption: t(LIST.title),
     standing: (standing: ProposalStanding | (string & {})) => proposalStandingWord(t, standing),
-    customer: (row: ProposalRow) =>
+    customer: (row: Named) =>
       row.customerName === null ? t(LIST.noName) : shownAsSent(row.customerName),
     number: (row: ProposalRow) => (row.number === null ? t(LIST.draft) : shownAsSent(row.number)),
     system: (row: ProposalRow) =>
@@ -132,9 +161,24 @@ export function proposalListWords(t: T, formats: ProposalListFormats) {
       row.customerName === null ? t(LIST.openPlain) : t(LIST.open, { name: row.customerName }),
     copyNamed: (row: ProposalRow) =>
       row.number === null ? t(LIST.copyDraft) : t(LIST.copyNamed, { number: row.number }),
+    /** A design with no proposal yet (`T-M05-001b`): its spoken name, size, status and last change. */
+    design: {
+      open: (row: ProposalEntryDesign) =>
+        row.customerName === null
+          ? t(LIST.openDesignPlain)
+          : t(LIST.openDesign, { name: row.customerName }),
+      noPanels: t(LIST.noPanels),
+      preview: designPreviewWord(t),
+      /** A design's number and price cells: a dash, not yet — never an empty cell. */
+      noFigure: shownAsSent('—'),
+      status: (status: string) => designStatusWord(t, status),
+      latest: (row: ProposalEntryDesign) => designLatestOf(t, formats, readerId, row),
+    },
     more: t(LIST.more),
     emptyTitle: t(LIST.emptyTitle),
     emptyLine: t(LIST.emptyLine),
+    empty3dTitle: t(LIST.empty3dTitle),
+    empty3dLine: t(LIST.empty3dLine),
     loading: t(LIST.loading),
     failedTitle: t(LIST.failedTitle),
     failedMessage: t(LIST.failedMessage),

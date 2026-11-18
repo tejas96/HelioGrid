@@ -1,27 +1,37 @@
+import { PROPOSAL_START_MODES } from '@heliogrid/domain';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.icons';
 import type { ProposalStartSheetProps, StartMode } from './ProposalStart.types';
 
-const MODES: readonly StartMode[] = ['quick', 'full'];
-const MODE_GLYPH: Readonly<Record<StartMode, ShellGlyphName>> = { quick: 'bolt', full: 'lines' };
+const MODE_GLYPH: Readonly<Record<StartMode, ShellGlyphName>> = {
+  quick: 'bolt',
+  full: 'lines',
+  design: 'package',
+};
 
-/** How to build it — Quick or Full: the choice both halves draw, each option with its glyph. */
+/**
+ * How to build it — Quick, Full, or With 3D design for who may design: the choice both halves
+ * draw, each option with its glyph.
+ */
 export function startModeChoice(props: ProposalStartSheetProps) {
   const { words } = props;
+  const modes = PROPOSAL_START_MODES.filter((mode) => mode !== 'design' || props.canDesign);
   return {
     group: {
       ariaLabel: words.how,
       value: props.mode,
       disabled: props.starting,
       onChange: (value: string) => {
-        const mode = MODES.find((candidate) => candidate === value);
+        const mode = modes.find((candidate) => candidate === value);
         if (mode !== undefined) props.onMode(mode);
       },
     },
-    options: MODES.map((mode) => ({
+    options: modes.map((mode) => ({
       value: mode,
       title: words.modes[mode].title,
       description: words.modes[mode].line,
       glyph: MODE_GLYPH[mode],
+      /** Where the model will show: the design's cover, its placeholder until the studio draws one. */
+      preview: mode === 'design' ? words.designPreview : null,
     })),
   };
 }
@@ -31,6 +41,7 @@ export interface StartSheetState {
   readonly open: boolean;
   readonly mode: StartMode;
   setMode(mode: StartMode): void;
+  readonly canDesign: boolean;
   copy(proposalId: string): void;
   go(): void;
   close(): void;
@@ -47,6 +58,7 @@ export function proposalStartSheetPropsOf(
     onClose: sheet.close,
     mode: sheet.mode,
     onMode: sheet.setMode,
+    canDesign: sheet.canDesign,
     onCopy: sheet.copy,
     onStart: sheet.go,
     starting: sheet.starting,

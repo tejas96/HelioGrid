@@ -18,6 +18,39 @@
   flex: none;
 }
 
+/* After the 3D chip: it filters by kind, the chips after it by where a proposal stands. */
+.hg-plist-rule {
+  align-self: center;
+  width: 1px;
+  height: var(--sp-5);
+  margin-inline: var(--sp-1);
+  background: var(--line-strong);
+}
+
+/* A design's customer cell: the model's picture, the name, the 3D mark. */
+.hg-plist-customer {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+}
+
+.hg-plist-thumb {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: calc(var(--sp-10) + var(--sp-1));
+  height: var(--sp-8);
+  border-radius: var(--r-sm);
+  background: var(--canvas-sunken);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+
+/* A 3D card's cover, then its facts. */
+.hg-plist-card .hg-design-cover {
+  margin-block-end: var(--sp-2);
+}
+
 .hg-plist-cards {
   display: flex;
   flex-direction: column;

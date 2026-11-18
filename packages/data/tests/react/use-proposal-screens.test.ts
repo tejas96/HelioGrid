@@ -3,12 +3,12 @@ import type { ComposedMessage } from '@heliogrid/contracts';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { useNewProposalFlow } from '../../src/react/use-new-proposal-flow';
-import { useProposalListScreen } from '../../src/react/use-proposal-list-screen';
 import {
   type ProposalTrackMoves,
   useProposalTrackScreen,
 } from '../../src/react/use-proposal-track-screen';
-import { LEAD, PROPOSAL, proposalDetail, proposalRow } from './proposals-fixtures';
+import { nowhere, recorded } from './proposal-page-moves';
+import { DESIGN, LEAD, PROPOSAL, proposalDetail, proposalRow } from './proposals-fixtures';
 import { provided, sell } from './proposals-origin';
 
 /**
@@ -177,44 +177,6 @@ describe('the track screen — a share is the act itself, and hands off on its a
   });
 });
 
-describe('the list — a draft opens in the builder, any other on its own page', () => {
-  it.each([
-    ['a draft never generated', 'draft', `builder:${PROPOSAL}`],
-    ['a shared proposal', 'shared', `proposal:${PROPOSAL}`],
-    ['an accepted proposal', 'accepted', `proposal:${PROPOSAL}`],
-  ] as const)('%s', (_, standing, expected) => {
-    const opened: string[] = [];
-    const view = renderHook(
-      () =>
-        useProposalListScreen({
-          toBuilder: (id) => void opened.push(`builder:${id}`),
-          toProposal: (id) => void opened.push(`proposal:${id}`),
-        }),
-      { wrapper: provided() },
-    );
-
-    act(() => view.result.current.open(proposalRow(PROPOSAL, standing)));
-
-    expect(opened).toEqual([expected]);
-  });
-
-  it('the rows and the chips arrive as one list, and New proposal is offered only with the head', async () => {
-    const view = renderHook(
-      () => useProposalListScreen({ toBuilder: () => undefined, toProposal: () => undefined }),
-      { wrapper: provided() },
-    );
-    expect(view.result.current.read.kind).toBe('loading');
-    expect(view.result.current.canStart).toBe(false);
-
-    await waitFor(() => expect(view.result.current.read.kind).toBe('ready'));
-
-    const { read } = view.result.current;
-    if (read.kind !== 'ready') throw new Error('the list is not in');
-    expect(read.value.rows.items.length).toBe(read.value.rows.totalCount);
-    expect(read.value.counts.all).toBeGreaterThan(0);
-  });
-});
-
 describe('New proposal — a lead first, then the start sheet, then the builder', () => {
   it.each([
     ['a home lead picks Quick first', 'residential', 'residential', 'quick', true],
@@ -230,9 +192,12 @@ describe('New proposal — a lead first, then the start sheet, then the builder'
   ] as const)('%s', async (_, hint, held, mode, quickMode) => {
     sell.leadSegment = held;
     const built: string[] = [];
-    const view = renderHook(() => useNewProposalFlow({ toBuilder: (id) => void built.push(id) }), {
-      wrapper: provided(),
-    });
+    const view = renderHook(
+      () => useNewProposalFlow({ ...nowhere(), toBuilder: (id) => void built.push(id) }),
+      {
+        wrapper: provided(),
+      },
+    );
     act(() => view.result.current.openNew());
     expect(view.result.current.stage).toBe('capture');
 
@@ -252,9 +217,12 @@ describe('New proposal — a lead first, then the start sheet, then the builder'
 
   it('one tap changes the mode the lead picked first', async () => {
     const built: string[] = [];
-    const view = renderHook(() => useNewProposalFlow({ toBuilder: (id) => void built.push(id) }), {
-      wrapper: provided(),
-    });
+    const view = renderHook(
+      () => useNewProposalFlow({ ...nowhere(), toBuilder: (id) => void built.push(id) }),
+      {
+        wrapper: provided(),
+      },
+    );
     act(() => view.result.current.openNew());
     act(() => view.result.current.startOn(LEAD, 'residential'));
     act(() => view.result.current.start.setMode('full'));
@@ -263,8 +231,25 @@ describe('New proposal — a lead first, then the start sheet, then the builder'
     expect(sell.sent.at(-1)?.body).toMatchObject({ quickMode: false });
   });
 
+  it('With 3D design makes the lead’s design and opens its Site details, with no proposal', async () => {
+    const opened: string[] = [];
+    const view = renderHook(() => useNewProposalFlow(recorded(opened)), { wrapper: provided() });
+    act(() => view.result.current.openNew());
+    act(() => view.result.current.startOn(LEAD, 'residential'));
+    // The design grant is read from the session, once it is in.
+    await waitFor(() => expect(view.result.current.start.canDesign).toBe(true));
+    act(() => view.result.current.start.setMode('design'));
+    act(() => view.result.current.start.go());
+    await waitFor(() => expect(opened).toEqual([`site:${DESIGN}`]));
+
+    expect(sell.sent.map((write) => write.path)).toEqual([`/leads/${LEAD}/designs`]);
+    expect(sell.sent.at(-1)?.body).toMatchObject({ copyOf: null });
+    expect(sell.sent.at(-1)?.key).toEqual(expect.any(String));
+    expect(view.result.current.stage).toBeNull();
+  });
+
   it('closing the start sheet starts nothing', () => {
-    const view = renderHook(() => useNewProposalFlow({ toBuilder: () => undefined }), {
+    const view = renderHook(() => useNewProposalFlow(nowhere()), {
       wrapper: provided(),
     });
     act(() => view.result.current.openNew());
@@ -276,9 +261,12 @@ describe('New proposal — a lead first, then the start sheet, then the builder'
 
   it('closing the capture starts nothing', () => {
     const built: string[] = [];
-    const view = renderHook(() => useNewProposalFlow({ toBuilder: (id) => void built.push(id) }), {
-      wrapper: provided(),
-    });
+    const view = renderHook(
+      () => useNewProposalFlow({ ...nowhere(), toBuilder: (id) => void built.push(id) }),
+      {
+        wrapper: provided(),
+      },
+    );
     act(() => view.result.current.openNew());
 
     act(() => view.result.current.close());
@@ -290,9 +278,12 @@ describe('New proposal — a lead first, then the start sheet, then the builder'
 
   it('a copy carries its source to the lead picked', async () => {
     const built: string[] = [];
-    const view = renderHook(() => useNewProposalFlow({ toBuilder: (id) => void built.push(id) }), {
-      wrapper: provided(),
-    });
+    const view = renderHook(
+      () => useNewProposalFlow({ ...nowhere(), toBuilder: (id) => void built.push(id) }),
+      {
+        wrapper: provided(),
+      },
+    );
     const source = proposalRow('01a30000-0000-7000-8000-00000000b009', 'shared');
     act(() => view.result.current.openCopy(source));
     expect(view.result.current.stage).toBe('pick');

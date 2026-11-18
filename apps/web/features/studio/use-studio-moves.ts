@@ -7,10 +7,13 @@ export function useStudioMoves() {
   const router = useRouter();
   return {
     toLeads: () => router.push(DOOR_PATH.leads),
+    toProposals: () => router.push(DOOR_PATH.proposals),
     toLead: (leadId: string) => router.push(leadPath(leadId)),
     /** The design's own page, in place of the Site details that started it: Back skips the form. */
-    toDesign: (designId: string) => router.replace(designPath(designId)),
-    toSiteDetails: (designId: string) => router.push(designSitePath(designId)),
+    toDesign: (designId: string, fromProposals = false) =>
+      router.replace(designPath(designId, fromProposals)),
+    toSiteDetails: (designId: string, fromProposals = false) =>
+      router.push(designSitePath(designId, fromProposals)),
   };
 }
 

@@ -37,8 +37,8 @@ section) and the Proposals list with its start sheet (`M06-05`, entry 1).
 
 | Part | Holds | Status |
 |---|---|---|
-| `T-M05-001a` | the `design` record, the roles, Create design on the lead, the Designs section, Site details with the address search and the pin map, the design page | open |
-| `T-M05-001b` | the Proposals list's 3D chip and 3D row, and With 3D design in the start sheet | open |
+| `T-M05-001a` | the `design` record, the roles, Create design on the lead, the Designs section, Site details with the address search and the pin map, the design page | done |
+| `T-M05-001b` | the Proposals list's 3D chip and 3D row, and With 3D design in the start sheet | done |
 
 **Roles.** `studio.create_edit_designs` is held by the EPC Owner, the Design Engineer, the Sales
 Manager and the Sales Executive. Reading a design follows the lead's visibility, with no grant of
@@ -64,9 +64,9 @@ Google's map now.
 - The studio's contract and domain files import no CRM, proposal or project code, and the check fails on a planted bad import.
 
 **DONE WHEN — part b:**
-- The Proposals list has a 3D chip first in its filter row, with its count. On, the list holds 3D rows only.
+- The Proposals list has a 3D chip first in its filter row, with its count. One chip is on at a time; with 3D on, the list holds 3D rows only.
 - A design with no proposal shows as a 3D row: the customer, the 3D mark, the design's size or "No panels yet", a dash for the number and the price, the design's status, who and when. A tap opens the design.
-- The start sheet has a third option, With 3D design, after Quick and Full, with Quick picked. Start makes a design and opens Site details; Back returns to Proposals with the new draft first. The option shows where the sheet opens: the Proposals list and the lead's Proposals section.
+- The start sheet has a third option, With 3D design, after Quick and Full, offered to who may design; the first pick stays the lead's own (Quick for a home, Full for any other, `T-M06-001`). Start makes a design and opens Site details; Back returns to Proposals with the new draft first. The option shows where the sheet opens: the Proposals list and the lead's Proposals section.
 - An app version from before this part still reads the Proposals list.
 - Roles and the other-company 404 are as in part a.
 

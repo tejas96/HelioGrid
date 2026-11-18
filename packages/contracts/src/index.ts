@@ -136,6 +136,7 @@ export * from './proposals/acts';
 export * from './proposals/checklist';
 export * from './proposals/detail';
 export * from './proposals/document';
+export * from './proposals/entries';
 export * from './proposals/field-set';
 export * from './proposals/money';
 export * from './proposals/proposals';

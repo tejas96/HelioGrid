@@ -16,7 +16,14 @@ import './studio.css';
  * built it names the design, says who it is for and where the site is, and says plainly what comes
  * next — with the way to the Site details for a reader who may change them.
  */
-export function DesignScreen({ designId }: { designId: string }) {
+export function DesignScreen({
+  designId,
+  fromProposals = false,
+}: {
+  designId: string;
+  /** The Proposals page opened it: the way back returns there (`T-M05-001b`). */
+  fromProposals?: boolean;
+}) {
   const t = useTranslate();
   const moves = useStudioMoves();
   const { read } = useDesignScreen(designId);
@@ -36,9 +43,10 @@ export function DesignScreen({ designId }: { designId: string }) {
         onLead={() => {
           if (detail !== null) moves.toLead(detail.subject.leadId);
         }}
+        fromProposals={fromProposals ? { label: page.proposals, onOpen: moves.toProposals } : null}
       />
       {read.kind === 'ready' ? (
-        <DesignHolding detail={read.value} moves={moves} />
+        <DesignHolding detail={read.value} moves={moves} fromProposals={fromProposals} />
       ) : (
         <LeadDetailStates
           read={read}
@@ -52,7 +60,15 @@ export function DesignScreen({ designId }: { designId: string }) {
 }
 
 /** What stands where the studio will: the site, what comes next, and the one way on. */
-function DesignHolding({ detail, moves }: { detail: DesignDetail; moves: StudioMoves }) {
+function DesignHolding({
+  detail,
+  moves,
+  fromProposals,
+}: {
+  detail: DesignDetail;
+  moves: StudioMoves;
+  fromProposals: boolean;
+}) {
   const words = designPageWords(useTranslate());
   const { design, site, subject } = detail;
   return (
@@ -68,7 +84,11 @@ function DesignHolding({ detail, moves }: { detail: DesignDetail; moves: StudioM
       }
       action={
         detail.canEdit ? (
-          <Button variant="secondary" size="lg" onClick={() => moves.toSiteDetails(design.id)}>
+          <Button
+            variant="secondary"
+            size="lg"
+            onClick={() => moves.toSiteDetails(design.id, fromProposals)}
+          >
             {words.editSite}
           </Button>
         ) : (

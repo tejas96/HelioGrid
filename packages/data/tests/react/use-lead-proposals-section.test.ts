@@ -38,7 +38,12 @@ function leadWith(items: LeadProposals['items']): LeadDetail {
 }
 
 function mounted(lead: LeadDetail) {
-  const moves = { toBuilder: vi.fn(), toProposal: vi.fn(), toLead: vi.fn() };
+  const moves = {
+    toBuilder: vi.fn(),
+    toProposal: vi.fn(),
+    toLead: vi.fn(),
+    toSiteDetails: vi.fn(),
+  };
   const view = renderHook(() => useLeadProposalsSection(LEAD, lead, moves), {
     wrapper: provided(),
   });

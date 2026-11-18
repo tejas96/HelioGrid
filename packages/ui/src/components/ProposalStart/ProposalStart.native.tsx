@@ -6,6 +6,7 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
+import { DesignCover } from '../DesignCover/DesignCover.native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
@@ -93,9 +94,10 @@ export function ProposalStartSheet(props: ProposalStartSheetProps) {
       <View style={styles.body}>
         <OptionCardGroup
           {...choice.group}
-          options={choice.options.map(({ glyph, ...option }) => ({
+          options={choice.options.map(({ glyph, preview, ...option }) => ({
             ...option,
             icon: <ShellGlyph name={glyph} size="md" />,
+            ...(preview === null ? {} : { content: <DesignCover word={preview} /> }),
           }))}
         />
         <Sources props={props} />

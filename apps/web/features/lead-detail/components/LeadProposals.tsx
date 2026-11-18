@@ -5,8 +5,7 @@ import {
   leadProposalsWords,
   proposalActFailureWords,
   proposalMoments,
-  proposalStartSources,
-  proposalStartWords,
+  proposalStartSheetSaid,
   proposalWithdrawWords,
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
@@ -15,6 +14,7 @@ import {
   type LeadProposalsPanel,
   ProposalStartSheet,
   ProposalWithdrawSheet,
+  proposalStartSheetPropsOf,
   useFormat,
 } from '@heliogrid/ui';
 
@@ -75,30 +75,20 @@ export function LeadProposalSheets({
 }) {
   const { t, formats } = useFormats();
   const { start, withdraw } = section;
-  const startWords = proposalStartWords(t, {
+  const said = proposalStartSheetSaid(t, formats, {
     name: lead.lead.name ?? '',
     segment: lead.lead.segment,
+    ...start,
   });
   const chosen = section.section?.items.find((item) => item.id === withdraw.proposalId) ?? null;
   const sheet = chosen === null ? null : proposalWithdrawWords(t, formats, chosen);
   return (
     <>
-      <ProposalStartSheet
-        open={start.open}
-        onClose={start.close}
-        words={startWords}
-        mode={start.mode}
-        onMode={start.setMode}
-        sources={proposalStartSources(t, formats, start.recent)}
-        onCopy={start.copy}
-        onStart={start.go}
-        starting={start.starting}
-        {...failureOf(proposalActFailureWords(t, start.failure))}
-      />
+      <ProposalStartSheet {...proposalStartSheetPropsOf(start, said)} />
       <ProposalWithdrawSheet
         open={sheet !== null}
         onClose={withdraw.close}
-        close={startWords.closeLabel}
+        close={said.words.closeLabel}
         words={sheet?.words ?? null}
         sending={withdraw.sending}
         failure={proposalActFailureWords(t, withdraw.failure)}
@@ -107,9 +97,4 @@ export function LeadProposalSheets({
       />
     </>
   );
-}
-
-/** The start sheet takes its failure only where there is one. */
-function failureOf<Words>(failure: Words | null): { failure?: Words } {
-  return failure === null ? {} : { failure };
 }

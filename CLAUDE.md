@@ -69,6 +69,19 @@ colour swapped for another existing token, or a bug inside one part) skips the s
 owner a before/after screenshot at phone and desktop width; its frame stays the approved design or
 the sample the owner picked for that screen. A token's value is §10's and waits for the owner.
 
+**Building UI from its design** (the approved design or the picked sample):
+- Build what it draws, with its sizes. Never drop a part silently.
+- A part whose feature is not built yet is a placeholder in its place that tells the user it is
+  coming (a 3D row's model picture: "3D preview coming soon"). The task that builds the feature
+  replaces it.
+- A mistake in the design (a broken rule, a missing state, a misfit) is fixed in the UI, never in
+  the design.
+- Before the report: the running screen beside its design, at the design's phone and desktop sizes,
+  in one picture.
+- The report lists only what is genuinely wrong or different, one line each: the issue in plain
+  words → the fix, with the recommended option first when there is a choice. What matches gets no
+  line.
+
 A shared part is reused by importing it, extending its one contract (Law 7) or lifting it into its
 shared package first (Law 5) — never by copying it. The session decides when a helper agent or a
 fork helps. Two agents never edit the same file at once; after each helper, read `git status` and

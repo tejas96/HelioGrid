@@ -357,7 +357,7 @@ msgid "{count, plural, =0 {free} one {# live project} other {# live projects}}"
 msgstr "{count, plural, =0 {खाली} one {# चालू प्रोजेक्ट} other {# चालू प्रोजेक्ट}}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:20
+#: src/copy/proposal-after-list.ts:21
 msgid "{count, plural, =0 {None waiting for an answer} one {# waiting for an answer} other {# waiting for an answer}} · {amount} in all"
 msgstr "{count, plural, =0 {कोई जवाब के इंतज़ार में नहीं} one {# जवाब के इंतज़ार में} other {# जवाब के इंतज़ार में}} · कुल {amount}"
 
@@ -854,7 +854,7 @@ msgid "{count, plural, one {Fix # issue to share} other {Fix # issues to share}}
 msgstr "{count, plural, one {शेयर करने के लिए # समस्या ठीक करें} other {शेयर करने के लिए # समस्याएँ ठीक करें}}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:51
+#: src/copy/proposal-builder-flow.ts:54
 msgid "{count, plural, one {Fix # thing first} other {Fix # things first}}"
 msgstr "{count, plural, one {पहले # चीज़ ठीक करें} other {पहले # चीज़ें ठीक करें}}"
 
@@ -1255,7 +1255,7 @@ msgid "{done} done · {notNeeded} not needed"
 msgstr "{done} पूरे · {notNeeded} ज़रूरी नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:61
+#: src/copy/proposal-after-list.ts:70
 msgid "{done} of {of} steps · saved {when}"
 msgstr "{of} में से {done} चरण · {when} सहेजा"
 
@@ -1922,6 +1922,7 @@ msgstr "{name} · {time}"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-designs.ts:25
+#: src/copy/proposal-after-list.ts:48
 msgid "{name} · {when}"
 msgstr "{name} · {when}"
 
@@ -2056,7 +2057,7 @@ msgid "{name} can add it. You can still send."
 msgstr "{name} इसे जोड़ सकते हैं। आप फिर भी भेज सकते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:97
+#: src/copy/proposal-builder-flow.ts:100
 msgid "{name} can change the plan."
 msgstr "{name} प्लान बदल सकते हैं।"
 
@@ -2131,7 +2132,7 @@ msgid "{name} has waited a day with no owner"
 msgstr "{name} एक दिन से किसी को नहीं सौंपी गई"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:205
+#: src/copy/proposal-after-list.ts:249
 msgid "{name} is already a lead"
 msgstr "{name} पहले से एक लीड है"
 
@@ -2479,12 +2480,12 @@ msgid "{page} of {total}"
 msgstr "{total} में से {page}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:85
+#: src/copy/proposal-builder-flow.ts:88
 msgid "{pages, plural, one {# page} other {# pages}} · {language} · version {version}"
 msgstr "{pages, plural, one {# पेज} other {# पेज}} · {language} · वर्शन {version}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:67
+#: src/copy/proposal-builder-flow.ts:70
 msgid "{pages, plural, one {Making # page and a number…} other {Making # pages and a number…}}"
 msgstr "{pages, plural, one {# पेज और नंबर बन रहा है…} other {# पेज और नंबर बन रहे हैं…}}"
 
@@ -2948,7 +2949,7 @@ msgstr "{total} में से {shown} {noun} इन फ़िल्टर स
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-lead.ts:28
-#: src/copy/proposal-after-list.ts:34
+#: src/copy/proposal-after-list.ts:35
 #: src/copy/proposal-after-versions.ts:59
 #: src/copy/proposal-builder-system.ts:28
 #: src/copy/proposal-document-head.ts:6
@@ -2958,7 +2959,7 @@ msgid "{size} kW"
 msgstr "{size} kW"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:84
+#: src/copy/proposal-builder-flow.ts:87
 msgid "{size} kW · {amount}"
 msgstr "{size} kW · {amount}"
 
@@ -3055,7 +3056,7 @@ msgid "{sum} of {target} — {remainder}"
 msgstr "{target} में से {sum} — {remainder}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:26
+#: src/copy/proposal-builder-flow.ts:29
 msgid "{summary} · {standing, select, draft {saved {when}} ready {made {when}} accepted {accepted} declined {declined} won {won} withdrawn {withdrawn} replaced {replaced} other {sent {when}}}"
 msgstr "{summary} · {standing, select, draft {{when} सहेजा} ready {{when} बना} accepted {स्वीकार किया} declined {मना किया} won {जीता} withdrawn {वापस लिया} replaced {बदला गया} other {{when} भेजा}}"
 
@@ -3233,7 +3234,7 @@ msgid "{used} of {limit} minutes used"
 msgstr "{limit} में से {used} मिनट इस्तेमाल हुए"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:88
+#: src/copy/proposal-builder-flow.ts:91
 msgid "{used} of {limit} proposals made this month"
 msgstr "इस महीने {limit} में से {used} प्रस्ताव बने"
 
@@ -3509,6 +3510,16 @@ msgid "3–6 months"
 msgstr "3–6 महीने"
 
 #. js-lingui-explicit-id
+#: src/copy/proposal-after-list.ts:61
+msgid "3D"
+msgstr "3D"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-designs.ts:49
+msgid "3D preview coming soon"
+msgstr "3D प्रीव्यू जल्द आ रहा है"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:91
 msgid "7 days left in your trial"
 msgstr "आपके ट्रायल में 7 दिन बाकी"
@@ -3534,7 +3545,7 @@ msgid "A {size} kW {type} rooftop system for your site in {place}"
 msgstr "{place} में आपकी साइट के लिए {size} kW का {type} रूफ़टॉप सिस्टम"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:96
+#: src/copy/proposal-builder-flow.ts:99
 msgid "A bigger plan lets you generate now."
 msgstr "बड़े प्लान से आप अभी प्रस्ताव बना सकते हैं।"
 
@@ -3599,12 +3610,12 @@ msgid "A company name is needed — it goes on every proposal you send."
 msgstr "कंपनी का नाम ज़रूरी है — यह आपके हर प्रस्ताव पर जाता है।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:29
+#: src/copy/proposal-builder-flow.ts:32
 msgid "A copy brings every step filled. {name}’s details come from this lead."
 msgstr "कॉपी में हर चरण भरा हुआ आता है। {name} की जानकारी इसी लीड से आती है।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:170
+#: src/copy/proposal-after-list.ts:214
 msgid "A copy brings every step filled. The customer’s name, phone and address come from the lead you pick."
 msgstr "कॉपी में हर चरण भरा हुआ आता है। ग्राहक का नाम, फ़ोन और पता आपकी चुनी लीड से आते हैं।"
 
@@ -3727,7 +3738,7 @@ msgid "A named contact"
 msgstr "एक तय संपर्क व्यक्ति"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:168
+#: src/copy/proposal-after-list.ts:212
 msgid "A new customer"
 msgstr "नया ग्राहक"
 
@@ -3812,7 +3823,7 @@ msgid "A proposal is made from a design."
 msgstr "प्रस्ताव डिज़ाइन से बनता है।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:45
+#: src/copy/proposal-after-list.ts:53
 msgid "A proposal starts on a lead, or with New proposal."
 msgstr "प्रस्ताव किसी लीड से, या ‘नया प्रस्ताव’ से शुरू होता है।"
 
@@ -4107,13 +4118,13 @@ msgstr "यह प्रस्ताव स्वीकार करें?"
 
 #. js-lingui-explicit-id
 #: src/copy/owner-dashboard.ts:98
-#: src/copy/proposal-after-list.ts:56
+#: src/copy/proposal-after-list.ts:65
 #: src/copy/proposal-after-standing.ts:15
 msgid "Accepted"
 msgstr "स्वीकृत"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:67
+#: src/copy/proposal-after-list.ts:76
 msgid "Accepted {when} · confirm won"
 msgstr "{when} स्वीकार किया · जीत पक्की करें"
 
@@ -4548,7 +4559,7 @@ msgid "Adding {name}"
 msgstr "{name} जोड़ी जा रही है"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:44
+#: src/copy/proposal-builder-flow.ts:47
 msgid "address"
 msgstr "पता"
 
@@ -4635,7 +4646,7 @@ msgstr "एजेंट की बारी"
 #: src/copy/leads-list.ts:40
 #: src/copy/list-top.ts:29
 #: src/copy/price-book.ts:26
-#: src/copy/proposal-after-list.ts:53
+#: src/copy/proposal-after-list.ts:62
 #: src/copy/role-matrix.ts:97
 #: src/copy/team.ts:13
 msgid "All"
@@ -5153,7 +5164,7 @@ msgid "Asked for a change"
 msgstr "बदलाव माँगा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:66
+#: src/copy/proposal-after-list.ts:75
 msgid "Asked for a change {when}"
 msgstr "{when} बदलाव माँगा"
 
@@ -5421,7 +5432,7 @@ msgid "Bank"
 msgstr "बैंक"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:41
+#: src/copy/proposal-builder-flow.ts:44
 msgid "bank details"
 msgstr "बैंक विवरण"
 
@@ -6306,7 +6317,7 @@ msgid "Charges"
 msgstr "शुल्क"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:23
+#: src/copy/proposal-builder-flow.ts:24
 msgid "Check every page yourself. Best for a factory or an office."
 msgstr "हर पेज खुद जाँचें। फ़ैक्टरी या ऑफ़िस के लिए सबसे अच्छा।"
 
@@ -6319,8 +6330,8 @@ msgstr "साइट पर चेक-इन और चेक-आउट कर�
 #: src/copy/lead-designs.ts:39
 #: src/copy/projects.ts:28
 #: src/copy/proposal-after-links.ts:37
-#: src/copy/proposal-after-list.ts:48
-#: src/copy/proposal-after-list.ts:176
+#: src/copy/proposal-after-list.ts:56
+#: src/copy/proposal-after-list.ts:220
 #: src/copy/proposal-after-messages.ts:38
 #: src/copy/proposal-after-versions.ts:54
 #: src/copy/site-details.ts:74
@@ -6365,7 +6376,7 @@ msgid "Checking the documents"
 msgstr "दस्तावेज़ जाँचे जा रहे हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:55
+#: src/copy/proposal-builder-flow.ts:58
 msgid "Checking the proposal"
 msgstr "प्रस्ताव जाँचा जा रहा है"
 
@@ -6573,7 +6584,7 @@ msgid "Clear target"
 msgstr "लक्ष्य हटाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:167
+#: src/copy/proposal-after-list.ts:211
 #: src/copy/proposal-builder-sheets.ts:39
 msgid "Clear the search"
 msgstr "खोज साफ़ करें"
@@ -6605,10 +6616,10 @@ msgstr "बंद करें"
 #: src/copy/proposal-after-in-force.ts:16
 #: src/copy/proposal-after-lead.ts:111
 #: src/copy/proposal-after-links.ts:34
-#: src/copy/proposal-after-list.ts:164
+#: src/copy/proposal-after-list.ts:208
 #: src/copy/proposal-after-messages.ts:19
-#: src/copy/proposal-builder-flow.ts:34
-#: src/copy/proposal-builder-flow.ts:99
+#: src/copy/proposal-builder-flow.ts:37
+#: src/copy/proposal-builder-flow.ts:102
 #: src/copy/proposal-builder-frame.ts:84
 #: src/copy/proposal-builder-sheets.ts:54
 #: src/copy/proposal-defaults-words.ts:66
@@ -6647,7 +6658,7 @@ msgid "Close this and nothing is created."
 msgstr "इसे बंद करें तो कुछ नहीं बनेगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:57
+#: src/copy/proposal-after-list.ts:66
 msgid "Closed"
 msgstr "बंद"
 
@@ -7002,7 +7013,7 @@ msgid "Copied — rename it if your variant differs."
 msgstr "कॉपी किया गया — आपका वेरिएंट अलग हो तो नाम बदलें।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:178
+#: src/copy/proposal-after-list.ts:222
 msgid "Copied for {name}. Every step is filled."
 msgstr "{name} के लिए कॉपी हुआ। हर चरण भरा है।"
 
@@ -7019,7 +7030,7 @@ msgstr "कॉपी हो गया। अपने ऐप में पेस
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:98
 #: src/copy/project-handover.ts:41
-#: src/copy/proposal-after-list.ts:31
+#: src/copy/proposal-after-list.ts:32
 msgid "Copy"
 msgstr "कॉपी करें"
 
@@ -7029,7 +7040,7 @@ msgid "Copy as a variant"
 msgstr "वेरिएंट के रूप में कॉपी करें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:163
+#: src/copy/proposal-after-list.ts:207
 msgid "Copy for which customer?"
 msgstr "किस ग्राहक के लिए कॉपी करें?"
 
@@ -7532,7 +7543,7 @@ msgstr "कस्टम"
 
 #. js-lingui-explicit-id
 #: src/copy/project-detail.ts:73
-#: src/copy/proposal-after-list.ts:25
+#: src/copy/proposal-after-list.ts:26
 msgid "Customer"
 msgstr "ग्राहक"
 
@@ -7646,7 +7657,7 @@ msgid "Customers merged"
 msgstr "ग्राहक मिलाए गए"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:95
+#: src/copy/proposal-builder-flow.ts:98
 msgid "Customers open and answer their links"
 msgstr "ग्राहक अपने लिंक खोलकर जवाब देते हैं"
 
@@ -7832,7 +7843,7 @@ msgid "Declined"
 msgstr "अस्वीकृत"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:68
+#: src/copy/proposal-after-list.ts:77
 msgid "Declined {when}"
 msgstr "{when} अस्वीकार किया"
 
@@ -7949,7 +7960,7 @@ msgid "Design {number}"
 msgstr "डिज़ाइन {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:47
+#: src/copy/lead-designs.ts:54
 msgid "Design draft"
 msgstr "डिज़ाइन का ड्राफ़्ट"
 
@@ -8273,8 +8284,8 @@ msgid "Download PDF"
 msgstr "PDF डाउनलोड करें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:33
-#: src/copy/proposal-after-list.ts:55
+#: src/copy/proposal-after-list.ts:34
+#: src/copy/proposal-after-list.ts:64
 #: src/copy/proposal-after-standing.ts:10
 #: src/copy/proposal-builder-frame.ts:69
 #: src/copy/proposal-document-cover.ts:36
@@ -8291,6 +8302,11 @@ msgstr "ठीक करने के लिए नक्शा खींचे�
 #: src/copy/site-details.ts:42
 msgid "Drag the map until the pin is on the right place."
 msgstr "नक्शा तब तक खींचें जब तक पिन सही जगह पर न आ जाए।"
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-builder-flow.ts:26
+msgid "Draw the roof. The system sizes it and fills the proposal."
+msgstr "छत बनाइए। सिस्टम साइज़ तय करता है और प्रस्ताव भरता है।"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:26
@@ -8488,7 +8504,7 @@ msgid "Edit {who}"
 msgstr "{who} बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:93
+#: src/copy/proposal-builder-flow.ts:96
 msgid "Edit and share the proposals you have"
 msgstr "अपने मौजूदा प्रस्ताव बदलें और शेयर करें"
 
@@ -8812,7 +8828,7 @@ msgid "Every plan"
 msgstr "हर प्लान"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:90
+#: src/copy/proposal-builder-flow.ts:93
 msgid "Every proposal in this plan’s month is made."
 msgstr "इस प्लान के महीने के सभी प्रस्ताव बन चुके हैं।"
 
@@ -9089,7 +9105,7 @@ msgid "Fills the first page"
 msgstr "पूरे पहले पेज पर दिखती है"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:24
+#: src/copy/proposal-after-list.ts:25
 msgid "Filter"
 msgstr "फ़िल्टर"
 
@@ -9478,7 +9494,7 @@ msgid "From your signup"
 msgstr "आपके साइनअप से"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:22
+#: src/copy/proposal-builder-flow.ts:23
 msgid "Full · 11 steps"
 msgstr "पूरा · 11 चरण"
 
@@ -9503,7 +9519,7 @@ msgid "Generate · {count} to fix"
 msgstr "बनाएँ · {count} ठीक करना है"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:60
+#: src/copy/proposal-builder-flow.ts:63
 msgid "Generate anyway"
 msgstr "फिर भी बनाएँ"
 
@@ -9523,7 +9539,7 @@ msgid "Generate makes version 1"
 msgstr "प्रस्ताव बनाने पर वर्शन 1 बनता है"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:59
+#: src/copy/proposal-builder-flow.ts:62
 #: src/copy/proposal-builder-frame.ts:57
 msgid "Generate proposal"
 msgstr "प्रस्ताव बनाएँ"
@@ -9535,13 +9551,13 @@ msgid "Generated"
 msgstr "बनाया गया"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:62
+#: src/copy/proposal-after-list.ts:71
 #: src/copy/proposal-after-versions.ts:36
 msgid "Generated {when} · not shared yet"
 msgstr "{when} बना · अभी शेयर नहीं किया"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:74
+#: src/copy/proposal-builder-flow.ts:77
 msgid "Generating"
 msgstr "बन रहा है"
 
@@ -9638,7 +9654,7 @@ msgid "Go to {name}. What you typed is not saved."
 msgstr "{name} पर जाएँ। आपने जो लिखा वह सहेजा नहीं जाएगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:58
+#: src/copy/proposal-builder-flow.ts:61
 msgid "Go to {step}"
 msgstr "{step} पर जाएँ"
 
@@ -10308,7 +10324,7 @@ msgid "How this is worked out"
 msgstr "यह कैसे निकाला गया"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:17
+#: src/copy/proposal-builder-flow.ts:18
 msgid "How to build it"
 msgstr "इसे कैसे बनाएँ"
 
@@ -10879,7 +10895,7 @@ msgid "It comes back at 09:00 that day, with a follow-up task."
 msgstr "यह उस दिन 09:00 बजे फ़ॉलो-अप काम के साथ लौटती है।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:70
+#: src/copy/proposal-builder-flow.ts:73
 msgid "It gets its number now. You can still make a new version later."
 msgstr "इसे अभी नंबर मिलता है। बाद में भी नया वर्शन बना सकते हैं।"
 
@@ -11198,7 +11214,7 @@ msgid "Kept reports"
 msgstr "रखी गई रिपोर्ट"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:62
+#: src/copy/proposal-builder-flow.ts:65
 msgid "Kept with version {version}. The versions page shows it first."
 msgstr "वर्शन {version} के साथ रखा जाता है। वर्शन पेज पर यह सबसे पहले दिखता है।"
 
@@ -11328,7 +11344,7 @@ msgid "Later"
 msgstr "बाद में"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:30
+#: src/copy/proposal-after-list.ts:31
 msgid "Latest"
 msgstr "सबसे नया"
 
@@ -11485,12 +11501,12 @@ msgid "Left out of the PDF · {title}"
 msgstr "PDF में शामिल नहीं · {title}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:81
+#: src/copy/proposal-builder-flow.ts:84
 msgid "Left out, as the company has not added them: {facts}. {owner} can add them."
 msgstr "छोड़ा गया, क्योंकि कंपनी ने ये नहीं जोड़े हैं: {facts}। {owner} इन्हें जोड़ सकते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:78
+#: src/copy/proposal-builder-flow.ts:81
 msgid "Left out, as the company has not added them: {facts}. Add them in Business profile."
 msgstr "छोड़ा गया, क्योंकि कंपनी ने ये नहीं जोड़े हैं: {facts}। इन्हें व्यवसाय प्रोफ़ाइल में जोड़ें।"
 
@@ -11871,7 +11887,7 @@ msgid "Loading the proposal preview"
 msgstr "प्रस्ताव का पूर्वावलोकन लोड हो रहा है"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:46
+#: src/copy/proposal-after-list.ts:54
 msgid "Loading the proposals"
 msgstr "प्रस्ताव लोड हो रहे हैं"
 
@@ -11957,7 +11973,7 @@ msgstr "आपका काम लोड हो रहा है"
 
 #. js-lingui-explicit-id
 #: src/copy/leads-list.ts:29
-#: src/copy/proposal-after-list.ts:174
+#: src/copy/proposal-after-list.ts:218
 msgid "Loading your leads"
 msgstr "आपकी लीड्स लोड हो रही हैं"
 
@@ -11992,7 +12008,7 @@ msgid "Loading your proposal template"
 msgstr "आपका प्रस्ताव टेम्पलेट लोड हो रहा है"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:33
+#: src/copy/proposal-builder-flow.ts:36
 msgid "Loading your recent proposals"
 msgstr "आपके हाल के प्रस्ताव लोड हो रहे हैं"
 
@@ -12053,7 +12069,7 @@ msgid "Logging the enquiry…"
 msgstr "पूछताछ दर्ज हो रही है…"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:42
+#: src/copy/proposal-builder-flow.ts:45
 msgid "logo"
 msgstr "लोगो"
 
@@ -12179,12 +12195,12 @@ msgid "Make a new address for {label}. The old one keeps working."
 msgstr "{label} के लिए नया पता बनाएँ। पुराना भी चलता रहेगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:37
+#: src/copy/proposal-after-list.ts:38
 msgid "Make a new version"
 msgstr "नया वर्शन बनाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:38
+#: src/copy/proposal-after-list.ts:39
 msgid "Make a new version of {number}"
 msgstr "{number} का नया वर्शन बनाएँ"
 
@@ -13050,7 +13066,7 @@ msgid "Name only"
 msgstr "केवल नाम"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:166
+#: src/copy/proposal-after-list.ts:210
 msgid "Name or number"
 msgstr "नाम या नंबर"
 
@@ -13377,8 +13393,8 @@ msgid "New projects pause"
 msgstr "नए प्रोजेक्ट रुकेंगे"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:23
-#: src/copy/proposal-builder-flow.ts:16
+#: src/copy/proposal-after-list.ts:24
+#: src/copy/proposal-builder-flow.ts:17
 msgid "New proposal"
 msgstr "नया प्रस्ताव"
 
@@ -13588,6 +13604,11 @@ msgstr "{tax} नहीं"
 #: src/copy/proposal-document.ts:28
 msgid "No {tax}. {company} is not registered for {tax}."
 msgstr "{tax} नहीं। {company} {tax} के लिए पंजीकृत नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-after-list.ts:50
+msgid "No 3D design yet"
+msgstr "अभी कोई 3D डिज़ाइन नहीं"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-won.ts:56
@@ -13816,7 +13837,7 @@ msgid "No jobs in this pipeline"
 msgstr "इस पाइपलाइन में कोई काम नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:173
+#: src/copy/proposal-after-list.ts:217
 msgid "No lead matches."
 msgstr "कोई लीड नहीं मिली।"
 
@@ -13883,7 +13904,7 @@ msgstr "{windowMinutes} मिनट तक और कोड नहीं"
 #: src/copy/lead-inbox.ts:34
 #: src/copy/my-day.ts:37
 #: src/copy/projects.ts:63
-#: src/copy/proposal-after-list.ts:32
+#: src/copy/proposal-after-list.ts:33
 #: src/copy/search.ts:41
 msgid "No name yet"
 msgstr "अभी नाम नहीं"
@@ -13973,6 +13994,7 @@ msgstr "अभी किसी को नहीं सौंपी। लीड 
 
 #. js-lingui-explicit-id
 #: src/copy/lead-designs.ts:24
+#: src/copy/proposal-after-list.ts:47
 msgid "No panels yet"
 msgstr "अभी पैनल नहीं"
 
@@ -14058,7 +14080,7 @@ msgid "No proposal yet"
 msgstr "अभी प्रस्ताव नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:44
+#: src/copy/proposal-after-list.ts:52
 msgid "No proposals here"
 msgstr "यहाँ कोई प्रस्ताव नहीं"
 
@@ -14139,7 +14161,7 @@ msgid "No sites to show"
 msgstr "दिखाने के लिए कोई साइट नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:35
+#: src/copy/proposal-after-list.ts:36
 msgid "No size yet"
 msgstr "अभी आकार नहीं"
 
@@ -14369,7 +14391,7 @@ msgid "Not copied. Try again."
 msgstr "कॉपी नहीं हुआ। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:36
+#: src/copy/proposal-after-list.ts:37
 msgid "Not current"
 msgstr "ताज़ा नहीं"
 
@@ -15125,7 +15147,7 @@ msgid "Now"
 msgstr "अभी"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:26
+#: src/copy/proposal-after-list.ts:27
 msgid "Number"
 msgstr "नंबर"
 
@@ -15585,6 +15607,11 @@ msgid "Open the demo project"
 msgstr "डेमो प्रोजेक्ट खोलें"
 
 #. js-lingui-explicit-id
+#: src/copy/proposal-after-list.ts:45
+msgid "Open the design for {name}"
+msgstr "{name} का डिज़ाइन खोलें"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-after-track-rows.ts:73
 #: src/copy/proposal-after-track.ts:22
 msgid "Open the document"
@@ -15606,7 +15633,7 @@ msgid "Open the project"
 msgstr "प्रोजेक्ट खोलें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:39
+#: src/copy/proposal-after-list.ts:40
 msgid "Open the proposal for {name}"
 msgstr "{name} का प्रस्ताव खोलें"
 
@@ -15621,6 +15648,11 @@ msgid "Open this customer"
 msgstr "यह ग्राहक खोलें"
 
 #. js-lingui-explicit-id
+#: src/copy/proposal-after-list.ts:46
+msgid "Open this design"
+msgstr "यह डिज़ाइन खोलें"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:47
 #: src/copy/leads-list.ts:63
 #: src/copy/search.ts:47
@@ -15628,7 +15660,7 @@ msgid "Open this lead"
 msgstr "यह लीड खोलें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:40
+#: src/copy/proposal-after-list.ts:41
 #: src/copy/search.ts:49
 msgid "Open this proposal"
 msgstr "यह प्रस्ताव खोलें"
@@ -15645,7 +15677,7 @@ msgid "Opened"
 msgstr "खोला गया"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:64
+#: src/copy/proposal-after-list.ts:73
 msgid "Opened {when}"
 msgstr "{when} खोला गया"
 
@@ -15742,7 +15774,7 @@ msgid "or"
 msgstr "या"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:24
+#: src/copy/proposal-builder-flow.ts:27
 msgid "or start from"
 msgstr "या यहाँ से शुरू करें"
 
@@ -16708,6 +16740,11 @@ msgid "Pick who visits"
 msgstr "कौन जाएगा, चुनें"
 
 #. js-lingui-explicit-id
+#: src/copy/proposal-after-list.ts:51
+msgid "Pick With 3D design in New proposal."
+msgstr "नया प्रस्ताव में 3D डिज़ाइन के साथ चुनें।"
+
+#. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:37
 msgid "Picked"
 msgstr "चुना"
@@ -17003,7 +17040,7 @@ msgstr "पिछला चरण"
 #: src/copy/catalog-settings.ts:173
 #: src/copy/crm-vocabulary.ts:113
 #: src/copy/customer-page-sheets.ts:17
-#: src/copy/proposal-after-list.ts:28
+#: src/copy/proposal-after-list.ts:29
 #: src/copy/proposal-after-versions.ts:64
 msgid "Price"
 msgstr "कीमत"
@@ -17434,10 +17471,11 @@ msgstr "प्रस्ताव वापस लिया गया। इस�
 #: src/copy/billing-strip.ts:97
 #: src/copy/lead-detail-parts.ts:111
 #: src/copy/pricing.ts:73
-#: src/copy/proposal-after-list.ts:19
+#: src/copy/proposal-after-list.ts:20
 #: src/copy/search.ts:66
 #: src/copy/shell.ts:95
 #: src/copy/shell.ts:111
+#: src/copy/site-details.ts:158
 msgid "Proposals"
 msgstr "प्रस्ताव"
 
@@ -17457,7 +17495,7 @@ msgid "Proposals already sent keep what they were sent with."
 msgstr "पहले भेजे गए प्रस्ताव वैसे ही रहते हैं जैसे भेजे गए थे।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:47
+#: src/copy/proposal-after-list.ts:55
 msgid "Proposals did not load"
 msgstr "प्रस्ताव लोड नहीं हुए"
 
@@ -17554,7 +17592,7 @@ msgid "Quick"
 msgstr "झटपट"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:18
+#: src/copy/proposal-builder-flow.ts:19
 msgid "Quick · 4 steps"
 msgstr "झटपट · 4 चरण"
 
@@ -17575,7 +17613,7 @@ msgid "Quick mode runs the same checks at Generate."
 msgstr "झटपट मोड में भी बनाते समय वही जाँच होती है।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:75
+#: src/copy/proposal-builder-flow.ts:78
 msgid "Quick mode used your company’s timeline, payment terms, and terms and conditions."
 msgstr "झटपट मोड ने आपकी कंपनी की टाइमलाइन, भुगतान शर्तें और नियम व शर्तें इस्तेमाल कीं।"
 
@@ -17667,7 +17705,7 @@ msgid "Read (results)"
 msgstr "पढ़ना (नतीजे)"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:94
+#: src/copy/proposal-builder-flow.ts:97
 msgid "Read and download every proposal"
 msgstr "हर प्रस्ताव पढ़ें और डाउनलोड करें"
 
@@ -17682,7 +17720,7 @@ msgid "Read for {count} min"
 msgstr "{count} मिनट पढ़ा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:65
+#: src/copy/proposal-after-list.ts:74
 msgid "Read for {count} min · {when}"
 msgstr "{count} मिनट पढ़ा · {when}"
 
@@ -17757,7 +17795,7 @@ msgid "Ready for {name}"
 msgstr "{name} के लिए तैयार"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:53
+#: src/copy/proposal-builder-flow.ts:56
 msgid "Ready to generate"
 msgstr "बनाने के लिए तैयार"
 
@@ -17777,7 +17815,7 @@ msgid "Ready to share"
 msgstr "शेयर के लिए तैयार"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:52
+#: src/copy/proposal-builder-flow.ts:55
 msgid "Ready. Check these first"
 msgstr "तैयार। पहले इन्हें देख लें"
 
@@ -17921,7 +17959,7 @@ msgid "Recorded by {recorder}."
 msgstr "{recorder} ने दर्ज किया।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:66
+#: src/copy/proposal-builder-flow.ts:69
 msgid "Red items stop Generate. Amber items only warn."
 msgstr "लाल बातें प्रस्ताव बनने से रोकती हैं। पीली बातें सिर्फ़ चेतावनी देती हैं।"
 
@@ -18192,7 +18230,7 @@ msgid "Replaced"
 msgstr "बदला गया"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:70
+#: src/copy/proposal-after-list.ts:79
 #: src/copy/proposal-after-track.ts:69
 msgid "Replaced by a newer proposal"
 msgstr "नए प्रस्ताव से बदला गया"
@@ -18659,7 +18697,7 @@ msgid "Sales Manager"
 msgstr "सेल्स मैनेजर"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:25
+#: src/copy/proposal-builder-flow.ts:28
 msgid "Same as {name}"
 msgstr "{name} जैसा"
 
@@ -18715,7 +18753,7 @@ msgid "Save {amount}"
 msgstr "{amount} सेव करें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:203
+#: src/copy/proposal-after-list.ts:247
 msgid "Save and build the proposal"
 msgstr "सहेजें और प्रस्ताव बनाएँ"
 
@@ -18968,7 +19006,7 @@ msgid "Savings pass the net cost after {years} years"
 msgstr "{years} साल बाद बचत शुद्ध लागत से ज़्यादा हो जाती है"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:65
+#: src/copy/proposal-builder-flow.ts:68
 msgid "Say what changed before you generate."
 msgstr "बनाने से पहले बताएँ कि क्या बदला।"
 
@@ -19093,7 +19131,7 @@ msgid "Search the catalog"
 msgstr "कैटलॉग में खोजें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:165
+#: src/copy/proposal-after-list.ts:209
 msgid "Search your leads"
 msgstr "अपनी लीड्स खोजें"
 
@@ -19165,7 +19203,7 @@ msgid "See it and share"
 msgstr "देखें और शेयर करें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:98
+#: src/copy/proposal-builder-flow.ts:101
 msgid "See plans"
 msgstr "प्लान देखें"
 
@@ -19601,7 +19639,7 @@ msgid "Shared {when} · kept exactly as sent"
 msgstr "{when} शेयर किया · जैसा भेजा, वैसा ही रखा है"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:63
+#: src/copy/proposal-after-list.ts:72
 msgid "Shared {when} · not opened yet"
 msgstr "{when} शेयर किया · अभी खोला नहीं गया"
 
@@ -19704,7 +19742,7 @@ msgstr "ग्राहक को पूरी स्क्रीन पर द�
 #: src/copy/billing-records.ts:42
 #: src/copy/catalog-import.ts:49
 #: src/copy/lead-import.ts:56
-#: src/copy/proposal-after-list.ts:43
+#: src/copy/proposal-after-list.ts:44
 #: src/copy/proposal-builder-sheets.ts:56
 #: src/copy/usage-page.ts:93
 msgid "Show more"
@@ -19938,7 +19976,7 @@ msgid "Size, price, brand or payment plan"
 msgstr "आकार, कीमत, ब्रांड या भुगतान योजना"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:19
+#: src/copy/proposal-builder-flow.ts:20
 msgid "Size, price, parts and client. The rest uses your company defaults. Best for a home."
 msgstr "आकार, कीमत, पार्ट्स और ग्राहक। बाकी आपकी कंपनी की डिफ़ॉल्ट सेटिंग से। घर के लिए सबसे अच्छा।"
 
@@ -20227,7 +20265,7 @@ msgid "Standard {split}"
 msgstr "मानक {split}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:32
+#: src/copy/proposal-builder-flow.ts:35
 msgid "Start"
 msgstr "शुरू करें"
 
@@ -20302,7 +20340,7 @@ msgstr "पहले राज्य"
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:129
 #: src/copy/projects.ts:61
-#: src/copy/proposal-after-list.ts:29
+#: src/copy/proposal-after-list.ts:30
 #: src/copy/team.ts:12
 msgid "Status"
 msgstr "स्थिति"
@@ -20440,7 +20478,7 @@ msgstr "अभी वसूलना बाकी"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:28
-#: src/copy/proposal-builder-flow.ts:92
+#: src/copy/proposal-builder-flow.ts:95
 msgid "Still works"
 msgstr "अब भी चलता है"
 
@@ -20644,7 +20682,7 @@ msgstr "{language} पर बदली · {time}"
 #: src/copy/activity-stream.ts:61
 #: src/copy/customer-messages.ts:103
 #: src/copy/customer-page-sheets.ts:13
-#: src/copy/proposal-after-list.ts:27
+#: src/copy/proposal-after-list.ts:28
 #: src/copy/proposal-builder-frame.ts:16
 msgid "System"
 msgstr "सिस्टम"
@@ -20863,7 +20901,7 @@ msgid "Tax invoice"
 msgstr "कर इनवॉइस"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:43
+#: src/copy/proposal-builder-flow.ts:46
 msgid "tax number"
 msgstr "टैक्स नंबर"
 
@@ -21321,12 +21359,12 @@ msgid "The company’s owner can add it. You can still send."
 msgstr "कंपनी के मालिक इसे जोड़ सकते हैं। आप फिर भी भेज सकते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:89
+#: src/copy/proposal-builder-flow.ts:92
 msgid "The count starts again on {date}."
 msgstr "गिनती {date} को फिर से शुरू होगी।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:91
+#: src/copy/proposal-builder-flow.ts:94
 msgid "The count starts again with the next month of the plan."
 msgstr "प्लान के अगले महीने से गिनती फिर शुरू होगी।"
 
@@ -22324,7 +22362,7 @@ msgid "Theme"
 msgstr "थीम"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:56
+#: src/copy/proposal-builder-flow.ts:59
 msgid "Then check · {count}"
 msgstr "फिर जाँचें · {count}"
 
@@ -22415,7 +22453,7 @@ msgid "Thin-film"
 msgstr "थिन-फ़िल्म"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:204
+#: src/copy/proposal-after-list.ts:248
 msgid "This also makes a lead, so nothing is typed twice."
 msgstr "इससे लीड भी बन जाती है, ताकि कुछ भी दो बार न लिखना पड़े।"
 
@@ -22642,7 +22680,7 @@ msgid "This market sets no rule for it"
 msgstr "इस बाज़ार में इसका कोई नियम नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:54
+#: src/copy/proposal-builder-flow.ts:57
 msgid "This month’s proposals are used"
 msgstr "इस महीने के प्रस्ताव पूरे हो गए"
 
@@ -22652,7 +22690,7 @@ msgid "This number already has an invite waiting"
 msgstr "इस नंबर का आमंत्रण पहले से बाकी है"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:206
+#: src/copy/proposal-after-list.ts:250
 msgid "This number is already a lead"
 msgstr "यह नंबर पहले से एक लीड है"
 
@@ -22969,7 +23007,7 @@ msgid "To"
 msgstr "तक"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:57
+#: src/copy/proposal-builder-flow.ts:60
 msgid "To check · {count}"
 msgstr "जाँचना है · {count}"
 
@@ -23200,8 +23238,8 @@ msgstr "इनवॉइस नंबर का कोई हिस्सा आ�
 #: src/copy/pricing.ts:118
 #: src/copy/proposal-after-in-force.ts:37
 #: src/copy/proposal-after-links.ts:38
-#: src/copy/proposal-after-list.ts:49
-#: src/copy/proposal-after-list.ts:177
+#: src/copy/proposal-after-list.ts:57
+#: src/copy/proposal-after-list.ts:221
 #: src/copy/proposal-after-messages.ts:39
 #: src/copy/proposal-after-track.ts:37
 #: src/copy/proposal-after-versions.ts:55
@@ -23374,7 +23412,7 @@ msgid "Type the specification"
 msgstr "विवरण लिखें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:169
+#: src/copy/proposal-after-list.ts:213
 msgid "Type their number first"
 msgstr "पहले उनका नंबर लिखें"
 
@@ -23674,12 +23712,12 @@ msgid "Use {hex}"
 msgstr "{hex} इस्तेमाल करें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:207
+#: src/copy/proposal-after-list.ts:251
 msgid "Use {name}"
 msgstr "{name} को चुनें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:41
+#: src/copy/proposal-after-list.ts:42
 msgid "Use {number} for another lead"
 msgstr "{number} को दूसरी लीड के लिए इस्तेमाल करें"
 
@@ -23730,12 +23768,12 @@ msgid "Use this button to start a survey."
 msgstr "सर्वे शुरू करने के लिए यह बटन इस्तेमाल करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:42
+#: src/copy/proposal-after-list.ts:43
 msgid "Use this draft for another lead"
 msgstr "यह ड्राफ़्ट दूसरी लीड के लिए इस्तेमाल करें"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:208
+#: src/copy/proposal-after-list.ts:252
 msgid "Use this lead"
 msgstr "यह लीड चुनें"
 
@@ -24102,7 +24140,7 @@ msgstr "इंतज़ार"
 
 #. js-lingui-explicit-id
 #: src/copy/projects.ts:35
-#: src/copy/proposal-after-list.ts:54
+#: src/copy/proposal-after-list.ts:63
 msgid "Waiting"
 msgstr "इंतज़ार में"
 
@@ -24498,7 +24536,7 @@ msgid "What changed in version {version}"
 msgstr "वर्शन {version} में क्या बदला"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:61
+#: src/copy/proposal-builder-flow.ts:64
 msgid "What changed, and why"
 msgstr "क्या बदला, और क्यों"
 
@@ -24984,7 +25022,7 @@ msgstr "कौन क्या करता है, भूमिका के �
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-links.ts:111
-#: src/copy/proposal-after-list.ts:202
+#: src/copy/proposal-after-list.ts:246
 msgid "Who is it for?"
 msgstr "यह किसके लिए है?"
 
@@ -25112,6 +25150,11 @@ msgid "with {tax}"
 msgstr "{tax} सहित"
 
 #. js-lingui-explicit-id
+#: src/copy/proposal-builder-flow.ts:25
+msgid "With 3D design"
+msgstr "3D डिज़ाइन के साथ"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:53
 msgid "with a {value}% margin"
 msgstr "{value}% मार्जिन के साथ"
@@ -25168,7 +25211,7 @@ msgid "Withdrawn"
 msgstr "वापस लिया"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:71
+#: src/copy/proposal-after-list.ts:80
 msgid "Withdrawn {when}"
 msgstr "{when} वापस लिया"
 
@@ -25205,7 +25248,7 @@ msgid "Won · project {number}"
 msgstr "जीती · प्रोजेक्ट {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:69
+#: src/copy/proposal-after-list.ts:78
 msgid "Won {when}"
 msgstr "{when} जीती"
 
@@ -25386,6 +25429,7 @@ msgstr "कल · {date}"
 #. js-lingui-explicit-id
 #: src/copy/lead-designs.ts:26
 #: src/copy/lead-inbox.ts:59
+#: src/copy/proposal-after-list.ts:49
 #: src/copy/search.ts:45
 #: src/copy/settings.ts:32
 #: src/copy/team.ts:14
@@ -25880,7 +25924,7 @@ msgid "Your documents"
 msgstr "आपके दस्तावेज़"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-builder-flow.ts:73
+#: src/copy/proposal-builder-flow.ts:76
 msgid "Your draft is saved. Nothing is lost."
 msgstr "आपका ड्राफ़्ट सहेजा गया है। कुछ भी खोया नहीं।"
 
@@ -26000,7 +26044,7 @@ msgid "Your leads at a glance"
 msgstr "आपकी लीड्स एक नज़र में"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-after-list.ts:175
+#: src/copy/proposal-after-list.ts:219
 msgid "Your leads did not load"
 msgstr "आपकी लीड्स लोड नहीं हुईं"
 

@@ -2,9 +2,10 @@ import { Pressable } from '../../primitives/Pressable';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { Badge } from '../Chip';
+import { DesignCover } from '../DesignCover';
+import { DesignStatus } from '../DesignStatus';
 import { Menu } from '../Menu';
-import { StatusChip } from '../StatusChip';
-import { leadDesignMenuOf, leadDesignStatusGlyph, mayChangeDesigns } from './LeadSections.designs';
+import { leadDesignMenuOf, mayChangeDesigns } from './LeadSections.designs';
 import type { LeadDesign, LeadDesignsPanel } from './LeadSections.types';
 
 interface LeadDesignCardProps {
@@ -19,7 +20,6 @@ interface LeadDesignCardProps {
  */
 export function LeadDesignCard({ design, panel }: LeadDesignCardProps) {
   const { words } = panel;
-  const glyph = leadDesignStatusGlyph(design.status);
   const open = () => panel.onOpen(design.id);
   return (
     <li className="hg-lead-design">
@@ -28,27 +28,25 @@ export function LeadDesignCard({ design, panel }: LeadDesignCardProps) {
         accessibilityLabel={words.openNamed(design)}
         onPress={open}
       >
-        <span className="hg-lead-design-cover" data-marked={design.recommended ? '' : undefined}>
-          {design.recommended ? (
-            <span className="hg-lead-design-mark">
-              <Badge tone="accent" glyph="star">
-                {words.recommended}
-              </Badge>
-            </span>
-          ) : null}
-          <span className="hg-lead-design-cover-word">{words.noPanels}</span>
-        </span>
+        <DesignCover
+          word={words.preview}
+          {...(design.recommended
+            ? {
+                mark: (
+                  <Badge tone="accent" glyph="star">
+                    {words.recommended}
+                  </Badge>
+                ),
+              }
+            : {})}
+        />
       </Pressable>
       <div className="hg-lead-design-top">
         <b>{words.named(design)}</b>
-        <StatusChip
+        <DesignStatus
           status={design.status}
           label={words.status(design.status)}
-          tone="neutral"
           density="functional"
-          {...(glyph === null
-            ? {}
-            : { glyph: <ShellGlyph name={glyph} size="sm" tone="secondary" /> })}
         />
       </div>
       <span className="hg-lead-design-facts">{words.noPanels}</span>

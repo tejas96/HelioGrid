@@ -92,6 +92,7 @@ export function BuilderSheets({
   kase = 'drawn',
   quick = false,
   addsParts = true,
+  canDesign = true,
   onLog,
 }: {
   t?: Translator['t'];
@@ -101,6 +102,8 @@ export function BuilderSheets({
   quick?: boolean;
   /** The reader may add a part inline (`rights.addsParts`): the picker then offers it. */
   addsParts?: boolean;
+  /** The reader may design: the start sheet offers *With 3D design*. */
+  canDesign?: boolean;
   onLog: (line: string) => void;
 }) {
   const [picked, setPicked] = useState<readonly string[]>(['waaree']);
@@ -176,6 +179,7 @@ export function BuilderSheets({
         words={proposalStartWords(t, { name: FIRST_NAME, segment: 'residential' })}
         mode={mode}
         onMode={setMode}
+        canDesign={canDesign}
         sources={[
           {
             id: 'a',
@@ -211,10 +215,12 @@ export function SheetStory({
   sheet,
   kase = 'drawn',
   addsParts = true,
+  canDesign = true,
 }: {
   sheet: StorySheet;
   kase?: BuilderCase;
   addsParts?: boolean;
+  canDesign?: boolean;
 }) {
   const [open, setOpen] = useState<StorySheet>(sheet);
   const [log, setLog] = useState('');
@@ -226,6 +232,7 @@ export function SheetStory({
         onSheet={setOpen}
         kase={kase}
         addsParts={addsParts}
+        canDesign={canDesign}
         onLog={setLog}
       />
     </ProvenanceWordsProvider>

@@ -57,6 +57,14 @@ export function proposalStandingOf(evidence: StandingEvidence): ProposalStanding
 export const PROPOSAL_LIST_FILTERS = ['all', 'waiting', 'draft', 'accepted', 'closed'] as const;
 export type ProposalListFilter = (typeof PROPOSAL_LIST_FILTERS)[number];
 
+/**
+ * The Proposals page's chips (`T-M05-001b`), in the order they are drawn: `3d` first, then the
+ * list's own. One chip is on at a time. A design that has no proposal yet sits under `all` and
+ * `3d` alone: it has no proposal status.
+ */
+export const PROPOSAL_ENTRY_FILTERS = ['3d', ...PROPOSAL_LIST_FILTERS] as const;
+export type ProposalEntryFilter = (typeof PROPOSAL_ENTRY_FILTERS)[number];
+
 const FILTER_OF: Readonly<Record<ProposalStanding, Exclude<ProposalListFilter, 'all'>>> = {
   draft: 'draft',
   ready: 'draft',

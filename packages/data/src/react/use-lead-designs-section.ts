@@ -4,10 +4,10 @@ import { can, isClosedState, type Read } from '@heliogrid/domain';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRef } from 'react';
 import { queryKeys } from '../cache/keys';
-import { DesignActRefusedError } from '../studio/studio-repository';
 import { useAction } from './action';
 import { useRepositories } from './context';
 import { readOf } from './read';
+import { type DesignActFailure, designActFailureOf, useCreateDesign } from './use-create-design';
 import { useSession } from './use-session';
 import { useTenantId } from './use-tenant-id';
 
@@ -19,7 +19,7 @@ export interface LeadDesignsMoves {
 }
 
 /** Why an act on the lead's designs came back undone: the lead closed meanwhile, or anything else. */
-export type LeadDesignActFailure = 'host_closed' | 'other';
+export type LeadDesignActFailure = DesignActFailure;
 
 export interface LeadDesignsSection {
   /** The lead's designs, newest change first; read once the section is in view. */
@@ -45,15 +45,7 @@ export interface LeadDesignsSection {
   readonly createFailure: LeadDesignActFailure | null;
 }
 
-type Made = { readonly copyOf: string | null };
 type Mark = { readonly designId: string; readonly recommended: boolean };
-
-const failureOf = (error: unknown): LeadDesignActFailure | null => {
-  if (error === null) return null;
-  return error instanceof DesignActRefusedError && error.refusal === 'host_closed'
-    ? 'host_closed'
-    : 'other';
-};
 
 /**
  * The lead's Designs section and the dock's *Create design* (`T-M05-001`). Fills
@@ -74,8 +66,6 @@ export function useLeadDesignsSection(
   const key = queryKeys.studio.leadDesigns(tenantId, leadId);
   const latestMoves = useRef(moves);
   latestMoves.current = moves;
-  /* One submission keeps its moment, so the same ask sent again carries the same retry key. */
-  const held = useRef<{ readonly ask: string; readonly capturedAt: string } | null>(null);
   const query = useQuery({
     queryKey: key,
     queryFn: ({ signal }) =>
@@ -83,30 +73,7 @@ export function useLeadDesignsSection(
     enabled: tenantId !== '' && shown,
   });
 
-  /** The lead's own read counts its designs for the tab: it reads again with the list. */
-  const reread = async () => {
-    await queryClient.invalidateQueries({ queryKey: key, exact: true });
-    await queryClient.invalidateQueries({
-      queryKey: queryKeys.crm.lead(tenantId, leadId),
-      exact: true,
-    });
-  };
-
-  const make = useAction(
-    ({ copyOf }: Made) => {
-      const ask = JSON.stringify({ leadId, copyOf });
-      if (held.current?.ask !== ask) held.current = { ask, capturedAt: new Date().toISOString() };
-      return repositories.studio.create(leadId, { copyOf, capturedAt: held.current.capturedAt });
-    },
-    {
-      onDone: async (made) => {
-        held.current = null;
-        queryClient.setQueryData(queryKeys.studio.design(tenantId, made.design.id), made);
-        await reread();
-        latestMoves.current.toSiteDetails(made.design.id);
-      },
-    },
-  );
+  const make = useCreateDesign((designId) => latestMoves.current.toSiteDetails(designId));
   const mark = useAction(
     ({ designId, recommended }: Mark) => repositories.studio.recommend(designId, recommended),
     {
@@ -134,13 +101,13 @@ export function useLeadDesignsSection(
       if (!free()) return;
       clear();
       plain.current = true;
-      void make.run({ copyOf: null });
+      void make.run({ leadId, copyOf: null });
     },
     copy: (designId) => {
       if (!free()) return;
       clear();
       plain.current = false;
-      void make.run({ copyOf: designId });
+      void make.run({ leadId, copyOf: designId });
     },
     open: (designId) => latestMoves.current.toDesign(designId),
     recommend: (designId, recommended) => {
@@ -150,8 +117,8 @@ export function useLeadDesignsSection(
       void mark.run({ designId, recommended });
     },
     busy,
-    failure: failureOf(make.failure) ?? failureOf(mark.failure),
+    failure: designActFailureOf(make.failure) ?? designActFailureOf(mark.failure),
     creating: plain.current && make.pending,
-    createFailure: plain.current ? failureOf(make.failure) : null,
+    createFailure: plain.current ? designActFailureOf(make.failure) : null,
   };
 }

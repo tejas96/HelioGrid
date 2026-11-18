@@ -1,10 +1,16 @@
-import type { ProposalList, ProposalRow } from '@heliogrid/contracts';
+import type {
+  ProposalEntries,
+  ProposalEntry,
+  ProposalList,
+  ProposalRow,
+} from '@heliogrid/contracts';
 import {
   can,
   draftProgress,
   listFilterOf,
   type MarketPack,
   minorUnits,
+  type ProposalEntryFilter,
   type ProposalListFilter,
   proposalStandingOf,
 } from '@heliogrid/domain';
@@ -12,7 +18,11 @@ import { minorUnitsToDecimal, proposalNumberOf } from '@heliogrid/domain/server'
 import { Inject, Injectable } from '@nestjs/common';
 import { type LeadReader, memberRefOf } from '../crm/crm.public';
 import { SettingsService } from '../settings/settings.public';
-import { type ProposalListRead, ProposalsListRepository } from './proposals.list.repository';
+import {
+  type ProposalEntriesRead,
+  type ProposalListRead,
+  ProposalsListRepository,
+} from './proposals.list.repository';
 import { latestFreshness } from './proposals.track-wire';
 
 type ListRow = ProposalListRead['rows'][number];
@@ -74,31 +84,100 @@ export class ProposalsListService {
       limit: query.limit,
       offset: (query.page - 1) * query.limit,
     });
-    const under = (filter: Exclude<ProposalListFilter, 'all'>) =>
-      read.byStatus.filter((group) => listFilterOf(group.status, group.won) === filter);
-    const countOf = (filter: Exclude<ProposalListFilter, 'all'>) =>
-      under(filter).reduce((sum, group) => sum + group.n, 0);
-    const waiting = under('waiting').reduce((sum, group) => sum + Number(group.payable), 0);
+    const head = headOf(read.byStatus, reader, digits);
     return {
       currencyCode: pack.formats.currency,
       rows: {
         items: read.rows.map((row) => rowWire(row, pack)),
         totalCount: read.totalCount,
       },
-      counts: {
-        all: read.byStatus.reduce((sum, group) => sum + group.n, 0),
-        waiting: countOf('waiting'),
-        draft: countOf('draft'),
-        accepted: countOf('accepted'),
-        closed: countOf('closed'),
-      },
-      waitingValue: minorUnitsToDecimal(minorUnits(waiting), digits),
-      // *New proposal* starts with a new lead: offered only to who can save one (`T-M06-032`).
-      canStart:
-        can(reader.roles, 'crm.add_edit_leads') &&
-        can(reader.roles, 'proposals.create_edit_proposals'),
+      ...head,
     };
   }
+
+  /**
+   * The Proposals page (`T-M05-001b`): the list's rows with each design that has no proposal yet
+   * between them, in the order the union paged them; `all` counts both and `3d` the designs.
+   */
+  async entries(
+    reader: LeadReader,
+    query: { filter: ProposalEntryFilter; limit: number; page: number },
+  ): Promise<ProposalEntries> {
+    const pack = await this.settings.packOf(reader.tenantId);
+    const read = await this.rows.entries(reader, {
+      filter: query.filter,
+      limit: query.limit,
+      offset: (query.page - 1) * query.limit,
+    });
+    const head = headOf(read.byStatus, reader, pack.formats.minorUnitDigits);
+    const counts = {
+      '3d': read.designCount,
+      ...head.counts,
+      all: head.counts.all + read.designCount,
+    };
+    return {
+      currencyCode: pack.formats.currency,
+      rows: { items: entriesInOrder(read, pack), totalCount: counts[query.filter] },
+      counts,
+      waitingValue: head.waitingValue,
+      canStart: head.canStart,
+    };
+  }
+}
+
+/** Each chip's count, what the waiting proposals are worth, and whether *New proposal* is offered. */
+function headOf(
+  byStatus: ProposalListRead['byStatus'],
+  reader: LeadReader,
+  digits: number,
+): Pick<ProposalList, 'counts' | 'waitingValue' | 'canStart'> {
+  const under = (filter: Exclude<ProposalListFilter, 'all'>) =>
+    byStatus.filter((group) => listFilterOf(group.status, group.won) === filter);
+  const countOf = (filter: Exclude<ProposalListFilter, 'all'>) =>
+    under(filter).reduce((sum, group) => sum + group.n, 0);
+  const waiting = under('waiting').reduce((sum, group) => sum + Number(group.payable), 0);
+  return {
+    counts: {
+      all: byStatus.reduce((sum, group) => sum + group.n, 0),
+      waiting: countOf('waiting'),
+      draft: countOf('draft'),
+      accepted: countOf('accepted'),
+      closed: countOf('closed'),
+    },
+    waitingValue: minorUnitsToDecimal(minorUnits(waiting), digits),
+    // *New proposal* starts with a new lead: offered only to who can save one (`T-M06-032`).
+    canStart:
+      can(reader.roles, 'crm.add_edit_leads') &&
+      can(reader.roles, 'proposals.create_edit_proposals'),
+  };
+}
+
+/** The page's rows in the union's order; an id read whole by neither side was gone between the two reads. */
+function entriesInOrder(read: ProposalEntriesRead, pack: MarketPack): ProposalEntry[] {
+  const proposals = new Map(read.proposals.map((row) => [row.id, row]));
+  const designs = new Map(read.designs.map((row) => [row.id, row]));
+  return read.page.flatMap((entry): ProposalEntry[] => {
+    if (entry.kind === 'proposal') {
+      const row = proposals.get(entry.id);
+      return row === undefined ? [] : [{ kind: 'proposal', ...rowWire(row, pack) }];
+    }
+    const row = designs.get(entry.id);
+    if (row === undefined) return [];
+    return [
+      {
+        kind: 'design',
+        id: row.id,
+        leadId: row.leadId,
+        customerName: row.customerName,
+        city: row.city,
+        ordinal: row.ordinal,
+        mount: row.mount,
+        status: row.status,
+        changedAt: row.updatedAt.toISOString(),
+        changedBy: memberRefOf(row.updatedBy, row.updaterName),
+      },
+    ];
+  });
 }
 
 function rowWire(row: ListRow, pack: MarketPack): ProposalRow {

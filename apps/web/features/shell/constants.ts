@@ -74,11 +74,22 @@ export const proposalVersionsPath = (proposalId: string): string =>
 export const proposalLinksPath = (proposalId: string): string =>
   `${proposalPath(proposalId)}/links`;
 
-/** A design's own page — where the studio opens (`SCR-M05-02`). */
-export const designPath = (designId: string): string => `/designs/${designId}`;
+/** Where a studio page was opened from, when not the lead: its way back goes there (`T-M05-001b`). */
+export const SITE_DETAILS_FROM_PROPOSALS = 'proposals';
 
-/** The Site details a design starts with (`SCR-M05-01`). */
-export const designSitePath = (designId: string): string => `${designPath(designId)}/site`;
+const fromQuery = (fromProposals: boolean) =>
+  fromProposals ? `?from=${SITE_DETAILS_FROM_PROPOSALS}` : '';
+
+/** A design's own page — where the studio opens (`SCR-M05-02`); `fromProposals` when Proposals opened it. */
+export const designPath = (designId: string, fromProposals = false): string =>
+  `/designs/${designId}${fromQuery(fromProposals)}`;
+
+/**
+ * The Site details a design starts with (`SCR-M05-01`); `fromProposals` when *With 3D design* on
+ * the Proposals page made it, so its Cancel returns there.
+ */
+export const designSitePath = (designId: string, fromProposals = false): string =>
+  `/designs/${designId}/site${fromQuery(fromProposals)}`;
 
 /** One lead's page, opened on its *Mark won* sheet — a proposal's *Confirm won* (`M07-62`). */
 export const leadWonPath = (leadId: string): string => `${leadPath(leadId)}?won=1`;

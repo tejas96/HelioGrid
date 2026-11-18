@@ -147,6 +147,8 @@ export function useSiteDetailsScreen(
         await queryClient.invalidateQueries({
           queryKey: queryKeys.studio.leadDesigns(tenantId, leadId),
         });
+        // The Proposals page orders a design by its last change and names who made it.
+        await queryClient.invalidateQueries({ queryKey: queryKeys.proposals.lists(tenantId) });
         setSavedFor(designId);
       },
     },
