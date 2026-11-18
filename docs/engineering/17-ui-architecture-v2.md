@@ -185,7 +185,7 @@ The design system's values live in this repo: the typed tokens in `packages/them
 (`packages/theme/CLAUDE.md`), drawn by `packages/ui`. The look they serve is `CLAUDE.md` §10.
 
 The port is then held by checks that run in `pnpm lint` and `pnpm check:all`, and by review.
-`.claude/protections.md` is the ledger; this is what each holder asks of `packages/ui`:
+This is what each holder asks of `packages/ui`:
 
 | The mistake | What holds it |
 | --- | --- |

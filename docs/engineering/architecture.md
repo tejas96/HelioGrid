@@ -412,9 +412,8 @@ Walk top-down; first match wins. The plan records the answer for each new file.
     read anywhere else needs an entry in biome.json's `noProcessEnv` override (§2 env).
 11. Is it the agent's own instruction or a check — a rule, a lint plugin, an invariant, a CI
     lane, a check on a tool call? → `.claude/rules/`, `.claude/hooks/`,
-    `packages/config/biome/`, `tests/invariants/`, `.github/workflows/`. Closed sets, and a new
-    holder gets its row in `.claude/protections.md`. There is no `scripts/`: a new script or
-    command waits for the owner's yes (CLAUDE.md §1).
+    `packages/config/biome/`, `tests/invariants/`, `.github/workflows/`. Closed sets. There is no `scripts/`: a new script or
+    command follows CLAUDE.md §1.
 12. None of the above fits → STOP. Name the mismatch to the owner before creating a new
     package or directory (CLAUDE.md §4 stop-and-ask).
 

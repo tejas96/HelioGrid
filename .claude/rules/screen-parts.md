@@ -37,7 +37,7 @@ hook's state — and the screen, which may import both sides, supplies it.
 
 ## Verify
 
-- A change to one twin gets a live check on the other (`qa-live`); a one-platform change to a
+- A change to one twin gets a live check on the other; a one-platform change to a
   twinned screen is where drift starts.
 
 A pair that already exists is a finding, not a rule to bend: the task that finds it lifts it.

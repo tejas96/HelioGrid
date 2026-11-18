@@ -38,7 +38,7 @@ paths:
 
 ## A screen follows the approved language
 
-The build follows the sample the owner picked (`CLAUDE.md` §3) and the language of `CLAUDE.md` §10.
+The build follows the approved design or the sample the owner picked (`CLAUDE.md` §3) and the language of `CLAUDE.md` §10.
 The app shell draws the top bar, nav and sidebar; the words come from the catalog.
 
 ## Compose from the primitives, don't re-answer them

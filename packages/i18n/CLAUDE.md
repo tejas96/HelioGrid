@@ -66,4 +66,4 @@ Follow `docs/engineering/adding-a-language.md`; the typecheck, `check:catalogs`,
 ## Done means
 
 Every locale has zero missing messages (`check:catalogs` refuses one) · a changed screen is seen in
-one non-English language per surface (`qa-live`).
+one non-English language per surface.

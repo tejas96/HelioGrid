@@ -13,7 +13,7 @@ points, but nothing V2 is designed or built until V1 ships.
 
 ## One order
 
-Every task is built in ONE fixed order, one block per session and per PR (`CLAUDE.md` §3); the
+Every task is built in ONE fixed order, one block per PR (`CLAUDE.md` §3); the
 invariant `build-order-holds` keeps the order itself whole — every task file placed, no loop, every
 later-block wait recorded. The order is followed, never chosen:
 
@@ -109,9 +109,3 @@ task that builds what it needs.
 
 | task | block | waits on | block | the proof step that needs it |
 |---|---|---|---|---|
-
----
-
-## Checking the suite
-
-The invariants in `.claude/protections.md` *Process* hold this file and the task documents.
