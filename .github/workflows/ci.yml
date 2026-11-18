@@ -31,7 +31,7 @@ jobs:
       phone_e2e: ${{ steps.lanes.outputs.phone_e2e }}
       ios: ${{ steps.lanes.outputs.ios }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - id: lanes
@@ -134,13 +134,13 @@ jobs:
       # A CI-only invite-link key; no link made with it leaves this workflow.
       INVITE_LINK_SECRET: ci-only-invite-link-secret-heliogrid-quality-lane-0001
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Full history: gitleaks scans every commit, check:openapi's breaking-change compare
           # reads origin/main, and the migration guard reads origin/<base>.
           fetch-depth: 0
       - name: Secret scan
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITLEAKS_CONFIG: .gitleaks.toml
@@ -159,12 +159,12 @@ jobs:
             exit 1
           fi
           echo "migrations append-only: OK"
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           # Keyed by JOB as well as commit. A cache key is write-once, so three ubuntu jobs
           # sharing one meant whichever finished first decided what the other two restored,
@@ -274,13 +274,13 @@ jobs:
       NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID: 349637662348-qtmdotp2qt6r9pc4qvks9b7u7705o844.apps.googleusercontent.com
       GOOGLE_CLIENT_IDS: 349637662348-qtmdotp2qt6r9pc4qvks9b7u7705o844.apps.googleusercontent.com
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: .turbo
           key: turbo-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
@@ -317,7 +317,7 @@ jobs:
         run: pnpm --filter @heliogrid/e2e test:web
       - name: Keep the traces, the api's log and the failure screenshots
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-web-traces
           path: |
@@ -338,13 +338,13 @@ jobs:
     # 1,005 tests take about 22 min after 2 min of setup; 20 cut the last ones off (PR #407).
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: .turbo
           key: turbo-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
@@ -358,7 +358,7 @@ jobs:
         run: pnpm --filter @heliogrid/e2e test:ct
       - name: Keep the traces and the failure screenshots
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-components-traces
           path: |
@@ -373,13 +373,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           # Keyed by JOB as well as commit. A cache key is write-once, so three ubuntu jobs
           # sharing one meant whichever finished first decided what the other two restored,
@@ -430,19 +430,19 @@ jobs:
           df -h /
           sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /usr/share/swift /opt/hostedtoolcache/CodeQL
           df -h /
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
       - run: pnpm install --frozen-lockfile
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         id: ndk-cache
         with:
           path: /usr/local/lib/android/sdk/ndk/27.1.12297006
@@ -458,7 +458,7 @@ jobs:
       # and codegen read, and the theme's resources — so it is kept against exactly those, and a run
       # that changed none of them skips the 20-minute build. Saved right after the build, not at the
       # job's end, so a run that fails later still keeps it.
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v6
         id: apk-cache
         with:
           path: apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
@@ -475,7 +475,7 @@ jobs:
         if: steps.apk-cache.outputs.cache-hit != 'true'
         working-directory: apps/mobile/android
         run: ./gradlew assembleDebug --no-daemon
-      - uses: actions/cache/save@v4
+      - uses: actions/cache/save@v6
         if: steps.apk-cache.outputs.cache-hit != 'true'
         with:
           path: apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
@@ -483,7 +483,7 @@ jobs:
       - name: Phone flows OFF
         if: vars.PHONE_E2E == 'off'
         run: echo "::warning::phone flows OFF (PHONE_E2E=off) — they ran nowhere on this change"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         if: vars.PHONE_E2E != 'off'
         with:
           path: .turbo
@@ -535,7 +535,7 @@ jobs:
             [ "$try" -lt 12 ] || { echo '::error::the api still answers a code request in over 2 s'; tail -20 .qa/api.log; exit 1; }
             sleep 5
           done
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         if: vars.PHONE_E2E != 'off'
         with:
           path: ~/maestro
@@ -560,7 +560,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         id: avd-cache
         if: vars.PHONE_E2E != 'off'
         with:
@@ -607,7 +607,7 @@ jobs:
           script: adb reverse tcp:8081 tcp:8081 && adb install -r apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk && bash tests/e2e/mobile/run.sh emulator-5554 || { adb logcat -d > .qa/device.log; exit 1; }
       - name: Keep the flows' screenshots and the logs of a failure
         if: failure() && vars.PHONE_E2E != 'off'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: phone-flows-android
           path: |
@@ -636,9 +636,9 @@ jobs:
       # Bundler in charge; the lock's resolution is unchanged and still honoured.
       BUNDLE_VERSION: system
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -657,7 +657,7 @@ jobs:
           # Installs the Gemfile.lock's CocoaPods into vendor/bundle and caches it by lockfile
           # hash — the pinned version React Native's template expects, not whatever `gem` finds.
           bundler-cache: true
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: apps/mobile/ios/Pods
           key: pods-${{ runner.os }}-${{ hashFiles('apps/mobile/ios/Podfile.lock') }}
