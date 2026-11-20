@@ -229,7 +229,7 @@ not claim to be a site survey.
 - **Key personas:** **Survey Engineer** (the physical mode is their day), **Sales Executive** (the
   remote mode is often theirs, standing in front of the customer), **Design Engineer** (the
   consumer of everything captured); **Field Technician** joins this stage in V2 (§4).
-- **The P0 heart:** every roof is outlined by hand on the pinned tile (`M04-22`), and no imagery
+- **The P0 heart:** every roof can be drawn by hand on the picture, free (`M04-22`), and no imagery
   failure ever blocks the survey (`M04-11`).
 
 ### Stage 5 — Design

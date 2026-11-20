@@ -38,16 +38,16 @@ figure carries the tier it earned.
 *Section removed 2026-08-07 by owner decision: the offline/sync capability was deleted.*
 
 The module owns, as feature areas: the two modes and the mode decision · Mode A's address entry,
-imagery and pinned tile · the roof outlined by hand · coverage failure and its honest fallback · the "what remote cannot tell you" gaps
+imagery and the picture a roof is drawn on · the roof drawn by hand or set up by AI · coverage failure and its honest fallback · the "what remote cannot tell you" gaps
 list · the derived-vs-measured honesty consequence · Mode B's visits home · guided
-capture and the five capture groups · review and submit · photographs as reference and never
-measurement · visits, survey versions and the survey record · and the survey → design hand-off.
+capture and the five capture groups · review and submit · photographs, and the numbers read from
+pictures · visits, survey versions and the survey record · and the survey → design hand-off.
 
 **What this module is explicitly not.**
 
-- It does **not** measure anything from a photograph. No LiDAR, no automatic roof measurement from
-  photographs, no augmented-reality height estimation — **every dimension and every height is
-  entered or estimated by a person** (`D35`, `S4.notv1.1`, §5).
+- It does **not** measure from a phone's photograph: no LiDAR and no augmented-reality height
+  estimation. Numbers read from the sky picture, a drone map or a height map are `derived`, and a
+  person can change each one (owner ruling 2026-11-19, `M04-53`, §5).
 - It does **not** own the design. An outlined roof, a captured dimension and a photograph are
   *inputs*; the canvas, the geometry kernel, the layout and the electrical model are
   the design studio's. This module hands over the survey and stops.
@@ -194,16 +194,16 @@ implementation on the reader's unit preference with procurement figures staying 
 (rule number) · mode switched · elapsed address-to-reviewed-roof (the M04-07 budget) · elapsed
 remote-survey-to-proposal-sent (`F7-37`, cross-module).
 
-### M04.2 — Mode A: address, imagery and the pinned tile
+### M04.2 — Mode A: address, imagery and the picture
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M04-08 | **Mode A starts at an address: search it, or drop a pin — and the building is shown highlighted on a satellite preview before anything is fetched.** The operator confirms *that building*, visually, as the first act of the survey. Nothing is fetched until the building is confirmed. | `SRC` — `S4.screen.1` ("Address entry: search or drop a pin. Satellite preview with the building highlighted") | P0 |
-| M04-09 | **Satellite imagery is a vendor-neutral capability requirement, and it is an enhancement — never a dependency.** The product requires *a* capability that returns imagery for a location; the v1 service behind it is a reference implementation. No roof-data or detection capability exists (owner ruling 2026-11-01). Any imagery failure *"simply means the studio starts from manual tracing"*. | `SRC` — `DOC07.google-enhancement-only` (docs/engineering/07, quoted verbatim: "enhancement, never dependency"; "coverage is patchy and that is fine"); `R5` *(shared — the imagery/detection half; the energy source-of-record ladder is `modules/M05`'s and the labelling law `foundations/F8`'s)* · vendor-neutrality per `F1-04`, reference-implementation pattern per `F1-43` | P0 |
-| M04-10 | **The imagery tile is fetched once per site capture and pinned: the tile a roof was traced on never changes under it.** The stored tile is what the operator traces on and what the designer later sees — one image, one coordinate mapping, for the life of that survey version. A newer tile becoming available does not silently replace it; it is offered as a new capture. | `SRC` — `DOC07.map-tile-pinned` (docs/engineering/07, quoted: "the tile a design was traced on never changes under it"; stable 1:1 mapping, reproducible provenance) *(shared — the studio canvas that renders the same pinned tile is `modules/M05`'s)* | P0 |
+| M04-09 | **Satellite imagery is a vendor-neutral capability requirement, and it is an enhancement — never a dependency.** The product requires *a* capability that returns imagery for a location; the v1 service behind it is a reference implementation. Roof data — heights and roof faces — and the AI setup are enhancements in the same way (owner ruling 2026-11-19). Any imagery failure *"simply means the studio starts from manual tracing"*. | `SRC` — `DOC07.google-enhancement-only` (docs/engineering/07, quoted verbatim: "enhancement, never dependency"; "coverage is patchy and that is fine"); `R5` *(shared — the imagery/detection half; the energy source-of-record ladder is `modules/M05`'s and the labelling law `foundations/F8`'s)* · vendor-neutrality per `F1-04`, reference-implementation pattern per `F1-43` | P0 |
+| M04-10 | **The roof drawn on a picture keeps its place.** The roof is kept in the site's own ground coordinates, so every later picture lies under the same roof. Google's picture is fetched again each time the design opens and is never stored with it (owner ruling 2026-11-19). A picture the company or the customer owns — a photo, a drone map, a plan — is stored with the design, pinned, and never changes. A newer picture is never a silent change: its date is shown (`M04-13`). | `SRC` — owner ruling 2026-11-19 (Google's picture fetched each time and never stored; only a picture the company or the customer owns is pinned); `DOC07.map-tile-pinned` (its kept half: "the tile a design was traced on never changes under it") *(shared — the studio canvas that renders the same pinned tile is `modules/M05`'s)* | P0 |
 | M04-11 | **Imagery failure never blocks a survey: the flow continues on a blank canvas with manual outlining and known-distance calibration.** Where no tile can be fetched at all, the operator can still outline the roof by hand and establish scale from a known distance, and the survey proceeds. *"Never blocks."* | `SRC` — `DOC07.map-tile-pinned` ("Tile fetch failure → studio still opens with blank canvas + manual calibration (known-distance rescale); 'Never blocks'"); refusal wording per `F8-36` | P0 |
 | M04-12 | **When the address resolves to the wrong building, the operator re-points it before anything is fetched — and correcting the address corrects the site record.** The confirmation step of M04-08 exists for exactly this failure. A pin moved to the correct building updates the survey's location and the site record it belongs to, so the mistake is not re-made on the next visit or the next design. | `SRC` — `S4.wrong.1` ("Address resolves to the wrong building"); `S4.wrong.11` (correction updates the site record — the on-site half is M04-59) | P0 |
-| M04-13 | **Imagery age is a stated fact on the review screen, not a discovery made later.** The capture date of the tile is shown beside the outlined roof, and the operator is asked the one question the imagery cannot answer — *has this roof changed since?* A "yes" marks the remote result **unreliable** (mode rule 4, M04-05), records that mark on the survey so the designer sees it, and offers to book a physical visit. | `SRC` — `S4.wrong.3` ("Imagery is years out of date and the roof has changed"); `S4.rule.mode-choice` (rule 4: "Roof recently modified → remote unreliable, physical required"); staleness is stated per `F8-13`, `F8-19` (consumed) | P0 |
+| M04-13 | **Imagery age is a stated fact on the review screen, not a discovery made later.** The capture date of the picture is shown beside the drawn roof, and, when the picture is a year old or more, the operator is asked once the one question the imagery cannot answer — *has this roof changed since?* A "yes" marks the remote result **unreliable** (mode rule 4, M04-05), records that mark on the survey so the designer sees it, and puts a site check on the gaps list (`M04-29`); where a physical visit can be booked, it offers one (owner ruling 2026-11-19). | `SRC` — `S4.wrong.3` ("Imagery is years out of date and the roof has changed"); `S4.rule.mode-choice` (rule 4: "Roof recently modified → remote unreliable, physical required"); staleness is stated per `F8-13`, `F8-19` (consumed) | P0 |
 
 **Behavior detail.** Address entry accepts a typed search and a dropped pin, and it pre-fills from
 the lead's address where one exists so the rep is confirming rather than retyping (`M04-07`'s
@@ -215,10 +215,10 @@ survey record.
 Where the imagery after confirmation cannot be reached, the blank-canvas path is offered in
 the same breath, because the manual path costs nothing and always works (M04-22).
 
-The pinned tile of `M04-10` is what makes every later claim reproducible: the operator's
-outline, the designer's layout and any subsequent dispute all refer
-to one image. Where the operator wants newer imagery, they start a new survey version (M04-57)
-rather than mutating the current one — the earlier version keeps its tile and its result, because
+The roof's own ground coordinates (`M04-10`) are what make every later claim reproducible: the
+operator's outline, the designer's layout and any subsequent dispute all refer to one roof, with
+the date of the picture it was drawn on. Where the operator wants newer imagery, they start a new survey version (M04-57)
+rather than mutating the current one — the earlier version keeps its roof and its result, because
 the earlier version is evidence of what was decided from.
 
 Permissions: `F2.M04.run-remote-survey`. Correcting a site address additionally rides the record's
@@ -228,7 +228,7 @@ own edit grant in `modules/M02` (`F2.M02.add-edit-leads`) where the address live
 
 - *Wrong building* (`S4.wrong.1`) → re-point before the tile is fetched; the site record updates (M04-12).
 - *Imagery years out of date and the roof has changed* (`S4.wrong.3`) → age shown, changed-roof
-  question asked, result marked unreliable, physical visit offered (M04-13).
+  question asked, result marked unreliable, a site check put on the gaps list (M04-13).
 - *No tile at all* → blank canvas, manual outline, known-distance calibration; never a dead end
   (M04-11).
 - *Several buildings at one address* → the operator picks the building; the pick is recorded.
@@ -238,14 +238,15 @@ own edit grant in `modules/M02` (`F2.M02.add-edit-leads`) where the address live
 - Given an address search or a dropped pin, when the preview renders, then the resolved building is
   highlighted and no imagery is consumed or metered until the operator confirms it (M04-08).
 - Given a confirmed building, when the survey is later reopened or opened by the designer, then the
-  same stored tile is shown and the same coordinate mapping applies (M04-10).
+  roof keeps its place and the date of the picture it was drawn on is shown (M04-10).
 - Given a tile that cannot be fetched, when the operator continues, then a blank canvas with manual
   outlining and known-distance calibration is available and the survey can be completed (M04-11).
 - Given a resolved address the operator identifies as the wrong building, when the pin is moved,
   then the survey and the site record both carry the corrected location (M04-12).
-- Given a fetched tile, when the review screen renders, then the tile's capture date is shown and
-  the changed-roof question is asked; and given a "yes", then the survey is marked remote-unreliable
-  and a physical visit is offered (M04-13).
+- Given a fetched picture, when the roof step shows it, then the picture's capture date is shown,
+  and when it is a year old or more the changed-roof question is asked once; and given a "yes", then
+  the result is marked remote-unreliable, a site check is put on the gaps list, and a physical visit
+  is offered where one can be booked (M04-13).
 - Given the imagery capability is unavailable, unconfigured or silent for this address,
   when the survey continues, then every remaining step still completes through the manual path and
   no capability of this module has been removed from the flow (M04-09).
@@ -257,7 +258,7 @@ never translated (`F3-08`). **Analytics events:** address resolved (method: sear
 building confirmed · multiple buildings disambiguated · tile fetched / tile fetch failed · manual
 calibration used · imagery age shown (age band) · roof-changed answered.
 
-### M04.3 — The roof, outlined by hand
+### M04.3 — The roof, drawn by hand or set up by AI
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
@@ -269,14 +270,15 @@ calibration used · imagery age shown (age band) · roof-changed answered.
 | M04-19 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *Detection runs against the exact tile the operator is looking at, pixel for pixel.* | `SRC` — `DOC07.roof-detect-honesty` ("detection runs against the exact stored tile the canvas shows (1:1 pixel mapping)") | — |
 | M04-20 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *Where a detected roof barely overlaps the building the operator confirmed, its confidence is floored.* | `SRC` — `DOC07.roof-detect-honesty` ("geometry cross-check floors confidence where a detected roof barely overlaps the building mask") | — |
 | M04-21 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *Detection failure is never a hard error, and an unavailable detection capability is hidden gracefully rather than shown broken.* | `SRC` — `DOC07.roof-detect-honesty` ("Detection failure → user traces manually; missing key → feature hidden gracefully; 'Never a hard error in the studio'"); `F8-36` | — |
-| M04-22 | **Every roof is outlined by hand, and outlining is never metered.** The operator traces the outline, the obstructions, the pitch and the area on the pinned tile of `M04-10`, or on a blank canvas when no tile could be fetched (`M04-11`); the product detects nothing (owner ruling 2026-11-01). Every remote survey is completed this way, and no allowance, tier or billing state bounds it. | `SRC` — owner ruling 2026-11-01 (no automatic roof detection: every roof is outlined by hand); `DOC16.gate.ai-detection` (cited for its manual half only: "MANUAL outline is always available (it costs nothing)") | P0 |
+| M04-22 | **Every roof can be drawn by hand, and drawing is never metered.** The operator draws the outline, the obstructions, the pitch and the area on the picture of `M04-10`, or on a blank grid when no picture can be had (`M04-11`). An AI setup may set the roof up first; it is counted by the company's AI allowance, and a person can change everything it sets (owner ruling 2026-11-19, replacing the ruling of 2026-11-01). Drawing by hand is always offered beside it, and no allowance, tier or billing state bounds it. | `SRC` — owner ruling 2026-11-19 (the AI setup returns; drawing by hand stays free and always there); `DOC16.gate.ai-detection` ("MANUAL outline is always available (it costs nothing)") | P0 |
 | M04-23 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *AI roof detection is a metered capability: allowance is checked before the call, a denial blocks only the detection, and a detection that returns no result never bills.* | `SRC` — `DOC16.gate.ai-detection` (cited — the server-side check is `modules/M12`'s) *(shared — the M04 half: the survey-side behaviour at the gate)*; honest state copy per `F8-34` | — |
 | M04-24 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *A detection enters a design only through a validated artifact, and applying it stamps what came from a detector.* | `SRC` — `DOC05.ai-doorway` (docs/05, quoted; the same doorway rule is restated in docs/engineering/07 §3) *(shared — this module produces and validates the artifact; the stamping inside the design and the studio's own detection entry point are `modules/M05`'s)`; `F8-01`/`F8-02` (consumed) | — |
 
-**Behavior detail.** The operator draws on the pinned tile: vertices place and drag, obstructions
+**Behavior detail.** The operator draws on the picture: vertices place and drag, obstructions
 are added and resized, and pitch, azimuth and area are typed or estimated. Every figure carries the
-tier F8 assigns it (`F8-21`): an outline traced on imagery is `derived`, and a typed figure outside
-the physical-survey flow is `assumed`.
+tier F8 assigns it (`F8-21`'s final reading: the studio's drawing carries `derived` or
+`estimated`): an outline traced on imagery or set from a height map is `derived`, and a figure a
+person types is `estimated`.
 
 Shading read from above is **partial by construction**: a tall neighbouring building, a wall or a
 tree the imagery does not resolve is one of the things remote surveys cannot see, and it is stated
@@ -296,8 +298,8 @@ Engineer).
 
 **Acceptance criteria.**
 
-- Given a confirmed building, when the operator outlines the roof on the pinned tile, then the
-  survey can be completed with no automatic step, and nothing is metered for it (M04-22).
+- Given a confirmed building, when the operator draws the roof by hand on the picture, then the
+  survey can be completed with no AI step, and nothing is metered for it (M04-22).
 
 **Localization notes.** Drawing hints and every refusal are translated per `F3-01`/`F3-06`; the
 provenance tier tokens are the fixed English tokens of `F8-02` with translated display; areas and
@@ -455,9 +457,9 @@ Permissions: no additional grant — provenance stamping is a property of captur
 
 **Edge cases & what-goes-wrong.**
 
-- *A remote figure typed over by the operator* → that field leaves `derived` and is `assumed`, the
-  tier F8 gives a typed figure outside the physical-survey flow (`F8-21`), with the change shown
-  (`F8-05`).
+- *A remote figure typed over by the operator* → that field leaves `derived` and is `estimated`,
+  the tier `F8-21`'s final reading gives a figure typed in the studio's drawing, with the change
+  shown (`F8-05`).
 - *A physical survey where a height was estimated by eye* → that field is `estimated`, and the
   survey is still a measured one (M04-35).
 - *A surveyor skips a step* → the field is marked skipped-but-flagged, not defaulted, not blank
@@ -648,11 +650,11 @@ fragments, and mixed-script lines are expected rather than exceptional (`F3-09`)
 · missing item tapped from review · submitted with gaps (which) · submit-to-notify latency (applied)
 · second-trip rate (missing item later captured on a revisit).
 
-### M04.10 — Photographs: reference, never measurement
+### M04.10 — Photographs, and the numbers read from pictures
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M04-53 | **Photographs are reference for the designer, never measurement — from any source, including a drone.** The survey captures and attaches photographs of the roof, its obstructions and everything around the building, however they were taken: **by phone on site, sent by the customer, or uploaded from a drone or another camera**. Every one of them travels with the survey to the designer, who uses them while building the design. **The product does not derive numbers from them** — *"the app just does not measure from them."* Every dimension and every height is entered or estimated by a person. | `SRC` — `D35` (docs/15: HONORED — "no LiDAR/AR/auto-measure; drone-as-imagery ok"); `S4.notv1.1` (quoted verbatim); `DOC00.nongoal-measurement` (Task 3's disposition — this module is its named home, §5) | P0 |
+| M04-53 | **Numbers may come from a picture — the sky picture, a drone map or a height map — and each carries `derived` until a person measures it.** The survey captures and attaches photographs of the roof, its obstructions and everything around the building, however they were taken: **by phone on site, sent by the customer, or uploaded from a drone or another camera**. Every one of them travels with the survey to the designer, who uses them while building the design. A figure read from a picture or a height map is `derived`, a person's typed figure is `estimated` and one measured on site is `measured`; a person can change any of them (owner ruling 2026-11-19). A phone's photograph stays reference: no LiDAR and no augmented-reality height estimation. | `SRC` — owner ruling 2026-11-19 (numbers from imagery, drone maps and height maps allowed, tagged `derived`, replacing `S4.notv1.1`'s "the app just does not measure from them"); `D35` (docs/15: its kept half — "no LiDAR/AR"; "drone-as-imagery ok"); `DOC00.nongoal-measurement` (Task 3's disposition — this module is its named home, §5) | P0 |
 | M04-54 | **Every photograph is tagged, carries its source, and can be pinned to what it shows.** Tags are the source's set — **roof corner · obstruction · meter · distribution board · structure · access · other** — and each photograph records whether it was taken **on site**, **sent by the customer**, or **uploaded from a drone or other camera**. A photograph may be pinned to a specific obstruction so the designer knows which shadow it belongs to. | `SRC` — `DOC04.photos-reference` (docs/04, verbatim: the tag set, the source set `on_site / customer_sent / drone`, pinning to an obstruction, "travel to the designer attached to the survey") | P0 |
 | M04-55 | **Capture is unconditional; upload is deliberate — and this is the product's one and only device-held queue.** A photograph is written to the device the moment it is taken, with no delay, and uploads when the connection returns — resumably, defaulting to Wi-Fi-or-charging, with a per-batch "upload now" available. A photograph is never blocked, never degraded to fit a network, and never lost because an upload failed. The queue is **one queue, one direction, no conflicts and no merge**, it holds photographs and nothing else, and its status is shown **on the capture screen (`SCR-M04-07`) and nowhere else** — no global indicator, no separate centre, no per-record marker anywhere else in the product. The device storage cap and its eviction order are this row's: acknowledged originals are evicted first and an unacknowledged original is never evicted. | `SRC` — `S4.rule.offline` (the capture half); owner decision 2026-08-07 (the photograph carve-out and its single status surface) | P0 |
 | M04-56 | **Photographs travel with the survey version they were captured in.** A revisit's photographs belong to the new version; the earlier version keeps its own (M04-57). A photograph is never moved between versions to make a later survey look complete. | `SRC` — `DOC04.survey-versioned` (versioned-append); `F4-14` (consumed) | P0 |
@@ -687,8 +689,10 @@ Permissions: `F2.M04.capture-surveys` for attaching photographs to a survey in e
 
 **Acceptance criteria.**
 
-- Given a photograph from any source, when it is read anywhere in the product, then it is presented
-  as reference and no dimension, height, area or pitch anywhere is attributed to it (M04-53).
+- Given a phone's photograph, when it is read anywhere in the product, then it is presented as
+  reference and no dimension, height, area or pitch is attributed to it; and given a figure read
+  from the sky picture, a drone map or a height map, then it carries `derived` until a person
+  changes it (M04-53).
 - Given any photograph, when it is attached, then it carries a tag and a source, and where it
   concerns an obstruction it can be pinned to that obstruction (M04-54).
 - Given photographs taken while the connection is down, then each is stored on the device
@@ -785,7 +789,7 @@ corrected on site.
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M04-63 | **A submitted survey hands the designer a complete, named brief — not a folder.** The hand-off carries, as one readable thing: the **five capture groups** with every value and its provenance (`M04-35`); every **photograph** with its tag, source and pin (`M04-54`); the **flagged and skipped** items stated as named absences (`M04-51`); the **open gaps** with their states (`M04-31`); the **access constraints** (`M04-44`); the **sanctioned load** (`M04-45`); the **structural observations** as observations (`F8-25`); and, for a remote survey, the **pinned tile**, the **outlined roof** and its **basis** (`M04-10`, `M04-28`). | `SRC` — `S4.screen.9` ("Submit hands off to the designer"); `S4.rule.capture` (the groups); `DOC04.photos-reference` ("travel to the designer attached to the survey"); `DOC04.survey-gaps`; `DOC04.survey-provenance` | P0 |
+| M04-63 | **A submitted survey hands the designer a complete, named brief — not a folder.** The hand-off carries, as one readable thing: the **five capture groups** with every value and its provenance (`M04-35`); every **photograph** with its tag, source and pin (`M04-54`); the **flagged and skipped** items stated as named absences (`M04-51`); the **open gaps** with their states (`M04-31`); the **access constraints** (`M04-44`); the **sanctioned load** (`M04-45`); the **structural observations** as observations (`F8-25`); and, for a remote survey, the **picture**, the **drawn roof** and its **basis** (`M04-10`, `M04-28`). | `SRC` — `S4.screen.9` ("Submit hands off to the designer"); `S4.rule.capture` (the groups); `DOC04.photos-reference` ("travel to the designer attached to the survey"); `DOC04.survey-gaps`; `DOC04.survey-provenance` | P0 |
 | M04-64 | **The designer receives what the survey knows and what it does not — with equal prominence.** A missing meter photograph, a waived gap, a skipped step, and an inaccessible roof are all first-class content of the hand-off, not omissions the designer must notice. The absence of a fact is a fact. | `SRC` — `S4.wrong.12` ("if submitted anyway, the designer sees the gap explicitly"); `S4.wrong.10` ("designer sees it before designing"); `S4.rec.1` (the second-trip logic, applied to the receiving end); `F8-01` (a number whose tier cannot be established is not rendered as a number) | P0 |
 | M04-65 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *Detected geometry crosses into a design only as a validated artifact, and never as raw detector output.* | `SRC` — `DOC05.ai-doorway` (docs/05; restated in docs/engineering/07 §3) *(shared — the artifact's production and validation are this module's; its application and entity stamping inside a design are `modules/M05`'s)* | — |
 | M04-66 | **A new survey version does not silently rewrite an existing design or a sent document.** When a revisit supersedes the version a design was built from, the design's own freshness comparison surfaces the difference (`F8-13`, `F8-14`) and the provenance change is shown before anything commits (`M04-37`); figures inside an already-sent document never move (`F8-15`). What this module guarantees is that the newer facts are available and visibly newer — not that they are applied behind someone's back. The design-side reconciliation is **ruled (owner ruling 2026-08-04)**: the design is marked "survey updated — review needed" with the designer notified, draft proposals on it are blocked from sending until review, and sent proposals stay pinned. | `SRC` — `DOC04.survey-versioned` (superseded state); `F8-13`, `F8-14`, `F8-15`, `F8-05` (consumed as published requirements) · reconciliation per owner ruling 2026-08-04 | P0 |
@@ -796,8 +800,8 @@ is what shades it, here is where the meter is and what it says, here is how mate
 here is what I could not check, here is what I was unsure about. Everything in `M04-63` is on that
 screen in that order, with the photographs inline against the group they belong to.
 
-The remote survey's hand-off adds the pinned tile and the outlined roof, and it says which basis
-the roof was outlined on — the imagery tile or a blank canvas (`M04-28`).
+The remote survey's hand-off adds the picture and the drawn roof, and it says which basis the
+roof was drawn on — a picture or a blank grid (`M04-28`).
 
 Permissions: reading a submitted survey follows the lead or site's visibility (`M04-61`); the
 Design Engineer's assigned scope is what puts a submitted survey in front of them.
@@ -841,9 +845,9 @@ against an in-progress design.
   read by `modules/M09-field-workforce.md` for the field-side view of the same day.
 - **The survey → design hand-off** (§M04.12) — the captured groups, photographs, flagged absences,
   open gaps, access constraints, sanctioned load, structural observations and, for remote surveys,
-  the pinned tile and the outlined roof with its basis.
-- **The pinned imagery tile** (`M04-10`) — the single image a survey and a design both
-  refer to.
+  the picture and the drawn roof with its basis.
+- **The picture under the roof** (`M04-10`) — Google's, fetched each time, or the company's own,
+  pinned; the roof keeps its place on either.
 - **The sanctioned load** (`M04-45`) — the site figure `modules/M05`'s overrun warning reads.
 - **Survey provenance** (`M04-34`, `M04-35`) — remote = `derived`, physical = `measured`, per field,
   which every downstream document's honesty labelling reads through `foundations/F8`.
@@ -868,12 +872,12 @@ against an in-progress design.
 
 ## 5. Non-goals
 
-- **No measurement from photographs, in any form** (`D35`, `S4.notv1.1`, `DOC00.nongoal-measurement`
-  — Task 3's disposition names this document as its home). No LiDAR, no automatic roof measurement
-  from photographs, no augmented-reality height estimation. **Every dimension and every height is
-  entered or estimated by a person.** The refinement is the source's own and is deliberate:
-  **capturing and attaching reference photographs — from a phone, from the customer, or from a
-  drone or other camera — is fully in scope** (§M04.10); *deriving numbers* from them is not.
+- **No measurement from a phone's photograph** (`D35`, `DOC00.nongoal-measurement` — Task 3's
+  disposition names this document as its home). No LiDAR and no augmented-reality height
+  estimation. Numbers read from the sky picture, a drone map or a height map are in scope, carry
+  `derived`, and a person can change each (owner ruling 2026-11-19, `M04-53`). **Capturing and
+  attaching reference photographs — from a phone, from the customer, or from a drone or other
+  camera — is fully in scope** (§M04.10).
   Drone-as-imagery is fine; drone-as-automatic-measurement is not.
 - **No LiDAR or imagery-derived measurement as a competitive answer** (`CG-7`, `CG-matrix.5` —
   skip-deliberately). The reasoning is recorded rather than assumed: high-resolution elevation
@@ -884,8 +888,9 @@ against an in-progress design.
 - **No computed structural verdict, at any scale** (`F8-25`). Structural capture is observations
   plus photographs — *"observations only, never a verdict"* (`S4.rule.capture`). No score, no
   adequacy flag, no "safe / unsafe" control exists anywhere in this module.
-- **No automatic roof detection** (owner ruling 2026-11-01). No AI model and no roof-data feed
-  produces a roof; the operator outlines every one.
+- **No roof the AI applies silently** (owner ruling 2026-11-19, replacing "no automatic roof
+  detection" of 2026-11-01). The AI setup and the height data set a roof up; each value shows what
+  it came from, a person can change it, and drawing by hand is always there (`M04-22`).
 - **No dependency on any one imagery provider** (`R5`, `DOC07.google-enhancement-only`).
   Every path a provider serves has a manual equivalent that costs nothing and always works
   (`M04-22`). No feature is designed such that a provider's absence removes it.
