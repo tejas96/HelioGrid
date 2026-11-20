@@ -33,4 +33,5 @@ export * from './leads-list';
 export * from './quick-add';
 export * from './search';
 export * from './site-details';
+export * from './studio-canvas';
 export * from './team-reassign';

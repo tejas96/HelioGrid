@@ -29,8 +29,9 @@ export function PageTrail({ trail, here, label, narrow = false, acts }: PageTrai
       ) : (
         <nav className="hg-page-trail" aria-label={label}>
           <ol>
-            {trail.map((crumb) => (
-              <li key={crumb.label}>
+            {trail.map((crumb, at) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: a trail is a path in order; two pages above may share a name (a lead and its design), never a place
+              <li key={at}>
                 <Pressable className="hg-page-trail-crumb" onPress={crumb.onOpen}>
                   {crumb.label}
                 </Pressable>

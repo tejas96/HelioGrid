@@ -1,0 +1,36 @@
+import { z } from 'zod';
+
+/**
+ * What a phone and a web page it shows in its web view say to each other, so the page is signed in
+ * as the phone's person (`T-M05-002a`): the studio is one web page, and iOS and Android show it in
+ * their app. The phone lends the page its short-lived API token, never its session; the token
+ * travels in a message, never in the page's address, and the page keeps it in memory alone.
+ *
+ * An installed phone app outlives a release of the page, and the page outlives the app: each side
+ * reads a message with `readSiteMapMessage`, which answers `null` for a version or a kind it does
+ * not know. A change no old reader can drop is a new version beside this one.
+ */
+export const WEB_VIEW_BRIDGE_VERSION = 1 as const;
+
+const version = z.literal(WEB_VIEW_BRIDGE_VERSION);
+
+/** Phone → page: the token to sign in with, or `null` when the phone's person is signed out. */
+export const webViewLendSchema = z.object({
+  v: version,
+  kind: z.literal('token'),
+  token: z.string().min(1).nullable(),
+});
+export type WebViewLend = z.infer<typeof webViewLendSchema>;
+
+/**
+ * Page → phone. `token-needed`: the page is ready, or its token lapsed — send one. `leave`: the
+ * person pressed the way back; the phone goes back a screen. `site`: the person asked to change the
+ * site details; the phone opens its own Site details in the studio's place. A phone app older than
+ * `site` reads it as `null` and stays on the studio.
+ */
+export const webViewAskSchema = z.discriminatedUnion('kind', [
+  z.object({ v: version, kind: z.literal('token-needed') }),
+  z.object({ v: version, kind: z.literal('leave') }),
+  z.object({ v: version, kind: z.literal('site') }),
+]);
+export type WebViewAsk = z.infer<typeof webViewAskSchema>;

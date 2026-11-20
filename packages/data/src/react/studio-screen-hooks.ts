@@ -8,6 +8,7 @@ export type {
   LeadDesignsSection,
 } from './use-lead-designs-section';
 export { useLeadDesignsSection } from './use-lead-designs-section';
+export { useLendToken } from './use-lend-token';
 export type {
   SiteDetailsMoves,
   SiteDetailsRead,
@@ -17,3 +18,11 @@ export type {
   SiteSaveFailure,
 } from './use-site-details-screen';
 export { useSiteDetailsScreen } from './use-site-details-screen';
+export type {
+  StudioEditing,
+  StudioMoves,
+  StudioPicture,
+  StudioSaveState,
+  StudioScreen,
+} from './use-studio-screen';
+export { useStudioScreen } from './use-studio-screen';

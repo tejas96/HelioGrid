@@ -15,7 +15,7 @@ import type { FormatPack, MeasurementSystem } from './pack';
  */
 export const PROCUREMENT_SYSTEM: MeasurementSystem = 'metric';
 
-const METRES_PER_FOOT = 0.3048;
+export const METRES_PER_FOOT = 0.3048;
 /** NON-BREAKING: `F3-08` forbids a value and its unit separating across a line. */
 const NBSP = ' ';
 
@@ -42,4 +42,26 @@ export function formatLength(
   const imperial = system === 'imperial';
   const value = imperial ? metres / METRES_PER_FOOT : metres;
   return `${formatNumber(pack, value, { maximumFractionDigits: 1 })}${NBSP}${imperial ? 'ft' : 'm'}`;
+}
+
+const CENTIMETRES_PER_METRE = 100;
+const INCHES_PER_METRE = 1 / 0.0254;
+
+/**
+ * A short length held in METRES — a picture's sharpness, a gap — in the reader's system: whole
+ * centimetres, or inches to one decimal.
+ */
+export function formatFineLength(
+  pack: FormatPack,
+  metres: number,
+  system: MeasurementSystem = pack.measurementSystem,
+): string {
+  if (system === 'imperial') {
+    const inches = formatNumber(pack, metres * INCHES_PER_METRE, { maximumFractionDigits: 1 });
+    return `${inches}${NBSP}in`;
+  }
+  const centimetres = formatNumber(pack, metres * CENTIMETRES_PER_METRE, {
+    maximumFractionDigits: 0,
+  });
+  return `${centimetres}${NBSP}cm`;
 }

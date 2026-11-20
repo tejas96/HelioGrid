@@ -146,11 +146,13 @@ export * from './proposals/vocabulary';
 export * from './search';
 export * from './session';
 export * from './studio/design';
+export * from './studio/document';
 export * from './studio/places';
 export * from './studio/site';
 export * from './studio/site-map-bridge';
 export * from './studio/studio';
 export * from './studio/vocabulary';
+export * from './studio/web-view-bridge';
 // The tenant (`T-M01-025`): signup, the tenant facts, the roster, the request-to-join steer.
 export * from './tenant';
 // Tenant settings (`T-M01-026`): every setting's one home, and the resolved read.

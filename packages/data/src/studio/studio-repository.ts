@@ -1,15 +1,21 @@
 import type {
   CreateDesign,
   DesignDetail,
+  DesignDocumentWire,
   DesignSet,
+  EditTurnWire,
   GeoPoint,
+  MemberRef,
   PlaceAnswer,
   PlaceSuggestions,
+  SaveDocument,
+  SavedDocument,
   SaveSite,
+  SkyPictureWire,
 } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
 import { createCreationKeys } from '../client/creation-key';
-import { ApiError, bodyAt, bodyOrRefusalAt } from '../errors/errors';
+import { ApiError, bodyAt, bodyOrRefusalAt, bodyOrRefusalsAt } from '../errors/errors';
 
 /** An act the studio refuses, with domain's reason — a closed lead takes no design and no site change. */
 export class DesignActRefusedError extends ApiError {
@@ -21,6 +27,30 @@ export class DesignActRefusedError extends ApiError {
   ) {
     super(422, message, { code });
     this.name = 'DesignActRefusedError';
+  }
+}
+
+/**
+ * A save the studio refuses in place: someone saved after the version it was made on — who, and
+ * when — or another person holds the design's turn to edit. Nothing merges (`F4-15`).
+ */
+export class DocumentConflictError extends ApiError {
+  constructor(
+    readonly conflict:
+      | {
+          readonly kind: 'saved-first';
+          readonly version: number;
+          readonly savedAt: string;
+          readonly savedBy: MemberRef | null;
+          /** The save that came first was this opening's own, whose answer was lost. */
+          readonly byThisOpening: boolean;
+        }
+      | { readonly kind: 'turn-held'; readonly editor: MemberRef },
+    message: string,
+    code: string,
+  ) {
+    super(409, message, { code });
+    this.name = 'DocumentConflictError';
   }
 }
 
@@ -53,6 +83,22 @@ export interface StudioRepository {
   saveSite(id: string, body: SaveSite): Promise<DesignDetail>;
   /** The recommended mark set or taken off; answers the lead's designs as they now stand. */
   recommend(id: string, recommended: boolean): Promise<DesignSet>;
+  /** The design document as it stands, who saved it last, and whose turn it is. */
+  document(id: string, signal?: AbortSignal): Promise<DesignDocumentWire>;
+  /**
+   * The whole document saved over the version it was changed from. A refusal the studio answers
+   * in place leaves as `DocumentConflictError`, a closed lead's as `DesignActRefusedError`.
+   */
+  saveDocument(id: string, body: SaveDocument): Promise<SavedDocument>;
+  /**
+   * The turn to edit taken or renewed, answered with whoever holds it after. A closed lead's design
+   * gives none, and leaves as `DesignActRefusedError`.
+   */
+  takeEditTurn(id: string): Promise<EditTurnWire>;
+  /** The turn to edit given back. */
+  giveEditTurn(id: string): Promise<void>;
+  /** The sky picture of the design's site, fetched now, or why there is none. */
+  skyPicture(id: string, signal?: AbortSignal): Promise<SkyPictureWire>;
 }
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
@@ -87,6 +133,36 @@ export function createStudioRepository(api: ApiClient): StudioRepository {
     },
     recommend: (id, recommended) =>
       bodyAt(() => routes.recommend({ ...at(id), body: { recommended } }), 200),
+    document: (id, signal) =>
+      bodyAt(() => routes.document({ ...at(id), fetchOptions: { signal } }), 200),
+    saveDocument: async (id, body) => {
+      const answer = await bodyOrRefusalsAt(
+        () => routes.saveDocument({ ...at(id), body }),
+        200,
+        [409, 422],
+      );
+      if (answer.answered) return answer.body;
+      const { refused } = answer;
+      if (refused.status === 422) throw actRefusal(refused.body.error);
+      const { error } = refused.body;
+      throw new DocumentConflictError(
+        error.code === 'DESIGN_SAVED_FIRST'
+          ? { kind: 'saved-first', ...error.facts }
+          : { kind: 'turn-held', editor: error.facts.editor },
+        error.message,
+        error.code,
+      );
+    },
+    takeEditTurn: async (id) => {
+      const answer = await bodyOrRefusalAt(() => routes.takeEditTurn(at(id)), 200, 422);
+      if (!answer.answered) throw actRefusal(answer.refusal.error);
+      return answer.body;
+    },
+    giveEditTurn: async (id) => {
+      await bodyAt(() => routes.giveEditTurn(at(id)), 204);
+    },
+    skyPicture: (id, signal) =>
+      bodyAt(() => routes.skyPicture({ ...at(id), fetchOptions: { signal } }), 200),
   };
 }
 

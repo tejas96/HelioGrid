@@ -924,7 +924,7 @@ document is deleted leaves this register with it.
 | Row | Tier | Type | Where | Task |
 |---|---|---|---|---|
 | M04-01 | P0 | policy | policy | T-M04-015 |
-| M04-02 | P0 | mixed | SCR-M04-02, SCR-M04-03 · +non-UI: imagery fetch; the roof outlined by hand; every figure stamped derived | T-M04-011 |
+| M04-02 | P0 | mixed | SCR-M04-02, SCR-M04-03 · +non-UI: imagery fetch; the roof drawn by hand or set up by AI; every figure stamped derived | T-M04-011 |
 | M04-03 | P0 | screen | SCR-M04-07 | T-M04-007 |
 | M04-04 | P0 | policy | policy | LAW |
 | M04-05 | P0 | mixed | SCR-M04-01 · +non-UI: five mode-choice rules; guidance stated, never enforced as lock | T-M04-001 |

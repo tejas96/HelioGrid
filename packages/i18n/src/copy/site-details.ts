@@ -66,6 +66,8 @@ const SITE = {
   needsLocation: /*i18n*/ { id: 'Set the location first.' },
   cancel: /*i18n*/ { id: 'Cancel' },
   start: /*i18n*/ { id: 'Start design' },
+  saveBack: /*i18n*/ { id: 'Save and open the design' },
+  nextAgain: /*i18n*/ { id: 'The design opens again at this place.' },
   saveFailed: /*i18n*/ { id: 'That did not save. Check the connection and try again.' },
   leadClosed: /*i18n*/ { id: 'This lead is closed. Reopen it to change its designs.' },
   notFoundTitle: /*i18n*/ { id: 'This design is not here' },
@@ -83,8 +85,11 @@ const SITE = {
   trail: /*i18n*/ { id: 'Breadcrumb' },
 } as const;
 
-/** Every word the Site details form says (`SCR-M05-01`). */
-export function siteDetailsWords(t: T) {
+/**
+ * Every word the Site details form says (`SCR-M05-01`). `started`: the design already opened once,
+ * so the form is a change to its site — its button saves and goes back to the design.
+ */
+export function siteDetailsWords(t: T, started: boolean) {
   return {
     name: t(SITE.name),
     mount: t(SITE.mount),
@@ -137,10 +142,12 @@ export function siteDetailsWords(t: T) {
     load: t(SITE.load),
     loadUnit: t(SITE.loadUnit),
     loadLater: t(SITE.loadLater),
-    next: { roof: t(SITE.nextRoof), ground: t(SITE.nextLand) },
+    next: started
+      ? { roof: t(SITE.nextAgain), ground: t(SITE.nextAgain) }
+      : { roof: t(SITE.nextRoof), ground: t(SITE.nextLand) },
     needsLocation: t(SITE.needsLocation),
     cancel: t(SITE.cancel),
-    start: t(SITE.start),
+    start: started ? t(SITE.saveBack) : t(SITE.start),
   };
 }
 

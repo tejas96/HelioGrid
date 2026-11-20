@@ -142,6 +142,12 @@ export const tokenLifeSchema = z.object({
  */
 export const AUTH_PATH_PREFIX = '/auth';
 
+/**
+ * The cookie the ten-minute API token rides in. The api sets it; a phone keeps it in its jar and
+ * lends the token alone to a page it shows in a web view (`T-M05-002a`), never its session.
+ */
+export const API_TOKEN_COOKIE = 'hg_token';
+
 export const authContract = c.router({
   requestOtp: {
     method: 'POST',

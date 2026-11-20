@@ -49,7 +49,7 @@ const FIRST_DESIGN = 1;
 export function studioFlowWords(
   t: Awaited<ReturnType<typeof createTranslator>>,
 ): Record<string, string> {
-  const site = siteDetailsWords(t.t);
+  const site = siteDetailsWords(t.t, false);
   const design = designPageWords(t.t);
   return {
     SITE_TITLE: siteDetailsPageWords(t.t).title,

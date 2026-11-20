@@ -267,6 +267,7 @@ export { Surface } from './primitives/Surface';
 export type { TextAlign, TextColor, TextProps, TextVariant } from './primitives/Text';
 export { Text } from './primitives/Text';
 export { useOwnWidth } from './primitives/use-own-width';
+export { useReducedMotion } from './primitives/use-reduced-motion';
 // END COMPONENT EXPORTS
 export * from './proposal-after';
 export * from './proposal-builder';

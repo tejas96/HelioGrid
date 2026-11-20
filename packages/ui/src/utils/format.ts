@@ -5,6 +5,8 @@ import {
   formatCompact,
   formatCompactMoney,
   formatDate,
+  formatFineLength,
+  formatLength,
   formatMinorUnits,
   formatMinorUnitsPlainly,
   formatMoney,
@@ -15,6 +17,7 @@ import {
   formatTime,
   formatWeekday,
   IN_FORMATS,
+  type MeasurementSystem,
   type MinorUnits,
   moneySymbol,
   monthNames,
@@ -83,6 +86,10 @@ export interface MarketFormat {
   monthYear: (value: string | Date) => string;
   /** When an event happened, by the pack's clock and zone — `16:12`. */
   clockAt: (value: string) => string;
+  /** A short length held in metres, in the reader's system — `14 cm`, `5.5 in` (`F3-23`). */
+  fineLength: (metres: number, system: MeasurementSystem) => string;
+  /** A length held in metres, in the reader's system — `10 m`, `20 ft` (`F3-23`). */
+  length: (metres: number, system: MeasurementSystem) => string;
   /** A day's name in the reader's words, on the pack's zone — `Monday`. */
   weekday: (value: string) => string;
   /** Resolved ISO week start, 1 = Monday … 7 = Sunday. `Calendar`'s first column reads this. */
@@ -124,6 +131,8 @@ export function createFormat(
     date: (value) => formatDate(pack, value, language),
     monthYear: (value) => formatMonthYear(pack, value, language),
     clockAt: (value) => formatClockAt(pack, value),
+    fineLength: (metres, system) => formatFineLength(pack, metres, system),
+    length: (metres, system) => formatLength(pack, metres, system),
     weekday: (value) => formatWeekday(pack, value, language),
     firstDayOfWeek: pack.firstDayOfWeek,
     monthNames: (style) => monthNames(pack, language, style),

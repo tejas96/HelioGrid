@@ -33,6 +33,7 @@ export function SiteMapTiles({
   mapKey,
   shown = 0,
   touch = false,
+  whole = false,
 }: {
   pin: Coordinate;
   /** Counts the times the map is told the pin again though the pin did not change (a refused move). */
@@ -42,6 +43,12 @@ export function SiteMapTiles({
   mapKey: string;
   /** Shown in a phone's web view: no keyboard is there, so the map's key help is left out. */
   touch?: boolean;
+  /**
+   * The big map, where moving the map is the whole job: one finger moves it. In the form's small
+   * map one finger scrolls the page and two move the map — Google says so on the map — so a person
+   * scrolling the form never moves the pin by mistake.
+   */
+  whole?: boolean;
 }) {
   const holder = useRef<HTMLDivElement>(null);
   const live = useRef<LiveMap | null>(null);
@@ -66,7 +73,7 @@ export function SiteMapTiles({
           styles: QUIET_LABELS,
           disableDefaultUI: true,
           keyboardShortcuts: !touch,
-          gestureHandling: 'greedy',
+          gestureHandling: whole ? 'greedy' : 'cooperative',
           clickableIcons: false,
           tilt: 0,
         });
@@ -94,7 +101,7 @@ export function SiteMapTiles({
       for (const one of heard) one.remove();
       live.current = null;
     };
-  }, [mapKey, touch]);
+  }, [mapKey, touch, whole]);
 
   const { latitude, longitude } = pin;
   const told = useRef(shown);
@@ -130,6 +137,7 @@ export function sitePinTilesOf(
       onFailed={map.loadFailed}
       mapKey={GOOGLE_MAPS_KEY}
       shown={map.shown}
+      whole={map.big}
     />
   );
 }

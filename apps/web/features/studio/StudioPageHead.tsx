@@ -18,6 +18,7 @@ export function StudioPageHead({
   onLeads,
   onLead,
   fromProposals,
+  design = null,
 }: {
   wide: boolean;
   /** The trail's name. */
@@ -31,6 +32,8 @@ export function StudioPageHead({
   onLead: () => void;
   /** The Proposals page opened it: the trail is Proposals, and its press goes back there. */
   fromProposals: { readonly label: TranslatedText; readonly onOpen: () => void } | null;
+  /** A started design's Site details: the design itself is the last step back. */
+  design?: { readonly label: TranslatedText; readonly onOpen: () => void } | null;
 }) {
   const trail =
     fromProposals === null
@@ -39,6 +42,7 @@ export function StudioPageHead({
           ...(lead === null ? [] : [{ label: lead, onOpen: onLead }]),
         ]
       : [fromProposals];
+  if (design !== null) trail.push(design);
   return (
     <div className="hg-studio-head">
       <PageTrail trail={trail} here={title} label={label} narrow={!wide} />

@@ -1,34 +1,22 @@
 import {
   type CreateDesign,
   type CreateHeaders,
-  DESIGN_ACT_REFUSED,
   type DesignDetail,
   type DesignSet,
-  designActRefusedEnvelope,
   type SaveSite,
   studioContract,
 } from '@heliogrid/contracts';
-import { can, type DesignActRefusal } from '@heliogrid/domain';
-import { HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { can } from '@heliogrid/domain';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';
-import { type ContractException, refusalWithFacts } from '../../common/errors/contract-exception';
 import { type LeadReader, moneyOf } from '../crm/crm.public';
 import { SettingsService } from '../settings/settings.public';
-import { designDetailOf, designWireOf } from './internal/design-wire';
+import { designDetailOf, designWireOf, refusedAct } from './internal/design-wire';
 import { StudioRepository } from './studio.repository';
 import { StudioWritesRepository } from './studio.writes.repository';
 
 const DESIGN = 'studio.create_edit_designs' as const;
-
-/** A refusal the design's lead gave, as the route declares it. */
-function refusedAct(refusal: DesignActRefusal): ContractException {
-  return refusalWithFacts(designActRefusedEnvelope, HttpStatus.UNPROCESSABLE_ENTITY, {
-    code: DESIGN_ACT_REFUSED,
-    message: 'The design cannot do that from where its lead stands.',
-    facts: { refusal },
-  });
-}
 
 /**
  * The studio's designs as HelioGrid hosts them: made on a lead, read by whoever may read that

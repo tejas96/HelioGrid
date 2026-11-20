@@ -20,10 +20,14 @@
     "@heliogrid/i18n": "workspace:*",
     "@heliogrid/theme": "workspace:*",
     "@heliogrid/ui": "workspace:*",
+    "@react-three/drei": "10.7.9",
+    "@react-three/fiber": "9.8.2",
     "@tanstack/react-query": "5.101.4",
+    "camera-controls": "3.1.2",
     "next": "15.5.21",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "three": "0.187.0"
   },
   "devDependencies": {
     "@heliogrid/config": "workspace:*",
@@ -31,6 +35,7 @@
     "@types/node": "22.20.1",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
+    "@types/three": "0.187.0",
     "tailwindcss": "4.3.3",
     "typescript": "5.8.3"
   }

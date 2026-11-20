@@ -129,10 +129,10 @@ const apiEnvObject = z.object({
    * The server key for the map service a site's place is found with: address suggestions, a
    * suggested place and the address at a typed point. Held by the api alone — no app carries it.
    * Optional: unset, the place search answers that it is not available, and a person sets the
-   * place with typed coordinates.
+   * place with typed coordinates. The studio's sky picture comes from the same key (Map Tiles API);
+   * unset, the studio says there is no sky picture.
    */
   GOOGLE_MAPS_API_KEY: z.string().min(1).optional(),
-
   /**
    * The oldest phone build the api still serves, and where each store sells the new one
    * (`F4-36`). Unset: no minimum, nothing refused. Raising it is a config change and a restart,

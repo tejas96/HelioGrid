@@ -11,16 +11,12 @@ import {
   type SiteDetailsActs,
   useFormat,
 } from '@heliogrid/ui';
-import {
-  StackActions,
-  type StaticScreenProps,
-  useNavigation,
-  usePreventRemove,
-} from '@react-navigation/native';
+import { type StaticScreenProps, useNavigation, usePreventRemove } from '@react-navigation/native';
 import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import { ShellPage } from '../shell/components/ShellPage';
 import { sitePinTilesOf } from './components/SitePinTiles';
+import { useToDesign } from './hooks/use-to-design';
 import { styles } from './styles';
 
 /** Site details open at `heliogrid://designs/<id>/site` — from *Create design* and from a design's own page. */
@@ -61,32 +57,33 @@ export function SiteDetailsScreen({ route }: Props) {
   const format = useFormat();
   const navigation = useNavigation();
   const { designId } = route.params;
-  const toDesign = (id: string) =>
-    navigation.dispatch(StackActions.replace('Design', { designId: id }));
+  const toDesign = useToDesign();
   const screen = useSiteDetailsScreen(
     designId,
     { formats: format.pack, language: locale },
-    { toDesign },
+    { toDesign: (id) => toDesign(id, true) },
   );
   /* The bar's way back and the system Back both remove the page: each is held while a change stands. */
   usePreventRemove(screen.changed, ({ data }) =>
     screen.leave.ask(() => navigation.dispatch(data.action)),
   );
-  const back = () => {
-    if (navigation.canGoBack()) navigation.goBack();
-    else navigation.navigate('Leads');
-  };
   const page = siteDetailsPageWords(t);
   const frame = useRef<View>(null);
   const { read } = screen;
   const shown = read.kind === 'ready' ? read.value : null;
+  /* A started design's form came from its studio: its way back opens the studio again. */
+  const leave = () => {
+    if (shown?.started) toDesign(designId, false);
+    else if (navigation.canGoBack()) navigation.goBack();
+    else navigation.navigate('Leads');
+  };
   const subject = shown?.detail.subject ?? null;
   /* A reader without the design grant has nothing to fill here: the design's own page shows the site. */
   const locked = shown !== null && !shown.detail.canEdit;
   const open = useRef(toDesign);
   open.current = toDesign;
   useEffect(() => {
-    if (locked) open.current(designId);
+    if (locked) open.current(designId, false);
   }, [locked, designId]);
   const summary =
     subject === null
@@ -102,7 +99,7 @@ export function SiteDetailsScreen({ route }: Props) {
         title: page.title,
         ...(summary === null ? {} : { summary }),
         back: page.states.backToList,
-        onBack: back,
+        onBack: leave,
         stripless: true,
         searchless: true,
       }}
@@ -133,8 +130,8 @@ export function SiteDetailsScreen({ route }: Props) {
             }}
             saving={screen.saving}
             failure={screen.failure === null ? null : page.saveFailed(screen.failure)}
-            acts={actsOf(screen, back)}
-            words={siteDetailsWords(t)}
+            acts={actsOf(screen, leave)}
+            words={siteDetailsWords(t, shown.started)}
           />
         )}
       </View>

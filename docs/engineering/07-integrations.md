@@ -77,7 +77,9 @@ into pure domain functions.
 | DocumentRenderPort | Playwright/Chromium | Typst | no (capacity metric) |
 | PushPort | FCM HTTP v1 (+APNs via FCM) | — | no |
 | OtpPort | MSG91 SMS → WhatsApp fallback | — | otp_sms (fair-use, not billed v1) |
-| MapsPort | Google Static/JS Maps | Esri, Mapbox | no (quota only) |
+| MapsPort | Google Map Tiles (2D satellite), Street View, Maps JS | Esri, Mapbox, Apple | no (quota only) |
+| RoofDataPort | Google Solar API (quality BASE) | a drone map's own heights | no (cost line `solar_imagery`) |
+| RoofModelPort | Claude (Anthropic API) | another model, after the 10-roof test | **ai_roof_detections** |
 | DemPort | Copernicus GLO-30 | SRTM, drone DTM import | no |
 | PlaceSource | Google Places (New) + Geocoding, called by the api | — | no |
 
@@ -108,15 +110,54 @@ estimate: a recorded PVGIS answer per district of the market (IN's is
 labelled `estimated` (`F8-10`). A market with no recorded table gets no built-in estimate and the
 step is filled by hand. The step never waits on a third party.
 
-## 2. BuildingInsightsPort — removed
+## 2. RoofDataPort — heights and roof faces
 
-No roof-data port exists: the product has no automatic roof detection and reads no Google roof
-data (owner ruling 2026-11-01). Every roof is outlined by hand on the MapsPort tile (§13).
+**Status: not built; the roof step builds it** (`docs/tasks/M05-design-studio.md`).
 
-## 3. RoofDetectPort — removed
+```ts
+interface RoofDataPort {
+  roofFaces(pin: LatLng): Promise<PortResult<RoofFaces>>;                  // faces, slopes, facing, imagery date
+  heightMap(pin: LatLng, radiusM: number): Promise<PortResult<HeightMap>>; // surface heights, in metres
+}
+```
 
-No detection port exists, for the same ruling. The section numbers stay so every citation of a
-later section still resolves.
+**v1: `GoogleSolarAdapter`, on the server key.** The Solar API's `buildingInsights` and its
+`dataLayers` height map and roof mask, at quality BASE — never `experiments=EXPANDED_COVERAGE`. The
+flux layers are never asked for (§1). Each open of a design fetches again and nothing is stored
+(owner ruling 2026-11-19). Every figure it gives is `derived`.
+
+**Under test:** a memory binding; a suite reaches no third party.
+
+**Failure/degradation:** no data → OpenStreetMap building outlines with `estimated` heights, and
+the studio asks for one measured height; with neither, the roof is drawn or typed by hand. Never
+blocks.
+
+**Metering:** the cost line `solar_imagery`, never billable. The key goes live only after the
+owner's yes and a budget alert, because it bills us.
+
+## 3. RoofModelPort — the AI setup's reader
+
+**Status: not built; the roof step builds it** (`docs/tasks/M05-design-studio.md`).
+
+```ts
+interface RoofModelPort {
+  read(input: RoofReadInput): Promise<PortResult<RoofReading>>; // the building, what was found, at most three questions
+}
+```
+
+**v1: `ClaudeRoofModel`, on the server** (the Anthropic API). The model never draws: §2's faces and
+height map give the geometry; the model picks the building, names what was found and asks at most
+three questions, each answered by a tap (owner ruling 2026-11-19). About ₹16 and 30 to 50 seconds a
+roof. The answer's shape is the studio's contract, never the provider's, so a switch of model or
+provider changes only the adapter — and first passes the 10-roof test and its scorer.
+
+**Under test:** a memory binding; a suite reaches no third party.
+
+**Failure/degradation:** no answer → the studio says so, and Draw myself is the main button. Never
+blocks.
+
+**Metering:** the company's AI allowance, `ai_roof_detections`, checked before the call — an
+entitlement, never a feature flag. The key goes live only after the owner's yes and a budget.
 
 ## 4. Telephony — a capability-negotiated port FAMILY (ADR-0019)
 
@@ -389,31 +430,35 @@ No silent degradation on the front door.
 
 **Metering:** `otp_sms`, non-billable — fair-use capped (rate limits above), never billed in v1.
 
-## 13. MapsPort — satellite tiles
+## 13. MapsPort — the sky picture and the road view
 
-**Status: not built.** No `MapsPort` exists in the code, and nothing fetches or stores a tile. The
-map under the pin is §15's page. What a roof is traced on is open until the studio's roof step
-(`docs/tasks/M05-design-studio.md`); the text below is the earlier direction, kept for that step.
+**Status: the sky picture is built** (`T-M05-002a`): the studio module's `SkyPictureSource` port,
+with Google's Map Tiles 2D satellite on the server key (3×3 tiles a fetch, capped per person) in
+development and production alike, and a memory source under test. The road view comes with
+`T-M05-002i`. The map under the pin is §15's page.
 
 ```ts
 interface MapsPort {
-  staticTile(pin: LatLng, zoom: number, sizePx: Size): Promise<PortResult<StoredTileRef>>;
+  skyPicture(pin: LatLng, sizeM: number): Promise<PortResult<SkyPicture>>; // picture, ground bounds, date, credit line
+  roadPhotos(pin: LatLng): Promise<PortResult<RoadPhoto[]>>;              // street photos with their heading and date
   jsApiKey: string;   // the one intentionally-public key (referrer-locked)
 }
 ```
 
-**v1: `GoogleMapsAdapter`.** Static satellite tiles are fetched **server-side once per site
-capture and stored in the object store** (`StoredTileRef` = object key + metres-per-pixel + fetch
-date). This gives: one stable coordinate frame to trace on, reproducible provenance
-(the tile a design was traced on never changes under it), and one billing event instead of
-per-render fetches. Interactive map picking uses Maps JS with the public key.
+**v1: `GoogleMapsAdapter`.** Google's satellite picture (the Map Tiles API's 2D satellite) and its
+Street View photos are fetched again each time a design opens, with their dates and the
+provider's credit line, and are never stored (owner ruling 2026-11-19). The roof is stored in the
+site's ground coordinates, so it keeps its place on every fetch (`M04-10`). A picture the company
+or the customer owns is stored with the design in the object store (`design_picture` in
+`data-model.md`). Interactive map picking uses Maps JS with the public key.
 
-**Later adapters:** Esri World Imagery, Mapbox — global expansion or cost lever.
+**Later adapters:** Esri World Imagery, Mapbox, Apple — global expansion or cost lever.
 
-**Failure/degradation:** tile fetch failure → studio still opens with blank canvas + manual
-calibration (known-distance rescale). Never blocks.
+**Failure/degradation:** no picture → the studio opens on a 1 m grid and says why; drawing and
+typing the size still work. No street photo → the road view offers the user's own photo. Never
+blocks.
 
-**Metering:** `map_tile_fetch`, non-billable, per-tenant daily quota.
+**Metering:** the cost line `solar_imagery`, non-billable, per-tenant daily quota.
 
 ## 14. DemPort — Copernicus GLO-30
 

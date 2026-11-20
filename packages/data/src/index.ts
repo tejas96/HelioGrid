@@ -108,4 +108,5 @@ export type { PlacesRepository, StudioRepository } from './studio/studio-reposit
 export { DesignActRefusedError } from './studio/studio-repository';
 export type { SimilarTenant, TenantRepository } from './tenant/repository';
 export type { TokenStorage } from './transport/storage';
+export type { BorrowedToken } from './transport/transport';
 export type { UserRepository } from './user/repository';
