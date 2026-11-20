@@ -14,6 +14,7 @@ import {
   RequestCancelledError,
   RequestTimeoutError,
 } from '../errors/errors';
+import { type BorrowedToken, renewedBorrowed } from './borrowed';
 import {
   type BlockedSignals,
   reportEntitlementBlocked,
@@ -22,6 +23,7 @@ import {
 } from './refusals';
 import type { TokenStorage } from './storage';
 
+export type { BorrowedToken } from './borrowed';
 export type { BlockedSignals, UpgradeSignals } from './refusals';
 
 type HeadersWithSetCookie = Headers & { getSetCookie?: () => string[] };
@@ -73,6 +75,14 @@ type TransportConfig =
       baseUrl: string;
       session: SessionSignals;
       upgrade: UpgradeSignals;
+      blocked: BlockedSignals;
+    }
+  | {
+      mode: 'borrowed';
+      token: BorrowedToken;
+      language: ReaderLanguage;
+      baseUrl: string;
+      session: SessionSignals;
       blocked: BlockedSignals;
     }
   | { mode: 'server'; headers: RequestHeaders };
@@ -208,6 +218,10 @@ async function sendRequest(
   const headers = { ...args.headers };
   if (config.mode === 'server') Object.assign(headers, forwardedHeaders(config.headers));
   else headers[ACCEPT_LANGUAGE_HEADER] = config.language();
+  if (config.mode === 'borrowed') {
+    const token = await config.token.current();
+    if (token !== null) headers.authorization = `Bearer ${token}`;
+  }
   if (config.mode === 'mobile') {
     const cookie = await config.storage.get();
     if (cookie) headers.cookie = cookie;
@@ -278,6 +292,9 @@ async function refreshedOnce(
   first: Awaited<ReturnType<ApiFetcher>>,
 ): Promise<Awaited<ReturnType<ApiFetcher>>> {
   if (config.mode === 'server' || first.status !== UNAUTHENTICATED) return first;
+  if (config.mode === 'borrowed') {
+    return renewedBorrowed(config, first, () => sendRequest(config, args, signal), lossOf);
+  }
   const { pathname } = new URL(args.path);
   if (pathname === `${AUTH_PREFIX}refresh`) return first;
   if (!config.session.couldHoldSession()) return first;

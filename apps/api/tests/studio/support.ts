@@ -1,5 +1,16 @@
-import type { DesignDetail, DesignSet, SaveSite } from '@heliogrid/contracts';
-import { design } from '@heliogrid/db';
+import { randomUUID } from 'node:crypto';
+import type {
+  DesignDetail,
+  DesignDocumentWire,
+  DesignSet,
+  EditTurnWire,
+  SavedDocument,
+  SaveSite,
+  SkyPictureWire,
+  StudioDocumentWire,
+} from '@heliogrid/contracts';
+import { design, designDocument } from '@heliogrid/db';
+import { EMPTY_STUDIO_DOCUMENT } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { inArray } from 'drizzle-orm';
 import type { Staffed, Team } from '../crm/support';
@@ -21,8 +32,8 @@ export {
 } from '../proposals/support';
 
 /*
- * One studio proof's world: the proposals world, and the designs it made removed before the leads
- * they hang on.
+ * One studio proof's world: the proposals world, and the designs it made — their documents first —
+ * removed before the leads they hang on.
  */
 export type StudioWorld = ProposalsWorld;
 
@@ -32,7 +43,9 @@ export async function openStudioWorld(staffed: readonly Staffed<Team>[]): Promis
   return {
     ...world,
     async close() {
-      await world.pools.admin.db.delete(design).where(inArray(design.tenantId, [...companies]));
+      const { db } = world.pools.admin;
+      await db.delete(designDocument).where(inArray(designDocument.tenantId, [...companies]));
+      await db.delete(design).where(inArray(design.tenantId, [...companies]));
       await world.close();
     },
   };
@@ -91,3 +104,30 @@ export const saveSite = (caller: Caller, designId: string, body: SaveSite = aSit
 
 export const recommend = (caller: Caller, designId: string, recommended: boolean) =>
   caller.call<DesignSet>('PUT', `/designs/${designId}/recommended`, { recommended });
+
+/** The document of a design as the reader reads it. */
+export const documentOf = (caller: Caller, designId: string) =>
+  caller.call<DesignDocumentWire>('GET', `/designs/${designId}/document`);
+
+/** A save of the document over the version it was changed from, whatever it answers. */
+export const saveDocument = (
+  caller: Caller,
+  designId: string,
+  baseVersion: number,
+  picture: StudioDocumentWire['picture'] = 'none',
+  opening: string = randomUUID(),
+) =>
+  caller.call<SavedDocument>('PUT', `/designs/${designId}/document`, {
+    baseVersion,
+    document: { ...EMPTY_STUDIO_DOCUMENT, picture },
+    opening,
+  });
+
+export const takeTurn = (caller: Caller, designId: string) =>
+  caller.call<EditTurnWire>('PUT', `/designs/${designId}/edit-turn`);
+
+export const giveTurn = (caller: Caller, designId: string) =>
+  caller.call<undefined>('DELETE', `/designs/${designId}/edit-turn`);
+
+export const skyPictureOf = (caller: Caller, designId: string) =>
+  caller.call<SkyPictureWire>('GET', `/designs/${designId}/sky-picture`);

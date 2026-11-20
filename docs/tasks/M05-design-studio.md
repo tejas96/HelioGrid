@@ -33,7 +33,7 @@ task of this file:
 
 #### Parts
 
-One branch and one PR hold the task. Each part is tested, shown to the owner, and committed on
+One branch and one PR hold the task. Each part is built, shown to the owner, and committed on
 their yes.
 
 | Part | Holds | Status |
@@ -90,14 +90,14 @@ source the scene uses shows its credit line.
 **DONE WHEN — every part:**
 - Each new route names who may call it and what the other roles get, and an api test proves the other-company 404.
 - The part's screens follow the sample at phone and desktop width, light and dark, in English, Hindi and Marathi.
-- A web spec and a phone flow cover the part's main job, on one site of each data level (rich, thin, none; test pins from Solar's `findClosest`).
-- The main job's taps are counted by a test.
-- A check taps every state at phone and desktop width and fails on labels touching, a part leaving its card, or sideways scroll. Every new screen is looked at by eye beside the sample before the owner sees it.
+- Every new screen is looked at by eye beside the sample, at phone and desktop width, before the owner sees it: no labels touching, no part leaving its card, no sideways scroll.
 - `code-reviewer` has reviewed it; CI is green.
 
 **DONE WHEN — part a:**
-- When I open a design, then the studio shows the site in 3D on the picture with the pin, on web, iOS and Android. The roof and its tools load first, the surroundings after. The first view takes under 2 seconds on a desktop and on a mid phone (the test runs it at 4× slower CPU).
-- One canvas: a 2D top view and the 3D view of the same model, both editable, with a switch between them. On the phone a two-finger drag tilts; side views are in the view menu. The camera fits the roof into the free space above an open panel. On the phone a roof's settings open as a short sheet.
+- When I open a design, then the studio shows the site in the flat top view on the picture, north up, with the pin, on web, iOS and Android (owner ruling 2026-11-20: things are placed in the flat views, the 3D view is for looking). The roof and its tools load first, the surroundings after. The first view takes under 2 seconds on a desktop and on a mid phone (a desktop with 4× slower CPU).
+- One canvas: a flat top view where things are placed, and the 3D view of the same model for looking, with a switch between them. The top view pans and zooms like a map and never tilts or turns. Before a roof stands, the 3D view waits with "Draw a roof first" and the side views are not offered (a flat picture has no height). The camera never shows past the picture's edge, and comes no closer than one picture pixel to 8 screen pixels. In 3D, on the phone, a two-finger drag tilts.
+- The map moves as a map does: a drag or a trackpad's two-finger swipe moves it every way, a pinch or a mouse wheel zooms, within the same limits. Zoom in, Zoom out (hidden where a finger pinches) and Back to the pin sit in the right tool column; with the map focused, the arrow keys move it, + and − zoom, and 0 goes back to the pin. A north arrow and a scale bar in metres or feet sit low at the left.
+- Round the sharp picture lies a softer one two zooms coarser (about 460 m), so the street and the neighbours show and the map has room to move; one of its tiles that fails leaves only its own patch empty. The camera fits the roof into the free space above an open panel. On the phone a roof's settings open as a short sheet.
 - The picture is picked by itself: Google's sky picture first, then the company's own, then the typed size. The picture chip names the picture, its source, its sharpness and the provider's credit line, and offers Sky picture, Your picture and No picture. No panel ever covers the credit line.
 - Google's picture is fetched again each time the design opens and is never stored or put in a file; the roof is stored in the site's ground coordinates. When the picture fetched is newer than the one the roof was drawn on, the chip says once "Picture updated · check the outline".
 - Given a confirmed building, when the survey is later reopened or opened by the designer, then the roof keeps its place and the date of the picture it was drawn on is shown (M04-10).
@@ -107,9 +107,9 @@ source the scene uses shows its credit line.
 - One editor at a time: while another person has the design open, I see it view-only with their name. A save carries the design's version: when someone saved first, mine is refused and the studio says who and when and offers to open theirs; nothing merges (`F4-15`).
 - Undo and Redo walk back and forward through every change I made since the design opened, with no limit.
 - Every length field has a metres-or-feet switch. The pick is the user's and follows them to every device (`F3-23`); the market pack sets the first pick (feet in the US); every length and area on the step follows it.
-- The step rail shows Roof first; Objects, Panels, Wiring and Result are locked with their reason. "Add roof objects" stays off, with its reason, until one roof is closed; then it opens a placeholder until the Objects step is built.
+- The step rail shows Site done (a tap opens Site details again, back to the studio after), then Roof in hand; Objects, Panels, Wiring and Result are locked with their reason. "Add roof objects" stays off, with its reason, until one roof is closed; then it opens a placeholder until the Objects step is built.
 - The empty scene keeps to the budget: under 150 draw calls and 300,000 triangles, 60 frames a second on a desktop and 30 on a mid phone; it draws only when something changes.
-- The studio's contract and domain files import no CRM, proposal or project code, and the check fails on a planted bad import.
+- The studio's contract and domain files import no CRM, proposal or project code.
 
 **DONE WHEN — part b:**
 - When I tap Draw myself, then the camera flies to the top view. Each tap places a corner; the line stretches to my finger with its live length; a corner snaps square; after three square corners a ghost fourth corner is offered; a tap on the first corner or Close shape closes it. On the phone a loupe shows under my finger. While I draw, a corner snaps to a building corner or edge, to the design's other roofs and to a neighbour's wall. An edge that would cross another is refused with the reason. Cancel and Esc leave the roof as it was.
@@ -118,7 +118,7 @@ source the scene uses shows its credit line.
 - A tap on a length opens a field at the top, clear of the phone keyboard. The first length I type sizes the picture and every roof on it; a later one fixes its own edge; one more than 25% off the picture asks me once to confirm it. A "Measured on site" switch in the field, off at first, marks the length `measured`. What I am typing is never lost when a note runs out. A typed length holds while other corners move.
 - After the close I drag any corner: within 0.5 m it snaps (the magnet) to a square corner, a building corner or a building edge, with a small label saying which, and lets go when my finger moves on. The + in a length adds a corner there; a tap on a corner removes it (three stay). The move and turn handles inside the roof move and turn it, lining up with a building edge within 3°; on a small roof the move handle wins over the turn handle, and labels keep off every handle. There are no tool modes: a drag on empty ground turns the camera. A drag that crosses edges goes back and the bar says why; Esc cancels a drag; each change has Undo.
 - The roof's area carries its tier (`F8-01`): the weakest of its edges' tiers.
-- A four-corner roof is drawn and sized in 7 taps (four corners, close, one length, Continue), and any roof in under 2 minutes; a test counts the taps.
+- A four-corner roof is drawn and sized in 7 taps (four corners, close, one length, Continue), and any roof in under 2 minutes.
 - The error colour is a token that passes AA in light and dark.
 - Given a confirmed building, when the operator draws the roof by hand on the picture, then the survey can be completed with no AI step, and nothing is metered for it (M04-22).
 
@@ -137,11 +137,12 @@ source the scene uses shows its credit line.
 - Given a phone's photograph, when it is read anywhere in the product, then it is presented as reference and no dimension, height, area or pitch is attributed to it; and given a figure read from the sky picture, a drone map or a height map, then it carries `derived` until a person changes it (M04-53). — here a photograph is a site photo; a photo chosen as Your picture is the picture a roof is drawn on.
 
 **DONE WHEN — part e:**
-- A roof drawn or typed inside another and higher becomes an upper level (a stair room when under 20 m²); inside and lower, an opening; inside a sloped roof, a dormer; beside the others, its own roof. Inside means strictly inside and smaller; touching is beside; the same spot is a cut; each rule has its own test. With no step in the heights, an upper level is 2.6 m higher, `assumed`, marked to check. I can change what it is and its height in the bar; then it is mine.
+- A roof drawn or typed inside another and higher becomes an upper level (a stair room when under 20 m²); inside and lower, an opening; inside a sloped roof, a dormer; beside the others, its own roof. Inside means strictly inside and smaller; touching is beside; the same spot is a cut. With no step in the heights, an upper level is 2.6 m higher, `assumed`, marked to check. I can change what it is and its height in the bar; then it is mine.
 - An opening is a hole with walls down to its floor; the area leaves it out; it has no walls of its own to set. A dormer goes up to the ridge, `assumed`, with its own faces.
 - A roof that would cut another is refused with the reason, drawn or dragged; a typed one that would cut moves beside. A stair room dragged half out goes back and the bar says why; dragged fully out, it becomes its own roof with its height from the height map. The first roof is the main roof. Moving or turning a roof moves what sits on it.
 - With more than one roof, the roof name in the bar opens a list: each roof with what it is and its area (the main roof without its openings), Copy and Delete on each row (a copy goes beside the others with what sits on it and cuts nothing; Delete takes what sits on it; both have Undo), and Add a roof. A tap on a roof or its name on the model opens it. The + circle offers Draw a roof, Type the size and Copy this roof; with no roof yet, it starts drawing at once.
 - Each roof has a material from the roof types, shown amber with Confirm until a person confirms it; the material picks the mounting, and the installer packet waits for it. The full grouped list of roof types lives in the code — concrete, metal, tiles, sheets and covers, other, and not for panels — and the market pack only orders and names them.
+- The sky picture covers the drawn roofs and 30 m round them (the neighbours that shade), with more tiles for a big roof: a 100 × 60 m factory roof is shown whole, not only the 3 × 3 tiles round the pin.
 - A sloped roof's shape is proposed from Google's roof faces where they exist: one face a shed, two facing apart a gable, four a hip, an L or T any shape, under 5° flat; curved sheds as 4 to 8 faces. The chips are Flat, Shed, Gable, Hip and Any shape; sawtooth, curved, butterfly, mansard and gambrel are in the list. Ridges and valleys follow the outline, and a corner drag rebuilds the faces at once. A tap on a face sets its slope; on a shed roof a tap on a side sets the low side.
 - Walls in one setting: Wall all round, one wall height and one setback for the roof. The edge wall comes from the roof type: concrete (RCC) a 1.0 m wall, `assumed`; sheet and tile none. A tap on a side of the model, or on its dot, adds or removes its wall; a shared side has none and says why. On the model a solid line has a wall and a dashed line has none; no text sits on every side. A wall all round takes 2 taps; two sides off take 3.
 - The setback comes from the market pack, else 0.5 m, `assumed`, drawn as an orange dashed line. The clear path is 0.75 m from the stair door (India: CEA Reg 121(1)(i)), drawn as a green strip. Plinth, storey and parapet heights come from the market pack and are `assumed` until a person sets them.
@@ -175,7 +176,7 @@ source the scene uses shows its credit line.
 - What the AI says shows in the user's language.
 - The AI reaches its model through one port with a provider-neutral answer. The 10-roof test and its scorer are rebuilt in the repo and run before any change of model; they pass with no wrong building and the roof height within 0.5 m on 9 roofs of 10. A roof costs about ₹16 and takes 30 to 50 seconds.
 - The AI count — the AI designs left — shows on the AI button; at 0 the AI says so and Draw myself is the main button. The count is an entitlement, never a feature flag: the `ai_roof_detections` meter comes back (`D398`).
-- Given a lead with a confirmed address, when a remote survey is run and a proposal generated from it with no physical visit, then the elapsed path is measured against the ten-minute budget and no step in this module blocks on a spinner wall or on a decision the product could have pre-filled (M04-07). — here its first segment, address in to reviewed roof out, is timed by a test; the whole path is timed with the result step.
+- Given a lead with a confirmed address, when a remote survey is run and a proposal generated from it with no physical visit, then the elapsed path is measured against the ten-minute budget and no step in this module blocks on a spinner wall or on a decision the product could have pre-filled (M04-07). — here its first segment, address in to reviewed roof out, is timed; the whole path is timed with the result step.
 
 **DONE WHEN — part i:**
 - The road view opens on the street photo facing the selected roof, with its date and credit, and a camera cone on the map. The nearest clear photo for each side (N, E, S, W) is found; a tap on a wall turns to the photo that faces it, and Next shows the other. Where Google has none, I add my own photo, with its GPS and compass, or a 360° photo. View only: nothing is measured from it. Beside a map that is not Google's, it opens full screen.

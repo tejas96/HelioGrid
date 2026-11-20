@@ -1,4 +1,4 @@
-import { AUTH_PATH_PREFIX } from '@heliogrid/contracts';
+import { API_TOKEN_COOKIE, AUTH_PATH_PREFIX } from '@heliogrid/contracts';
 import type { Request, Response } from 'express';
 import { ENV } from '../../config/env';
 
@@ -8,7 +8,7 @@ import { ENV } from '../../config/env';
  * outside development, where the browser talks to a plain-http localhost.
  */
 export const SESSION_COOKIE = 'hg_session';
-export const TOKEN_COOKIE = 'hg_token';
+export const TOKEN_COOKIE = API_TOKEN_COOKIE;
 
 /* The contract's own prefix: a cookie scoped to a path the routes have left is simply not
    sent, and the failure looks like an expired session rather than a misplaced cookie. */

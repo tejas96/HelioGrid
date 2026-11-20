@@ -1,4 +1,15 @@
-import type { DesignDetail, DesignWire } from '@heliogrid/contracts';
+import {
+  DESIGN_ACT_REFUSED,
+  type DesignDetail,
+  type DesignWire,
+  designActRefusedEnvelope,
+} from '@heliogrid/contracts';
+import type { DesignActRefusal } from '@heliogrid/domain';
+import { HttpStatus } from '@nestjs/common';
+import {
+  type ContractException,
+  refusalWithFacts,
+} from '../../../common/errors/contract-exception';
 import { memberRefOf } from '../../crm/crm.public';
 import type { DesignFacts, DesignRow } from '../studio.repository';
 
@@ -28,4 +39,13 @@ export function designDetailOf(facts: DesignFacts, canEdit: boolean): DesignDeta
     },
     canEdit,
   };
+}
+
+/** A refusal the design's lead gave, as the route declares it. */
+export function refusedAct(refusal: DesignActRefusal): ContractException {
+  return refusalWithFacts(designActRefusedEnvelope, HttpStatus.UNPROCESSABLE_ENTITY, {
+    code: DESIGN_ACT_REFUSED,
+    message: 'The design cannot do that from where its lead stands.',
+    facts: { refusal },
+  });
 }

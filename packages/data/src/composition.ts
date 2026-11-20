@@ -80,6 +80,7 @@ import { createTenantRepository, type TenantRepository } from './tenant/reposito
 import type { TokenStorage } from './transport/storage';
 import {
   type BlockedSignals,
+  type BorrowedToken,
   createTransport,
   type ReaderLanguage,
   type RequestHeaders,
@@ -147,6 +148,13 @@ type RepositoryRegistryConfig = { baseUrl: string } & (
       upgrade: UpgradeSignals;
       blocked: BlockedSignals;
     }
+  | {
+      mode: 'borrowed';
+      token: BorrowedToken;
+      session: SessionSignals;
+      language: ReaderLanguage;
+      blocked: BlockedSignals;
+    }
   | { mode: 'server'; headers: RequestHeaders }
 );
 
@@ -171,13 +179,22 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
         })
       : config.mode === 'server'
         ? createTransport({ mode: 'server', headers: config.headers })
-        : createTransport({
-            mode: 'browser',
-            baseUrl: config.baseUrl,
-            session: config.session,
-            language: config.language,
-            blocked: config.blocked,
-          });
+        : config.mode === 'borrowed'
+          ? createTransport({
+              mode: 'borrowed',
+              token: config.token,
+              baseUrl: config.baseUrl,
+              session: config.session,
+              language: config.language,
+              blocked: config.blocked,
+            })
+          : createTransport({
+              mode: 'browser',
+              baseUrl: config.baseUrl,
+              session: config.session,
+              language: config.language,
+              blocked: config.blocked,
+            });
   const api = createApiClient(config.baseUrl, transport);
   return {
     audit: createAuditRepository(api),

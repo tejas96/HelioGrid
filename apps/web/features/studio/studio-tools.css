@@ -1,0 +1,212 @@
+/* The studio's two tool columns and its one bottom bar (`T-M05-002a`). */
+/* The two columns of round tools. */
+.hg-studio-tools {
+  grid-row: 2;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-studio-tools[data-side="left"] {
+  grid-column: 1;
+}
+
+.hg-studio-tools[data-side="right"] {
+  grid-column: 3;
+}
+
+.hg-studio-tools .hg-icon-button,
+.hg-studio-tools > * {
+  pointer-events: auto;
+}
+
+.hg-studio-tools .hg-icon-button {
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow:
+    inset 0 0 0 var(--hg-studio-line) var(--line-soft),
+    var(--e3);
+}
+
+/* Zoom in and Zoom out, one pair, on every screen: a finger can pinch, but the buttons are the
+   one way that needs no gesture, and the phone keeps every feature the desktop has. */
+.hg-studio-zoom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* The map's quiet marks, low at the left of the free room: the north arrow and the scale bar. */
+.hg-studio-marks {
+  grid-row: 2;
+  grid-column: 2;
+  align-self: end;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-1);
+  border-radius: var(--r-pill);
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+}
+
+.hg-studio-north {
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--sp-6);
+  block-size: var(--sp-6);
+  color: var(--text-primary);
+}
+
+.hg-studio-north-letter {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-medium);
+  line-height: 1;
+}
+
+.hg-studio-scale {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-studio-scale-words {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-studio-scale-bar {
+  block-size: var(--sp-1);
+  border: var(--hg-studio-line) solid var(--text-secondary);
+  border-block-start: 0;
+}
+
+.hg-studio-scale-bar[data-hidden="true"] {
+  visibility: hidden;
+}
+
+/* The map answers its keys once it has the focus: a ring inside its edge says so. */
+.hg-studio-scene:focus-visible {
+  outline: var(--sp-0-5) solid var(--focus-ring);
+  outline-offset: calc(-1 * var(--sp-1));
+}
+
+/* A tool or an act the next part of the studio builds keeps its own look, as the approved sample
+   draws it: it is off with its reason, and a tap says it is coming. A tool that is simply off —
+   Undo with nothing to undo — stays dim. */
+.hg-studio-tools .hg-icon-button[aria-disabled="true"]:not(:disabled) {
+  color: var(--text-primary);
+}
+
+.hg-studio-bar .hg-button[data-stated="true"][data-variant="primary"] {
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  box-shadow: var(--e2);
+}
+
+.hg-studio-bar .hg-button[data-stated="true"][data-variant="secondary"] {
+  background: var(--hg-control-fill);
+  color: var(--text-primary);
+  box-shadow:
+    inset 0 0 0 var(--hg-studio-line) var(--line-strong),
+    var(--e1);
+}
+
+/* The one bottom bar. */
+.hg-studio-bar {
+  grid-row: 3;
+  grid-column: 1 / -1;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
+  border-radius: var(--r-pill);
+}
+
+.hg-studio-bar-mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--sp-8);
+  block-size: var(--sp-8);
+  border-radius: var(--r-pill);
+  background: var(--accent-subtle);
+  color: var(--accent-text);
+}
+
+.hg-studio-bar-words {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+}
+
+.hg-studio-bar-name {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: var(--fs-body-lg);
+}
+
+.hg-studio-bar-status {
+  overflow: hidden;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hg-studio-bar-acts {
+  display: flex;
+  flex: none;
+  gap: var(--sp-2);
+}
+
+/* A phone: the tools sit low, in thumb reach; the bar stands as a card across the foot with its
+   acts one under the other, and the name moves into it. */
+@media (width < 968px) {
+  .hg-studio-tools {
+    align-self: end;
+  }
+
+  .hg-studio-bar {
+    justify-self: stretch;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-3);
+    padding: var(--sp-3);
+    border-radius: var(--r-xl);
+  }
+
+  .hg-studio-bar-mark {
+    display: none;
+  }
+
+  .hg-studio-bar-words {
+    flex-direction: column;
+    gap: var(--sp-0-5);
+  }
+
+  .hg-studio-bar-status {
+    white-space: normal;
+  }
+
+  /* The two acts side by side, the main one at the right; a language too long for one row puts
+     them one under the other. */
+  .hg-studio-bar-acts {
+    flex-wrap: wrap;
+  }
+
+  .hg-studio-bar-acts > * {
+    flex: 1 1 0;
+  }
+
+  .hg-studio-bar-acts .hg-button {
+    inline-size: 100%;
+  }
+}

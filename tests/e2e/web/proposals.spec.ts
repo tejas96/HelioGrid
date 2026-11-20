@@ -29,7 +29,7 @@ const formats = { money: String, number: String, when: String, ago: String, phon
 const LIST = proposalListWords(en.t, formats, null);
 const START = proposalStartWords(en.t, { name: CUSTOMER.name, segment: 'residential' });
 const ASK = proposalQuickAddWords(en.t, null);
-const SITE = siteDetailsWords(en.t);
+const SITE = siteDetailsWords(en.t, false);
 const DESIGN = designPageWords(en.t);
 
 /** A design row's name, as its open button speaks it: only the customer's name is read. */

@@ -79,6 +79,14 @@ describe('Site details — the read', () => {
     expect(shown(world).operators).toContain('MSEDCL');
   });
 
+  it.each([
+    [null, false],
+    [SANGLI.pin, true],
+  ] as const)('a site whose pin is %o reads as started: %s', async (pin, started) => {
+    origin.site = { ...origin.site, pin };
+    expect(shown(await opened()).started).toBe(started);
+  });
+
   it('a design that is not the reader’s to see reads unavailable', async () => {
     const world = mounted(designId(9));
     await waitFor(() => expect(world.view.result.current.read.kind).toBe('unavailable'));
@@ -202,6 +210,8 @@ describe('Site details — Start design', () => {
     });
     expect(world.view.result.current.changed).toBe(false);
     expect(world.view.result.current.failure).toBeNull();
+    // The first pin it saved does not turn the form into a change of a started design.
+    expect(shown(world).started).toBe(false);
   });
 
   it('reads numbers still in the fields before it saves, so the typed point is the one sent', async () => {

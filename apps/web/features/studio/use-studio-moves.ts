@@ -14,6 +14,9 @@ export function useStudioMoves() {
       router.replace(designPath(designId, fromProposals)),
     toSiteDetails: (designId: string, fromProposals = false) =>
       router.push(designSitePath(designId, fromProposals)),
+    /** Site details in place of the studio: its save or Cancel opens the studio again in its place. */
+    swapToSiteDetails: (designId: string, fromProposals = false) =>
+      router.replace(designSitePath(designId, fromProposals)),
   };
 }
 

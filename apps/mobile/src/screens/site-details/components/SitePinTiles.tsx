@@ -53,8 +53,11 @@ function Tiles({
   onFailed,
   onNoMap,
   shown,
+  whole,
 }: {
   pin: Coordinate;
+  /** The big map: one finger moves it. In the form's small map one finger scrolls the page. */
+  whole: boolean;
   /** Counts the times the map is told the pin again though the pin did not change (a refused move). */
   shown: number;
   onMove: (point: Coordinate) => void;
@@ -87,7 +90,7 @@ function Tiles({
   return (
     <WebView<object>
       ref={view}
-      source={{ uri: SITE_MAP_URL }}
+      source={{ uri: whole ? `${SITE_MAP_URL}?whole=1` : SITE_MAP_URL }}
       style={styles.tiles}
       originWhitelist={[WEB_URL]}
       // iOS asks for each frame's load: only the view's own address is held to this page.
@@ -138,6 +141,7 @@ export function sitePinTilesOf(
       onFailed={map.loadFailed}
       onNoMap={map.noMap}
       shown={map.shown}
+      whole={map.big}
     />
   );
 }

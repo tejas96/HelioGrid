@@ -12,6 +12,14 @@ import {
   recommendDesignSchema,
 } from './design';
 import {
+  designDocumentSchema,
+  designSaveConflictEnvelope,
+  editTurnSchema,
+  saveDocumentSchema,
+  savedDocumentSchema,
+  skyPictureSchema,
+} from './document';
+import {
   placeAnswerSchema,
   placeAtQuerySchema,
   placeDetailsQuerySchema,
@@ -83,6 +91,58 @@ export const studioContract = c.router({
     summary:
       'Mark the design as the one recommended, or take the mark off — one design of a lead at most',
     responses: { 200: designSetSchema, 401: unauthenticatedEnvelope, 404: notFound },
+  },
+  document: {
+    method: 'GET',
+    path: '/designs/:id/document',
+    pathParams: designParamsSchema,
+    summary: 'The design document as it stands, who saved it last, and who holds its turn to edit',
+    responses: { 200: designDocumentSchema, 401: unauthenticatedEnvelope, 404: notFound },
+  },
+  saveDocument: {
+    method: 'PUT',
+    path: '/designs/:id/document',
+    pathParams: designParamsSchema,
+    body: saveDocumentSchema,
+    summary:
+      'Save the whole document over the version it was changed from — refused when someone saved since or holds the turn',
+    responses: {
+      200: savedDocumentSchema,
+      401: unauthenticatedEnvelope,
+      404: notFound,
+      409: designSaveConflictEnvelope,
+      422: designActRefusedEnvelope,
+    },
+  },
+  takeEditTurn: {
+    method: 'PUT',
+    path: '/designs/:id/edit-turn',
+    pathParams: designParamsSchema,
+    body: c.noBody(),
+    summary:
+      'Take the turn to edit, or renew it — answered with whoever holds it, the reader only when it was free; a closed lead gives none',
+    responses: {
+      200: editTurnSchema,
+      401: unauthenticatedEnvelope,
+      404: notFound,
+      422: designActRefusedEnvelope,
+    },
+  },
+  giveEditTurn: {
+    method: 'DELETE',
+    path: '/designs/:id/edit-turn',
+    pathParams: designParamsSchema,
+    body: c.noBody(),
+    summary: 'Give back the turn to edit; a turn the reader does not hold stays as it is',
+    responses: { 204: c.noBody(), 401: unauthenticatedEnvelope, 404: notFound },
+  },
+  skyPicture: {
+    method: 'GET',
+    path: '/designs/:id/sky-picture',
+    pathParams: designParamsSchema,
+    summary:
+      'The sky picture of the design’s site, fetched now and never stored — or why there is none',
+    responses: { 200: skyPictureSchema, 401: unauthenticatedEnvelope, 404: notFound },
   },
 });
 

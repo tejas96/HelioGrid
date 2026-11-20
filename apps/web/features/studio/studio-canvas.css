@@ -1,0 +1,214 @@
+/* The studio's canvas (`T-M05-002a`): the scene on the whole screen, and thin glass parts over it
+   on a grid — the head across the top, the two tool columns at the sides, the one bar at the foot.
+   The grid lets every click through to the scene except on a part. */
+.hg-studio {
+  --hg-studio-line: calc(var(--sp-0-5) / 2);
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--sp-3);
+  padding: max(var(--sp-4), env(safe-area-inset-top)) max(var(--sp-4), env(safe-area-inset-right))
+    max(var(--sp-4), env(safe-area-inset-bottom)) max(var(--sp-4), env(safe-area-inset-left));
+  overflow: hidden;
+  background: var(--canvas);
+  pointer-events: none;
+}
+
+.hg-studio-scene {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.hg-studio-no-scene {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-6);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* White frosted glass over the picture, as the approved sample draws it: the theme's strong glass,
+   which follows dark and field mode. */
+.hg-studio-glass {
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow:
+    inset 0 0 0 var(--hg-studio-line) var(--line-soft),
+    var(--e3);
+  color: var(--text-primary);
+  pointer-events: auto;
+}
+
+/* The head: the top bar and the picture chip in a column at the left; the steps in the middle of
+   the canvas on a desktop, beside the way back in one row on a phone. */
+.hg-studio-canvas-head {
+  grid-row: 1;
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-areas:
+    "top rail ."
+    "chip chip chip";
+  align-items: start;
+  gap: var(--sp-2) var(--sp-3);
+  min-inline-size: 0;
+}
+
+.hg-studio-top {
+  grid-area: top;
+  justify-self: start;
+  min-inline-size: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  max-inline-size: 100%;
+  padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-1);
+  border-radius: var(--r-pill);
+}
+
+.hg-studio-name {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: var(--fs-body-lg);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hg-studio-pill {
+  display: inline-flex;
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-studio-pill-words {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hg-studio-pill[data-tone="success"] {
+  color: var(--success-text);
+}
+
+.hg-studio-pill[data-tone="warning"] {
+  color: var(--warning-text);
+}
+
+.hg-studio-steps {
+  grid-area: rail;
+  justify-self: center;
+  min-inline-size: 0;
+}
+
+/* The steps' pill: the step before, the step in hand and the step after, on one glass pill whose
+   own border shows how far the design has come. */
+.hg-studio-steps-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-body-sm);
+}
+
+/* The pieces are the pill's edge: the glass keeps its lift, not its own edge line under them. */
+.hg-studio-glass.hg-studio-steps-pill {
+  box-shadow: var(--e3);
+}
+
+/* Drawn over the pill's whole box, on its edge only, so it never covers a control and lets every
+   press through. */
+.hg-studio-steps-border {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.hg-studio-steps-border rect {
+  fill: none;
+  /* The steps ahead: a track that reads on light and dark glass alike. */
+  stroke: color-mix(in srgb, var(--text-primary) 24%, transparent);
+  /* Three pixels, as the border is drawn for (`StudioStepSwitcher` LINE_PX). */
+  stroke-width: calc(var(--sp-1) - var(--hg-studio-line));
+  stroke-linecap: round;
+  transition: stroke var(--dur-standard) var(--ease-standard);
+}
+
+.hg-studio-steps-border rect[data-standing="done"] {
+  stroke: var(--success);
+}
+
+.hg-studio-steps-border rect[data-standing="here"] {
+  stroke: var(--accent);
+}
+
+/* Notes in the middle of the canvas, under the head: a save someone else made first, a closed
+   lead, a newer picture. */
+.hg-studio-note {
+  grid-row: 2;
+  grid-column: 2;
+  align-self: start;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  max-inline-size: 100%;
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
+  border-radius: var(--r-lg);
+  font-size: var(--fs-body-sm);
+}
+
+/* A phone: the way back and the steps share the top row, the chip under them, and the name moves
+   to the bar. A row too narrow for both puts the steps on their own row, so nothing is crushed. */
+@media (width < 968px) {
+  .hg-studio {
+    gap: var(--sp-2);
+    padding: max(var(--sp-3), env(safe-area-inset-top)) max(var(--sp-3), env(safe-area-inset-right))
+      max(var(--sp-3), env(safe-area-inset-bottom)) max(var(--sp-3), env(safe-area-inset-left));
+  }
+
+  .hg-studio-canvas-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+
+  .hg-studio-top {
+    gap: var(--sp-1);
+  }
+
+  .hg-studio-top .hg-studio-name {
+    display: none;
+  }
+
+  /* Saved is the quiet default: its mark alone, its word still the pill's spoken name. Every
+     other state keeps its words. */
+  .hg-studio-pill[data-saved="true"] .hg-studio-pill-words {
+    display: none;
+  }
+
+  /* The steps share the top row with the way back: the pill keeps its own size, in the middle of
+     the room the way back leaves. */
+  .hg-studio-steps {
+    flex: 0 1 auto;
+    margin-inline: auto;
+  }
+}

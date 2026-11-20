@@ -5,12 +5,13 @@ import { InstantMoveProvider } from './instant-move';
 import { LeaveGuardProvider } from './leave-guard';
 
 /**
- * The inside pages that are FOCUS screens (`T-M06-002`, `T-M01-030`): one job, drawn with no
+ * The inside pages that are FOCUS screens (`T-M06-002`, `T-M01-030`, the studio's `T-M05-002a`): one job, drawn with no
  * sidebar, no settings side list and no bottom pill. A page joins by its path pattern here — a
  * `[segment]` matches any one segment — and nowhere else: the inside layout and the settings
  * layout both ask `useIsFocusScreen`.
  */
 const FOCUS_PATHS = [
+  '/designs/[id]',
   '/proposals/[id]/build',
   '/proposals/[id]/document',
   '/more/proposal-templates',

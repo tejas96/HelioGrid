@@ -15,8 +15,9 @@ export function PageTrail({ trail, here, label, acts }: PageTrailProps) {
   return (
     <View style={styles.row}>
       <View style={styles.trail} accessibilityLabel={label} role="navigation" collapsable={false}>
-        {trail.map((crumb) => (
-          <View key={crumb.label} style={styles.crumb}>
+        {trail.map((crumb, at) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: a trail is a path in order; two pages above may share a name (a lead and its design), never a place
+          <View key={at} style={styles.crumb}>
             <Pressable onPress={crumb.onOpen}>
               <Text variant="body-sm" color="secondary">
                 {crumb.label}

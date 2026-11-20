@@ -1,0 +1,47 @@
+'use client';
+import { type RefObject, useEffect, useRef, useState } from 'react';
+
+/** The room the bars take at the top and the foot of the canvas, in CSS pixels. */
+export interface ChromeRoom {
+  readonly top: number;
+  readonly bottom: number;
+}
+
+const NONE: ChromeRoom = { top: 0, bottom: 0 };
+
+/**
+ * The web's measure of the canvas's bars: how far the top bars reach down, and how far the bottom
+ * bar reaches up, so the camera frames the site in the room between them. It follows every resize.
+ */
+export function useChromeRoom(): {
+  readonly frame: RefObject<HTMLDivElement | null>;
+  readonly top: RefObject<HTMLDivElement | null>;
+  readonly bottom: RefObject<HTMLDivElement | null>;
+  readonly room: ChromeRoom;
+} {
+  const frame = useRef<HTMLDivElement>(null);
+  const top = useRef<HTMLDivElement>(null);
+  const bottom = useRef<HTMLDivElement>(null);
+  // biome-ignore lint/plugin: the web's own measure of laid-out boxes; the phone shows this page
+  const [room, setRoom] = useState<ChromeRoom>(NONE);
+  useEffect(() => {
+    const measure = () => {
+      const box = frame.current?.getBoundingClientRect();
+      const upper = top.current?.getBoundingClientRect();
+      const lower = bottom.current?.getBoundingClientRect();
+      if (box === undefined) return;
+      const next = {
+        top: upper === undefined ? 0 : Math.round(upper.bottom - box.top),
+        bottom: lower === undefined ? 0 : Math.round(box.bottom - lower.top),
+      };
+      setRoom((was) => (was.top === next.top && was.bottom === next.bottom ? was : next));
+    };
+    const observer = new ResizeObserver(measure);
+    for (const node of [frame.current, top.current, bottom.current]) {
+      if (node !== null) observer.observe(node);
+    }
+    measure();
+    return () => observer.disconnect();
+  }, []);
+  return { frame, top, bottom, room };
+}

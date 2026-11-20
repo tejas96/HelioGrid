@@ -1,0 +1,152 @@
+/* The studio's picture chip, its three pictures, and the pin on the ground (`T-M05-002a`). */
+/* The picture chip and its three pictures. The chip stays narrow, so no panel ever covers its
+   credit line. */
+.hg-studio-picture {
+  position: relative;
+  grid-area: chip;
+  justify-self: start;
+  max-inline-size: min(100%, calc(var(--sp-24) * 4));
+}
+
+.hg-studio-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-2);
+  border-radius: var(--r-lg);
+  text-align: start;
+}
+
+.hg-studio-chip-thumb {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--sp-8);
+  block-size: var(--sp-8);
+  overflow: hidden;
+  border-radius: var(--r-sm);
+  background: var(--fill);
+  color: var(--text-secondary);
+}
+
+.hg-studio-chip-thumb img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.hg-studio-chip-words {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.hg-studio-chip-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+}
+
+.hg-studio-chip-source {
+  font-weight: var(--fw-regular);
+  color: var(--text-secondary);
+}
+
+.hg-studio-chip-credit {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-studio-picker {
+  position: absolute;
+  inset-block-start: calc(100% + var(--sp-2));
+  inset-inline-start: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  inline-size: min(calc(100vw - var(--sp-8)), calc(var(--sp-24) * 3.5));
+  padding: var(--sp-2);
+  border-radius: var(--r-lg);
+  transition:
+    opacity var(--dur-fast) var(--ease-enter),
+    transform var(--dur-fast) var(--ease-enter);
+}
+
+@starting-style {
+  .hg-studio-picker {
+    opacity: 0;
+    transform: translateY(calc(var(--sp-1) * -1));
+  }
+}
+
+.hg-studio-picker-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  inline-size: 100%;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  text-align: start;
+  color: var(--text-primary);
+}
+
+.hg-studio-picker-row[aria-checked="true"] {
+  background: var(--fill);
+}
+
+.hg-studio-picker-words {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-studio-picker-title {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+}
+
+.hg-studio-picker-row[aria-disabled="true"] .hg-studio-picker-title {
+  color: var(--text-tertiary);
+}
+
+.hg-studio-picker-line,
+.hg-studio-picker-guide {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-studio-picker-guide {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3) var(--sp-1);
+}
+
+/* The pin on the ground: a small red label in the scene, in the mono face a place is read in. */
+.hg-studio-pin {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: 0;
+  display: inline-flex;
+  pointer-events: none;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--danger);
+  color: var(--text-inverse);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  white-space: nowrap;
+  box-shadow: var(--e2);
+}
+
+.hg-studio-pin[data-hidden="true"] {
+  visibility: hidden;
+}

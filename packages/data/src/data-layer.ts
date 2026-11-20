@@ -1,3 +1,4 @@
+import { API_TOKEN_COOKIE } from '@heliogrid/contracts';
 import type { StorePlatform } from '@heliogrid/domain';
 import { createRepositoryRegistry, type Repositories } from './composition';
 import { type BlockedStore, createBlockedStore } from './session/blocked';
@@ -6,7 +7,7 @@ import { createSessionStore } from './session/store';
 import type { SessionStore } from './session/types';
 import { createUpgradeStore, NEVER_REFUSED, type UpgradeStore } from './session/upgrade';
 import type { TokenStorage } from './transport/storage';
-import type { ReaderLanguage, SessionSignals } from './transport/transport';
+import type { BorrowedToken, ReaderLanguage, SessionSignals } from './transport/transport';
 
 export type { Repositories } from './composition';
 
@@ -23,8 +24,13 @@ export type DataLayerConfig = {
   /** What the device holds for its user (`F4-37`); nothing, until a capture feature lands. */
   heldWork?: HeldWork;
 } & (
-  | { storage: TokenStorage; appVersion: string; storePlatform: StorePlatform }
-  | { storage?: undefined }
+  | {
+      storage: TokenStorage;
+      appVersion: string;
+      storePlatform: StorePlatform;
+      borrowed?: undefined;
+    }
+  | { storage?: undefined; borrowed?: BorrowedToken }
 );
 
 export interface DataLayer {
@@ -34,6 +40,20 @@ export interface DataLayer {
   upgrade: UpgradeStore;
   /** The latest save the billing gate refused, for the app's one denial (`M12-21`). */
   blocked: BlockedStore;
+  /**
+   * The phone's API token, fresh, to lend a page it shows in a web view — never the session, which
+   * stays in the jar. `null` on the web, and on a phone with no one signed in.
+   */
+  lendToken(): Promise<string | null>;
+}
+
+/** One cookie's value out of the jar's `name=value; …` text. */
+function cookieIn(jar: string | null, name: string): string | null {
+  for (const pair of (jar ?? '').split('; ')) {
+    const eq = pair.indexOf('=');
+    if (eq > 0 && pair.slice(0, eq) === name) return pair.slice(eq + 1);
+  }
+  return null;
 }
 
 /**
@@ -73,13 +93,22 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
         upgrade: upgrade.signals,
         blocked: blocked.signals,
       })
-    : createRepositoryRegistry({
-        baseUrl,
-        mode: 'browser',
-        session: signals,
-        language,
-        blocked: blocked.signals,
-      });
+    : config.borrowed
+      ? createRepositoryRegistry({
+          baseUrl,
+          mode: 'borrowed',
+          token: config.borrowed,
+          session: signals,
+          language,
+          blocked: blocked.signals,
+        })
+      : createRepositoryRegistry({
+          baseUrl,
+          mode: 'browser',
+          session: signals,
+          language,
+          blocked: blocked.signals,
+        });
   session = createSessionStore({
     auth: repositories.auth,
     user: repositories.user,
@@ -88,5 +117,11 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
     platform: storage ? 'mobile' : 'web',
     heldWork: heldWork ?? NO_HELD_WORK,
   });
-  return { repositories, session, upgrade, blocked };
+  const lendToken = async (): Promise<string | null> => {
+    if (!storage) return null;
+    // A session read renews a lapsed token first, so the token lent has its ten minutes ahead.
+    await repositories.auth.session().catch(() => undefined);
+    return cookieIn(await storage.get(), API_TOKEN_COOKIE);
+  };
+  return { repositories, session, upgrade, blocked, lendToken };
 }

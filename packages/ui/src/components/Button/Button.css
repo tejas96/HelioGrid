@@ -134,25 +134,29 @@
   color: inherit;
 }
 
-.hg-button[data-variant="primary"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  background: var(--action-primary-hover);
-}
+/* Hover only where a pointer truly hovers: a touch screen keeps :hover after a tap, and the button
+   would stay lit after the person has moved on. */
+@media (hover: hover) {
+  .hg-button[data-variant="primary"]:hover:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--action-primary-hover);
+  }
 
-.hg-button[data-variant="secondary"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  box-shadow:
-    inset 0 0 0 1px var(--mark-subtle),
-    var(--e1);
-}
+  .hg-button[data-variant="secondary"]:hover:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow:
+      inset 0 0 0 1px var(--mark-subtle),
+      var(--e1);
+  }
 
-.hg-button[data-variant="ghost"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  background: var(--hg-control-fill);
-  color: var(--text-primary);
-}
+  .hg-button[data-variant="ghost"]:hover:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--hg-control-fill);
+    color: var(--text-primary);
+  }
 
-/* --danger is the token one step lighter than --danger-text — this hover is a token, never a
-   literal lighter red. */
-.hg-button[data-variant="destructive"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  background: var(--danger);
+  /* --danger is the token one step lighter than --danger-text — this hover is a token, never a
+     literal lighter red. */
+  .hg-button[data-variant="destructive"]:hover:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--danger);
+  }
 }
 
 .hg-button:active:not(:disabled):not([aria-disabled="true"]) {

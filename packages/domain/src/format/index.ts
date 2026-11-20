@@ -85,6 +85,7 @@ export {
   uiLanguageOrSource,
 } from './languages';
 export {
+  formatFineLength,
   formatLength,
   PROCUREMENT_SYSTEM,
   resolveMeasurementSystem,

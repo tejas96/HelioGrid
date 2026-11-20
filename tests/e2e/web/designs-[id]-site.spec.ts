@@ -29,7 +29,7 @@ import {
 const en = await createTranslator('en');
 const DOCK = leadDockWords(en.t);
 const PAGE = siteDetailsPageWords(en.t);
-const SITE = siteDetailsWords(en.t);
+const SITE = siteDetailsWords(en.t, false);
 const DESIGN = designPageWords(en.t);
 
 const SITE_PATH = /\/designs\/[0-9a-f-]{36}\/site$/;

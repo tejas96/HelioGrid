@@ -4,7 +4,7 @@ import {
   type SiteDetailsScreen as SiteDetailsView,
   useSiteDetailsScreen,
 } from '@heliogrid/data/react';
-import { siteDetailsWords } from '@heliogrid/i18n';
+import { siteDetailsWords, studioCanvasWords } from '@heliogrid/i18n';
 import { useI18n, useTranslate } from '@heliogrid/i18n/react';
 import {
   LeadDetailStates,
@@ -85,7 +85,13 @@ export function SiteDetailsScreen({
   const toLead = () => {
     if (shown !== null) guarded(() => moves.toLead(shown.detail.subject.leadId));
   };
-  const cancel = fromProposals ? () => guarded(moves.toProposals) : toLead;
+  /* A started design's form opened in the studio's place: Cancel opens the studio again. */
+  const cancel = shown?.started
+    ? () => guarded(() => toDesign(designId, fromProposals))
+    : fromProposals
+      ? () => guarded(moves.toProposals)
+      : toLead;
+  const canvas = studioCanvasWords(useTranslate());
   const head = (
     <StudioPageHead
       wide={wide}
@@ -98,6 +104,14 @@ export function SiteDetailsScreen({
       onLead={toLead}
       fromProposals={
         fromProposals ? { label: page.proposals, onOpen: () => guarded(moves.toProposals) } : null
+      }
+      design={
+        shown?.started
+          ? {
+              label: canvas.designName(shown.detail.site.name, shown.detail.design.ordinal),
+              onOpen: cancel,
+            }
+          : null
       }
     />
   );
@@ -172,7 +186,7 @@ function SiteDetailsForm({
       saving={screen.saving}
       failure={screen.failure === null ? null : page.saveFailed(screen.failure)}
       acts={actsOf(screen, onCancel)}
-      words={siteDetailsWords(t)}
+      words={siteDetailsWords(t, shown.started)}
     />
   );
 }

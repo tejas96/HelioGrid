@@ -6,6 +6,7 @@ import {
   check,
   index,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   timestamp,
@@ -36,8 +37,8 @@ const person = (name: string) => uuid(name).references(() => userAccount.id);
  * and a ground design. At most one design of a lead is `recommended`. `duplicated_from` keeps a
  * copy's lineage. Creating one carries its retry key (`F4-07`).
  *
- * The drawing itself is not here yet: the roof step adds the design document. Tenant-scoped, all
- * four always: SELECT, INSERT and UPDATE for `app_user`. No DELETE: nothing removes a design yet.
+ * The drawing itself is the design document (`design_document`). Tenant-scoped, all four always:
+ * SELECT, INSERT and UPDATE for `app_user`. No DELETE: nothing removes a design yet.
  */
 export const design = pgTable(
   'design',
@@ -73,5 +74,58 @@ export const design = pgTable(
       .on(table.tenantId, table.creationKey)
       .where(sql`${table.creationKey} is not null`),
     check('design_ordinal_counts', sql`${table.ordinal} >= 1`),
+  ],
+);
+
+/**
+ * The design document's envelope: the shape version names how `body` reads; the whole is parsed by
+ * the studio's own schema, never here.
+ */
+export interface DesignDocumentEnvelope {
+  readonly schemaVersion: number;
+}
+
+/**
+ * The design document: the whole drawing of one design, stored as one document and saved whole on
+ * each change (`T-M05-002a`). `version` counts the saves — a save made over an older count is
+ * refused, never merged (`F4-15`) — and 0 is a design whose turn was taken but nothing saved yet;
+ * `saved_opening` is the studio opening that made the last save, so a save whose answer was lost
+ * knows its own.
+ * `editor_id` holds the design's turn to edit until `editor_until`: one editor at a time, and a
+ * turn its studio stops renewing runs out by itself.
+ *
+ * Tenant-scoped, all four: SELECT, INSERT and UPDATE for `app_user`. No DELETE: a design is never
+ * removed yet, and neither is its document.
+ */
+export const designDocument = pgTable(
+  'design_document',
+  {
+    designId: uuid('design_id')
+      .primaryKey()
+      .references(() => design.id),
+    tenantId: uuid('tenant_id')
+      .notNull()
+      .references(() => tenant.id),
+    schemaVersion: integer('schema_version').notNull(),
+    body: jsonb('body').$type<DesignDocumentEnvelope>().notNull(),
+    version: integer('version').notNull(),
+    savedAt: instant('saved_at'),
+    savedBy: person('saved_by'),
+    savedOpening: uuid('saved_opening'),
+    editorId: person('editor_id'),
+    editorUntil: instant('editor_until'),
+  },
+  (table) => [
+    index('design_document_tenant_idx').on(table.tenantId, table.designId),
+    check('design_document_body_is_object', sql`jsonb_typeof(${table.body}) = 'object'`),
+    check('design_document_version_counts', sql`${table.version} >= 0`),
+    check(
+      'design_document_saved_whole',
+      sql`(${table.savedAt} is null) = (${table.savedBy} is null)`,
+    ),
+    check(
+      'design_document_turn_whole',
+      sql`(${table.editorId} is null) = (${table.editorUntil} is null)`,
+    ),
   ],
 );

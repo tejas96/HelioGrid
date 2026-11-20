@@ -21,6 +21,7 @@ import {
 import { type ReactNode, useCallback, useState } from 'react';
 import { BillingDenialHost } from '../features/billing';
 import { API_URL } from '../lib/env';
+import { inPhoneWebView, tokenFromPhone } from '../lib/web-view-host';
 
 /**
  * App-wide providers: the shared data layer (transport, repositories, session) plus the
@@ -51,8 +52,13 @@ export function Providers({ children }: { children: ReactNode }) {
     installFormsErrorMap(createFormsValidationMessage(runtime.t));
     return runtime;
   });
+  // Inside the phone app's web view the page is signed in with the token the phone lends it.
   const [dataLayer] = useState(() =>
-    createDataLayer({ baseUrl: API_URL, language: () => i18nRuntime.locale }),
+    createDataLayer({
+      baseUrl: API_URL,
+      language: () => i18nRuntime.locale,
+      ...(inPhoneWebView() ? { borrowed: tokenFromPhone() } : {}),
+    }),
   );
   const [device] = useState(deviceLanguage);
 

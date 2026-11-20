@@ -53,6 +53,11 @@ export interface SiteDetailsShown {
   /** The pin as one line, or `null` while none stands. */
   readonly pin: string | null;
   readonly pinMoved: boolean;
+  /**
+   * The design had its place when the form opened: the form changes a started design's site, its
+   * save goes back to the design, and so does Cancel.
+   */
+  readonly started: boolean;
 }
 
 /** The design read — never empty — or `unavailable` when it answered 404. */
@@ -134,6 +139,11 @@ export function useSiteDetailsScreen(
   const leave = useLeaveAsk(held.discard);
   const latestMoves = useRef(moves);
   latestMoves.current = moves;
+  /* Read once, from the first answer: a save that sets the first pin must not turn the form into a change. */
+  const started = useRef<boolean | null>(null);
+  if (started.current === null && query.data !== undefined) {
+    started.current = query.data.site.pin !== null;
+  }
 
   const save = useAction(
     (body: NonNullable<ReturnType<typeof siteSaveOf>>) =>
@@ -186,7 +196,7 @@ export function useSiteDetailsScreen(
   };
 
   return {
-    read: readOf(query, held.form, search.state, formats, language),
+    read: readOf(query, held.form, search.state, formats, language, started.current === true),
     acts: {
       name: (name) => typed({ kind: 'name-typed', name }),
       mount: (mount) => typed({ kind: 'mount-picked', mount }),
@@ -243,6 +253,7 @@ function readOf(
   search: SitePlaceSearchState,
   formats: FormatPack,
   language: UiLanguage,
+  started: boolean,
 ): SiteDetailsRead {
   /* A 404 wins over a design already shown: a lead moved away leaves nothing this reader may see. */
   if (query.error instanceof ApiError && query.error.status === 404) return { kind: 'unavailable' };
@@ -262,6 +273,7 @@ function readOf(
       search,
       pin: form.pin === null ? null : pinText(form.pin),
       pinMoved: sitePinMoved(form),
+      started,
     },
   };
 }
