@@ -3,6 +3,7 @@ import type { GroundPoint } from './ground';
 import {
   angleAt,
   between,
+  CORNER_GAP_M,
   cornerAfter,
   edgesCross,
   nearestOnSegment,
@@ -24,11 +25,7 @@ import type { StudioHelper } from './vocabulary';
 export const SNAP_M = 0.5;
 /** How near a new edge must come to square with the last one to snap square, in degrees. */
 export const SQUARE_SNAP_DEGREES = 6;
-/**
- * Two corners of a roof never stand nearer than this (`T-M05-002`, part b): a tap this near the
- * last corner places nothing — a double tap is one corner — and one this near another is refused.
- */
-export const CORNER_GAP_M = 0.3;
+
 /** A corner whose angle is this near square counts as square: the ghost corner, a length's slide. */
 export const SQUARE_EXACT_DEGREES = 0.5;
 

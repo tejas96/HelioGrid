@@ -146,6 +146,23 @@ describe('the roof step: one true length (the 7-tap path)', () => {
     expect(document).toEqual(drawn);
   });
 
+  it('a length opened and left untouched, then a tap outside: nothing set, the picture not sized', () => {
+    // Only Set says "this is its true length"; a look and a tap away keeps the first length unused.
+    for (const away of [
+      { kind: 'tap', at: p(30, 30), system: 'metric' },
+      { kind: 'pick_length', roof: 0, edge: 1, system: 'metric' },
+    ] as const) {
+      const { document, commits, state } = run([
+        ...RECTANGLE,
+        { kind: 'pick_length', roof: 0, edge: 0, system: 'metric' },
+        away,
+      ]);
+      expect(commits).toBe(1);
+      expect(document).toEqual(drawn);
+      expect(state.kind === 'idle' ? state.said : state.kind).not.toEqual({ kind: 'sized' });
+    }
+  });
+
   it('steps of 5 cm or 1 inch; many steps then Set are one change', () => {
     const { document, commits } = run([
       ...RECTANGLE,

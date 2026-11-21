@@ -1,5 +1,13 @@
-import type { GroundPoint, RoofHandles } from '@heliogrid/domain';
+import type {
+  GroundPoint,
+  LabelAsk,
+  LabelPlace,
+  RoofHandles,
+  RoofLabelAsk,
+  ScreenPoint,
+} from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
+import { MathUtils } from 'three';
 import type { ScreenOf } from './StudioRoofs';
 
 /**
@@ -14,8 +22,8 @@ const PLUS_MIN_PX = 110;
 const HANDLE_GAP_PX = 44;
 /** How far the × and a picked corner's angle stand out from the corner, in CSS pixels. */
 const PICKED_OUT_PX = 30;
-/** The gap between a length's label and its edge, in CSS pixels. */
-const LABEL_GAP_PX = 8;
+/** The room a label keeps from a tool column, in CSS pixels. */
+const COLUMN_GAP_PX = 8;
 /** On a phone the tool columns stand beside the roof: a label keeps between them. */
 const PHONE_BELOW = theme.layout['bp-desktop'];
 
@@ -53,38 +61,56 @@ function placePoint(node: HTMLElement, screenOf: ScreenOf): void {
   node.style.transform = `translate(${x}px, ${y}px)`;
 }
 
-/** An edge mark: the + at its middle, or a length outside it by its own half size. */
 /** The free room between the two tool columns, in the layer's pixels. */
 interface ToolRoom {
   readonly left: number;
   readonly right: number;
 }
 
-function placeEdge(node: HTMLElement, screenOf: ScreenOf, room: ToolRoom | null): void {
+/** An edge mark of the roof being drawn: the + at its middle, or its length beside it. */
+function placeEdge(
+  node: HTMLElement,
+  screenOf: ScreenOf,
+  room: ToolRoom | null,
+  layout: LayoutLabels,
+): void {
   const [a, b, inside] = (node.dataset.edge ?? '').split('|').map((text) => readPoint(text));
   const sa = a == null ? null : screenOf(a, onTop(node));
   const sb = b == null ? null : screenOf(b, onTop(node));
   const sm = inside == null ? null : screenOf(inside, onTop(node));
   node.hidden = sa === null || sb === null;
   if (sa === null || sb === null) return;
-  const mid = { x: (sa.x + sb.x) / 2, y: (sa.y + sb.y) / 2 };
-  const reach = Math.hypot(sb.x - sa.x, sb.y - sa.y) || 1;
   if (node.dataset.plus === 'true') {
-    node.hidden = reach < PLUS_MIN_PX;
-    node.style.transform = `translate(${mid.x}px, ${mid.y}px)`;
+    node.hidden = Math.hypot(sb.x - sa.x, sb.y - sa.y) < PLUS_MIN_PX;
+    node.style.transform = `translate(${(sa.x + sb.x) / 2}px, ${(sa.y + sb.y) / 2}px)`;
     return;
   }
-  let normal = { x: (sb.y - sa.y) / reach, y: -(sb.x - sa.x) / reach };
-  if (sm !== null && normal.x * (mid.x - sm.x) + normal.y * (mid.y - sm.y) < 0) {
-    normal = { x: -normal.x, y: -normal.y };
-  }
-  const label = node.firstElementChild as HTMLElement | null;
-  const halfWidth = (label?.offsetWidth ?? 0) / 2;
-  const halfHeight = (label?.offsetHeight ?? 0) / 2;
-  const by = LABEL_GAP_PX + Math.abs(normal.x) * halfWidth + Math.abs(normal.y) * halfHeight;
-  let x = mid.x + normal.x * by;
-  if (room !== null) x = Math.min(Math.max(x, room.left + halfWidth), room.right - halfWidth);
-  node.style.transform = `translate(${x}px, ${mid.y + normal.y * by}px)`;
+  // A length on the roof being drawn: level, always shown, on the side away from the inside point,
+  // laid by the one label layout.
+  const label = node.querySelector<HTMLElement>('.hg-roof-len');
+  const width = label?.offsetWidth ?? 0;
+  const [placed] =
+    layout([
+      {
+        corners: sm === null ? [sa, sb] : [sa, sb, sm],
+        labels: [
+          {
+            from: sa,
+            to: sb,
+            trust: 'traced',
+            width,
+            height: label?.offsetHeight ?? 0,
+            pinned: true,
+            level: true,
+          },
+        ],
+      },
+    ])[0] ?? [];
+  if (placed === undefined) return;
+  let { x } = placed.at;
+  const half = width / 2;
+  if (room !== null) x = Math.min(Math.max(x, room.left + half), room.right - half);
+  node.style.transform = `translate(${x}px, ${placed.at.y}px)`;
 }
 
 /** A move or turn handle: placed by the roof's own rule, its gap a screen size in ground metres. */
@@ -133,8 +159,8 @@ function toolRoomOf(layer: HTMLElement): ToolRoom | null {
     ?.querySelector('.hg-studio-tools[data-side="right"]')
     ?.getBoundingClientRect();
   return {
-    left: left === undefined || left.width === 0 ? 0 : left.right - frame.left + LABEL_GAP_PX,
-    right: right === undefined ? frame.width : right.left - frame.left - LABEL_GAP_PX,
+    left: left === undefined || left.width === 0 ? 0 : left.right - frame.left + COLUMN_GAP_PX,
+    right: right === undefined ? frame.width : right.left - frame.left - COLUMN_GAP_PX,
   };
 }
 
@@ -142,11 +168,12 @@ export function placeRoofMarks(
   layer: HTMLElement,
   screenOf: ScreenOf,
   handlesOf: (roof: number, gap: number) => RoofHandles | null,
+  layout: LayoutLabels,
 ): void {
   for (const node of layer.querySelectorAll<HTMLElement>('[data-at]')) placePoint(node, screenOf);
   const room = toolRoomOf(layer);
   for (const node of layer.querySelectorAll<HTMLElement>('[data-edge]')) {
-    placeEdge(node, screenOf, room);
+    placeEdge(node, screenOf, room, layout);
   }
   for (const node of layer.querySelectorAll<HTMLElement>('[data-handle]')) {
     placeHandle(node, screenOf, handlesOf);
@@ -154,4 +181,86 @@ export function placeRoofMarks(
   for (const path of layer.querySelectorAll<SVGPathElement>('path[data-pts]')) {
     placePath(path, screenOf);
   }
+}
+
+/** The label layout, from the studio's hook: where each length sits for the points it is given. */
+export type LayoutLabels = (roofs: readonly RoofLabelAsk[]) => LabelPlace[][];
+
+const DEGREES = MathUtils.RAD2DEG;
+
+/** A roof's corners on the screen, from its shape mark; `null` when one is behind the camera. */
+function shapesOn(layer: HTMLElement, screenOf: ScreenOf): Map<string, ScreenPoint[]> {
+  const shapes = new Map<string, ScreenPoint[]>();
+  for (const node of layer.querySelectorAll<HTMLElement>('[data-roof][data-pts]')) {
+    const seen = (node.dataset.pts ?? '').split(';').map((text) => {
+      const point = readPoint(text);
+      return point === null ? null : screenOf(point, false);
+    });
+    if (seen.every((point) => point !== null))
+      shapes.set(node.dataset.roof ?? '', seen as ScreenPoint[]);
+  }
+  return shapes;
+}
+
+/** One label set where the layout put it: turned along its edge, its thin line back when sent out. */
+function setLabel(node: HTMLElement, place: LabelPlace | undefined): void {
+  // Away, not hidden: a label keeps its size, so the next frame measures it and it does not blink.
+  node.dataset.unseen = String(place === undefined || !place.shown);
+  if (place === undefined || !place.shown) return;
+  node.style.transform = `translate(${place.at.x}px, ${place.at.y}px)`;
+  node.style.setProperty('--hg-turn', `${place.degrees}deg`);
+  const leader = node.querySelector<HTMLElement>('.hg-roof-leader');
+  if (leader === null) return;
+  leader.hidden = place.leaderFrom === null;
+  if (place.leaderFrom === null) return;
+  const dx = place.leaderFrom.x - place.at.x;
+  const dy = place.leaderFrom.y - place.at.y;
+  leader.style.inlineSize = `${Math.hypot(dx, dy)}px`;
+  leader.style.transform = `rotate(${Math.atan2(dy, dx) * DEGREES}deg)`;
+}
+
+/**
+ * Every length label, laid by the label layout (`T-M05-002`, part b): each roof's labels are asked
+ * at their edges' screen points and their own measured size, and set where the layout puts them.
+ */
+export function placeLabels(layer: HTMLElement, screenOf: ScreenOf, layout: LayoutLabels): void {
+  const shapes = shapesOn(layer, screenOf);
+  const asked = new Map<string, { nodes: HTMLElement[]; labels: LabelAsk[] }>();
+  for (const node of layer.querySelectorAll<HTMLElement>('[data-label]')) {
+    const roof = node.dataset.label ?? '';
+    const from = readPoint(node.dataset.from);
+    const to = readPoint(node.dataset.to);
+    const a = from === null ? null : screenOf(from, false);
+    const b = to === null ? null : screenOf(to, false);
+    // The pill as drawn, not its wider tap area: labels give way where they are seen to touch.
+    const pill = node.querySelector<HTMLElement>('.hg-roof-len');
+    if (a === null || b === null || pill === null || !shapes.has(roof)) {
+      node.dataset.unseen = 'true';
+      continue;
+    }
+    const group = asked.get(roof) ?? { nodes: [], labels: [] };
+    group.nodes.push(node);
+    group.labels.push({
+      from: a,
+      to: b,
+      trust:
+        node.dataset.trust === 'typed' || node.dataset.trust === 'measured'
+          ? node.dataset.trust
+          : 'traced',
+      width: pill.offsetWidth,
+      height: pill.offsetHeight,
+      pinned: node.dataset.pinned === 'true',
+      level: node.dataset.level === 'true',
+    });
+    asked.set(roof, group);
+  }
+  const roofs = [...asked.entries()];
+  const placed = layout(
+    roofs.map(([roof, group]) => ({ corners: shapes.get(roof) ?? [], labels: group.labels })),
+  );
+  roofs.forEach(([, group], r) => {
+    group.nodes.forEach((node, e) => {
+      setLabel(node, placed[r]?.[e]);
+    });
+  });
 }

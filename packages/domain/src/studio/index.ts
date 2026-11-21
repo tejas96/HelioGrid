@@ -78,7 +78,6 @@ export type {
 } from './roof-check';
 export {
   ALL_HELPERS,
-  CORNER_GAP_M,
   type DraftClose,
   type DraftRefusal,
   type DraftTap,
@@ -106,12 +105,16 @@ export {
   TURN_SNAP_DEGREES,
 } from './roof-edit';
 export {
-  entryMetres,
   entryOf,
+  handMetres,
+  LENGTH_SLIDE_SHARE,
   type LengthEntry,
   type LengthInHand,
+  type LengthSlide,
+  lengthSlide,
   sizingResult,
   stepRefused,
+  tracedLength,
 } from './roof-entry';
 export {
   ROOF_HEIGHT_MAX_M,
@@ -135,6 +138,7 @@ export {
 } from './roof-length';
 export {
   between,
+  CORNER_GAP_M,
   cornerAfter,
   cornerAngle,
   edgeLengths,

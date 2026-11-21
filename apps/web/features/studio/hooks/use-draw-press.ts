@@ -13,7 +13,12 @@ const TAP_PX = 6;
  * while drawing aims, with the loupe, and places on lift; a mouse shows the spot as it moves. Esc
  * puts back what is in hand.
  */
-export function useDrawPress(studio: StudioScreen, drive: RefObject<StudioDrive | null>) {
+export function useDrawPress(
+  studio: StudioScreen,
+  drive: RefObject<StudioDrive | null>,
+  /** A tap on the map, at its point on the page, whatever else it does. */
+  onTapAt: (x: number, y: number) => void,
+) {
   const { moves, roofStep } = studio;
   const drawing = roofStep.kind === 'drawing';
   const press = useRef<{ x: number; y: number; moved: boolean } | null>(null);
@@ -56,6 +61,7 @@ export function useDrawPress(studio: StudioScreen, drive: RefObject<StudioDrive 
     stopAiming();
     if (studio.objectsNote) moves.objectsSeen();
     if (held === null || (held.moved && !aimed)) return;
+    if (!drawing) onTapAt(event.clientX, event.clientY);
     const at = groundAt(event.clientX, event.clientY);
     if (at !== null) moves.tap(at);
   };

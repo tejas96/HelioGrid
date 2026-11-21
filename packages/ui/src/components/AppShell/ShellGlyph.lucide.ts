@@ -59,6 +59,7 @@ export {
   IndianRupeeIcon,
   InfoIcon,
   ItalicIcon,
+  KeyboardIcon,
   KeyIcon,
   LayersIcon,
   LayoutGridIcon,

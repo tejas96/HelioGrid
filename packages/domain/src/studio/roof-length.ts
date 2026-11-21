@@ -8,15 +8,15 @@ import {
 import type { GroundPoint } from './ground';
 import { type EditResult, faultOf, roofAt, withRoof } from './roof-check';
 import { SQUARE_EXACT_DEGREES } from './roof-draw';
-import { between, cornerAfter, cornerAngle, edgeLengths } from './roof-shape';
+import { between, CORNER_GAP_M, cornerAfter, cornerAngle, edgeLengths } from './roof-shape';
 
 /**
  * A roof edge's true length (`T-M05-002`, part b): the first in a design sizes the picture and
  * every roof on it; a later one fixes only its own edge, and never changes a length a person set.
  */
 
-/** A true length may be no shorter than 30 cm, and no longer than 999 m. */
-export const LENGTH_MIN_M = 0.3;
+/** A true length may be no shorter than the gap between two corners, and no longer than 999 m. */
+export const LENGTH_MIN_M = CORNER_GAP_M;
 export const LENGTH_MAX_M = 999;
 /** A typed length this far off the traced one asks once before it is used. */
 export const LENGTH_ASK_SHARE = 0.25;

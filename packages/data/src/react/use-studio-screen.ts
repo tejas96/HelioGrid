@@ -177,6 +177,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     setHelpersOff: (off) => void session.setStudioPicks({ studioHelpersOff: off }),
     helpersRefused: session.refusedPreferences.includes('studio'),
     storeyHeightM: formats.storeyHeightM,
+    numberEntry: session.user?.numberEntry ?? 'slider',
+    setNumberEntry: (entry) => void session.setStudioPicks({ numberEntry: entry }),
   });
   const { step, act } = roof;
   const { roofStep } = roof.view;

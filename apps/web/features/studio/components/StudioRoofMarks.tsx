@@ -4,9 +4,10 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { DraftView, MeasurementSystem, StudioView } from '@heliogrid/domain';
 import type { RoofWordsShown, StudioCanvasWords } from '@heliogrid/i18n';
 import { useFormat } from '@heliogrid/ui';
-import { type Ref, useImperativeHandle, useLayoutEffect, useRef } from 'react';
-import { placeRoofMarks, pointText } from './roof-marks-place';
+import { type Ref, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
+import { placeLabels, placeRoofMarks, pointText } from './roof-marks-place';
 import { StudioDraftMarks } from './StudioDraftMarks';
+import { edgeAt, type Revealed, StudioRoofLengths } from './StudioRoofLengths';
 import type { RoofMarksHandle, ScreenOf } from './StudioRoofs';
 
 type Tag = { text: TranslatedText; bad: boolean; at: string };
@@ -39,6 +40,7 @@ export function StudioRoofMarks({
   units,
   words,
   aiming,
+  lengths,
 }: {
   handle: Ref<RoofMarksHandle>;
   studio: StudioScreen;
@@ -47,19 +49,34 @@ export function StudioRoofMarks({
   words: StudioCanvasWords;
   /** A finger aims a corner: its loupe shows the live length and the tag, so the page does not. */
   aiming: boolean;
+  /** Focus mode: the roofs' lengths show, or only the draft's while drawing, or none. */
+  lengths: 'all' | 'draft' | 'hidden';
 }) {
   const format = useFormat();
   const layer = useRef<HTMLDivElement>(null);
   const lastPlace = useRef<ScreenOf | null>(null);
   const handlesOf = useRef(studio.handlesOf);
   handlesOf.current = studio.handlesOf;
+  const layout = useRef(studio.layoutLabels);
+  layout.current = studio.layoutLabels;
   const place = (screenOf: ScreenOf) => {
     lastPlace.current = screenOf;
     if (layer.current !== null) {
-      placeRoofMarks(layer.current, screenOf, (roof, gap) => handlesOf.current(roof, gap));
+      placeRoofMarks(
+        layer.current,
+        screenOf,
+        (roof, gap) => handlesOf.current(roof, gap),
+        layout.current,
+      );
+      placeLabels(layer.current, screenOf, layout.current);
     }
   };
-  useImperativeHandle(handle, () => ({ place }));
+  // biome-ignore lint/plugin: which given-way length a tap brought back is the page's own passing state
+  const [revealed, setRevealed] = useState<Revealed>(null);
+  useImperativeHandle(handle, () => ({
+    place,
+    revealAt: (x, y) => setRevealed(layer.current === null ? null : edgeAt(layer.current, x, y)),
+  }));
   // Marks that change between two frames — a new corner, a label's new length — take their place
   // before the page is painted.
   useLayoutEffect(() => {
@@ -88,6 +105,15 @@ export function StudioRoofMarks({
           );
         })}
       </svg>
+      {lengths === 'all' ? (
+        <StudioRoofLengths
+          roofs={roofMarks}
+          studio={studio}
+          units={units}
+          words={words}
+          revealed={revealed}
+        />
+      ) : null}
       {draft === null ? null : (
         <StudioDraftMarks
           draft={draft}

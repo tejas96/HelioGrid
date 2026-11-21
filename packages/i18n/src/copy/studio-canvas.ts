@@ -56,7 +56,7 @@ const CANVAS = {
   yourLine: /*i18n*/ { id: 'Photo, drone map or plan, from above' },
   yourComing: /*i18n*/ { id: 'Adding your own picture is coming soon' },
   noLine: /*i18n*/ { id: 'Type the size instead' },
-  pictureGuide: /*i18n*/ { id: 'The picture is a guide. Lengths you type are the true size.' },
+  pictureGuide: /*i18n*/ { id: 'The picture is a guide. Lengths you set are the true size.' },
   pickedNone: /*i18n*/ { id: 'No picture: draw the roof on the grid.' },
   notSetUp: /*i18n*/ { id: 'No sky picture is set up yet. Draw the roof on the grid.' },
   notAnswered: /*i18n*/ { id: 'The sky picture did not load. Draw the roof on the grid.' },

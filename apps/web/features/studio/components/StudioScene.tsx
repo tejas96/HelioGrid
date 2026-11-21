@@ -6,7 +6,12 @@ import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { type ReactNode, type RefObject, useState } from 'react';
 import { MathUtils, Vector3 } from 'three';
-import { StudioCameraRig, type StudioDrive, type StudioMarks } from './StudioCameraRig';
+import {
+  type ClearGround,
+  StudioCameraRig,
+  type StudioDrive,
+  type StudioMarks,
+} from './StudioCameraRig';
 import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
 import {
   type RoofMarksHandle,
@@ -21,6 +26,22 @@ const GROUND_M = 1_200;
 /** How far the sun's light stands from the site, and the ground its shadows cover. */
 const SUN_DISTANCE_M = 120;
 const SHADOW_HALF_M = 60;
+
+/** A box of ground stretched about the pin, as the picture is by the first true length. */
+function scaledBox<B extends ClearGround>(box: B | null, scale: number): B | null {
+  if (box === null || scale === 1) return box;
+  return {
+    ...box,
+    west: box.west * scale,
+    east: box.east * scale,
+    south: box.south * scale,
+    north: box.north * scale,
+  };
+}
+
+/** The picture a roof's top wears, laid where the stretched picture lies. */
+const scaledTop = (top: RoofTopPicture, scale: number): RoofTopPicture =>
+  scaledBox(top, scale) ?? top;
 
 /** The camera before its first view is set: the rig flies it from here. */
 const CAMERA_START = { near: 0.5, far: 3_000, position: [0, 60, 60] as [number, number, number] };
@@ -106,6 +127,8 @@ export interface StudioSceneProps {
   roofs: readonly Roof[];
   /** Each roof's height in metres, in the order of `roofs`. */
   heights: readonly number[];
+  /** How much the picture is stretched about the pin to its true size. */
+  pictureScale: number;
   /** The market's storey height, where the marks on a roof's top stand. */
   storeyHeightM: number;
   /** The roofs' ground, which the view frames; `null` before a roof. */
@@ -136,6 +159,7 @@ export function StudioScene({
   onMarks,
   roofs,
   heights,
+  pictureScale,
   storeyHeightM,
   fit,
   frameOn,
@@ -157,12 +181,15 @@ export function StudioScene({
       <fog attach="fog" args={[palette.canvas, CAMERA_START.far, CAMERA_START.far]} />
       <SunLight sun={sun} palette={palette} />
       {picture.kind === 'sky' ? (
-        <StudioPictureGround
-          pieces={picture.pieces}
-          around={picture.around}
-          page={palette.canvas}
-          onSharp={setSharp}
-        />
+        // The first true length stretches the picture about the pin with every roof on it.
+        <group scale={[pictureScale, 1, pictureScale]}>
+          <StudioPictureGround
+            pieces={picture.pieces}
+            around={picture.around}
+            page={palette.canvas}
+            onSharp={setSharp}
+          />
+        </group>
       ) : (
         <mesh rotation-x={-Math.PI / 2}>
           <planeGeometry args={[GROUND_M, GROUND_M]} />
@@ -198,7 +225,7 @@ export function StudioScene({
         palette={palette}
         heights={heights}
         storeyHeightM={storeyHeightM}
-        top={picture.kind === 'sky' ? sharp : null}
+        top={picture.kind === 'sky' && sharp !== null ? scaledTop(sharp, pictureScale) : null}
         rise={rise}
         marks={roofMarks}
       />
@@ -206,8 +233,8 @@ export function StudioScene({
         view={view}
         free={free}
         still={still}
-        clear={clearGroundOf(picture)}
-        metresPerPixel={picture.kind === 'sky' ? picture.metresPerPixel : null}
+        clear={scaledBox(clearGroundOf(picture), pictureScale)}
+        metresPerPixel={picture.kind === 'sky' ? picture.metresPerPixel * pictureScale : null}
         drive={drive}
         onMarks={onMarks}
         fit={fit}

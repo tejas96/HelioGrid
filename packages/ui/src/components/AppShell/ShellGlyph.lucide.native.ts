@@ -66,6 +66,7 @@ export { default as IndianRupeeIcon } from 'lucide-react-native/icons/indian-rup
 export { default as InfoIcon } from 'lucide-react-native/icons/info';
 export { default as ItalicIcon } from 'lucide-react-native/icons/italic';
 export { default as KeyIcon } from 'lucide-react-native/icons/key';
+export { default as KeyboardIcon } from 'lucide-react-native/icons/keyboard';
 export { default as LayersIcon } from 'lucide-react-native/icons/layers';
 export { default as LayoutGridIcon } from 'lucide-react-native/icons/layout-grid';
 export { default as LinkIcon } from 'lucide-react-native/icons/link';

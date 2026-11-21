@@ -203,3 +203,15 @@
   font-size: var(--fs-caption);
   color: var(--text-tertiary);
 }
+
+/* The system's own value on the track: a thin upright tick the thumb passes over. */
+.hg-slider-mark {
+  position: absolute;
+  top: 50%;
+  inline-size: var(--sp-0-5);
+  block-size: var(--sp-4);
+  border-radius: var(--r-pill);
+  background: var(--text-secondary);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}

@@ -24,6 +24,11 @@ export interface LabelAsk {
   readonly height: number;
   /** Always shown: the length being set, or one a person tapped to see. */
   readonly pinned: boolean;
+  /**
+   * Kept level, never turned along its edge: the length in hand, whose − and + are pressed. It
+   * stands clear of its edge by its own reach across it, and is never sent out.
+   */
+  readonly level: boolean;
 }
 
 /** One roof's labels, edge i running from corner i to corner i + 1. */
@@ -121,14 +126,18 @@ function placeOne(ask: LabelAsk, corners: readonly ScreenPoint[]): Placed {
   const { from, to, width, height } = ask;
   const reach = Math.hypot(to.x - from.x, to.y - from.y);
   const mid = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 };
-  const degrees = readableDegrees(from, to);
+  const degrees = ask.level ? 0 : readableDegrees(from, to);
   let normal =
     reach === 0 ? { x: 0, y: -1 } : { x: (to.y - from.y) / reach, y: -(to.x - from.x) / reach };
   if (inside({ x: mid.x + normal.x, y: mid.y + normal.y }, corners)) {
     normal = { x: -normal.x, y: -normal.y };
   }
-  const out = width + 2 * LABEL_END_ROOM_PX > reach;
-  const away = LABEL_GAP_PX + height / 2 + (out ? LABEL_OUT_PX : 0);
+  const out = !ask.level && width + 2 * LABEL_END_ROOM_PX > reach;
+  // How far the label reaches across its edge: half its height when it lies along it.
+  const across = ask.level
+    ? (Math.abs(normal.x) * width) / 2 + (Math.abs(normal.y) * height) / 2
+    : height / 2;
+  const away = LABEL_GAP_PX + across + (out ? LABEL_OUT_PX : 0);
   const at = { x: mid.x + normal.x * away, y: mid.y + normal.y * away };
   const keeps = ask.pinned || ask.trust !== 'traced';
   return {

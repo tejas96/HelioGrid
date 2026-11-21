@@ -31,8 +31,9 @@
   pointer-events: none;
 }
 
-/* The length box, in the head beside the chip: one row on a desktop, under the chip on a phone,
-   clear of the keyboard. */
+/* The length field, in the head: beside the chip on a desktop, under it on a phone, clear of the
+   keyboard (the board's 3.2). A head row — the words, the value, m or ft, the keyboard switch and
+   × — then the slider (or the boxes), then Measured on site and Set, then one line of hint. */
 .hg-length-box {
   grid-row: 2;
   grid-column: 1 / -1;
@@ -41,10 +42,28 @@
   display: flex;
   flex-direction: column;
   gap: var(--sp-1);
-  max-inline-size: 100%;
+  inline-size: min(100%, calc(var(--sp-24) * 6));
   min-inline-size: 0;
-  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  padding: var(--sp-2) var(--sp-2) var(--sp-3) var(--sp-3);
   border-radius: var(--r-lg);
+}
+
+.hg-length-box-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* The words and the value share the room left by the controls: on a narrow phone, in feet and
+   inches, the value goes under the words rather than pushing the box past the screen. */
+.hg-length-box-title {
+  display: flex;
+  flex: 1 1 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 var(--sp-2);
+  min-inline-size: 0;
 }
 
 .hg-length-box-label,
@@ -53,15 +72,26 @@
   color: var(--text-secondary);
 }
 
+/* The value as it changes: one value with the label on the roof and the line. */
+.hg-length-box-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-lg);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
 .hg-length-box-row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--sp-2) var(--sp-3);
 }
 
 .hg-length-box-well {
-  flex: none;
-  inline-size: calc(var(--sp-24) + var(--sp-8) + var(--sp-1));
+  flex: 1 1 0;
+  min-inline-size: calc(var(--sp-20) + var(--sp-4));
 }
 
 .hg-length-box-well > * {
@@ -69,20 +99,12 @@
 }
 
 .hg-length-box-well[data-short="true"] {
-  inline-size: calc(var(--sp-20) + var(--sp-1));
+  flex: 0 1 calc(var(--sp-20) + var(--sp-1));
 }
 
 .hg-length-box-switch {
   display: inline-flex;
   font-size: var(--fs-body-sm);
-  white-space: nowrap;
-}
-
-.hg-length-box-go {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  margin-inline-start: auto;
 }
 
 .hg-length-box-ask {
@@ -112,31 +134,8 @@
 
 @media (width < 968px) {
   .hg-length-box {
-    flex: 1 1 100%;
     justify-self: stretch;
-  }
-
-  .hg-length-box-row {
-    flex-wrap: wrap;
-  }
-
-  .hg-length-box-well {
-    flex: 1 1 0;
     inline-size: auto;
-    min-inline-size: calc(var(--sp-20) + var(--sp-4));
-  }
-
-  .hg-length-box-switch {
-    order: 5;
-    flex: 1 1 auto;
-  }
-
-  .hg-length-box-switch[data-asking="true"] {
-    display: none;
-  }
-
-  .hg-length-box-unit {
-    order: 6;
   }
 
   .hg-length-box-ask {

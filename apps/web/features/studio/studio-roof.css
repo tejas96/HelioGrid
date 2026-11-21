@@ -4,7 +4,9 @@
 .hg-roof-marks {
   position: absolute;
   inset: 0;
-  overflow: hidden;
+  /* Clip, never hidden: a hidden box still scrolls, and focus on a mark laid past the edge would
+     scroll every mark away from the model. */
+  overflow: clip;
   pointer-events: none;
   --hg-roof-ink: var(--scene-line);
   --hg-roof-hit: calc(-1 * var(--sp-3));

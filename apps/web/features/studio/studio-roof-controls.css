@@ -200,3 +200,40 @@
     0 0 0 var(--sp-2) color-mix(in srgb, var(--accent) 30%, transparent),
     var(--e2);
 }
+
+/* A length laid along its edge (`label-layout.ts`): the label turns with the edge, never upside
+   down; the one in hand, with its − and +, stays level to be read and pressed. */
+.hg-roof-label > .hg-roof-len,
+.hg-roof-label > .hg-roof-hit {
+  transform: translate(-50%, -50%) rotate(var(--hg-turn, 0deg));
+}
+
+.hg-roof-label > .hg-roof-step {
+  transform: translate(-50%, -50%);
+}
+
+/* A length that gave way, or not yet laid: unseen and untouchable, its size kept for the layout. */
+.hg-roof-label[data-unseen="true"] {
+  visibility: hidden;
+}
+
+/* The thin line from a length sent out back to its edge. */
+.hg-roof-at > .hg-roof-leader {
+  transform-origin: 0 50%;
+  block-size: var(--hg-studio-line);
+  background: var(--scene-mark);
+  box-shadow: 0 0 0 var(--hg-studio-line) color-mix(in srgb, var(--scene-shade) 40%, transparent);
+  pointer-events: none;
+}
+
+.hg-roof-at > .hg-roof-leader[hidden] {
+  display: none;
+}
+
+/* Each edge's tap band: a tap on the map along it shows a length that gave way. It takes no
+   pointer of its own, so a pan or a zoom that starts on an edge still moves the map. */
+.hg-roof-edge-taps .hg-roof-edge-tap {
+  stroke: transparent;
+  stroke-width: var(--sp-5);
+  pointer-events: none;
+}

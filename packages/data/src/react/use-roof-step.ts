@@ -6,19 +6,22 @@ import {
   draftClosesAt,
   draftViewOf,
   dragTagAt,
-  edgeLengths,
-  entryMetres,
   entryOf,
   type FocusJob,
   focusJobOf,
   type GroundPoint,
   type History,
+  handMetres,
   helpersOf,
   historyAfter,
   isStudioHelper,
   type LengthEntry,
+  type LengthSlide,
+  labelLayoutOf,
   lengthIsFirst,
+  lengthSlide,
   type MeasurementSystem,
+  type NumberEntry,
   pickedAngleOf,
   ROOF_STEP_START,
   type RoofBar,
@@ -37,6 +40,7 @@ import {
   type StudioDocument,
   type StudioHelper,
   stepRefused,
+  tracedLength,
 } from '@heliogrid/domain';
 import { type RefObject, useRef, useState } from 'react';
 import { aKey } from '../client/creation-key';
@@ -62,6 +66,10 @@ export interface RoofMoves {
   cancel(): void;
   pickLength(roof: number, edge: number): void;
   typeLength(entry: LengthEntry): void;
+  /** The slider moved, or − or + on the length: the length in hand, in metres. */
+  slideLength(metres: number): void;
+  /** The slider or the box: the pick follows the person to every device. */
+  chooseNumberEntry(entry: NumberEntry): void;
   stepLength(by: 1 | -1): void;
   setLength(): void;
   /** The answer to "the picture shows about …": use the typed length, or change it. */
@@ -106,7 +114,13 @@ export interface RoofStepView {
     readonly traced: number;
     readonly typed: number | null;
     readonly first: boolean;
+    /** The slider's ends, its step and the picture's mark on its track. */
+    readonly slide: LengthSlide;
   } | null;
+  /** How the person sets a number: the slider first, or a box (`T-M05-002`, *Values*). */
+  readonly numberEntry: NumberEntry;
+  /** Where each length's label sits on the screen: along its edge, out past a short one. */
+  readonly layoutLabels: typeof labelLayoutOf;
   /** The picked corner's angle, in whole degrees. */
   readonly pickedAngle: number | null;
   /** Where a drag's tag sits. */
@@ -132,6 +146,8 @@ export function useRoofStep({
   setHelpersOff,
   helpersRefused,
   storeyHeightM,
+  numberEntry,
+  setNumberEntry,
 }: {
   /** The design as it stands, as the screen last drew it. */
   document: StudioDocument | null;
@@ -147,6 +163,8 @@ export function useRoofStep({
   helpersRefused: boolean;
   /** The market's storey height: a roof with no height of its own stands at it. */
   storeyHeightM: number;
+  numberEntry: NumberEntry;
+  setNumberEntry: (entry: NumberEntry) => void;
 }) {
   const [roofStep, setRoofStep] = useState<RoofStepState>(ROOF_STEP_START);
   const [free, setFree] = useState(false);
@@ -187,10 +205,13 @@ export function useRoofStep({
       sizing === null
         ? null
         : {
-            traced: edgeLengths(sizing.base.roofs[sizing.roof]?.corners ?? [])[sizing.edge] ?? 0,
-            typed: entryMetres(sizing.entry, units),
+            traced: tracedLength(sizing.base, sizing.roof, sizing.edge),
+            typed: handMetres(sizing, units),
             first: lengthIsFirst(sizing.base),
+            slide: lengthSlide(tracedLength(sizing.base, sizing.roof, sizing.edge), units),
           },
+    numberEntry,
+    layoutLabels: labelLayoutOf,
     pickedAngle: shown === null ? null : pickedAngleOf(roofStep, shown),
     dragTagAt: dragTagAt(roofStep),
     handlesOf: (roof, gap) => {
@@ -236,6 +257,14 @@ export function useRoofStep({
     cancel: () => act({ kind: 'cancel' }),
     pickLength: (roof, edge) => act({ kind: 'pick_length', roof, edge, system: units }),
     typeLength: (entry) => act({ kind: 'type', entry }),
+    slideLength: (metres) => {
+      const now = step.current;
+      if (now.kind === 'sizing')
+        act({ kind: 'type', entry: entryOf(metres, units, now.entry.measured) });
+    },
+    chooseNumberEntry: (entry) => {
+      if (entry !== numberEntry) setNumberEntry(entry);
+    },
     stepLength: (by) => act({ kind: 'step', by, system: units }),
     setLength: () => act({ kind: 'set', system: units }),
     confirmLength: (use) => act({ kind: 'confirm', use, system: units }),
@@ -247,8 +276,7 @@ export function useRoofStep({
     lengthUnits: (system) => {
       const now = step.current;
       if (now.kind !== 'sizing' || system === units) return;
-      const traced = edgeLengths(now.base.roofs[now.roof]?.corners ?? [])[now.edge] ?? 0;
-      const metres = entryMetres(now.entry, units) ?? traced;
+      const metres = handMetres(now, units) ?? tracedLength(now.base, now.roof, now.edge);
       setUnits(system);
       act({ kind: 'type', entry: entryOf(metres, system, now.entry.measured) });
     },

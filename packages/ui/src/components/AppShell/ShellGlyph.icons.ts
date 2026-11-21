@@ -87,6 +87,8 @@ export const SHELL_GLYPHS = {
   info: Lucide.InfoIcon,
   inverter: InverterIcon,
   italic: Lucide.ItalicIcon,
+  /** A keyboard: a number's switch from its slider to a box to type. */
+  keyboard: Lucide.KeyboardIcon,
   key: Lucide.KeyIcon,
   layer: Lucide.DiamondIcon,
   layers: Lucide.LayersIcon,

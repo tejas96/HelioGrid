@@ -5,6 +5,7 @@ import type { FocusParts, PictureChoice } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { useFormat } from '@heliogrid/ui';
 import type { Ref } from 'react';
+import { StudioLengthBox } from './StudioLengthBox';
 import { StudioPictureChip, StudioPictureCredit } from './StudioPictureChip';
 import { StudioStepSwitcher } from './StudioStepSwitcher';
 import { StudioTopBar } from './StudioTopBar';
@@ -74,7 +75,15 @@ export function StudioCanvasHead({
         <StudioPictureChip
           picture={picture}
           shown={shown}
-          sharpness={sky === null ? null : format.fineLength(sky.metresPerPixel, studio.units)}
+          // The first length stretches the picture: its sharpness is the picture as drawn.
+          sharpness={
+            sky === null
+              ? null
+              : format.fineLength(
+                  sky.metresPerPixel * (studio.shown?.pictureScale ?? 1),
+                  studio.units,
+                )
+          }
           takenOn={sky?.takenOn == null ? null : format.monthYear(sky.takenOn)}
           drawnOn={drawnOn === null ? null : format.monthYear(drawnOn)}
           words={words}
@@ -84,6 +93,9 @@ export function StudioCanvasHead({
           onPick={moves.pickPicture}
         />
       )}
+      {roofStep.kind === 'sizing' ? (
+        <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
+      ) : null}
     </div>
   );
 }

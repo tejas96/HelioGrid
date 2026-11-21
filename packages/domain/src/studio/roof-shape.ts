@@ -1,6 +1,13 @@
 import type { GroundBox, GroundPoint } from './ground';
 
 /**
+ * Two corners of a roof never stand nearer than this, so no edge is shorter (`T-M05-002`, part b):
+ * a tap this near the last corner places nothing — a double tap is one corner — and one this near
+ * another, a drag or a length that would bring two this close, is refused.
+ */
+export const CORNER_GAP_M = 0.3;
+
+/**
  * A roof's outline on the site's ground (`ground.ts`): its corners in order, edge i running from
  * corner i to corner i + 1 and the last edge back to the first corner. Pure plane geometry, in
  * metres; every rule of the roof step (`roof-draw.ts`, `roof-edit.ts`) is built on these.

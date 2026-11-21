@@ -1714,7 +1714,7 @@ msgid "{left} of this cycle’s {total} days remain on {date}."
 msgstr "{left} of this cycle’s {total} days remain on {date}."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:91
+#: src/copy/studio-roof.ts:89
 msgid "{length} held"
 msgstr "{length} held"
 
@@ -3737,6 +3737,11 @@ msgid "A length is at most {length}."
 msgstr "A length is at most {length}."
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof.ts:78
+msgid "A length you set would change. Change that length first."
+msgstr "A length you set would change. Change that length first."
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-builder-findings.ts:83
 msgid "A loss of {amount} on this job"
 msgstr "A loss of {amount} on this job"
@@ -3929,12 +3934,12 @@ msgid "A roof has at most {max} corners"
 msgstr "A roof has at most {max} corners"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:83
+#: src/copy/studio-roof.ts:81
 msgid "A roof has at most {max} corners."
 msgstr "A roof has at most {max} corners."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:82
+#: src/copy/studio-roof.ts:80
 msgid "A roof keeps at least 3 corners."
 msgstr "A roof keeps at least 3 corners."
 
@@ -3997,11 +4002,6 @@ msgstr "A timeline holds up to {count} phases."
 #: src/copy/payment-terms.ts:53
 msgid "A tranche carries a share between 0.01% and 100%."
 msgstr "A tranche carries a share between 0.01% and 100%."
-
-#. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:78
-msgid "A typed length would change. Change that length first."
-msgstr "A typed length would change. Change that length first."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:68
@@ -4338,7 +4338,7 @@ msgid "Add a contact"
 msgstr "Add a contact"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:99
+#: src/copy/studio-roof.ts:97
 msgid "Add a corner on this edge"
 msgstr "Add a corner on this edge"
 
@@ -4774,8 +4774,8 @@ msgstr "All languages"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof.ts:59
-msgid "All lengths sized from your one typed length."
-msgstr "All lengths sized from your one typed length."
+msgid "All lengths sized from the one length you set."
+msgstr "All lengths sized from the one length you set."
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:70
@@ -5833,8 +5833,8 @@ msgstr "Both"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof.ts:79
-msgid "Both lengths at this corner are typed. Tap a length to change it."
-msgstr "Both lengths at this corner are typed. Tap a length to change it."
+msgid "Both lengths at this corner are set. Tap a length to change it."
+msgstr "Both lengths at this corner are set. Tap a length to change it."
 
 #. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:40
@@ -6323,7 +6323,7 @@ msgstr "certification schemes"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail.ts:36
-#: src/copy/studio-length.ts:19
+#: src/copy/studio-length.ts:23
 msgid "Change"
 msgstr "Change"
 
@@ -6796,7 +6796,7 @@ msgid "Close this and nothing is created."
 msgstr "Close this and nothing is created."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-length.ts:14
+#: src/copy/studio-length.ts:17
 msgid "Close, and keep the old length"
 msgstr "Close, and keep the old length"
 
@@ -7219,12 +7219,12 @@ msgid "Copy the link for {label}"
 msgstr "Copy the link for {label}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:97
+#: src/copy/studio-roof.ts:95
 msgid "Corner {number}"
 msgstr "Corner {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:98
+#: src/copy/studio-roof.ts:96
 msgid "Corner 1: close the shape"
 msgstr "Corner 1: close the shape"
 
@@ -7240,8 +7240,8 @@ msgstr "Corner moved · {snap}. Undo puts it back."
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof.ts:64
-msgid "Corner moved. The typed length held."
-msgstr "Corner moved. The typed length held."
+msgid "Corner moved. The length you set held."
+msgstr "Corner moved. The length you set held."
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof.ts:62
@@ -8498,6 +8498,11 @@ msgid "Drag the map until the pin is on the right place."
 msgstr "Drag the map until the pin is on the right place."
 
 #. js-lingui-explicit-id
+#: src/copy/studio-length.ts:18
+msgid "Drag, or − + for {step}. The first length sizes the whole roof."
+msgstr "Drag, or − + for {step}. The first length sizes the whole roof."
+
+#. js-lingui-explicit-id
 #: src/copy/studio-canvas.ts:90
 msgid "Draw a roof"
 msgstr "Draw a roof"
@@ -8701,7 +8706,7 @@ msgid "Earlier versions are kept as they were sent"
 msgstr "Earlier versions are kept as they were sent"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:101
+#: src/copy/studio-roof.ts:99
 msgid "Edge {number}: {length}. Change it"
 msgstr "Edge {number}: {length}. Change it"
 
@@ -9269,7 +9274,7 @@ msgstr "Family home"
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:34
 #: src/copy/studio-canvas.ts:76
-#: src/copy/studio-length.ts:9
+#: src/copy/studio-length.ts:12
 msgid "Feet"
 msgstr "Feet"
 
@@ -10844,7 +10849,7 @@ msgid "Incentive claim"
 msgstr "Incentive claim"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-length.ts:10
+#: src/copy/studio-length.ts:13
 msgid "Inches"
 msgstr "Inches"
 
@@ -11625,7 +11630,7 @@ msgid "Later"
 msgstr "Later"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-length.ts:16
+#: src/copy/studio-length.ts:20
 msgid "Later lengths fix only their own edge."
 msgstr "Later lengths fix only their own edge."
 
@@ -11888,7 +11893,7 @@ msgid "Lines under your address"
 msgstr "Lines under your address"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:90
+#: src/copy/studio-roof.ts:88
 msgid "Lines up with corner {number}"
 msgstr "Lines up with corner {number}"
 
@@ -12411,7 +12416,7 @@ msgid "Logo, colour and letterhead"
 msgstr "Logo, colour and letterhead"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-length.ts:21
+#: src/copy/studio-length.ts:25
 msgid "Longer"
 msgstr "Longer"
 
@@ -12755,7 +12760,7 @@ msgid "Measured"
 msgstr "Measured"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-length.ts:12
+#: src/copy/studio-length.ts:15
 msgid "Measured on site"
 msgstr "Measured on site"
 
@@ -13120,7 +13125,7 @@ msgid "Move on a stage — move to {stage}"
 msgstr "Move on a stage — move to {stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:102
+#: src/copy/studio-roof.ts:100
 msgid "Move the roof"
 msgstr "Move the roof"
 
@@ -13577,7 +13582,7 @@ msgid "New company on HelioGrid?"
 msgstr "New company on HelioGrid?"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:94
+#: src/copy/studio-roof.ts:92
 msgid "New corner · drag it"
 msgstr "New corner · drag it"
 
@@ -16217,7 +16222,7 @@ msgid "Over {plan}’s limits"
 msgstr "Over {plan}’s limits"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:93
+#: src/copy/studio-roof.ts:91
 msgid "Over a roof"
 msgstr "Over a roof"
 
@@ -18503,7 +18508,7 @@ msgid "Remove {tranche}"
 msgstr "Remove {tranche}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:100
+#: src/copy/studio-roof.ts:98
 msgid "Remove corner {number}"
 msgstr "Remove corner {number}"
 
@@ -18975,12 +18980,12 @@ msgid "Roof · {area}"
 msgstr "Roof · {area}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:88
+#: src/copy/studio-roof.ts:86
 msgid "Roof {number} corner"
 msgstr "Roof {number} corner"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:89
+#: src/copy/studio-roof.ts:87
 msgid "Roof {number} edge"
 msgstr "Roof {number} edge"
 
@@ -19963,7 +19968,7 @@ msgid "Service code"
 msgstr "Service code"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-length.ts:13
+#: src/copy/studio-length.ts:16
 msgid "Set"
 msgstr "Set"
 
@@ -20026,6 +20031,11 @@ msgstr "Set the size in System and the site’s state in Client first."
 #: src/copy/proposal-builder-performance.ts:20
 msgid "Set the size in System first."
 msgstr "Set the size in System first."
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof.ts:58
+msgid "Set the true length of the marked edge."
+msgstr "Set the true length of the marked edge."
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:66
@@ -20181,7 +20191,7 @@ msgid "Short-circuit current (A)"
 msgstr "Short-circuit current (A)"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-length.ts:20
+#: src/copy/studio-length.ts:24
 msgid "Shorter"
 msgstr "Shorter"
 
@@ -20534,6 +20544,11 @@ msgid "SLD, AC/DC and earthing layouts"
 msgstr "SLD, AC/DC and earthing layouts"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-length.ts:10
+msgid "Slide the length"
+msgstr "Slide the length"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-builder-system.ts:25
 msgid "Smaller"
 msgstr "Smaller"
@@ -20753,12 +20768,12 @@ msgstr "Spouse"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof.ts:26
-#: src/copy/studio-roof.ts:86
+#: src/copy/studio-roof.ts:84
 msgid "Square"
 msgstr "Square"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:87
+#: src/copy/studio-roof.ts:85
 msgid "Square corner"
 msgstr "Square corner"
 
@@ -21798,7 +21813,7 @@ msgid "That isn't a hex colour."
 msgstr "That isn't a hex colour."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:84
+#: src/copy/studio-roof.ts:82
 msgid "That length is far from the picture. Check the number."
 msgstr "That length is far from the picture. Check the number."
 
@@ -22163,9 +22178,9 @@ msgid "The first install tick moves it to {stage}."
 msgstr "The first install tick moves it to {stage}."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-length.ts:15
-msgid "The first length you type sizes the whole roof."
-msgstr "The first length you type sizes the whole roof."
+#: src/copy/studio-length.ts:19
+msgid "The first length sizes the whole roof."
+msgstr "The first length sizes the whole roof."
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-links.ts:27
@@ -22557,13 +22572,13 @@ msgstr "The photo did not open. Try again."
 
 #. js-lingui-explicit-id
 #: src/copy/studio-canvas.ts:59
-msgid "The picture is a guide. Lengths you type are the true size."
-msgstr "The picture is a guide. Lengths you type are the true size."
+msgid "The picture is a guide. Lengths you set are the true size."
+msgstr "The picture is a guide. Lengths you set are the true size."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-length.ts:17
-msgid "The picture shows about {traced}. You typed {typed}."
-msgstr "The picture shows about {traced}. You typed {typed}."
+#: src/copy/studio-length.ts:21
+msgid "The picture shows about {traced}. You set {typed}."
+msgstr "The picture shows about {traced}. You set {typed}."
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-defaults-words.ts:111
@@ -23885,6 +23900,11 @@ msgid "Trial to {to} · {cycle}"
 msgstr "Trial to {to} · {cycle}"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-length.ts:9
+msgid "True length"
+msgstr "True length"
+
+#. js-lingui-explicit-id
 #: src/copy/studio-length.ts:8
 msgid "True length of this edge"
 msgstr "True length of this edge"
@@ -24025,12 +24045,12 @@ msgid "Turn per-employee field tracking on or off"
 msgstr "Turn per-employee field tracking on or off"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:103
+#: src/copy/studio-roof.ts:101
 msgid "Turn the roof"
 msgstr "Turn the roof"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:95
+#: src/copy/studio-roof.ts:93
 msgid "Turned {degrees}°"
 msgstr "Turned {degrees}°"
 
@@ -24092,6 +24112,11 @@ msgid "Type the brand"
 msgstr "Type the brand"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-length.ts:11
+msgid "Type the length"
+msgstr "Type the length"
+
+#. js-lingui-explicit-id
 #: src/copy/quick-add.ts:40
 msgid "Type the number. It is the one field a lead needs."
 msgstr "Type the number. It is the one field a lead needs."
@@ -24105,11 +24130,6 @@ msgstr "Type the size instead"
 #: src/copy/proposal-builder-sheets.ts:192
 msgid "Type the specification"
 msgstr "Type the specification"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:58
-msgid "Type the true length of the marked edge."
-msgstr "Type the true length of the marked edge."
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-list.ts:229
@@ -24149,7 +24169,7 @@ msgid "Undo overrides and new SKUs in Catalog settings."
 msgstr "Undo overrides and new SKUs in Catalog settings."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-length.ts:11
+#: src/copy/studio-length.ts:14
 msgid "Unit"
 msgstr "Unit"
 
@@ -24418,7 +24438,7 @@ msgid "Use {hex}"
 msgstr "Use {hex}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-length.ts:18
+#: src/copy/studio-length.ts:22
 msgid "Use {length}"
 msgstr "Use {length}"
 
@@ -26030,7 +26050,7 @@ msgid "worse"
 msgstr "worse"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:92
+#: src/copy/studio-roof.ts:90
 msgid "Would cross"
 msgstr "Would cross"
 

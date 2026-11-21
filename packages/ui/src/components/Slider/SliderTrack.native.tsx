@@ -20,6 +20,8 @@ interface SliderTrackProps {
   /** One step either way, for the assistive increment/decrement actions. */
   onNudge: (direction: number) => void;
   percent: number;
+  /** The system's mark on the track, in percent; `null` with none. */
+  mark: number | null;
   shown: string;
   step: number;
   value: number;
@@ -43,6 +45,7 @@ export function SliderTrack({
   onLive,
   onNudge,
   percent,
+  mark,
   shown,
   step,
   value,
@@ -85,6 +88,7 @@ export function SliderTrack({
       <View
         style={[styles.fill, { width: `${percent}%` }, disabled ? styles.fillDisabled : undefined]}
       />
+      {mark === null ? null : <View style={[styles.mark, { left: `${mark}%` }]} />}
       <View
         style={[
           styles.thumb,
@@ -122,6 +126,16 @@ const styles = StyleSheet.create({
   },
   fillDisabled: {
     backgroundColor: colors['text-disabled'],
+  },
+  /* The system's own value: a thin upright tick the thumb passes over. */
+  mark: {
+    position: 'absolute',
+    top: 14,
+    width: 2,
+    height: 16,
+    marginLeft: -1,
+    borderRadius: theme.radius['r-pill'],
+    backgroundColor: colors['text-secondary'],
   },
   thumb: {
     position: 'absolute',

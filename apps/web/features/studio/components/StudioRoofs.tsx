@@ -28,6 +28,8 @@ export type ScreenOf = (point: GroundPoint, onTop: boolean) => { x: number; y: n
 /** The page's marks on the model: told each drawn frame where the model now lands on the screen. */
 export interface RoofMarksHandle {
   place(screenOf: ScreenOf): void;
+  /** A tap on the map, at a point on the page: a length that gave way on an edge there shows. */
+  revealAt(x: number, y: number): void;
 }
 
 /**

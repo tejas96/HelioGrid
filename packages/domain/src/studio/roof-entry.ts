@@ -3,7 +3,7 @@ import { parseNumber } from '../format/number';
 import type { MeasurementSystem } from '../format/pack';
 import type { SetEdgeTrust, StudioDocument } from './document';
 import type { EditResult } from './roof-check';
-import { lengthSet } from './roof-length';
+import { LENGTH_MIN_M, lengthSet } from './roof-length';
 import { edgeLengths } from './roof-shape';
 
 /**
@@ -29,6 +29,31 @@ export interface LengthInHand {
 
 const STEP_M = 0.05;
 const STEP_IN = 0.0254;
+/** The slider runs this share either side of the picture's length; a length past it is typed. */
+export const LENGTH_SLIDE_SHARE = 0.3;
+
+/** The slider for a length: its ends, its step, and the picture's length marked on its track. */
+export interface LengthSlide {
+  readonly min: number;
+  readonly max: number;
+  readonly step: number;
+  readonly mark: number;
+}
+
+/**
+ * The length slider (`T-M05-002`, *Values*): the picture's length ± 30 %, never under the shortest
+ * edge, in steps of 5 cm or an inch; the picture's own length is the mark on the track.
+ */
+export function lengthSlide(traced: number, system: MeasurementSystem): LengthSlide {
+  const step = system === 'imperial' ? STEP_IN : STEP_M;
+  const onStep = (metres: number) => Math.round(metres / step) * step;
+  return {
+    min: Math.max(LENGTH_MIN_M, onStep(traced * (1 - LENGTH_SLIDE_SHARE))),
+    max: Math.max(LENGTH_MIN_M, onStep(traced * (1 + LENGTH_SLIDE_SHARE))),
+    step,
+    mark: traced,
+  };
+}
 const CENTIMETRE_DIGITS = 2;
 
 /** The metres a box holds, or `null` while it holds no number. */
@@ -59,12 +84,35 @@ export function tracedLength(document: StudioDocument, roof: number, edge: numbe
   return edgeLengths(document.roofs[roof]?.corners ?? [])[edge] ?? 0;
 }
 
+/**
+ * The length in the box, in metres; `null` while it holds no number. While the box still reads
+ * the edge's own length, its rounding to the centimetre or the inch is not a change: the edge
+ * keeps its exact length — in either unit, so m or ft alone moves nothing.
+ */
+export function handMetres(hand: LengthInHand, system: MeasurementSystem): number | null {
+  const typed = entryMetres(hand.entry, system);
+  if (typed === null) return null;
+  const traced = tracedLength(hand.base, hand.roof, hand.edge);
+  return entryMetres(entryOf(traced, system, hand.entry.measured), system) === typed
+    ? traced
+    : typed;
+}
+
+/** The box still reads the edge as it stood: its own length, its own measured or not. */
+export function handUntouched(hand: LengthInHand, system: MeasurementSystem): boolean {
+  const measured = hand.base.roofs[hand.roof]?.edges[hand.edge] === 'measured';
+  return (
+    hand.entry.measured === measured &&
+    handMetres(hand, system) === tracedLength(hand.base, hand.roof, hand.edge)
+  );
+}
+
 /** What the length in the box would make of the design, or why it cannot; empty: no number yet. */
 export function sizingResult(
   hand: LengthInHand,
   system: MeasurementSystem,
 ): { readonly kind: 'empty' } | EditResult {
-  const metres = entryMetres(hand.entry, system);
+  const metres = handMetres(hand, system);
   if (metres === null) return { kind: 'empty' };
   const trust: SetEdgeTrust = hand.entry.measured ? 'measured' : 'typed';
   return lengthSet(hand.base, hand.roof, hand.edge, metres, trust);
@@ -76,7 +124,7 @@ export function steppedEntry(
   by: 1 | -1,
   system: MeasurementSystem,
 ): LengthEntry | null {
-  const now = entryMetres(hand.entry, system) ?? tracedLength(hand.base, hand.roof, hand.edge);
+  const now = handMetres(hand, system) ?? tracedLength(hand.base, hand.roof, hand.edge);
   const metres = now + by * (system === 'imperial' ? STEP_IN : STEP_M);
   return metres > 0 ? entryOf(metres, system, hand.entry.measured) : null;
 }

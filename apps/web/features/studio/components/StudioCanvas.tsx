@@ -73,7 +73,9 @@ export function StudioCanvas({
   const roofs = studio.shown?.roofs ?? [];
   const parts = studio.focus(desktop === false);
 
-  const { aim, handlers } = useDrawPress(studio, drive);
+  const { aim, handlers } = useDrawPress(studio, drive, (x, y) =>
+    roofMarks.current?.revealAt(x, y),
+  );
   // A roof that closes is framed in the room between the bars: the camera stays in the top view,
   // where its lengths are set next.
   const said = roofStep.kind === 'idle' ? roofStep.said : null;
@@ -103,6 +105,7 @@ export function StudioCanvas({
           onMarks={(seen) => marks.current?.show(seen)}
           roofs={roofs}
           heights={studio.heights.map((height) => height.metres)}
+          pictureScale={studio.shown?.pictureScale ?? 1}
           storeyHeightM={format.pack.storeyHeightM}
           fit={studio.fit}
           frameOn={closed}
@@ -117,6 +120,7 @@ export function StudioCanvas({
         units={studio.units}
         words={words}
         aiming={aim !== null}
+        lengths={parts.lengthLabels}
       />
       {aim !== null ? (
         <StudioLoupe at={aim} studio={studio} units={studio.units} drive={drive} />

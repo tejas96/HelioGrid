@@ -11,7 +11,7 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import type { SliderProps } from './Slider.types';
 import { SliderTrack } from './SliderTrack.native';
-import { fillPercent, formatValue, nudged, stepperOff } from './slider-math';
+import { fillPercent, formatValue, markPercent, nudged, stepperOff } from './slider-math';
 
 interface NativeSliderProps extends SliderProps {
   style?: StyleProp<ViewStyle>;
@@ -58,9 +58,11 @@ export function Slider({
   max = 100,
   step = 1,
   label,
+  labelSpokenOnly = false,
   unit,
   hint,
   words,
+  mark,
   format,
   steppers = true,
   disabled = false,
@@ -84,7 +86,7 @@ export function Slider({
 
   return (
     <View style={style}>
-      {label !== undefined || unit !== undefined || hint !== undefined ? (
+      {!labelSpokenOnly && (label !== undefined || unit !== undefined || hint !== undefined) ? (
         <View style={[styles.head, density === 'functional' ? styles.headFunctional : undefined]}>
           <Text variant="body-sm" color="secondary" style={styles.label}>
             {label ?? ''}
@@ -112,6 +114,7 @@ export function Slider({
           onLive={live}
           onNudge={nudge}
           percent={percent}
+          mark={markPercent(mark, min, max)}
           shown={shown}
           step={step}
           value={value}

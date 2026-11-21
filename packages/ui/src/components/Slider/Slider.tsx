@@ -6,7 +6,14 @@ import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { renderProvenance } from '../Provenance';
 import type { SliderProps } from './Slider.types';
-import { clampToRange, fillPercent, formatValue, nudged, stepperOff } from './slider-math';
+import {
+  clampToRange,
+  fillPercent,
+  formatValue,
+  markPercent,
+  nudged,
+  stepperOff,
+} from './slider-math';
 
 interface WebSliderProps extends SliderProps {
   className?: string;
@@ -48,9 +55,11 @@ export function Slider({
   max = 100,
   step = 1,
   label,
+  labelSpokenOnly = false,
   unit,
   hint,
   words,
+  mark,
   format,
   steppers = true,
   disabled = false,
@@ -63,6 +72,7 @@ export function Slider({
   const autoId = useId();
   const sid = id ?? autoId;
   const percent = fillPercent(value, min, max);
+  const marked = markPercent(mark, min, max);
   const shown = formatValue(value, unit, format);
 
   const live = (next: number) => onInput?.(clampToRange(next, min, max, step));
@@ -78,7 +88,11 @@ export function Slider({
 
   return (
     <div className={classNames('hg-slider', className)} style={style}>
-      {label !== undefined || unit !== undefined || hint !== undefined ? (
+      {labelSpokenOnly ? (
+        <label className="hg-spoken-only" htmlFor={sid}>
+          {label}
+        </label>
+      ) : label !== undefined || unit !== undefined || hint !== undefined ? (
         <div className="hg-slider-head" data-density={density}>
           <label className="hg-slider-label" htmlFor={sid}>
             {label}
@@ -107,6 +121,9 @@ export function Slider({
             data-disabled={disabled}
             style={{ width: `${percent}%` }}
           />
+          {marked === null ? null : (
+            <span className="hg-slider-mark" aria-hidden="true" style={{ left: `${marked}%` }} />
+          )}
           <input
             className="hg-slider-range"
             id={sid}

@@ -14,7 +14,7 @@ const xy = (x: number, y: number): ScreenPoint => ({ x, y });
 /** A roof on the screen with every edge labelled, `width` wide unless one is given. */
 function roofOf(
   corners: ScreenPoint[],
-  options: { width?: number; trusts?: RoofEdgeTrust[]; pinned?: number } = {},
+  options: { width?: number; trusts?: RoofEdgeTrust[]; pinned?: number; level?: number } = {},
 ): RoofLabelAsk {
   const labels: LabelAsk[] = corners.map((from, i) => ({
     from,
@@ -23,6 +23,7 @@ function roofOf(
     width: options.width ?? 60,
     height: HEIGHT,
     pinned: options.pinned === i,
+    level: options.level === i,
   }));
   return { corners, labels };
 }
@@ -109,5 +110,20 @@ describe('where labels touch, picture lengths give way', () => {
   it('labels with room between them both show', () => {
     const far = roofOf(B.map((p) => xy(p.x, p.y + 100)));
     expect(shown(roofOf(A), far)).toEqual([true, true]);
+  });
+});
+
+describe('the length in hand stays level, clear of its edge (T-M05-002)', () => {
+  // Its − and + are pressed, so it never turns: on an upright edge it stands out by half its width.
+  it.each([
+    ['the right edge', 1, xy(100 + 6 + 50, 50)],
+    ['the top edge', 0, xy(50, -16)],
+  ])('%s', (_why, edge, at) => {
+    const place = labelLayoutOf([
+      roofOf(SQUARE, { width: 100, pinned: edge as number, level: edge as number }),
+    ])[0]?.[edge as number];
+    expect(place?.degrees).toBe(0);
+    expect(place?.at.x).toBeCloseTo(at.x, 6);
+    expect(place?.at.y).toBeCloseTo(at.y, 6);
   });
 });
