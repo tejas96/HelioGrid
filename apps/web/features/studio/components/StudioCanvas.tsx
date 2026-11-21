@@ -14,6 +14,7 @@ import { useMemo, useRef, useState } from 'react';
 import { useChromeRoom } from '../hooks/use-chrome-room';
 import { useDrawPress } from '../hooks/use-draw-press';
 import { useMapKeys } from '../hooks/use-map-keys';
+import { useStudioHaptics } from '../hooks/use-studio-haptics';
 import { StudioBottomBar } from './StudioBottomBar';
 import type { StudioDrive } from './StudioCameraRig';
 import { StudioCanvasHead } from './StudioCanvasHead';
@@ -80,6 +81,7 @@ export function StudioCanvas({
 
   // A tap on the map: in the top view it shows a length that gave way; in 3D it opens the roof
   // it lands on, met at each roof's own height.
+  useStudioHaptics(studio);
   const { aim, aimAt, handlers } = useDrawPress(studio, drive, (x, y) => {
     if (view === 'top') roofMarks.current?.revealAt(x, y);
     else moves.tapRoof((heightM) => drive.current?.groundAt(x, y, heightM) ?? null);
@@ -121,7 +123,7 @@ export function StudioCanvas({
           onMarks={(seen) => marks.current?.show(seen)}
           roofs={roofs}
           heights={studio.heights.map((height) => height.metres)}
-          pictureScale={studio.shown?.pictureScale ?? 1}
+          pictureScale={studio.shown?.pictureScale ?? null}
           storeyHeightM={format.pack.storeyHeightM}
           fit={studio.fit}
           frameOn={sheetFraming ?? closed}

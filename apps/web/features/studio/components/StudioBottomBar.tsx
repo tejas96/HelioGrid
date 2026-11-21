@@ -85,6 +85,9 @@ function roofsStatus(
   const { words } = facts;
   if (bar.live !== null) return words.editRefusal(bar.live, shown);
   if (facts.crowded && facts.studio.roofStep.kind === 'dragging') return words.dragCrowded;
+  // Undo and Redo name themselves in every view.
+  const kind = bar.said?.kind;
+  if (kind === 'undone' || kind === 'redone') return words.roofLine(bar.said, false, shown);
   // In 3D the outline is not changed: what a person does here is a roof's height — or, for a
   // reader, looks at it.
   if (facts.view !== 'top') return facts.editable ? words.roofIdle3d : words.roofIdle3dReader;
@@ -245,8 +248,11 @@ export function StudioBottomBar({
       </span>
       <span className="hg-studio-bar-words">
         <span className="hg-studio-bar-name">{title}</span>
+        {/* The live region stays; a new sentence inside it is a new line, and slides in. */}
         <span className="hg-studio-bar-status" role="status">
-          {status}
+          <span key={String(status)} className="hg-studio-bar-line">
+            {status}
+          </span>
         </span>
       </span>
       {acts.length > 0 ? (

@@ -25,12 +25,14 @@ export type WebViewLend = z.infer<typeof webViewLendSchema>;
 /**
  * Page → phone. `token-needed`: the page is ready, or its token lapsed — send one. `leave`: the
  * person pressed the way back; the phone goes back a screen. `site`: the person asked to change the
- * site details; the phone opens its own Site details in the studio's place. A phone app older than
- * `site` reads it as `null` and stays on the studio.
+ * site details; the phone opens its own Site details in the studio's place. `haptic`: the phone taps
+ * — a light `selection` on a snap, a close or the slider's tick, a short `impact` on a refusal
+ * (`T-M05-002`, part b). A phone app older than a kind reads it as `null` and does nothing.
  */
 export const webViewAskSchema = z.discriminatedUnion('kind', [
   z.object({ v: version, kind: z.literal('token-needed') }),
   z.object({ v: version, kind: z.literal('leave') }),
   z.object({ v: version, kind: z.literal('site') }),
+  z.object({ v: version, kind: z.literal('haptic'), strength: z.enum(['selection', 'impact']) }),
 ]);
 export type WebViewAsk = z.infer<typeof webViewAskSchema>;

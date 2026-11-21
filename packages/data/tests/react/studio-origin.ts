@@ -13,6 +13,7 @@ import { afterEach } from 'vitest';
 import { createDataLayer } from '../../src/data-layer';
 import { DataProvider } from '../../src/react/provider';
 import { listeningOrigin, refusal, send, writeBodyOf } from './origin-wire';
+import { DOCUMENT_ROUTES } from './studio-document-origin';
 import { placesAnswer } from './studio-places-origin';
 
 export { MUNICH, SANGLI } from './studio-places-origin';
@@ -274,7 +275,7 @@ const myProfile: Route = (req, res, path) => {
 };
 
 const ROUTES: readonly Route[] = [leadDesigns, oneDesign, siteOfDesign, recommended, places];
-const ALL_ROUTES = [...ROUTES, myProfile];
+const ALL_ROUTES = [...ROUTES, myProfile, ...DOCUMENT_ROUTES];
 
 const served = listeningOrigin((req, res) => {
   const path = new URL(req.url ?? '/', 'http://origin').pathname;

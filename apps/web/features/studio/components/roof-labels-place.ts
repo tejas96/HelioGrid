@@ -1,6 +1,6 @@
-import type { KeepOff, LabelAsk, LabelPlace, RoofLabelAsk, ScreenPoint } from '@heliogrid/domain';
+import type { KeepOff, LabelAsk, LabelPlace, ScreenPoint } from '@heliogrid/domain';
 import { MathUtils } from 'three';
-import { laidAt, readPoint } from './roof-marks-place';
+import { type LayoutLabels, laidAt, readPoint } from './roof-marks-place';
 import type { ScreenOf } from './StudioRoofs';
 
 /**
@@ -8,12 +8,6 @@ import type { ScreenOf } from './StudioRoofs';
  * their edges' screen points and their own size, the handles kept clear, and set where the label
  * layout puts them.
  */
-
-/** The label layout, from the studio's hook: where each length sits for the points it is given. */
-export type LayoutLabels = (
-  roofs: readonly RoofLabelAsk[],
-  keepOff?: readonly KeepOff[],
-) => LabelPlace[][];
 
 /**
  * The move and turn handles where they were laid this frame: the labels keep off them. The + dots
@@ -58,17 +52,24 @@ function shapesOn(layer: HTMLElement, screenOf: ScreenOf): Map<string, ScreenPoi
 }
 
 /** One label set where the layout put it: turned along its edge, its thin line back when sent out. */
-function setLabel(node: HTMLElement, place: LabelPlace | undefined): void {
+/** How near the screen's side the length in hand may come, in CSS pixels. */
+const SIDE_ROOM_PX = 8;
+
+/** The room across the screen a label's middle keeps to: the length in hand stays on screen. */
+type Across = { readonly min: number; readonly max: number } | null;
+
+function setLabel(node: HTMLElement, place: LabelPlace | undefined, across: Across): void {
   // Away, not hidden: a label keeps its size, so the next frame measures it and it does not blink.
   node.dataset.unseen = String(place === undefined || !place.shown);
   if (place === undefined || !place.shown) return;
-  node.style.transform = `translate(${place.at.x}px, ${place.at.y}px)`;
+  const x = across === null ? place.at.x : Math.min(Math.max(place.at.x, across.min), across.max);
+  node.style.transform = `translate(${x}px, ${place.at.y}px)`;
   node.style.setProperty('--hg-turn', `${place.degrees}deg`);
   const leader = node.querySelector<HTMLElement>('.hg-roof-leader');
   if (leader === null) return;
   leader.hidden = place.leaderFrom === null;
   if (place.leaderFrom === null) return;
-  const dx = place.leaderFrom.x - place.at.x;
+  const dx = place.leaderFrom.x - x;
   const dy = place.leaderFrom.y - place.at.y;
   leader.style.inlineSize = `${Math.hypot(dx, dy)}px`;
   leader.style.transform = `rotate(${Math.atan2(dy, dx) * DEGREES}deg)`;
@@ -114,9 +115,13 @@ export function placeLabels(layer: HTMLElement, screenOf: ScreenOf, layout: Layo
     roofs.map(([roof, group]) => ({ corners: shapes.get(roof) ?? [], labels: group.labels })),
     handleBoxes(layer),
   );
+  const wide = layer.clientWidth;
   roofs.forEach(([, group], r) => {
     group.nodes.forEach((node, e) => {
-      setLabel(node, placed[r]?.[e]);
+      const ask = group.labels[e];
+      const half = (ask?.width ?? 0) / 2 + SIDE_ROOM_PX;
+      const across = ask?.level === true ? { min: half, max: wide - half } : null;
+      setLabel(node, placed[r]?.[e], across);
     });
   });
 }

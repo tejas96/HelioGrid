@@ -138,7 +138,9 @@ function cornerGone(state: RoofStepState, document: StudioDocument): RoofStepOut
   if (removed.kind === 'refused') {
     return stay(idle({ kind: 'refused', refusal: removed.refusal }, state.roof, state.picked));
   }
-  return { state: idle({ kind: 'corner_removed' }, state.roof), commit: removed.document };
+  const at = document.roofs[state.picked.roof]?.corners[state.picked.corner];
+  const said: RoofSaid | null = at === undefined ? null : { kind: 'corner_removed', at };
+  return { state: idle(said, state.roof), commit: removed.document };
 }
 
 /** One handler per event, in the state it fits; in any other state the event is nothing. */
@@ -226,6 +228,10 @@ const ON: Handlers = {
       ),
     ),
   remove_corner: (state, _event, document) => cornerGone(state, document),
+  history: (state, { undone }) =>
+    inState(state, 'idle', (looking) =>
+      stay(idle({ kind: undone ? 'undone' : 'redone' }, looking.roof)),
+    ),
   pick_roof: (state, { roof, metres }) =>
     inState(state, 'idle', () => stay(idle({ kind: 'roof_picked', roof, metres }, roof))),
 };

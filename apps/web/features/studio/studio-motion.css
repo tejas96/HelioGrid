@@ -1,0 +1,136 @@
+/* Every moment moves (`T-M05-002`, part b, *Look and motion*): what the roof step's marks do as
+   they come, answer the pointer and refuse — by transform and opacity, from the motion tokens.
+   Reduced motion lands each at once; the two loops stop. */
+
+/* Drawing on a desktop: a crosshair where the next corner goes. */
+.hg-studio[data-drawing="true"] .hg-studio-scene {
+  cursor: crosshair;
+}
+
+/* The cursor says what a drag does: a corner or the move handle moves, the turn handle turns,
+   a + pulls a new corner out, a length opens its field. */
+.hg-roof-at[data-dot-roof],
+.hg-roof-at[data-handle="move"] {
+  cursor: move;
+}
+
+.hg-roof-at[data-handle="turn"] {
+  cursor: grab;
+}
+
+.hg-roof-at[data-plus] {
+  cursor: copy;
+}
+
+.hg-roof-label .hg-roof-hit {
+  cursor: pointer;
+}
+
+/* A desktop hover lights what it would take: a corner, a +, a handle, a length. */
+.hg-roof-plus,
+.hg-roof-handle,
+.hg-roof-label .hg-roof-len {
+  transition: scale var(--dur-fast) var(--ease-standard);
+}
+
+/* The dot keeps its ring's easing (`studio-roof-controls.css`) beside the hover's. */
+.hg-roof-dot {
+  transition:
+    box-shadow var(--dur-fast) var(--ease-standard),
+    scale var(--dur-fast) var(--ease-standard);
+}
+
+@media (hover: hover) {
+  .hg-roof-hit:hover .hg-roof-dot {
+    scale: 1.35;
+  }
+
+  .hg-roof-hit:hover .hg-roof-plus,
+  .hg-roof-hit:hover .hg-roof-handle,
+  .hg-roof-label .hg-roof-hit:hover .hg-roof-len {
+    scale: 1.08;
+  }
+}
+
+/* A corner pops in where it is placed — a + pulled out splits its edge with one — and a ticked
+   length draws its tick. */
+.hg-roof-dot,
+.hg-roof-len[data-kind="measured"] svg {
+  animation: hg-pop-in var(--dur-spring-snappy) var(--ease-spring-snappy) backwards;
+}
+
+@keyframes hg-pop-in {
+  from {
+    opacity: 0;
+    scale: 0.2;
+  }
+}
+
+/* A removed corner shrinks away where it stood. */
+.hg-roof-at > .hg-roof-dot-gone {
+  pointer-events: none;
+  animation: hg-shrink-away var(--dur-standard) var(--ease-exit) forwards;
+}
+
+@keyframes hg-shrink-away {
+  to {
+    opacity: 0;
+    scale: 0;
+  }
+}
+
+/* The Line up guide and a snap's tag draw in; a picked roof's blue ring draws round it. */
+.hg-roof-lines .hg-roof-guide,
+.hg-roof-at > .hg-roof-tag {
+  animation: hg-fade-in var(--dur-fast) var(--ease-enter) backwards;
+}
+
+.hg-roof-lines .hg-roof-picked-ring,
+.hg-roof-lines .hg-roof-picked-fill {
+  animation: hg-fade-in var(--dur-emphasised) var(--ease-enter) backwards;
+}
+
+@keyframes hg-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The ghost corner breathes while it offers the fourth corner. */
+.hg-roof-dot[data-ghost="true"] {
+  animation:
+    hg-pop-in var(--dur-spring-snappy) var(--ease-spring-snappy) backwards,
+    hg-ghost-breathe var(--dur-data) var(--ease-in-out) infinite alternate;
+}
+
+@keyframes hg-ghost-breathe {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* A refused line flashes once. */
+.hg-roof-lines .hg-roof-stretch[data-bad="true"],
+.hg-roof-lines .hg-roof-line[data-bad="true"] {
+  animation: hg-flash var(--dur-fast) var(--ease-standard) 2 alternate;
+}
+
+@keyframes hg-flash {
+  to {
+    opacity: 0.25;
+  }
+}
+
+/* The bar's sentence fades in when it changes; it stays inline, so a long one still ends in "…". */
+.hg-studio-bar-line {
+  animation: hg-fade-in var(--dur-standard) var(--ease-enter) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hg-roof-dot[data-ghost="true"] {
+    animation: none;
+  }
+}

@@ -1,6 +1,11 @@
-import type { GroundPoint, RoofHandles } from '@heliogrid/domain';
+import type {
+  GroundPoint,
+  KeepOff,
+  LabelPlace,
+  RoofHandles,
+  RoofLabelAsk,
+} from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
-import type { LayoutLabels } from './roof-labels-place';
 import type { ScreenOf } from './StudioRoofs';
 
 /**
@@ -21,6 +26,12 @@ const PICKED_OUT_PX = 30;
 const COLUMN_GAP_PX = 8;
 /** On a phone the tool columns stand beside the roof: a label keeps between them. */
 const PHONE_BELOW = theme.layout['bp-desktop'];
+
+/** The label layout, from the studio's hook: where each length sits for the points it is given. */
+export type LayoutLabels = (
+  roofs: readonly RoofLabelAsk[],
+  keepOff?: readonly KeepOff[],
+) => LabelPlace[][];
 
 type Xy = { x: number; y: number };
 

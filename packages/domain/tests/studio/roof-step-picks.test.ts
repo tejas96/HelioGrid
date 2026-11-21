@@ -100,3 +100,29 @@ describe('the picked roof: its + dots and handles show, the others keep their co
     expect(handlesRoofOf(moved.state, moved.document)).toBe(0);
   });
 });
+
+describe('Undo and Redo: the bar names them, the roof stays picked (T-M05-002)', () => {
+  it.each([
+    [true, 'undone'],
+    [false, 'redone'],
+  ] as const)('undone %s: %s', (undone, kind) => {
+    const { state } = run(
+      [
+        { kind: 'tap', at: p(4, 3), system: 'metric' },
+        { kind: 'history', undone },
+      ],
+      drawn,
+    );
+    expect(state).toEqual({ kind: 'idle', roof: 0, picked: null, said: { kind } });
+  });
+});
+
+describe('a removed corner says where it stood, to shrink away there (T-M05-002)', () => {
+  it('the × on a picked corner', () => {
+    const { state } = run(
+      [{ kind: 'pick_corner', corner: { roof: 0, corner: 2 } }, { kind: 'remove_corner' }],
+      drawn,
+    );
+    expect(state.kind === 'idle' && state.said).toEqual({ kind: 'corner_removed', at: p(8, 6) });
+  });
+});

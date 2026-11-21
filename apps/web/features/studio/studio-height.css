@@ -18,7 +18,7 @@
   box-shadow: var(--e2);
 }
 
-/* The open roof: a blue ring round its top and a soft blue fill. The ring draws round once. */
+/* The open roof: a blue ring round its top and a soft blue fill; both fade in once. */
 .hg-roof-lines .hg-roof-picked-fill {
   fill: color-mix(in srgb, var(--hg-roof-ink) 14%, transparent);
   stroke: none;
@@ -75,6 +75,10 @@
   box-shadow:
     0 0 0 var(--sp-1) color-mix(in srgb, var(--accent) 26%, transparent),
     var(--e2);
+}
+
+.hg-roof-at > .hg-roof-arrow:active:not(:disabled) {
+  transform: translate(calc(-1 * var(--sp-0-5)), -100%) scale(var(--press-scale));
 }
 
 @keyframes hg-arrow-grow {

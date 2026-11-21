@@ -4,7 +4,7 @@ import type { GroundBox, Roof, StudioView, SunPosition } from '@heliogrid/domain
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { type ReactNode, type RefObject, useState } from 'react';
+import { type ReactNode, type RefObject, useRef, useState } from 'react';
 import { MathUtils, Vector3 } from 'three';
 import {
   type ClearGround,
@@ -19,6 +19,7 @@ import {
   type RoofTopPicture,
   StudioRoofs,
 } from './StudioRoofs';
+import { StudioScaleTween } from './StudioScaleTween';
 
 const RADIANS = MathUtils.DEG2RAD;
 /** The plain ground where there is no picture, wide enough that its edge is never seen. */
@@ -128,7 +129,8 @@ export interface StudioSceneProps {
   /** Each roof's height in metres, in the order of `roofs`. */
   heights: readonly number[];
   /** How much the picture is stretched about the pin to its true size. */
-  pictureScale: number;
+  /** `null` until the design is read: its stored stretch then lands, never grown into. */
+  pictureScale: number | null;
   /** The market's storey height: a roof with no height of its own stands at it. */
   storeyHeightM: number;
   /** The roofs' ground, which the view frames; `null` before a roof. */
@@ -159,7 +161,7 @@ export function StudioScene({
   onMarks,
   roofs,
   heights,
-  pictureScale,
+  pictureScale: readScale,
   storeyHeightM,
   fit,
   frameOn,
@@ -168,6 +170,9 @@ export function StudioScene({
 }: StudioSceneProps) {
   // biome-ignore lint/plugin: the web's WebGL picture of the ground, handed on to the roofs' tops
   const [sharp, setSharp] = useState<RoofTopPicture | null>(null);
+  const pictureScale = readScale ?? 1;
+  // The share of its new size the model stands at while the first length grows it: 1 at rest.
+  const sizing = useRef(1);
   return (
     <Canvas
       frameloop="demand"
@@ -180,55 +185,58 @@ export function StudioScene({
       {/* The far ground fades into the page; the camera rig sets how far, from its own distance. */}
       <fog attach="fog" args={[palette.canvas, CAMERA_START.far, CAMERA_START.far]} />
       <SunLight sun={sun} palette={palette} />
-      {picture.kind === 'sky' ? (
-        // The first true length stretches the picture about the pin with every roof on it.
-        <group scale={[pictureScale, 1, pictureScale]}>
-          <StudioPictureGround
-            pieces={picture.pieces}
-            around={picture.around}
-            page={palette.canvas}
-            onSharp={setSharp}
+      <StudioScaleTween scale={readScale} still={still} factor={sizing}>
+        {picture.kind === 'sky' ? (
+          // The first true length stretches the picture about the pin with every roof on it.
+          <group scale={[pictureScale, 1, pictureScale]}>
+            <StudioPictureGround
+              pieces={picture.pieces}
+              around={picture.around}
+              page={palette.canvas}
+              onSharp={setSharp}
+            />
+          </group>
+        ) : (
+          <mesh rotation-x={-Math.PI / 2}>
+            <planeGeometry args={[GROUND_M, GROUND_M]} />
+            <meshBasicMaterial color={palette['canvas-sunken']} toneMapped={false} />
+          </mesh>
+        )}
+        {picture.kind === 'none' ? (
+          <Grid
+            position={[0, GRID_LIFT_M, 0]}
+            cellSize={1}
+            sectionSize={5}
+            cellThickness={0.6}
+            sectionThickness={1}
+            cellColor={palette['line-soft']}
+            sectionColor={palette['line-strong']}
+            fadeDistance={160}
+            fadeStrength={1.5}
+            infiniteGrid
           />
-        </group>
-      ) : (
-        <mesh rotation-x={-Math.PI / 2}>
-          <planeGeometry args={[GROUND_M, GROUND_M]} />
-          <meshBasicMaterial color={palette['canvas-sunken']} toneMapped={false} />
-        </mesh>
-      )}
-      {picture.kind === 'none' ? (
-        <Grid
-          position={[0, GRID_LIFT_M, 0]}
-          cellSize={1}
-          sectionSize={5}
-          cellThickness={0.6}
-          sectionThickness={1}
-          cellColor={palette['line-soft']}
-          sectionColor={palette['line-strong']}
-          fadeDistance={160}
-          fadeStrength={1.5}
-          infiniteGrid
+        ) : null}
+        {/* Once a roof stands, the roof is the place: the pin's ring steps aside. */}
+        {roofs.length === 0 ? (
+          <mesh rotation-x={-Math.PI / 2} position={[0, RING_LIFT_M, 0]}>
+            <ringGeometry args={[RING_INNER_M, RING_OUTER_M, RING_SEGMENTS]} />
+            <meshBasicMaterial color={palette.danger} toneMapped={false} />
+          </mesh>
+        ) : null}
+        <PinFollower label={pinLabel} />
+        <StudioRoofs
+          roofs={roofs}
+          view={view}
+          still={still}
+          palette={palette}
+          heights={heights}
+          storeyHeightM={storeyHeightM}
+          top={picture.kind === 'sky' && sharp !== null ? scaledTop(sharp, pictureScale) : null}
+          rise={rise}
+          sizing={sizing}
+          marks={roofMarks}
         />
-      ) : null}
-      {/* Once a roof stands, the roof is the place: the pin's ring steps aside. */}
-      {roofs.length === 0 ? (
-        <mesh rotation-x={-Math.PI / 2} position={[0, RING_LIFT_M, 0]}>
-          <ringGeometry args={[RING_INNER_M, RING_OUTER_M, RING_SEGMENTS]} />
-          <meshBasicMaterial color={palette.danger} toneMapped={false} />
-        </mesh>
-      ) : null}
-      <PinFollower label={pinLabel} />
-      <StudioRoofs
-        roofs={roofs}
-        view={view}
-        still={still}
-        palette={palette}
-        heights={heights}
-        storeyHeightM={storeyHeightM}
-        top={picture.kind === 'sky' && sharp !== null ? scaledTop(sharp, pictureScale) : null}
-        rise={rise}
-        marks={roofMarks}
-      />
+      </StudioScaleTween>
       <StudioCameraRig
         view={view}
         free={free}

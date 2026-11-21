@@ -195,6 +195,8 @@ export function StudioRoofMarks({
   const editsOn = (index: number) =>
     editable && !drawing && (handles !== 'hidden' || index === studio.handlesRoof);
   const closedJust = step.kind === 'idle' && step.said?.kind === 'closed' ? roofMarks.at(-1) : null;
+  // A corner removed shrinks away where it stood, once, as its edges join.
+  const gone = step.kind === 'idle' && step.said?.kind === 'corner_removed' ? step.said : null;
 
   return (
     <div ref={layer} className="hg-roof-marks" data-view={view}>
@@ -236,6 +238,11 @@ export function StudioRoofMarks({
           <span className="hg-roof-tag" data-tone={tag.bad ? 'bad' : undefined} role="status">
             {tag.text}
           </span>
+        </span>
+      )}
+      {gone === null ? null : (
+        <span key={pointText(gone.at)} className="hg-roof-at" data-at={pointText(gone.at)}>
+          <span className="hg-roof-dot hg-roof-dot-gone" />
         </span>
       )}
       {closedJust == null ? null : (

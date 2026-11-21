@@ -263,12 +263,13 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         if (now === 'drawing') act({ kind: 'undo_corner' });
         else if (now === 'sizing' || now === 'dragging') act({ kind: 'cancel' });
         else if (latest.current !== null) {
-          act({ kind: 'pick_corner', corner: null });
+          act({ kind: 'history', undone: true });
           change(historyUndone(latest.current));
         }
       },
       redo: () => {
         if (step.current.kind === 'idle' && latest.current !== null) {
+          act({ kind: 'history', undone: false });
           change(historyRedone(latest.current));
         }
       },

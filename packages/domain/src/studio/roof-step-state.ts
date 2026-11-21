@@ -32,9 +32,13 @@ export type RoofSaid =
   | { readonly kind: 'corner_moved'; readonly snap: RoofSnap | null }
   | { readonly kind: 'corner_added' }
   | { readonly kind: 'corner_picked' }
-  | { readonly kind: 'corner_removed' }
+  /** `at`: where the corner stood, which shrinks away there as its edges join. */
+  | { readonly kind: 'corner_removed'; readonly at: GroundPoint }
   | { readonly kind: 'roof_moved' }
   | { readonly kind: 'roof_turned'; readonly degrees: number }
+  /** Undo or Redo walked the design's history: the bar names it. */
+  | { readonly kind: 'undone' }
+  | { readonly kind: 'redone' }
   /** A roof picked from its 3D sheet, to fix its outline here: its height, in metres. */
   | { readonly kind: 'roof_picked'; readonly roof: number; readonly metres: number }
   /** A drag let go with a fault: the roof went back. */
@@ -121,6 +125,8 @@ export type RoofStepEvent =
   | { readonly kind: 'drag'; readonly at: GroundPoint }
   | { readonly kind: 'release' }
   | { readonly kind: 'pick_corner'; readonly corner: CornerRef | null }
+  /** Undo or Redo with nothing in hand: the design steps back or on. */
+  | { readonly kind: 'history'; readonly undone: boolean }
   /** Edit outline in 2D, from a roof's 3D sheet: that roof is picked; `metres` is its height. */
   | { readonly kind: 'pick_roof'; readonly roof: number; readonly metres: number }
   | { readonly kind: 'remove_corner' };

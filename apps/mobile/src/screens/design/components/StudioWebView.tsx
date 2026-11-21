@@ -5,6 +5,7 @@ import {
   webViewAskSchema,
 } from '@heliogrid/contracts';
 import { useLendToken } from '@heliogrid/data/react';
+import { tapHaptic } from '@heliogrid/ui';
 import { useEffect, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -72,6 +73,10 @@ export function StudioWebView({
         }
         if (asked.kind === 'site') {
           onSite();
+          return;
+        }
+        if (asked.kind === 'haptic') {
+          tapHaptic(asked.strength);
           return;
         }
         void lendToken().then((token) => {

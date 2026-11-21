@@ -14,8 +14,18 @@ describe('the web view bridge: page → phone', () => {
     });
   });
 
+  it.each(['selection', 'impact'] as const)('reads the %s haptic', (strength) => {
+    const sent = JSON.stringify({ v: WEB_VIEW_BRIDGE_VERSION, kind: 'haptic', strength });
+    expect(readSiteMapMessage(webViewAskSchema, sent)).toEqual({
+      v: WEB_VIEW_BRIDGE_VERSION,
+      kind: 'haptic',
+      strength,
+    });
+  });
+
   it.each([
     ['an ask it does not know', { v: WEB_VIEW_BRIDGE_VERSION, kind: 'roof' }],
+    ['a haptic it does not know', { v: WEB_VIEW_BRIDGE_VERSION, kind: 'haptic', strength: 'long' }],
     ['another version', { v: WEB_VIEW_BRIDGE_VERSION + 1, kind: 'site' }],
     ['no version', { kind: 'site' }],
   ])('reads %s as nothing', (_why, body) => {

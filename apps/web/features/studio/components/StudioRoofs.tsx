@@ -1,6 +1,6 @@
 'use client';
 import type { GroundPoint, Roof, StudioView } from '@heliogrid/domain';
-import type { ThemePalette } from '@heliogrid/theme';
+import { type ThemePalette, theme } from '@heliogrid/theme';
 import { useFrame, useThree } from '@react-three/fiber';
 import { type RefObject, useEffect, useMemo } from 'react';
 import { type CanvasTexture, ExtrudeGeometry, Shape, type Texture, Vector3 } from 'three';
@@ -11,8 +11,15 @@ const FLAT = 0;
 const STANDING = 1;
 /** Below this height a rising roof is not drawn: in the top view the picture is the roof. */
 const SHOWN_FROM_M = 0.02;
-/** How much of the way to its height a roof rises each second: about a quarter second's rise. */
-const RISE_PER_SECOND = 12;
+/**
+ * How much of the way to its height a roof rises each second: nineteen-twentieths of the way in
+ * the emphasised duration — the walls rising from the ground the first time in 3D.
+ */
+/** A rise that closes its gap at a steady rate is nineteen-twentieths there after three time constants. */
+const TIME_CONSTANTS_TO_RISEN = 3;
+const MS_PER_SECOND = 1000;
+const RISE_PER_SECOND =
+  (TIME_CONSTANTS_TO_RISEN * MS_PER_SECOND) / theme.motion.durations.emphasised;
 /** A rise this near its end has arrived: a thousandth of the way. */
 const SETTLED_M = 1e-3;
 /** The ground that takes the roofs' soft shadow, in metres across. */
@@ -155,6 +162,7 @@ export function StudioRoofs({
   storeyHeightM,
   top,
   rise,
+  sizing,
   marks,
 }: {
   roofs: readonly Roof[];
@@ -168,6 +176,8 @@ export function StudioRoofs({
   /** The sky picture the roofs' tops wear; `null` on the grid. */
   top: RoofTopPicture | null;
   rise: RoofRise;
+  /** The share of its new size the model stands at while the first length grows it. */
+  sizing: RefObject<number>;
   marks: RefObject<RoofMarksHandle | null>;
 }) {
   const scene = useThree((three) => three.scene);
@@ -193,7 +203,8 @@ export function StudioRoofs({
     }
     marks.current?.place((point, heightM) => {
       // A mark on a roof's top stands at that roof's height, as far risen as the roof.
-      at.set(point.east, rise.current * heightM, -point.north).project(camera);
+      const grown = sizing.current;
+      at.set(point.east * grown, rise.current * heightM, -point.north * grown).project(camera);
       if (at.z > 1) return null;
       return { x: ((at.x + 1) / 2) * size.width, y: ((1 - at.y) / 2) * size.height };
     });

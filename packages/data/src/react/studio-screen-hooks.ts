@@ -1,5 +1,7 @@
 /** The design studio's view models (block 9): one per screen pair, the web's and the phone's alike. */
 
+export type { StudioMoments } from './studio-haptics';
+export { studioHapticOf, studioMomentsOf } from './studio-haptics';
 export type { DesignRead, DesignScreen } from './use-design-screen';
 export { useDesignScreen } from './use-design-screen';
 export type {

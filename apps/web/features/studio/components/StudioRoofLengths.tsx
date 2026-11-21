@@ -181,8 +181,8 @@ export function StudioRoofLengths({
       {roofs.flatMap((roof, index) =>
         roof.edges.map((edge, i) => (
           <EdgeLength
-            // biome-ignore lint/suspicious/noArrayIndexKey: an edge is its place in the roof
-            key={`len${index}-${i}`}
+            // biome-ignore lint/suspicious/noArrayIndexKey: an edge is its place in the roof; a length set or measured is drawn anew, its tick drawing in
+            key={`len${index}-${i}-${edge.trust}`}
             edge={edge}
             roof={index}
             index={i}

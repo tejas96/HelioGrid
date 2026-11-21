@@ -59,6 +59,8 @@ const ROOF = {
   roofArea: /*i18n*/ { id: 'Roof · {area}' },
   roofClosed: /*i18n*/ { id: 'Height {height} is assumed. Drag a corner to fix the shape.' },
   roofIdle: /*i18n*/ { id: 'Drag a corner to fix the shape.' },
+  undone: /*i18n*/ { id: 'Undone. Redo puts it back.' },
+  redone: /*i18n*/ { id: 'Redone. Undo takes it back.' },
   roofPicked: /*i18n*/ { id: 'Roof {number} · height {height}. Drag a corner to fix the shape.' },
   roofIdle3d: /*i18n*/ { id: 'Tap the roof to change its height.' },
   roofIdle3dReader: /*i18n*/ { id: 'Tap a roof to see its height.' },
@@ -182,6 +184,10 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'roof_turned':
       // A turn is said by its size: which way it went is on the screen.
       return t(ROOF.roofTurned, { degrees: Math.abs(said.degrees) });
+    case 'undone':
+      return t(ROOF.undone);
+    case 'redone':
+      return t(ROOF.redone);
     case 'roof_picked':
       return t(ROOF.roofPicked, { number: said.roof + 1, height: shown.heightOf(said.metres) });
     case 'went_back':
