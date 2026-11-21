@@ -13,7 +13,7 @@ describe('the roof step: drawing', () => {
     expect(commits).toBe(1);
     expect(document.roofs).toHaveLength(1);
     expect(document.drawnOn).toEqual(STAMP);
-    expect(state).toEqual({ kind: 'idle', picked: null, said: { kind: 'closed' } });
+    expect(state).toEqual({ kind: 'idle', roof: 0, picked: null, said: { kind: 'closed' } });
   });
 
   it('three square corners and close: the ghost makes the fourth', () => {
@@ -126,7 +126,7 @@ describe('the roof step: one true length (the 7-tap path)', () => {
     expect(commits).toBe(2);
     expect(document.pictureScale).toBeCloseTo(8.2 / 8);
     expect(edgeLengths(document.roofs[0]?.corners ?? [])[0]).toBeCloseTo(8.2);
-    expect(state).toEqual({ kind: 'idle', picked: null, said: { kind: 'sized' } });
+    expect(state).toEqual({ kind: 'idle', roof: 0, picked: null, said: { kind: 'sized' } });
   });
 
   it('the box previews live and × puts the old length back', () => {

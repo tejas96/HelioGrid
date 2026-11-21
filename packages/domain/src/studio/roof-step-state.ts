@@ -40,7 +40,16 @@ export type RoofSaid =
   | { readonly kind: 'refused'; readonly refusal: EditRefusal };
 
 export type RoofStepState =
-  | { readonly kind: 'idle'; readonly picked: CornerRef | null; readonly said: RoofSaid | null }
+  | {
+      readonly kind: 'idle';
+      /**
+       * The roof picked while looking — tapped, or the last one changed: its + dots and handles
+       * show, and the other roofs keep only their corners. `null` after a tap on open ground.
+       */
+      readonly roof: number | null;
+      readonly picked: CornerRef | null;
+      readonly said: RoofSaid | null;
+    }
   | {
       readonly kind: 'drawing';
       readonly corners: readonly GroundPoint[];
@@ -68,7 +77,12 @@ export type RoofStepState =
       readonly degrees: number;
     };
 
-export const ROOF_STEP_START: RoofStepState = { kind: 'idle', picked: null, said: null };
+export const ROOF_STEP_START: RoofStepState = {
+  kind: 'idle',
+  roof: null,
+  picked: null,
+  said: null,
+};
 
 export type RoofStepEvent =
   | { readonly kind: 'draw'; readonly helpers: DrawHelpers }
@@ -111,4 +125,18 @@ export interface RoofStepOutcome {
   readonly state: RoofStepState;
   /** The design after an act that ends here: one history entry. `null`: nothing to save. */
   readonly commit: StudioDocument | null;
+}
+
+/** What is in hand moves on, and nothing is committed. */
+export function stay(state: RoofStepState): RoofStepOutcome {
+  return { state, commit: null };
+}
+
+/** Nothing in hand: what was said, the roof picked, the corner picked. */
+export function idle(
+  said: RoofSaid | null,
+  roof: number | null,
+  picked: CornerRef | null = null,
+): RoofStepState {
+  return { kind: 'idle', roof, picked, said };
 }

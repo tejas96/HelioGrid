@@ -1,7 +1,7 @@
 import { GROUND_REACH_M, type Roof, type StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import type { RoofSnap } from './roof-draw';
-import { edgesCross, roofsOverlap } from './roof-shape';
+import { between, CORNER_GAP_M, edgesCross, pointInside, roofsOverlap } from './roof-shape';
 
 /**
  * What every change to a standing roof answers (`T-M05-002`, part b): the design after it, or why
@@ -16,6 +16,8 @@ export type EditRefusal =
   | 'would_cross'
   | 'would_overlap'
   | 'too_far'
+  /** Two corners would stand within `CORNER_GAP_M` of each other. */
+  | 'too_close'
   /** A typed or measured length would change because of another edge; `edge` names it. */
   | 'held_length'
   /** Both lengths at a dragged corner are typed: the corner cannot move. */
@@ -64,8 +66,22 @@ export function faultOf(
     return 'too_far';
   }
   if (edgesCross(corners)) return 'would_cross';
+  if (corners.some((c, i) => corners.some((d, j) => j > i && between(c, d) < CORNER_GAP_M))) {
+    return 'too_close';
+  }
   const overlaps = document.roofs.some(
     (roof, i) => i !== index && roofsOverlap(corners, roof.corners),
   );
   return overlaps ? 'would_overlap' : null;
+}
+
+/** The roof a point lies inside, the last drawn first; `null` on open ground. */
+export function roofUnder(
+  roofs: readonly { readonly corners: readonly GroundPoint[] }[],
+  at: GroundPoint,
+): number | null {
+  for (let i = roofs.length - 1; i >= 0; i--) {
+    if (pointInside(at, (roofs[i] as (typeof roofs)[number]).corners)) return i;
+  }
+  return null;
 }

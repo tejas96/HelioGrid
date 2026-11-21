@@ -10,7 +10,7 @@ import {
   useReducedMotion,
 } from '@heliogrid/ui';
 import dynamic from 'next/dynamic';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useChromeRoom } from '../hooks/use-chrome-room';
 import { useDrawPress } from '../hooks/use-draw-press';
 import { useMapKeys } from '../hooks/use-map-keys';
@@ -65,6 +65,9 @@ export function StudioCanvas({
   const drive = useRef<StudioDrive | null>(null);
   const marks = useRef<StudioMapMarksHandle>(null);
   const roofMarks = useRef<RoofMarksHandle>(null);
+  const scene = useRef<HTMLDivElement>(null);
+  // biome-ignore lint/plugin: whether the corner held is crowded on the screen, as the marks last laid it
+  const [crowded, setCrowded] = useState(false);
   const rise = useRef(0);
   const onKeyDown = useMapKeys(drive);
   const { picture, editing, moves, view, sun, roofStep } = studio;
@@ -73,7 +76,7 @@ export function StudioCanvas({
   const roofs = studio.shown?.roofs ?? [];
   const parts = studio.focus(desktop === false);
 
-  const { aim, handlers } = useDrawPress(studio, drive, (x, y) =>
+  const { aim, aimAt, handlers } = useDrawPress(studio, drive, (x, y) =>
     roofMarks.current?.revealAt(x, y),
   );
   // A roof that closes is framed in the room between the bars: the camera stays in the top view,
@@ -84,6 +87,7 @@ export function StudioCanvas({
   return (
     <div ref={frame} className="hg-studio" data-view={view} data-drawing={drawing}>
       <div
+        ref={scene}
         className="hg-studio-scene"
         role="application"
         aria-label={words.mapKeys}
@@ -121,6 +125,11 @@ export function StudioCanvas({
         words={words}
         aiming={aim !== null}
         lengths={parts.lengthLabels}
+        handles={parts.otherHandles}
+        drive={drive}
+        onAim={aimAt}
+        onCrowded={setCrowded}
+        map={scene}
       />
       {aim !== null ? (
         <StudioLoupe at={aim} studio={studio} units={studio.units} drive={drive} />
@@ -189,6 +198,7 @@ export function StudioCanvas({
         place={detail.site.address}
         words={words}
         part={parts.bottomBar}
+        crowded={crowded}
       />
     </div>
   );

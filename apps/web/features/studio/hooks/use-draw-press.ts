@@ -89,6 +89,8 @@ export function useDrawPress(
   };
   return {
     aim,
+    /** A drag on a roof mark aims too: its finger shows the loupe. */
+    aimAt: setAim,
     handlers: {
       onPointerDown,
       onPointerMove,

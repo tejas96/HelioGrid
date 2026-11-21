@@ -61,6 +61,7 @@ export {
   historyUndone,
 } from './history';
 export {
+  type KeepOff,
   LABEL_END_ROOM_PX,
   LABEL_GAP_PX,
   LABEL_OUT_PX,
@@ -99,7 +100,10 @@ export {
 export {
   cornerAdded,
   cornerDragged,
+  cornerNearest,
   cornerRemoved,
+  KEY_MOVE_M,
+  KEY_TURN_DEGREES,
   roofMoved,
   roofTurned,
   TURN_SNAP_DEGREES,
@@ -168,8 +172,13 @@ export {
   type DraftEdge,
   type DraftView,
   draftViewOf,
+  dragBeforeOf,
   dragTagAt,
   type EdgeView,
+  type HeldCircle,
+  handlesRoofOf,
+  heldCircleOf,
+  heldCornerOf,
   pickedAngleOf,
   type RoofBar,
   type RoofMarksView,

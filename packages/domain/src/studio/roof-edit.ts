@@ -11,6 +11,7 @@ import {
 import { type RoofSnap, SNAP_M, snapTargetsOf, snapToTargets } from './roof-draw';
 import {
   between,
+  CORNER_GAP_M,
   cornerAfter,
   cornerBefore,
   edgeLengths,
@@ -28,6 +29,10 @@ import {
 
 /** Within this many degrees, a turned roof lines up with another roof's edge. */
 export const TURN_SNAP_DEGREES = 3;
+/** One arrow key on a move handle moves the roof this far, in metres. */
+export const KEY_MOVE_M = 0.1;
+/** One arrow key on a turn handle turns the roof this far, in degrees. */
+export const KEY_TURN_DEGREES = 1;
 
 /** The point where two lines cross: each through a point, running a way; `null` when parallel. */
 function lineCross(
@@ -135,7 +140,7 @@ export function cornerDragged(
         east: anchor.east + ((to.east - anchor.east) / reach) * metres,
         north: anchor.north + ((to.north - anchor.north) / reach) * metres,
       },
-      snap: { kind: 'held', metres },
+      snap: { kind: 'held', metres, centre: anchor },
     };
   } else {
     placed = cornerMagnet(corners, corner, to, document, roofIndex);
@@ -156,6 +161,8 @@ export function cornerAdded(document: StudioDocument, roofIndex: number, edge: n
   }
   const start = roof.corners[edge] as GroundPoint;
   const end = cornerAfter(roof.corners, edge);
+  // Its middle would stand within the corner gap of both ends: no room for a corner.
+  if (between(start, end) < 2 * CORNER_GAP_M) return { kind: 'refused', refusal: 'too_close' };
   const middle = { east: (start.east + end.east) / 2, north: (start.north + end.north) / 2 };
   const corners = [...roof.corners.slice(0, edge + 1), middle, ...roof.corners.slice(edge + 1)];
   const edges: RoofEdgeTrust[] = [
@@ -165,6 +172,15 @@ export function cornerAdded(document: StudioDocument, roofIndex: number, edge: n
     ...roof.edges.slice(edge + 1),
   ];
   return { kind: 'done', document: withRoof(document, roofIndex, { ...roof, corners, edges }) };
+}
+
+/** The corner of a roof nearest a point: where a finger on crowded dots meant to hold. */
+export function cornerNearest(corners: readonly GroundPoint[], at: GroundPoint): number {
+  let best = 0;
+  corners.forEach((corner, i) => {
+    if (between(corner, at) < between(corners[best] as GroundPoint, at)) best = i;
+  });
+  return best;
 }
 
 /** × on a picked corner: it goes, and its two edges join as one traced edge. A roof keeps three. */

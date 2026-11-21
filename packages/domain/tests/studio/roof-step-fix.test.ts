@@ -114,7 +114,7 @@ describe('the roof step: fixing the shape', () => {
       drawn,
     );
     expect(commits).toBe(0);
-    expect(state).toEqual({ kind: 'idle', picked: null, said: null });
+    expect(state).toEqual({ kind: 'idle', roof: 0, picked: null, said: null });
   });
 });
 

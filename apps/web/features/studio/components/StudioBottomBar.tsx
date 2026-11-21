@@ -40,6 +40,8 @@ interface BarFacts {
   readonly units: MeasurementSystem;
   readonly words: StudioCanvasWords;
   readonly format: Format;
+  /** The corner held is crowded by another on the screen. */
+  readonly crowded: boolean;
 }
 
 function drawingBar(bar: Extract<RoofBar, { kind: 'drawing' }>, facts: BarFacts): BarView {
@@ -79,6 +81,7 @@ function roofsStatus(
 ): TranslatedText {
   const { words } = facts;
   if (bar.live !== null) return words.editRefusal(bar.live, shown);
+  if (facts.crowded && facts.studio.roofStep.kind === 'dragging') return words.dragCrowded;
   return words.roofLine(bar.said, bar.sizing, shown);
 }
 
@@ -180,6 +183,7 @@ export function StudioBottomBar({
   place,
   words,
   part,
+  crowded,
 }: {
   barRef: Ref<HTMLDivElement>;
   name: TranslatedText;
@@ -192,9 +196,11 @@ export function StudioBottomBar({
   words: StudioCanvasWords;
   /** Focus mode: the whole bar, its status line alone, or none. */
   part: FocusParts['bottomBar'];
+  /** The corner held is crowded by another on the screen: the bar asks for a closer look. */
+  crowded: boolean;
 }) {
   const format = useFormat();
-  const facts: BarFacts = { studio, view, units, words, format };
+  const facts: BarFacts = { studio, view, units, words, format, crowded };
   const { bar } = studio;
   let shown = startBar(name, place, facts);
   if (bar?.kind === 'drawing') shown = drawingBar(bar, facts);

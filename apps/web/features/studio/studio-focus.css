@@ -24,7 +24,8 @@
   display: inline-flex;
 }
 
-.hg-studio-pencil > .hg-studio-focus {
+/* The helper bar, beside the pencil's place. */
+.hg-studio-pencil > .hg-studio-focus + .hg-studio-focus {
   position: absolute;
   inset-block-start: 0;
   inset-inline-start: calc(100% + var(--sp-2));

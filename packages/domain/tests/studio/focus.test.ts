@@ -218,7 +218,7 @@ describe('the job a drag holds: a corner the helpers guide, or a whole roof they
     ['a + pulled out', dragging({ kind: 'plus', roof: 0, edge: 1 }), 'dragging'],
     ['the move handle', dragging({ kind: 'move', roof: 0 }), 'moving'],
     ['the turn handle', dragging({ kind: 'turn', roof: 0 }), 'moving'],
-    ['nothing in hand', { kind: 'idle', picked: null, said: null } as const, 'looking'],
+    ['nothing in hand', { kind: 'idle', roof: null, picked: null, said: null } as const, 'looking'],
     [
       'a roof being drawn',
       {

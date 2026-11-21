@@ -26,13 +26,6 @@
   stroke-linecap: round;
 }
 
-.hg-roof-lines .hg-roof-fill {
-  fill: color-mix(in srgb, var(--hg-roof-ink) 8%, transparent);
-  filter: drop-shadow(
-    var(--sp-1) var(--sp-2) var(--sp-1) color-mix(in srgb, var(--scene-shade) 40%, transparent)
-  );
-}
-
 .hg-roof-halo {
   stroke: color-mix(in srgb, var(--scene-mark) 92%, transparent);
   stroke-width: 5;
@@ -67,8 +60,18 @@
   filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 70%, transparent));
 }
 
-.hg-roof-before[data-bad="true"] {
+/* A drag that would be refused: the shape in hand, red and dashed, over where the roof goes back. */
+.hg-roof-line[data-bad="true"] {
   stroke: var(--scene-bad);
+  stroke-dasharray: 6 4;
+}
+
+/* A set length the corner drag keeps: the thin circle its corner runs on. */
+.hg-roof-held {
+  stroke: var(--scene-mark);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 5;
+  filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 70%, transparent));
 }
 
 .hg-roof-guide {
@@ -150,4 +153,9 @@
 /* Once a roof stands, or while one is drawn, the pin steps aside: the roof is the place now. */
 .hg-studio-pin[data-gone="true"] {
   display: none;
+}
+
+/* Until the camera first lays the marks, none shows: never a frame at the screen's corner. */
+.hg-roof-marks:not([data-placed]) > * {
+  visibility: hidden;
 }

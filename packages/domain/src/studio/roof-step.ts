@@ -1,26 +1,24 @@
-import type { MeasurementSystem } from '../format/pack';
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
+import { roofUnder } from './roof-check';
 import { draftClose, draftSpot, draftTap, snapTargetsOf } from './roof-draw';
 import { cornerAdded, cornerDragged, cornerRemoved, roofMoved, roofTurned } from './roof-edit';
-import {
-  entryOf,
-  handMetres,
-  handUntouched,
-  sizingResult,
-  steppedEntry,
-  stepRefused,
-  tracedLength,
-} from './roof-entry';
-import { lengthAsks, lengthIsFirst } from './roof-length';
 import { roofMiddle } from './roof-shape';
-import type {
-  CornerRef,
-  RoofGrip,
-  RoofSaid,
-  RoofStepEvent,
-  RoofStepOutcome,
-  RoofStepState,
+import {
+  committedLength,
+  lengthKept,
+  lengthPicked,
+  lengthStepped,
+  thenKept,
+} from './roof-step-length';
+import {
+  idle,
+  type RoofGrip,
+  type RoofSaid,
+  type RoofStepEvent,
+  type RoofStepOutcome,
+  type RoofStepState,
+  stay,
 } from './roof-step-state';
 
 /**
@@ -30,15 +28,13 @@ import type {
  * the save queue and the clock; this reducer holds every decision (`CLAUDE.md` Law 11).
  */
 
-type Sizing = Extract<RoofStepState, { kind: 'sizing' }>;
 type Dragging = Extract<RoofStepState, { kind: 'dragging' }>;
 
-function stay(state: RoofStepState): RoofStepOutcome {
-  return { state, commit: null };
-}
-
-function idle(said: RoofSaid | null, picked: CornerRef | null = null): RoofStepState {
-  return { kind: 'idle', picked, said };
+/** The roof a state holds, kept picked when it ends: the one dragged, sized or picked. */
+function roofHeld(state: RoofStepState): number | null {
+  if (state.kind === 'dragging') return state.grip.roof;
+  if (state.kind === 'sizing' || state.kind === 'idle') return state.roof;
+  return null;
 }
 
 /** The corner a grip moves: a dragged corner, or the one the + added; `null` for a whole roof. */
@@ -90,85 +86,24 @@ const SAID_AFTER: Record<RoofGrip['kind'], (state: Dragging) => RoofSaid> = {
 
 function released(state: Dragging): RoofStepOutcome {
   const { drag, grip, base } = state;
-  if (drag.fault === 'two_held') return stay(idle({ kind: 'refused', refusal: 'two_held' }));
+  if (drag.fault === 'two_held')
+    return stay(idle({ kind: 'refused', refusal: 'two_held' }, grip.roof));
   if (drag.fault !== null) {
     // A + let go with a fault keeps the corner it added, where it was added.
     return {
-      state: idle({ kind: 'went_back', fault: drag.fault }),
+      state: idle({ kind: 'went_back', fault: drag.fault }, grip.roof),
       commit: grip.kind === 'plus' ? base : null,
     };
   }
   // A handle pressed and let go where it was changes nothing: no Undo step, no save.
-  if (grip.kind !== 'plus' && drag.document === base) return stay(idle(null));
-  return { state: idle(SAID_AFTER[grip.kind](state)), commit: drag.document };
-}
-
-function committedLength(state: Sizing, system: MeasurementSystem): RoofStepOutcome {
-  const result = sizingResult(state, system);
-  if (result.kind !== 'done') return stay(state);
-  const metres = handMetres(state, system) ?? 0;
-  const said: RoofSaid = lengthIsFirst(state.base)
-    ? { kind: 'sized' }
-    : { kind: 'set', metres, measured: state.entry.measured };
-  return { state: idle(said), commit: result.document };
-}
-
-function lengthPicked(
-  state: RoofStepState,
-  event: Extract<RoofStepEvent, { kind: 'pick_length' }>,
-  document: StudioDocument,
-): RoofStepOutcome {
-  const roof = document.roofs[event.roof];
-  if (state.kind === 'drawing' || state.kind === 'dragging' || roof === undefined) {
-    return stay(state);
-  }
-  const metres = tracedLength(document, event.roof, event.edge);
-  return stay({
-    kind: 'sizing',
-    roof: event.roof,
-    edge: event.edge,
-    base: document,
-    entry: entryOf(metres, event.system, roof.edges[event.edge] === 'measured'),
-    asking: false,
-  });
-}
-
-/** Set or Enter: a value far off the picture asks once; any other is kept. */
-function lengthKept(state: Sizing, system: MeasurementSystem): RoofStepOutcome {
-  const metres = handMetres(state, system);
-  const traced = tracedLength(state.base, state.roof, state.edge);
-  const asks = metres !== null && !state.asking && lengthAsks(traced, metres);
-  if (asks && sizingResult(state, system).kind === 'done') return stay({ ...state, asking: true });
-  return committedLength(state, system);
-}
-
-function lengthStepped(state: Sizing, by: 1 | -1, system: MeasurementSystem): RoofStepOutcome {
-  const entry = stepRefused(state, by, system) ? null : steppedEntry(state, by, system);
-  return stay(entry === null ? state : { ...state, entry, asking: false });
-}
-
-/**
- * Set, Enter or a tap outside keeps the length in the box: before a tap, another length or a grab
- * goes on, a length the person changed is kept first — or the box stays open, asking or saying why
- * it cannot. One left as it opened is let go.
- */
-function thenKept(
-  state: RoofStepState,
-  system: MeasurementSystem,
-  document: StudioDocument,
-  next: (state: RoofStepState, document: StudioDocument) => RoofStepOutcome,
-): RoofStepOutcome {
-  if (state.kind !== 'sizing') return next(state, document);
-  // Opened and left as it was: only Set says this is the edge's true length.
-  if (handUntouched(state, system)) return next(idle(null), document);
-  const kept = lengthKept(state, system);
-  if (kept.state.kind === 'sizing') return kept;
-  const after = next(kept.state, kept.commit ?? document);
-  return { state: after.state, commit: after.commit ?? kept.commit };
+  if (grip.kind !== 'plus' && drag.document === base) return stay(idle(null, grip.roof));
+  return { state: idle(SAID_AFTER[grip.kind](state), grip.roof), commit: drag.document };
 }
 
 function tapped(state: RoofStepState, at: GroundPoint, document: StudioDocument): RoofStepOutcome {
-  if (state.kind === 'idle' && state.picked !== null) return stay(idle(null));
+  if (state.kind === 'idle' && state.picked !== null) return stay(idle(null, state.roof));
+  // A tap inside a roof picks it; on open ground, none.
+  if (state.kind === 'idle') return stay(idle(null, roofUnder(document.roofs, at)));
   if (state.kind !== 'drawing') return stay(state);
   const targets = snapTargetsOf(document.roofs);
   const tap = draftTap(state.corners, at, targets, document.roofs, state.helpers);
@@ -188,7 +123,7 @@ function closed(
   // The first roof keeps the picture it was drawn on (M04-10).
   const first = document.roofs.length === 0 && document.drawnOn === null;
   return {
-    state: idle({ kind: 'closed' }),
+    state: idle({ kind: 'closed' }, document.roofs.length),
     commit: {
       ...document,
       roofs: [...document.roofs, close.roof],
@@ -201,9 +136,9 @@ function cornerGone(state: RoofStepState, document: StudioDocument): RoofStepOut
   if (state.kind !== 'idle' || state.picked === null) return stay(state);
   const removed = cornerRemoved(document, state.picked.roof, state.picked.corner);
   if (removed.kind === 'refused') {
-    return stay(idle({ kind: 'refused', refusal: removed.refusal }, state.picked));
+    return stay(idle({ kind: 'refused', refusal: removed.refusal }, state.roof, state.picked));
   }
-  return { state: idle({ kind: 'corner_removed' }), commit: removed.document };
+  return { state: idle({ kind: 'corner_removed' }, state.roof), commit: removed.document };
 }
 
 /** One handler per event, in the state it fits; in any other state the event is nothing. */
@@ -244,7 +179,7 @@ const ON: Handlers = {
       const spot = pointer === null ? null : draftSpot(corners, pointer, targets, helpers);
       return stay({ ...drawing, helpers, spot });
     }),
-  cancel: () => stay(idle(null)),
+  cancel: (state) => stay(idle(null, roofHeld(state))),
   hover: (state, { at }, document) =>
     inState(state, 'drawing', (drawing) => {
       const targets = snapTargetsOf(document.roofs);
@@ -283,8 +218,12 @@ const ON: Handlers = {
   drag: (state, { at }) => inState(state, 'dragging', (held) => stay(dragged(held, at))),
   release: (state) => inState(state, 'dragging', released),
   pick_corner: (state, { corner }) =>
-    inState(state, 'idle', () =>
-      stay(corner === null ? idle(null) : idle({ kind: 'corner_picked' }, corner)),
+    inState(state, 'idle', (looking) =>
+      stay(
+        corner === null
+          ? idle(null, looking.roof)
+          : idle({ kind: 'corner_picked' }, corner.roof, corner),
+      ),
     ),
   remove_corner: (state, _event, document) => cornerGone(state, document),
 };

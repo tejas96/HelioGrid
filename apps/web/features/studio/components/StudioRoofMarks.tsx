@@ -1,31 +1,102 @@
 'use client';
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { StudioScreen } from '@heliogrid/data/react';
-import type { DraftView, MeasurementSystem, StudioView } from '@heliogrid/domain';
+import type { HeldCircle, MeasurementSystem, StudioView } from '@heliogrid/domain';
 import type { RoofWordsShown, StudioCanvasWords } from '@heliogrid/i18n';
-import { useFormat } from '@heliogrid/ui';
-import { type Ref, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
-import { placeLabels, placeRoofMarks, pointText } from './roof-marks-place';
+import { type FocusAfter, useFormat } from '@heliogrid/ui';
+import {
+  type Ref,
+  type RefObject,
+  useImperativeHandle,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useRoofPress } from '../hooks/use-roof-press';
+import { placeLabels } from './roof-labels-place';
+import { placeRoofMarks, pointText } from './roof-marks-place';
+import type { StudioDrive } from './StudioCameraRig';
 import { StudioDraftMarks } from './StudioDraftMarks';
+import { StudioRoofEdit } from './StudioRoofEdit';
 import { edgeAt, type Revealed, StudioRoofLengths } from './StudioRoofLengths';
 import type { RoofMarksHandle, ScreenOf } from './StudioRoofs';
 
 type Tag = { text: TranslatedText; bad: boolean; at: string };
 
+/** The tag beside the spot or the drag in hand, where it is: the words are the catalog's choice. */
+function tagOf(
+  studio: StudioScreen,
+  words: StudioCanvasWords,
+  shown: RoofWordsShown,
+  aiming: boolean,
+): Tag | null {
+  const { draft, roofStep } = studio;
+  if (draft !== null) {
+    if (aiming || draft.spot === null) return null;
+    const { point, snap } = draft.spot;
+    const tag = words.spotTag({ refusal: draft.spotRefusal, snap, angle: draft.angle }, shown);
+    return tag === null ? null : { ...tag, at: pointText(point) };
+  }
+  if (roofStep.kind !== 'dragging' || studio.dragTagAt === null) return null;
+  const { fault, snap } = roofStep.drag;
+  const tag = words.dragTag(
+    { fault, snap, grip: roofStep.grip.kind, degrees: roofStep.degrees },
+    shown,
+  );
+  return tag === null ? null : { ...tag, at: pointText(studio.dragTagAt) };
+}
+
+/** A held length's circle as a closed line of ground points, fine enough to read as round. */
+const CIRCLE_STEPS = 72;
+function circlePoints({ centre, metres }: HeldCircle): string {
+  return Array.from({ length: CIRCLE_STEPS }, (_, i) => {
+    const turn = (i / CIRCLE_STEPS) * 2 * Math.PI;
+    return pointText({
+      east: centre.east + metres * Math.cos(turn),
+      north: centre.north + metres * Math.sin(turn),
+    });
+  }).join(';');
+}
+
 /**
- * The tag beside the spot under the pointer while drawing: its snap, why it cannot go there, or —
- * when nothing snapped — the angle it makes, so a wall that is truly 87° is seen to be.
+ * Each roof's line, red and dashed for a drag that would be refused; the roof as it stood under a
+ * move, a turn or a refused drag; and the circle a held length keeps a dragged corner on.
  */
-function draftTag(draft: DraftView, words: StudioCanvasWords, shown: RoofWordsShown): Tag | null {
-  if (draft.spot === null) return null;
-  const at = pointText(draft.spot.point);
-  const refusal = draft.spotRefusal;
-  if (refusal === 'would_cross') return { text: words.tagCross, bad: true, at };
-  if (refusal === 'would_overlap') return { text: words.tagOver, bad: true, at };
-  if (refusal !== null) return { text: words.drawRefusal(refusal).title, bad: true, at };
-  const snap = draft.spot.snap;
-  if (snap !== null) return { text: words.snap(snap, shown), bad: false, at };
-  return draft.angle === null ? null : { text: words.angle(draft.angle), bad: false, at };
+function RoofLines({ studio, drawing }: { studio: StudioScreen; drawing: boolean }) {
+  const step = studio.roofStep;
+  const bad = step.kind === 'dragging' && step.drag.fault !== null ? step.grip.roof : null;
+  return (
+    <svg className="hg-roof-lines" aria-hidden="true">
+      {studio.roofMarks.map((roof, index) => {
+        const pts = roof.corners.map(pointText).join(';');
+        return (
+          <g key={roof.id} data-quiet={drawing}>
+            <path className="hg-roof-halo" data-pts={pts} data-closed="true" />
+            <path
+              className="hg-roof-line"
+              data-pts={pts}
+              data-closed="true"
+              data-bad={bad === index}
+            />
+          </g>
+        );
+      })}
+      {studio.dragBefore === null ? null : (
+        <path
+          className="hg-roof-before"
+          data-pts={studio.dragBefore.map(pointText).join(';')}
+          data-closed="true"
+        />
+      )}
+      {studio.heldCircle === null ? null : (
+        <path
+          className="hg-roof-held"
+          data-pts={circlePoints(studio.heldCircle)}
+          data-closed="true"
+        />
+      )}
+    </svg>
+  );
 }
 
 /**
@@ -41,6 +112,11 @@ export function StudioRoofMarks({
   words,
   aiming,
   lengths,
+  handles,
+  drive,
+  onAim,
+  onCrowded,
+  map,
 }: {
   handle: Ref<RoofMarksHandle>;
   studio: StudioScreen;
@@ -51,10 +127,24 @@ export function StudioRoofMarks({
   aiming: boolean;
   /** Focus mode: the roofs' lengths show, or only the draft's while drawing, or none. */
   lengths: 'all' | 'draft' | 'hidden';
+  /** Focus mode: every roof's corners and handles, or only the roof the job holds. */
+  handles: 'picked' | 'hidden';
+  /** The camera, which tells a drag on a mark where on the ground it is. */
+  drive: RefObject<StudioDrive | null>;
+  /** A finger's drag on a mark shows the loupe. */
+  onAim: (at: { x: number; y: number } | null) => void;
+  /** Told when the corner held becomes crowded on the screen, or stops being. */
+  onCrowded: (crowded: boolean) => void;
+  /** The map, where focus goes when a control here leaves with what it acted on. */
+  map: FocusAfter;
 }) {
   const format = useFormat();
+  const press = useRoofPress(drive, onAim);
   const layer = useRef<HTMLDivElement>(null);
   const lastPlace = useRef<ScreenOf | null>(null);
+  const wasCrowded = useRef(false);
+  const crowdedTold = useRef(onCrowded);
+  crowdedTold.current = onCrowded;
   const handlesOf = useRef(studio.handlesOf);
   handlesOf.current = studio.handlesOf;
   const layout = useRef(studio.layoutLabels);
@@ -62,12 +152,17 @@ export function StudioRoofMarks({
   const place = (screenOf: ScreenOf) => {
     lastPlace.current = screenOf;
     if (layer.current !== null) {
-      placeRoofMarks(
+      layer.current.dataset.placed = 'true';
+      const crowded = placeRoofMarks(
         layer.current,
         screenOf,
         (roof, gap) => handlesOf.current(roof, gap),
         layout.current,
       );
+      if (crowded !== wasCrowded.current) {
+        wasCrowded.current = crowded;
+        crowdedTold.current(crowded);
+      }
       placeLabels(layer.current, screenOf, layout.current);
     }
   };
@@ -89,22 +184,16 @@ export function StudioRoofMarks({
   const { roofStep: step, draft, roofMarks } = studio;
   if (view !== 'top') return <div ref={layer} className="hg-roof-marks" data-view={view} />;
   const drawing = step.kind === 'drawing';
-  const tag = draft === null || aiming ? null : draftTag(draft, words, shown);
+  const tag = tagOf(studio, words, shown, aiming);
+  const editable = studio.editing.kind === 'editor';
+  // Corners show on every roof while looking; in a job, only on the roof it holds.
+  const editsOn = (index: number) =>
+    editable && !drawing && (handles !== 'hidden' || index === studio.handlesRoof);
   const closedJust = step.kind === 'idle' && step.said?.kind === 'closed' ? roofMarks.at(-1) : null;
 
   return (
     <div ref={layer} className="hg-roof-marks" data-view={view}>
-      <svg className="hg-roof-lines" aria-hidden="true">
-        {roofMarks.map((roof) => {
-          const pts = roof.corners.map(pointText).join(';');
-          return (
-            <g key={roof.id} data-quiet={drawing}>
-              <path className="hg-roof-halo" data-pts={pts} data-closed="true" />
-              <path className="hg-roof-line" data-pts={pts} data-closed="true" />
-            </g>
-          );
-        })}
-      </svg>
+      <RoofLines studio={studio} drawing={drawing} />
       {lengths === 'all' ? (
         <StudioRoofLengths
           roofs={roofMarks}
@@ -114,6 +203,20 @@ export function StudioRoofMarks({
           revealed={revealed}
         />
       ) : null}
+      {roofMarks.map((roof, index) =>
+        editsOn(index) ? (
+          <StudioRoofEdit
+            key={roof.id}
+            roof={roof}
+            index={index}
+            studio={studio}
+            words={words}
+            press={press}
+            picked={index === studio.handlesRoof}
+            afterRemove={map}
+          />
+        ) : null,
+      )}
       {draft === null ? null : (
         <StudioDraftMarks
           draft={draft}

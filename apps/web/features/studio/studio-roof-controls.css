@@ -19,6 +19,11 @@
   transition: box-shadow var(--dur-fast) var(--ease-standard);
 }
 
+/* Two corners crowded on the screen: their dots shrink, so both stay seen (the board's 4.8). */
+[data-near="true"] .hg-roof-dot {
+  transform: scale(0.6);
+}
+
 .hg-roof-dot[data-hot="true"],
 .hg-roof-dot[data-picked="true"] {
   box-shadow:
@@ -206,6 +211,8 @@
 .hg-roof-label > .hg-roof-len,
 .hg-roof-label > .hg-roof-hit {
   transform: translate(-50%, -50%) rotate(var(--hg-turn, 0deg));
+  /* Its place is laid every frame: a transition would trail the edge and swing in on load. */
+  transition: none;
 }
 
 .hg-roof-label > .hg-roof-step {

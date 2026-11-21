@@ -7,11 +7,17 @@ import {
   ROOF_CORNERS_MAX,
   ROOFS_MAX,
   type RoofSaid,
-  type RoofSnap,
   type StudioHelper,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
+import {
+  type DragFacts,
+  type RoofTag,
+  type SpotFacts,
+  snapName,
+  tagWord,
+} from './studio-roof-tags';
 
 type T = Translator['t'];
 
@@ -70,9 +76,12 @@ const ROOF = {
   wentBackCross: /*i18n*/ { id: 'Those edges would cross. The roof went back.' },
   wentBackOver: /*i18n*/ { id: 'Roofs cannot overlap yet. The roof went back.' },
   wentBackFar: /*i18n*/ { id: 'That is too far from the pin. The roof went back.' },
+  wentBackClose: /*i18n*/ { id: 'That corner was too close to another. The roof went back.' },
   editCross: /*i18n*/ { id: 'Those edges would cross.' },
   editOver: /*i18n*/ { id: 'Roofs cannot overlap yet.' },
   editFar: /*i18n*/ { id: 'That is too far from the pin.' },
+  editClose: /*i18n*/ { id: 'That corner would be too close to another.' },
+  dragCrowded: /*i18n*/ { id: 'Drag the corner. Zoom in for more room.' },
   editShort: /*i18n*/ { id: 'A length is at least {length}.' },
   editLong: /*i18n*/ { id: 'A length is at most {length}.' },
   editHeld: /*i18n*/ { id: 'A length you set would change. Change that length first.' },
@@ -80,17 +89,6 @@ const ROOF = {
   editThree: /*i18n*/ { id: 'A roof keeps at least 3 corners.' },
   editManyCorners: /*i18n*/ { id: 'A roof has at most {max} corners.' },
   editScale: /*i18n*/ { id: 'That length is far from the picture. Check the number.' },
-
-  snapSquare: /*i18n*/ { id: 'Square' },
-  snapSquareCorner: /*i18n*/ { id: 'Square corner' },
-  snapRoofCorner: /*i18n*/ { id: 'Roof {number} corner' },
-  snapRoofEdge: /*i18n*/ { id: 'Roof {number} edge' },
-  snapLinesUp: /*i18n*/ { id: 'Lines up with corner {number}' },
-  snapHeld: /*i18n*/ { id: '{length} held' },
-  tagCross: /*i18n*/ { id: 'Would cross' },
-  tagOver: /*i18n*/ { id: 'Over a roof' },
-  tagNewCorner: /*i18n*/ { id: 'New corner · drag it' },
-  tagTurned: /*i18n*/ { id: 'Turned {degrees}°' },
 
   cornerName: /*i18n*/ { id: 'Corner {number}' },
   cornerFirst: /*i18n*/ { id: 'Corner 1: close the shape' },
@@ -136,6 +134,8 @@ function editRefusalLine(t: T, refusal: EditRefusal, shown: RoofWordsShown): Tra
       return t(ROOF.editOver);
     case 'too_far':
       return t(ROOF.editFar);
+    case 'too_close':
+      return t(ROOF.editClose);
     case 'too_short':
       return t(ROOF.editShort, { length: shown.length(LENGTH_MIN_M) });
     case 'too_long':
@@ -150,23 +150,6 @@ function editRefusalLine(t: T, refusal: EditRefusal, shown: RoofWordsShown): Tra
       return t(ROOF.editManyCorners, { max: ROOF_CORNERS_MAX });
     case 'scale_out_of_range':
       return t(ROOF.editScale);
-  }
-}
-
-function snapName(t: T, snap: RoofSnap, shown: RoofWordsShown): TranslatedText {
-  switch (snap.kind) {
-    case 'square':
-      return t(ROOF.snapSquare);
-    case 'square_corner':
-      return t(ROOF.snapSquareCorner);
-    case 'corner_of':
-      return t(ROOF.snapRoofCorner, { number: snap.owner.roof + 1 });
-    case 'edge_of':
-      return t(ROOF.snapRoofEdge, { number: snap.owner.roof + 1 });
-    case 'lines_up':
-      return t(ROOF.snapLinesUp, { number: snap.corner + 1 });
-    case 'held':
-      return t(ROOF.snapHeld, { length: shown.length(snap.metres) });
   }
 }
 
@@ -193,10 +176,12 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'roof_moved':
       return t(ROOF.roofMoved);
     case 'roof_turned':
-      return t(ROOF.roofTurned, { degrees: said.degrees });
+      // A turn is said by its size: which way it went is on the screen.
+      return t(ROOF.roofTurned, { degrees: Math.abs(said.degrees) });
     case 'went_back':
       if (said.fault === 'would_overlap') return t(ROOF.wentBackOver);
       if (said.fault === 'too_far') return t(ROOF.wentBackFar);
+      if (said.fault === 'too_close') return t(ROOF.wentBackClose);
       return t(ROOF.wentBackCross);
     case 'refused':
       return editRefusalLine(t, said.refusal, shown);
@@ -234,8 +219,6 @@ export function studioRoofWords(t: T) {
     noBuildingData: t(ROOF.noBuildingData),
     addRoof: t(ROOF.addRoof),
     helpersNotSaved: t(ROOF.helpersNotSaved),
-    /** The angle the next corner makes, beside the spot: digits and the degree sign, never translated. */
-    angle: (degrees: number) => shownAsSent(`${degrees}°`),
     cancel: t(ROOF.cancel),
     closeShape: t(ROOF.closeShape),
     /** "Roof · 66 m²": the area already formatted. */
@@ -250,14 +233,31 @@ export function studioRoofWords(t: T) {
     editRefusal: (refusal: EditRefusal, shown: RoofWordsShown): TranslatedText =>
       editRefusalLine(t, refusal, shown),
     seeIn3d: t(ROOF.seeIn3d),
+    /** A corner held among crowded dots: a closer look gives it room. */
+    dragCrowded: t(ROOF.dragCrowded),
     /** The bar at rest in 3D, where a roof's height is changed and its outline is not. */
     roofIdle3d: t(ROOF.roofIdle3d),
-    /** The small label a snap shows beside the spot. */
-    snap: (snap: RoofSnap, shown: RoofWordsShown): TranslatedText => snapName(t, snap, shown),
-    tagCross: t(ROOF.tagCross),
-    tagOver: t(ROOF.tagOver),
-    tagNewCorner: t(ROOF.tagNewCorner),
-    tagTurned: (degrees: number) => t(ROOF.tagTurned, { degrees }),
+    /** The tag beside the spot while drawing: why it cannot go there, its snap, or its angle. */
+    spotTag: (spot: SpotFacts, shown: RoofWordsShown): RoofTag | null => {
+      if (spot.refusal === 'would_cross') return { text: tagWord(t, 'cross'), bad: true };
+      if (spot.refusal === 'would_overlap') return { text: tagWord(t, 'over'), bad: true };
+      if (spot.refusal !== null) return { text: DRAW_REFUSAL[spot.refusal](t).title, bad: true };
+      if (spot.snap !== null) return { text: snapName(t, spot.snap, shown), bad: false };
+      // The angle the next corner makes: digits and the degree sign, never translated.
+      return spot.angle === null ? null : { text: shownAsSent(`${spot.angle}°`), bad: false };
+    },
+    /** The tag beside the drag in hand: why it would go back, its turn, a new corner, or its snap. */
+    dragTag: (drag: DragFacts, shown: RoofWordsShown): RoofTag | null => {
+      if (drag.fault === 'would_cross') return { text: tagWord(t, 'cross'), bad: true };
+      if (drag.fault === 'would_overlap') return { text: tagWord(t, 'over'), bad: true };
+      if (drag.fault === 'too_close') return { text: DRAW_REFUSAL.too_close(t).title, bad: true };
+      // Any other refusal is a sentence: the bar says it; the tag beside the finger stays short.
+      if (drag.fault !== null) return null;
+      if (drag.grip === 'turn') return { text: tagWord(t, 'turned', drag.degrees), bad: false };
+      if (drag.grip === 'plus' && drag.snap === null)
+        return { text: tagWord(t, 'new'), bad: false };
+      return drag.snap === null ? null : { text: snapName(t, drag.snap, shown), bad: false };
+    },
     cornerName: (number: number) => t(ROOF.cornerName, { number }),
     cornerFirst: t(ROOF.cornerFirst),
     cornerAdd: t(ROOF.cornerAdd),

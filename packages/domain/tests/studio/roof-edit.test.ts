@@ -5,6 +5,7 @@ import type { GroundPoint } from '../../src/studio/ground';
 import {
   cornerAdded,
   cornerDragged,
+  cornerNearest,
   cornerRemoved,
   roofMoved,
   roofTurned,
@@ -163,7 +164,7 @@ describe('dragging a corner', () => {
     const typed = designOf(roofOf(RECT, ['typed', 'traced', 'traced', 'traced']));
     const drag = cornerDragged(typed, 0, 1, p(8, 2));
     expect(edgeLengths(drag.document.roofs[0]?.corners ?? [])[0]).toBeCloseTo(8);
-    expect(drag.snap).toEqual({ kind: 'held', metres: 8 });
+    expect(drag.snap).toEqual({ kind: 'held', metres: 8, centre: p(0, 0) });
   });
 
   it('two typed neighbours: the corner stays, and says why', () => {
@@ -237,5 +238,34 @@ describe('moving and turning a roof', () => {
     const turn = roofTurned(designOf(roofOf(RECT), far), 0, degrees);
     expect(turn.snapped).toBe(snapped);
     expect(turn.degrees).toBeCloseTo(applied);
+  });
+});
+
+describe('no two corners of a roof stand within 0.3 m (T-M05-002)', () => {
+  it('a corner dragged onto its neighbour is refused, and one 0.3 m off is kept', () => {
+    const design = designOf(roofOf(RECT));
+    expect(cornerDragged(design, 0, 2, p(8.1, 0.15)).fault).toBe('too_close');
+    expect(cornerDragged(design, 0, 2, p(8.2, 0.3)).fault).toBeNull();
+  });
+});
+
+describe('a finger on crowded dots holds the corner nearest it (T-M05-002)', () => {
+  it('picks the nearest corner', () => {
+    const corners = [p(0, 0), p(8, 0), p(8, 0.6), p(0, 6)];
+    expect(cornerNearest(corners, p(8.1, 0.5))).toBe(2);
+    expect(cornerNearest(corners, p(8.1, 0.1))).toBe(1);
+    expect(cornerNearest(corners, p(1, 1))).toBe(0);
+  });
+});
+
+describe('a + on an edge too short for a corner adds none (T-M05-002)', () => {
+  it.each([
+    // edge length, metres → added
+    [0.59, false],
+    [0.6, true],
+    [1, true],
+  ])('%s m: %s', (metres, added) => {
+    const design = designOf(roofOf([p(0, 0), p(8, 0), p(8, metres), p(0, metres)]));
+    expect(cornerAdded(design, 0, 1).kind === 'done').toBe(added);
   });
 });

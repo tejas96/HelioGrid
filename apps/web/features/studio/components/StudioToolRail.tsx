@@ -160,8 +160,10 @@ export function StudioToolRail({
     <>
       <div className="hg-studio-tools" data-side="left">
         {editable ? (
-          <Shown when={parts.pencil !== 'hidden'}>
-            <span className="hg-studio-pencil">
+          // The helper bar keeps the pencil's place when the pencil steps aside: a corner dragged
+          // after the close has its helpers, and no pencil.
+          <span className="hg-studio-pencil">
+            <Shown when={parts.pencil !== 'hidden'}>
               <IconButton
                 label={words.drawRoof}
                 size={TOOL}
@@ -171,18 +173,18 @@ export function StudioToolRail({
               >
                 <ShellGlyph name="pencil" size="md" />
               </IconButton>
-              <Shown when={parts.helperBar === 'shown'}>
-                <HelperBar
-                  helpers={helpers}
-                  buildingData={buildingData}
-                  refused={helpersRefused}
-                  words={words}
-                  onHelper={onHelper}
-                  onRetry={onRetryHelpers}
-                />
-              </Shown>
-            </span>
-          </Shown>
+            </Shown>
+            <Shown when={parts.helperBar === 'shown'}>
+              <HelperBar
+                helpers={helpers}
+                buildingData={buildingData}
+                refused={helpersRefused}
+                words={words}
+                onHelper={onHelper}
+                onRetry={onRetryHelpers}
+              />
+            </Shown>
+          </span>
         ) : null}
         {editable && hasRoof ? (
           <Shown when={parts.addRoof === 'shown'}>

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { RoofEdgeTrust } from '../../src/studio/document';
 import {
   LABEL_END_ROOM_PX,
+  LABEL_GAP_PX,
   type LabelAsk,
   labelLayoutOf,
   type RoofLabelAsk,
@@ -10,6 +11,8 @@ import {
 
 const HEIGHT = 20;
 const xy = (x: number, y: number): ScreenPoint => ({ x, y });
+/** A label's middle stands this far off its edge: the gap, then half its height. */
+const OFF = LABEL_GAP_PX + HEIGHT / 2;
 
 /** A roof on the screen with every edge labelled, `width` wide unless one is given. */
 function roofOf(
@@ -33,10 +36,10 @@ const SQUARE = [xy(0, 0), xy(100, 0), xy(100, 100), xy(0, 100)];
 describe('a label lies along its edge, outside the roof, never upside down', () => {
   it.each([
     // edge → middle, turn
-    ['the top edge, drawn left to right', 0, xy(50, -16), 0],
-    ['the right edge, drawn downwards', 1, xy(116, 50), 90],
-    ['the bottom edge, drawn right to left: read left to right', 2, xy(50, 116), 0],
-    ['the left edge, drawn upwards', 3, xy(-16, 50), 90],
+    ['the top edge, drawn left to right', 0, xy(50, -OFF), 0],
+    ['the right edge, drawn downwards', 1, xy(100 + OFF, 50), 90],
+    ['the bottom edge, drawn right to left: read left to right', 2, xy(50, 100 + OFF), 0],
+    ['the left edge, drawn upwards', 3, xy(-OFF, 50), 90],
   ])('%s', (_why, edge, at, degrees) => {
     const place = labelLayoutOf([roofOf(SQUARE)])[0]?.[edge];
     expect(place?.at.x).toBeCloseTo(at.x, 6);
@@ -48,7 +51,7 @@ describe('a label lies along its edge, outside the roof, never upside down', () 
   it('a roof drawn the other way round still puts its labels outside', () => {
     const place = labelLayoutOf([roofOf([...SQUARE].reverse())])[0]?.[0];
     // Edge 0 now runs (0,100) → (100,100): the bottom edge.
-    expect(place?.at.y).toBeCloseTo(116, 6);
+    expect(place?.at.y).toBeCloseTo(100 + OFF, 6);
   });
 });
 
@@ -62,7 +65,7 @@ describe('a short edge sends its label out, with a thin line back', () => {
     const place = labelLayoutOf([roofOf(SQUARE, { width })])[0]?.[0];
     expect(place?.out).toBe(out);
     expect(place?.leaderFrom).toEqual(out ? xy(50, 0) : null);
-    if (out) expect(place?.at.y).toBeLessThan(-16);
+    if (out) expect(place?.at.y).toBeLessThan(-OFF);
   });
 });
 
@@ -116,8 +119,8 @@ describe('where labels touch, picture lengths give way', () => {
 describe('the length in hand stays level, clear of its edge (T-M05-002)', () => {
   // Its − and + are pressed, so it never turns: on an upright edge it stands out by half its width.
   it.each([
-    ['the right edge', 1, xy(100 + 6 + 50, 50)],
-    ['the top edge', 0, xy(50, -16)],
+    ['the right edge', 1, xy(100 + LABEL_GAP_PX + 50, 50)],
+    ['the top edge', 0, xy(50, -OFF)],
   ])('%s', (_why, edge, at) => {
     const place = labelLayoutOf([
       roofOf(SQUARE, { width: 100, pinned: edge as number, level: edge as number }),
@@ -125,5 +128,20 @@ describe('the length in hand stays level, clear of its edge (T-M05-002)', () => 
     expect(place?.degrees).toBe(0);
     expect(place?.at.x).toBeCloseTo(at.x, 6);
     expect(place?.at.y).toBeCloseTo(at.y, 6);
+  });
+});
+
+describe('labels keep off every handle (T-M05-002)', () => {
+  it('a picture length under a handle gives way; a set length still shows', () => {
+    // The top edge's label sits just above its middle: a handle there takes its place.
+    const handle = { at: xy(50, -OFF), width: 32, height: 32 };
+    const traced = labelLayoutOf([roofOf(SQUARE)], [handle])[0]?.[0];
+    expect(traced?.shown).toBe(false);
+    const set = labelLayoutOf(
+      [roofOf(SQUARE, { trusts: ['typed', 'traced', 'traced', 'traced'] })],
+      [handle],
+    )[0]?.[0];
+    expect(set?.shown).toBe(true);
+    expect(labelLayoutOf([roofOf(SQUARE)])[0]?.[0]?.shown).toBe(true);
   });
 });

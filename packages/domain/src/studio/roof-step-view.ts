@@ -16,7 +16,7 @@ import {
   roofMiddle,
 } from './roof-shape';
 import { gripCorner } from './roof-step';
-import type { RoofSaid, RoofStepState } from './roof-step-state';
+import type { CornerRef, RoofSaid, RoofStepState } from './roof-step-state';
 import { roofAreaTier, scaleTierOf } from './roof-trust';
 
 /**
@@ -91,6 +91,50 @@ export function dragTagAt(state: RoofStepState): GroundPoint | null {
   if (roof === undefined) return null;
   const corner = gripCorner(state.grip);
   return corner === null ? roofMiddle(roof.corners) : (roof.corners[corner] ?? null);
+}
+
+/**
+ * The roof whose + dots and move and turn handles show (`T-M05-002`, part b): the one a job holds,
+ * or the one picked while looking — a lone roof always is. Every roof keeps its corners.
+ */
+export function handlesRoofOf(state: RoofStepState, document: StudioDocument): number | null {
+  if (state.kind === 'dragging') return state.grip.roof;
+  if (state.kind === 'sizing') return state.roof;
+  if (state.kind !== 'idle') return null;
+  // A roof Undo or another's save took away is picked no more.
+  const picked = state.roof !== null && state.roof < document.roofs.length ? state.roof : null;
+  return picked ?? (document.roofs.length === 1 ? 0 : null);
+}
+
+/**
+ * The roof as it stood before the drag in hand, drawn dashed under it: where a move or a turn
+ * started, or where a refused drag goes back to. `null` for a corner drag that is allowed.
+ */
+export function dragBeforeOf(state: RoofStepState): readonly GroundPoint[] | null {
+  if (state.kind !== 'dragging') return null;
+  const whole = state.grip.kind === 'move' || state.grip.kind === 'turn';
+  if (!whole && state.drag.fault === null) return null;
+  return state.base.roofs[state.grip.roof]?.corners ?? null;
+}
+
+/** The corner a drag holds — dragged, or the one a + added — or `null`. */
+export function heldCornerOf(state: RoofStepState): CornerRef | null {
+  if (state.kind !== 'dragging') return null;
+  const corner = gripCorner(state.grip);
+  return corner === null ? null : { roof: state.grip.roof, corner };
+}
+
+/** A set length a corner drag keeps: the circle the corner runs on round its other end. */
+export interface HeldCircle {
+  readonly centre: GroundPoint;
+  readonly metres: number;
+}
+
+/** The circle of the set length a corner drag holds, or `null` when it holds none. */
+export function heldCircleOf(state: RoofStepState): HeldCircle | null {
+  if (state.kind !== 'dragging' || state.drag.snap?.kind !== 'held') return null;
+  const { centre, metres } = state.drag.snap;
+  return { centre, metres };
 }
 
 /** An edge of the draft, with its length. */

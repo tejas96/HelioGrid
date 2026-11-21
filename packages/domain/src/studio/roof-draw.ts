@@ -93,7 +93,8 @@ export type RoofSnap =
   /** A corner dragged into a square corner. */
   | { readonly kind: 'square_corner' }
   /** A corner dragged round a typed length, which keeps its `metres`. */
-  | { readonly kind: 'held'; readonly metres: number };
+  /** A set length kept: the corner runs on the circle of `metres` round `centre`. */
+  | { readonly kind: 'held'; readonly metres: number; readonly centre: GroundPoint };
 
 export interface Snapped {
   readonly point: GroundPoint;

@@ -37,6 +37,13 @@ export interface RoofLabelAsk {
   readonly labels: readonly LabelAsk[];
 }
 
+/** A control on the screen a label keeps off: a move or turn handle, by its middle and size. */
+export interface KeepOff {
+  readonly at: ScreenPoint;
+  readonly width: number;
+  readonly height: number;
+}
+
 export interface LabelPlace {
   /** The label's middle. */
   readonly at: ScreenPoint;
@@ -49,8 +56,8 @@ export interface LabelPlace {
   readonly shown: boolean;
 }
 
-/** The gap between an edge and its label's near side. */
-export const LABEL_GAP_PX = 6;
+/** The gap between an edge and its label's near side: clear of the + dot on the edge's middle. */
+export const LABEL_GAP_PX = 12;
 /** How far a label sent out stands past where it would lie along its edge. */
 export const LABEL_OUT_PX = 18;
 /** Room a label keeps at each end of its edge, clear of the corner dots. */
@@ -149,15 +156,21 @@ function placeOne(ask: LabelAsk, corners: readonly ScreenPoint[]): Placed {
 }
 
 /**
- * Every roof's labels, in the order asked. Labels that always show are laid first; then the picture
- * lengths, the longest first, each one shown only where it touches none laid before it.
+ * Every roof's labels, in the order asked. The handles are laid first, then the labels that always
+ * show; then the picture lengths, the longest first, each one shown only where it touches none laid
+ * before it.
  */
-export function labelLayoutOf(roofs: readonly RoofLabelAsk[]): LabelPlace[][] {
+export function labelLayoutOf(
+  roofs: readonly RoofLabelAsk[],
+  keepOff: readonly KeepOff[] = [],
+): LabelPlace[][] {
   const placed = roofs.map((roof) => roof.labels.map((ask) => placeOne(ask, roof.corners)));
   const order = placed
     .flatMap((labels, r) => labels.map((label, e) => ({ label, r, e })))
     .sort((a, b) => Number(b.label.keeps) - Number(a.label.keeps) || b.label.reach - a.label.reach);
-  const laid: (readonly ScreenPoint[])[] = [];
+  const laid: (readonly ScreenPoint[])[] = keepOff.map((box) =>
+    boxOf(box.at, 0, box.width, box.height),
+  );
   const shown = placed.map((labels) => labels.map(() => true));
   for (const { label, r, e } of order) {
     const touches = laid.some((box) => boxesTouch(box, label.box));
