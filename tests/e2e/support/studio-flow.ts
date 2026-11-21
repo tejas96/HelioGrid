@@ -4,6 +4,7 @@ import {
   designPageWords,
   siteDetailsPageWords,
   siteDetailsWords,
+  studioCanvasWords,
 } from '@heliogrid/i18n';
 
 /*
@@ -42,7 +43,7 @@ export function leadSiteBody(): Record<string, unknown> {
 const FIRST_DESIGN = 1;
 
 /**
- * The address and the state the lead already holds, Site details' title, its Coordinates switch and two fields, the numbers typed there and the pin
+ * The studio's roof step words, and the address and the state the lead already holds, Site details' title, its Coordinates switch and two fields, the numbers typed there and the pin
  * they set, why *Start design* is off, and the button; the design page's title, what stands where
  * the studio will, its line before and after the site is set, and its way to Site details.
  */
@@ -51,6 +52,7 @@ export function studioFlowWords(
 ): Record<string, string> {
   const site = siteDetailsWords(t.t, false);
   const design = designPageWords(t.t);
+  const studio = studioCanvasWords(t.t);
   return {
     SITE_TITLE: siteDetailsPageWords(t.t).title,
     SITE_LEAD_ADDRESS: LEAD_SITE.address,
@@ -66,7 +68,12 @@ export function studioFlowWords(
     DESIGN_TITLE: design.named(FIRST_DESIGN),
     DESIGN_HOLDING: design.holdingTitle,
     DESIGN_NEEDS_SITE: design.holdingLine('roof', false),
-    DESIGN_NEXT_ROOF: design.holdingLine('roof', true),
     DESIGN_EDIT_SITE: design.editSite,
+    // The studio's roof step: either way to start drawing, the line once three square corners
+    // offer the fourth, Close shape, and the act a standing roof offers.
+    DESIGN_DRAW: `${studio.drawMyself}|${studio.drawOnGrid}`,
+    DESIGN_FOURTH_READY: studio.drawTitle(3, true),
+    DESIGN_CLOSE_SHAPE: studio.closeShape,
+    DESIGN_SEE_IN_3D: studio.seeIn3d,
   };
 }

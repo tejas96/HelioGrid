@@ -100,6 +100,7 @@ export const SHELL_GLYPHS = {
   'minus-circle': Lucide.CircleMinusIcon,
   monitor: Lucide.MonitorIcon,
   moon: Lucide.MoonIcon,
+  move: Lucide.MoveIcon,
   north: Lucide.Navigation2Icon,
   note: Lucide.StickyNoteIcon,
   package: Lucide.PackageIcon,
@@ -136,6 +137,8 @@ export const SHELL_GLYPHS = {
   trash: Lucide.TrashIcon,
   'trend-down': Lucide.TrendingDownIcon,
   'trend-up': Lucide.TrendingUpIcon,
+  /** A turn about a middle: the same arrow as `retry`, named for the shape it is drawn as here. */
+  turn: Lucide.RotateCwIcon,
   truck: Lucide.TruckIcon,
   undo: Lucide.Undo2Icon,
   upload: Lucide.UploadIcon,

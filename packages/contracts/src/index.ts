@@ -150,6 +150,7 @@ export * from './studio/document';
 export * from './studio/places';
 export * from './studio/site';
 export * from './studio/site-map-bridge';
+export * from './studio/sky-tiles';
 export * from './studio/studio';
 export * from './studio/vocabulary';
 export * from './studio/web-view-bridge';

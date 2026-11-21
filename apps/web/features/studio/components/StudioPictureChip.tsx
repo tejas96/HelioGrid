@@ -15,6 +15,17 @@ interface PictureOption {
   readonly off: TranslatedText | null;
 }
 
+/** " · Google · Oct 2025": who gave the picture, and the month the roof was drawn on it. */
+function sourceLineOf(
+  source: string | null,
+  drawnOn: string | null,
+  words: StudioCanvasWords,
+): string {
+  if (source === null) return '';
+  const who = ` · ${words.source(source)}`;
+  return drawnOn === null ? who : `${who} · ${drawnOn}`;
+}
+
 /**
  * The picture chip, top left: which picture the ground shows, who gave it, how sharp it is and its
  * credit line — always in view, never under a panel. A tap opens the three pictures: the sky
@@ -22,9 +33,11 @@ interface PictureOption {
  */
 export function StudioPictureChip({
   picture,
+  thumb,
   shown,
   sharpness,
   takenOn,
+  drawnOn,
   words,
   canPick,
   open,
@@ -32,11 +45,15 @@ export function StudioPictureChip({
   onPick,
 }: {
   picture: StudioPicture;
+  /** A small picture of the ground round the pin, as an address an image shows; `null` until it comes. */
+  thumb: string | null;
   /** The picture the ground shows, by the person's pick or by itself. */
   shown: PictureChoice;
   /** The sky picture's sharpness and date, already in the reader's units and the market's dates. */
   sharpness: string | null;
   takenOn: string | null;
+  /** The month the roof was drawn on the picture, formatted (M04-10); `null` before a roof. */
+  drawnOn: string | null;
   words: StudioCanvasWords;
   canPick: boolean;
   open: boolean;
@@ -63,6 +80,7 @@ export function StudioPictureChip({
   }, [open, setOpen]);
 
   const sky = picture.kind === 'sky' ? picture : null;
+  const sourceLine = sourceLineOf(sky?.source ?? null, drawnOn, words);
   const title =
     shown === 'none' ? words.noPicture : shown === 'own' ? words.yourPicture : words.skyPicture;
   const options: readonly PictureOption[] = [
@@ -82,7 +100,6 @@ export function StudioPictureChip({
     },
     { choice: 'none', glyph: 'grid', title: words.noPicture, line: words.noLine, off: null },
   ];
-  const thumb = sky?.pieces[Math.floor(sky.pieces.length / 2)]?.image ?? null;
 
   return (
     <div ref={holder} className="hg-studio-picture">
@@ -98,7 +115,7 @@ export function StudioPictureChip({
           {thumb === null || shown !== 'sky' ? (
             <ShellGlyph name="image-off" size="sm" />
           ) : (
-            // A data picture fetched for this opening: there is no file to hand an image loader.
+            // A picture fetched for this opening: there is no file to hand an image loader.
             // biome-ignore lint/performance/noImgElement: the picture lives in memory alone.
             <img src={thumb} alt="" />
           )}
@@ -107,7 +124,7 @@ export function StudioPictureChip({
           <span className="hg-studio-chip-title">
             {title}
             {sky === null || shown !== 'sky' ? null : (
-              <span className="hg-studio-chip-source"> · {words.source(sky.source)}</span>
+              <span className="hg-studio-chip-source">{sourceLine}</span>
             )}
             {canPick ? <ShellGlyph name="chevron" size="xs" /> : null}
           </span>

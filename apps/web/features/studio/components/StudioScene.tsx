@@ -1,13 +1,21 @@
 'use client';
 import type { StudioPicture } from '@heliogrid/data/react';
-import type { StudioView, SunPosition } from '@heliogrid/domain';
+import type { Roof, StudioView, SunPosition } from '@heliogrid/domain';
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
-import type { ReactNode, RefObject } from 'react';
+import { type ReactNode, type RefObject, useCallback, useState } from 'react';
 import { MathUtils, Vector3 } from 'three';
-import { StudioCameraRig, type StudioDrive, type StudioMarks } from './StudioCameraRig';
-import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
+import { clearGroundOf } from './ground-edge';
+import type { GroundPicture } from './roof-patch';
+import {
+  type GroundBox,
+  StudioCameraRig,
+  type StudioDrive,
+  type StudioMarks,
+} from './StudioCameraRig';
+import { type RoofMarksHandle, type RoofRise, StudioRoofs } from './StudioRoofs';
+import { StudioTileGround } from './StudioTileGround';
 
 const RADIANS = MathUtils.DEG2RAD;
 /** The plain ground where there is no picture, wide enough that its edge is never seen. */
@@ -15,6 +23,12 @@ const GROUND_M = 1_200;
 /** How far the sun's light stands from the site, and the ground its shadows cover. */
 const SUN_DISTANCE_M = 120;
 const SHADOW_HALF_M = 60;
+
+/**
+ * The screen's own pixels the scene draws on, at most: a phone's three to a CSS pixel, so the
+ * picture is as sharp as the screen. The camera reads the same number off the renderer.
+ */
+const PIXEL_RATIO_MAX = 3;
 
 /** The camera before its first view is set: the rig flies it from here. */
 const CAMERA_START = { near: 0.5, far: 3_000, position: [0, 60, 60] as [number, number, number] };
@@ -33,14 +47,17 @@ const SUN_LIGHT = 2.4;
 const SHADOW_MAP_PX = 2048;
 const PIN_TOP = new Vector3(0, PIN_LABEL_M, 0);
 
-/** The sun's light from where the sun stands, casting soft shadows over the site. */
+/**
+ * The sun's light from where the sun stands, casting soft shadows over the site. The sky's fill is
+ * daylight, the same in light and dark: the page's mode never darkens the walls.
+ */
 function SunLight({ sun, palette }: { sun: SunPosition; palette: ThemePalette }) {
   const azimuth = sun.azimuthDegrees * RADIANS;
   const elevation = sun.elevationDegrees * RADIANS;
   const across = Math.cos(elevation) * SUN_DISTANCE_M;
   return (
     <>
-      <hemisphereLight args={[palette.surface, palette['canvas-sunken'], SKY_LIGHT]} />
+      <hemisphereLight args={[palette['scene-sky'], palette['scene-ground'], SKY_LIGHT]} />
       <directionalLight
         position={[
           Math.sin(azimuth) * across,
@@ -96,6 +113,18 @@ export interface StudioSceneProps {
   drive: RefObject<StudioDrive | null>;
   /** Told the scale and the turn each time the camera moves. */
   onMarks: (marks: StudioMarks) => void;
+  /** The roofs to stand on the ground: the design's, or the preview of what is in hand. */
+  roofs: readonly Roof[];
+  /** How much the picture is stretched about the pin to its true size. */
+  pictureScale: number;
+  /** The roofs' ground, which the view frames; `null` before a roof. */
+  fit: GroundBox | null;
+  /** The height the roofs stand at now, shared with the page's marks. */
+  rise: RoofRise;
+  /** The page's marks on the roofs, told each frame where the model lands. */
+  roofMarks: RefObject<RoofMarksHandle | null>;
+  /** Told the first picture of the ground round the pin, for the picture chip. */
+  onThumb: (picture: Blob) => void;
 }
 
 /**
@@ -114,12 +143,23 @@ export function StudioScene({
   fallback,
   drive,
   onMarks,
+  roofs,
+  pictureScale,
+  fit,
+  rise,
+  roofMarks,
+  onThumb,
 }: StudioSceneProps) {
+  // biome-ignore lint/plugin: the web's WebGL picture of the ground under the roofs, handed on to their tops
+  const [patch, setPatch] = useState<GroundPicture | null>(null);
+  const onPatch = useCallback((made: GroundPicture | null) => setPatch(made), []);
+  const sky = picture.kind === 'sky' ? picture : null;
+  const clear = sky === null ? null : clearGroundOf(sky.tiles.reach);
   return (
     <Canvas
       frameloop="demand"
       shadows="soft"
-      dpr={[1, 2]}
+      dpr={[1, PIXEL_RATIO_MAX]}
       camera={CAMERA_START}
       fallback={fallback}
     >
@@ -127,11 +167,14 @@ export function StudioScene({
       {/* The far ground fades into the page; the camera rig sets how far, from its own distance. */}
       <fog attach="fog" args={[palette.canvas, CAMERA_START.far, CAMERA_START.far]} />
       <SunLight sun={sun} palette={palette} />
-      {picture.kind === 'sky' ? (
-        <StudioPictureGround
-          pieces={picture.pieces}
-          around={picture.around}
+      {sky !== null ? (
+        <StudioTileGround
+          tiles={sky.tiles}
           page={palette.canvas}
+          pictureScale={pictureScale}
+          roofs={fit}
+          onPatch={onPatch}
+          onThumb={onThumb}
         />
       ) : (
         <mesh rotation-x={-Math.PI / 2}>
@@ -153,19 +196,42 @@ export function StudioScene({
           infiniteGrid
         />
       ) : null}
-      <mesh rotation-x={-Math.PI / 2} position={[0, RING_LIFT_M, 0]}>
-        <ringGeometry args={[RING_INNER_M, RING_OUTER_M, RING_SEGMENTS]} />
-        <meshBasicMaterial color={palette.danger} toneMapped={false} />
-      </mesh>
+      {/* Once a roof stands, the roof is the place: the pin's ring steps aside. */}
+      {roofs.length === 0 ? (
+        <mesh rotation-x={-Math.PI / 2} position={[0, RING_LIFT_M, 0]}>
+          <ringGeometry args={[RING_INNER_M, RING_OUTER_M, RING_SEGMENTS]} />
+          <meshBasicMaterial color={palette.danger} toneMapped={false} />
+        </mesh>
+      ) : null}
       <PinFollower label={pinLabel} />
+      <StudioRoofs
+        roofs={roofs}
+        view={view}
+        still={still}
+        palette={palette}
+        top={sky === null ? null : patch}
+        rise={rise}
+        marks={roofMarks}
+      />
       <StudioCameraRig
         view={view}
         free={free}
         still={still}
-        clear={clearGroundOf(picture)}
-        metresPerPixel={picture.kind === 'sky' ? picture.metresPerPixel : null}
+        clear={
+          clear === null
+            ? null
+            : {
+                west: clear.west * pictureScale,
+                east: clear.east * pictureScale,
+                south: clear.south * pictureScale,
+                north: clear.north * pictureScale,
+              }
+        }
+        metresPerPixel={sky === null ? null : sky.metresPerPixel * pictureScale}
+        tilePixelMetres={sky === null ? null : sky.tiles.finestPixelMetres * pictureScale}
         drive={drive}
         onMarks={onMarks}
+        fit={fit}
       />
     </Canvas>
   );

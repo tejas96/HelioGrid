@@ -1,3 +1,4 @@
+import { SKY_TILES_PER_OPENING_MAX } from '@heliogrid/domain';
 import {
   createTranslator,
   designPageWords,
@@ -11,7 +12,13 @@ import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { captureLead, ownerWithCompany } from '../support/project';
-import { saveSiteThroughApi, startDesignThroughApi, withoutMapService } from '../support/studio';
+import {
+  SKY_TILES,
+  saveSiteThroughApi,
+  startDesignThroughApi,
+  withoutMapService,
+  withSkyPicture,
+} from '../support/studio';
 
 /**
  * `/designs/<id>` (`SCR-M05-02`, T-M05-001a, T-M05-002a): where the studio opens. A design whose
@@ -49,7 +56,8 @@ test('a design asks for its site first, and opens the studio once its place is s
   await saveSiteThroughApi(page, design.id);
   await page.goto(`/designs/${design.id}`);
   await expect(page.getByRole('navigation', { name: STUDIO.steps })).toBeVisible();
-  await expect(page.getByText(STUDIO.saved)).toBeVisible();
+  // Saved is the pill's word; on a phone the pill shows its mark alone, and the word stays its name.
+  await expect(page.getByText(STUDIO.saved)).toBeAttached();
 });
 
 test('the Site step opens Site details in the studio’s place, and every way back returns to it', async ({
@@ -76,14 +84,62 @@ test('the Site step opens Site details in the studio’s place, and every way ba
   await page.getByRole('button', { name: named }).click();
   await expect(page.getByRole('navigation', { name: STUDIO.steps })).toBeVisible();
 
-  /* Cancel goes back to the studio too, and so does the save. */
+  /* Cancel goes back to the studio too where the page draws it (a phone's way back is the trail),
+     and so does the save. */
   await siteStep.click();
-  await page.getByRole('button', { name: CHANGE.cancel }).click();
-  await expect(page.getByRole('navigation', { name: STUDIO.steps })).toBeVisible();
-  await siteStep.click();
+  if (test.info().project.name === 'desktop') {
+    await page.getByRole('button', { name: CHANGE.cancel }).click();
+    await expect(page.getByRole('navigation', { name: STUDIO.steps })).toBeVisible();
+    await siteStep.click();
+  }
   await page.getByRole('button', { name: CHANGE.start }).click();
   await expect(page).toHaveURL(new RegExp(`/designs/${design.id}(\\?|$)`));
   await expect(page.getByRole('navigation', { name: STUDIO.steps })).toBeVisible();
+});
+
+test('the studio opens on the sky picture, tile by tile, and on its grid when no tile comes', async ({
+  page,
+}) => {
+  await ownerWithCompany(page, en);
+  const leadId = await captureLead(page);
+  const { design } = await startDesignThroughApi(page, leadId);
+  await withoutMapService(page);
+  await saveSiteThroughApi(page, design.id);
+  const noPicture = page.getByText(STUDIO.noPictureWhy('not_answered'));
+  /** The same studio opened again with other tiles coming. */
+  const openedWith = async (tiles: Parameters<typeof withSkyPicture>[1]) => {
+    await page.unrouteAll({ behavior: 'ignoreErrors' });
+    await withoutMapService(page);
+    const asked = await withSkyPicture(page, tiles);
+    await page.goto(`/designs/${design.id}`);
+    return asked;
+  };
+
+  /* The picture's facts name who took it. Its tiles are asked for with the ticket they came with,
+     the coarse first picture first, and an opening asks for no more than it may. */
+  const asked = await openedWith('come');
+  await expect(page.getByText(SKY_TILES.credit)).toBeVisible();
+  await expect.poll(() => asked.some((tile) => tile.zoom > SKY_TILES.zoomMin)).toBe(true);
+  await page.waitForLoadState('networkidle');
+  expect(new Set(asked.map((tile) => tile.ticket))).toEqual(new Set([SKY_TILES.ticket]));
+  expect(asked[0]?.zoom).toBe(SKY_TILES.zoomMin);
+  expect(asked.length).toBeLessThanOrEqual(SKY_TILES_PER_OPENING_MAX);
+  await expect(noPicture).toBeHidden();
+
+  /* A sharp tile that does not come leaves the first picture showing: the site still has one. */
+  const coarse = await openedWith('only the first picture comes');
+  await expect(page.getByText(SKY_TILES.credit)).toBeVisible();
+  await expect.poll(() => coarse.some((tile) => tile.zoom > SKY_TILES.zoomMin)).toBe(true);
+  await page.waitForLoadState('networkidle');
+  await expect(noPicture).toBeHidden();
+  await expect(page.getByText(SKY_TILES.credit)).toBeVisible();
+
+  /* No tile of the first picture comes: the studio says so and opens on its grid (`F8-36`). */
+  await openedWith('never come');
+  await expect(noPicture).toBeVisible();
+  await expect(page.getByText(SKY_TILES.credit)).toBeHidden();
+  // A tile still on its way when the flow ends is let go, not answered.
+  await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
 
 test("the lead's Designs section holds the design, and Continue opens it", async ({ page }) => {

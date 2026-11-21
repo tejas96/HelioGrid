@@ -82,6 +82,7 @@ export { default as MessageCircleIcon } from 'lucide-react-native/icons/message-
 export { default as MinusIcon } from 'lucide-react-native/icons/minus';
 export { default as MonitorIcon } from 'lucide-react-native/icons/monitor';
 export { default as MoonIcon } from 'lucide-react-native/icons/moon';
+export { default as MoveIcon } from 'lucide-react-native/icons/move';
 export { default as Navigation2Icon } from 'lucide-react-native/icons/navigation-2';
 export { default as PackageIcon } from 'lucide-react-native/icons/package';
 export { default as PaletteIcon } from 'lucide-react-native/icons/palette';

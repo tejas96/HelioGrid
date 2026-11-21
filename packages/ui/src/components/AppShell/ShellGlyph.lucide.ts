@@ -77,6 +77,7 @@ export {
   MinusIcon,
   MonitorIcon,
   MoonIcon,
+  MoveIcon,
   Navigation2Icon,
   PackageIcon,
   PaletteIcon,

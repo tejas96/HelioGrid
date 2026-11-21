@@ -1,58 +1,228 @@
 'use client';
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { Button, ShellGlyph } from '@heliogrid/ui';
-import type { Ref } from 'react';
+import type { StudioEditing, StudioScreen } from '@heliogrid/data/react';
+import {
+  type MeasurementSystem,
+  type RoofBar,
+  STOREY_HEIGHT_M,
+  type StudioView,
+} from '@heliogrid/domain';
+import type { RoofWordsShown, StudioCanvasWords } from '@heliogrid/i18n';
+import {
+  Button,
+  ProvenanceTier,
+  RollingNumber,
+  ShellGlyph,
+  type ShellGlyphName,
+  useFormat,
+} from '@heliogrid/ui';
+import type { ReactNode, Ref } from 'react';
+
+interface BarAct {
+  readonly key: string;
+  readonly label: TranslatedText;
+  readonly kind: 'primary' | 'secondary';
+  readonly icon: ShellGlyphName;
+  readonly iconRight?: boolean;
+  readonly off?: boolean;
+  readonly onPress: () => void;
+}
+
+/** What the bar shows: its mark, title, sentence, tone and acts. */
+interface BarView {
+  readonly mark: ShellGlyphName;
+  readonly title: ReactNode;
+  readonly status: TranslatedText;
+  readonly bad: boolean;
+  readonly acts: readonly BarAct[];
+}
+
+type Format = ReturnType<typeof useFormat>;
+
+interface BarFacts {
+  readonly studio: StudioScreen;
+  readonly view: StudioView;
+  readonly units: MeasurementSystem;
+  readonly words: StudioCanvasWords;
+  readonly format: Format;
+}
+
+function drawingBar(bar: Extract<RoofBar, { kind: 'drawing' }>, facts: BarFacts): BarView {
+  const { words, format, units, studio } = facts;
+  const refusal = bar.refused === null ? null : words.drawRefusal(bar.refused);
+  const lastEdge = bar.lastEdge === null ? null : format.roofLength(bar.lastEdge, units, true);
+  return {
+    mark: refusal === null ? 'pencil' : 'alert-circle',
+    title: refusal?.title ?? words.drawTitle(bar.corners, bar.ghost),
+    status: refusal?.line ?? words.drawLine(bar.corners, lastEdge),
+    bad: refusal !== null,
+    acts: [
+      {
+        key: 'cancel',
+        label: words.cancel,
+        kind: 'secondary',
+        icon: 'close',
+        onPress: studio.moves.cancel,
+      },
+      {
+        key: 'close',
+        label: words.closeShape,
+        kind: 'primary',
+        icon: 'check',
+        off: !bar.canClose,
+        onPress: studio.moves.close,
+      },
+    ],
+  };
+}
+
+function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): BarView {
+  const { words, format, units, studio, view } = facts;
+  const shown: RoofWordsShown = {
+    length: (metres) => format.roofLength(metres, units, false),
+    height: format.roofLength(STOREY_HEIGHT_M, units, false),
+  };
+  const area = words.roofArea(format.area(bar.area, units));
+  const see3d: BarAct[] =
+    studio.offer3d && view === 'top'
+      ? [
+          {
+            key: '3d',
+            label: words.seeIn3d,
+            kind: 'secondary',
+            icon: 'box',
+            onPress: () => studio.moves.see('3d'),
+          },
+        ]
+      : [];
+  return {
+    mark: bar.bad ? 'alert-circle' : 'check',
+    // The area counts to its new value each time it changes: the number rolls, the words stand.
+    title: (
+      <>
+        <span className="hg-studio-bar-area">
+          <RollingNumber key={area} value={area} />
+        </span>
+        <span className="hg-studio-bar-tier">
+          <ProvenanceTier tier={bar.tier} />
+        </span>
+      </>
+    ),
+    status:
+      bar.live === null
+        ? words.roofLine(bar.said, bar.sizing, shown)
+        : words.editRefusal(bar.live, shown),
+    bad: bar.bad,
+    acts: [
+      ...see3d,
+      {
+        key: 'objects',
+        label: words.addObjects,
+        kind: 'primary',
+        icon: 'chevron-right',
+        iconRight: true,
+        onPress: studio.moves.toObjects,
+      },
+    ],
+  };
+}
+
+/** Before a roof: the site's name and where it is, and the one way to begin. */
+function startBar(name: TranslatedText, place: string | null, facts: BarFacts): BarView {
+  const { words, studio } = facts;
+  const { picture } = studio;
+  const noPicture = picture.kind === 'none';
+  return {
+    mark: noPicture ? 'ruler' : 'pencil',
+    title: name,
+    status: noPicture ? words.noPictureWhy(picture.reason) : words.roofNotSetUp(place),
+    bad: false,
+    acts: [
+      {
+        key: 'draw',
+        label: noPicture ? words.drawOnGrid : words.drawMyself,
+        kind: 'primary',
+        icon: 'pencil',
+        onPress: studio.moves.draw,
+      },
+    ],
+  };
+}
+
+/** A reader who may not change the design: the same words, no acts, and who is editing. */
+function readOnly(view: BarView, editing: StudioEditing, facts: BarFacts): BarView {
+  const editor = editing.kind === 'view-only' ? editing.editor : null;
+  const roofs = facts.studio.bar?.kind === 'roofs';
+  return {
+    ...view,
+    mark: 'eye',
+    acts: [],
+    status: editor !== null && roofs ? facts.words.editingNow(editor.name) : view.status,
+  };
+}
 
 /**
- * The one bottom bar: the site's name, one sentence of where the roof stands, and the step's acts.
- * Before a roof exists the acts are drawing it or setting it up with AI — or, with no picture,
- * drawing on the grid or typing its size. Each is coming soon, and says so on a tap.
+ * The one bottom bar of the roof step (`T-M05-002`, part b): a mark, the title — the site, what to
+ * tap now, or the roofs' area with its tier — one sentence of where things stand, and the step's
+ * acts. Before a roof: Draw myself (no picture: Draw on the grid). While drawing: Cancel and Close
+ * shape. With a roof: See it in 3D once, and Add roof objects. A refusal takes the error colour.
  */
 export function StudioBottomBar({
   barRef,
   name,
-  status,
-  noPicture,
-  editable,
+  studio,
+  view,
+  units,
+  editing,
+  place,
   words,
 }: {
   barRef: Ref<HTMLDivElement>;
   name: TranslatedText;
-  status: TranslatedText;
-  noPicture: boolean;
-  editable: boolean;
+  studio: StudioScreen;
+  view: StudioView;
+  units: MeasurementSystem;
+  editing: StudioEditing;
+  /** The site's place, which the bar names before a roof. */
+  place: string | null;
   words: StudioCanvasWords;
 }) {
+  const format = useFormat();
+  const facts: BarFacts = { studio, view, units, words, format };
+  const { bar } = studio;
+  let shown = startBar(name, place, facts);
+  if (bar?.kind === 'drawing') shown = drawingBar(bar, facts);
+  if (bar?.kind === 'roofs') shown = roofsBar(bar, facts);
+  if (editing.kind !== 'editor') shown = readOnly(shown, editing, facts);
+  const { mark, title, status, bad, acts } = shown;
   return (
-    <div ref={barRef} className="hg-studio-glass hg-studio-bar">
-      <span className="hg-studio-bar-mark" aria-hidden>
-        <ShellGlyph name={noPicture ? 'ruler' : 'spark'} size="sm" />
+    <div ref={barRef} className="hg-studio-glass hg-studio-bar" data-tone={bad ? 'bad' : undefined}>
+      <span className="hg-studio-bar-mark" data-mark={mark} aria-hidden>
+        <ShellGlyph name={mark} size="sm" />
       </span>
       <span className="hg-studio-bar-words">
-        <span className="hg-studio-bar-name">{name}</span>
-        <span className="hg-studio-bar-status">{status}</span>
+        <span className="hg-studio-bar-name">{title}</span>
+        <span className="hg-studio-bar-status" role="status">
+          {status}
+        </span>
       </span>
-      {editable ? (
+      {acts.length > 0 ? (
         <span className="hg-studio-bar-acts">
-          <Button
-            variant="secondary"
-            size="md"
-            disabled
-            disabledReason={words.drawComing}
-            icon={<ShellGlyph name="pencil" size="sm" />}
-          >
-            {noPicture ? words.drawOnGrid : words.drawMyself}
-          </Button>
-          <Button
-            variant="primary"
-            size="md"
-            disabled
-            disabledReason={noPicture ? words.typeComing : words.aiComing}
-            icon={<ShellGlyph name={noPicture ? 'ruler' : 'spark'} size="sm" />}
-          >
-            {noPicture ? words.typeSize : words.setUpWithAi}
-          </Button>
+          {acts.map((act) => {
+            const icon = <ShellGlyph name={act.icon} size="sm" />;
+            return (
+              <Button
+                key={act.key}
+                variant={act.kind}
+                size="md"
+                disabled={act.off}
+                onClick={act.onPress}
+                {...(act.iconRight ? { iconRight: icon } : { icon })}
+              >
+                {act.label}
+              </Button>
+            );
+          })}
         </span>
       ) : null}
     </div>

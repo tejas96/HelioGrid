@@ -73,7 +73,7 @@ flow -e "LEAD_NAME=Lead $owner_national" leads-list.yaml
 flow lead-import.yaml
 flow -e "LEAD_ID=$lead_id" -e "LEAD_NAME=Lead $owner_national" lead-detail.yaml
 # The first lead's design: its own page asks for the site first and leads to Site details, where
-# typed coordinates set the pin and *Start design* opens the design again.
+# typed coordinates set the pin and *Start design* opens the studio, where a roof is drawn and closed.
 flow -e "DESIGN_ID=$design_id" design.yaml
 flow -e "DESIGN_ID=$design_id" site-details.yaml
 # The first lead's proposal draft: the list holds its card and opens *New proposal*'s capture, its

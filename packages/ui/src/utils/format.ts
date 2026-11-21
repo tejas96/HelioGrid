@@ -1,11 +1,11 @@
 import { UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
 import {
   type FormatPack,
+  formatArea,
   formatClockAt,
   formatCompact,
   formatCompactMoney,
   formatDate,
-  formatFineLength,
   formatLength,
   formatMinorUnits,
   formatMinorUnitsPlainly,
@@ -14,6 +14,8 @@ import {
   formatMonthYear,
   formatNumber,
   formatPhone,
+  formatPictureDetail,
+  formatRoofLength,
   formatTime,
   formatWeekday,
   IN_FORMATS,
@@ -86,10 +88,14 @@ export interface MarketFormat {
   monthYear: (value: string | Date) => string;
   /** When an event happened, by the pack's clock and zone — `16:12`. */
   clockAt: (value: string) => string;
-  /** A short length held in metres, in the reader's system — `14 cm`, `5.5 in` (`F3-23`). */
-  fineLength: (metres: number, system: MeasurementSystem) => string;
+  /** A picture's real detail, held in metres, told round in the reader's system — `30 cm`, `11 in` (`F3-23`). */
+  pictureDetail: (metres: number, system: MeasurementSystem) => string;
   /** A length held in metres, in the reader's system — `10 m`, `20 ft` (`F3-23`). */
   length: (metres: number, system: MeasurementSystem) => string;
+  /** A roof edge's length: traced `~7.8 m`, set `8.20 m`, or `26 ft 11 in` (`T-M05-002`). */
+  roofLength: (metres: number, system: MeasurementSystem, traced: boolean) => string;
+  /** An area held in square metres, whole: `66 m²`, `706 sq ft`. */
+  area: (squareMetres: number, system: MeasurementSystem) => string;
   /** A day's name in the reader's words, on the pack's zone — `Monday`. */
   weekday: (value: string) => string;
   /** Resolved ISO week start, 1 = Monday … 7 = Sunday. `Calendar`'s first column reads this. */
@@ -131,8 +137,10 @@ export function createFormat(
     date: (value) => formatDate(pack, value, language),
     monthYear: (value) => formatMonthYear(pack, value, language),
     clockAt: (value) => formatClockAt(pack, value),
-    fineLength: (metres, system) => formatFineLength(pack, metres, system),
+    pictureDetail: (metres, system) => formatPictureDetail(pack, metres, system),
     length: (metres, system) => formatLength(pack, metres, system),
+    roofLength: (metres, system, traced) => formatRoofLength(pack, metres, system, traced),
+    area: (squareMetres, system) => formatArea(pack, squareMetres, system),
     weekday: (value) => formatWeekday(pack, value, language),
     firstDayOfWeek: pack.firstDayOfWeek,
     monthNames: (style) => monthNames(pack, language, style),

@@ -1,7 +1,7 @@
-# Site details (`SCR-M05-01`, T-M05-001a): the design's site opens at its address with the lead's
+# Site details (`SCR-M05-01`, T-M05-001a, T-M05-002b): the design's site opens at its address with the lead's
 # address and state filled and no location yet, so *Start design* says why it is off; Coordinates takes the two numbers a rep types, the pin
-# stands under the map, and *Start design* saves the site and opens the design, which now names
-# its next step.
+# stands under the map, and *Start design* saves the site and opens the studio, where a roof is
+# drawn and closed.
 appId: com.heliogrid.app
 ---
 - openLink: heliogrid://designs/${DESIGN_ID}/site
@@ -39,7 +39,22 @@ appId: com.heliogrid.app
     direction: DOWN
     centerElement: true
 - tapOn: ${SITE_START}
-# The design's page: the site's address and its next step are one run of text; the step ends it.
+# The studio (T-M05-002b): draw, three corners square to each other, the fourth is offered, and
+# Close shape stands the roof, which then offers its 3D view.
 - extendedWaitUntil:
-    visible: '[\s\S]*${DESIGN_NEXT_ROOF}'
-    timeout: 15000
+    visible: '${DESIGN_DRAW}'
+    timeout: 20000
+- tapOn: '${DESIGN_DRAW}'
+- tapOn:
+    point: '30%,38%'
+- tapOn:
+    point: '70%,38%'
+- tapOn:
+    point: '70%,52%'
+- extendedWaitUntil:
+    visible: ${DESIGN_FOURTH_READY}
+    timeout: 10000
+- tapOn: ${DESIGN_CLOSE_SHAPE}
+- extendedWaitUntil:
+    visible: ${DESIGN_SEE_IN_3D}
+    timeout: 10000

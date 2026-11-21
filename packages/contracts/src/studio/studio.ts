@@ -27,6 +27,12 @@ import {
   placeSuggestionsSchema,
 } from './places';
 import { saveSiteSchema } from './site';
+import {
+  SKY_TILE_UNAVAILABLE,
+  skyTileHeadersSchema,
+  skyTileParamsSchema,
+  skyTilesSchema,
+} from './sky-tiles';
 
 const c = initContract();
 
@@ -143,6 +149,29 @@ export const studioContract = c.router({
     summary:
       'The sky picture of the design’s site, fetched now and never stored — or why there is none',
     responses: { 200: skyPictureSchema, 401: unauthenticatedEnvelope, 404: notFound },
+  },
+  skyTiles: {
+    method: 'GET',
+    path: '/designs/:id/sky-tiles',
+    pathParams: designParamsSchema,
+    summary:
+      'What the sky picture of the design’s site is, and the ticket its tiles are asked with — or why there is none',
+    responses: { 200: skyTilesSchema, 401: unauthenticatedEnvelope, 404: notFound },
+  },
+  skyTile: {
+    method: 'GET',
+    path: '/designs/:id/sky-tiles/:z/:x/:y',
+    pathParams: skyTileParamsSchema,
+    headers: skyTileHeadersSchema,
+    summary:
+      'One tile of the sky picture, as the map service gives it; a tile past the site’s reach or above its zoom is not found',
+    responses: {
+      200: c.otherResponse({ contentType: 'image/jpeg', body: c.type<Blob>() }),
+      401: unauthenticatedEnvelope,
+      404: notFound,
+      429: errorEnvelope(baseError('RATE_LIMITED')),
+      503: errorEnvelope(z.literal(SKY_TILE_UNAVAILABLE)),
+    },
   },
 });
 

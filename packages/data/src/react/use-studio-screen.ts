@@ -8,6 +8,7 @@ import {
   OPENING_VIEW,
   type PictureChoice,
   pictureNewerThanDrawn,
+  type RoofStepState,
   type ScaleBar,
   type StepPlace,
   type StudioDocument,
@@ -34,12 +35,16 @@ import {
 } from './studio-document-state';
 import type { StudioSaveState } from './studio-save-queue';
 import { type DesignRead, useDesignScreen } from './use-design-screen';
+import { type RoofMoves, type RoofStepView, useRoofStep } from './use-roof-step';
 import { useSession } from './use-session';
+import { useSkyTiles } from './use-sky-tiles';
 
 export type { StudioEditing, StudioPicture } from './studio-document-state';
 export type { StudioSaveState } from './studio-save-queue';
+export type { RoofMoves, RoofStepView } from './use-roof-step';
+export type { StudioSkyTile, StudioSkyTiles } from './use-sky-tiles';
 
-export interface StudioMoves {
+export interface StudioMoves extends RoofMoves {
   pickPicture(choice: PictureChoice): void;
   undo(): void;
   redo(): void;
@@ -54,9 +59,15 @@ export interface StudioMoves {
   see(view: StudioView): void;
   /** The three pictures shown or put away. */
   showPictures(open: boolean): void;
+  /** Draw a roof: the pencil, Draw myself, Draw on the grid. */
+  draw(): void;
+  /** Add roof objects: the next step, a note until it is built. */
+  toObjects(): void;
+  /** The note that the next step is coming, put away. */
+  objectsSeen(): void;
 }
 
-export interface StudioScreen {
+export interface StudioScreen extends RoofStepView {
   readonly read: DesignRead;
   /** `null` until the document is read. */
   readonly document: StudioDocument | null;
@@ -79,7 +90,26 @@ export interface StudioScreen {
   readonly picturesOpen: boolean;
   /** The sun the scene is lit by: the real sun for the site now, or its noon after dark. */
   readonly sun: SunPosition | null;
+  /** "See it in 3D" is offered once, until the 3D view is first seen. */
+  readonly offer3d: boolean;
+  /** Add roof objects was pressed: its note shows. */
+  readonly objectsNote: boolean;
   readonly moves: StudioMoves;
+}
+
+/**
+ * What Undo and Redo can do now: while drawing, Undo takes the last corner off; with nothing in
+ * hand, they walk the design's history; Redo waits while a roof is drawn, sized or dragged.
+ */
+function undoRedoOf(
+  editable: boolean,
+  roofStep: RoofStepState,
+  history: History<StudioDocument> | null,
+): { canUndo: boolean; canRedo: boolean } {
+  if (!editable) return { canUndo: false, canRedo: false };
+  const back =
+    roofStep.kind === 'drawing' ? roofStep.corners.length > 0 : (history?.past.length ?? 0) > 0;
+  return { canUndo: back, canRedo: roofStep.kind === 'idle' && (history?.future.length ?? 0) > 0 };
 }
 
 /**
@@ -99,12 +129,12 @@ export function useStudioScreen(designId: string): StudioScreen {
   );
   const [pictureSeen, setPictureSeen] = useState(false);
   const [view, setView] = useState<StudioView>(OPENING_VIEW);
-  /** No roof can be drawn yet: the rail and the views wait for one. */
-  const roofClosed = false;
-  const views = viewsOffered(roofClosed);
   const units = session.user?.unitPreference ?? 'metric';
+  const [seen3d, setSeen3d] = useState(false);
+  const [objectsNote, setObjectsNote] = useState(false);
   const [picturesOpen, setPicturesOpen] = useState(false);
   const pin = ready ? read.value.site.pin : null;
+  const skyTiles = useSkyTiles(designId, skyQuery, pin);
   // The sun is read once for the opening: the scene does not move with the clock.
   const sun = useMemo(() => (pin === null ? null : sceneSunAt(pin, Date.now())), [pin]);
 
@@ -124,8 +154,23 @@ export function useStudioScreen(designId: string): StudioScreen {
 
   const document = history?.present ?? null;
   const skyRead = readOf(skyQuery);
-  const sky = skyReadOf(skyRead);
-  const picture = pictureOf(shownPicture(document?.picture ?? null, sky), skyRead);
+  const sky = skyReadOf(skyRead, skyTiles.lost);
+  const picture = pictureOf(shownPicture(document?.picture ?? null, sky), skyRead, skyTiles.tiles);
+  /** The views and the rail wait for a roof that stands. */
+  const roofClosed = (document?.roofs.length ?? 0) > 0;
+  const views = viewsOffered(roofClosed);
+
+  const roof = useRoofStep({
+    document,
+    latest,
+    change,
+    editable,
+    units,
+    picture,
+    setUnits: (system) => void session.setUnitPreference(system),
+  });
+  const { step, act } = roof;
+  const { roofStep } = roof.view;
 
   return {
     read,
@@ -141,22 +186,35 @@ export function useStudioScreen(designId: string): StudioScreen {
     rail: stepRail(roofClosed),
     view,
     views,
+    ...roof.view,
+    offer3d: roofClosed && !seen3d,
+    objectsNote,
     scaleBar: (metresPerPixel, maxPixels) => scaleBarOf(metresPerPixel, units, maxPixels),
     picturesOpen,
     sun,
-    canUndo: editable && (history?.past.length ?? 0) > 0,
-    canRedo: editable && (history?.future.length ?? 0) > 0,
+    ...undoRedoOf(editable, roofStep, history),
     moves: {
+      ...roof.moves,
       pickPicture: (choice) => {
         const at = latest.current;
         if (at === null || at.present.picture === choice) return;
         change(historyAfter(at, { ...at.present, picture: choice }));
       },
+      // While drawing, Undo takes the last corner off; with a length or a drag in hand, it puts
+      // that back first.
       undo: () => {
-        if (latest.current !== null) change(historyUndone(latest.current));
+        const now = step.current.kind;
+        if (now === 'drawing') act({ kind: 'undo_corner' });
+        else if (now === 'sizing' || now === 'dragging') act({ kind: 'cancel' });
+        else if (latest.current !== null) {
+          act({ kind: 'pick_corner', corner: null });
+          change(historyUndone(latest.current));
+        }
       },
       redo: () => {
-        if (latest.current !== null) change(historyRedone(latest.current));
+        if (step.current.kind === 'idle' && latest.current !== null) {
+          change(historyRedone(latest.current));
+        }
       },
       chooseUnits: (system) => void session.setUnitPreference(system),
       openTheirs: () => void refetchDocument(),
@@ -164,9 +222,20 @@ export function useStudioScreen(designId: string): StudioScreen {
       pictureChecked: () => setPictureSeen(true),
       // A view that waits for a roof is not taken, whoever asks for it.
       see: (next) => {
-        if (views.some((place) => place.view === next && place.lock === null)) setView(next);
+        if (!views.some((place) => place.view === next && place.lock === null)) return;
+        // A new roof is drawn in the top view only: leaving it drops the draft.
+        if (next !== 'top' && step.current.kind === 'drawing') act({ kind: 'cancel' });
+        if (next === '3d') setSeen3d(true);
+        setView(next);
       },
       showPictures: setPicturesOpen,
+      draw: () => {
+        setView('top');
+        setObjectsNote(false);
+        act({ kind: 'draw' });
+      },
+      toObjects: () => setObjectsNote(true),
+      objectsSeen: () => setObjectsNote(false),
     },
   };
 }

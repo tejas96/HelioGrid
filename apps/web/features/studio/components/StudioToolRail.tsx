@@ -9,10 +9,10 @@ import { IconButton, Menu, ShellGlyph } from '@heliogrid/ui';
 const TOOL = theme.layout['button-h-md'];
 
 /**
- * The two small columns of round tools. Left: what changes the model — draw (coming soon), Undo
- * and Redo. Right: how the model is seen — the view menu (the views on offer, metres or feet), the
- * 2D and 3D switch, Zoom in, Zoom out and Back to the pin, and the road view and the sun, coming
- * soon. A view that waits for a roof says why on a tap.
+ * The two small columns of round tools. Left: what changes the model — the pencil that draws a
+ * roof (pressed while drawing), Undo and Redo. Right: how the model is seen — the view menu (the
+ * views on offer, metres or feet), the 2D and 3D switch, Zoom in, Zoom out and Back to the pin. A
+ * view that waits for a roof says why on a tap. The road view and the sun join with their parts.
  */
 export function StudioToolRail({
   view,
@@ -21,11 +21,14 @@ export function StudioToolRail({
   editable,
   canUndo,
   canRedo,
+  drawing,
+  newView,
   words,
   onView,
   onUnits,
   onUndo,
   onRedo,
+  onDraw,
   onZoomIn,
   onZoomOut,
   onHome,
@@ -36,6 +39,12 @@ export function StudioToolRail({
   editable: boolean;
   canUndo: boolean;
   canRedo: boolean;
+  /** A roof is being drawn: the pencil is pressed. */
+  drawing: boolean;
+  /** The 3D view just opened for the first roof: its circle carries a small dot until seen. */
+  newView: boolean;
+  /** The pencil: draw a roof. */
+  onDraw: () => void;
   words: StudioCanvasWords;
   onView: (view: StudioView) => void;
   onUnits: (units: MeasurementSystem) => void;
@@ -60,10 +69,11 @@ export function StudioToolRail({
       <div className="hg-studio-tools" data-side="left">
         {editable ? (
           <IconButton
-            label={words.drawMyself}
-            disabled
-            disabledReason={words.drawComing}
+            label={words.drawRoof}
             size={TOOL}
+            variant={drawing ? 'dark' : 'surface'}
+            pressed={drawing}
+            onClick={onDraw}
           >
             <ShellGlyph name="pencil" size="md" />
           </IconButton>
@@ -115,15 +125,17 @@ export function StudioToolRail({
             },
           ]}
         />
-        <IconButton
-          label={view === 'top' ? words.threeDView : words.topView}
-          size={TOOL}
-          {...(view === 'top' && threeD?.lock != null
-            ? { disabled: true, disabledReason: words.stepLock(threeD.lock) }
-            : { onClick: () => onView(view === 'top' ? '3d' : 'top') })}
-        >
-          <ShellGlyph name={view === 'top' ? 'box' : 'grid'} size="md" />
-        </IconButton>
+        <span className="hg-studio-tool-new" data-new={newView}>
+          <IconButton
+            label={view === 'top' ? words.threeDView : words.topView}
+            size={TOOL}
+            {...(view === 'top' && threeD?.lock != null
+              ? { disabled: true, disabledReason: words.stepLock(threeD.lock) }
+              : { onClick: () => onView(view === 'top' ? '3d' : 'top') })}
+          >
+            <ShellGlyph name={view === 'top' ? 'box' : 'grid'} size="md" />
+          </IconButton>
+        </span>
         <span className="hg-studio-zoom">
           <IconButton label={words.zoomIn} size={TOOL} onClick={onZoomIn}>
             <ShellGlyph name="plus" size="md" />
@@ -134,12 +146,6 @@ export function StudioToolRail({
         </span>
         <IconButton label={words.backToPin} size={TOOL} onClick={onHome}>
           <ShellGlyph name="recentre" size="md" />
-        </IconButton>
-        <IconButton label={words.roadView} disabled disabledReason={words.roadComing} size={TOOL}>
-          <ShellGlyph name="camera" size="md" />
-        </IconButton>
-        <IconButton label={words.sun} disabled disabledReason={words.sunComing} size={TOOL}>
-          <ShellGlyph name="sun" size="md" />
         </IconButton>
       </div>
     </>

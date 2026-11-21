@@ -47,21 +47,82 @@ export function formatLength(
 const CENTIMETRES_PER_METRE = 100;
 const INCHES_PER_METRE = 1 / 0.0254;
 
+/** A picture's detail is told to this many centimetres from ten up: it is known no finer. */
+const DETAIL_STEP_CM = 5;
+const DETAIL_STEPPED_FROM_CM = 10;
+
 /**
- * A short length held in METRES — a picture's sharpness, a gap — in the reader's system: whole
- * centimetres, or inches to one decimal.
+ * A picture's real detail, held in METRES, in the reader's system. It is known only about, so it is
+ * told round: whole centimetres below ten and the nearest five from there, or whole inches — never
+ * less than one of either.
  */
-export function formatFineLength(
+export function formatPictureDetail(
   pack: FormatPack,
   metres: number,
   system: MeasurementSystem = pack.measurementSystem,
 ): string {
+  const whole = (value: number) =>
+    formatNumber(pack, Math.max(1, Math.round(value)), { maximumFractionDigits: 0 });
+  if (system === 'imperial') return `${whole(metres * INCHES_PER_METRE)}${NBSP}in`;
+  const centimetres = metres * CENTIMETRES_PER_METRE;
+  const told =
+    centimetres < DETAIL_STEPPED_FROM_CM
+      ? centimetres
+      : Math.round(centimetres / DETAIL_STEP_CM) * DETAIL_STEP_CM;
+  return `${whole(told)}${NBSP}cm`;
+}
+
+const INCHES_PER_FOOT = 12;
+const SQUARE_FEET_PER_SQUARE_METRE = 1 / (METRES_PER_FOOT * METRES_PER_FOOT);
+/** Before a length read off a picture: it is about this long (`T-M05-002`). Never translated. */
+const ABOUT = '~';
+
+/** A length in whole feet and whole inches, the inches rounded and never 12. */
+export function feetAndInches(metres: number): { feet: number; inches: number } {
+  const inches = Math.round(metres * INCHES_PER_METRE);
+  return { feet: Math.floor(inches / INCHES_PER_FOOT), inches: inches % INCHES_PER_FOOT };
+}
+
+/** Feet and inches as a person types them in two boxes, held in metres. */
+export function metresOfFeetAndInches(feet: number, inches: number): number {
+  return (feet * INCHES_PER_FOOT + inches) / INCHES_PER_METRE;
+}
+
+/**
+ * A roof edge's length (`T-M05-002`): read off the picture, `~7.8 m` — about, to a decimetre; set
+ * by a person, `8.20 m` — to the centimetre. In feet, `26 ft 11 in` either way: a tape in feet
+ * reads whole inches.
+ */
+export function formatRoofLength(
+  pack: FormatPack,
+  metres: number,
+  system: MeasurementSystem,
+  traced: boolean,
+): string {
+  const about = traced ? ABOUT : '';
   if (system === 'imperial') {
-    const inches = formatNumber(pack, metres * INCHES_PER_METRE, { maximumFractionDigits: 1 });
-    return `${inches}${NBSP}in`;
+    const { feet, inches } = feetAndInches(metres);
+    return `${about}${formatNumber(pack, feet)}${NBSP}ft ${formatNumber(pack, inches)}${NBSP}in`;
   }
-  const centimetres = formatNumber(pack, metres * CENTIMETRES_PER_METRE, {
-    maximumFractionDigits: 0,
+  const digits = traced ? 1 : 2;
+  const value = formatNumber(pack, metres, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
   });
-  return `${centimetres}${NBSP}cm`;
+  return `${about}${value}${NBSP}m`;
+}
+
+/** An area held in square metres, whole, in the reader's system: `66 m²`, `706 sq ft`. */
+export function formatArea(
+  pack: FormatPack,
+  squareMetres: number,
+  system: MeasurementSystem,
+): string {
+  if (system === 'imperial') {
+    const feet = formatNumber(pack, squareMetres * SQUARE_FEET_PER_SQUARE_METRE, {
+      maximumFractionDigits: 0,
+    });
+    return `${feet}${NBSP}sq ft`;
+  }
+  return `${formatNumber(pack, squareMetres, { maximumFractionDigits: 0 })}${NBSP}m²`;
 }

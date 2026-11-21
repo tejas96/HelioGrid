@@ -1,3 +1,5 @@
+import type { GroundPoint } from './ground';
+
 /**
  * The design document: everything a person makes in the studio, stored whole, one per design. It
  * names no record of a host's (`docs/tasks/M05-design-studio.md`, *The wall*). Every place in it is
@@ -32,12 +34,54 @@ export interface PictureStamp {
   readonly takenOn: string | null;
 }
 
+/**
+ * How an edge's length is known: traced on the picture (drawn dashed), typed by a person (solid),
+ * or measured on site (solid, with a tick).
+ */
+export const ROOF_EDGE_TRUSTS = ['traced', 'typed', 'measured'] as const;
+export type RoofEdgeTrust = (typeof ROOF_EDGE_TRUSTS)[number];
+
+/** A length a person set: typed, or measured on site. */
+export type SetEdgeTrust = Exclude<RoofEdgeTrust, 'traced'>;
+
+/** A design holds at most this many roofs. */
+export const ROOFS_MAX = 50;
+
+/**
+ * How far from the pin a corner may lie, in metres east or north: far past any picture (about
+ * 460 m across), near enough that the ground stays flat (`ground.ts`).
+ */
+export const GROUND_REACH_M = 2_000;
+
+/** How far the first true length may stretch or shrink the picture: five times either way. */
+export const PICTURE_SCALE_MIN = 0.2;
+export const PICTURE_SCALE_MAX = 5;
+
+/** One roof's outline on the site's ground. */
+export interface Roof {
+  /** Made by the studio when the roof closes; names the roof inside its design, never a record. */
+  readonly id: string;
+  /** Metres east and north of the pin, in order: 3 to 100 corners (`roof-shape.ts`). */
+  readonly corners: readonly GroundPoint[];
+  /** How each edge's length is known: edge i runs from corner i to corner i + 1. */
+  readonly edges: readonly RoofEdgeTrust[];
+  /** The picture the roof was traced on. */
+  readonly tracedOn: PictureChoice;
+}
+
 export interface StudioDocument {
   readonly schemaVersion: typeof STUDIO_DOCUMENT_SCHEMA;
   /** The picture a person picked; `null` lets the studio pick by itself. */
   readonly picture: PictureChoice | null;
   /** The picture the first roof was drawn on, kept so a newer one is told apart; `null` until then. */
   readonly drawnOn: PictureStamp | null;
+  /** The roofs, in the order they were drawn: roof 1 first. A document saved before roofs has none. */
+  readonly roofs: readonly Roof[];
+  /**
+   * How much the picture is stretched about the pin to its true size: 1 until the first true length
+   * is set, which sizes the picture and every roof on it together (`roof-edit.ts`).
+   */
+  readonly pictureScale: number;
 }
 
 /** A design no one has changed yet. */
@@ -45,6 +89,8 @@ export const EMPTY_STUDIO_DOCUMENT: StudioDocument = {
   schemaVersion: STUDIO_DOCUMENT_SCHEMA,
   picture: null,
   drawnOn: null,
+  roofs: [],
+  pictureScale: 1,
 };
 
 /** What the studio knows of the sky picture of a site. */

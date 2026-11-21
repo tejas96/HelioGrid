@@ -15,6 +15,7 @@ import { StudioDocumentService } from './studio.document.service';
 import { StudioPlacesService } from './studio.places.service';
 import { StudioRepository } from './studio.repository';
 import { StudioService } from './studio.service';
+import { StudioSkyPictureService } from './studio.sky-picture.service';
 import { StudioWritesRepository } from './studio.writes.repository';
 
 /**
@@ -60,6 +61,7 @@ const skyPictureSourceProvider: Provider = {
     StudioPlacesService,
     StudioRepository,
     StudioService,
+    StudioSkyPictureService,
     StudioWritesRepository,
   ],
 })
