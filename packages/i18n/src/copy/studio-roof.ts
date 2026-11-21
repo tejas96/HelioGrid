@@ -59,7 +59,9 @@ const ROOF = {
   roofArea: /*i18n*/ { id: 'Roof · {area}' },
   roofClosed: /*i18n*/ { id: 'Height {height} is assumed. Drag a corner to fix the shape.' },
   roofIdle: /*i18n*/ { id: 'Drag a corner to fix the shape.' },
+  roofPicked: /*i18n*/ { id: 'Roof {number} · height {height}. Drag a corner to fix the shape.' },
   roofIdle3d: /*i18n*/ { id: 'Tap the roof to change its height.' },
+  roofIdle3dReader: /*i18n*/ { id: 'Tap a roof to see its height.' },
   seeIn3d: /*i18n*/ { id: 'See it in 3D' },
   roofSizing: /*i18n*/ { id: 'Set the true length of the marked edge.' },
   roofSized: /*i18n*/ { id: 'All lengths sized from the one length you set.' },
@@ -103,8 +105,10 @@ const ROOF = {
 export interface RoofWordsShown {
   /** A length in metres, formatted. */
   readonly length: (metres: number) => string;
-  /** The roof's height, formatted. */
+  /** The storey height a new roof stands at, formatted. */
   readonly height: string;
+  /** A roof's own height in metres, formatted. */
+  readonly heightOf: (metres: number) => string;
 }
 
 const DRAW_REFUSAL: Record<
@@ -178,6 +182,8 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'roof_turned':
       // A turn is said by its size: which way it went is on the screen.
       return t(ROOF.roofTurned, { degrees: Math.abs(said.degrees) });
+    case 'roof_picked':
+      return t(ROOF.roofPicked, { number: said.roof + 1, height: shown.heightOf(said.metres) });
     case 'went_back':
       if (said.fault === 'would_overlap') return t(ROOF.wentBackOver);
       if (said.fault === 'too_far') return t(ROOF.wentBackFar);
@@ -237,6 +243,7 @@ export function studioRoofWords(t: T) {
     dragCrowded: t(ROOF.dragCrowded),
     /** The bar at rest in 3D, where a roof's height is changed and its outline is not. */
     roofIdle3d: t(ROOF.roofIdle3d),
+    roofIdle3dReader: t(ROOF.roofIdle3dReader),
     /** The tag beside the spot while drawing: why it cannot go there, its snap, or its angle. */
     spotTag: (spot: SpotFacts, shown: RoofWordsShown): RoofTag | null => {
       if (spot.refusal === 'would_cross') return { text: tagWord(t, 'cross'), bad: true };

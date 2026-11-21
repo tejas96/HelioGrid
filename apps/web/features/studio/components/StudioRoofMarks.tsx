@@ -15,11 +15,13 @@ import {
 import { useRoofPress } from '../hooks/use-roof-press';
 import { placeLabels } from './roof-labels-place';
 import { placeRoofMarks, pointText } from './roof-marks-place';
+import { roofWordsShown } from './roof-words-shown';
 import type { StudioDrive } from './StudioCameraRig';
 import { StudioDraftMarks } from './StudioDraftMarks';
 import { StudioRoofEdit } from './StudioRoofEdit';
 import { edgeAt, type Revealed, StudioRoofLengths } from './StudioRoofLengths';
 import type { RoofMarksHandle, ScreenOf } from './StudioRoofs';
+import { StudioRoofTops } from './StudioRoofTops';
 
 type Tag = { text: TranslatedText; bad: boolean; at: string };
 
@@ -177,12 +179,15 @@ export function StudioRoofMarks({
   useLayoutEffect(() => {
     if (lastPlace.current !== null) place(lastPlace.current);
   });
-  const shown: RoofWordsShown = {
-    length: (metres) => format.roofLength(metres, units, false),
-    height: format.roofHeight(format.pack.storeyHeightM, units),
-  };
+  const shown = roofWordsShown(format, units);
   const { roofStep: step, draft, roofMarks } = studio;
-  if (view !== 'top') return <div ref={layer} className="hg-roof-marks" data-view={view} />;
+  if (view !== 'top') {
+    return (
+      <div ref={layer} className="hg-roof-marks" data-view={view}>
+        <StudioRoofTops studio={studio} words={words} units={units} />
+      </div>
+    );
+  }
   const drawing = step.kind === 'drawing';
   const tag = tagOf(studio, words, shown, aiming);
   const editable = studio.editing.kind === 'editor';

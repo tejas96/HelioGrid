@@ -49,7 +49,7 @@ function shapesOn(layer: HTMLElement, screenOf: ScreenOf): Map<string, ScreenPoi
   for (const node of layer.querySelectorAll<HTMLElement>('[data-roof][data-pts]')) {
     const seen = (node.dataset.pts ?? '').split(';').map((text) => {
       const point = readPoint(text);
-      return point === null ? null : screenOf(point, false);
+      return point === null ? null : screenOf(point, 0);
     });
     if (seen.every((point) => point !== null))
       shapes.set(node.dataset.roof ?? '', seen as ScreenPoint[]);
@@ -85,8 +85,8 @@ export function placeLabels(layer: HTMLElement, screenOf: ScreenOf, layout: Layo
     const roof = node.dataset.label ?? '';
     const from = readPoint(node.dataset.from);
     const to = readPoint(node.dataset.to);
-    const a = from === null ? null : screenOf(from, false);
-    const b = to === null ? null : screenOf(to, false);
+    const a = from === null ? null : screenOf(from, 0);
+    const b = to === null ? null : screenOf(to, 0);
     // The pill as drawn, not its wider tap area: labels give way where they are seen to touch.
     const pill = node.querySelector<HTMLElement>('.hg-roof-len');
     if (a === null || b === null || pill === null || !shapes.has(roof)) {

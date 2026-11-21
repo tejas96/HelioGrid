@@ -62,6 +62,8 @@ export function useDrawPress(
     if (studio.objectsNote) moves.objectsSeen();
     if (held === null || (held.moved && !aimed)) return;
     if (!drawing) onTapAt(event.clientX, event.clientY);
+    // In 3D a tap is the roofs' own (their sheet): the ground under it is not what was tapped.
+    if (studio.view !== 'top') return;
     const at = groundAt(event.clientX, event.clientY);
     if (at !== null) moves.tap(at);
   };

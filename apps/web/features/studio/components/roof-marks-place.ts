@@ -44,7 +44,8 @@ export function readPoint(text: string | undefined): GroundPoint | null {
   return east === undefined || north === undefined ? null : { east, north };
 }
 
-const onTop = (node: HTMLElement | SVGElement) => node.dataset.top === 'true';
+/** How high above the ground a mark stands, in metres: a roof's top in 3D, the ground in the top view. */
+const onTop = (node: HTMLElement | SVGElement) => Number(node.dataset.top ?? 0);
 
 /**
  * A point mark, pushed out from `data-away` when it has one: the × of a picked corner one step out,
@@ -66,6 +67,14 @@ function placePoint(node: HTMLElement, screenOf: ScreenOf): void {
   }
   laid.set(node, { x, y });
   node.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+/** The blue arrow's measure: how many screen pixels one metre up takes at the roof's top. */
+function measureRise(node: HTMLElement, screenOf: ScreenOf): void {
+  const at = readPoint(node.dataset.at);
+  const here = at === null ? null : screenOf(at, onTop(node));
+  const above = at === null ? null : screenOf(at, onTop(node) + 1);
+  node.dataset.perMetre = here === null || above === null ? '0' : String(here.y - above.y);
 }
 
 /** The free room between the two tool columns, in the layer's pixels. */
@@ -206,6 +215,9 @@ export function placeRoofMarks(
   layout: LayoutLabels,
 ): boolean {
   for (const node of layer.querySelectorAll<HTMLElement>('[data-at]')) placePoint(node, screenOf);
+  for (const node of layer.querySelectorAll<HTMLElement>('[data-arrow]')) {
+    measureRise(node, screenOf);
+  }
   const room = toolRoomOf(layer);
   for (const node of layer.querySelectorAll<HTMLElement>('[data-edge]')) {
     placeEdge(node, screenOf, room, layout);

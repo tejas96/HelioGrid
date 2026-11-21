@@ -34,6 +34,7 @@ export * from './quick-add';
 export * from './search';
 export * from './site-details';
 export * from './studio-canvas';
+export * from './studio-height';
 export * from './studio-length';
 export * from './studio-roof';
 export * from './team-reassign';

@@ -18,6 +18,7 @@ import './studio-picture.css';
 import './studio-roof.css';
 import './studio-roof-controls.css';
 import './studio-length.css';
+import './studio-height.css';
 import './studio-tools.css';
 import './studio-focus.css';
 

@@ -10,7 +10,7 @@ import {
   useReducedMotion,
 } from '@heliogrid/ui';
 import dynamic from 'next/dynamic';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useChromeRoom } from '../hooks/use-chrome-room';
 import { useDrawPress } from '../hooks/use-draw-press';
 import { useMapKeys } from '../hooks/use-map-keys';
@@ -21,6 +21,7 @@ import { StudioCanvasNotes } from './StudioCanvasNotes';
 import { StudioLoupe } from './StudioLoupe';
 import { StudioMapMarks, type StudioMapMarksHandle } from './StudioMapMarks';
 import { StudioRoofMarks } from './StudioRoofMarks';
+import { StudioRoofSheet } from './StudioRoofSheet';
 import type { RoofMarksHandle } from './StudioRoofs';
 import { StudioToolRail } from './StudioToolRail';
 
@@ -60,7 +61,8 @@ export function StudioCanvas({
   const palette = usePalette();
   const still = useReducedMotion();
   const desktop = useDesktopShell();
-  const { frame, top, bottom, room } = useChromeRoom();
+  // The sheet takes the bar's place: the room is measured again when one swaps for the other.
+  const { frame, top, bottom, room } = useChromeRoom(studio.roofSheet !== null);
   const pin = useRef<HTMLSpanElement>(null);
   const drive = useRef<StudioDrive | null>(null);
   const marks = useRef<StudioMapMarksHandle>(null);
@@ -76,12 +78,22 @@ export function StudioCanvas({
   const roofs = studio.shown?.roofs ?? [];
   const parts = studio.focus(desktop === false);
 
-  const { aim, aimAt, handlers } = useDrawPress(studio, drive, (x, y) =>
-    roofMarks.current?.revealAt(x, y),
-  );
+  // A tap on the map: in the top view it shows a length that gave way; in 3D it opens the roof
+  // it lands on, met at each roof's own height.
+  const { aim, aimAt, handlers } = useDrawPress(studio, drive, (x, y) => {
+    if (view === 'top') roofMarks.current?.revealAt(x, y);
+    else moves.tapRoof((heightM) => drive.current?.groundAt(x, y, heightM) ?? null);
+  });
   // A roof that closes is framed in the room between the bars: the camera stays in the top view,
   // where its lengths are set next.
   const said = roofStep.kind === 'idle' ? roofStep.said : null;
+  // A roof's sheet frames its roof above the sheet: again once the sheet's room is measured, as
+  // the sheet is taller than the bar it replaces.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the measured room is what asks for a new frame
+  const sheetFraming = useMemo(
+    () => (studio.sheetFrame === null ? null : {}),
+    [studio.sheetFrame, room.bottom],
+  );
   const closed = said?.kind === 'closed' ? said : null;
 
   return (
@@ -112,7 +124,7 @@ export function StudioCanvas({
           pictureScale={studio.shown?.pictureScale ?? 1}
           storeyHeightM={format.pack.storeyHeightM}
           fit={studio.fit}
-          frameOn={closed}
+          frameOn={sheetFraming ?? closed}
           rise={rise}
           roofMarks={roofMarks}
         />
@@ -188,18 +200,29 @@ export function StudioCanvas({
         onZoomOut={() => drive.current?.zoomOut()}
         onHome={() => drive.current?.home()}
       />
-      <StudioBottomBar
-        barRef={bottom}
-        name={name}
-        studio={studio}
-        view={view}
-        units={studio.units}
-        editing={editing}
-        place={detail.site.address}
-        words={words}
-        part={parts.bottomBar}
-        crowded={crowded}
-      />
+      {studio.roofSheet !== null && view !== 'top' ? (
+        <StudioRoofSheet
+          sheetRef={bottom}
+          sheet={studio.roofSheet}
+          studio={studio}
+          units={studio.units}
+          words={words}
+          map={scene}
+        />
+      ) : (
+        <StudioBottomBar
+          barRef={bottom}
+          name={name}
+          studio={studio}
+          view={view}
+          units={studio.units}
+          editing={editing}
+          place={detail.site.address}
+          words={words}
+          part={parts.bottomBar}
+          crowded={crowded}
+        />
+      )}
     </div>
   );
 }

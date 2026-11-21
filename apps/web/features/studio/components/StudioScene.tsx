@@ -129,7 +129,7 @@ export interface StudioSceneProps {
   heights: readonly number[];
   /** How much the picture is stretched about the pin to its true size. */
   pictureScale: number;
-  /** The market's storey height, where the marks on a roof's top stand. */
+  /** The market's storey height: a roof with no height of its own stands at it. */
   storeyHeightM: number;
   /** The roofs' ground, which the view frames; `null` before a roof. */
   fit: GroundBox | null;

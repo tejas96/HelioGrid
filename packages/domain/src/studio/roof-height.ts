@@ -51,6 +51,32 @@ export function roofHeightReset(document: StudioDocument, index: number): Studio
   return withRoof(document, index, { ...roofAt(document, index), height: null });
 }
 
+/** One step up or down, by the arrow's keys or − and +: whole steps, kept on the slider's track. */
+export function roofHeightStepped(metres: number, by: 1 | -1): number {
+  return roofHeightDragged(metres, by * ROOF_HEIGHT_STEP_M);
+}
+
+/**
+ * The height in hand, kept: the design with it, why it is refused, or `null` when there is
+ * nothing to keep — none in hand, or one within half a step of the height the roof stands at
+ * (the slider let go where it was, rounded to its step).
+ */
+export function roofHeightKept(
+  document: StudioDocument,
+  index: number,
+  inHand: number | null,
+  storeyHeightM: number,
+): EditResult | null {
+  const roof = document.roofs[index];
+  if (inHand === null || roof === undefined) return null;
+  const standing = roofHeightOf(roof, storeyHeightM).metres;
+  // In whole centimetres, as heights are kept: 3.05 against 3 is a change, 3.04 is not.
+  if (Math.round(Math.abs(inHand - standing) * 100) < Math.round((ROOF_HEIGHT_STEP_M / 2) * 100)) {
+    return null;
+  }
+  return roofHeightSet(document, index, inHand);
+}
+
 /**
  * Where the blue arrow puts the height while it is dragged: the height it was grabbed at plus how
  * far the pointer rose, in whole steps, kept on the slider's track. A height typed past the track

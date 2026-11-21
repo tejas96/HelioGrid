@@ -109,6 +109,7 @@ export {
   TURN_SNAP_DEGREES,
 } from './roof-edit';
 export {
+  entryMetres,
   entryOf,
   handMetres,
   LENGTH_SLIDE_SHARE,
@@ -128,9 +129,11 @@ export {
   ROOF_HEIGHT_STEP_M,
   type RoofHeightShown,
   roofHeightDragged,
+  roofHeightKept,
   roofHeightOf,
   roofHeightReset,
   roofHeightSet,
+  roofHeightStepped,
 } from './roof-height';
 export {
   LENGTH_ASK_SHARE,
@@ -158,6 +161,7 @@ export {
   roofsBox,
   roofsOverlap,
 } from './roof-shape';
+export { type RoofSheetView, roofHitAt, roofSheetOf } from './roof-sheet';
 export { gripCorner, roofStepAfter } from './roof-step';
 export {
   type CornerRef,

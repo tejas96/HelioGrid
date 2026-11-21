@@ -12,6 +12,8 @@ import {
   OPENING_VIEW,
   type PictureChoice,
   pictureNewerThanDrawn,
+  type RoofHeightShown,
+  type RoofSheetView,
   type RoofStepState,
   roofsBox,
   type ScaleBar,
@@ -40,6 +42,7 @@ import {
 } from './studio-document-state';
 import type { StudioSaveState } from './studio-save-queue';
 import { type DesignRead, useDesignScreen } from './use-design-screen';
+import { type RoofSheetMoves, type RoofSheetState, useRoofSheet } from './use-roof-sheet';
 import { type RoofMoves, type RoofStepView, useRoofStep } from './use-roof-step';
 import { useSession } from './use-session';
 
@@ -47,7 +50,7 @@ export type { StudioEditing, StudioPicture } from './studio-document-state';
 export type { StudioSaveState } from './studio-save-queue';
 export type { RoofMoves, RoofStepView } from './use-roof-step';
 
-export interface StudioMoves extends RoofMoves {
+export interface StudioMoves extends RoofMoves, RoofSheetMoves {
   pickPicture(choice: PictureChoice): void;
   undo(): void;
   redo(): void;
@@ -68,7 +71,7 @@ export interface StudioMoves extends RoofMoves {
   objectsSeen(): void;
 }
 
-export interface StudioScreen extends RoofStepView {
+export interface StudioScreen extends RoofStepView, RoofSheetState {
   readonly read: DesignRead;
   /** `null` until the document is read. */
   readonly document: StudioDocument | null;
@@ -115,6 +118,21 @@ function undoRedoOf(
   const back =
     roofStep.kind === 'drawing' ? roofStep.corners.length > 0 : (history?.past.length ?? 0) > 0;
   return { canUndo: back, canRedo: roofStep.kind === 'idle' && (history?.future.length ?? 0) > 0 };
+}
+
+/** The roof whose sheet is open stands at the height in hand, and the camera frames it alone. */
+function withSheet(
+  heights: readonly RoofHeightShown[],
+  fit: GroundBox | null,
+  roofSheet: RoofSheetView | null,
+  document: StudioDocument | null,
+): { heights: readonly RoofHeightShown[]; fit: GroundBox | null } {
+  const open = roofSheet === null ? undefined : document?.roofs[roofSheet.roof];
+  if (roofSheet === null || open === undefined) return { heights, fit };
+  return {
+    heights: heights.map((height, i) => (i === roofSheet.roof ? roofSheet.height : height)),
+    fit: roofsBox([open]),
+  };
 }
 
 /**
@@ -182,6 +200,19 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   });
   const { step, act } = roof;
   const { roofStep } = roof.view;
+  const sheet = useRoofSheet({
+    document,
+    latest,
+    change,
+    editable,
+    storeyHeightM: formats.storeyHeightM,
+    units,
+    outline: (index, metres) => {
+      setView('top');
+      act({ kind: 'pick_roof', roof: index, metres });
+    },
+  });
+  const { roofSheet } = sheet.state;
 
   return {
     read,
@@ -198,7 +229,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     view,
     views,
     ...roof.view,
-    fit,
+    ...sheet.state,
+    ...withSheet(roof.view.heights, fit, roofSheet, document),
     offer3d: roofClosed && !seen3d,
     objectsNote,
     scaleBar: (metresPerPixel, maxPixels) => scaleBarOf(metresPerPixel, units, maxPixels),
@@ -207,7 +239,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     ...undoRedoOf(editable, roofStep, history),
     focus: (phone) =>
       focusOf({
-        job: roof.view.job,
+        job: roofSheet === null ? roof.view.job : 'sheet',
         view,
         phone,
         canEdit: editable,
@@ -216,6 +248,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       }),
     moves: {
       ...roof.moves,
+      ...sheet.moves,
       pickPicture: (choice) => {
         const at = latest.current;
         if (at === null || at.present.picture === choice) return;
@@ -224,6 +257,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       // While drawing, Undo takes the last corner off; with a length or a drag in hand, it puts
       // that back first.
       undo: () => {
+        // A height in hand is put back first, as a length or a drag is.
+        if (sheet.moves.dropHeight()) return;
         const now = step.current.kind;
         if (now === 'drawing') act({ kind: 'undo_corner' });
         else if (now === 'sizing' || now === 'dragging') act({ kind: 'cancel' });
@@ -247,6 +282,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         // A new roof is drawn in the top view only: leaving it drops the draft.
         if (next !== 'top' && step.current.kind === 'drawing') act({ kind: 'cancel' });
         if (next === '3d') setSeen3d(true);
+        // A roof's sheet is the 3D view's: the top view keeps its height and closes it.
+        if (next === 'top') void sheet.moves.done();
         setView(next);
       },
       // Drawing happens in the top view only: the camera flies there first.

@@ -13,7 +13,10 @@ const NONE: ChromeRoom = { top: 0, bottom: 0 };
  * The web's measure of the canvas's bars: how far the top bars reach down, and how far the bottom
  * bar reaches up, so the camera frames the site in the room between them. It follows every resize.
  */
-export function useChromeRoom(): {
+export function useChromeRoom(
+  /** A part that swaps the bar for another (a roof's sheet): each new value measures again. */
+  swapped: boolean,
+): {
   readonly frame: RefObject<HTMLDivElement | null>;
   readonly top: RefObject<HTMLDivElement | null>;
   readonly bottom: RefObject<HTMLDivElement | null>;
@@ -24,6 +27,7 @@ export function useChromeRoom(): {
   const bottom = useRef<HTMLDivElement>(null);
   // biome-ignore lint/plugin: the web's own measure of laid-out boxes; the phone shows this page
   const [room, setRoom] = useState<ChromeRoom>(NONE);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: a swapped bar is a new node to watch
   useEffect(() => {
     const measure = () => {
       const box = frame.current?.getBoundingClientRect();
@@ -42,6 +46,6 @@ export function useChromeRoom(): {
     }
     measure();
     return () => observer.disconnect();
-  }, []);
+  }, [swapped]);
   return { frame, top, bottom, room };
 }

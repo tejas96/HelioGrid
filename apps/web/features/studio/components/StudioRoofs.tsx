@@ -23,7 +23,7 @@ const SHADOW_STRENGTH = 0.32;
 const PLASTER_ROUGHNESS = 0.92;
 
 /** Where a point of the model lands on the screen, in CSS pixels; `null` behind the camera. */
-export type ScreenOf = (point: GroundPoint, onTop: boolean) => { x: number; y: number } | null;
+export type ScreenOf = (point: GroundPoint, heightM: number) => { x: number; y: number } | null;
 
 /** The page's marks on the model: told each drawn frame where the model now lands on the screen. */
 export interface RoofMarksHandle {
@@ -163,7 +163,7 @@ export function StudioRoofs({
   palette: ThemePalette;
   /** Each roof's height in metres, in the order of `roofs`. */
   heights: readonly number[];
-  /** The market's storey height, where the marks on a roof's top stand. */
+  /** The market's storey height: a roof with no height of its own stands at it. */
   storeyHeightM: number;
   /** The sky picture the roofs' tops wear; `null` on the grid. */
   top: RoofTopPicture | null;
@@ -191,9 +191,9 @@ export function StudioRoofs({
       });
       invalidate();
     }
-    marks.current?.place((point, onTop) => {
-      // A mark on a roof's top stands at the storey; a roof's own height moves its sheet's marks.
-      at.set(point.east, onTop ? rise.current * storeyHeightM : 0, -point.north).project(camera);
+    marks.current?.place((point, heightM) => {
+      // A mark on a roof's top stands at that roof's height, as far risen as the roof.
+      at.set(point.east, rise.current * heightM, -point.north).project(camera);
       if (at.z > 1) return null;
       return { x: ((at.x + 1) / 2) * size.width, y: ((1 - at.y) / 2) * size.height };
     });

@@ -6,7 +6,6 @@ import { useTranslate } from '@heliogrid/i18n/react';
 import {
   Button,
   IconButton,
-  Input,
   SegmentedControl,
   ShellGlyph,
   Slider,
@@ -14,60 +13,13 @@ import {
   useFormat,
 } from '@heliogrid/ui';
 import type { KeyboardEvent } from 'react';
+import { StudioEntryBoxes } from './StudioEntryBoxes';
 
 type Sizing = Extract<RoofStepState, { kind: 'sizing' }>;
 
 /** Each edge opened, and each switch to the box, gives the box a new focus number. */
 const FOCUS_PER_ROOF = 1_000;
 const ONE_DIGIT = /^[0-9]$/;
-
-/** The box to type in: metres, or feet and inches, as the board draws them. */
-function LengthBoxes({
-  sizing,
-  studio,
-  units,
-  words,
-}: {
-  sizing: Sizing;
-  studio: StudioScreen;
-  units: MeasurementSystem;
-  words: StudioCanvasWords;
-}) {
-  const { entry } = sizing;
-  const feet = units === 'imperial';
-  const { moves } = studio;
-  return (
-    <div className="hg-length-box-row">
-      <span className="hg-length-box-well">
-        <Input
-          label={feet ? words.lengthFeet : words.lengthLabel}
-          labelSpokenOnly
-          type="number"
-          mono
-          density="functional"
-          value={entry.main}
-          focusRequest={sizing.roof * FOCUS_PER_ROOF + sizing.edge + 1}
-          onChange={(main) => moves.typeLength({ ...entry, main })}
-          trailing={feet ? words.unitFeet : words.unitMetres}
-        />
-      </span>
-      {feet ? (
-        <span className="hg-length-box-well" data-short="true">
-          <Input
-            label={words.lengthInches}
-            labelSpokenOnly
-            type="number"
-            mono
-            density="functional"
-            value={entry.inches}
-            onChange={(inches) => moves.typeLength({ ...entry, inches })}
-            trailing={words.unitInches}
-          />
-        </span>
-      ) : null}
-    </div>
-  );
-}
 
 /**
  * The length field (`T-M05-002`, part b): opened by a tap on a length, at the top. A slider first —
@@ -151,7 +103,14 @@ export function StudioLengthBox({
         </IconButton>
       </div>
       {typing ? (
-        <LengthBoxes sizing={sizing} studio={studio} units={units} words={words} />
+        <StudioEntryBoxes
+          entry={entry}
+          units={units}
+          label={words.lengthLabel}
+          focusRequest={sizing.roof * FOCUS_PER_ROOF + sizing.edge + 1}
+          onEntry={moves.typeLength}
+          words={words}
+        />
       ) : (
         <Slider
           value={metres}

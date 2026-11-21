@@ -12,6 +12,7 @@ import {
   useFormat,
 } from '@heliogrid/ui';
 import { type ReactNode, type Ref, useEffect, useRef } from 'react';
+import { roofWordsShown } from './roof-words-shown';
 
 interface BarAct {
   readonly key: string;
@@ -42,6 +43,8 @@ interface BarFacts {
   readonly format: Format;
   /** The corner held is crowded by another on the screen. */
   readonly crowded: boolean;
+  /** The reader may change the design. */
+  readonly editable: boolean;
 }
 
 function drawingBar(bar: Extract<RoofBar, { kind: 'drawing' }>, facts: BarFacts): BarView {
@@ -82,15 +85,15 @@ function roofsStatus(
   const { words } = facts;
   if (bar.live !== null) return words.editRefusal(bar.live, shown);
   if (facts.crowded && facts.studio.roofStep.kind === 'dragging') return words.dragCrowded;
+  // In 3D the outline is not changed: what a person does here is a roof's height — or, for a
+  // reader, looks at it.
+  if (facts.view !== 'top') return facts.editable ? words.roofIdle3d : words.roofIdle3dReader;
   return words.roofLine(bar.said, bar.sizing, shown);
 }
 
 function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): BarView {
   const { words, format, units, studio, view } = facts;
-  const shown: RoofWordsShown = {
-    length: (metres) => format.roofLength(metres, units, false),
-    height: format.roofHeight(format.pack.storeyHeightM, units),
-  };
+  const shown = roofWordsShown(format, units);
   const area = words.roofArea(format.area(bar.area, units));
   const see3d: BarAct[] =
     studio.offer3d && view === 'top'
@@ -200,7 +203,15 @@ export function StudioBottomBar({
   crowded: boolean;
 }) {
   const format = useFormat();
-  const facts: BarFacts = { studio, view, units, words, format, crowded };
+  const facts: BarFacts = {
+    studio,
+    view,
+    units,
+    words,
+    format,
+    crowded,
+    editable: editing.kind === 'editor',
+  };
   const { bar } = studio;
   let shown = startBar(name, place, facts);
   if (bar?.kind === 'drawing') shown = drawingBar(bar, facts);

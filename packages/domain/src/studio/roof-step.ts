@@ -226,6 +226,8 @@ const ON: Handlers = {
       ),
     ),
   remove_corner: (state, _event, document) => cornerGone(state, document),
+  pick_roof: (state, { roof, metres }) =>
+    inState(state, 'idle', () => stay(idle({ kind: 'roof_picked', roof, metres }, roof))),
 };
 
 /**

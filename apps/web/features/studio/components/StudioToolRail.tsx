@@ -255,6 +255,29 @@ export function StudioToolRail({
             </IconButton>
           </span>
         </Shown>
+        {/* The 3D tool: the camera glides to each side of the model. */}
+        <Shown when={parts.sideViews === 'shown'}>
+          <Menu
+            label={words.sideViews}
+            selection="single"
+            align="end"
+            trigger={
+              <IconButton label={words.sideViews} size={TOOL}>
+                <ShellGlyph name="eye" size="md" />
+              </IconButton>
+            }
+            items={views
+              .filter((place) => place.view !== 'top')
+              .map((place) => ({
+                key: place.view,
+                label: sideName[place.view],
+                selected: view === place.view,
+                ...(place.lock === null
+                  ? { onSelect: () => onView(place.view) }
+                  : { disabled: true, disabledReason: words.stepLock(place.lock) }),
+              }))}
+          />
+        </Shown>
         <Shown when={parts.zoom === 'shown'}>
           <span className="hg-studio-zoom">
             <IconButton label={words.zoomIn} size={TOOL} onClick={onZoomIn}>
