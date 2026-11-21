@@ -33,15 +33,17 @@ const placeSourceProvider: Provider = {
 
 /**
  * Where the studio's sky picture comes from. Under TEST the memory source stands in — a suite must
- * never reach a third party. Elsewhere, development included, it is Google's Map Tiles on the server
- * key, and absent where there is no key: the studio then says so and opens on its grid.
+ * never reach a third party. Elsewhere, development included, it is Google's Static Maps on the
+ * server key, and absent where there is no key: the studio then says so and opens on its grid.
  */
 const skyPictureSourceProvider: Provider = {
   provide: SKY_PICTURE_SOURCE,
   useFactory: () => {
     if (ENV.NODE_ENV === 'test') return new MemorySkyPictureSource();
     const key = ENV.GOOGLE_MAPS_API_KEY;
-    return key === undefined ? new AbsentSkyPictureSource() : new GoogleSkyPictureSource(key);
+    return key === undefined
+      ? new AbsentSkyPictureSource()
+      : new GoogleSkyPictureSource(key, ENV.GOOGLE_MAPS_SIGNING_SECRET);
   },
 };
 
