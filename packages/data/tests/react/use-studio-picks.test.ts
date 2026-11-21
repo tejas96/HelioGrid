@@ -1,5 +1,6 @@
 // @vitest-environment happy-dom
 
+import { IN_FORMATS } from '@heliogrid/domain';
 import { act, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { useSession } from '../../src/react/use-session';
@@ -12,7 +13,10 @@ import { answerNext, designId, mountedOver, origin } from './studio-origin';
  * pick last asked for; a save the server refuses is told, never swallowed.
  */
 async function mounted() {
-  const view = mountedOver(() => ({ session: useSession(), studio: useStudioScreen(designId(1)) }));
+  const view = mountedOver(() => ({
+    session: useSession(),
+    studio: useStudioScreen(designId(1), IN_FORMATS),
+  }));
   await waitFor(() => expect(view.result.current.session.user).not.toBeNull());
   return view;
 }

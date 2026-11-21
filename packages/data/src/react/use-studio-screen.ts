@@ -1,6 +1,7 @@
 'use client';
 import {
   type FocusParts,
+  type FormatPack,
   focusOf,
   type GroundBox,
   type History,
@@ -121,7 +122,7 @@ function undoRedoOf(
  * change saved the moment it is made, one editor at a time, Undo and Redo through every change
  * since the design opened; the reader's metres or feet.
  */
-export function useStudioScreen(designId: string): StudioScreen {
+export function useStudioScreen(designId: string, formats: FormatPack): StudioScreen {
   const session = useSession();
   const { read } = useDesignScreen(designId);
   const ready = read.kind === 'ready';
@@ -175,6 +176,7 @@ export function useStudioScreen(designId: string): StudioScreen {
     helpersOff: session.user?.studioHelpersOff ?? [],
     setHelpersOff: (off) => void session.setStudioPicks({ studioHelpersOff: off }),
     helpersRefused: session.refusedPreferences.includes('studio'),
+    storeyHeightM: formats.storeyHeightM,
   });
   const { step, act } = roof;
   const { roofStep } = roof.view;

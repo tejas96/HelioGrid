@@ -15,6 +15,28 @@ interface PictureOption {
   readonly off: TranslatedText | null;
 }
 
+/** The chip's title line: the picture, who gave it, and the date the roof was drawn on it. */
+function ChipTitle({
+  title,
+  source,
+  drawnOn,
+  canPick,
+}: {
+  title: TranslatedText;
+  source: TranslatedText | null;
+  drawnOn: string | null;
+  canPick: boolean;
+}) {
+  return (
+    <span className="hg-studio-chip-title">
+      {title}
+      {source === null ? null : <span className="hg-studio-chip-source"> · {source}</span>}
+      {drawnOn === null ? null : <span className="hg-studio-chip-source"> · {drawnOn}</span>}
+      {canPick ? <ShellGlyph name="chevron" size="xs" /> : null}
+    </span>
+  );
+}
+
 /**
  * The picture chip, top left: which picture the ground shows, who gave it, how sharp it is and its
  * credit line — always in view, never under a panel. A tap opens the three pictures: the sky
@@ -25,6 +47,7 @@ export function StudioPictureChip({
   shown,
   sharpness,
   takenOn,
+  drawnOn,
   words,
   canPick,
   open,
@@ -37,6 +60,11 @@ export function StudioPictureChip({
   /** The sky picture's sharpness and date, already in the reader's units and the market's dates. */
   sharpness: string | null;
   takenOn: string | null;
+  /**
+   * The date of the picture the first roof was drawn on, in the market's dates (M04-10): the chip
+   * names it once a roof stands. `null` before a roof, or when the provider gave no date.
+   */
+  drawnOn: string | null;
   words: StudioCanvasWords;
   canPick: boolean;
   open: boolean;
@@ -104,13 +132,12 @@ export function StudioPictureChip({
           )}
         </span>
         <span className="hg-studio-chip-words">
-          <span className="hg-studio-chip-title">
-            {title}
-            {sky === null || shown !== 'sky' ? null : (
-              <span className="hg-studio-chip-source"> · {words.source(sky.source)}</span>
-            )}
-            {canPick ? <ShellGlyph name="chevron" size="xs" /> : null}
-          </span>
+          <ChipTitle
+            title={title}
+            source={sky === null || shown !== 'sky' ? null : words.source(sky.source)}
+            drawnOn={shown === 'sky' ? drawnOn : null}
+            canPick={canPick}
+          />
           {sky === null || shown !== 'sky' ? null : (
             <span className="hg-studio-chip-credit">{sky.credit}</span>
           )}

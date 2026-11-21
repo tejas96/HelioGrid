@@ -15,6 +15,7 @@ import {
   formatMonthYear,
   formatNumber,
   formatPhone,
+  formatRoofHeight,
   formatRoofLength,
   formatTime,
   formatWeekday,
@@ -94,6 +95,8 @@ export interface MarketFormat {
   length: (metres: number, system: MeasurementSystem) => string;
   /** A roof edge's length: traced `~7.8 m`, set `8.20 m`, or `26 ft 11 in` (`T-M05-002`). */
   roofLength: (metres: number, system: MeasurementSystem, traced: boolean) => string;
+  /** A roof's height: `3.0 m`, `9 ft 10 in` (`T-M05-002`). */
+  roofHeight: (metres: number, system: MeasurementSystem) => string;
   /** An area held in square metres, whole: `66 m²`, `706 sq ft`. */
   area: (squareMetres: number, system: MeasurementSystem) => string;
   /** A day's name in the reader's words, on the pack's zone — `Monday`. */
@@ -140,6 +143,7 @@ export function createFormat(
     fineLength: (metres, system) => formatFineLength(pack, metres, system),
     length: (metres, system) => formatLength(pack, metres, system),
     roofLength: (metres, system, traced) => formatRoofLength(pack, metres, system, traced),
+    roofHeight: (metres, system) => formatRoofHeight(pack, metres, system),
     area: (squareMetres, system) => formatArea(pack, squareMetres, system),
     weekday: (value) => formatWeekday(pack, value, language),
     firstDayOfWeek: pack.firstDayOfWeek,

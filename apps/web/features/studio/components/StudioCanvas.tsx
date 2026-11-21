@@ -1,7 +1,6 @@
 'use client';
 import type { DesignDetail, TranslatedText } from '@heliogrid/contracts';
 import type { StudioScreen } from '@heliogrid/data/react';
-import type { PictureChoice } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import {
   ShellGlyph,
@@ -17,15 +16,13 @@ import { useDrawPress } from '../hooks/use-draw-press';
 import { useMapKeys } from '../hooks/use-map-keys';
 import { StudioBottomBar } from './StudioBottomBar';
 import type { StudioDrive } from './StudioCameraRig';
+import { StudioCanvasHead } from './StudioCanvasHead';
 import { StudioCanvasNotes } from './StudioCanvasNotes';
 import { StudioLoupe } from './StudioLoupe';
 import { StudioMapMarks, type StudioMapMarksHandle } from './StudioMapMarks';
-import { StudioPictureChip, StudioPictureCredit } from './StudioPictureChip';
 import { StudioRoofMarks } from './StudioRoofMarks';
 import type { RoofMarksHandle } from './StudioRoofs';
-import { StudioStepSwitcher } from './StudioStepSwitcher';
 import { StudioToolRail } from './StudioToolRail';
-import { StudioTopBar } from './StudioTopBar';
 
 /** The sun the scene is lit by before the site's own is known: high, so nothing waits on it. */
 const NOON_OVERHEAD = { azimuthDegrees: 180, elevationDegrees: 60 } as const;
@@ -70,15 +67,17 @@ export function StudioCanvas({
   const roofMarks = useRef<RoofMarksHandle>(null);
   const rise = useRef(0);
   const onKeyDown = useMapKeys(drive);
-  const { picture, editing, saving, moves, view, sun, roofStep, document } = studio;
+  const { picture, editing, moves, view, sun, roofStep } = studio;
   const editable = editing.kind === 'editor';
   const drawing = roofStep.kind === 'drawing';
   const roofs = studio.shown?.roofs ?? [];
   const parts = studio.focus(desktop === false);
-  const shown: PictureChoice = picture.kind === 'none' ? 'none' : (document?.picture ?? 'sky');
-  const sky = picture.kind === 'sky' ? picture : null;
 
   const { aim, handlers } = useDrawPress(studio, drive);
+  // A roof that closes is framed in the room between the bars: the camera stays in the top view,
+  // where its lengths are set next.
+  const said = roofStep.kind === 'idle' ? roofStep.said : null;
+  const closed = said?.kind === 'closed' ? said : null;
 
   return (
     <div ref={frame} className="hg-studio" data-view={view} data-drawing={drawing}>
@@ -103,8 +102,10 @@ export function StudioCanvas({
           drive={drive}
           onMarks={(seen) => marks.current?.show(seen)}
           roofs={roofs}
+          heights={studio.heights.map((height) => height.metres)}
           storeyHeightM={format.pack.storeyHeightM}
           fit={studio.fit}
+          frameOn={closed}
           rise={rise}
           roofMarks={roofMarks}
         />
@@ -137,51 +138,15 @@ export function StudioCanvas({
         <ShellGlyph name="pin" size="sm" tone="current" />
         {words.pin}
       </span>
-      <div ref={top} className="hg-studio-canvas-head">
-        <div
-          className="hg-studio-head-part"
-          data-hidden={parts.topBar === 'hidden'}
-          inert={parts.topBar === 'hidden'}
-        >
-          <StudioTopBar
-            name={name}
-            editing={editing}
-            saving={saving}
-            words={words}
-            onBack={onBack}
-            onRetry={moves.retry}
-          />
-        </div>
-        {/* While another person edits, the place stays: their roof is drawn on it. A change still
-            on its way keeps the person here, or leaving would lose it. */}
-        <div
-          className="hg-studio-head-part"
-          data-hidden={parts.stepSwitcher === 'hidden'}
-          inert={parts.stepSwitcher === 'hidden'}
-        >
-          <StudioStepSwitcher
-            rail={studio.rail}
-            words={words}
-            onSite={editable ? onSite : null}
-            siteWaits={saving.kind !== 'saved'}
-          />
-        </div>
-        {parts.pictureChip === 'credit' ? (
-          <StudioPictureCredit picture={picture} />
-        ) : (
-          <StudioPictureChip
-            picture={picture}
-            shown={shown}
-            sharpness={sky === null ? null : format.fineLength(sky.metresPerPixel, studio.units)}
-            takenOn={sky?.takenOn == null ? null : format.monthYear(sky.takenOn)}
-            words={words}
-            canPick={editable && roofStep.kind === 'idle'}
-            open={studio.picturesOpen}
-            onOpen={moves.showPictures}
-            onPick={moves.pickPicture}
-          />
-        )}
-      </div>
+      <StudioCanvasHead
+        headRef={top}
+        studio={studio}
+        parts={parts}
+        name={name}
+        words={words}
+        onBack={onBack}
+        onSite={onSite}
+      />
       <StudioCanvasNotes studio={studio} words={words} />
       <StudioToolRail
         view={view}

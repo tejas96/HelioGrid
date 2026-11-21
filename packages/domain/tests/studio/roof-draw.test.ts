@@ -145,10 +145,19 @@ describe('drawing a roof: taps', () => {
   });
 
   it.each([
-    ['0.19 m from the last corner adds nothing', p(0.19, 0), 'same'],
-    ['0.21 m from it adds a corner', p(0.21, 0), 'added'],
-  ])('%s', (_name, at, kind) => {
-    expect(draftTap([p(0, 0)], at, NO_SNAP_TARGETS, [], ALL_HELPERS).kind).toBe(kind);
+    // corners placed, the tap → what it does: no two corners nearer than 0.3 m
+    ['0.29 m from the last corner adds nothing', [p(0, 0)], p(0.29, 0), 'same'],
+    ['0.3 m from it adds a corner', [p(0, 0)], p(0.3, 0), 'added'],
+    [
+      '0.29 m from an earlier corner is refused',
+      [p(0, 0), p(8, 0), p(8, 6)],
+      p(0.29, 0),
+      'refused',
+    ],
+    ['0.3 m from it is placed', [p(0, 0), p(8, 0), p(8, 6)], p(0, 0.3), 'added'],
+  ])('%s', (_name, corners, at, kind) => {
+    // Free, so no snap moves the tap: the gap alone decides.
+    expect(draftTap(corners, at, NO_SNAP_TARGETS, [], helpersOf([], true)).kind).toBe(kind);
   });
 
   it('a tap whose edge would cross an earlier one is refused', () => {

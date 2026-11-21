@@ -61,12 +61,18 @@ export function StudioCameraRig({
   drive,
   onMarks,
   fit,
+  frameOn,
 }: {
   view: StudioView;
   free: { readonly top: number; readonly bottom: number };
   still: boolean;
   /** The roofs' ground: the view frames them when it opens and on Back to the pin. */
   fit: GroundBox | null;
+  /**
+   * A roof closed: each new value frames the roofs once, with the box from this same render, so the
+   * new roof is in it. The camera stays in its view.
+   */
+  frameOn: object | null;
   /** The picture's sharp ground: the camera never shows past it. `null`: the grid, or no picture yet. */
   clear: ClearGround | null;
   /** The picture's ground per pixel, which sets how close the camera comes; `null` with no picture. */
@@ -203,6 +209,11 @@ export function StudioCameraRig({
     // The camera flies to a picked view; the first view and a reduced-motion one are set at once.
     poseFor(view, !still && was !== null && was.view !== view);
   });
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: a new close is what asks for the frame
+  useEffect(() => {
+    if (frameOn !== null) poseFor(view, !still);
+  }, [frameOn]);
 
   /** The view framed round the roofs, or round the pin before a roof, flown to or set at once. */
   const poseFor = (to: StudioView, move: boolean) => {

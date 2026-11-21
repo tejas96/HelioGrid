@@ -1,3 +1,5 @@
+import { gripCorner } from './roof-step';
+import type { RoofStepState } from './roof-step-state';
 import type { StudioView } from './views';
 
 /**
@@ -7,9 +9,30 @@ import type { StudioView } from './views';
  * fades each part in and out; this file alone decides which.
  */
 
-/** The job in hand. `looking` is no job: everything a person may use is there. */
-export const FOCUS_JOBS = ['looking', 'drawing', 'dragging', 'sizing', 'sheet'] as const;
+/**
+ * The job in hand. `looking` is no job: everything a person may use is there. `dragging` is a
+ * corner (or a new one from a +), which the helpers guide; `moving` is the whole roof, moved or
+ * turned, which they do not.
+ */
+export const FOCUS_JOBS = ['looking', 'drawing', 'dragging', 'moving', 'sizing', 'sheet'] as const;
 export type FocusJob = (typeof FOCUS_JOBS)[number];
+
+const JOB_OF_STEP: Record<RoofStepState['kind'], FocusJob> = {
+  idle: 'looking',
+  drawing: 'drawing',
+  sizing: 'sizing',
+  dragging: 'dragging',
+};
+
+/**
+ * The job the roof step has in hand. A drag holds a corner — or a new one from a + — which the
+ * helpers guide, or the whole roof, moved or turned, which they do not. A roof's sheet is the
+ * studio's own job, beside the roof step.
+ */
+export function focusJobOf(step: RoofStepState): FocusJob {
+  if (step.kind === 'dragging' && gripCorner(step.grip) === null) return 'moving';
+  return JOB_OF_STEP[step.kind];
+}
 
 /** What the studio shows of each part. `hidden` steps aside; every other value is on screen. */
 export interface FocusParts {
@@ -20,7 +43,7 @@ export interface FocusParts {
   readonly pictureChip: 'shown' | 'credit';
   /** The pencil that starts a drawing; `filled` while it draws. */
   readonly pencil: 'shown' | 'filled' | 'hidden';
-  /** Square, Line up and Buildings, beside the pencil. */
+  /** Square, Line up and Buildings, beside the pencil: while a corner is drawn or dragged. */
   readonly helperBar: 'shown' | 'hidden';
   readonly undoRedo: 'shown' | 'hidden';
   /** The + that starts another roof. */
@@ -97,6 +120,18 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     otherHandles: 'hidden',
     bottomBar: 'status',
   },
+  moving: {
+    topBar: 'hidden',
+    stepSwitcher: 'hidden',
+    pictureChip: 'credit',
+    pencil: 'hidden',
+    undoRedo: 'hidden',
+    addRoof: 'hidden',
+    layers: 'hidden',
+    zoom: 'hidden',
+    otherHandles: 'hidden',
+    bottomBar: 'status',
+  },
   sizing: {
     topBar: 'hidden',
     stepSwitcher: 'hidden',
@@ -107,6 +142,8 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     layers: 'hidden',
     zoom: 'hidden',
     otherHandles: 'hidden',
+    // The bar's status line stays on every screen: a refused step says why there (`T-M05-002`).
+    bottomBar: 'status',
   },
 };
 
@@ -139,10 +176,8 @@ function partsOfJob(facts: FocusFacts): FocusParts {
   }
   if (job === 'looking' || job === 'sheet') return LOOKING_TOP;
   const parts = { ...LOOKING_TOP, ...IN_A_JOB[job] };
-  if (job !== 'sizing') return parts;
-  return facts.phone
-    ? { ...parts, compass: 'hidden', bottomBar: 'hidden' }
-    : { ...parts, bottomBar: 'status' };
+  // On a phone the slider, or the keyboard, takes the low screen: the compass steps aside.
+  return job === 'sizing' && facts.phone ? { ...parts, compass: 'hidden' } : parts;
 }
 
 /** Which parts the studio shows for the job in hand. */

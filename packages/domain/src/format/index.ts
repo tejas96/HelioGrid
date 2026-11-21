@@ -89,6 +89,7 @@ export {
   formatArea,
   formatFineLength,
   formatLength,
+  formatRoofHeight,
   formatRoofLength,
   metresOfFeetAndInches,
   PROCUREMENT_SYSTEM,

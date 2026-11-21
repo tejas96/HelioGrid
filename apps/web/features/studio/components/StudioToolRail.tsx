@@ -25,7 +25,7 @@ import { Shown } from './StudioShown';
 const TOOL = theme.layout['button-h-md'];
 
 const HELPER_GLYPH: Record<StudioHelper, ShellGlyphName> = {
-  square: 'angle',
+  square: 'right-angle',
   line_up: 'line-up',
   buildings: 'building',
 };

@@ -71,11 +71,22 @@ function drawingBar(bar: Extract<RoofBar, { kind: 'drawing' }>, facts: BarFacts)
   };
 }
 
+/** The roofs' sentence: a refusal, what an act did, or what the view lets a person do. */
+function roofsStatus(
+  bar: Extract<RoofBar, { kind: 'roofs' }>,
+  facts: BarFacts,
+  shown: RoofWordsShown,
+): TranslatedText {
+  const { words } = facts;
+  if (bar.live !== null) return words.editRefusal(bar.live, shown);
+  return words.roofLine(bar.said, bar.sizing, shown);
+}
+
 function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): BarView {
   const { words, format, units, studio, view } = facts;
   const shown: RoofWordsShown = {
     length: (metres) => format.roofLength(metres, units, false),
-    height: format.roofLength(format.pack.storeyHeightM, units, false),
+    height: format.roofHeight(format.pack.storeyHeightM, units),
   };
   const area = words.roofArea(format.area(bar.area, units));
   const see3d: BarAct[] =
@@ -103,10 +114,7 @@ function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): Ba
         </span>
       </>
     ),
-    status:
-      bar.live === null
-        ? words.roofLine(bar.said, bar.sizing, shown)
-        : words.editRefusal(bar.live, shown),
+    status: roofsStatus(bar, facts, shown),
     bad: bar.bad,
     acts: [
       ...see3d,

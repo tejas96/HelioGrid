@@ -3,7 +3,7 @@ import type { DesignDetail } from '@heliogrid/contracts';
 import { useStudioScreen } from '@heliogrid/data/react';
 import { designPageWords, siteDetailsPageWords, studioCanvasWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, LeadDetailStates, StateRegion, useOwnWidth } from '@heliogrid/ui';
+import { Button, LeadDetailStates, StateRegion, useFormat, useOwnWidth } from '@heliogrid/ui';
 import { useRef } from 'react';
 import { inPhoneWebView, leaveToPhone, siteToPhone } from '../../lib/web-view-host';
 import { StudioCanvas } from './components/StudioCanvas';
@@ -36,7 +36,8 @@ export function DesignScreen({
 }) {
   const t = useTranslate();
   const moves = useStudioMoves();
-  const studio = useStudioScreen(designId);
+  const format = useFormat();
+  const studio = useStudioScreen(designId, format.pack);
   const frame = useRef<HTMLDivElement>(null);
   const { read } = studio;
   const page = siteDetailsPageWords(t);

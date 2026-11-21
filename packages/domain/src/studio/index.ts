@@ -49,6 +49,7 @@ export {
   type FocusFacts,
   type FocusJob,
   type FocusParts,
+  focusJobOf,
   focusOf,
 } from './focus';
 export { coordinateOf, type GroundBox, type GroundPoint, groundOf } from './ground';
@@ -77,6 +78,7 @@ export type {
 } from './roof-check';
 export {
   ALL_HELPERS,
+  CORNER_GAP_M,
   type DraftClose,
   type DraftRefusal,
   type DraftTap,
@@ -89,7 +91,6 @@ export {
   helpersOf,
   NO_SNAP_TARGETS,
   type RoofSnap,
-  SAME_TAP_M,
   SNAP_M,
   type SnapOwner,
   type Snapped,

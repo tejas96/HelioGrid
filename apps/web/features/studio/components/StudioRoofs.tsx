@@ -3,15 +3,17 @@ import type { GroundPoint, Roof, StudioView } from '@heliogrid/domain';
 import type { ThemePalette } from '@heliogrid/theme';
 import { useFrame, useThree } from '@react-three/fiber';
 import { type RefObject, useEffect, useMemo } from 'react';
-import { ExtrudeGeometry, Shape, Vector3 } from 'three';
+import { type CanvasTexture, ExtrudeGeometry, Shape, type Texture, Vector3 } from 'three';
 
 /** A roof in the top view lies flat on its picture: the marks over it sit where the picture is. */
-const FLAT_M = 0;
+const FLAT = 0;
+/** In 3D every roof stands at its whole height. */
+const STANDING = 1;
 /** Below this height a rising roof is not drawn: in the top view the picture is the roof. */
 const SHOWN_FROM_M = 0.02;
 /** How much of the way to its height a roof rises each second: about a quarter second's rise. */
 const RISE_PER_SECOND = 12;
-/** A rise this near its height has arrived: a millimetre. */
+/** A rise this near its end has arrived: a thousandth of the way. */
 const SETTLED_M = 1e-3;
 /** The ground that takes the roofs' soft shadow, in metres across. */
 const SHADOW_GROUND_M = 160;
@@ -29,11 +31,45 @@ export interface RoofMarksHandle {
 }
 
 /**
- * The height the roofs stand at now: 0 in the top view, the storey in 3D, rising between them.
- * The marks read it, so a dot sits on the roof's top corner as the roof rises.
+ * How far the roofs have risen, as a share of each one's own height: 0 in the top view, 1 in 3D,
+ * rising between them. The marks read it, so a mark sits on the roof's top as the roof rises.
  */
 export interface RoofRise {
   current: number;
+}
+
+/** The sky picture as the ground lays it: one texture over a box of ground, in metres from the pin. */
+export interface RoofTopPicture {
+  readonly texture: CanvasTexture;
+  readonly west: number;
+  readonly east: number;
+  readonly south: number;
+  readonly north: number;
+}
+
+/**
+ * The picture a roof's top wears: the ground's own texture, laid by ground metres. A cap's corners
+ * carry their east and north as their texture places, so one stretch and shift lay the picture on
+ * the roof exactly where it lies on the ground.
+ */
+function topOf(picture: RoofTopPicture): Texture {
+  const top = picture.texture.clone();
+  const across = picture.east - picture.west;
+  const along = picture.north - picture.south;
+  top.repeat.set(1 / across, 1 / along);
+  top.offset.set(-picture.west / across, -picture.south / along);
+  top.needsUpdate = true;
+  return top;
+}
+
+/** A roof block's height in metres at the rise now; below a hair it is not drawn. */
+function standAt(
+  node: { scale: { y: number }; visible: boolean; userData: { metres?: number } },
+  rise: number,
+) {
+  const metres = (node.userData.metres ?? 0) * rise;
+  node.scale.y = Math.max(metres, SHOWN_FROM_M);
+  node.visible = metres >= SHOWN_FROM_M;
 }
 
 function outlineOf(corners: readonly GroundPoint[]): Shape {
@@ -50,30 +86,48 @@ function outlineOf(corners: readonly GroundPoint[]): Shape {
  * One roof standing on the ground: plaster walls and a plaster top. In the top view it lies flat
  * and the picture shows through; the picture on its top in 3D comes with the roof's close.
  */
-function RoofBlock({ roof, palette, rise }: { roof: Roof; palette: ThemePalette; rise: RoofRise }) {
+function RoofBlock({
+  roof,
+  metres,
+  top,
+  palette,
+  rise,
+}: {
+  roof: Roof;
+  /** The roof's height: its own, or the market's storey height. */
+  metres: number;
+  /** The picture its top wears; `null` on the grid, where the top is plaster. */
+  top: RoofTopPicture | null;
+  palette: ThemePalette;
+  rise: RoofRise;
+}) {
   const geometry = useMemo(
     () => new ExtrudeGeometry(outlineOf(roof.corners), { depth: 1, bevelEnabled: false }),
     [roof.corners],
   );
   useEffect(() => () => geometry.dispose(), [geometry]);
+  const map = useMemo(() => (top === null ? null : topOf(top)), [top]);
+  useEffect(() => () => map?.dispose(), [map]);
   return (
     <group
-      // The block is one metre tall: its group stretches it to the height the roofs stand at.
+      // The block is one metre tall: its group stretches it to the roof's height at the rise now.
       ref={(group) => {
-        if (group === null) return;
-        group.scale.y = Math.max(rise.current, SHOWN_FROM_M);
-        group.visible = rise.current >= SHOWN_FROM_M;
+        if (group !== null) standAt(group, rise.current);
       }}
       name="roof"
-      userData={{ rises: true }}
+      userData={{ rises: true, metres }}
     >
       <mesh geometry={geometry} rotation-x={-Math.PI / 2} castShadow receiveShadow>
         {/* The extruded shape's first group is its two caps, the second its walls. */}
-        <meshStandardMaterial
-          attach="material-0"
-          color={palette['scene-wall']}
-          roughness={PLASTER_ROUGHNESS}
-        />
+        {map === null ? (
+          <meshStandardMaterial
+            attach="material-0"
+            color={palette['scene-wall']}
+            roughness={PLASTER_ROUGHNESS}
+          />
+        ) : (
+          <meshBasicMaterial attach="material-0" map={map} toneMapped={false} />
+        )}
         <meshStandardMaterial
           attach="material-1"
           color={palette['scene-wall']}
@@ -95,7 +149,9 @@ export function StudioRoofs({
   view,
   still,
   palette,
+  heights,
   storeyHeightM,
+  top,
   rise,
   marks,
 }: {
@@ -103,8 +159,12 @@ export function StudioRoofs({
   view: StudioView;
   still: boolean;
   palette: ThemePalette;
-  /** The market's storey height, which the roofs rise to in 3D. */
+  /** Each roof's height in metres, in the order of `roofs`. */
+  heights: readonly number[];
+  /** The market's storey height, where the marks on a roof's top stand. */
   storeyHeightM: number;
+  /** The sky picture the roofs' tops wear; `null` on the grid. */
+  top: RoofTopPicture | null;
   rise: RoofRise;
   marks: RefObject<RoofMarksHandle | null>;
 }) {
@@ -112,7 +172,7 @@ export function StudioRoofs({
   const camera = useThree((three) => three.camera);
   const size = useThree((three) => three.size);
   const invalidate = useThree((three) => three.invalidate);
-  const goal = view === 'top' ? FLAT_M : storeyHeightM;
+  const goal = view === 'top' ? FLAT : STANDING;
   // A view picked starts the rise or the fall; the frames carry it.
   // biome-ignore lint/correctness/useExhaustiveDependencies: a new goal asks for one more frame
   useEffect(() => invalidate(), [goal, invalidate]);
@@ -125,14 +185,13 @@ export function StudioRoofs({
       const next = now + (goal - now) * step;
       rise.current = Math.abs(goal - next) < SETTLED_M ? goal : next;
       scene.traverse((node) => {
-        if (node.userData.rises !== true) return;
-        node.scale.y = Math.max(rise.current, SHOWN_FROM_M);
-        node.visible = rise.current >= SHOWN_FROM_M;
+        if (node.userData.rises === true) standAt(node, rise.current);
       });
       invalidate();
     }
     marks.current?.place((point, onTop) => {
-      at.set(point.east, onTop ? rise.current : 0, -point.north).project(camera);
+      // A mark on a roof's top stands at the storey; a roof's own height moves its sheet's marks.
+      at.set(point.east, onTop ? rise.current * storeyHeightM : 0, -point.north).project(camera);
       if (at.z > 1) return null;
       return { x: ((at.x + 1) / 2) * size.width, y: ((1 - at.y) / 2) * size.height };
     });
@@ -140,8 +199,15 @@ export function StudioRoofs({
 
   return (
     <>
-      {roofs.map((roof) => (
-        <RoofBlock key={roof.id} roof={roof} palette={palette} rise={rise} />
+      {roofs.map((roof, index) => (
+        <RoofBlock
+          key={roof.id}
+          roof={roof}
+          metres={heights[index] ?? storeyHeightM}
+          top={top}
+          palette={palette}
+          rise={rise}
+        />
       ))}
       {roofs.length > 0 ? (
         <mesh rotation-x={-Math.PI / 2} position-y={SHADOW_LIFT_M} receiveShadow>

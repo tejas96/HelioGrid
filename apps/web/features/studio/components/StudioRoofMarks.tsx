@@ -67,7 +67,7 @@ export function StudioRoofMarks({
   });
   const shown: RoofWordsShown = {
     length: (metres) => format.roofLength(metres, units, false),
-    height: format.roofLength(format.pack.storeyHeightM, units, false),
+    height: format.roofHeight(format.pack.storeyHeightM, units),
   };
   const { roofStep: step, draft, roofMarks } = studio;
   if (view !== 'top') return <div ref={layer} className="hg-roof-marks" data-view={view} />;

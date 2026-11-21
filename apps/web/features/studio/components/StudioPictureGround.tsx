@@ -277,16 +277,23 @@ export function StudioPictureGround({
   pieces,
   around,
   page,
+  onSharp,
 }: {
   pieces: readonly SkyPicturePiece[];
   /** The softer picture round the sharp one; empty where there is none. */
   around: readonly SkyPicturePiece[];
   /** The page's colour, which the ground beyond the picture leans to. */
   page: string;
+  /** Told the sharp picture once it is laid, so a roof's top can wear the ground under it. */
+  onSharp: (picture: GroundPicture | null) => void;
 }) {
   const ringed = around.length > 0;
   const outer = useGroundPicture(around, page, false);
   const sharp = useGroundPicture(pieces, page, ringed);
+  useEffect(() => {
+    onSharp(sharp);
+    return () => onSharp(null);
+  }, [sharp, onSharp]);
   const under = ringed ? outer : sharp;
   if (sharp === null && under === null) return null;
   return (

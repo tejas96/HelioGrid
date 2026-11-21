@@ -4,11 +4,16 @@ import type { GroundBox, Roof, StudioView, SunPosition } from '@heliogrid/domain
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
-import type { ReactNode, RefObject } from 'react';
+import { type ReactNode, type RefObject, useState } from 'react';
 import { MathUtils, Vector3 } from 'three';
 import { StudioCameraRig, type StudioDrive, type StudioMarks } from './StudioCameraRig';
 import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
-import { type RoofMarksHandle, type RoofRise, StudioRoofs } from './StudioRoofs';
+import {
+  type RoofMarksHandle,
+  type RoofRise,
+  type RoofTopPicture,
+  StudioRoofs,
+} from './StudioRoofs';
 
 const RADIANS = MathUtils.DEG2RAD;
 /** The plain ground where there is no picture, wide enough that its edge is never seen. */
@@ -99,10 +104,14 @@ export interface StudioSceneProps {
   onMarks: (marks: StudioMarks) => void;
   /** The roofs to stand on the ground: the design's, or the preview of what is in hand. */
   roofs: readonly Roof[];
-  /** The market's storey height: the roofs stand at it in 3D until their own heights are set. */
+  /** Each roof's height in metres, in the order of `roofs`. */
+  heights: readonly number[];
+  /** The market's storey height, where the marks on a roof's top stand. */
   storeyHeightM: number;
   /** The roofs' ground, which the view frames; `null` before a roof. */
   fit: GroundBox | null;
+  /** A roof closed: the camera frames the roofs once for each new value. */
+  frameOn: object | null;
   /** The height the roofs stand at now, shared with the page's marks. */
   rise: RoofRise;
   /** The page's marks on the roofs, told each frame where the model lands. */
@@ -126,11 +135,15 @@ export function StudioScene({
   drive,
   onMarks,
   roofs,
+  heights,
   storeyHeightM,
   fit,
+  frameOn,
   rise,
   roofMarks,
 }: StudioSceneProps) {
+  // biome-ignore lint/plugin: the web's WebGL picture of the ground, handed on to the roofs' tops
+  const [sharp, setSharp] = useState<RoofTopPicture | null>(null);
   return (
     <Canvas
       frameloop="demand"
@@ -148,6 +161,7 @@ export function StudioScene({
           pieces={picture.pieces}
           around={picture.around}
           page={palette.canvas}
+          onSharp={setSharp}
         />
       ) : (
         <mesh rotation-x={-Math.PI / 2}>
@@ -182,7 +196,9 @@ export function StudioScene({
         view={view}
         still={still}
         palette={palette}
+        heights={heights}
         storeyHeightM={storeyHeightM}
+        top={picture.kind === 'sky' ? sharp : null}
         rise={rise}
         marks={roofMarks}
       />
@@ -195,6 +211,7 @@ export function StudioScene({
         drive={drive}
         onMarks={onMarks}
         fit={fit}
+        frameOn={frameOn}
       />
     </Canvas>
   );

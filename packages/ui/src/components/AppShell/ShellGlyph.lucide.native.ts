@@ -48,7 +48,6 @@ export { default as CreditCardIcon } from 'lucide-react-native/icons/credit-card
 export { default as DiamondIcon } from 'lucide-react-native/icons/diamond';
 export { default as DotIcon } from 'lucide-react-native/icons/dot';
 export { default as DownloadIcon } from 'lucide-react-native/icons/download';
-export { default as DraftingCompassIcon } from 'lucide-react-native/icons/drafting-compass';
 export { default as EllipsisIcon } from 'lucide-react-native/icons/ellipsis';
 export { default as ExpandIcon } from 'lucide-react-native/icons/expand';
 export { default as EyeIcon } from 'lucide-react-native/icons/eye';
@@ -115,6 +114,7 @@ export { default as TrashIcon } from 'lucide-react-native/icons/trash';
 export { default as TrendingDownIcon } from 'lucide-react-native/icons/trending-down';
 export { default as TrendingUpIcon } from 'lucide-react-native/icons/trending-up';
 export { default as TriangleAlertIcon } from 'lucide-react-native/icons/triangle-alert';
+export { default as TriangleRightIcon } from 'lucide-react-native/icons/triangle-right';
 export { default as TruckIcon } from 'lucide-react-native/icons/truck';
 export { default as Undo2Icon } from 'lucide-react-native/icons/undo-2';
 export { default as UnlinkIcon } from 'lucide-react-native/icons/unlink';

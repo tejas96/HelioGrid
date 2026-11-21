@@ -2,7 +2,8 @@ import type { StepLock } from './steps';
 
 /**
  * The camera's views of the one model: the top view, the 3D view, and a side view from each
- * compass point. A new roof is drawn in the top view; every control on a roof works in 3D too.
+ * compass point. A roof's outline is drawn and changed in the top view only; 3D shows the result
+ * and changes a roof's height in its sheet (`T-M05-002`, part a).
  */
 export const STUDIO_VIEWS = ['top', '3d', 'north', 'east', 'south', 'west'] as const;
 export type StudioView = (typeof STUDIO_VIEWS)[number];

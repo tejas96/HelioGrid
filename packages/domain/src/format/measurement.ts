@@ -106,6 +106,21 @@ export function formatRoofLength(
   return `${about}${value}${NBSP}m`;
 }
 
+/**
+ * A roof's height (`T-M05-002`): `3.0 m` — slid in 10 cm steps, so to the decimetre, and to the
+ * centimetre when typed so (`3.25 m`) — or in whole feet and inches.
+ */
+export function formatRoofHeight(
+  pack: FormatPack,
+  metres: number,
+  system: MeasurementSystem,
+): string {
+  if (system === 'imperial') return formatRoofLength(pack, metres, system, false);
+  // A height typed to the centimetre shows its centimetres: what is stored is what is shown.
+  const value = formatNumber(pack, metres, { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+  return `${value}${NBSP}m`;
+}
+
 /** An area held in square metres, whole, in the reader's system: `66 m²`, `706 sq ft`. */
 export function formatArea(
   pack: FormatPack,

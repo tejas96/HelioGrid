@@ -10,6 +10,7 @@ import {
   entryMetres,
   entryOf,
   type FocusJob,
+  focusJobOf,
   type GroundPoint,
   type History,
   helpersOf,
@@ -23,11 +24,13 @@ import {
   type RoofBar,
   type RoofGrip,
   type RoofHandles,
+  type RoofHeightShown,
   type RoofMarksView,
   type RoofStepEvent,
   type RoofStepState,
   roofBarOf,
   roofHandles,
+  roofHeightOf,
   roofMarksOf,
   roofStepAfter,
   roofStepShown,
@@ -89,6 +92,8 @@ export interface RoofStepView {
   readonly helpersRefused: boolean;
   /** The design to draw: the design, or the preview of what is in hand. */
   readonly shown: StudioDocument | null;
+  /** Each roof's height as it stands, in the order of `shown`'s roofs: its own, or the storey's. */
+  readonly heights: readonly RoofHeightShown[];
   /** Each roof's marks, from the design drawn. */
   readonly roofMarks: readonly RoofMarksView[];
   /** The roof being drawn, while drawing. */
@@ -110,14 +115,6 @@ export interface RoofStepView {
   handlesOf(roof: number, gap: number): RoofHandles | null;
 }
 
-/** The focus job of each roof-step state: a roof's sheet is the studio's own (`focus.ts`). */
-const JOB_OF: Record<RoofStepState['kind'], FocusJob> = {
-  idle: 'looking',
-  drawing: 'drawing',
-  sizing: 'sizing',
-  dragging: 'dragging',
-};
-
 /**
  * The roof step's state and moves (`T-M05-002`, part b, Law 11): the reducer's state, each event
  * run over the design as it stands, and an act that ends committed as one change. The studio's
@@ -134,6 +131,7 @@ export function useRoofStep({
   helpersOff,
   setHelpersOff,
   helpersRefused,
+  storeyHeightM,
 }: {
   /** The design as it stands, as the screen last drew it. */
   document: StudioDocument | null;
@@ -147,6 +145,8 @@ export function useRoofStep({
   helpersOff: readonly string[];
   setHelpersOff: (off: readonly StudioHelper[]) => void;
   helpersRefused: boolean;
+  /** The market's storey height: a roof with no height of its own stands at it. */
+  storeyHeightM: number;
 }) {
   const [roofStep, setRoofStep] = useState<RoofStepState>(ROOF_STEP_START);
   const [free, setFree] = useState(false);
@@ -169,7 +169,8 @@ export function useRoofStep({
   const sizing = roofStep.kind === 'sizing' ? roofStep : null;
   const view: RoofStepView = {
     roofStep,
-    job: JOB_OF[roofStep.kind],
+    heights: shown?.roofs.map((roof) => roofHeightOf(roof, storeyHeightM)) ?? [],
+    job: focusJobOf(roofStep),
     helpers: picked,
     buildingData: false,
     helpersRefused,

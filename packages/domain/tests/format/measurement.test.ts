@@ -3,6 +3,7 @@ import {
   feetAndInches,
   formatArea,
   formatLength,
+  formatRoofHeight,
   formatRoofLength,
   metresOfFeetAndInches,
   PROCUREMENT_SYSTEM,
@@ -58,6 +59,15 @@ describe('a roof’s lengths and area (T-M05-002)', () => {
     [0.9144 - 0.0001, 'imperial', false, `3${NBSP}ft 0${NBSP}in`],
   ] as const)('%s m, %s, traced %s: %s', (metres, system, traced, shown) => {
     expect(formatRoofLength(IN_FORMATS, metres, system, traced)).toBe(shown);
+  });
+
+  it.each([
+    [3, 'metric', `3.0${NBSP}m`],
+    [4.5, 'metric', `4.5${NBSP}m`],
+    [3.25, 'metric', `3.25${NBSP}m`],
+    [3, 'imperial', `9${NBSP}ft 10${NBSP}in`],
+  ] as const)('a height of %s m, %s: %s', (metres, system, shown) => {
+    expect(formatRoofHeight(IN_FORMATS, metres, system)).toBe(shown);
   });
 
   it.each([

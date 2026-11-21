@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { type FocusFacts, type FocusParts, focusOf } from '../../src/studio/focus';
+import { EMPTY_STUDIO_DOCUMENT } from '../../src/studio/document';
+import { type FocusFacts, type FocusParts, focusJobOf, focusOf } from '../../src/studio/focus';
+import { ALL_HELPERS } from '../../src/studio/roof-draw';
+import type { RoofGrip, RoofStepState } from '../../src/studio/roof-step-state';
 
 const FACTS: FocusFacts = {
   job: 'looking',
@@ -65,7 +68,24 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         zoom: 'hidden',
         compass: 'hidden',
         otherHandles: 'hidden',
-        bottomBar: 'hidden',
+        bottomBar: 'status',
+      },
+    ],
+    [
+      'moving',
+      'top',
+      true,
+      {
+        topBar: 'hidden',
+        stepSwitcher: 'hidden',
+        pictureChip: 'credit',
+        pencil: 'hidden',
+        undoRedo: 'hidden',
+        addRoof: 'hidden',
+        layers: 'hidden',
+        zoom: 'hidden',
+        otherHandles: 'hidden',
+        bottomBar: 'status',
       },
     ],
     [
@@ -137,7 +157,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
   });
 
   it('the credit line never hides, whatever the job', () => {
-    for (const job of ['looking', 'drawing', 'dragging', 'sizing', 'sheet'] as const) {
+    for (const job of ['looking', 'drawing', 'dragging', 'moving', 'sizing', 'sheet'] as const) {
       for (const view of ['top', '3d'] as const) {
         expect(['shown', 'credit']).toContain(partsOf({ job, view }).pictureChip);
       }
@@ -181,5 +201,37 @@ describe('focus mode: the edge cases', () => {
 
   it('before a roof stands, 3D offers no side views', () => {
     expect(partsOf({ view: '3d', hasRoof: false }).sideViews).toBe('hidden');
+  });
+});
+
+describe('the job a drag holds: a corner the helpers guide, or a whole roof they do not', () => {
+  const dragging = (grip: RoofGrip): RoofStepState => ({
+    kind: 'dragging',
+    grip,
+    base: EMPTY_STUDIO_DOCUMENT,
+    from: { east: 0, north: 0 },
+    drag: { document: EMPTY_STUDIO_DOCUMENT, snap: null, fault: null },
+    degrees: 0,
+  });
+  it.each([
+    ['a corner', dragging({ kind: 'corner', roof: 0, corner: 1 }), 'dragging'],
+    ['a + pulled out', dragging({ kind: 'plus', roof: 0, edge: 1 }), 'dragging'],
+    ['the move handle', dragging({ kind: 'move', roof: 0 }), 'moving'],
+    ['the turn handle', dragging({ kind: 'turn', roof: 0 }), 'moving'],
+    ['nothing in hand', { kind: 'idle', picked: null, said: null } as const, 'looking'],
+    [
+      'a roof being drawn',
+      {
+        kind: 'drawing',
+        corners: [],
+        pointer: null,
+        spot: null,
+        refused: null,
+        helpers: ALL_HELPERS,
+      } as const,
+      'drawing',
+    ],
+  ])('%s: %s', (_why, step, job) => {
+    expect(focusJobOf(step)).toBe(job);
   });
 });
