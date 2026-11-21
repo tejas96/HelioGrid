@@ -77,7 +77,7 @@ into pure domain functions.
 | DocumentRenderPort | Playwright/Chromium | Typst | no (capacity metric) |
 | PushPort | FCM HTTP v1 (+APNs via FCM) | — | no |
 | OtpPort | MSG91 SMS → WhatsApp fallback | — | otp_sms (fair-use, not billed v1) |
-| MapsPort | Google Map Tiles (2D satellite), Street View, Maps JS | Esri, Mapbox, Apple | no (quota only) |
+| MapsPort | Google Maps Static (satellite), Street View, Maps JS | Esri, Mapbox, Apple | no (quota only) |
 | RoofDataPort | Google Solar API (quality BASE) | a drone map's own heights | no (cost line `solar_imagery`) |
 | RoofModelPort | Claude (Anthropic API) | another model, after the 10-roof test | **ai_roof_detections** |
 | DemPort | Copernicus GLO-30 | SRTM, drone DTM import | no |
@@ -433,8 +433,10 @@ No silent degradation on the front door.
 ## 13. MapsPort — the sky picture and the road view
 
 **Status: the sky picture is built** (`T-M05-002a`): the studio module's `SkyPictureSource` port,
-with Google's Map Tiles 2D satellite on the server key (3×3 tiles a fetch, capped per person) in
-development and production alike, and a memory source under test. The road view comes with
+with one Google Maps Static satellite picture on the server key (zoom 19, 1,280 px JPEG, about
+±91 m round the pin; zoom 18, then 17, where Google answers its grey no-imagery picture; capped per
+person; signed when `GOOGLE_MAPS_SIGNING_SECRET` is set) in development and production alike, and a
+memory source under test. The road view comes with
 `T-M05-002i`. The map under the pin is §15's page.
 
 ```ts
@@ -445,7 +447,7 @@ interface MapsPort {
 }
 ```
 
-**v1: `GoogleMapsAdapter`.** Google's satellite picture (the Map Tiles API's 2D satellite) and its
+**v1: `GoogleMapsAdapter`.** Google's satellite picture (the Maps Static API) and its
 Street View photos are fetched again each time a design opens, with their dates and the
 provider's credit line, and are never stored (owner ruling 2026-11-19). The roof is stored in the
 site's ground coordinates, so it keeps its place on every fetch (`M04-10`). A picture the company

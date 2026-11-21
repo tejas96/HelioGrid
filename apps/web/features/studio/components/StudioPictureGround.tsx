@@ -16,8 +16,11 @@ import type { ClearGround } from './StudioCameraRig';
 const TEXTURE_MAX_PX = 4_096;
 /** A pixel's red, green, blue and alpha. */
 const PIXEL_BYTES = 4;
-/** The share of each side over which the picture fades into the ground around it. */
-const FADE_EDGE = 0.09;
+/**
+ * The share of each side over which the picture fades into the ground around it: about 7 m of a
+ * 183 m picture, so the fade never reaches a roof the sharp picture was fetched for.
+ */
+const FADE_EDGE = 0.04;
 /** The edge colour is the mean of the outer ring of the picture shrunk to this many pixels a side. */
 const EDGE_SAMPLE_PX = 8;
 const CHANNEL_MAX = 255;
