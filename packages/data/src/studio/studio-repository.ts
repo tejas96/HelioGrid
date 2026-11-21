@@ -11,8 +11,10 @@ import type {
   SaveDocument,
   SavedDocument,
   SaveSite,
-  SkyPictureWire,
+  SkyTilesWire,
 } from '@heliogrid/contracts';
+import { SKY_TICKET_HEADER } from '@heliogrid/contracts';
+import type { SkyTileKey } from '@heliogrid/domain';
 import type { ApiClient } from '../client/client';
 import { createCreationKeys } from '../client/creation-key';
 import { ApiError, bodyAt, bodyOrRefusalAt, bodyOrRefusalsAt } from '../errors/errors';
@@ -97,8 +99,10 @@ export interface StudioRepository {
   takeEditTurn(id: string): Promise<EditTurnWire>;
   /** The turn to edit given back. */
   giveEditTurn(id: string): Promise<void>;
-  /** The sky picture of the design's site, fetched now, or why there is none. */
-  skyPicture(id: string, signal?: AbortSignal): Promise<SkyPictureWire>;
+  /** What the sky picture of the design's site is and the ticket its tiles are asked with, or why there is none. */
+  skyTiles(id: string, signal?: AbortSignal): Promise<SkyTilesWire>;
+  /** One tile of the sky picture, as the map service gives it. */
+  skyTile(id: string, key: SkyTileKey, ticket: string, signal?: AbortSignal): Promise<Blob>;
 }
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
@@ -161,8 +165,18 @@ export function createStudioRepository(api: ApiClient): StudioRepository {
     giveEditTurn: async (id) => {
       await bodyAt(() => routes.giveEditTurn(at(id)), 204);
     },
-    skyPicture: (id, signal) =>
-      bodyAt(() => routes.skyPicture({ ...at(id), fetchOptions: { signal } }), 200),
+    skyTiles: (id, signal) =>
+      bodyAt(() => routes.skyTiles({ ...at(id), fetchOptions: { signal } }), 200),
+    skyTile: (id, key, ticket, signal) =>
+      bodyAt(
+        () =>
+          routes.skyTile({
+            params: { id, ...key },
+            headers: { [SKY_TICKET_HEADER]: ticket },
+            fetchOptions: { signal },
+          }),
+        200,
+      ),
   };
 }
 

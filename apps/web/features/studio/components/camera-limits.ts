@@ -1,4 +1,5 @@
 'use client';
+import type { GroundBox } from '@heliogrid/domain';
 import { Box3, MathUtils, Vector3 } from 'three';
 
 const RADIANS = MathUtils.DEG2RAD;
@@ -20,20 +21,16 @@ const DISTANCE_MAX = 600;
 /** A floor under every other bound, so the camera never stands in the ground. */
 const DISTANCE_MIN = 4;
 /**
- * The closest the camera comes to a picture: one of its pixels at most this many screen pixels.
- * Nearer, the picture only blurs; the true size comes from typed lengths, not from more zoom.
+ * The closest the camera comes to a picture: one pixel of its real detail on at most this many
+ * screen pixels — a roof then fills a phone. Nearer, the picture only blurs; the true size comes
+ * from typed lengths, not from more zoom.
  */
-const SCREEN_PX_PER_PICTURE_PX = 4;
+const SCREEN_PX_PER_DETAIL_PX = 16;
 /** The least ground the window's shorter side shows on the grid, with no picture to blur. */
 const GRID_SHORT_SIDE_M = 5;
 
-/** The picture's sharp ground, in metres east and north of the pin. */
-export interface ClearGround {
-  readonly west: number;
-  readonly east: number;
-  readonly south: number;
-  readonly north: number;
-}
+/** The ground the picture shows whole, in metres east and north of the pin. */
+export type ClearGround = GroundBox;
 
 /**
  * How much ground a camera straight down sees from one metre up, each way from its middle, in the
@@ -65,7 +62,7 @@ function closestOver(
   const closest =
     metresPerPixel === null
       ? GRID_SHORT_SIDE_M / 2 / (down * Math.min(1, size.width / size.height))
-      : (metresPerPixel * size.height) / (2 * SCREEN_PX_PER_PICTURE_PX * down);
+      : (metresPerPixel * size.height) / (2 * SCREEN_PX_PER_DETAIL_PX * down);
   return Math.max(DISTANCE_MIN, closest);
 }
 
@@ -107,21 +104,18 @@ const OPENING_SHORT_SIDE_M = 90;
 
 /**
  * How far the camera stands as the studio opens: the picture at its own sharpness — one of its
- * pixels on one of the screen's own pixels, so a 2× or 3× screen shows it crisp, never blown up —
- * but the window's shorter side showing no more than the house and its neighbours, and never
- * nearer than one picture pixel to one CSS pixel. With no picture, `null`: the view frames the
- * ground round the pin instead.
+ * finest tile's pixels on one of the screen's own pixels, so a 2× or 3× screen shows it crisp — but
+ * the window's shorter side showing no more than the house and its neighbours: the roof a person
+ * came for, never a street of them. With no picture, `null`: the view frames the ground round the
+ * pin instead.
  */
 export function openingDistance(
-  metresPerPixel: number | null,
+  tilePixelMetres: number | null,
   size: { readonly width: number; readonly height: number },
   screenPixelsPerCss: number,
 ): number | null {
-  if (metresPerPixel === null) return null;
+  if (tilePixelMetres === null) return null;
   const shortSide = Math.min(size.width, size.height);
-  const perCss = Math.max(
-    metresPerPixel,
-    Math.min(metresPerPixel * screenPixelsPerCss, OPENING_SHORT_SIDE_M / shortSide),
-  );
+  const perCss = Math.min(tilePixelMetres * screenPixelsPerCss, OPENING_SHORT_SIDE_M / shortSide);
   return (perCss * size.height) / (2 * Math.tan((FOV_DEGREES / 2) * RADIANS));
 }

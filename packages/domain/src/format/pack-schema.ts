@@ -12,6 +12,9 @@ import { FORECAST_STAGES } from '../proposals/forecast-stage';
 import { CHECKLIST_ROW_MAKERS } from './checklist';
 import { type FormatPack, MEASUREMENT_SYSTEMS } from './pack';
 
+/** The finest zoom any map service cuts its tiles at. */
+const SKY_ZOOM_CEILING = 22;
+
 const stageLabel = z.object({ stage: z.string(), label: packLabel });
 const partyLabel = z.object({ party: z.string(), label: packLabel });
 const modeLabel = z.object({ mode: z.string(), label: packLabel });
@@ -92,4 +95,6 @@ export const FORMAT_PACK_SCHEMA: z.ZodType<FormatPack, z.ZodTypeDef, unknown> = 
   /** A pack stored before proposals declares no areas and no proposal facts, until the next revision. */
   areas: z.array(area).default([]),
   proposal: proposalFacts.nullable().default(null),
+  /** A pack stored before it declares no cap: the sky picture then runs to its provider's own. */
+  skyPictureRealZoomMax: z.number().int().min(0).max(SKY_ZOOM_CEILING).nullable().default(null),
 });

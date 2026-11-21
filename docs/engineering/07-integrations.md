@@ -433,8 +433,10 @@ No silent degradation on the front door.
 ## 13. MapsPort — the sky picture and the road view
 
 **Status: the sky picture is built** (`T-M05-002a`): the studio module's `SkyPictureSource` port,
-with Google's Map Tiles 2D satellite on the server key (3×3 tiles a fetch, capped per person) in
-development and production alike, and a memory source under test. The road view comes with
+with Google's Map Tiles 2D satellite on the server key in development and production alike, and a
+memory source under test. The studio asks tile by tile, each tile checked against a signed ticket
+that names the reader, the design, its zooms and the ground it may show, and capped per person; a
+tile is handed on as JPEG with Google's own cache headers and never stored. The road view comes with
 `T-M05-002i`. The map under the pin is §15's page.
 
 ```ts

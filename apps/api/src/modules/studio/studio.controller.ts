@@ -1,5 +1,5 @@
-import { placesContract, studioContract } from '@heliogrid/contracts';
-import { Controller, Inject, Req } from '@nestjs/common';
+import { placesContract, SKY_TICKET_HEADER, studioContract } from '@heliogrid/contracts';
+import { Controller, Inject, Req, StreamableFile } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
@@ -10,11 +10,21 @@ import { readerOf } from '../crm/crm.public';
 import { StudioDocumentService } from './studio.document.service';
 import { StudioPlacesService } from './studio.places.service';
 import { StudioService } from './studio.service';
+import { StudioSkyPictureService } from './studio.sky-picture.service';
 
 const DESIGN = { capability: 'studio.create_edit_designs' } as const;
 
 /**
- * Designs (`T-M05-001`) and their documents (`T-M05-002a`). Reading is every member's, narrowed to the leads their presets reach
+ * A tile's bytes as its route's contract names them. The contract types the body as its reader
+ * holds it, a `Blob`; the server sends the bytes themselves, which is what the reader's `Blob` is
+ * made of. They go as a file, so the framework writes them as they are: handed a plain buffer, it
+ * would describe the buffer in JSON instead.
+ */
+const bytesOnTheWire = (bytes: Buffer): Blob =>
+  new StreamableFile(bytes, { type: 'image/jpeg', length: bytes.length }) as unknown as Blob;
+
+/**
+ * Designs (`T-M05-001`), their documents and their sky picture (`T-M05-002a`). Reading is every member's, narrowed to the leads their presets reach
  * (`F2.M02.lead-visibility`); making and changing one is the create-and-edit grant's. In the
  * billing matrix every write is the studio's own row, which pauses with the plan; reading never
  * pauses.
@@ -25,6 +35,7 @@ export class StudioController {
   constructor(
     @Inject(StudioService) private readonly studio: StudioService,
     @Inject(StudioDocumentService) private readonly documents: StudioDocumentService,
+    @Inject(StudioSkyPictureService) private readonly sky: StudioSkyPictureService,
   ) {}
 
   // Topmost, so it is applied last: it serves each route from what the maps below declared.
@@ -49,6 +60,8 @@ export class StudioController {
     takeEditTurn: DESIGN,
     giveEditTurn: DESIGN,
     skyPicture: 'member',
+    skyTiles: 'member',
+    skyTile: 'member',
   })
   handler(@Req() req: Request) {
     const reader = readerOf(req);
@@ -80,7 +93,22 @@ export class StudioController {
       skyPicture: async ({ params }) => {
         // Google's picture is never stored, nor put in a file — a cache on disk included.
         responseOf(req).setHeader('Cache-Control', 'no-store');
-        return ok(await this.documents.skyPicture(reader, params.id));
+        return ok(await this.sky.whole(reader, params.id));
+      },
+      skyTiles: async ({ params }) => {
+        // The ticket is this reader's alone, for this opening: no cache keeps it.
+        responseOf(req).setHeader('Cache-Control', 'no-store');
+        return ok(await this.sky.tiles(reader, params.id));
+      },
+      skyTile: async ({ params, headers }) => {
+        const { id, ...key } = params;
+        const tile = await this.sky.tile(reader, id, key, headers[SKY_TICKET_HEADER]);
+        // The reader's own browser may keep a tile as long as the provider says; this api keeps
+        // nothing, and no cache between them may.
+        const answer = responseOf(req);
+        answer.setHeader('Cache-Control', tile.cacheControl);
+        if (tile.etag !== null) answer.setHeader('ETag', tile.etag);
+        return { status: 200 as const, body: bytesOnTheWire(tile.bytes) };
       },
     });
   }

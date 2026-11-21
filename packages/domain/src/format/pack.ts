@@ -132,6 +132,13 @@ export interface FormatPack {
    * is forecast.
    */
   readonly proposal: ProposalMarketFacts | null;
+  /**
+   * `T-M05-002a` — the finest zoom at which a tile of the map service's sky picture of this market
+   * still adds detail, for a tile of the studio's own size (`SKY_TILE_PIXELS`); past it the
+   * service only enlarges the same picture. `null`, as on a pack stored before it: no cap is
+   * known, and the studio runs to the service's own finest zoom.
+   */
+  readonly skyPictureRealZoomMax: number | null;
 }
 
 /**
@@ -188,4 +195,10 @@ export const IN_FORMATS: FormatPack = {
   utilities: IN_UTILITIES,
   areas: IN_AREAS,
   proposal: IN_PROPOSAL_FACTS,
+  /**
+   * Measured in six cities (Pune, Sangli, Mumbai, Delhi, Jaipur, Bengaluru), on tiles of the
+   * studio's size: a zoom 20 tile shrunk back matches the zoom 19 tile at 0.998 — the same picture,
+   * enlarged — where a zoom 19 tile shrunk back matches zoom 18 at 0.991: it still adds detail.
+   */
+  skyPictureRealZoomMax: 19,
 };

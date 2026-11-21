@@ -1,10 +1,5 @@
 'use client';
-import type {
-  EditTurnWire,
-  MemberRef,
-  SkyPicturePiece,
-  SkyPictureWire,
-} from '@heliogrid/contracts';
+import type { EditTurnWire, MemberRef, SkyTilesWire } from '@heliogrid/contracts';
 import {
   EDIT_TURN_RENEW_SECONDS,
   type History,
@@ -23,6 +18,7 @@ import { queryKeys } from '../cache/keys';
 import { DesignActRefusedError } from '../studio/studio-repository';
 import { useRepositories } from './context';
 import { StudioSaveQueue, type StudioSaveState } from './studio-save-queue';
+import type { StudioSkyTiles } from './use-sky-tiles';
 import { useTenantId } from './use-tenant-id';
 
 /** What the ground shows: the sky picture with its facts, nothing yet, or no picture and why. */
@@ -32,11 +28,11 @@ export type StudioPicture =
       readonly kind: 'sky';
       readonly source: string;
       readonly credit: string;
+      /** The picture's real detail: the ground one pixel of the provider's own picture covers. */
       readonly metresPerPixel: number;
       readonly takenOn: string | null;
-      readonly pieces: readonly SkyPicturePiece[];
-      /** The softer picture round the sharp one; empty where the api gave none. */
-      readonly around: readonly SkyPicturePiece[];
+      /** The picture itself, asked for tile by tile as the camera moves. */
+      readonly tiles: StudioSkyTiles;
     }
   | { readonly kind: 'none'; readonly reason: NoPictureReason };
 
@@ -62,9 +58,12 @@ export type Turn =
 const isSkyPictureGap = (gap: string): gap is SkyPictureGap =>
   (SKY_PICTURE_GAPS as readonly string[]).includes(gap);
 
-/** The sky picture as domain's rule reads it: a failed read is a provider that did not answer. */
-export function skyReadOf(read: Read<SkyPictureWire>): SkyPictureRead {
-  if (read.kind === 'failed') return { kind: 'none', gap: 'not_answered' };
+/**
+ * The sky picture as domain's rule reads it: a failed read is a provider that did not answer, and so
+ * is a picture whose first tiles never came (`lost`).
+ */
+export function skyReadOf(read: Read<SkyTilesWire>, lost: boolean): SkyPictureRead {
+  if (read.kind === 'failed' || lost) return { kind: 'none', gap: 'not_answered' };
   if (read.kind !== 'ready') return { kind: 'loading' };
   if (read.value.kind === 'none') {
     const { gap } = read.value;
@@ -75,11 +74,20 @@ export function skyReadOf(read: Read<SkyPictureWire>): SkyPictureRead {
 }
 
 /** What the ground shows: the sky picture with its facts when it is the one shown. */
-export function pictureOf(shown: ShownPicture, sky: Read<SkyPictureWire>): StudioPicture {
+export function pictureOf(
+  shown: ShownPicture,
+  sky: Read<SkyTilesWire>,
+  tiles: StudioSkyTiles | null,
+): StudioPicture {
   if (shown.kind === 'none') return shown;
-  if (shown.kind === 'sky' && sky.kind === 'ready' && sky.value.kind === 'picture') {
-    const { kind: _picture, around, ...facts } = sky.value;
-    return { kind: 'sky', ...facts, around: around ?? [] };
+  if (
+    shown.kind === 'sky' &&
+    sky.kind === 'ready' &&
+    sky.value.kind === 'tiles' &&
+    tiles !== null
+  ) {
+    const { source, credit, metresPerPixel, takenOn } = sky.value;
+    return { kind: 'sky', source, credit, metresPerPixel, takenOn, tiles };
   }
   return { kind: 'waiting' };
 }
@@ -166,8 +174,10 @@ export function useSaveRetries(queue: StudioSaveQueue, saving: StudioSaveState):
 
 /**
  * The design's document as the studio holds it: read once for the opening, its history of every
- * change since, and the one queue that saves each change. The sky picture is read beside it,
- * fetched for this opening and dropped with it — never kept (`T-M05-002a`).
+ * change since, and the one queue that saves each change. What the sky picture is, and the ticket
+ * its tiles are asked with, are read beside the design itself, not after it: the first tiles are
+ * on their way while the design still opens. The ticket is this opening's and is dropped with it
+ * (`T-M05-002a`).
  */
 export function useStudioDocument(designId: string, ready: boolean) {
   const repositories = useRepositories();
@@ -181,9 +191,9 @@ export function useStudioDocument(designId: string, ready: boolean) {
     gcTime: 0,
   });
   const skyQuery = useQuery({
-    queryKey: [...designKey, 'sky-picture'],
-    queryFn: ({ signal }) => repositories.studio.skyPicture(designId, signal),
-    enabled: tenantId !== '' && ready,
+    queryKey: [...designKey, 'sky-tiles'],
+    queryFn: ({ signal }) => repositories.studio.skyTiles(designId, signal),
+    enabled: tenantId !== '',
     staleTime: Number.POSITIVE_INFINITY,
     gcTime: 0,
   });
@@ -196,7 +206,19 @@ export function useStudioDocument(designId: string, ready: boolean) {
     () =>
       new StudioSaveQueue({
         send: (baseVersion, document, opening) =>
-          repositories.studio.saveDocument(designId, { baseVersion, document, opening }),
+          repositories.studio.saveDocument(designId, {
+            baseVersion,
+            // The wire's lists are plain arrays; the studio holds them read-only.
+            document: {
+              ...document,
+              roofs: document.roofs.map((roof) => ({
+                ...roof,
+                corners: [...roof.corners],
+                edges: [...roof.edges],
+              })),
+            },
+            opening,
+          }),
         online: () => onlineManager.isOnline(),
         changed: setSaving,
       }),

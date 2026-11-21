@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
+  feetAndInches,
+  formatArea,
   formatLength,
+  formatPictureDetail,
+  formatRoofLength,
+  metresOfFeetAndInches,
   PROCUREMENT_SYSTEM,
   resolveMeasurementSystem,
 } from '../../src/format/measurement';
@@ -39,5 +44,75 @@ describe('formatLength — metres in, the reader’s system out', () => {
     expect(formatLength(IN_FORMATS, 1, 'imperial')).toBe(`3.3${NBSP}ft`);
     expect(formatLength(IN_FORMATS, 0)).toBe(`0${NBSP}m`);
     expect(formatLength(IN_FORMATS, -1.5)).toBe(`-1.5${NBSP}m`);
+  });
+});
+
+describe('a roof’s lengths and area (T-M05-002)', () => {
+  it.each([
+    // metres, system, traced → shown
+    [7.84, 'metric', true, `~7.8${NBSP}m`],
+    [8.2, 'metric', false, `8.20${NBSP}m`],
+    [8.204, 'imperial', false, `26${NBSP}ft 11${NBSP}in`],
+    [8.0, 'imperial', true, `~26${NBSP}ft 3${NBSP}in`],
+    // 11.6 in rounds up into the next foot, never "12 in".
+    [0.3 * 3 + 0.3, 'imperial', false, `3${NBSP}ft 11${NBSP}in`],
+    [0.9144 - 0.0001, 'imperial', false, `3${NBSP}ft 0${NBSP}in`],
+  ] as const)('%s m, %s, traced %s: %s', (metres, system, traced, shown) => {
+    expect(formatRoofLength(IN_FORMATS, metres, system, traced)).toBe(shown);
+  });
+
+  it.each([
+    [26, 11, 8.2042],
+    [0, 12, 0.3048],
+    [3, 0, 0.9144],
+  ])('%s ft %s in is %s m', (feet, inches, metres) => {
+    expect(metresOfFeetAndInches(feet, inches)).toBeCloseTo(metres, 4);
+  });
+
+  it.each([
+    [8.2042, { feet: 26, inches: 11 }],
+    [0.9144 - 0.005, { feet: 3, inches: 0 }],
+    [0, { feet: 0, inches: 0 }],
+  ])('%s m is %o', (metres, parts) => {
+    expect(feetAndInches(metres)).toEqual(parts);
+  });
+
+  it.each([
+    [65.6, 'metric', `66${NBSP}m²`],
+    [65.6, 'imperial', `706${NBSP}sq ft`],
+    [1234.4, 'metric', `1,234${NBSP}m²`],
+  ] as const)('an area of %s m², %s: %s', (squareMetres, system, shown) => {
+    expect(formatArea(IN_FORMATS, squareMetres, system)).toBe(shown);
+  });
+});
+
+describe('a picture’s real detail is told round: it is known only about', () => {
+  it.each([
+    // metres → centimetres: whole below ten, the nearest five from there
+    [0.283, '30'],
+    [0.274, '25'],
+    [0.275, '30'],
+    [0.142, '15'],
+    [0.1, '10'],
+    [0.099, '10'],
+    [0.094, '9'],
+    [0.075, '8'],
+    [0.57, '55'],
+    [0.004, '1'],
+  ])('metric: %s m reads %s cm', (metres, centimetres) => {
+    expect(formatPictureDetail(IN_FORMATS, metres, 'metric')).toBe(`${centimetres}${NBSP}cm`);
+  });
+
+  it.each([
+    // metres → whole inches, never less than one
+    [0.283, '11'],
+    [0.1, '4'],
+    [0.01, '1'],
+  ])('imperial: %s m reads %s in', (metres, inches) => {
+    expect(formatPictureDetail(IN_FORMATS, metres, 'imperial')).toBe(`${inches}${NBSP}in`);
+  });
+
+  it('reads in the market’s own system unless the reader chose one', () => {
+    expect(formatPictureDetail(IMPERIAL_MARKET, 0.283)).toBe(`11${NBSP}in`);
   });
 });

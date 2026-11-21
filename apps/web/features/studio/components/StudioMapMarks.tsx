@@ -14,7 +14,8 @@ export interface StudioMapMarksHandle {
 }
 
 /**
- * The map's two quiet marks in a corner: the north arrow, turned with the view, and the scale bar —
+ * The map's two quiet marks in one slim capsule that takes no tap: the north arrow, turned with the
+ * view, and the scale bar —
  * the longest round length that fits, in the reader's metres or feet. The bar shows only in the flat
  * views, where one length holds across the whole window. The camera moves them each frame by
  * writing to them directly, never through a render.
@@ -25,6 +26,7 @@ export function StudioMapMarks({
   units,
   scaleBar,
   words,
+  off,
 }: {
   handle: Ref<StudioMapMarksHandle>;
   view: StudioView;
@@ -32,6 +34,8 @@ export function StudioMapMarks({
   /** The scale bar for the ground one screen pixel covers, in the reader's units. */
   scaleBar: (metresPerPixel: number, maxPixels: number) => ScaleBar | null;
   words: StudioCanvasWords;
+  /** Put away: on a phone while the keyboard is up for a length. */
+  off: boolean;
 }) {
   const format = useFormat();
   const arrow = useRef<HTMLSpanElement>(null);
@@ -61,15 +65,17 @@ export function StudioMapMarks({
     if (last.current !== null) draw(last.current);
   });
   return (
-    <div className="hg-studio-glass hg-studio-marks" aria-hidden>
-      <span ref={arrow} className="hg-studio-north" title={words.north}>
-        <ShellGlyph name="north" size="sm" tone="current" />
+    <div className="hg-studio-glass hg-studio-marks" data-off={off} aria-hidden>
+      <span className="hg-studio-north" title={words.north}>
+        <span ref={arrow} className="hg-studio-north-arrow">
+          <ShellGlyph name="north" size="xs" tone="current" />
+        </span>
         <span className="hg-studio-north-letter">{words.northLetter}</span>
       </span>
       {flat ? (
         <span className="hg-studio-scale">
-          <span ref={label} className="hg-studio-scale-words" />
           <span ref={bar} className="hg-studio-scale-bar" />
+          <span ref={label} className="hg-studio-scale-words" />
         </span>
       ) : null}
     </div>
