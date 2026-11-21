@@ -34,6 +34,11 @@ export const SITE_NAME_MAX = 40;
 export const STUDIO_HELPERS = ['square', 'line_up', 'buildings'] as const;
 export type StudioHelper = (typeof STUDIO_HELPERS)[number];
 
+/** Whether a helper name is one this build knows: an unknown one is kept, and helps nothing. */
+export function isStudioHelper(name: string): name is StudioHelper {
+  return (STUDIO_HELPERS as readonly string[]).includes(name);
+}
+
 /**
  * How a person sets a number (`T-M05-002`, *Values*): by the slider first, or in a box to type.
  * The pick is the person's and follows them to every device.

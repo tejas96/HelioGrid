@@ -1,6 +1,7 @@
 import { UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
 import {
   type FormatPack,
+  formatArea,
   formatClockAt,
   formatCompact,
   formatCompactMoney,
@@ -14,6 +15,7 @@ import {
   formatMonthYear,
   formatNumber,
   formatPhone,
+  formatRoofLength,
   formatTime,
   formatWeekday,
   IN_FORMATS,
@@ -90,6 +92,10 @@ export interface MarketFormat {
   fineLength: (metres: number, system: MeasurementSystem) => string;
   /** A length held in metres, in the reader's system — `10 m`, `20 ft` (`F3-23`). */
   length: (metres: number, system: MeasurementSystem) => string;
+  /** A roof edge's length: traced `~7.8 m`, set `8.20 m`, or `26 ft 11 in` (`T-M05-002`). */
+  roofLength: (metres: number, system: MeasurementSystem, traced: boolean) => string;
+  /** An area held in square metres, whole: `66 m²`, `706 sq ft`. */
+  area: (squareMetres: number, system: MeasurementSystem) => string;
   /** A day's name in the reader's words, on the pack's zone — `Monday`. */
   weekday: (value: string) => string;
   /** Resolved ISO week start, 1 = Monday … 7 = Sunday. `Calendar`'s first column reads this. */
@@ -133,6 +139,8 @@ export function createFormat(
     clockAt: (value) => formatClockAt(pack, value),
     fineLength: (metres, system) => formatFineLength(pack, metres, system),
     length: (metres, system) => formatLength(pack, metres, system),
+    roofLength: (metres, system, traced) => formatRoofLength(pack, metres, system, traced),
+    area: (squareMetres, system) => formatArea(pack, squareMetres, system),
     weekday: (value) => formatWeekday(pack, value, language),
     firstDayOfWeek: pack.firstDayOfWeek,
     monthNames: (style) => monthNames(pack, language, style),

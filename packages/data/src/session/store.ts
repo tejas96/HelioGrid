@@ -2,6 +2,7 @@ import type { PlatformKind, UpdateUserProfile } from '@heliogrid/contracts';
 import {
   CHECKING,
   type GoogleResult,
+  isStudioHelper,
   OTP_MAX_FAILED_VERIFIES,
   type OtpRequestOutcome,
   type OtpVerifyResult,
@@ -69,6 +70,7 @@ export function createSessionStore(config: {
   const preferenceSaves: Record<ProfilePreference, { latest: number; queue: Promise<unknown> }> = {
     language: { latest: 0, queue: Promise.resolve() },
     units: { latest: 0, queue: Promise.resolve() },
+    studio: { latest: 0, queue: Promise.resolve() },
   };
   const savePreference = async (
     kind: ProfilePreference,
@@ -282,6 +284,16 @@ export function createSessionStore(config: {
         emit({ ...snapshot, user: { ...user, unitPreference: next } });
       }
       return savePreference('units', { unitPreference: next });
+    },
+    async setStudioPicks(next) {
+      const user = snapshot.user;
+      if (user === null) return false;
+      emit({ ...snapshot, user: { ...user, ...next } });
+      const off = next.studioHelpersOff ?? user.studioHelpersOff.filter(isStudioHelper);
+      return savePreference('studio', {
+        studioHelpersOff: [...off],
+        numberEntry: next.numberEntry ?? user.numberEntry,
+      });
     },
     chooseHome(preset) {
       if (snapshot.status === 'authenticated') emit({ ...snapshot, chosenHome: preset });

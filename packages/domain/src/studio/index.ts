@@ -51,7 +51,7 @@ export {
   type FocusParts,
   focusOf,
 } from './focus';
-export { coordinateOf, type GroundPoint, groundOf } from './ground';
+export { coordinateOf, type GroundBox, type GroundPoint, groundOf } from './ground';
 export {
   type History,
   historyAfter,
@@ -76,13 +76,17 @@ export type {
   TurnResult,
 } from './roof-check';
 export {
+  ALL_HELPERS,
   type DraftClose,
   type DraftRefusal,
   type DraftTap,
+  type DrawHelpers,
   draftClose,
+  draftClosesAt,
   draftGhost,
   draftSpot,
   draftTap,
+  helpersOf,
   NO_SNAP_TARGETS,
   type RoofSnap,
   SAME_TAP_M,
@@ -142,6 +146,7 @@ export {
   roofArea,
   roofHandles,
   roofMiddle,
+  roofsBox,
   roofsOverlap,
 } from './roof-shape';
 export { gripCorner, roofStepAfter } from './roof-step';
@@ -217,6 +222,7 @@ export {
   type DesignActRefusal,
   type DesignMount,
   type DesignStatus,
+  isStudioHelper,
   NUMBER_ENTRIES,
   type NumberEntry,
   SITE_NAME_MAX,

@@ -1,4 +1,4 @@
-import type { GroundPoint } from './ground';
+import type { GroundBox, GroundPoint } from './ground';
 
 /**
  * A roof's outline on the site's ground (`ground.ts`): its corners in order, edge i running from
@@ -299,5 +299,19 @@ export function roofHandles(corners: readonly GroundPoint[], gap: number): RoofH
       north: corner.north + ((corner.north - move.north) / reach) * gap,
     },
     turnOutside: true,
+  };
+}
+
+/** The ground the roofs cover, which the camera frames and Back to the pin fits; `null` with none. */
+export function roofsBox(
+  roofs: readonly { readonly corners: readonly GroundPoint[] }[],
+): GroundBox | null {
+  const corners = roofs.flatMap((roof) => roof.corners);
+  if (corners.length === 0) return null;
+  return {
+    west: Math.min(...corners.map((c) => c.east)),
+    east: Math.max(...corners.map((c) => c.east)),
+    south: Math.min(...corners.map((c) => c.north)),
+    north: Math.max(...corners.map((c) => c.north)),
   };
 }

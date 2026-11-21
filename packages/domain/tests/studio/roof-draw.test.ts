@@ -2,10 +2,13 @@ import { describe, expect, it } from 'vitest';
 import type { Roof } from '../../src/studio/document';
 import type { GroundPoint } from '../../src/studio/ground';
 import {
+  ALL_HELPERS,
   draftClose,
+  draftClosesAt,
   draftGhost,
   draftSpot,
   draftTap,
+  helpersOf,
   NO_SNAP_TARGETS,
   snapTargetsOf,
 } from '../../src/studio/roof-draw';
@@ -23,9 +26,63 @@ const ROOF_1: Roof = {
   height: null,
 };
 
+describe('a helper that is off snaps nothing (T-M05-002, part b)', () => {
+  const r = (87 * Math.PI) / 180;
+  // The third corner of a wall 87° to the first, 6 m long; Square would pull it to 90°.
+  const AT_87 = p(8 - 6 * Math.cos(r), 6 * Math.sin(r));
+  const L_SHAPE = [p(0, 0), p(8, 0), p(8, 3), p(4, 3), p(4, 6)];
+
+  it.each([
+    // helpers, the spot, the corners → the snap
+    ['every helper on: square', ALL_HELPERS, AT_87, [p(0, 0), p(8, 0)], 'square'],
+    [
+      'Square off: where it was tapped',
+      helpersOf(['square'], false),
+      AT_87,
+      [p(0, 0), p(8, 0)],
+      null,
+    ],
+    ['Alt held: free', helpersOf([], true), AT_87, [p(0, 0), p(8, 0)], null],
+    ['every helper on: lines up with corner 1', ALL_HELPERS, p(0.3, 6.1), L_SHAPE, 'lines_up'],
+    [
+      'Line up off: square, not lined up',
+      helpersOf(['line_up'], false),
+      p(0.3, 6.1),
+      L_SHAPE,
+      'square',
+    ],
+    [
+      'Square and Line up off: free',
+      helpersOf(['square', 'line_up'], false),
+      p(0.3, 6.1),
+      L_SHAPE,
+      null,
+    ],
+  ] as const)('%s', (_why, helpers, at, corners, snap) => {
+    const spot = draftSpot(corners, at, NO_SNAP_TARGETS, helpers);
+    expect(spot.snap?.kind ?? null).toBe(snap);
+    if (snap === null) expect(spot.point).toEqual(at);
+  });
+
+  it.each([
+    ['Buildings on: onto the other roof’s corner', ALL_HELPERS, 'corner_of'],
+    ['Buildings off: where it was tapped', helpersOf(['buildings'], false), null],
+  ] as const)('%s', (_why, helpers, snap) => {
+    const spot = draftSpot([], p(8.2, 6.3), snapTargetsOf([ROOF_1]), helpers);
+    expect(spot.snap?.kind ?? null).toBe(snap);
+  });
+
+  it('a helper name the studio does not know turns nothing off', () => {
+    expect(helpersOf(['magic'], false)).toEqual(ALL_HELPERS);
+  });
+});
+
 describe('drawing a roof: where a tap lands', () => {
   it('the first corner lands where it is tapped', () => {
-    expect(draftSpot([], p(3.3, 4.4), NO_SNAP_TARGETS)).toEqual({ point: p(3.3, 4.4), snap: null });
+    expect(draftSpot([], p(3.3, 4.4), NO_SNAP_TARGETS, ALL_HELPERS)).toEqual({
+      point: p(3.3, 4.4),
+      snap: null,
+    });
   });
 
   it.each([
@@ -39,6 +96,7 @@ describe('drawing a roof: where a tap lands', () => {
       [p(0, 0), p(8, 0)],
       p(8 + 5 * Math.sin(r), 5 * Math.cos(r)),
       NO_SNAP_TARGETS,
+      ALL_HELPERS,
     );
     expect(spot.snap?.kind === 'square').toBe(snaps);
     if (snaps) expect(spot.point.east).toBeCloseTo(8, 6);
@@ -47,7 +105,7 @@ describe('drawing a roof: where a tap lands', () => {
   it('a corner square to the last edge and level with an earlier corner lines up with it', () => {
     // An L: the fifth corner is tapped 0.3 m off level with corner 1.
     const corners = [p(0, 0), p(8, 0), p(8, 3), p(4, 3), p(4, 6)];
-    const spot = draftSpot(corners, p(0.3, 6.1), NO_SNAP_TARGETS);
+    const spot = draftSpot(corners, p(0.3, 6.1), NO_SNAP_TARGETS, ALL_HELPERS);
     near(spot.point, p(0, 6));
     expect(spot.snap).toEqual({ kind: 'lines_up', corner: 0 });
   });
@@ -67,7 +125,7 @@ describe('drawing a roof: where a tap lands', () => {
     ],
     ['0.6 m off: free', p(8.6, 3), null, p(8.6, 3)],
   ] as const)('%s', (_name, at, snap, point) => {
-    const spot = draftSpot([], at, snapTargetsOf([ROOF_1]));
+    const spot = draftSpot([], at, snapTargetsOf([ROOF_1]), ALL_HELPERS);
     expect(spot.snap).toEqual(snap);
     near(spot.point, point);
   });
@@ -79,7 +137,7 @@ describe('drawing a roof: where a tap lands', () => {
 
 describe('drawing a roof: taps', () => {
   it('a tap adds a corner', () => {
-    expect(draftTap([p(0, 0)], p(8, 0), NO_SNAP_TARGETS, [])).toEqual({
+    expect(draftTap([p(0, 0)], p(8, 0), NO_SNAP_TARGETS, [], ALL_HELPERS)).toEqual({
       kind: 'added',
       corners: [p(0, 0), p(8, 0)],
       snap: null,
@@ -90,12 +148,12 @@ describe('drawing a roof: taps', () => {
     ['0.19 m from the last corner adds nothing', p(0.19, 0), 'same'],
     ['0.21 m from it adds a corner', p(0.21, 0), 'added'],
   ])('%s', (_name, at, kind) => {
-    expect(draftTap([p(0, 0)], at, NO_SNAP_TARGETS, []).kind).toBe(kind);
+    expect(draftTap([p(0, 0)], at, NO_SNAP_TARGETS, [], ALL_HELPERS).kind).toBe(kind);
   });
 
   it('a tap whose edge would cross an earlier one is refused', () => {
     const corners = [p(0, 0), p(8, 0), p(8, 6)];
-    expect(draftTap(corners, p(4, -3), NO_SNAP_TARGETS, [])).toEqual({
+    expect(draftTap(corners, p(4, -3), NO_SNAP_TARGETS, [], ALL_HELPERS)).toEqual({
       kind: 'refused',
       refusal: 'would_cross',
     });
@@ -105,14 +163,14 @@ describe('drawing a roof: taps', () => {
     ['inside another roof', [p(10, 3)], p(4, 3)],
     ['an edge through another roof', [p(-3, 3)], p(11, 3)],
   ])('a tap %s is refused', (_name, corners, at) => {
-    expect(draftTap(corners, at, NO_SNAP_TARGETS, [ROOF_1])).toEqual({
+    expect(draftTap(corners, at, NO_SNAP_TARGETS, [ROOF_1], ALL_HELPERS)).toEqual({
       kind: 'refused',
       refusal: 'would_overlap',
     });
   });
 
   it('a tap far past the picture is refused', () => {
-    expect(draftTap([], p(2_001, 0), NO_SNAP_TARGETS, [])).toEqual({
+    expect(draftTap([], p(2_001, 0), NO_SNAP_TARGETS, [], ALL_HELPERS)).toEqual({
       kind: 'refused',
       refusal: 'too_far',
     });
@@ -168,5 +226,20 @@ describe('drawing a roof: the ghost corner and the close', () => {
       kind: 'refused',
       refusal: 'too_many_roofs',
     });
+  });
+});
+
+describe('a tap on the first corner closes the shape', () => {
+  const SQUARE = [p(0, 0), p(8, 0), p(8, 6)];
+  const BENT = [p(0, 0), p(8, 0), p(9, 6)];
+  it.each([
+    ['three square corners, on corner 1', SQUARE, p(0.2, 0.2), true],
+    ['three square corners, at the snap’s reach', SQUARE, p(0.5, 0), true],
+    ['three square corners, just past it', SQUARE, p(0.51, 0), false],
+    ['three bent corners, no ghost: closes from three', BENT, p(0.1, 0), true],
+    ['two corners: too few to close', [p(0, 0), p(8, 0)], p(0.1, 0), false],
+    ['no corner', [], p(0, 0), false],
+  ])('%s', (_why, corners, at, closes) => {
+    expect(draftClosesAt(corners, at)).toBe(closes);
   });
 });

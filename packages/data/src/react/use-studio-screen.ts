@@ -1,5 +1,8 @@
 'use client';
 import {
+  type FocusParts,
+  focusOf,
+  type GroundBox,
   type History,
   historyAfter,
   historyRedone,
@@ -8,6 +11,8 @@ import {
   OPENING_VIEW,
   type PictureChoice,
   pictureNewerThanDrawn,
+  type RoofStepState,
+  roofsBox,
   type ScaleBar,
   type StepPlace,
   type StudioDocument,
@@ -34,12 +39,14 @@ import {
 } from './studio-document-state';
 import type { StudioSaveState } from './studio-save-queue';
 import { type DesignRead, useDesignScreen } from './use-design-screen';
+import { type RoofMoves, type RoofStepView, useRoofStep } from './use-roof-step';
 import { useSession } from './use-session';
 
 export type { StudioEditing, StudioPicture } from './studio-document-state';
 export type { StudioSaveState } from './studio-save-queue';
+export type { RoofMoves, RoofStepView } from './use-roof-step';
 
-export interface StudioMoves {
+export interface StudioMoves extends RoofMoves {
   pickPicture(choice: PictureChoice): void;
   undo(): void;
   redo(): void;
@@ -54,9 +61,13 @@ export interface StudioMoves {
   see(view: StudioView): void;
   /** The three pictures shown or put away. */
   showPictures(open: boolean): void;
+  /** Add roof objects: the next step, a note until it is built. */
+  toObjects(): void;
+  /** The note that the next step is coming, put away. */
+  objectsSeen(): void;
 }
 
-export interface StudioScreen {
+export interface StudioScreen extends RoofStepView {
   readonly read: DesignRead;
   /** `null` until the document is read. */
   readonly document: StudioDocument | null;
@@ -79,7 +90,30 @@ export interface StudioScreen {
   readonly picturesOpen: boolean;
   /** The sun the scene is lit by: the real sun for the site now, or its noon after dark. */
   readonly sun: SunPosition | null;
+  /** The ground the design's roofs cover, which the camera frames; `null` before a roof. */
+  readonly fit: GroundBox | null;
+  /** "See it in 3D" is offered once, until the 3D view is first seen. */
+  readonly offer3d: boolean;
+  /** Add roof objects was pressed: its note shows. */
+  readonly objectsNote: boolean;
+  /** Which parts show for the job in hand, on a phone-width screen or a wider one (focus mode). */
+  focus(phone: boolean): FocusParts;
   readonly moves: StudioMoves;
+}
+
+/**
+ * What Undo and Redo can do now: while drawing, Undo takes the last corner off; with nothing in
+ * hand, they walk the design's history; Redo waits while a roof is drawn, sized or dragged.
+ */
+function undoRedoOf(
+  editable: boolean,
+  roofStep: RoofStepState,
+  history: History<StudioDocument> | null,
+): { canUndo: boolean; canRedo: boolean } {
+  if (!editable) return { canUndo: false, canRedo: false };
+  const back =
+    roofStep.kind === 'drawing' ? roofStep.corners.length > 0 : (history?.past.length ?? 0) > 0;
+  return { canUndo: back, canRedo: roofStep.kind === 'idle' && (history?.future.length ?? 0) > 0 };
 }
 
 /**
@@ -99,10 +133,9 @@ export function useStudioScreen(designId: string): StudioScreen {
   );
   const [pictureSeen, setPictureSeen] = useState(false);
   const [view, setView] = useState<StudioView>(OPENING_VIEW);
-  /** No roof can be drawn yet: the rail and the views wait for one. */
-  const roofClosed = false;
-  const views = viewsOffered(roofClosed);
   const units = session.user?.unitPreference ?? 'metric';
+  const [seen3d, setSeen3d] = useState(false);
+  const [objectsNote, setObjectsNote] = useState(false);
   const [picturesOpen, setPicturesOpen] = useState(false);
   const pin = ready ? read.value.site.pin : null;
   // The sun is read once for the opening: the scene does not move with the clock.
@@ -126,6 +159,25 @@ export function useStudioScreen(designId: string): StudioScreen {
   const skyRead = readOf(skyQuery);
   const sky = skyReadOf(skyRead);
   const picture = pictureOf(shownPicture(document?.picture ?? null, sky), skyRead);
+  /** The views and the rail wait for a roof that stands. */
+  const roofClosed = (document?.roofs.length ?? 0) > 0;
+  const views = viewsOffered(roofClosed);
+  const fit = useMemo(() => roofsBox(document?.roofs ?? []), [document]);
+
+  const roof = useRoofStep({
+    document,
+    latest,
+    change,
+    editable,
+    units,
+    picture,
+    setUnits: (system) => void session.setUnitPreference(system),
+    helpersOff: session.user?.studioHelpersOff ?? [],
+    setHelpersOff: (off) => void session.setStudioPicks({ studioHelpersOff: off }),
+    helpersRefused: session.refusedPreferences.includes('studio'),
+  });
+  const { step, act } = roof;
+  const { roofStep } = roof.view;
 
   return {
     read,
@@ -141,22 +193,45 @@ export function useStudioScreen(designId: string): StudioScreen {
     rail: stepRail(roofClosed),
     view,
     views,
+    ...roof.view,
+    fit,
+    offer3d: roofClosed && !seen3d,
+    objectsNote,
     scaleBar: (metresPerPixel, maxPixels) => scaleBarOf(metresPerPixel, units, maxPixels),
     picturesOpen,
     sun,
-    canUndo: editable && (history?.past.length ?? 0) > 0,
-    canRedo: editable && (history?.future.length ?? 0) > 0,
+    ...undoRedoOf(editable, roofStep, history),
+    focus: (phone) =>
+      focusOf({
+        job: roof.view.job,
+        view,
+        phone,
+        canEdit: editable,
+        hasRoof: roofClosed,
+        saveFailed: saving.kind === 'failed' || saving.kind === 'refused',
+      }),
     moves: {
+      ...roof.moves,
       pickPicture: (choice) => {
         const at = latest.current;
         if (at === null || at.present.picture === choice) return;
         change(historyAfter(at, { ...at.present, picture: choice }));
       },
+      // While drawing, Undo takes the last corner off; with a length or a drag in hand, it puts
+      // that back first.
       undo: () => {
-        if (latest.current !== null) change(historyUndone(latest.current));
+        const now = step.current.kind;
+        if (now === 'drawing') act({ kind: 'undo_corner' });
+        else if (now === 'sizing' || now === 'dragging') act({ kind: 'cancel' });
+        else if (latest.current !== null) {
+          act({ kind: 'pick_corner', corner: null });
+          change(historyUndone(latest.current));
+        }
       },
       redo: () => {
-        if (latest.current !== null) change(historyRedone(latest.current));
+        if (step.current.kind === 'idle' && latest.current !== null) {
+          change(historyRedone(latest.current));
+        }
       },
       chooseUnits: (system) => void session.setUnitPreference(system),
       openTheirs: () => void refetchDocument(),
@@ -164,8 +239,20 @@ export function useStudioScreen(designId: string): StudioScreen {
       pictureChecked: () => setPictureSeen(true),
       // A view that waits for a roof is not taken, whoever asks for it.
       see: (next) => {
-        if (views.some((place) => place.view === next && place.lock === null)) setView(next);
+        if (!views.some((place) => place.view === next && place.lock === null)) return;
+        // A new roof is drawn in the top view only: leaving it drops the draft.
+        if (next !== 'top' && step.current.kind === 'drawing') act({ kind: 'cancel' });
+        if (next === '3d') setSeen3d(true);
+        setView(next);
       },
+      // Drawing happens in the top view only: the camera flies there first.
+      draw: () => {
+        setView('top');
+        setObjectsNote(false);
+        roof.moves.draw();
+      },
+      toObjects: () => setObjectsNote(true),
+      objectsSeen: () => setObjectsNote(false),
       showPictures: setPicturesOpen,
     },
   };

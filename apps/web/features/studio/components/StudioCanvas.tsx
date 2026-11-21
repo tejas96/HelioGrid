@@ -3,15 +3,26 @@ import type { DesignDetail, TranslatedText } from '@heliogrid/contracts';
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { PictureChoice } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { Button, ShellGlyph, useFormat, usePalette, useReducedMotion } from '@heliogrid/ui';
+import {
+  ShellGlyph,
+  useDesktopShell,
+  useFormat,
+  usePalette,
+  useReducedMotion,
+} from '@heliogrid/ui';
 import dynamic from 'next/dynamic';
 import { useRef } from 'react';
 import { useChromeRoom } from '../hooks/use-chrome-room';
+import { useDrawPress } from '../hooks/use-draw-press';
 import { useMapKeys } from '../hooks/use-map-keys';
 import { StudioBottomBar } from './StudioBottomBar';
 import type { StudioDrive } from './StudioCameraRig';
+import { StudioCanvasNotes } from './StudioCanvasNotes';
+import { StudioLoupe } from './StudioLoupe';
 import { StudioMapMarks, type StudioMapMarksHandle } from './StudioMapMarks';
-import { StudioPictureChip } from './StudioPictureChip';
+import { StudioPictureChip, StudioPictureCredit } from './StudioPictureChip';
+import { StudioRoofMarks } from './StudioRoofMarks';
+import type { RoofMarksHandle } from './StudioRoofs';
 import { StudioStepSwitcher } from './StudioStepSwitcher';
 import { StudioToolRail } from './StudioToolRail';
 import { StudioTopBar } from './StudioTopBar';
@@ -25,9 +36,12 @@ const StudioScene = dynamic(() => import('./StudioScene').then((scene) => scene.
 });
 
 /**
- * The studio's canvas (`T-M05-002a`): the scene on the whole screen and the thin glass parts over
- * it — the top bar with the Saved pill, the step rail, the picture chip, the two tool columns and
- * the one bottom bar. It holds only how the model is seen; every fact is the studio hook's.
+ * The studio's canvas (`T-M05-002a`, `T-M05-002b`): the scene on the whole screen and the thin
+ * glass parts over it — the top bar with the Saved pill, the step rail, the picture chip, the two
+ * tool columns and the one bottom bar — and the marks on the roofs. While a roof is drawn, a tap on
+ * the map places a corner and a drag still moves it; on a phone a finger held still aims with the
+ * loupe. Focus mode sets aside every part the job in hand does not use. It holds only how the model
+ * is seen and touched; every fact and every rule is the studio hook's.
  */
 export function StudioCanvas({
   detail,
@@ -48,23 +62,26 @@ export function StudioCanvas({
   const format = useFormat();
   const palette = usePalette();
   const still = useReducedMotion();
+  const desktop = useDesktopShell();
   const { frame, top, bottom, room } = useChromeRoom();
   const pin = useRef<HTMLSpanElement>(null);
   const drive = useRef<StudioDrive | null>(null);
   const marks = useRef<StudioMapMarksHandle>(null);
+  const roofMarks = useRef<RoofMarksHandle>(null);
+  const rise = useRef(0);
   const onKeyDown = useMapKeys(drive);
-  const { picture, editing, saving, moves, view, sun } = studio;
+  const { picture, editing, saving, moves, view, sun, roofStep, document } = studio;
   const editable = editing.kind === 'editor';
-  const shown: PictureChoice =
-    picture.kind === 'none' ? 'none' : (studio.document?.picture ?? 'sky');
+  const drawing = roofStep.kind === 'drawing';
+  const roofs = studio.shown?.roofs ?? [];
+  const parts = studio.focus(desktop === false);
+  const shown: PictureChoice = picture.kind === 'none' ? 'none' : (document?.picture ?? 'sky');
   const sky = picture.kind === 'sky' ? picture : null;
-  const status =
-    picture.kind === 'none'
-      ? words.noPictureWhy(picture.reason)
-      : words.roofNotSetUp(detail.site.address);
+
+  const { aim, handlers } = useDrawPress(studio, drive);
 
   return (
-    <div ref={frame} className="hg-studio" data-view={view}>
+    <div ref={frame} className="hg-studio" data-view={view} data-drawing={drawing}>
       <div
         className="hg-studio-scene"
         role="application"
@@ -72,6 +89,7 @@ export function StudioCanvas({
         // biome-ignore lint/a11y/noNoninteractiveTabindex: the map takes the focus to answer its keys, as a map does
         tabIndex={0}
         onKeyDown={onKeyDown}
+        {...handlers}
       >
         <StudioScene
           picture={picture}
@@ -84,74 +102,87 @@ export function StudioCanvas({
           fallback={<p className="hg-studio-no-scene">{words.noScene}</p>}
           drive={drive}
           onMarks={(seen) => marks.current?.show(seen)}
+          roofs={roofs}
+          storeyHeightM={format.pack.storeyHeightM}
+          fit={studio.fit}
+          rise={rise}
+          roofMarks={roofMarks}
         />
       </div>
+      <StudioRoofMarks
+        handle={roofMarks}
+        studio={studio}
+        view={view}
+        units={studio.units}
+        words={words}
+        aiming={aim !== null}
+      />
+      {aim !== null ? (
+        <StudioLoupe at={aim} studio={studio} units={studio.units} drive={drive} />
+      ) : null}
       <StudioMapMarks
         handle={marks}
         view={view}
         units={studio.units}
         scaleBar={studio.scaleBar}
         words={words}
+        off={parts.compass === 'hidden'}
       />
-      <span ref={pin} className="hg-studio-pin" data-hidden="true">
+      <span
+        ref={pin}
+        className="hg-studio-pin"
+        data-hidden="true"
+        data-gone={roofs.length > 0 || drawing}
+      >
         <ShellGlyph name="pin" size="sm" tone="current" />
         {words.pin}
       </span>
       <div ref={top} className="hg-studio-canvas-head">
-        <StudioTopBar
-          name={name}
-          editing={editing}
-          saving={saving}
-          words={words}
-          onBack={onBack}
-          onRetry={moves.retry}
-        />
+        <div
+          className="hg-studio-head-part"
+          data-hidden={parts.topBar === 'hidden'}
+          inert={parts.topBar === 'hidden'}
+        >
+          <StudioTopBar
+            name={name}
+            editing={editing}
+            saving={saving}
+            words={words}
+            onBack={onBack}
+            onRetry={moves.retry}
+          />
+        </div>
         {/* While another person edits, the place stays: their roof is drawn on it. A change still
             on its way keeps the person here, or leaving would lose it. */}
-        <StudioStepSwitcher
-          rail={studio.rail}
-          words={words}
-          onSite={editable ? onSite : null}
-          siteWaits={saving.kind !== 'saved'}
-        />
-        <StudioPictureChip
-          picture={picture}
-          shown={shown}
-          sharpness={sky === null ? null : format.fineLength(sky.metresPerPixel, studio.units)}
-          takenOn={sky?.takenOn == null ? null : format.monthYear(sky.takenOn)}
-          words={words}
-          canPick={editable}
-          open={studio.picturesOpen}
-          onOpen={moves.showPictures}
-          onPick={moves.pickPicture}
-        />
+        <div
+          className="hg-studio-head-part"
+          data-hidden={parts.stepSwitcher === 'hidden'}
+          inert={parts.stepSwitcher === 'hidden'}
+        >
+          <StudioStepSwitcher
+            rail={studio.rail}
+            words={words}
+            onSite={editable ? onSite : null}
+            siteWaits={saving.kind !== 'saved'}
+          />
+        </div>
+        {parts.pictureChip === 'credit' ? (
+          <StudioPictureCredit picture={picture} />
+        ) : (
+          <StudioPictureChip
+            picture={picture}
+            shown={shown}
+            sharpness={sky === null ? null : format.fineLength(sky.metresPerPixel, studio.units)}
+            takenOn={sky?.takenOn == null ? null : format.monthYear(sky.takenOn)}
+            words={words}
+            canPick={editable && roofStep.kind === 'idle'}
+            open={studio.picturesOpen}
+            onOpen={moves.showPictures}
+            onPick={moves.pickPicture}
+          />
+        )}
       </div>
-      {saving.kind === 'saved-first' ? (
-        <div className="hg-studio-glass hg-studio-note" role="alert">
-          <ShellGlyph name="alert-circle" size="sm" />
-          <span>
-            {words.savedFirst(saving.savedBy?.name ?? null, format.clockAt(saving.savedAt))}
-          </span>
-          <Button variant="secondary" size="sm" onClick={moves.openTheirs}>
-            {words.openTheirs}
-          </Button>
-        </div>
-      ) : null}
-      {saving.kind === 'closed' ? (
-        <div className="hg-studio-glass hg-studio-note" role="status">
-          <ShellGlyph name="lock" size="sm" />
-          <span>{words.closed}</span>
-        </div>
-      ) : null}
-      {studio.pictureUpdated ? (
-        <div className="hg-studio-glass hg-studio-note" role="status">
-          <ShellGlyph name="image" size="sm" />
-          <span>{words.pictureUpdated}</span>
-          <Button variant="secondary" size="sm" onClick={moves.pictureChecked}>
-            {words.pictureChecked}
-          </Button>
-        </div>
-      ) : null}
+      <StudioCanvasNotes studio={studio} words={words} />
       <StudioToolRail
         view={view}
         views={studio.views}
@@ -159,11 +190,22 @@ export function StudioCanvas({
         editable={editable}
         canUndo={studio.canUndo}
         canRedo={studio.canRedo}
+        drawing={drawing}
+        newView={studio.offer3d}
+        parts={parts}
+        helpers={studio.helpers}
+        buildingData={studio.buildingData}
+        helpersRefused={studio.helpersRefused}
+        hasRoof={studio.fit !== null}
+        onRetryHelpers={moves.retryHelpers}
         words={words}
         onView={moves.see}
         onUnits={moves.chooseUnits}
         onUndo={moves.undo}
         onRedo={moves.redo}
+        onDraw={drawing ? moves.cancel : moves.draw}
+        onHelper={moves.toggleHelper}
+        onAddRoof={moves.draw}
         onZoomIn={() => drive.current?.zoomIn()}
         onZoomOut={() => drive.current?.zoomOut()}
         onHome={() => drive.current?.home()}
@@ -171,10 +213,13 @@ export function StudioCanvas({
       <StudioBottomBar
         barRef={bottom}
         name={name}
-        status={status}
-        noPicture={picture.kind === 'none'}
-        editable={editable}
+        studio={studio}
+        view={view}
+        units={studio.units}
+        editing={editing}
+        place={detail.site.address}
         words={words}
+        part={parts.bottomBar}
       />
     </div>
   );

@@ -6,6 +6,7 @@
  * Text tokens clear WCAG AA (4.5:1) on every surface they land on; marks clear 3:1. The pairs and
  * their floors are `contrast.ts`, measured in every mode by `tests/contrast.test.ts`.
  */
+import { DAYLIGHT } from './scene';
 export const COLOR_TOKENS = [
   // The ladder: page → card → raised control, each one brighter than what holds it.
   'canvas',
@@ -79,6 +80,14 @@ export const COLOR_TOKENS = [
   'hue-plum-text',
   // The sun on the door's sky: art, never words or status.
   'sun',
+  // The studio's daylight scene and the marks on its picture (`scene.ts`).
+  'scene-sky',
+  'scene-ground',
+  'scene-wall',
+  'scene-mark',
+  'scene-shade',
+  'scene-line',
+  'scene-bad',
   // The solar-glass hero.
   'panel',
   'panel-deep',
@@ -162,6 +171,8 @@ export const LIGHT: ThemePalette = {
   'hue-plum-bg': '#F3E6F1',
   'hue-plum-text': '#6A3A65',
   sun: '#F7C548',
+  ...DAYLIGHT,
+  'scene-line': '#006EAA',
   panel: '#FFFFFF',
   'panel-deep': '#EFF6F8',
   'on-panel': '#14171A',
@@ -242,6 +253,8 @@ export const DARK: ThemePalette = {
   'hue-plum-bg': '#2E1A2C',
   'hue-plum-text': '#E7BFE0',
   sun: '#F7C548',
+  ...DAYLIGHT,
+  'scene-line': '#0A84C6',
   panel: '#062B3F',
   'panel-deep': '#03161F',
   'on-panel': '#EEF5F4',

@@ -10,6 +10,8 @@ const person = {
   phoneE164: '+919876543210',
   interfaceLanguage: 'en',
   unitPreference: 'metric',
+  studioHelpersOff: [],
+  numberEntry: 'slider',
 } as const;
 const TENANT_ID = '8f0c2d1e-0000-4000-8000-000000000001';
 const owner: SessionUser = { ...person, tenant: { id: TENANT_ID, roles: ['epc_owner'] } };

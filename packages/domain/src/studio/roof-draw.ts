@@ -12,6 +12,7 @@ import {
   roofsOverlap,
   segmentsCross,
 } from './roof-shape';
+import type { StudioHelper } from './vocabulary';
 
 /**
  * Drawing a new roof in the top view (`T-M05-002`, part b): each tap places a corner, snapped to
@@ -27,6 +28,29 @@ export const SQUARE_SNAP_DEGREES = 6;
 export const SAME_TAP_M = 0.2;
 /** A corner whose angle is this near square counts as square: the ghost corner, a length's slide. */
 export const SQUARE_EXACT_DEGREES = 0.5;
+
+/**
+ * Which helpers guide a corner now (`T-M05-002`, part b): Square (square corners), Line up (level
+ * with an earlier corner) and Buildings (onto another roof's corner or edge, and the building's own
+ * once part g reads it). Each is on until a person turns it off.
+ */
+export type DrawHelpers = Readonly<Record<StudioHelper, boolean>>;
+
+export const ALL_HELPERS: DrawHelpers = { square: true, line_up: true, buildings: true };
+const NO_HELPERS: DrawHelpers = { square: false, line_up: false, buildings: false };
+
+/**
+ * The helpers in force: every one the person did not turn off — and none while `free` (Alt held on
+ * a desktop draws free for a moment). A helper name the studio does not know is ignored.
+ */
+export function helpersOf(off: readonly string[], free: boolean): DrawHelpers {
+  if (free) return NO_HELPERS;
+  return {
+    square: !off.includes('square'),
+    line_up: !off.includes('line_up'),
+    buildings: !off.includes('buildings'),
+  };
+}
 
 /**
  * Who owns a corner or an edge a spot can snap to. The design's other roofs now; the building and
@@ -110,14 +134,16 @@ function along(from: GroundPoint, way: GroundPoint, metres: number): GroundPoint
 
 /**
  * Where a tap lands while drawing, snapped in order: another roof's corner, another roof's edge,
- * then square to the last edge — and, square or not, level with an earlier corner.
+ * then square to the last edge — and, square or not, level with an earlier corner. A helper that
+ * is off snaps nothing.
  */
 export function draftSpot(
   corners: readonly GroundPoint[],
   at: GroundPoint,
   targets: SnapTargets,
+  helpers: DrawHelpers,
 ): Snapped {
-  const onTarget = snapToTargets(at, targets);
+  const onTarget = helpers.buildings ? snapToTargets(at, targets) : null;
   if (onTarget !== null) return onTarget;
   const last = corners.at(-1);
   const before = corners.at(-2);
@@ -125,9 +151,9 @@ export function draftSpot(
     return { point: at, snap: null };
   }
   // The corners a line-up can name: not the last two, whose line the new edge already touches.
-  const earlier = corners.slice(0, -2);
+  const earlier = helpers.line_up ? corners.slice(0, -2) : [];
   const angle = angleAt(before, last, at);
-  if (Math.abs(angle - 90) <= SQUARE_SNAP_DEGREES) {
+  if (helpers.square && Math.abs(angle - 90) <= SQUARE_SNAP_DEGREES) {
     // Square: the new edge runs at right angles to the last, the way the tap leans.
     const lastWay = unit(before, last);
     const across = { east: -lastWay.north, north: lastWay.east };
@@ -211,8 +237,9 @@ export function draftTap(
   at: GroundPoint,
   targets: SnapTargets,
   roofs: readonly Roof[],
+  helpers: DrawHelpers,
 ): DraftTap {
-  const { point, snap } = draftSpot(corners, at, targets);
+  const { point, snap } = draftSpot(corners, at, targets, helpers);
   const last = corners.at(-1);
   if (last !== undefined && between(last, point) < SAME_TAP_M) return { kind: 'same' };
   if (Math.abs(point.east) > GROUND_REACH_M || Math.abs(point.north) > GROUND_REACH_M) {
@@ -224,6 +251,16 @@ export function draftTap(
   if (crossesRoofs(last ?? point, point, roofs))
     return { kind: 'refused', refusal: 'would_overlap' };
   return { kind: 'added', corners: next, snap };
+}
+
+/**
+ * Whether a tap at this spot closes the shape: it lands on the first corner, within the snap's
+ * reach, once the shape has corners enough to close — with the ghost's fourth, three will do.
+ */
+export function draftClosesAt(corners: readonly GroundPoint[], at: GroundPoint): boolean {
+  const first = corners[0];
+  const enough = corners.length + (draftGhost(corners) === null ? 0 : 1) >= ROOF_CORNERS_MIN;
+  return first !== undefined && enough && between(first, at) <= SNAP_M;
 }
 
 /**

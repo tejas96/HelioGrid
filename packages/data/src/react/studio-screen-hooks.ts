@@ -9,6 +9,7 @@ export type {
 } from './use-lead-designs-section';
 export { useLeadDesignsSection } from './use-lead-designs-section';
 export { useLendToken } from './use-lend-token';
+export { useAimHold, useRepeatPress } from './use-press-timing';
 export type {
   SiteDetailsMoves,
   SiteDetailsRead,
@@ -19,6 +20,8 @@ export type {
 } from './use-site-details-screen';
 export { useSiteDetailsScreen } from './use-site-details-screen';
 export type {
+  RoofMoves,
+  RoofStepView,
   StudioEditing,
   StudioMoves,
   StudioPicture,

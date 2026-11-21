@@ -8,6 +8,7 @@ import {
   roofArea,
   roofHandles,
   roofMiddle,
+  roofsBox,
   roofsOverlap,
 } from '../../src/studio/roof-shape';
 
@@ -84,5 +85,23 @@ describe('a roof’s shape', () => {
     expect(handles.move).toEqual(p(1, 1));
     expect(handles.turnOutside).toBe(true);
     expect(pointInside(handles.turn, small)).toBe(false);
+  });
+});
+
+describe('the ground the roofs cover', () => {
+  it.each([
+    ['no roof', [], null],
+    [
+      'one roof',
+      [{ corners: [p(0, 0), p(8, 0), p(8, 6)] }],
+      { west: 0, east: 8, south: 0, north: 6 },
+    ],
+    [
+      'two roofs, apart',
+      [{ corners: [p(0, 0), p(8, 0), p(8, 6)] }, { corners: [p(-3, -2), p(-1, -2), p(-1, 1)] }],
+      { west: -3, east: 8, south: -2, north: 6 },
+    ],
+  ])('%s', (_why, roofs, box) => {
+    expect(roofsBox(roofs)).toEqual(box);
   });
 });

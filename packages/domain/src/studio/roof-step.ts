@@ -166,10 +166,11 @@ function thenKept(
 function tapped(state: RoofStepState, at: GroundPoint, document: StudioDocument): RoofStepOutcome {
   if (state.kind === 'idle' && state.picked !== null) return stay(idle(null));
   if (state.kind !== 'drawing') return stay(state);
-  const tap = draftTap(state.corners, at, snapTargetsOf(document.roofs), document.roofs);
+  const targets = snapTargetsOf(document.roofs);
+  const tap = draftTap(state.corners, at, targets, document.roofs, state.helpers);
   if (tap.kind === 'same') return stay(state);
   if (tap.kind === 'refused') return stay({ ...state, refused: tap.refusal });
-  return stay({ ...state, corners: tap.corners, spot: null, refused: null });
+  return stay({ ...state, corners: tap.corners, pointer: null, spot: null, refused: null });
 }
 
 function closed(
@@ -219,14 +220,36 @@ function inState<K extends RoofStepState['kind']>(
 }
 
 const ON: Handlers = {
-  draw: () => stay({ kind: 'drawing', corners: [], spot: null, refused: null }),
+  draw: (state, { helpers }) =>
+    state.kind === 'drawing'
+      ? stay(state)
+      : stay({
+          kind: 'drawing',
+          corners: [],
+          pointer: null,
+          spot: null,
+          refused: null,
+          helpers,
+        }),
+  // The spot under a still pointer snaps again by the helpers now in force: what shows is where a
+  // tap would place the corner.
+  helpers: (state, { helpers }, document) =>
+    inState(state, 'drawing', (drawing) => {
+      const { pointer, corners } = drawing;
+      const targets = snapTargetsOf(document.roofs);
+      const spot = pointer === null ? null : draftSpot(corners, pointer, targets, helpers);
+      return stay({ ...drawing, helpers, spot });
+    }),
   cancel: () => stay(idle(null)),
   hover: (state, { at }, document) =>
     inState(state, 'drawing', (drawing) => {
       const targets = snapTargetsOf(document.roofs);
+      // The pointer moved on: a refusal of the last tap is behind it; the spot says its own.
       return stay({
         ...drawing,
-        spot: at === null ? null : draftSpot(drawing.corners, at, targets),
+        pointer: at,
+        spot: at === null ? null : draftSpot(drawing.corners, at, targets, drawing.helpers),
+        refused: null,
       });
     }),
   tap: (state, { at, system }, document) =>

@@ -28,6 +28,8 @@ const InverterIcon = Lucide.createLucideIcon({
 export const SHELL_GLYPHS = {
   alert: AlertMarkIcon,
   'alert-circle': Lucide.CircleAlertIcon,
+  /** A corner's angle: the Square helper, which snaps a corner to 90°. */
+  angle: Lucide.DraftingCompassIcon,
   'alert-triangle': Lucide.TriangleAlertIcon,
   archive: Lucide.ArchiveIcon,
   'arrow-down': Lucide.ArrowDownIcon,
@@ -91,6 +93,8 @@ export const SHELL_GLYPHS = {
   lines: Lucide.TextAlignStartIcon,
   link: Lucide.LinkIcon,
   'link-off': Lucide.UnlinkIcon,
+  /** Guides through earlier corners: the Line up helper. */
+  'line-up': Lucide.WaypointsIcon,
   'list-bullet': Lucide.ListIcon,
   'list-number': Lucide.ListOrderedIcon,
   lock: Lucide.LockIcon,
@@ -100,6 +104,7 @@ export const SHELL_GLYPHS = {
   'minus-circle': Lucide.CircleMinusIcon,
   monitor: Lucide.MonitorIcon,
   moon: Lucide.MoonIcon,
+  move: Lucide.MoveIcon,
   north: Lucide.Navigation2Icon,
   note: Lucide.StickyNoteIcon,
   package: Lucide.PackageIcon,
@@ -136,6 +141,8 @@ export const SHELL_GLYPHS = {
   trash: Lucide.TrashIcon,
   'trend-down': Lucide.TrendingDownIcon,
   'trend-up': Lucide.TrendingUpIcon,
+  /** A turn about a middle: the same arrow as `retry`, named for the shape it is drawn as here. */
+  turn: Lucide.RotateCwIcon,
   truck: Lucide.TruckIcon,
   undo: Lucide.Undo2Icon,
   upload: Lucide.UploadIcon,

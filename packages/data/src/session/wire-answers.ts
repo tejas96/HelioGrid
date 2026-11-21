@@ -56,6 +56,9 @@ export function userOf(projection: SessionProjection): SessionUser {
     phoneE164: projection.actor.phoneE164,
     interfaceLanguage: uiLanguageOrSource(projection.actor.interfaceLanguage),
     unitPreference: projection.actor.unitPreference,
+    studioHelpersOff: projection.actor.studioHelpersOff,
+    // A way to set numbers this build does not know reads as the slider.
+    numberEntry: projection.actor.numberEntry === 'box' ? 'box' : 'slider',
     tenant:
       projection.membership === null
         ? null

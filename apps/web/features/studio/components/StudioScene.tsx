@@ -1,6 +1,6 @@
 'use client';
 import type { StudioPicture } from '@heliogrid/data/react';
-import type { StudioView, SunPosition } from '@heliogrid/domain';
+import type { GroundBox, Roof, StudioView, SunPosition } from '@heliogrid/domain';
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
@@ -8,6 +8,7 @@ import type { ReactNode, RefObject } from 'react';
 import { MathUtils, Vector3 } from 'three';
 import { StudioCameraRig, type StudioDrive, type StudioMarks } from './StudioCameraRig';
 import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
+import { type RoofMarksHandle, type RoofRise, StudioRoofs } from './StudioRoofs';
 
 const RADIANS = MathUtils.DEG2RAD;
 /** The plain ground where there is no picture, wide enough that its edge is never seen. */
@@ -40,7 +41,7 @@ function SunLight({ sun, palette }: { sun: SunPosition; palette: ThemePalette })
   const across = Math.cos(elevation) * SUN_DISTANCE_M;
   return (
     <>
-      <hemisphereLight args={[palette.surface, palette['canvas-sunken'], SKY_LIGHT]} />
+      <hemisphereLight args={[palette['scene-sky'], palette['scene-ground'], SKY_LIGHT]} />
       <directionalLight
         position={[
           Math.sin(azimuth) * across,
@@ -96,6 +97,16 @@ export interface StudioSceneProps {
   drive: RefObject<StudioDrive | null>;
   /** Told the scale and the turn each time the camera moves. */
   onMarks: (marks: StudioMarks) => void;
+  /** The roofs to stand on the ground: the design's, or the preview of what is in hand. */
+  roofs: readonly Roof[];
+  /** The market's storey height: the roofs stand at it in 3D until their own heights are set. */
+  storeyHeightM: number;
+  /** The roofs' ground, which the view frames; `null` before a roof. */
+  fit: GroundBox | null;
+  /** The height the roofs stand at now, shared with the page's marks. */
+  rise: RoofRise;
+  /** The page's marks on the roofs, told each frame where the model lands. */
+  roofMarks: RefObject<RoofMarksHandle | null>;
 }
 
 /**
@@ -114,6 +125,11 @@ export function StudioScene({
   fallback,
   drive,
   onMarks,
+  roofs,
+  storeyHeightM,
+  fit,
+  rise,
+  roofMarks,
 }: StudioSceneProps) {
   return (
     <Canvas
@@ -153,11 +169,23 @@ export function StudioScene({
           infiniteGrid
         />
       ) : null}
-      <mesh rotation-x={-Math.PI / 2} position={[0, RING_LIFT_M, 0]}>
-        <ringGeometry args={[RING_INNER_M, RING_OUTER_M, RING_SEGMENTS]} />
-        <meshBasicMaterial color={palette.danger} toneMapped={false} />
-      </mesh>
+      {/* Once a roof stands, the roof is the place: the pin's ring steps aside. */}
+      {roofs.length === 0 ? (
+        <mesh rotation-x={-Math.PI / 2} position={[0, RING_LIFT_M, 0]}>
+          <ringGeometry args={[RING_INNER_M, RING_OUTER_M, RING_SEGMENTS]} />
+          <meshBasicMaterial color={palette.danger} toneMapped={false} />
+        </mesh>
+      ) : null}
       <PinFollower label={pinLabel} />
+      <StudioRoofs
+        roofs={roofs}
+        view={view}
+        still={still}
+        palette={palette}
+        storeyHeightM={storeyHeightM}
+        rise={rise}
+        marks={roofMarks}
+      />
       <StudioCameraRig
         view={view}
         free={free}
@@ -166,6 +194,7 @@ export function StudioScene({
         metresPerPixel={picture.kind === 'sky' ? picture.metresPerPixel : null}
         drive={drive}
         onMarks={onMarks}
+        fit={fit}
       />
     </Canvas>
   );

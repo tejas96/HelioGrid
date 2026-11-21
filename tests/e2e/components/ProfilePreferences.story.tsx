@@ -70,6 +70,8 @@ export function ProfilePreferencesAsHeld({
     phoneE164: '+919876543210',
     interfaceLanguage: language,
     unitPreference: units,
+    studioHelpersOff: [],
+    numberEntry: 'slider' as const,
     tenant: { id: 't', roles },
   };
   const whole = profilePreferencesView({ user, device: 'en', marketUnits: 'metric' });

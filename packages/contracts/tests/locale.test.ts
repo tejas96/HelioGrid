@@ -36,6 +36,8 @@ describe('a language on the wire — open where a response carries it, closed wh
         name: 'Asha',
         interfaceLanguage: 'ta',
         unitPreference: 'metric',
+        studioHelpersOff: [],
+        numberEntry: 'slider',
       }).success,
     ).toBe(true);
     expect(
@@ -45,6 +47,8 @@ describe('a language on the wire — open where a response carries it, closed wh
         displayName: 'Asha',
         interfaceLanguage: 'ta',
         unitPreference: 'metric',
+        studioHelpersOff: [],
+        numberEntry: 'slider',
       }).success,
     ).toBe(true);
     expect(tenantSchema.shape.defaultLanguage.safeParse('ta').success).toBe(true);

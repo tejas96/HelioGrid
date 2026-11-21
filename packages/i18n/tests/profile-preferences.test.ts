@@ -19,6 +19,8 @@ const anjali: SessionUser = {
   phoneE164: '+919876543210',
   interfaceLanguage: 'en',
   unitPreference: 'metric',
+  studioHelpersOff: [],
+  numberEntry: 'slider',
   tenant: { id: 't', roles: [SALES_EXECUTIVE] },
 };
 

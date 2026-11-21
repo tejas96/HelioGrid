@@ -151,3 +151,15 @@ export function StudioPictureChip({
     </div>
   );
 }
+
+/**
+ * Focus mode's picture chip: while a job is in hand the chip steps down to the provider's credit
+ * line alone, which never leaves the screen (the provider's terms). With no sky picture, nothing.
+ */
+export function StudioPictureCredit({ picture }: { picture: StudioPicture }) {
+  return picture.kind === 'sky' ? (
+    <div className="hg-studio-picture">
+      <p className="hg-studio-glass hg-studio-credit-only">{picture.credit}</p>
+    </div>
+  ) : null;
+}

@@ -25,6 +25,7 @@ export function StudioMapMarks({
   units,
   scaleBar,
   words,
+  off,
 }: {
   handle: Ref<StudioMapMarksHandle>;
   view: StudioView;
@@ -32,6 +33,8 @@ export function StudioMapMarks({
   /** The scale bar for the ground one screen pixel covers, in the reader's units. */
   scaleBar: (metresPerPixel: number, maxPixels: number) => ScaleBar | null;
   words: StudioCanvasWords;
+  /** Put away by focus mode: on a phone while a length is set, the slider takes the low screen. */
+  off: boolean;
 }) {
   const format = useFormat();
   const arrow = useRef<HTMLSpanElement>(null);
@@ -61,7 +64,7 @@ export function StudioMapMarks({
     if (last.current !== null) draw(last.current);
   });
   return (
-    <div className="hg-studio-glass hg-studio-marks" aria-hidden>
+    <div className="hg-studio-glass hg-studio-marks" data-off={off} aria-hidden>
       <span ref={arrow} className="hg-studio-north" title={words.north}>
         <ShellGlyph name="north" size="sm" tone="current" />
         <span className="hg-studio-north-letter">{words.northLetter}</span>

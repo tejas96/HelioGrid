@@ -1,0 +1,163 @@
+/* The roof step's length box and the phone's loupe (`T-M05-002`, part b). */
+/* The phone's loupe: the spot under the finger, larger, above it. */
+.hg-roof-loupe {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: 2;
+  inline-size: calc(var(--sp-24) + var(--sp-3));
+  block-size: calc(var(--sp-24) + var(--sp-3));
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  background: var(--canvas);
+  box-shadow:
+    0 0 0 calc(var(--sp-0-5) + var(--hg-studio-line)) var(--scene-mark),
+    var(--e3);
+  pointer-events: none;
+}
+
+.hg-roof-loupe canvas {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* The live length under the loupe. */
+.hg-roof-loupe-len {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* The length box, in the head beside the chip: one row on a desktop, under the chip on a phone,
+   clear of the keyboard. */
+.hg-length-box {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  justify-self: center;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  border-radius: var(--r-lg);
+}
+
+.hg-length-box-label,
+.hg-length-box-hint {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-length-box-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+}
+
+.hg-length-box-well {
+  flex: none;
+  inline-size: calc(var(--sp-24) + var(--sp-8) + var(--sp-1));
+}
+
+.hg-length-box-well > * {
+  inline-size: 100%;
+}
+
+.hg-length-box-well[data-short="true"] {
+  inline-size: calc(var(--sp-20) + var(--sp-1));
+}
+
+.hg-length-box-switch {
+  display: inline-flex;
+  font-size: var(--fs-body-sm);
+  white-space: nowrap;
+}
+
+.hg-length-box-go {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-inline-start: auto;
+}
+
+.hg-length-box-ask {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-1);
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--warning-bg);
+  color: var(--text-primary);
+  font-size: var(--fs-body-sm);
+}
+
+.hg-length-box-ask-words {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-length-box-ask-acts {
+  display: inline-flex;
+  flex: none;
+  gap: var(--sp-2);
+  margin-inline-start: auto;
+}
+
+@media (width < 968px) {
+  .hg-length-box {
+    flex: 1 1 100%;
+    justify-self: stretch;
+  }
+
+  .hg-length-box-row {
+    flex-wrap: wrap;
+  }
+
+  .hg-length-box-well {
+    flex: 1 1 0;
+    inline-size: auto;
+    min-inline-size: calc(var(--sp-20) + var(--sp-4));
+  }
+
+  .hg-length-box-switch {
+    order: 5;
+    flex: 1 1 auto;
+  }
+
+  .hg-length-box-switch[data-asking="true"] {
+    display: none;
+  }
+
+  .hg-length-box-unit {
+    order: 6;
+  }
+
+  .hg-length-box-ask {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+  }
+
+  .hg-length-box-ask-acts {
+    margin-inline-start: 0;
+    justify-content: flex-end;
+  }
+}
+
+/* The boxes take numbers: the browser's own spinner is not drawn, − and + sit on the length. */
+.hg-length-box-well input::-webkit-inner-spin-button,
+.hg-length-box-well input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.hg-length-box-well input {
+  -moz-appearance: textfield;
+}

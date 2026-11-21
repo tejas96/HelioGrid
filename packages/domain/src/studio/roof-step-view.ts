@@ -6,7 +6,15 @@ import type { EditRefusal } from './roof-check';
 import { type DraftRefusal, draftGhost, draftTap, type Snapped, snapTargetsOf } from './roof-draw';
 import { sizingResult } from './roof-entry';
 import { lengthIsFirst } from './roof-length';
-import { between, cornerAfter, cornerAngle, edgeLengths, roofArea, roofMiddle } from './roof-shape';
+import {
+  angleAt,
+  between,
+  cornerAfter,
+  cornerAngle,
+  edgeLengths,
+  roofArea,
+  roofMiddle,
+} from './roof-shape';
 import { gripCorner } from './roof-step';
 import type { RoofSaid, RoofStepState } from './roof-step-state';
 import { roofAreaTier, scaleTierOf } from './roof-trust';
@@ -102,6 +110,11 @@ export interface DraftView {
   readonly stretch: DraftEdge | null;
   /** Why a corner at the spot under the pointer would be refused: its line takes the error colour. */
   readonly spotRefusal: DraftRefusal | null;
+  /**
+   * The angle the next corner would make at the last one, in whole degrees: shown beside the spot
+   * when nothing snapped, so a wall that is truly 87° is seen to be. `null` before two corners.
+   */
+  readonly angle: number | null;
   readonly canClose: boolean;
 }
 
@@ -116,10 +129,11 @@ export function draftViewOf(
   const ghost = draftGhost(state.corners);
   const { spot, corners } = state;
   const last = corners.at(-1);
+  const before = corners.at(-2);
   const tap =
     spot === null
       ? null
-      : draftTap(corners, spot.point, snapTargetsOf(document.roofs), document.roofs);
+      : draftTap(corners, spot.point, snapTargetsOf(document.roofs), document.roofs, state.helpers);
   return {
     corners,
     edges: corners.slice(1).map((corner, i) => edgeOf(corners[i] as GroundPoint, corner)),
@@ -127,6 +141,10 @@ export function draftViewOf(
     spot,
     stretch: spot === null || last === undefined ? null : edgeOf(last, spot.point),
     spotRefusal: tap?.kind === 'refused' ? tap.refusal : null,
+    angle:
+      spot === null || last === undefined || before === undefined
+        ? null
+        : Math.round(angleAt(before, last, spot.point)),
     canClose: corners.length + (ghost === null ? 0 : 1) >= 3,
   };
 }

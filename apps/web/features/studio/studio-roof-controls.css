@@ -1,0 +1,202 @@
+/* The controls on a roof (`T-M05-002`, part b): its corners, its lengths, the + that adds a corner,
+   the × of a picked corner, and the move and turn handles. */
+/* Each mark is a `Pressable`: its 44px target round the small mark a finger finds without covering
+   the corner. The target is clear; the mark inside it is what shows. */
+.hg-roof-hit {
+  touch-action: none;
+}
+
+/* A corner. */
+.hg-roof-dot {
+  display: block;
+  inline-size: calc(var(--sp-2) + var(--sp-0-5));
+  block-size: calc(var(--sp-2) + var(--sp-0-5));
+  border-radius: var(--r-pill);
+  background: var(--scene-mark);
+  box-shadow:
+    0 0 0 var(--sp-0-5) var(--hg-roof-ink),
+    var(--e2);
+  transition: box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+.hg-roof-dot[data-hot="true"],
+.hg-roof-dot[data-picked="true"] {
+  box-shadow:
+    0 0 0 calc(var(--sp-0-5) + var(--hg-studio-line)) var(--hg-roof-ink),
+    0 0 0 var(--sp-3) color-mix(in srgb, var(--hg-roof-ink) 30%, transparent),
+    var(--e2);
+}
+
+.hg-roof-dot[data-first="true"] {
+  box-shadow:
+    0 0 0 calc(var(--sp-0-5) + var(--hg-studio-line)) var(--hg-roof-ink),
+    0 0 0 var(--sp-2) color-mix(in srgb, var(--scene-mark) 55%, transparent),
+    var(--e2);
+}
+
+.hg-roof-dot[data-ghost="true"] {
+  background: transparent;
+  box-shadow:
+    0 0 0 var(--sp-0-5) var(--scene-mark),
+    0 0 var(--sp-1) color-mix(in srgb, var(--scene-shade) 60%, transparent);
+}
+
+.hg-roof-dot[data-next="true"] {
+  inline-size: var(--sp-3);
+  block-size: var(--sp-3);
+  background: var(--hg-roof-ink);
+  box-shadow:
+    0 0 0 var(--sp-0-5) var(--scene-mark),
+    var(--e2);
+  pointer-events: none;
+}
+
+.hg-roof-dot[data-next="true"][data-bad="true"] {
+  background: var(--scene-bad);
+}
+
+/* A length: dashed from the picture, solid when typed, a tick when measured on site. */
+.hg-roof-len {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  block-size: var(--sp-6);
+  padding-inline: var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  box-shadow: var(--e2);
+  border: calc(var(--hg-studio-line) * 1.5) dashed var(--text-tertiary);
+  box-sizing: border-box;
+}
+
+.hg-roof-len[data-kind="typed"] {
+  border-style: solid;
+  border-color: var(--text-primary);
+}
+
+.hg-roof-len[data-kind="measured"] {
+  border-style: solid;
+  border-color: var(--success);
+  color: var(--success-text);
+}
+
+.hg-roof-len[data-live="true"] {
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.hg-roof-len[data-pulse="true"] {
+  border-color: var(--accent);
+  animation: hg-roof-pulse var(--dur-scene) var(--ease-in-out) infinite alternate;
+}
+
+@keyframes hg-roof-pulse {
+  from {
+    box-shadow:
+      0 0 0 0 color-mix(in srgb, var(--accent) 30%, transparent),
+      var(--e2);
+  }
+  to {
+    box-shadow:
+      0 0 0 var(--sp-1) color-mix(in srgb, var(--accent) 30%, transparent),
+      var(--e2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hg-roof-len[data-pulse="true"] {
+    animation: none;
+    box-shadow:
+      0 0 0 var(--sp-1) color-mix(in srgb, var(--accent) 30%, transparent),
+      var(--e2);
+  }
+}
+
+/* The length in hand: a minus and a plus beside its number. */
+.hg-roof-step {
+  block-size: calc(var(--sp-8) + var(--sp-0-5));
+  padding-inline: var(--sp-1);
+  gap: var(--sp-2);
+  border: 0;
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  font-size: var(--fs-body-sm);
+  box-shadow:
+    0 0 0 var(--sp-1) color-mix(in srgb, var(--accent) 26%, transparent),
+    var(--e2);
+}
+
+.hg-roof-step-act {
+  display: grid;
+  place-items: center;
+  inline-size: calc(var(--sp-6) + var(--sp-0-5));
+  block-size: calc(var(--sp-6) + var(--sp-0-5));
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, currentColor 20%, transparent);
+  color: inherit;
+}
+
+.hg-roof-hit:disabled .hg-roof-step-act {
+  opacity: 0.35;
+}
+
+/* The + on an edge: drag it out, and it is a new corner. */
+.hg-roof-plus {
+  display: grid;
+  place-items: center;
+  inline-size: calc(var(--sp-4) + var(--sp-0-5));
+  block-size: calc(var(--sp-4) + var(--sp-0-5));
+  border-radius: var(--r-pill);
+  background: var(--scene-mark);
+  color: var(--hg-roof-ink);
+  box-shadow:
+    0 0 0 calc(var(--hg-studio-line) * 1.5) var(--hg-roof-ink),
+    var(--e1);
+  opacity: 0.92;
+}
+
+/* A picked corner's ×: it removes the corner. */
+.hg-roof-remove {
+  display: grid;
+  place-items: center;
+  inline-size: calc(var(--sp-6) + var(--sp-1));
+  block-size: calc(var(--sp-6) + var(--sp-1));
+  border-radius: var(--r-pill);
+  background: var(--scene-bad);
+  color: var(--scene-mark);
+  box-shadow:
+    0 0 0 var(--sp-0-5) var(--scene-mark),
+    var(--e2);
+}
+
+/* Move and turn: two glass circles inside the roof. */
+.hg-roof-handle {
+  display: grid;
+  place-items: center;
+  inline-size: var(--sp-8);
+  block-size: var(--sp-8);
+  border-radius: var(--r-pill);
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  color: var(--text-primary);
+  box-shadow:
+    inset 0 0 0 var(--hg-studio-line) var(--line-soft),
+    var(--e2);
+}
+
+.hg-roof-handle[data-hot="true"] {
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  box-shadow:
+    0 0 0 var(--sp-2) color-mix(in srgb, var(--accent) 30%, transparent),
+    var(--e2);
+}

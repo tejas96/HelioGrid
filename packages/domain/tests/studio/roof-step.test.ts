@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { EMPTY_STUDIO_DOCUMENT } from '../../src/studio/document';
+import { ALL_HELPERS, helpersOf } from '../../src/studio/roof-draw';
 import { stepRefused } from '../../src/studio/roof-entry';
 import { edgeLengths } from '../../src/studio/roof-shape';
 import type { RoofStepEvent } from '../../src/studio/roof-step-state';
@@ -28,7 +29,7 @@ describe('the roof step: drawing', () => {
 
   it('a second roof keeps the first roof’s picture date', () => {
     const shed = [
-      { kind: 'draw' },
+      { kind: 'draw', helpers: ALL_HELPERS },
       { kind: 'tap', at: p(8, 0), system: 'metric' },
       { kind: 'tap', at: p(12, 0), system: 'metric' },
       { kind: 'tap', at: p(12, 6), system: 'metric' },
@@ -37,6 +38,47 @@ describe('the roof step: drawing', () => {
     const { document } = run(shed, drawn);
     expect(document.roofs).toHaveLength(2);
     expect(document.drawnOn).toEqual(STAMP);
+  });
+
+  it.each([
+    // helpers while the third corner is tapped → where it lands
+    ['every helper on: pulled square', ALL_HELPERS, p(8, 6)],
+    ['Square turned off mid-draw: where it was tapped', helpersOf(['square'], false), p(8.4, 6)],
+    ['Alt held: where it was tapped', helpersOf([], true), p(8.4, 6)],
+  ])('%s', (_why, helpers, third) => {
+    const { state } = run([
+      { kind: 'draw', helpers: ALL_HELPERS },
+      { kind: 'tap', at: p(0, 0), system: 'metric' },
+      { kind: 'tap', at: p(8, 0), system: 'metric' },
+      { kind: 'helpers', helpers },
+      { kind: 'tap', at: p(8.4, 6), system: 'metric' },
+    ]);
+    expect(state.kind === 'drawing' ? state.corners[2] : null).toEqual(third);
+  });
+
+  it('a refusal stays until the pointer moves on', () => {
+    const crossing = [
+      ...RECTANGLE.slice(0, 4),
+      { kind: 'tap', at: p(4, -3), system: 'metric' },
+    ] as RoofStepEvent[];
+    const refused = run(crossing).state;
+    expect(refused.kind === 'drawing' ? refused.refused : null).toBe('would_cross');
+    const moved = run([...crossing, { kind: 'hover', at: p(0, 6) }]).state;
+    expect(moved.kind === 'drawing' ? moved.refused : 'none').toBeNull();
+  });
+
+  it('Alt pressed over a still pointer: the spot lets go of its snap at once', () => {
+    const at = p(8.4, 6);
+    const pointed = [...RECTANGLE.slice(0, 3), { kind: 'hover', at }] as RoofStepEvent[];
+    const snapped = run(pointed).state;
+    expect(snapped.kind === 'drawing' ? snapped.spot?.snap?.kind : null).toBe('square');
+    const free = run([...pointed, { kind: 'helpers', helpers: helpersOf([], true) }]).state;
+    expect(free.kind === 'drawing' ? free.spot : null).toEqual({ point: at, snap: null });
+  });
+
+  it('Draw again while drawing keeps the corners placed', () => {
+    const { state } = run([...RECTANGLE.slice(0, 3), { kind: 'draw', helpers: ALL_HELPERS }]);
+    expect(state.kind === 'drawing' ? state.corners : null).toHaveLength(2);
   });
 
   it('Cancel drops the draft: nothing changes', () => {

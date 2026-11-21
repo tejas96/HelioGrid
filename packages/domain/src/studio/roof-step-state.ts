@@ -2,7 +2,7 @@ import type { MeasurementSystem } from '../format/pack';
 import type { PictureChoice, PictureStamp, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import type { DragResult, EditRefusal } from './roof-check';
-import type { DraftRefusal, RoofSnap, Snapped } from './roof-draw';
+import type { DraftRefusal, DrawHelpers, RoofSnap, Snapped } from './roof-draw';
 import type { LengthEntry, LengthInHand } from './roof-entry';
 
 /**
@@ -44,9 +44,13 @@ export type RoofStepState =
   | {
       readonly kind: 'drawing';
       readonly corners: readonly GroundPoint[];
-      /** Where the next corner would land, under the pointer; `null` when it is off the map. */
+      /** The pointer on the ground, as it is, before any snap; `null` when it is off the map. */
+      readonly pointer: GroundPoint | null;
+      /** Where the next corner would land, under the pointer, snapped by the helpers in force. */
       readonly spot: Snapped | null;
       readonly refused: DraftRefusal | null;
+      /** The helpers guiding the next corner: the person's picks, or none while Alt is held. */
+      readonly helpers: DrawHelpers;
     }
   | ({
       readonly kind: 'sizing';
@@ -67,7 +71,9 @@ export type RoofStepState =
 export const ROOF_STEP_START: RoofStepState = { kind: 'idle', picked: null, said: null };
 
 export type RoofStepEvent =
-  | { readonly kind: 'draw' }
+  | { readonly kind: 'draw'; readonly helpers: DrawHelpers }
+  /** A helper turned on or off, or Alt pressed or let go, while drawing. */
+  | { readonly kind: 'helpers'; readonly helpers: DrawHelpers }
   | { readonly kind: 'hover'; readonly at: GroundPoint | null }
   /** A tap on the ground; `system` keeps a length still in the box, which a tap outside sets. */
   | { readonly kind: 'tap'; readonly at: GroundPoint; readonly system: MeasurementSystem }

@@ -15,7 +15,11 @@ import { useStudioSubject } from './use-studio-subject';
 import './studio.css';
 import './studio-canvas.css';
 import './studio-picture.css';
+import './studio-roof.css';
+import './studio-roof-controls.css';
+import './studio-length.css';
 import './studio-tools.css';
+import './studio-focus.css';
 
 /**
  * One design's own page (`SCR-M05-02`): the studio (`T-M05-002a`). It opens on the site in 3D on

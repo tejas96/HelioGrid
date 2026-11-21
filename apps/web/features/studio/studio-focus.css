@@ -1,0 +1,117 @@
+/* Focus mode and the drawing helpers (`T-M05-002`, part b). */
+/* Focus mode (`T-M05-002`, part b): a part the job in hand does not use fades out and keeps its
+   place, so nothing else moves; it comes back when the job ends. Set aside, it takes no tap. */
+.hg-studio-focus {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  opacity: 1;
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+
+.hg-studio-focus[data-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hg-studio-tools .hg-studio-focus[data-hidden="true"] > * {
+  pointer-events: none;
+}
+
+/* The pencil holds the helper bar beside it, out of the column's flow. */
+.hg-studio-pencil {
+  position: relative;
+  display: inline-flex;
+}
+
+.hg-studio-pencil > .hg-studio-focus {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: calc(100% + var(--sp-2));
+}
+
+/* Square, Line up and Buildings: three switches in one glass card, each a word with its mark. An
+   off switch keeps its word and loses its ring. */
+.hg-studio-helpers {
+  margin: 0;
+  border: 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  padding: var(--sp-1);
+  border-radius: var(--r-md);
+  inline-size: max-content;
+  max-inline-size: calc(var(--sp-12) * 3);
+}
+
+.hg-studio-helper {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--sp-1) + var(--sp-0-5));
+  min-block-size: var(--sp-8);
+  padding-inline: var(--sp-2);
+  border-radius: var(--r-pill);
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+.hg-studio-helper[aria-checked="true"] {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--scene-line) 10%, transparent);
+  box-shadow: inset 0 0 0 var(--hg-studio-line) var(--scene-line);
+}
+
+.hg-studio-helper:focus-visible {
+  outline: var(--sp-0-5) solid var(--focus-ring);
+  outline-offset: var(--sp-0-5);
+}
+
+@media (hover: hover) {
+  .hg-studio-helper:hover {
+    background: color-mix(in srgb, var(--text-primary) 6%, transparent);
+  }
+}
+
+.hg-studio-helper-note {
+  padding: var(--sp-1) var(--sp-2) var(--sp-0-5);
+  color: var(--text-tertiary);
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  white-space: normal;
+}
+
+/* The bar and the head's parts fade with focus mode, as the tools do. */
+.hg-studio-bar,
+.hg-studio-head-part {
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+
+.hg-studio-bar[data-hidden="true"],
+.hg-studio-head-part[data-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* While a roof is drawn the pencil is filled with ink: the mode is on, and the pencil ends it. */
+.hg-studio-tools .hg-icon-button[data-variant="dark"] {
+  background: var(--text-primary);
+  color: var(--text-inverse);
+}
+
+/* A helper save the server refused: said under the switches, with the way to send it again. */
+.hg-studio-helper-refused {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-2) var(--sp-0-5);
+  color: var(--danger-text);
+  font-size: var(--fs-caption);
+  white-space: normal;
+}

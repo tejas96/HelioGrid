@@ -1,5 +1,6 @@
 import { EMPTY_STUDIO_DOCUMENT, type StudioDocument } from '../../src/studio/document';
 import type { GroundPoint } from '../../src/studio/ground';
+import { ALL_HELPERS } from '../../src/studio/roof-draw';
 import { roofStepAfter } from '../../src/studio/roof-step';
 import {
   ROOF_STEP_START,
@@ -31,7 +32,7 @@ export function run(events: RoofStepEvent[], from: StudioDocument = EMPTY_STUDIO
 export const CLOSE = { kind: 'close', id: 'roof-1', tracedOn: 'sky', stamp: STAMP } as const;
 /** Four corners of an 8 m by 6 m roof, and Close shape. */
 export const RECTANGLE: RoofStepEvent[] = [
-  { kind: 'draw' },
+  { kind: 'draw', helpers: ALL_HELPERS },
   { kind: 'tap', at: p(0, 0), system: 'metric' },
   { kind: 'tap', at: p(8, 0), system: 'metric' },
   { kind: 'tap', at: p(8, 6), system: 'metric' },

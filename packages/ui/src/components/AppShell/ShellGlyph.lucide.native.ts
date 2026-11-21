@@ -48,6 +48,7 @@ export { default as CreditCardIcon } from 'lucide-react-native/icons/credit-card
 export { default as DiamondIcon } from 'lucide-react-native/icons/diamond';
 export { default as DotIcon } from 'lucide-react-native/icons/dot';
 export { default as DownloadIcon } from 'lucide-react-native/icons/download';
+export { default as DraftingCompassIcon } from 'lucide-react-native/icons/drafting-compass';
 export { default as EllipsisIcon } from 'lucide-react-native/icons/ellipsis';
 export { default as ExpandIcon } from 'lucide-react-native/icons/expand';
 export { default as EyeIcon } from 'lucide-react-native/icons/eye';
@@ -82,6 +83,7 @@ export { default as MessageCircleIcon } from 'lucide-react-native/icons/message-
 export { default as MinusIcon } from 'lucide-react-native/icons/minus';
 export { default as MonitorIcon } from 'lucide-react-native/icons/monitor';
 export { default as MoonIcon } from 'lucide-react-native/icons/moon';
+export { default as MoveIcon } from 'lucide-react-native/icons/move';
 export { default as Navigation2Icon } from 'lucide-react-native/icons/navigation-2';
 export { default as PackageIcon } from 'lucide-react-native/icons/package';
 export { default as PaletteIcon } from 'lucide-react-native/icons/palette';
@@ -123,6 +125,7 @@ export { default as UserPlusIcon } from 'lucide-react-native/icons/user-plus';
 export { default as UsersIcon } from 'lucide-react-native/icons/users';
 export { default as UsersRoundIcon } from 'lucide-react-native/icons/users-round';
 export { default as WalletIcon } from 'lucide-react-native/icons/wallet';
+export { default as WaypointsIcon } from 'lucide-react-native/icons/waypoints';
 export { default as WrenchIcon } from 'lucide-react-native/icons/wrench';
 export { default as XIcon } from 'lucide-react-native/icons/x';
 export { default as ZapIcon } from 'lucide-react-native/icons/zap';
