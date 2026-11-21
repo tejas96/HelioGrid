@@ -1,8 +1,19 @@
 import {
+  edgesCross,
+  GROUND_REACH_M,
   PICTURE_CHOICES,
+  PICTURE_SCALE_MAX,
+  PICTURE_SCALE_MIN,
+  ROOF_CORNERS_MAX,
+  ROOF_CORNERS_MIN,
+  ROOF_EDGE_TRUSTS,
+  ROOF_HEIGHT_MAX_M,
+  ROOF_HEIGHT_MIN_M,
+  ROOFS_MAX,
   SKY_PICTURE_GAPS,
   SKY_PICTURE_SOURCES,
   STUDIO_DOCUMENT_SCHEMA,
+  VALUE_SETTERS,
 } from '@heliogrid/domain';
 import { z } from 'zod';
 import { extensibleEnum, memberRefSchema, uuidSchema } from '../common';
@@ -16,6 +27,46 @@ import { errorEnvelopeWithFacts } from '../error';
 
 const calendarDaySchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 
+/** Metres east or north of the pin: a real number, within the site's reach. */
+const groundMetreSchema = z.number().finite().min(-GROUND_REACH_M).max(GROUND_REACH_M);
+const groundPointSchema = z.object({ east: groundMetreSchema, north: groundMetreSchema }).strict();
+
+const roofHeightSchema = z
+  .object({
+    metres: z.number().min(ROOF_HEIGHT_MIN_M).max(ROOF_HEIGHT_MAX_M),
+    setBy: z.enum(VALUE_SETTERS),
+  })
+  .strict();
+
+/**
+ * One roof's outline (domain's `Roof`): its edges never cross, and each corner starts one edge.
+ * `height` came after the first roofs: a roof sent or stored without it stands at the market's
+ * storey height, set by the system.
+ */
+export const roofSchema = z
+  .object({
+    id: uuidSchema,
+    corners: z.array(groundPointSchema).min(ROOF_CORNERS_MIN).max(ROOF_CORNERS_MAX),
+    edges: z.array(z.enum(ROOF_EDGE_TRUSTS)).min(ROOF_CORNERS_MIN).max(ROOF_CORNERS_MAX),
+    tracedOn: z.enum(PICTURE_CHOICES),
+    height: roofHeightSchema.nullable().default(null),
+  })
+  .strict()
+  .refine((roof) => roof.edges.length === roof.corners.length, {
+    message: 'Each corner starts one edge.',
+    path: ['edges'],
+  })
+  // The crossing check walks every pair of edges: it runs only on a corner count the roof may have,
+  // so an outsized body is refused by its count, not checked at length.
+  .refine((roof) => roof.corners.length <= ROOF_CORNERS_MAX && !edgesCross(roof.corners), {
+    message: 'The roof’s edges cross.',
+    path: ['corners'],
+  });
+
+/**
+ * `roofs` and `pictureScale` came after the first documents were saved: a save may leave them out,
+ * and a document stored without them reads as no roofs at the picture's own scale.
+ */
 export const studioDocumentSchema = z
   .object({
     schemaVersion: z.literal(STUDIO_DOCUMENT_SCHEMA),
@@ -24,6 +75,8 @@ export const studioDocumentSchema = z
       .object({ source: z.string().min(1).max(40), takenOn: calendarDaySchema.nullable() })
       .strict()
       .nullable(),
+    roofs: z.array(roofSchema).max(ROOFS_MAX).default([]),
+    pictureScale: z.number().min(PICTURE_SCALE_MIN).max(PICTURE_SCALE_MAX).default(1),
   })
   .strict();
 export type StudioDocumentWire = z.infer<typeof studioDocumentSchema>;

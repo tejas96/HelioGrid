@@ -9,7 +9,7 @@ import type { LoginBindOutcome, LoginProvider } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
 import { ADMIN_DB } from '../../../common/db/admin.token';
-import { type AccountRow, accountColumns } from './auth.admin.repository';
+import { type AccountRow, accountColumns } from './account.admin.repository';
 import { OtpAdminRepository } from './otp.admin.repository';
 
 const UNIQUE_VIOLATION = '23505';

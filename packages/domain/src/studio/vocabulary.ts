@@ -24,3 +24,19 @@ export type DesignActRefusal = (typeof DESIGN_ACT_REFUSALS)[number];
 
 /** A site name is a short label a person reads on a card and in the studio's top bar. */
 export const SITE_NAME_MAX = 40;
+
+/**
+ * The helpers that guide a corner while a roof is drawn or changed (`T-M05-002`, part b): Square
+ * (square corners and parallel edges), Line up (guides to earlier corners) and Buildings (snaps to
+ * building edges and the design's other roofs). Each is on at first; a person turns one off, and
+ * the pick follows them to every device.
+ */
+export const STUDIO_HELPERS = ['square', 'line_up', 'buildings'] as const;
+export type StudioHelper = (typeof STUDIO_HELPERS)[number];
+
+/**
+ * How a person sets a number (`T-M05-002`, *Values*): by the slider first, or in a box to type.
+ * The pick is the person's and follows them to every device.
+ */
+export const NUMBER_ENTRIES = ['slider', 'box'] as const;
+export type NumberEntry = (typeof NUMBER_ENTRIES)[number];

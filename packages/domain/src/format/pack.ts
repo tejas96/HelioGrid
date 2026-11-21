@@ -132,6 +132,11 @@ export interface FormatPack {
    * is forecast.
    */
   readonly proposal: ProposalMarketFacts | null;
+  /**
+   * `T-M05-002` — the height a roof stands at, in metres, until a person or the height map sets
+   * its own: the market's usual storey, `assumed`.
+   */
+  readonly storeyHeightM: number;
 }
 
 /**
@@ -188,4 +193,5 @@ export const IN_FORMATS: FormatPack = {
   utilities: IN_UTILITIES,
   areas: IN_AREAS,
   proposal: IN_PROPOSAL_FACTS,
+  storeyHeightM: 3,
 };

@@ -76,7 +76,7 @@ describe.skipIf(skip)('The design document, over HTTP against a migrated databas
     const read = await documentOf(owner(), designId);
     expect(read.status).toBe(HttpStatus.OK);
     expect(read.body).toEqual<DesignDocumentWire>({
-      document: EMPTY_STUDIO_DOCUMENT,
+      document: { ...EMPTY_STUDIO_DOCUMENT, roofs: [] },
       version: 0,
       savedAt: null,
       savedBy: null,

@@ -92,4 +92,6 @@ export const FORMAT_PACK_SCHEMA: z.ZodType<FormatPack, z.ZodTypeDef, unknown> = 
   /** A pack stored before proposals declares no areas and no proposal facts, until the next revision. */
   areas: z.array(area).default([]),
   proposal: proposalFacts.nullable().default(null),
+  /** A pack stored before the studio's roofs reads the common storey, 3 m, until its next revision. */
+  storeyHeightM: z.number().positive().max(20).default(3),
 });

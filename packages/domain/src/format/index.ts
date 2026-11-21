@@ -85,8 +85,12 @@ export {
   uiLanguageOrSource,
 } from './languages';
 export {
+  feetAndInches,
+  formatArea,
   formatFineLength,
   formatLength,
+  formatRoofLength,
+  metresOfFeetAndInches,
   PROCUREMENT_SYSTEM,
   resolveMeasurementSystem,
 } from './measurement';

@@ -196,7 +196,19 @@ export function useStudioDocument(designId: string, ready: boolean) {
     () =>
       new StudioSaveQueue({
         send: (baseVersion, document, opening) =>
-          repositories.studio.saveDocument(designId, { baseVersion, document, opening }),
+          repositories.studio.saveDocument(designId, {
+            baseVersion,
+            // The wire's lists are plain arrays; the studio holds them read-only.
+            document: {
+              ...document,
+              roofs: document.roofs.map((roof) => ({
+                ...roof,
+                corners: [...roof.corners],
+                edges: [...roof.edges],
+              })),
+            },
+            opening,
+          }),
         online: () => onlineManager.isOnline(),
         changed: setSaving,
       }),

@@ -132,6 +132,8 @@ function projection(): SessionProjection {
       displayName: 'Asha Patil',
       interfaceLanguage: 'en',
       unitPreference: 'metric',
+      studioHelpersOff: [],
+      numberEntry: 'slider',
     },
     membership: { tenantId: TENANT, roles: origin.roles, authorizationVersion: 1 },
     expiry: { expiresAt: '2099-01-01T00:00:00.000Z', lastForegroundActivityAt: null },

@@ -10,14 +10,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { ADMIN_DB } from '../../../common/db/admin.token';
 import { memberAct, recordAuditEntry } from '../../audit/audit.public';
-
-export interface AccountRow {
-  readonly id: string;
-  readonly phoneE164: string;
-  readonly name: string | null;
-  readonly interfaceLanguage: UiLanguage;
-  readonly unitPreference: MeasurementSystem;
-}
+import { type AccountRow, accountColumns } from './account.admin.repository';
 
 export interface SessionRow {
   readonly id: string;
@@ -291,16 +284,6 @@ export class AuthAdminRepository {
       ),
     );
   }
-}
-
-export function accountColumns() {
-  return {
-    id: userAccount.id,
-    phoneE164: userAccount.phoneE164,
-    name: userAccount.name,
-    interfaceLanguage: userAccount.interfaceLanguage,
-    unitPreference: userAccount.unitPreference,
-  };
 }
 
 function sessionColumns() {

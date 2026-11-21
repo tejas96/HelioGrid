@@ -1,5 +1,5 @@
 import { type Db, userAccount } from '@heliogrid/db';
-import type { MeasurementSystem, UiLanguage } from '@heliogrid/domain';
+import type { MeasurementSystem, NumberEntry, StudioHelper, UiLanguage } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
@@ -10,12 +10,14 @@ export interface ProfileRow {
   readonly name: string | null;
   readonly interfaceLanguage: UiLanguage;
   readonly unitPreference: MeasurementSystem;
+  readonly studioHelpersOff: StudioHelper[];
+  readonly numberEntry: NumberEntry;
 }
 
 /**
  * The one profile write (`M01-14`). `user_account` is a platform table every write reaches on
  * the admin path; the actor is the session's, never a body field, so a person edits only their
- * own row.
+ * own row — there is no way to name another account.
  */
 @Injectable()
 export class UserAdminRepository {
@@ -33,7 +35,13 @@ export class UserAdminRepository {
 
   async update(
     userId: string,
-    patch: { name?: string; interfaceLanguage?: UiLanguage; unitPreference?: MeasurementSystem },
+    patch: {
+      name?: string;
+      interfaceLanguage?: UiLanguage;
+      unitPreference?: MeasurementSystem;
+      studioHelpersOff?: StudioHelper[];
+      numberEntry?: NumberEntry;
+    },
   ): Promise<ProfileRow | null> {
     const [row] = await this.db
       .update(userAccount)
@@ -51,5 +59,7 @@ function profileColumns() {
     name: userAccount.name,
     interfaceLanguage: userAccount.interfaceLanguage,
     unitPreference: userAccount.unitPreference,
+    studioHelpersOff: userAccount.studioHelpersOff,
+    numberEntry: userAccount.numberEntry,
   };
 }

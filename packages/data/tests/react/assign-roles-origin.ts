@@ -79,6 +79,8 @@ function projection(): SessionProjection {
       displayName: OWNER.name,
       interfaceLanguage: 'en',
       unitPreference: 'metric',
+      studioHelpersOff: [],
+      numberEntry: 'slider',
     },
     membership: {
       tenantId: TENANT,
