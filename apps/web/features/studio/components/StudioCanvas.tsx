@@ -21,7 +21,6 @@ import { StudioCanvasHead } from './StudioCanvasHead';
 import { StudioCanvasNotes } from './StudioCanvasNotes';
 import type { StudioCompassHandle } from './StudioCompass';
 import { StudioLoupe } from './StudioLoupe';
-import { StudioMapMarks, type StudioMapMarksHandle } from './StudioMapMarks';
 import { StudioRoofMarks } from './StudioRoofMarks';
 import { StudioRoofSheet } from './StudioRoofSheet';
 import type { RoofMarksHandle } from './StudioRoofs';
@@ -67,7 +66,6 @@ export function StudioCanvas({
   const { frame, top, bottom, room } = useChromeRoom(studio.roofSheet !== null);
   const pin = useRef<HTMLSpanElement>(null);
   const drive = useRef<StudioDrive | null>(null);
-  const marks = useRef<StudioMapMarksHandle>(null);
   const compass = useRef<StudioCompassHandle>(null);
   const roofMarks = useRef<RoofMarksHandle>(null);
   const scene = useRef<HTMLDivElement>(null);
@@ -122,10 +120,7 @@ export function StudioCanvas({
           pinLabel={pin}
           fallback={<p className="hg-studio-no-scene">{words.noScene}</p>}
           drive={drive}
-          onMarks={(seen) => {
-            marks.current?.show(seen);
-            compass.current?.turn(seen.turn);
-          }}
+          onTurn={(turn) => compass.current?.turn(turn)}
           roofs={roofs}
           heights={studio.heights.map((height) => height.metres)}
           pictureScale={studio.shown?.pictureScale ?? null}
@@ -153,13 +148,6 @@ export function StudioCanvas({
       {aim !== null ? (
         <StudioLoupe at={aim} studio={studio} units={studio.units} drive={drive} />
       ) : null}
-      <StudioMapMarks
-        handle={marks}
-        view={view}
-        units={studio.units}
-        scaleBar={studio.scaleBar}
-        off={parts.compass !== 'shown'}
-      />
       {/* The marker says what it is: a word beside it only repeats the glyph, so it is spoken alone. */}
       <span
         ref={pin}
@@ -176,7 +164,6 @@ export function StudioCanvas({
         compass={compass}
         studio={studio}
         parts={parts}
-        name={name}
         words={words}
         onBack={onBack}
         onSite={onSite}

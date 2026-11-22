@@ -198,7 +198,6 @@ export {
   roofAreaTier,
   scaleTierOf,
 } from './roof-trust';
-export { type ScaleBar, scaleBarOf } from './scale-bar';
 export {
   areaOfPlace,
   operatorAfterArea,

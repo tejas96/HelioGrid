@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   type SiteDetailsScreen as SiteDetailsView,
   useSiteDetailsScreen,
@@ -7,11 +8,18 @@ import { useI18n } from '@heliogrid/i18n/react';
 import {
   LeadDetailStates,
   LeaveConfirm,
+  ShellAction,
+  ShellGlyph,
   SiteDetails,
   type SiteDetailsActs,
   useFormat,
 } from '@heliogrid/ui';
-import { type StaticScreenProps, useNavigation, usePreventRemove } from '@react-navigation/native';
+import {
+  StackActions,
+  type StaticScreenProps,
+  useNavigation,
+  usePreventRemove,
+} from '@react-navigation/native';
 import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import { ShellPage } from '../shell/components/ShellPage';
@@ -52,6 +60,31 @@ function actsOf(screen: SiteDetailsView, onCancel: () => void): SiteDetailsActs 
  * `useSiteDetailsScreen`'s, the web's too; the phone's own parts are the ways back, held while a
  * change stands, and the move to the design.
  */
+/** "For Anil Sharma · 98765 43210": who the site is for, under the title. */
+function forWhoOf(
+  page: ReturnType<typeof siteDetailsPageWords>,
+  subject: { customerName: string | null; customerPhone: string | null },
+  phone: (raw: string) => string,
+) {
+  return page.forWho(
+    subject.customerName,
+    subject.customerPhone === null ? null : phone(subject.customerPhone),
+  );
+}
+
+/** The bar's round way to the lead: out of the design, past its studio. */
+function ToLead({ label, leadId }: { label: TranslatedText; leadId: string }) {
+  const navigation = useNavigation();
+  return (
+    <ShellAction
+      round
+      label={label}
+      onClick={() => navigation.dispatch(StackActions.popTo('LeadDetail', { leadId }))}
+      icon={<ShellGlyph name="user" size="md" tone="primary" />}
+    />
+  );
+}
+
 export function SiteDetailsScreen({ route }: Props) {
   const { t, locale } = useI18n();
   const format = useFormat();
@@ -85,13 +118,7 @@ export function SiteDetailsScreen({ route }: Props) {
   useEffect(() => {
     if (locked) open.current(designId, false);
   }, [locked, designId]);
-  const summary =
-    subject === null
-      ? null
-      : page.forWho(
-          subject.customerName,
-          subject.customerPhone === null ? null : format.phone(subject.customerPhone),
-        );
+  const summary = subject === null ? null : forWhoOf(page, subject, format.phone);
   return (
     <ShellPage
       inView="leads"
@@ -100,6 +127,9 @@ export function SiteDetailsScreen({ route }: Props) {
         ...(summary === null ? {} : { summary }),
         back: page.states.backToList,
         onBack: leave,
+        ...(shown?.started && subject !== null
+          ? { actions: <ToLead label={page.backToLead} leadId={subject.leadId} /> }
+          : {}),
         stripless: true,
         searchless: true,
       }}

@@ -22,7 +22,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       'top',
       true,
       {
-        topBar: 'hidden',
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'filled',
@@ -42,7 +41,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       'top',
       false,
       {
-        topBar: 'hidden',
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
@@ -60,7 +58,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       'top',
       true,
       {
-        topBar: 'hidden',
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
@@ -79,7 +76,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       'top',
       true,
       {
-        topBar: 'hidden',
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
@@ -97,7 +93,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       'top',
       false,
       {
-        topBar: 'hidden',
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
@@ -119,7 +114,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         magnet: 'hidden',
         addRoof: 'hidden',
         sideViews: 'shown',
-        compass: 'north',
+        compass: 'shown',
         otherHandles: 'hidden',
         lengthLabels: 'hidden',
       },
@@ -129,14 +124,14 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       '3d',
       true,
       {
-        stepSwitcher: 'hidden',
+        stepSwitcher: 'mark',
         pictureChip: 'credit',
         pencil: 'hidden',
         magnet: 'hidden',
         addRoof: 'hidden',
         layers: 'switch',
         sideViews: 'shown',
-        compass: 'north',
+        compass: 'shown',
         otherHandles: 'hidden',
         lengthLabels: 'hidden',
         bottomBar: 'hidden',
@@ -147,14 +142,14 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       'south',
       false,
       {
-        stepSwitcher: 'hidden',
+        stepSwitcher: 'mark',
         pictureChip: 'credit',
         pencil: 'hidden',
         magnet: 'hidden',
         addRoof: 'hidden',
         layers: 'switch',
         sideViews: 'shown',
-        compass: 'north',
+        compass: 'shown',
         otherHandles: 'hidden',
         lengthLabels: 'hidden',
         bottomBar: 'hidden',
@@ -176,14 +171,15 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
 describe('focus mode: the edge cases', () => {
   it.each([
     [
-      'a save that fails while drawing shows its pill',
+      'a save that fails while drawing shows its mark alone',
       { job: 'drawing', saveFailed: true },
-      'error',
+      'mark',
     ],
-    ['a failed save while looking keeps the whole bar', { saveFailed: true }, 'shown'],
-    ['no failed save: the bar steps aside', { job: 'drawing' }, 'hidden'],
-  ] as const)('%s', (_why, facts, topBar) => {
-    expect(partsOf(facts).topBar).toBe(topBar);
+    ['a roof sheet in 3D keeps the mark, saved or not', { job: 'sheet', view: '3d' }, 'mark'],
+    ['a failed save while looking keeps the whole pill', { saveFailed: true }, 'shown'],
+    ['no failed save: the pill steps aside', { job: 'drawing' }, 'hidden'],
+  ] as const)('%s', (_why, facts, stepSwitcher) => {
+    expect(partsOf(facts).stepSwitcher).toBe(stepSwitcher);
   });
 
   it.each([
@@ -196,7 +192,6 @@ describe('focus mode: the edge cases', () => {
   it('a reader never enters a job and holds no edit control', () => {
     const reader = partsOf({ job: 'drawing', canEdit: false });
     expect(reader).toMatchObject({
-      topBar: 'shown',
       stepSwitcher: 'shown',
       pencil: 'hidden',
       magnet: 'hidden',

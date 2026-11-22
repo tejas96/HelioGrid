@@ -6,12 +6,7 @@ import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { type ReactNode, type RefObject, useRef, useState } from 'react';
 import { MathUtils, Vector3 } from 'three';
-import {
-  type ClearGround,
-  StudioCameraRig,
-  type StudioDrive,
-  type StudioMarks,
-} from './StudioCameraRig';
+import { type ClearGround, StudioCameraRig, type StudioDrive } from './StudioCameraRig';
 import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
 import {
   type RoofMarksHandle,
@@ -117,8 +112,8 @@ export interface StudioSceneProps {
   fallback: ReactNode;
   /** Filled with what the page's own controls ask of the camera. */
   drive: RefObject<StudioDrive | null>;
-  /** Told the scale and the turn each time the camera moves. */
-  onMarks: (marks: StudioMarks) => void;
+  /** Told the view's turn from north up, in radians, each time it changes. */
+  onTurn: (turn: number) => void;
   /** The roofs to stand on the ground: the design's, or the preview of what is in hand. */
   roofs: readonly Roof[];
   /** Each roof's height in metres, in the order of `roofs`. */
@@ -153,7 +148,7 @@ export function StudioScene({
   pinLabel,
   fallback,
   drive,
-  onMarks,
+  onTurn,
   roofs,
   heights,
   pictureScale: readScale,
@@ -232,7 +227,7 @@ export function StudioScene({
         clear={scaledBox(clearGroundOf(picture), pictureScale)}
         metresPerPixel={picture.kind === 'sky' ? picture.metresPerPixel * pictureScale : null}
         drive={drive}
-        onMarks={onMarks}
+        onTurn={onTurn}
         fit={fit}
         frameOn={frameOn}
       />

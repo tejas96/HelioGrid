@@ -16,12 +16,10 @@ import {
   type RoofSheetView,
   type RoofStepState,
   roofsBox,
-  type ScaleBar,
   type StepPlace,
   type StudioDocument,
   type StudioView,
   type SunPosition,
-  scaleBarOf,
   sceneSunAt,
   shownPicture,
   stepRail,
@@ -88,8 +86,6 @@ export interface StudioScreen extends RoofStepView, RoofSheetState {
   readonly view: StudioView;
   /** The views on offer, each open or waiting with its reason. */
   readonly views: readonly ViewPlace[];
-  /** The map's scale bar at the ground one screen pixel covers now, in the reader's units. */
-  scaleBar(metresPerPixel: number, maxPixels: number): ScaleBar | null;
   /** The three pictures are open to pick from. */
   readonly picturesOpen: boolean;
   /** The sun the scene is lit by: the real sun for the site now, or its noon after dark. */
@@ -237,7 +233,6 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     ...withSheet(roof.view.heights, fit, roofSheet, document),
     offer3d: roofClosed && !seen3d,
     objectsNote,
-    scaleBar: (metresPerPixel, maxPixels) => scaleBarOf(metresPerPixel, units, maxPixels),
     picturesOpen,
     sun,
     ...undoRedoOf(editable, roofStep, history),

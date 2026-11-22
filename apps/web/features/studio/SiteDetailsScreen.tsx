@@ -25,6 +25,18 @@ import { useStudioSubject } from './use-studio-subject';
 import './studio.css';
 
 /** What each control of the form reports, as the screen's hook answers it. */
+/** A started design's way out in a narrow room: Proposals when they opened it, else its lead. */
+function outOfDesign(
+  page: ReturnType<typeof siteDetailsPageWords>,
+  fromProposals: boolean,
+  toProposals: () => void,
+  toLead: () => void,
+) {
+  return fromProposals
+    ? ({ label: page.proposals, glyph: 'document', onOpen: toProposals } as const)
+    : ({ label: page.backToLead, glyph: 'user', onOpen: toLead } as const);
+}
+
 function actsOf(screen: SiteDetailsView, onCancel: () => void): SiteDetailsActs {
   const { acts } = screen;
   return {
@@ -111,6 +123,11 @@ export function SiteDetailsScreen({
               label: canvas.designName(shown.detail.site.name, shown.detail.design.ordinal),
               onOpen: cancel,
             }
+          : null
+      }
+      out={
+        shown?.started
+          ? outOfDesign(page, fromProposals, () => guarded(moves.toProposals), toLead)
           : null
       }
     />

@@ -38,30 +38,6 @@
   gap: var(--sp-2);
 }
 
-/* North and the scale: one slim capsule that takes no tap. On a desktop it sits in the foot's left
-   corner, on the bar's own centre line; on a phone, centred between the two tool columns, on the
-   centre line of their lowest circles (the boards, `T-M05-002` part b). */
-.hg-studio-marks {
-  grid-row: 3;
-  grid-column: 1 / -1;
-  justify-self: start;
-  align-self: center;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  /* The task's slim capsule: 26 px. */
-  block-size: calc(var(--sp-6) + var(--sp-0-5));
-  padding-inline: calc(var(--sp-2) + var(--sp-0-5));
-  border-radius: var(--r-pill);
-  color: var(--text-secondary);
-  font-size: var(--fs-overline);
-  line-height: 1;
-  pointer-events: none;
-  box-shadow:
-    inset 0 0 0 var(--hg-studio-line) var(--line-soft),
-    var(--e1);
-}
-
 /* The compass: the needle alone, in the head's right corner, turning about its middle. Its white
    half and a soft shade keep it clear on any picture. */
 .hg-studio-compass {
@@ -88,28 +64,6 @@
 
 .hg-studio-needle-south {
   fill: var(--scene-mark);
-}
-
-.hg-studio-scale {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--sp-1) + var(--sp-0-5));
-}
-
-.hg-studio-scale-words {
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.hg-studio-scale-bar {
-  block-size: var(--sp-1);
-  border: calc(var(--hg-studio-line) * 3) solid var(--text-primary);
-  border-block-start: 0;
-  box-sizing: border-box;
-}
-
-.hg-studio-scale-bar[data-hidden="true"] {
-  visibility: hidden;
 }
 
 /* The 3D view's circle, just opened by the first roof: a small dot until it is first seen. */
@@ -243,19 +197,6 @@
 @media (width < 968px) {
   .hg-studio-tools {
     align-self: end;
-  }
-
-  /* While the keyboard is up for a length, the capsule steps aside. */
-  .hg-studio-marks[data-off="true"] {
-    display: none;
-  }
-
-  .hg-studio-marks {
-    grid-row: 2;
-    grid-column: 2;
-    justify-self: center;
-    align-self: end;
-    margin-block-end: calc(var(--sp-2) + var(--sp-0-5) / 2);
   }
 
   .hg-studio-bar {

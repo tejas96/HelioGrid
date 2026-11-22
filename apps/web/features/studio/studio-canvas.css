@@ -48,68 +48,49 @@
   pointer-events: auto;
 }
 
-/* The head: the top bar and the picture chip in a column at the left; the steps in the middle of
-   the canvas on a desktop, beside the way back in one row on a phone. */
+/* The head: the steps in the middle of the canvas, the compass in the right corner and the picture
+   chip under them at the left. */
 .hg-studio-canvas-head {
   grid-row: 1;
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   grid-template-areas:
-    "top rail compass"
+    ". rail compass"
     "chip chip chip";
   align-items: start;
   gap: var(--sp-2) var(--sp-3);
   min-inline-size: 0;
 }
 
-.hg-studio-top {
-  grid-area: top;
-  justify-self: start;
-  min-inline-size: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  max-inline-size: 100%;
-  padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-1);
-  border-radius: var(--r-pill);
+/* The save mark after the step in hand: a hairline sets it apart from the steps, and a quiet mark
+   holds the same square as the buttons beside it, so the pill never jumps as saving moves on. */
+.hg-studio-save {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  min-inline-size: var(--button-h-sm);
+  min-block-size: var(--button-h-sm);
+  margin-inline-start: var(--sp-1);
 }
 
-.hg-studio-name {
-  flex: 0 1 auto;
-  min-inline-size: 0;
-  overflow: hidden;
-  font-family: var(--font-display);
-  font-size: var(--fs-body-lg);
-  white-space: nowrap;
-  text-overflow: ellipsis;
+.hg-studio-save::before {
+  content: "";
+  position: absolute;
+  inset-block: var(--sp-2);
+  inset-inline-start: calc(var(--sp-1) * -1);
+  inline-size: var(--hg-studio-line);
+  background: var(--line-soft);
 }
 
-.hg-studio-pill {
-  display: inline-flex;
-  flex: 0 1 auto;
-  min-inline-size: 0;
-  align-items: center;
-  gap: var(--sp-1);
-  font-size: var(--fs-body-sm);
-  color: var(--text-secondary);
+/* The mark alone, while a job keeps the steps aside, has nothing to be set apart from. */
+.hg-studio-save:only-child::before {
+  content: none;
 }
 
-.hg-studio-pill-words {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.hg-studio-pill[data-tone="success"] {
-  color: var(--success-text);
-}
-
-.hg-studio-pill[data-tone="warning"] {
-  color: var(--warning-text);
-}
-
-.hg-studio-steps {
+/* The steps hold the head's middle cell by name: the head has no part left of them to fill it. */
+.hg-studio-head-steps {
   grid-area: rail;
   justify-self: center;
   min-inline-size: 0;
@@ -177,7 +158,7 @@
   font-size: var(--fs-body-sm);
 }
 
-/* The compass stands in the head's right corner, level with the top bar; on a phone's one row it
+/* The compass stands in the head's right corner, level with the steps; on a phone's one row it
    takes the room left after the steps, so it still ends in the corner. */
 .hg-studio-compass {
   grid-area: compass;
@@ -186,8 +167,7 @@
   margin-inline-start: auto;
 }
 
-/* A phone: the way back and the steps share the top row, the chip under them, and the name moves
-   to the bar. A row too narrow for both puts the steps on their own row, so nothing is crushed. */
+/* A phone: the head keeps the desktop's grid, a little tighter. */
 @media (width < 968px) {
   .hg-studio {
     gap: var(--sp-2);
@@ -196,30 +176,6 @@
   }
 
   .hg-studio-canvas-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
     gap: var(--sp-2);
-  }
-
-  .hg-studio-top {
-    gap: var(--sp-1);
-  }
-
-  .hg-studio-top .hg-studio-name {
-    display: none;
-  }
-
-  /* Saved is the quiet default: its mark alone, its word still the pill's spoken name. Every
-     other state keeps its words. */
-  .hg-studio-pill[data-saved="true"] .hg-studio-pill-words {
-    display: none;
-  }
-
-  /* The steps share the top row with the way back: the pill keeps its own size, in the middle of
-     the room the way back leaves. */
-  .hg-studio-steps {
-    flex: 0 1 auto;
-    margin-inline: auto;
   }
 }
