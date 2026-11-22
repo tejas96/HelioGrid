@@ -36,9 +36,11 @@ export function focusJobOf(step: RoofStepState): FocusJob {
 
 /** What the studio shows of each part. `hidden` steps aside; every other value is on screen. */
 export interface FocusParts {
-  /** Back, the design's name and the save pill. `error`: only a save that failed. */
-  readonly topBar: 'shown' | 'error' | 'hidden';
-  readonly stepSwitcher: 'shown' | 'hidden';
+  /**
+   * The steps and the save mark in their pill. `mark`: the save mark alone — a roof's sheet keeps
+   * it, and any job keeps it for a save that failed.
+   */
+  readonly stepSwitcher: 'shown' | 'mark' | 'hidden';
   /** The picture chip whole, or its credit line alone. */
   readonly pictureChip: 'shown' | 'credit';
   /** The pencil that starts a drawing; `filled` while it draws. */
@@ -59,8 +61,8 @@ export interface FocusParts {
   readonly sideViews: 'shown' | 'hidden';
   /** Zoom in, Zoom out and Back to the pin. */
   readonly zoom: 'shown' | 'hidden';
-  /** The north arrow and the scale bar, or the north arrow alone. */
-  readonly compass: 'shown' | 'north' | 'hidden';
+  /** The north arrow. */
+  readonly compass: 'shown' | 'hidden';
   /** The corner dots, + dots and handles of the roofs not being changed: the picked roof's only. */
   readonly otherHandles: 'picked' | 'hidden';
   /** Which length labels show: all, the draft's, every one live, or none. */
@@ -78,12 +80,11 @@ export interface FocusFacts {
   readonly canEdit: boolean;
   /** At least one roof stands. */
   readonly hasRoof: boolean;
-  /** The last save failed: its pill shows whatever the job. */
+  /** The last save failed: its mark shows whatever the job. */
   readonly saveFailed: boolean;
 }
 
 const LOOKING_TOP: FocusParts = {
-  topBar: 'shown',
   stepSwitcher: 'shown',
   pictureChip: 'shown',
   pencil: 'shown',
@@ -103,7 +104,6 @@ const LOOKING_TOP: FocusParts = {
 /** What a job keeps in the top view; the rest of the parts are the looking ones. */
 const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusParts>> = {
   drawing: {
-    topBar: 'hidden',
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
     pencil: 'filled',
@@ -118,7 +118,6 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     bottomBar: 'drawing',
   },
   dragging: {
-    topBar: 'hidden',
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
     pencil: 'hidden',
@@ -131,7 +130,6 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     bottomBar: 'status',
   },
   moving: {
-    topBar: 'hidden',
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
     pencil: 'hidden',
@@ -144,7 +142,6 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     bottomBar: 'status',
   },
   sizing: {
-    topBar: 'hidden',
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
     pencil: 'hidden',
@@ -166,7 +163,6 @@ const IN_3D: Partial<FocusParts> = {
   addRoof: 'hidden',
   otherHandles: 'hidden',
   lengthLabels: 'hidden',
-  compass: 'north',
 };
 
 const EDIT_PARTS: Partial<FocusParts> = {
@@ -183,7 +179,7 @@ function partsOfJob(facts: FocusFacts): FocusParts {
   if (facts.view !== 'top') {
     const sheet: Partial<FocusParts> =
       job === 'sheet'
-        ? { stepSwitcher: 'hidden', pictureChip: 'credit', layers: 'switch', bottomBar: 'hidden' }
+        ? { stepSwitcher: 'mark', pictureChip: 'credit', layers: 'switch', bottomBar: 'hidden' }
         : {};
     return { ...LOOKING_TOP, ...IN_3D, sideViews: facts.hasRoof ? 'shown' : 'hidden', ...sheet };
   }
@@ -198,6 +194,7 @@ export function focusOf(facts: FocusFacts): FocusParts {
   const parts = partsOfJob(facts);
   const own = facts.canEdit ? parts : { ...parts, ...EDIT_PARTS };
   const addRoof = own.addRoof === 'shown' && !facts.hasRoof ? 'hidden' : own.addRoof;
-  const topBar = own.topBar === 'hidden' && facts.saveFailed ? 'error' : own.topBar;
-  return { ...own, addRoof, topBar };
+  const stepSwitcher =
+    own.stepSwitcher === 'hidden' && facts.saveFailed ? 'mark' : own.stepSwitcher;
+  return { ...own, addRoof, stepSwitcher };
 }

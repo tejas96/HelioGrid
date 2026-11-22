@@ -3,6 +3,7 @@ import type { StepPlace, StudioStep } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { theme } from '@heliogrid/theme';
 import { Button, IconButton, Menu, type MenuItem, ShellGlyph } from '@heliogrid/ui';
+import type { ReactNode } from 'react';
 import { useOwnSize } from '../hooks/use-own-size';
 
 /** The border's line, and the gap between two steps' pieces of it, in CSS pixels. */
@@ -68,13 +69,17 @@ function ProgressBorder({
  * The studio's steps in one pill (`T-M05-002a`): the step in hand with its number in the middle —
  * a press lists every step, done, in hand or locked with its reason — the step before and the step
  * after on each side, and the pill's own border showing how far the design has come. The way to the
- * site is the step before the roof: a press opens Site details again.
+ * site is the step before the roof: a press opens Site details again, whose head leads out of the
+ * studio; for a reader who cannot change the site it leads out at once. The save mark sits after
+ * the step in hand, before the step after.
  */
 export function StudioStepSwitcher({
   rail,
   words,
   onSite,
   siteWaits,
+  saveMark,
+  onLeave,
 }: {
   rail: readonly StepPlace[];
   words: StudioCanvasWords;
@@ -82,6 +87,10 @@ export function StudioStepSwitcher({
   onSite: (() => void) | null;
   /** A change is still on its way: the site waits for it, with its reason. */
   siteWaits: boolean;
+  /** Where saving stands (`StudioSaveMark`). */
+  saveMark: ReactNode;
+  /** Out of the studio: where the step before the roof leads a reader who cannot open the site. */
+  onLeave: () => void;
 }) {
   const [pill, size] = useOwnSize<HTMLDivElement>();
   const standings = standingsOf(rail);
@@ -129,6 +138,18 @@ export function StudioStepSwitcher({
 
   const side = (place: StepPlace | undefined, toward: 'before' | 'after') => {
     if (place === undefined) return null;
+    if (place.step === 'site' && onSite === null) {
+      return (
+        <IconButton
+          label={words.back}
+          variant="ghost"
+          size={theme.layout['button-h-sm']}
+          onClick={onLeave}
+        >
+          <ShellGlyph name="chevron-left" size="md" />
+        </IconButton>
+      );
+    }
     const go = reach(place.step, place.lock);
     const label = sideLabel(place, toward);
     return (
@@ -164,6 +185,7 @@ export function StudioStepSwitcher({
             </Button>
           }
         />
+        {saveMark}
         {side(after, 'after')}
       </div>
     </nav>

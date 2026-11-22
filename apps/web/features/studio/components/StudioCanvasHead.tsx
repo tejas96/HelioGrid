@@ -1,5 +1,4 @@
 'use client';
-import type { TranslatedText } from '@heliogrid/contracts';
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { FocusParts, PictureChoice } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
@@ -9,20 +8,70 @@ import { DrawHint } from './StudioBarPills';
 import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
 import { StudioLengthBox } from './StudioLengthBox';
 import { StudioPictureChip, StudioPictureCredit } from './StudioPictureChip';
+import { StudioSaveMark } from './StudioSaveMark';
 import { StudioStepSwitcher } from './StudioStepSwitcher';
-import { StudioTopBar } from './StudioTopBar';
 
 /**
- * The canvas's head: the top bar with the Saved pill, the step switcher and the picture chip. Focus
- * mode sets the bar and the switcher aside and steps the chip down to its credit line, which never
- * leaves the screen.
+ * The steps with the save mark, or the mark alone while a job keeps the steps aside. While another person edits, the place stays: their roof is drawn on it. A change still
+ * on its way keeps the person here, or leaving would lose it.
+ */
+function HeadSteps({
+  studio,
+  parts,
+  words,
+  onBack,
+  onSite,
+}: {
+  studio: StudioScreen;
+  parts: FocusParts;
+  words: StudioCanvasWords;
+  onBack: () => void;
+  onSite: (() => void) | null;
+}) {
+  const { editing, saving, moves } = studio;
+  const saveMark = (
+    <StudioSaveMark
+      editing={editing}
+      saving={saving}
+      words={words}
+      onRetry={moves.retry}
+      onLeave={onBack}
+    />
+  );
+  return (
+    <div
+      className="hg-studio-head-part hg-studio-head-steps"
+      data-hidden={parts.stepSwitcher === 'hidden'}
+      inert={parts.stepSwitcher === 'hidden'}
+    >
+      {parts.stepSwitcher === 'mark' ? (
+        <div className="hg-studio-steps">
+          <div className="hg-studio-glass hg-studio-steps-pill">{saveMark}</div>
+        </div>
+      ) : (
+        <StudioStepSwitcher
+          rail={studio.rail}
+          words={words}
+          onSite={editing.kind === 'editor' ? onSite : null}
+          siteWaits={saving.kind !== 'saved'}
+          saveMark={saveMark}
+          onLeave={onBack}
+        />
+      )}
+    </div>
+  );
+}
+
+/**
+ * The canvas's head: the step switcher with the save mark, the compass and the picture chip. Focus
+ * mode sets the switcher aside — a save that failed keeps its mark — and steps the chip down to its
+ * credit line, which never leaves the screen.
  */
 export function StudioCanvasHead({
   headRef,
   compass,
   studio,
   parts,
-  name,
   words,
   onBack,
   onSite,
@@ -32,48 +81,21 @@ export function StudioCanvasHead({
   compass: Ref<StudioCompassHandle>;
   studio: StudioScreen;
   parts: FocusParts;
-  name: TranslatedText;
   words: StudioCanvasWords;
+  /** Out of the studio: the step before the roof for a reader who cannot open Site details. */
   onBack: () => void;
   /** Back to Site details; `null` for a reader who cannot change the design. */
   onSite: (() => void) | null;
 }) {
   const format = useFormat();
-  const { picture, editing, saving, moves, document, roofStep } = studio;
+  const { picture, editing, moves, document, roofStep } = studio;
   const editable = editing.kind === 'editor';
   const shown: PictureChoice = picture.kind === 'none' ? 'none' : (document?.picture ?? 'sky');
   const sky = picture.kind === 'sky' ? picture : null;
   const drawnOn = document?.drawnOn?.takenOn ?? null;
   return (
     <div ref={headRef} className="hg-studio-canvas-head">
-      <div
-        className="hg-studio-head-part"
-        data-hidden={parts.topBar === 'hidden'}
-        inert={parts.topBar === 'hidden'}
-      >
-        <StudioTopBar
-          name={name}
-          editing={editing}
-          saving={saving}
-          words={words}
-          onBack={onBack}
-          onRetry={moves.retry}
-        />
-      </div>
-      {/* While another person edits, the place stays: their roof is drawn on it. A change still
-          on its way keeps the person here, or leaving would lose it. */}
-      <div
-        className="hg-studio-head-part"
-        data-hidden={parts.stepSwitcher === 'hidden'}
-        inert={parts.stepSwitcher === 'hidden'}
-      >
-        <StudioStepSwitcher
-          rail={studio.rail}
-          words={words}
-          onSite={editable ? onSite : null}
-          siteWaits={saving.kind !== 'saved'}
-        />
-      </div>
+      <HeadSteps studio={studio} parts={parts} words={words} onBack={onBack} onSite={onSite} />
       <StudioCompass handle={compass} words={words} off={parts.compass === 'hidden'} />
       {parts.pictureChip === 'credit' ? (
         <StudioPictureCredit picture={picture} />

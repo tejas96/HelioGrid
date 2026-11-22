@@ -212,6 +212,8 @@ export function siteDetailsPageWords(t: T) {
       shownAsSent(name ?? phone ?? undefined) ?? null,
     /** The way-back row's name. */
     trail: t(SITE.trail),
+    /** Out of a started design to its lead, where the narrow way back leads to the studio. */
+    backToLead: t(DESIGN.backToLead),
     leads: t(DESIGN.leads),
     /** The trail's start when the Proposals page opened the design (`T-M05-001b`). */
     proposals: t(DESIGN.proposals),

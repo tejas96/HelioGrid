@@ -15,7 +15,7 @@ import {
   Vector3,
 } from 'three';
 import { useStudioWheel } from '../hooks/use-studio-wheel';
-import type { StudioDrive, StudioMarks } from './camera-drive';
+import type { StudioDrive } from './camera-drive';
 import {
   type ClearGround,
   fieldOfView,
@@ -28,7 +28,7 @@ import {
 import { bindHands, fitDistance, fitSpread, type GroundBox, POSE } from './camera-poses';
 import { SceneLens } from './scene-lens';
 
-export type { StudioDrive, StudioMarks } from './camera-drive';
+export type { StudioDrive } from './camera-drive';
 export type { ClearGround } from './camera-limits';
 export type { GroundBox } from './camera-poses';
 
@@ -59,7 +59,7 @@ export function StudioCameraRig({
   clear,
   metresPerPixel,
   drive,
-  onMarks,
+  onTurn,
   fit,
   frameOn,
 }: {
@@ -79,8 +79,8 @@ export function StudioCameraRig({
   metresPerPixel: number | null;
   /** Filled with what the page's own controls ask of the camera. */
   drive: RefObject<StudioDrive | null>;
-  /** Told the scale and the turn each time the camera moves. */
-  onMarks: (marks: StudioMarks) => void;
+  /** Told the view's turn from north up, in radians, each time it changes. */
+  onTurn: (turn: number) => void;
 }) {
   const controls = useRef<CameraControlsImpl>(null);
   const camera = useThree((three) => three.camera) as PerspectiveCamera;
@@ -137,7 +137,7 @@ export function StudioCameraRig({
   const pointer = useRef(new Vector2()).current;
   const level = useRef(new Plane(new Vector3(0, 1, 0), 0)).current;
   const landed = useRef(new Vector3()).current;
-  const told = useRef<StudioMarks | null>(null);
+  const told = useRef<number | null>(null);
   const heading = useRef(new Spherical()).current;
   // Each drawn frame sets the haze from where the camera stands now, and the room it may look in.
   useFrame(() => {
@@ -153,11 +153,9 @@ export function StudioCameraRig({
       camera.near = near;
       camera.updateProjectionMatrix();
     }
-    const perPixel = groundPerPixel(rig.distance, size.height);
-    const said = told.current;
-    if (said === null || said.metresPerPixel !== perPixel || said.turn !== rig.azimuthAngle) {
-      told.current = { metresPerPixel: perPixel, turn: rig.azimuthAngle };
-      onMarks(told.current);
+    if (told.current !== rig.azimuthAngle) {
+      told.current = rig.azimuthAngle;
+      onTurn(rig.azimuthAngle);
     }
     if (!held) return;
     // The room is the one the camera is going to: while it flies in, the pin it flies to stays

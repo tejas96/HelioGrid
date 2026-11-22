@@ -22,10 +22,3 @@ export interface StudioDrive {
    */
   drawRound(clientX: number, clientY: number, span: number, into: HTMLCanvasElement): void;
 }
-
-/** What the camera tells the page each time it moves: the ground one screen pixel covers, its turn. */
-export interface StudioMarks {
-  readonly metresPerPixel: number;
-  /** Radians the view is turned from north up. */
-  readonly turn: number;
-}

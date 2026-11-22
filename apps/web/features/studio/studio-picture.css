@@ -144,6 +144,8 @@
 
 /* Focus mode: the provider's credit line alone, small and quiet, never covered. */
 .hg-studio-credit-only {
+  grid-area: chip;
+  justify-self: start;
   margin: 0;
   padding: var(--sp-1) var(--sp-2);
   border-radius: var(--r-pill);
