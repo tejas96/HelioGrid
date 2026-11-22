@@ -6,17 +6,20 @@
   touch-action: none;
 }
 
-/* A corner. */
+/* A corner: a small dot in a thin ring, about 10 px in all, so the roof's own corner stays seen
+   under it; its touch target stays 44 px (`.hg-roof-hit`). */
 .hg-roof-dot {
   display: block;
-  inline-size: calc(var(--sp-2) + var(--sp-0-5));
-  block-size: calc(var(--sp-2) + var(--sp-0-5));
+  inline-size: var(--sp-2);
+  block-size: var(--sp-2);
   border-radius: var(--r-pill);
   background: var(--scene-mark);
   box-shadow:
-    0 0 0 var(--sp-0-5) var(--hg-roof-ink),
+    0 0 0 calc(var(--hg-studio-line) * 1.5) var(--hg-roof-ink),
     var(--e2);
-  transition: box-shadow var(--dur-fast) var(--ease-standard);
+  transition:
+    box-shadow var(--dur-fast) var(--ease-standard),
+    transform var(--dur-fast) var(--ease-standard);
 }
 
 /* Two corners crowded on the screen: their dots shrink, so both stay seen (the board's 4.8). */
@@ -39,6 +42,15 @@
     var(--e2);
 }
 
+/* The first corner, once a tap there would close: it grows and glows. */
+.hg-roof-dot[data-first="true"][data-closing="true"] {
+  transform: scale(1.6);
+  box-shadow:
+    0 0 0 calc(var(--sp-0-5) + var(--hg-studio-line)) var(--hg-roof-ink),
+    0 0 0 var(--sp-3) color-mix(in srgb, var(--scene-mark) 55%, transparent),
+    var(--e2);
+}
+
 .hg-roof-dot[data-ghost="true"] {
   background: transparent;
   box-shadow:
@@ -47,8 +59,8 @@
 }
 
 .hg-roof-dot[data-next="true"] {
-  inline-size: var(--sp-3);
-  block-size: var(--sp-3);
+  inline-size: calc(var(--sp-2) + var(--sp-0-5));
+  block-size: calc(var(--sp-2) + var(--sp-0-5));
   background: var(--hg-roof-ink);
   box-shadow:
     0 0 0 var(--sp-0-5) var(--scene-mark),
@@ -163,8 +175,8 @@
 .hg-roof-plus {
   display: grid;
   place-items: center;
-  inline-size: calc(var(--sp-4) + var(--sp-0-5));
-  block-size: calc(var(--sp-4) + var(--sp-0-5));
+  inline-size: var(--sp-3);
+  block-size: var(--sp-3);
   border-radius: var(--r-pill);
   background: var(--scene-mark);
   color: var(--hg-roof-ink);

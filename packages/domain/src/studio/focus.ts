@@ -11,8 +11,8 @@ import type { StudioView } from './views';
 
 /**
  * The job in hand. `looking` is no job: everything a person may use is there. `dragging` is a
- * corner (or a new one from a +), which the helpers guide; `moving` is the whole roof, moved or
- * turned, which they do not.
+ * corner (or a new one from a +), which the magnet guides; `moving` is the whole roof, moved or
+ * turned.
  */
 export const FOCUS_JOBS = ['looking', 'drawing', 'dragging', 'moving', 'sizing', 'sheet'] as const;
 export type FocusJob = (typeof FOCUS_JOBS)[number];
@@ -26,7 +26,7 @@ const JOB_OF_STEP: Record<RoofStepState['kind'], FocusJob> = {
 
 /**
  * The job the roof step has in hand. A drag holds a corner — or a new one from a + — which the
- * helpers guide, or the whole roof, moved or turned, which they do not. A roof's sheet is the
+ * magnet guides, or the whole roof, moved or turned. A roof's sheet is the
  * studio's own job, beside the roof step.
  */
 export function focusJobOf(step: RoofStepState): FocusJob {
@@ -43,9 +43,15 @@ export interface FocusParts {
   readonly pictureChip: 'shown' | 'credit';
   /** The pencil that starts a drawing; `filled` while it draws. */
   readonly pencil: 'shown' | 'filled' | 'hidden';
-  /** Square, Line up and Buildings, beside the pencil: while a corner is drawn or dragged. */
-  readonly helperBar: 'shown' | 'hidden';
-  readonly undoRedo: 'shown' | 'hidden';
+  /**
+   * The magnet, in the bottom bar: while a corner is drawn, and — `picked` — while a roof is picked,
+   * for the drags to come. A drag in hand keeps it as it was set (Alt frees one move).
+   */
+  readonly magnet: 'shown' | 'picked' | 'hidden';
+  /** Undo and Redo, or — while drawing, where Undo takes off a corner — Undo alone. */
+  readonly undoRedo: 'shown' | 'undo' | 'hidden';
+  /** The trash beside Undo that wipes every corner of the drawing. */
+  readonly wipe: 'shown' | 'hidden';
   /** The + that starts another roof. */
   readonly addRoof: 'shown' | 'hidden';
   /** The layers and the 2D/3D switch, or the switch alone. */
@@ -59,7 +65,7 @@ export interface FocusParts {
   readonly otherHandles: 'picked' | 'hidden';
   /** Which length labels show: all, the draft's, every one live, or none. */
   readonly lengthLabels: 'all' | 'draft' | 'hidden';
-  /** The bottom bar: status and main button, Cancel and Close shape, the status alone, or none. */
+  /** The bottom bar: status and main button, the drawing pill, the status alone, or none. */
   readonly bottomBar: 'main' | 'drawing' | 'status' | 'hidden';
 }
 
@@ -81,8 +87,9 @@ const LOOKING_TOP: FocusParts = {
   stepSwitcher: 'shown',
   pictureChip: 'shown',
   pencil: 'shown',
-  helperBar: 'hidden',
+  magnet: 'picked',
   undoRedo: 'shown',
+  wipe: 'hidden',
   addRoof: 'shown',
   layers: 'shown',
   sideViews: 'hidden',
@@ -100,9 +107,12 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
     pencil: 'filled',
-    helperBar: 'shown',
+    magnet: 'shown',
+    undoRedo: 'undo',
+    wipe: 'shown',
     addRoof: 'hidden',
     layers: 'hidden',
+    zoom: 'hidden',
     otherHandles: 'hidden',
     lengthLabels: 'draft',
     bottomBar: 'drawing',
@@ -112,7 +122,7 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
     pencil: 'hidden',
-    helperBar: 'shown',
+    magnet: 'hidden',
     undoRedo: 'hidden',
     addRoof: 'hidden',
     layers: 'hidden',
@@ -125,6 +135,7 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
     pencil: 'hidden',
+    magnet: 'hidden',
     undoRedo: 'hidden',
     addRoof: 'hidden',
     layers: 'hidden',
@@ -137,6 +148,7 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
     pencil: 'hidden',
+    magnet: 'hidden',
     undoRedo: 'hidden',
     addRoof: 'hidden',
     layers: 'hidden',
@@ -150,7 +162,7 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
 /** The 3D view holds no drawing tool, no handle and no length label (`T-M05-002`, part a). */
 const IN_3D: Partial<FocusParts> = {
   pencil: 'hidden',
-  helperBar: 'hidden',
+  magnet: 'hidden',
   addRoof: 'hidden',
   otherHandles: 'hidden',
   lengthLabels: 'hidden',
@@ -159,7 +171,8 @@ const IN_3D: Partial<FocusParts> = {
 
 const EDIT_PARTS: Partial<FocusParts> = {
   pencil: 'hidden',
-  helperBar: 'hidden',
+  magnet: 'hidden',
+  wipe: 'hidden',
   undoRedo: 'hidden',
   addRoof: 'hidden',
   otherHandles: 'hidden',

@@ -78,24 +78,13 @@ export type {
   TurnResult,
 } from './roof-check';
 export {
-  ALL_HELPERS,
   type DraftClose,
   type DraftRefusal,
   type DraftTap,
-  type DrawHelpers,
   draftClose,
   draftClosesAt,
   draftGhost,
-  draftSpot,
   draftTap,
-  helpersOf,
-  NO_SNAP_TARGETS,
-  type RoofSnap,
-  SNAP_M,
-  type SnapOwner,
-  type Snapped,
-  type SnapTargets,
-  snapTargetsOf,
 } from './roof-draw';
 export {
   cornerAdded,
@@ -162,6 +151,19 @@ export {
   roofsOverlap,
 } from './roof-shape';
 export { type RoofSheetView, roofHitAt, roofSheetOf } from './roof-sheet';
+export {
+  draftSpot,
+  type Guide,
+  longSideOf,
+  magnetOf,
+  NO_SNAP_TARGETS,
+  type RoofSnap,
+  SNAP_M,
+  type SnapOwner,
+  type Snapped,
+  type SnapTargets,
+  snapTargetsOf,
+} from './roof-snap';
 export { gripCorner, roofStepAfter } from './roof-step';
 export {
   type CornerRef,
@@ -179,6 +181,7 @@ export {
   dragBeforeOf,
   dragTagAt,
   type EdgeView,
+  guidesOf,
   type HeldCircle,
   handlesRoofOf,
   heldCircleOf,

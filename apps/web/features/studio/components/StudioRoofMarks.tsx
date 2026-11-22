@@ -25,6 +25,27 @@ import { StudioRoofTops } from './StudioRoofTops';
 
 type Tag = { text: TranslatedText; bad: boolean; at: string };
 
+/** The tag while drawing: beside the spot, or — a tap refused with no pointer over the map, a
+ * finger lifted — by the last corner, where the edge would have started. */
+function draftTagOf(
+  studio: StudioScreen,
+  words: StudioCanvasWords,
+  shown: RoofWordsShown,
+  aiming: boolean,
+): Tag | null {
+  const { draft, roofStep } = studio;
+  if (draft === null || roofStep.kind !== 'drawing') return null;
+  const last = draft.corners.at(-1);
+  if (draft.spot === null && roofStep.refused !== null && last !== undefined) {
+    const tag = words.spotTag({ refusal: roofStep.refused, snap: null, angle: null }, shown);
+    return tag === null ? null : { ...tag, at: pointText(last) };
+  }
+  if (aiming || draft.spot === null) return null;
+  const { point, snap } = draft.spot;
+  const tag = words.spotTag({ refusal: draft.spotRefusal, snap, angle: draft.angle }, shown);
+  return tag === null ? null : { ...tag, at: pointText(point) };
+}
+
 /** The tag beside the spot or the drag in hand, where it is: the words are the catalog's choice. */
 function tagOf(
   studio: StudioScreen,
@@ -33,12 +54,7 @@ function tagOf(
   aiming: boolean,
 ): Tag | null {
   const { draft, roofStep } = studio;
-  if (draft !== null) {
-    if (aiming || draft.spot === null) return null;
-    const { point, snap } = draft.spot;
-    const tag = words.spotTag({ refusal: draft.spotRefusal, snap, angle: draft.angle }, shown);
-    return tag === null ? null : { ...tag, at: pointText(point) };
-  }
+  if (draft !== null) return draftTagOf(studio, words, shown, aiming);
   if (roofStep.kind !== 'dragging' || studio.dragTagAt === null) return null;
   const { fault, snap } = roofStep.drag;
   const tag = words.dragTag(
@@ -60,9 +76,13 @@ function circlePoints({ centre, metres }: HeldCircle): string {
   }).join(';');
 }
 
+/** How far each way a guide runs from its point, in metres: past every edge of the map. */
+const GUIDE_REACH_M = 400;
+
 /**
  * Each roof's line, red and dashed for a drag that would be refused; the roof as it stood under a
- * move, a turn or a refused drag; and the circle a held length keeps a dragged corner on.
+ * move, a turn or a refused drag; the circle a held length keeps a dragged corner on; and the
+ * magnet's guides, dashed right across the map, so they show past a finger.
  */
 function RoofLines({ studio, drawing }: { studio: StudioScreen; drawing: boolean }) {
   const step = studio.roofStep;
@@ -90,6 +110,17 @@ function RoofLines({ studio, drawing }: { studio: StudioScreen; drawing: boolean
           data-closed="true"
         />
       )}
+      {studio.guides.map(({ through, way }) => {
+        const from = pointText({
+          east: through.east - way.east * GUIDE_REACH_M,
+          north: through.north - way.north * GUIDE_REACH_M,
+        });
+        const to = pointText({
+          east: through.east + way.east * GUIDE_REACH_M,
+          north: through.north + way.north * GUIDE_REACH_M,
+        });
+        return <path key={`${from};${to}`} className="hg-roof-guide" data-pts={`${from};${to}`} />;
+      })}
       {studio.heldCircle === null ? null : (
         <path
           className="hg-roof-held"

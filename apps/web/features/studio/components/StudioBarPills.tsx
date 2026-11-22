@@ -1,0 +1,119 @@
+'use client';
+import type { StudioScreen } from '@heliogrid/data/react';
+import type { RoofBar } from '@heliogrid/domain';
+import type { StudioCanvasWords } from '@heliogrid/i18n';
+import { theme } from '@heliogrid/theme';
+import { Button, IconButton, ShellGlyph, Text } from '@heliogrid/ui';
+
+/** The round tools in the bar take the tool columns' size. */
+export const BAR_TOOL = theme.layout['button-h-md'];
+
+interface PillFacts {
+  readonly studio: StudioScreen;
+  readonly words: StudioCanvasWords;
+}
+
+/** The magnet: pressed while on. One tap turns it off for every corner, drawn or dragged. */
+export function MagnetSwitch({ studio, words }: PillFacts) {
+  return (
+    <span className="hg-studio-magnet">
+      <IconButton
+        label={words.magnet}
+        size={BAR_TOOL}
+        pressed={studio.magnet}
+        onClick={studio.moves.toggleMagnet}
+      >
+        <ShellGlyph name="magnet" size="md" tone="current" />
+      </IconButton>
+    </span>
+  );
+}
+
+/** A save of the magnet's pick the server refused: said beside the switch, with a retry. */
+export function MagnetRefused({ studio, words }: PillFacts) {
+  if (!studio.magnetRefused) return null;
+  return (
+    <span className="hg-studio-pill-refused" role="alert">
+      {words.magnetNotSaved}
+      <Button variant="secondary" size="sm" onClick={studio.moves.retryMagnet}>
+        {words.tryAgain}
+      </Button>
+    </span>
+  );
+}
+
+/**
+ * The foot while drawing: one slim pill, no sentence, so the map keeps its room — the magnet, and
+ * Close shape once the shape can close. A refusal is the tag by the line, and is read out here.
+ */
+export function DrawPill({
+  bar,
+  studio,
+  words,
+}: PillFacts & { bar: Extract<RoofBar, { kind: 'drawing' }> }) {
+  const refusal = bar.refused === null ? null : words.drawRefusal(bar.refused);
+  return (
+    <>
+      <MagnetSwitch studio={studio} words={words} />
+      {bar.canClose ? (
+        <Button
+          variant="primary"
+          size="md"
+          icon={<ShellGlyph name="check" size="sm" />}
+          onClick={studio.moves.close}
+        >
+          {words.closeShape}
+        </Button>
+      ) : null}
+      <MagnetRefused studio={studio} words={words} />
+      <span role="status">
+        {refusal === null ? null : <Text spokenOnly>{`${refusal.title}. ${refusal.line}`}</Text>}
+      </span>
+    </>
+  );
+}
+
+/** Just after a close: Redraw, or Done. It waits for no one: any other act means Done. */
+export function ClosedPill({ studio, words }: PillFacts) {
+  return (
+    <>
+      <Button
+        variant="secondary"
+        size="md"
+        icon={<ShellGlyph name="undo" size="sm" />}
+        onClick={studio.moves.redraw}
+      >
+        {words.redraw}
+      </Button>
+      <Button
+        variant="primary"
+        size="md"
+        icon={<ShellGlyph name="check" size="sm" />}
+        onClick={studio.moves.keepClosed}
+      >
+        {words.done}
+      </Button>
+    </>
+  );
+}
+
+/**
+ * The pill the foot shows instead of the bar, for an editor in the top view: while drawing, or just
+ * after a close; `null` when the bar shows.
+ */
+export function pillOf(studio: StudioScreen, words: StudioCanvasWords, off: boolean) {
+  const { bar } = studio;
+  if (off || studio.editing.kind !== 'editor') return null;
+  if (bar?.kind === 'drawing') return <DrawPill bar={bar} studio={studio} words={words} />;
+  if (bar?.kind === 'roofs' && bar.asking && studio.view === 'top') {
+    return <ClosedPill studio={studio} words={words} />;
+  }
+  return null;
+}
+
+/** Before the first corner, one line says what to do; the first tap takes it away. */
+export function DrawHint({ studio, words }: PillFacts) {
+  return studio.bar?.kind === 'drawing' && studio.bar.hint ? (
+    <p className="hg-studio-glass hg-studio-hint">{words.drawHint}</p>
+  ) : null;
+}

@@ -39,7 +39,7 @@ describe('m or ft alone moves nothing (T-M05-002)', () => {
   // 13.3812 m reads 43 ft 11 in, which is 13.386 m, which reads 13.39 m: switching units must not
   // carry the rounding of one unit into the other.
   const odd = run([
-    { kind: 'draw', helpers: { square: false, line_up: false, buildings: false } },
+    { kind: 'draw', magnet: false },
     { kind: 'tap', at: p(0, 0), system: 'metric' },
     { kind: 'tap', at: p(13.3812, 0), system: 'metric' },
     { kind: 'tap', at: p(13.3812, 6), system: 'metric' },

@@ -47,12 +47,6 @@ export function StudioDraftMarks({
             />
           </>
         ) : null}
-        {draft.spot?.snap?.kind === 'lines_up' && draft.corners[draft.spot.snap.corner] ? (
-          <path
-            className="hg-roof-guide"
-            data-pts={`${pointText(draft.corners[draft.spot.snap.corner] as (typeof draft.corners)[number])};${pointText(draft.spot.point)}`}
-          />
-        ) : null}
         {draft.ghost !== null && last !== undefined && draft.corners[0] !== undefined ? (
           <path
             className="hg-roof-ghost"
@@ -71,7 +65,7 @@ export function StudioDraftMarks({
                 ripple="none"
                 onPress={onClose}
               >
-                <span className="hg-roof-dot" data-first="true" />
+                <span className="hg-roof-dot" data-first="true" data-closing={draft.closing} />
               </Pressable>
             ) : (
               <span className="hg-roof-dot" />

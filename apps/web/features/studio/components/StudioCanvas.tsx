@@ -192,18 +192,15 @@ export function StudioCanvas({
         drawing={drawing}
         newView={studio.offer3d}
         parts={parts}
-        helpers={studio.helpers}
-        buildingData={studio.buildingData}
-        helpersRefused={studio.helpersRefused}
+        canWipe={studio.bar?.kind === 'drawing' && studio.bar.canWipe}
+        onWipe={moves.wipe}
         hasRoof={studio.fit !== null}
-        onRetryHelpers={moves.retryHelpers}
         words={words}
         onView={moves.see}
         onUnits={moves.chooseUnits}
         onUndo={moves.undo}
         onRedo={moves.redo}
         onDraw={drawing ? moves.cancel : moves.draw}
-        onHelper={moves.toggleHelper}
         onAddRoof={moves.draw}
         onZoomIn={() => drive.current?.zoomIn()}
         onZoomOut={() => drive.current?.zoomOut()}
@@ -229,6 +226,7 @@ export function StudioCanvas({
           place={detail.site.address}
           words={words}
           part={parts.bottomBar}
+          magnet={parts.magnet}
           crowded={crowded}
         />
       )}

@@ -28,8 +28,6 @@ const InverterIcon = Lucide.createLucideIcon({
 export const SHELL_GLYPHS = {
   alert: AlertMarkIcon,
   'alert-circle': Lucide.CircleAlertIcon,
-  /** A right-angled triangle: the studio's Square helper, which snaps a corner to 90°. */
-  'right-angle': Lucide.TriangleRightIcon,
   'alert-triangle': Lucide.TriangleAlertIcon,
   archive: Lucide.ArchiveIcon,
   'arrow-down': Lucide.ArrowDownIcon,
@@ -95,8 +93,8 @@ export const SHELL_GLYPHS = {
   lines: Lucide.TextAlignStartIcon,
   link: Lucide.LinkIcon,
   'link-off': Lucide.UnlinkIcon,
-  /** Points joined by a line: the studio's Line up helper, which lines a corner up with another. */
-  'line-up': Lucide.WaypointsIcon,
+  /** A magnet: the studio's one drawing aid, which snaps a corner square, parallel or in line. */
+  magnet: Lucide.MagnetIcon,
   'list-bullet': Lucide.ListIcon,
   'list-number': Lucide.ListOrderedIcon,
   lock: Lucide.LockIcon,

@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { EMPTY_STUDIO_DOCUMENT } from '../../src/studio/document';
 import { type FocusFacts, type FocusParts, focusJobOf, focusOf } from '../../src/studio/focus';
-import { ALL_HELPERS } from '../../src/studio/roof-draw';
 import type { RoofGrip, RoofStepState } from '../../src/studio/roof-step-state';
 
 const FACTS: FocusFacts = {
@@ -27,9 +26,12 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'filled',
-        helperBar: 'shown',
+        magnet: 'shown',
+        undoRedo: 'undo',
+        wipe: 'shown',
         addRoof: 'hidden',
         layers: 'hidden',
+        zoom: 'hidden',
         otherHandles: 'hidden',
         lengthLabels: 'draft',
         bottomBar: 'drawing',
@@ -44,7 +46,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
-        helperBar: 'shown',
+        magnet: 'hidden',
         undoRedo: 'hidden',
         addRoof: 'hidden',
         layers: 'hidden',
@@ -62,6 +64,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
+        magnet: 'hidden',
         undoRedo: 'hidden',
         addRoof: 'hidden',
         layers: 'hidden',
@@ -80,6 +83,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
+        magnet: 'hidden',
         undoRedo: 'hidden',
         addRoof: 'hidden',
         layers: 'hidden',
@@ -97,6 +101,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
+        magnet: 'hidden',
         undoRedo: 'hidden',
         addRoof: 'hidden',
         layers: 'hidden',
@@ -111,6 +116,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       true,
       {
         pencil: 'hidden',
+        magnet: 'hidden',
         addRoof: 'hidden',
         sideViews: 'shown',
         compass: 'north',
@@ -126,6 +132,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
+        magnet: 'hidden',
         addRoof: 'hidden',
         layers: 'switch',
         sideViews: 'shown',
@@ -143,6 +150,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
+        magnet: 'hidden',
         addRoof: 'hidden',
         layers: 'switch',
         sideViews: 'shown',
@@ -191,7 +199,8 @@ describe('focus mode: the edge cases', () => {
       topBar: 'shown',
       stepSwitcher: 'shown',
       pencil: 'hidden',
-      helperBar: 'hidden',
+      magnet: 'hidden',
+      wipe: 'hidden',
       undoRedo: 'hidden',
       addRoof: 'hidden',
       otherHandles: 'hidden',
@@ -204,14 +213,15 @@ describe('focus mode: the edge cases', () => {
   });
 });
 
-describe('the job a drag holds: a corner the helpers guide, or a whole roof they do not', () => {
+describe('the job a drag holds: a corner the magnet guides, or a whole roof', () => {
   const dragging = (grip: RoofGrip): RoofStepState => ({
     kind: 'dragging',
     grip,
     base: EMPTY_STUDIO_DOCUMENT,
     from: { east: 0, north: 0 },
-    drag: { document: EMPTY_STUDIO_DOCUMENT, snap: null, fault: null },
+    drag: { document: EMPTY_STUDIO_DOCUMENT, snap: null, fault: null, guides: [] },
     degrees: 0,
+    magnet: true,
   });
   it.each([
     ['a corner', dragging({ kind: 'corner', roof: 0, corner: 1 }), 'dragging'],
@@ -227,7 +237,8 @@ describe('the job a drag holds: a corner the helpers guide, or a whole roof they
         pointer: null,
         spot: null,
         refused: null,
-        helpers: ALL_HELPERS,
+        magnet: true,
+        wiped: null,
       } as const,
       'drawing',
     ],

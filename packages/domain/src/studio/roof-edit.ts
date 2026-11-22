@@ -8,7 +8,6 @@ import {
   type TurnResult,
   withRoof,
 } from './roof-check';
-import { type RoofSnap, SNAP_M, snapTargetsOf, snapToTargets } from './roof-draw';
 import {
   between,
   CORNER_GAP_M,
@@ -20,6 +19,7 @@ import {
   ROOF_CORNERS_MIN,
   roofMiddle,
 } from './roof-shape';
+import { type Guide, type RoofSnap, SNAP_M, snapTargetsOf, snapToTargets } from './roof-snap';
 
 /**
  * Fixing a roof's shape once it stands (`T-M05-002`, part b): drag a corner with the magnet, add
@@ -59,6 +59,24 @@ function squareAt(from: GroundPoint, to: GroundPoint): GroundPoint {
   return { east: -(to.north - from.north), north: to.east - from.east };
 }
 
+/** A guide through `through`, running `way`, scaled to one metre. */
+function guideOf(through: GroundPoint, way: GroundPoint): Guide {
+  const reach = Math.hypot(way.east, way.north) || 1;
+  return { through, way: { east: way.east / reach, north: way.north / reach } };
+}
+
+/** The two sides of a square corner at `point`, as guides. */
+function sidesAt(point: GroundPoint, before: GroundPoint, after: GroundPoint): Guide[] {
+  const way = (to: GroundPoint) => ({ east: to.east - point.east, north: to.north - point.north });
+  return [guideOf(point, way(before)), guideOf(point, way(after))];
+}
+
+interface Placed {
+  readonly point: GroundPoint;
+  readonly snap: RoofSnap | null;
+  readonly guides: readonly Guide[];
+}
+
 /**
  * Where a dragged corner snaps: another roof's corner or edge; a square corner — at both of its
  * neighbours, or at itself; square at one neighbour. Each within `SNAP_M`; the first found wins.
@@ -69,7 +87,7 @@ function cornerMagnet(
   to: GroundPoint,
   document: StudioDocument,
   roofIndex: number,
-): { point: GroundPoint; snap: RoofSnap | null } {
+): Placed {
   const target = snapToTargets(to, snapTargetsOf(document.roofs, roofIndex));
   if (target !== null) return target;
   const before = cornerBefore(corners, corner);
@@ -78,11 +96,12 @@ function cornerMagnet(
   const afterThat = cornerAfter(corners, (corner + 1) % corners.length);
   const wayAtBefore = squareAt(beforeThat, before);
   const wayAtAfter = squareAt(afterThat, after);
-  const candidates: { point: GroundPoint | null; snap: RoofSnap }[] = [];
+  const candidates: { point: GroundPoint | null; snap: RoofSnap; guides: readonly Guide[] }[] = [];
   if (corners.length > ROOF_CORNERS_MIN) {
     candidates.push({
       point: lineCross(before, wayAtBefore, after, wayAtAfter),
       snap: { kind: 'square_corner' },
+      guides: [guideOf(before, wayAtBefore), guideOf(after, wayAtAfter)],
     });
   }
   // Square at itself: on the circle whose diameter joins its two neighbours.
@@ -90,30 +109,41 @@ function cornerMagnet(
   const radius = between(before, after) / 2;
   const fromCentre = between(centre, to);
   if (fromCentre > 0) {
+    const point = {
+      east: centre.east + ((to.east - centre.east) / fromCentre) * radius,
+      north: centre.north + ((to.north - centre.north) / fromCentre) * radius,
+    };
     candidates.push({
-      point: {
-        east: centre.east + ((to.east - centre.east) / fromCentre) * radius,
-        north: centre.north + ((to.north - centre.north) / fromCentre) * radius,
-      },
+      point,
       snap: { kind: 'square_corner' },
+      guides: sidesAt(point, before, after),
     });
   }
   if (corners.length > ROOF_CORNERS_MIN) {
     const lines = [
-      { point: ontoLine(to, before, wayAtBefore), snap: { kind: 'square' } as const },
-      { point: ontoLine(to, after, wayAtAfter), snap: { kind: 'square' } as const },
+      {
+        point: ontoLine(to, before, wayAtBefore),
+        snap: { kind: 'square' } as const,
+        guides: [guideOf(before, wayAtBefore)],
+      },
+      {
+        point: ontoLine(to, after, wayAtAfter),
+        snap: { kind: 'square' } as const,
+        guides: [guideOf(after, wayAtAfter)],
+      },
     ].sort((x, y) => between(x.point, to) - between(y.point, to));
     candidates.push(...lines);
   }
   const found = candidates.find(
-    (c): c is { point: GroundPoint; snap: RoofSnap } =>
+    (c): c is { point: GroundPoint; snap: RoofSnap; guides: readonly Guide[] } =>
       c.point !== null && between(c.point, to) <= SNAP_M,
   );
-  return found ?? { point: to, snap: null };
+  return found ?? { point: to, snap: null, guides: [] };
 }
 
 /**
- * A corner dragged to `to`. The magnet pulls it within `SNAP_M` and lets go as the finger moves on.
+ * A corner dragged to `to`. The magnet, when on, pulls it within `SNAP_M` and lets go as the finger
+ * moves on; off, the corner goes exactly where it is dragged.
  * A typed neighbour edge keeps its length: the corner slides round that edge's other end. Two typed
  * neighbours hold the corner still. A fault means the roof goes back when the drag ends.
  */
@@ -122,6 +152,7 @@ export function cornerDragged(
   roofIndex: number,
   corner: number,
   to: GroundPoint,
+  magnet: boolean,
 ): DragResult {
   const roof = roofAt(document, roofIndex);
   const { corners, edges } = roof;
@@ -129,8 +160,8 @@ export function cornerDragged(
   const beforeEdge = (corner - 1 + count) % count;
   const heldBefore = edges[beforeEdge] !== 'traced';
   const heldAfter = edges[corner] !== 'traced';
-  if (heldBefore && heldAfter) return { document, snap: null, fault: 'two_held' };
-  let placed: { point: GroundPoint; snap: RoofSnap | null };
+  if (heldBefore && heldAfter) return { document, snap: null, fault: 'two_held', guides: [] };
+  let placed: Placed;
   if (heldBefore || heldAfter) {
     const anchor = heldBefore ? cornerBefore(corners, corner) : cornerAfter(corners, corner);
     const metres = edgeLengths(corners)[heldBefore ? beforeEdge : corner] ?? 0;
@@ -141,15 +172,19 @@ export function cornerDragged(
         north: anchor.north + ((to.north - anchor.north) / reach) * metres,
       },
       snap: { kind: 'held', metres, centre: anchor },
+      guides: [],
     };
   } else {
-    placed = cornerMagnet(corners, corner, to, document, roofIndex);
+    placed = magnet
+      ? cornerMagnet(corners, corner, to, document, roofIndex)
+      : { point: to, snap: null, guides: [] };
   }
   const moved = corners.map((c, i) => (i === corner ? placed.point : c));
   return {
     document: withRoof(document, roofIndex, { ...roof, corners: moved }),
     snap: placed.snap,
     fault: faultOf(document, roofIndex, moved),
+    guides: placed.guides,
   };
 }
 
@@ -215,6 +250,7 @@ export function roofMoved(
     document: withRoof(document, roofIndex, { ...roof, corners }),
     snap: null,
     fault: faultOf(document, roofIndex, corners),
+    guides: [],
   };
 }
 
@@ -231,18 +267,18 @@ function directionOf(a: GroundPoint, b: GroundPoint): number {
 }
 
 /**
- * The roof turned `degrees` anticlockwise about its middle. Within `TURN_SNAP_DEGREES` of lining an
- * edge up with another roof's edge, it lines up.
+ * The roof turned `degrees` anticlockwise about its middle. With the magnet on, within
+ * `TURN_SNAP_DEGREES` of lining an edge up with another roof's edge, it lines up.
  */
 export function roofTurned(
   document: StudioDocument,
   roofIndex: number,
   degrees: number,
+  magnet: boolean,
 ): TurnResult {
   const roof = roofAt(document, roofIndex);
-  const targets = snapTargetsOf(document.roofs, roofIndex).edges.map((e) =>
-    directionOf(e.from, e.to),
-  );
+  const edges = magnet ? snapTargetsOf(document.roofs, roofIndex).edges : [];
+  const targets = edges.map((e) => directionOf(e.from, e.to));
   let applied = degrees;
   let snapped = false;
   let nearest = TURN_SNAP_DEGREES + 1e-9;
@@ -269,6 +305,7 @@ export function roofTurned(
     document: withRoof(document, roofIndex, { ...roof, corners }),
     snap: null,
     fault: faultOf(document, roofIndex, corners),
+    guides: [],
     degrees: applied,
     snapped,
   };

@@ -7,6 +7,28 @@ import type { StudioDrive } from '../components/StudioCameraRig';
 /** A press that moves less than this, in CSS pixels, is a tap; more moves the map. */
 const TAP_PX = 6;
 
+/** A key pressed over the studio while drawing, just after a close, or with a corner picked. */
+function drawKey(
+  event: KeyboardEvent,
+  roofStep: StudioScreen['roofStep'],
+  asking: boolean,
+  moves: StudioScreen['moves'],
+): void {
+  // Backspace typed into a field, or Enter on a button, is that control's own; Esc is always ours.
+  const target = event.target;
+  const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
+  if (event.key === 'Backspace' && roofStep.kind === 'drawing' && !typing) {
+    event.preventDefault();
+    moves.undo();
+  }
+  const own = typing || target instanceof HTMLButtonElement;
+  if (event.key === 'Enter' && asking && !own) moves.keepClosed();
+  if (event.key !== 'Escape') return;
+  if (asking) moves.redraw();
+  else if (roofStep.kind !== 'idle') moves.cancel();
+  else if (roofStep.picked !== null) moves.pickCorner(null);
+}
+
 /**
  * The web's press on the map (a platform adapter, `T-M05-002` part b): a tap places a corner while
  * drawing, or lets a picked corner go; a drag is the camera's. On a phone a finger held still
@@ -67,14 +89,15 @@ export function useDrawPress(
     const at = groundAt(event.clientX, event.clientY);
     if (at !== null) moves.tap(at);
   };
-  // Esc puts back what is in hand: the draft, the length in the box, a drag, a picked corner. Alt
-  // held draws free for a moment: every helper rests until it is let go, or the window loses it.
+  // Esc puts back what is in hand: the draft (one Undo takes it up again), the length in the box, a
+  // drag, a picked corner; just after a close it is Redraw, and Enter is Done. Backspace takes the
+  // last corner off while drawing. Alt held draws free for a moment: the magnet rests until it is
+  // let go, or the window loses it.
+  const asking = studio.view === 'top' && studio.bar?.kind === 'roofs' && studio.bar.asking;
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Alt') moves.drawFree(event.type === 'keydown');
-      if (event.key !== 'Escape' || event.type !== 'keydown') return;
-      if (roofStep.kind !== 'idle') moves.cancel();
-      else if (roofStep.picked !== null) moves.pickCorner(null);
+      if (event.type === 'keydown') drawKey(event, roofStep, asking, moves);
     };
     const onBlur = () => moves.drawFree(false);
     window.addEventListener('keydown', onKey);
@@ -85,7 +108,7 @@ export function useDrawPress(
       window.removeEventListener('keyup', onKey);
       window.removeEventListener('blur', onBlur);
     };
-  }, [roofStep, moves]);
+  }, [roofStep, moves, asking]);
   const onPointerLeave = (event: PointerEvent<HTMLDivElement>) => {
     if (drawing && event.pointerType === 'mouse') moves.hover(null);
   };

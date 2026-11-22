@@ -115,8 +115,12 @@ function undoRedoOf(
   history: History<StudioDocument> | null,
 ): { canUndo: boolean; canRedo: boolean } {
   if (!editable) return { canUndo: false, canRedo: false };
+  // While drawing, Undo takes a corner off or brings wiped ones back; just after a stop, it takes
+  // the stopped drawing up again.
   const back =
-    roofStep.kind === 'drawing' ? roofStep.corners.length > 0 : (history?.past.length ?? 0) > 0;
+    roofStep.kind === 'drawing'
+      ? roofStep.corners.length > 0 || roofStep.wiped !== null
+      : (roofStep.kind === 'idle' && Boolean(roofStep.left)) || (history?.past.length ?? 0) > 0;
   return { canUndo: back, canRedo: roofStep.kind === 'idle' && (history?.future.length ?? 0) > 0 };
 }
 
@@ -260,7 +264,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         // A height in hand is put back first, as a length or a drag is.
         if (sheet.moves.dropHeight()) return;
         const now = step.current.kind;
-        if (now === 'drawing') act({ kind: 'undo_corner' });
+        const left = step.current.kind === 'idle' && Boolean(step.current.left);
+        if (now === 'drawing' || left) act({ kind: 'undo_corner' });
         else if (now === 'sizing' || now === 'dragging') act({ kind: 'cancel' });
         else if (latest.current !== null) {
           act({ kind: 'history', undone: true });
@@ -280,8 +285,9 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       // A view that waits for a roof is not taken, whoever asks for it.
       see: (next) => {
         if (!views.some((place) => place.view === next && place.lock === null)) return;
-        // A new roof is drawn in the top view only: leaving it drops the draft.
-        if (next !== 'top' && step.current.kind === 'drawing') act({ kind: 'cancel' });
+        // A new roof is drawn in the top view only: leaving it drops the draft, or — just after a
+        // close — keeps the roof and ends the Redraw ask.
+        if (next !== 'top') act({ kind: step.current.kind === 'drawing' ? 'cancel' : 'done' });
         if (next === '3d') setSeen3d(true);
         // A roof's sheet is the 3D view's: the top view keeps its height and closes it.
         if (next === 'top') void sheet.moves.done();

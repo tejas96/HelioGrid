@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_HELPERS } from '../../src/studio/roof-draw';
 import { dragBeforeOf, handlesRoofOf, heldCircleOf } from '../../src/studio/roof-step-view';
 import { CLOSE, drawn, p, RECTANGLE, run } from './roof-step-run';
 
@@ -19,6 +18,7 @@ describe('a corner drag that keeps a set length shows its circle (T-M05-002)', (
           grip: { kind: 'corner', roof: 0, corner: 1 },
           at: p(8, 0),
           system: 'metric',
+          magnet: true,
         },
         { kind: 'drag', at: p(7, 2) },
       ],
@@ -30,7 +30,13 @@ describe('a corner drag that keeps a set length shows its circle (T-M05-002)', (
     expect(dragBeforeOf(state)).toBeNull();
     const turning = run(
       [
-        { kind: 'grab', grip: { kind: 'turn', roof: 0 }, at: p(9, 3), system: 'metric' },
+        {
+          kind: 'grab',
+          grip: { kind: 'turn', roof: 0 },
+          at: p(9, 3),
+          system: 'metric',
+          magnet: true,
+        },
         { kind: 'drag', at: p(9, 5) },
       ],
       sized,
@@ -42,7 +48,7 @@ describe('a corner drag that keeps a set length shows its circle (T-M05-002)', (
 describe('the picked roof: its + dots and handles show, the others keep their corners (T-M05-002)', () => {
   const two = run(
     [
-      { kind: 'draw', helpers: ALL_HELPERS },
+      { kind: 'draw', magnet: true },
       { kind: 'tap', at: p(20, 0), system: 'metric' },
       { kind: 'tap', at: p(26, 0), system: 'metric' },
       { kind: 'tap', at: p(26, 5), system: 'metric' },
@@ -91,6 +97,7 @@ describe('the picked roof: its + dots and handles show, the others keep their co
           grip: { kind: 'corner', roof: 0, corner: 2 },
           at: p(8, 6),
           system: 'metric',
+          magnet: true,
         },
         { kind: 'drag', at: p(8.5, 6.5) },
         { kind: 'release' },

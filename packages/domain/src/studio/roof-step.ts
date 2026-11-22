@@ -1,9 +1,19 @@
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { roofUnder } from './roof-check';
-import { draftClose, draftSpot, draftTap, snapTargetsOf } from './roof-draw';
 import { cornerAdded, cornerDragged, cornerRemoved, roofMoved, roofTurned } from './roof-edit';
 import { roofMiddle } from './roof-shape';
+import { snapTargetsOf } from './roof-snap';
+import {
+  closed,
+  cornerUndone,
+  drawing,
+  justClosed,
+  pickedRoofOf,
+  spotAt,
+  stopped,
+  tapped,
+  withoutRoof,
+} from './roof-step-draw';
 import {
   committedLength,
   lengthKept,
@@ -30,20 +40,18 @@ import {
 
 type Dragging = Extract<RoofStepState, { kind: 'dragging' }>;
 
-/** The roof a state holds, kept picked when it ends: the one dragged, sized or picked. */
-function roofHeld(state: RoofStepState): number | null {
-  if (state.kind === 'dragging') return state.grip.roof;
-  if (state.kind === 'sizing' || state.kind === 'idle') return state.roof;
-  return null;
-}
-
 /** The corner a grip moves: a dragged corner, or the one the + added; `null` for a whole roof. */
 export function gripCorner(grip: RoofGrip): number | null {
   if (grip.kind === 'corner') return grip.corner;
   return grip.kind === 'plus' ? grip.edge + 1 : null;
 }
 
-function grabbed(document: StudioDocument, grip: RoofGrip, at: GroundPoint): RoofStepState | null {
+function grabbed(
+  document: StudioDocument,
+  grip: RoofGrip,
+  at: GroundPoint,
+  magnet: boolean,
+): RoofStepState | null {
   if (document.roofs[grip.roof] === undefined) return null;
   let base = document;
   if (grip.kind === 'plus') {
@@ -51,8 +59,8 @@ function grabbed(document: StudioDocument, grip: RoofGrip, at: GroundPoint): Roo
     if (added.kind !== 'done') return null;
     base = added.document;
   }
-  const drag = { document: base, snap: null, fault: null };
-  return { kind: 'dragging', grip, base, from: at, drag, degrees: 0 };
+  const drag = { document: base, snap: null, fault: null, guides: [] };
+  return { kind: 'dragging', grip, base, from: at, drag, degrees: 0, magnet };
 }
 
 /** The turn from where the handle was taken to where it is now, about the roof's middle. */
@@ -66,14 +74,15 @@ function turnOf(state: Dragging, at: GroundPoint): number {
 }
 
 function dragged(state: Dragging, at: GroundPoint): RoofStepState {
-  const { grip, base, from } = state;
+  const { grip, base, from, magnet } = state;
   const corner = gripCorner(grip);
-  if (corner !== null) return { ...state, drag: cornerDragged(base, grip.roof, corner, at) };
+  if (corner !== null)
+    return { ...state, drag: cornerDragged(base, grip.roof, corner, at, magnet) };
   if (grip.kind === 'move') {
     const by = { east: at.east - from.east, north: at.north - from.north };
     return { ...state, drag: roofMoved(base, grip.roof, by) };
   }
-  const turn = roofTurned(base, grip.roof, turnOf(state, at));
+  const turn = roofTurned(base, grip.roof, turnOf(state, at), magnet);
   return { ...state, drag: turn, degrees: turn.degrees };
 }
 
@@ -98,38 +107,6 @@ function released(state: Dragging): RoofStepOutcome {
   // A handle pressed and let go where it was changes nothing: no Undo step, no save.
   if (grip.kind !== 'plus' && drag.document === base) return stay(idle(null, grip.roof));
   return { state: idle(SAID_AFTER[grip.kind](state), grip.roof), commit: drag.document };
-}
-
-function tapped(state: RoofStepState, at: GroundPoint, document: StudioDocument): RoofStepOutcome {
-  if (state.kind === 'idle' && state.picked !== null) return stay(idle(null, state.roof));
-  // A tap inside a roof picks it; on open ground, none.
-  if (state.kind === 'idle') return stay(idle(null, roofUnder(document.roofs, at)));
-  if (state.kind !== 'drawing') return stay(state);
-  const targets = snapTargetsOf(document.roofs);
-  const tap = draftTap(state.corners, at, targets, document.roofs, state.helpers);
-  if (tap.kind === 'same') return stay(state);
-  if (tap.kind === 'refused') return stay({ ...state, refused: tap.refusal });
-  return stay({ ...state, corners: tap.corners, pointer: null, spot: null, refused: null });
-}
-
-function closed(
-  state: RoofStepState,
-  event: Extract<RoofStepEvent, { kind: 'close' }>,
-  document: StudioDocument,
-): RoofStepOutcome {
-  if (state.kind !== 'drawing') return stay(state);
-  const close = draftClose(state.corners, document.roofs, event.id, event.tracedOn);
-  if (close.kind === 'refused') return stay({ ...state, refused: close.refusal });
-  // The first roof keeps the picture it was drawn on (M04-10).
-  const first = document.roofs.length === 0 && document.drawnOn === null;
-  return {
-    state: idle({ kind: 'closed' }, document.roofs.length),
-    commit: {
-      ...document,
-      roofs: [...document.roofs, close.roof],
-      drawnOn: first ? event.stamp : document.drawnOn,
-    },
-  };
 }
 
 function cornerGone(state: RoofStepState, document: StudioDocument): RoofStepOutcome {
@@ -161,46 +138,53 @@ function inState<K extends RoofStepState['kind']>(
 }
 
 const ON: Handlers = {
-  draw: (state, { helpers }) =>
-    state.kind === 'drawing'
-      ? stay(state)
-      : stay({
-          kind: 'drawing',
-          corners: [],
-          pointer: null,
-          spot: null,
-          refused: null,
-          helpers,
-        }),
-  // The spot under a still pointer snaps again by the helpers now in force: what shows is where a
-  // tap would place the corner.
-  helpers: (state, { helpers }, document) =>
-    inState(state, 'drawing', (drawing) => {
-      const { pointer, corners } = drawing;
+  draw: (state, { magnet }) => (state.kind === 'drawing' ? stay(state) : stay(drawing(magnet))),
+  // The spot under a still pointer snaps again with the magnet as it is now: what shows is where a
+  // tap would place the corner. A drag in hand pulls by it from its next move.
+  magnet: (state, { magnet }, document) => {
+    if (state.kind === 'dragging') return stay({ ...state, magnet });
+    // A stopped drawing taken up again by Undo draws with the magnet as it is now.
+    if (state.kind === 'idle' && state.left)
+      return stay({ ...state, left: { ...state.left, magnet } });
+    return inState(state, 'drawing', (held) => {
+      const { pointer } = held;
       const targets = snapTargetsOf(document.roofs);
-      const spot = pointer === null ? null : draftSpot(corners, pointer, targets, helpers);
-      return stay({ ...drawing, helpers, spot });
+      return stay({ ...held, magnet, spot: spotAt({ ...held, magnet }, pointer, targets) });
+    });
+  },
+  wipe: (state) =>
+    inState(state, 'drawing', (held) =>
+      held.corners.length < 2
+        ? stay(held)
+        : stay({ ...held, corners: [], wiped: held.corners, spot: null, refused: null }),
+    ),
+  redraw: (state, { magnet }, document) =>
+    justClosed(state, document)
+      ? { state: drawing(magnet), commit: withoutRoof(document, document.roofs.length - 1) }
+      : stay(state),
+  done: (state, _event, document) =>
+    justClosed(state, document) && state.kind === 'idle'
+      ? stay(idle(null, state.roof))
+      : stay(state),
+  delete_roof: (state, _event, document) =>
+    inState(state, 'idle', (looking) => {
+      const roof = pickedRoofOf(looking, document);
+      return roof === null
+        ? stay(looking)
+        : { state: idle({ kind: 'roof_deleted' }, null), commit: withoutRoof(document, roof) };
     }),
-  cancel: (state) => stay(idle(null, roofHeld(state))),
+  cancel: stopped,
   hover: (state, { at }, document) =>
-    inState(state, 'drawing', (drawing) => {
+    inState(state, 'drawing', (held) => {
       const targets = snapTargetsOf(document.roofs);
       // The pointer moved on: a refusal of the last tap is behind it; the spot says its own.
-      return stay({
-        ...drawing,
-        pointer: at,
-        spot: at === null ? null : draftSpot(drawing.corners, at, targets, drawing.helpers),
-        refused: null,
-      });
+      return stay({ ...held, pointer: at, spot: spotAt(held, at, targets), refused: null });
     }),
   tap: (state, { at, system }, document) =>
     state.kind === 'sizing'
       ? thenKept(state, system, document, (kept) => stay(kept))
       : tapped(state, at, document),
-  undo_corner: (state) =>
-    inState(state, 'drawing', (drawing) =>
-      stay({ ...drawing, corners: drawing.corners.slice(0, -1), refused: null }),
-    ),
+  undo_corner: cornerUndone,
   close: closed,
   pick_length: (state, event, document) =>
     thenKept(state, event.system, document, (kept, at) => lengthPicked(kept, event, at)),
@@ -213,10 +197,12 @@ const ON: Handlers = {
     inState(state, 'sizing', (sizing) =>
       use ? committedLength(sizing, system) : stay({ ...sizing, asking: false }),
     ),
-  grab: (state, { grip, at, system }, document) =>
+  grab: (state, { grip, at, system, magnet }, document) =>
     state.kind === 'drawing'
       ? stay(state)
-      : thenKept(state, system, document, (kept, now) => stay(grabbed(now, grip, at) ?? kept)),
+      : thenKept(state, system, document, (kept, now) =>
+          stay(grabbed(now, grip, at, magnet) ?? kept),
+        ),
   drag: (state, { at }) => inState(state, 'dragging', (held) => stay(dragged(held, at))),
   release: (state) => inState(state, 'dragging', released),
   pick_corner: (state, { corner }) =>

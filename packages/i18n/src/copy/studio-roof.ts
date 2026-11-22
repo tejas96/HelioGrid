@@ -7,7 +7,6 @@ import {
   ROOF_CORNERS_MAX,
   ROOFS_MAX,
   type RoofSaid,
-  type StudioHelper,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
@@ -23,24 +22,16 @@ type T = Translator['t'];
 
 /** The roof step's words (`T-M05-002`, part b): drawing, the bar, the snaps, the length box, the marks. */
 const ROOF = {
-  drawFirst: /*i18n*/ { id: 'Tap the first corner of the roof' },
-  drawNext: /*i18n*/ { id: 'Tap the next corner' },
-  drawGhost: /*i18n*/ { id: 'Tap Close: the 4th corner is ready' },
-  drawSnaps: /*i18n*/ { id: 'Corners snap square.' },
-  drawSquareOff: /*i18n*/ { id: 'Square is off. Corners go where you tap.' },
-  helpers: /*i18n*/ { id: 'Drawing helpers' },
-  helperSquare: /*i18n*/ { id: 'Square' },
-  helperLineUp: /*i18n*/ { id: 'Line up' },
-  helperBuildings: /*i18n*/ { id: 'Buildings' },
-  noBuildingData: /*i18n*/ {
-    id: 'No building data here yet. Buildings snaps to your other roofs.',
-  },
+  drawHint: /*i18n*/ { id: 'Tap each corner of the roof' },
+  stopDrawing: /*i18n*/ { id: 'Stop drawing' },
+  wipeCorners: /*i18n*/ { id: 'Clear every corner' },
+  magnet: /*i18n*/ { id: 'Magnet' },
   addRoof: /*i18n*/ { id: 'Draw another roof' },
-  helpersNotSaved: /*i18n*/ { id: 'Your pick was not saved.' },
-  drawCorners: /*i18n*/ { id: '{count, plural, one {# corner} other {# corners}}' },
-  drawCornersLast: /*i18n*/ {
-    id: '{count, plural, one {# corner · last edge {length}} other {# corners · last edge {length}}}',
-  },
+  magnetNotSaved: /*i18n*/ { id: 'Your pick was not saved.' },
+  redraw: /*i18n*/ { id: 'Redraw' },
+  done: /*i18n*/ { id: 'Done' },
+  deleteRoof: /*i18n*/ { id: 'Delete roof' },
+  roofDeleted: /*i18n*/ { id: 'Roof deleted. Undo brings it back.' },
   drawCrossTitle: /*i18n*/ { id: 'This edge would cross another' },
   drawCrossLine: /*i18n*/ { id: 'Tap a spot where the edges do not cross.' },
   drawOverTitle: /*i18n*/ { id: 'This edge would run over another roof' },
@@ -52,8 +43,7 @@ const ROOF = {
   drawManyTitle: /*i18n*/ { id: 'A roof has at most {max} corners' },
   drawFewTitle: /*i18n*/ { id: 'A roof needs at least 3 corners' },
   drawRoofsTitle: /*i18n*/ { id: 'A design holds at most {max} roofs' },
-  drawFixLine: /*i18n*/ { id: 'Close the shape, or Cancel.' },
-  cancel: /*i18n*/ { id: 'Cancel' },
+  drawFixLine: /*i18n*/ { id: 'Close the shape, or tap Undo.' },
   closeShape: /*i18n*/ { id: 'Close shape' },
 
   roofArea: /*i18n*/ { id: 'Roof · {area}' },
@@ -190,6 +180,8 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
       return t(ROOF.redone);
     case 'roof_picked':
       return t(ROOF.roofPicked, { number: said.roof + 1, height: shown.heightOf(said.metres) });
+    case 'roof_deleted':
+      return t(ROOF.roofDeleted);
     case 'went_back':
       if (said.fault === 'would_overlap') return t(ROOF.wentBackOver);
       if (said.fault === 'too_far') return t(ROOF.wentBackFar);
@@ -203,36 +195,25 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
 /** The roof step's words, part of the studio canvas's (`studioCanvasWords`). */
 export function studioRoofWords(t: T) {
   return {
-    /** The bar's title while drawing: what to tap now. */
-    drawTitle: (corners: number, ghost: boolean): TranslatedText => {
-      if (ghost) return t(ROOF.drawGhost);
-      return corners === 0 ? t(ROOF.drawFirst) : t(ROOF.drawNext);
-    },
-    /**
-     * "3 corners · last edge ~7.6 m": the length already formatted. With Square off the bar says so
-     * instead, so no one wonders why a corner did not snap.
-     */
-    drawLine: (corners: number, lastEdge: string | null, square: boolean): TranslatedText => {
-      if (!square) return t(ROOF.drawSquareOff);
-      if (corners === 0) return t(ROOF.drawSnaps);
-      return lastEdge === null
-        ? t(ROOF.drawCorners, { count: corners })
-        : t(ROOF.drawCornersLast, { count: corners, length: lastEdge });
-    },
-    /** Why a corner or a close is refused: the bar's title and its line. */
+    /** The one line before the first corner: what to do. It goes with the first tap. */
+    drawHint: t(ROOF.drawHint),
+    /** Why a corner or a close is refused: what the tag by the line says, and what is read out. */
     drawRefusal: (refusal: DraftRefusal): { title: TranslatedText; line: TranslatedText } =>
       DRAW_REFUSAL[refusal](t),
-    helpers: t(ROOF.helpers),
-    helper: {
-      square: t(ROOF.helperSquare),
-      line_up: t(ROOF.helperLineUp),
-      buildings: t(ROOF.helperBuildings),
-    } satisfies Record<StudioHelper, TranslatedText>,
-    noBuildingData: t(ROOF.noBuildingData),
+    /** The filled pencil's name while drawing: a tap stops. */
+    stopDrawing: t(ROOF.stopDrawing),
+    /** The trash while drawing: every corner goes, and drawing goes on. */
+    wipeCorners: t(ROOF.wipeCorners),
+    /** The one drawing aid's switch: it says on or off by being pressed. */
+    magnet: t(ROOF.magnet),
     addRoof: t(ROOF.addRoof),
-    helpersNotSaved: t(ROOF.helpersNotSaved),
-    cancel: t(ROOF.cancel),
+    magnetNotSaved: t(ROOF.magnetNotSaved),
     closeShape: t(ROOF.closeShape),
+    /** Just after a close: draw that roof again, or keep it. */
+    redraw: t(ROOF.redraw),
+    done: t(ROOF.done),
+    /** The trash on a picked roof. */
+    deleteRoof: t(ROOF.deleteRoof),
     /** "Roof · 66 m²": the area already formatted. */
     roofArea: (area: string) => t(ROOF.roofArea, { area }),
     /** What the bar says of the roofs: after an act, while a length is in the box, or at rest. */

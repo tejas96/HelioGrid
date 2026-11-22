@@ -8,9 +8,9 @@ import { useStudioScreen } from '../../src/react/use-studio-screen';
 import { answerNext, designId, mountedOver, origin } from './studio-origin';
 
 /**
- * The studio's helper picks (`T-M05-002`, part b) through the real client: a switch moves at once
- * and is saved to the person's account; two quick taps end where they began, each sent from the
- * pick last asked for; a save the server refuses is told, never swallowed.
+ * The studio's magnet (`T-M05-002`, part b) through the real client: one switch, on by default,
+ * that moves at once and is saved to the person's account in the shape older studios read — every
+ * helper off; two quick taps end where they began; a save the server refuses is told.
  */
 async function mounted() {
   const view = mountedOver(() => ({
@@ -26,32 +26,34 @@ const helpersSent = () =>
     .filter((write) => write.path === '/users/me')
     .map((write) => (write.body as { studioHelpersOff: string[] }).studioHelpersOff);
 
-describe('the drawing helpers: each a switch saved to the account', () => {
-  it('a tap on Square turns it off at once, and the account keeps it', async () => {
+describe('the magnet: one switch saved to the account', () => {
+  it('a tap turns it off at once, and the account keeps every helper off', async () => {
     const view = await mounted();
-    act(() => view.result.current.studio.moves.toggleHelper('square'));
-    expect(view.result.current.studio.helpers.square).toBe(false);
-    await waitFor(() => expect(helpersSent()).toEqual([['square']]));
-    expect(view.result.current.studio.helpersRefused).toBe(false);
+    expect(view.result.current.studio.magnet).toBe(true);
+    act(() => view.result.current.studio.moves.toggleMagnet());
+    expect(view.result.current.studio.magnet).toBe(false);
+    await waitFor(() => expect(helpersSent()).toEqual([['square', 'line_up', 'buildings']]));
+    expect(view.result.current.studio.magnetRefused).toBe(false);
   });
 
   it('two quick taps end where they began: the second flips from the first', async () => {
     const view = await mounted();
     act(() => {
-      view.result.current.studio.moves.toggleHelper('square');
-      view.result.current.studio.moves.toggleHelper('square');
+      view.result.current.studio.moves.toggleMagnet();
+      view.result.current.studio.moves.toggleMagnet();
     });
-    await waitFor(() => expect(helpersSent()).toEqual([['square'], []]));
-    expect(view.result.current.studio.helpers.square).toBe(true);
+    await waitFor(() => expect(helpersSent()).toEqual([['square', 'line_up', 'buildings'], []]));
+    expect(view.result.current.studio.magnet).toBe(true);
   });
 
-  it('a save the server refuses is told at the switch', async () => {
+  it('a save the server refuses is told at the switch, and sent again on retry', async () => {
     answerNext('me', { status: 500, body: { error: { code: 'INTERNAL', message: 'down' } } });
     const view = await mounted();
-    act(() => view.result.current.studio.moves.toggleHelper('buildings'));
-    await waitFor(() => expect(view.result.current.studio.helpersRefused).toBe(true));
-    act(() => view.result.current.studio.moves.retryHelpers());
-    await waitFor(() => expect(view.result.current.studio.helpersRefused).toBe(false));
-    expect(helpersSent()).toEqual([['buildings'], ['buildings']]);
+    act(() => view.result.current.studio.moves.toggleMagnet());
+    await waitFor(() => expect(view.result.current.studio.magnetRefused).toBe(true));
+    act(() => view.result.current.studio.moves.retryMagnet());
+    await waitFor(() => expect(view.result.current.studio.magnetRefused).toBe(false));
+    const off = ['square', 'line_up', 'buildings'];
+    expect(helpersSent()).toEqual([off, off]);
   });
 });

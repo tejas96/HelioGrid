@@ -5,6 +5,7 @@ import type { FocusParts, PictureChoice } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { useFormat } from '@heliogrid/ui';
 import type { Ref } from 'react';
+import { DrawHint } from './StudioBarPills';
 import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
 import { StudioLengthBox } from './StudioLengthBox';
 import { StudioPictureChip, StudioPictureCredit } from './StudioPictureChip';
@@ -98,6 +99,7 @@ export function StudioCanvasHead({
           onPick={moves.pickPicture}
         />
       )}
+      <DrawHint studio={studio} words={words} />
       {roofStep.kind === 'sizing' ? (
         <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
       ) : null}

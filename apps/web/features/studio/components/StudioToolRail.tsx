@@ -1,89 +1,18 @@
 'use client';
 import type { TranslatedText } from '@heliogrid/contracts';
-import {
-  type DrawHelpers,
-  type FocusParts,
-  type MeasurementSystem,
-  STUDIO_HELPERS,
-  type StudioHelper,
-  type StudioView,
-  type ViewPlace,
-} from '@heliogrid/domain';
+import type { FocusParts, MeasurementSystem, StudioView, ViewPlace } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { theme } from '@heliogrid/theme';
-import {
-  Button,
-  IconButton,
-  Menu,
-  Pressable,
-  ShellGlyph,
-  type ShellGlyphName,
-} from '@heliogrid/ui';
+import { IconButton, Menu, ShellGlyph } from '@heliogrid/ui';
 import { Shown } from './StudioShown';
 
 /** The circle size of the studio's tools: small, so they never cover the map. */
 const TOOL = theme.layout['button-h-md'];
 
-const HELPER_GLYPH: Record<StudioHelper, ShellGlyphName> = {
-  square: 'right-angle',
-  line_up: 'line-up',
-  buildings: 'building',
-};
-
-/**
- * The helper bar beside the pencil (`T-M05-002`, part b): Square, Line up and Buildings, each a
- * switch that is on at first. It shows only while a corner is drawn or dragged. With no building
- * data yet, a small note says Buildings snaps to the design's other roofs alone.
- */
-function HelperBar({
-  helpers,
-  buildingData,
-  refused,
-  words,
-  onHelper,
-  onRetry,
-}: {
-  helpers: DrawHelpers;
-  buildingData: boolean;
-  /** The last save of the picks was refused: said here, where the pick was made. */
-  refused: boolean;
-  words: StudioCanvasWords;
-  onHelper: (helper: StudioHelper) => void;
-  onRetry: () => void;
-}) {
-  return (
-    <fieldset className="hg-studio-glass hg-studio-helpers" aria-label={words.helpers}>
-      {STUDIO_HELPERS.map((helper) => (
-        <Pressable
-          key={helper}
-          className="hg-studio-helper"
-          accessibilityRole="switch"
-          accessibilityState={{ checked: helpers[helper] }}
-          accessibilityLabel={words.helper[helper]}
-          onPress={() => onHelper(helper)}
-        >
-          <ShellGlyph name={HELPER_GLYPH[helper]} size="sm" />
-          <span>{words.helper[helper]}</span>
-        </Pressable>
-      ))}
-      {helpers.buildings && !buildingData ? (
-        <span className="hg-studio-helper-note">{words.noBuildingData}</span>
-      ) : null}
-      {refused ? (
-        <span className="hg-studio-helper-refused" role="alert">
-          {words.helpersNotSaved}
-          <Button variant="secondary" size="sm" onClick={onRetry}>
-            {words.tryAgain}
-          </Button>
-        </span>
-      ) : null}
-    </fieldset>
-  );
-}
-
 /**
  * The two small columns of round tools. Left: what changes the model — the pencil that draws a
- * roof (pressed while drawing), Undo and Redo. Right: how the model is seen — the view menu (the
+ * roof (filled while drawing: a tap stops), the trash that clears every corner of the drawing,
+ * Undo and Redo (Undo alone while drawing). Right: how the model is seen — the view menu (the
  * views on offer, metres or feet), the 2D and 3D switch, Zoom in, Zoom out and Back to the pin. A
  * view that waits for a roof says why on a tap. The road view and the sun join with their parts.
  */
@@ -97,9 +26,7 @@ export function StudioToolRail({
   drawing,
   newView,
   parts,
-  helpers,
-  buildingData,
-  helpersRefused,
+  canWipe,
   hasRoof,
   words,
   onView,
@@ -107,8 +34,7 @@ export function StudioToolRail({
   onUndo,
   onRedo,
   onDraw,
-  onHelper,
-  onRetryHelpers,
+  onWipe,
   onAddRoof,
   onZoomIn,
   onZoomOut,
@@ -128,11 +54,10 @@ export function StudioToolRail({
   onDraw: () => void;
   /** Which parts show for the job in hand (focus mode). */
   parts: FocusParts;
-  helpers: DrawHelpers;
-  buildingData: boolean;
-  helpersRefused: boolean;
-  onHelper: (helper: StudioHelper) => void;
-  onRetryHelpers: () => void;
+  /** Two corners or more are drawn: the trash can clear them, which one Undo would not. */
+  canWipe: boolean;
+  /** The trash while drawing: every corner goes, and drawing goes on. */
+  onWipe: () => void;
   /** A roof stands: the + that starts another is there (focus mode may set it aside). */
   hasRoof: boolean;
   /** The + that starts another roof. */
@@ -160,33 +85,28 @@ export function StudioToolRail({
     <>
       <div className="hg-studio-tools" data-side="left">
         {editable ? (
-          // The helper bar keeps the pencil's place when the pencil steps aside: a corner dragged
-          // after the close has its helpers, and no pencil.
-          <span className="hg-studio-pencil">
-            <Shown when={parts.pencil !== 'hidden'}>
-              <IconButton
-                label={words.drawRoof}
-                size={TOOL}
-                variant={drawing ? 'dark' : 'surface'}
-                pressed={drawing}
-                onClick={onDraw}
-              >
-                <ShellGlyph name="pencil" size="md" />
-              </IconButton>
-            </Shown>
-            <Shown when={parts.helperBar === 'shown'}>
-              <HelperBar
-                helpers={helpers}
-                buildingData={buildingData}
-                refused={helpersRefused}
-                words={words}
-                onHelper={onHelper}
-                onRetry={onRetryHelpers}
-              />
-            </Shown>
-          </span>
+          <Shown when={parts.pencil !== 'hidden'}>
+            <IconButton
+              label={drawing ? words.stopDrawing : words.drawRoof}
+              size={TOOL}
+              variant={drawing ? 'dark' : 'surface'}
+              pressed={drawing}
+              onClick={onDraw}
+            >
+              <ShellGlyph name="pencil" size="md" />
+            </IconButton>
+          </Shown>
         ) : null}
-        {editable && hasRoof ? (
+        {/* One place below the pencil: the trash while drawing, the + for another roof else. Undo
+            keeps its place as either comes and goes. */}
+        {editable && parts.wipe === 'shown' ? (
+          <Shown when={canWipe}>
+            <IconButton label={words.wipeCorners} size={TOOL} onClick={onWipe}>
+              <ShellGlyph name="trash" size="md" />
+            </IconButton>
+          </Shown>
+        ) : null}
+        {editable && parts.wipe !== 'shown' && hasRoof ? (
           <Shown when={parts.addRoof === 'shown'}>
             <IconButton label={words.addRoof} size={TOOL} onClick={onAddRoof}>
               <ShellGlyph name="plus" size="md" />
@@ -194,10 +114,14 @@ export function StudioToolRail({
           </Shown>
         ) : null}
         {editable ? (
-          <Shown when={parts.undoRedo === 'shown'}>
+          <Shown when={parts.undoRedo !== 'hidden'}>
             <IconButton label={words.undo} disabled={!canUndo} onClick={onUndo} size={TOOL}>
               <ShellGlyph name="undo" size="md" />
             </IconButton>
+          </Shown>
+        ) : null}
+        {editable ? (
+          <Shown when={parts.undoRedo === 'shown'}>
             <IconButton label={words.redo} disabled={!canRedo} onClick={onRedo} size={TOOL}>
               <ShellGlyph name="redo" size="md" />
             </IconButton>

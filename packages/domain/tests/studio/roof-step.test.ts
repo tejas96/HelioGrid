@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { EMPTY_STUDIO_DOCUMENT } from '../../src/studio/document';
-import { ALL_HELPERS, helpersOf } from '../../src/studio/roof-draw';
 import { stepRefused } from '../../src/studio/roof-entry';
 import { edgeLengths } from '../../src/studio/roof-shape';
 import type { RoofStepEvent } from '../../src/studio/roof-step-state';
@@ -29,7 +28,7 @@ describe('the roof step: drawing', () => {
 
   it('a second roof keeps the first roof’s picture date', () => {
     const shed = [
-      { kind: 'draw', helpers: ALL_HELPERS },
+      { kind: 'draw', magnet: true },
       { kind: 'tap', at: p(8, 0), system: 'metric' },
       { kind: 'tap', at: p(12, 0), system: 'metric' },
       { kind: 'tap', at: p(12, 6), system: 'metric' },
@@ -41,17 +40,16 @@ describe('the roof step: drawing', () => {
   });
 
   it.each([
-    // helpers while the third corner is tapped → where it lands
-    ['every helper on: pulled square', ALL_HELPERS, p(8, 6)],
-    ['Square turned off mid-draw: where it was tapped', helpersOf(['square'], false), p(8.4, 6)],
-    ['Alt held: where it was tapped', helpersOf([], true), p(8.4, 6)],
-  ])('%s', (_why, helpers, third) => {
+    // the magnet while the third corner is tapped → where it lands
+    ['on: pulled square', true, p(8, 6)],
+    ['turned off mid-draw, or Alt held: where it was tapped', false, p(8.15, 6)],
+  ])('%s', (_why, magnet, third) => {
     const { state } = run([
-      { kind: 'draw', helpers: ALL_HELPERS },
+      { kind: 'draw', magnet: true },
       { kind: 'tap', at: p(0, 0), system: 'metric' },
       { kind: 'tap', at: p(8, 0), system: 'metric' },
-      { kind: 'helpers', helpers },
-      { kind: 'tap', at: p(8.4, 6), system: 'metric' },
+      { kind: 'magnet', magnet },
+      { kind: 'tap', at: p(8.15, 6), system: 'metric' },
     ]);
     expect(state.kind === 'drawing' ? state.corners[2] : null).toEqual(third);
   });
@@ -68,16 +66,20 @@ describe('the roof step: drawing', () => {
   });
 
   it('Alt pressed over a still pointer: the spot lets go of its snap at once', () => {
-    const at = p(8.4, 6);
+    const at = p(8.15, 6);
     const pointed = [...RECTANGLE.slice(0, 3), { kind: 'hover', at }] as RoofStepEvent[];
     const snapped = run(pointed).state;
     expect(snapped.kind === 'drawing' ? snapped.spot?.snap?.kind : null).toBe('square');
-    const free = run([...pointed, { kind: 'helpers', helpers: helpersOf([], true) }]).state;
-    expect(free.kind === 'drawing' ? free.spot : null).toEqual({ point: at, snap: null });
+    const free = run([...pointed, { kind: 'magnet', magnet: false }]).state;
+    expect(free.kind === 'drawing' ? free.spot : null).toEqual({
+      point: at,
+      snap: null,
+      guides: [],
+    });
   });
 
   it('Draw again while drawing keeps the corners placed', () => {
-    const { state } = run([...RECTANGLE.slice(0, 3), { kind: 'draw', helpers: ALL_HELPERS }]);
+    const { state } = run([...RECTANGLE.slice(0, 3), { kind: 'draw', magnet: true }]);
     expect(state.kind === 'drawing' ? state.corners : null).toHaveLength(2);
   });
 
@@ -111,7 +113,21 @@ describe('the roof step: drawing', () => {
       ghost: false,
       refused: null,
       canClose: false,
+      magnet: true,
+      hint: false,
+      canWipe: true,
+      canUndo: true,
     });
+  });
+
+  it.each([
+    // events after Draw → the hint, the trash, Undo
+    ['no corner yet: the hint alone', 0, true, false, false],
+    ['one corner: Undo, no trash (Undo already clears it)', 1, false, false, true],
+    ['two corners: the trash shows', 2, false, true, true],
+  ] as const)('%s', (_why, taps, hint, canWipe, canUndo) => {
+    const { state, document } = run(RECTANGLE.slice(0, 1 + taps));
+    expect(roofBarOf(state, document, false, 'metric')).toMatchObject({ hint, canWipe, canUndo });
   });
 });
 

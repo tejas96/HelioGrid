@@ -1,9 +1,9 @@
 import type {
   CornerRef,
   DraftView,
-  DrawHelpers,
   FocusJob,
   GroundPoint,
+  Guide,
   HeldCircle,
   LengthEntry,
   LengthSlide,
@@ -17,26 +17,36 @@ import type {
   RoofMarksView,
   RoofStepState,
   StudioDocument,
-  StudioHelper,
 } from '@heliogrid/domain';
 
 /** The roof step's moves (`T-M05-002`, part b): drawing, the length box, and the fixes on a roof. */
 export interface RoofMoves {
   /** Draw a roof: the pencil, Draw myself, Draw on the grid, or + for another roof. */
   draw(): void;
-  /** Square, Line up or Buildings turned on or off: the pick follows the person to every device. */
-  toggleHelper(helper: StudioHelper): void;
-  /** Alt held or let go on a desktop: every helper rests while it is held. */
+  /** The magnet turned on or off: the pick follows the person to every device. */
+  toggleMagnet(): void;
+  /** Alt held or let go on a desktop: the magnet rests while it is held. */
   drawFree(free: boolean): void;
-  /** The helper picks sent again, after their save was refused. */
-  retryHelpers(): void;
+  /** The magnet's pick sent again, after its save was refused. */
+  retryMagnet(): void;
+  /** The trash while drawing: every corner goes, drawing goes on; Undo brings them back. */
+  wipe(): void;
+  /** Redraw, just after a close: that roof goes and drawing starts again. */
+  redraw(): void;
+  /** Done, just after a close: the ask goes away, the roof stays. */
+  keepClosed(): void;
+  /** The trash on a picked roof: it goes, as one change; Undo brings it back. */
+  deleteRoof(): void;
   /** The pointer over the ground while drawing; `null` when it leaves. */
   hover(at: GroundPoint | null): void;
   /** A tap on the ground: a corner while drawing, else it lets a picked corner go. */
   tap(at: GroundPoint): void;
   /** Close shape, or a tap on the first corner. */
   close(): void;
-  /** Cancel, Esc, × on the length box: what is in hand goes, the design stays. */
+  /**
+   * The filled pencil, Esc, × on the length box: what is in hand goes, the design stays. A drawing
+   * stopped with corners leaves them for one Undo.
+   */
   cancel(): void;
   pickLength(roof: number, edge: number): void;
   typeLength(entry: LengthEntry): void;
@@ -68,15 +78,10 @@ export interface RoofStepView {
   readonly roofStep: RoofStepState;
   /** The job in hand, for focus mode: every part the job does not use steps aside. */
   readonly job: FocusJob;
-  /** The helpers as the person picked them, for their switches; Alt does not change these. */
-  readonly helpers: DrawHelpers;
-  /**
-   * Building outlines are read for the site. Not before the height map is read (part g): until
-   * then Buildings snaps to the design's other roofs alone, and a note says so.
-   */
-  readonly buildingData: boolean;
-  /** The last save of the helper picks was refused: the pick shows here, and is not kept. */
-  readonly helpersRefused: boolean;
+  /** The magnet as the person picked it, for its switch; Alt does not change it. */
+  readonly magnet: boolean;
+  /** The last save of the magnet's pick was refused: the pick shows here, and is not kept. */
+  readonly magnetRefused: boolean;
   /** The design to draw: the design, or the preview of what is in hand. */
   readonly shown: StudioDocument | null;
   /** Each roof's height as it stands, in the order of `shown`'s roofs: its own, or the storey's. */
@@ -102,6 +107,8 @@ export interface RoofStepView {
   readonly layoutLabels: typeof labelLayoutOf;
   /** The picked corner's angle, in whole degrees. */
   readonly pickedAngle: number | null;
+  /** The guide lines a corner in hand is held on, drawn dashed across the map. */
+  readonly guides: readonly Guide[];
   /** Where a drag's tag sits. */
   readonly dragTagAt: GroundPoint | null;
   /** The roof as it stood before the drag in hand: a turn's or a move's start, or where a refused

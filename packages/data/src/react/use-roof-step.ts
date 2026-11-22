@@ -7,20 +7,20 @@ import {
   dragTagAt,
   entryOf,
   focusJobOf,
+  guidesOf,
   type History,
   handlesRoofOf,
   handMetres,
   heldCircleOf,
   heldCornerOf,
-  helpersOf,
   historyAfter,
-  isStudioHelper,
   KEY_MOVE_M,
   KEY_TURN_DEGREES,
   labelLayoutOf,
   lengthIsFirst,
   lengthSlide,
   type MeasurementSystem,
+  magnetOf,
   type NumberEntry,
   pickedAngleOf,
   ROOF_STEP_START,
@@ -33,6 +33,7 @@ import {
   roofMiddle,
   roofStepAfter,
   roofStepShown,
+  STUDIO_HELPERS,
   type StudioDocument,
   type StudioHelper,
   stepRefused,
@@ -73,7 +74,10 @@ export function useRoofStep({
   units: MeasurementSystem;
   picture: StudioPicture;
   setUnits: (system: MeasurementSystem) => void;
-  /** The helpers the person turned off, as their account holds them. */
+  /**
+   * The helpers the person turned off, as their account holds them: any one off is the magnet off
+   * (`magnetOf`), and turning it off writes them all.
+   */
   helpersOff: readonly string[];
   setHelpersOff: (off: readonly StudioHelper[]) => void;
   helpersRefused: boolean;
@@ -84,7 +88,16 @@ export function useRoofStep({
 }) {
   const [roofStep, setRoofStep] = useState<RoofStepState>(ROOF_STEP_START);
   const [free, setFree] = useState(false);
-  const askedOff = useRef<readonly StudioHelper[] | null>(null);
+  /** The magnet last asked for, so a second tap before the redraw flips from it. */
+  const askedOn = useRef<boolean | null>(null);
+  // The account answered — kept or refused: the pick it holds is the one to flip from again.
+  // Compared by what it holds: an account with none is a new empty list on each render.
+  const held = helpersOff.join(',');
+  const answered = useRef(held);
+  if (answered.current !== held) {
+    answered.current = held;
+    askedOn.current = null;
+  }
   const step = useRef(roofStep);
   step.current = roofStep;
 
@@ -98,16 +111,17 @@ export function useRoofStep({
     if (outcome.commit !== null) change(historyAfter(at, outcome.commit));
   };
 
-  const picked = helpersOf(helpersOff, false);
+  const picked = magnetOf(helpersOff, false);
+  // The pick last asked for wins until the account answers: the switch already shows it.
+  const magnet = (next: boolean = askedOn.current ?? picked) => next && !free;
   const shown = document === null ? null : roofStepShown(roofStep, document, units);
   const sizing = roofStep.kind === 'sizing' ? roofStep : null;
   const view: RoofStepView = {
     roofStep,
     heights: shown?.roofs.map((roof) => roofHeightOf(roof, storeyHeightM)) ?? [],
     job: focusJobOf(roofStep),
-    helpers: picked,
-    buildingData: false,
-    helpersRefused,
+    magnet: picked,
+    magnetRefused: helpersRefused,
     shown,
     roofMarks: shown === null ? [] : roofMarksOf(shown),
     draft:
@@ -129,6 +143,7 @@ export function useRoofStep({
     numberEntry,
     layoutLabels: labelLayoutOf,
     pickedAngle: shown === null ? null : pickedAngleOf(roofStep, shown),
+    guides: guidesOf(roofStep),
     dragTagAt: dragTagAt(roofStep),
     dragBefore: dragBeforeOf(roofStep),
     heldCircle: heldCircleOf(roofStep),
@@ -150,23 +165,24 @@ export function useRoofStep({
     });
 
   const moves: RoofMoves = {
-    draw: () => act({ kind: 'draw', helpers: helpersOf(helpersOff, free) }),
-    // A second tap before the redraw flips from the list last asked for, never from a stale one.
-    toggleHelper: (helper) => {
-      const known = (askedOff.current ?? helpersOff).filter(isStudioHelper);
-      const off = known.includes(helper)
-        ? known.filter((other) => other !== helper)
-        : [...known, helper];
-      askedOff.current = off;
-      setHelpersOff(off);
-      act({ kind: 'helpers', helpers: helpersOf(off, free) });
+    draw: () => act({ kind: 'draw', magnet: magnet() }),
+    // A second tap before the redraw flips from the pick last asked for, never from a stale one.
+    toggleMagnet: () => {
+      const on = !(askedOn.current ?? picked);
+      askedOn.current = on;
+      setHelpersOff(on ? [] : STUDIO_HELPERS);
+      act({ kind: 'magnet', magnet: on && !free });
     },
-    retryHelpers: () => setHelpersOff(helpersOff.filter(isStudioHelper)),
+    retryMagnet: () => setHelpersOff(picked ? [] : STUDIO_HELPERS),
     drawFree: (next) => {
       if (next === free) return;
       setFree(next);
-      act({ kind: 'helpers', helpers: helpersOf(helpersOff, next) });
+      act({ kind: 'magnet', magnet: !next && (askedOn.current ?? picked) });
     },
+    wipe: () => act({ kind: 'wipe' }),
+    redraw: () => act({ kind: 'redraw', magnet: magnet() }),
+    keepClosed: () => act({ kind: 'done' }),
+    deleteRoof: () => act({ kind: 'delete_roof' }),
     hover: (at) => act({ kind: 'hover', at }),
     // A tap on the first corner closes the shape, whether it lands on the dot or beside it.
     tap: (at) => {
@@ -189,7 +205,7 @@ export function useRoofStep({
     stepLength: (by) => act({ kind: 'step', by, system: units }),
     setLength: () => act({ kind: 'set', system: units }),
     confirmLength: (use) => act({ kind: 'confirm', use, system: units }),
-    grab: (grip, at) => act({ kind: 'grab', grip, at, system: units }),
+    grab: (grip, at) => act({ kind: 'grab', grip, at, system: units, magnet: magnet() }),
     drag: (at) => act({ kind: 'drag', at }),
     release: () => act({ kind: 'release' }),
     pickCorner: (corner) => act({ kind: 'pick_corner', corner }),
@@ -199,12 +215,13 @@ export function useRoofStep({
       const middle = roofMiddle(corners);
       const { east, north } = middle;
       if (kind === 'move') {
-        act({ kind: 'grab', grip: { kind, roof }, at: middle, system: units });
+        act({ kind: 'grab', grip: { kind, roof }, at: middle, system: units, magnet: false });
         act({ kind: 'drag', at: { east: east + x * KEY_MOVE_M, north: north + y * KEY_MOVE_M } });
       } else {
         // Right turns clockwise, left anticlockwise, one degree a press.
         const turn = (-x * KEY_TURN_DEGREES * Math.PI) / 180;
-        act({ kind: 'grab', grip: { kind, roof }, at: { east: east + 1, north }, system: units });
+        const at = { east: east + 1, north };
+        act({ kind: 'grab', grip: { kind, roof }, at, system: units, magnet: false });
         act({ kind: 'drag', at: { east: east + Math.cos(turn), north: north + Math.sin(turn) } });
       }
       act({ kind: 'release' });

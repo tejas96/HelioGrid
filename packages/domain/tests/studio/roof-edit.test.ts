@@ -143,11 +143,17 @@ describe('a length far off the picture asks once', () => {
 describe('dragging a corner', () => {
   const design = designOf(roofOf(RECT));
 
+  it('a square corner shows both of its sides as guides', () => {
+    expect(cornerDragged(design, 0, 2, p(8.3, 6.25), true).guides).toHaveLength(2);
+  });
+
   it.each([
-    ['0.4 m off square: the magnet takes it', p(8.3, 6.25), 'square_corner', p(8, 6)],
-    ['0.7 m off: it is let go', p(8.7, 6.7), null, p(8.7, 6.7)],
-  ])('%s', (_name, to, snap, at) => {
-    const drag = cornerDragged(design, 0, 2, to);
+    ['0.4 m off square: the magnet takes it', p(8.3, 6.25), true, 'square_corner', p(8, 6)],
+    ['0.7 m off: it is let go', p(8.7, 6.7), true, null, p(8.7, 6.7)],
+    ['the magnet off: exactly where dragged', p(8.3, 6.25), false, null, p(8.3, 6.25)],
+  ] as const)('%s', (_name, to, magnet, snap, at) => {
+    const drag = cornerDragged(design, 0, 2, to, magnet);
+    if (snap === null) expect(drag.guides).toEqual([]);
     expect(drag.snap?.kind ?? null).toBe(snap);
     near([drag.document.roofs[0]?.corners[2] as GroundPoint], [at]);
     expect(drag.fault).toBeNull();
@@ -155,21 +161,22 @@ describe('dragging a corner', () => {
 
   it('snaps to another roof’s corner', () => {
     const shed = roofOf([p(9, 7), p(12, 7), p(12, 10), p(9, 10)]);
-    const drag = cornerDragged(designOf(roofOf(RECT), shed), 0, 2, p(8.8, 6.8));
+    const drag = cornerDragged(designOf(roofOf(RECT), shed), 0, 2, p(8.8, 6.8), true);
     expect(drag.snap).toEqual({ kind: 'corner_of', owner: { kind: 'roof', roof: 1 } });
+    expect(cornerDragged(designOf(roofOf(RECT), shed), 0, 2, p(8.8, 6.8), false).snap).toBeNull();
     near([drag.document.roofs[0]?.corners[2] as GroundPoint], [p(9, 7)]);
   });
 
   it('a typed neighbour edge keeps its length: the corner slides round its other end', () => {
     const typed = designOf(roofOf(RECT, ['typed', 'traced', 'traced', 'traced']));
-    const drag = cornerDragged(typed, 0, 1, p(8, 2));
+    const drag = cornerDragged(typed, 0, 1, p(8, 2), true);
     expect(edgeLengths(drag.document.roofs[0]?.corners ?? [])[0]).toBeCloseTo(8);
     expect(drag.snap).toEqual({ kind: 'held', metres: 8, centre: p(0, 0) });
   });
 
   it('two typed neighbours: the corner stays, and says why', () => {
     const typed = designOf(roofOf(RECT, ['typed', 'typed', 'traced', 'traced']));
-    const drag = cornerDragged(typed, 0, 1, p(9, 1));
+    const drag = cornerDragged(typed, 0, 1, p(9, 1), true);
     expect(drag.document).toBe(typed);
     expect(drag.fault).toBe('two_held');
   });
@@ -178,7 +185,7 @@ describe('dragging a corner', () => {
     ['across the roof: the edges cross', [], p(4, -3), 'would_cross'],
     ['into another roof', [SHED], p(10, 7), 'would_overlap'],
   ])('%s', (_name, others, to, fault) => {
-    expect(cornerDragged(designOf(roofOf(RECT), ...others), 0, 2, to).fault).toBe(fault);
+    expect(cornerDragged(designOf(roofOf(RECT), ...others), 0, 2, to, true).fault).toBe(fault);
   });
 });
 
@@ -225,17 +232,18 @@ describe('moving and turning a roof', () => {
   });
 
   it('turns about its middle and keeps its area', () => {
-    const turn = roofTurned(designOf(roofOf(RECT)), 0, 90);
+    const turn = roofTurned(designOf(roofOf(RECT)), 0, 90, true);
     near(turn.document.roofs[0]?.corners ?? [], [p(7, -1), p(7, 7), p(1, 7), p(1, -1)]);
     expect(roofArea(turn.document.roofs[0]?.corners ?? [])).toBeCloseTo(48);
   });
 
   it.each([
-    ['2.9° from another roof’s edge: lines up with it', 2.9, true, 0],
-    ['3.1°: stays as turned', 3.1, false, 3.1],
-  ])('%s', (_name, degrees, snapped, applied) => {
+    ['2.9° from another roof’s edge: lines up with it', 2.9, true, true, 0],
+    ['3.1°: stays as turned', 3.1, true, false, 3.1],
+    ['2.9° with the magnet off: stays as turned', 2.9, false, false, 2.9],
+  ] as const)('%s', (_name, degrees, magnet, snapped, applied) => {
     const far = roofOf([p(30, 0), p(34, 0), p(34, 4), p(30, 4)]);
-    const turn = roofTurned(designOf(roofOf(RECT), far), 0, degrees);
+    const turn = roofTurned(designOf(roofOf(RECT), far), 0, degrees, magnet);
     expect(turn.snapped).toBe(snapped);
     expect(turn.degrees).toBeCloseTo(applied);
   });
@@ -244,8 +252,8 @@ describe('moving and turning a roof', () => {
 describe('no two corners of a roof stand within 0.3 m (T-M05-002)', () => {
   it('a corner dragged onto its neighbour is refused, and one 0.3 m off is kept', () => {
     const design = designOf(roofOf(RECT));
-    expect(cornerDragged(design, 0, 2, p(8.1, 0.15)).fault).toBe('too_close');
-    expect(cornerDragged(design, 0, 2, p(8.2, 0.3)).fault).toBeNull();
+    expect(cornerDragged(design, 0, 2, p(8.1, 0.15), true).fault).toBe('too_close');
+    expect(cornerDragged(design, 0, 2, p(8.2, 0.3), true).fault).toBeNull();
   });
 });
 

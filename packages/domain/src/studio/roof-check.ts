@@ -1,7 +1,7 @@
 import { GROUND_REACH_M, type Roof, type StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import type { RoofSnap } from './roof-draw';
 import { between, CORNER_GAP_M, edgesCross, pointInside, roofsOverlap } from './roof-shape';
+import type { Guide, RoofSnap } from './roof-snap';
 
 /**
  * What every change to a standing roof answers (`T-M05-002`, part b): the design after it, or why
@@ -36,6 +36,8 @@ export interface DragResult {
   readonly document: StudioDocument;
   readonly snap: RoofSnap | null;
   readonly fault: EditRefusal | null;
+  /** The lines the dragged corner is held on, drawn dashed across the map. */
+  readonly guides: readonly Guide[];
 }
 
 export interface TurnResult extends DragResult {

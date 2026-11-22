@@ -3,7 +3,7 @@ import { type ProvenanceTier, weakestTier } from '../format/qualified';
 import type { RoofEdgeTrust, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import type { EditRefusal } from './roof-check';
-import { type DraftRefusal, draftGhost, draftTap, type Snapped, snapTargetsOf } from './roof-draw';
+import { type DraftRefusal, draftClosesAt, draftGhost, draftTap } from './roof-draw';
 import { sizingResult } from './roof-entry';
 import { lengthIsFirst } from './roof-length';
 import {
@@ -15,7 +15,9 @@ import {
   roofArea,
   roofMiddle,
 } from './roof-shape';
+import { type Guide, type Snapped, snapTargetsOf } from './roof-snap';
 import { gripCorner } from './roof-step';
+import { pickedRoofOf } from './roof-step-draw';
 import type { CornerRef, RoofSaid, RoofStepState } from './roof-step-state';
 import { roofAreaTier, scaleTierOf } from './roof-trust';
 
@@ -100,10 +102,7 @@ export function dragTagAt(state: RoofStepState): GroundPoint | null {
 export function handlesRoofOf(state: RoofStepState, document: StudioDocument): number | null {
   if (state.kind === 'dragging') return state.grip.roof;
   if (state.kind === 'sizing') return state.roof;
-  if (state.kind !== 'idle') return null;
-  // A roof Undo or another's save took away is picked no more.
-  const picked = state.roof !== null && state.roof < document.roofs.length ? state.roof : null;
-  return picked ?? (document.roofs.length === 1 ? 0 : null);
+  return state.kind === 'idle' ? pickedRoofOf(state, document) : null;
 }
 
 /**
@@ -160,6 +159,14 @@ export interface DraftView {
    */
   readonly angle: number | null;
   readonly canClose: boolean;
+  /** The pointer is within reach of the first corner and a tap closes: that dot grows and glows. */
+  readonly closing: boolean;
+}
+
+/** The guide lines the corner in hand is held on: the spot while drawing, the corner dragged. */
+export function guidesOf(state: RoofStepState): readonly Guide[] {
+  if (state.kind === 'drawing') return state.spot?.guides ?? [];
+  return state.kind === 'dragging' ? state.drag.guides : [];
 }
 
 function edgeOf(from: GroundPoint, to: GroundPoint): DraftEdge {
@@ -174,10 +181,13 @@ export function draftViewOf(
   const { spot, corners } = state;
   const last = corners.at(-1);
   const before = corners.at(-2);
+  // Within reach of the first corner a tap closes: no corner is added there, so none is refused
+  // and no angle is named.
+  const closing = state.pointer !== null && draftClosesAt(corners, state.pointer);
   const tap =
-    spot === null
+    spot === null || closing
       ? null
-      : draftTap(corners, spot.point, snapTargetsOf(document.roofs), document.roofs, state.helpers);
+      : draftTap(corners, spot.point, snapTargetsOf(document.roofs), document.roofs, state.magnet);
   return {
     corners,
     edges: corners.slice(1).map((corner, i) => edgeOf(corners[i] as GroundPoint, corner)),
@@ -186,16 +196,22 @@ export function draftViewOf(
     stretch: spot === null || last === undefined ? null : edgeOf(last, spot.point),
     spotRefusal: tap?.kind === 'refused' ? tap.refusal : null,
     angle:
-      spot === null || last === undefined || before === undefined
+      spot === null || closing || last === undefined || before === undefined
         ? null
         : Math.round(angleAt(before, last, spot.point)),
     canClose: corners.length + (ghost === null ? 0 : 1) >= 3,
+    closing,
   };
 }
 
 /** The one bottom bar of the roof step: what it says and which acts it offers. */
 export type RoofBar =
-  | { readonly kind: 'start'; readonly noPicture: boolean }
+  | {
+      readonly kind: 'start';
+      readonly noPicture: boolean;
+      /** What was said, when the last roof was just deleted: Undo brings it back. */
+      readonly said: RoofSaid | null;
+    }
   | {
       readonly kind: 'drawing';
       readonly corners: number;
@@ -204,6 +220,14 @@ export type RoofBar =
       readonly ghost: boolean;
       readonly refused: DraftRefusal | null;
       readonly canClose: boolean;
+      /** The magnet guides the next corner. */
+      readonly magnet: boolean;
+      /** No corner yet: the one line that says what to do shows. */
+      readonly hint: boolean;
+      /** The trash shows: two corners or more, which one Undo would not clear. */
+      readonly canWipe: boolean;
+      /** Undo has a corner to take off, or the wiped corners to bring back. */
+      readonly canUndo: boolean;
     }
   | {
       readonly kind: 'roofs';
@@ -217,6 +241,10 @@ export type RoofBar =
       readonly sizing: boolean;
       /** The live refusal of the length in the box, or of the drag in hand. */
       readonly live: EditRefusal | null;
+      /** The roof just closed: Redraw and Done show, and any other act means Done. */
+      readonly asking: boolean;
+      /** The roof picked, which the trash deletes; `null` with none picked. */
+      readonly picked: number | null;
     };
 
 function liveRefusal(state: RoofStepState, system: MeasurementSystem): EditRefusal | null {
@@ -242,13 +270,18 @@ export function roofBarOf(
       ghost: view.ghost !== null,
       refused: state.refused ?? view.spotRefusal,
       canClose: view.canClose,
+      magnet: state.magnet,
+      hint: state.corners.length === 0 && state.wiped === null,
+      canWipe: state.corners.length >= 2,
+      canUndo: state.corners.length > 0 || state.wiped !== null,
     };
   }
   const shown = roofStepShown(state, document, system);
-  if (shown.roofs.length === 0) return { kind: 'start', noPicture };
+  const said = state.kind === 'idle' ? state.said : null;
+  if (shown.roofs.length === 0) return { kind: 'start', noPicture, said };
   const scale = scaleTierOf(shown);
   const live = liveRefusal(state, system);
-  const said = state.kind === 'idle' ? state.said : null;
+  const picked = state.kind === 'idle' ? pickedRoofOf(state, shown) : null;
   return {
     kind: 'roofs',
     area: shown.roofs.reduce((sum, roof) => sum + roofArea(roof.corners), 0),
@@ -257,5 +290,7 @@ export function roofBarOf(
     bad: live !== null || said?.kind === 'went_back' || said?.kind === 'refused',
     sizing: state.kind === 'sizing',
     live,
+    asking: said?.kind === 'closed' && picked === shown.roofs.length - 1,
+    picked,
   };
 }

@@ -2,8 +2,9 @@ import type { MeasurementSystem } from '../format/pack';
 import type { PictureChoice, PictureStamp, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import type { DragResult, EditRefusal } from './roof-check';
-import type { DraftRefusal, DrawHelpers, RoofSnap, Snapped } from './roof-draw';
+import type { DraftRefusal } from './roof-draw';
 import type { LengthEntry, LengthInHand } from './roof-entry';
+import type { RoofSnap, Snapped } from './roof-snap';
 
 /**
  * The roof step's vocabulary (`T-M05-002`, part b): its states, the events that move it, and what
@@ -41,6 +42,8 @@ export type RoofSaid =
   | { readonly kind: 'redone' }
   /** A roof picked from its 3D sheet, to fix its outline here: its height, in metres. */
   | { readonly kind: 'roof_picked'; readonly roof: number; readonly metres: number }
+  /** A roof deleted from the bar; Undo brings it back. */
+  | { readonly kind: 'roof_deleted' }
   /** A drag let go with a fault: the roof went back. */
   | { readonly kind: 'went_back'; readonly fault: EditRefusal }
   | { readonly kind: 'refused'; readonly refusal: EditRefusal };
@@ -55,6 +58,8 @@ export type RoofStepState =
       readonly roof: number | null;
       readonly picked: CornerRef | null;
       readonly said: RoofSaid | null;
+      /** The corners a stopped drawing left: Undo takes them up again, until another act. */
+      readonly left?: DraftLeft | null;
     }
   | {
       readonly kind: 'drawing';
@@ -64,8 +69,10 @@ export type RoofStepState =
       /** Where the next corner would land, under the pointer, snapped by the helpers in force. */
       readonly spot: Snapped | null;
       readonly refused: DraftRefusal | null;
-      /** The helpers guiding the next corner: the person's picks, or none while Alt is held. */
-      readonly helpers: DrawHelpers;
+      /** The magnet guides the next corner: the person's pick, and off while Alt is held. */
+      readonly magnet: boolean;
+      /** The corners the trash wiped: Undo brings them back, until the next corner. */
+      readonly wiped: readonly GroundPoint[] | null;
     }
   | ({
       readonly kind: 'sizing';
@@ -81,7 +88,15 @@ export type RoofStepState =
       readonly drag: DragResult;
       /** A turn's angle so far, in degrees anticlockwise. */
       readonly degrees: number;
+      /** The magnet pulls the corner in hand, as it does while drawing. */
+      readonly magnet: boolean;
     };
+
+/** A drawing stopped with corners placed: what Undo takes up again. */
+export interface DraftLeft {
+  readonly corners: readonly GroundPoint[];
+  readonly magnet: boolean;
+}
 
 export const ROOF_STEP_START: RoofStepState = {
   kind: 'idle',
@@ -91,9 +106,17 @@ export const ROOF_STEP_START: RoofStepState = {
 };
 
 export type RoofStepEvent =
-  | { readonly kind: 'draw'; readonly helpers: DrawHelpers }
-  /** A helper turned on or off, or Alt pressed or let go, while drawing. */
-  | { readonly kind: 'helpers'; readonly helpers: DrawHelpers }
+  | { readonly kind: 'draw'; readonly magnet: boolean }
+  /** The magnet turned on or off, or Alt pressed or let go. */
+  | { readonly kind: 'magnet'; readonly magnet: boolean }
+  /** The trash while drawing: every corner goes, and drawing goes on. */
+  | { readonly kind: 'wipe' }
+  /** Redraw, just after a close: that roof goes, and drawing starts again. */
+  | { readonly kind: 'redraw'; readonly magnet: boolean }
+  /** Done, just after a close: the ask goes away; the roof stays. */
+  | { readonly kind: 'done' }
+  /** The trash on a picked roof: the roof goes, as one change. */
+  | { readonly kind: 'delete_roof' }
   | { readonly kind: 'hover'; readonly at: GroundPoint | null }
   /** A tap on the ground; `system` keeps a length still in the box, which a tap outside sets. */
   | { readonly kind: 'tap'; readonly at: GroundPoint; readonly system: MeasurementSystem }
@@ -121,6 +144,7 @@ export type RoofStepEvent =
       readonly grip: RoofGrip;
       readonly at: GroundPoint;
       readonly system: MeasurementSystem;
+      readonly magnet: boolean;
     }
   | { readonly kind: 'drag'; readonly at: GroundPoint }
   | { readonly kind: 'release' }

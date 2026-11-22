@@ -9,7 +9,10 @@ type T = Translator['t'];
  * why a spot or a drag would be refused, a turn's size, a new corner.
  */
 const TAG = {
-  snapSquare: /*i18n*/ { id: 'Square' },
+  snapSquare: /*i18n*/ { id: 'Square 90°' },
+  snapParallel: /*i18n*/ { id: 'Parallel' },
+  snapSquareInLine: /*i18n*/ { id: 'Square 90° · in line' },
+  snapParallelInLine: /*i18n*/ { id: 'Parallel · in line' },
   snapSquareCorner: /*i18n*/ { id: 'Square corner' },
   snapRoofCorner: /*i18n*/ { id: 'Roof {number} corner' },
   snapRoofEdge: /*i18n*/ { id: 'Roof {number} edge' },
@@ -66,6 +69,8 @@ export function snapName(t: T, snap: RoofSnap, shown: LengthShown): TranslatedTe
   switch (snap.kind) {
     case 'square':
       return t(TAG.snapSquare);
+    case 'parallel':
+      return t(TAG.snapParallel);
     case 'square_corner':
       return t(TAG.snapSquareCorner);
     case 'corner_of':
@@ -73,6 +78,8 @@ export function snapName(t: T, snap: RoofSnap, shown: LengthShown): TranslatedTe
     case 'edge_of':
       return t(TAG.snapRoofEdge, { number: snap.owner.roof + 1 });
     case 'lines_up':
+      if (snap.along === 'square') return t(TAG.snapSquareInLine);
+      if (snap.along === 'parallel') return t(TAG.snapParallelInLine);
       return t(TAG.snapLinesUp, { number: snap.corner + 1 });
     case 'held':
       return t(TAG.snapHeld, { length: shown.length(snap.metres) });

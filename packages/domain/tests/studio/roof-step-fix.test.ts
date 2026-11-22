@@ -13,6 +13,7 @@ describe('the roof step: fixing the shape', () => {
           grip: { kind: 'corner', roof: 0, corner: 2 },
           at: p(8, 6),
           system: 'metric',
+          magnet: true,
         },
         { kind: 'drag', at: p(9.5, 7) },
         { kind: 'drag', at: p(8.3, 6.2) },
@@ -34,6 +35,7 @@ describe('the roof step: fixing the shape', () => {
           grip: { kind: 'corner', roof: 0, corner: 2 },
           at: p(8, 6),
           system: 'metric',
+          magnet: true,
         },
         { kind: 'drag', at: p(4, -3) },
         { kind: 'release' },
@@ -51,7 +53,13 @@ describe('the roof step: fixing the shape', () => {
   it('+ dragged out adds a corner where it is let go: one change', () => {
     const { commits, document } = run(
       [
-        { kind: 'grab', grip: { kind: 'plus', roof: 0, edge: 1 }, at: p(8, 3), system: 'metric' },
+        {
+          kind: 'grab',
+          grip: { kind: 'plus', roof: 0, edge: 1 },
+          at: p(8, 3),
+          system: 'metric',
+          magnet: true,
+        },
         { kind: 'drag', at: p(10, 3) },
         { kind: 'release' },
       ],
@@ -79,7 +87,13 @@ describe('the roof step: fixing the shape', () => {
   it('the turn handle turns the roof about its middle; the bar names the angle', () => {
     const { state, commits } = run(
       [
-        { kind: 'grab', grip: { kind: 'turn', roof: 0 }, at: p(8, 3), system: 'metric' },
+        {
+          kind: 'grab',
+          grip: { kind: 'turn', roof: 0 },
+          at: p(8, 3),
+          system: 'metric',
+          magnet: true,
+        },
         { kind: 'drag', at: p(4 + 4 * Math.cos(0.244), 3 + 4 * Math.sin(0.244)) },
         { kind: 'release' },
       ],
@@ -98,17 +112,26 @@ describe('the roof step: fixing the shape', () => {
       bad: false,
       sizing: false,
       live: null,
+      asking: false,
+      picked: 0,
     });
     expect(roofBarOf(ROOF_STEP_START, EMPTY_STUDIO_DOCUMENT, true, 'metric')).toEqual({
       kind: 'start',
       noPicture: true,
+      said: null,
     });
   });
 
   it('a handle pressed and let go where it was changes nothing: no Undo step', () => {
     const { commits, state } = run(
       [
-        { kind: 'grab', grip: { kind: 'move', roof: 0 }, at: p(4, 3), system: 'metric' },
+        {
+          kind: 'grab',
+          grip: { kind: 'move', roof: 0 },
+          at: p(4, 3),
+          system: 'metric',
+          magnet: true,
+        },
         { kind: 'release' },
       ],
       drawn,
@@ -130,7 +153,13 @@ describe('the roof step: a length in the box is kept by the next act', () => {
     ['another length', { kind: 'pick_length', roof: 0, edge: 1, system: 'metric' }],
     [
       'a corner taken',
-      { kind: 'grab', grip: { kind: 'corner', roof: 0, corner: 2 }, at: p(8, 6), system: 'metric' },
+      {
+        kind: 'grab',
+        grip: { kind: 'corner', roof: 0, corner: 2 },
+        at: p(8, 6),
+        system: 'metric',
+        magnet: true,
+      },
     ],
   ] as const)('%s keeps the typed length as one change', (_name, next) => {
     const { commits, document } = run([...typed('8.4'), next], drawn);
