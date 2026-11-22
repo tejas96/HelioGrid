@@ -1,8 +1,6 @@
-import { theme } from '@heliogrid/theme';
+import { cssEasing, theme } from '@heliogrid/theme';
 import { type RefObject, useEffect } from 'react';
 import { useReducedMotion } from '../../primitives/use-reduced-motion';
-
-const bezier = (b: readonly number[]) => `cubic-bezier(${b.join(',')})`;
 
 /**
  * When the sidebar folds or opens, its width changes in one frame — a width never animates, since
@@ -23,7 +21,7 @@ export function useRailFollow(
     if (box === null || page === null || reduced || typeof ResizeObserver === 'undefined') return;
     const timing: KeyframeAnimationOptions = {
       duration: theme.motion.durations.fast,
-      easing: bezier(theme.motion.easings.standard),
+      easing: cssEasing(theme.motion.easings.standard),
     };
     let width = box.getBoundingClientRect().width;
     const watch = new ResizeObserver(() => {

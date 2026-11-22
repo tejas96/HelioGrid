@@ -26,6 +26,7 @@ import {
 } from './tokens/layout';
 import {
   AMBIENT,
+  cssEasing,
   DURATION,
   EASING,
   ENTER,
@@ -64,7 +65,6 @@ const ALIASES: Readonly<Record<string, ColorToken>> = {
 };
 
 const px = (n: number): string => (n === 0 ? '0' : `${n}px`);
-const bezier = (points: readonly number[]): string => `cubic-bezier(${points.join(',')})`;
 const stack = (families: readonly string[]): string =>
   families.map((f) => (/^[a-z-]+$/.test(f) ? f : `"${f}"`)).join(',');
 const shadow = (layers: readonly Shadow[]): string =>
@@ -132,10 +132,10 @@ function rootDeclarations(): Declarations {
   const motion: Record<string, string | number> = {};
   for (const [k, v] of Object.entries(DURATION)) motion[`dur-${k}`] = `${v}ms`;
   for (const [k, v] of Object.entries(AMBIENT)) motion[`amb-${k}`] = `${v}ms`;
-  for (const [k, v] of Object.entries(EASING)) motion[`ease-${k}`] = bezier(v);
+  for (const [k, v] of Object.entries(EASING)) motion[`ease-${k}`] = cssEasing(v);
   for (const [k, v] of Object.entries(SPRING)) {
     motion[`dur-spring-${k}`] = `${springCurve(v).durationMs}ms`;
-    motion[`ease-spring-${k}`] = bezier(EASING['out-quint']);
+    motion[`ease-spring-${k}`] = cssEasing(EASING['out-quint']);
   }
   motion['press-scale'] = PRESS.scale;
   motion['press-scale-icon'] = PRESS.iconScale;
