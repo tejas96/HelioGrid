@@ -1,0 +1,273 @@
+/* The controls on a roof (`T-M05-002`, part b): its corners, its lengths, the + that adds a corner,
+   the × of a picked corner, and the move and turn handles. */
+/* Each mark is a `Pressable`: its 44px target round the small mark a finger finds without covering
+   the corner. The target is clear; the mark inside it is what shows. */
+.hg-roof-hit {
+  touch-action: none;
+}
+
+/* A corner: a small dot in a thin ring, about 10 px in all, so the roof's own corner stays seen
+   under it; its touch target stays 44 px (`.hg-roof-hit`). */
+.hg-roof-dot {
+  display: block;
+  inline-size: var(--sp-2);
+  block-size: var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--scene-mark);
+  box-shadow:
+    0 0 0 calc(var(--hg-studio-line) * 1.5) var(--hg-roof-ink),
+    var(--e2);
+  transition:
+    box-shadow var(--dur-fast) var(--ease-standard),
+    transform var(--dur-fast) var(--ease-standard);
+}
+
+/* Two corners crowded on the screen: their dots shrink, so both stay seen (the board's 4.8). */
+[data-near="true"] .hg-roof-dot {
+  transform: scale(0.6);
+}
+
+.hg-roof-dot[data-hot="true"],
+.hg-roof-dot[data-picked="true"] {
+  box-shadow:
+    0 0 0 calc(var(--sp-0-5) + var(--hg-studio-line)) var(--hg-roof-ink),
+    0 0 0 var(--sp-3) color-mix(in srgb, var(--hg-roof-ink) 30%, transparent),
+    var(--e2);
+}
+
+.hg-roof-dot[data-first="true"] {
+  box-shadow:
+    0 0 0 calc(var(--sp-0-5) + var(--hg-studio-line)) var(--hg-roof-ink),
+    0 0 0 var(--sp-2) color-mix(in srgb, var(--scene-mark) 55%, transparent),
+    var(--e2);
+}
+
+/* The first corner, once a tap there would close: it grows and glows. */
+.hg-roof-dot[data-first="true"][data-closing="true"] {
+  transform: scale(1.6);
+  box-shadow:
+    0 0 0 calc(var(--sp-0-5) + var(--hg-studio-line)) var(--hg-roof-ink),
+    0 0 0 var(--sp-3) color-mix(in srgb, var(--scene-mark) 55%, transparent),
+    var(--e2);
+}
+
+.hg-roof-dot[data-ghost="true"] {
+  background: transparent;
+  box-shadow:
+    0 0 0 var(--sp-0-5) var(--scene-mark),
+    0 0 var(--sp-1) color-mix(in srgb, var(--scene-shade) 60%, transparent);
+}
+
+.hg-roof-dot[data-next="true"] {
+  inline-size: calc(var(--sp-2) + var(--sp-0-5));
+  block-size: calc(var(--sp-2) + var(--sp-0-5));
+  background: var(--hg-roof-ink);
+  box-shadow:
+    0 0 0 var(--sp-0-5) var(--scene-mark),
+    var(--e2);
+  pointer-events: none;
+}
+
+.hg-roof-dot[data-next="true"][data-bad="true"] {
+  background: var(--scene-bad);
+}
+
+/* A length: "~" and no outline from the picture, an outline when typed, a tick when measured. */
+.hg-roof-len {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-0-5);
+  /* Reslink's edge label: plain figures on a see-through dark box, no border, small and square. */
+  block-size: calc(var(--sp-4) + var(--sp-0-5));
+  padding-inline: var(--sp-1);
+  border-radius: calc(var(--r-xs) / 4);
+  background: color-mix(in srgb, var(--scene-shade) 85%, transparent);
+  color: var(--scene-mark);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: 1;
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  border: var(--hg-studio-line) solid transparent;
+  box-sizing: border-box;
+}
+
+/* A length a person set keeps its trust in a thin line: white when typed, green when measured. */
+.hg-roof-len[data-kind="typed"] {
+  border-color: var(--scene-mark);
+}
+
+.hg-roof-len[data-kind="measured"] {
+  border-color: var(--success);
+}
+
+.hg-roof-len[data-live="true"] {
+  border-color: var(--scene-line);
+}
+
+.hg-roof-len[data-pulse="true"] {
+  position: relative;
+  border-color: var(--accent);
+}
+
+/* Set it first: a soft accent ring breathes round the longest picture length, by transform and
+   opacity alone, until a length is set. */
+.hg-roof-len[data-pulse="true"]::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--sp-1));
+  border-radius: inherit;
+  box-shadow: 0 0 0 var(--sp-1) color-mix(in srgb, var(--accent) 30%, transparent);
+  pointer-events: none;
+  animation: hg-roof-pulse var(--dur-scene) var(--ease-in-out) infinite alternate;
+}
+
+@keyframes hg-roof-pulse {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hg-roof-len[data-pulse="true"]::after {
+    animation: none;
+  }
+}
+
+/* The length in hand: a minus and a plus beside its number. */
+.hg-roof-len.hg-roof-step {
+  block-size: calc(var(--sp-8) + var(--sp-0-5));
+  padding-inline: var(--sp-1);
+  gap: var(--sp-2);
+  border: 0;
+  /* The pill and the figures it had: the small box is the edge labels' alone. */
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  font-size: var(--fs-body-sm);
+  box-shadow:
+    0 0 0 var(--sp-1) color-mix(in srgb, var(--accent) 26%, transparent),
+    var(--e2);
+}
+
+.hg-roof-step-act {
+  display: grid;
+  place-items: center;
+  inline-size: calc(var(--sp-6) + var(--sp-0-5));
+  block-size: calc(var(--sp-6) + var(--sp-0-5));
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, currentColor 20%, transparent);
+  color: inherit;
+}
+
+.hg-roof-hit:disabled .hg-roof-step-act {
+  opacity: 0.35;
+}
+
+/* The + on an edge: drag it out, and it is a new corner. */
+.hg-roof-plus {
+  display: grid;
+  place-items: center;
+  inline-size: var(--sp-3);
+  block-size: var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--scene-mark);
+  color: var(--hg-roof-ink);
+  box-shadow:
+    0 0 0 calc(var(--hg-studio-line) * 1.5) var(--hg-roof-ink),
+    var(--e1);
+  opacity: 0.92;
+}
+
+/* A picked corner's ×: it removes the corner. */
+.hg-roof-remove {
+  display: grid;
+  place-items: center;
+  inline-size: calc(var(--sp-6) + var(--sp-1));
+  block-size: calc(var(--sp-6) + var(--sp-1));
+  border-radius: var(--r-pill);
+  background: var(--scene-bad);
+  color: var(--scene-mark);
+  box-shadow:
+    0 0 0 var(--sp-0-5) var(--scene-mark),
+    var(--e2);
+}
+
+/* Move and turn: two glass circles inside the roof. */
+.hg-roof-handle {
+  display: grid;
+  place-items: center;
+  inline-size: var(--sp-8);
+  block-size: var(--sp-8);
+  border-radius: var(--r-pill);
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  color: var(--text-primary);
+  box-shadow:
+    inset 0 0 0 var(--hg-studio-line) var(--line-soft),
+    var(--e2);
+}
+
+.hg-roof-handle[data-hot="true"] {
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  box-shadow:
+    0 0 0 var(--sp-2) color-mix(in srgb, var(--accent) 30%, transparent),
+    var(--e2);
+}
+
+/* A length laid along its edge (`label-layout.ts`): the label turns with the edge, never upside
+   down; the one in hand, with its − and +, stays level to be read and pressed. */
+.hg-roof-label > .hg-roof-len,
+.hg-roof-label > .hg-roof-hit {
+  transform: translate(-50%, -50%) rotate(var(--hg-turn, 0deg));
+  /* Its place is laid every frame: a transition would trail the edge and swing in on load. */
+  transition: none;
+}
+
+/* A press sinks a mark where it stands: the press keeps the mark's own placement and adds the
+   sink, so the mark does not jump from under the finger before it is let go. */
+.hg-roof-at > .hg-roof-hit:active:not(:disabled) {
+  transform: translate(-50%, -50%) scale(var(--press-scale));
+}
+
+.hg-roof-label > .hg-roof-hit:active:not(:disabled) {
+  transform: translate(-50%, -50%) rotate(var(--hg-turn, 0deg)) scale(var(--press-scale));
+}
+
+.hg-roof-label > .hg-roof-step {
+  transform: translate(-50%, -50%);
+}
+
+/* A length that gave way, or not yet laid: unseen and untouchable, its size kept for the layout. */
+.hg-roof-label[data-unseen="true"] {
+  visibility: hidden;
+}
+
+/* Each edge's tap band: a tap on the map along it shows a length that gave way. It takes no
+   pointer of its own, so a pan or a zoom that starts on an edge still moves the map. */
+.hg-roof-edge-taps .hg-roof-edge-tap {
+  stroke: transparent;
+  stroke-width: var(--sp-5);
+  pointer-events: none;
+}
+
+/* Over each other, a length's small label sits above the + on its edge's middle, so a tap on
+   the label always opens it; a corner stays on top of both, to be dragged, and so does the tag
+   that says what a corner snapped to or why it cannot go there. */
+.hg-roof-label {
+  z-index: 1;
+}
+
+.hg-roof-on > .hg-roof-at:not([data-plus="true"]),
+.hg-roof-at[data-tag="true"] {
+  z-index: 2;
+}

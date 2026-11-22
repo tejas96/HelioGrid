@@ -38,39 +38,62 @@
   gap: var(--sp-2);
 }
 
-/* The map's quiet marks, low at the left of the free room: the north arrow and the scale bar. */
+/* North and the scale: one slim capsule that takes no tap. On a desktop it sits in the foot's left
+   corner, on the bar's own centre line; on a phone, centred between the two tool columns, on the
+   centre line of their lowest circles (the boards, `T-M05-002` part b). */
 .hg-studio-marks {
-  grid-row: 2;
-  grid-column: 2;
-  align-self: end;
+  grid-row: 3;
+  grid-column: 1 / -1;
   justify-self: start;
+  align-self: center;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-1);
+  /* The task's slim capsule: 26 px. */
+  block-size: calc(var(--sp-6) + var(--sp-0-5));
+  padding-inline: calc(var(--sp-2) + var(--sp-0-5));
   border-radius: var(--r-pill);
   color: var(--text-secondary);
-  font-size: var(--fs-caption);
-}
-
-.hg-studio-north {
-  display: inline-grid;
-  place-items: center;
-  inline-size: var(--sp-6);
-  block-size: var(--sp-6);
-  color: var(--text-primary);
-}
-
-.hg-studio-north-letter {
   font-size: var(--fs-overline);
-  font-weight: var(--fw-medium);
   line-height: 1;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 var(--hg-studio-line) var(--line-soft),
+    var(--e1);
+}
+
+/* The compass: the needle alone, in the head's right corner, turning about its middle. Its white
+   half and a soft shade keep it clear on any picture. */
+.hg-studio-compass {
+  display: grid;
+  place-items: center;
+  flex: none;
+  pointer-events: none;
+  filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 70%, transparent));
+}
+
+.hg-studio-compass[data-off="true"] {
+  visibility: hidden;
+}
+
+.hg-studio-needle {
+  inline-size: var(--sp-4);
+  block-size: var(--sp-8);
+  transform-origin: 50% 50%;
+}
+
+.hg-studio-needle-north {
+  fill: var(--danger);
+}
+
+.hg-studio-needle-south {
+  fill: var(--scene-mark);
 }
 
 .hg-studio-scale {
   display: inline-flex;
-  flex-direction: column;
-  gap: var(--sp-0-5);
+  align-items: center;
+  gap: calc(var(--sp-1) + var(--sp-0-5));
 }
 
 .hg-studio-scale-words {
@@ -80,12 +103,34 @@
 
 .hg-studio-scale-bar {
   block-size: var(--sp-1);
-  border: var(--hg-studio-line) solid var(--text-secondary);
+  border: calc(var(--hg-studio-line) * 3) solid var(--text-primary);
   border-block-start: 0;
+  box-sizing: border-box;
 }
 
 .hg-studio-scale-bar[data-hidden="true"] {
   visibility: hidden;
+}
+
+/* The 3D view's circle, just opened by the first roof: a small dot until it is first seen. */
+.hg-studio-tool-new {
+  position: relative;
+  display: inline-flex;
+}
+
+.hg-studio-tool-new[data-new="true"]::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inline-size: calc(var(--sp-2) + var(--sp-0-5));
+  block-size: calc(var(--sp-2) + var(--sp-0-5));
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  box-shadow:
+    0 0 0 var(--sp-0-5) var(--hg-ground),
+    0 0 0 calc(var(--sp-1) + var(--sp-0-5)) color-mix(in srgb, var(--accent) 28%, transparent);
+  pointer-events: none;
 }
 
 /* The map answers its keys once it has the focus: a ring inside its edge says so. */
@@ -167,11 +212,50 @@
   gap: var(--sp-2);
 }
 
+/* The bar's mark: a tick once a roof stands, the error colour when something is refused. */
+.hg-studio-bar-mark[data-mark="check"] {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.hg-studio-bar[data-tone="bad"] .hg-studio-bar-mark {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.hg-studio-bar[data-tone="bad"] .hg-studio-bar-status {
+  color: var(--danger-text);
+}
+
+.hg-studio-bar-name {
+  display: inline-flex;
+  align-items: center;
+}
+
+.hg-studio-bar-tier {
+  display: inline-flex;
+  margin-inline-start: var(--sp-2);
+  font-family: var(--font-sans);
+}
+
 /* A phone: the tools sit low, in thumb reach; the bar stands as a card across the foot with its
    acts one under the other, and the name moves into it. */
 @media (width < 968px) {
   .hg-studio-tools {
     align-self: end;
+  }
+
+  /* While the keyboard is up for a length, the capsule steps aside. */
+  .hg-studio-marks[data-off="true"] {
+    display: none;
+  }
+
+  .hg-studio-marks {
+    grid-row: 2;
+    grid-column: 2;
+    justify-self: center;
+    align-self: end;
+    margin-block-end: calc(var(--sp-2) + var(--sp-0-5) / 2);
   }
 
   .hg-studio-bar {

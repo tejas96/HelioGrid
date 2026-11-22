@@ -3,9 +3,11 @@ import {
   LOGIN_PROVIDERS,
   MEASUREMENT_SYSTEMS,
   MEMBERSHIP_STATUSES,
+  NUMBER_ENTRIES,
   OTP_CHANNELS,
   PLATFORM_KINDS,
   ROLE_PRESETS,
+  STUDIO_HELPERS,
 } from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
 import {
@@ -32,6 +34,8 @@ export const membershipStatus = pgEnum('membership_status', MEMBERSHIP_STATUSES)
 export const platformKind = pgEnum('platform_kind', PLATFORM_KINDS);
 export const otpChannel = pgEnum('otp_channel', OTP_CHANNELS);
 export const loginProvider = pgEnum('login_provider', LOGIN_PROVIDERS);
+export const studioHelper = pgEnum('studio_helper', STUDIO_HELPERS);
+export const numberEntry = pgEnum('number_entry', NUMBER_ENTRIES);
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
 
@@ -51,6 +55,10 @@ export const userAccount = pgTable('user_account', {
   name: text('name'),
   interfaceLanguage: uiLanguage('interface_language').notNull(),
   unitPreference: measurementSystem('unit_preference').notNull(),
+  /** The studio helpers the person turned off (`T-M05-002`, part b): none, at first. */
+  studioHelpersOff: studioHelper('studio_helpers_off').array().notNull().default([]),
+  /** How the person sets a number: the slider first, at first (`T-M05-002`, *Values*). */
+  numberEntry: numberEntry('number_entry').notNull().default('slider'),
   createdAt: instant('created_at').notNull(),
 });
 

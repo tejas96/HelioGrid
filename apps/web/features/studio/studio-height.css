@@ -1,0 +1,199 @@
+/* The 3D view's marks and a roof's sheet (`T-M05-002`, part b, the board's 5.1 to 5.3): each roof's
+   height on its top, the open roof's blue ring, soft fill and blue arrow, and the sheet. */
+
+/* A roof's height on its top: an up arrow and the number, on a dark pill; a tap opens the sheet. */
+.hg-roof-height {
+  display: inline-flex;
+  align-items: center;
+  block-size: var(--sp-6);
+  padding-inline: var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--scene-shade);
+  color: var(--scene-mark);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  box-shadow: var(--e2);
+}
+
+/* The open roof: a blue ring round its top and a soft blue fill; both fade in once. */
+.hg-roof-lines .hg-roof-picked-fill {
+  fill: color-mix(in srgb, var(--hg-roof-ink) 14%, transparent);
+  stroke: none;
+}
+
+.hg-roof-lines .hg-roof-picked-ring {
+  stroke: var(--hg-roof-ink);
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 60%, transparent));
+}
+
+/* The blue arrow: a stem that grows up out of the roof's top, its height beside it. The holder
+   sits on the top; the arrow stands up from it. */
+.hg-roof-at > .hg-roof-arrow {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-3);
+  transform: translate(calc(-1 * var(--sp-0-5)), -100%);
+  cursor: ns-resize;
+  touch-action: none;
+}
+
+.hg-roof-arrow-stem {
+  position: relative;
+  inline-size: var(--sp-1);
+  block-size: var(--sp-12);
+  border-radius: var(--r-pill);
+  background: var(--action-primary);
+  box-shadow: var(--e2);
+  transform-origin: bottom;
+  animation: hg-arrow-grow var(--dur-emphasised) var(--ease-enter) 1 both;
+}
+
+/* The arrow's head. */
+.hg-roof-arrow-stem::before {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(-1 * var(--sp-2));
+  inset-inline-start: 50%;
+  border-inline: var(--sp-2) solid transparent;
+  border-block-end: var(--sp-3) solid var(--action-primary);
+  transform: translateX(-50%);
+}
+
+.hg-roof-arrow-value.hg-roof-len {
+  /* The height beside the arrow keeps the 3D pills' size, not the small edge chip's. */
+  block-size: var(--sp-6);
+  padding-inline: var(--sp-2);
+  border-radius: var(--r-pill);
+  margin-block-end: var(--sp-8);
+  border: 0;
+  background: var(--action-primary);
+  color: var(--text-inverse);
+}
+
+.hg-roof-arrow:hover .hg-roof-arrow-stem,
+.hg-roof-arrow:focus-visible .hg-roof-arrow-stem {
+  box-shadow:
+    0 0 0 var(--sp-1) color-mix(in srgb, var(--accent) 26%, transparent),
+    var(--e2);
+}
+
+.hg-roof-at > .hg-roof-arrow:active:not(:disabled) {
+  transform: translate(calc(-1 * var(--sp-0-5)), -100%) scale(var(--press-scale));
+}
+
+@keyframes hg-arrow-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* The sheet: a card in the bar's place on a desktop, a short sheet across the foot on a phone. */
+.hg-roof-sheet {
+  grid-row: 3;
+  grid-column: 1 / -1;
+  justify-self: center;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  inline-size: min(100%, calc(var(--sp-24) * 5));
+  min-inline-size: 0;
+  padding: var(--sp-3) var(--sp-3) var(--sp-4) var(--sp-4);
+  border-radius: var(--r-xl);
+  animation: hg-sheet-up var(--dur-emphasised) var(--ease-enter) 1 both;
+}
+
+.hg-roof-sheet-head,
+.hg-roof-sheet-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+}
+
+.hg-roof-sheet-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-card-title);
+  color: var(--text-primary);
+}
+
+.hg-roof-sheet-area,
+.hg-roof-sheet-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.hg-roof-sheet-area {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-roof-sheet-value {
+  font-size: var(--fs-body-lg);
+  font-weight: var(--fw-bold);
+}
+
+.hg-roof-sheet-label {
+  min-inline-size: var(--sp-16);
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-roof-sheet-close,
+.hg-roof-sheet-switch {
+  margin-inline-start: auto;
+}
+
+.hg-roof-sheet-refused {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-body-sm);
+  color: var(--danger-text);
+}
+
+.hg-roof-sheet-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--sp-2);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-roof-sheet-acts {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+}
+
+@keyframes hg-sheet-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-6));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (width < 968px) {
+  .hg-roof-sheet {
+    justify-self: stretch;
+    inline-size: auto;
+  }
+
+  .hg-roof-sheet-acts > * {
+    flex: 1 1 0;
+  }
+}

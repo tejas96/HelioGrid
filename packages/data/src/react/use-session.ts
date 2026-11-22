@@ -38,6 +38,7 @@ export function useSession(): SessionApi {
       signOutEverywhere: session.signOutEverywhere,
       setInterfaceLanguage: session.setInterfaceLanguage,
       setUnitPreference: session.setUnitPreference,
+      setStudioPicks: session.setStudioPicks,
     }),
     [snapshot, session],
   );

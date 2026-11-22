@@ -11,7 +11,9 @@
   gap: var(--sp-3);
   padding: max(var(--sp-4), env(safe-area-inset-top)) max(var(--sp-4), env(safe-area-inset-right))
     max(var(--sp-4), env(safe-area-inset-bottom)) max(var(--sp-4), env(safe-area-inset-left));
-  overflow: hidden;
+  /* Clip, not hide: a hidden box still scrolls when a focus or a number's rolling digits reach past
+     its foot, and the whole studio slid up under its own bars. */
+  overflow: clip;
   background: var(--canvas);
   pointer-events: none;
 }
@@ -54,7 +56,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   grid-template-areas:
-    "top rail ."
+    "top rail compass"
     "chip chip chip";
   align-items: start;
   gap: var(--sp-2) var(--sp-3);
@@ -173,6 +175,15 @@
   padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
   border-radius: var(--r-lg);
   font-size: var(--fs-body-sm);
+}
+
+/* The compass stands in the head's right corner, level with the top bar; on a phone's one row it
+   takes the room left after the steps, so it still ends in the corner. */
+.hg-studio-compass {
+  grid-area: compass;
+  justify-self: end;
+  align-self: center;
+  margin-inline-start: auto;
 }
 
 /* A phone: the way back and the steps share the top row, the chip under them, and the name moves

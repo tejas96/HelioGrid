@@ -2,10 +2,20 @@
 import type { StudioView } from '@heliogrid/domain';
 import { CameraControls } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import CameraControlsImpl from 'camera-controls';
+import type CameraControlsImpl from 'camera-controls';
 import { type RefObject, useEffect, useRef } from 'react';
-import { type Box3, Fog, MathUtils, type PerspectiveCamera, Spherical } from 'three';
+import {
+  type Box3,
+  Fog,
+  type PerspectiveCamera,
+  Plane,
+  Raycaster,
+  Spherical,
+  Vector2,
+  Vector3,
+} from 'three';
 import { useStudioWheel } from '../hooks/use-studio-wheel';
+import type { StudioDrive, StudioMarks } from './camera-drive';
 import {
   type ClearGround,
   fieldOfView,
@@ -15,22 +25,13 @@ import {
   reachOf,
   seenPerMetre,
 } from './camera-limits';
+import { bindHands, fitDistance, fitSpread, type GroundBox, POSE } from './camera-poses';
+import { SceneLens } from './scene-lens';
 
+export type { StudioDrive, StudioMarks } from './camera-drive';
 export type { ClearGround } from './camera-limits';
+export type { GroundBox } from './camera-poses';
 
-const { ACTION } = CameraControlsImpl;
-const RADIANS = MathUtils.DEG2RAD;
-/** The ground a view frames around the pin where there is no picture to show at its own sharpness. */
-const FRAME_RADIUS_M = 13;
-/** The 3D view's tilt from straight down, and how far round from the south it looks. */
-const TILT_3D_DEGREES = 46;
-const TILT_3D = TILT_3D_DEGREES * RADIANS;
-const TURN_3D_DEGREES = 18;
-const TURN_3D = TURN_3D_DEGREES * RADIANS;
-const TILT_SIDE_DEGREES = 78;
-const TILT_SIDE = TILT_SIDE_DEGREES * RADIANS;
-const TILT_MAX_DEGREES = 85;
-const TILT_MAX = TILT_MAX_DEGREES * RADIANS;
 /** How long the camera takes to fly to a new view, in seconds. */
 const FLY_SECONDS = 0.25;
 /**
@@ -50,59 +51,6 @@ const ZOOM_STEP = 1.6;
 /** Each arrow key moves the map this share of the window. */
 const ARROW_SHARE = 0.15;
 
-/** What the page's own controls ask of the camera: the zoom buttons, Back to the pin, the arrow keys. */
-export interface StudioDrive {
-  zoomIn(): void;
-  zoomOut(): void;
-  /** The view as it opens: the pin in the middle, framed. */
-  home(): void;
-  /** One arrow key's move: `east` and `north` are each -1, 0 or 1. */
-  nudge(east: number, north: number): void;
-}
-
-/** What the camera tells the page each time it moves: the ground one screen pixel covers, its turn. */
-export interface StudioMarks {
-  readonly metresPerPixel: number;
-  /** Radians the view is turned from north up. */
-  readonly turn: number;
-}
-
-/** The camera's pose for each view: its tilt from straight down and its compass turn. */
-const POSE: Record<StudioView, { readonly tilt: number; readonly turn: number }> = {
-  top: { tilt: 0, turn: 0 },
-  '3d': { tilt: TILT_3D, turn: TURN_3D },
-  north: { tilt: TILT_SIDE, turn: Math.PI },
-  east: { tilt: TILT_SIDE, turn: Math.PI / 2 },
-  south: { tilt: TILT_SIDE, turn: 0 },
-  west: { tilt: TILT_SIDE, turn: -Math.PI / 2 },
-};
-
-/**
- * Which hand does what in a view. The top view is a map: a drag pans and nothing tilts. In 3D a drag
- * turns the camera; on a phone two fingers pinch to zoom and drag to tilt (`T-M05-002a`).
- */
-function bindHands(rig: CameraControlsImpl, top: boolean): void {
-  rig.mouseButtons.left = top ? ACTION.TRUCK : ACTION.ROTATE;
-  rig.mouseButtons.right = ACTION.TRUCK;
-  rig.mouseButtons.wheel = ACTION.DOLLY;
-  rig.touches.one = top ? ACTION.TOUCH_TRUCK : ACTION.TOUCH_ROTATE;
-  rig.touches.two = ACTION.TOUCH_DOLLY_ROTATE;
-  rig.touches.three = ACTION.TOUCH_TRUCK;
-  rig.minPolarAngle = 0;
-  rig.maxPolarAngle = top ? 0 : TILT_MAX;
-  rig.azimuthRotateSpeed = top ? 0 : 1;
-}
-
-/** How far the camera stands to frame the ground around the pin in the room between the bars. */
-function fitDistance(
-  size: { readonly width: number; readonly height: number },
-  free: { readonly top: number; readonly bottom: number },
-): number {
-  const freeHeight = Math.max(1, size.height - free.top - free.bottom);
-  const reach = FRAME_RADIUS_M / Math.tan((fieldOfView() / 2) * RADIANS);
-  return Math.max(reach / (freeHeight / size.height), reach / (size.width / size.height));
-}
-
 /** Where the camera looks from for a view, framing the ground around the pin in the room left free. */
 export function StudioCameraRig({
   view,
@@ -112,10 +60,19 @@ export function StudioCameraRig({
   metresPerPixel,
   drive,
   onMarks,
+  fit,
+  frameOn,
 }: {
   view: StudioView;
   free: { readonly top: number; readonly bottom: number };
   still: boolean;
+  /** The roofs' ground: the view frames them when it opens and on Back to the pin. */
+  fit: GroundBox | null;
+  /**
+   * A roof closed: each new value frames the roofs once, with the box from this same render, so the
+   * new roof is in it. The camera stays in its view.
+   */
+  frameOn: object | null;
   /** The picture's sharp ground: the camera never shows past it. `null`: the grid, or no picture yet. */
   clear: ClearGround | null;
   /** The picture's ground per pixel, which sets how close the camera comes; `null` with no picture. */
@@ -130,7 +87,8 @@ export function StudioCameraRig({
   const size = useThree((three) => three.size);
   const invalidate = useThree((three) => three.invalidate);
   const scene = useThree((three) => three.scene);
-  const map = useThree((three) => three.gl.domElement);
+  const gl = useThree((three) => three.gl);
+  const map = gl.domElement;
   useStudioWheel(controls, map);
 
   // The picture holds the camera. Out: no farther than the picture fills the room between the bars,
@@ -171,6 +129,14 @@ export function StudioCameraRig({
     invalidate,
   ]);
 
+  // The loupe's own small picture on the graphics chip, kept between its draws.
+  const lens = useRef(new SceneLens()).current;
+  useEffect(() => () => lens.dispose(), [lens]);
+
+  const caster = useRef(new Raycaster()).current;
+  const pointer = useRef(new Vector2()).current;
+  const level = useRef(new Plane(new Vector3(0, 1, 0), 0)).current;
+  const landed = useRef(new Vector3()).current;
   const told = useRef<StudioMarks | null>(null);
   const heading = useRef(new Spherical()).current;
   // Each drawn frame sets the haze from where the camera stands now, and the room it may look in.
@@ -244,16 +210,28 @@ export function StudioCameraRig({
     poseFor(view, !still && was !== null && was.view !== view);
   });
 
-  /** The view framed round the pin, flown to or set at once. */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: a new close is what asks for the frame
+  useEffect(() => {
+    if (frameOn !== null) poseFor(view, !still);
+  }, [frameOn]);
+
+  /** The view framed round the roofs, or round the pin before a roof, flown to or set at once. */
   const poseFor = (to: StudioView, move: boolean) => {
     const rig = controls.current;
     if (rig === null) return;
+    const screen = { width: size.width, height: size.height };
+    const bars = { top: free.top, bottom: free.bottom };
+    const spread = fit === null ? null : fitSpread(fit);
+    // The roofs framed with room round them; the camera's own limits keep the picture sharp.
     const distance =
-      openingDistance(metresPerPixel, size, window.devicePixelRatio) ??
-      fitDistance(
-        { width: size.width, height: size.height },
-        { top: free.top, bottom: free.bottom },
-      );
+      spread !== null
+        ? fitDistance(screen, bars, spread)
+        : (openingDistance(metresPerPixel, size, window.devicePixelRatio) ??
+          fitDistance(screen, bars));
+    const middle =
+      fit === null
+        ? { east: 0, north: 0 }
+        : { east: (fit.west + fit.east) / 2, north: (fit.south + fit.north) / 2 };
     const pose = POSE[to];
     const going = Math.min(Math.max(distance, rig.minDistance), rig.maxDistance);
     // The room for where the camera is going comes first, or the pin it flies to is cut off.
@@ -262,7 +240,7 @@ export function StudioCameraRig({
       rig.setBoundary(room.current);
     }
     void rig.dollyTo(going, move);
-    void rig.moveTo(0, 0, 0, move);
+    void rig.moveTo(middle.east, 0, -middle.north, move);
     void rig.rotateTo(pose.turn, pose.tilt, move);
     invalidate();
   };
@@ -285,6 +263,30 @@ export function StudioCameraRig({
         const across = groundPerPixel(rig.distance, size.height) * size.width * ARROW_SHARE;
         // The library's `truck` takes y as screen-down: north is its negative.
         void rig.truck(east * across, -north * across, !still);
+      },
+      groundAt: (clientX, clientY, height) => {
+        const box = map.getBoundingClientRect();
+        pointer.set(
+          ((clientX - box.left) / box.width) * 2 - 1,
+          -((clientY - box.top) / box.height) * 2 + 1,
+        );
+        caster.setFromCamera(pointer, camera);
+        level.constant = -height;
+        const hit = caster.ray.intersectPlane(level, landed);
+        return hit === null ? null : { east: hit.x, north: -hit.z };
+      },
+      hold: (holding) => {
+        const rig = controls.current;
+        if (rig !== null) rig.enabled = !holding;
+      },
+      drawRound: (clientX, clientY, span, into) => {
+        const box = map.getBoundingClientRect();
+        const square = {
+          left: clientX - box.left - span / 2,
+          top: clientY - box.top - span / 2,
+          side: span,
+        };
+        lens.draw(gl, scene, camera, size, square, into);
       },
     };
   });

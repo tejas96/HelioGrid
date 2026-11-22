@@ -1352,6 +1352,26 @@
                             "metric",
                             "imperial"
                           ]
+                        },
+                        "studioHelpersOff": {
+                          "default": [],
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "square",
+                              "line_up",
+                              "buildings"
+                            ]
+                          }
+                        },
+                        "numberEntry": {
+                          "default": "slider",
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "slider",
+                            "box"
+                          ]
                         }
                       },
                       "required": [
@@ -2032,6 +2052,26 @@
                           "enum": [
                             "metric",
                             "imperial"
+                          ]
+                        },
+                        "studioHelpersOff": {
+                          "default": [],
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "square",
+                              "line_up",
+                              "buildings"
+                            ]
+                          }
+                        },
+                        "numberEntry": {
+                          "default": "slider",
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "slider",
+                            "box"
                           ]
                         }
                       },
@@ -3995,6 +4035,26 @@
                               "enum": [
                                 "metric",
                                 "imperial"
+                              ]
+                            },
+                            "studioHelpersOff": {
+                              "default": [],
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "x-extensible-enum": [
+                                  "square",
+                                  "line_up",
+                                  "buildings"
+                                ]
+                              }
+                            },
+                            "numberEntry": {
+                              "default": "slider",
+                              "type": "string",
+                              "x-extensible-enum": [
+                                "slider",
+                                "box"
                               ]
                             }
                           },
@@ -40259,6 +40319,26 @@
                             "metric",
                             "imperial"
                           ]
+                        },
+                        "studioHelpersOff": {
+                          "default": [],
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "square",
+                              "line_up",
+                              "buildings"
+                            ]
+                          }
+                        },
+                        "numberEntry": {
+                          "default": "slider",
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "slider",
+                            "box"
+                          ]
                         }
                       },
                       "required": [
@@ -51331,6 +51411,26 @@
                           "enum": [
                             "metric",
                             "imperial"
+                          ]
+                        },
+                        "studioHelpersOff": {
+                          "default": [],
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "square",
+                              "line_up",
+                              "buildings"
+                            ]
+                          }
+                        },
+                        "numberEntry": {
+                          "default": "slider",
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "slider",
+                            "box"
                           ]
                         }
                       },
@@ -70555,7 +70655,7 @@
     },
     "/users/me": {
       "patch": {
-        "summary": "Edit my own profile — name, interface language, units",
+        "summary": "Edit my own profile — name, interface language, units, the studio’s helpers and number entry",
         "tags": [
           "user"
         ],
@@ -70585,6 +70685,25 @@
                     "enum": [
                       "metric",
                       "imperial"
+                    ]
+                  },
+                  "studioHelpersOff": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "square",
+                        "line_up",
+                        "buildings"
+                      ]
+                    },
+                    "maxItems": 3
+                  },
+                  "numberEntry": {
+                    "type": "string",
+                    "enum": [
+                      "slider",
+                      "box"
                     ]
                   }
                 }
@@ -70624,6 +70743,26 @@
                       "enum": [
                         "metric",
                         "imperial"
+                      ]
+                    },
+                    "studioHelpersOff": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "x-extensible-enum": [
+                          "square",
+                          "line_up",
+                          "buildings"
+                        ]
+                      }
+                    },
+                    "numberEntry": {
+                      "default": "slider",
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "slider",
+                        "box"
                       ]
                     }
                   },
@@ -94872,26 +95011,6 @@
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 40,
-                    "nullable": true
-                  },
-                  "sitePin": {
-                    "type": "object",
-                    "properties": {
-                      "latitude": {
-                        "type": "number",
-                        "minimum": -90,
-                        "maximum": 90
-                      },
-                      "longitude": {
-                        "type": "number",
-                        "minimum": -180,
-                        "maximum": 180
-                      }
-                    },
-                    "required": [
-                      "latitude",
-                      "longitude"
-                    ],
                     "nullable": true
                   },
                   "utilityOperator": {
@@ -244816,7 +244935,8 @@
                                 "refusal": {
                                   "type": "string",
                                   "x-extensible-enum": [
-                                    "host_closed"
+                                    "host_closed",
+                                    "roofs_off_site"
                                   ]
                                 }
                               },
@@ -245708,6 +245828,9 @@
                       "ground"
                     ]
                   },
+                  "removeRoofs": {
+                    "type": "boolean"
+                  },
                   "capturedAt": {
                     "type": "string",
                     "format": "date-time"
@@ -246336,7 +246459,8 @@
                             "refusal": {
                               "type": "string",
                               "x-extensible-enum": [
-                                "host_closed"
+                                "host_closed",
+                                "roofs_off_site"
                               ]
                             }
                           },
@@ -247057,6 +247181,103 @@
                           ],
                           "additionalProperties": false,
                           "nullable": true
+                        },
+                        "roofs": {
+                          "default": [],
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "corners": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "east": {
+                                      "type": "number",
+                                      "minimum": -2000,
+                                      "maximum": 2000
+                                    },
+                                    "north": {
+                                      "type": "number",
+                                      "minimum": -2000,
+                                      "maximum": 2000
+                                    }
+                                  },
+                                  "required": [
+                                    "east",
+                                    "north"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "minItems": 3,
+                                "maxItems": 100
+                              },
+                              "edges": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "enum": [
+                                    "traced",
+                                    "typed",
+                                    "measured"
+                                  ]
+                                },
+                                "minItems": 3,
+                                "maxItems": 100
+                              },
+                              "tracedOn": {
+                                "type": "string",
+                                "enum": [
+                                  "sky",
+                                  "own",
+                                  "none"
+                                ]
+                              },
+                              "height": {
+                                "default": null,
+                                "type": "object",
+                                "properties": {
+                                  "metres": {
+                                    "type": "number",
+                                    "minimum": 0.3,
+                                    "maximum": 300
+                                  },
+                                  "setBy": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "metres",
+                                  "setBy"
+                                ],
+                                "additionalProperties": false,
+                                "nullable": true
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "corners",
+                              "edges",
+                              "tracedOn"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "maxItems": 50
+                        },
+                        "pictureScale": {
+                          "default": 1,
+                          "type": "number",
+                          "minimum": 0.2,
+                          "maximum": 5
                         }
                       },
                       "required": [
@@ -247639,6 +247860,103 @@
                         ],
                         "additionalProperties": false,
                         "nullable": true
+                      },
+                      "roofs": {
+                        "default": [],
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "corners": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "east": {
+                                    "type": "number",
+                                    "minimum": -2000,
+                                    "maximum": 2000
+                                  },
+                                  "north": {
+                                    "type": "number",
+                                    "minimum": -2000,
+                                    "maximum": 2000
+                                  }
+                                },
+                                "required": [
+                                  "east",
+                                  "north"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "minItems": 3,
+                              "maxItems": 100
+                            },
+                            "edges": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "traced",
+                                  "typed",
+                                  "measured"
+                                ]
+                              },
+                              "minItems": 3,
+                              "maxItems": 100
+                            },
+                            "tracedOn": {
+                              "type": "string",
+                              "enum": [
+                                "sky",
+                                "own",
+                                "none"
+                              ]
+                            },
+                            "height": {
+                              "default": null,
+                              "type": "object",
+                              "properties": {
+                                "metres": {
+                                  "type": "number",
+                                  "minimum": 0.3,
+                                  "maximum": 300
+                                },
+                                "setBy": {
+                                  "type": "string",
+                                  "enum": [
+                                    "system",
+                                    "person"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "metres",
+                                "setBy"
+                              ],
+                              "additionalProperties": false,
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "corners",
+                            "edges",
+                            "tracedOn"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 50
+                      },
+                      "pictureScale": {
+                        "default": 1,
+                        "type": "number",
+                        "minimum": 0.2,
+                        "maximum": 5
                       }
                     },
                     "required": [
@@ -248282,7 +248600,8 @@
                             "refusal": {
                               "type": "string",
                               "x-extensible-enum": [
-                                "host_closed"
+                                "host_closed",
+                                "roofs_off_site"
                               ]
                             }
                           },
@@ -248848,7 +249167,8 @@
                             "refusal": {
                               "type": "string",
                               "x-extensible-enum": [
-                                "host_closed"
+                                "host_closed",
+                                "roofs_off_site"
                               ]
                             }
                           },

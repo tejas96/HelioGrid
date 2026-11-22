@@ -87,7 +87,8 @@ export class StudioDocumentService {
     if (row === undefined) throw new NotFoundException('No such design.');
     if (row === null) {
       return {
-        document: EMPTY_STUDIO_DOCUMENT,
+        // The wire's lists are its own: the shared empty document's are never handed out.
+        document: { ...EMPTY_STUDIO_DOCUMENT, roofs: [] },
         version: 0,
         savedAt: null,
         savedBy: null,

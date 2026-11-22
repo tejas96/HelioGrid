@@ -81,6 +81,12 @@ const SITE = {
   leaveBody: /*i18n*/ { id: 'Your changes to the site details will be lost.' },
   leaveConfirm: /*i18n*/ { id: 'Discard and leave' },
   keepEditing: /*i18n*/ { id: 'Keep editing' },
+  roofsOffSiteTitle: /*i18n*/ { id: 'Move the pin to another site?' },
+  roofsOffSiteBody: /*i18n*/ {
+    id: 'The roofs drawn at the old place are too far from the new pin to stay on the map. Moving it removes them from every design of this site.',
+  },
+  roofsOffSiteRemove: /*i18n*/ { id: 'Move and remove roofs' },
+  roofsOffSiteKeep: /*i18n*/ { id: 'Keep the roofs' },
   backToLeads: /*i18n*/ { id: 'Back to leads' },
   trail: /*i18n*/ { id: 'Breadcrumb' },
 } as const;
@@ -216,5 +222,12 @@ export function siteDetailsPageWords(t: T) {
     leaveBody: t(SITE.leaveBody),
     leaveConfirm: t(SITE.leaveConfirm),
     keepEditing: t(SITE.keepEditing),
+    /** A pin moved to another site, which leaves the drawn roofs behind: asked before they go. */
+    roofsOffSite: {
+      title: t(SITE.roofsOffSiteTitle),
+      body: t(SITE.roofsOffSiteBody),
+      remove: t(SITE.roofsOffSiteRemove),
+      keep: t(SITE.roofsOffSiteKeep),
+    },
   };
 }

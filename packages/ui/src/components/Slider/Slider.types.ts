@@ -26,12 +26,22 @@ export interface SliderProps {
   max?: number;
   step?: number;
   label?: TranslatedText;
+  /**
+   * The label is spoken, not shown, nor the value beside it: the caller draws both in its own
+   * head (the length field's). The hint, if any, still shows.
+   */
+  labelSpokenOnly?: boolean;
   /** Displayed after the value; the unit toggle itself is a SegmentedControl. */
   unit?: string;
   /** Role-aware line under the track. */
   hint?: TranslatedText;
   /** The steppers' names — `sliderWords(t)`. */
   words: SliderWords;
+  /**
+   * The system's own value, marked on the track (`T-M05-002`, *Values*): the picture's length, the
+   * storey height — a tick a person can slide back to. Outside the ends, no mark.
+   */
+  mark?: number;
   /** Custom value formatter — overrides value + unit. */
   format?: (value: number) => string;
   /** 44px minus/plus buttons either side. On by default (MS12-26). */

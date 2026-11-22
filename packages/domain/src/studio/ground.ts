@@ -10,6 +10,14 @@ export interface GroundPoint {
   readonly north: number;
 }
 
+/** A box of the site's ground, in metres east and north of the pin. */
+export interface GroundBox {
+  readonly west: number;
+  readonly east: number;
+  readonly south: number;
+  readonly north: number;
+}
+
 /** WGS 84's equator radius, the one Web Mercator tiles are cut by. */
 const EARTH_RADIUS_M = 6_378_137;
 const RADIANS = Math.PI / 180;

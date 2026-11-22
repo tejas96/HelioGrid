@@ -5,6 +5,7 @@ import {
   webViewAskSchema,
 } from '@heliogrid/contracts';
 import { useLendToken } from '@heliogrid/data/react';
+import { tapHaptic } from '@heliogrid/ui';
 import { useEffect, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -74,12 +75,19 @@ export function StudioWebView({
           onSite();
           return;
         }
+        if (asked.kind === 'haptic') {
+          tapHaptic(asked.strength);
+          return;
+        }
         void lendToken().then((token) => {
           const lend: WebViewLend = { v: WEB_VIEW_BRIDGE_VERSION, kind: 'token', token };
           view.current?.postMessage(JSON.stringify(lend));
         });
       }}
       bounces={false}
+      // iOS lays its own up / down / done bar over the page's sheet above the keyboard: the studio's
+      // sheets have their own Done, so the bar only hides it.
+      hideKeyboardAccessoryView
       overScrollMode="never"
       setSupportMultipleWindows={false}
       allowsBackForwardNavigationGestures={false}

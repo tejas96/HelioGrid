@@ -20,7 +20,8 @@ import { hashSecret, randomSecret } from '../../common/auth/secrets';
 import { ContractException } from '../../common/errors/contract-exception';
 import { OtpUsageService } from '../billing/billing.public';
 import { MarketPackService } from '../market/market.public';
-import { type AccountRow, AuthAdminRepository } from './internal/auth.admin.repository';
+import type { AccountRow } from './internal/account.admin.repository';
+import { AuthAdminRepository } from './internal/auth.admin.repository';
 import {
   LoginBindingAdminRepository,
   type LoginIdentity,

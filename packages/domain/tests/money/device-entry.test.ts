@@ -131,7 +131,11 @@ type ReviewedComputesNothing =
   | 'compactQualified'
   | 'statedAssumptions'
   /* splits a proposal's terms into the sheets they print on: words in, words out, no figure */
-  | 'termsPagesOf';
+  | 'termsPagesOf'
+  /* the studio's roof step (`T-M05-002`): its design document outruns the depth the check walks, and holds lengths, never money */
+  | 'roofStepAfter'
+  /* a moved pin's drawings (`site-moved.ts`): the design documents outrun the depth the check walks, and hold lengths, never money */
+  | 'drawingsAfterPinMove';
 
 /** `true` only when the set is empty; otherwise the type NAMES what is in it, so the error does. */
 type NoneOf<Names> = [Names] extends [never] ? true : { unreviewed: Names };

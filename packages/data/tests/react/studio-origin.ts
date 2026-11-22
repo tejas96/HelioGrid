@@ -13,6 +13,7 @@ import { afterEach } from 'vitest';
 import { createDataLayer } from '../../src/data-layer';
 import { DataProvider } from '../../src/react/provider';
 import { listeningOrigin, refusal, send, writeBodyOf } from './origin-wire';
+import { DOCUMENT_ROUTES } from './studio-document-origin';
 import { placesAnswer } from './studio-places-origin';
 
 export { MUNICH, SANGLI } from './studio-places-origin';
@@ -126,6 +127,8 @@ function projection(): SessionProjection {
       displayName: READER.name,
       interfaceLanguage: 'en',
       unitPreference: 'metric',
+      studioHelpersOff: [] as string[],
+      numberEntry: 'slider',
     },
     membership: { tenantId: TENANT, roles: origin.roles, authorizationVersion: 1 },
     expiry: { expiresAt: '2099-01-01T00:00:00.000Z', lastForegroundActivityAt: null },
@@ -257,14 +260,29 @@ const places: Route = (req, res, path) => {
   return true;
 };
 
+/** The reader's own profile write: what it sends is stored and answered, as the api does. */
+const myProfile: Route = (req, res, path) => {
+  if (path !== '/users/me' || req.method !== 'PATCH') return false;
+  const { userId, displayName, ...rest } = projection().actor;
+  const answer = (body: unknown) => ({
+    id: userId,
+    name: displayName,
+    ...rest,
+    ...(body as object),
+  });
+  void answerWrite(req, res, 'me', (body) => ({ status: 200, body: answer(body) }));
+  return true;
+};
+
 const ROUTES: readonly Route[] = [leadDesigns, oneDesign, siteOfDesign, recommended, places];
+const ALL_ROUTES = [...ROUTES, myProfile, ...DOCUMENT_ROUTES];
 
 const served = listeningOrigin((req, res) => {
   const path = new URL(req.url ?? '/', 'http://origin').pathname;
   if (req.method === 'OPTIONS') return send(res, req, 204);
   origin.sent.push(`${req.method} ${path}`);
   if (path === '/auth/session') return send(res, req, 200, projection());
-  if (!ROUTES.some((route) => route(req, res, path))) send(res, req, 404, refusal('NOT_FOUND'));
+  if (!ALL_ROUTES.some((route) => route(req, res, path))) send(res, req, 404, refusal('NOT_FOUND'));
 });
 
 afterEach(() => {

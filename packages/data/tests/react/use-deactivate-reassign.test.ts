@@ -102,6 +102,8 @@ function projection(): SessionProjection {
       displayName: OWNER.name,
       interfaceLanguage: 'en',
       unitPreference: 'metric',
+      studioHelpersOff: [],
+      numberEntry: 'slider',
     },
     membership: { tenantId: TENANT, roles: [OWNER_ROLE] as [RolePreset], authorizationVersion: 1 },
     expiry: { expiresAt: '2099-01-01T00:00:00.000Z', lastForegroundActivityAt: null },

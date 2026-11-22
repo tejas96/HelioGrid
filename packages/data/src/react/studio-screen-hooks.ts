@@ -1,5 +1,7 @@
 /** The design studio's view models (block 9): one per screen pair, the web's and the phone's alike. */
 
+export type { StudioMoments } from './studio-haptics';
+export { studioHapticOf, studioMomentsOf } from './studio-haptics';
 export type { DesignRead, DesignScreen } from './use-design-screen';
 export { useDesignScreen } from './use-design-screen';
 export type {
@@ -9,6 +11,8 @@ export type {
 } from './use-lead-designs-section';
 export { useLeadDesignsSection } from './use-lead-designs-section';
 export { useLendToken } from './use-lend-token';
+export { useAimHold, useRepeatPress } from './use-press-timing';
+export type { RoofsOffSiteAsk } from './use-roofs-off-site';
 export type {
   SiteDetailsMoves,
   SiteDetailsRead,
@@ -19,6 +23,8 @@ export type {
 } from './use-site-details-screen';
 export { useSiteDetailsScreen } from './use-site-details-screen';
 export type {
+  RoofMoves,
+  RoofStepView,
   StudioEditing,
   StudioMoves,
   StudioPicture,

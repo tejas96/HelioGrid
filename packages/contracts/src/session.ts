@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { measurementSystemSchema, roleSetSchema, uuidSchema } from './common';
 import { uiLanguageResponseSchema } from './locale';
+import { numberEntryReadSchema, studioHelperReadSchema } from './studio/vocabulary';
 
 /**
  * The HelioGrid session PROJECTION — the shape every guard, repository, screen and contract
@@ -37,6 +38,13 @@ export const actorSchema = z.object({
   interfaceLanguage: uiLanguageResponseSchema,
   /** The person's own measurement preference (`F3-23`); written by `PATCH /users/me`. */
   unitPreference: measurementSystemSchema,
+  /**
+   * The studio helpers the person turned off (`T-M05-002`, part b); written by `PATCH /users/me`.
+   * Absent from an api older than it: none off. An unknown helper is kept, and helps nothing.
+   */
+  studioHelpersOff: z.array(studioHelperReadSchema).default([]),
+  /** How the person sets a number: the slider first, or a box (`T-M05-002`, *Values*). */
+  numberEntry: numberEntryReadSchema.default('slider'),
 });
 export type Actor = z.infer<typeof actorSchema>;
 

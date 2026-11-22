@@ -52,3 +52,9 @@ export function stepperOff(
 ): boolean {
   return disabled || (direction < 0 ? value <= min : value >= max);
 }
+
+/** Where the system's mark sits on the track, as a share in percent; `null` with none, or off it. */
+export function markPercent(mark: number | undefined, min: number, max: number): number | null {
+  if (mark === undefined || mark < min || mark > max) return null;
+  return fillPercent(mark, min, max);
+}

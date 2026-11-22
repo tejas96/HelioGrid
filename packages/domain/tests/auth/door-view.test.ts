@@ -15,6 +15,8 @@ const aUser: SessionUser = {
   phoneE164: '+919876543210',
   interfaceLanguage: 'en',
   unitPreference: 'metric',
+  studioHelpersOff: [],
+  numberEntry: 'slider',
   tenant: null,
 };
 

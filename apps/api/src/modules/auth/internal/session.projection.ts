@@ -1,6 +1,7 @@
 import type { SessionClaims, SessionProjection } from '@heliogrid/contracts';
 import type { RolePreset, SessionLife } from '@heliogrid/domain';
-import type { AccountRow, MembershipRow, SessionRow } from './auth.admin.repository';
+import type { AccountRow } from './account.admin.repository';
+import type { MembershipRow, SessionRow } from './auth.admin.repository';
 
 /** The active membership as a claim; a membership that is not active is no claim at all. */
 export function claimsOf(
@@ -35,6 +36,8 @@ export function projectionOf(
       displayName: account.name ?? '',
       interfaceLanguage: account.interfaceLanguage,
       unitPreference: account.unitPreference,
+      studioHelpersOff: [...account.studioHelpersOff],
+      numberEntry: account.numberEntry,
     },
     membership: claimsOf(account.id, row.id, membership).membership,
     expiry: {

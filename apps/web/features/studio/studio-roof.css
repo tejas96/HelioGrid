@@ -1,0 +1,164 @@
+/* The marks on the roofs (`T-M05-002`, part b), as the approved boards draw them: page elements the
+   camera keeps on the model. Each mark sits in a zero-size holder the camera moves; the mark centres
+   itself on that point. The layer lets every tap through except on a mark. */
+.hg-roof-marks {
+  position: absolute;
+  inset: 0;
+  /* Clip, never hidden: a hidden box still scrolls, and focus on a mark laid past the edge would
+     scroll every mark away from the model. */
+  overflow: clip;
+  /* Its own layer: the marks' order among themselves never lifts one over the studio's bars. */
+  isolation: isolate;
+  pointer-events: none;
+  --hg-roof-ink: var(--scene-line);
+  --hg-roof-hit: calc(-1 * var(--sp-3));
+}
+
+.hg-roof-lines {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+}
+
+.hg-roof-lines path {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.hg-roof-halo {
+  stroke: color-mix(in srgb, var(--scene-mark) 92%, transparent);
+  stroke-width: 5;
+}
+
+.hg-roof-line {
+  stroke: var(--hg-roof-ink);
+  stroke-width: 2.5;
+}
+
+[data-quiet="true"] .hg-roof-line {
+  stroke-width: 2;
+  opacity: 0.85;
+}
+
+.hg-roof-stretch {
+  stroke: var(--hg-roof-ink);
+  stroke-width: 2.5;
+  stroke-dasharray: 2 7;
+}
+
+.hg-roof-stretch[data-bad="true"] {
+  stroke: var(--scene-bad);
+  stroke-dasharray: none;
+}
+
+.hg-roof-ghost,
+.hg-roof-before {
+  stroke: var(--scene-mark);
+  stroke-width: 2;
+  stroke-dasharray: 6 6;
+  filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 70%, transparent));
+}
+
+/* A drag that would be refused: the shape in hand, red and dashed, over where the roof goes back. */
+.hg-roof-line[data-bad="true"] {
+  stroke: var(--scene-bad);
+  stroke-dasharray: 6 4;
+}
+
+/* A set length the corner drag keeps: the thin circle its corner runs on. */
+.hg-roof-held {
+  stroke: var(--scene-mark);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 5;
+  filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 70%, transparent));
+}
+
+/* The magnet's guide: a thin dashed line right across the map, in the roof line's colour. */
+.hg-roof-guide {
+  stroke: var(--scene-line);
+  stroke-width: calc(var(--hg-studio-line) * 2.5);
+  stroke-dasharray: 6 5;
+  filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 60%, transparent));
+}
+
+/* A mark's holder: a point on the screen. Its child centres on it. */
+.hg-roof-at {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 0;
+  block-size: 0;
+}
+
+.hg-roof-at[hidden] {
+  display: none;
+}
+
+.hg-roof-at > * {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+/* A tag beside the spot: what it snapped to, or why it cannot go there. */
+.hg-roof-at > .hg-roof-tag {
+  transform: translate(var(--sp-4), calc(-1 * (var(--sp-8) + var(--sp-0-5))));
+  display: inline-flex;
+  align-items: center;
+  block-size: calc(var(--sp-5) + var(--sp-0-5));
+  padding-inline: var(--sp-2);
+  border-radius: var(--r-xs);
+  background: var(--scene-shade);
+  color: var(--scene-mark);
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  box-shadow: var(--e2);
+  pointer-events: none;
+}
+
+.hg-roof-tag[data-tone="bad"] {
+  background: var(--scene-bad);
+}
+
+.hg-roof-at > .hg-roof-angle {
+  transform: translate(-50%, -50%);
+}
+
+/* The one small celebration when a roof closes: a soft ring that widens and fades, once. */
+.hg-roof-at > .hg-roof-ring {
+  inline-size: calc(var(--sp-24) * 3);
+  block-size: calc(var(--sp-24) * 3);
+  border-radius: var(--r-pill);
+  border: var(--sp-0-5) solid color-mix(in srgb, var(--scene-mark) 70%, transparent);
+  box-shadow: 0 0 0 var(--sp-3) color-mix(in srgb, var(--scene-mark) 12%, transparent);
+  pointer-events: none;
+  opacity: 0;
+  animation: hg-roof-ring var(--dur-scene) var(--ease-exit) 1 both;
+}
+
+@keyframes hg-roof-ring {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Once a roof stands, or while one is drawn, the pin steps aside: the roof is the place now. */
+.hg-studio-pin[data-gone="true"] {
+  display: none;
+}
+
+/* Until the camera first lays the marks, none shows: never a frame at the screen's corner. */
+.hg-roof-marks:not([data-placed]) > * {
+  visibility: hidden;
+}

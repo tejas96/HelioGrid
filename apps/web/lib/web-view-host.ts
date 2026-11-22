@@ -34,6 +34,11 @@ export function leaveToPhone(): void {
   ask({ v: WEB_VIEW_BRIDGE_VERSION, kind: 'leave' });
 }
 
+/** A moment the phone marks with a tap: a snap, a close, the slider's tick, or a refusal. */
+export function hapticToPhone(strength: 'selection' | 'impact'): void {
+  ask({ v: WEB_VIEW_BRIDGE_VERSION, kind: 'haptic', strength });
+}
+
 /** The person asked to change the site details: the phone opens its own Site details. */
 export function siteToPhone(): void {
   ask({ v: WEB_VIEW_BRIDGE_VERSION, kind: 'site' });

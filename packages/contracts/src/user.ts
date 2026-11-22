@@ -1,9 +1,16 @@
+import { STUDIO_HELPERS } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { measurementSystemSchema, phoneE164Schema, uuidSchema } from './common';
 import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
 import { fileErrorCodeSchema } from './file';
 import { uiLanguageResponseSchema, uiLanguageSchema } from './locale';
+import {
+  numberEntryReadSchema,
+  numberEntrySchema,
+  studioHelperReadSchema,
+  studioHelperSchema,
+} from './studio/vocabulary';
 
 const c = initContract();
 
@@ -14,15 +21,30 @@ export const userProfileSchema = z.object({
   name: z.string(),
   interfaceLanguage: uiLanguageResponseSchema,
   unitPreference: measurementSystemSchema,
+  /**
+   * The studio helpers turned off, and how a number is set (`T-M05-002`, part b). Absent from an
+   * api older than them: none off, and the slider.
+   */
+  studioHelpersOff: z.array(studioHelperReadSchema).default([]),
+  numberEntry: numberEntryReadSchema.default('slider'),
 });
 export type UserProfile = z.infer<typeof userProfileSchema>;
 
-/** The account's profile write (`M01-14`): name, language, units. The photo is per company: `setMyPhoto`. */
+/**
+ * The account's profile write (`M01-14`): name, language, units, and the studio's picks — the
+ * helpers turned off, each named once, and how a number is set. The photo is per company:
+ * `setMyPhoto`.
+ */
 export const updateUserProfileSchema = z
   .object({
     name: z.string().trim().min(1).max(120),
     interfaceLanguage: uiLanguageSchema,
     unitPreference: measurementSystemSchema,
+    studioHelpersOff: z
+      .array(studioHelperSchema)
+      .max(STUDIO_HELPERS.length)
+      .refine((helpers) => new Set(helpers).size === helpers.length, 'Each helper once.'),
+    numberEntry: numberEntrySchema,
   })
   .partial();
 export type UpdateUserProfile = z.infer<typeof updateUserProfileSchema>;
@@ -42,7 +64,8 @@ export const userContract = c.router({
     method: 'PATCH',
     path: '/users/me',
     body: updateUserProfileSchema,
-    summary: 'Edit my own profile — name, interface language, units',
+    summary:
+      'Edit my own profile — name, interface language, units, the studio’s helpers and number entry',
     responses: {
       200: userProfileSchema,
       401: unauthenticatedEnvelope,

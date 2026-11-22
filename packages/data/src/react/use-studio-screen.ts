@@ -1,5 +1,9 @@
 'use client';
 import {
+  type FocusParts,
+  type FormatPack,
+  focusOf,
+  type GroundBox,
   type History,
   historyAfter,
   historyRedone,
@@ -8,6 +12,10 @@ import {
   OPENING_VIEW,
   type PictureChoice,
   pictureNewerThanDrawn,
+  type RoofHeightShown,
+  type RoofSheetView,
+  type RoofStepState,
+  roofsBox,
   type ScaleBar,
   type StepPlace,
   type StudioDocument,
@@ -34,12 +42,15 @@ import {
 } from './studio-document-state';
 import type { StudioSaveState } from './studio-save-queue';
 import { type DesignRead, useDesignScreen } from './use-design-screen';
+import { type RoofSheetMoves, type RoofSheetState, useRoofSheet } from './use-roof-sheet';
+import { type RoofMoves, type RoofStepView, useRoofStep } from './use-roof-step';
 import { useSession } from './use-session';
 
 export type { StudioEditing, StudioPicture } from './studio-document-state';
 export type { StudioSaveState } from './studio-save-queue';
+export type { RoofMoves, RoofStepView } from './use-roof-step';
 
-export interface StudioMoves {
+export interface StudioMoves extends RoofMoves, RoofSheetMoves {
   pickPicture(choice: PictureChoice): void;
   undo(): void;
   redo(): void;
@@ -54,9 +65,13 @@ export interface StudioMoves {
   see(view: StudioView): void;
   /** The three pictures shown or put away. */
   showPictures(open: boolean): void;
+  /** Add roof objects: the next step, a note until it is built. */
+  toObjects(): void;
+  /** The note that the next step is coming, put away. */
+  objectsSeen(): void;
 }
 
-export interface StudioScreen {
+export interface StudioScreen extends RoofStepView, RoofSheetState {
   readonly read: DesignRead;
   /** `null` until the document is read. */
   readonly document: StudioDocument | null;
@@ -79,7 +94,49 @@ export interface StudioScreen {
   readonly picturesOpen: boolean;
   /** The sun the scene is lit by: the real sun for the site now, or its noon after dark. */
   readonly sun: SunPosition | null;
+  /** The ground the design's roofs cover, which the camera frames; `null` before a roof. */
+  readonly fit: GroundBox | null;
+  /** "See it in 3D" is offered once, until the 3D view is first seen. */
+  readonly offer3d: boolean;
+  /** Add roof objects was pressed: its note shows. */
+  readonly objectsNote: boolean;
+  /** Which parts show for the job in hand, on a phone-width screen or a wider one (focus mode). */
+  focus(phone: boolean): FocusParts;
   readonly moves: StudioMoves;
+}
+
+/**
+ * What Undo and Redo can do now: while drawing, Undo takes the last corner off; with nothing in
+ * hand, they walk the design's history; Redo waits while a roof is drawn, sized or dragged.
+ */
+function undoRedoOf(
+  editable: boolean,
+  roofStep: RoofStepState,
+  history: History<StudioDocument> | null,
+): { canUndo: boolean; canRedo: boolean } {
+  if (!editable) return { canUndo: false, canRedo: false };
+  // While drawing, Undo takes a corner off or brings wiped ones back; just after a stop, it takes
+  // the stopped drawing up again.
+  const back =
+    roofStep.kind === 'drawing'
+      ? roofStep.corners.length > 0 || roofStep.wiped !== null
+      : (roofStep.kind === 'idle' && Boolean(roofStep.left)) || (history?.past.length ?? 0) > 0;
+  return { canUndo: back, canRedo: roofStep.kind === 'idle' && (history?.future.length ?? 0) > 0 };
+}
+
+/** The roof whose sheet is open stands at the height in hand, and the camera frames it alone. */
+function withSheet(
+  heights: readonly RoofHeightShown[],
+  fit: GroundBox | null,
+  roofSheet: RoofSheetView | null,
+  document: StudioDocument | null,
+): { heights: readonly RoofHeightShown[]; fit: GroundBox | null } {
+  const open = roofSheet === null ? undefined : document?.roofs[roofSheet.roof];
+  if (roofSheet === null || open === undefined) return { heights, fit };
+  return {
+    heights: heights.map((height, i) => (i === roofSheet.roof ? roofSheet.height : height)),
+    fit: roofsBox([open]),
+  };
 }
 
 /**
@@ -87,7 +144,7 @@ export interface StudioScreen {
  * change saved the moment it is made, one editor at a time, Undo and Redo through every change
  * since the design opened; the reader's metres or feet.
  */
-export function useStudioScreen(designId: string): StudioScreen {
+export function useStudioScreen(designId: string, formats: FormatPack): StudioScreen {
   const session = useSession();
   const { read } = useDesignScreen(designId);
   const ready = read.kind === 'ready';
@@ -99,10 +156,9 @@ export function useStudioScreen(designId: string): StudioScreen {
   );
   const [pictureSeen, setPictureSeen] = useState(false);
   const [view, setView] = useState<StudioView>(OPENING_VIEW);
-  /** No roof can be drawn yet: the rail and the views wait for one. */
-  const roofClosed = false;
-  const views = viewsOffered(roofClosed);
   const units = session.user?.unitPreference ?? 'metric';
+  const [seen3d, setSeen3d] = useState(false);
+  const [objectsNote, setObjectsNote] = useState(false);
   const [picturesOpen, setPicturesOpen] = useState(false);
   const pin = ready ? read.value.site.pin : null;
   // The sun is read once for the opening: the scene does not move with the clock.
@@ -126,6 +182,41 @@ export function useStudioScreen(designId: string): StudioScreen {
   const skyRead = readOf(skyQuery);
   const sky = skyReadOf(skyRead);
   const picture = pictureOf(shownPicture(document?.picture ?? null, sky), skyRead);
+  /** The views and the rail wait for a roof that stands. */
+  const roofClosed = (document?.roofs.length ?? 0) > 0;
+  const views = viewsOffered(roofClosed);
+  const fit = useMemo(() => roofsBox(document?.roofs ?? []), [document]);
+
+  const roof = useRoofStep({
+    document,
+    latest,
+    change,
+    editable,
+    units,
+    picture,
+    setUnits: (system) => void session.setUnitPreference(system),
+    helpersOff: session.user?.studioHelpersOff ?? [],
+    setHelpersOff: (off) => void session.setStudioPicks({ studioHelpersOff: off }),
+    helpersRefused: session.refusedPreferences.includes('studio'),
+    storeyHeightM: formats.storeyHeightM,
+    numberEntry: session.user?.numberEntry ?? 'slider',
+    setNumberEntry: (entry) => void session.setStudioPicks({ numberEntry: entry }),
+  });
+  const { step, act } = roof;
+  const { roofStep } = roof.view;
+  const sheet = useRoofSheet({
+    document,
+    latest,
+    change,
+    editable,
+    storeyHeightM: formats.storeyHeightM,
+    units,
+    outline: (index, metres) => {
+      setView('top');
+      act({ kind: 'pick_roof', roof: index, metres });
+    },
+  });
+  const { roofSheet } = sheet.state;
 
   return {
     read,
@@ -141,22 +232,51 @@ export function useStudioScreen(designId: string): StudioScreen {
     rail: stepRail(roofClosed),
     view,
     views,
+    ...roof.view,
+    ...sheet.state,
+    ...withSheet(roof.view.heights, fit, roofSheet, document),
+    offer3d: roofClosed && !seen3d,
+    objectsNote,
     scaleBar: (metresPerPixel, maxPixels) => scaleBarOf(metresPerPixel, units, maxPixels),
     picturesOpen,
     sun,
-    canUndo: editable && (history?.past.length ?? 0) > 0,
-    canRedo: editable && (history?.future.length ?? 0) > 0,
+    ...undoRedoOf(editable, roofStep, history),
+    focus: (phone) =>
+      focusOf({
+        job: roofSheet === null ? roof.view.job : 'sheet',
+        view,
+        phone,
+        canEdit: editable,
+        hasRoof: roofClosed,
+        saveFailed: saving.kind === 'failed' || saving.kind === 'refused',
+      }),
     moves: {
+      ...roof.moves,
+      ...sheet.moves,
       pickPicture: (choice) => {
         const at = latest.current;
         if (at === null || at.present.picture === choice) return;
         change(historyAfter(at, { ...at.present, picture: choice }));
       },
+      // While drawing, Undo takes the last corner off; with a length or a drag in hand, it puts
+      // that back first.
       undo: () => {
-        if (latest.current !== null) change(historyUndone(latest.current));
+        // A height in hand is put back first, as a length or a drag is.
+        if (sheet.moves.dropHeight()) return;
+        const now = step.current.kind;
+        const left = step.current.kind === 'idle' && Boolean(step.current.left);
+        if (now === 'drawing' || left) act({ kind: 'undo_corner' });
+        else if (now === 'sizing' || now === 'dragging') act({ kind: 'cancel' });
+        else if (latest.current !== null) {
+          act({ kind: 'history', undone: true });
+          change(historyUndone(latest.current));
+        }
       },
       redo: () => {
-        if (latest.current !== null) change(historyRedone(latest.current));
+        if (step.current.kind === 'idle' && latest.current !== null) {
+          act({ kind: 'history', undone: false });
+          change(historyRedone(latest.current));
+        }
       },
       chooseUnits: (system) => void session.setUnitPreference(system),
       openTheirs: () => void refetchDocument(),
@@ -164,8 +284,23 @@ export function useStudioScreen(designId: string): StudioScreen {
       pictureChecked: () => setPictureSeen(true),
       // A view that waits for a roof is not taken, whoever asks for it.
       see: (next) => {
-        if (views.some((place) => place.view === next && place.lock === null)) setView(next);
+        if (!views.some((place) => place.view === next && place.lock === null)) return;
+        // A new roof is drawn in the top view only: leaving it drops the draft, or — just after a
+        // close — keeps the roof and ends the Redraw ask.
+        if (next !== 'top') act({ kind: step.current.kind === 'drawing' ? 'cancel' : 'done' });
+        if (next === '3d') setSeen3d(true);
+        // A roof's sheet is the 3D view's: the top view keeps its height and closes it.
+        if (next === 'top') void sheet.moves.done();
+        setView(next);
       },
+      // Drawing happens in the top view only: the camera flies there first.
+      draw: () => {
+        setView('top');
+        setObjectsNote(false);
+        roof.moves.draw();
+      },
+      toObjects: () => setObjectsNote(true),
+      objectsSeen: () => setObjectsNote(false),
       showPictures: setPicturesOpen,
     },
   };

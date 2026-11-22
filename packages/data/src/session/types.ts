@@ -5,12 +5,14 @@ import type {
   GoogleToken,
   InviteJoinOutcome,
   InviteJoinResult,
+  NumberEntry,
   OnboardingStep,
   OtpRequestOutcome,
   OtpVerifyResult,
   RolePreset,
   SessionSnapshot,
   SignInDoor,
+  StudioHelper,
 } from '@heliogrid/domain';
 import type { SessionSignals } from '../transport/transport';
 import type { JoinedInvite } from './invite-join';
@@ -112,6 +114,14 @@ export interface SessionStore {
    * once and `PATCH /users/me` persists it; a refusal is held in `refusedPreferences`.
    */
   setUnitPreference(next: MeasurementSystem): Promise<boolean>;
+  /**
+   * The person turned a studio helper on or off, or picked the slider or the box (`T-M05-002`,
+   * part b): as `setUnitPreference`, the snapshot moves at once and `PATCH /users/me` persists it.
+   */
+  setStudioPicks(next: {
+    readonly studioHelpersOff?: readonly StudioHelper[];
+    readonly numberEntry?: NumberEntry;
+  }): Promise<boolean>;
 }
 
 /**

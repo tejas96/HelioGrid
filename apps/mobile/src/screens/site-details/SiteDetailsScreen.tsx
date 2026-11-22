@@ -144,6 +144,28 @@ export function SiteDetailsScreen({ route }: Props) {
         onKeep={screen.leave.stay}
         onLeave={screen.leave.leave}
       />
+      <RoofsOffSite ask={screen.roofsOffSite} words={page.roofsOffSite} />
     </ShellPage>
+  );
+}
+
+/** The pin moved to another site: the same two-answer ask, its destructive answer the move. */
+function RoofsOffSite({
+  ask,
+  words,
+}: {
+  ask: SiteDetailsView['roofsOffSite'];
+  words: ReturnType<typeof siteDetailsPageWords>['roofsOffSite'];
+}) {
+  return (
+    <LeaveConfirm
+      open={ask.asking}
+      title={words.title}
+      body={words.body}
+      discard={words.remove}
+      keep={words.keep}
+      onKeep={ask.keep}
+      onLeave={ask.remove}
+    />
   );
 }

@@ -4,6 +4,9 @@ import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import { MAP_SURFACE } from './map-surface';
 import { designPageWords } from './site-details';
+import { studioHeightWords } from './studio-height';
+import { studioLengthWords } from './studio-length';
+import { studioRoofWords } from './studio-roof';
 
 type T = Translator['t'];
 
@@ -54,15 +57,11 @@ const CANVAS = {
   yourLine: /*i18n*/ { id: 'Photo, drone map or plan, from above' },
   yourComing: /*i18n*/ { id: 'Adding your own picture is coming soon' },
   noLine: /*i18n*/ { id: 'Type the size instead' },
-  pictureGuide: /*i18n*/ { id: 'The picture is a guide. Lengths you type are the true size.' },
-  pickedNone: /*i18n*/ { id: 'No picture: type the size, or draw on the grid.' },
-  notSetUp: /*i18n*/ { id: 'No sky picture is set up yet. Type the size, or draw on the grid.' },
-  notAnswered: /*i18n*/ {
-    id: 'The sky picture did not load. Type the size, or draw on the grid.',
-  },
-  notCovered: /*i18n*/ {
-    id: 'There is no sky picture of this place. Type the size, or draw on the grid.',
-  },
+  pictureGuide: /*i18n*/ { id: 'The picture is a guide. Lengths you set are the true size.' },
+  pickedNone: /*i18n*/ { id: 'No picture: draw the roof on the grid.' },
+  notSetUp: /*i18n*/ { id: 'No sky picture is set up yet. Draw the roof on the grid.' },
+  notAnswered: /*i18n*/ { id: 'The sky picture did not load. Draw the roof on the grid.' },
+  notCovered: /*i18n*/ { id: 'There is no sky picture of this place. Draw the roof on the grid.' },
   pictureUpdated: /*i18n*/ { id: 'Picture updated · check the outline' },
   pictureChecked: /*i18n*/ { id: 'Checked' },
 
@@ -81,28 +80,17 @@ const CANVAS = {
   pin: /*i18n*/ { id: 'Pin' },
   backToPin: /*i18n*/ { id: 'Back to the pin' },
   north: /*i18n*/ { id: 'North' },
-  // The north arrow on a map: the one letter for North.
-  northLetter: /*i18n*/ { id: 'N' },
   mapKeys: /*i18n*/ {
     id: 'Map. Arrow keys move it, plus and minus zoom, and 0 goes back to the pin.',
   },
 
   drawMyself: /*i18n*/ { id: 'Draw myself' },
   drawOnGrid: /*i18n*/ { id: 'Draw on the grid' },
-  setUpWithAi: /*i18n*/ { id: 'Set up roof with AI' },
-  typeSize: /*i18n*/ { id: 'Type the size' },
-  roadView: /*i18n*/ { id: 'Road view' },
-  sun: /*i18n*/ { id: 'Sun and shade' },
-  heightView: /*i18n*/ { id: 'Height view' },
-  drawComing: /*i18n*/ { id: 'Drawing a roof is coming soon' },
-  aiComing: /*i18n*/ { id: 'Setting up the roof with AI is coming soon' },
-  typeComing: /*i18n*/ { id: 'Typing the size is coming soon' },
-  roadComing: /*i18n*/ { id: 'Road view is coming soon' },
-  sunComing: /*i18n*/ { id: 'The sun control is coming soon' },
-  heightComing: /*i18n*/ { id: 'The height view is coming soon' },
+  drawRoof: /*i18n*/ { id: 'Draw a roof' },
   roofNotSetUp: /*i18n*/ { id: '{place} · roof not set up yet' },
   roofNotSetUpNoPlace: /*i18n*/ { id: 'Roof not set up yet' },
   addObjects: /*i18n*/ { id: 'Add roof objects' },
+  objectsComing: /*i18n*/ { id: 'Adding roof objects is the next step. It is coming soon.' },
   noScene: /*i18n*/ { id: 'The 3D view cannot start on this device. Try another browser.' },
 } as const;
 
@@ -204,27 +192,19 @@ export function studioCanvasWords(t: T) {
     zoomOut: t(MAP_SURFACE.zoomOut),
     backToPin: t(CANVAS.backToPin),
     north: t(CANVAS.north),
-    /** The north arrow's one letter. */
-    northLetter: t(CANVAS.northLetter),
     /** The map's own name for a screen reader, with the keys that move it. */
     mapKeys: t(CANVAS.mapKeys),
     drawMyself: t(CANVAS.drawMyself),
     drawOnGrid: t(CANVAS.drawOnGrid),
-    setUpWithAi: t(CANVAS.setUpWithAi),
-    typeSize: t(CANVAS.typeSize),
-    roadView: t(CANVAS.roadView),
-    sun: t(CANVAS.sun),
-    heightView: t(CANVAS.heightView),
-    drawComing: t(CANVAS.drawComing),
-    aiComing: t(CANVAS.aiComing),
-    typeComing: t(CANVAS.typeComing),
-    roadComing: t(CANVAS.roadComing),
-    sunComing: t(CANVAS.sunComing),
-    heightComing: t(CANVAS.heightComing),
+    drawRoof: t(CANVAS.drawRoof),
     /** "Vishrambag, Sangli · roof not set up yet". */
     roofNotSetUp: (place: string | null) =>
       place === null ? t(CANVAS.roofNotSetUpNoPlace) : t(CANVAS.roofNotSetUp, { place }),
     addObjects: t(CANVAS.addObjects),
+    objectsComing: t(CANVAS.objectsComing),
+    ...studioRoofWords(t),
+    ...studioLengthWords(t),
+    ...studioHeightWords(t),
     noScene: t(CANVAS.noScene),
   };
 }

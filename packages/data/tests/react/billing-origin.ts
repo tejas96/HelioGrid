@@ -102,6 +102,8 @@ function projection(): SessionProjection {
       displayName: 'Rajesh Sharma',
       interfaceLanguage: 'en',
       unitPreference: 'metric',
+      studioHelpersOff: [],
+      numberEntry: 'slider',
     },
     membership: {
       tenantId: TENANT,

@@ -65,3 +65,73 @@ export function formatFineLength(
   });
   return `${centimetres}${NBSP}cm`;
 }
+
+const INCHES_PER_FOOT = 12;
+const SQUARE_FEET_PER_SQUARE_METRE = 1 / (METRES_PER_FOOT * METRES_PER_FOOT);
+/** Before a length read off a picture: it is about this long (`T-M05-002`). Never translated. */
+const ABOUT = '~';
+
+/** A length in whole feet and whole inches, the inches rounded and never 12. */
+export function feetAndInches(metres: number): { feet: number; inches: number } {
+  const inches = Math.round(metres * INCHES_PER_METRE);
+  return { feet: Math.floor(inches / INCHES_PER_FOOT), inches: inches % INCHES_PER_FOOT };
+}
+
+/** Feet and inches as a person types them in two boxes, held in metres. */
+export function metresOfFeetAndInches(feet: number, inches: number): number {
+  return (feet * INCHES_PER_FOOT + inches) / INCHES_PER_METRE;
+}
+
+/**
+ * A roof edge's length (`T-M05-002`): read off the picture, `~7.8 m` — about, to a decimetre; set
+ * by a person, `8.20 m` — to the centimetre. In feet, `26 ft 11 in` either way: a tape in feet
+ * reads whole inches.
+ */
+export function formatRoofLength(
+  pack: FormatPack,
+  metres: number,
+  system: MeasurementSystem,
+  traced: boolean,
+): string {
+  const about = traced ? ABOUT : '';
+  if (system === 'imperial') {
+    const { feet, inches } = feetAndInches(metres);
+    return `${about}${formatNumber(pack, feet)}${NBSP}ft ${formatNumber(pack, inches)}${NBSP}in`;
+  }
+  const digits = traced ? 1 : 2;
+  const value = formatNumber(pack, metres, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
+  return `${about}${value}${NBSP}m`;
+}
+
+/**
+ * A roof's height (`T-M05-002`): `3.0 m` — slid in 10 cm steps, so to the decimetre, and to the
+ * centimetre when typed so (`3.25 m`) — or in whole feet and inches.
+ */
+export function formatRoofHeight(
+  pack: FormatPack,
+  metres: number,
+  system: MeasurementSystem,
+): string {
+  if (system === 'imperial') return formatRoofLength(pack, metres, system, false);
+  // A height typed to the centimetre shows its centimetres: what is stored is what is shown.
+  const value = formatNumber(pack, metres, { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+  return `${value}${NBSP}m`;
+}
+
+/** An area held in square metres, whole, in the reader's system: `66 m²`, `706 sq ft`. */
+export function formatArea(
+  pack: FormatPack,
+  squareMetres: number,
+  system: MeasurementSystem,
+): string {
+  if (system === 'imperial') {
+    const feet = formatNumber(pack, squareMetres * SQUARE_FEET_PER_SQUARE_METRE, {
+      maximumFractionDigits: 0,
+    });
+    return `${feet}${NBSP}sq ft`;
+  }
+  return `${formatNumber(pack, squareMetres, { maximumFractionDigits: 0 })}${NBSP}m²`;
+}

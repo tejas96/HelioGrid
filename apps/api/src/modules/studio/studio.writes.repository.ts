@@ -1,6 +1,6 @@
 import type { CreateDesign, SaveSite } from '@heliogrid/contracts';
 import { type DbTransaction, design, type TenantPool } from '@heliogrid/db';
-import { type DesignActRefusal, type DesignMount, isClosed } from '@heliogrid/domain';
+import { type DesignActRefusal, type DesignMount, isClosed, roundPin } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, max, ne } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
@@ -13,6 +13,7 @@ import {
   leadWorkedOn,
   lockLeadInScope,
 } from '../crm/crm.public';
+import { drawingsFollowPin, storedPinOf } from './studio.site-drawings.repository';
 
 export type CreateOutcome =
   | { readonly outcome: 'not-found' }
@@ -140,8 +141,9 @@ export class StudioWritesRepository {
 
   /**
    * Site details, saved whole. The site's facts are the lead's, so they go through the lead's own
-   * edit path — each changed one a timeline entry; where the panels go is the design's. Sent again
-   * with what is stored, it writes nothing.
+   * edit path — each changed one a timeline entry; where the panels go is the design's. A moved pin
+   * takes every design's drawing with it (`drawingsFollowPin`). Sent again with what is stored, it
+   * writes nothing.
    */
   saveSite(
     reader: LeadReader,
@@ -157,7 +159,13 @@ export class StudioWritesRepository {
       const locked = await lockLeadInScope(tx, reader, leadId);
       if (locked === null) return { outcome: 'not-found' };
       if (isClosed(locked.lifecycle)) return { outcome: 'refused', refusal: 'host_closed' };
-      const { mount, capturedAt, name, address, pin, ...site } = body;
+      const { mount, capturedAt, name, address, pin, removeRoofs, ...site } = body;
+      // The drawings follow the pin first: a move that would leave roofs behind writes nothing.
+      const before = await storedPinOf(tx, tenantId, leadId);
+      const move = { before, after: roundPin(pin), remove: removeRoofs === true };
+      if (!(await drawingsFollowPin(tx, { tenantId, leadId }, move, act))) {
+        return { outcome: 'refused', refusal: 'roofs_off_site' };
+      }
       const edit = { ...site, siteName: name, siteAddress: address, sitePin: pin };
       await applyLeadEdit(tx, reader, leadId, edit, new Date(capturedAt), money, act);
       await tx

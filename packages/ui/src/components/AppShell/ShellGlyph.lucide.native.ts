@@ -66,6 +66,7 @@ export { default as IndianRupeeIcon } from 'lucide-react-native/icons/indian-rup
 export { default as InfoIcon } from 'lucide-react-native/icons/info';
 export { default as ItalicIcon } from 'lucide-react-native/icons/italic';
 export { default as KeyIcon } from 'lucide-react-native/icons/key';
+export { default as KeyboardIcon } from 'lucide-react-native/icons/keyboard';
 export { default as LayersIcon } from 'lucide-react-native/icons/layers';
 export { default as LayoutGridIcon } from 'lucide-react-native/icons/layout-grid';
 export { default as LinkIcon } from 'lucide-react-native/icons/link';
@@ -74,6 +75,7 @@ export { default as ListOrderedIcon } from 'lucide-react-native/icons/list-order
 export { default as LocateFixedIcon } from 'lucide-react-native/icons/locate-fixed';
 export { default as LockIcon } from 'lucide-react-native/icons/lock';
 export { default as LogOutIcon } from 'lucide-react-native/icons/log-out';
+export { default as MagnetIcon } from 'lucide-react-native/icons/magnet';
 export { default as MapIcon } from 'lucide-react-native/icons/map';
 export { default as MapPinIcon } from 'lucide-react-native/icons/map-pin';
 export { default as MapPinCheckIcon } from 'lucide-react-native/icons/map-pin-check';
@@ -82,7 +84,7 @@ export { default as MessageCircleIcon } from 'lucide-react-native/icons/message-
 export { default as MinusIcon } from 'lucide-react-native/icons/minus';
 export { default as MonitorIcon } from 'lucide-react-native/icons/monitor';
 export { default as MoonIcon } from 'lucide-react-native/icons/moon';
-export { default as Navigation2Icon } from 'lucide-react-native/icons/navigation-2';
+export { default as MoveIcon } from 'lucide-react-native/icons/move';
 export { default as PackageIcon } from 'lucide-react-native/icons/package';
 export { default as PaletteIcon } from 'lucide-react-native/icons/palette';
 export { default as PanelLeftIcon } from 'lucide-react-native/icons/panel-left';

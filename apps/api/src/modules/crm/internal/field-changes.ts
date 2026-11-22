@@ -1,4 +1,4 @@
-import { type EditLead, type LeadField, leadFieldSchema } from '@heliogrid/contracts';
+import { type LeadField, type LeadFields, leadFieldSchema } from '@heliogrid/contracts';
 import { minorUnits, minorUnitsOfDecimal, pinRecordText } from '@heliogrid/domain';
 import { minorUnitsToDecimal } from '@heliogrid/domain/server';
 import { sitePinOf } from './site-pin';
@@ -66,7 +66,8 @@ export function fieldTextsOf(values: LeadFieldValues, minorUnitDigits: number): 
 }
 
 /** The fields one edit sends, without the moment it was made. */
-export type LeadFieldEdit = Omit<EditLead, 'capturedAt'>;
+/** The fields one edit sets: a person's lead edit, or the studio's Site details with its pin. */
+export type LeadFieldEdit = Partial<LeadFields>;
 
 /**
  * What an edit sends, as timeline texts: a bill re-scaled so `1500` and `1500.00` are one amount.

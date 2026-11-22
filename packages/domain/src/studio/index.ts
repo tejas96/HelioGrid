@@ -11,11 +11,20 @@ export {
 } from './coordinates';
 export {
   EMPTY_STUDIO_DOCUMENT,
+  GROUND_REACH_M,
   type NoPictureReason,
   PICTURE_CHOICES,
+  PICTURE_SCALE_MAX,
+  PICTURE_SCALE_MIN,
   type PictureChoice,
   type PictureStamp,
   pictureNewerThanDrawn,
+  ROOF_EDGE_TRUSTS,
+  ROOFS_MAX,
+  type Roof,
+  type RoofEdgeTrust,
+  type RoofHeight,
+  type SetEdgeTrust,
   type ShownPicture,
   SKY_PICTURE_GAPS,
   SKY_PICTURE_SOURCES,
@@ -25,6 +34,8 @@ export {
   STUDIO_DOCUMENT_SCHEMA,
   type StudioDocument,
   shownPicture,
+  VALUE_SETTERS,
+  type ValueSetter,
 } from './document';
 export {
   EDIT_TURN_RENEW_SECONDS,
@@ -33,7 +44,15 @@ export {
   editTurnOpenTo,
   editTurnUntil,
 } from './edit-turn';
-export { coordinateOf, type GroundPoint, groundOf } from './ground';
+export {
+  FOCUS_JOBS,
+  type FocusFacts,
+  type FocusJob,
+  type FocusParts,
+  focusJobOf,
+  focusOf,
+} from './focus';
+export { coordinateOf, type GroundBox, type GroundPoint, groundOf } from './ground';
 export {
   type History,
   historyAfter,
@@ -41,6 +60,144 @@ export {
   historyRedone,
   historyUndone,
 } from './history';
+export {
+  type KeepOff,
+  LABEL_END_ROOM_PX,
+  LABEL_GAP_PX,
+  LABEL_OUT_PX,
+  type LabelAsk,
+  type LabelPlace,
+  labelLayoutOf,
+  type RoofLabelAsk,
+  type ScreenPoint,
+} from './label-layout';
+export type {
+  DragResult,
+  EditRefusal,
+  EditResult,
+  TurnResult,
+} from './roof-check';
+export {
+  type DraftClose,
+  type DraftRefusal,
+  type DraftTap,
+  draftClose,
+  draftClosesAt,
+  draftGhost,
+  draftTap,
+} from './roof-draw';
+export {
+  cornerAdded,
+  cornerDragged,
+  cornerNearest,
+  cornerRemoved,
+  KEY_MOVE_M,
+  KEY_TURN_DEGREES,
+  roofMoved,
+  roofTurned,
+  TURN_SNAP_DEGREES,
+} from './roof-edit';
+export {
+  entryMetres,
+  entryOf,
+  handMetres,
+  LENGTH_SLIDE_SHARE,
+  type LengthEntry,
+  type LengthInHand,
+  type LengthSlide,
+  lengthSlide,
+  sizingResult,
+  stepRefused,
+  tracedLength,
+} from './roof-entry';
+export {
+  ROOF_HEIGHT_MAX_M,
+  ROOF_HEIGHT_MIN_M,
+  ROOF_HEIGHT_SLIDER_MAX_M,
+  ROOF_HEIGHT_SLIDER_MIN_M,
+  ROOF_HEIGHT_STEP_M,
+  type RoofHeightShown,
+  roofHeightDragged,
+  roofHeightKept,
+  roofHeightOf,
+  roofHeightReset,
+  roofHeightSet,
+  roofHeightStepped,
+} from './roof-height';
+export {
+  LENGTH_ASK_SHARE,
+  LENGTH_MAX_M,
+  LENGTH_MIN_M,
+  lengthAsks,
+  lengthIsFirst,
+  lengthSet,
+} from './roof-length';
+export {
+  between,
+  CORNER_GAP_M,
+  cornerAfter,
+  cornerAngle,
+  edgeLengths,
+  edgesCross,
+  innerPoint,
+  pointInside,
+  ROOF_CORNERS_MAX,
+  ROOF_CORNERS_MIN,
+  type RoofHandles,
+  roofArea,
+  roofHandles,
+  roofMiddle,
+  roofsBox,
+  roofsOverlap,
+} from './roof-shape';
+export { type RoofSheetView, roofHitAt, roofSheetOf } from './roof-sheet';
+export {
+  draftSpot,
+  type Guide,
+  longSideOf,
+  magnetOf,
+  NO_SNAP_TARGETS,
+  type RoofSnap,
+  SNAP_M,
+  type SnapOwner,
+  type Snapped,
+  type SnapTargets,
+  snapTargetsOf,
+} from './roof-snap';
+export { gripCorner, roofStepAfter } from './roof-step';
+export {
+  type CornerRef,
+  ROOF_STEP_START,
+  type RoofGrip,
+  type RoofSaid,
+  type RoofStepEvent,
+  type RoofStepOutcome,
+  type RoofStepState,
+} from './roof-step-state';
+export {
+  type DraftEdge,
+  type DraftView,
+  draftViewOf,
+  dragBeforeOf,
+  dragTagAt,
+  type EdgeView,
+  guidesOf,
+  type HeldCircle,
+  handlesRoofOf,
+  heldCircleOf,
+  heldCornerOf,
+  pickedAngleOf,
+  type RoofBar,
+  type RoofMarksView,
+  roofBarOf,
+  roofMarksOf,
+  roofStepShown,
+} from './roof-step-view';
+export {
+  edgeTier,
+  roofAreaTier,
+  scaleTierOf,
+} from './roof-trust';
 export { type ScaleBar, scaleBarOf } from './scale-bar';
 export {
   areaOfPlace,
@@ -63,6 +220,7 @@ export {
   sitePinMoved,
   siteSaveOf,
 } from './site-form';
+export { type DrawingsAfterPinMove, drawingsAfterPinMove, PIN_FIX_REACH_M } from './site-moved';
 export {
   STEP_LOCKS,
   STUDIO_STEPS,
@@ -86,5 +244,10 @@ export {
   type DesignActRefusal,
   type DesignMount,
   type DesignStatus,
+  isStudioHelper,
+  NUMBER_ENTRIES,
+  type NumberEntry,
   SITE_NAME_MAX,
+  STUDIO_HELPERS,
+  type StudioHelper,
 } from './vocabulary';

@@ -243,6 +243,7 @@ export type { FieldCommits } from './primitives/FieldCommits';
 export { FieldCommitsProvider, useFieldCommits } from './primitives/FieldCommits';
 export type { FocusAfter, FocusHandle, LeavingPress } from './primitives/FocusAfter';
 export { landFocusOn, useFocusAfter } from './primitives/FocusAfter';
+export { tapHaptic } from './primitives/haptic';
 export type { KeyboardFrameProps, KeyboardHostProps } from './primitives/Keyboard';
 export {
   closeKeyboard,

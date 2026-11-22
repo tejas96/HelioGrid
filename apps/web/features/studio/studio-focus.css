@@ -1,0 +1,106 @@
+/* Focus mode and the drawing magnet (`T-M05-002`, part b). */
+/* Focus mode (`T-M05-002`, part b): a part the job in hand does not use fades out and keeps its
+   place, so nothing else moves; it comes back when the job ends. Set aside, it takes no tap. */
+.hg-studio-focus {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  opacity: 1;
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+
+.hg-studio-focus[data-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hg-studio-tools .hg-studio-focus[data-hidden="true"] > * {
+  pointer-events: none;
+}
+
+/* The bar and the head's parts fade with focus mode, as the tools do. */
+.hg-studio-bar,
+.hg-studio-head-part {
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+
+.hg-studio-bar[data-hidden="true"],
+.hg-studio-head-part[data-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* While a roof is drawn the pencil is filled with ink: the mode is on, and the pencil ends it. */
+.hg-studio-tools .hg-icon-button[data-variant="dark"] {
+  background: var(--text-primary);
+  color: var(--text-inverse);
+}
+
+/* While drawing, and just after a close: one slim pill at the foot, no sentence. */
+.hg-studio-bar[data-kind="pill"] {
+  gap: var(--sp-2);
+  padding: var(--sp-1);
+}
+
+/* The magnet is pressed while on: the primary fill, so on and off read at a glance. */
+.hg-studio-magnet .hg-icon-button[aria-pressed="true"] {
+  background: var(--action-primary);
+  color: var(--text-inverse);
+}
+
+.hg-studio-magnet .hg-icon-button[aria-pressed="false"] {
+  color: var(--text-secondary);
+}
+
+/* A round tool in the bar keeps its size; only the worded buttons share the row. */
+.hg-studio-bar-acts > .hg-studio-magnet,
+.hg-studio-bar-acts > .hg-icon-button {
+  flex: none;
+}
+
+/* A pick of the magnet the server refused: said in the pill, with its retry. */
+.hg-studio-pill-refused {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding-inline: var(--sp-2) 0;
+  color: var(--danger-text);
+  font-size: var(--fs-caption);
+}
+
+/* Before the first corner: one line under the head that says what to do. */
+.hg-studio-hint {
+  grid-column: 1 / -1;
+  justify-self: center;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  pointer-events: none;
+}
+
+/* On a phone the pill stays slim and centred, one row, as on a desktop. */
+@media (width < 968px) {
+  .hg-studio-bar[data-kind="pill"] {
+    justify-self: center;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-1);
+    border-radius: var(--r-pill);
+  }
+
+  .hg-studio-bar[data-kind="pill"] .hg-studio-bar-acts {
+    flex-wrap: nowrap;
+  }
+
+  .hg-studio-bar[data-kind="pill"] .hg-studio-bar-acts > * {
+    flex: none;
+  }
+
+  .hg-studio-bar[data-kind="pill"] .hg-studio-bar-acts .hg-button {
+    inline-size: auto;
+  }
+}
