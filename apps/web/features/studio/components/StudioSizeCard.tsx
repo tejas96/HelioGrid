@@ -58,6 +58,7 @@ function SizeRow({
             label={label}
             labelSpokenOnly
             format={(next) => format.roofLength(next, units, false)}
+            mark={card.slide.mark[which]}
             words={sliderWords(t)}
             onInput={(next) => studio.moves.slideSize(which, next)}
           />

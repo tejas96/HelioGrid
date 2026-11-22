@@ -66,7 +66,15 @@ function SteppedLength({
     </Pressable>
   );
   return (
-    <span className="hg-roof-len hg-roof-step" data-kind={trust}>
+    <span
+      className="hg-roof-len hg-roof-step"
+      data-kind={trust}
+      // A key's press is never a pointer's: a step that went off under the finger left no click
+      // to clear the mark, and the next key would be lost.
+      onKeyDownCapture={() => {
+        byPointer.current = false;
+      }}
+    >
       {step(-1)}
       <span className="hg-roof-len-num">{text}</span>
       {trust === 'measured' ? <ShellGlyph name="check" size="xs" tone="current" /> : null}

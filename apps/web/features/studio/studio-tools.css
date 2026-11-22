@@ -45,11 +45,13 @@
   place-items: center;
   flex: none;
   pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-standard);
   filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 70%, transparent));
 }
 
+/* It steps aside as the other parts of focus mode do: a fade, never a cut. */
 .hg-studio-compass[data-off="true"] {
-  visibility: hidden;
+  opacity: 0;
 }
 
 .hg-studio-needle {

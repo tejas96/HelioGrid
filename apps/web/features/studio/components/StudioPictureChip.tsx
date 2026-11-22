@@ -76,11 +76,33 @@ export function StudioPictureChip({
   const list = useId();
   useEffect(() => {
     if (!open) return;
+    const radios = () =>
+      Array.from(
+        holder.current?.querySelectorAll<HTMLElement>('[role="radio"]:not(:disabled)') ?? [],
+      );
+    // The menu opens on the picture shown, as a radio group does; the arrows move between pictures.
+    const checked = holder.current?.querySelector<HTMLElement>(
+      '[role="radio"][aria-checked="true"]',
+    );
+    (checked ?? radios()[0])?.focus();
     const away = (event: PointerEvent) => {
       if (!holder.current?.contains(event.target as Node)) setOpen(false);
     };
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape') {
+        // The Esc is the menu's: the studio's own Esc leaves the job in hand alone.
+        event.preventDefault();
+        setOpen(false);
+        holder.current?.querySelector<HTMLElement>('.hg-studio-chip')?.focus();
+        return;
+      }
+      const by = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[event.key];
+      if (by === undefined) return;
+      const all = radios();
+      const at = all.indexOf(document.activeElement as HTMLElement);
+      if (at === -1) return;
+      event.preventDefault();
+      all[(at + by + all.length) % all.length]?.focus();
     };
     document.addEventListener('pointerdown', away);
     document.addEventListener('keydown', onKey);

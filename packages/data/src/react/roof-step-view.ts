@@ -9,6 +9,7 @@ import type {
   LengthSlide,
   labelLayoutOf,
   NumberEntry,
+  ProvenanceTier,
   RoofBar,
   RoofGrip,
   RoofHandles,
@@ -100,17 +101,29 @@ export interface SizeCardView {
     readonly lengths: readonly number[];
     readonly middle: GroundPoint;
     readonly area: number;
+    /** Each length no person set yet — the market's start size — reads as "about". */
+    readonly about: readonly boolean[];
+    /** The area's tier: `assumed` until both numbers are set (`F8-01`). */
+    readonly tier: ProvenanceTier;
   } | null;
   /** The preview cannot stand there: it is drawn in the error colour. */
   readonly previewBad: boolean;
-  /** The sliders' ends and step, in metres. */
-  readonly slide: { readonly min: number; readonly max: number; readonly step: number };
+  /** The sliders' ends and step, in metres, and the market's start size marked on each track. */
+  readonly slide: {
+    readonly min: number;
+    readonly max: number;
+    readonly step: number;
+    readonly mark: { readonly length: number; readonly width: number };
+  };
   /**
    * The numbers are in boxes: the person's pick, or a size past the sliders' ends, which a slider
    * would cut. On a phone the keyboard then covers the foot, and Place roof moves into the card.
    */
   readonly boxes: boolean;
-  /** A size past the sliders' ends: the switch back to them rests until it is between them. */
+  /**
+   * A number the sliders cannot show — past their ends, or not a number yet: the switch back to
+   * them rests until the boxes hold a length between the ends.
+   */
   readonly outside: boolean;
 }
 

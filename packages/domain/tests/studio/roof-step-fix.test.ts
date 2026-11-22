@@ -112,6 +112,7 @@ describe('the roof step: fixing the shape', () => {
       bad: false,
       sizing: false,
       live: null,
+      liveHeld: null,
       picked: 0,
     });
     expect(roofBarOf(ROOF_STEP_START, EMPTY_STUDIO_DOCUMENT, true, 'metric')).toEqual({
@@ -173,5 +174,25 @@ describe('the roof step: a length in the box is kept by the next act', () => {
     );
     expect(commits).toBe(0);
     expect(state.kind === 'sizing' && state.asking).toBe(true);
+  });
+});
+
+describe('a length that would change a set one names it by its length (T-M05-002)', () => {
+  it('the 8 m typed on the far side holds; the bar says which', () => {
+    const roof = drawn.roofs[0];
+    if (roof === undefined) throw new Error('no roof');
+    const typed = {
+      ...drawn,
+      roofs: [{ ...roof, edges: ['traced', 'traced', 'typed', 'traced'] }],
+    };
+    const { state, document } = run(
+      [
+        { kind: 'pick_length', roof: 0, edge: 0, system: 'metric' },
+        { kind: 'type', entry: { main: '9', inches: '', measured: false } },
+      ],
+      typed as typeof drawn,
+    );
+    const bar = roofBarOf(state, document, false, 'metric');
+    expect(bar).toMatchObject({ kind: 'roofs', live: 'held_length', liveHeld: 8 });
   });
 });

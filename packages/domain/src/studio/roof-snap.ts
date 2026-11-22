@@ -85,6 +85,12 @@ export interface Guide {
   readonly way: GroundPoint;
 }
 
+/** A guide through `through`, running `way`, scaled to one metre. */
+export function guideOf(through: GroundPoint, way: GroundPoint): Guide {
+  const reach = Math.hypot(way.east, way.north) || 1;
+  return { through, way: { east: way.east / reach, north: way.north / reach } };
+}
+
 export interface Snapped {
   readonly point: GroundPoint;
   readonly snap: RoofSnap | null;

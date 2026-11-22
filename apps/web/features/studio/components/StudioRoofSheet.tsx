@@ -33,8 +33,7 @@ function HeightControls({
   const format = useFormat();
   const { moves } = studio;
   const { height, slide } = sheet;
-  const outside = height.metres < slide.min || height.metres > slide.max;
-  const typing = studio.numberEntry === 'box' || outside;
+  const typing = studio.numberEntry === 'box' || sheet.outside;
   const byPerson = height.setBy === 'person';
   return (
     <>
@@ -119,7 +118,8 @@ export function StudioRoofSheet({
     if (act() !== false) landFocusOn(map);
   };
   const editable = studio.editing.kind === 'editor';
-  const typing = studio.numberEntry === 'box';
+  // A height past the slider's ends shows in the box: the switch says so, and rests there.
+  const typing = studio.numberEntry === 'box' || sheet.outside;
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Escape') closing(closed)();
     if (event.key === 'Enter' && event.target instanceof HTMLInputElement) moves.keepHeight();
@@ -154,6 +154,7 @@ export function StudioRoofSheet({
               label={typing ? words.slideHeight : words.typeHeight}
               variant="ghost"
               pressed={typing}
+              disabled={sheet.outside}
               onClick={() => moves.chooseNumberEntry(typing ? 'slider' : 'box')}
             >
               <ShellGlyph name="keyboard" size="md" />

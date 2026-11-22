@@ -59,7 +59,7 @@ function roofsStatus(
   shown: RoofWordsShown,
 ): TranslatedText {
   const { words } = facts;
-  if (bar.live !== null) return words.editRefusal(bar.live, shown);
+  if (bar.live !== null) return words.editRefusal(bar.live, shown, bar.liveHeld);
   if (facts.crowded && facts.studio.roofStep.kind === 'dragging') return words.dragCrowded;
   // Undo and Redo name themselves in every view.
   const kind = bar.said?.kind;

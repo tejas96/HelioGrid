@@ -152,14 +152,14 @@ export function StudioToolRail({
               {
                 key: 'metric',
                 label: words.metres,
-                meta: 'm',
+                meta: words.unitMetres,
                 selected: units === 'metric',
                 onSelect: () => onUnits('metric'),
               },
               {
                 key: 'imperial',
                 label: words.feet,
-                meta: 'ft',
+                meta: words.unitFeet,
                 selected: units === 'imperial',
                 onSelect: () => onUnits('imperial'),
               },

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { entryOf, handMetres, lengthSlide, sizingResult } from '../../src/studio/roof-entry';
+import {
+  entryOf,
+  entryRead,
+  handMetres,
+  lengthSlide,
+  pairOf,
+  sizingResult,
+} from '../../src/studio/roof-entry';
 import { edgeLengths } from '../../src/studio/roof-shape';
 import { CLOSE, drawn, p, run } from './roof-step-run';
 
@@ -52,5 +59,47 @@ describe('m or ft alone moves nothing (T-M05-002)', () => {
     const metres = handMetres(state, 'imperial');
     expect(metres).toBeCloseTo(13.3812, 6);
     expect(entryOf(metres ?? 0, 'metric', false).main).toBe('13.38');
+  });
+});
+
+const box = (main: string, inches = '') => ({ main, inches, measured: false });
+
+describe('a box reads what a person in the market types (T-M05-002)', () => {
+  it.each([
+    // typed, system → metres, or null when refused
+    ['13,2', 'metric', 13.2],
+    ['13,25', 'metric', 13.25],
+    // A comma before three digits groups thousands; a length is never that long: refused.
+    ['1,200', 'metric', null],
+    ['13,2.5', 'metric', null],
+    // Devanagari digits, as a Hindi or Marathi keyboard types them.
+    ['१३.२', 'metric', 13.2],
+    ['१३,२', 'metric', 13.2],
+  ] as const)('%j in %s', (text, system, metres) => {
+    const read = entryRead(box(text), system);
+    if (metres === null) expect(read).toEqual({ kind: 'bad' });
+    else expect(read).toEqual({ kind: 'metres', metres });
+  });
+
+  it.each([
+    // feet box, inch box → read
+    ['40', '11', true],
+    ['40', '12', false],
+    ['40', '30', false],
+    ['40\'30"', '', false],
+    ['40.5\'6"', '', false],
+    ["40.5'", '', true],
+    ['40.5', '6', false],
+    ['40.5', '', true],
+    ['४०', '६', true],
+  ])('%j ft %j in reads: %s', (feet, inches, reads) => {
+    expect(entryRead(box(feet, inches), 'imperial').kind === 'metres').toBe(reads);
+  });
+
+  it.each([
+    ['13,2x8,6', ['13.2', '8.6']],
+    ['१३.२x८.६', ['13.2', '8.6']],
+  ])('one box %j is a length and a width', (text, pair) => {
+    expect(pairOf(text)).toEqual(pair);
   });
 });

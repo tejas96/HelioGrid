@@ -28,6 +28,8 @@ export interface RoofSheetView {
   readonly systemMetres: number;
   /** The slider's ends and step. */
   readonly slide: { readonly min: number; readonly max: number; readonly step: number };
+  /** The height is past the slider's ends: only the box can show it, and the switch rests on it. */
+  readonly outside: boolean;
 }
 
 /** The sheet of roof `index`, its height in hand shown; `null` when there is no such roof. */
@@ -40,17 +42,20 @@ export function roofSheetOf(
   const roof = document.roofs[index];
   if (roof === undefined) return null;
   const stands = roofHeightOf(roof, storeyHeightM);
+  const height: RoofHeightShown =
+    inHand === null ? stands : { metres: inHand, setBy: 'person', tier: 'estimated' };
   return {
     roof: index,
     area: roofArea(roof.corners),
     areaTier: roofAreaTier(roof, scaleTierOf(document)),
-    height: inHand === null ? stands : { metres: inHand, setBy: 'person', tier: 'estimated' },
+    height,
     systemMetres: storeyHeightM,
     slide: {
       min: ROOF_HEIGHT_SLIDER_MIN_M,
       max: ROOF_HEIGHT_SLIDER_MAX_M,
       step: ROOF_HEIGHT_STEP_M,
     },
+    outside: height.metres < ROOF_HEIGHT_SLIDER_MIN_M || height.metres > ROOF_HEIGHT_SLIDER_MAX_M,
   };
 }
 

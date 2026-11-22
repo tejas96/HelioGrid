@@ -92,11 +92,6 @@ export {
   cornerDragged,
   cornerNearest,
   cornerRemoved,
-  KEY_MOVE_M,
-  KEY_TURN_DEGREES,
-  roofMoved,
-  roofTurned,
-  TURN_SNAP_DEGREES,
 } from './roof-edit';
 export {
   type EntryRead,
@@ -139,6 +134,13 @@ export {
   lengthSizesPicture,
   onPicture,
 } from './roof-length';
+export {
+  KEY_MOVE_M,
+  KEY_TURN_DEGREES,
+  roofMoved,
+  roofTurned,
+  TURN_SNAP_DEGREES,
+} from './roof-move';
 export {
   between,
   CORNER_GAP_M,
@@ -254,6 +256,7 @@ export {
   type StudioStep,
   stepRail,
 } from './steps';
+export { STUDIO_CHANGES, type StudioChange, studioChangeOf } from './studio-change';
 export { type SunPosition, sceneSunAt, sunAt } from './sun';
 export {
   OPENING_VIEW,

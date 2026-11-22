@@ -116,11 +116,11 @@ describe('Undo and Redo: the bar names them, the roof stays picked (T-M05-002)',
     const { state } = run(
       [
         { kind: 'tap', at: p(4, 3), system: 'metric' },
-        { kind: 'history', undone },
+        { kind: 'history', undone, change: 'shape' },
       ],
       drawn,
     );
-    expect(state).toEqual({ kind: 'idle', roof: 0, picked: null, said: { kind } });
+    expect(state).toEqual({ kind: 'idle', roof: 0, picked: null, said: { kind, change: 'shape' } });
   });
 });
 

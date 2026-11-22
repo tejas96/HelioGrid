@@ -86,3 +86,15 @@ describe('a step of the height stays on the slider’s track (T-M05-002)', () =>
     expect(roofHeightStepped(from, by)).toBeCloseTo(to, 6);
   });
 });
+
+describe('a height past the slider’s ends is typed, and the switch says so (T-M05-002)', () => {
+  it.each([
+    // in hand → outside the slider
+    [9, false],
+    [20, false],
+    [25, true],
+    [1.5, true],
+  ])('%s m: %s', (inHand, outside) => {
+    expect(roofSheetOf(design, 0, 3, inHand)?.outside).toBe(outside);
+  });
+});

@@ -3,11 +3,14 @@ import {
   entryRead,
   type GroundBox,
   type GroundPoint,
+  lengthHeld,
   type MeasurementSystem,
   type NumberEntry,
+  pairOf,
   type RoofStepEvent,
   type RoofStepState,
   roofArea,
+  roofAreaTier,
   roofMiddle,
   roofsBox,
   type SizeCardArrival,
@@ -19,6 +22,7 @@ import {
   type TypedSize,
   typedCorners,
   typedResult,
+  typedRoof,
 } from '@heliogrid/domain';
 import { type RefObject, useEffect, useRef } from 'react';
 import type { SizeCardView } from './roof-step-view';
@@ -59,12 +63,19 @@ export function sizeCardIn(
     : null;
 }
 
-function previewOf(corners: readonly GroundPoint[]): NonNullable<SizeCardView['preview']> {
+function previewOf(
+  corners: readonly GroundPoint[],
+  set: TypedSize['set'],
+): NonNullable<SizeCardView['preview']> {
+  // The roof as Place roof would stand it: its lengths' trust and its area's tier.
+  const roof = typedRoof(corners, 'preview', set);
   return {
     corners,
     lengths: edgeLengths(corners),
     middle: roofMiddle(corners),
     area: roofArea(corners),
+    about: roof.edges.map((trust) => !lengthHeld(trust)),
+    tier: roofAreaTier(roof, null),
   };
 }
 
@@ -79,14 +90,19 @@ function sizeCardOf(
   const width = entryRead(size.width, units);
   const lengthM = length.kind === 'metres' ? length.metres : null;
   const widthM = width.kind === 'metres' ? width.metres : null;
-  const outside = [lengthM, widthM].some(
-    (m) => m !== null && (m < TYPED_SLIDE_MIN_M || m > TYPED_SLIDE_MAX_M),
-  );
+  // A pair half typed, or a box that is not a number, has nothing a slider could show.
+  const halfPair = size.pair !== null && pairOf(size.pair) === null;
+  const outside =
+    halfPair ||
+    length.kind === 'bad' ||
+    width.kind === 'bad' ||
+    [lengthM, widthM].some((m) => m !== null && (m < TYPED_SLIDE_MIN_M || m > TYPED_SLIDE_MAX_M));
   const result = typedResult(size, document, units);
   const refusal = result.kind === 'refused' ? result.refusal : null;
   // A rectangle that cannot stand still shows where it would, in the error colour — unless its
   // numbers are unreadable or out of bounds, when there is nothing true to draw.
   const drawable =
+    !halfPair &&
     lengthM !== null &&
     widthM !== null &&
     (refusal === null || refusal.kind === 'overlaps' || refusal.kind === 'too_far');
@@ -98,9 +114,16 @@ function sizeCardOf(
     pair: size.pair,
     placeable: result.kind === 'ready',
     refusal,
-    preview: drawable ? previewOf(typedCorners(size.place, document.roofs, lengthM, widthM)) : null,
+    preview: drawable
+      ? previewOf(typedCorners(size.place, document.roofs, lengthM, widthM), size.set)
+      : null,
     previewBad: refusal !== null,
-    slide: { min: TYPED_SLIDE_MIN_M, max: TYPED_SLIDE_MAX_M, step: SIZE_STEP[units] },
+    slide: {
+      min: TYPED_SLIDE_MIN_M,
+      max: TYPED_SLIDE_MAX_M,
+      step: SIZE_STEP[units],
+      mark: size.start,
+    },
     boxes: numberEntry === 'box' || outside,
     outside,
   };

@@ -6,6 +6,7 @@ import type { DraftRefusal } from './roof-draw';
 import type { LengthEntry, LengthInHand } from './roof-entry';
 import type { RoofSnap, Snapped } from './roof-snap';
 import type { TypedSize } from './roof-type';
+import type { StudioChange } from './studio-change';
 
 /**
  * The roof step's vocabulary (`T-M05-002`, part b): its states, the events that move it, and what
@@ -38,9 +39,9 @@ export type RoofSaid =
   | { readonly kind: 'corner_removed'; readonly at: GroundPoint }
   | { readonly kind: 'roof_moved' }
   | { readonly kind: 'roof_turned'; readonly degrees: number }
-  /** Undo or Redo walked the design's history: the bar names it. */
-  | { readonly kind: 'undone' }
-  | { readonly kind: 'redone' }
+  /** Undo or Redo walked the design's history: the bar names it, and what it changed. */
+  | { readonly kind: 'undone'; readonly change: StudioChange }
+  | { readonly kind: 'redone'; readonly change: StudioChange }
   /** A roof picked from its 3D sheet, to fix its outline here: its height, in metres. */
   | { readonly kind: 'roof_picked'; readonly roof: number; readonly metres: number }
   /** A roof deleted from the bar; Undo brings it back. */
@@ -185,7 +186,7 @@ export type RoofStepEvent =
   | { readonly kind: 'release' }
   | { readonly kind: 'pick_corner'; readonly corner: CornerRef | null }
   /** Undo or Redo with nothing in hand: the design steps back or on. */
-  | { readonly kind: 'history'; readonly undone: boolean }
+  | { readonly kind: 'history'; readonly undone: boolean; readonly change: StudioChange }
   /** Edit outline in 2D, from a roof's 3D sheet: that roof is picked; `metres` is its height. */
   | { readonly kind: 'pick_roof'; readonly roof: number; readonly metres: number }
   | { readonly kind: 'remove_corner' };

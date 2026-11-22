@@ -250,15 +250,24 @@ export type RoofBar =
       readonly sizing: boolean;
       /** The live refusal of the length in the box, or of the drag in hand. */
       readonly live: EditRefusal | null;
+      /** The set length a `held_length` refusal holds to, in metres, named by it; else `null`. */
+      readonly liveHeld: number | null;
       /** The roof picked, which the trash deletes; `null` with none picked. */
       readonly picked: number | null;
     };
 
-function liveRefusal(state: RoofStepState, system: MeasurementSystem): EditRefusal | null {
-  if (state.kind === 'dragging') return state.drag.fault;
-  if (state.kind !== 'sizing') return null;
+function liveRefusal(
+  state: RoofStepState,
+  system: MeasurementSystem,
+): { readonly refusal: EditRefusal | null; readonly held: number | null } {
+  if (state.kind === 'dragging') return { refusal: state.drag.fault, held: null };
+  if (state.kind !== 'sizing') return { refusal: null, held: null };
   const result = sizingResult(state, system);
-  return result.kind === 'refused' ? result.refusal : null;
+  if (result.kind !== 'refused') return { refusal: null, held: null };
+  const edge = result.refusal === 'held_length' ? result.edge : undefined;
+  const corners = state.base.roofs[state.roof]?.corners ?? [];
+  const held = edge === undefined ? null : (edgeLengths(corners)[edge] ?? null);
+  return { refusal: result.refusal, held };
 }
 
 export function roofBarOf(
@@ -288,7 +297,7 @@ export function roofBarOf(
   const said = state.kind === 'idle' ? state.said : null;
   if (shown.roofs.length === 0) return { kind: 'start', noPicture, said };
   const scale = scaleTierOf(shown);
-  const live = liveRefusal(state, system);
+  const { refusal: live, held: liveHeld } = liveRefusal(state, system);
   const picked = state.kind === 'idle' ? pickedRoofOf(state, shown) : null;
   return {
     kind: 'roofs',
@@ -298,6 +307,7 @@ export function roofBarOf(
     bad: live !== null || said?.kind === 'went_back' || said?.kind === 'refused',
     sizing: state.kind === 'sizing',
     live,
+    liveHeld,
     picked,
   };
 }

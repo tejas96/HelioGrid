@@ -37,6 +37,10 @@ export function typingEntered(
     length: event.length ?? state.length,
     width: event.width ?? state.width,
     pair: null,
+    set: {
+      length: state.set.length || event.length !== undefined,
+      width: state.set.width || event.width !== undefined,
+    },
   });
 }
 
@@ -73,7 +77,7 @@ export function typingPlaced(
     ),
     commit: {
       ...document,
-      roofs: [...document.roofs, typedRoof(result.corners, event.id)],
+      roofs: [...document.roofs, typedRoof(result.corners, event.id, state.set)],
       drawnOn: first ? event.stamp : document.drawnOn,
     },
   };
