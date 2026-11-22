@@ -63,10 +63,6 @@ export interface StudioMoves extends RoofMoves, RoofSheetMoves {
   see(view: StudioView): void;
   /** The three pictures shown or put away. */
   showPictures(open: boolean): void;
-  /** Add roof objects: the next step, a note until it is built. */
-  toObjects(): void;
-  /** The note that the next step is coming, put away. */
-  objectsSeen(): void;
 }
 
 export interface StudioScreen extends RoofStepView, RoofSheetState {
@@ -92,10 +88,8 @@ export interface StudioScreen extends RoofStepView, RoofSheetState {
   readonly sun: SunPosition | null;
   /** The ground the design's roofs cover, which the camera frames; `null` before a roof. */
   readonly fit: GroundBox | null;
-  /** "See it in 3D" is offered once, until the 3D view is first seen. */
+  /** The 3D switch is marked new until the 3D view is first seen. */
   readonly offer3d: boolean;
-  /** Add roof objects was pressed: its note shows. */
-  readonly objectsNote: boolean;
   /** Which parts show for the job in hand, on a phone-width screen or a wider one (focus mode). */
   focus(phone: boolean): FocusParts;
   readonly moves: StudioMoves;
@@ -154,7 +148,6 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const [view, setView] = useState<StudioView>(OPENING_VIEW);
   const units = session.user?.unitPreference ?? 'metric';
   const [seen3d, setSeen3d] = useState(false);
-  const [objectsNote, setObjectsNote] = useState(false);
   const [picturesOpen, setPicturesOpen] = useState(false);
   const pin = ready ? read.value.site.pin : null;
   // The sun is read once for the opening: the scene does not move with the clock.
@@ -232,7 +225,6 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     ...sheet.state,
     ...withSheet(roof.view.heights, fit, roofSheet, document),
     offer3d: roofClosed && !seen3d,
-    objectsNote,
     picturesOpen,
     sun,
     ...undoRedoOf(editable, roofStep, history),
@@ -291,11 +283,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       // Drawing happens in the top view only: the camera flies there first.
       draw: () => {
         setView('top');
-        setObjectsNote(false);
         roof.moves.draw();
       },
-      toObjects: () => setObjectsNote(true),
-      objectsSeen: () => setObjectsNote(false),
       showPictures: setPicturesOpen,
     },
   };

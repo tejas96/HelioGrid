@@ -54,7 +54,6 @@ const ROOF = {
   roofPicked: /*i18n*/ { id: 'Roof {number} · height {height}. Drag a corner to fix the shape.' },
   roofIdle3d: /*i18n*/ { id: 'Tap the roof to change its height.' },
   roofIdle3dReader: /*i18n*/ { id: 'Tap a roof to see its height.' },
-  seeIn3d: /*i18n*/ { id: 'See it in 3D' },
   roofSizing: /*i18n*/ { id: 'Set the true length of the marked edge.' },
   roofSized: /*i18n*/ { id: 'All lengths sized from the one length you set.' },
   roofSet: /*i18n*/ { id: 'Edge set to {length}.' },
@@ -225,7 +224,6 @@ export function studioRoofWords(t: T) {
     /** Why an edit is refused, said in the bar: the limits already formatted. */
     editRefusal: (refusal: EditRefusal, shown: RoofWordsShown): TranslatedText =>
       editRefusalLine(t, refusal, shown),
-    seeIn3d: t(ROOF.seeIn3d),
     /** A corner held among crowded dots: a closer look gives it room. */
     dragCrowded: t(ROOF.dragCrowded),
     /** The bar at rest in 3D, where a roof's height is changed and its outline is not. */

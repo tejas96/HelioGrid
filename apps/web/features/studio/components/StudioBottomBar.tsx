@@ -19,10 +19,7 @@ import { BAR_TOOL, MagnetRefused, MagnetSwitch, pillOf } from './StudioBarPills'
 interface BarAct {
   readonly key: string;
   readonly label: TranslatedText;
-  readonly kind: 'primary' | 'secondary';
   readonly icon: ShellGlyphName;
-  readonly iconRight?: boolean;
-  readonly off?: boolean;
   readonly onPress: () => void;
 }
 
@@ -86,18 +83,6 @@ function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): Ba
       </IconButton>
     </>
   ) : null;
-  const see3d: BarAct[] =
-    studio.offer3d && view === 'top'
-      ? [
-          {
-            key: '3d',
-            label: words.seeIn3d,
-            kind: 'secondary',
-            icon: 'box',
-            onPress: () => studio.moves.see('3d'),
-          },
-        ]
-      : [];
   return {
     mark: bar.bad ? 'alert-circle' : 'check',
     // The area counts to its new value each time it changes: the number rolls, the words stand.
@@ -114,17 +99,9 @@ function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): Ba
     status: roofsStatus(bar, facts, shown),
     bad: bar.bad,
     tools,
-    acts: [
-      ...see3d,
-      {
-        key: 'objects',
-        label: words.addObjects,
-        kind: 'primary',
-        icon: 'chevron-right',
-        iconRight: true,
-        onPress: studio.moves.toObjects,
-      },
-    ],
+    // No acts: the next step is the steps' › in the head, and 3D is the tools' switch, never a
+    // second way here.
+    acts: [],
   };
 }
 
@@ -145,7 +122,6 @@ function startBar(name: TranslatedText, place: string | null, facts: BarFacts): 
       {
         key: 'draw',
         label: noPicture ? words.drawOnGrid : words.drawMyself,
-        kind: 'primary',
         icon: 'pencil',
         onPress: studio.moves.draw,
       },
@@ -170,9 +146,8 @@ function readOnly(view: BarView, editing: StudioEditing, facts: BarFacts): BarVi
  * The one bottom bar of the roof step (`T-M05-002`, part b): a mark, the title — the site, what to
  * tap now, or the roofs' area with its tier — one sentence of where things stand, and the step's
  * acts. Before a roof: Draw myself (no picture: Draw on the grid). While drawing, and just after a
- * close, a slim pill instead: the magnet and Close shape; Redraw and Done. With a roof: See it in
- * 3D once, and Add roof objects; a roof picked adds the magnet and its trash. A refusal takes the
- * error colour.
+ * close, a slim pill instead: the magnet and Close shape; Redraw and Done. With a roof: no acts; a
+ * roof picked adds the magnet and its trash. A refusal takes the error colour.
  */
 export function StudioBottomBar({
   barRef,
@@ -269,21 +244,17 @@ export function StudioBottomBar({
       {acts.length > 0 || tools ? (
         <span ref={actsHolder} className="hg-studio-bar-acts">
           {tools}
-          {acts.map((act) => {
-            const icon = <ShellGlyph name={act.icon} size="sm" />;
-            return (
-              <Button
-                key={act.key}
-                variant={act.kind}
-                size="md"
-                disabled={act.off}
-                onClick={act.onPress}
-                {...(act.iconRight ? { iconRight: icon } : { icon })}
-              >
-                {act.label}
-              </Button>
-            );
-          })}
+          {acts.map((act) => (
+            <Button
+              key={act.key}
+              variant="primary"
+              size="md"
+              onClick={act.onPress}
+              icon={<ShellGlyph name={act.icon} size="sm" />}
+            >
+              {act.label}
+            </Button>
+          ))}
         </span>
       ) : null}
     </div>
