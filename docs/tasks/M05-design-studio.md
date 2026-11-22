@@ -70,7 +70,9 @@ Provenance); a new part only when none of these can hold the job.
 
 **Values.**
 - Every value the system sets can be changed by a person — typed, dragged or tapped — and then
-  shows as set by a person; a reset brings the system's value back.
+  shows as set by a person; a reset brings the system's value back. A roof length is the one
+  exception: setting it moves the corners, so the picture's length is not kept, and Undo takes a
+  set length back.
 - Each value keeps its source, its tier and who set it: the system, the AI or a person.
 - A tier is one of `F8-02`'s four. Traced on a picture, or read from the height map, Google's
   roof faces, a drone map or a CAD plan: `derived`. Read by the AI from a picture or a road photo,

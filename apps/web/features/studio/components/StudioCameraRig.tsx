@@ -16,6 +16,7 @@ import {
 } from 'three';
 import { useStudioWheel } from '../hooks/use-studio-wheel';
 import type { StudioDrive } from './camera-drive';
+import { type CameraEnd, cameraEnd, fadeIfMovedFrom } from './camera-fade';
 import {
   type ClearGround,
   fieldOfView,
@@ -204,8 +205,9 @@ export function StudioCameraRig({
     if (settled) return;
     posed.current = { view, measured, pictured };
     bindHands(rig, view === 'top');
-    // The camera flies to a picked view; the first view and a reduced-motion one are set at once.
-    poseFor(view, !still && was !== null && was.view !== view);
+    // The camera flies to a picked view; the first view is set at once, and with Reduce Motion a
+    // new one fades in.
+    poseFor(view, !still && was !== null && was.view !== view, was !== null && was.view !== view);
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: a new close is what asks for the frame
@@ -213,8 +215,12 @@ export function StudioCameraRig({
     if (frameOn !== null) poseFor(view, !still);
   }, [frameOn]);
 
+  const fadeIfMoved = (rig: CameraControlsImpl, before: CameraEnd) => {
+    if (still) fadeIfMovedFrom(map, rig, before);
+  };
+
   /** The view framed round the roofs, or round the pin before a roof, flown to or set at once. */
-  const poseFor = (to: StudioView, move: boolean) => {
+  const poseFor = (to: StudioView, move: boolean, fade = true) => {
     const rig = controls.current;
     if (rig === null) return;
     const screen = { width: size.width, height: size.height };
@@ -233,6 +239,7 @@ export function StudioCameraRig({
     const pose = POSE[to];
     const going = Math.min(Math.max(distance, rig.minDistance), rig.maxDistance);
     // The room for where the camera is going comes first, or the pin it flies to is cut off.
+    const before = cameraEnd(rig);
     if (held) {
       room.current = lookRoom({ west, east, south, north }, seenPerMetre(size, free), going);
       rig.setBoundary(room.current);
@@ -240,12 +247,16 @@ export function StudioCameraRig({
     void rig.dollyTo(going, move);
     void rig.moveTo(middle.east, 0, -middle.north, move);
     void rig.rotateTo(pose.turn, pose.tilt, move);
+    if (fade) fadeIfMoved(rig, before);
     invalidate();
   };
 
   const zoomBy = (factor: number) => {
     const rig = controls.current;
-    if (rig !== null) void rig.dollyTo(rig.getSpherical(heading, true).radius * factor, !still);
+    if (rig === null) return;
+    const before = cameraEnd(rig);
+    void rig.dollyTo(rig.getSpherical(heading, true).radius * factor, !still);
+    fadeIfMoved(rig, before);
   };
 
   // The page's own controls: each moves the camera as a gesture would, inside the same limits.
@@ -260,7 +271,9 @@ export function StudioCameraRig({
         if (rig === null) return;
         const across = groundPerPixel(rig.distance, size.height) * size.width * ARROW_SHARE;
         // The library's `truck` takes y as screen-down: north is its negative.
+        const before = cameraEnd(rig);
         void rig.truck(east * across, -north * across, !still);
+        fadeIfMoved(rig, before);
       },
       groundAt: (clientX, clientY, height) => {
         const box = map.getBoundingClientRect();

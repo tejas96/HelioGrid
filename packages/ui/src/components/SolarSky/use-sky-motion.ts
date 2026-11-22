@@ -1,11 +1,10 @@
-import { theme } from '@heliogrid/theme';
+import { cssEasing, theme } from '@heliogrid/theme';
 import { type RefObject, useEffect, useRef } from 'react';
 import { riseOffsets, type SkyPhase, wireRun } from './SolarSky.logic';
 import { WIRES } from './SolarSky.shapes';
 
 /** How many sparks run along each wire, a third of the flow cycle apart. */
 export const SPARKS_PER_WIRE = 3;
-const bezier = (b: readonly number[]) => `cubic-bezier(${b.join(',')})`;
 
 /** The sun's one rise along its arc into its place for the hour, by transform. */
 export function useSunRise(
@@ -22,7 +21,7 @@ export function useSunRise(
       {
         duration: theme.motion.ambient.settle,
         delay: theme.motion.durations.emphasised,
-        easing: bezier(theme.motion.easings.enter),
+        easing: cssEasing(theme.motion.easings.enter),
         fill: 'backwards',
       },
     );

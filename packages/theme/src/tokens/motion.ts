@@ -86,3 +86,8 @@ export const SKELETON_DELAY_MS = 150;
 
 /** A hover's name tip waits this long, so a pointer passing over never flashes one. */
 export const TIP_DELAY_MS = 350;
+
+/** An easing's four points as CSS and the Web Animations API write them: the one formatter. */
+export function cssEasing(points: readonly number[]): string {
+  return `cubic-bezier(${points.join(',')})`;
+}
