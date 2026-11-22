@@ -55,7 +55,11 @@ export function useStudioWheel(
     let gesture: { reading: Reading; at: number } | null = null;
     /** A pinch, handed back as a plain zoom at the same spot; on a zoomed page, the browser's. */
     const zoomFor = (pinch: WheelEvent) => {
-      if (pageZoomed()) return;
+      // The browser keeps the pinch, and the camera never hears it: no lens zoom past its limits.
+      if (pageZoomed()) {
+        pinch.stopPropagation();
+        return;
+      }
       pinch.preventDefault();
       pinch.stopPropagation();
       const zoom = new WheelEvent('wheel', {

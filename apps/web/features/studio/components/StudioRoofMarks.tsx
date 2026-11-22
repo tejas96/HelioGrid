@@ -234,7 +234,7 @@ export function StudioRoofMarks({
         />
       )}
       {tag === null ? null : (
-        <span className="hg-roof-at" data-at={tag.at}>
+        <span className="hg-roof-at" data-at={tag.at} data-tag="true">
           <span className="hg-roof-tag" data-tone={tag.bad ? 'bad' : undefined} role="status">
             {tag.text}
           </span>

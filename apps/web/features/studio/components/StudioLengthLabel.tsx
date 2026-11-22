@@ -3,8 +3,8 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { Pressable, ShellGlyph } from '@heliogrid/ui';
 
 /**
- * A length's label on the model (`T-M05-002`, part b): dashed from the picture, solid when typed,
- * a tick when measured on site. With a way to open it, a tap opens the length box.
+ * A length's label on the model (`T-M05-002`, part b): "~" and no outline from the picture, a
+ * white outline when typed, a green one and a tick when measured on site. With a way to open it, a tap opens the length box.
  */
 export function StudioLengthLabel({
   text,

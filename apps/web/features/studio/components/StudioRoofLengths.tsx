@@ -75,7 +75,7 @@ function SteppedLength({
   );
 }
 
-/** One edge's length: its label, or — in hand — its number between − and +, and its thin line. */
+/** One edge's length: its label, or — in hand — its number between − and +. */
 function EdgeLength({
   edge,
   roof,
@@ -127,15 +127,14 @@ function EdgeLength({
           onOpen={open}
         />
       )}
-      <span className="hg-roof-leader" aria-hidden="true" />
     </span>
   );
 }
 
 /**
- * Every edge's length on the design's roofs (`T-M05-002`, part b), in the top view: dashed from
- * the picture, solid when set, a tick when measured. The mark placer lays each along its edge,
- * outside the roof, never upside down, sent out past a short edge with a thin line back; where
+ * Every edge's length on the design's roofs (`T-M05-002`, part b), in the top view: "~" and no
+ * outline from the picture, an outline when set, a tick when measured. The mark placer lays each
+ * along its edge, outside the roof, never upside down, out past every corner's touch target; where
  * they touch, picture lengths give way and show again on a tap of their edge. A tap opens the
  * length field; the length in hand wears − and +.
  */

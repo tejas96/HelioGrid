@@ -1,5 +1,4 @@
 import type { KeepOff, LabelAsk, LabelPlace, ScreenPoint } from '@heliogrid/domain';
-import { MathUtils } from 'three';
 import { type LayoutLabels, laidAt, readPoint } from './roof-marks-place';
 import type { ScreenOf } from './StudioRoofs';
 
@@ -35,8 +34,6 @@ function handleSize(node: HTMLElement): { width: number; height: number } | null
   return size;
 }
 
-const DEGREES = MathUtils.RAD2DEG;
-
 /** A roof's corners on the screen, from its shape mark; `null` when one is behind the camera. */
 function shapesOn(layer: HTMLElement, screenOf: ScreenOf): Map<string, ScreenPoint[]> {
   const shapes = new Map<string, ScreenPoint[]>();
@@ -51,7 +48,6 @@ function shapesOn(layer: HTMLElement, screenOf: ScreenOf): Map<string, ScreenPoi
   return shapes;
 }
 
-/** One label set where the layout put it: turned along its edge, its thin line back when sent out. */
 /** How near the screen's side the length in hand may come, in CSS pixels. */
 const SIDE_ROOM_PX = 8;
 
@@ -65,14 +61,6 @@ function setLabel(node: HTMLElement, place: LabelPlace | undefined, across: Acro
   const x = across === null ? place.at.x : Math.min(Math.max(place.at.x, across.min), across.max);
   node.style.transform = `translate(${x}px, ${place.at.y}px)`;
   node.style.setProperty('--hg-turn', `${place.degrees}deg`);
-  const leader = node.querySelector<HTMLElement>('.hg-roof-leader');
-  if (leader === null) return;
-  leader.hidden = place.leaderFrom === null;
-  if (place.leaderFrom === null) return;
-  const dx = place.leaderFrom.x - x;
-  const dy = place.leaderFrom.y - place.at.y;
-  leader.style.inlineSize = `${Math.hypot(dx, dy)}px`;
-  leader.style.transform = `rotate(${Math.atan2(dy, dx) * DEGREES}deg)`;
 }
 
 /**

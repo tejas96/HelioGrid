@@ -7,6 +7,8 @@
   /* Clip, never hidden: a hidden box still scrolls, and focus on a mark laid past the edge would
      scroll every mark away from the model. */
   overflow: clip;
+  /* Its own layer: the marks' order among themselves never lifts one over the studio's bars. */
+  isolation: isolate;
   pointer-events: none;
   --hg-roof-ink: var(--scene-line);
   --hg-roof-hit: calc(-1 * var(--sp-3));

@@ -3,7 +3,8 @@ import type { RoofEdgeTrust } from './document';
 /**
  * Where each length label sits on the screen (`T-M05-002`, part b). A label lies along its edge,
  * outside the roof, never upside down, at one size at every zoom. An edge too short for its label
- * sends the label out, with a thin line back to the edge. Where labels still touch, lengths from the
+ * sends the label farther out, and a label steps out past every corner's touch target, so a tap on
+ * it always opens it. Where labels still touch, lengths from the
  * picture give way; a length a person set, a measured one, the active one and one a person tapped
  * to see always show. Everything here is in screen pixels: the screen measures, this decides.
  */
@@ -49,9 +50,6 @@ export interface LabelPlace {
   readonly at: ScreenPoint;
   /** The turn along the edge, in degrees clockwise, kept between −90 and 90: never upside down. */
   readonly degrees: number;
-  /** Sent out past a short edge: the thin line runs from `leaderFrom` on the edge to the label. */
-  readonly out: boolean;
-  readonly leaderFrom: ScreenPoint | null;
   /** `false`: a picture length that gave way to another label. */
   readonly shown: boolean;
 }
@@ -65,6 +63,11 @@ export const LABEL_GAP_PX = 22;
 export const LABEL_OUT_PX = 18;
 /** Room a label keeps at each end of its edge, clear of the corner dots. */
 export const LABEL_END_ROOM_PX = 10;
+/** A corner dot's touch target, square round its corner: a label keeps out of every one. */
+export const CORNER_TOUCH_PX = 44;
+/** A label moves out from its edge in steps this long, and no farther than this, to clear them. */
+const CLEAR_STEP_PX = 2;
+const CLEAR_MOST_PX = 64;
 
 /** Whether a point lies inside a polygon (even-odd). */
 function inside(point: ScreenPoint, corners: readonly ScreenPoint[]): boolean {
@@ -106,6 +109,9 @@ function boxOf(at: ScreenPoint, degrees: number, width: number, height: number):
   }));
 }
 
+/** How far two boxes may cross and still only meet: well under a pixel, for a turn's rounding. */
+const MEET_PX = 1e-6;
+
 /** Whether two turned boxes overlap (separating axes). */
 function boxesTouch(a: readonly ScreenPoint[], b: readonly ScreenPoint[]): boolean {
   for (const box of [a, b]) {
@@ -119,10 +125,63 @@ function boxesTouch(a: readonly ScreenPoint[], b: readonly ScreenPoint[]): boole
       };
       const [aMin, aMax] = span(a);
       const [bMin, bMax] = span(b);
-      if (aMax <= bMin || bMax <= aMin) return false;
+      // Boxes that only meet along a side do not touch, a turned box's rounding included.
+      if (aMax <= bMin + MEET_PX || bMax <= aMin + MEET_PX) return false;
     }
   }
   return true;
+}
+
+/** A corner's touch target, laid once per layout: its square, and the square's bounds. */
+interface CornerTouch {
+  readonly box: readonly ScreenPoint[];
+  readonly left: number;
+  readonly right: number;
+  readonly top: number;
+  readonly bottom: number;
+}
+
+function touchOf(corner: ScreenPoint): CornerTouch {
+  const half = CORNER_TOUCH_PX / 2;
+  return {
+    box: boxOf(corner, 0, CORNER_TOUCH_PX, CORNER_TOUCH_PX),
+    left: corner.x - half,
+    right: corner.x + half,
+    top: corner.y - half,
+    bottom: corner.y + half,
+  };
+}
+
+/** Whether a label's box stays out of every corner's touch target, of every roof on the screen. */
+function clearOfCorners(box: readonly ScreenPoint[], touches: readonly CornerTouch[]): boolean {
+  const xs = box.map((p) => p.x);
+  const ys = box.map((p) => p.y);
+  const [left, right] = [Math.min(...xs), Math.max(...xs)];
+  const [top, bottom] = [Math.min(...ys), Math.max(...ys)];
+  return !touches.some(
+    (t) =>
+      // Far apart by their bounds: no need for the full test.
+      left < t.right &&
+      right > t.left &&
+      top < t.bottom &&
+      bottom > t.top &&
+      boxesTouch(box, t.box),
+  );
+}
+
+/**
+ * How much farther out a label stands so a tap on it never lands on a corner: the first step that
+ * clears them all, or none when no step within reach does (it then stays where it lay).
+ */
+function clearing(
+  start: number,
+  boxAt: (away: number) => readonly ScreenPoint[],
+  touches: readonly CornerTouch[],
+): number {
+  for (let more = 0; more <= CLEAR_MOST_PX; more += CLEAR_STEP_PX) {
+    if (clearOfCorners(boxAt(start + more), touches)) return more;
+  }
+  return 0;
 }
 
 interface Placed {
@@ -132,7 +191,11 @@ interface Placed {
   readonly reach: number;
 }
 
-function placeOne(ask: LabelAsk, corners: readonly ScreenPoint[]): Placed {
+function placeOne(
+  ask: LabelAsk,
+  corners: readonly ScreenPoint[],
+  touches: readonly CornerTouch[],
+): Placed {
   const { from, to, width, height } = ask;
   const reach = Math.hypot(to.x - from.x, to.y - from.y);
   const mid = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 };
@@ -142,16 +205,21 @@ function placeOne(ask: LabelAsk, corners: readonly ScreenPoint[]): Placed {
   if (inside({ x: mid.x + normal.x, y: mid.y + normal.y }, corners)) {
     normal = { x: -normal.x, y: -normal.y };
   }
-  const out = !ask.level && width + 2 * LABEL_END_ROOM_PX > reach;
+  const short = !ask.level && width + 2 * LABEL_END_ROOM_PX > reach;
   // How far the label reaches across its edge: half its height when it lies along it.
   const across = ask.level
     ? (Math.abs(normal.x) * width) / 2 + (Math.abs(normal.y) * height) / 2
     : height / 2;
-  const away = LABEL_GAP_PX + across + (out ? LABEL_OUT_PX : 0);
-  const at = { x: mid.x + normal.x * away, y: mid.y + normal.y * away };
+  const start = LABEL_GAP_PX + across + (short ? LABEL_OUT_PX : 0);
+  const atAway = (away: number) => ({ x: mid.x + normal.x * away, y: mid.y + normal.y * away });
+  // The length in hand stays where its − and + are held: it never steps away from the finger.
+  const more = ask.level
+    ? 0
+    : clearing(start, (away) => boxOf(atAway(away), degrees, width, height), touches);
+  const at = atAway(start + more);
   const keeps = ask.pinned || ask.trust !== 'traced';
   return {
-    place: { at, degrees, out, leaderFrom: out ? mid : null, shown: true },
+    place: { at, degrees, shown: true },
     box: boxOf(at, degrees, width, height),
     keeps,
     reach,
@@ -167,7 +235,10 @@ export function labelLayoutOf(
   roofs: readonly RoofLabelAsk[],
   keepOff: readonly KeepOff[] = [],
 ): LabelPlace[][] {
-  const placed = roofs.map((roof) => roof.labels.map((ask) => placeOne(ask, roof.corners)));
+  const touches = roofs.flatMap((roof) => roof.corners.map(touchOf));
+  const placed = roofs.map((roof) =>
+    roof.labels.map((ask) => placeOne(ask, roof.corners, touches)),
+  );
   const order = placed
     .flatMap((labels, r) => labels.map((label, e) => ({ label, r, e })))
     .sort((a, b) => Number(b.label.keeps) - Number(a.label.keeps) || b.label.reach - a.label.reach);

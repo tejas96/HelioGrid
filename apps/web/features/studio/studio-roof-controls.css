@@ -60,39 +60,38 @@
   background: var(--scene-bad);
 }
 
-/* A length: dashed from the picture, solid when typed, a tick when measured on site. */
+/* A length: "~" and no outline from the picture, an outline when typed, a tick when measured. */
 .hg-roof-len {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-0-5);
-  /* Small, as the POC's edge chip: the roof stays in view and a corner stays free to place. */
-  block-size: var(--sp-4);
+  /* Reslink's edge label: plain figures on a see-through dark box, no border, small and square. */
+  block-size: calc(var(--sp-4) + var(--sp-0-5));
   padding-inline: var(--sp-1);
-  border-radius: calc(var(--r-xs) / 2);
-  background: color-mix(in srgb, var(--scene-shade) 88%, transparent);
+  border-radius: calc(var(--r-xs) / 4);
+  background: color-mix(in srgb, var(--scene-shade) 85%, transparent);
   color: var(--scene-mark);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: var(--fs-caption);
   line-height: 1;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  border: var(--hg-studio-line) dashed color-mix(in srgb, var(--scene-mark) 45%, transparent);
+  border: var(--hg-studio-line) solid transparent;
   box-sizing: border-box;
 }
 
+/* A length a person set keeps its trust in a thin line: white when typed, green when measured. */
 .hg-roof-len[data-kind="typed"] {
-  border-style: solid;
   border-color: var(--scene-mark);
 }
 
 .hg-roof-len[data-kind="measured"] {
-  border-style: solid;
   border-color: var(--success);
 }
 
 .hg-roof-len[data-live="true"] {
-  border-color: var(--accent);
+  border-color: var(--scene-line);
 }
 
 .hg-roof-len[data-pulse="true"] {
@@ -135,6 +134,9 @@
   padding-inline: var(--sp-1);
   gap: var(--sp-2);
   border: 0;
+  /* The pill and the figures it had: the small box is the edge labels' alone. */
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
   background: var(--action-primary);
   color: var(--text-inverse);
   font-size: var(--fs-body-sm);
@@ -238,19 +240,6 @@
   visibility: hidden;
 }
 
-/* The thin line from a length sent out back to its edge. */
-.hg-roof-at > .hg-roof-leader {
-  transform-origin: 0 50%;
-  block-size: var(--hg-studio-line);
-  background: var(--scene-mark);
-  box-shadow: 0 0 0 var(--hg-studio-line) color-mix(in srgb, var(--scene-shade) 40%, transparent);
-  pointer-events: none;
-}
-
-.hg-roof-at > .hg-roof-leader[hidden] {
-  display: none;
-}
-
 /* Each edge's tap band: a tap on the map along it shows a length that gave way. It takes no
    pointer of its own, so a pan or a zoom that starts on an edge still moves the map. */
 .hg-roof-edge-taps .hg-roof-edge-tap {
@@ -260,11 +249,13 @@
 }
 
 /* Over each other, a length's small label sits above the + on its edge's middle, so a tap on
-   the label always opens it; a corner stays on top of both, to be dragged. */
+   the label always opens it; a corner stays on top of both, to be dragged, and so does the tag
+   that says what a corner snapped to or why it cannot go there. */
 .hg-roof-label {
   z-index: 1;
 }
 
-.hg-roof-on > .hg-roof-at:not([data-plus="true"]) {
+.hg-roof-on > .hg-roof-at:not([data-plus="true"]),
+.hg-roof-at[data-tag="true"] {
   z-index: 2;
 }

@@ -84,8 +84,8 @@ function SunLight({ sun, palette }: { sun: SunPosition; palette: ThemePalette })
 }
 
 /**
- * Keeps the page's pin label over the pin: each drawn frame puts it where the pin lands on the
- * screen, and hides it while the pin is behind the camera. The label is the page's own text, never
+ * Keeps the page's pin marker on the pin: each drawn frame puts its tip where the pin lands on the
+ * screen, and hides it while the pin is behind the camera. The marker is the page's own, never
  * drawn into the scene.
  */
 function PinFollower({ label }: { label: RefObject<HTMLElement | null> }) {
@@ -111,7 +111,7 @@ export interface StudioSceneProps {
   /** The room the bars take at the top and the foot, in CSS pixels: the view frames the rest. */
   free: { readonly top: number; readonly bottom: number };
   still: boolean;
-  /** The page's pin label, which the scene keeps over the pin as the camera moves. */
+  /** The page's pin marker, which the scene keeps on the pin as the camera moves. */
   pinLabel: RefObject<HTMLElement | null>;
   /** What shows where the device cannot draw 3D. */
   fallback: ReactNode;

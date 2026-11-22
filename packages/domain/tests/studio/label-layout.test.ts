@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { RoofEdgeTrust } from '../../src/studio/document';
 import {
+  CORNER_TOUCH_PX,
   LABEL_END_ROOM_PX,
   LABEL_GAP_PX,
   type LabelAsk,
@@ -45,7 +46,6 @@ describe('a label lies along its edge, outside the roof, never upside down', () 
     expect(place?.at.x).toBeCloseTo(at.x, 6);
     expect(place?.at.y).toBeCloseTo(at.y, 6);
     expect(place?.degrees).toBeCloseTo(degrees, 6);
-    expect(place?.out).toBe(false);
   });
 
   it('a roof drawn the other way round still puts its labels outside', () => {
@@ -55,7 +55,7 @@ describe('a label lies along its edge, outside the roof, never upside down', () 
   });
 });
 
-describe('a short edge sends its label out, with a thin line back', () => {
+describe('a short edge sends its label out past its corners', () => {
   it.each([
     // label width → sent out
     [100 - 2 * LABEL_END_ROOM_PX, false],
@@ -63,9 +63,89 @@ describe('a short edge sends its label out, with a thin line back', () => {
     [10, false],
   ])('a %s px label on a 100 px edge: out %s', (width, out) => {
     const place = labelLayoutOf([roofOf(SQUARE, { width })])[0]?.[0];
-    expect(place?.out).toBe(out);
-    expect(place?.leaderFrom).toEqual(out ? xy(50, 0) : null);
     if (out) expect(place?.at.y).toBeLessThan(-OFF);
+    else expect(place?.at.y).toBeCloseTo(-OFF, 6);
+  });
+});
+
+describe('a label keeps out of every corner’s touch target', () => {
+  // A U: the notch's floor runs (20,0) → (80,0), and its label, outward, rises into the notch
+  // towards the two corners at its top.
+  const U = [
+    xy(0, -60),
+    xy(20, -60),
+    xy(20, 0),
+    xy(80, 0),
+    xy(80, -60),
+    xy(100, -60),
+    xy(100, 100),
+    xy(0, 100),
+  ];
+  const FLOOR = 2;
+  const touchOf = (c: ScreenPoint) => ({
+    left: c.x - CORNER_TOUCH_PX / 2,
+    right: c.x + CORNER_TOUCH_PX / 2,
+    top: c.y - CORNER_TOUCH_PX / 2,
+    bottom: c.y + CORNER_TOUCH_PX / 2,
+  });
+  /** The label's box, upright: the floor's label lies level. */
+  const clear = (at: ScreenPoint, width: number) =>
+    U.every((c) => {
+      const t = touchOf(c);
+      return (
+        at.x + width / 2 <= t.left ||
+        at.x - width / 2 >= t.right ||
+        at.y + HEIGHT / 2 <= t.top ||
+        at.y - HEIGHT / 2 >= t.bottom
+      );
+    });
+
+  it('a label that would sit in a corner’s touch target moves out past it', () => {
+    const place = labelLayoutOf([roofOf(U, { width: 40 })])[0]?.[FLOOR];
+    expect(place && clear(place.at, 40)).toBe(true);
+    expect(place?.at.x).toBeCloseTo(50, 6);
+  });
+
+  /** The top edge's label of `roof`, laid beside `other`, and whether it clears `other`'s corners. */
+  const besideOther = (other: ScreenPoint[]) => {
+    const place = labelLayoutOf([roofOf(SQUARE), roofOf(other)])[0]?.[0];
+    const clearOf = other.every((c) => {
+      const half = CORNER_TOUCH_PX / 2;
+      return (
+        place !== undefined &&
+        (place.at.x + 30 <= c.x - half ||
+          place.at.x - 30 >= c.x + half ||
+          place.at.y + HEIGHT / 2 <= c.y - half ||
+          place.at.y - HEIGHT / 2 >= c.y + half)
+      );
+    });
+    return { place, clearOf };
+  };
+
+  it('a label keeps out of another roof’s corners too', () => {
+    const { place, clearOf } = besideOther([xy(40, -40), xy(60, -40), xy(50, -30)]);
+    expect(clearOf).toBe(true);
+    expect(place?.at.y).toBeLessThan(-OFF);
+  });
+
+  it('where no step within reach is clear, the label stays where it lay', () => {
+    // A column of another roof's corners rises from just over the top edge, past every step.
+    const column = [
+      xy(40, -30),
+      xy(60, -30),
+      xy(60, -60),
+      xy(60, -90),
+      xy(60, -120),
+      xy(40, -120),
+      xy(40, -90),
+      xy(40, -60),
+    ];
+    expect(besideOther(column).place?.at).toEqual(xy(50, -OFF));
+  });
+
+  it('a label already clear stays where it lies', () => {
+    const place = labelLayoutOf([roofOf(SQUARE)])[0]?.[0];
+    expect(place?.at).toEqual(xy(50, -OFF));
   });
 });
 
