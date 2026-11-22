@@ -45,6 +45,7 @@ const CANVAS = {
   stepsSoFar: /*i18n*/ { id: 'Step {number} of {total}' },
   needsRoof: /*i18n*/ { id: 'Draw a roof first' },
   needsEarlierStep: /*i18n*/ { id: 'Finish the step before first' },
+  stepComing: /*i18n*/ { id: 'This step is coming soon' },
 
   skyPicture: /*i18n*/ { id: 'Sky picture' },
   yourPicture: /*i18n*/ { id: 'Your picture' },
@@ -89,8 +90,6 @@ const CANVAS = {
   drawRoof: /*i18n*/ { id: 'Draw a roof' },
   roofNotSetUp: /*i18n*/ { id: '{place} · roof not set up yet' },
   roofNotSetUpNoPlace: /*i18n*/ { id: 'Roof not set up yet' },
-  addObjects: /*i18n*/ { id: 'Add roof objects' },
-  objectsComing: /*i18n*/ { id: 'Adding roof objects is the next step. It is coming soon.' },
   noScene: /*i18n*/ { id: 'The 3D view cannot start on this device. Try another browser.' },
 } as const;
 
@@ -152,6 +151,8 @@ export function studioCanvasWords(t: T) {
     stepsSoFar: (number: number, total: number): TranslatedText =>
       t(CANVAS.stepsSoFar, { number, total }),
     stepLock: (lock: StepLock): TranslatedText => t(STEP_LOCK[lock]),
+    /** Why an open step does nothing yet: it is not built. */
+    stepComing: t(CANVAS.stepComing),
     /** What a screen reader says for the site step: its word first, then that a press changes it. */
     changeSite: t(CANVAS.changeSite),
     /** Why the site step waits: leaving now would lose a change still on its way. */
@@ -200,8 +201,6 @@ export function studioCanvasWords(t: T) {
     /** "Vishrambag, Sangli · roof not set up yet". */
     roofNotSetUp: (place: string | null) =>
       place === null ? t(CANVAS.roofNotSetUpNoPlace) : t(CANVAS.roofNotSetUp, { place }),
-    addObjects: t(CANVAS.addObjects),
-    objectsComing: t(CANVAS.objectsComing),
     ...studioRoofWords(t),
     ...studioLengthWords(t),
     ...studioHeightWords(t),

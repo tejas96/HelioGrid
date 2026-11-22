@@ -103,7 +103,9 @@ export function StudioStepSwitcher({
   /** What a press on a step does, or why it does nothing; `null` for the step in hand. */
   const reach = (step: StudioStep, lock: StepPlace['lock']) => {
     if (lock !== null) return { reason: words.stepLock(lock) } as const;
-    if (step !== 'site' || onSite === null) return null;
+    // An open step after the roof is not built yet: it says so, never a silent grey press.
+    if (step !== 'site') return { reason: words.stepComing } as const;
+    if (onSite === null) return null;
     return siteWaits ? ({ reason: words.siteWaitsForSave } as const) : ({ open: onSite } as const);
   };
 
