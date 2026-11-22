@@ -156,14 +156,16 @@ export function StudioCanvas({
         words={words}
         off={parts.compass === 'hidden'}
       />
+      {/* The marker says what it is: a word beside it only repeats the glyph, so it is spoken alone. */}
       <span
         ref={pin}
+        role="img"
+        aria-label={words.pin}
         className="hg-studio-pin"
         data-hidden="true"
         data-gone={roofs.length > 0 || drawing}
       >
-        <ShellGlyph name="pin" size="sm" tone="current" />
-        {words.pin}
+        <ShellGlyph name="pin" tone="current" />
       </span>
       <StudioCanvasHead
         headRef={top}

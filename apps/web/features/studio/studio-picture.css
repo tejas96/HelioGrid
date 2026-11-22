@@ -127,7 +127,7 @@
   padding: var(--sp-2) var(--sp-3) var(--sp-1);
 }
 
-/* The pin on the ground: a small red label in the scene, in the mono face a place is read in. */
+/* The pin on the ground: the marker alone, its tip on the point. */
 .hg-studio-pin {
   position: absolute;
   inset-block-start: 0;
@@ -135,16 +135,7 @@
   z-index: 0;
   display: inline-flex;
   pointer-events: none;
-  align-items: center;
-  gap: var(--sp-1);
-  padding: var(--sp-1) var(--sp-2);
-  border-radius: var(--r-pill);
-  background: var(--danger);
-  color: var(--text-inverse);
-  font-family: var(--font-mono);
-  font-size: var(--fs-caption);
-  white-space: nowrap;
-  box-shadow: var(--e2);
+  color: var(--danger);
 }
 
 .hg-studio-pin[data-hidden="true"] {

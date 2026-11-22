@@ -47,19 +47,14 @@ const scaledTop = (top: RoofTopPicture, scale: number): RoofTopPicture =>
 /** The camera before its first view is set: the rig flies it from here. */
 const CAMERA_START = { near: 0.5, far: 3_000, position: [0, 60, 60] as [number, number, number] };
 
-/** Heights that keep the ground's layers apart: the grid and the pin's ring over the ground. */
+/** How high the grid lies over the ground, so the two never fight. */
 const GRID_LIFT_M = 0.02;
-const RING_LIFT_M = 0.03;
-const PIN_LABEL_M = 0.4;
-/** The pin's ring on the ground: its inner and outer radius, and its smoothness. */
-const RING_INNER_M = 0.35;
-const RING_OUTER_M = 0.55;
-const RING_SEGMENTS = 40;
 /** The light: the sky's fill, the sun's strength, and the sharpness of its shadow map. */
 const SKY_LIGHT = 1.1;
 const SUN_LIGHT = 2.4;
 const SHADOW_MAP_PX = 2048;
-const PIN_TOP = new Vector3(0, PIN_LABEL_M, 0);
+/** The pin's point on the ground, where the marker's tip stands. */
+const PIN_POINT = new Vector3(0, 0, 0);
 
 /** The sun's light from where the sun stands, casting soft shadows over the site. */
 function SunLight({ sun, palette }: { sun: SunPosition; palette: ThemePalette }) {
@@ -98,7 +93,7 @@ function PinFollower({ label }: { label: RefObject<HTMLElement | null> }) {
   useFrame(({ camera, size }) => {
     const node = label.current;
     if (node === null) return;
-    at.copy(PIN_TOP).project(camera);
+    at.copy(PIN_POINT).project(camera);
     const behind = at.z > 1;
     node.dataset.hidden = String(behind);
     const x = ((at.x + 1) / 2) * size.width;
@@ -215,13 +210,6 @@ export function StudioScene({
             fadeStrength={1.5}
             infiniteGrid
           />
-        ) : null}
-        {/* Once a roof stands, the roof is the place: the pin's ring steps aside. */}
-        {roofs.length === 0 ? (
-          <mesh rotation-x={-Math.PI / 2} position={[0, RING_LIFT_M, 0]}>
-            <ringGeometry args={[RING_INNER_M, RING_OUTER_M, RING_SEGMENTS]} />
-            <meshBasicMaterial color={palette.danger} toneMapped={false} />
-          </mesh>
         ) : null}
         <PinFollower label={pinLabel} />
         <StudioRoofs
