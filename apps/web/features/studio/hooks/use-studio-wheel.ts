@@ -13,6 +13,15 @@ const MAC_WHEEL_CLICK = 4.000_244_140_625;
 
 type Reading = 'pan' | 'zoom';
 
+/** WebKit's pinch, which zooms the page unless held: the map's own pinch runs on touch events. */
+const WEBKIT_PINCH = ['gesturestart', 'gesturechange', 'gestureend'] as const;
+
+/**
+ * The page is already zoomed (a pinch from before the studio held it, which a browser keeps across
+ * a reload): the next pinch is the browser's, so the person can pinch back out.
+ */
+const pageZoomed = () => (window.visualViewport?.scale ?? 1) > 1;
+
 /**
  * What a wheel event is. A mouse wheel turns in whole clicks, straight up and down; a trackpad's two
  * fingers send small steps, often sideways.
@@ -31,19 +40,22 @@ function readingOf(event: WheelEvent): Reading {
  * map every way; a pinch (which a browser sends as a wheel with Ctrl held) zooms at the fingers.
  * The camera library would turn a pinch into a lens zoom that its distance limits never see — so a
  * pinch is handed back to it as a plain zoom, which keeps the map inside its edges and its
- * sharpness. A wheel over the map never scrolls or zooms the page.
+ * sharpness. A pinch anywhere on the studio — over a bar or a button too — zooms the map, never
+ * the page: WebKit's own pinch (`gesture*`, Safari and the phone's web view) is held as well.
  */
 export function useStudioWheel(
   rig: RefObject<CameraControlsImpl | null>,
   map: HTMLElement | null,
 ): void {
   useEffect(() => {
-    const host = map?.parentElement;
+    // The whole studio, its bars and buttons over the map included: a pinch there is the map's.
+    const host = map?.closest<HTMLElement>('.hg-studio');
     if (map === null || host == null) return;
     const ours = new WeakSet<Event>();
     let gesture: { reading: Reading; at: number } | null = null;
-    /** A pinch, handed back as a plain zoom at the same spot. */
+    /** A pinch, handed back as a plain zoom at the same spot; on a zoomed page, the browser's. */
     const zoomFor = (pinch: WheelEvent) => {
+      if (pageZoomed()) return;
       pinch.preventDefault();
       pinch.stopPropagation();
       const zoom = new WheelEvent('wheel', {
@@ -77,8 +89,15 @@ export function useStudioWheel(
       const reading = ours.has(event) ? 'zoom' : readingFor(event);
       controls.mouseButtons.wheel = reading === 'pan' ? ACTION.TRUCK : ACTION.DOLLY;
     };
-    // On the map's holder, while the event comes down: before the camera library hears it.
+    const held = (event: Event) => {
+      if (!pageZoomed()) event.preventDefault();
+    };
+    // On the studio, while the event comes down: before the camera library hears it.
     host.addEventListener('wheel', heard, { capture: true, passive: false });
-    return () => host.removeEventListener('wheel', heard, { capture: true });
+    for (const kind of WEBKIT_PINCH) host.addEventListener(kind, held, { passive: false });
+    return () => {
+      host.removeEventListener('wheel', heard, { capture: true });
+      for (const kind of WEBKIT_PINCH) host.removeEventListener(kind, held);
+    };
   }, [rig, map]);
 }

@@ -64,6 +64,10 @@
 }
 
 .hg-roof-arrow-value.hg-roof-len {
+  /* The height beside the arrow keeps the 3D pills' size, not the small edge chip's. */
+  block-size: var(--sp-6);
+  padding-inline: var(--sp-2);
+  border-radius: var(--r-pill);
   margin-block-end: var(--sp-8);
   border: 0;
   background: var(--action-primary);

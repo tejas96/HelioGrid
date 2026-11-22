@@ -64,38 +64,35 @@
 .hg-roof-len {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1);
-  block-size: var(--sp-6);
-  padding-inline: var(--sp-2);
-  border-radius: var(--r-pill);
-  background: var(--glass-strong);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  color: var(--text-primary);
+  gap: var(--sp-0-5);
+  /* Small, as the POC's edge chip: the roof stays in view and a corner stays free to place. */
+  block-size: var(--sp-4);
+  padding-inline: var(--sp-1);
+  border-radius: calc(var(--r-xs) / 2);
+  background: color-mix(in srgb, var(--scene-shade) 88%, transparent);
+  color: var(--scene-mark);
   font-family: var(--font-mono);
   font-size: var(--fs-caption);
-  font-weight: var(--fw-medium);
+  line-height: 1;
+  font-weight: var(--fw-semibold);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  box-shadow: var(--e2);
-  border: calc(var(--hg-studio-line) * 1.5) dashed var(--text-tertiary);
+  border: var(--hg-studio-line) dashed color-mix(in srgb, var(--scene-mark) 45%, transparent);
   box-sizing: border-box;
 }
 
 .hg-roof-len[data-kind="typed"] {
   border-style: solid;
-  border-color: var(--text-primary);
+  border-color: var(--scene-mark);
 }
 
 .hg-roof-len[data-kind="measured"] {
   border-style: solid;
   border-color: var(--success);
-  color: var(--success-text);
 }
 
 .hg-roof-len[data-live="true"] {
   border-color: var(--accent);
-  color: var(--accent-text);
 }
 
 .hg-roof-len[data-pulse="true"] {
@@ -260,4 +257,14 @@
   stroke: transparent;
   stroke-width: var(--sp-5);
   pointer-events: none;
+}
+
+/* Over each other, a length's small label sits above the + on its edge's middle, so a tap on
+   the label always opens it; a corner stays on top of both, to be dragged. */
+.hg-roof-label {
+  z-index: 1;
+}
+
+.hg-roof-on > .hg-roof-at:not([data-plus="true"]) {
+  z-index: 2;
 }

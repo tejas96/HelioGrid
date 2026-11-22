@@ -70,9 +70,11 @@ describe('a short edge sends its label out, with a thin line back', () => {
 });
 
 describe('where labels touch, picture lengths give way', () => {
-  // Roof A's bottom label and roof B's top label meet in the 30 px gap between the roofs.
+  // Roof A's bottom label and roof B's top label meet in the gap between the roofs: each stands
+  // the label gap off its edge, so the two overlap by half a label's height.
+  const GAP = 2 * LABEL_GAP_PX + HEIGHT / 2;
   const A = [xy(0, 0), xy(100, 0), xy(100, 50), xy(0, 50)];
-  const B = [xy(0, 80), xy(120, 80), xy(120, 130), xy(0, 130)];
+  const B = [xy(0, 50 + GAP), xy(120, 50 + GAP), xy(120, 100 + GAP), xy(0, 100 + GAP)];
   const A_BOTTOM = 2;
   const B_TOP = 0;
   const shown = (a: RoofLabelAsk, b: RoofLabelAsk) => {

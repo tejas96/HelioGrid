@@ -56,8 +56,11 @@ export interface LabelPlace {
   readonly shown: boolean;
 }
 
-/** The gap between an edge and its label's near side: clear of the + dot on the edge's middle. */
-export const LABEL_GAP_PX = 12;
+/**
+ * The gap between an edge and its label's near side: past the + dot's whole touch target (44 px
+ * across, on the edge's middle), so a tap on the small label never lands on the + instead.
+ */
+export const LABEL_GAP_PX = 22;
 /** How far a label sent out stands past where it would lie along its edge. */
 export const LABEL_OUT_PX = 18;
 /** Room a label keeps at each end of its edge, clear of the corner dots. */
