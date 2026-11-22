@@ -66,7 +66,7 @@ export function DrawPill({
         </Button>
       ) : null}
       <MagnetRefused studio={studio} words={words} />
-      <span role="status">
+      <span role="status" className="hg-studio-pill-status">
         {refusal === null ? null : <Text spokenOnly>{`${refusal.title}. ${refusal.line}`}</Text>}
       </span>
     </>
