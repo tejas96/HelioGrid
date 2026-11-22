@@ -85,6 +85,9 @@ export function StudioWebView({
         });
       }}
       bounces={false}
+      // iOS lays its own up / down / done bar over the page's sheet above the keyboard: the studio's
+      // sheets have their own Done, so the bar only hides it.
+      hideKeyboardAccessoryView
       overScrollMode="never"
       setSupportMultipleWindows={false}
       allowsBackForwardNavigationGestures={false}

@@ -107,7 +107,6 @@ export const SHELL_GLYPHS = {
   monitor: Lucide.MonitorIcon,
   moon: Lucide.MoonIcon,
   move: Lucide.MoveIcon,
-  north: Lucide.Navigation2Icon,
   note: Lucide.StickyNoteIcon,
   package: Lucide.PackageIcon,
   pair: Lucide.UsersRoundIcon,

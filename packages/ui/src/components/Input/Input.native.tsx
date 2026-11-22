@@ -31,7 +31,8 @@ const KEYBOARD: Record<InputType, KeyboardTypeOptions> = {
   search: 'default',
   tel: 'phone-pad',
   url: 'url',
-  number: 'numeric',
+  // Digits and a point, as the web half's decimal pad: a number here is never negative.
+  number: 'decimal-pad',
   handle: 'email-address',
 };
 

@@ -5,6 +5,7 @@ import type { FocusParts, PictureChoice } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { useFormat } from '@heliogrid/ui';
 import type { Ref } from 'react';
+import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
 import { StudioLengthBox } from './StudioLengthBox';
 import { StudioPictureChip, StudioPictureCredit } from './StudioPictureChip';
 import { StudioStepSwitcher } from './StudioStepSwitcher';
@@ -17,6 +18,7 @@ import { StudioTopBar } from './StudioTopBar';
  */
 export function StudioCanvasHead({
   headRef,
+  compass,
   studio,
   parts,
   name,
@@ -25,6 +27,8 @@ export function StudioCanvasHead({
   onSite,
 }: {
   headRef: Ref<HTMLDivElement>;
+  /** The compass in the head's right corner, which the camera turns. */
+  compass: Ref<StudioCompassHandle>;
   studio: StudioScreen;
   parts: FocusParts;
   name: TranslatedText;
@@ -69,6 +73,7 @@ export function StudioCanvasHead({
           siteWaits={saving.kind !== 'saved'}
         />
       </div>
+      <StudioCompass handle={compass} words={words} off={parts.compass === 'hidden'} />
       {parts.pictureChip === 'credit' ? (
         <StudioPictureCredit picture={picture} />
       ) : (

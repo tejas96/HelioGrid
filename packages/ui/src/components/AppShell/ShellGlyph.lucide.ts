@@ -79,7 +79,6 @@ export {
   MonitorIcon,
   MoonIcon,
   MoveIcon,
-  Navigation2Icon,
   PackageIcon,
   PaletteIcon,
   PanelLeftIcon,

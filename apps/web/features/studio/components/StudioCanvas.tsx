@@ -19,6 +19,7 @@ import { StudioBottomBar } from './StudioBottomBar';
 import type { StudioDrive } from './StudioCameraRig';
 import { StudioCanvasHead } from './StudioCanvasHead';
 import { StudioCanvasNotes } from './StudioCanvasNotes';
+import type { StudioCompassHandle } from './StudioCompass';
 import { StudioLoupe } from './StudioLoupe';
 import { StudioMapMarks, type StudioMapMarksHandle } from './StudioMapMarks';
 import { StudioRoofMarks } from './StudioRoofMarks';
@@ -67,6 +68,7 @@ export function StudioCanvas({
   const pin = useRef<HTMLSpanElement>(null);
   const drive = useRef<StudioDrive | null>(null);
   const marks = useRef<StudioMapMarksHandle>(null);
+  const compass = useRef<StudioCompassHandle>(null);
   const roofMarks = useRef<RoofMarksHandle>(null);
   const scene = useRef<HTMLDivElement>(null);
   // biome-ignore lint/plugin: whether the corner held is crowded on the screen, as the marks last laid it
@@ -120,7 +122,10 @@ export function StudioCanvas({
           pinLabel={pin}
           fallback={<p className="hg-studio-no-scene">{words.noScene}</p>}
           drive={drive}
-          onMarks={(seen) => marks.current?.show(seen)}
+          onMarks={(seen) => {
+            marks.current?.show(seen);
+            compass.current?.turn(seen.turn);
+          }}
           roofs={roofs}
           heights={studio.heights.map((height) => height.metres)}
           pictureScale={studio.shown?.pictureScale ?? null}
@@ -153,8 +158,7 @@ export function StudioCanvas({
         view={view}
         units={studio.units}
         scaleBar={studio.scaleBar}
-        words={words}
-        off={parts.compass === 'hidden'}
+        off={parts.compass !== 'shown'}
       />
       {/* The marker says what it is: a word beside it only repeats the glyph, so it is spoken alone. */}
       <span
@@ -169,6 +173,7 @@ export function StudioCanvas({
       </span>
       <StudioCanvasHead
         headRef={top}
+        compass={compass}
         studio={studio}
         parts={parts}
         name={name}

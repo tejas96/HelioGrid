@@ -51,7 +51,7 @@
   align-items: center;
   /* The task's slim capsule: 26 px. */
   block-size: calc(var(--sp-6) + var(--sp-0-5));
-  padding-inline: var(--sp-2) calc(var(--sp-2) + var(--sp-0-5));
+  padding-inline: calc(var(--sp-2) + var(--sp-0-5));
   border-radius: var(--r-pill);
   color: var(--text-secondary);
   font-size: var(--fs-overline);
@@ -62,28 +62,38 @@
     var(--e1);
 }
 
-.hg-studio-north {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-0-5);
-  color: var(--text-primary);
+/* The compass: the needle alone, in the head's right corner, turning about its middle. Its white
+   half and a soft shade keep it clear on any picture. */
+.hg-studio-compass {
+  display: grid;
+  place-items: center;
+  flex: none;
+  pointer-events: none;
+  filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 70%, transparent));
 }
 
-.hg-studio-north-arrow {
-  display: inline-flex;
+.hg-studio-compass[data-off="true"] {
+  visibility: hidden;
 }
 
-.hg-studio-north-letter {
-  font-weight: var(--fw-semibold);
+.hg-studio-needle {
+  inline-size: var(--sp-4);
+  block-size: var(--sp-8);
+  transform-origin: 50% 50%;
+}
+
+.hg-studio-needle-north {
+  fill: var(--danger);
+}
+
+.hg-studio-needle-south {
+  fill: var(--scene-mark);
 }
 
 .hg-studio-scale {
   display: inline-flex;
   align-items: center;
   gap: calc(var(--sp-1) + var(--sp-0-5));
-  margin-inline-start: var(--sp-2);
-  padding-inline-start: var(--sp-2);
-  border-inline-start: var(--hg-studio-line) solid var(--line-strong);
 }
 
 .hg-studio-scale-words {

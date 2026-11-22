@@ -2671,7 +2671,7 @@ msgid "{pin}, draggable"
 msgstr "{pin}, draggable"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:92
+#: src/copy/studio-canvas.ts:90
 msgid "{place} · roof not set up yet"
 msgstr "{place} · roof not set up yet"
 
@@ -4573,7 +4573,7 @@ msgid "Add role"
 msgstr "Add role"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:94
+#: src/copy/studio-canvas.ts:92
 msgid "Add roof objects"
 msgstr "Add roof objects"
 
@@ -4654,7 +4654,7 @@ msgid "Adding {name}"
 msgstr "Adding {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:95
+#: src/copy/studio-canvas.ts:93
 msgid "Adding roof objects is the next step. It is coming soon."
 msgstr "Adding roof objects is the next step. It is coming soon."
 
@@ -8525,7 +8525,7 @@ msgid "Drag, or − + for {step}. The first length sizes the whole roof."
 msgstr "Drag, or − + for {step}. The first length sizes the whole roof."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:91
+#: src/copy/studio-canvas.ts:89
 msgid "Draw a roof"
 msgstr "Draw a roof"
 
@@ -8540,12 +8540,12 @@ msgid "Draw another roof"
 msgstr "Draw another roof"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:89
+#: src/copy/studio-canvas.ts:87
 msgid "Draw myself"
 msgstr "Draw myself"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:90
+#: src/copy/studio-canvas.ts:88
 msgid "Draw on the grid"
 msgstr "Draw on the grid"
 
@@ -12626,7 +12626,7 @@ msgid "Map columns"
 msgstr "Map columns"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:85
+#: src/copy/studio-canvas.ts:83
 msgid "Map. Arrow keys move it, plus and minus zoom, and 0 goes back to the pin."
 msgstr "Map. Arrow keys move it, plus and minus zoom, and 0 goes back to the pin."
 
@@ -13400,11 +13400,6 @@ msgstr "My roof"
 #: src/copy/homes.ts:20
 msgid "My Visits Today"
 msgstr "My Visits Today"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:84
-msgid "N"
-msgstr "N"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:172
@@ -19068,7 +19063,7 @@ msgid "Roof moved. Undo puts it back."
 msgstr "Roof moved. Undo puts it back."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:93
+#: src/copy/studio-canvas.ts:91
 msgid "Roof not set up yet"
 msgstr "Roof not set up yet"
 
@@ -21991,7 +21986,7 @@ msgid "That's taking too long to answer — they stay on this phone."
 msgstr "That's taking too long to answer — they stay on this phone."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:96
+#: src/copy/studio-canvas.ts:94
 msgid "The 3D view cannot start on this device. Try another browser."
 msgstr "The 3D view cannot start on this device. Try another browser."
 

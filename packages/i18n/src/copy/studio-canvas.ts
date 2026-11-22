@@ -80,8 +80,6 @@ const CANVAS = {
   pin: /*i18n*/ { id: 'Pin' },
   backToPin: /*i18n*/ { id: 'Back to the pin' },
   north: /*i18n*/ { id: 'North' },
-  // The north arrow on a map: the one letter for North.
-  northLetter: /*i18n*/ { id: 'N' },
   mapKeys: /*i18n*/ {
     id: 'Map. Arrow keys move it, plus and minus zoom, and 0 goes back to the pin.',
   },
@@ -194,8 +192,6 @@ export function studioCanvasWords(t: T) {
     zoomOut: t(MAP_SURFACE.zoomOut),
     backToPin: t(CANVAS.backToPin),
     north: t(CANVAS.north),
-    /** The north arrow's one letter. */
-    northLetter: t(CANVAS.northLetter),
     /** The map's own name for a screen reader, with the keys that move it. */
     mapKeys: t(CANVAS.mapKeys),
     drawMyself: t(CANVAS.drawMyself),

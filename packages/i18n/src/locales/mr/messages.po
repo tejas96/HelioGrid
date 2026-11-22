@@ -2671,7 +2671,7 @@ msgid "{pin}, draggable"
 msgstr "{pin}, ओढता येते"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:92
+#: src/copy/studio-canvas.ts:90
 msgid "{place} · roof not set up yet"
 msgstr "{place} · छत अजून ठरलेले नाही"
 
@@ -4573,7 +4573,7 @@ msgid "Add role"
 msgstr "भूमिका जोडा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:94
+#: src/copy/studio-canvas.ts:92
 msgid "Add roof objects"
 msgstr "छतावरील वस्तू जोडा"
 
@@ -4654,7 +4654,7 @@ msgid "Adding {name}"
 msgstr "{name} जोडली जात आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:95
+#: src/copy/studio-canvas.ts:93
 msgid "Adding roof objects is the next step. It is coming soon."
 msgstr "छतावरील वस्तू जोडणे ही पुढची पायरी आहे. ती लवकरच येत आहे."
 
@@ -8525,7 +8525,7 @@ msgid "Drag, or − + for {step}. The first length sizes the whole roof."
 msgstr "ओढा, किंवा {step} साठी − + दाबा. पहिली लांबी संपूर्ण छताचे माप ठरवते."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:91
+#: src/copy/studio-canvas.ts:89
 msgid "Draw a roof"
 msgstr "छत काढा"
 
@@ -8540,12 +8540,12 @@ msgid "Draw another roof"
 msgstr "आणखी एक छत काढा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:89
+#: src/copy/studio-canvas.ts:87
 msgid "Draw myself"
 msgstr "मी स्वतः काढेन"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:90
+#: src/copy/studio-canvas.ts:88
 msgid "Draw on the grid"
 msgstr "ग्रिडवर काढा"
 
@@ -12626,7 +12626,7 @@ msgid "Map columns"
 msgstr "कॉलम जुळवा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:85
+#: src/copy/studio-canvas.ts:83
 msgid "Map. Arrow keys move it, plus and minus zoom, and 0 goes back to the pin."
 msgstr "नकाशा. बाण कळा तो सरकवतात, प्लस आणि मायनस झूम करतात, आणि 0 पिनवर परत नेते."
 
@@ -13400,11 +13400,6 @@ msgstr "माझे छत"
 #: src/copy/homes.ts:20
 msgid "My Visits Today"
 msgstr "आजच्या माझ्या भेटी"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:84
-msgid "N"
-msgstr "उ"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:172
@@ -19068,7 +19063,7 @@ msgid "Roof moved. Undo puts it back."
 msgstr "छत हलले. पूर्ववत करा ने परत येईल."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:93
+#: src/copy/studio-canvas.ts:91
 msgid "Roof not set up yet"
 msgstr "छत अजून ठरलेले नाही"
 
@@ -21991,7 +21986,7 @@ msgid "That's taking too long to answer — they stay on this phone."
 msgstr "उत्तर यायला खूप वेळ लागत आहे — ते याच फोनवर राहतील."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:96
+#: src/copy/studio-canvas.ts:94
 msgid "The 3D view cannot start on this device. Try another browser."
 msgstr "या डिव्हाइसवर 3D व्ह्यू सुरू होऊ शकत नाही. दुसरा ब्राउझर वापरून पहा."
 
