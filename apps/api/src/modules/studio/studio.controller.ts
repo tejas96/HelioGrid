@@ -8,13 +8,14 @@ import { RouteBillingMap } from '../../common/auth/route-billing';
 import { actOf, tenantIdOf } from '../../common/auth/session-context';
 import { readerOf } from '../crm/crm.public';
 import { StudioDocumentService } from './studio.document.service';
+import { StudioPictureService } from './studio.picture.service';
 import { StudioPlacesService } from './studio.places.service';
 import { StudioService } from './studio.service';
 
 const DESIGN = { capability: 'studio.create_edit_designs' } as const;
 
 /**
- * Designs (`T-M05-001`) and their documents (`T-M05-002a`). Reading is every member's, narrowed to the leads their presets reach
+ * Designs (`T-M05-001`), their documents (`T-M05-002a`) and their own pictures (`T-M05-002d`). Reading is every member's, narrowed to the leads their presets reach
  * (`F2.M02.lead-visibility`); making and changing one is the create-and-edit grant's. In the
  * billing matrix every write is the studio's own row, which pauses with the plan; reading never
  * pauses.
@@ -25,6 +26,7 @@ export class StudioController {
   constructor(
     @Inject(StudioService) private readonly studio: StudioService,
     @Inject(StudioDocumentService) private readonly documents: StudioDocumentService,
+    @Inject(StudioPictureService) private readonly pictures: StudioPictureService,
   ) {}
 
   // Topmost, so it is applied last: it serves each route from what the maps below declared.
@@ -34,6 +36,8 @@ export class StudioController {
     saveSite: 'studio_design_edit',
     recommend: 'studio_design_edit',
     saveDocument: 'studio_design_edit',
+    addPicture: 'studio_design_edit',
+    addCadPlan: 'studio_design_edit',
     // A turn to edit changes nothing in the design: taking and giving it back pause with nothing.
     takeEditTurn: 'ungated',
     giveEditTurn: 'ungated',
@@ -49,6 +53,9 @@ export class StudioController {
     takeEditTurn: DESIGN,
     giveEditTurn: DESIGN,
     skyPicture: 'member',
+    addPicture: DESIGN,
+    addCadPlan: DESIGN,
+    picture: 'member',
   })
   handler(@Req() req: Request) {
     const reader = readerOf(req);
@@ -76,6 +83,19 @@ export class StudioController {
       giveEditTurn: async ({ params }) => {
         await this.documents.giveTurn(reader, params.id, act);
         return { status: 204 as const, body: undefined };
+      },
+      addPicture: async ({ params, body, headers }) => ({
+        status: 201 as const,
+        body: await this.pictures.add(reader, params.id, { read: 'device', ...body }, headers, act),
+      }),
+      addCadPlan: async ({ params, body, headers }) => ({
+        status: 201 as const,
+        body: await this.pictures.add(reader, params.id, { read: 'server', ...body }, headers, act),
+      }),
+      picture: async ({ params }) => {
+        // The links to its parts are short-lived: no browser or web view keeps the answer.
+        responseOf(req).setHeader('Cache-Control', 'no-store');
+        return ok(await this.pictures.picture(reader, params.id, params.pictureId, Date.now()));
       },
       skyPicture: async ({ params }) => {
         // Google's picture is never stored, nor put in a file — a cache on disk included.

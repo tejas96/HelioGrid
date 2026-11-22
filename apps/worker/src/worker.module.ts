@@ -19,6 +19,10 @@ import { notificationWorkerRegistration } from './modules/notification/notificat
 import { outboxWorkerRegistration } from './modules/outbox/outbox.public';
 import { platformWorkerRegistration } from './modules/platform/platform.public';
 import { reportingWorkerRegistration } from './modules/reporting/reporting.public';
+import {
+  cadPlanWorkerRegistration,
+  studioWorkerRegistration,
+} from './modules/studio/studio.public';
 import { teamWorkerRegistration } from './modules/team/team.public';
 import { usageWorkerRegistration } from './modules/usage/usage.public';
 
@@ -62,6 +66,8 @@ import { usageWorkerRegistration } from './modules/usage/usage.public';
         usageWorkerRegistration,
         notificationWorkerRegistration,
         reportingWorkerRegistration,
+        studioWorkerRegistration,
+        cadPlanWorkerRegistration,
       ],
     },
     TemporalWorkerHost,

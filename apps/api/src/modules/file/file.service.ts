@@ -18,6 +18,7 @@ import {
   type FileSubjectRule,
   judgeFileDeclaration,
   matchesFileSignature,
+  maxBytesOf,
   mayReadFile,
   mayUploadFile,
   type RolePreset,
@@ -81,7 +82,11 @@ export class FileService {
     if (!mayUploadFile(roles, rule, subject)) {
       throw new ForbiddenException('You may not store files against this.');
     }
-    refuseUnlessAccepted(judgeFileDeclaration(rule, body.contentType, body.byteSize), rule);
+    refuseUnlessAccepted(
+      judgeFileDeclaration(rule, body.contentType, body.byteSize),
+      rule,
+      body.contentType,
+    );
     if (!(await SUBJECT_LOOKUPS[body.subjectKind](tenantId, body.subjectRef))) {
       throw new NotFoundException();
     }
@@ -259,6 +264,7 @@ export class FileService {
 function refuseUnlessAccepted(
   verdict: ReturnType<typeof judgeFileDeclaration>,
   rule: FileSubjectRule,
+  contentType: FileContentType,
 ): void {
   switch (verdict) {
     case 'accepted':
@@ -266,7 +272,7 @@ function refuseUnlessAccepted(
     case 'too-large':
       throw new ContractException(
         'FILE_TOO_LARGE',
-        `This file is larger than the ${rule.maxBytes}-byte limit.`,
+        `This file is larger than the ${maxBytesOf(rule, contentType)}-byte limit.`,
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     case 'type-not-taken':

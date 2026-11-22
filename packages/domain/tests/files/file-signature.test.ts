@@ -15,6 +15,12 @@ const HTML = [...'<html><b'].map((character) => character.charCodeAt(0));
 const CSV = [...'Brand,Model,Rate\n'].map((character) => character.charCodeAt(0));
 const BOM_CSV = [0xef, 0xbb, 0xbf, ...CSV];
 const UTF16_CSV = [0xff, 0xfe, 0x42, 0x00, 0x72, 0x00];
+const ascii = (text: string) => [...text].map((character) => character.charCodeAt(0));
+const DWG = ascii('AC1032\0\0');
+const BINARY_DXF = [...ascii('AutoCAD Binary DXF\r\n'), 0x1a, 0x00, 0x00, 0x00];
+const TEXT_DXF = ascii('  0\nSECTION\n');
+const LINES = ascii(' \n{"page":1}');
+const ARRAY_JSON = ascii('[1,2]');
 const bytes = (values: readonly number[]) => Uint8Array.from(values);
 
 const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -40,6 +46,19 @@ describe('matchesFileSignature — each type holds only its own first bytes', ()
     ['text/csv', XLSX, false],
     ['text/csv', UTF16_CSV, false],
     ['text/csv', [], false],
+    ['image/vnd.dwg', DWG, true],
+    ['image/vnd.dwg', DWG.slice(0, 3), false],
+    ['image/vnd.dwg', BINARY_DXF, false],
+    ['image/vnd.dxf', BINARY_DXF, true],
+    ['image/vnd.dxf', BINARY_DXF.slice(0, 19), false],
+    ['image/vnd.dxf', TEXT_DXF, false],
+    ['image/vnd.dxf', DWG, false],
+    ['application/json', LINES, true],
+    ['application/json', ARRAY_JSON, false],
+    ['application/json', [...LINES, 0x00], false],
+    ['application/json', HTML, false],
+    ['application/json', ascii('  '), false],
+    ['application/json', [], false],
   ] as const)('%s over %j is %s', (type, first, expected) => {
     expect(matchesFileSignature(type, bytes(first))).toBe(expected);
   });

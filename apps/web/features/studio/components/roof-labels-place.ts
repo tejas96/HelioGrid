@@ -1,4 +1,11 @@
-import type { KeepOff, LabelAsk, LabelPlace, ScreenPoint } from '@heliogrid/domain';
+import {
+  type KeepOff,
+  type LabelAsk,
+  type LabelPlace,
+  ROOF_EDGE_TRUSTS,
+  type RoofEdgeTrust,
+  type ScreenPoint,
+} from '@heliogrid/domain';
 import { type LayoutLabels, laidAt, readPoint } from './roof-marks-place';
 import type { ScreenOf } from './StudioRoofs';
 
@@ -7,6 +14,11 @@ import type { ScreenOf } from './StudioRoofs';
  * their edges' screen points and their own size, the handles kept clear, and set where the label
  * layout puts them.
  */
+
+/** An edge's trust as its label carries it; one this build does not know reads as traced. */
+function trustOf(written: string | undefined): RoofEdgeTrust {
+  return ROOF_EDGE_TRUSTS.find((trust) => trust === written) ?? 'traced';
+}
 
 /**
  * The move and turn handles where they were laid this frame: the labels keep off them. The + dots
@@ -87,10 +99,7 @@ export function placeLabels(layer: HTMLElement, screenOf: ScreenOf, layout: Layo
     group.labels.push({
       from: a,
       to: b,
-      trust:
-        node.dataset.trust === 'typed' || node.dataset.trust === 'measured'
-          ? node.dataset.trust
-          : 'traced',
+      trust: trustOf(node.dataset.trust),
       width: pill.offsetWidth,
       height: pill.offsetHeight,
       pinned: node.dataset.pinned === 'true',

@@ -5,13 +5,14 @@ import { onPicture } from './roof-length';
 /**
  * How far each roof figure can be trusted (`F8-01`, `F8-02`): a length traced on a picture is
  * derived, one traced on the bare grid or typed by a person is estimated, one measured on site is
- * measured. Trust shows on the model by the line itself (`ROOF_EDGE_TRUSTS`) and on the area's pill.
+ * measured, and one read from a CAD plan is derived. Trust shows on the model by the line itself (`ROOF_EDGE_TRUSTS`) and on the area's pill.
  */
 
 const SET_TIER: Record<Exclude<RoofEdgeTrust, 'traced'>, ProvenanceTier> = {
   typed: 'estimated',
   measured: 'measured',
   assumed: 'assumed',
+  plan: 'derived',
 };
 
 /**
@@ -20,11 +21,14 @@ const SET_TIER: Record<Exclude<RoofEdgeTrust, 'traced'>, ProvenanceTier> = {
  * lengths a person set (`F8-04`); a scaled picture whose set length was split away is estimated.
  */
 export function scaleTierOf(document: StudioDocument): ProvenanceTier | null {
-  // A typed or grid roof's lengths never sized the picture: only a picture roof's count.
+  // A typed or grid roof's lengths never sized the picture: only a picture roof's count, and of
+  // those only a length someone set — a plan's came with the plan.
   const set = document.roofs
     .filter(onPicture)
     .flatMap((roof) =>
-      roof.edges.flatMap((trust) => (trust === 'traced' ? [] : [SET_TIER[trust]])),
+      roof.edges.flatMap((trust) =>
+        trust === 'traced' || trust === 'plan' ? [] : [SET_TIER[trust]],
+      ),
     );
   if (set.length > 0) return weakestTier(set);
   return document.pictureScale === 1 ? null : 'estimated';

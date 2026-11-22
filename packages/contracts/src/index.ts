@@ -147,6 +147,7 @@ export * from './search';
 export * from './session';
 export * from './studio/design';
 export * from './studio/document';
+export * from './studio/picture';
 export * from './studio/places';
 export * from './studio/site';
 export * from './studio/site-map-bridge';

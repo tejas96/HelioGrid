@@ -315,7 +315,9 @@ type, so the api checks the first bytes and every download link forces the row's
 attachment. Clients upload and download **direct to the store** — no request carries a file's bytes
 through the api. Only a workflow step reads a stored file back whole, through the file module's
 `readStored`, and only a file its subject's rule bounds — the price list the catalog import reads
-(`T-M01-030c`), which is checked for what it unpacks to before it is opened. No file is larger than 2 MB (`FILE_MAX_BYTES`). The per-tenant quota check on every presign
+(`T-M01-030c`), which is checked for what it unpacks to before it is opened, and a design's CAD
+plan (`T-M05-002d`). No file is larger than 2 MB (`FILE_MAX_BYTES`), except a CAD plan — a DWG or a
+binary DXF — which may be up to 20 MB (`CAD_PLAN_MAX_BYTES`). The per-tenant quota check on every presign
 and the sweep of never-completed rows are the billing module's; until they land, pending rows are unbounded.
 
 ---

@@ -165,7 +165,9 @@
                               "proposal",
                               "proposal_version",
                               "customer_link",
-                              "saved_part"
+                              "saved_part",
+                              "design",
+                              "design_picture"
                             ]
                           },
                           "subjectRef": {
@@ -25012,7 +25014,10 @@
                             "image/jpeg",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "application/pdf"
+                            "application/pdf",
+                            "application/json",
+                            "image/vnd.dwg",
+                            "image/vnd.dxf"
                           ]
                         },
                         "byteSize": {
@@ -26366,7 +26371,10 @@
                             "image/jpeg",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "application/pdf"
+                            "application/pdf",
+                            "application/json",
+                            "image/vnd.dwg",
+                            "image/vnd.dxf"
                           ]
                         },
                         "byteSize": {
@@ -27189,7 +27197,10 @@
                             "image/jpeg",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "application/pdf"
+                            "application/pdf",
+                            "application/json",
+                            "image/vnd.dwg",
+                            "image/vnd.dxf"
                           ]
                         },
                         "byteSize": {
@@ -30544,7 +30555,10 @@
                             "image/jpeg",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "application/pdf"
+                            "application/pdf",
+                            "application/json",
+                            "image/vnd.dwg",
+                            "image/vnd.dxf"
                           ]
                         },
                         "byteSize": {
@@ -35325,7 +35339,8 @@
                       "lead",
                       "project",
                       "project_payment",
-                      "proposal_version"
+                      "proposal_version",
+                      "design"
                     ]
                   },
                   "subjectRef": {
@@ -35339,7 +35354,10 @@
                       "image/jpeg",
                       "text/csv",
                       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                      "application/pdf"
+                      "application/pdf",
+                      "application/json",
+                      "image/vnd.dwg",
+                      "image/vnd.dxf"
                     ]
                   },
                   "byteSize": {
@@ -35389,7 +35407,8 @@
                             "lead",
                             "project",
                             "project_payment",
-                            "proposal_version"
+                            "proposal_version",
+                            "design"
                           ]
                         },
                         "subjectRef": {
@@ -35403,7 +35422,10 @@
                             "image/jpeg",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "application/pdf"
+                            "application/pdf",
+                            "application/json",
+                            "image/vnd.dwg",
+                            "image/vnd.dxf"
                           ]
                         },
                         "byteSize": {
@@ -36010,7 +36032,8 @@
                         "lead",
                         "project",
                         "project_payment",
-                        "proposal_version"
+                        "proposal_version",
+                        "design"
                       ]
                     },
                     "subjectRef": {
@@ -36024,7 +36047,10 @@
                         "image/jpeg",
                         "text/csv",
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "application/pdf"
+                        "application/pdf",
+                        "application/json",
+                        "image/vnd.dwg",
+                        "image/vnd.dxf"
                       ]
                     },
                     "byteSize": {
@@ -42424,7 +42450,9 @@
                               "proposal",
                               "proposal_version",
                               "customer_link",
-                              "saved_part"
+                              "saved_part",
+                              "design",
+                              "design_picture"
                             ]
                           },
                           "subjectRef": {
@@ -45618,7 +45646,9 @@
                         "proposal",
                         "proposal_version",
                         "customer_link",
-                        "saved_part"
+                        "saved_part",
+                        "design",
+                        "design_picture"
                       ]
                     },
                     "subjectRef": {
@@ -99106,7 +99136,10 @@
                             "image/jpeg",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "application/pdf"
+                            "application/pdf",
+                            "application/json",
+                            "image/vnd.dwg",
+                            "image/vnd.dxf"
                           ]
                         },
                         "byteSize": {
@@ -99929,7 +99962,10 @@
                             "image/jpeg",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "application/pdf"
+                            "application/pdf",
+                            "application/json",
+                            "image/vnd.dwg",
+                            "image/vnd.dxf"
                           ]
                         },
                         "byteSize": {
@@ -100682,7 +100718,10 @@
                             "image/jpeg",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "application/pdf"
+                            "application/pdf",
+                            "application/json",
+                            "image/vnd.dwg",
+                            "image/vnd.dxf"
                           ]
                         },
                         "byteSize": {
@@ -102292,7 +102331,10 @@
                             "image/jpeg",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "application/pdf"
+                            "application/pdf",
+                            "application/json",
+                            "image/vnd.dwg",
+                            "image/vnd.dxf"
                           ]
                         },
                         "byteSize": {
@@ -247225,7 +247267,8 @@
                                     "traced",
                                     "typed",
                                     "measured",
-                                    "assumed"
+                                    "assumed",
+                                    "plan"
                                   ]
                                 },
                                 "minItems": 3,
@@ -247279,6 +247322,139 @@
                           "type": "number",
                           "minimum": 0.2,
                           "maximum": 5
+                        },
+                        "ownPicture": {
+                          "type": "object",
+                          "properties": {
+                            "pictureId": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "at": {
+                              "type": "object",
+                              "properties": {
+                                "east": {
+                                  "type": "number",
+                                  "minimum": -2000,
+                                  "maximum": 2000
+                                },
+                                "north": {
+                                  "type": "number",
+                                  "minimum": -2000,
+                                  "maximum": 2000
+                                }
+                              },
+                              "required": [
+                                "east",
+                                "north"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "turnDeg": {
+                              "type": "number",
+                              "minimum": -180,
+                              "exclusiveMinimum": -180,
+                              "maximum": 180
+                            },
+                            "metresPerUnit": {
+                              "type": "number",
+                              "minimum": 0.000001,
+                              "maximum": 100
+                            },
+                            "scaleFrom": {
+                              "type": "string",
+                              "enum": [
+                                "file",
+                                "guess",
+                                "person"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "pictureId",
+                            "at",
+                            "turnDeg",
+                            "metresPerUnit",
+                            "scaleFrom"
+                          ],
+                          "additionalProperties": false,
+                          "nullable": true
+                        },
+                        "plan": {
+                          "type": "object",
+                          "properties": {
+                            "pictureId": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "at": {
+                              "type": "object",
+                              "properties": {
+                                "east": {
+                                  "type": "number",
+                                  "minimum": -2000,
+                                  "maximum": 2000
+                                },
+                                "north": {
+                                  "type": "number",
+                                  "minimum": -2000,
+                                  "maximum": 2000
+                                }
+                              },
+                              "required": [
+                                "east",
+                                "north"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "turnDeg": {
+                              "type": "number",
+                              "minimum": -180,
+                              "exclusiveMinimum": -180,
+                              "maximum": 180
+                            },
+                            "metresPerUnit": {
+                              "type": "number",
+                              "minimum": 0.000001,
+                              "maximum": 100
+                            },
+                            "scaleFrom": {
+                              "type": "string",
+                              "enum": [
+                                "file",
+                                "guess",
+                                "person"
+                              ]
+                            },
+                            "seeThrough": {
+                              "type": "integer",
+                              "minimum": 10,
+                              "maximum": 100
+                            },
+                            "locked": {
+                              "type": "boolean"
+                            },
+                            "hidden": {
+                              "type": "boolean"
+                            },
+                            "page": {
+                              "type": "integer",
+                              "minimum": 1
+                            }
+                          },
+                          "required": [
+                            "pictureId",
+                            "at",
+                            "turnDeg",
+                            "metresPerUnit",
+                            "scaleFrom",
+                            "seeThrough",
+                            "locked",
+                            "hidden",
+                            "page"
+                          ],
+                          "additionalProperties": false,
+                          "nullable": true
                         }
                       },
                       "required": [
@@ -247905,7 +248081,8 @@
                                   "traced",
                                   "typed",
                                   "measured",
-                                  "assumed"
+                                  "assumed",
+                                  "plan"
                                 ]
                               },
                               "minItems": 3,
@@ -247959,6 +248136,139 @@
                         "type": "number",
                         "minimum": 0.2,
                         "maximum": 5
+                      },
+                      "ownPicture": {
+                        "type": "object",
+                        "properties": {
+                          "pictureId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "at": {
+                            "type": "object",
+                            "properties": {
+                              "east": {
+                                "type": "number",
+                                "minimum": -2000,
+                                "maximum": 2000
+                              },
+                              "north": {
+                                "type": "number",
+                                "minimum": -2000,
+                                "maximum": 2000
+                              }
+                            },
+                            "required": [
+                              "east",
+                              "north"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "turnDeg": {
+                            "type": "number",
+                            "minimum": -180,
+                            "exclusiveMinimum": -180,
+                            "maximum": 180
+                          },
+                          "metresPerUnit": {
+                            "type": "number",
+                            "minimum": 0.000001,
+                            "maximum": 100
+                          },
+                          "scaleFrom": {
+                            "type": "string",
+                            "enum": [
+                              "file",
+                              "guess",
+                              "person"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "pictureId",
+                          "at",
+                          "turnDeg",
+                          "metresPerUnit",
+                          "scaleFrom"
+                        ],
+                        "additionalProperties": false,
+                        "nullable": true
+                      },
+                      "plan": {
+                        "type": "object",
+                        "properties": {
+                          "pictureId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "at": {
+                            "type": "object",
+                            "properties": {
+                              "east": {
+                                "type": "number",
+                                "minimum": -2000,
+                                "maximum": 2000
+                              },
+                              "north": {
+                                "type": "number",
+                                "minimum": -2000,
+                                "maximum": 2000
+                              }
+                            },
+                            "required": [
+                              "east",
+                              "north"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "turnDeg": {
+                            "type": "number",
+                            "minimum": -180,
+                            "exclusiveMinimum": -180,
+                            "maximum": 180
+                          },
+                          "metresPerUnit": {
+                            "type": "number",
+                            "minimum": 0.000001,
+                            "maximum": 100
+                          },
+                          "scaleFrom": {
+                            "type": "string",
+                            "enum": [
+                              "file",
+                              "guess",
+                              "person"
+                            ]
+                          },
+                          "seeThrough": {
+                            "type": "integer",
+                            "minimum": 10,
+                            "maximum": 100
+                          },
+                          "locked": {
+                            "type": "boolean"
+                          },
+                          "hidden": {
+                            "type": "boolean"
+                          },
+                          "page": {
+                            "type": "integer",
+                            "minimum": 1
+                          }
+                        },
+                        "required": [
+                          "pictureId",
+                          "at",
+                          "turnDeg",
+                          "metresPerUnit",
+                          "scaleFrom",
+                          "seeThrough",
+                          "locked",
+                          "hidden",
+                          "page"
+                        ],
+                        "additionalProperties": false,
+                        "nullable": true
                       }
                     },
                     "required": [
@@ -249280,6 +249590,2617 @@
         "responses": {
           "204": {
             "description": "204"
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_FAILED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "FORBIDDEN"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "ENTITLEMENT_BLOCKED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "requestId": {
+                              "type": "string"
+                            },
+                            "blocked": {
+                              "discriminator": {
+                                "propertyName": "reason"
+                              },
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "billing_state"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "phase": {
+                                      "type": "string",
+                                      "enum": [
+                                        "trialing",
+                                        "active",
+                                        "past_due_full_function",
+                                        "past_due_metered_paused",
+                                        "halted",
+                                        "expired",
+                                        "cancelled_post_period"
+                                      ]
+                                    },
+                                    "haltsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "phase",
+                                    "haltsAt"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "cap"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "key": {
+                                      "type": "string",
+                                      "enum": [
+                                        "design_ceiling_kw",
+                                        "proposals_per_cycle",
+                                        "active_projects",
+                                        "voice_minutes",
+                                        "marketing_sends",
+                                        "tracked_field_seats",
+                                        "storage_gb",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "resetsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    },
+                                    "used": {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    },
+                                    "limit": {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "key",
+                                    "resetsAt"
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId",
+                            "blocked"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_FOUND"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INTERNAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/designs/{id}/pictures": {
+      "post": {
+        "summary": "Keep a picture of the company’s own with the design, read on the device: its facts and its stored parts",
+        "tags": [
+          "studio"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "photo",
+                      "drone",
+                      "plan"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "facts": {
+                    "type": "object",
+                    "properties": {
+                      "takenOn": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                        "nullable": true
+                      },
+                      "metresPerUnit": {
+                        "type": "number",
+                        "minimum": 0.000001,
+                        "maximum": 100,
+                        "nullable": true
+                      },
+                      "turnDeg": {
+                        "type": "number",
+                        "minimum": -180,
+                        "maximum": 180,
+                        "nullable": true
+                      },
+                      "centre": {
+                        "type": "object",
+                        "properties": {
+                          "latitude": {
+                            "type": "number",
+                            "minimum": -90,
+                            "maximum": 90
+                          },
+                          "longitude": {
+                            "type": "number",
+                            "minimum": -180,
+                            "maximum": 180
+                          }
+                        },
+                        "required": [
+                          "latitude",
+                          "longitude"
+                        ],
+                        "nullable": true
+                      },
+                      "unit": {
+                        "type": "string",
+                        "enum": [
+                          "mm",
+                          "cm",
+                          "m",
+                          "in",
+                          "ft"
+                        ],
+                        "nullable": true
+                      },
+                      "unitGuess": {
+                        "type": "string",
+                        "enum": [
+                          "mm",
+                          "cm",
+                          "m",
+                          "in",
+                          "ft"
+                        ],
+                        "nullable": true
+                      },
+                      "pages": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 200
+                      },
+                      "pickedPage": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 200
+                      }
+                    },
+                    "required": [
+                      "takenOn",
+                      "metresPerUnit",
+                      "turnDeg",
+                      "centre",
+                      "unit",
+                      "unitGuess",
+                      "pages",
+                      "pickedPage"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "fileId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 200
+                        },
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "piece",
+                            "lines"
+                          ]
+                        },
+                        "box": {
+                          "type": "object",
+                          "properties": {
+                            "west": {
+                              "type": "number"
+                            },
+                            "south": {
+                              "type": "number"
+                            },
+                            "east": {
+                              "type": "number"
+                            },
+                            "north": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "west",
+                            "south",
+                            "east",
+                            "north"
+                          ],
+                          "additionalProperties": false,
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "fileId",
+                        "page",
+                        "role",
+                        "box"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 1,
+                    "maxItems": 120
+                  }
+                },
+                "required": [
+                  "kind",
+                  "name",
+                  "facts",
+                  "files"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "201",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "photo",
+                        "drone",
+                        "plan"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "reading",
+                        "ready",
+                        "refused"
+                      ]
+                    },
+                    "refusal": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "broken",
+                        "no_lines"
+                      ],
+                      "nullable": true
+                    },
+                    "facts": {
+                      "type": "object",
+                      "properties": {
+                        "takenOn": {
+                          "type": "string",
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                          "nullable": true
+                        },
+                        "metresPerUnit": {
+                          "type": "number",
+                          "minimum": 0.000001,
+                          "maximum": 100,
+                          "nullable": true
+                        },
+                        "turnDeg": {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180,
+                          "nullable": true
+                        },
+                        "centre": {
+                          "type": "object",
+                          "properties": {
+                            "latitude": {
+                              "type": "number",
+                              "minimum": -90,
+                              "maximum": 90
+                            },
+                            "longitude": {
+                              "type": "number",
+                              "minimum": -180,
+                              "maximum": 180
+                            }
+                          },
+                          "required": [
+                            "latitude",
+                            "longitude"
+                          ],
+                          "nullable": true
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "nullable": true
+                        },
+                        "unitGuess": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "nullable": true
+                        },
+                        "pages": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 200
+                        },
+                        "pickedPage": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 200
+                        }
+                      },
+                      "required": [
+                        "takenOn",
+                        "metresPerUnit",
+                        "turnDeg",
+                        "centre",
+                        "unit",
+                        "unitGuess",
+                        "pages",
+                        "pickedPage"
+                      ],
+                      "additionalProperties": false,
+                      "nullable": true
+                    },
+                    "files": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "page": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "exclusiveMinimum": 0
+                          },
+                          "role": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "piece",
+                              "lines"
+                            ]
+                          },
+                          "box": {
+                            "type": "object",
+                            "properties": {
+                              "west": {
+                                "type": "number"
+                              },
+                              "south": {
+                                "type": "number"
+                              },
+                              "east": {
+                                "type": "number"
+                              },
+                              "north": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "west",
+                              "south",
+                              "east",
+                              "north"
+                            ],
+                            "additionalProperties": false,
+                            "nullable": true
+                          },
+                          "url": {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          "expiresAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "page",
+                          "role",
+                          "box",
+                          "url",
+                          "expiresAt"
+                        ]
+                      }
+                    },
+                    "addedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "addedBy": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "userId",
+                        "name"
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "name",
+                    "state",
+                    "refusal",
+                    "facts",
+                    "files",
+                    "addedAt",
+                    "addedBy"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_FAILED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "FORBIDDEN"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "ENTITLEMENT_BLOCKED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "requestId": {
+                              "type": "string"
+                            },
+                            "blocked": {
+                              "discriminator": {
+                                "propertyName": "reason"
+                              },
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "billing_state"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "phase": {
+                                      "type": "string",
+                                      "enum": [
+                                        "trialing",
+                                        "active",
+                                        "past_due_full_function",
+                                        "past_due_metered_paused",
+                                        "halted",
+                                        "expired",
+                                        "cancelled_post_period"
+                                      ]
+                                    },
+                                    "haltsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "phase",
+                                    "haltsAt"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "cap"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "key": {
+                                      "type": "string",
+                                      "enum": [
+                                        "design_ceiling_kw",
+                                        "proposals_per_cycle",
+                                        "active_projects",
+                                        "voice_minutes",
+                                        "marketing_sends",
+                                        "tracked_field_seats",
+                                        "storage_gb",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "resetsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    },
+                                    "used": {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    },
+                                    "limit": {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "key",
+                                    "resetsAt"
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId",
+                            "blocked"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_FOUND"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "DESIGN_PICTURE_FILE_REFUSED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "DESIGN_ACT_REFUSED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            },
+                            "facts": {
+                              "type": "object",
+                              "properties": {
+                                "refusal": {
+                                  "type": "string",
+                                  "x-extensible-enum": [
+                                    "host_closed",
+                                    "roofs_off_site"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "refusal"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId",
+                            "facts"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "x-extensible-enum": [
+                                "IDEMPOTENCY_KEY_REUSED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INTERNAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/designs/{id}/cad-plans": {
+      "post": {
+        "summary": "Keep a CAD plan with the design — a stored DWG or binary DXF — and start our server reading it into lines",
+        "tags": [
+          "studio"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "fileId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "name",
+                  "fileId"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "201",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "photo",
+                        "drone",
+                        "plan"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "reading",
+                        "ready",
+                        "refused"
+                      ]
+                    },
+                    "refusal": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "broken",
+                        "no_lines"
+                      ],
+                      "nullable": true
+                    },
+                    "facts": {
+                      "type": "object",
+                      "properties": {
+                        "takenOn": {
+                          "type": "string",
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                          "nullable": true
+                        },
+                        "metresPerUnit": {
+                          "type": "number",
+                          "minimum": 0.000001,
+                          "maximum": 100,
+                          "nullable": true
+                        },
+                        "turnDeg": {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180,
+                          "nullable": true
+                        },
+                        "centre": {
+                          "type": "object",
+                          "properties": {
+                            "latitude": {
+                              "type": "number",
+                              "minimum": -90,
+                              "maximum": 90
+                            },
+                            "longitude": {
+                              "type": "number",
+                              "minimum": -180,
+                              "maximum": 180
+                            }
+                          },
+                          "required": [
+                            "latitude",
+                            "longitude"
+                          ],
+                          "nullable": true
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "nullable": true
+                        },
+                        "unitGuess": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "nullable": true
+                        },
+                        "pages": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 200
+                        },
+                        "pickedPage": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 200
+                        }
+                      },
+                      "required": [
+                        "takenOn",
+                        "metresPerUnit",
+                        "turnDeg",
+                        "centre",
+                        "unit",
+                        "unitGuess",
+                        "pages",
+                        "pickedPage"
+                      ],
+                      "additionalProperties": false,
+                      "nullable": true
+                    },
+                    "files": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "page": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "exclusiveMinimum": 0
+                          },
+                          "role": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "piece",
+                              "lines"
+                            ]
+                          },
+                          "box": {
+                            "type": "object",
+                            "properties": {
+                              "west": {
+                                "type": "number"
+                              },
+                              "south": {
+                                "type": "number"
+                              },
+                              "east": {
+                                "type": "number"
+                              },
+                              "north": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "west",
+                              "south",
+                              "east",
+                              "north"
+                            ],
+                            "additionalProperties": false,
+                            "nullable": true
+                          },
+                          "url": {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          "expiresAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "page",
+                          "role",
+                          "box",
+                          "url",
+                          "expiresAt"
+                        ]
+                      }
+                    },
+                    "addedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "addedBy": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "userId",
+                        "name"
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "name",
+                    "state",
+                    "refusal",
+                    "facts",
+                    "files",
+                    "addedAt",
+                    "addedBy"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_FAILED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "FORBIDDEN"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "ENTITLEMENT_BLOCKED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "requestId": {
+                              "type": "string"
+                            },
+                            "blocked": {
+                              "discriminator": {
+                                "propertyName": "reason"
+                              },
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "billing_state"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "phase": {
+                                      "type": "string",
+                                      "enum": [
+                                        "trialing",
+                                        "active",
+                                        "past_due_full_function",
+                                        "past_due_metered_paused",
+                                        "halted",
+                                        "expired",
+                                        "cancelled_post_period"
+                                      ]
+                                    },
+                                    "haltsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "phase",
+                                    "haltsAt"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "cap"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "key": {
+                                      "type": "string",
+                                      "enum": [
+                                        "design_ceiling_kw",
+                                        "proposals_per_cycle",
+                                        "active_projects",
+                                        "voice_minutes",
+                                        "marketing_sends",
+                                        "tracked_field_seats",
+                                        "storage_gb",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "resetsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    },
+                                    "used": {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    },
+                                    "limit": {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "key",
+                                    "resetsAt"
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId",
+                            "blocked"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_FOUND"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "DESIGN_PICTURE_FILE_REFUSED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "DESIGN_ACT_REFUSED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            },
+                            "facts": {
+                              "type": "object",
+                              "properties": {
+                                "refusal": {
+                                  "type": "string",
+                                  "x-extensible-enum": [
+                                    "host_closed",
+                                    "roofs_off_site"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "refusal"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId",
+                            "facts"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "x-extensible-enum": [
+                                "IDEMPOTENCY_KEY_REUSED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INTERNAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/designs/{id}/pictures/{pictureId}": {
+      "get": {
+        "summary": "A picture of the design’s own as it stands, with short-lived links to its parts",
+        "tags": [
+          "studio"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pictureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "photo",
+                        "drone",
+                        "plan"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "reading",
+                        "ready",
+                        "refused"
+                      ]
+                    },
+                    "refusal": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "broken",
+                        "no_lines"
+                      ],
+                      "nullable": true
+                    },
+                    "facts": {
+                      "type": "object",
+                      "properties": {
+                        "takenOn": {
+                          "type": "string",
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                          "nullable": true
+                        },
+                        "metresPerUnit": {
+                          "type": "number",
+                          "minimum": 0.000001,
+                          "maximum": 100,
+                          "nullable": true
+                        },
+                        "turnDeg": {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180,
+                          "nullable": true
+                        },
+                        "centre": {
+                          "type": "object",
+                          "properties": {
+                            "latitude": {
+                              "type": "number",
+                              "minimum": -90,
+                              "maximum": 90
+                            },
+                            "longitude": {
+                              "type": "number",
+                              "minimum": -180,
+                              "maximum": 180
+                            }
+                          },
+                          "required": [
+                            "latitude",
+                            "longitude"
+                          ],
+                          "nullable": true
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "nullable": true
+                        },
+                        "unitGuess": {
+                          "type": "string",
+                          "enum": [
+                            "mm",
+                            "cm",
+                            "m",
+                            "in",
+                            "ft"
+                          ],
+                          "nullable": true
+                        },
+                        "pages": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 200
+                        },
+                        "pickedPage": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 200
+                        }
+                      },
+                      "required": [
+                        "takenOn",
+                        "metresPerUnit",
+                        "turnDeg",
+                        "centre",
+                        "unit",
+                        "unitGuess",
+                        "pages",
+                        "pickedPage"
+                      ],
+                      "additionalProperties": false,
+                      "nullable": true
+                    },
+                    "files": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "page": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "exclusiveMinimum": 0
+                          },
+                          "role": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "piece",
+                              "lines"
+                            ]
+                          },
+                          "box": {
+                            "type": "object",
+                            "properties": {
+                              "west": {
+                                "type": "number"
+                              },
+                              "south": {
+                                "type": "number"
+                              },
+                              "east": {
+                                "type": "number"
+                              },
+                              "north": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "west",
+                              "south",
+                              "east",
+                              "north"
+                            ],
+                            "additionalProperties": false,
+                            "nullable": true
+                          },
+                          "url": {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          "expiresAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "page",
+                          "role",
+                          "box",
+                          "url",
+                          "expiresAt"
+                        ]
+                      }
+                    },
+                    "addedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "addedBy": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "userId",
+                        "name"
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "name",
+                    "state",
+                    "refusal",
+                    "facts",
+                    "files",
+                    "addedAt",
+                    "addedBy"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "description": "400",

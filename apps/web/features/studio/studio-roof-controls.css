@@ -93,8 +93,12 @@
   box-sizing: border-box;
 }
 
-/* A length a person set keeps its trust in a thin line: white when typed, green when measured. */
-.hg-roof-len[data-kind="typed"] {
+/*
+ * A length a person set keeps its trust in a thin line: white when typed, green when measured. A
+ * plan's length is exact, so it is drawn as a typed one is.
+ */
+.hg-roof-len[data-kind="typed"],
+.hg-roof-len[data-kind="plan"] {
   border-color: var(--scene-mark);
 }
 

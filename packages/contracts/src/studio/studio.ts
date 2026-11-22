@@ -20,6 +20,13 @@ import {
   skyPictureSchema,
 } from './document';
 import {
+  addCadPlanSchema,
+  addDesignPictureSchema,
+  designPictureFileRefusedEnvelope,
+  designPictureParamsSchema,
+  designPictureSchema,
+} from './picture';
+import {
   placeAnswerSchema,
   placeAtQuerySchema,
   placeDetailsQuerySchema,
@@ -135,6 +142,43 @@ export const studioContract = c.router({
     body: c.noBody(),
     summary: 'Give back the turn to edit; a turn the reader does not hold stays as it is',
     responses: { 204: c.noBody(), 401: unauthenticatedEnvelope, 404: notFound },
+  },
+  addPicture: {
+    method: 'POST',
+    path: '/designs/:id/pictures',
+    pathParams: designParamsSchema,
+    headers: createHeadersSchema,
+    body: addDesignPictureSchema,
+    summary:
+      'Keep a picture of the company’s own with the design, read on the device: its facts and its stored parts',
+    responses: {
+      201: designPictureSchema,
+      401: unauthenticatedEnvelope,
+      404: notFound,
+      422: z.union([designPictureFileRefusedEnvelope, designActRefusedEnvelope, keyReusedEnvelope]),
+    },
+  },
+  addCadPlan: {
+    method: 'POST',
+    path: '/designs/:id/cad-plans',
+    pathParams: designParamsSchema,
+    headers: createHeadersSchema,
+    body: addCadPlanSchema,
+    summary:
+      'Keep a CAD plan with the design — a stored DWG or binary DXF — and start our server reading it into lines',
+    responses: {
+      201: designPictureSchema,
+      401: unauthenticatedEnvelope,
+      404: notFound,
+      422: z.union([designPictureFileRefusedEnvelope, designActRefusedEnvelope, keyReusedEnvelope]),
+    },
+  },
+  picture: {
+    method: 'GET',
+    path: '/designs/:id/pictures/:pictureId',
+    pathParams: designPictureParamsSchema,
+    summary: 'A picture of the design’s own as it stands, with short-lived links to its parts',
+    responses: { 200: designPictureSchema, 401: unauthenticatedEnvelope, 404: notFound },
   },
   skyPicture: {
     method: 'GET',

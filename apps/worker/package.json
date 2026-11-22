@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@heliogrid/contracts": "workspace:*",
+    "@heliogrid/domain": "workspace:*",
     "@heliogrid/env": "workspace:*",
+    "@mlightcad/libredwg-web": "0.8.6",
     "@nestjs/common": "11.1.28",
     "@nestjs/core": "11.1.28",
     "@temporalio/worker": "1.22.0",

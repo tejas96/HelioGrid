@@ -38,6 +38,8 @@ export {
   VALUE_SETTERS,
   type ValueSetter,
 } from './document';
+export * from './dxf-pairs';
+export * from './dxf-read';
 export {
   EDIT_TURN_RENEW_SECONDS,
   EDIT_TURN_SECONDS,
@@ -72,6 +74,8 @@ export {
   type RoofLabelAsk,
   type ScreenPoint,
 } from './label-layout';
+export * from './own-picture';
+export * from './plan-lines';
 export type {
   DragResult,
   EditRefusal,

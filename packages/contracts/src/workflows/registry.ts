@@ -33,6 +33,10 @@ export const TASK_QUEUES = [
   'heliogrid-projects',
   /** The owner's reports — the monthly summary (`M13-21`). */
   'heliogrid-reporting',
+  /** The studio's work off the request: a design's CAD plan read into lines (`T-M05-002d`). */
+  'heliogrid-studio',
+  /** The CAD reader: only the worker polls it, one plan at a time (`designPlanReadWorkflow`). */
+  'heliogrid-cad',
 ] as const;
 export type TaskQueue = (typeof TASK_QUEUES)[number];
 

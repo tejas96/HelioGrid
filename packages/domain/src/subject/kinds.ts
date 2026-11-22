@@ -58,5 +58,9 @@ export const SUBJECT_KINDS = [
   'customer_link',
   /** A company's saved cable, electrical or structure part (`M06-28`). */
   'saved_part',
+  /** One design of the studio — what its own picture's files are stored against (`T-M05-002d`). */
+  'design',
+  /** One picture of a design's own — what the lines our server reads from a CAD plan are kept against. */
+  'design_picture',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

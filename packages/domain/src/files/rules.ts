@@ -12,6 +12,17 @@ import type { FileContentType } from './vocabulary';
  */
 export const FILE_MAX_BYTES = 2_000_000;
 
+/**
+ * A CAD plan file is the one file larger than the ceiling (`T-M05-002d`): a house's DWG runs to
+ * many MB, it cannot be shrunk on the device, and it is read on our server alone, because its
+ * reader may not ship to a device. Every other file stays under `FILE_MAX_BYTES`.
+ */
+export const CAD_PLAN_MAX_BYTES = 20_000_000;
+export const CAD_PLAN_CONTENT_TYPES = [
+  'image/vnd.dwg',
+  'image/vnd.dxf',
+] as const satisfies readonly FileContentType[];
+
 /** How long an upload link works (`02-system-architecture.md` §8): one slow mobile upload. */
 export const FILE_UPLOAD_LINK_SECONDS = 15 * 60;
 /** How long a download link works: long enough to fetch, short enough that a leaked one dies. */
@@ -66,6 +77,7 @@ export const FILE_SUBJECT_KINDS = [
   'project',
   'project_payment',
   'proposal_version',
+  'design',
 ] as const satisfies readonly SubjectKind[];
 export type FileSubjectKind = (typeof FILE_SUBJECT_KINDS)[number];
 
@@ -154,9 +166,30 @@ export const FILE_SUBJECT_RULES = {
     maxBytes: FILE_MAX_BYTES,
     contentTypes: ['application/pdf'],
   },
+  /**
+   * A design's own picture (`T-M05-002d`): the cut-out pieces of a photo, a drone map or a picture
+   * page, the plan's lines, and a CAD plan read on the server. Who may see the design reads them,
+   * and who may also change it adds one — the studio's own judge decides, as the CRM does for a lead.
+   */
+  design: {
+    upload: 'subject',
+    read: 'subject',
+    maxBytes: FILE_MAX_BYTES,
+    contentTypes: ['image/jpeg', 'application/json', ...CAD_PLAN_CONTENT_TYPES],
+  },
 } as const satisfies Readonly<Record<FileSubjectKind, FileSubjectRule>>;
 
 export type FileDeclarationVerdict = 'accepted' | 'too-large' | 'type-not-taken';
+
+/** The largest file of this type the rule takes: a CAD plan's own limit, else the kind's. */
+export function maxBytesOf(
+  rule: Pick<FileSubjectRule, 'maxBytes'>,
+  contentType: FileContentType,
+): number {
+  return (CAD_PLAN_CONTENT_TYPES as readonly FileContentType[]).includes(contentType)
+    ? CAD_PLAN_MAX_BYTES
+    : rule.maxBytes;
+}
 
 export function judgeFileDeclaration(
   rule: Pick<FileSubjectRule, 'contentTypes' | 'maxBytes'>,
@@ -164,7 +197,7 @@ export function judgeFileDeclaration(
   byteSize: number,
 ): FileDeclarationVerdict {
   if (!rule.contentTypes.includes(contentType)) return 'type-not-taken';
-  if (byteSize > rule.maxBytes) return 'too-large';
+  if (byteSize > maxBytesOf(rule, contentType)) return 'too-large';
   return 'accepted';
 }
 

@@ -1,4 +1,5 @@
 import type { GroundPoint } from './ground';
+import type { LaidPicture, LaidPlan } from './own-picture';
 
 /**
  * The design document: everything a person makes in the studio, stored whole, one per design. It
@@ -36,19 +37,23 @@ export interface PictureStamp {
 
 /**
  * How an edge's length is known: traced on the picture (drawn dashed), typed by a person (solid),
- * measured on site (solid, with a tick), or the market's usual size a typed roof starts at, which
- * no person set. Every reader takes `assumed` before anything writes it: an open studio older than
- * the release that writes it would refuse the design (`CLAUDE.md` §8, expand then contract).
+ * measured on site (solid, with a tick), the market's usual size a typed roof starts at, which no
+ * person set, or read from a CAD plan (`T-M05-002d`) — exact, so solid like a set length, and
+ * derived. Every reader takes `assumed` and `plan` before anything writes them: an open studio older
+ * than the release that writes one would refuse the design (`CLAUDE.md` §8, expand then contract).
  */
-export const ROOF_EDGE_TRUSTS = ['traced', 'typed', 'measured', 'assumed'] as const;
+export const ROOF_EDGE_TRUSTS = ['traced', 'typed', 'measured', 'assumed', 'plan'] as const;
 export type RoofEdgeTrust = (typeof ROOF_EDGE_TRUSTS)[number];
 
 /** A length a person set: typed, or measured on site. */
 export type SetEdgeTrust = Extract<RoofEdgeTrust, 'typed' | 'measured'>;
 
-/** Whether a person set this length: it holds while other corners move, and its label always shows. */
-export function lengthHeld(trust: RoofEdgeTrust): trust is SetEdgeTrust {
-  return trust === 'typed' || trust === 'measured';
+/**
+ * Whether this length is held: it holds while other corners move, and its label always shows. A
+ * person's length is, and so is a plan's, which is exact.
+ */
+export function lengthHeld(trust: RoofEdgeTrust): boolean {
+  return trust === 'typed' || trust === 'measured' || trust === 'plan';
 }
 
 /** A design holds at most this many roofs. */
@@ -107,6 +112,13 @@ export interface StudioDocument {
    * is set, which sizes the picture and every roof on it together (`roof-length.ts`).
    */
   readonly pictureScale: number;
+  /**
+   * The company's own photo or drone map laid as the ground, shown when `picture` is `own`; `null`
+   * or absent when none is laid. A document saved before part d has none.
+   */
+  readonly ownPicture?: LaidPicture | null;
+  /** The plan laid over the ground, whichever picture shows; absent or `null` when none is laid. */
+  readonly plan?: LaidPlan | null;
 }
 
 /** A design no one has changed yet. */

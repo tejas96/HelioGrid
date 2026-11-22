@@ -8,6 +8,8 @@ export { checksumSha256Of } from './checksum';
 export { FILE_SIGNATURE_BYTES, matchesFileSignature } from './file-signature';
 export type { FileDeclarationVerdict, FileSubjectKind, FileSubjectRule } from './rules';
 export {
+  CAD_PLAN_CONTENT_TYPES,
+  CAD_PLAN_MAX_BYTES,
   FILE_DOWNLOAD_LINK_SECONDS,
   FILE_MAX_BYTES,
   FILE_STORE_ATTEMPTS,
@@ -17,6 +19,7 @@ export {
   FILE_SUBJECT_RULES,
   FILE_UPLOAD_LINK_SECONDS,
   judgeFileDeclaration,
+  maxBytesOf,
   mayReadFile,
   mayUploadFile,
   SPREADSHEET_CONTENT_TYPES,

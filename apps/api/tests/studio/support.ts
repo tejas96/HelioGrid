@@ -9,7 +9,7 @@ import type {
   SkyPictureWire,
   StudioDocumentWire,
 } from '@heliogrid/contracts';
-import { design, designDocument } from '@heliogrid/db';
+import { design, designDocument, designPicture, designPictureFile } from '@heliogrid/db';
 import { EMPTY_STUDIO_DOCUMENT } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { inArray } from 'drizzle-orm';
@@ -32,8 +32,8 @@ export {
 } from '../proposals/support';
 
 /*
- * One studio proof's world: the proposals world, and the designs it made — their documents first —
- * removed before the leads they hang on.
+ * One studio proof's world: the proposals world, and the designs it made — their pictures and
+ * documents first — removed before the leads they hang on.
  */
 export type StudioWorld = ProposalsWorld;
 
@@ -44,6 +44,8 @@ export async function openStudioWorld(staffed: readonly Staffed<Team>[]): Promis
     ...world,
     async close() {
       const { db } = world.pools.admin;
+      await db.delete(designPictureFile).where(inArray(designPictureFile.tenantId, [...companies]));
+      await db.delete(designPicture).where(inArray(designPicture.tenantId, [...companies]));
       await db.delete(designDocument).where(inArray(designDocument.tenantId, [...companies]));
       await db.delete(design).where(inArray(design.tenantId, [...companies]));
       await world.close();
