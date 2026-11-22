@@ -84,7 +84,12 @@
   background: var(--line-soft);
 }
 
-/* The mark alone, while a job keeps the steps aside, has nothing to be set apart from. */
+/* The mark alone, while a job keeps the steps aside, has nothing to be set apart from: no hairline
+   and no gap for one, so its pill is a circle. */
+.hg-studio-save:only-child {
+  margin-inline-start: 0;
+}
+
 .hg-studio-save:only-child::before {
   content: none;
 }

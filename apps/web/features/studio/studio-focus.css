@@ -42,6 +42,11 @@
   padding: var(--sp-1);
 }
 
+/* The magnet's holder is the button's own size: no text line under it to stretch the pill. */
+.hg-studio-magnet {
+  display: flex;
+}
+
 /* The magnet is pressed while on: the primary fill, so on and off read at a glance. */
 .hg-studio-magnet .hg-icon-button[aria-pressed="true"] {
   background: var(--action-primary);
@@ -50,6 +55,12 @@
 
 .hg-studio-magnet .hg-icon-button[aria-pressed="false"] {
   color: var(--text-secondary);
+}
+
+/* The pill's live region is heard, never seen: out of the row, so it takes no gap and the magnet
+   alone sits in a circle. */
+.hg-studio-pill-status {
+  position: absolute;
 }
 
 /* A round tool in the bar keeps its size; only the worded buttons share the row. */
