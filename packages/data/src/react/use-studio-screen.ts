@@ -6,8 +6,6 @@ import {
   type GroundBox,
   type History,
   historyAfter,
-  historyRedone,
-  historyUndone,
   type MeasurementSystem,
   OPENING_VIEW,
   type PictureChoice,
@@ -39,7 +37,7 @@ import {
   useStudioDocument,
 } from './studio-document-state';
 import type { StudioSaveState } from './studio-save-queue';
-import { studioBack, undoRedoOf } from './studio-undo-back';
+import { historyStep, studioBack, undoRedoOf } from './studio-undo-back';
 import { type DesignRead, useDesignScreen } from './use-design-screen';
 import { type RoofSheetMoves, type RoofSheetState, useRoofSheet } from './use-roof-sheet';
 import { type RoofMoves, type RoofStepView, useRoofStep } from './use-roof-step';
@@ -250,14 +248,16 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         else if (now === 'sizing' || now === 'dragging' || now === 'typing')
           act({ kind: 'cancel' });
         else if (latest.current !== null) {
-          act({ kind: 'history', undone: true });
-          change(historyUndone(latest.current));
+          const back = historyStep(latest.current, true);
+          act({ kind: 'history', undone: true, change: back.change });
+          change(back.next);
         }
       },
       redo: () => {
         if (step.current.kind === 'idle' && latest.current !== null) {
-          act({ kind: 'history', undone: false });
-          change(historyRedone(latest.current));
+          const on = historyStep(latest.current, false);
+          act({ kind: 'history', undone: false, change: on.change });
+          change(on.next);
         }
       },
       chooseUnits: (system) => void session.setUnitPreference(system),

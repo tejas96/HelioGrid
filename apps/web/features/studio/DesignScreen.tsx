@@ -33,8 +33,8 @@ import './studio-tools.css';
 import './studio-focus.css';
 
 /**
- * One design's own page (`SCR-M05-02`): the studio (`T-M05-002a`). It opens on the site in 3D on
- * its picture, with the pin; a design whose site has no place yet asks for Site details first.
+ * One design's own page (`SCR-M05-02`): the studio (`T-M05-002a`). It opens on the site in the flat
+ * top view on its picture, with the pin; a design whose site has no place yet asks for Site details first.
  * Inside the phone app's web view the way back hands the person back to the phone.
  */
 export function DesignScreen({

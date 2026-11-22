@@ -44,8 +44,8 @@ height from that data) works without it, and part g proves it with it.
 | Part | Holds | Status |
 |---|---|---|
 | `T-M05-002a` | the canvas: the design document, autosave and one editor, undo, the 3D scene on the picture, 2D and 3D, the picture chip, metres or feet, the phone's web view | built |
-| `T-M05-002b` | draw and fix a roof: corners, close, lengths and their trust, one true length, edit after close with the magnet | open |
-| `T-M05-002c` | type the size: a rectangle from two numbers, the 1 m grid, no picture | open |
+| `T-M05-002b` | draw and fix a roof: corners, close, lengths and their trust, one true length, edit after close with the magnet | built |
+| `T-M05-002c` | type the size: a rectangle from two numbers, the 1 m grid, no picture | built |
 | `T-M05-002d` | your own picture: a photo, a drone map or a CAD plan, north, one length sizes both | open |
 | `T-M05-002e` | many roofs, materials, roof shapes and walls: levels, openings, dormers, the switcher, walls in one setting, setback and path | open |
 | `T-M05-002f` | the ready checks, site photos and versions | open |

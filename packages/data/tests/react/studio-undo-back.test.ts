@@ -1,6 +1,14 @@
-import type { RoofStepEvent, RoofStepState } from '@heliogrid/domain';
+import {
+  EMPTY_STUDIO_DOCUMENT,
+  historyAfter,
+  historyOf,
+  historyUndone,
+  type RoofStepEvent,
+  type RoofStepState,
+  type StudioDocument,
+} from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
-import { type StudioBackFacts, studioBack } from '../../src/react/studio-undo-back';
+import { historyStep, type StudioBackFacts, studioBack } from '../../src/react/studio-undo-back';
 
 const IDLE: RoofStepState = { kind: 'idle', roof: null, picked: null, said: null };
 const DRAWING: RoofStepState = {
@@ -44,5 +52,29 @@ describe('the system back closes the top thing open first (T-M05-002)', () => {
     ['nothing: the way back leaves', {}, false, []],
   ] as const)('%s', (_why, open, handled, done) => {
     expect(run(open)).toEqual({ handled, done });
+  });
+});
+
+describe('Undo and Redo name the change they take back or make again (T-M05-002)', () => {
+  const empty = EMPTY_STUDIO_DOCUMENT;
+  const roof = {
+    id: 'r',
+    corners: [
+      { east: 0, north: 0 },
+      { east: 8, north: 0 },
+      { east: 8, north: 6 },
+    ],
+    edges: ['traced', 'traced', 'traced'],
+    tracedOn: 'sky',
+    height: null,
+  } as const;
+  const one: StudioDocument = { ...empty, roofs: [roof] };
+  it.each([
+    // the history, Undo or Redo → the change named
+    ['Undo of a roof drawn', historyAfter(historyOf(empty), one), true, 'roof_added'],
+    ['Redo of it', historyUndone(historyAfter(historyOf(empty), one)), false, 'roof_added'],
+    ['Undo of a roof deleted', historyAfter(historyOf(one), empty), true, 'roof_deleted'],
+  ] as const)('%s', (_why, history, undone, change) => {
+    expect(historyStep(history, undone).change).toBe(change);
   });
 });

@@ -7,19 +7,40 @@ import type { StudioDrive } from '../components/StudioCameraRig';
 /** A press that moves less than this, in CSS pixels, is a tap; more moves the map. */
 const TAP_PX = 6;
 
-/** A key pressed over the studio: Backspace while drawing, and Esc. */
+/** The desktop's own Undo and Redo: ⌘Z or Ctrl+Z, ⇧⌘Z or Ctrl+Y; as the buttons, idle when they rest. */
+function historyKey(
+  event: KeyboardEvent,
+  can: { readonly undo: boolean; readonly redo: boolean },
+  moves: StudioScreen['moves'],
+): void {
+  const key = event.key.toLowerCase();
+  if (!(event.metaKey || event.ctrlKey) || (key !== 'z' && key !== 'y')) return;
+  event.preventDefault();
+  const redo = key === 'y' || event.shiftKey;
+  if (redo && can.redo) moves.redo();
+  if (!redo && can.undo) moves.undo();
+}
+
+/** A key pressed over the studio: Backspace and Enter while drawing, Undo and Redo, and Esc. */
 function drawKey(
   event: KeyboardEvent,
   roofStep: StudioScreen['roofStep'],
+  can: { readonly close: boolean; readonly undo: boolean; readonly redo: boolean },
   moves: StudioScreen['moves'],
 ): void {
-  // Backspace typed into a field is that field's own.
+  // Backspace, Enter and Undo typed into a field are that field's own.
   const target = event.target;
   const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
   if (event.key === 'Backspace' && roofStep.kind === 'drawing' && !typing) {
     event.preventDefault();
     moves.undo();
   }
+  // Enter is Close shape while drawing, as it is the main act; on a button it is the button's.
+  if (event.key === 'Enter' && can.close && !typing && !(target instanceof HTMLButtonElement)) {
+    event.preventDefault();
+    moves.close();
+  }
+  if (!typing) historyKey(event, can, moves);
   // Esc is the phone's system back: the top thing open closes.
   // A part that took the Esc itself (a card, a field, a dialog) has had it.
   if (event.key === 'Escape' && !event.defaultPrevented) moves.back();
@@ -88,10 +109,13 @@ export function useDrawPress(
   // drag, a picked corner. Backspace takes the
   // last corner off while drawing. Alt held draws free for a moment: the magnet rests until it is
   // let go, or the window loses it.
+  const canClose = studio.bar?.kind === 'drawing' && studio.bar.canClose;
+  const { canUndo, canRedo } = studio;
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Alt') moves.drawFree(event.type === 'keydown');
-      if (event.type === 'keydown') drawKey(event, roofStep, moves);
+      if (event.type === 'keydown')
+        drawKey(event, roofStep, { close: canClose, undo: canUndo, redo: canRedo }, moves);
     };
     const onBlur = () => moves.drawFree(false);
     window.addEventListener('keydown', onKey);
@@ -102,7 +126,7 @@ export function useDrawPress(
       window.removeEventListener('keyup', onKey);
       window.removeEventListener('blur', onBlur);
     };
-  }, [roofStep, moves]);
+  }, [roofStep, canClose, canUndo, canRedo, moves]);
   const onPointerLeave = (event: PointerEvent<HTMLDivElement>) => {
     if (drawing && event.pointerType === 'mouse') moves.hover(null);
   };

@@ -7,10 +7,9 @@ import {
   cornerDragged,
   cornerNearest,
   cornerRemoved,
-  roofMoved,
-  roofTurned,
 } from '../../src/studio/roof-edit';
 import { lengthAsks, lengthIsFirst, lengthSet } from '../../src/studio/roof-length';
+import { roofMoved, roofTurned } from '../../src/studio/roof-move';
 import { edgeLengths, roofArea } from '../../src/studio/roof-shape';
 
 const p = (east: number, north: number): GroundPoint => ({ east, north });
@@ -261,6 +260,8 @@ describe('moving and turning a roof', () => {
     const turn = roofTurned(designOf(roofOf(RECT), far), 0, degrees, magnet);
     expect(turn.snapped).toBe(snapped);
     expect(turn.degrees).toBeCloseTo(applied);
+    // A turn that lines up flashes the edge it lines up with: one guide along that edge.
+    expect(turn.guides).toHaveLength(snapped ? 1 : 0);
   });
 });
 

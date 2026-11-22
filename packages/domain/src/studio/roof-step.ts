@@ -1,6 +1,7 @@
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { cornerAdded, cornerDragged, cornerRemoved, roofMoved, roofTurned } from './roof-edit';
+import { cornerAdded, cornerDragged, cornerRemoved } from './roof-edit';
+import { roofMoved, roofTurned } from './roof-move';
 import { roofMiddle } from './roof-shape';
 import { snapTargetsOf } from './roof-snap';
 import {
@@ -222,9 +223,9 @@ const ON: Handlers = {
       ),
     ),
   remove_corner: (state, _event, document) => cornerGone(state, document),
-  history: (state, { undone }) =>
+  history: (state, { undone, change }) =>
     inState(state, 'idle', (looking) =>
-      stay(idle({ kind: undone ? 'undone' : 'redone' }, looking.roof)),
+      stay(idle({ kind: undone ? 'undone' : 'redone', change }, looking.roof)),
     ),
   pick_roof: (state, { roof, metres }) =>
     inState(state, 'idle', () => stay(idle({ kind: 'roof_picked', roof, metres }, roof))),

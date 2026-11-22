@@ -10,6 +10,7 @@ import {
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
+import { historyLine } from './studio-history';
 import {
   type DragFacts,
   type RoofTag,
@@ -47,8 +48,6 @@ const ROOF = {
   roofArea: /*i18n*/ { id: 'Roof · {area}' },
   roofClosed: /*i18n*/ { id: 'Height {height} is assumed. Drag a corner to fix the shape.' },
   roofIdle: /*i18n*/ { id: 'Drag a corner to fix the shape.' },
-  undone: /*i18n*/ { id: 'Undone. Redo puts it back.' },
-  redone: /*i18n*/ { id: 'Redone. Undo takes it back.' },
   roofPicked: /*i18n*/ { id: 'Roof {number} · height {height}. Drag a corner to fix the shape.' },
   roofIdle3d: /*i18n*/ { id: 'Tap the roof to change its height.' },
   roofIdle3dReader: /*i18n*/ { id: 'Tap a roof to see its height.' },
@@ -76,6 +75,9 @@ const ROOF = {
   editShort: /*i18n*/ { id: 'A length is at least {length}.' },
   editLong: /*i18n*/ { id: 'A length is at most {length}.' },
   editHeld: /*i18n*/ { id: 'A length you set would change. Change that length first.' },
+  editHeldLength: /*i18n*/ {
+    id: 'The {length} you set would change. Change that length first.',
+  },
   editTwoHeld: /*i18n*/ { id: 'Both lengths at this corner are set. Tap a length to change it.' },
   editThree: /*i18n*/ { id: 'A roof keeps at least 3 corners.' },
   editManyCorners: /*i18n*/ { id: 'A roof has at most {max} corners.' },
@@ -122,7 +124,13 @@ const DRAW_REFUSAL: Record<
   }),
 };
 
-function editRefusalLine(t: T, refusal: EditRefusal, shown: RoofWordsShown): TranslatedText {
+function editRefusalLine(
+  t: T,
+  refusal: EditRefusal,
+  shown: RoofWordsShown,
+  /** The set length that holds, in metres, for `held_length`. */
+  held: number | null = null,
+): TranslatedText {
   switch (refusal) {
     case 'would_cross':
       return t(ROOF.editCross);
@@ -137,7 +145,9 @@ function editRefusalLine(t: T, refusal: EditRefusal, shown: RoofWordsShown): Tra
     case 'too_long':
       return t(ROOF.editLong, { length: shown.length(LENGTH_MAX_M) });
     case 'held_length':
-      return t(ROOF.editHeld);
+      return held === null
+        ? t(ROOF.editHeld)
+        : t(ROOF.editHeldLength, { length: shown.length(held) });
     case 'two_held':
       return t(ROOF.editTwoHeld);
     case 'keeps_three':
@@ -183,9 +193,9 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
       // A turn is said by its size: which way it went is on the screen.
       return t(ROOF.roofTurned, { degrees: Math.abs(said.degrees) });
     case 'undone':
-      return t(ROOF.undone);
+      return historyLine(t, true, said.change);
     case 'redone':
-      return t(ROOF.redone);
+      return historyLine(t, false, said.change);
     case 'roof_picked':
       return t(ROOF.roofPicked, { number: said.roof + 1, height: shown.heightOf(said.metres) });
     case 'roof_deleted':
@@ -230,8 +240,11 @@ export function studioRoofWords(t: T) {
       return roofSaidLine(t, said, shown);
     },
     /** Why an edit is refused, said in the bar: the limits already formatted. */
-    editRefusal: (refusal: EditRefusal, shown: RoofWordsShown): TranslatedText =>
-      editRefusalLine(t, refusal, shown),
+    editRefusal: (
+      refusal: EditRefusal,
+      shown: RoofWordsShown,
+      held: number | null = null,
+    ): TranslatedText => editRefusalLine(t, refusal, shown, held),
     /** A corner held among crowded dots: a closer look gives it room. */
     dragCrowded: t(ROOF.dragCrowded),
     /** The bar at rest in 3D, where a roof's height is changed and its outline is not. */

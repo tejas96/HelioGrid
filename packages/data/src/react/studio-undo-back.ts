@@ -1,4 +1,13 @@
-import type { History, RoofStepEvent, RoofStepState, StudioDocument } from '@heliogrid/domain';
+import {
+  type History,
+  historyRedone,
+  historyUndone,
+  type RoofStepEvent,
+  type RoofStepState,
+  type StudioChange,
+  type StudioDocument,
+  studioChangeOf,
+} from '@heliogrid/domain';
 
 /** What stepping back does in the studio: Undo and Redo, and the phone's system back. */
 
@@ -46,4 +55,17 @@ export function undoRedoOf(
       ? roofStep.corners.length > 0 || roofStep.wiped !== null
       : (roofStep.kind === 'idle' && Boolean(roofStep.left)) || (history?.past.length ?? 0) > 0;
   return { canUndo: back, canRedo: roofStep.kind === 'idle' && (history?.future.length ?? 0) > 0 };
+}
+
+/** One step back or on through the design's history, and what that step changes, for the bar. */
+export function historyStep(
+  history: History<StudioDocument>,
+  undone: boolean,
+): { readonly next: History<StudioDocument>; readonly change: StudioChange } {
+  const next = undone ? historyUndone(history) : historyRedone(history);
+  // The change named is the one as it was made: Undo takes back the step into the present.
+  const change = undone
+    ? studioChangeOf(next.present, history.present)
+    : studioChangeOf(history.present, next.present);
+  return { next, change };
 }

@@ -66,13 +66,35 @@ const PAIR = /^\s*((?:\d+(?:\.\d*)?|\.\d+))\s*m?\s*[xX×*]\s*((?:\d+(?:\.\d*)?|\
 const PAIR_ON_ITS_WAY =
   /^\s*(?:\d+(?:\.\d*)?|\.\d*)?\s*m?\s*(?:[xX×*]\s*(?:\d+(?:\.\d*)?|\.\d*)?\s*)?$/;
 
+/** Devanagari digits, as a Hindi or Marathi keyboard types them. */
+const DEVANAGARI_ZERO = 0x0966;
+const DEVANAGARI_DIGIT = /[\u0966-\u096F]/g;
+/** A decimal comma: one or two digits after it. Three would group thousands, which no length has. */
+const DECIMAL_COMMA = /(\d),(\d{1,2})(?!\d)/g;
+const INCHES_IN_A_FOOT = 12;
+
+/** What was typed, as the readers below take it: Western digits, and a point for a decimal comma. */
+function asTyped(text: string): string {
+  return text
+    .replace(DEVANAGARI_DIGIT, (digit) =>
+      String((digit.codePointAt(0) ?? DEVANAGARI_ZERO) - DEVANAGARI_ZERO),
+    )
+    .replace(DECIMAL_COMMA, '$1.$2');
+}
+
 /** Whether one box's text is still on its way to a pair: it waits, never refused, as it is typed. */
 export function pairOnItsWay(text: string): boolean {
-  return pairOf(text) === null && PAIR_ON_ITS_WAY.test(text);
+  return pairOf(text) === null && PAIR_ON_ITS_WAY.test(asTyped(text));
 }
 
 function plain(text: string): number | null {
   return PLAIN.test(text) ? Number(text) : null;
+}
+
+/** Inches beside feet: a plain number under a foot. */
+function inchesOf(text: string): number | null {
+  const inches = plain(text);
+  return inches !== null && inches < INCHES_IN_A_FOOT ? inches : null;
 }
 
 /**
@@ -84,24 +106,36 @@ export type EntryRead =
   | { readonly kind: 'bad' }
   | { readonly kind: 'metres'; readonly metres: number };
 
+/**
+ * Feet and inches typed together in the feet box: the inch box is not read beside them, for it may
+ * still hold inches written there for the person. Inches take whole feet, under a foot.
+ */
+function feetBoxRead(feetText: string, inchesText: string | undefined): EntryRead {
+  if (inchesText === undefined) {
+    return { kind: 'metres', metres: metresOfFeetAndInches(Number(feetText), 0) };
+  }
+  const inches = inchesOf(inchesText);
+  if (inches === null || feetText.includes('.')) return { kind: 'bad' };
+  return { kind: 'metres', metres: metresOfFeetAndInches(Number(feetText), inches) };
+}
+
 export function entryRead(entry: LengthEntry, system: MeasurementSystem): EntryRead {
-  const main = entry.main.trim();
+  const main = asTyped(entry.main.trim());
   if (system === 'metric') {
     if (main === '') return { kind: 'empty' };
     const metres = plain(main);
     return metres === null ? { kind: 'bad' } : { kind: 'metres', metres };
   }
-  const inchesText = entry.inches.trim();
+  const inchesText = asTyped(entry.inches.trim());
   if (main === '' && inchesText === '') return { kind: 'empty' };
   const both = FEET_INCHES.exec(main);
-  if (both !== null) {
-    // Feet and inches typed together in the feet box: the inch box is not read beside them.
-    const inches = both[2] === undefined ? 0 : Number(both[2]);
-    return { kind: 'metres', metres: metresOfFeetAndInches(Number(both[1]), inches) };
-  }
+  if (both !== null) return feetBoxRead(both[1] as string, both[2]);
   const feet = main === '' ? 0 : plain(main);
-  const inches = inchesText === '' ? 0 : plain(inchesText);
-  if (feet === null || inches === null) return { kind: 'bad' };
+  const inches = inchesText === '' ? 0 : inchesOf(inchesText);
+  // Inches take whole feet: a part of a foot beside inches says the length twice.
+  if (feet === null || inches === null || (inchesText !== '' && main.includes('.'))) {
+    return { kind: 'bad' };
+  }
   return { kind: 'metres', metres: metresOfFeetAndInches(feet, inches) };
 }
 
@@ -116,7 +150,7 @@ export function entryMetres(entry: LengthEntry, system: MeasurementSystem): numb
  * boxes would hold them; `null` when the box is not two numbers.
  */
 export function pairOf(text: string): readonly [string, string] | null {
-  const pair = PAIR.exec(text);
+  const pair = PAIR.exec(asTyped(text));
   return pair === null ? null : [pair[1] as string, pair[2] as string];
 }
 

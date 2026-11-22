@@ -41,6 +41,10 @@ export interface TypedSize {
   /** The desktop's one box (`13.2x8.6`) as typed; `null` when the two boxes or sliders hold it. */
   readonly pair: string | null;
   readonly place: TypedPlace;
+  /** The market's start size, marked on each slider's track. */
+  readonly start: { readonly length: number; readonly width: number };
+  /** Which numbers a person set; the others are the market's start size, `assumed`. */
+  readonly set: { readonly length: boolean; readonly width: boolean };
   /**
    * The boxes as they were before the last change of units, and what that change wrote: units
    * changed back with nothing typed between give back what was typed, never a length rounded twice.
@@ -141,6 +145,8 @@ export function typedStart(
     width: entryOf(start.width, system, false),
     pair: null,
     place: typedPlaceOf(roofs, start.length, start.width),
+    start,
+    set: { length: false, width: false },
   };
 }
 
@@ -153,6 +159,7 @@ export function typedPair(size: TypedSize, text: string): TypedSize {
     pair: text,
     length: { main: pair[0], inches: '', measured: false },
     width: { main: pair[1], inches: '', measured: false },
+    set: { length: true, width: true },
   };
 }
 
@@ -206,11 +213,18 @@ export function typedResult(
 }
 
 /**
- * The roof a ready card places: every edge typed by a person, traced on no picture — its lengths
- * are true, so a picture never stretches it.
+ * The roof a ready card places, traced on no picture — its lengths are true, so a picture never
+ * stretches it. Each edge is typed where a person set its number, else the market's `assumed`;
+ * the edges run length, width, length, width.
  */
-export function typedRoof(corners: readonly GroundPoint[], id: string): Roof {
-  return { id, corners, edges: corners.map(() => 'typed'), tracedOn: 'none', height: null };
+export function typedRoof(
+  corners: readonly GroundPoint[],
+  id: string,
+  set: TypedSize['set'],
+): Roof {
+  const length = set.length ? 'typed' : 'assumed';
+  const width = set.width ? 'typed' : 'assumed';
+  return { id, corners, edges: [length, width, length, width], tracedOn: 'none', height: null };
 }
 
 /** The card's numbers in another unit: each box holds the same length, written in it. */
