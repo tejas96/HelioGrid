@@ -21,11 +21,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { ApiError } from '../errors/errors';
-import { DesignActRefusedError } from '../studio/studio-repository';
 import { useAction } from './action';
 import { useRepositories } from './context';
 import { recordReadOf } from './read';
 import { type LeaveAsk, useLeaveAsk } from './use-leave-ask';
+import { type RoofsOffSiteAsk, refusedFor, useRoofsOffSite } from './use-roofs-off-site';
 import { useSiteForm } from './use-site-form';
 import { type SiteMapHeld, useSiteMapLoad } from './use-site-map-load';
 import { type SitePlaceSearchState, useSitePlaceSearch } from './use-site-place-search';
@@ -96,16 +96,20 @@ export interface SiteDetailsScreen {
   readonly changed: boolean;
   /** *Leave without saving?* — the platform holds the move and hands it here. */
   readonly leave: LeaveAsk;
+  /** The pin moved to another site, which leaves the drawn roofs behind: asked before they go. */
+  readonly roofsOffSite: RoofsOffSiteAsk;
 }
+
+/** What one press of *Start design* sends: the form, and whether the roofs may go. */
+type SiteSaveBody = NonNullable<ReturnType<typeof siteSaveOf>> & { readonly removeRoofs?: true };
 
 const samePoint = (left: Coordinate | null, right: Coordinate | null): boolean =>
   left?.latitude === right?.latitude && left?.longitude === right?.longitude;
 
 const saveFailureOf = (failure: unknown): SiteSaveFailure | null => {
-  if (failure === null) return null;
-  return failure instanceof DesignActRefusedError && failure.refusal === 'host_closed'
-    ? 'host_closed'
-    : 'other';
+  // Roofs left behind are a question, never a failure line.
+  if (failure === null || refusedFor(failure, 'roofs_off_site')) return null;
+  return refusedFor(failure, 'host_closed') ? 'host_closed' : 'other';
 };
 
 /**
@@ -145,8 +149,12 @@ export function useSiteDetailsScreen(
     started.current = query.data.site.pin !== null;
   }
 
+  // The save held back for roofs left behind, sent again once the person agrees.
+  const roofsOffSite = useRoofsOffSite<SiteSaveBody>((agreed) => {
+    if (!save.isOut()) void save.run(agreed);
+  });
   const save = useAction(
-    (body: NonNullable<ReturnType<typeof siteSaveOf>>) =>
+    (body: SiteSaveBody) =>
       repositories.studio.saveSite(designId, { ...body, capturedAt: new Date().toISOString() }),
     {
       onDone: async (saved) => {
@@ -161,6 +169,7 @@ export function useSiteDetailsScreen(
         await queryClient.invalidateQueries({ queryKey: queryKeys.proposals.lists(tenantId) });
         setSavedFor(designId);
       },
+      onFailed: roofsOffSite.failed,
     },
   );
   // A save that ends with a refused map move behind it: the map rests where it was left, off the pin.
@@ -243,6 +252,7 @@ export function useSiteDetailsScreen(
     failure: saveFailureOf(save.failure),
     changed: held.changed,
     leave,
+    roofsOffSite: roofsOffSite.ask,
   };
 }
 

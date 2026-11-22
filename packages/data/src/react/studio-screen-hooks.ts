@@ -12,6 +12,7 @@ export type {
 export { useLeadDesignsSection } from './use-lead-designs-section';
 export { useLendToken } from './use-lend-token';
 export { useAimHold, useRepeatPress } from './use-press-timing';
+export type { RoofsOffSiteAsk } from './use-roofs-off-site';
 export type {
   SiteDetailsMoves,
   SiteDetailsRead,

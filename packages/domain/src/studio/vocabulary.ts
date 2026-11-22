@@ -17,9 +17,10 @@ export type DesignStatus = (typeof DESIGN_STATUSES)[number];
 
 /**
  * Why the studio refuses an act. `host_closed`: the record the host hangs the design on takes no
- * new work — in HelioGrid, a closed lead.
+ * new work — in HelioGrid, a closed lead. `roofs_off_site`: the pin moved to another site, which
+ * leaves the roofs drawn behind; the save waits until the person agrees they go (`site-moved.ts`).
  */
-export const DESIGN_ACT_REFUSALS = ['host_closed'] as const;
+export const DESIGN_ACT_REFUSALS = ['host_closed', 'roofs_off_site'] as const;
 export type DesignActRefusal = (typeof DESIGN_ACT_REFUSALS)[number];
 
 /** A site name is a short label a person reads on a card and in the studio's top bar. */

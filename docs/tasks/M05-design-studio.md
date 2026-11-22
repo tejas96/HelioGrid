@@ -154,6 +154,7 @@ source the scene uses shows its credit line.
 - With more than one roof, the roof name in the bar opens a list: each roof with what it is and its area (the main roof without its openings), Copy and Delete on each row (a copy goes beside the others with what sits on it and cuts nothing; Delete takes what sits on it; both have Undo), and Add a roof. A tap on a roof or its name on the model opens it. The + circle offers Draw a roof, Type the size and Copy this roof; with no roof yet, it starts drawing at once.
 - Each roof has a material from the roof types, shown amber with Confirm until a person confirms it; the material picks the mounting, and the installer packet waits for it. The full grouped list of roof types lives in the code — concrete, metal, tiles, sheets and covers, other, and not for panels — and the market pack only orders and names them.
 - The sky picture covers the drawn roofs and 30 m round them (the neighbours that shade), with more tiles for a big roof: a 100 × 60 m factory roof is shown whole, not only the 3 × 3 tiles round the pin.
+- One site is one place: every roof of a design lies on the picture shown round the pin. A building past it is another site, added as its own lead; a roof drawn or moved past the picture is refused, and the bar says so. On that one picture I can pick and draw as many roofs as the site has.
 - A sloped roof's shape is proposed from Google's roof faces where they exist: one face a shed, two facing apart a gable, four a hip, an L or T any shape, under 5° flat; curved sheds as 4 to 8 faces. The chips are Flat, Shed, Gable, Hip and Any shape; sawtooth, curved, butterfly, mansard and gambrel are in the list. Ridges and valleys follow the outline, and a corner drag rebuilds the faces at once. A tap on a face sets its slope; on a shed roof a tap on a side sets the low side.
 - Walls in one setting: Wall all round, one wall height and one setback for the roof. The edge wall comes from the roof type: concrete (RCC) a 1.0 m wall, `assumed`; sheet and tile none. In the top view a tap on a side or on its dot, and in 3D the roof's sheet, adds or removes its wall; a shared side has none and says why. On the model a solid line has a wall and a dashed line has none; no text sits on every side. A wall all round takes 2 taps; two sides off take 3.
 - The setback comes from the market pack, else 0.5 m, `assumed`, drawn as an orange dashed line. The clear path is 0.75 m from the stair door (India: CEA Reg 121(1)(i)), drawn as a green strip. Plinth, storey and parapet heights come from the market pack and are `assumed` until a person sets them.
@@ -169,6 +170,7 @@ source the scene uses shows its credit line.
 
 **DONE WHEN — part g:**
 - Heights, slopes and facing come from Google's height map and roof faces, at quality BASE and never with `experiments=EXPANDED_COVERAGE`; the studio reads the quality that comes back. They are fetched again when the design opens and never stored; the values we make from them stay with the design. Each is `derived`. The height map wins over a face's height. A roof's height above the ground is the height map inside the roof minus the ground level, taken as a low percentile of the ground around it, since trees lift the median. The picture is first moved onto the height map (0.5 to 3 m, by matching edges).
+- Every roof gets its own data, wherever it lies on the site. The height map is one call for the whole site, centred on its roofs and wide enough for all of them (Google allows up to 100 m round the point at the sharpest detail, wider at coarser detail). A roof's faces come from Google's building data, one call at each roof's middle, since Google answers only the one building nearest a point (within about 50 m).
 - The height view shows the height surface in 3D, coloured by height and see-through, with an opacity slider; no plan limits it.
 - The sun circle opens from any step: Winter, Summer, Equinox or Today and the hour, in the site's own time zone; the shadows follow it. Shade numbers come with panels.
 - Neighbour buildings are plain blocks at their measured height, drawn only when they can shade the roof: the sun is checked on 21 Dec, 21 Mar and 21 Jun, every hour from 8:00 to 17:00, at the site's latitude. Trees are real models at their measured height: the 6 that shade most in full, the rest by their shadow only. Nothing else is drawn.
@@ -204,6 +206,10 @@ source the scene uses shows its credit line.
 - part h: the Claude key's budget; the AI allowance per tier and for the trial; whether a stopped or failed AI setup uses one (my pick: no).
 - part i: Street View on the server key.
 - Google test data: refreshed or deleted — Pune by 13 Dec; Sangli and the 10 AI roofs by 18 Dec; the 19 Nov tests by 19 Dec.
+
+**For the Panels step's task, when it is written:** panels are placed per roof by themselves — each
+roof matched to Google's roof faces for it, with Google's panel layout and sun as the start — so
+every roof says how many panels it holds and where; a person then changes what they want.
 
 **Not in this task:** the Objects, Panels, Wiring and Result steps; the block-8 tasks parked for the
 studio and the `M08-41` and `F6-10` proofs (they need panels and wiring); ground-mount designs;

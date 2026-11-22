@@ -217,6 +217,7 @@ export {
   sitePinMoved,
   siteSaveOf,
 } from './site-form';
+export { type DrawingsAfterPinMove, drawingsAfterPinMove, PIN_FIX_REACH_M } from './site-moved';
 export {
   STEP_LOCKS,
   STUDIO_STEPS,

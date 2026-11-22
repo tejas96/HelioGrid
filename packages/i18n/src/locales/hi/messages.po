@@ -5492,7 +5492,7 @@ msgstr "होम पर वापस"
 #: src/copy/customer-merge.ts:83
 #: src/copy/lead-import.ts:112
 #: src/copy/lead-inbox.ts:26
-#: src/copy/site-details.ts:84
+#: src/copy/site-details.ts:90
 msgid "Back to leads"
 msgstr "लीड्स पर वापस"
 
@@ -5513,7 +5513,7 @@ msgid "Back to the choices"
 msgstr "विकल्पों पर वापस"
 
 #. js-lingui-explicit-id
-#: src/copy/site-details.ts:163
+#: src/copy/site-details.ts:169
 msgid "Back to the lead"
 msgstr "लीड पर वापस"
 
@@ -5881,7 +5881,7 @@ msgstr "ब्रांड, स्पेसिफ़िकेशन और व�
 #. js-lingui-explicit-id
 #: src/copy/proposal-defaults-words.ts:72
 #: src/copy/proposal-screens-words.ts:27
-#: src/copy/site-details.ts:85
+#: src/copy/site-details.ts:91
 msgid "Breadcrumb"
 msgstr "नेविगेशन पथ"
 
@@ -8154,7 +8154,7 @@ msgstr "डिज़ाइन"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-designs.ts:22
-#: src/copy/site-details.ts:155
+#: src/copy/site-details.ts:161
 msgid "Design {number}"
 msgstr "डिज़ाइन {number}"
 
@@ -11497,6 +11497,11 @@ msgid "Keep the one the customer should answer, and withdraw the other."
 msgstr "जिसका जवाब ग्राहक को देना है उसे रखें, और दूसरा वापस लें।"
 
 #. js-lingui-explicit-id
+#: src/copy/site-details.ts:89
+msgid "Keep the roofs"
+msgstr "छतें रहने दें"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-records.ts:50
 msgid "Kept"
 msgstr "सुरक्षित"
@@ -11759,7 +11764,7 @@ msgstr "लेड-एसिड"
 #: src/copy/leads-list.ts:28
 #: src/copy/search.ts:64
 #: src/copy/shell.ts:94
-#: src/copy/site-details.ts:164
+#: src/copy/site-details.ts:170
 msgid "Leads"
 msgstr "लीड्स"
 
@@ -13127,6 +13132,11 @@ msgid "Move a lead into and out of the parking/terminal states"
 msgstr "लीड को रोकी गई या बंद स्थिति में डालें और वहाँ से निकालें"
 
 #. js-lingui-explicit-id
+#: src/copy/site-details.ts:88
+msgid "Move and remove roofs"
+msgstr "पिन ले जाएँ और छतें हटाएँ"
+
+#. js-lingui-explicit-id
 #: src/copy/kanban.ts:13
 #: src/copy/project-detail.ts:90
 msgid "Move back a stage"
@@ -13151,6 +13161,11 @@ msgstr "एक चरण आगे ले जाएँ"
 #: src/copy/kanban.ts:16
 msgid "Move on a stage — move to {stage}"
 msgstr "एक चरण आगे ले जाएँ — {stage} चरण पर ले जाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/site-details.ts:84
+msgid "Move the pin to another site?"
+msgstr "पिन दूसरी साइट पर ले जाएँ?"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof.ts:102
@@ -17926,7 +17941,7 @@ msgstr "प्रस्ताव वापस लिया गया। इस�
 #: src/copy/search.ts:66
 #: src/copy/shell.ts:95
 #: src/copy/shell.ts:111
-#: src/copy/site-details.ts:165
+#: src/copy/site-details.ts:171
 msgid "Proposals"
 msgstr "प्रस्ताव"
 
@@ -20071,7 +20086,7 @@ msgid "Set the location first."
 msgstr "पहले स्थान तय करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/site-details.ts:161
+#: src/copy/site-details.ts:167
 msgid "Set the location of the site first."
 msgstr "पहले साइट का स्थान तय करें।"
 
@@ -20526,7 +20541,7 @@ msgstr "साइट का पता"
 
 #. js-lingui-explicit-id
 #: src/copy/site-details.ts:9
-#: src/copy/site-details.ts:162
+#: src/copy/site-details.ts:168
 msgid "Site details"
 msgstr "साइट का विवरण"
 
@@ -22509,12 +22524,12 @@ msgid "The next part falls due at {stage}."
 msgstr "अगला हिस्सा {stage} पर देय होगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/site-details.ts:158
+#: src/copy/site-details.ts:164
 msgid "The next step is to draw the land boundary. That step is being built."
 msgstr "अगला कदम ज़मीन की सीमा बनाना है। वह कदम अभी बन रहा है।"
 
 #. js-lingui-explicit-id
-#: src/copy/site-details.ts:157
+#: src/copy/site-details.ts:163
 msgid "The next step is to draw the roof. That step is being built."
 msgstr "अगला कदम छत की रूपरेखा बनाना है। वह कदम अभी बन रहा है।"
 
@@ -22844,6 +22859,11 @@ msgid "The report opens after the import runs."
 msgstr "इम्पोर्ट चलने के बाद रिपोर्ट खुलेगी।"
 
 #. js-lingui-explicit-id
+#: src/copy/site-details.ts:85
+msgid "The roofs drawn at the old place are too far from the new pin to stay on the map. Moving it removes them from every design of this site."
+msgstr "पुरानी जगह पर बनी छतें नए पिन से इतनी दूर हैं कि नक्शे पर नहीं रह सकतीं। पिन ले जाने से वे इस साइट के हर डिज़ाइन से हट जाएँगी।"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import-rows.ts:77
 msgid "The row named no brand or model. Nothing was created."
 msgstr "पंक्ति में कोई ब्रांड या मॉडल नहीं था। कुछ नहीं बनाया गया।"
@@ -22914,7 +22934,7 @@ msgid "The structure, panels and wiring are installed on your roof."
 msgstr "आपकी छत पर स्ट्रक्चर, पैनल और वायरिंग लगाई जाती है।"
 
 #. js-lingui-explicit-id
-#: src/copy/site-details.ts:156
+#: src/copy/site-details.ts:162
 msgid "The studio opens here"
 msgstr "स्टूडियो यहाँ खुलेगा"
 

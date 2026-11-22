@@ -37,6 +37,11 @@ export const saveSiteSchema = z
     sanctionedLoadKw: z.number().positive().max(100000).nullable(),
     /** Where the panels go. The design's own fact: one site can carry a roof and a ground design. */
     mount: designMountSchema,
+    /**
+     * The person agreed that a pin moved to another site takes the roofs drawn at the old one away.
+     * Without it, such a save is refused (`roofs_off_site`) and nothing is written.
+     */
+    removeRoofs: z.boolean().optional(),
     capturedAt: capturedAtSchema,
   })
   .strict();

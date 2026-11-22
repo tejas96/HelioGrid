@@ -95013,26 +95013,6 @@
                     "maxLength": 40,
                     "nullable": true
                   },
-                  "sitePin": {
-                    "type": "object",
-                    "properties": {
-                      "latitude": {
-                        "type": "number",
-                        "minimum": -90,
-                        "maximum": 90
-                      },
-                      "longitude": {
-                        "type": "number",
-                        "minimum": -180,
-                        "maximum": 180
-                      }
-                    },
-                    "required": [
-                      "latitude",
-                      "longitude"
-                    ],
-                    "nullable": true
-                  },
                   "utilityOperator": {
                     "type": "string",
                     "minLength": 1,
@@ -244955,7 +244935,8 @@
                                 "refusal": {
                                   "type": "string",
                                   "x-extensible-enum": [
-                                    "host_closed"
+                                    "host_closed",
+                                    "roofs_off_site"
                                   ]
                                 }
                               },
@@ -245847,6 +245828,9 @@
                       "ground"
                     ]
                   },
+                  "removeRoofs": {
+                    "type": "boolean"
+                  },
                   "capturedAt": {
                     "type": "string",
                     "format": "date-time"
@@ -246475,7 +246459,8 @@
                             "refusal": {
                               "type": "string",
                               "x-extensible-enum": [
-                                "host_closed"
+                                "host_closed",
+                                "roofs_off_site"
                               ]
                             }
                           },
@@ -248615,7 +248600,8 @@
                             "refusal": {
                               "type": "string",
                               "x-extensible-enum": [
-                                "host_closed"
+                                "host_closed",
+                                "roofs_off_site"
                               ]
                             }
                           },
@@ -249181,7 +249167,8 @@
                             "refusal": {
                               "type": "string",
                               "x-extensible-enum": [
-                                "host_closed"
+                                "host_closed",
+                                "roofs_off_site"
                               ]
                             }
                           },

@@ -56,8 +56,15 @@ export const leadFieldsSchema = z.object({
 export const leadFieldSchema = leadFieldsSchema.keyof();
 export type LeadField = z.infer<typeof leadFieldSchema>;
 
-/** One or more fields, and when the person set them. */
+/** The fields as the lead holds them; one edit sets any of them. */
+export type LeadFields = z.infer<typeof leadFieldsSchema>;
+
+/**
+ * One or more fields, and when the person set them. The pin is not one: every design's drawing
+ * hangs on it, so it moves only through the studio's Site details, which moves the drawings too.
+ */
 export const editLeadSchema = leadFieldsSchema
+  .omit({ sitePin: true })
   .partial()
   .extend({ capturedAt: capturedAtSchema })
   .strict();
