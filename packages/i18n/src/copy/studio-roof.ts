@@ -82,6 +82,9 @@ const ROOF = {
   editThree: /*i18n*/ { id: 'A roof keeps at least 3 corners.' },
   editManyCorners: /*i18n*/ { id: 'A roof has at most {max} corners.' },
   editScale: /*i18n*/ { id: 'That length is far from the picture. Check the number.' },
+  placedOnPicture: /*i18n*/ { id: 'Placed on the pin. Drag it onto the house.' },
+  placedOnGrid: /*i18n*/ { id: 'Every length is yours. Drag a + out for an L.' },
+  placedBeside: /*i18n*/ { id: 'Placed beside Roof {number}. Drag it onto the house.' },
 
   cornerName: /*i18n*/ { id: 'Corner {number}' },
   cornerFirst: /*i18n*/ { id: 'Corner 1: close the shape' },
@@ -148,6 +151,14 @@ function editRefusalLine(t: T, refusal: EditRefusal, shown: RoofWordsShown): Tra
   }
 }
 
+/** After Place roof: on the grid, how to make an L; on the picture, where it went and what next. */
+function placedLine(t: T, said: Extract<RoofSaid, { kind: 'placed' }>): TranslatedText {
+  if (!said.onPicture) return t(ROOF.placedOnGrid);
+  return said.beside === null
+    ? t(ROOF.placedOnPicture)
+    : t(ROOF.placedBeside, { number: said.beside + 1 });
+}
+
 function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedText {
   switch (said.kind) {
     case 'closed':
@@ -188,6 +199,8 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
       return t(ROOF.wentBackCross);
     case 'refused':
       return editRefusalLine(t, said.refusal, shown);
+    case 'placed':
+      return placedLine(t, said);
   }
 }
 

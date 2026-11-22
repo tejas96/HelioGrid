@@ -94,4 +94,7 @@ export const FORMAT_PACK_SCHEMA: z.ZodType<FormatPack, z.ZodTypeDef, unknown> = 
   proposal: proposalFacts.nullable().default(null),
   /** A pack stored before the studio's roofs reads the common storey, 3 m, until its next revision. */
   storeyHeightM: z.number().positive().max(20).default(3),
+  /** A pack stored before the typed roof reads a usual house roof, 10 × 8 m, until its next revision. */
+  typedRoofLengthM: z.number().min(1).max(40).default(10),
+  typedRoofWidthM: z.number().min(1).max(40).default(8),
 });

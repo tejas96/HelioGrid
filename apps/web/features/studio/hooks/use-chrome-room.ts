@@ -10,7 +10,7 @@ export interface ChromeRoom {
 const NONE: ChromeRoom = { top: 0, bottom: 0 };
 
 /**
- * The web's measure of the canvas's bars: how far the top bars reach down, and how far the bottom
+ * The web's measure of the canvas's bars: how far the head reaches down, and how far the bottom
  * bar reaches up, so the camera frames the site in the room between them. It follows every resize.
  */
 export function useChromeRoom(

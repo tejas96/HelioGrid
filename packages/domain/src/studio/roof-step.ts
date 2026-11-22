@@ -30,6 +30,13 @@ import {
   type RoofStepState,
   stay,
 } from './roof-step-state';
+import {
+  typingEntered,
+  typingInUnits,
+  typingOpened,
+  typingPaired,
+  typingPlaced,
+} from './roof-step-type';
 
 /**
  * The roof step's reducer (`T-M05-002`, part b): drawing a roof, sizing an edge, dragging a corner or
@@ -138,7 +145,15 @@ function inState<K extends RoofStepState['kind']>(
 }
 
 const ON: Handlers = {
-  draw: (state, { magnet }) => (state.kind === 'drawing' ? stay(state) : stay(drawing(magnet))),
+  draw: (state, { magnet, grid }) =>
+    state.kind === 'drawing' ? stay(state) : stay(drawing(magnet, [], grid ?? false)),
+  type_size: typingOpened,
+  type_entry: (state, event) => inState(state, 'typing', (typing) => typingEntered(typing, event)),
+  type_pair: (state, { text }) => inState(state, 'typing', (typing) => typingPaired(typing, text)),
+  type_units: (state, { from, to }) =>
+    inState(state, 'typing', (typing) => typingInUnits(typing, from, to)),
+  place: (state, event, document) =>
+    inState(state, 'typing', (typing) => typingPlaced(typing, event, document)),
   // The spot under a still pointer snaps again with the magnet as it is now: what shows is where a
   // tap would place the corner. A drag in hand pulls by it from its next move.
   magnet: (state, { magnet }, document) => {
@@ -158,9 +173,12 @@ const ON: Handlers = {
         ? stay(held)
         : stay({ ...held, corners: [], wiped: held.corners, spot: null, refused: null }),
     ),
-  redraw: (state, { magnet }, document) =>
+  redraw: (state, { magnet, grid }, document) =>
     justClosed(state, document)
-      ? { state: drawing(magnet), commit: withoutRoof(document, document.roofs.length - 1) }
+      ? {
+          state: drawing(magnet, [], grid ?? false),
+          commit: withoutRoof(document, document.roofs.length - 1),
+        }
       : stay(state),
   done: (state, _event, document) =>
     justClosed(state, document) && state.kind === 'idle'
@@ -187,7 +205,9 @@ const ON: Handlers = {
   undo_corner: cornerUndone,
   close: closed,
   pick_length: (state, event, document) =>
-    thenKept(state, event.system, document, (kept, at) => lengthPicked(kept, event, at)),
+    state.kind === 'typing'
+      ? stay(state)
+      : thenKept(state, event.system, document, (kept, at) => lengthPicked(kept, event, at)),
   type: (state, { entry }) =>
     inState(state, 'sizing', (sizing) => stay({ ...sizing, entry, asking: false })),
   step: (state, { by, system }) =>
@@ -198,7 +218,7 @@ const ON: Handlers = {
       use ? committedLength(sizing, system) : stay({ ...sizing, asking: false }),
     ),
   grab: (state, { grip, at, system, magnet }, document) =>
-    state.kind === 'drawing'
+    state.kind === 'drawing' || state.kind === 'typing'
       ? stay(state)
       : thenKept(state, system, document, (kept, now) =>
           stay(grabbed(now, grip, at, magnet) ?? kept),

@@ -8,7 +8,6 @@ import type {
   LengthEntry,
   LengthSlide,
   labelLayoutOf,
-  MeasurementSystem,
   NumberEntry,
   RoofBar,
   RoofGrip,
@@ -17,6 +16,7 @@ import type {
   RoofMarksView,
   RoofStepState,
   StudioDocument,
+  TypedRefusal,
 } from '@heliogrid/domain';
 
 /** The roof step's moves (`T-M05-002`, part b): drawing, the length box, and the fixes on a roof. */
@@ -68,8 +68,52 @@ export interface RoofMoves {
    */
   nudgeRoof(roof: number, kind: 'move' | 'turn', x: number, y: number): void;
   removeCorner(): void;
-  /** m or ft on the length box: the reader's units change, and the box keeps its length. */
-  lengthUnits(system: MeasurementSystem): void;
+  /** Type the size (part c): the card opens at the market's start size. */
+  typeSize(): void;
+  /** A number in the card typed in its box. */
+  typeSizeEntry(which: 'length' | 'width', entry: LengthEntry): void;
+  /** A number in the card slid, or stepped by − or +: in metres. */
+  slideSize(which: 'length' | 'width', metres: number): void;
+  /** The desktop's one box: `13.2x8.6`. */
+  typeSizePair(text: string): void;
+  /** Place roof: the rectangle stands as one change. */
+  placeRoof(): void;
+}
+
+/** The size card (part c) as the screen draws it. */
+export interface SizeCardView {
+  readonly length: LengthEntry;
+  readonly width: LengthEntry;
+  /** Each number in metres; `null` while its box holds no length. */
+  readonly lengthM: number | null;
+  readonly widthM: number | null;
+  /** The desktop's one box as typed; `null` when the boxes or sliders hold the numbers. */
+  readonly pair: string | null;
+  /** Place roof would place it now: both numbers good and the rectangle free to stand. */
+  readonly placeable: boolean;
+  /** Why it cannot be placed; `null` when it can, or while a box is empty. */
+  readonly refusal: TypedRefusal | null;
+  /**
+   * The rectangle to draw dashed — its corners, each edge's length, its middle and its area — or
+   * `null` while a number is missing or unreadable.
+   */
+  readonly preview: {
+    readonly corners: readonly GroundPoint[];
+    readonly lengths: readonly number[];
+    readonly middle: GroundPoint;
+    readonly area: number;
+  } | null;
+  /** The preview cannot stand there: it is drawn in the error colour. */
+  readonly previewBad: boolean;
+  /** The sliders' ends and step, in metres. */
+  readonly slide: { readonly min: number; readonly max: number; readonly step: number };
+  /**
+   * The numbers are in boxes: the person's pick, or a size past the sliders' ends, which a slider
+   * would cut. On a phone the keyboard then covers the foot, and Place roof moves into the card.
+   */
+  readonly boxes: boolean;
+  /** A size past the sliders' ends: the switch back to them rests until it is between them. */
+  readonly outside: boolean;
 }
 
 /** What the roof step draws: the screen's view model of it. */
@@ -94,6 +138,8 @@ export interface RoofStepView {
   /** − or + on the length in the box would be refused: the button dims. */
   readonly stepOff: { readonly less: boolean; readonly more: boolean };
   /** The length in the box: the edge's traced length, the typed one, and whether it sizes all. */
+  /** Type the size's card (part c), while it is open. */
+  readonly sizeCard: SizeCardView | null;
   readonly lengthBox: {
     readonly traced: number;
     readonly typed: number | null;

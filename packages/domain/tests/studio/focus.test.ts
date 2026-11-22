@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { EMPTY_STUDIO_DOCUMENT } from '../../src/studio/document';
-import { type FocusFacts, type FocusParts, focusJobOf, focusOf } from '../../src/studio/focus';
+import {
+  FOCUS_JOBS,
+  type FocusFacts,
+  type FocusParts,
+  focusJobOf,
+  focusOf,
+} from '../../src/studio/focus';
 import type { RoofGrip, RoofStepState } from '../../src/studio/roof-step-state';
 
 const FACTS: FocusFacts = {
@@ -88,6 +94,43 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         bottomBar: 'status',
       },
     ],
+    // Type the size: the card's job keeps the zoom and moves the foot to the slim pill; on a phone
+    // the compass steps aside for the keyboard.
+    [
+      'typing',
+      'top',
+      false,
+      {
+        stepSwitcher: 'hidden',
+        pictureChip: 'credit',
+        pencil: 'hidden',
+        magnet: 'hidden',
+        undoRedo: 'hidden',
+        addRoof: 'hidden',
+        layers: 'hidden',
+        otherHandles: 'hidden',
+        lengthLabels: 'draft',
+        bottomBar: 'drawing',
+      },
+    ],
+    [
+      'typing',
+      'top',
+      true,
+      {
+        stepSwitcher: 'hidden',
+        pictureChip: 'credit',
+        pencil: 'hidden',
+        magnet: 'hidden',
+        undoRedo: 'hidden',
+        addRoof: 'hidden',
+        layers: 'hidden',
+        otherHandles: 'hidden',
+        compass: 'hidden',
+        lengthLabels: 'draft',
+        bottomBar: 'drawing',
+      },
+    ],
     [
       'sizing',
       'top',
@@ -160,7 +203,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
   });
 
   it('the credit line never hides, whatever the job', () => {
-    for (const job of ['looking', 'drawing', 'dragging', 'moving', 'sizing', 'sheet'] as const) {
+    for (const job of FOCUS_JOBS) {
       for (const view of ['top', '3d'] as const) {
         expect(['shown', 'credit']).toContain(partsOf({ job, view }).pictureChip);
       }

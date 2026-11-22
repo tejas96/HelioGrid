@@ -23,7 +23,7 @@ export type DesignStatus = (typeof DESIGN_STATUSES)[number];
 export const DESIGN_ACT_REFUSALS = ['host_closed', 'roofs_off_site'] as const;
 export type DesignActRefusal = (typeof DESIGN_ACT_REFUSALS)[number];
 
-/** A site name is a short label a person reads on a card and in the studio's top bar. */
+/** A site name is a short label a person reads on a card and in the studio's bar. */
 export const SITE_NAME_MAX = 40;
 
 /**

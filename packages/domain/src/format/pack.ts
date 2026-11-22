@@ -137,6 +137,12 @@ export interface FormatPack {
    * its own: the market's usual storey, `assumed`.
    */
   readonly storeyHeightM: number;
+  /**
+   * `T-M05-002` — the size a typed roof starts at, in metres, before a person slides it: the
+   * market's usual house roof, `assumed`.
+   */
+  readonly typedRoofLengthM: number;
+  readonly typedRoofWidthM: number;
 }
 
 /**
@@ -194,4 +200,6 @@ export const IN_FORMATS: FormatPack = {
   areas: IN_AREAS,
   proposal: IN_PROPOSAL_FACTS,
   storeyHeightM: 3,
+  typedRoofLengthM: 10,
+  typedRoofWidthM: 8,
 };

@@ -36,7 +36,7 @@ const StudioScene = dynamic(() => import('./StudioScene').then((scene) => scene.
 
 /**
  * The studio's canvas (`T-M05-002a`, `T-M05-002b`): the scene on the whole screen and the thin
- * glass parts over it — the top bar with the Saved pill, the step rail, the picture chip, the two
+ * glass parts over it — the steps with the save mark, the compass, the picture chip, the two
  * tool columns and the one bottom bar — and the marks on the roofs. While a roof is drawn, a tap on
  * the map places a corner and a drag still moves it; on a phone a finger held still aims with the
  * loupe. Focus mode sets aside every part the job in hand does not use. It holds only how the model
@@ -97,6 +97,9 @@ export function StudioCanvas({
     [studio.sheetFrame, room.bottom],
   );
   const closed = said?.kind === 'closed' ? said : null;
+  // The size card opening frames its rectangle with the roofs, once: sliding then never moves the map.
+  const typing = roofStep.kind === 'typing';
+  const typingFrame = useMemo(() => (typing ? {} : null), [typing]);
 
   return (
     <div ref={frame} className="hg-studio" data-view={view} data-drawing={drawing}>
@@ -126,7 +129,7 @@ export function StudioCanvas({
           pictureScale={studio.shown?.pictureScale ?? null}
           storeyHeightM={format.pack.storeyHeightM}
           fit={studio.fit}
-          frameOn={sheetFraming ?? closed}
+          frameOn={sheetFraming ?? typingFrame ?? closed}
           rise={rise}
           roofMarks={roofMarks}
         />
@@ -167,6 +170,7 @@ export function StudioCanvas({
         words={words}
         onBack={onBack}
         onSite={onSite}
+        phone={desktop === false}
       />
       <StudioCanvasNotes studio={studio} words={words} />
       <StudioToolRail
@@ -215,6 +219,7 @@ export function StudioCanvas({
           part={parts.bottomBar}
           magnet={parts.magnet}
           crowded={crowded}
+          phone={desktop === false}
         />
       )}
     </div>

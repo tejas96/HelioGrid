@@ -3,15 +3,7 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { MeasurementSystem, RoofStepState } from '@heliogrid/domain';
 import { type StudioCanvasWords, sliderWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import {
-  Button,
-  IconButton,
-  SegmentedControl,
-  ShellGlyph,
-  Slider,
-  Switch,
-  useFormat,
-} from '@heliogrid/ui';
+import { Button, IconButton, ShellGlyph, Slider, Switch, useFormat } from '@heliogrid/ui';
 import type { KeyboardEvent } from 'react';
 import { StudioEntryBoxes } from './StudioEntryBoxes';
 
@@ -77,17 +69,6 @@ export function StudioLengthBox({
         <span className="hg-length-box-title">
           <span className="hg-length-box-label">{words.lengthTitle}</span>
           <span className="hg-length-box-value">{format.roofLength(metres, units, false)}</span>
-        </span>
-        <span className="hg-length-box-unit">
-          <SegmentedControl
-            ariaLabel={words.lengthUnit}
-            value={units}
-            onChange={(next) => moves.lengthUnits(next === 'imperial' ? 'imperial' : 'metric')}
-            options={[
-              { value: 'metric', label: words.unitMetres },
-              { value: 'imperial', label: words.unitFeet },
-            ]}
-          />
         </span>
         <IconButton
           label={typing ? words.slideLength : words.typeLength}

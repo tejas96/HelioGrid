@@ -9,6 +9,7 @@ import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
 import { StudioLengthBox } from './StudioLengthBox';
 import { StudioPictureChip, StudioPictureCredit } from './StudioPictureChip';
 import { StudioSaveMark } from './StudioSaveMark';
+import { StudioSizeCard } from './StudioSizeCard';
 import { StudioStepSwitcher } from './StudioStepSwitcher';
 
 /**
@@ -75,6 +76,7 @@ export function StudioCanvasHead({
   words,
   onBack,
   onSite,
+  phone,
 }: {
   headRef: Ref<HTMLDivElement>;
   /** The compass in the head's right corner, which the camera turns. */
@@ -86,6 +88,8 @@ export function StudioCanvasHead({
   onBack: () => void;
   /** Back to Site details; `null` for a reader who cannot change the design. */
   onSite: (() => void) | null;
+  /** A phone-width screen: the size card holds Place roof while the keyboard is up. */
+  phone: boolean;
 }) {
   const format = useFormat();
   const { picture, editing, moves, document, roofStep } = studio;
@@ -124,6 +128,15 @@ export function StudioCanvasHead({
       <DrawHint studio={studio} words={words} />
       {roofStep.kind === 'sizing' ? (
         <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
+      ) : null}
+      {studio.sizeCard !== null ? (
+        <StudioSizeCard
+          card={studio.sizeCard}
+          studio={studio}
+          units={studio.units}
+          words={words}
+          phone={phone}
+        />
       ) : null}
     </div>
   );

@@ -160,3 +160,62 @@
 .hg-length-box-well input {
   -moz-appearance: textfield;
 }
+
+/* Type the size's card (`T-M05-002`, part c): in the length box's place, one row per number — its
+   word, then the slider and its value, or the boxes — and the reason a size cannot stand. */
+.hg-size-card {
+  gap: 0;
+}
+
+.hg-size-title {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-size-row {
+  display: grid;
+  grid-template-columns: minmax(var(--sp-12), auto) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-size-row[data-typing="true"] {
+  grid-template-columns: minmax(var(--sp-12), auto) minmax(0, 1fr);
+  margin-block: var(--sp-1);
+}
+
+.hg-size-row .hg-length-box-value {
+  min-inline-size: calc(var(--sp-16) + var(--sp-2));
+  text-align: end;
+  white-space: nowrap;
+}
+
+.hg-size-act {
+  justify-content: flex-end;
+  margin-block-start: var(--sp-1);
+}
+
+.hg-size-refusal {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-1);
+  font-size: var(--fs-body-sm);
+  color: var(--danger-text);
+}
+
+/* The typed rectangle before it is placed: dashed; in the error colour where it cannot stand. */
+.hg-size-line {
+  stroke-dasharray: 8 6;
+}
+
+.hg-size-line[data-bad="true"] {
+  stroke: var(--scene-bad);
+}
+
+/* The area sits on the rectangle's middle, not beside a spot as a tag does. */
+.hg-roof-at > .hg-size-area {
+  transform: translate(-50%, -50%);
+  font-size: var(--fs-caption);
+}

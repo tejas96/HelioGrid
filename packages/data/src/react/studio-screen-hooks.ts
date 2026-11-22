@@ -25,6 +25,7 @@ export { useSiteDetailsScreen } from './use-site-details-screen';
 export type {
   RoofMoves,
   RoofStepView,
+  SizeCardView,
   StudioEditing,
   StudioMoves,
   StudioPicture,

@@ -5,7 +5,7 @@ import type { GroundPoint } from './ground';
 import type { EditRefusal } from './roof-check';
 import { type DraftRefusal, draftClosesAt, draftGhost, draftTap } from './roof-draw';
 import { sizingResult } from './roof-entry';
-import { lengthIsFirst } from './roof-length';
+import { lengthIsFirst, onPicture } from './roof-length';
 import {
   angleAt,
   between,
@@ -64,6 +64,9 @@ export function roofMarksOf(document: StudioDocument): readonly RoofMarksView[] 
   return document.roofs.map((roof) => {
     const lengths = edgeLengths(roof.corners);
     const longest = lengths.indexOf(Math.max(...lengths));
+    // Type it first: on a picture roof, the length that will size the picture; on a typed or grid
+    // roof, its longest while none of its own is set.
+    const pulses = onPicture(roof) ? first : roof.edges.every((trust) => trust === 'traced');
     return {
       id: roof.id,
       corners: roof.corners,
@@ -73,7 +76,7 @@ export function roofMarksOf(document: StudioDocument): readonly RoofMarksView[] 
         to: cornerAfter(roof.corners, i),
         metres,
         trust: roof.edges[i] ?? 'traced',
-        pulse: first && i === longest,
+        pulse: pulses && i === longest,
       })),
     };
   });
@@ -229,6 +232,8 @@ export type RoofBar =
       /** Undo has a corner to take off, or the wiped corners to bring back. */
       readonly canUndo: boolean;
     }
+  /** Type the size (part c): the slim pill's Place roof; the card's view says whether it can. */
+  | { readonly kind: 'typing' }
   | {
       readonly kind: 'roofs';
       /** All roofs' area, square metres, and its tier: the weakest roof's. */
@@ -276,6 +281,7 @@ export function roofBarOf(
       canUndo: state.corners.length > 0 || state.wiped !== null,
     };
   }
+  if (state.kind === 'typing') return { kind: 'typing' };
   const shown = roofStepShown(state, document, system);
   const said = state.kind === 'idle' ? state.said : null;
   if (shown.roofs.length === 0) return { kind: 'start', noPicture, said };
