@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  CAD_PLAN_MAX_BYTES,
   FILE_MAX_BYTES,
   FILE_SUBJECT_KINDS,
   FILE_SUBJECT_RULES,
@@ -41,6 +42,25 @@ describe('judgeFileDeclaration — the size and type a kind takes', () => {
     expect(judgeFileDeclaration(logo, 'image/png', 2_000_000)).toBe('accepted');
     expect(judgeFileDeclaration(logo, 'image/jpeg', 2_000_000)).toBe('accepted');
     expect(judgeFileDeclaration(logo, 'image/png', 2_000_001)).toBe('too-large');
+  });
+
+  it.each([
+    ['image/vnd.dwg', 20_000_000, 'accepted'],
+    ['image/vnd.dwg', 20_000_001, 'too-large'],
+    ['image/vnd.dxf', 20_000_000, 'accepted'],
+    ['image/vnd.dxf', 20_000_001, 'too-large'],
+    ['image/jpeg', 2_000_000, 'accepted'],
+    ['image/jpeg', 2_000_001, 'too-large'],
+    ['application/json', 2_000_000, 'accepted'],
+    ['application/json', 2_000_001, 'too-large'],
+    ['application/pdf', 10, 'type-not-taken'],
+  ] as const)('a design takes a %s of %i bytes: %s', (type, byteSize, verdict) => {
+    expect(judgeFileDeclaration(FILE_SUBJECT_RULES.design, type, byteSize)).toBe(verdict);
+  });
+
+  it('a CAD plan is the one type past the ceiling, and only up to its own', () => {
+    expect(CAD_PLAN_MAX_BYTES).toBe(20_000_000);
+    expect(judgeFileDeclaration(pngOnly, 'image/png', 101)).toBe('too-large');
   });
 
   it('every kind stays within the ceiling and the vocabulary', () => {

@@ -38,6 +38,15 @@ export { creditNoteDocumentWorkflow } from './credit-note-document';
 export type { CrmDailySweepActivities } from './crm-daily-sweep';
 export { CRM_DAILY_SWEEP_SCHEDULE_ID, crmDailySweepWorkflow } from './crm-daily-sweep';
 export type {
+  CadPlanRead,
+  CadPlanReadActivities,
+  DesignPlanReadActivities,
+  DesignPlanReadResult,
+  DesignPlanSource,
+  DesignPlanStepInput,
+} from './design-plan-read';
+export { CAD_PLAN_READ_QUEUE, designPlanReadWorkflow } from './design-plan-read';
+export type {
   HandoverPackActivities,
   HandoverPackStepInput,
   HandoverPackStepResult,

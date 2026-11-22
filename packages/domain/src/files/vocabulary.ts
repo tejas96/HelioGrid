@@ -22,5 +22,10 @@ export const FILE_CONTENT_TYPES = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   /** A document the platform renders — an invoice's PDF (`M12-44`); no upload rule takes it. */
   'application/pdf',
+  /** A plan's lines, read from a DWG, DXF or PDF (`T-M05-002d`): text the studio draws. */
+  'application/json',
+  /** A CAD plan read on the server alone (`CAD_PLAN_CONTENT_TYPES`): a DWG, or a DXF saved in binary. */
+  'image/vnd.dwg',
+  'image/vnd.dxf',
 ] as const;
 export type FileContentType = (typeof FILE_CONTENT_TYPES)[number];

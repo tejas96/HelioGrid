@@ -12,6 +12,8 @@ const QUICK_MS = 1_000;
 /** The ring the outsized roof's corners stand on, in metres. */
 const RING_M = 500;
 const OLD = { schemaVersion: 1, picture: null, drawnOn: null };
+/** A document saved before part d carries neither key, and reads back with neither. */
+const NO_OWN = {};
 const corners = [
   { east: 0, north: 0 },
   { east: 8, north: 0 },
@@ -25,9 +27,53 @@ const roof = {
   tracedOn: 'sky',
 };
 
+const LAID = {
+  pictureId: '01a50000-0000-7000-8000-0000000000aa',
+  at: { east: 1.5, north: -2 },
+  turnDeg: -15,
+  metresPerUnit: 0.001,
+  scaleFrom: 'file',
+};
+const PLAN = { ...LAID, seeThrough: 80, locked: false, hidden: false, page: 2 };
+
 describe('the design document on the wire', () => {
+  it('reads a picture of the company’s own and a plan as sent, a plan edge as an edge', () => {
+    const sent = {
+      ...OLD,
+      roofs: [{ ...roof, edges: ['plan', 'plan', 'plan', 'plan'], height: null }],
+      pictureScale: 1,
+      ownPicture: LAID,
+      plan: PLAN,
+    };
+    expect(studioDocumentSchema.parse(sent)).toEqual(sent);
+  });
+
+  it('an answer for a document saved before part d carries no new key, which an older reader would refuse', () => {
+    const read = studioDocumentSchema.parse({ ...OLD, roofs: [], pictureScale: 1 });
+    expect(Object.keys(read)).not.toContain('ownPicture');
+    expect(Object.keys(read)).not.toContain('plan');
+  });
+
+  it.each([
+    ['a turn of −180°, which is +180°', { plan: { ...PLAN, turnDeg: -180 } }],
+    ['a turn past 180°', { plan: { ...PLAN, turnDeg: 185 } }],
+    ['a plan seen through at 5%', { plan: { ...PLAN, seeThrough: 5 } }],
+    ['a plan seen through past 100%', { plan: { ...PLAN, seeThrough: 105 } }],
+    ['page 0', { plan: { ...PLAN, page: 0 } }],
+    ['a picture with no scale', { ownPicture: { ...LAID, metresPerUnit: 0 } }],
+    ['a scale from no known source', { ownPicture: { ...LAID, scaleFrom: 'drone' } }],
+    ['a picture with a field of the plan', { ownPicture: { ...LAID, locked: true } }],
+  ])('refuses %s', (_why, change) => {
+    expect(studioDocumentSchema.safeParse({ ...OLD, ...change }).success).toBe(false);
+  });
+
   it('a document saved before roofs reads as no roofs, at the picture’s own scale', () => {
-    expect(studioDocumentSchema.parse(OLD)).toEqual({ ...OLD, roofs: [], pictureScale: 1 });
+    expect(studioDocumentSchema.parse(OLD)).toEqual({
+      ...OLD,
+      roofs: [],
+      pictureScale: 1,
+      ...NO_OWN,
+    });
   });
 
   it('a roof sent before heights reads as standing at the system’s height', () => {
@@ -35,6 +81,7 @@ describe('the design document on the wire', () => {
     expect(studioDocumentSchema.parse(sent)).toEqual({
       ...sent,
       roofs: [{ ...roof, height: null }],
+      ...NO_OWN,
     });
   });
 
@@ -43,7 +90,7 @@ describe('the design document on the wire', () => {
     ['set by the system', { metres: 3, setBy: 'system' }],
     ['none', null],
   ])('a roof with a height %s reads as sent', (_why, height) => {
-    const sent = { ...OLD, roofs: [{ ...roof, height }], pictureScale: 1 };
+    const sent = { ...OLD, roofs: [{ ...roof, height }], pictureScale: 1, ...NO_OWN };
     expect(studioDocumentSchema.parse(sent)).toEqual(sent);
   });
 

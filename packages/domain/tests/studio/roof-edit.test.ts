@@ -38,6 +38,8 @@ describe('the first true length sizes the picture and every roof', () => {
     expect(lengthIsFirst(designOf(roofOf(RECT, ['typed', 'traced', 'traced', 'traced'])))).toBe(
       false,
     );
+    // A plan's lengths came with the plan: a roof made from it leaves the picture unsized.
+    expect(lengthIsFirst(designOf(roofOf(RECT, ['plan', 'plan', 'plan', 'plan'])))).toBe(true);
   });
 
   it.each([

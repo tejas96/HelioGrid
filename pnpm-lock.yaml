@@ -359,9 +359,15 @@ importers:
       '@heliogrid/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@heliogrid/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
       '@heliogrid/env':
         specifier: workspace:*
         version: link:../../packages/env
+      '@mlightcad/libredwg-web':
+        specifier: 0.8.6
+        version: 0.8.6
       '@nestjs/common':
         specifier: 11.1.28
         version: 11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -2728,6 +2734,10 @@ packages:
 
   '@messageformat/parser@5.1.1':
     resolution: {integrity: sha512-3p0YRGCcTUCYvBKLIxtDDyrJ0YijGIwrTRu1DT8gIviIDZru8H23+FkY6MJBzM1n9n20CiM4VeDYuBsrrwnLjg==}
+
+  '@mlightcad/libredwg-web@0.8.6':
+    resolution: {integrity: sha512-c5zMYwj9S7xH0l84fjukV0tg9gK31Zbf9CAwk4KeKCwcFTA/413vn5Pav4Kb+Mt//xmAtm5ef25s7ZUKLHweJg==}
+    engines: {node: '>=20'}
 
   '@monogrid/gainmap-js@3.7.3':
     resolution: {integrity: sha512-YjgdH65wZ9lQnzkVWerrR9FJR0JYhn3ahV7DJqDZVtIvR/kWv7XzFbMSIOFS/47+nWbZ5zFTRxsFhq0OX//SuA==}
@@ -9458,6 +9468,8 @@ snapshots:
     dependencies:
       moo: 0.5.3
 
+  '@mlightcad/libredwg-web@0.8.6': {}
+
   '@monogrid/gainmap-js@3.7.3(three@0.187.0)':
     dependencies:
       promise-worker-transferable: 1.0.4
@@ -9902,7 +9914,9 @@ snapshots:
       metro-runtime: 0.84.4
     transitivePeerDependencies:
       - '@babel/core'
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   '@react-native/normalize-colors@0.86.0': {}
 

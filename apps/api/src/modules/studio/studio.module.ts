@@ -1,5 +1,6 @@
 import { Module, type Provider } from '@nestjs/common';
 import { ENV } from '../../config/env';
+import { FileModule } from '../file/file.public';
 import { SettingsModule } from '../settings/settings.public';
 import { PLACE_SOURCE } from './internal/place-source';
 import { AbsentPlaceSource } from './internal/place-source.absent';
@@ -12,6 +13,10 @@ import { MemorySkyPictureSource } from './internal/sky-picture-source.memory';
 import { PlacesController, StudioController } from './studio.controller';
 import { StudioDocumentRepository } from './studio.document.repository';
 import { StudioDocumentService } from './studio.document.service';
+import { StudioPictureActivityRegistration } from './studio.picture.activities';
+import { StudioPictureRepository } from './studio.picture.repository';
+import { StudioPictureService } from './studio.picture.service';
+import { StudioPictureReadRepository } from './studio.picture-read.repository';
 import { StudioPlacesService } from './studio.places.service';
 import { StudioRepository } from './studio.repository';
 import { StudioService } from './studio.service';
@@ -49,16 +54,20 @@ const skyPictureSourceProvider: Provider = {
 
 /**
  * The design studio as HelioGrid hosts it (`T-M05-001`): a lead's designs, the site details that
- * start one, and the place search. It reaches the lead only through the CRM module's public surface.
+ * start one, the pictures of its own (`T-M05-002d`), and the place search. It reaches the lead only through the CRM module's public surface.
  */
 @Module({
-  imports: [SettingsModule],
+  imports: [SettingsModule, FileModule],
   controllers: [StudioController, PlacesController],
   providers: [
     placeSourceProvider,
     skyPictureSourceProvider,
     StudioDocumentRepository,
     StudioDocumentService,
+    StudioPictureActivityRegistration,
+    StudioPictureReadRepository,
+    StudioPictureRepository,
+    StudioPictureService,
     StudioPlacesService,
     StudioRepository,
     StudioService,

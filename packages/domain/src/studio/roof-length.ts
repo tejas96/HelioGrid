@@ -44,7 +44,8 @@ export function lengthIsFirst(document: StudioDocument): boolean {
     document.pictureScale === 1 &&
     document.roofs
       .filter(onPicture)
-      .every((roof) => roof.edges.every((trust) => trust === 'traced'))
+      // A plan's length came with the plan: it never sized the picture, so it leaves it unsized.
+      .every((roof) => roof.edges.every((trust) => trust === 'traced' || trust === 'plan'))
   );
 }
 

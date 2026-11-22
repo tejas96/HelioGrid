@@ -9,7 +9,7 @@ import type { Caller, ProjectsWorld } from './support';
 
 /** What a person's own upload stores: the record it hangs on and the bytes. */
 export interface Upload {
-  readonly subjectKind: 'project' | 'project_payment';
+  readonly subjectKind: 'project' | 'project_payment' | 'design';
   readonly subjectRef: string;
   readonly contentType: FileContentType;
   readonly bytes: Uint8Array;

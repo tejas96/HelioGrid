@@ -2,8 +2,13 @@ import {
   edgesCross,
   GROUND_REACH_M,
   PICTURE_CHOICES,
+  PICTURE_METRES_PER_UNIT_MAX,
+  PICTURE_METRES_PER_UNIT_MIN,
   PICTURE_SCALE_MAX,
   PICTURE_SCALE_MIN,
+  PICTURE_SCALE_SOURCES,
+  PLAN_SEE_THROUGH_MAX,
+  PLAN_SEE_THROUGH_MIN,
   ROOF_CORNERS_MAX,
   ROOF_CORNERS_MIN,
   ROOF_EDGE_TRUSTS,
@@ -64,8 +69,32 @@ export const roofSchema = z
   });
 
 /**
- * `roofs` and `pictureScale` came after the first documents were saved: a save may leave them out,
- * and a document stored without them reads as no roofs at the picture's own scale.
+ * A picture of the company's own as it lies on the ground (domain's `LaidPicture`): which stored
+ * picture, where its origin lies, its turn clockwise from north, and its scale and where that came
+ * from.
+ */
+const laidPictureShape = {
+  pictureId: uuidSchema,
+  at: groundPointSchema,
+  turnDeg: z.number().gt(-180).lte(180),
+  metresPerUnit: z.number().min(PICTURE_METRES_PER_UNIT_MIN).max(PICTURE_METRES_PER_UNIT_MAX),
+  scaleFrom: z.enum(PICTURE_SCALE_SOURCES),
+};
+export const laidPictureSchema = z.object(laidPictureShape).strict();
+export const laidPlanSchema = z
+  .object({
+    ...laidPictureShape,
+    seeThrough: z.number().int().min(PLAN_SEE_THROUGH_MIN).max(PLAN_SEE_THROUGH_MAX),
+    locked: z.boolean(),
+    hidden: z.boolean(),
+    page: z.number().int().min(1),
+  })
+  .strict();
+
+/**
+ * `roofs`, `pictureScale`, `ownPicture` and `plan` came after the first documents were saved: a save may leave them out,
+ * and a document stored without them reads as no roofs at the picture's own scale; one without
+ * `ownPicture` or `plan` has no picture of the company's own and no plan.
  */
 export const studioDocumentSchema = z
   .object({
@@ -77,6 +106,10 @@ export const studioDocumentSchema = z
       .nullable(),
     roofs: z.array(roofSchema).max(ROOFS_MAX).default([]),
     pictureScale: z.number().min(PICTURE_SCALE_MIN).max(PICTURE_SCALE_MAX).default(1),
+    // Absent until a studio lays one: a reader from before them refuses any key it does not know,
+    // so an answer carries neither until the release that writes them.
+    ownPicture: laidPictureSchema.nullable().optional(),
+    plan: laidPlanSchema.nullable().optional(),
   })
   .strict();
 export type StudioDocumentWire = z.infer<typeof studioDocumentSchema>;

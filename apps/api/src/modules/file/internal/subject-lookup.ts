@@ -35,4 +35,6 @@ export const SUBJECT_LOOKUPS: Readonly<Record<FileSubjectKind, SubjectLookup>> =
    * names a version, so none is found. Its link comes from the version's own route.
    */
   proposal_version: async () => false,
+  /** A design's picture files: the studio has already answered that the design is in reach. */
+  design: async () => true,
 };
