@@ -14,7 +14,7 @@ import {
 
 /**
  * The roof step's drawing (`T-M05-002`, part b): a corner tapped, the shape closed, a drawing
- * stopped and taken up again by Undo, and a roof just closed taken back by Redraw. The reducer
+ * stopped and taken up again by Undo; a closed roof stands at once, and Undo takes it back. The reducer
  * (`roof-step.ts`) routes each event here.
  */
 
@@ -117,16 +117,6 @@ export function withoutRoof(document: StudioDocument, index: number): StudioDocu
   return { ...document, roofs, drawnOn: roofs.length === 0 ? null : document.drawnOn };
 }
 
-/** Whether the roof just closed is still on the bar's Redraw · Done ask. */
-export function justClosed(state: RoofStepState, document: StudioDocument): boolean {
-  return (
-    state.kind === 'idle' &&
-    state.said?.kind === 'closed' &&
-    state.roof !== null &&
-    state.roof === document.roofs.length - 1
-  );
-}
-
 /** Stop drawing: the corners go, and the one Undo after takes them up again. */
 export function stopped(state: RoofStepState): RoofStepOutcome {
   if (state.kind !== 'drawing' || state.corners.length === 0) {
@@ -157,7 +147,7 @@ export function closed(
   document: StudioDocument,
 ): RoofStepOutcome {
   if (state.kind !== 'drawing') return stay(state);
-  const close = draftClose(state.corners, document.roofs, event.id, event.tracedOn);
+  const close = draftClose(state.corners, document.roofs, event.id, event.tracedOn, event.ghost);
   if (close.kind === 'refused') return stay({ ...state, refused: close.refusal });
   // The first roof keeps the picture it was drawn on (M04-10).
   const first = document.roofs.length === 0 && document.drawnOn === null;

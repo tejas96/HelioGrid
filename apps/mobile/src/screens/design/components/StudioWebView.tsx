@@ -1,15 +1,20 @@
 import {
   readSiteMapMessage,
   WEB_VIEW_BRIDGE_VERSION,
+  type WebViewBack,
   type WebViewLend,
   webViewAskSchema,
 } from '@heliogrid/contracts';
 import { useLendToken } from '@heliogrid/data/react';
-import { tapHaptic } from '@heliogrid/ui';
-import { useEffect, useRef } from 'react';
-import { StyleSheet } from 'react-native';
+import { siteDetailsPageWords } from '@heliogrid/i18n';
+import { useTranslate } from '@heliogrid/i18n/react';
+import { LeadDetailStates, tapHaptic } from '@heliogrid/ui';
+import { useNavigation } from '@react-navigation/native';
+import { useEffect, useRef, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { WEB_URL } from '../../../env';
+import { useHardwareBack } from '../../shared/use-hardware-back';
 
 /**
  * The library types its props as `WebViewProps & P` with `P` defaulting to `undefined`, which
@@ -46,6 +51,23 @@ export function StudioWebView({
 }) {
   const view = useRef<StudioView>(null);
   const lendToken = useLendToken();
+  const states = siteDetailsPageWords(useTranslate()).states;
+  const frame = useRef<View>(null);
+  // The page did not load, or its process was lost: the screen says so and offers to try again.
+  // biome-ignore lint/plugin/screen-assembly: the native web view's own load state; the web has no web view to fail
+  const [failed, setFailed] = useState(false);
+  // The page said it takes the system back (`back-here`); a load starts it over.
+  const takesBack = useRef(false);
+  const navigation = useNavigation();
+  // Android's back: to the page when it takes it, else out; never while Site details is over it.
+  useHardwareBack(() => {
+    if (!navigation.isFocused()) return false;
+    if (takesBack.current && view.current !== null) {
+      const back: WebViewBack = { v: WEB_VIEW_BRIDGE_VERSION, kind: 'back' };
+      view.current.postMessage(JSON.stringify(back));
+    } else onLeave();
+    return true;
+  });
   // Back from a save in Site details: the page opens again on the site as it now stands. A way
   // back with nothing saved leaves the page as it was, its picture with it.
   const loadedFor = useRef(savedAt);
@@ -54,6 +76,18 @@ export function StudioWebView({
     loadedFor.current = savedAt;
     view.current?.reload();
   }, [savedAt]);
+  if (failed) {
+    return (
+      <View ref={frame} style={styles.page}>
+        <LeadDetailStates
+          read={{ kind: 'failed', retry: () => setFailed(false) }}
+          words={states}
+          onBackToList={onLeave}
+          focusAfter={frame}
+        />
+      </View>
+    );
+  }
   return (
     <WebView<object>
       ref={view}
@@ -79,11 +113,24 @@ export function StudioWebView({
           tapHaptic(asked.strength);
           return;
         }
+        if (asked.kind === 'back-here' || asked.kind === 'back-gone') {
+          takesBack.current = asked.kind === 'back-here';
+          return;
+        }
         void lendToken().then((token) => {
           const lend: WebViewLend = { v: WEB_VIEW_BRIDGE_VERSION, kind: 'token', token };
           view.current?.postMessage(JSON.stringify(lend));
         });
       }}
+      onLoadStart={() => {
+        takesBack.current = false;
+      }}
+      onError={() => setFailed(true)}
+      onHttpError={(event) => {
+        if (ownPage(event.nativeEvent.url)) setFailed(true);
+      }}
+      onContentProcessDidTerminate={() => setFailed(true)}
+      onRenderProcessGone={() => setFailed(true)}
       bounces={false}
       // iOS lays its own up / down / done bar over the page's sheet above the keyboard: the studio's
       // sheets have their own Done, so the bar only hides it.

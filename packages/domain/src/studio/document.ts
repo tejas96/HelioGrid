@@ -36,13 +36,20 @@ export interface PictureStamp {
 
 /**
  * How an edge's length is known: traced on the picture (drawn dashed), typed by a person (solid),
- * or measured on site (solid, with a tick).
+ * measured on site (solid, with a tick), or the market's usual size a typed roof starts at, which
+ * no person set. Every reader takes `assumed` before anything writes it: an open studio older than
+ * the release that writes it would refuse the design (`CLAUDE.md` §8, expand then contract).
  */
-export const ROOF_EDGE_TRUSTS = ['traced', 'typed', 'measured'] as const;
+export const ROOF_EDGE_TRUSTS = ['traced', 'typed', 'measured', 'assumed'] as const;
 export type RoofEdgeTrust = (typeof ROOF_EDGE_TRUSTS)[number];
 
 /** A length a person set: typed, or measured on site. */
-export type SetEdgeTrust = Exclude<RoofEdgeTrust, 'traced'>;
+export type SetEdgeTrust = Extract<RoofEdgeTrust, 'typed' | 'measured'>;
+
+/** Whether a person set this length: it holds while other corners move, and its label always shows. */
+export function lengthHeld(trust: RoofEdgeTrust): trust is SetEdgeTrust {
+  return trust === 'typed' || trust === 'measured';
+}
 
 /** A design holds at most this many roofs. */
 export const ROOFS_MAX = 50;

@@ -11,9 +11,11 @@ export interface PressActs {
   onDragStart?: (at: GroundPoint | null) => void;
   onDrag?: (at: GroundPoint) => void;
   onDragEnd?: () => void;
+  /** The system took the press away mid-drag (a pinch, an edge swipe): what was in hand goes back. */
+  onDragCancel?: () => void;
   /** A press that never moved: the mark's tap. */
   onTap?: () => void;
-  /** The drag starts the moment the pointer goes down: the + and the handles. */
+  /** The drag starts the moment the pointer goes down: the move and turn handles. */
   dragAtOnce?: boolean;
 }
 
@@ -77,7 +79,7 @@ export function useRoofPress(
       const held = press.current;
       press.current = null;
       onAim(null);
-      if (held?.dragging) acts.onDragEnd?.();
+      if (held?.dragging) acts.onDragCancel?.();
     },
   });
 }

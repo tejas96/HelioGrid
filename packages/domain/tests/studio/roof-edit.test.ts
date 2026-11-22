@@ -41,6 +41,14 @@ describe('the first true length sizes the picture and every roof', () => {
     );
   });
 
+  it.each([
+    // the picture's scale, the edges → first
+    ['picture never sized, every edge traced', 1, true],
+    ['picture sized, its set length split away: every edge traced again', 1.25, false],
+  ])('%s', (_why, pictureScale, first) => {
+    expect(lengthIsFirst({ ...designOf(roofOf(RECT)), pictureScale })).toBe(first);
+  });
+
   it('8 m traced, 10 m typed: every corner of every roof × 1.25 about the pin, the picture too', () => {
     const after = done(lengthSet(designOf(roofOf(RECT), SHED), 0, 0, 10, 'typed'));
     expect(after.pictureScale).toBeCloseTo(1.25);
@@ -172,6 +180,13 @@ describe('dragging a corner', () => {
     const drag = cornerDragged(typed, 0, 1, p(8, 2), true);
     expect(edgeLengths(drag.document.roofs[0]?.corners ?? [])[0]).toBeCloseTo(8);
     expect(drag.snap).toEqual({ kind: 'held', metres: 8, centre: p(0, 0) });
+  });
+
+  it('the market’s start size holds nothing: no person set it, so the corner moves', () => {
+    const start = designOf(roofOf(RECT, ['assumed', 'assumed', 'assumed', 'assumed']));
+    const drag = cornerDragged(start, 0, 1, p(9, 1), false);
+    expect(drag.fault).toBeNull();
+    expect(drag.document.roofs[0]?.corners[1]).toEqual(p(9, 1));
   });
 
   it('two typed neighbours: the corner stays, and says why', () => {

@@ -7,26 +7,22 @@ import type { StudioDrive } from '../components/StudioCameraRig';
 /** A press that moves less than this, in CSS pixels, is a tap; more moves the map. */
 const TAP_PX = 6;
 
-/** A key pressed over the studio while drawing, just after a close, or with a corner picked. */
+/** A key pressed over the studio: Backspace while drawing, and Esc. */
 function drawKey(
   event: KeyboardEvent,
   roofStep: StudioScreen['roofStep'],
-  asking: boolean,
   moves: StudioScreen['moves'],
 ): void {
-  // Backspace typed into a field, or Enter on a button, is that control's own; Esc is always ours.
+  // Backspace typed into a field is that field's own.
   const target = event.target;
   const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
   if (event.key === 'Backspace' && roofStep.kind === 'drawing' && !typing) {
     event.preventDefault();
     moves.undo();
   }
-  const own = typing || target instanceof HTMLButtonElement;
-  if (event.key === 'Enter' && asking && !own) moves.keepClosed();
-  if (event.key !== 'Escape') return;
-  if (asking) moves.redraw();
-  else if (roofStep.kind !== 'idle') moves.cancel();
-  else if (roofStep.picked !== null) moves.pickCorner(null);
+  // Esc is the phone's system back: the top thing open closes.
+  // A part that took the Esc itself (a card, a field, a dialog) has had it.
+  if (event.key === 'Escape' && !event.defaultPrevented) moves.back();
 }
 
 /**
@@ -89,14 +85,13 @@ export function useDrawPress(
     if (at !== null) moves.tap(at);
   };
   // Esc puts back what is in hand: the draft (one Undo takes it up again), the length in the box, a
-  // drag, a picked corner; just after a close it is Redraw, and Enter is Done. Backspace takes the
+  // drag, a picked corner. Backspace takes the
   // last corner off while drawing. Alt held draws free for a moment: the magnet rests until it is
   // let go, or the window loses it.
-  const asking = studio.view === 'top' && studio.bar?.kind === 'roofs' && studio.bar.asking;
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Alt') moves.drawFree(event.type === 'keydown');
-      if (event.type === 'keydown') drawKey(event, roofStep, asking, moves);
+      if (event.type === 'keydown') drawKey(event, roofStep, moves);
     };
     const onBlur = () => moves.drawFree(false);
     window.addEventListener('keydown', onKey);
@@ -107,7 +102,7 @@ export function useDrawPress(
       window.removeEventListener('keyup', onKey);
       window.removeEventListener('blur', onBlur);
     };
-  }, [roofStep, moves, asking]);
+  }, [roofStep, moves]);
   const onPointerLeave = (event: PointerEvent<HTMLDivElement>) => {
     if (drawing && event.pointerType === 'mouse') moves.hover(null);
   };

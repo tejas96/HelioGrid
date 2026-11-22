@@ -51,6 +51,7 @@
 /* The head: the steps in the middle of the canvas, the compass in the right corner and the picture
    chip under them at the left. */
 .hg-studio-canvas-head {
+  position: relative;
   grid-row: 1;
   grid-column: 1 / -1;
   display: grid;

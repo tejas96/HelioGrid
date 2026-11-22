@@ -1,6 +1,6 @@
 import type { MeasurementSystem } from '../format/pack';
 import { type ProvenanceTier, weakestTier } from '../format/qualified';
-import type { RoofEdgeTrust, StudioDocument } from './document';
+import { lengthHeld, type RoofEdgeTrust, type StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import type { EditRefusal } from './roof-check';
 import { type DraftRefusal, draftClosesAt, draftGhost, draftTap } from './roof-draw';
@@ -47,6 +47,8 @@ export interface EdgeView {
   readonly to: GroundPoint;
   readonly metres: number;
   readonly trust: RoofEdgeTrust;
+  /** No person set it — from the picture, or the market's usual size: its label reads "about". */
+  readonly about: boolean;
   /** The longest length from the picture, before any is set: type it first. */
   readonly pulse: boolean;
 }
@@ -66,7 +68,7 @@ export function roofMarksOf(document: StudioDocument): readonly RoofMarksView[] 
     const longest = lengths.indexOf(Math.max(...lengths));
     // Type it first: on a picture roof, the length that will size the picture; on a typed or grid
     // roof, its longest while none of its own is set.
-    const pulses = onPicture(roof) ? first : roof.edges.every((trust) => trust === 'traced');
+    const pulses = onPicture(roof) ? first : !roof.edges.some(lengthHeld);
     return {
       id: roof.id,
       corners: roof.corners,
@@ -76,6 +78,7 @@ export function roofMarksOf(document: StudioDocument): readonly RoofMarksView[] 
         to: cornerAfter(roof.corners, i),
         metres,
         trust: roof.edges[i] ?? 'traced',
+        about: !lengthHeld(roof.edges[i] ?? 'traced'),
         pulse: pulses && i === longest,
       })),
     };
@@ -180,13 +183,14 @@ export function draftViewOf(
   state: Extract<RoofStepState, { kind: 'drawing' }>,
   document: StudioDocument,
 ): DraftView {
-  const ghost = draftGhost(state.corners);
   const { spot, corners } = state;
   const last = corners.at(-1);
   const before = corners.at(-2);
   // Within reach of the first corner a tap closes: no corner is added there, so none is refused
   // and no angle is named.
   const closing = state.pointer !== null && draftClosesAt(corners, state.pointer);
+  // A tap on the first corner closes the shape as drawn: the ghost is not offered under it.
+  const ghost = closing ? null : draftGhost(state.corners);
   const tap =
     spot === null || closing
       ? null
@@ -246,8 +250,6 @@ export type RoofBar =
       readonly sizing: boolean;
       /** The live refusal of the length in the box, or of the drag in hand. */
       readonly live: EditRefusal | null;
-      /** The roof just closed: Redraw and Done show, and any other act means Done. */
-      readonly asking: boolean;
       /** The roof picked, which the trash deletes; `null` with none picked. */
       readonly picked: number | null;
     };
@@ -296,7 +298,6 @@ export function roofBarOf(
     bad: live !== null || said?.kind === 'went_back' || said?.kind === 'refused',
     sizing: state.kind === 'sizing',
     live,
-    asking: said?.kind === 'closed' && picked === shown.roofs.length - 1,
     picked,
   };
 }

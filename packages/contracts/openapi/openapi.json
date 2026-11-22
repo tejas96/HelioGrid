@@ -247224,7 +247224,8 @@
                                   "enum": [
                                     "traced",
                                     "typed",
-                                    "measured"
+                                    "measured",
+                                    "assumed"
                                   ]
                                 },
                                 "minItems": 3,
@@ -247903,7 +247904,8 @@
                                 "enum": [
                                   "traced",
                                   "typed",
-                                  "measured"
+                                  "measured",
+                                  "assumed"
                                 ]
                               },
                               "minItems": 3,

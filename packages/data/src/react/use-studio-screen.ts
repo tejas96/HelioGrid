@@ -14,7 +14,6 @@ import {
   pictureNewerThanDrawn,
   type RoofHeightShown,
   type RoofSheetView,
-  type RoofStepState,
   roofsBox,
   type StepPlace,
   type StudioDocument,
@@ -40,6 +39,7 @@ import {
   useStudioDocument,
 } from './studio-document-state';
 import type { StudioSaveState } from './studio-save-queue';
+import { studioBack, undoRedoOf } from './studio-undo-back';
 import { type DesignRead, useDesignScreen } from './use-design-screen';
 import { type RoofSheetMoves, type RoofSheetState, useRoofSheet } from './use-roof-sheet';
 import { type RoofMoves, type RoofStepView, useRoofStep } from './use-roof-step';
@@ -64,6 +64,8 @@ export interface StudioMoves extends RoofMoves, RoofSheetMoves {
   see(view: StudioView): void;
   /** The three pictures shown or put away. */
   showPictures(open: boolean): void;
+  /** The phone's system back (`studioBack`): `false` with nothing open to close. */
+  back(): boolean;
 }
 
 export interface StudioScreen extends RoofStepView, RoofSheetState {
@@ -75,6 +77,8 @@ export interface StudioScreen extends RoofStepView, RoofSheetState {
   readonly pictureUpdated: boolean;
   readonly editing: StudioEditing;
   readonly saving: StudioSaveState;
+  /** A change waits, not sent: no connection, or the api did not save it. Leaving loses it. */
+  readonly unsent: boolean;
   readonly units: MeasurementSystem;
   readonly rail: readonly StepPlace[];
   readonly canUndo: boolean;
@@ -94,26 +98,6 @@ export interface StudioScreen extends RoofStepView, RoofSheetState {
   /** Which parts show for the job in hand, on a phone-width screen or a wider one (focus mode). */
   focus(phone: boolean): FocusParts;
   readonly moves: StudioMoves;
-}
-
-/**
- * What Undo and Redo can do now: while drawing, Undo takes the last corner off; with nothing in
- * hand, they walk the design's history; Redo waits while a roof is drawn, sized or dragged.
- */
-function undoRedoOf(
-  editable: boolean,
-  roofStep: RoofStepState,
-  history: History<StudioDocument> | null,
-): { canUndo: boolean; canRedo: boolean } {
-  // The size card's rectangle is not in the history: Undo has nothing to take while it is open.
-  if (!editable || roofStep.kind === 'typing') return { canUndo: false, canRedo: false };
-  // While drawing, Undo takes a corner off or brings wiped ones back; just after a stop, it takes
-  // the stopped drawing up again.
-  const back =
-    roofStep.kind === 'drawing'
-      ? roofStep.corners.length > 0 || roofStep.wiped !== null
-      : (roofStep.kind === 'idle' && Boolean(roofStep.left)) || (history?.past.length ?? 0) > 0;
-  return { canUndo: back, canRedo: roofStep.kind === 'idle' && (history?.future.length ?? 0) > 0 };
 }
 
 /** The roof whose sheet is open stands at the height in hand, and the camera frames it alone. */
@@ -221,6 +205,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       pictureNewerThanDrawn(document?.drawnOn ?? null, sky.takenOn),
     editing,
     saving,
+    unsent: saving.kind === 'offline' || saving.kind === 'failed',
     units,
     rail: stepRail(roofClosed),
     view,
@@ -282,12 +267,9 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       // A view that waits for a roof is not taken, whoever asks for it.
       see: (next) => {
         if (!views.some((place) => place.view === next && place.lock === null)) return;
-        // A new roof is drawn in the top view only: leaving it drops the draft, or — just after a
-        // close — keeps the roof and ends the Redraw ask.
-        if (next !== 'top') {
-          const held = step.current.kind;
-          act({ kind: held === 'drawing' || held === 'typing' ? 'cancel' : 'done' });
-        }
+        // A new roof is drawn, or typed, in the top view only: leaving it drops the draft.
+        const held = step.current.kind;
+        if (next !== 'top' && (held === 'drawing' || held === 'typing')) act({ kind: 'cancel' });
         if (next === '3d') setSeen3d(true);
         // A roof's sheet is the 3D view's: the top view keeps its height and closes it.
         if (next === 'top') void sheet.moves.done();
@@ -299,6 +281,15 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         roof.moves.draw();
       },
       showPictures: setPicturesOpen,
+      back: () =>
+        studioBack({
+          picturesOpen,
+          closePictures: () => setPicturesOpen(false),
+          sheetOpen: roofSheet !== null,
+          closeSheet: () => void sheet.moves.done(),
+          step: step.current,
+          act,
+        }),
     },
   };
 }

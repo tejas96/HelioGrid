@@ -11,6 +11,7 @@ import { onPicture } from './roof-length';
 const SET_TIER: Record<Exclude<RoofEdgeTrust, 'traced'>, ProvenanceTier> = {
   typed: 'estimated',
   measured: 'measured',
+  assumed: 'assumed',
 };
 
 /**

@@ -51,7 +51,7 @@ describe('stopping a drawing, deleting a roof', () => {
     expect(stored.saves).toHaveLength(0);
   });
 
-  it('leaving for 3D just after a close keeps the roof: the Redraw ask is over', async () => {
+  it('leaving for 3D just after a close keeps the roof, saved', async () => {
     const view = await opened([RECTANGLE]);
     act(() => view.result.current.moves.draw());
     for (const at of [
@@ -62,10 +62,9 @@ describe('stopping a drawing, deleting a roof', () => {
       act(() => view.result.current.moves.tap(at));
     }
     act(() => view.result.current.moves.close());
-    expect(view.result.current.bar).toMatchObject({ kind: 'roofs', asking: true });
     act(() => view.result.current.moves.see('3d'));
     act(() => view.result.current.moves.see('top'));
-    expect(view.result.current.bar).toMatchObject({ kind: 'roofs', asking: false });
+    expect(view.result.current.bar).toMatchObject({ kind: 'roofs' });
     expect(view.result.current.document?.roofs).toHaveLength(2);
     await waitFor(() => expect(stored.saves.at(-1)?.roofs).toHaveLength(2));
   });

@@ -1,4 +1,4 @@
-import type { RoofEdgeTrust, StudioDocument } from './document';
+import { lengthHeld, type RoofEdgeTrust, type StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import {
   type DragResult,
@@ -158,8 +158,8 @@ export function cornerDragged(
   const { corners, edges } = roof;
   const count = corners.length;
   const beforeEdge = (corner - 1 + count) % count;
-  const heldBefore = edges[beforeEdge] !== 'traced';
-  const heldAfter = edges[corner] !== 'traced';
+  const heldBefore = lengthHeld(edges[beforeEdge] ?? 'traced');
+  const heldAfter = lengthHeld(edges[corner] ?? 'traced');
   if (heldBefore && heldAfter) return { document, snap: null, fault: 'two_held', guides: [] };
   let placed: Placed;
   if (heldBefore || heldAfter) {

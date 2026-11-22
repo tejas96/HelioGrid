@@ -1,5 +1,5 @@
 'use client';
-import type { DraftView, MeasurementSystem } from '@heliogrid/domain';
+import type { DraftView, GroundPoint, MeasurementSystem } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { Pressable, useFormat } from '@heliogrid/ui';
 import { pointText } from './roof-marks-place';
@@ -16,6 +16,7 @@ export function StudioDraftMarks({
   words,
   aiming,
   onClose,
+  onOverFirst,
 }: {
   draft: DraftView;
   units: MeasurementSystem;
@@ -23,6 +24,11 @@ export function StudioDraftMarks({
   /** A finger aims with the loupe, which shows the live length: the page does not. */
   aiming: boolean;
   onClose: () => void;
+  /**
+   * The pointer came over the first corner's dot, which the map under it does not hear: it is at
+   * that corner, so a tap would close and the ghost steps aside.
+   */
+  onOverFirst: (at: GroundPoint) => void;
 }) {
   const format = useFormat();
   const inside = draft.ghost ?? draft.spot?.point ?? draft.corners[0];
@@ -56,8 +62,13 @@ export function StudioDraftMarks({
       </svg>
       <div className="hg-roof-on">
         {draft.corners.map((corner, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: a corner is its place in the draft
-          <span key={`d${i}`} className="hg-roof-at" data-at={pointText(corner)}>
+          <span
+            // biome-ignore lint/suspicious/noArrayIndexKey: a corner is its place in the draft
+            key={`d${i}`}
+            className="hg-roof-at"
+            data-at={pointText(corner)}
+            onPointerEnter={i === 0 && draft.canClose ? () => onOverFirst(corner) : undefined}
+          >
             {i === 0 && draft.canClose ? (
               <Pressable
                 className="hg-roof-hit"

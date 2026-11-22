@@ -18,3 +18,4 @@ GET /catalog/releases/{id} added `subschema #1, subschema #3` to the `lines/item
 GET /customers/{id}/activities added `subschema #1, subschema #2` to the `items/items/` response property `oneOf` list for the response status `200`
 GET /leads/{id}/activities added `subschema #1, subschema #2` to the `items/items/` response property `oneOf` list for the response status `200`
 GET /tenants/me/audit-log added `subschema #4` to the `items/items/changePayload` response property `oneOf` list for the response status `200`
+GET /designs/{id}/document added the new `assumed` enum value to the `document/roofs/items/edges/items/` response property for the response status `200`

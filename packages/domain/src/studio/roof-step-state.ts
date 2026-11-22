@@ -148,10 +148,6 @@ export type RoofStepEvent =
   | { readonly kind: 'magnet'; readonly magnet: boolean }
   /** The trash while drawing: every corner goes, and drawing goes on. */
   | { readonly kind: 'wipe' }
-  /** Redraw, just after a close: that roof goes, and drawing starts again. */
-  | { readonly kind: 'redraw'; readonly magnet: boolean; readonly grid?: boolean }
-  /** Done, just after a close: the ask goes away; the roof stays. */
-  | { readonly kind: 'done' }
   /** The trash on a picked roof: the roof goes, as one change. */
   | { readonly kind: 'delete_roof' }
   | { readonly kind: 'hover'; readonly at: GroundPoint | null }
@@ -163,6 +159,8 @@ export type RoofStepEvent =
       readonly tracedOn: PictureChoice;
       /** The sky picture shown, kept with the first roof (M04-10); `null` with none. */
       readonly stamp: PictureStamp | null;
+      /** Close shape takes the ghost corner; a tap on the first corner closes the shape as drawn. */
+      readonly ghost: boolean;
     }
   | { readonly kind: 'cancel' }
   | { readonly kind: 'undo_corner' }

@@ -114,9 +114,11 @@ export function draftClose(
   roofs: readonly Roof[],
   id: string,
   tracedOn: PictureChoice,
+  /** Take the ghost corner when it is offered: Close shape does, a tap on the first corner not. */
+  withGhost: boolean,
 ): DraftClose {
   if (roofs.length >= ROOFS_MAX) return { kind: 'refused', refusal: 'too_many_roofs' };
-  const ghost = draftGhost(corners);
+  const ghost = withGhost ? draftGhost(corners) : null;
   const outline = ghost === null ? corners : [...corners, ghost];
   if (outline.length < ROOF_CORNERS_MIN) return { kind: 'refused', refusal: 'too_few_corners' };
   if (edgesCross(outline)) return { kind: 'refused', refusal: 'would_cross' };

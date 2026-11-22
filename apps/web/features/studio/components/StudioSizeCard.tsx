@@ -105,7 +105,8 @@ export function StudioSizeCard({
       moves.cancel();
       return;
     }
-    if (event.key === 'Enter') {
+    // Enter places the roof from a slider or a box; on a button it is that button's own press.
+    if (event.key === 'Enter' && !(event.target instanceof HTMLButtonElement)) {
       event.preventDefault();
       moves.placeRoof();
       return;

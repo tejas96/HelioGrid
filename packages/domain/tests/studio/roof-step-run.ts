@@ -28,7 +28,13 @@ export function run(events: RoofStepEvent[], from: StudioDocument = EMPTY_STUDIO
   return { state, document, commits };
 }
 
-export const CLOSE = { kind: 'close', id: 'roof-1', tracedOn: 'sky', stamp: STAMP } as const;
+export const CLOSE = {
+  kind: 'close',
+  id: 'roof-1',
+  tracedOn: 'sky',
+  stamp: STAMP,
+  ghost: true,
+} as const;
 /** Four corners of an 8 m by 6 m roof, and Close shape. */
 export const RECTANGLE: RoofStepEvent[] = [
   { kind: 'draw', magnet: true },

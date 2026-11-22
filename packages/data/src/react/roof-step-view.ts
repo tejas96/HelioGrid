@@ -31,18 +31,16 @@ export interface RoofMoves {
   retryMagnet(): void;
   /** The trash while drawing: every corner goes, drawing goes on; Undo brings them back. */
   wipe(): void;
-  /** Redraw, just after a close: that roof goes and drawing starts again. */
-  redraw(): void;
-  /** Done, just after a close: the ask goes away, the roof stays. */
-  keepClosed(): void;
   /** The trash on a picked roof: it goes, as one change; Undo brings it back. */
   deleteRoof(): void;
   /** The pointer over the ground while drawing; `null` when it leaves. */
   hover(at: GroundPoint | null): void;
   /** A tap on the ground: a corner while drawing, else it lets a picked corner go. */
   tap(at: GroundPoint): void;
-  /** Close shape, or a tap on the first corner. */
+  /** Close shape: with three square corners, the ghost gives the fourth. */
   close(): void;
+  /** A tap on the first corner: the shape closes as drawn, a triangle from three. */
+  closeAsDrawn(): void;
   /**
    * The filled pencil, Esc, × on the length box: what is in hand goes, the design stays. A drawing
    * stopped with corners leaves them for one Undo.
