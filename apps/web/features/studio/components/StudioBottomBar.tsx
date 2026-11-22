@@ -19,7 +19,9 @@ import { BAR_TOOL, MagnetRefused, MagnetSwitch, pillOf } from './StudioBarPills'
 interface BarAct {
   readonly key: string;
   readonly label: TranslatedText;
-  readonly icon: ShellGlyphName;
+  readonly icon?: ShellGlyphName;
+  /** The bar's main act is primary; one beside it is secondary. */
+  readonly secondary?: boolean;
   readonly onPress: () => void;
 }
 
@@ -118,14 +120,19 @@ function startBar(name: TranslatedText, place: string | null, facts: BarFacts): 
     title: name,
     status: said === null ? why : words.roofLine(said, false, roofWordsShown(format, units)),
     bad: false,
-    acts: [
-      {
-        key: 'draw',
-        label: noPicture ? words.drawOnGrid : words.drawMyself,
-        icon: 'pencil',
-        onPress: studio.moves.draw,
-      },
-    ],
+    // With no picture, typing the size is the main way; drawing on the grid sits beside it.
+    acts: noPicture
+      ? [
+          {
+            key: 'draw',
+            label: words.drawOnGrid,
+            icon: 'pencil',
+            secondary: true,
+            onPress: studio.moves.draw,
+          },
+          { key: 'type', label: words.typeSize, onPress: studio.moves.typeSize },
+        ]
+      : [{ key: 'draw', label: words.drawMyself, icon: 'pencil', onPress: studio.moves.draw }],
   };
 }
 
@@ -161,6 +168,7 @@ export function StudioBottomBar({
   part,
   crowded,
   magnet,
+  phone,
 }: {
   barRef: Ref<HTMLDivElement>;
   name: TranslatedText;
@@ -177,6 +185,8 @@ export function StudioBottomBar({
   crowded: boolean;
   /** Focus mode's magnet. */
   magnet: FocusParts['magnet'];
+  /** A phone-width screen, where the keyboard covers the foot. */
+  phone: boolean;
 }) {
   const format = useFormat();
   const editable = editing.kind === 'editor';
@@ -192,7 +202,7 @@ export function StudioBottomBar({
     magnetPart: magnet,
   };
   const { bar } = studio;
-  const pill = pillOf(studio, words, part === 'hidden');
+  const pill = pillOf(studio, words, part === 'hidden', phone);
   let shown = startBar(name, place, facts);
   if (bar?.kind === 'roofs') shown = roofsBar(bar, facts);
   if (!editable) shown = readOnly(shown, editing, facts);
@@ -212,6 +222,10 @@ export function StudioBottomBar({
       holder?.querySelector<HTMLButtonElement>('button:not(:disabled)');
     next?.focus();
   }, [kind]);
+  // The size card holds Place roof while the phone's keyboard covers the foot: nothing shows here.
+  if (pill === null && bar?.kind === 'typing') {
+    return <div ref={barRef} className="hg-studio-glass hg-studio-bar" data-hidden="true" inert />;
+  }
   if (pill !== null) {
     return (
       <div ref={barRef} className="hg-studio-glass hg-studio-bar" data-kind="pill">
@@ -247,10 +261,10 @@ export function StudioBottomBar({
           {acts.map((act) => (
             <Button
               key={act.key}
-              variant="primary"
+              variant={act.secondary ? 'secondary' : 'primary'}
               size="md"
               onClick={act.onPress}
-              icon={<ShellGlyph name={act.icon} size="sm" />}
+              icon={act.icon === undefined ? undefined : <ShellGlyph name={act.icon} size="sm" />}
             >
               {act.label}
             </Button>

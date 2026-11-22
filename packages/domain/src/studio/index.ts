@@ -98,14 +98,18 @@ export {
   TURN_SNAP_DEGREES,
 } from './roof-edit';
 export {
+  type EntryRead,
   entryMetres,
   entryOf,
+  entryRead,
   handMetres,
   LENGTH_SLIDE_SHARE,
   type LengthEntry,
   type LengthInHand,
   type LengthSlide,
   lengthSlide,
+  pairOf,
+  pairOnItsWay,
   sizingResult,
   stepRefused,
   tracedLength,
@@ -131,6 +135,8 @@ export {
   lengthAsks,
   lengthIsFirst,
   lengthSet,
+  lengthSizesPicture,
+  onPicture,
 } from './roof-length';
 export {
   between,
@@ -198,6 +204,25 @@ export {
   roofAreaTier,
   scaleTierOf,
 } from './roof-trust';
+export {
+  type SizeCardArrival,
+  sizeCardOnArrival,
+  TYPED_SIDES,
+  TYPED_SLIDE_MAX_M,
+  TYPED_SLIDE_MIN_M,
+  type TypedPlace,
+  type TypedRefusal,
+  type TypedResult,
+  type TypedSide,
+  type TypedSize,
+  typedCorners,
+  typedInUnits,
+  typedPair,
+  typedPlaceOf,
+  typedResult,
+  typedRoof,
+  typedStart,
+} from './roof-type';
 export {
   areaOfPlace,
   operatorAfterArea,

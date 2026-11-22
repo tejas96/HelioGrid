@@ -14,13 +14,22 @@ import type { StudioView } from './views';
  * corner (or a new one from a +), which the magnet guides; `moving` is the whole roof, moved or
  * turned.
  */
-export const FOCUS_JOBS = ['looking', 'drawing', 'dragging', 'moving', 'sizing', 'sheet'] as const;
+export const FOCUS_JOBS = [
+  'looking',
+  'drawing',
+  'dragging',
+  'moving',
+  'sizing',
+  'typing',
+  'sheet',
+] as const;
 export type FocusJob = (typeof FOCUS_JOBS)[number];
 
 const JOB_OF_STEP: Record<RoofStepState['kind'], FocusJob> = {
   idle: 'looking',
   drawing: 'drawing',
   sizing: 'sizing',
+  typing: 'typing',
   dragging: 'dragging',
 };
 
@@ -67,7 +76,7 @@ export interface FocusParts {
   readonly otherHandles: 'picked' | 'hidden';
   /** Which length labels show: all, the draft's, every one live, or none. */
   readonly lengthLabels: 'all' | 'draft' | 'hidden';
-  /** The bottom bar: status and main button, the drawing pill, the status alone, or none. */
+  /** The bottom bar: status and main button, the slim pill (drawing or typing), the status alone, or none. */
   readonly bottomBar: 'main' | 'drawing' | 'status' | 'hidden';
 }
 
@@ -154,6 +163,21 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     // The bar's status line stays on every screen: a refused step says why there (`T-M05-002`).
     bottomBar: 'status',
   },
+  // Type the size (part c): the card holds the numbers and their refusal; the foot is the slim pill
+  // with Place roof. Undo and Redo step aside: the rectangle is not in the history until placed.
+  typing: {
+    stepSwitcher: 'hidden',
+    pictureChip: 'credit',
+    pencil: 'hidden',
+    magnet: 'hidden',
+    undoRedo: 'hidden',
+    addRoof: 'hidden',
+    layers: 'hidden',
+    otherHandles: 'hidden',
+    // The rectangle's own lengths show; the other roofs' would crowd it at a shared wall.
+    lengthLabels: 'draft',
+    bottomBar: 'drawing',
+  },
 };
 
 /** The 3D view holds no drawing tool, no handle and no length label (`T-M05-002`, part a). */
@@ -186,7 +210,9 @@ function partsOfJob(facts: FocusFacts): FocusParts {
   if (job === 'looking' || job === 'sheet') return LOOKING_TOP;
   const parts = { ...LOOKING_TOP, ...IN_A_JOB[job] };
   // On a phone the slider, or the keyboard, takes the low screen: the compass steps aside.
-  return job === 'sizing' && facts.phone ? { ...parts, compass: 'hidden' } : parts;
+  return (job === 'sizing' || job === 'typing') && facts.phone
+    ? { ...parts, compass: 'hidden' }
+    : parts;
 }
 
 /** Which parts the studio shows for the job in hand. */

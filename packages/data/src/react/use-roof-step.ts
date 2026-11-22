@@ -16,8 +16,9 @@ import {
   historyAfter,
   KEY_MOVE_M,
   KEY_TURN_DEGREES,
+  type LengthEntry,
   labelLayoutOf,
-  lengthIsFirst,
+  lengthSizesPicture,
   lengthSlide,
   type MeasurementSystem,
   magnetOf,
@@ -42,9 +43,10 @@ import {
 import { type RefObject, useRef, useState } from 'react';
 import { aKey } from '../client/creation-key';
 import type { RoofMoves, RoofStepView } from './roof-step-view';
+import { sizeCardIn, useUnitsFollow } from './size-card';
 import type { StudioPicture } from './studio-document-state';
 
-export type { RoofMoves, RoofStepView } from './roof-step-view';
+export type { RoofMoves, RoofStepView, SizeCardView } from './roof-step-view';
 
 /**
  * The roof step's state and moves (`T-M05-002`, part b, Law 11): the reducer's state, each event
@@ -58,11 +60,11 @@ export function useRoofStep({
   editable,
   units,
   picture,
-  setUnits,
   helpersOff,
   setHelpersOff,
   helpersRefused,
   storeyHeightM,
+  typedStart,
   numberEntry,
   setNumberEntry,
 }: {
@@ -73,7 +75,6 @@ export function useRoofStep({
   editable: boolean;
   units: MeasurementSystem;
   picture: StudioPicture;
-  setUnits: (system: MeasurementSystem) => void;
   /**
    * The helpers the person turned off, as their account holds them: any one off is the magnet off
    * (`magnetOf`), and turning it off writes them all.
@@ -83,6 +84,8 @@ export function useRoofStep({
   helpersRefused: boolean;
   /** The market's storey height: a roof with no height of its own stands at it. */
   storeyHeightM: number;
+  /** The market's start size for a typed roof. */
+  typedStart: { readonly length: number; readonly width: number };
   numberEntry: NumberEntry;
   setNumberEntry: (entry: NumberEntry) => void;
 }) {
@@ -100,6 +103,8 @@ export function useRoofStep({
   }
   const step = useRef(roofStep);
   step.current = roofStep;
+
+  useUnitsFollow(units, step, (event) => act(event));
 
   /** One event of the roof step: its state moves, and an act that ends commits one change. */
   const act = (event: RoofStepEvent) => {
@@ -131,13 +136,14 @@ export function useRoofStep({
       less: sizing === null || stepRefused(sizing, -1, units),
       more: sizing === null || stepRefused(sizing, 1, units),
     },
+    sizeCard: sizeCardIn(roofStep, document, units, numberEntry),
     lengthBox:
       sizing === null
         ? null
         : {
             traced: tracedLength(sizing.base, sizing.roof, sizing.edge),
             typed: handMetres(sizing, units),
-            first: lengthIsFirst(sizing.base),
+            first: lengthSizesPicture(sizing.base, sizing.roof),
             slide: lengthSlide(tracedLength(sizing.base, sizing.roof, sizing.edge), units),
           },
     numberEntry,
@@ -164,8 +170,22 @@ export function useRoofStep({
       stamp: picture.kind === 'sky' ? { source: picture.source, takenOn: picture.takenOn } : null,
     });
 
+  const grid = picture.kind === 'none';
+  const stamp =
+    picture.kind === 'sky' ? { source: picture.source, takenOn: picture.takenOn } : null;
+  const sizeEntry = (which: 'length' | 'width', entry: LengthEntry) =>
+    act(
+      which === 'length'
+        ? { kind: 'type_entry', length: entry }
+        : { kind: 'type_entry', width: entry },
+    );
+
   const moves: RoofMoves = {
-    draw: () => act({ kind: 'draw', magnet: magnet() }),
+    // On the bare grid each corner lands on a whole metre.
+    // While the sky picture is on its way, a roof would be stored as traced on none: it waits.
+    draw: () => {
+      if (picture.kind !== 'waiting') act({ kind: 'draw', magnet: magnet(), grid });
+    },
     // A second tap before the redraw flips from the pick last asked for, never from a stale one.
     toggleMagnet: () => {
       const on = !(askedOn.current ?? picked);
@@ -180,7 +200,7 @@ export function useRoofStep({
       act({ kind: 'magnet', magnet: !next && (askedOn.current ?? picked) });
     },
     wipe: () => act({ kind: 'wipe' }),
-    redraw: () => act({ kind: 'redraw', magnet: magnet() }),
+    redraw: () => act({ kind: 'redraw', magnet: magnet(), grid }),
     keepClosed: () => act({ kind: 'done' }),
     deleteRoof: () => act({ kind: 'delete_roof' }),
     hover: (at) => act({ kind: 'hover', at }),
@@ -227,13 +247,13 @@ export function useRoofStep({
       act({ kind: 'release' });
     },
     removeCorner: () => act({ kind: 'remove_corner' }),
-    lengthUnits: (system) => {
-      const now = step.current;
-      if (now.kind !== 'sizing' || system === units) return;
-      const metres = handMetres(now, units) ?? tracedLength(now.base, now.roof, now.edge);
-      setUnits(system);
-      act({ kind: 'type', entry: entryOf(metres, system, now.entry.measured) });
+    typeSize: () => {
+      if (picture.kind !== 'waiting') act({ kind: 'type_size', start: typedStart, system: units });
     },
+    typeSizeEntry: sizeEntry,
+    slideSize: (which, metres) => sizeEntry(which, entryOf(metres, units, false)),
+    typeSizePair: (text) => act({ kind: 'type_pair', text }),
+    placeRoof: () => act({ kind: 'place', id: aKey(), stamp, system: units }),
   };
   return { view, moves, step, act };
 }

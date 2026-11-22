@@ -28,6 +28,7 @@ import {
 } from '@heliogrid/domain';
 import { useMemo, useState } from 'react';
 import { readOf } from './read';
+import { arrivalOf, framedWithCard, useSizeCardOpens } from './size-card';
 import {
   editingOf,
   pictureOf,
@@ -46,7 +47,7 @@ import { useSession } from './use-session';
 
 export type { StudioEditing, StudioPicture } from './studio-document-state';
 export type { StudioSaveState } from './studio-save-queue';
-export type { RoofMoves, RoofStepView } from './use-roof-step';
+export type { RoofMoves, RoofStepView, SizeCardView } from './use-roof-step';
 
 export interface StudioMoves extends RoofMoves, RoofSheetMoves {
   pickPicture(choice: PictureChoice): void;
@@ -104,7 +105,8 @@ function undoRedoOf(
   roofStep: RoofStepState,
   history: History<StudioDocument> | null,
 ): { canUndo: boolean; canRedo: boolean } {
-  if (!editable) return { canUndo: false, canRedo: false };
+  // The size card's rectangle is not in the history: Undo has nothing to take while it is open.
+  if (!editable || roofStep.kind === 'typing') return { canUndo: false, canRedo: false };
   // While drawing, Undo takes a corner off or brings wiped ones back; just after a stop, it takes
   // the stopped drawing up again.
   const back =
@@ -183,16 +185,18 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     editable,
     units,
     picture,
-    setUnits: (system) => void session.setUnitPreference(system),
     helpersOff: session.user?.studioHelpersOff ?? [],
     setHelpersOff: (off) => void session.setStudioPicks({ studioHelpersOff: off }),
     helpersRefused: session.refusedPreferences.includes('studio'),
     storeyHeightM: formats.storeyHeightM,
+    typedStart: { length: formats.typedRoofLengthM, width: formats.typedRoofWidthM },
     numberEntry: session.user?.numberEntry ?? 'slider',
     setNumberEntry: (entry) => void session.setStudioPicks({ numberEntry: entry }),
   });
   const { step, act } = roof;
   const { roofStep } = roof.view;
+
+  useSizeCardOpens(arrivalOf(document, picture, editing, editable, view), roof.moves.typeSize);
   const sheet = useRoofSheet({
     document,
     latest,
@@ -223,7 +227,12 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     views,
     ...roof.view,
     ...sheet.state,
-    ...withSheet(roof.view.heights, fit, roofSheet, document),
+    ...withSheet(
+      roof.view.heights,
+      framedWithCard(fit, document, roof.view.sizeCard),
+      roofSheet,
+      document,
+    ),
     offer3d: roofClosed && !seen3d,
     picturesOpen,
     sun,
@@ -253,7 +262,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         const now = step.current.kind;
         const left = step.current.kind === 'idle' && Boolean(step.current.left);
         if (now === 'drawing' || left) act({ kind: 'undo_corner' });
-        else if (now === 'sizing' || now === 'dragging') act({ kind: 'cancel' });
+        else if (now === 'sizing' || now === 'dragging' || now === 'typing')
+          act({ kind: 'cancel' });
         else if (latest.current !== null) {
           act({ kind: 'history', undone: true });
           change(historyUndone(latest.current));
@@ -274,7 +284,10 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         if (!views.some((place) => place.view === next && place.lock === null)) return;
         // A new roof is drawn in the top view only: leaving it drops the draft, or — just after a
         // close — keeps the roof and ends the Redraw ask.
-        if (next !== 'top') act({ kind: step.current.kind === 'drawing' ? 'cancel' : 'done' });
+        if (next !== 'top') {
+          const held = step.current.kind;
+          act({ kind: held === 'drawing' || held === 'typing' ? 'cancel' : 'done' });
+        }
         if (next === '3d') setSeen3d(true);
         // A roof's sheet is the 3D view's: the top view keeps its height and closes it.
         if (next === 'top') void sheet.moves.done();

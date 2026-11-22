@@ -7,6 +7,7 @@ import { designPageWords } from './site-details';
 import { studioHeightWords } from './studio-height';
 import { studioLengthWords } from './studio-length';
 import { studioRoofWords } from './studio-roof';
+import { studioSizeWords } from './studio-size';
 
 type T = Translator['t'];
 
@@ -59,10 +60,12 @@ const CANVAS = {
   yourComing: /*i18n*/ { id: 'Adding your own picture is coming soon' },
   noLine: /*i18n*/ { id: 'Type the size instead' },
   pictureGuide: /*i18n*/ { id: 'The picture is a guide. Lengths you set are the true size.' },
-  pickedNone: /*i18n*/ { id: 'No picture: draw the roof on the grid.' },
-  notSetUp: /*i18n*/ { id: 'No sky picture is set up yet. Draw the roof on the grid.' },
-  notAnswered: /*i18n*/ { id: 'The sky picture did not load. Draw the roof on the grid.' },
-  notCovered: /*i18n*/ { id: 'There is no sky picture of this place. Draw the roof on the grid.' },
+  pickedNone: /*i18n*/ { id: 'No picture: type the size, or draw on the grid.' },
+  notSetUp: /*i18n*/ { id: 'No sky picture is set up yet. Type the size, or draw on the grid.' },
+  notAnswered: /*i18n*/ { id: 'The sky picture did not load. Type the size, or draw on the grid.' },
+  notCovered: /*i18n*/ {
+    id: 'There is no sky picture of this place. Type the size, or draw on the grid.',
+  },
   pictureUpdated: /*i18n*/ { id: 'Picture updated · check the outline' },
   pictureChecked: /*i18n*/ { id: 'Checked' },
 
@@ -203,6 +206,7 @@ export function studioCanvasWords(t: T) {
       place === null ? t(CANVAS.roofNotSetUpNoPlace) : t(CANVAS.roofNotSetUp, { place }),
     ...studioRoofWords(t),
     ...studioLengthWords(t),
+    ...studioSizeWords(t),
     ...studioHeightWords(t),
     noScene: t(CANVAS.noScene),
   };

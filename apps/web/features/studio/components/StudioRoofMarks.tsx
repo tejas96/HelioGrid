@@ -22,6 +22,7 @@ import { StudioRoofEdit } from './StudioRoofEdit';
 import { edgeAt, type Revealed, StudioRoofLengths } from './StudioRoofLengths';
 import type { RoofMarksHandle, ScreenOf } from './StudioRoofs';
 import { StudioRoofTops } from './StudioRoofTops';
+import { StudioSizePreview } from './StudioSizePreview';
 
 type Tag = { text: TranslatedText; bad: boolean; at: string };
 
@@ -255,6 +256,7 @@ export function StudioRoofMarks({
           />
         ) : null,
       )}
+      {studio.sizeCard === null ? null : <StudioSizePreview card={studio.sizeCard} units={units} />}
       {draft === null ? null : (
         <StudioDraftMarks
           draft={draft}

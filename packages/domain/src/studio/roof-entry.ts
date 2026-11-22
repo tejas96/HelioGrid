@@ -1,5 +1,4 @@
 import { feetAndInches, metresOfFeetAndInches } from '../format/measurement';
-import { parseNumber } from '../format/number';
 import type { MeasurementSystem } from '../format/pack';
 import type { SetEdgeTrust, StudioDocument } from './document';
 import type { EditResult } from './roof-check';
@@ -56,18 +55,69 @@ export function lengthSlide(traced: number, system: MeasurementSystem): LengthSl
 }
 const CENTIMETRE_DIGITS = 2;
 
-/** The metres a box holds, or `null` while it holds no number. */
-export function entryMetres(entry: LengthEntry, system: MeasurementSystem): number | null {
+/** A plain number as typed: digits and at most one point. Nothing else is a number here. */
+const PLAIN = /^(?:\d+(?:\.\d*)?|\.\d+)$/;
+/** Feet and inches in the feet box: 40'6", 40′ 6″, 40 ft 6 in, or 40' alone. */
+const FEET_INCHES = /^(\d+(?:\.\d+)?)\s*(?:'|′|ft)\s*(?:(\d+(?:\.\d+)?)\s*(?:"|″|in)?)?$/i;
+/** A length and a width in one box: 13.2x8.6 — x, X, × or *, with spaces or m around. */
+const PAIR = /^\s*((?:\d+(?:\.\d*)?|\.\d+))\s*m?\s*[xX×*]\s*((?:\d+(?:\.\d*)?|\.\d+))\s*m?\s*$/;
+
+/** A pair on its way: digits, a point, a separator, as far as they are typed (`13.2x`). */
+const PAIR_ON_ITS_WAY =
+  /^\s*(?:\d+(?:\.\d*)?|\.\d*)?\s*m?\s*(?:[xX×*]\s*(?:\d+(?:\.\d*)?|\.\d*)?\s*)?$/;
+
+/** Whether one box's text is still on its way to a pair: it waits, never refused, as it is typed. */
+export function pairOnItsWay(text: string): boolean {
+  return pairOf(text) === null && PAIR_ON_ITS_WAY.test(text);
+}
+
+function plain(text: string): number | null {
+  return PLAIN.test(text) ? Number(text) : null;
+}
+
+/**
+ * What a box holds: nothing yet, a length in metres, or something that is not a length — letters,
+ * a second point, `1e3` — which is refused with its reason, never read as part of a number.
+ */
+export type EntryRead =
+  | { readonly kind: 'empty' }
+  | { readonly kind: 'bad' }
+  | { readonly kind: 'metres'; readonly metres: number };
+
+export function entryRead(entry: LengthEntry, system: MeasurementSystem): EntryRead {
   const main = entry.main.trim();
   if (system === 'metric') {
-    const metres = main === '' ? null : parseNumber(main);
-    return metres === null || !Number.isFinite(metres) ? null : metres;
+    if (main === '') return { kind: 'empty' };
+    const metres = plain(main);
+    return metres === null ? { kind: 'bad' } : { kind: 'metres', metres };
   }
   const inchesText = entry.inches.trim();
-  if (main === '' && inchesText === '') return null;
-  const feet = main === '' ? 0 : parseNumber(main);
-  const inches = inchesText === '' ? 0 : parseNumber(inchesText);
-  return feet === null || inches === null ? null : metresOfFeetAndInches(feet, inches);
+  if (main === '' && inchesText === '') return { kind: 'empty' };
+  const both = FEET_INCHES.exec(main);
+  if (both !== null) {
+    // Feet and inches typed together in the feet box: the inch box is not read beside them.
+    const inches = both[2] === undefined ? 0 : Number(both[2]);
+    return { kind: 'metres', metres: metresOfFeetAndInches(Number(both[1]), inches) };
+  }
+  const feet = main === '' ? 0 : plain(main);
+  const inches = inchesText === '' ? 0 : plain(inchesText);
+  if (feet === null || inches === null) return { kind: 'bad' };
+  return { kind: 'metres', metres: metresOfFeetAndInches(feet, inches) };
+}
+
+/** The metres a box holds, or `null` while it holds no length. */
+export function entryMetres(entry: LengthEntry, system: MeasurementSystem): number | null {
+  const read = entryRead(entry, system);
+  return read.kind === 'metres' ? read.metres : null;
+}
+
+/**
+ * A length and a width typed in one box, in metres (`13.2x8.6`): the two numbers as their own
+ * boxes would hold them; `null` when the box is not two numbers.
+ */
+export function pairOf(text: string): readonly [string, string] | null {
+  const pair = PAIR.exec(text);
+  return pair === null ? null : [pair[1] as string, pair[2] as string];
 }
 
 /** A length as the box shows it: metres to the centimetre, or whole feet and inches. */

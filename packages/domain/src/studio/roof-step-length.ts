@@ -9,7 +9,7 @@ import {
   stepRefused,
   tracedLength,
 } from './roof-entry';
-import { lengthAsks, lengthIsFirst } from './roof-length';
+import { lengthAsks, lengthSizesPicture } from './roof-length';
 import {
   idle,
   type RoofSaid,
@@ -30,7 +30,7 @@ export function committedLength(state: Sizing, system: MeasurementSystem): RoofS
   const result = sizingResult(state, system);
   if (result.kind !== 'done') return stay(state);
   const metres = handMetres(state, system) ?? 0;
-  const said: RoofSaid = lengthIsFirst(state.base)
+  const said: RoofSaid = lengthSizesPicture(state.base, state.roof)
     ? { kind: 'sized' }
     : { kind: 'set', metres, measured: state.entry.measured };
   return { state: idle(said, state.roof), commit: result.document };

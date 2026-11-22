@@ -55,6 +55,12 @@ export function DrawPill({
   return (
     <>
       <MagnetSwitch studio={studio} words={words} />
+      {/* Before the first corner, typing the size is one tap away; the first corner takes it away. */}
+      {bar.hint ? (
+        <Button variant="secondary" size="md" onClick={studio.moves.typeSize}>
+          {words.typeSize}
+        </Button>
+      ) : null}
       {bar.canClose ? (
         <Button
           variant="primary"
@@ -97,14 +103,38 @@ export function ClosedPill({ studio, words }: PillFacts) {
   );
 }
 
+/** Type the size: Place roof alone, off while the card cannot place its roof. */
+export function TypingPill({ studio, words }: PillFacts) {
+  return (
+    <Button
+      variant="primary"
+      size="md"
+      disabled={studio.sizeCard?.placeable !== true}
+      icon={<ShellGlyph name="check" size="sm" />}
+      onClick={studio.moves.placeRoof}
+    >
+      {words.placeRoof}
+    </Button>
+  );
+}
+
 /**
- * The pill the foot shows instead of the bar, for an editor in the top view: while drawing, or just
- * after a close; `null` when the bar shows.
+ * The pill the foot shows instead of the bar, for an editor in the top view: while drawing, while
+ * the size card is open, or just after a close; `null` when the bar shows. On a phone with the
+ * card's boxes open the keyboard covers the foot, so Place roof is the card's and the foot is empty.
  */
-export function pillOf(studio: StudioScreen, words: StudioCanvasWords, off: boolean) {
+export function pillOf(
+  studio: StudioScreen,
+  words: StudioCanvasWords,
+  off: boolean,
+  phone: boolean,
+) {
   const { bar } = studio;
   if (off || studio.editing.kind !== 'editor') return null;
   if (bar?.kind === 'drawing') return <DrawPill bar={bar} studio={studio} words={words} />;
+  if (bar?.kind === 'typing') {
+    return phone && studio.sizeCard?.boxes ? null : <TypingPill studio={studio} words={words} />;
+  }
   if (bar?.kind === 'roofs' && bar.asking && studio.view === 'top') {
     return <ClosedPill studio={studio} words={words} />;
   }

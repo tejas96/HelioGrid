@@ -1,6 +1,7 @@
 import {
   PICTURE_SCALE_MAX,
   PICTURE_SCALE_MIN,
+  type Roof,
   type RoofEdgeTrust,
   type SetEdgeTrust,
   type StudioDocument,
@@ -11,8 +12,9 @@ import { SQUARE_EXACT_DEGREES } from './roof-draw';
 import { between, CORNER_GAP_M, cornerAfter, cornerAngle, edgeLengths } from './roof-shape';
 
 /**
- * A roof edge's true length (`T-M05-002`, part b): the first in a design sizes the picture and
- * every roof on it; a later one fixes only its own edge, and never changes a length a person set.
+ * A roof edge's true length (`T-M05-002`, part b): the first on a roof traced on the picture sizes
+ * the picture and every roof traced on it; any other fixes only its own edge, and never changes a
+ * length a person set.
  */
 
 /** A true length may be no shorter than the gap between two corners, and no longer than 999 m. */
@@ -23,9 +25,28 @@ export const LENGTH_ASK_SHARE = 0.25;
 /** Two lengths within a millimetre are one: a typed length "holds" within it. */
 const HOLD_M = 1e-3;
 
-/** Whether no length in the design is typed or measured yet: the next one sizes everything. */
+/**
+ * A roof traced on a picture: only its lengths size the picture. A roof typed, or drawn on the bare
+ * grid, is in true metres already, and never stretches.
+ */
+export function onPicture(roof: Roof): boolean {
+  return roof.tracedOn !== 'none';
+}
+
+/**
+ * Whether no length of a roof traced on the picture is typed or measured yet: the next one set on
+ * such a roof sizes the picture and every roof traced on it.
+ */
 export function lengthIsFirst(document: StudioDocument): boolean {
-  return document.roofs.every((roof) => roof.edges.every((trust) => trust === 'traced'));
+  return document.roofs
+    .filter(onPicture)
+    .every((roof) => roof.edges.every((trust) => trust === 'traced'));
+}
+
+/** Whether a length set on this roof now would size the picture: a picture roof, and the first. */
+export function lengthSizesPicture(document: StudioDocument, roofIndex: number): boolean {
+  const roof = document.roofs[roofIndex];
+  return roof !== undefined && onPicture(roof) && lengthIsFirst(document);
 }
 
 /** Whether a typed length is far enough off the traced one to ask once before it is used. */
@@ -95,9 +116,10 @@ function firstLengthSet(
   if (pictureScale < PICTURE_SCALE_MIN || pictureScale > PICTURE_SCALE_MAX) {
     return { kind: 'refused', refusal: 'scale_out_of_range' };
   }
+  // Only the roofs traced on the picture stretch with it: a typed or grid roof is in true metres.
   const roofs = document.roofs.map((r, i) => ({
     ...r,
-    corners: r.corners.map((corner) => scaledAboutPin(corner, k)),
+    corners: onPicture(r) ? r.corners.map((corner) => scaledAboutPin(corner, k)) : r.corners,
     edges: i === roofIndex ? edges : r.edges,
   }));
   const scaled = { ...document, roofs, pictureScale };
@@ -127,7 +149,7 @@ export function lengthSet(
   const roof = roofAt(document, roofIndex);
   const edges = roof.edges.map((t, i) => (i === edge ? trust : t));
   const traced = edgeLengths(roof.corners)[edge] ?? 0;
-  if (lengthIsFirst(document)) {
+  if (lengthSizesPicture(document, roofIndex)) {
     return firstLengthSet(document, roofIndex, edges, metres / traced);
   }
   const before = edgeLengths(roof.corners);

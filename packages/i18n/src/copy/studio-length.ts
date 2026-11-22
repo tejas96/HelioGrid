@@ -11,7 +11,6 @@ const LENGTH = {
   typeLength: /*i18n*/ { id: 'Type the length' },
   lengthFeet: /*i18n*/ { id: 'Feet' },
   lengthInches: /*i18n*/ { id: 'Inches' },
-  lengthUnit: /*i18n*/ { id: 'Unit' },
   measuredOnSite: /*i18n*/ { id: 'Measured on site' },
   setLength: /*i18n*/ { id: 'Set' },
   closeLength: /*i18n*/ { id: 'Close, and keep the old length' },
@@ -35,7 +34,6 @@ export function studioLengthWords(t: T) {
     typeLength: t(LENGTH.typeLength),
     lengthFeet: t(LENGTH.lengthFeet),
     lengthInches: t(LENGTH.lengthInches),
-    lengthUnit: t(LENGTH.lengthUnit),
     /** The unit symbols on the length box: never translated (`F3-08`). */
     unitMetres: shownAsSent('m'),
     unitFeet: shownAsSent('ft'),

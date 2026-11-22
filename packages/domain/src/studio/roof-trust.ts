@@ -1,5 +1,6 @@
 import { type ProvenanceTier, weakestTier } from '../format/qualified';
 import type { PictureChoice, Roof, RoofEdgeTrust, StudioDocument } from './document';
+import { onPicture } from './roof-length';
 
 /**
  * How far each roof figure can be trusted (`F8-01`, `F8-02`): a length traced on a picture is
@@ -18,9 +19,12 @@ const SET_TIER: Record<Exclude<RoofEdgeTrust, 'traced'>, ProvenanceTier> = {
  * lengths a person set (`F8-04`); a scaled picture whose set length was split away is estimated.
  */
 export function scaleTierOf(document: StudioDocument): ProvenanceTier | null {
-  const set = document.roofs.flatMap((roof) =>
-    roof.edges.flatMap((trust) => (trust === 'traced' ? [] : [SET_TIER[trust]])),
-  );
+  // A typed or grid roof's lengths never sized the picture: only a picture roof's count.
+  const set = document.roofs
+    .filter(onPicture)
+    .flatMap((roof) =>
+      roof.edges.flatMap((trust) => (trust === 'traced' ? [] : [SET_TIER[trust]])),
+    );
   if (set.length > 0) return weakestTier(set);
   return document.pictureScale === 1 ? null : 'estimated';
 }

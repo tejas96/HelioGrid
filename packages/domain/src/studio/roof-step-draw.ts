@@ -35,7 +35,11 @@ export function tapped(
   if (state.kind === 'idle') return stay(idle(null, roofUnder(document.roofs, at)));
   if (state.kind !== 'drawing') return stay(state);
   const targets = snapTargetsOf(document.roofs);
-  const tap = draftTap(state.corners, at, targets, document.roofs, state.magnet);
+  // On the grid the magnet's holds go first and the whole metre last: the corner is held level or
+  // square, then lands on the grid; nothing snaps it again after.
+  const grid = state.grid === true && state.magnet;
+  const spot = grid ? onGrid(state, draftSpot(state.corners, at, targets, true).point) : at;
+  const tap = draftTap(state.corners, spot, targets, document.roofs, state.magnet && !grid);
   if (tap.kind === 'same') return stay(state);
   if (tap.kind === 'refused') return stay({ ...state, refused: tap.refusal });
   // A new corner after the trash: the wiped corners are behind it, and Undo no longer brings them.
@@ -50,7 +54,11 @@ export function tapped(
 }
 
 /** A fresh drawing: no corners yet, the magnet as picked. */
-export function drawing(magnet: boolean, corners: readonly GroundPoint[] = []): RoofStepState {
+export function drawing(
+  magnet: boolean,
+  corners: readonly GroundPoint[] = [],
+  grid = false,
+): RoofStepState {
   return {
     kind: 'drawing',
     corners,
@@ -59,6 +67,47 @@ export function drawing(magnet: boolean, corners: readonly GroundPoint[] = []): 
     refused: null,
     magnet,
     wiped: null,
+    grid,
+  };
+}
+
+/** The bare grid's step: a corner drawn there lands on a whole metre. */
+export const GRID_STEP_M = 1;
+
+/**
+ * A side within this many degrees of a grid line follows the line: on the bare grid most roofs do,
+ * and a tap a little off would tilt the side a whole metre.
+ */
+export const GRID_LINE_DEGREES = 10;
+
+/**
+ * Where a tap or the pointer counts on the bare grid, while the magnet is on: a side nearly along
+ * a grid line follows it, then the corner lands on the nearest whole metre. Alt (the magnet off)
+ * draws free, as it does on a picture.
+ */
+export function onGrid(
+  state: Extract<RoofStepState, { kind: 'drawing' }>,
+  at: GroundPoint,
+): GroundPoint {
+  if (!state.grid || !state.magnet) return at;
+  // `+ 0` turns -0 into 0: a corner on the line reads 0, never -0.
+  const step = (v: number) => Math.round(v / GRID_STEP_M) * GRID_STEP_M + 0;
+  const last = state.corners.at(-1);
+  if (last === undefined) return { east: step(at.east), north: step(at.north) };
+  const east = at.east - last.east;
+  const north = at.north - last.north;
+  const off =
+    (Math.atan2(
+      Math.min(Math.abs(east), Math.abs(north)),
+      Math.max(Math.abs(east), Math.abs(north)),
+    ) *
+      180) /
+    Math.PI;
+  const along = off <= GRID_LINE_DEGREES;
+  const level = Math.abs(east) >= Math.abs(north);
+  return {
+    east: along && !level ? last.east : step(at.east),
+    north: along && level ? last.north : step(at.north),
   };
 }
 
@@ -83,14 +132,18 @@ export function stopped(state: RoofStepState): RoofStepOutcome {
   if (state.kind !== 'drawing' || state.corners.length === 0) {
     return stay(idle(null, roofHeld(state)));
   }
-  const left: DraftLeft = { corners: state.corners, magnet: state.magnet };
+  const left: DraftLeft = {
+    corners: state.corners,
+    magnet: state.magnet,
+    grid: state.grid ?? false,
+  };
   return stay({ kind: 'idle', roof: null, picked: null, said: null, left });
 }
 
 /** Undo while drawing, or just after stopping: the last corner goes, or what was wiped comes back. */
 export function cornerUndone(state: RoofStepState): RoofStepOutcome {
   if (state.kind === 'idle' && state.left)
-    return stay(drawing(state.left.magnet, state.left.corners));
+    return stay(drawing(state.left.magnet, state.left.corners, state.left.grid ?? false));
   if (state.kind !== 'drawing') return stay(state);
   if (state.corners.length === 0 && state.wiped !== null) {
     return stay({ ...state, corners: state.wiped, wiped: null, refused: null });
@@ -144,5 +197,7 @@ export function spotAt(
   if (first !== undefined && draftClosesAt(state.corners, at)) {
     return { point: first, snap: null, guides: [] };
   }
-  return draftSpot(state.corners, at, targets, state.magnet);
+  const spot = draftSpot(state.corners, at, targets, state.magnet);
+  // On the grid the held spot then lands on the whole metre, as the tap will.
+  return state.grid === true && state.magnet ? { ...spot, point: onGrid(state, spot.point) } : spot;
 }
