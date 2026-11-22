@@ -33,11 +33,15 @@ function dragOf(studio: StudioScreen, grip: RoofGrip, at: GroundPoint): PressAct
     onDragStart: () => studio.moves.grab(grip, at),
     onDrag: (to) => studio.moves.drag(to),
     onDragEnd: () => studio.moves.release(),
+    onDragCancel: () => studio.moves.cancel(),
   };
 }
 
-/** The + on each edge: drag it out, and it is a new corner; a key adds one in place. */
-function EdgePluses({ facts }: { facts: RoofFacts }) {
+/**
+ * The + on each edge: drag it out, and it is a new corner; a key adds one in place. A press that
+ * never moves adds none: a brushed + must not split an edge and lose the length set on it.
+ */
+function EdgePluses({ facts, away }: { facts: RoofFacts; away: boolean }) {
   const { roof, index, studio, words, press } = facts;
   const middle = pointText(roof.middle);
   return roof.edges.map((edge, i) => {
@@ -50,7 +54,8 @@ function EdgePluses({ facts }: { facts: RoofFacts }) {
         className="hg-roof-at"
         data-edge={`${pointText(edge.from)}|${pointText(edge.to)}|${middle}`}
         data-plus="true"
-        {...press({ dragAtOnce: true, ...dragOf(studio, grip, at) })}
+        data-away={away}
+        {...press(dragOf(studio, grip, at))}
       >
         <Pressable
           className="hg-roof-hit"
@@ -94,6 +99,7 @@ function CornerDots({ facts }: { facts: RoofFacts }) {
         },
         onDrag: (to) => studio.moves.drag(to),
         onDragEnd: () => studio.moves.release(),
+        onDragCancel: () => studio.moves.cancel(),
         onTap: () => pick(i),
       })}
     >
@@ -186,6 +192,7 @@ function RoofHandles({ facts }: { facts: RoofFacts }) {
         },
         onDrag: (to) => studio.moves.drag(to),
         onDragEnd: () => studio.moves.release(),
+        onDragCancel: () => studio.moves.cancel(),
       })}
     >
       <Pressable
@@ -227,7 +234,11 @@ export function StudioRoofEdit({
   const tools = picked && (step.kind === 'idle' || step.kind === 'dragging');
   return (
     <div className="hg-roof-on">
-      {picked && step.kind === 'idle' ? <EdgePluses facts={facts} /> : null}
+      {/* The + dragged out stays mounted under the pointer, or its let-go is lost; unseen meanwhile. */}
+      {picked &&
+      (step.kind === 'idle' || (step.kind === 'dragging' && step.grip.kind === 'plus')) ? (
+        <EdgePluses facts={facts} away={step.kind !== 'idle'} />
+      ) : null}
       <CornerDots facts={facts} />
       <PickedCorner facts={facts} />
       {tools ? <RoofHandles facts={facts} /> : null}

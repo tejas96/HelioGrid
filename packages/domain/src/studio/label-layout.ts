@@ -1,4 +1,4 @@
-import type { RoofEdgeTrust } from './document';
+import { lengthHeld, type RoofEdgeTrust } from './document';
 
 /**
  * Where each length label sits on the screen (`T-M05-002`, part b). A label lies along its edge,
@@ -217,7 +217,7 @@ function placeOne(
     ? 0
     : clearing(start, (away) => boxOf(atAway(away), degrees, width, height), touches);
   const at = atAway(start + more);
-  const keeps = ask.pinned || ask.trust !== 'traced';
+  const keeps = ask.pinned || lengthHeld(ask.trust);
   return {
     place: { at, degrees, shown: true },
     box: boxOf(at, degrees, width, height),

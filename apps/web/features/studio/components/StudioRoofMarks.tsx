@@ -263,7 +263,8 @@ export function StudioRoofMarks({
           units={units}
           words={words}
           aiming={aiming}
-          onClose={studio.moves.close}
+          onClose={studio.moves.closeAsDrawn}
+          onOverFirst={studio.moves.hover}
         />
       )}
       {tag === null ? null : (

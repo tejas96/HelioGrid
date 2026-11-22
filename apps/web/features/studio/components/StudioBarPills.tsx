@@ -79,30 +79,6 @@ export function DrawPill({
   );
 }
 
-/** Just after a close: Redraw, or Done. It waits for no one: any other act means Done. */
-export function ClosedPill({ studio, words }: PillFacts) {
-  return (
-    <>
-      <Button
-        variant="secondary"
-        size="md"
-        icon={<ShellGlyph name="undo" size="sm" />}
-        onClick={studio.moves.redraw}
-      >
-        {words.redraw}
-      </Button>
-      <Button
-        variant="primary"
-        size="md"
-        icon={<ShellGlyph name="check" size="sm" />}
-        onClick={studio.moves.keepClosed}
-      >
-        {words.done}
-      </Button>
-    </>
-  );
-}
-
 /** Type the size: Place roof alone, off while the card cannot place its roof. */
 export function TypingPill({ studio, words }: PillFacts) {
   return (
@@ -119,8 +95,8 @@ export function TypingPill({ studio, words }: PillFacts) {
 }
 
 /**
- * The pill the foot shows instead of the bar, for an editor in the top view: while drawing, while
- * the size card is open, or just after a close; `null` when the bar shows. On a phone with the
+ * The pill the foot shows instead of the bar, for an editor in the top view: while drawing or while
+ * the size card is open; `null` when the bar shows. On a phone with the
  * card's boxes open the keyboard covers the foot, so Place roof is the card's and the foot is empty.
  */
 export function pillOf(
@@ -134,9 +110,6 @@ export function pillOf(
   if (bar?.kind === 'drawing') return <DrawPill bar={bar} studio={studio} words={words} />;
   if (bar?.kind === 'typing') {
     return phone && studio.sizeCard?.boxes ? null : <TypingPill studio={studio} words={words} />;
-  }
-  if (bar?.kind === 'roofs' && bar.asking && studio.view === 'top') {
-    return <ClosedPill studio={studio} words={words} />;
   }
   return null;
 }

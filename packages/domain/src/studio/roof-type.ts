@@ -41,6 +41,19 @@ export interface TypedSize {
   /** The desktop's one box (`13.2x8.6`) as typed; `null` when the two boxes or sliders hold it. */
   readonly pair: string | null;
   readonly place: TypedPlace;
+  /**
+   * The boxes as they were before the last change of units, and what that change wrote: units
+   * changed back with nothing typed between give back what was typed, never a length rounded twice.
+   */
+  readonly back?: {
+    readonly system: MeasurementSystem;
+    readonly shown: { readonly length: LengthEntry; readonly width: LengthEntry };
+    readonly was: {
+      readonly length: LengthEntry;
+      readonly width: LengthEntry;
+      readonly pair: string | null;
+    };
+  };
 }
 
 interface Box {
@@ -206,11 +219,35 @@ export function typedInUnits(
   from: MeasurementSystem,
   to: MeasurementSystem,
 ): TypedSize {
+  const { back } = size;
+  const same = (a: LengthEntry, b: LengthEntry) =>
+    a.main === b.main && a.inches === b.inches && a.measured === b.measured;
+  if (
+    back !== undefined &&
+    back.system === to &&
+    same(back.shown.length, size.length) &&
+    same(back.shown.width, size.width)
+  ) {
+    const { back: _gone, ...rest } = size;
+    return { ...rest, ...back.was };
+  }
   const convert = (entry: LengthEntry): LengthEntry => {
     const read = entryRead(entry, from);
     return read.kind === 'metres' ? entryOf(read.metres, to, false) : entry;
   };
-  return { ...size, length: convert(size.length), width: convert(size.width), pair: null };
+  const length = convert(size.length);
+  const width = convert(size.width);
+  return {
+    ...size,
+    length,
+    width,
+    pair: null,
+    back: {
+      system: from,
+      shown: { length, width },
+      was: { length: size.length, width: size.width, pair: size.pair },
+    },
+  };
 }
 
 /** What the studio knows as a design opens, for the size card to open by itself or not. */

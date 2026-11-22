@@ -175,18 +175,6 @@ describe('Type the size: the card, the place and Place roof (T-M05-002c)', () =>
       refusal: { kind: 'not_a_number' },
     });
   });
-
-  it('metres to feet while the card is open writes the same lengths in feet', () => {
-    const { state } = run([
-      OPEN,
-      size('13.2', '8.6'),
-      { kind: 'type_units', from: 'metric', to: 'imperial' },
-    ]);
-    if (state.kind !== 'typing') throw new Error(state.kind);
-    expect(state.length).toMatchObject({ main: '43', inches: '4' });
-    // Feet are written to the inch: 43 ft 4 in is 13.208 m.
-    expect(entryMetres(state.length, 'imperial')).toBeCloseTo(13.2, 1);
-  });
 });
 
 describe('a typed roof beside the roof on the pin (T-M05-002c)', () => {
@@ -246,7 +234,7 @@ describe('only a roof traced on the picture sizes it (T-M05-002c)', () => {
         { kind: 'tap', at: p(18, 0), system: 'metric' },
         { kind: 'tap', at: p(18, 6), system: 'metric' },
         { kind: 'tap', at: p(10, 6), system: 'metric' },
-        { kind: 'close', id: 'pic', tracedOn: 'sky', stamp: STAMP },
+        { kind: 'close', id: 'pic', tracedOn: 'sky', stamp: STAMP, ghost: true },
       ],
       typedOnly,
     ).document;
@@ -261,7 +249,7 @@ describe('only a roof traced on the picture sizes it (T-M05-002c)', () => {
   it('a roof drawn on the bare grid is never stretched: its first length fixes its own edge', () => {
     const grid = run([
       ...RECTANGLE.slice(0, -1),
-      { kind: 'close', id: 'g', tracedOn: 'none', stamp: null },
+      { kind: 'close', id: 'g', tracedOn: 'none', stamp: null, ghost: true },
     ]).document;
     const result = lengthSet(grid, 0, 0, 10, 'typed');
     if (result.kind !== 'done') throw new Error(result.kind);

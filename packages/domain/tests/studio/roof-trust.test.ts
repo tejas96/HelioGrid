@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { PictureChoice, Roof, RoofEdgeTrust, StudioDocument } from '../../src/studio/document';
 import { EMPTY_STUDIO_DOCUMENT } from '../../src/studio/document';
+import { roofMarksOf } from '../../src/studio/roof-step-view';
 import { edgeTier, roofAreaTier, scaleTierOf } from '../../src/studio/roof-trust';
 
 const roofOf = (edges: RoofEdgeTrust[], tracedOn: PictureChoice = 'sky'): Roof => ({
@@ -29,6 +30,8 @@ describe('how far a length can be trusted (F8-01)', () => {
     ['traced', 'none', null, 'estimated'],
     ['typed', 'sky', null, 'estimated'],
     ['measured', 'sky', null, 'measured'],
+    ['assumed', 'none', null, 'assumed'],
+    ['assumed', 'none', 'measured', 'assumed'],
     ['traced', 'sky', 'estimated', 'estimated'],
     ['traced', 'sky', 'measured', 'derived'],
     ['traced', 'none', 'measured', 'estimated'],
@@ -73,5 +76,23 @@ describe('how far a length can be trusted (F8-01)', () => {
     ['all measured', ['measured', 'measured', 'measured', 'measured'], 'measured', 'measured'],
   ] as const)('a roof’s area: %s → %s', (_name, edges, scale, tier) => {
     expect(roofAreaTier(roofOf([...edges]), scale)).toBe(tier);
+  });
+});
+
+describe('a roof not on a picture pulses its longest length while none of its own is set', () => {
+  it.each([
+    // edges of a typed or grid roof → its longest pulses
+    ['drawn on the bare grid', ['traced', 'traced', 'traced', 'traced'], true],
+    [
+      'the market’s start size, no person set it',
+      ['assumed', 'assumed', 'assumed', 'assumed'],
+      true,
+    ],
+    ['one length typed', ['typed', 'assumed', 'assumed', 'assumed'], false],
+  ] as const)('%s', (_why, edges, pulses) => {
+    const [marks] = roofMarksOf(documentOf([roofOf([...edges], 'none')]));
+    expect(marks?.edges.some((edge) => edge.pulse)).toBe(pulses);
+    // A length no person set reads "about"; one typed does not.
+    expect(marks?.edges.map((edge) => edge.about)).toEqual(edges.map((t) => t !== 'typed'));
   });
 });

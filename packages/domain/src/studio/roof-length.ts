@@ -1,4 +1,5 @@
 import {
+  lengthHeld,
   PICTURE_SCALE_MAX,
   PICTURE_SCALE_MIN,
   type Roof,
@@ -34,13 +35,17 @@ export function onPicture(roof: Roof): boolean {
 }
 
 /**
- * Whether no length of a roof traced on the picture is typed or measured yet: the next one set on
- * such a roof sizes the picture and every roof traced on it.
+ * Whether the picture keeps its own scale and no length of a roof traced on it is typed or measured
+ * yet: the next one set on such a roof sizes the picture and every roof traced on it. A picture once
+ * sized stays sized, though the length that sized it is split or deleted away.
  */
 export function lengthIsFirst(document: StudioDocument): boolean {
-  return document.roofs
-    .filter(onPicture)
-    .every((roof) => roof.edges.every((trust) => trust === 'traced'));
+  return (
+    document.pictureScale === 1 &&
+    document.roofs
+      .filter(onPicture)
+      .every((roof) => roof.edges.every((trust) => trust === 'traced'))
+  );
 }
 
 /** Whether a length set on this roof now would size the picture: a picture roof, and the first. */
@@ -159,7 +164,7 @@ export function lengthSet(
     const after = edgeLengths(corners);
     const held = roof.edges.findIndex(
       (t, i) =>
-        i !== edge && t !== 'traced' && Math.abs((after[i] ?? 0) - (before[i] ?? 0)) > HOLD_M,
+        i !== edge && lengthHeld(t) && Math.abs((after[i] ?? 0) - (before[i] ?? 0)) > HOLD_M,
     );
     if (held !== -1) {
       blocking ??= held;

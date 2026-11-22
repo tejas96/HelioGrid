@@ -7,7 +7,6 @@ import {
   closed,
   cornerUndone,
   drawing,
-  justClosed,
   pickedRoofOf,
   spotAt,
   stopped,
@@ -173,17 +172,6 @@ const ON: Handlers = {
         ? stay(held)
         : stay({ ...held, corners: [], wiped: held.corners, spot: null, refused: null }),
     ),
-  redraw: (state, { magnet, grid }, document) =>
-    justClosed(state, document)
-      ? {
-          state: drawing(magnet, [], grid ?? false),
-          commit: withoutRoof(document, document.roofs.length - 1),
-        }
-      : stay(state),
-  done: (state, _event, document) =>
-    justClosed(state, document) && state.kind === 'idle'
-      ? stay(idle(null, state.roof))
-      : stay(state),
   delete_roof: (state, _event, document) =>
     inState(state, 'idle', (looking) => {
       const roof = pickedRoofOf(looking, document);

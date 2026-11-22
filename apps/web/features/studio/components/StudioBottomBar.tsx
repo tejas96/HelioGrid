@@ -152,9 +152,9 @@ function readOnly(view: BarView, editing: StudioEditing, facts: BarFacts): BarVi
 /**
  * The one bottom bar of the roof step (`T-M05-002`, part b): a mark, the title — the site, what to
  * tap now, or the roofs' area with its tier — one sentence of where things stand, and the step's
- * acts. Before a roof: Draw myself (no picture: Draw on the grid). While drawing, and just after a
- * close, a slim pill instead: the magnet and Close shape; Redraw and Done. With a roof: no acts; a
- * roof picked adds the magnet and its trash. A refusal takes the error colour.
+ * acts. Before a roof: Draw myself (no picture: Draw on the grid). While drawing, a slim pill
+ * instead: the magnet and Close shape. A closed roof stands at once — Undo takes it back. With a
+ * roof: no acts; a roof picked adds the magnet and its trash. A refusal takes the error colour.
  */
 export function StudioBottomBar({
   barRef,

@@ -80,10 +80,15 @@
 }
 
 /* Before the first corner: one line under the head that says what to do. */
+/* It hangs below the head and takes no room in it: the camera frames the map in the room the head
+   leaves, so a line that comes and goes there would move the map under the first tap. */
 .hg-studio-hint {
-  grid-column: 1 / -1;
-  justify-self: center;
-  margin: 0;
+  position: absolute;
+  inset-block-start: calc(100% + var(--sp-2));
+  inset-inline: 0;
+  inline-size: max-content;
+  max-inline-size: 100%;
+  margin: 0 auto;
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-pill);
   font-size: var(--fs-body-sm);

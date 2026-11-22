@@ -177,6 +177,12 @@ describe('where labels touch, picture lengths give way', () => {
       [false, true],
     ],
     [
+      'the market’s start size gives way, as a picture length does',
+      roofOf(A, { trusts: ['traced', 'traced', 'assumed', 'traced'] }),
+      roofOf(B),
+      [false, true],
+    ],
+    [
       'two set lengths both show, even touching',
       roofOf(A, { trusts: ['traced', 'traced', 'typed', 'traced'] }),
       roofOf(B, { trusts: ['measured', 'traced', 'traced', 'traced'] }),

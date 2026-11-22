@@ -99,7 +99,7 @@ function EdgeLength({
   const editable = studio.editing.kind === 'editor';
   const live =
     step.kind === 'dragging' && (step.grip.kind === 'corner' || step.grip.kind === 'plus');
-  const text = format.roofLength(edge.metres, units, edge.trust === 'traced');
+  const text = format.roofLength(edge.metres, units, edge.about);
   const inHand = step.kind === 'sizing' && step.roof === roof && step.edge === index;
   const open =
     editable && step.kind !== 'drawing' ? () => studio.moves.pickLength(roof, index) : null;

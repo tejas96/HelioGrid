@@ -202,14 +202,14 @@ describe('drawing a roof: the ghost corner and the close', () => {
   });
 
   it('a close with the ghost makes the rectangle: every edge traced, on the picture shown', () => {
-    expect(draftClose([p(0, 0), p(8, 0), p(8, 6)], [], 'id', 'sky')).toEqual({
+    expect(draftClose([p(0, 0), p(8, 0), p(8, 6)], [], 'id', 'sky', true)).toEqual({
       kind: 'closed',
       roof: { ...ROOF_1, id: 'id' },
     });
   });
 
   it('a close with four corners keeps them as drawn', () => {
-    const closed = draftClose([p(0, 0), p(8, 0), p(8, 6), p(1, 5)], [], 'id', 'none');
+    const closed = draftClose([p(0, 0), p(8, 0), p(8, 6), p(1, 5)], [], 'id', 'none', true);
     expect(closed.kind === 'closed' && closed.roof.corners).toHaveLength(4);
     expect(closed.kind === 'closed' && closed.roof.tracedOn).toBe('none');
   });
@@ -220,12 +220,12 @@ describe('drawing a roof: the ghost corner and the close', () => {
     ['a closing edge that crosses', [p(0, 0), p(8, 0), p(0, 6), p(8, 6)], [], 'would_cross'],
     ['over roof 1', [p(4, 3), p(12, 3), p(12, 9), p(4, 9)], [ROOF_1], 'would_overlap'],
   ])('a close is refused: %s', (_name, corners, roofs, refusal) => {
-    expect(draftClose(corners, roofs, 'id', 'sky')).toEqual({ kind: 'refused', refusal });
+    expect(draftClose(corners, roofs, 'id', 'sky', true)).toEqual({ kind: 'refused', refusal });
   });
 
   it('a second roof beside the first closes', () => {
     const shed = [p(8, 0), p(12, 0), p(12, 6), p(8, 6)];
-    expect(draftClose(shed, [ROOF_1], 'id', 'sky').kind).toBe('closed');
+    expect(draftClose(shed, [ROOF_1], 'id', 'sky', true).kind).toBe('closed');
   });
 
   it('a design holds 50 roofs', () => {
@@ -233,7 +233,7 @@ describe('drawing a roof: the ghost corner and the close', () => {
       ...ROOF_1,
       corners: ROOF_1.corners.map((c) => p(c.east + i * 10, c.north)),
     }));
-    expect(draftClose([p(0, 20), p(8, 20), p(8, 26)], roofs, 'id', 'sky')).toEqual({
+    expect(draftClose([p(0, 20), p(8, 20), p(8, 26)], roofs, 'id', 'sky', true)).toEqual({
       kind: 'refused',
       refusal: 'too_many_roofs',
     });

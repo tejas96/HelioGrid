@@ -28,8 +28,6 @@ const ROOF = {
   magnet: /*i18n*/ { id: 'Magnet' },
   addRoof: /*i18n*/ { id: 'Draw another roof' },
   magnetNotSaved: /*i18n*/ { id: 'Your pick was not saved.' },
-  redraw: /*i18n*/ { id: 'Redraw' },
-  done: /*i18n*/ { id: 'Done' },
   deleteRoof: /*i18n*/ { id: 'Delete roof' },
   roofDeleted: /*i18n*/ { id: 'Roof deleted. Undo brings it back.' },
   drawCrossTitle: /*i18n*/ { id: 'This edge would cross another' },
@@ -221,9 +219,6 @@ export function studioRoofWords(t: T) {
     addRoof: t(ROOF.addRoof),
     magnetNotSaved: t(ROOF.magnetNotSaved),
     closeShape: t(ROOF.closeShape),
-    /** Just after a close: draw that roof again, or keep it. */
-    redraw: t(ROOF.redraw),
-    done: t(ROOF.done),
     /** The trash on a picked roof. */
     deleteRoof: t(ROOF.deleteRoof),
     /** "Roof · 66 m²": the area already formatted. */

@@ -112,7 +112,6 @@ describe('the roof step: fixing the shape', () => {
       bad: false,
       sizing: false,
       live: null,
-      asking: false,
       picked: 0,
     });
     expect(roofBarOf(ROOF_STEP_START, EMPTY_STUDIO_DOCUMENT, true, 'metric')).toEqual({

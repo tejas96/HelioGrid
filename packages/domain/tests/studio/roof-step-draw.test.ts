@@ -25,9 +25,19 @@ describe('the first corner glows when a tap would close', () => {
     expect(view?.spotRefusal).toBeNull();
     expect(view?.angle).toBeNull();
   });
+
+  it.each([
+    // where the pointer is, after three square corners → the ghost fourth is offered
+    ['on the first corner: the tap closes as drawn', p(0.3, 0.2), false],
+    ['away from it', p(20, 20), true],
+  ])('the ghost, pointer %s', (_why, at, ghost) => {
+    const { state, document } = run([...RECTANGLE.slice(0, 4), { kind: 'hover', at }]);
+    const view = state.kind === 'drawing' ? draftViewOf(state, document) : null;
+    expect(view?.ghost !== null).toBe(ghost);
+  });
 });
 
-describe('the roof step: stopping, the trash, Redraw and Done', () => {
+describe('the roof step: stopping, the trash, the close', () => {
   const THREE = RECTANGLE.slice(0, 4);
 
   it('the filled pencil stops: nothing saved, and one Undo takes the corners up again', () => {
@@ -90,57 +100,20 @@ describe('the roof step: stopping, the trash, Redraw and Done', () => {
     expect(state.kind === 'drawing' && state.corners).toEqual([]);
   });
 
-  it('Redraw just after a close: the roof goes and drawing starts again, as one change', () => {
-    const { state, document, commits } = run([...RECTANGLE, { kind: 'redraw', magnet: true }]);
-    expect(commits).toBe(2);
-    expect(document.roofs).toEqual([]);
-    expect(document.drawnOn).toBeNull();
-    expect(state.kind === 'drawing' && state.corners).toEqual([]);
-  });
-
-  it('Redraw of a second roof keeps the first and its picture date', () => {
-    const second = [
-      { kind: 'draw', magnet: true },
-      { kind: 'tap', at: p(8, 0), system: 'metric' },
-      { kind: 'tap', at: p(12, 0), system: 'metric' },
-      { kind: 'tap', at: p(12, 6), system: 'metric' },
-      CLOSE,
-      { kind: 'redraw', magnet: true },
-    ] as RoofStepEvent[];
-    const { document } = run(second, drawn);
+  it('a close stands the roof at once, as one change, picked: nothing asks after it', () => {
+    const { state, document, commits } = run(RECTANGLE);
+    expect(commits).toBe(1);
     expect(document.roofs).toHaveLength(1);
-    expect(document.drawnOn).toEqual(STAMP);
+    expect(state).toEqual({ kind: 'idle', roof: 0, picked: null, said: { kind: 'closed' } });
   });
 
   it.each([
-    // the act after a close → Redraw still on offer
-    ['nothing yet', [], true],
-    ['Done', [{ kind: 'done' }], false],
-    [
-      'a tap on the map (any next act means Done)',
-      [{ kind: 'tap', at: p(30, 30), system: 'metric' }],
-      false,
-    ],
-    ['a length picked', [{ kind: 'pick_length', roof: 0, edge: 0, system: 'metric' }], false],
-  ] as const)('%s', (_why, after, asking) => {
-    const { state, document } = run([...RECTANGLE, ...(after as readonly RoofStepEvent[])]);
-    const bar = roofBarOf(state, document, false, 'metric');
-    expect(bar.kind === 'roofs' && bar.asking).toBe(asking);
-    // Redraw once the ask has gone changes nothing.
-    if (!asking) {
-      const late = run([
-        ...RECTANGLE,
-        ...(after as readonly RoofStepEvent[]),
-        { kind: 'redraw', magnet: true },
-      ]);
-      expect(late.document.roofs).toHaveLength(1);
-    }
-  });
-
-  it('Done keeps the roof, saves nothing more and keeps it picked', () => {
-    const { state, commits } = run([...RECTANGLE, { kind: 'done' }]);
-    expect(commits).toBe(1);
-    expect(state).toEqual({ kind: 'idle', roof: 0, picked: null, said: null });
+    // how three square corners close → corners of the roof
+    ['Close shape: the ghost gives the fourth', true, 4],
+    ['a tap on the first corner: as drawn, a triangle', false, 3],
+  ])('%s', (_why, ghost, corners) => {
+    const { document } = run([...THREE, { ...CLOSE, ghost }]);
+    expect(document.roofs[0]?.corners).toHaveLength(corners);
   });
 });
 

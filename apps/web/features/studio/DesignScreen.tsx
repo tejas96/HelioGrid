@@ -1,13 +1,22 @@
 'use client';
 import type { DesignDetail } from '@heliogrid/contracts';
-import { useStudioScreen } from '@heliogrid/data/react';
+import { useLeaveAsk, useStudioScreen } from '@heliogrid/data/react';
 import { designPageWords, siteDetailsPageWords, studioCanvasWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, LeadDetailStates, StateRegion, useFormat, useOwnWidth } from '@heliogrid/ui';
+import {
+  Button,
+  LeadDetailStates,
+  LeaveConfirm,
+  StateRegion,
+  useFormat,
+  useOwnWidth,
+} from '@heliogrid/ui';
 import { useRef } from 'react';
+import { useLeaveGuard } from '../../lib/leave-guard';
 import { inPhoneWebView, leaveToPhone, siteToPhone } from '../../lib/web-view-host';
 import { StudioCanvas } from './components/StudioCanvas';
 import { SITE_DETAILS_WIDE_FROM } from './constants';
+import { usePhoneBack } from './hooks/use-phone-back';
 import { StudioPageHead } from './StudioPageHead';
 import { type StudioMoves, useStudioMoves } from './use-studio-moves';
 import { useStudioSubject } from './use-studio-subject';
@@ -43,12 +52,24 @@ export function DesignScreen({
   const frame = useRef<HTMLDivElement>(null);
   const { read } = studio;
   const page = siteDetailsPageWords(t);
+  // A change still waiting to be sent is lost on leaving: the way back and the tab's close ask first.
+  const leave = useLeaveAsk(() => {});
+  useLeaveGuard(studio.unsent, leave.ask);
   const back = (leadId: string | null) => {
-    if (inPhoneWebView()) leaveToPhone();
-    else if (fromProposals) moves.toProposals();
-    else if (leadId !== null) moves.toLead(leadId);
-    else moves.toLeads();
+    const go = () => {
+      if (inPhoneWebView()) leaveToPhone();
+      else if (fromProposals) moves.toProposals();
+      else if (leadId !== null) moves.toLead(leadId);
+      else moves.toLeads();
+    };
+    if (studio.unsent) leave.ask(go);
+    else go();
   };
+  // The phone's system back: the leave ask closes first, then what is open; then the way back.
+  usePhoneBack(() => {
+    if (leave.asking) leave.stay();
+    else if (!studio.moves.back()) back(read.kind === 'ready' ? read.value.subject.leadId : null);
+  });
   if (read.kind !== 'ready') {
     return (
       <div ref={frame} tabIndex={-1} className="hg-shell-page hg-focus-target hg-studio-page">
@@ -71,14 +92,25 @@ export function DesignScreen({
     else moves.swapToSiteDetails(designId, fromProposals);
   };
   return (
-    <StudioCanvas
-      detail={detail}
-      studio={studio}
-      name={words.designName(detail.site.name, detail.design.ordinal)}
-      words={words}
-      onBack={() => back(detail.subject.leadId)}
-      onSite={detail.canEdit ? toSite : null}
-    />
+    <>
+      <StudioCanvas
+        detail={detail}
+        studio={studio}
+        name={words.designName(detail.site.name, detail.design.ordinal)}
+        words={words}
+        onBack={() => back(detail.subject.leadId)}
+        onSite={detail.canEdit ? toSite : null}
+      />
+      <LeaveConfirm
+        open={leave.asking}
+        title={page.leaveTitle}
+        body={words.leaveUnsaved}
+        discard={page.leaveConfirm}
+        keep={page.keepEditing}
+        onKeep={leave.stay}
+        onLeave={leave.leave}
+      />
+    </>
   );
 }
 

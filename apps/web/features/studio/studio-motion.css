@@ -22,6 +22,11 @@
   cursor: copy;
 }
 
+/* While a + is dragged out the + dots step aside; the one in hand stays mounted for its let-go. */
+.hg-roof-at[data-plus][data-away="true"] {
+  opacity: 0;
+}
+
 .hg-roof-label .hg-roof-hit {
   cursor: pointer;
 }

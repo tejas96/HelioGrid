@@ -16,6 +16,9 @@ const CANVAS = {
   saved: /*i18n*/ { id: 'Saved' },
   saving: /*i18n*/ { id: 'Saving' },
   offline: /*i18n*/ { id: 'No connection · not saved' },
+  leaveUnsaved: /*i18n*/ {
+    id: 'Your last change is not saved yet. If you leave now, it is lost.',
+  },
   failed: /*i18n*/ { id: 'Not saved' },
   tryAgain: /*i18n*/ { id: 'Try again' },
   viewOnly: /*i18n*/ { id: 'View only' },
@@ -127,6 +130,7 @@ export function studioCanvasWords(t: T) {
     saved: t(CANVAS.saved),
     saving: t(CANVAS.saving),
     offline: t(CANVAS.offline),
+    leaveUnsaved: t(CANVAS.leaveUnsaved),
     failed: t(CANVAS.failed),
     tryAgain: t(CANVAS.tryAgain),
     viewOnly: t(CANVAS.viewOnly),

@@ -12,6 +12,7 @@ export {
 export {
   EMPTY_STUDIO_DOCUMENT,
   GROUND_REACH_M,
+  lengthHeld,
   type NoPictureReason,
   PICTURE_CHOICES,
   PICTURE_SCALE_MAX,

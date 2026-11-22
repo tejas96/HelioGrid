@@ -3,6 +3,7 @@ import {
   readSiteMapMessage,
   WEB_VIEW_BRIDGE_VERSION,
   type WebViewAsk,
+  webViewBackSchema,
   webViewLendSchema,
 } from '@heliogrid/contracts';
 import type { BorrowedToken } from '@heliogrid/data';
@@ -42,6 +43,25 @@ export function hapticToPhone(strength: 'selection' | 'impact'): void {
 /** The person asked to change the site details: the phone opens its own Site details. */
 export function siteToPhone(): void {
   ask({ v: WEB_VIEW_BRIDGE_VERSION, kind: 'site' });
+}
+
+/**
+ * The phone's system back, taken by this page: the phone is told the page takes it, and each back
+ * runs `onBack`. Returns the way to stop listening.
+ */
+export function backFromPhone(onBack: () => void): () => void {
+  const heard = (event: Event) => {
+    if (readSiteMapMessage(webViewBackSchema, (event as MessageEvent).data) !== null) onBack();
+  };
+  // iOS hands a message to the window, Android to the document.
+  window.addEventListener('message', heard);
+  document.addEventListener('message', heard);
+  ask({ v: WEB_VIEW_BRIDGE_VERSION, kind: 'back-here' });
+  return () => {
+    window.removeEventListener('message', heard);
+    document.removeEventListener('message', heard);
+    ask({ v: WEB_VIEW_BRIDGE_VERSION, kind: 'back-gone' });
+  };
 }
 
 /**

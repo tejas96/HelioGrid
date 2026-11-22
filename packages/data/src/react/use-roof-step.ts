@@ -162,13 +162,16 @@ export function useRoofStep({
     },
   };
 
-  const close = () =>
+  // Close shape takes the ghost corner; a tap on the first corner closes the shape as drawn.
+  const closeWith = (ghost: boolean) =>
     act({
       kind: 'close',
       id: aKey(),
       tracedOn: picture.kind === 'sky' ? 'sky' : 'none',
       stamp: picture.kind === 'sky' ? { source: picture.source, takenOn: picture.takenOn } : null,
+      ghost,
     });
+  const close = () => closeWith(true);
 
   const grid = picture.kind === 'none';
   const stamp =
@@ -200,17 +203,16 @@ export function useRoofStep({
       act({ kind: 'magnet', magnet: !next && (askedOn.current ?? picked) });
     },
     wipe: () => act({ kind: 'wipe' }),
-    redraw: () => act({ kind: 'redraw', magnet: magnet(), grid }),
-    keepClosed: () => act({ kind: 'done' }),
     deleteRoof: () => act({ kind: 'delete_roof' }),
     hover: (at) => act({ kind: 'hover', at }),
     // A tap on the first corner closes the shape, whether it lands on the dot or beside it.
     tap: (at) => {
       const now = step.current;
-      if (now.kind === 'drawing' && draftClosesAt(now.corners, at)) close();
+      if (now.kind === 'drawing' && draftClosesAt(now.corners, at)) closeWith(false);
       else act({ kind: 'tap', at, system: units });
     },
     close,
+    closeAsDrawn: () => closeWith(false),
     cancel: () => act({ kind: 'cancel' }),
     pickLength: (roof, edge) => act({ kind: 'pick_length', roof, edge, system: units }),
     typeLength: (entry) => act({ kind: 'type', entry }),
