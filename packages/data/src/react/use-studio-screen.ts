@@ -20,7 +20,7 @@ import { useMemo, useState } from 'react';
 import { planOutlinesOf } from './own-picture-view';
 import { readOf } from './read';
 import { closePlacingOf, roofPlaceMoves } from './roof-place-moves';
-import { roofModelShown } from './roof-scene-view';
+import { heightPullWith, roofModelShown } from './roof-scene-view';
 import { arrivalOf, framedWithCard, useSizeCardOpens } from './size-card';
 import {
   editingOf,
@@ -114,6 +114,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     editable,
     facts,
     units,
+    pullOf: heightPullWith(facts, roof.magnetNow),
     outline: (index, metres) => {
       setView('top');
       act({ kind: 'pick_roof', roof: index, metres });

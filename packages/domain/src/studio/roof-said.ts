@@ -66,7 +66,13 @@ export type RoofSaid =
   | { readonly kind: 'undone'; readonly change: StudioChange }
   | { readonly kind: 'redone'; readonly change: StudioChange }
   /** A roof picked from its 3D sheet, to fix its outline here: its height, in metres. */
-  | { readonly kind: 'roof_picked'; readonly roof: number; readonly metres: number }
+  | {
+      readonly kind: 'roof_picked';
+      readonly roof: number;
+      readonly metres: number;
+      /** What the roof is called; absent, it is said by its place in the design. */
+      readonly name?: RoofName;
+    }
   /** A roof deleted, with what stood on it; Undo brings it back. `was`: what it was called. */
   | { readonly kind: 'roof_deleted'; readonly was?: RoofName }
   /** A typed roof placed (part c): on the sky picture it is dragged onto the house next. */

@@ -240,8 +240,11 @@ const ON: Handlers = {
     inState(state, 'idle', (looking) =>
       stay(idle({ kind: undone ? 'undone' : 'redone', change }, looking.roof)),
     ),
-  pick_roof: (state, { roof, metres }) =>
-    inState(state, 'idle', () => stay(idle({ kind: 'roof_picked', roof, metres }, roof))),
+  pick_roof: (state, { roof, metres }, document) =>
+    inState(state, 'idle', () => {
+      const name = roofNameOf(document, roof) ?? undefined;
+      return stay(idle({ kind: 'roof_picked', roof, metres, name }, roof));
+    }),
 };
 
 /**

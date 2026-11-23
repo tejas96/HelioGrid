@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type {
+  HeightLevel,
   KindLine,
   MeetChoice,
   NoWallWhy,
@@ -58,6 +59,9 @@ const KIND = {
     id: '{count, plural, one {Parapet on # side} other {Parapet on # sides}}',
   },
   wallsAllRound: /*i18n*/ { id: 'Parapet all round' },
+  levelTop: /*i18n*/ { id: 'Level with {roof}’s top · {height}' },
+  levelParapet: /*i18n*/ { id: 'Level with {roof}’s parapet top · {height}' },
+  levelFloor: /*i18n*/ { id: 'Floor {floor} · {height}' },
   wallsNone: /*i18n*/ { id: 'No parapet on this roof' },
   noWallOnSide: /*i18n*/ { id: 'No parapet on this side' },
   sideWallOff: /*i18n*/ { id: 'Side {number}: take its parapet off' },
@@ -222,6 +226,20 @@ export function roofTopWords(t: T) {
     noWallWhy: (why: NoWallWhy) => noWallWhyLine(t, why),
     /** The tag on a roof past the edge of the roof it stands on: how far, already formatted. */
     sticksOutBy: (length: string) => t(KIND.sticksOutBy, { length }),
+    /**
+     * The tag on the level line a dragged height pulled to: what it is level with, and the height
+     * above the ground, already formatted. A round value has no tag: the number by the arrow says it.
+     */
+    heightLevel: (to: HeightLevel, height: string): TranslatedText | null => {
+      if (to.kind === 'round') return null;
+      // Floors as reps count them: G, G+1, G+2.
+      if (to.kind === 'floor') {
+        const floor = shownAsSent(to.floors === 0 ? 'G' : `G+${to.floors}`);
+        return t(KIND.levelFloor, { floor, height });
+      }
+      const roof = roofNameWord(t, to.name);
+      return t(to.kind === 'roof_top' ? KIND.levelTop : KIND.levelParapet, { roof, height });
+    },
     /** A roof's height above the roof it stands on, on it in the top view: "+3.0 m". */
     above: (height: string) => shownAsSent(`+${height}`),
   };

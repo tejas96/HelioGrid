@@ -3,6 +3,7 @@
  * roof is and what it is made of, how it meets the others, what it is called, where it stands, and
  * the 3D model's shape. The geometry behind them is the kernel's (`../studio-kernel.ts`).
  */
+export * from './roof-height-pull';
 export * from './roof-kind';
 export { type KindLine, kindLineOf } from './roof-kind-line';
 export {

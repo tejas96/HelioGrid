@@ -47,6 +47,7 @@ export {
   roofSurfaceM2,
   roofsAreaM2,
 } from './studio/roof-free-ground';
+export { heightPullOf } from './studio/roof-height-magnet';
 export {
   LEVEL_M,
   type RoofFacts,

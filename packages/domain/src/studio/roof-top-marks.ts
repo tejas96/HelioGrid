@@ -35,6 +35,8 @@ export interface NoWallWhy {
 
 export interface RoofTopMark {
   readonly kind: RoofKind;
+  /** What it is called: "Roof 2" on the ground, its kind on another roof. */
+  readonly name: RoofName;
   /** Each side's stretches, in the order of the roof's sides. */
   readonly sides: readonly (readonly SideStretchMark[])[];
   readonly dots: readonly SideDot[];

@@ -120,6 +120,10 @@ export function StudioRoofSheet({
     if (act() !== false) landFocusOn(map);
   };
   const editable = studio.editing.kind === 'editor';
+  // What the roof is called: "Roof 2" on the ground, its kind on another roof.
+  const name = words.sheetRoof(
+    studio.topMarks[sheet.roof]?.name ?? { kind: 'roof', number: sheet.roof + 1 },
+  );
   // A height past the slider's ends shows in the box: the switch says so, and rests there.
   const typing = studio.numberEntry === 'box' || sheet.outside;
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -131,12 +135,12 @@ export function StudioRoofSheet({
       ref={sheetRef}
       className="hg-studio-glass hg-roof-sheet"
       role="dialog"
-      aria-label={words.sheetRoof(sheet.roof + 1)}
+      aria-label={name}
       onKeyDown={onKeyDown}
     >
       <div className="hg-roof-sheet-head">
         <span ref={title} className="hg-roof-sheet-title" tabIndex={-1}>
-          {words.sheetRoof(sheet.roof + 1)}
+          {name}
         </span>
         <span className="hg-roof-sheet-area">{format.area(sheet.area, units)}</span>
         <span className="hg-roof-sheet-close">

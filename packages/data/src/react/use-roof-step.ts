@@ -282,5 +282,6 @@ export function useRoofStep({
     typeSizePair: (text) => act({ kind: 'type_pair', text }),
     placeRoof: () => act({ kind: 'place', id: aKey(), stamp, system: units }),
   };
-  return { view, moves, step, act };
+  // The magnet as it works this moment: the person's pick, resting while Alt is held.
+  return { view, moves, step, act, magnetNow: () => magnet() };
 }

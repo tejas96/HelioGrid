@@ -56,7 +56,8 @@ describe('Edit outline in 2D picks the roof and says its height (T-M05-002)', ()
       kind: 'idle',
       roof: 1,
       picked: null,
-      said: { kind: 'roof_picked', roof: 1, metres: 9 },
+      // The line names the roof: the second roof on the ground is Roof 2.
+      said: { kind: 'roof_picked', roof: 1, metres: 9, name: { kind: 'roof', number: 2 } },
     });
   });
 });

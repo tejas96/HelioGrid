@@ -5,6 +5,7 @@ import {
   type StudioDocument,
 } from '@heliogrid/domain';
 import {
+  heightPullOf,
   roofSceneOf,
   roofsAreaM2,
   roofsWorked,
@@ -42,4 +43,10 @@ export function roofModelShown(
     topMarks: roofTopMarksOf(shown, facts, worked),
     roofsAreaM2: roofsAreaM2(shown),
   };
+}
+
+/** The magnet for a dragged height: the kernel's pull while the magnet is on, none while it is off. */
+export function heightPullWith(facts: RoofFacts, magnetOn: () => boolean) {
+  return (design: StudioDocument, roof: number, metres: number, reachM: number) =>
+    magnetOn() ? heightPullOf(design, roof, facts, metres, reachM) : null;
 }

@@ -12,7 +12,7 @@ import {
 import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import { historyLine } from './studio-history';
-import { kindLineWords, roofPlaceLine, roofTopWords } from './studio-roof-kinds';
+import { kindLineWords, roofNameWord, roofPlaceLine, roofTopWords } from './studio-roof-kinds';
 import {
   type DragFacts,
   type RoofTag,
@@ -49,7 +49,7 @@ const ROOF = {
     id: 'Height {height} is the usual storey here. Drag a corner to fix the shape.',
   },
   roofIdle: /*i18n*/ { id: 'Drag a corner to fix the shape.' },
-  roofPicked: /*i18n*/ { id: 'Roof {number} · height {height}. Drag a corner to fix the shape.' },
+  roofPicked: /*i18n*/ { id: '{name} · height {height}. Drag a corner to fix the shape.' },
   roofIdle3d: /*i18n*/ { id: 'Tap the roof to change its height.' },
   roofIdle3dReader: /*i18n*/ { id: 'Tap a roof to see its height.' },
   roofSizing: /*i18n*/ { id: 'Set the true length of the marked edge.' },
@@ -208,7 +208,10 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'redone':
       return historyLine(t, false, said.change);
     case 'roof_picked':
-      return t(ROOF.roofPicked, { number: said.roof + 1, height: shown.heightOf(said.metres) });
+      return t(ROOF.roofPicked, {
+        name: roofNameWord(t, said.name ?? { kind: 'roof', number: said.roof + 1 }),
+        height: shown.heightOf(said.metres),
+      });
     case 'roof_deleted':
       return roofPlaceLine(t, said, shown.heightOf) ?? t(ROOF.roofDeleted);
     case 'went_back':

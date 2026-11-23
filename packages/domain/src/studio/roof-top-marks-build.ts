@@ -97,6 +97,7 @@ function markOf(
   const stands = SAYS_ABOVE.includes(kind) && standsOn(document, roof) !== null;
   return {
     kind,
+    name: roofNameOf(document, index) ?? { kind: 'roof', number: index + 1 },
     sides,
     dots: edges.map((stretches, side) => dotOf(ends(side).from, ends(side).to, stretches)),
     aboveM: stands ? roofOwnHeightM(document, roof, facts) : null,
