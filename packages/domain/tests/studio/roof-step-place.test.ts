@@ -1,59 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import type { Roof, StudioDocument } from '../../src/studio/document';
+import type { Roof } from '../../src/studio/document';
 import { cutToEdge, meetingOf } from '../../src/studio/roof-meet';
 import { joined, shapeOf } from '../../src/studio/roof-polygons';
 import { roofStepAfter } from '../../src/studio/roof-step';
-import { COPY_GAP_M } from '../../src/studio/roof-step-place';
-import {
-  ROOF_STEP_START,
-  type RoofStepEvent,
-  type RoofStepState,
-} from '../../src/studio/roof-step-state';
-import { box, designOf, FACTS, p, roofOf, SHED, stairOn, TERRACE } from './roof-meet-support';
+import { ROOF_STEP_START } from '../../src/studio/roof-step-state';
+import { box, designOf, FACTS, p, roofOf, SHED, TERRACE } from './roof-meet-support';
+import { draw, run, saidOf } from './roof-step-support';
 
 /**
  * The roof step among many roofs (`T-M05-002`, part e): a closed roof takes its place and the line
- * says what it became; a chip makes it another kind; Join, Cut to edge, Copy and Delete are each
- * one change with Undo.
+ * says what it became; a chip makes it another kind; Join and Cut to edge are each one change with
+ * Undo, and a kind's chip parts two roofs Join made one.
  */
-function run(events: readonly RoofStepEvent[], from: StudioDocument) {
-  let state: RoofStepState = ROOF_STEP_START;
-  let document = from;
-  let commits = 0;
-  for (const event of events) {
-    const outcome = roofStepAfter(state, event, document);
-    state = outcome.state;
-    if (outcome.commit !== null) {
-      document = outcome.commit;
-      commits += 1;
-    }
-  }
-  return { state, document, commits };
-}
-const tap = (east: number, north: number): RoofStepEvent => ({
-  kind: 'tap',
-  at: p(east, north),
-  system: 'metric',
-});
-/** A roof drawn corner by corner and closed, placed by the kernel as the studio's hook asks it to. */
-const draw = (
-  corners: ReturnType<typeof box>,
-  design: StudioDocument,
-  id = 'new',
-): RoofStepEvent[] => [
-  { kind: 'draw', magnet: false },
-  ...corners.map((corner) => tap(corner.east, corner.north)),
-  {
-    kind: 'close',
-    id,
-    tracedOn: 'sky',
-    stamp: null,
-    ghost: false,
-    placing: { meet: (outline) => meetingOf(design, outline, FACTS), facts: FACTS },
-  },
-];
 const HOUSE = designOf(TERRACE, SHED);
-const saidOf = (state: RoofStepState) => (state.kind === 'idle' ? state.said : null);
 
 describe('a new roof closes among the others', () => {
   it('a stair room on the terrace: it is the picked roof, and the line says what it became with its chips', () => {
@@ -73,6 +32,7 @@ describe('a new roof closes among the others', () => {
         on: 0,
         choices: ['stair_room', 'hole', 'open_shed', 'separate_part'],
         joinWith: null,
+        across: false,
         toCheck: true,
         // "Stair room on Roof 1 · 3 m above Roof 1 · to check".
         name: { kind: 'stair_room', with: 1 },
@@ -158,10 +118,12 @@ describe('Join and Cut to edge', () => {
     expect(one.corners).toHaveLength(8);
     // The bar's far side and ends still stand where they stood: their lengths are still typed.
     expect(one.edges.filter((trust) => trust === 'typed')).toHaveLength(3);
-    expect(saidOf(after.state)).toEqual({
+    // The line keeps what it said of the stem, so its chips can part the two again.
+    expect(saidOf(after.state)).toMatchObject({
       kind: 'joined',
       roof: 0,
       name: { kind: 'roof', number: 1 },
+      apart: { fresh: { id: 'stem' }, met: BAR, became: { roof: 1, is: 'building' } },
     });
   });
 
@@ -207,57 +169,74 @@ describe('Join and Cut to edge', () => {
   });
 });
 
-describe('Copy and Delete, from a roof’s row', () => {
-  const stair = stairOn(box(0, 0, 3, 3));
-  const design = designOf(TERRACE, stair, SHED);
+describe('two sloped roofs of one material join by themselves', () => {
+  const design = designOf(SHED);
+  const WING = box(14, 0, 4, 8);
+  const closed = run(draw(WING, design, 'wing'), design);
 
-  it('Copy: the roof and what stands on it land beside it, cutting nothing, and the copy is picked', () => {
-    const { state, document, commits } = run(
-      [{ kind: 'copy_roof', roof: 0, ids: ['copy', 'copy-stair'] }],
-      design,
-    );
-    expect(commits).toBe(1);
-    expect(document.roofs.map((roof) => roof.id)).toEqual([
-      'terrace',
-      'stair',
-      'shed',
-      'copy',
-      'copy-stair',
-    ]);
-    // East of the terrace stands the shed: the copy goes south, a gap clear of it.
-    expect(document.roofs[3]?.corners[0]).toEqual(p(0, -(8 + COPY_GAP_M)));
-    expect(document.roofs[4]).toMatchObject({ on: 'copy', kind: { is: 'stair_room' } });
-    expect(state).toMatchObject({
-      kind: 'idle',
-      roof: 3,
-      said: { kind: 'copied', roof: 3, of: { kind: 'roof', number: 1 } },
+  it('the new roof closes into the roof it meets: one roof, one change, and the line keeps its chips', () => {
+    expect(closed.commits).toBe(1);
+    expect(closed.document.roofs.map((roof) => roof.id)).toEqual(['shed']);
+    expect(closed.document.roofs[0]?.corners).toHaveLength(4);
+    expect(closed.state).toMatchObject({ kind: 'idle', roof: 0 });
+    expect(saidOf(closed.state)).toMatchObject({
+      kind: 'joined',
+      roof: 0,
+      name: { kind: 'roof', number: 1 },
+      apart: { became: { choices: ['join', 'building', 'open_shed'] } },
     });
   });
 
-  it('a copy keeps what the roof is made of and whether it was confirmed', () => {
-    const made = {
-      ...TERRACE,
-      material: { type: 'rcc', setBy: 'person', confirmed: true } as const,
-    };
-    const { document } = run([{ kind: 'copy_roof', roof: 0, ids: ['copy'] }], designOf(made));
-    expect(document.roofs[1]?.material).toEqual(made.material);
-    expect(document.roofs[1]?.corners[0]).toEqual(p(10 + COPY_GAP_M, 0));
+  it.each([
+    ['Building', 'building', undefined],
+    ['Open shed', 'open_shed', { is: 'open_shed', setBy: 'person' }],
+  ] as const)(
+    'the %s chip parts them: the shed is as it was, and the new roof stands beside it',
+    (_chip, into, kind) => {
+      const after = roofStepAfter(
+        closed.state,
+        { kind: 'make', roof: 0, into, facts: FACTS },
+        closed.document,
+      );
+      expect(after.commit?.roofs[0]).toEqual(SHED);
+      expect(after.commit?.roofs[1]).toMatchObject({ id: 'wing', corners: WING });
+      expect(after.commit?.roofs[1]?.kind).toEqual(kind);
+      expect(after.state).toMatchObject({ kind: 'idle', roof: 1 });
+      expect(saidOf(after.state)).toMatchObject({
+        kind: 'closed',
+        became: { roof: 1, is: into, joinWith: 0, beside: { kind: 'roof', number: 1 } },
+      });
+    },
+  );
+
+  it('a flat roof beside a flat one stays its own building, with Join as its second chip', () => {
+    const flat = designOf(TERRACE);
+    const beside = run(draw(box(10, 0, 4, 8), flat), flat);
+    expect(beside.document.roofs).toHaveLength(2);
+    expect(saidOf(beside.state)).toMatchObject({
+      kind: 'closed',
+      became: { choices: ['building', 'join', 'open_shed'] },
+    });
+  });
+});
+
+describe('the first roof takes what the host knows of the site’s roof', () => {
+  const EMPTY = designOf();
+  const TILE = { type: 'clay_tile', setBy: 'system', confirmed: false };
+
+  it('a tiled house: the first roof starts as clay tile, still to be confirmed', () => {
+    const first = run(draw(box(0, 0, 10, 8), EMPTY, 'first', { siteMaterial: 'clay_tile' }), EMPTY);
+    expect(first.document.roofs[0]?.material).toEqual(TILE);
   });
 
-  it('a copy with too few names for its parts makes nothing', () => {
-    expect(run([{ kind: 'copy_roof', roof: 0, ids: ['copy'] }], design).commits).toBe(0);
+  it('a second roof apart from it does not: it starts as the market’s first roof does', () => {
+    const one = designOf(roofOf('first', box(0, 0, 10, 8), { material: TILE } as Partial<Roof>));
+    const next = run(draw(box(30, 0, 5, 5), one, 'next', { siteMaterial: 'clay_tile' }), one);
+    expect(Object.keys(next.document.roofs[1] as Roof)).not.toContain('material');
   });
 
-  it('Delete on a row: that roof goes with what stands on it, and the line names what went', () => {
-    const { state, document, commits } = run([{ kind: 'delete_roof', roof: 0 }], design);
-    expect(commits).toBe(1);
-    expect(document.roofs.map((roof) => roof.id)).toEqual(['shed']);
-    expect(saidOf(state)).toEqual({ kind: 'roof_deleted', was: { kind: 'roof', number: 1 } });
-  });
-
-  it('Delete on the stair room’s row names it by its kind and its roof', () => {
-    const { state, document } = run([{ kind: 'delete_roof', roof: 1 }], design);
-    expect(document.roofs.map((roof) => roof.id)).toEqual(['terrace', 'shed']);
-    expect(saidOf(state)).toEqual({ kind: 'roof_deleted', was: { kind: 'stair_room', with: 1 } });
+  it('a host that knows nothing stores nothing: the first roof reads as the market’s first type', () => {
+    const first = run(draw(box(0, 0, 10, 8), EMPTY, 'first'), EMPTY);
+    expect(Object.keys(first.document.roofs[0] as Roof)).not.toContain('material');
   });
 });

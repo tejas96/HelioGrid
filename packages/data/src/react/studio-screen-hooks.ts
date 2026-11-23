@@ -1,8 +1,12 @@
 /** The design studio's view models (block 9): one per screen pair, the web's and the phone's alike. */
 
 export type { PlanShown, UnitCard } from './own-picture-view';
+export type { RoofMoves, RoofPlaceMoves, RoofStepView, SizeCardView } from './roof-step-view';
+export type { StudioEditing, StudioPicture } from './studio-document-state';
 export type { StudioMoments } from './studio-haptics';
 export { studioHapticOf, studioMomentsOf } from './studio-haptics';
+export type { StudioSaveState } from './studio-save-queue';
+export type { StudioMoves, StudioScreen } from './studio-screen-view';
 export type { DesignRead, DesignScreen } from './use-design-screen';
 export { useDesignScreen } from './use-design-screen';
 export type {
@@ -25,14 +29,3 @@ export type {
   SiteSaveFailure,
 } from './use-site-details-screen';
 export { useSiteDetailsScreen } from './use-site-details-screen';
-export type {
-  RoofMoves,
-  RoofStepView,
-  SizeCardView,
-  StudioEditing,
-  StudioMoves,
-  StudioPicture,
-  StudioSaveState,
-  StudioScreen,
-} from './use-studio-screen';
-export { useStudioScreen } from './use-studio-screen';

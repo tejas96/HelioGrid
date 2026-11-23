@@ -16,6 +16,7 @@ import {
   historyAfter,
   KEY_MOVE_M,
   KEY_TURN_DEGREES,
+  kindLineOf,
   type LengthEntry,
   labelLayoutOf,
   lengthSizesPicture,
@@ -45,7 +46,7 @@ import {
 } from '@heliogrid/domain';
 import { type RefObject, useRef, useState } from 'react';
 import { aKey } from '../client/creation-key';
-import type { RoofMoves, RoofStepView } from './roof-step-view';
+import type { ClosePlacing, RoofMoves, RoofStepView } from './roof-step-view';
 import { sizeCardIn, useUnitsFollow } from './size-card';
 import { type StudioPicture, stampOf, tracedOnOf } from './studio-document-state';
 
@@ -71,6 +72,7 @@ export function useRoofStep({
   numberEntry,
   setNumberEntry,
   planOutlines,
+  placingOf,
 }: {
   /** The design as it stands, as the screen last drew it. */
   document: StudioDocument | null;
@@ -94,6 +96,8 @@ export function useRoofStep({
   setNumberEntry: (entry: NumberEntry) => void;
   /** The laid plan's closed outlines, in its own units: a roof made from one is sized with it. */
   planOutlines: readonly (readonly number[])[];
+  /** What places a roof closed on a design as it stands: asked of the studio's kernel. */
+  placingOf: (document: StudioDocument) => ClosePlacing;
 }) {
   const [roofStep, setRoofStep] = useState<RoofStepState>(ROOF_STEP_START);
   const [free, setFree] = useState(false);
@@ -139,6 +143,7 @@ export function useRoofStep({
     draft:
       roofStep.kind === 'drawing' && document !== null ? draftViewOf(roofStep, document) : null,
     bar: document === null ? null : roofBarOf(roofStep, document, picture.kind === 'none', units),
+    kindLine: kindLineOf(roofStep),
     stepOff: {
       less: sizing === null || stepRefused(sizing, -1, units),
       more: sizing === null || stepRefused(sizing, 1, units),
@@ -171,14 +176,18 @@ export function useRoofStep({
   };
 
   // Close shape takes the ghost corner; a tap on the first corner closes the shape as drawn.
-  const closeWith = (ghost: boolean) =>
+  const closeWith = (ghost: boolean) => {
+    const design = latest.current?.present;
+    if (design === undefined) return;
     act({
       kind: 'close',
       id: aKey(),
       tracedOn: tracedOnOf(picture),
       stamp: stampOf(picture),
       ghost,
+      placing: placingOf(design),
     });
+  };
   const close = () => closeWith(true);
 
   const grid = picture.kind === 'none';

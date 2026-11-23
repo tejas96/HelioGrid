@@ -1,5 +1,12 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { MeetChoice, RoofBecame, RoofKind, RoofName } from '@heliogrid/domain';
+import type {
+  KindLine,
+  MeetChoice,
+  RoofBecame,
+  RoofKind,
+  RoofName,
+  RoofSaid,
+} from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 
 type T = Translator['t'];
@@ -31,12 +38,15 @@ const KIND = {
   aboveOnPosts: /*i18n*/ { id: '{height} above {roof} · on posts · to check' },
   openBelow: /*i18n*/ { id: 'Open down to the floor below' },
   partlyOver: /*i18n*/ { id: 'Partly over {roof} · to check' },
+  overBothArms: /*i18n*/ { id: 'Over both arms · to check' },
+  storeyAbove: /*i18n*/ { id: 'A storey above · to check' },
   sharesEdge: /*i18n*/ { id: 'Shares {roof}’s edge' },
   ownType: /*i18n*/ { id: 'Its own roof type · same building' },
   toCheck: /*i18n*/ { id: 'Check it on site.' },
 
   madeInto: /*i18n*/ { id: 'Changed to {name}. Undo puts it back.' },
-  joined: /*i18n*/ { id: 'Joined with {roof} · one roof, one outline' },
+  joinedWith: /*i18n*/ { id: 'Joined with {roof}' },
+  oneOutline: /*i18n*/ { id: 'One roof, one outline' },
   copied: /*i18n*/ { id: 'Copy of {roof} · drag it onto its house' },
   deleted: /*i18n*/ { id: '{name} deleted · Undo brings it back' },
 } as const;
@@ -79,7 +89,8 @@ function placeWord(became: RoofBecame) {
   if (became.is === 'hole') return KIND.inRoof;
   if (became.is === 'separate_part') return KIND.partOfRoof;
   if (became.is === 'building') return KIND.besideRoof;
-  const over = became.is === 'open_shed' || became.place !== 'inside';
+  // An upper floor across both arms of one roof stands on it; one that sticks out lies over it.
+  const over = became.is === 'open_shed' || (became.place !== 'inside' && !became.across);
   return over ? KIND.overRoof : KIND.onRoof;
 }
 
@@ -104,26 +115,60 @@ export function roofBecameStatus(
   if (became.beside === null) return null;
   const roof = roofNameWord(t, became.beside);
   if (became.is === 'building') return t(KIND.sharesEdge, { roof });
+  if (became.across) return t(KIND.overBothArms);
   if (became.place === 'partly_over') return t(KIND.partlyOver, { roof });
   if (became.aboveM === null) return became.toCheck ? t(KIND.toCheck) : null;
+  if (became.is === 'upper_floor') return t(KIND.storeyAbove);
   const facts = { height: height(became.aboveM), roof };
   return t(became.is === 'open_shed' ? KIND.aboveOnPosts : KIND.above, facts);
 }
 
-/** A kind picked from a roof's sheet. */
-export function roofMadeLine(t: T, name: RoofName): TranslatedText {
-  return t(KIND.madeInto, { name: roofNameWord(t, name) });
+/** What a placed roof became, as one line: its second half, or its name where there is none. */
+function becameLine(t: T, became: RoofBecame, height: (metres: number) => string): TranslatedText {
+  return roofBecameStatus(t, became, height) ?? roofBecameTitle(t, became);
 }
 
-export function roofJoinedLine(t: T, roof: RoofName): TranslatedText {
-  return t(KIND.joined, { roof: roofNameWord(t, roof) });
+/**
+ * What the roof step says of a roof among the others, as one line: what it became, the kind a
+ * person made it, the roof it joined, its copy, or what was deleted by name. `null` for any other
+ * line, and for a roof closed or deleted with no word on its place.
+ */
+export function roofPlaceLine(
+  t: T,
+  said: RoofSaid,
+  height: (metres: number) => string,
+): TranslatedText | null {
+  switch (said.kind) {
+    case 'closed':
+      return said.became === undefined ? null : becameLine(t, said.became, height);
+    case 'cut':
+      return becameLine(t, said.became, height);
+    case 'made':
+      return t(KIND.madeInto, { name: roofNameWord(t, said.name) });
+    case 'joined':
+      return t(KIND.joinedWith, { roof: roofNameWord(t, said.name) });
+    case 'copied':
+      return t(KIND.copied, { roof: roofNameWord(t, said.of) });
+    case 'roof_deleted':
+      return said.was === undefined ? null : t(KIND.deleted, { name: roofNameWord(t, said.was) });
+    default:
+      return null;
+  }
 }
 
-export function roofCopiedLine(t: T, of: RoofName): TranslatedText {
-  return t(KIND.copied, { roof: roofNameWord(t, of) });
-}
-
-/** A roof deleted, named: "Stair room deleted · Undo brings it back". */
-export function roofDeletedLine(t: T, was: RoofName): TranslatedText {
-  return t(KIND.deleted, { name: roofNameWord(t, was) });
+/** The line after a roof closes, as the bar draws it: its name, why, and its chips, the lit one first. */
+export function kindLineWords(t: T, line: KindLine, height: (metres: number) => string) {
+  const { became, joined } = line;
+  return {
+    title:
+      joined === null
+        ? roofBecameTitle(t, became)
+        : t(KIND.joinedWith, { roof: roofNameWord(t, joined) }),
+    status: joined === null ? roofBecameStatus(t, became, height) : t(KIND.oneOutline),
+    chips: line.chips.map(({ choice, lit }) => ({
+      choice,
+      lit,
+      label: meetChoiceWord(t, choice, became.beside),
+    })),
+  };
 }

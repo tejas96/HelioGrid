@@ -1,7 +1,7 @@
 import type { Roof, StudioDocument } from './document';
 import { belongsTo, roofKindOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofOwnHeightM } from './roof-levels';
-import { firstSheetMaterial } from './roof-material';
+import { firstSheetMaterial, type RoofMaterial } from './roof-material';
 import type { RoofMeeting } from './roof-meeting';
 import { roofNameOf } from './roof-names';
 import type { RoofKind, RoofMaterialSet } from './roof-parts';
@@ -71,10 +71,15 @@ export function roofPlaced(
   roof: Roof,
   meeting: RoofMeeting,
   facts: RoofFacts,
+  /** What the host knows the site's roof is made of: the design's first roof starts as it. */
+  siteMaterial?: RoofMaterial,
 ): Roof {
   const idOf = (index: number | null) => (index === null ? undefined : document.roofs[index]?.id);
   const like = meeting.startsLike === null ? undefined : document.roofs[meeting.startsLike];
-  const material = startMaterial(meeting.kind, like, facts);
+  const first = document.roofs.length === 0 && siteMaterial !== undefined;
+  const material: RoofMaterialSet | undefined = first
+    ? { type: siteMaterial, setBy: 'system', confirmed: false }
+    : startMaterial(meeting.kind, like, facts);
   // A drawn roof's corners may have been moved onto a neighbour, and two of them made one.
   const corners = roof.edges.every((trust) => trust === 'traced') ? meeting.corners : roof.corners;
   return {
@@ -147,12 +152,15 @@ export function placedAt(
   index: number,
   placing: RoofPlacing,
 ): { readonly roof: Roof; readonly became: RoofBecame } {
-  const { meeting, facts } = placing;
-  const { place, on, choices, joinWith, toCheck } = meeting;
-  const placed = roofPlaced(document, roof, meeting, facts);
+  const { meeting, facts, siteMaterial } = placing;
+  const { place, on, choices, joinWith, across, toCheck } = meeting;
+  const placed = roofPlaced(document, roof, meeting, facts, siteMaterial);
   // The roof stands at `index` among the others: the line reads it there.
   const roofs = [...document.roofs];
   roofs[index] = placed;
   const said = becameFacts({ ...document, roofs }, index, facts, joinWith ?? meeting.startsLike);
-  return { roof: placed, became: { roof: index, place, on, choices, joinWith, toCheck, ...said } };
+  return {
+    roof: placed,
+    became: { roof: index, place, on, choices, joinWith, across, toCheck, ...said },
+  };
 }

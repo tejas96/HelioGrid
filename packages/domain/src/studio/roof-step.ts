@@ -4,7 +4,8 @@ import { cornerAdded, cornerDragged, cornerRemoved } from './roof-edit';
 import { roofMoved, roofTurned } from './roof-move';
 import { roofMiddle } from './roof-shape';
 import { snapTargetsOf } from './roof-snap';
-import { closed, cornerUndone, drawing, spotAt, stopped, tapped } from './roof-step-draw';
+import { copied, deleted } from './roof-step-copy';
+import { cornerUndone, drawing, spotAt, stopped, tapped } from './roof-step-draw';
 import {
   committedLength,
   lengthKept,
@@ -12,7 +13,7 @@ import {
   lengthStepped,
   thenKept,
 } from './roof-step-length';
-import { copied, cutBack, deleted, joinedIn, kindMade } from './roof-step-place';
+import { closed, cutBack, joinedIn, kindMade } from './roof-step-place';
 import {
   idle,
   type RoofGrip,

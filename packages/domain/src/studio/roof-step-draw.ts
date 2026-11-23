@@ -1,15 +1,12 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { roofUnder } from './roof-check';
-import { draftClose, draftClosesAt, draftTap } from './roof-draw';
+import { draftClosesAt, draftTap } from './roof-draw';
 import { roofWithItsParts } from './roof-kind';
-import { placedAt } from './roof-place';
 import { draftSpot, type Snapped, type SnapTargets, snapTargetsOf } from './roof-snap';
 import {
   type DraftLeft,
   idle,
-  type RoofSaid,
-  type RoofStepEvent,
   type RoofStepOutcome,
   type RoofStepState,
   stay,
@@ -169,38 +166,6 @@ export function cornerUndone(state: RoofStepState): RoofStepOutcome {
     return stay({ ...state, corners: state.wiped, wiped: null, refused: null });
   }
   return stay({ ...state, corners: state.corners.slice(0, -1), refused: null });
-}
-
-export function closed(
-  state: RoofStepState,
-  event: Extract<RoofStepEvent, { kind: 'close' }>,
-  document: StudioDocument,
-): RoofStepOutcome {
-  if (state.kind !== 'drawing') return stay(state);
-  const close = draftClose(state.corners, document.roofs, event.id, event.tracedOn, event.ghost);
-  if (close.kind === 'refused') return stay({ ...state, refused: close.refusal });
-  // The first roof keeps the picture it was drawn on (M04-10).
-  const first = document.roofs.length === 0 && document.drawnOn === null;
-  const index = document.roofs.length;
-  // How it meets the roofs already standing says what it is: only this roof is placed.
-  const placing = event.placing;
-  const placed =
-    placing === undefined
-      ? null
-      : placedAt(document, close.roof, index, {
-          meeting: placing.meet(close.roof.corners),
-          facts: placing.facts,
-        });
-  const said: RoofSaid =
-    placed === null ? { kind: 'closed' } : { kind: 'closed', became: placed.became };
-  return {
-    state: idle(said, index),
-    commit: {
-      ...document,
-      roofs: [...document.roofs, placed?.roof ?? close.roof],
-      drawnOn: first ? event.stamp : document.drawnOn,
-    },
-  };
 }
 
 /**

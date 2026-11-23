@@ -6,7 +6,7 @@ import {
   type SaveSite,
   type SessionProjection,
 } from '@heliogrid/contracts';
-import { can, ROLE_PRESETS, type RolePreset } from '@heliogrid/domain';
+import type { RolePreset } from '@heliogrid/domain';
 import { cleanup, renderHook } from '@testing-library/react';
 import { createElement, type ReactNode } from 'react';
 import { afterEach } from 'vitest';
@@ -15,8 +15,10 @@ import { DataProvider } from '../../src/react/provider';
 import { listeningOrigin, refusal, send, writeBodyOf } from './origin-wire';
 import { DOCUMENT_ROUTES } from './studio-document-origin';
 import { placesAnswer } from './studio-places-origin';
+import { DESIGNS_ROLE, mayDesign } from './studio-roles';
 
 export { MUNICH, SANGLI } from './studio-places-origin';
+export { DESIGNS_ROLE, READS_ONLY_ROLE } from './studio-roles';
 
 /**
  * A lead's designs end to end through the real client (`packages/data/CLAUDE.md`, Done means): an
@@ -32,16 +34,6 @@ export const READER = { userId: id(2), name: 'Asha Patil' };
 export const LEAD_ID = id(101);
 export const AT = '2026-11-10T05:00:00.000Z';
 export const designId = (ordinal: number) => id(600 + ordinal);
-
-/* By the matrix, never by spelling: who may make a design is F2's. */
-const designs = (role: RolePreset) => can([role], 'studio.create_edit_designs');
-function presetWhere(test: (role: RolePreset) => boolean): RolePreset {
-  const found = ROLE_PRESETS.find(test);
-  if (found === undefined) throw new Error('no preset fits');
-  return found;
-}
-export const DESIGNS_ROLE = presetWhere(designs);
-export const READS_ONLY_ROLE = presetWhere((role) => !designs(role));
 
 /** A design of the lead as the api lists it. */
 export const aDesign = (ordinal: number, typed: Partial<DesignWire> = {}): DesignWire => ({
@@ -75,6 +67,8 @@ interface Origin {
   roles: readonly RolePreset[];
   designs: DesignWire[];
   site: Site;
+  /** What the lead says of the site's roof; `null` where no one has said. */
+  siteRoof: DesignDetail['subject']['siteRoof'];
   /** The map service answers; `false` is a service that is down. */
   placesUp: boolean;
   /** The design each retry key made. */
@@ -92,6 +86,7 @@ const START = (): Origin => ({
   roles: [DESIGNS_ROLE],
   designs: [],
   site: NO_SITE,
+  siteRoof: null,
   placesUp: true,
   madeWith: new Map(),
   answers: new Map(),
@@ -138,14 +133,19 @@ function projection(): SessionProjection {
 /** The designs newest first, as the api lists them. */
 const listed = () => ({
   designs: [...origin.designs].sort((a, b) => b.ordinal - a.ordinal),
-  canDesign: origin.roles.some(designs),
+  canDesign: origin.roles.some(mayDesign),
 });
 
 const detailOf = (design: DesignWire): DesignDetail => ({
   design,
   site: origin.site,
-  subject: { leadId: LEAD_ID, customerName: 'Anil Sharma', customerPhone: '+919876543210' },
-  canEdit: origin.roles.some(designs),
+  subject: {
+    leadId: LEAD_ID,
+    customerName: 'Anil Sharma',
+    customerPhone: '+919876543210',
+    siteRoof: origin.siteRoof,
+  },
+  canEdit: origin.roles.some(mayDesign),
 });
 
 /** Site details saved whole: the site's facts on the lead, roof or ground on the design. */

@@ -25,6 +25,10 @@ export interface RoofMeeting {
   readonly partOf: number | null;
   /** The roof Join would join it with; `null` when it meets none at its own height. */
   readonly joinWith: number | null;
+  /** The one outline Join makes of the new roof and `joinWith`; `null` where it joins none. */
+  readonly joined: readonly GroundPoint[] | null;
+  /** It lies over the roof it covers most in more than one piece: across both arms of a C. */
+  readonly across: boolean;
   /**
    * The roof the new one starts like — made of the same thing, with the same shape: the roof it
    * lies on, or the level neighbour it meets; `null` for a roof apart, which starts as the market's

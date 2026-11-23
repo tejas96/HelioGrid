@@ -139,7 +139,9 @@ export {
   roofHeightStepped,
 } from './roof-height';
 export * from './roof-kind';
+export { type KindLine, kindLineOf } from './roof-kind-line';
 export * from './roof-length';
+export { type RoofFacts, roofFactsOf } from './roof-levels';
 export * from './roof-material';
 export * from './roof-meeting';
 export {
@@ -187,6 +189,7 @@ export { gripCorner, roofStepAfter } from './roof-step';
 export {
   type CornerRef,
   ROOF_STEP_START,
+  type RoofApart,
   type RoofBecame,
   type RoofGrip,
   type RoofPlacing,

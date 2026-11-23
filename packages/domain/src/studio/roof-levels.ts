@@ -23,6 +23,14 @@ export interface RoofFacts extends RoofMarketFacts {
   readonly storeyHeightM: number;
 }
 
+/** The roof facts of a market's formats: its pack's roof values and its storey. */
+export function roofFactsOf(formats: {
+  readonly roof: RoofMarketFacts;
+  readonly storeyHeightM: number;
+}): RoofFacts {
+  return { ...formats.roof, storeyHeightM: formats.storeyHeightM };
+}
+
 /** A roof's height above what it stands on, in metres: its own, or its kind's first height. */
 export function roofOwnHeightM(document: StudioDocument, roof: Roof, facts: RoofFacts): number {
   if (roof.height !== null) return roof.height.metres;

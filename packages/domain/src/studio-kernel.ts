@@ -66,6 +66,7 @@ export {
   meetingOf,
   STAIR_ROOM_MAX_M2,
 } from './studio/roof-meet';
+export { meetingOfRoof, roofCutToEdge } from './studio/roof-meet-standing';
 export {
   type EdgeState,
   type EdgeStretch,

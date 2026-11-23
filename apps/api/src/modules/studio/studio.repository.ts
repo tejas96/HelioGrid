@@ -46,6 +46,8 @@ export interface DesignFacts {
   readonly leadId: string;
   readonly customerName: string | null;
   readonly customerPhone: string | null;
+  /** The roof type the lead was qualified with (`M02-39`); `null` where no one has said. */
+  readonly roofType: (typeof lead.$inferSelect)['roofType'];
   readonly site: {
     readonly name: string | null;
     readonly address: string | null;
@@ -91,6 +93,7 @@ export class StudioRepository {
           leadId: lead.id,
           customerName: customer.name,
           customerPhone: customer.phoneE164,
+          roofType: lead.roofType,
           siteName: lead.siteName,
           siteAddress: lead.siteAddress,
           siteLatitude: lead.siteLatitude,
@@ -118,6 +121,7 @@ export class StudioRepository {
         leadId: row.leadId,
         customerName: row.customerName,
         customerPhone: row.customerPhone,
+        roofType: row.roofType,
         site: {
           name: row.siteName,
           address: row.siteAddress,

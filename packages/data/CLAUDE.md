@@ -3,8 +3,9 @@
 ## What lives here / what must never live here
 
 - NEVER: UI, navigation or business logic (that is `@heliogrid/domain`); `baseUrl` is passed in.
-  Entries: `.` (framework-free), `./react` (React Query adapter), `./server` (one request-scoped
-  Next context).
+  Entries: `.` (framework-free), `./react` (React Query adapter), `./react/studio` (the design
+  studio's canvas hook, which asks `@heliogrid/domain/studio-kernel`; its view-model types stay on
+  `./react`, in files that import no kernel file), `./server` (one request-scoped Next context).
 
 ## Local conventions
 

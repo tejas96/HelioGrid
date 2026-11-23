@@ -1,4 +1,4 @@
-import type { StudioScreen } from './use-studio-screen';
+import type { StudioScreen } from './studio-screen-view';
 
 /** The moments a phone marks with a tap, as the studio stands now (`T-M05-002`, part b). */
 export interface StudioMoments {

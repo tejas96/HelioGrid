@@ -1,10 +1,11 @@
 import type { MeasurementSystem } from '../format/pack';
-import type { PictureChoice, PictureStamp, StudioDocument } from './document';
+import type { PictureChoice, PictureStamp, Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import type { DragResult, EditRefusal } from './roof-check';
 import type { DraftRefusal } from './roof-draw';
 import type { LengthEntry, LengthInHand } from './roof-entry';
 import type { RoofFacts } from './roof-levels';
+import type { RoofMaterial } from './roof-material';
 import type { MeetChoice, RoofMeeting, RoofPlace } from './roof-meeting';
 import type { RoofName } from './roof-names';
 import type { RoofKind } from './roof-parts';
@@ -40,8 +41,16 @@ export type RoofSaid =
   | { readonly kind: 'closed'; readonly became?: RoofBecame }
   /** A person made a roof another kind from its sheet. */
   | { readonly kind: 'made'; readonly roof: number; readonly is: RoofKind; readonly name: RoofName }
-  /** A new roof joined with the roof it met: the two are one, with one outline. */
-  | { readonly kind: 'joined'; readonly roof: number; readonly name: RoofName }
+  /**
+   * A new roof joined with the roof it met: the two are one, with one outline. `apart`: the two as
+   * they stood apart and what the line said of the new one, while its chips can still part them.
+   */
+  | {
+      readonly kind: 'joined';
+      readonly roof: number;
+      readonly name: RoofName;
+      readonly apart?: RoofApart;
+    }
   /** A new roof cut back to the edge of the roof it lay over, and what it is now. */
   | { readonly kind: 'cut'; readonly became: RoofBecame }
   /** A roof copied beside itself, with what stands on it; the copy is picked to drag. */
@@ -86,13 +95,24 @@ export interface RoofBecame {
   readonly aboveM: number | null;
   readonly choices: readonly MeetChoice[];
   readonly joinWith: number | null;
+  /** It lies over the roof under it in more than one piece: across both arms of a C. */
+  readonly across: boolean;
   readonly toCheck: boolean;
+}
+
+/** Two roofs Join made one, as they stood apart: a kind's chip puts them back. */
+export interface RoofApart {
+  readonly fresh: Roof;
+  readonly met: Roof;
+  readonly became: RoofBecame;
 }
 
 /** How a new roof meets the others and the market's roof facts: what places it when it closes. */
 export interface RoofPlacing {
   readonly meeting: RoofMeeting;
   readonly facts: RoofFacts;
+  /** What the host knows the site's roof is made of: the design's first roof starts as it. */
+  readonly siteMaterial?: RoofMaterial;
 }
 
 export type RoofStepState =
@@ -205,9 +225,8 @@ export type RoofStepEvent =
        * this close; `meet` is asked with the outline as it would close. Absent, the roof stands
        * as drawn, a building.
        */
-      readonly placing?: {
+      readonly placing?: Omit<RoofPlacing, 'meeting'> & {
         readonly meet: (corners: readonly GroundPoint[]) => RoofMeeting;
-        readonly facts: RoofFacts;
       };
     }
   /** A kind picked for a roof: a chip on the line after it closed, or its sheet's What it is row. */
