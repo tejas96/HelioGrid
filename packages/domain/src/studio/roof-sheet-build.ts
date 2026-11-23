@@ -2,6 +2,7 @@ import { compassOf } from './compass';
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { roofFormOf } from './roof-built';
+import { roofCrossingsOf } from './roof-crossings';
 import { gableEnds } from './roof-forms';
 import { belongsTo, roofKindOf, roofSidesOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofHasWalls, roofOwnHeightM, roofShapeNow } from './roof-levels';
@@ -206,6 +207,7 @@ export function roofSheetRowsOf(
   const { parapet, details } = parapetRowsOf(at);
   const extras = built === null ? [] : (EXTRAS[shape] ?? []).map((key) => numberOf(at, key));
   const materialWaits = row.material !== null && !row.material.confirmed;
+  const crossings = roofCrossingsOf(document, index, facts);
   return {
     roof: index,
     name: row.name,
@@ -221,7 +223,10 @@ export function roofSheetRowsOf(
     parapet,
     setback: hole ? null : numberOf(at, 'setback'),
     details,
-    waits: [materialWaits, kind?.waits, slope?.waits, parapet?.waits].some((each) => each === true),
+    crossings,
+    waits:
+      crossings.length > 0 ||
+      [materialWaits, kind?.waits, slope?.waits, parapet?.waits].some((each) => each === true),
   };
 }
 

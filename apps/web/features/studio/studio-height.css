@@ -44,6 +44,13 @@
   filter: drop-shadow(0 0 var(--sp-1) color-mix(in srgb, var(--hg-roof-ink) 60%, transparent));
 }
 
+/* A roof the open one crosses (board 10.3): ringed in the check colour. */
+.hg-roof-lines .hg-roof-crossed {
+  fill: color-mix(in srgb, var(--warning) 18%, transparent);
+  stroke: var(--warning);
+  stroke-width: 3;
+}
+
 /* The magnet's level line: dashed, in the roof's blue, across the model at the height pulled to,
    with a tag that names it. */
 .hg-roof-lines .hg-roof-level {

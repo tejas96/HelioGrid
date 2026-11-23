@@ -4,7 +4,7 @@ import type { MeasurementSystem, RoofKind, RoofName } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { Pressable, useFormat } from '@heliogrid/ui';
 import { pointText } from './roof-marks-place';
-import { DragArrow, LitSide, RidgeArrow } from './StudioRoofArrows';
+import { Crossings, DragArrow, LitSide, RidgeArrow } from './StudioRoofArrows';
 
 /** The kinds whose top carries no height pill. */
 const NO_HEIGHT: readonly RoofKind[] = ['hole', 'dormer'];
@@ -159,6 +159,7 @@ export function StudioRoofTops({
         );
       })}
       <RidgeArrow studio={studio} units={units} words={words} />
+      <Crossings studio={studio} words={words} />
     </>
   );
 }

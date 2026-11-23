@@ -4,6 +4,7 @@ import type {
   HeightFrom,
   LengthsMeasured,
   ParapetBuild,
+  RoofCrossing,
   RoofKind,
   RoofName,
   RoofNumber,
@@ -82,6 +83,10 @@ const SHEET = {
   hipEnd: /*i18n*/ { id: 'Hip' },
   openSide: /*i18n*/ { id: 'Side facing {way}: open its sheet' },
   openFace: /*i18n*/ { id: 'A face of {roof}: set its slope' },
+  crossWall: /*i18n*/ { id: 'Above {roof} · to check' },
+  crossRidge: /*i18n*/ { id: 'Ridge through {roof} · to check' },
+  crossSunk: /*i18n*/ { id: 'Below {roof}’s parapet · to check' },
+  crossEdge: /*i18n*/ { id: 'Past {roof}’s edge · to check' },
   wallArrow: /*i18n*/ { id: 'Drag to change this side’s parapet height' },
   ridgeArrow: /*i18n*/ { id: 'Drag to change the ridge’s height' },
 } as const;
@@ -98,6 +103,13 @@ const NUMBER: Record<RoofNumber, (typeof SHEET)[keyof typeof SHEET] | { readonly
   parapet_height: SHEET.parapetHeight,
   setback: SHEET.setback,
   thickness: SHEET.thickness,
+};
+
+const CROSS: Record<RoofCrossing['kind'], { readonly id: string }> = {
+  wall_above: SHEET.crossWall,
+  ridge_through: SHEET.crossRidge,
+  sunk: SHEET.crossSunk,
+  past_edge: SHEET.crossEdge,
 };
 
 const SHAPE: Record<RoofShape, { readonly id: string }> = {
@@ -225,6 +237,9 @@ export function studioSheetWords(t: T) {
     openSide: (way: CompassWay) => t(SHEET.openSide, { way: t(WAY[way]) }),
     openFace: (roof: RoofName) => t(SHEET.openFace, { roof: roofNameWord(t, roof) }),
     wallArrow: t(SHEET.wallArrow),
+    /** What a changed roof crosses, on the roof it crosses: allowed, and to check. */
+    crossing: (crossing: RoofCrossing) =>
+      t(CROSS[crossing.kind], { roof: roofNameWord(t, crossing.name) }),
     ridgeArrow: t(SHEET.ridgeArrow),
   };
 }

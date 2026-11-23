@@ -205,3 +205,48 @@ export function RidgeArrow({
     />
   );
 }
+
+/**
+ * What the open roof crosses as it changes (board 10.3): the roof crossed is ringed in the check
+ * colour, with a tag that names it. Allowed, and marked to check.
+ */
+export function Crossings({ studio, words }: { studio: StudioScreen; words: StudioCanvasWords }) {
+  const crossings = studio.sheetRows?.crossings ?? [];
+  if (crossings.length === 0) return null;
+  return (
+    <>
+      <svg className="hg-roof-lines" aria-hidden="true">
+        {crossings.map((crossing) => {
+          const marks = studio.roofMarks[crossing.roof];
+          if (marks === undefined) return null;
+          return (
+            <path
+              key={`${crossing.kind}-${crossing.roof}`}
+              className="hg-roof-crossed"
+              data-pts={marks.corners.map(pointText).join(';')}
+              data-closed="true"
+              data-top={studio.scene.levels[crossing.roof]?.topM ?? 0}
+            />
+          );
+        })}
+      </svg>
+      {crossings.map((crossing) => {
+        const marks = studio.roofMarks[crossing.roof];
+        if (marks === undefined) return null;
+        return (
+          <span
+            key={`${crossing.kind}-${crossing.roof}`}
+            className="hg-roof-at"
+            data-at={pointText(marks.middle)}
+            data-top={studio.scene.levels[crossing.roof]?.topM ?? 0}
+            data-tag="true"
+          >
+            <span className="hg-roof-tag" data-tone="check" role="status">
+              {words.crossing(crossing)}
+            </span>
+          </span>
+        );
+      })}
+    </>
+  );
+}

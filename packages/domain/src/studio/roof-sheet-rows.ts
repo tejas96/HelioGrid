@@ -33,6 +33,14 @@ export type SlopeWay =
   | { readonly kind: 'down'; readonly way: CompassWay; readonly bearing: number }
   | { readonly kind: 'faces'; readonly ways: readonly CompassWay[] };
 
+/** What a roof crosses as it is changed: allowed, lit on the model and marked to check. */
+export interface RoofCrossing {
+  readonly kind: 'wall_above' | 'ridge_through' | 'sunk' | 'past_edge';
+  /** The roof crossed: the one its walls rise above, its ridge runs through, or it stands on. */
+  readonly roof: number;
+  readonly name: RoofName;
+}
+
 export interface RoofSheetRows {
   readonly roof: number;
   readonly name: RoofName;
@@ -87,6 +95,8 @@ export interface RoofSheetRows {
     readonly build: ParapetBuild;
     readonly measured: LengthsMeasured;
   } | null;
+  /** What it crosses now: lit on the model with a tag, each marked to check. */
+  readonly crossings: readonly RoofCrossing[];
   /** Something on this sheet waits for a person: the sheet says once "Check it on site." */
   readonly waits: boolean;
 }
