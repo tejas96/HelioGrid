@@ -13,12 +13,16 @@ import { useMemo } from 'react';
 const HALF_TURN_DEG = 180;
 const DEGREES = Math.PI / HALF_TURN_DEG;
 const PERCENT = 100;
-/** The plan lies over the ground's pictures, under every roof. */
-const PLAN_ORDER = 3;
-const GLOW_ORDER = 4;
-/** A line's width on the screen, in CSS pixels, at every zoom; an outline that glows is wider. */
+/** The plan lies over the ground's pictures, under every roof: its halo, then its lines, then the glow. */
+const HALO_ORDER = 3;
+const PLAN_ORDER = 4;
+const GLOW_ORDER = 5;
+/** A line's width on the screen, in CSS pixels, at every zoom; its halo and a glowing outline are wider. */
 const LINE_PX = 2;
+const HALO_PX = 4;
 const GLOW_PX = 3;
+/** On a picture each line keeps a dark halo this strong, so it reads on any roof (board 4.1–4.8). */
+const HALO_SHARE = 0.55;
 /** The plan lies a hair above the ground, so no picture ever covers a line. */
 const LIFT_M = 0.02;
 
@@ -40,12 +44,17 @@ function segmentsOf(lines: PlanShown['lines']['lines']): [number, number, number
 export function StudioPlanLines({
   plan,
   ink,
+  halo,
   glow,
   glowing,
 }: {
   plan: PlanShown;
-  /** The line's colour and the glow's, from the theme's scene tokens. */
+  /**
+   * The line's colour, its halo's and the glow's, from the theme's tokens: on a picture white lines
+   * over a dark halo; on the bare grid ink lines and no halo (`halo` null).
+   */
   ink: string;
+  halo: string | null;
   glow: string;
   /** Its closed outlines glow: the plan rests on the house and is not locked. */
   glowing: boolean;
@@ -64,6 +73,19 @@ export function StudioPlanLines({
       rotation-y={-laid.turnDeg * DEGREES}
       scale={[laid.metresPerUnit, 1, laid.metresPerUnit]}
     >
+      {all.length === 0 || halo === null ? null : (
+        <Line
+          points={all}
+          segments
+          lineWidth={HALO_PX}
+          color={halo}
+          transparent
+          opacity={opacity * HALO_SHARE}
+          depthTest={false}
+          toneMapped={false}
+          renderOrder={HALO_ORDER}
+        />
+      )}
       {all.length === 0 ? null : (
         <Line
           points={all}

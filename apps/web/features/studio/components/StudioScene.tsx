@@ -219,8 +219,9 @@ export function StudioScene({
         {plan !== null && view === 'top' ? (
           <StudioPlanLines
             plan={plan}
-            ink={palette['scene-line']}
-            glow={palette['scene-mark']}
+            ink={picture.kind === 'none' ? palette['text-primary'] : palette['scene-mark']}
+            halo={picture.kind === 'none' ? null : palette['scene-shade']}
+            glow={palette['scene-line']}
             glowing={planGlows}
           />
         ) : null}

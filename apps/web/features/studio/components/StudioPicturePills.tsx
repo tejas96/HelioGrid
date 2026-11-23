@@ -41,7 +41,7 @@ function RefusedPill({ studio, words }: { studio: StudioScreen; words: StudioCan
   const km = job.distanceKm === null ? null : format.number(Math.round(job.distanceKm * 10) / 10);
   return (
     <span className="hg-studio-pill-refused" role="alert">
-      <ShellGlyph name="alert" size="sm" />
+      <ShellGlyph name="alert-circle" size="sm" />
       {words.pictureRefused(job.refusal, km)}
       <Button
         variant="secondary"

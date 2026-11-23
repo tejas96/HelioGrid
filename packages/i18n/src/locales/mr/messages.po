@@ -20199,7 +20199,7 @@ msgstr "एक लांबी ठरवा. त्यावरून फोट�
 #. js-lingui-explicit-id
 #: src/copy/studio-picture.ts:55
 msgid "Set one length. It sizes the plan and the roof."
-msgstr "एक लांबी ठरवा. त्यावरून प्लॅन आणि छत दोन्हीचे माप ठरेल."
+msgstr "एक लांबी ठरवा. त्यावरून आराखडा आणि छत दोन्हीचे माप ठरेल."
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:75
@@ -22892,7 +22892,7 @@ msgstr "आराखडा लॉक आहे."
 #. js-lingui-explicit-id
 #: src/copy/studio-picture.ts:60
 msgid "The plan is removed. Undo brings it back."
-msgstr "आराखडा काढला. पूर्ववत करा ने तो परत येईल."
+msgstr "आराखडा काढला. ‘पूर्ववत करा’ दाबल्यावर तो परत येईल."
 
 #. js-lingui-explicit-id
 #: src/copy/studio-picture.ts:47
@@ -23801,7 +23801,7 @@ msgstr "हा प्लॅन आता रद्द होऊ शकत ना
 #. js-lingui-explicit-id
 #: src/copy/studio-picture.ts:26
 msgid "This plan has too many lines. Save its roof floor alone and pick it again."
-msgstr "या प्लॅनमध्ये खूप रेषा आहेत. फक्त छताचा मजला वेगळा सेव्ह करा आणि पुन्हा निवडा."
+msgstr "या आराखड्यात खूप रेषा आहेत. फक्त छताचा मजला वेगळा सेव्ह करा आणि पुन्हा निवडा."
 
 #. js-lingui-explicit-id
 #: src/copy/studio-picture.ts:25

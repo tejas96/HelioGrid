@@ -20199,7 +20199,7 @@ msgstr "एक लंबाई तय करें। उससे फ़ोट�
 #. js-lingui-explicit-id
 #: src/copy/studio-picture.ts:55
 msgid "Set one length. It sizes the plan and the roof."
-msgstr "एक लंबाई तय करें। उससे प्लान और छत दोनों का माप बनेगा।"
+msgstr "एक लंबाई तय करें। उससे नक्शे और छत दोनों का माप बनेगा।"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:75
@@ -22892,7 +22892,7 @@ msgstr "नक्शा लॉक है।"
 #. js-lingui-explicit-id
 #: src/copy/studio-picture.ts:60
 msgid "The plan is removed. Undo brings it back."
-msgstr "नक्शा हटा दिया गया। पहले जैसा करें से वापस आएगा।"
+msgstr "नक्शा हटा दिया गया। ‘पहले जैसा करें’ दबाने पर वापस आएगा।"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-picture.ts:47
@@ -23801,7 +23801,7 @@ msgstr "यह प्लान अब रद्द नहीं हो सकत
 #. js-lingui-explicit-id
 #: src/copy/studio-picture.ts:26
 msgid "This plan has too many lines. Save its roof floor alone and pick it again."
-msgstr "इस प्लान में बहुत ज़्यादा लाइनें हैं। सिर्फ़ छत वाली मंज़िल अलग से सेव करें और फिर से चुनें।"
+msgstr "इस नक्शे में बहुत ज़्यादा लाइनें हैं। सिर्फ़ छत वाली मंज़िल अलग से सेव करें और फिर से चुनें।"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-picture.ts:25
