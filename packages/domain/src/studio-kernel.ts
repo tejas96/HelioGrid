@@ -63,10 +63,7 @@ export {
   HOLE_SIDE_MAX_M,
   type HoleMeets,
   holeMeets,
-  type MeetChoice,
   meetingOf,
-  type RoofMeeting,
-  type RoofPlace,
   STAIR_ROOM_MAX_M2,
 } from './studio/roof-meet';
 export {

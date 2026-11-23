@@ -150,6 +150,7 @@ export {
   onPicture,
 } from './roof-length';
 export * from './roof-material';
+export * from './roof-meeting';
 export {
   KEY_MOVE_M,
   KEY_TURN_DEGREES,
