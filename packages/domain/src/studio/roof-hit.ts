@@ -1,6 +1,6 @@
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { belongsTo, roofKindOf } from './roof-kind';
+import { roofKindOf } from './roof-kind';
 import { type RoofFacts, roofShapeNow } from './roof-levels';
 import type { ModelPoint, RoofHit, RoofScene, SightAt } from './roof-scene';
 import { pointInside } from './roof-shape';
@@ -111,8 +111,32 @@ function nearestSide(document: StudioDocument, roof: number, point: GroundPoint)
   return best;
 }
 
+/** The holes cut in a roof: the roofs of that kind that are part of it. */
+function holesOf(document: StudioDocument, roof: number): number[] {
+  const id = document.roofs[roof]?.id;
+  return document.roofs.flatMap((other, index) =>
+    roofKindOf(other) === 'hole' && other.partOf === id ? [index] : [],
+  );
+}
+
+/** Two plan points this near are one: a cut wall's ends lie on the hole's outline. */
+const ON_M = 1e-3;
+
+/**
+ * A wall of the roof's body that stands on a hole's outline: a hole inside the roof cuts a ring, and
+ * one across its edge a notch in the outline — either way the wall is the hole's.
+ */
+function onHole(document: StudioDocument, roof: number, from: GroundPoint, to: GroundPoint) {
+  return holesOf(document, roof).some((hole) => {
+    const ring = document.roofs[hole]?.corners ?? [];
+    const on = (point: GroundPoint) =>
+      ring.some((a, i) => farFrom(point, a, ring[(i + 1) % ring.length] as GroundPoint) < ON_M);
+    return on(from) && on(to);
+  });
+}
+
 /** Every top, face and wall of the model the line of sight meets. */
-function metAll(scene: RoofScene, sight: Sight): Met[] {
+function metAll(document: StudioDocument, scene: RoofScene, sight: Sight): Met[] {
   const met: Met[] = [];
   const add = (up: number | null, roof: number, hit: RoofHit, inHole = false) => {
     if (up !== null) met.push({ up, hit, roof, at: sightAt(sight, up), inHole });
@@ -126,14 +150,16 @@ function metAll(scene: RoofScene, sight: Sight): Met[] {
         pointInside(at, prism.outer) && !prism.holes.some((hole) => pointInside(at, hole));
       add(inside ? prism.topM : null, prism.roof, { kind: 'roof', roof: prism.roof });
     }
-    [prism.outer, ...prism.holes].forEach((ring, k) => {
+    for (const ring of [prism.outer, ...prism.holes]) {
       ring.forEach((from, i) => {
         const to = ring[(i + 1) % ring.length] as GroundPoint;
         const up = onWall(sight, from, to, prism.footM, () => prism.topM);
-        // A wall is met as its roof's side: the side is named once the hit is chosen.
-        add(up, prism.roof, { kind: 'side', roof: prism.roof, side: -1 }, k > 0);
+        if (up === null) return;
+        // A wall is met as its roof's side, or its hole's: the side is named once the hit is chosen.
+        const inHole = onHole(document, prism.roof, from, to);
+        add(up, prism.roof, { kind: 'side', roof: prism.roof, side: -1 }, inHole);
       });
-    });
+    }
   }
   for (const wall of scene.walls) {
     const up = onWall(
@@ -174,31 +200,39 @@ function nearRidge(
 /** Steps of the search for where the line of sight starts: well under a millimetre. */
 const SEARCH_STEPS = 32;
 
-/**
- * The highest height the line of sight is read at: the camera's, found by search, since a height
- * above the camera is behind it and reads `null`; `null` when the line meets the ground nowhere.
- */
-function sightTop(at: SightAt, highest: number): number | null {
-  if (at(highest) !== null) return highest;
-  if (at(0) === null) return null;
-  let below = 0;
-  let above = highest;
+/** The height between `answers` and `silent` where the line of sight starts to answer: the camera's. */
+function cameraAt(at: SightAt, answers: number, silent: number): number {
+  let near = answers;
+  let far = silent;
   for (let step = 0; step < SEARCH_STEPS; step += 1) {
-    const middle = (below + above) / 2;
-    if (at(middle) === null) above = middle;
-    else below = middle;
+    const middle = (near + far) / 2;
+    if (at(middle) === null) far = middle;
+    else near = middle;
   }
-  return below;
+  return near;
+}
+
+/**
+ * The heights the line of sight is read between: `near` the camera's end, `far` the other. A height
+ * behind the camera reads `null`, so a camera between the ground and `highest` is found by search
+ * — looking down, below `highest`; looking up, above the ground. `null` when nothing answers.
+ */
+function sightEnds(at: SightAt, highest: number): { near: number; far: number } | null {
+  const high = at(highest) !== null;
+  const low = at(0) !== null;
+  if (high && low) return { near: highest, far: 0 };
+  if (low) return { near: cameraAt(at, 0, highest), far: 0 };
+  if (high) return { near: cameraAt(at, highest, 0), far: highest };
+  return null;
 }
 
 /** A side met on a hole's wall: the hole roof cut there, and its side nearest the point. */
 function holeSide(document: StudioDocument, roof: number, point: GroundPoint): RoofHit | null {
   let best: { roof: number; side: number; far: number } | null = null;
-  document.roofs.forEach((other, index) => {
-    if (roofKindOf(other) !== 'hole' || belongsTo(document, other) !== roof) return;
+  for (const index of holesOf(document, roof)) {
     const near = nearestSide(document, index, point);
     if (best === null || near.far < best.far) best = { roof: index, ...near };
-  });
+  }
   const found = best as { roof: number; side: number } | null;
   return found === null ? null : { kind: 'side', roof: found.roof, side: found.side };
 }
@@ -230,7 +264,9 @@ function named(
 }
 
 /**
- * What a tap on the 3D model lands on; `null` off every roof. `open`: the roof whose sheet is open
+ * What a tap on the 3D model lands on; `null` off every roof. `at` is the tap's line of sight and
+ * `beside` the same line a finger's half-width to the side: a side or a ridge within that reach,
+ * measured where the tap meets the model, is the one tapped. `open`: the roof whose sheet is open
  * — a second tap on its top, where another roof lies under it, picks the one under it (E035).
  */
 export function roofHitOf(
@@ -239,18 +275,24 @@ export function roofHitOf(
   worked: RoofsWorked,
   facts: RoofFacts,
   at: SightAt,
-  reachM: number,
+  beside: SightAt,
   open: number | null = null,
 ): RoofHit | null {
   const highest = Math.max(0, ...scene.levels.map((level) => level.topM)) + ABOVE_M;
-  const top = sightTop(at, highest);
-  const high = top === null ? null : at(top);
-  const low = at(0);
-  if (top === null || high === null || low === null) return null;
-  const sight: Sight = { from: { ...high, up: top }, to: { ...low, up: 0 } };
-  const met = metAll(scene, sight).sort((a, b) => b.up - a.up);
+  const ends = sightEnds(at, highest);
+  const near = ends === null ? null : at(ends.near);
+  const far = ends === null ? null : at(ends.far);
+  if (ends === null || near === null || far === null) return null;
+  const sight: Sight = { from: { ...near, up: ends.near }, to: { ...far, up: ends.far } };
+  // The nearest to the camera is met first.
+  const met = metAll(document, scene, sight).sort(
+    (a, b) => Math.abs(a.up - ends.near) - Math.abs(b.up - ends.near),
+  );
   const first = met[0];
   if (first === undefined) return null;
+  const aside = beside(first.up);
+  const reachM =
+    aside === null ? 0 : Math.hypot(aside.east - first.at.east, aside.north - first.at.north);
   const hit = named(document, scene, worked, facts, sight, first, reachM);
   if (hit?.kind !== 'roof' || hit.roof !== open) return hit;
   const under = met.find((each) => each.roof !== open);

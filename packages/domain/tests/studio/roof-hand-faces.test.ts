@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import type { Roof } from '../../src/studio/document';
 import { roofBuilt } from '../../src/studio/roof-built';
+import { lengthSet } from '../../src/studio/roof-length';
 import { roofMoved, roofTurned } from '../../src/studio/roof-move';
+import { drawingsAfterPinMove } from '../../src/studio/site-moved';
 import { box, designOf, FACTS, p, roofOf } from './roof-meet-support';
 
 /**
@@ -45,6 +47,41 @@ describe('a roof of any shape with faces drawn by hand', () => {
     // An older app version moves a corner and keeps faces it does not read: they no longer fit,
     // and the roof stands flat until faces are drawn again.
     expect(sloped({ ...DRAWN, corners, edges: corners.map(() => 'traced') })).toBe(kept);
+  });
+
+  it('a big roof with a corner moved a little out loses its faces too', () => {
+    const half = (west: number) => ({
+      corners: [p(west, 0), p(west + 10, 0), p(west + 10, 20), p(west, 20)],
+      slope: { degrees: 20, setBy: 'person' as const },
+      lowSide: 0,
+    });
+    const big = roofOf('big', box(0, 0, 20, 20), {
+      shape: { is: 'any', setBy: 'person', faces: [half(0), half(10)] },
+    });
+    expect(sloped(big)).toBe(true);
+    // 0.39 m out on a 20 m side: under 1% of the roof, still a hole of nearly 4 m² by the faces.
+    const corners = [p(0, 0), p(20.39, 0), p(20, 20), p(0, 20)];
+    expect(sloped({ ...big, corners })).toBe(false);
+  });
+
+  it('a fixed pin carries its faces with its corners', () => {
+    const pin = { latitude: 16.845_6, longitude: 74.601_2 };
+    const after = drawingsAfterPinMove(
+      [designOf(DRAWN)],
+      pin,
+      { ...pin, latitude: 16.845_62 },
+      false,
+    );
+    const moved = after.kind === 'done' ? after.documents[0]?.roofs[0] : undefined;
+    expect(moved?.corners[0]).not.toEqual(DRAWN.corners[0]);
+    expect(moved === undefined ? false : sloped(moved)).toBe(true);
+  });
+
+  it('the first true length stretches its faces with the picture', () => {
+    const sized = lengthSet(designOf(DRAWN), 0, 0, 10, 'typed');
+    const roof = sized.kind === 'done' ? sized.document.roofs[0] : undefined;
+    expect(roof?.corners[1]?.east).toBeCloseTo(10, 6);
+    expect(roof === undefined ? false : sloped(roof)).toBe(true);
   });
 
   it('a move carries its faces with it', () => {

@@ -45,8 +45,11 @@ const NOTHING: RoofModelShown = {
 
 /** The model drawn, and what a tap on it lands on: the screen hook's, never shown. */
 export interface RoofModelSeen extends RoofModelShown {
-  /** `open`: the roof whose sheet is open — a second tap on its top picks the roof under it. */
-  hitAt(at: SightAt, reachM: number, open: number | null): RoofHit | null;
+  /**
+   * `beside`: the tap's line of sight a finger's half-width to the side. `open`: the roof whose
+   * sheet is open — a second tap on its top picks the roof under it.
+   */
+  hitAt(at: SightAt, beside: SightAt, open: number | null): RoofHit | null;
 }
 
 /** The open sheet's roof, the side whose sheet shows over it, and the height slider's ends. */
@@ -91,7 +94,7 @@ export function roofModelShown(
   const row = open === null ? undefined : roofList.rows.find((each) => each.roof === open.roof);
   return {
     scene,
-    hitAt: (at, reachM, open) => roofHitOf(shown, scene, worked, facts, at, reachM, open),
+    hitAt: (at, beside, open) => roofHitOf(shown, scene, worked, facts, at, beside, open),
     topMarks: roofTopMarksOf(shown, facts, worked, latitude),
     roofList,
     roofsAreaM2: roofsAreaM2(shown),

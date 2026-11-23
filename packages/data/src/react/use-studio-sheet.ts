@@ -60,7 +60,7 @@ export function useStudioSheet(args: {
   /** The magnet is on, and not held off for a moment. */
   magnetOn: () => boolean;
   /** What a tap on the model lands on, as the kernel reads the design drawn. */
-  hitAt: (at: SightAt, reachM: number, open: number | null) => RoofHit | null;
+  hitAt: (at: SightAt, beside: SightAt, open: number | null) => RoofHit | null;
 }): {
   readonly state: RoofSheetState & RoofSheetRowsState & { readonly arrowHeld: boolean };
   readonly moves: RoofSheetMoves & RoofSheetRowMoves;
@@ -136,8 +136,8 @@ export function useStudioSheet(args: {
         rows.moves.keepNumber();
         sheet.moves.openRoof(index);
       },
-      tapRoof: (at, reachM) => {
-        const hit = args.hitAt(at, reachM, sheet.state.roofSheet?.roof ?? null);
+      tapRoof: (at, beside) => {
+        const hit = args.hitAt(at, beside, sheet.state.roofSheet?.roof ?? null);
         rows.moves.keepNumber();
         if (!sheet.landOn(hit?.roof ?? null) || hit === null) return;
         tapped(hit, rows.showOn, rows.moves.turnRidgeOf);

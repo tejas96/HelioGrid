@@ -1,7 +1,6 @@
 'use client';
 import type { DesignDetail, TranslatedText } from '@heliogrid/contracts';
 import type { StudioScreen } from '@heliogrid/data/react';
-import type { GroundPoint, RoofScene } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { ShellGlyph, useDesktopShell, usePalette, useReducedMotion } from '@heliogrid/ui';
 import dynamic from 'next/dynamic';
@@ -27,20 +26,6 @@ import { StudioToolRail } from './StudioToolRail';
 
 /** A finger's half-width on the screen: a side or a ridge this near a tap is the one tapped. */
 const FINGER_PX = 22;
-
-/** How far a finger's half-width reaches on the model at its tallest roof, in metres. */
-function fingerReachM(
-  at: (heightM: number) => GroundPoint | null,
-  beside: (heightM: number) => GroundPoint | null,
-  scene: RoofScene,
-): number {
-  const top = Math.max(0, ...scene.levels.map((level) => level.topM));
-  const here = at(top);
-  const there = beside(top);
-  return here === null || there === null
-    ? 0
-    : Math.hypot(there.east - here.east, there.north - here.north);
-}
 
 /** The sun the scene is lit by before the site's own is known: high, so nothing waits on it. */
 const NOON_OVERHEAD = { azimuthDegrees: 180, elevationDegrees: 60 } as const;
@@ -100,10 +85,7 @@ export function StudioCanvas({
   const { aim, aimAt, handlers } = useDrawPress(studio, drive, (x, y) => {
     if (view !== 'top') {
       const at = (heightM: number) => drive.current?.groundAt(x, y, heightM) ?? null;
-      moves.tapRoof(
-        at,
-        fingerReachM(at, (h) => drive.current?.groundAt(x + FINGER_PX, y, h) ?? null, studio.scene),
-      );
+      moves.tapRoof(at, (h) => drive.current?.groundAt(x + FINGER_PX, y, h) ?? null);
       return;
     }
     // The plan takes the tap first: an outline makes its roof (`T-M05-002d`, board 4.3).

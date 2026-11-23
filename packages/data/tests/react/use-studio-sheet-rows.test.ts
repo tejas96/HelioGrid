@@ -130,16 +130,18 @@ describe('a side’s sheet', () => {
 describe('a tap on the model in 3D', () => {
   /** Straight down onto a point of the plan. */
   const down = (east: number, north: number) => () => ({ east, north });
+  /** The same, a finger's half-width east: a side within 0.3 m of the tap is the one tapped. */
+  const finger = (east: number, north: number) => down(east + 0.3, north);
 
   it('on a roof opens its sheet; on its edge, that side’s sheet; off every roof, it closes', async () => {
     const view = await opened();
     act(() => view.result.current.moves.closeRoof());
-    act(() => view.result.current.moves.tapRoof(down(4, 3), 0.3));
+    act(() => view.result.current.moves.tapRoof(down(4, 3), finger(4, 3)));
     expect(view.result.current.roofSheet?.roof).toBe(0);
     expect(view.result.current.sheetPart).toEqual({ kind: 'roof' });
-    act(() => view.result.current.moves.tapRoof(down(4, 0.1), 0.3));
+    act(() => view.result.current.moves.tapRoof(down(4, 0.1), finger(4, 0.1)));
     expect(view.result.current.sheetPart).toEqual({ kind: 'side', side: 0 });
-    act(() => view.result.current.moves.tapRoof(down(40, 40), 0.3));
+    act(() => view.result.current.moves.tapRoof(down(40, 40), finger(40, 40)));
     expect(view.result.current.roofSheet).toBeNull();
   });
 
@@ -158,9 +160,9 @@ describe('a tap on the model in 3D', () => {
     };
     const view = await opened([TERRACE, stair]);
     act(() => view.result.current.moves.closeRoof());
-    act(() => view.result.current.moves.tapRoof(down(3.5, 3.5), 0.3));
+    act(() => view.result.current.moves.tapRoof(down(3.5, 3.5), finger(3.5, 3.5)));
     expect(view.result.current.roofSheet?.roof).toBe(1);
-    act(() => view.result.current.moves.tapRoof(down(3.5, 3.5), 0.3));
+    act(() => view.result.current.moves.tapRoof(down(3.5, 3.5), finger(3.5, 3.5)));
     expect(view.result.current.roofSheet?.roof).toBe(0);
   });
 

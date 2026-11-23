@@ -68,6 +68,20 @@ describe('roofsOnPlan', () => {
 });
 
 describe('planSizedByLength', () => {
+  it('a roof’s faces drawn by hand are sized with it, and still fit it', () => {
+    const design = designWith();
+    const roof = design.roofs[0] as Roof;
+    const face = {
+      corners: roof.corners,
+      slope: { degrees: 20, setBy: 'person' as const },
+      lowSide: 0,
+    };
+    const drawn: Roof = { ...roof, shape: { is: 'any', setBy: 'person', faces: [face] } };
+    const result = planSizedByLength({ ...design, roofs: [drawn] }, [0], 0, 0, 9, 'typed');
+    const sized = result.kind === 'done' ? result.document.roofs[0] : undefined;
+    expect(sized?.shape?.faces?.[0]?.corners).toEqual(sized?.corners);
+  });
+
   it('the first length sizes the plan and its roof; the plan’s scale is then a person’s', () => {
     const design = designWith();
     const result = planSizedByLength(design, [0], 0, 0, 9, 'typed');

@@ -1,6 +1,7 @@
 import type { Coordinate } from '../format/areas';
 import { GROUND_REACH_M, type StudioDocument } from './document';
 import { type GroundPoint, groundOf } from './ground';
+import { roofPlaced } from './roof-move';
 
 /**
  * How far the pin may move and still be the same site, in metres: a fix onto the right house. The
@@ -29,10 +30,9 @@ const samePin = (left: Coordinate, right: Coordinate) =>
 function drawingMovedBy(document: StudioDocument, shift: GroundPoint): StudioDocument | null {
   const east = shift.east * document.pictureScale;
   const north = shift.north * document.pictureScale;
-  const roofs = document.roofs.map((roof) => ({
-    ...roof,
-    corners: roof.corners.map((c) => ({ east: c.east - east, north: c.north - north })),
-  }));
+  const roofs = document.roofs.map((roof) =>
+    roofPlaced(roof, (c) => ({ east: c.east - east, north: c.north - north })),
+  );
   const outside = roofs.some((roof) =>
     roof.corners.some(
       (c) => Math.abs(c.east) > GROUND_REACH_M || Math.abs(c.north) > GROUND_REACH_M,

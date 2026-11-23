@@ -30,9 +30,9 @@ export interface RoofSheetMoves {
   /**
    * A tap on the model in 3D, as the kernel reads it (`roofHitOf`): what it lands on — a roof
    * opens its sheet, a face its Slope, a side its own sheet, a gable's ridge turns; off every
-   * roof, the sheet closes. `reachM`: how far a finger's width reaches there, in metres.
+   * roof, the sheet closes. `beside`: the same line of sight a finger's half-width to the side.
    */
-  tapRoof(at: SightAt, reachM: number): void;
+  tapRoof(at: SightAt, beside: SightAt): void;
   /** × or Esc: the sheet closes; a height still in hand goes, as the length box's × does. */
   closeRoof(): void;
   /** The slider moved: the walls follow; nothing is kept yet. */

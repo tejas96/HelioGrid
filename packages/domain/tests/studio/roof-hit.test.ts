@@ -20,7 +20,12 @@ const hitOf = (
 ) => {
   const worked = roofsWorked(design, FACTS, 18.5);
   const scene = roofSceneOf(design, FACTS, worked);
-  return roofHitOf(design, scene, worked, FACTS, at, REACH_M, open);
+  // The same line of sight a finger's half-width east: the reach, wherever it meets the model.
+  const beside = (h: number) => {
+    const point = at(h);
+    return point === null ? null : { east: point.east + REACH_M, north: point.north };
+  };
+  return roofHitOf(design, scene, worked, FACTS, at, beside, open);
 };
 /** A camera this high: a height above it is behind it, and reads nothing. */
 const under = (cameraM: number, at: (h: number) => GroundPoint | null) => (h: number) =>
@@ -68,6 +73,26 @@ describe('a tap on the 3D model', () => {
     });
   });
 
+  it('a camera below the roof’s top, looking up at its wall, meets that wall', () => {
+    // From 1 m up, 3 m south of the terrace, looking up and north: the south wall, 2.5 m up.
+    const up = (h: number) => (h < 1 ? null : { east: 5, north: -3 + (h - 1) * 2 });
+    expect(hitOf(designOf(TERRACE), up)).toEqual({ kind: 'side', roof: 0, side: 0 });
+  });
+
+  it('the reach is a finger’s width where the tap meets the roof, not high above it', () => {
+    const design = designOf(TERRACE);
+    const worked = roofsWorked(design, FACTS, 18.5);
+    const scene = roofSceneOf(design, FACTS, worked);
+    // Seen in perspective: a finger spans 0.3 m at the roof, nothing far above it.
+    const at = down(5, 0.2);
+    const beside = (h: number) => ({ east: 5 + (h < 10 ? REACH_M : 0), north: 0.2 });
+    expect(roofHitOf(design, scene, worked, FACTS, at, beside)).toEqual({
+      kind: 'side',
+      roof: 0,
+      side: 0,
+    });
+  });
+
   it('a second tap on the open roof’s top picks the roof under it', () => {
     const design = designOf(TERRACE, stairOn(box(1, 1, 3, 3)));
     expect(hitOf(design, down(2.5, 2.5), 1)).toEqual({ kind: 'roof', roof: 0 });
@@ -80,6 +105,13 @@ describe('a tap on the 3D model', () => {
     // Steep, down through the duct's open top onto its south wall, at north 3.
     const hit = hitOf(designOf(TERRACE, duct), (h) => ({ east: 5, north: 2.9 + 0.2 * h }));
     expect(hit).toMatchObject({ kind: 'side', roof: 1 });
+  });
+
+  it('a hole across the roof’s edge: its wall is still the hole’s side', () => {
+    const duct = kindOf('duct', 'hole', box(9, 3, 2, 2), { partOf: 'terrace' });
+    // Steep, down through the duct's open top onto its west wall, at east 9.
+    const hit = hitOf(designOf(TERRACE, duct), (h) => ({ east: 8.9 + 0.2 * h, north: 4 }));
+    expect(hit).toEqual({ kind: 'side', roof: 1, side: 3 });
   });
 
   it('nothing is met behind the camera', () => {
