@@ -44,3 +44,5 @@ appId: com.heliogrid.app
     notVisible: ${SITE_START}
     timeout: 15000
 - assertNotVisible: ${SITE_BY_COORDINATES}
+# A site saved with no place would open the holding page instead: it is not here either.
+- assertNotVisible: ${DESIGN_HOLDING}
