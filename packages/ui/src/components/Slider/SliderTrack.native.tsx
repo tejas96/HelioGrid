@@ -22,6 +22,8 @@ interface SliderTrackProps {
   percent: number;
   /** The system's mark on the track, in percent; `null` with none. */
   mark: number | null;
+  /** Named points on the track, in percent: a short tick each. */
+  ticks: readonly number[];
   shown: string;
   step: number;
   value: number;
@@ -46,6 +48,7 @@ export function SliderTrack({
   onNudge,
   percent,
   mark,
+  ticks,
   shown,
   step,
   value,
@@ -89,6 +92,9 @@ export function SliderTrack({
         style={[styles.fill, { width: `${percent}%` }, disabled ? styles.fillDisabled : undefined]}
       />
       {mark === null ? null : <View style={[styles.mark, { left: `${mark}%` }]} />}
+      {ticks.map((at) => (
+        <View key={at} style={[styles.tick, { left: `${at}%` }]} />
+      ))}
       <View
         style={[
           styles.thumb,
@@ -136,6 +142,14 @@ const styles = StyleSheet.create({
     marginLeft: -1,
     borderRadius: theme.radius['r-pill'],
     backgroundColor: colors['text-secondary'],
+  },
+  /* A named point (a roof's floor): a short tick the thumb passes over. */
+  tick: {
+    position: 'absolute',
+    top: 18,
+    width: 1,
+    height: 8,
+    backgroundColor: colors['text-tertiary'],
   },
   thumb: {
     position: 'absolute',

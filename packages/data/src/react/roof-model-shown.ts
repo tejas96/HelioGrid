@@ -1,4 +1,10 @@
-import type { RoofList, RoofScene, RoofTopMark } from '@heliogrid/domain';
+import type {
+  RoofList,
+  RoofScene,
+  RoofSheetRows,
+  RoofTopMark,
+  SideSheetRows,
+} from '@heliogrid/domain';
 
 /** What the studio's kernel works out of the design drawn, for the screen to draw. */
 export interface RoofModelShown {
@@ -10,4 +16,8 @@ export interface RoofModelShown {
   readonly roofList: RoofList;
   /** The area of every roof together, every spot once as seen from above, in square metres. */
   readonly roofsAreaM2: number;
+  /** The open roof's sheet, row by row; `null` with no sheet open. */
+  readonly sheetRows: RoofSheetRows | null;
+  /** The open side's sheet; `null` with no side open. */
+  readonly sideRows: SideSheetRows | null;
 }

@@ -119,7 +119,7 @@ export interface StudioSceneProps {
   sun: SunPosition;
   palette: ThemePalette;
   /** The room the bars take at the top and the foot, in CSS pixels: the view frames the rest. */
-  free: { readonly top: number; readonly bottom: number };
+  free: { readonly top: number; readonly bottom: number; readonly right?: number };
   still: boolean;
   /** The page's pin marker, which the scene keeps on the pin as the camera moves. */
   pinLabel: RefObject<HTMLElement | null>;

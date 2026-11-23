@@ -9,6 +9,7 @@ import { studioLengthWords } from './studio-length';
 import { studioPictureWords } from './studio-picture';
 import { studioRoofWords } from './studio-roof';
 import { studioRoofListWords } from './studio-roof-list';
+import { studioSheetWords } from './studio-sheet';
 import { studioSizeWords } from './studio-size';
 
 type T = Translator['t'];
@@ -214,6 +215,7 @@ export function studioCanvasWords(t: T) {
     ...studioRoofListWords(t),
     ...studioLengthWords(t),
     ...studioSizeWords(t),
+    ...studioSheetWords(t),
     ...studioHeightWords(t),
     ...studioPictureWords(t),
     noScene: t(CANVAS.noScene),

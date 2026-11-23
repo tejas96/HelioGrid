@@ -35,10 +35,10 @@ import { historyStep, studioBack, undoRedoOf } from './studio-undo-back';
 import { useStudioPicture } from './use-design-picture';
 import { useDesignScreen } from './use-design-screen';
 import { useOwnPictureScreen } from './use-own-picture-screen';
-import { useRoofSheet } from './use-roof-sheet';
 import { useRoofStep } from './use-roof-step';
 import { useRoofsPanel } from './use-roofs-panel';
 import { useSession } from './use-session';
+import { useStudioSheet } from './use-studio-sheet';
 
 /**
  * The studio's canvas (`T-M05-002a`): the design, its document and the sky picture under it; each
@@ -109,22 +109,20 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const { roofStep } = roof.view;
 
   useSizeCardOpens(arrivalOf(document, picture, editing, editable, view), roof.moves.typeSize);
-  const sheet = useRoofSheet({
+  const sheet = useStudioSheet({
     document,
     latest,
     change,
+    act,
     editable,
     facts,
     units,
+    pin,
     pullOf: heightPullWith(facts, roof.magnetNow),
-    outline: (index, metres) => {
-      setView('top');
-      act({ kind: 'pick_roof', roof: index, metres });
-    },
   });
-  const { roofSheet } = sheet.state;
+  const { roofSheet, numberInHand } = sheet.state;
   const { shown } = roof.view;
-  const model = useRoofModel(shown, facts, roofSheet, pin);
+  const model = useRoofModel(shown, facts, roofSheet, pin, sheet.side, numberInHand);
   const place = roofPlaceMoves({ latest, step, act, facts });
   // Drawing happens in the top view only: the camera flies there first. A roof's sheet is the 3D
   // view's: its height is kept and it closes, as when the top view is picked; a height that is
@@ -214,8 +212,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       // While drawing, Undo takes the last corner off; with a length or a drag in hand, it puts
       // that back first.
       undo: () => {
-        // A height in hand is put back first, as a length or a drag is.
-        if (sheet.moves.dropHeight()) return;
+        // A height or a number in hand is put back first, as a length or a drag is.
+        if (sheet.dropInHand()) return;
         const now = step.current.kind;
         const left = step.current.kind === 'idle' && Boolean(step.current.left);
         if (now === 'drawing' || left) act({ kind: 'undo_corner' });
@@ -245,9 +243,9 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         const held = step.current.kind;
         if (next !== 'top' && (held === 'drawing' || held === 'typing')) act({ kind: 'cancel' });
         if (next === '3d') setSeen3d(true);
-        // A roof's sheet is the 3D view's: the top view keeps its height and closes it. A height
-        // that is refused keeps the sheet and the view, with its reason showing.
-        if (next === 'top' && !sheet.moves.done()) return;
+        // A roof's sheet stays open in either view: its height in hand is kept first. A height
+        // that is refused keeps the view, with its reason showing.
+        if (!sheet.viewing(next)) return;
         setView(next);
       },
       draw,
@@ -259,7 +257,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
           picturesOpen,
           closePictures: () => setPicturesOpen(false),
           sheetOpen: roofSheet !== null,
-          closeSheet: () => void sheet.moves.done(),
+          // A side's sheet and Parapet details go back to the roof's; the roof's sheet closes.
+          closeSheet: sheet.back,
           step: step.current,
           act,
         }),

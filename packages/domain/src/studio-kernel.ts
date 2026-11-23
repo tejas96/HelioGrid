@@ -13,6 +13,16 @@
 
 export { roofBuilt, roofFormOf, roofSlopeDeg } from './studio/roof-built';
 export {
+  roofLengthsMeasuredTo,
+  roofParapetAllRound,
+  roofParapetBuilt,
+  roofRidgeTurned,
+  roofShapePicked,
+  roofSideEnded,
+  roofSideMarked,
+  roofSideWallFollows,
+} from './studio/roof-choices';
+export {
   type CutRoofs,
   cutInto,
   facesWithout,
@@ -93,12 +103,14 @@ export {
 export type { ProfilePart, StandingWall } from './studio/roof-profile';
 export { roofSceneOf } from './studio/roof-scene-build';
 export { setbackLines } from './studio/roof-setback';
+export { type HeightSlide, roofSheetRowsOf, sideSheetRowsOf } from './studio/roof-sheet-build';
 export {
   bearingsApart,
   COMPASS_WAYS,
   type CompassWay,
   compassOf,
   equatorBearing,
+  formPicksOf,
   gableTurnedFor,
   glassSideOf,
   type LowSide,
@@ -106,4 +118,6 @@ export {
   sideBearing,
 } from './studio/roof-slope-way';
 export { roofTopMarksOf } from './studio/roof-top-marks-build';
+export { roofNumberOf } from './studio/roof-values';
+export { roofNumberReset, roofNumberSet } from './studio/roof-values-set';
 export { type RoofsWorked, roofsWorked, type WorkedBefore } from './studio/roof-worked';

@@ -1,3 +1,5 @@
+import { METRES_PER_FOOT } from '../format/measurement';
+import type { MeasurementSystem } from '../format/pack';
 import {
   OVERHANG_MAX_M,
   PARAPET_HEIGHT_MAX_M,
@@ -148,4 +150,60 @@ export function roofNumberHeld(key: RoofNumber, value: number): number {
   const grain = unit === 'metres' ? 0.01 : slide.step;
   const clamped = Math.min(typed.max, Math.max(typed.min, Number.isFinite(value) ? value : 0));
   return Math.round(Math.round(clamped / grain) * grain * 100) / 100;
+}
+
+/** A number as its box takes it: in the reader's units, with its ends, and back to what is stored. */
+export interface RoofNumberTyped {
+  readonly value: number;
+  readonly min: number;
+  readonly max: number;
+  readonly step: number;
+  /** The unit beside the box: never a word, so never translated. */
+  readonly unit: string;
+  /** A typed number, back in the unit the roof stores. */
+  back(typed: number): number;
+}
+
+const PERCENT = 100;
+
+/**
+ * The box a number is typed in: a length in metres, or in feet where feet are used; a slope in
+ * degrees; a valley's place as a share in per cent; a count as it is.
+ */
+export function roofNumberTyped(
+  shown: RoofNumberShown,
+  system: MeasurementSystem,
+): RoofNumberTyped {
+  const { unit, typed, slide } = shown;
+  const keep = (value: number) => Math.round(value * PERCENT) / PERCENT;
+  if (unit === 'metres') {
+    const feet = system === 'imperial';
+    const by = feet ? 1 / METRES_PER_FOOT : 1;
+    return {
+      value: keep(shown.value * by),
+      min: keep(typed.min * by),
+      max: keep(typed.max * by),
+      step: feet ? 0.1 : 0.01,
+      unit: feet ? 'ft' : 'm',
+      back: (value) => value / by,
+    };
+  }
+  if (unit === 'share') {
+    return {
+      value: keep(shown.value * PERCENT),
+      min: typed.min * PERCENT,
+      max: typed.max * PERCENT,
+      step: 1,
+      unit: '%',
+      back: (value) => value / PERCENT,
+    };
+  }
+  return {
+    value: shown.value,
+    min: typed.min,
+    max: typed.max,
+    step: slide.step,
+    unit: unit === 'degrees' ? '°' : '',
+    back: (value) => value,
+  };
 }

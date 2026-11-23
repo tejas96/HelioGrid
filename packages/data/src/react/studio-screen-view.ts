@@ -10,6 +10,7 @@ import type {
   ViewPlace,
 } from '@heliogrid/domain';
 import type { RoofModelShown } from './roof-model-shown';
+import type { RoofSheetRowMoves, RoofSheetRowsState } from './roof-sheet-rows-view';
 import type { RoofMoves, RoofPlaceMoves, RoofStepView } from './roof-step-view';
 import type { RoofsPanelMoves, RoofsPanelView } from './roofs-panel-view';
 import type { SkyFacts, StudioEditing, StudioPicture } from './studio-document-state';
@@ -20,7 +21,12 @@ import type { RoofSheetMoves, RoofSheetState } from './use-roof-sheet';
 
 /** The studio screen's view model (`T-M05-002`): what its hook assembles for the web and the phone. */
 
-export interface StudioMoves extends RoofMoves, RoofSheetMoves, RoofPlaceMoves, RoofsPanelMoves {
+export interface StudioMoves
+  extends RoofMoves,
+    RoofSheetMoves,
+    RoofSheetRowMoves,
+    RoofPlaceMoves,
+    RoofsPanelMoves {
   pickPicture(choice: PictureChoice): void;
   undo(): void;
   redo(): void;
@@ -39,7 +45,12 @@ export interface StudioMoves extends RoofMoves, RoofSheetMoves, RoofPlaceMoves, 
   back(): boolean;
 }
 
-export interface StudioScreen extends RoofStepView, RoofSheetState, RoofModelShown, RoofsPanelView {
+export interface StudioScreen
+  extends RoofStepView,
+    RoofSheetState,
+    RoofSheetRowsState,
+    RoofModelShown,
+    RoofsPanelView {
   readonly read: DesignRead;
   /** `null` until the document is read. */
   readonly document: StudioDocument | null;

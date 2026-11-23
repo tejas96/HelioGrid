@@ -1,6 +1,12 @@
 /** The design studio's view models (block 9): one per screen pair, the web's and the phone's alike. */
 
 export type { PlanShown, UnitCard } from './own-picture-view';
+export type {
+  RoofSheetRowMoves,
+  RoofSheetRowsState,
+  SheetPart,
+  SheetRowKey,
+} from './roof-sheet-rows-view';
 export type { RoofMoves, RoofPlaceMoves, RoofStepView, SizeCardView } from './roof-step-view';
 export type { RoofsPanelMoves, RoofsPanelView } from './roofs-panel-view';
 export type { StudioEditing, StudioPicture } from './studio-document-state';

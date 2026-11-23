@@ -13,6 +13,8 @@ import {
   markPercent,
   nudged,
   stepperOff,
+  tickNudged,
+  ticksOnTrack,
 } from './slider-math';
 
 interface WebSliderProps extends SliderProps {
@@ -60,6 +62,7 @@ export function Slider({
   hint,
   words,
   mark,
+  ticks,
   format,
   steppers = true,
   disabled = false,
@@ -77,11 +80,19 @@ export function Slider({
 
   const live = (next: number) => onInput?.(clampToRange(next, min, max, step));
   const commit = (next: number) => onCommit?.(clampToRange(next, min, max, step));
-  const nudge = (direction: number) => {
-    const next = nudged(value, direction, min, max, step);
+  const stepped = (direction: -1 | 1) =>
+    ticks === undefined || ticks.length === 0
+      ? nudged(value, direction, min, max, step)
+      : tickNudged(value, direction, ticks, step);
+  const nudge = (direction: -1 | 1) => {
+    const next = stepped(direction);
+    if (next === null) return;
     live(next);
     commit(next);
   };
+  const off = (direction: -1 | 1) =>
+    stepperOff(direction, value, min, max, disabled) || stepped(direction) === null;
+  const onTrack = ticksOnTrack(ticks, min, max);
   /* A props object or a bare tier — `Provenance`'s own resolver decides, at the
      12px type floor. `"unmarked"` comes back null and the slot collapses. */
   const provenanceNode = renderProvenance(provenance, { size: 12 });
@@ -105,7 +116,7 @@ export function Slider({
       <div className="hg-slider-row">
         {steppers ? (
           <StepButton
-            disabled={stepperOff(-1, value, min, max, disabled)}
+            disabled={off(-1)}
             glyph="minus"
             label={words.decrease(label)}
             onPress={() => nudge(-1)}
@@ -124,6 +135,14 @@ export function Slider({
           {marked === null ? null : (
             <span className="hg-slider-mark" aria-hidden="true" style={{ left: `${marked}%` }} />
           )}
+          {onTrack.map(({ tick, percent: at }) => (
+            <span
+              key={tick.value}
+              className="hg-slider-tick"
+              aria-hidden="true"
+              style={{ left: `${at}%` }}
+            />
+          ))}
           <input
             className="hg-slider-range"
             id={sid}
@@ -142,13 +161,22 @@ export function Slider({
         </div>
         {steppers ? (
           <StepButton
-            disabled={stepperOff(1, value, min, max, disabled)}
+            disabled={off(1)}
             glyph="plus"
             label={words.increase(label)}
             onPress={() => nudge(1)}
           />
         ) : null}
       </div>
+      {onTrack.length === 0 ? null : (
+        <div className="hg-slider-ticks" data-steppers={steppers} aria-hidden="true">
+          {onTrack.map(({ tick, percent: at }) => (
+            <span key={tick.value} className="hg-slider-tick-word" style={{ left: `${at}%` }}>
+              {tick.label}
+            </span>
+          ))}
+        </div>
+      )}
       {provenanceNode === null ? null : (
         <div className="hg-slider-provenance">{provenanceNode}</div>
       )}

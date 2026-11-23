@@ -2,6 +2,7 @@
 import {
   NO_ROOF_LIST,
   NO_ROOF_SCENE,
+  type NumberAt,
   type RoofFacts,
   type RoofHeight,
   type RoofSheetView,
@@ -10,10 +11,13 @@ import {
 import {
   heightPullOf,
   roofListOf,
+  roofNumberSet,
   roofSceneOf,
+  roofSheetRowsOf,
   roofsAreaM2,
   roofsWorked,
   roofTopMarksOf,
+  sideSheetRowsOf,
   type WorkedBefore,
 } from '@heliogrid/domain/studio-kernel';
 import { useMemo, useRef } from 'react';
@@ -32,7 +36,16 @@ const NOTHING: RoofModelShown = {
   topMarks: [],
   roofList: NO_ROOF_LIST,
   roofsAreaM2: 0,
+  sheetRows: null,
+  sideRows: null,
 };
+
+/** The open sheet's roof, the side whose sheet shows over it, and the height slider's ends. */
+export interface SheetOpen {
+  readonly roof: number;
+  readonly side: number | null;
+  readonly slide: { readonly min: number; readonly max: number };
+}
 
 /**
  * The design as it stands, or the preview of what is in hand, with the open sheet's height where
@@ -47,6 +60,9 @@ export function roofModelShown(
   /** The site's pin: its latitude says which way a one-way slope first faces. */
   pin: { readonly latitude: number } | null,
   memory: RoofMemory,
+  /** The sheet open over the model, and a number moving on its slider, not kept yet. */
+  open: SheetOpen | null = null,
+  numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
 ): RoofModelShown {
   if (document === null) return NOTHING;
   const roofs =
@@ -55,14 +71,27 @@ export function roofModelShown(
       : document.roofs.map((roof, index) =>
           index === inHand.roof ? { ...roof, height: inHand.height } : roof,
         );
-  const shown = { ...document, roofs };
-  const worked = roofsWorked(shown, facts, pin?.latitude ?? 0, memory.before);
+  const held = { ...document, roofs };
+  const shown =
+    numberInHand === null ? held : roofNumberSet(held, numberInHand.at, numberInHand.value, facts);
+  const latitude = pin?.latitude ?? 0;
+  const worked = roofsWorked(shown, facts, latitude, memory.before);
   memory.before = { document: shown, worked };
+  const roofList = roofListOf(shown, facts, worked);
+  const row = open === null ? undefined : roofList.rows.find((each) => each.roof === open.roof);
   return {
     scene: roofSceneOf(shown, facts, worked),
     topMarks: roofTopMarksOf(shown, facts, worked),
-    roofList: roofListOf(shown, facts, worked),
+    roofList,
     roofsAreaM2: roofsAreaM2(shown),
+    sheetRows:
+      open === null || row === undefined
+        ? null
+        : roofSheetRowsOf(shown, open.roof, facts, worked, row, latitude, open.slide),
+    sideRows:
+      open === null || open.side === null
+        ? null
+        : sideSheetRowsOf(shown, open.roof, open.side, facts, worked, latitude),
   };
 }
 
@@ -82,16 +111,25 @@ export function useRoofModel(
   facts: RoofFacts,
   sheet: RoofSheetView | null,
   pin: { readonly latitude: number } | null,
+  /** The side whose sheet shows over the roof's, and the number in hand. */
+  side: number | null = null,
+  numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
 ): RoofModelShown {
   const memory = useRef<RoofMemory>({});
   const open = sheet?.roof ?? null;
   const held = sheet?.height.metres;
   const setBy = sheet?.height.setBy;
+  const min = sheet?.slide.min;
+  const max = sheet?.slide.max;
   return useMemo(() => {
     const inHand =
       open === null || held === undefined || setBy === undefined
         ? null
         : { roof: open, height: { metres: held, setBy } };
-    return roofModelShown(shown, facts, inHand, pin, memory.current);
-  }, [shown, facts, open, held, setBy, pin]);
+    const sheetOpen =
+      open === null || min === undefined || max === undefined
+        ? null
+        : { roof: open, side, slide: { min, max } };
+    return roofModelShown(shown, facts, inHand, pin, memory.current, sheetOpen, numberInHand);
+  }, [shown, facts, open, held, setBy, pin, side, numberInHand, min, max]);
 }

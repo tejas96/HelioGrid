@@ -60,7 +60,7 @@ export function StudioCanvas({
   const still = useReducedMotion();
   const desktop = useDesktopShell();
   // The sheet takes the bar's place: the room is measured again when one swaps for the other.
-  const { frame, top, bottom, room } = useChromeRoom(studio.roofSheet !== null);
+  const { frame, top, bottom, side, room } = useChromeRoom(studio.roofSheet !== null);
   const pin = useRef<HTMLSpanElement>(null);
   const drive = useRef<StudioDrive | null>(null);
   const compass = useRef<StudioCompassHandle>(null);
@@ -97,7 +97,7 @@ export function StudioCanvas({
   // biome-ignore lint/correctness/useExhaustiveDependencies: the measured room is what asks for a new frame
   const sheetFraming = useMemo(
     () => (studio.sheetFrame === null ? null : {}),
-    [studio.sheetFrame, room.bottom],
+    [studio.sheetFrame, room.bottom, room.right],
   );
   const closed = said?.kind === 'closed' ? said : null;
   // The size card opening frames its rectangle with the roofs, once: sliding then never moves the map.
@@ -211,14 +211,16 @@ export function StudioCanvas({
           onZoomOut={() => drive.current?.zoomOut()}
           onHome={() => drive.current?.home()}
         />
-        {studio.roofSheet !== null && view !== 'top' ? (
+        {studio.roofSheet !== null ? (
           <StudioRoofSheet
-            sheetRef={bottom}
+            footRef={bottom}
+            sideRef={side}
             sheet={studio.roofSheet}
             studio={studio}
             units={studio.units}
             words={words}
             map={scene}
+            phone={desktop === false}
           />
         ) : (
           <StudioBottomBar

@@ -5,6 +5,7 @@ import {
   formatLength,
   formatRoofHeight,
   formatRoofLength,
+  formatRoofSlope,
   metresOfFeetAndInches,
   PROCUREMENT_SYSTEM,
   resolveMeasurementSystem,
@@ -68,6 +69,18 @@ describe('a roof’s lengths and area (T-M05-002)', () => {
     [3, 'imperial', `9${NBSP}ft 10${NBSP}in`],
   ] as const)('a height of %s m, %s: %s', (metres, system, shown) => {
     expect(formatRoofHeight(IN_FORMATS, metres, system)).toBe(shown);
+  });
+
+  it.each([
+    [30, 'metric', '30°'],
+    [6.5, 'metric', '6.5°'],
+    [0, 'metric', '0°'],
+    [14, 'imperial', '3/12 · 14°'],
+    [45, 'imperial', '12/12 · 45°'],
+    [6, 'imperial', '1.3/12 · 6°'],
+    [0, 'imperial', '0/12 · 0°'],
+  ] as const)('a slope of %s°, %s: %s', (degrees, system, shown) => {
+    expect(formatRoofSlope(IN_FORMATS, degrees, system)).toBe(shown);
   });
 
   it.each([

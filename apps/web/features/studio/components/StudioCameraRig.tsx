@@ -65,7 +65,7 @@ export function StudioCameraRig({
   frameOn,
 }: {
   view: StudioView;
-  free: { readonly top: number; readonly bottom: number };
+  free: { readonly top: number; readonly bottom: number; readonly right?: number };
   still: boolean;
   /** The roofs' ground: the view frames them when it opens and on Back to the pin. */
   fit: GroundBox | null;
@@ -174,14 +174,14 @@ export function StudioCameraRig({
     camera.setViewOffset(
       size.width,
       size.height,
-      0,
+      (free.right ?? 0) / 2,
       (free.bottom - free.top) / 2,
       size.width,
       size.height,
     );
     camera.updateProjectionMatrix();
     invalidate();
-  }, [free.top, free.bottom, size.width, size.height, camera, invalidate]);
+  }, [free.top, free.bottom, free.right, size.width, size.height, camera, invalidate]);
 
   // A view is flown to when it is picked, and fitted once more when the bars are first measured; a
   // resize keeps where the person turned the camera.
@@ -224,7 +224,7 @@ export function StudioCameraRig({
     const rig = controls.current;
     if (rig === null) return;
     const screen = { width: size.width, height: size.height };
-    const bars = { top: free.top, bottom: free.bottom };
+    const bars = { top: free.top, bottom: free.bottom, right: free.right ?? 0 };
     const spread = fit === null ? null : fitSpread(fit);
     // The roofs framed with room round them; the camera's own limits keep the picture sharp.
     const distance =

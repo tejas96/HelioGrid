@@ -41,6 +41,8 @@ export interface RoofSheetMoves {
   stepHeight(by: 1 | -1): void;
   /** The slider let go, or Enter: the height in hand is kept as one change. */
   keepHeight(): void;
+  /** The height in hand kept, the sheet left open: `false` when it is refused and stays. */
+  keep(): boolean;
   /** Reset: the system's height comes back, as one change. */
   resetHeight(): void;
   /**
@@ -51,8 +53,6 @@ export interface RoofSheetMoves {
   dragHeight(risenM: number, reachM?: number): void;
   /** Done: the height in hand is kept and the sheet closes; `false` when it is refused and stays. */
   done(): boolean;
-  /** Edit outline in 2D: the height kept, the top view with this roof picked; `false` as Done. */
-  editOutline(): boolean;
   /** Undo with a height in hand puts that back first; `true` when there was one. */
   dropHeight(): boolean;
 }
@@ -82,7 +82,6 @@ export function useRoofSheet({
   editable,
   facts,
   units,
-  outline,
   pullOf,
 }: {
   document: StudioDocument | null;
@@ -92,8 +91,6 @@ export function useRoofSheet({
   /** The market's roof facts: what a roof of each kind starts at, and where each one stands. */
   facts: RoofFacts;
   units: MeasurementSystem;
-  /** Edit outline in 2D: the top view, the roof picked, its height said. */
-  outline: (roof: number, metres: number) => void;
   /**
    * The magnet for a dragged height, from the studio's kernel: the level a height pulls to, or
    * `null` — while the magnet is off, or free for a moment — when it pulls to none.
@@ -210,6 +207,7 @@ export function useRoofSheet({
         keep();
       },
       keepHeight: () => void keep(),
+      keep,
       resetHeight: () => {
         const at = latest.current;
         hold(null);
@@ -232,13 +230,6 @@ export function useRoofSheet({
       done: () => {
         if (!keep()) return false;
         setOpen(null);
-        return true;
-      },
-      editOutline: () => {
-        if (!keep()) return false;
-        const metres = standing();
-        setOpen(null);
-        if (roof !== null && metres !== null) outline(roof, metres);
         return true;
       },
       dropHeight: () => {

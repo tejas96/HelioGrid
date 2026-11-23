@@ -28,10 +28,14 @@ export const hasTwoSlopes = (shape: RoofShape) => TWO_SLOPES.includes(shape);
  */
 export function roofFirstSlopeDeg(roof: Roof, facts: RoofFacts): number {
   if (hasTwoSlopes(roofShapeNow(roof, facts))) return MANSARD_LOWER_DEG;
-  return roofKindOf(roof) === 'open_shed'
-    ? facts.openShedSlopeDeg
-    : materialSlopeDeg(roofMaterialNow(roof), facts);
+  if (roofKindOf(roof) === 'open_shed') return facts.openShedSlopeDeg;
+  // A material that starts flat, given a sloped shape by a person, starts as a sloped slab does.
+  const material = materialSlopeDeg(roofMaterialNow(roof), facts);
+  return material > 0 ? material : SLOPED_SLAB_DEG;
 }
+
+/** A sloped concrete slab's first slope, as tiles laid on RCC start. */
+export const SLOPED_SLAB_DEG = 20;
 
 /**
  * How far a sloped roof's drip edge lies past its walls: what is stored, else the market's. A

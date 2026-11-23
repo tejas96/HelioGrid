@@ -121,6 +121,25 @@ export function formatRoofHeight(
   return `${value}${NBSP}m`;
 }
 
+/** A pitch's run: a slope is said as its rise over this many inches across. */
+const PITCH_RUN_IN = 12;
+const RADIANS = Math.PI / 180;
+
+/**
+ * A roof's slope in the reader's system (`T-M05-002`, part e): degrees, `30°`; where feet are used,
+ * its rise in 12 with the degrees beside it, `3/12 · 14°`.
+ */
+export function formatRoofSlope(
+  pack: FormatPack,
+  degrees: number,
+  system: MeasurementSystem,
+): string {
+  const angle = `${formatNumber(pack, degrees, { maximumFractionDigits: 1 })}°`;
+  if (system !== 'imperial') return angle;
+  const rise = PITCH_RUN_IN * Math.tan(degrees * RADIANS);
+  return `${formatNumber(pack, rise, { maximumFractionDigits: 1 })}/${PITCH_RUN_IN} · ${angle}`;
+}
+
 /** An area held in square metres, whole, in the reader's system: `66 m²`, `706 sq ft`. */
 export function formatArea(
   pack: FormatPack,
