@@ -13,6 +13,10 @@
     "./server": {
       "types": "./dist/server.d.ts",
       "default": "./dist/server.js"
+    },
+    "./studio-kernel": {
+      "types": "./dist/studio-kernel.d.ts",
+      "default": "./dist/studio-kernel.js"
     }
   },
   "scripts": {

@@ -49,6 +49,8 @@ export interface BuiltFace {
   readonly surfaceM2: number;
   /** The upper part of a mansard's or a gambrel's face. */
   readonly upper: boolean;
+  /** What is cut out of the face inside it — a duct, a shaft — each ring clockwise; its areas leave them out. */
+  readonly holes?: readonly (readonly FaceCorner[])[];
 }
 
 export interface BuiltRoof {

@@ -137,19 +137,28 @@ function anticlockwise(ring: readonly GroundPoint[]): readonly GroundPoint[] {
   return area >= 0 ? ring : [...ring].reverse();
 }
 
-/** The walls that stand where the profile jumps: under each face's high edge along the jump. */
-function wallsOf(faces: readonly BuiltFace[], parts: readonly ProfilePart[]): StandingWall[] {
+/**
+ * The walls that stand where the profile jumps: along the jump's line, under the higher of the two
+ * faces that meet there.
+ */
+function wallsOf(
+  across: Across,
+  parts: readonly ProfilePart[],
+  faces: readonly (readonly BuiltFace[])[],
+): StandingWall[] {
+  const reach = (point: GroundPoint) => inOf(across.line, point) - across.least;
   const walls: StandingWall[] = [];
   parts.forEach((part, index) => {
     const before = parts[index - 1];
     if (before === undefined || Math.abs(before.toUp - part.fromUp) <= SAME_M) return;
     const lowM = Math.min(before.toUp, part.fromUp);
     const highM = Math.max(before.toUp, part.fromUp);
-    for (const face of faces) {
+    const higher = faces[part.fromUp > before.toUp ? index : index - 1] ?? [];
+    for (const face of higher) {
       face.corners.forEach((corner, i) => {
         const next = face.corners[(i + 1) % face.corners.length] as FaceCorner;
-        const onTop = Math.abs(corner.up - highM) < SAME_M && Math.abs(next.up - highM) < SAME_M;
-        if (onTop && face.edges[i] === 'ridge') walls.push({ from: corner, to: next, lowM, highM });
+        const onJump = [corner, next].every((end) => Math.abs(reach(end) - part.from) < SAME_M);
+        if (onJump) walls.push({ from: corner, to: next, lowM, highM });
       });
     }
   });
@@ -173,12 +182,17 @@ export function profileRoof(
   const across = acrossOf(ring, measured);
   if (across === null || across.span < SAME_M) return null;
   const parts = partsFor(across.span).filter((part) => part.to - part.from > SAME_M);
-  const faces: BuiltFace[] = [];
+  const byPart: BuiltFace[][] = [];
   for (let index = 0; index < parts.length; index++) {
     const strip = stripFaces(shapeOf(ring), across, parts, index, side);
     if (strip === null) return null;
-    faces.push(...strip);
+    byPart.push(strip);
   }
   const topM = parts.reduce((top, part) => Math.max(top, part.fromUp, part.toUp), 0);
-  return { faces, topM, walls: wallsOf(faces, parts), acrossM: across.span };
+  return {
+    faces: byPart.flat(),
+    topM,
+    walls: wallsOf(across, parts, byPart),
+    acrossM: across.span,
+  };
 }
