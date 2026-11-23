@@ -43,6 +43,11 @@ const anticlockwise = (ring: readonly GroundPoint[]) =>
   turn(ring) >= 0 ? ring : [...ring].reverse();
 const clockwise = (ring: readonly GroundPoint[]) => (turn(ring) < 0 ? ring : [...ring].reverse());
 
+/** A ring of the model's points turned to run anticlockwise seen from above, or clockwise. */
+function upRing<P extends GroundPoint>(ring: readonly P[], left: boolean): readonly P[] {
+  return turn(ring) >= 0 === left ? ring : [...ring].reverse();
+}
+
 /** A flat cap over an outline with holes, at one height, facing up or down. */
 function cap(
   into: Triangles,
@@ -98,19 +103,22 @@ function walls(into: Triangles, prism: ScenePrism) {
 
 const inScene = (at: Vertex) => new Vector3(at.east, at.up, -at.north);
 
-/** A sloped face, flat in itself: a fan from its first corner, facing up. */
-function face(into: Triangles, corners: readonly Vertex[]) {
-  const [first, ...rest] = corners;
-  if (first === undefined) return;
-  const from = inScene(first);
-  for (let i = 0; i + 1 < rest.length; i += 1) {
-    const b = rest[i] as Vertex;
-    const c = rest[i + 1] as Vertex;
+/**
+ * A sloped face, flat in itself, with what is cut out of it: split into triangles on the plan,
+ * each corner at its own height, and each triangle facing up.
+ */
+function face(into: Triangles, corners: readonly Vertex[], holes: readonly (readonly Vertex[])[]) {
+  const points = [...corners, ...holes.flat()];
+  const onPlan = (ring: readonly Vertex[]) => ring.map((at) => new Vector2(at.east, at.north));
+  for (const [i, j, k] of ShapeUtils.triangulateShape(onPlan(corners), holes.map(onPlan))) {
+    const [a, b, c] = [points[i ?? 0], points[j ?? 0], points[k ?? 0]];
+    if (a === undefined || b === undefined || c === undefined) continue;
+    const from = inScene(a);
     const normal = inScene(b).sub(from).cross(inScene(c).sub(from)).normalize();
     // A face faces up: a triangle found facing down is turned.
     const up = normal.y >= 0;
     if (!up) normal.negate();
-    triangle(into, first, up ? b : c, up ? c : b, normal.toArray());
+    triangle(into, a, up ? b : c, up ? c : b, normal.toArray());
   }
 }
 
@@ -152,7 +160,12 @@ export function roofGeometries(scene: RoofScene): RoofGeometries {
   }
   for (const each of scene.faces) {
     topM = Math.max(topM, ...each.corners.map((corner) => corner.up));
-    face(tops, each.corners);
+    // The plan's split wants the outline one way round and each hole the other.
+    face(
+      tops,
+      upRing(each.corners, true),
+      each.holes.map((hole) => upRing(hole, false)),
+    );
   }
   for (const each of scene.walls) {
     topM = Math.max(topM, each.fromTopM, each.toTopM);

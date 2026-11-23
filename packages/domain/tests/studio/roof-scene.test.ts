@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Roof } from '../../src/studio/document';
-import type { ScenePrism } from '../../src/studio/roof-scene';
+import type { SceneFace, ScenePrism } from '../../src/studio/roof-scene';
 import { roofSceneOf } from '../../src/studio/roof-scene-build';
 import {
   box,
@@ -213,5 +213,80 @@ describe('a sloped roof', () => {
     const flat = roofSceneOf(designOf(TERRACE), FACTS);
     expect(flat.faces).toEqual([]);
     expect(flat.walls).toEqual([]);
+  });
+});
+
+describe('holes and dormers in a sloped roof', () => {
+  const sheet = {
+    material: { type: 'trapezoidal_sheet', setBy: 'system', confirmed: false },
+  } as const;
+  const MAIN = roofOf('main', box(0, 0, 12, 8), sheet);
+  const ringArea = (ring: readonly { east: number; north: number }[]) =>
+    Math.abs(
+      ring.reduce((part, at, i) => {
+        const next = ring[(i + 1) % ring.length] ?? at;
+        return part + at.east * next.north - next.east * at.north;
+      }, 0),
+    ) / 2;
+  /** The ground some faces cover, seen from above: each face less what is cut out of it. */
+  const planArea = (faces: readonly SceneFace[]) =>
+    faces.reduce(
+      (sum, face) =>
+        sum + ringArea(face.corners) - face.holes.reduce((cut, hole) => cut + ringArea(hole), 0),
+      0,
+    );
+
+  it('a hole in the middle of one face is cut out of that face alone', () => {
+    const duct = kindOf('duct', 'hole', box(5, 1, 1, 1), { partOf: 'main' });
+    const scene = roofSceneOf(designOf(MAIN, duct), FACTS);
+    const cut = scene.faces.filter((face) => face.holes.length > 0);
+    expect(cut).toHaveLength(1);
+    expect(cut[0]?.holes[0]).toHaveLength(4);
+    // The hole's corners lie in the face's own plane: above the low edge, below the ridge.
+    const ups = cut[0]?.holes[0]?.map((corner) => corner.up) ?? [];
+    expect(Math.min(...ups)).toBeGreaterThan(3);
+    expect(Math.max(...ups)).toBeLessThan(
+      Math.max(...scene.faces.flatMap((f) => f.corners.map((c) => c.up))),
+    );
+  });
+
+  it('a dormer on a steep roof: its ridge 0.3 m under the main ridge, and the main face gives way under it', () => {
+    const steep = { ...MAIN, slope: { degrees: 30, setBy: 'person' } } as Roof;
+    const dormer = kindOf('dormer', 'dormer', box(5, 0.5, 2, 2), { on: 'main', ...sheet });
+    const plain = roofSceneOf(designOf(steep), FACTS);
+    const scene = roofSceneOf(designOf(steep, dormer), FACTS);
+    const upsOf = (roof: number) =>
+      scene.faces
+        .filter((face) => face.roof === roof)
+        .flatMap((face) => face.corners.map((c) => c.up));
+    const mainRidge = Math.max(...plain.faces.flatMap((face) => face.corners.map((c) => c.up)));
+    expect(Math.max(...upsOf(1))).toBeCloseTo(mainRidge - 0.3, 6);
+    // The main roof has lost the ground the dormer stands over.
+    const mainNow = planArea(scene.faces.filter((face) => face.roof === 0));
+    expect(mainNow).toBeCloseTo(planArea(plain.faces) - 4, 6);
+    // Its walls stand from the main roof's low edge up to its own, lifted, low edge.
+    const [walls] = partsOf(scene.prisms, 1, 'body');
+    expect(walls?.footM).toBe(3);
+    expect(walls?.topM).toBeGreaterThan(3);
+    expect(walls?.top).toBe('none');
+  });
+
+  it('a dormer on a shallow roof still shows: it stands on the highest point of the roof under it', () => {
+    const dormer = kindOf('dormer', 'dormer', box(5, 0.5, 2, 2), { on: 'main', ...sheet });
+    const plain = roofSceneOf(designOf(MAIN), FACTS);
+    const scene = roofSceneOf(designOf(MAIN, dormer), FACTS);
+    const own = scene.faces.filter((face) => face.roof === 1);
+    expect(planArea(own)).toBeCloseTo(4, 6);
+    // No corner of it is lower than the main roof at its back edge, 2.5 m in from the low edge.
+    const mainRidge = Math.max(...plain.faces.flatMap((face) => face.corners.map((c) => c.up)));
+    const atBack = 3 + ((mainRidge - 3) * 2.5) / 4;
+    const ups = own.flatMap((face) => face.corners.map((c) => c.up));
+    expect(Math.min(...ups)).toBeCloseTo(atBack, 6);
+  });
+
+  it('a dormer as tall as its roof is not lifted, and has no wall of its own to stand', () => {
+    const wide = kindOf('dormer', 'dormer', box(0, 0, 12, 8), { on: 'main', ...sheet });
+    const scene = roofSceneOf(designOf(MAIN, wide), FACTS);
+    expect(partsOf(scene.prisms, 1, 'body')).toEqual([]);
   });
 });

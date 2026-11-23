@@ -1,10 +1,13 @@
 'use client';
 import type { StudioScreen } from '@heliogrid/data/react';
-import type { MeasurementSystem, RoofName } from '@heliogrid/domain';
+import type { MeasurementSystem, RoofKind, RoofName } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { Pressable, useFormat } from '@heliogrid/ui';
 import { type PointerEvent, useRef } from 'react';
 import { pointText } from './roof-marks-place';
+
+/** The kinds whose top carries no height pill. */
+const NO_HEIGHT: readonly RoofKind[] = ['hole', 'dormer'];
 
 /** A dragged height within this many pixels of a level pulls to it. */
 const PULL_PX = 8;
@@ -178,8 +181,9 @@ export function StudioRoofTops({
             />
           );
         }
-        // A hole has no height of its own: it is open down to the floor below.
-        if (studio.topMarks[index]?.kind === 'hole') return null;
+        // A hole and a dormer have no height of their own to set: a hole is open down to the floor
+        // below, and a dormer's ridge follows the roof it sits on.
+        if (NO_HEIGHT.includes(studio.topMarks[index]?.kind ?? 'building')) return null;
         const height = format.roofHeight(metres, units);
         return (
           <span key={roof.id} className="hg-roof-at" data-at={middle} data-top={top}>

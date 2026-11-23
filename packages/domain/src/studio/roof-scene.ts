@@ -43,6 +43,8 @@ export interface ModelPoint extends GroundPoint {
 export interface SceneFace {
   readonly roof: number;
   readonly corners: readonly ModelPoint[];
+  /** What is cut out of it: a hole that lies in the face. Each lies in the face's own plane. */
+  readonly holes: readonly (readonly ModelPoint[])[];
 }
 
 /** A wall that stands between a low edge and a high one: a gable end, a sawtooth's glass side. */

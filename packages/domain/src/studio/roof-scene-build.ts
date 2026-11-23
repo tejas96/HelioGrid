@@ -1,13 +1,12 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { facesWithout, movedIn } from './roof-cuts';
-import type { BuiltFace } from './roof-faces';
-import type { FormedRoof } from './roof-forms';
+import { movedIn } from './roof-cuts';
 import { roofKindOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofFloorM, roofHasWalls, roofOwnHeightM, roofTopsM } from './roof-levels';
 import { type FlatShape, shapeOf, shared, without } from './roof-polygons';
-import type { RoofScene, SceneFace, ScenePrism, SceneWall } from './roof-scene';
+import type { RoofScene, ScenePrism } from './roof-scene';
 import { parapetPrisms } from './roof-scene-parapets';
+import { type SlopedTop, slopedTops } from './roof-scene-slopes';
 import { pointInside } from './roof-shape';
 import { type RoofsWorked, roofsWorked } from './roof-worked';
 
@@ -62,51 +61,6 @@ function flatBody(document: StudioDocument, facts: RoofFacts, at: Standing): Sce
   return [...body, ...floors];
 }
 
-/** The walls under a face's gable ends and against a step: from the roof's low edge up to the face. */
-function wallsUnder(index: number, eaveM: number, faces: readonly BuiltFace[]): SceneWall[] {
-  return faces.flatMap((face) =>
-    face.edges.flatMap((kind, i): SceneWall[] => {
-      const from = face.corners[i];
-      const to = face.corners[(i + 1) % face.corners.length];
-      const stands = kind === 'gable_end' || kind === 'wall';
-      if (!stands || from === undefined || to === undefined) return [];
-      if (from.up < SAME_M && to.up < SAME_M) return [];
-      return [
-        { roof: index, from, to, footM: eaveM, fromTopM: eaveM + from.up, toTopM: eaveM + to.up },
-      ];
-    }),
-  );
-}
-
-/** A sloped roof: its faces above its low edge, cut round its holes, and the walls that stand in it. */
-function slopedTop(
-  document: StudioDocument,
-  built: FormedRoof,
-  at: Standing,
-): { faces: SceneFace[]; walls: SceneWall[] } {
-  const faces = holesIn(document, at.roof).reduce<readonly BuiltFace[]>(
-    (left, hole) => facesWithout(left, hole.corners),
-    built.faces,
-  );
-  const strips = built.walls.map(
-    (wall): SceneWall => ({
-      roof: at.index,
-      from: wall.from,
-      to: wall.to,
-      footM: at.topM + wall.lowM,
-      fromTopM: at.topM + wall.highM,
-      toTopM: at.topM + wall.highM,
-    }),
-  );
-  return {
-    faces: faces.map((face) => ({
-      roof: at.index,
-      corners: face.corners.map((corner) => ({ ...corner, up: at.topM + corner.up })),
-    })),
-    walls: [...wallsUnder(at.index, at.topM, faces), ...strips],
-  };
-}
-
 /** A sloped roof's walls up to its low edge, inside its overhang, with no top of their own. */
 function slopedWalls(at: Standing): ScenePrism[] {
   const over = at.roof.overhang?.metres ?? 0;
@@ -117,6 +71,8 @@ function slopedWalls(at: Standing): ScenePrism[] {
           at.roof.corners.map(() => over),
         )
       : [at.roof.corners];
+  // A roof whose low edge is at its foot has no wall to stand: a dormer no higher than its roof.
+  if (at.topM - at.footM < SAME_M) return [];
   return inside.map(
     (outer): ScenePrism => ({
       roof: at.index,
@@ -172,15 +128,16 @@ function roofParts(
   facts: RoofFacts,
   worked: RoofsWorked,
   at: Standing,
+  /** Its faces and standing walls where it slopes, and how far a dormer's low edge is lifted. */
+  top: SlopedTop | null,
 ): RoofScene {
   const kind = roofKindOf(at.roof);
   const stretches = worked.edges[at.index] ?? [];
   const parapets = parapetPrisms(document, at.index, facts, at.topM, stretches);
   const none = { faces: [], walls: [], levels: [] };
   if (kind === 'hole') return { ...none, prisms: parapets };
-  const built = worked.built[at.index] ?? null;
-  const sloped = built !== null;
-  const top = built === null ? { faces: [], walls: [] } : slopedTop(document, built, at);
+  const sloped = top !== null;
+  const surfaces = { faces: top?.faces ?? [], walls: top?.walls ?? [] };
   const stands = roofHasWalls(at.roof) ? [] : posts(document, at, at.footM);
   if (!roofHasWalls(at.roof)) {
     const sheet: ScenePrism[] = sloped
@@ -196,10 +153,12 @@ function roofParts(
             top: 'roof',
           },
         ];
-    return { ...top, levels: [], prisms: [...sheet, ...stands, ...parapets] };
+    return { ...surfaces, levels: [], prisms: [...sheet, ...stands, ...parapets] };
   }
-  const body = sloped ? slopedWalls(at) : flatBody(document, facts, at);
-  return { ...top, levels: [], prisms: [...body, ...parapets] };
+  // A dormer's walls stand from its roof's low edge up to its own, lifted, low edge.
+  const walled = top === null ? at : { ...at, topM: at.topM + top.liftM };
+  const body = sloped ? slopedWalls(walled) : flatBody(document, facts, at);
+  return { ...surfaces, levels: [], prisms: [...body, ...parapets] };
 }
 
 /** Where each roof stands and where its top is, above the ground. */
@@ -219,9 +178,11 @@ export function roofSceneOf(
   worked: RoofsWorked = roofsWorked(document, facts),
 ): RoofScene {
   const levels = levelsOf(document, facts);
+  const tops = slopedTops(document, worked, levels);
   const parts = document.roofs.map((roof, index) => {
     const { footM, topM } = levels[index] as RoofScene['levels'][number];
-    return roofParts(document, facts, worked, { roof, index, footM, topM });
+    const at = { roof, index, footM, topM };
+    return roofParts(document, facts, worked, at, tops[index] ?? null);
   });
   return {
     prisms: parts.flatMap((part) => part.prisms),
