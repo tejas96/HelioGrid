@@ -14,6 +14,7 @@ import {
 import { type ReactNode, type Ref, useEffect, useRef } from 'react';
 import { roofWordsShown } from './roof-words-shown';
 import { BAR_TOOL, MagnetRefused, MagnetSwitch, pillOf } from './StudioBarPills';
+import { StudioKindChips } from './StudioKindChips';
 
 interface BarAct {
   readonly key: string;
@@ -31,6 +32,8 @@ interface BarView {
   readonly status: TranslatedText;
   readonly bad: boolean;
   readonly tools?: ReactNode;
+  /** The chips under the sentence: a new roof's likely kinds. */
+  readonly chips?: ReactNode;
   readonly acts: readonly BarAct[];
 }
 
@@ -73,6 +76,9 @@ function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): Ba
   const { words, format, units, studio, view } = facts;
   const shown = roofWordsShown(format, units, studio.startHeightM);
   const area = words.roofArea(format.area(bar.area, units));
+  // A roof just closed: the line says what it became, and its chips fix a wrong guess.
+  const line = view === 'top' ? studio.kindLine : null;
+  const kind = line === null ? null : words.kindLine(line, shown);
   // A roof picked in the top view: the magnet for the drags to come, and the trash that deletes it.
   const picked = facts.editable && view === 'top' && bar.picked !== null;
   const tools = picked ? (
@@ -87,14 +93,22 @@ function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): Ba
   return {
     mark: bar.bad ? 'alert-circle' : 'check',
     // The area counts to its new value each time it changes: the number rolls, the words stand.
-    title: (
+    title: kind?.title ?? (
       <span className="hg-studio-bar-area">
         <RollingNumber key={area} value={area} />
       </span>
     ),
-    status: roofsStatus(bar, facts, shown),
+    status: kind?.status ?? roofsStatus(bar, facts, shown),
     bad: bar.bad,
     tools,
+    chips:
+      kind === null || !facts.editable ? null : (
+        <StudioKindChips
+          name={kind.chipsName}
+          chips={kind.chips}
+          onChoose={studio.moves.chooseKind}
+        />
+      ),
     // No acts: the next step is the steps' › in the head, and 3D is the tools' switch, never a
     // second way here.
     acts: [],
@@ -141,6 +155,7 @@ function readOnly(view: BarView, editing: StudioEditing, facts: BarFacts): BarVi
     ...view,
     mark: 'eye',
     tools: null,
+    chips: null,
     acts: [],
     status: editor !== null && roofs ? facts.words.editingNow(editor.name) : view.status,
   };
@@ -209,9 +224,9 @@ export function StudioBottomBar({
     shown = { ...shown, status: words.ownSay(say), acts: bar?.kind === 'roofs' ? shown.acts : [] };
   }
   if (!editable) shown = readOnly(shown, editing, facts);
-  const { mark, title, status, bad } = shown;
-  const acts = part === 'status' ? [] : shown.acts;
-  const tools = part === 'status' ? null : shown.tools;
+  // Focus mode's status alone: the words, with nothing to press.
+  if (part === 'status') shown = { ...shown, acts: [], tools: null, chips: null };
+  const { mark, title, status, bad, chips, acts, tools } = shown;
   const actsHolder = useRef<HTMLSpanElement>(null);
   const kind = pill === null ? (bar?.kind ?? 'start') : `pill-${bar?.kind}`;
   // A bar act that swaps the bar (Draw myself, Close shape, Cancel) takes its own button away:
@@ -245,6 +260,7 @@ export function StudioBottomBar({
       className="hg-studio-glass hg-studio-bar hg-focus-target"
       tabIndex={-1}
       data-tone={bad ? 'bad' : undefined}
+      data-chips={Boolean(chips)}
       data-hidden={part === 'hidden'}
       inert={part === 'hidden'}
     >
@@ -259,6 +275,7 @@ export function StudioBottomBar({
             {status}
           </span>
         </span>
+        {chips}
       </span>
       {acts.length > 0 || tools ? (
         <span ref={actsHolder} className="hg-studio-bar-acts">

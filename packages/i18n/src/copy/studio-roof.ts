@@ -29,7 +29,6 @@ const ROOF = {
   stopDrawing: /*i18n*/ { id: 'Stop drawing' },
   wipeCorners: /*i18n*/ { id: 'Clear every corner' },
   magnet: /*i18n*/ { id: 'Magnet' },
-  addRoof: /*i18n*/ { id: 'Draw another roof' },
   magnetNotSaved: /*i18n*/ { id: 'Your pick was not saved.' },
   deleteRoof: /*i18n*/ { id: 'Delete roof' },
   roofDeleted: /*i18n*/ { id: 'Roof deleted. Undo brings it back.' },
@@ -228,7 +227,6 @@ export function studioRoofWords(t: T) {
     wipeCorners: t(ROOF.wipeCorners),
     /** The one drawing aid's switch: it says on or off by being pressed. */
     magnet: t(ROOF.magnet),
-    addRoof: t(ROOF.addRoof),
     magnetNotSaved: t(ROOF.magnetNotSaved),
     closeShape: t(ROOF.closeShape),
     /** The trash on a picked roof. */

@@ -202,14 +202,12 @@ export function StudioCanvas({
           parts={parts}
           canWipe={studio.bar?.kind === 'drawing' && studio.bar.canWipe}
           onWipe={moves.wipe}
-          hasRoof={studio.fit !== null}
           words={words}
           onView={moves.see}
           onUnits={moves.chooseUnits}
           onUndo={moves.undo}
           onRedo={moves.redo}
           onDraw={drawing ? moves.cancel : moves.draw}
-          onAddRoof={moves.draw}
           onZoomIn={() => drive.current?.zoomIn()}
           onZoomOut={() => drive.current?.zoomOut()}
           onHome={() => drive.current?.home()}

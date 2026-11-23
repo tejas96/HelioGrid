@@ -168,6 +168,38 @@
   gap: var(--sp-2);
 }
 
+/* A new roof's chips sit under its line: the bar is a card, its words one under the other, and
+   the chips one row that scrolls sideways where they do not fit. */
+.hg-studio-bar[data-chips="true"] {
+  align-items: flex-start;
+  border-radius: var(--r-xl);
+}
+
+.hg-studio-bar[data-chips="true"] .hg-studio-bar-words {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--sp-0-5);
+}
+
+.hg-studio-bar[data-chips="true"] .hg-studio-bar-status {
+  white-space: normal;
+}
+
+.hg-studio-kind-chips {
+  display: flex;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+  margin: var(--sp-2) 0 0;
+  padding: 0;
+  border: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.hg-studio-kind-chips > * {
+  flex: none;
+}
+
 /* The bar's mark: a tick once a roof stands, the error colour when something is refused. */
 .hg-studio-bar-mark[data-mark="check"] {
   background: var(--success-bg);
@@ -229,5 +261,12 @@
 
   .hg-studio-bar-acts .hg-button {
     inline-size: 100%;
+  }
+
+  /* The chip row fades at its end, so it reads as one that scrolls. */
+  .hg-studio-kind-chips {
+    padding-inline-end: var(--sp-6);
+    -webkit-mask-image: linear-gradient(90deg, var(--text-primary) 85%, transparent);
+    mask-image: linear-gradient(90deg, var(--text-primary) 85%, transparent);
   }
 }

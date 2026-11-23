@@ -27,6 +27,7 @@ const KIND = {
   separatePart: /*i18n*/ { id: 'Separate part' },
   joinWith: /*i18n*/ { id: 'Join with {roof}' },
   cutToEdge: /*i18n*/ { id: 'Cut to edge' },
+  whatItIs: /*i18n*/ { id: 'What it is' },
 
   onRoof: /*i18n*/ { id: '{name} on {roof}' },
   overRoof: /*i18n*/ { id: '{name} over {roof}' },
@@ -140,7 +141,8 @@ export function roofPlaceLine(
 ): TranslatedText | null {
   switch (said.kind) {
     case 'closed':
-      return said.became === undefined ? null : becameLine(t, said.became, height);
+      // A roof that stands apart has no more to say of its place: the caller says its height.
+      return said.became === undefined ? null : roofBecameStatus(t, said.became, height);
     case 'cut':
       return becameLine(t, said.became, height);
     case 'made':
@@ -160,6 +162,8 @@ export function roofPlaceLine(
 export function kindLineWords(t: T, line: KindLine, height: (metres: number) => string) {
   const { became, joined } = line;
   return {
+    /** The chip row's name, for a screen reader. */
+    chipsName: t(KIND.whatItIs),
     title:
       joined === null
         ? roofBecameTitle(t, became)

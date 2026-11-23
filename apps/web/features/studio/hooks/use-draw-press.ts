@@ -21,13 +21,33 @@ function historyKey(
   if (!redo && can.undo) moves.undo();
 }
 
+/** The parts that keep a letter or Delete typed in them: a menu, a list of options, a sheet. */
+const OWN_KEYS = '[role="dialog"], [role="menu"], [role="listbox"], [contenteditable="true"]';
+
+/**
+ * The desktop's roof keys, for an editor with nothing in hand: D draws another roof in one press,
+ * and Delete removes the roof picked in the top view, with what stands on it.
+ */
+function roofKey(event: KeyboardEvent, studio: StudioScreen): void {
+  const free = studio.editing.kind === 'editor' && studio.roofStep.kind === 'idle';
+  if (!free || event.metaKey || event.ctrlKey || event.altKey) return;
+  if (event.key.toLowerCase() === 'd') {
+    event.preventDefault();
+    studio.moves.draw();
+  }
+  if (event.key === 'Delete' && studio.view === 'top') {
+    event.preventDefault();
+    studio.moves.deleteRoof();
+  }
+}
+
 /** A key pressed over the studio: Backspace and Enter while drawing, Undo and Redo, and Esc. */
 function drawKey(
   event: KeyboardEvent,
-  roofStep: StudioScreen['roofStep'],
+  studio: StudioScreen,
   can: { readonly close: boolean; readonly undo: boolean; readonly redo: boolean },
-  moves: StudioScreen['moves'],
 ): void {
+  const { roofStep, moves } = studio;
   // Backspace, Enter and Undo typed into a field are that field's own.
   const target = event.target;
   const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
@@ -41,6 +61,9 @@ function drawKey(
     moves.close();
   }
   if (!typing) historyKey(event, can, moves);
+  // A key typed in a field, a menu or a sheet is that part's own.
+  const held = target instanceof Element && target.closest(OWN_KEYS) !== null;
+  if (!typing && !held) roofKey(event, studio);
   // Esc is the phone's system back: the top thing open closes.
   // A part that took the Esc itself (a card, a field, a dialog) has had it.
   if (event.key === 'Escape' && !event.defaultPrevented) moves.back();
@@ -50,7 +73,7 @@ function drawKey(
  * The web's press on the map (a platform adapter, `T-M05-002` part b): a tap places a corner while
  * drawing, or lets a picked corner go; a drag is the camera's. On a phone a finger held still
  * while drawing aims, with the loupe, and places on lift; a mouse shows the spot as it moves. Esc
- * puts back what is in hand.
+ * puts back what is in hand; D draws another roof and Delete removes the picked one.
  */
 export function useDrawPress(
   studio: StudioScreen,
@@ -119,7 +142,7 @@ export function useDrawPress(
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Alt') moves.drawFree(event.type === 'keydown');
       if (event.type === 'keydown')
-        drawKey(event, roofStep, { close: canClose, undo: canUndo, redo: canRedo }, moves);
+        drawKey(event, studio, { close: canClose, undo: canUndo, redo: canRedo });
     };
     const onBlur = () => moves.drawFree(false);
     window.addEventListener('keydown', onKey);
@@ -130,7 +153,7 @@ export function useDrawPress(
       window.removeEventListener('keyup', onKey);
       window.removeEventListener('blur', onBlur);
     };
-  }, [roofStep, canClose, canUndo, canRedo, moves]);
+  }, [studio, canClose, canUndo, canRedo, moves]);
   const onPointerLeave = (event: PointerEvent<HTMLDivElement>) => {
     if (drawing && event.pointerType === 'mouse') moves.hover(null);
   };

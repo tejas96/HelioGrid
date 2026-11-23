@@ -34,7 +34,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         magnet: 'shown',
         undoRedo: 'undo',
         wipe: 'shown',
-        addRoof: 'hidden',
         layers: 'hidden',
         zoom: 'hidden',
         otherHandles: 'hidden',
@@ -52,7 +51,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         pencil: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
-        addRoof: 'hidden',
         layers: 'hidden',
         zoom: 'hidden',
         otherHandles: 'hidden',
@@ -69,7 +67,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         pencil: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
-        addRoof: 'hidden',
         layers: 'hidden',
         zoom: 'hidden',
         compass: 'hidden',
@@ -87,7 +84,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         pencil: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
-        addRoof: 'hidden',
         layers: 'hidden',
         zoom: 'hidden',
         otherHandles: 'hidden',
@@ -106,7 +102,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         pencil: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
-        addRoof: 'hidden',
         layers: 'hidden',
         otherHandles: 'hidden',
         lengthLabels: 'draft',
@@ -123,7 +118,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         pencil: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
-        addRoof: 'hidden',
         layers: 'hidden',
         otherHandles: 'hidden',
         compass: 'hidden',
@@ -141,7 +135,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         pencil: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
-        addRoof: 'hidden',
         layers: 'hidden',
         zoom: 'hidden',
         otherHandles: 'hidden',
@@ -155,7 +148,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       {
         stepSwitcher: 'mark',
         pictureChip: 'credit',
-        addRoof: 'hidden',
         otherHandles: 'hidden',
         bottomBar: 'drawing',
       },
@@ -167,7 +159,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       {
         pencil: 'hidden',
         magnet: 'hidden',
-        addRoof: 'hidden',
         sideViews: 'shown',
         compass: 'shown',
         otherHandles: 'hidden',
@@ -183,7 +174,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         pictureChip: 'credit',
         pencil: 'hidden',
         magnet: 'hidden',
-        addRoof: 'hidden',
         layers: 'switch',
         sideViews: 'shown',
         compass: 'shown',
@@ -201,7 +191,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         pictureChip: 'credit',
         pencil: 'hidden',
         magnet: 'hidden',
-        addRoof: 'hidden',
         layers: 'switch',
         sideViews: 'shown',
         compass: 'shown',
@@ -237,13 +226,6 @@ describe('focus mode: the edge cases', () => {
     expect(partsOf(facts).stepSwitcher).toBe(stepSwitcher);
   });
 
-  it.each([
-    [true, 'shown'],
-    [false, 'hidden'],
-  ] as const)('the + for another roof shows once a roof stands: %s → %s', (hasRoof, addRoof) => {
-    expect(partsOf({ hasRoof }).addRoof).toBe(addRoof);
-  });
-
   it('a reader never enters a job and holds no edit control', () => {
     const reader = partsOf({ job: 'drawing', canEdit: false });
     expect(reader).toMatchObject({
@@ -252,7 +234,6 @@ describe('focus mode: the edge cases', () => {
       magnet: 'hidden',
       wipe: 'hidden',
       undoRedo: 'hidden',
-      addRoof: 'hidden',
       otherHandles: 'hidden',
       bottomBar: 'main',
     });

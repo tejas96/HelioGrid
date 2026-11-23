@@ -11,7 +11,8 @@ const TOOL = theme.layout['button-h-md'];
 
 /**
  * The two small columns of round tools. Left: what changes the model — the pencil that draws a
- * roof (filled while drawing: a tap stops), the trash that clears every corner of the drawing,
+ * roof, the first or another (filled while drawing: a tap stops), the trash that clears every
+ * corner of the drawing,
  * Undo and Redo (Undo alone while drawing). Right: how the model is seen — the view menu (the
  * views on offer, metres or feet), the 2D and 3D switch, Zoom in, Zoom out and Back to the pin. A
  * view that waits for a roof says why on a tap. The road view and the sun join with their parts.
@@ -27,7 +28,6 @@ export function StudioToolRail({
   newView,
   parts,
   canWipe,
-  hasRoof,
   words,
   onView,
   onUnits,
@@ -35,7 +35,6 @@ export function StudioToolRail({
   onRedo,
   onDraw,
   onWipe,
-  onAddRoof,
   onZoomIn,
   onZoomOut,
   onHome,
@@ -58,10 +57,6 @@ export function StudioToolRail({
   canWipe: boolean;
   /** The trash while drawing: every corner goes, and drawing goes on. */
   onWipe: () => void;
-  /** A roof stands: the + that starts another is there (focus mode may set it aside). */
-  hasRoof: boolean;
-  /** The + that starts another roof. */
-  onAddRoof: () => void;
   words: StudioCanvasWords;
   onView: (view: StudioView) => void;
   onUnits: (units: MeasurementSystem) => void;
@@ -97,19 +92,11 @@ export function StudioToolRail({
             </IconButton>
           </Shown>
         ) : null}
-        {/* One place below the pencil: the trash while drawing, the + for another roof else. Undo
-            keeps its place as either comes and goes. */}
+        {/* The trash shows only while drawing: no + for another roof, which is the pencil's job. */}
         {editable && parts.wipe === 'shown' ? (
           <Shown when={canWipe}>
             <IconButton label={words.wipeCorners} size={TOOL} onClick={onWipe}>
               <ShellGlyph name="trash" size="md" />
-            </IconButton>
-          </Shown>
-        ) : null}
-        {editable && parts.wipe !== 'shown' && hasRoof ? (
-          <Shown when={parts.addRoof === 'shown'}>
-            <IconButton label={words.addRoof} size={TOOL} onClick={onAddRoof}>
-              <ShellGlyph name="plus" size="md" />
             </IconButton>
           </Shown>
         ) : null}
