@@ -133,6 +133,9 @@ function RoofLines({ studio, drawing }: { studio: StudioScreen; drawing: boolean
   );
 }
 
+/** What the marks lie on: on the bare grid a side is ink, with no picture to stand out from. */
+const groundOf = (studio: StudioScreen) => (studio.picture.kind === 'none' ? 'grid' : 'picture');
+
 /**
  * Which roofs show their corners and handles, for a person who may change the design: the one roof
  * of a design while looking, and with more roofs only the picked one; in a job, the roof it holds.
@@ -242,7 +245,7 @@ export function StudioRoofMarks({
   const gone = step.kind === 'idle' && step.said?.kind === 'corner_removed' ? step.said : null;
 
   return (
-    <div ref={layer} className="hg-roof-marks" data-view={view}>
+    <div ref={layer} className="hg-roof-marks" data-view={view} data-ground={groundOf(studio)}>
       <RoofLines studio={studio} drawing={drawing} />
       {lengths === 'all' ? (
         <StudioRoofLengths

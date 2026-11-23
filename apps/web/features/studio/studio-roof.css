@@ -33,88 +33,9 @@
   stroke-width: 5;
 }
 
-/* The dark line under a roof's sides, which keeps them seen on any picture; under the picked roof,
-   a soft wide line in its blue: its glow. A plain stroke, never a filter: a filter on every side
-   of 200 roofs is drawn again each frame, and the map then moves at a quarter of its speed. */
-.hg-roof-under {
-  stroke: color-mix(in srgb, var(--scene-shade) 55%, transparent);
-  stroke-width: 8;
-}
-
-.hg-roof-under[data-picked="true"] {
-  stroke: color-mix(in srgb, var(--hg-roof-ink) 35%, transparent);
-  stroke-width: 13;
-}
-
 .hg-roof-line {
   stroke: var(--hg-roof-ink);
   stroke-width: 2.5;
-}
-
-/* A roof's sides in the top view: solid and thick where a side has a wall, thin and dashed where
-   it has none; the picked roof's glow; amber and dashed on a roof that sticks out past its roof. */
-.hg-roof-side {
-  stroke: var(--scene-mark);
-  stroke-width: 2.5;
-  stroke-dasharray: 7 6;
-}
-
-.hg-roof-side[data-wall="true"] {
-  stroke-width: 5;
-  stroke-dasharray: none;
-}
-
-.hg-roof-side[data-picked="true"] {
-  stroke: var(--hg-roof-ink);
-}
-
-.hg-roof-side[data-check="true"] {
-  stroke: var(--warning);
-  stroke-dasharray: 7 5;
-}
-
-[data-quiet="true"] .hg-roof-side {
-  opacity: 0.85;
-}
-
-/* What a roof is shows in its fill: a hole is dark, a roof on another a little lighter. */
-.hg-roof-lines .hg-roof-fill {
-  fill: none;
-  stroke: none;
-}
-
-.hg-roof-lines .hg-roof-fill[data-kind="hole"] {
-  fill: color-mix(in srgb, var(--scene-shade) 62%, transparent);
-}
-
-.hg-roof-lines .hg-roof-fill[data-kind="stair_room"],
-.hg-roof-lines .hg-roof-fill[data-kind="upper_floor"],
-.hg-roof-lines .hg-roof-fill[data-kind="open_shed"] {
-  fill: color-mix(in srgb, var(--scene-mark) 22%, transparent);
-}
-
-.hg-roof-lines .hg-roof-fill[data-picked="true"] {
-  fill: color-mix(in srgb, var(--hg-roof-ink) 20%, transparent);
-}
-
-/* A short quiet arrow down each sloped face: which way it slopes. */
-.hg-roof-slope {
-  stroke: var(--scene-mark);
-  stroke-width: 1.5;
-  opacity: 0.9;
-}
-
-.hg-roof-slope-shade {
-  stroke: color-mix(in srgb, var(--scene-shade) 55%, transparent);
-  stroke-width: 4;
-}
-
-.hg-roof-slope-tip {
-  fill: none;
-  stroke: var(--scene-mark);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 [data-quiet="true"] .hg-roof-line {
@@ -203,49 +124,6 @@
 
 .hg-roof-tag[data-tone="bad"] {
   background: var(--scene-bad);
-}
-
-/* A tag that waits for a look, not a refusal: amber. */
-.hg-roof-tag[data-tone="check"] {
-  background: var(--warning-bg);
-  color: var(--warning-text);
-}
-
-/* A roof on another says its height on it: "+3.0 m", quiet, in the roof's middle. */
-.hg-roof-at > .hg-roof-above {
-  transform: translate(-50%, -50%);
-  display: inline-flex;
-  align-items: center;
-  block-size: var(--sp-5);
-  padding-inline: var(--sp-1);
-  border-radius: var(--r-xs);
-  background: color-mix(in srgb, var(--scene-shade) 78%, transparent);
-  color: var(--scene-mark);
-  font-family: var(--font-mono);
-  font-size: var(--fs-caption);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  /* A tap on it is a tap on its roof. */
-  pointer-events: none;
-}
-
-/* A dot on each side of the picked roof: a tap adds or removes that side's wall. */
-.hg-roof-side-dot {
-  display: block;
-  inline-size: var(--sp-3);
-  block-size: var(--sp-3);
-  border-radius: var(--r-pill);
-  background: var(--scene-mark);
-  box-shadow:
-    0 0 0 calc(var(--hg-studio-line) * 2.5) var(--hg-roof-ink),
-    var(--e1);
-}
-
-.hg-roof-side-dot[data-hot="true"] {
-  background: var(--hg-roof-ink);
-  box-shadow:
-    0 0 0 calc(var(--hg-studio-line) * 2.5) var(--scene-mark),
-    var(--e1);
 }
 
 .hg-roof-at > .hg-roof-angle {

@@ -26,6 +26,7 @@ import './studio.css';
 import './studio-canvas.css';
 import './studio-picture.css';
 import './studio-roof.css';
+import './studio-roof-sides.css';
 import './studio-roof-controls.css';
 import './studio-length.css';
 import './studio-height.css';
