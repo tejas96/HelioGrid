@@ -78,6 +78,7 @@ export * from './components/Explainer';
 export * from './components/FactRow';
 export * from './components/FieldOverride';
 export * from './components/FileChip';
+export * from './components/FileChooser';
 export * from './components/FilterBar';
 export * from './components/FilterPanel';
 export * from './components/FindingList';

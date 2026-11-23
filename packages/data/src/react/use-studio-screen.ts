@@ -9,41 +9,46 @@ import {
   type MeasurementSystem,
   OPENING_VIEW,
   type PictureChoice,
-  pictureNewerThanDrawn,
-  type RoofHeightShown,
-  type RoofSheetView,
+  pictureUpdatedOver,
   roofsBox,
+  roofsWithSheet,
   type StepPlace,
   type StudioDocument,
   type StudioView,
   type SunPosition,
   sceneSunAt,
-  shownPicture,
   stepRail,
   type ViewPlace,
   viewsOffered,
 } from '@heliogrid/domain';
 import { useMemo, useState } from 'react';
+import { planOutlinesOf } from './own-picture-view';
 import { readOf } from './read';
 import { arrivalOf, framedWithCard, useSizeCardOpens } from './size-card';
 import {
   editingOf,
-  pictureOf,
+  type SkyFacts,
   type StudioEditing,
   type StudioPicture,
-  skyReadOf,
+  skyFactsOf,
   useEditTurn,
   useSaveRetries,
   useStudioDocument,
 } from './studio-document-state';
 import type { StudioSaveState } from './studio-save-queue';
 import { historyStep, studioBack, undoRedoOf } from './studio-undo-back';
+import { useStudioPicture } from './use-design-picture';
 import { type DesignRead, useDesignScreen } from './use-design-screen';
+import {
+  type OwnPictureMoves,
+  type OwnPictureView,
+  useOwnPictureScreen,
+} from './use-own-picture-screen';
 import { type RoofSheetMoves, type RoofSheetState, useRoofSheet } from './use-roof-sheet';
 import { type RoofMoves, type RoofStepView, useRoofStep } from './use-roof-step';
 import { useSession } from './use-session';
 
-export type { StudioEditing, StudioPicture } from './studio-document-state';
+export type { SkyFacts, StudioEditing, StudioPicture } from './studio-document-state';
 export type { StudioSaveState } from './studio-save-queue';
 export type { RoofMoves, RoofStepView, SizeCardView } from './use-roof-step';
 
@@ -71,8 +76,11 @@ export interface StudioScreen extends RoofStepView, RoofSheetState {
   /** `null` until the document is read. */
   readonly document: StudioDocument | null;
   readonly picture: StudioPicture;
-  /** The sky picture is newer than the one the roof was drawn on, and the note is not seen yet. */
+  readonly own: OwnPictureView; // Your picture and the plan (`T-M05-002d`).
+  /** The picture the roofs were drawn on is newer now, and the note is not seen yet (board 5.1). */
   readonly pictureUpdated: boolean;
+  /** The sky picture's sharpness and date, shown or not; `null` while unread or where none. */
+  readonly skyFacts: SkyFacts | null;
   readonly editing: StudioEditing;
   readonly saving: StudioSaveState;
   /** A change waits, not sent: no connection, or the api did not save it. Leaving loses it. */
@@ -96,21 +104,7 @@ export interface StudioScreen extends RoofStepView, RoofSheetState {
   /** Which parts show for the job in hand, on a phone-width screen or a wider one (focus mode). */
   focus(phone: boolean): FocusParts;
   readonly moves: StudioMoves;
-}
-
-/** The roof whose sheet is open stands at the height in hand, and the camera frames it alone. */
-function withSheet(
-  heights: readonly RoofHeightShown[],
-  fit: GroundBox | null,
-  roofSheet: RoofSheetView | null,
-  document: StudioDocument | null,
-): { heights: readonly RoofHeightShown[]; fit: GroundBox | null } {
-  const open = roofSheet === null ? undefined : document?.roofs[roofSheet.roof];
-  if (roofSheet === null || open === undefined) return { heights, fit };
-  return {
-    heights: heights.map((height, i) => (i === roofSheet.roof ? roofSheet.height : height)),
-    fit: roofsBox([open]),
-  };
+  readonly ownMoves: OwnPictureMoves;
 }
 
 /**
@@ -137,8 +131,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   // The sun is read once for the opening: the scene does not move with the clock.
   const sun = useMemo(() => (pin === null ? null : sceneSunAt(pin, Date.now())), [pin]);
 
-  const refetchDocument = documentQuery.refetch;
-  const turn = useEditTurn(canEdit, designId, queue, refetchDocument);
+  const turn = useEditTurn(canEdit, designId, queue, documentQuery.refetch);
   useSaveRetries(queue, saving);
 
   const editing = editingOf(ready ? canEdit : null, saving, turn, history !== null);
@@ -152,9 +145,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   };
 
   const document = history?.present ?? null;
-  const skyRead = readOf(skyQuery);
-  const sky = skyReadOf(skyRead);
-  const picture = pictureOf(shownPicture(document?.picture ?? null, sky), skyRead);
+  const { sky, picture } = useStudioPicture(designId, document, readOf(skyQuery));
+  const own = useOwnPictureScreen({ designId, document, picture, latest, change, editable });
   /** The views and the rail wait for a roof that stands. */
   const roofClosed = (document?.roofs.length ?? 0) > 0;
   const views = viewsOffered(roofClosed);
@@ -174,6 +166,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     typedStart: { length: formats.typedRoofLengthM, width: formats.typedRoofWidthM },
     numberEntry: session.user?.numberEntry ?? 'slider',
     setNumberEntry: (entry) => void session.setStudioPicks({ numberEntry: entry }),
+    planOutlines: planOutlinesOf(own.view.plan),
   });
   const { step, act } = roof;
   const { roofStep } = roof.view;
@@ -197,10 +190,16 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     read,
     document,
     picture,
+    own: own.view,
+    ownMoves: own.moves,
     pictureUpdated:
       !pictureSeen &&
-      sky.kind === 'ready' &&
-      pictureNewerThanDrawn(document?.drawnOn ?? null, sky.takenOn),
+      pictureUpdatedOver(
+        document?.drawnOn ?? null,
+        sky.kind === 'ready' ? sky.takenOn : null,
+        picture.kind === 'own' ? picture.takenOn : null,
+      ),
+    skyFacts: skyFactsOf(readOf(skyQuery)),
     editing,
     saving,
     unsent: saving.kind === 'offline' || saving.kind === 'failed',
@@ -210,7 +209,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     views,
     ...roof.view,
     ...sheet.state,
-    ...withSheet(
+    ...roofsWithSheet(
       roof.view.heights,
       framedWithCard(fit, document, roof.view.sizeCard),
       roofSheet,
@@ -222,7 +221,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     ...undoRedoOf(editable, roofStep, history),
     focus: (phone) =>
       focusOf({
-        job: roofSheet === null ? roof.view.job : 'sheet',
+        job: roofSheet !== null ? 'sheet' : own.view.cardOpen ? 'picture' : roof.view.job,
         view,
         phone,
         canEdit: editable,
@@ -261,7 +260,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         }
       },
       chooseUnits: (system) => void session.setUnitPreference(system),
-      openTheirs: () => void refetchDocument(),
+      openTheirs: () => void documentQuery.refetch(),
       retry: () => void queue.flush(),
       pictureChecked: () => setPictureSeen(true),
       // A view that waits for a roof is not taken, whoever asks for it.

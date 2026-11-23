@@ -170,6 +170,8 @@ export type RoofStepEvent =
       readonly roof: number;
       readonly edge: number;
       readonly system: MeasurementSystem;
+      /** The roofs made from a plan laid at our guess: a first length on one sizes the plan. */
+      readonly planRoofs?: readonly number[];
     }
   | { readonly kind: 'type'; readonly entry: LengthEntry }
   | { readonly kind: 'step'; readonly by: 1 | -1; readonly system: MeasurementSystem }

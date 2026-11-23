@@ -11,9 +11,15 @@ import type { FileContentType } from './vocabulary';
 type TextType = 'text/csv' | 'application/json';
 const ascii = (text: string): number[] => [...text].map((mark) => mark.charCodeAt(0));
 
-const SIGNATURES: Readonly<Record<Exclude<FileContentType, TextType>, readonly number[]>> = {
+/** A byte any value may take: a WebP's file size sits between its two marks. */
+const ANY = null;
+
+const SIGNATURES: Readonly<
+  Record<Exclude<FileContentType, TextType>, readonly (number | typeof ANY)[]>
+> = {
   'image/png': [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a],
   'image/jpeg': [0xff, 0xd8, 0xff],
+  'image/webp': [...ascii('RIFF'), ANY, ANY, ANY, ANY, ...ascii('WEBP')],
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [0x50, 0x4b, 0x03, 0x04],
   'application/pdf': [0x25, 0x50, 0x44, 0x46, 0x2d],
   /** `AC10` and the release's two digits: `AC1015` is AutoCAD 2000, `AC1032` is 2018. */
@@ -30,7 +36,9 @@ export function matchesFileSignature(type: FileContentType, firstBytes: Uint8Arr
     const first = firstBytes.find((byte) => !WHITESPACE.has(byte));
     return isText(firstBytes) && first === 0x7b;
   }
-  return SIGNATURES[type].every((byte, index) => firstBytes[index] === byte);
+  return SIGNATURES[type].every((byte, index) =>
+    byte === ANY ? firstBytes[index] !== undefined : firstBytes[index] === byte,
+  );
 }
 
 const WHITESPACE = new Set([0x20, 0x09, 0x0a, 0x0d]);

@@ -1,6 +1,7 @@
 import { feetAndInches, metresOfFeetAndInches } from '../format/measurement';
 import type { MeasurementSystem } from '../format/pack';
 import type { SetEdgeTrust, StudioDocument } from './document';
+import { planSizedByLength } from './plan-sizing';
 import type { EditResult } from './roof-check';
 import { LENGTH_MIN_M, lengthSet } from './roof-length';
 import { edgeLengths } from './roof-shape';
@@ -24,6 +25,8 @@ export interface LengthInHand {
   readonly edge: number;
   readonly base: StudioDocument;
   readonly entry: LengthEntry;
+  /** The roofs made from a plan laid at our guess (`roofsOnPlan`): a length on one sizes the plan. */
+  readonly planRoofs?: readonly number[];
 }
 
 const STEP_M = 0.05;
@@ -191,6 +194,11 @@ export function handUntouched(hand: LengthInHand, system: MeasurementSystem): bo
   );
 }
 
+/** Whether the length in the box sizes the plan its roof was made from, not the picture. */
+export function lengthSizesPlan(hand: LengthInHand): boolean {
+  return hand.planRoofs?.includes(hand.roof) ?? false;
+}
+
 /** What the length in the box would make of the design, or why it cannot; empty: no number yet. */
 export function sizingResult(
   hand: LengthInHand,
@@ -199,6 +207,9 @@ export function sizingResult(
   const metres = handMetres(hand, system);
   if (metres === null) return { kind: 'empty' };
   const trust: SetEdgeTrust = hand.entry.measured ? 'measured' : 'typed';
+  if (lengthSizesPlan(hand)) {
+    return planSizedByLength(hand.base, hand.planRoofs ?? [], hand.roof, hand.edge, metres, trust);
+  }
   return lengthSet(hand.base, hand.roof, hand.edge, metres, trust);
 }
 

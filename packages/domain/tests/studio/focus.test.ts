@@ -149,6 +149,18 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       },
     ],
     [
+      'picture',
+      'top',
+      true,
+      {
+        stepSwitcher: 'mark',
+        pictureChip: 'credit',
+        addRoof: 'hidden',
+        otherHandles: 'hidden',
+        bottomBar: 'drawing',
+      },
+    ],
+    [
       'looking',
       '3d',
       true,

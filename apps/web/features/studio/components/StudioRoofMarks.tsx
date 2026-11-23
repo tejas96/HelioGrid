@@ -18,6 +18,7 @@ import { placeRoofMarks, pointText } from './roof-marks-place';
 import { roofWordsShown } from './roof-words-shown';
 import type { StudioDrive } from './StudioCameraRig';
 import { StudioDraftMarks } from './StudioDraftMarks';
+import { StudioPlanHandles } from './StudioPlanHandles';
 import { StudioRoofEdit } from './StudioRoofEdit';
 import { edgeAt, type Revealed, StudioRoofLengths } from './StudioRoofLengths';
 import type { RoofMarksHandle, ScreenOf } from './StudioRoofs';
@@ -44,6 +45,12 @@ function draftTagOf(
   if (aiming || draft.spot === null) return null;
   const { point, snap } = draft.spot;
   const tag = words.spotTag({ refusal: draft.spotRefusal, snap, angle: draft.angle }, shown);
+  // A spot the plan took (board 4.6): its tag names the plan's corner or line.
+  const onPlan = studio.own.planSnap;
+  if (tag === null && onPlan !== null && snap === null) {
+    const text = onPlan.on === 'corner' ? words.onPlanCorner : words.onPlanLine;
+    return { text, bad: false, at: pointText(point) };
+  }
   return tag === null ? null : { ...tag, at: pointText(point) };
 }
 
@@ -224,8 +231,10 @@ export function StudioRoofMarks({
   const tag = tagOf(studio, words, shown, aiming);
   const editable = studio.editing.kind === 'editor';
   // Corners show on every roof while looking; in a job, only on the roof it holds.
+  // While the plan is picked its own handles take the drags: the roofs' edit tools step aside.
+  const planPicked = studio.own.plan?.picked === true;
   const editsOn = (index: number) =>
-    editable && !drawing && (handles !== 'hidden' || index === studio.handlesRoof);
+    editable && !drawing && !planPicked && (handles !== 'hidden' || index === studio.handlesRoof);
   const closedJust = step.kind === 'idle' && step.said?.kind === 'closed' ? roofMarks.at(-1) : null;
   // A corner removed shrinks away where it stood, once, as its edges join.
   const gone = step.kind === 'idle' && step.said?.kind === 'corner_removed' ? step.said : null;
@@ -256,6 +265,9 @@ export function StudioRoofMarks({
           />
         ) : null,
       )}
+      {studio.own.plan?.picked && view === 'top' ? (
+        <StudioPlanHandles plan={studio.own.plan} studio={studio} words={words} press={press} />
+      ) : null}
       {studio.sizeCard === null ? null : <StudioSizePreview card={studio.sizeCard} units={units} />}
       {draft === null ? null : (
         <StudioDraftMarks

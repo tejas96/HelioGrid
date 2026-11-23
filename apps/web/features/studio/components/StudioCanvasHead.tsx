@@ -6,8 +6,11 @@ import { useFormat } from '@heliogrid/ui';
 import type { Ref } from 'react';
 import { DrawHint } from './StudioBarPills';
 import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
+import { useFilePick } from './StudioFilePick';
 import { StudioLengthBox } from './StudioLengthBox';
+import { StudioPictureCards } from './StudioPictureCards';
 import { StudioPictureChip, StudioPictureCredit } from './StudioPictureChip';
+import { StudioPlanRow } from './StudioPlanRow';
 import { StudioSaveMark } from './StudioSaveMark';
 import { StudioSizeCard } from './StudioSizeCard';
 import { StudioStepSwitcher } from './StudioStepSwitcher';
@@ -91,44 +94,17 @@ export function StudioCanvasHead({
   /** A phone-width screen: the size card holds Place roof while the keyboard is up. */
   phone: boolean;
 }) {
-  const format = useFormat();
-  const { picture, editing, moves, document, roofStep } = studio;
-  const editable = editing.kind === 'editor';
-  const shown: PictureChoice = picture.kind === 'none' ? 'none' : (document?.picture ?? 'sky');
-  const sky = picture.kind === 'sky' ? picture : null;
-  const drawnOn = document?.drawnOn?.takenOn ?? null;
+  const { roofStep } = studio;
   return (
     <div ref={headRef} className="hg-studio-canvas-head">
       <HeadSteps studio={studio} parts={parts} words={words} onBack={onBack} onSite={onSite} />
       <StudioCompass handle={compass} words={words} off={parts.compass === 'hidden'} />
-      {parts.pictureChip === 'credit' ? (
-        <StudioPictureCredit picture={picture} />
-      ) : (
-        <StudioPictureChip
-          picture={picture}
-          shown={shown}
-          // The first length stretches the picture: its sharpness is the picture as drawn.
-          sharpness={
-            sky === null
-              ? null
-              : format.fineLength(
-                  sky.metresPerPixel * (studio.shown?.pictureScale ?? 1),
-                  studio.units,
-                )
-          }
-          takenOn={sky?.takenOn == null ? null : format.monthYear(sky.takenOn)}
-          drawnOn={drawnOn === null ? null : format.monthYear(drawnOn)}
-          words={words}
-          canPick={editable && roofStep.kind === 'idle'}
-          open={studio.picturesOpen}
-          onOpen={moves.showPictures}
-          onPick={moves.pickPicture}
-        />
-      )}
+      <HeadPicture studio={studio} parts={parts} words={words} phone={phone} />
       <DrawHint studio={studio} words={words} />
       {roofStep.kind === 'sizing' ? (
         <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
       ) : null}
+      <StudioPictureCards studio={studio} words={words} phone={phone} />
       {studio.sizeCard !== null ? (
         <StudioSizeCard
           card={studio.sizeCard}
@@ -140,4 +116,73 @@ export function StudioCanvasHead({
       ) : null}
     </div>
   );
+}
+
+/** The picture chip, or its credit line alone while a job is in hand. */
+function HeadPicture({
+  studio,
+  parts,
+  words,
+  phone,
+}: {
+  studio: StudioScreen;
+  parts: FocusParts;
+  words: StudioCanvasWords;
+  phone: boolean;
+}) {
+  const format = useFormat();
+  const pickFile = useFilePick();
+  const { picture, editing, moves, document, roofStep } = studio;
+  const editable = editing.kind === 'editor';
+  const shown: PictureChoice = picture.kind === 'none' ? 'none' : (document?.picture ?? 'sky');
+  // The sky picture's row names it, shown or not.
+  const { skyFacts } = studio;
+  const drawnOn = document?.drawnOn?.takenOn ?? null;
+  if (parts.pictureChip === 'credit') {
+    // On a phone your picture's open card carries the credit as its last line (ruling 8).
+    return phone && studio.own.cardOpen ? null : (
+      <StudioPictureCredit picture={picture} words={words} />
+    );
+  }
+  return (
+    <StudioPictureChip
+      picture={picture}
+      shown={shown}
+      // The first length stretches the picture: its sharpness is the picture as drawn.
+      sharpness={
+        skyFacts === null
+          ? null
+          : format.fineLength(
+              skyFacts.metresPerPixel * (studio.shown?.pictureScale ?? 1),
+              studio.units,
+            )
+      }
+      takenOn={skyFacts?.takenOn == null ? null : format.monthYear(skyFacts.takenOn)}
+      drawnOn={drawnOn === null ? null : format.monthYear(drawnOn)}
+      words={words}
+      canPick={editable && roofStep.kind === 'idle'}
+      open={studio.picturesOpen}
+      onOpen={moves.showPictures}
+      onPick={moves.pickPicture}
+      ownLine={ownLineOf(picture, words, format, studio.units)}
+      onPickFile={pickFile}
+      ownLaid={studio.document?.ownPicture != null}
+      planRow={<StudioPlanRow plan={studio.own.plan} studio={studio} words={words} />}
+    />
+  );
+}
+
+/** Your picture's line on the chip: a photo's day, or a drone map's sharpness and day (board 2.1, 3.1). */
+function ownLineOf(
+  picture: StudioScreen['picture'],
+  words: StudioCanvasWords,
+  format: ReturnType<typeof useFormat>,
+  units: StudioScreen['units'],
+): string | null {
+  if (picture.kind !== 'own') return null;
+  const date = picture.takenOn === null ? null : format.date(picture.takenOn);
+  if (picture.pictureKind === 'photo' || picture.metresPerPixel === null) return date;
+  const sharpness = format.fineLength(picture.metresPerPixel, units);
+  if (!picture.placeRead) return words.ownDronePlaceless(sharpness);
+  return date === null ? sharpness : `${sharpness} · ${date}`;
 }

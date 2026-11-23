@@ -1,5 +1,5 @@
 'use client';
-import type { StudioPicture } from '@heliogrid/data/react';
+import type { PlanShown, StudioPicture } from '@heliogrid/data/react';
 import type { GroundBox, Roof, StudioView, SunPosition } from '@heliogrid/domain';
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
@@ -7,7 +7,9 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { type ReactNode, type RefObject, useRef, useState } from 'react';
 import { MathUtils, Vector3 } from 'three';
 import { type ClearGround, StudioCameraRig, type StudioDrive } from './StudioCameraRig';
+import { StudioOwnGround } from './StudioOwnGround';
 import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
+import { StudioPlanLines } from './StudioPlanLines';
 import {
   type RoofMarksHandle,
   type RoofRise,
@@ -38,6 +40,17 @@ function scaledBox<B extends ClearGround>(box: B | null, scale: number): B | nul
 /** The picture a roof's top wears, laid where the stretched picture lies. */
 const scaledTop = (top: RoofTopPicture, scale: number): RoofTopPicture =>
   scaledBox(top, scale) ?? top;
+
+/** The picture the roofs' tops wear: the sky picture stretched, or your own where it lies. */
+function roofTopIn(
+  kind: StudioPicture['kind'],
+  sharp: RoofTopPicture | null,
+  own: RoofTopPicture | null,
+  scale: number,
+): RoofTopPicture | null {
+  if (kind === 'sky') return sharp === null ? null : scaledTop(sharp, scale);
+  return kind === 'own' ? own : null;
+}
 
 /** The camera before its first view is set: the rig flies it from here. */
 const CAMERA_START = { near: 0.5, far: 3_000, position: [0, 60, 60] as [number, number, number] };
@@ -131,6 +144,10 @@ export interface StudioSceneProps {
   rise: RoofRise;
   /** The page's marks on the roofs, told each frame where the model lands. */
   roofMarks: RefObject<RoofMarksHandle | null>;
+  /** The plan over the ground (`T-M05-002d`), drawn in the top view alone; `null` with none. */
+  plan: PlanShown | null;
+  /** Its closed outlines glow: it rests, unlocked, and a tap makes a roof. */
+  planGlows: boolean;
 }
 
 /**
@@ -157,9 +174,13 @@ export function StudioScene({
   frameOn,
   rise,
   roofMarks,
+  plan,
+  planGlows,
 }: StudioSceneProps) {
   // biome-ignore lint/plugin: the web's WebGL picture of the ground, handed on to the roofs' tops
   const [sharp, setSharp] = useState<RoofTopPicture | null>(null);
+  // biome-ignore lint/plugin: your picture's WebGL texture, handed on to the roofs' tops as the sky's is
+  const [ownTop, setOwnTop] = useState<RoofTopPicture | null>(null);
   const pictureScale = readScale ?? 1;
   // The share of its new size the model stands at while the first length grows it: 1 at rest.
   const sizing = useRef(1);
@@ -192,7 +213,20 @@ export function StudioScene({
             <meshBasicMaterial color={palette['canvas-sunken']} toneMapped={false} />
           </mesh>
         )}
-        {picture.kind === 'none' ? (
+        {picture.kind === 'own' ? (
+          <StudioOwnGround picture={picture} plaster={palette['scene-wall']} onTop={setOwnTop} />
+        ) : null}
+        {plan !== null && view === 'top' ? (
+          <StudioPlanLines
+            plan={plan}
+            ink={picture.kind === 'none' ? palette['text-primary'] : palette['scene-mark']}
+            halo={picture.kind === 'none' ? null : palette['scene-shade']}
+            glow={palette['scene-line']}
+            glowing={planGlows}
+          />
+        ) : null}
+        {/* No picture: the grid is the ground. Your own picture lies on it, and it shows round it. */}
+        {picture.kind === 'none' || picture.kind === 'own' ? (
           <Grid
             position={[0, GRID_LIFT_M, 0]}
             cellSize={1}
@@ -214,7 +248,7 @@ export function StudioScene({
           palette={palette}
           heights={heights}
           storeyHeightM={storeyHeightM}
-          top={picture.kind === 'sky' && sharp !== null ? scaledTop(sharp, pictureScale) : null}
+          top={roofTopIn(picture.kind, sharp, ownTop, pictureScale)}
           rise={rise}
           sizing={sizing}
           marks={roofMarks}

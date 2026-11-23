@@ -175,7 +175,14 @@ export const FILE_SUBJECT_RULES = {
     upload: 'subject',
     read: 'subject',
     maxBytes: FILE_MAX_BYTES,
-    contentTypes: ['image/jpeg', 'application/json', ...CAD_PLAN_CONTENT_TYPES],
+    contentTypes: [
+      'image/jpeg',
+      // A drone map's piece with see-through edges: WebP, or PNG where the device writes no WebP.
+      'image/webp',
+      'image/png',
+      'application/json',
+      ...CAD_PLAN_CONTENT_TYPES,
+    ],
   },
 } as const satisfies Readonly<Record<FileSubjectKind, FileSubjectRule>>;
 

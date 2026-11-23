@@ -4,6 +4,7 @@ import type { RoofBar } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { theme } from '@heliogrid/theme';
 import { Button, IconButton, ShellGlyph, Text } from '@heliogrid/ui';
+import { picturePillOf } from './StudioPicturePills';
 
 /** The round tools in the bar take the tool columns' size. */
 export const BAR_TOOL = theme.layout['button-h-md'];
@@ -107,6 +108,8 @@ export function pillOf(
 ) {
   const { bar } = studio;
   if (off || studio.editing.kind !== 'editor') return null;
+  const picture = picturePillOf(studio, words);
+  if (picture !== null) return picture;
   if (bar?.kind === 'drawing') return <DrawPill bar={bar} studio={studio} words={words} />;
   if (bar?.kind === 'typing') {
     return phone && studio.sizeCard?.boxes ? null : <TypingPill studio={studio} words={words} />;

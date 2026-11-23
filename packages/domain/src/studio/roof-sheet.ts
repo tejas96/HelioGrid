@@ -1,6 +1,6 @@
 import type { ProvenanceTier } from '../format/qualified';
 import type { StudioDocument } from './document';
-import type { GroundPoint } from './ground';
+import type { GroundBox, GroundPoint } from './ground';
 import {
   ROOF_HEIGHT_SLIDER_MAX_M,
   ROOF_HEIGHT_SLIDER_MIN_M,
@@ -8,7 +8,7 @@ import {
   type RoofHeightShown,
   roofHeightOf,
 } from './roof-height';
-import { pointInside, roofArea } from './roof-shape';
+import { pointInside, roofArea, roofsBox } from './roof-shape';
 import { roofAreaTier, scaleTierOf } from './roof-trust';
 
 /**
@@ -47,7 +47,7 @@ export function roofSheetOf(
   return {
     roof: index,
     area: roofArea(roof.corners),
-    areaTier: roofAreaTier(roof, scaleTierOf(document)),
+    areaTier: roofAreaTier(roof, scaleTierOf(document, roof.tracedOn)),
     height,
     systemMetres: storeyHeightM,
     slide: {
@@ -77,4 +77,19 @@ export function roofHitAt(
     if (at !== null && pointInside(at, roof.corners)) return index;
   }
   return null;
+}
+
+/** The roof whose sheet is open stands at the height in hand, and the camera frames it alone. */
+export function roofsWithSheet(
+  heights: readonly RoofHeightShown[],
+  fit: GroundBox | null,
+  roofSheet: RoofSheetView | null,
+  document: StudioDocument | null,
+): { heights: readonly RoofHeightShown[]; fit: GroundBox | null } {
+  const open = roofSheet === null ? undefined : document?.roofs[roofSheet.roof];
+  if (roofSheet === null || open === undefined) return { heights, fit };
+  return {
+    heights: heights.map((height, i) => (i === roofSheet.roof ? roofSheet.height : height)),
+    fit: roofsBox([open]),
+  };
 }

@@ -4,6 +4,7 @@ import {
   entryOf,
   handMetres,
   handUntouched,
+  lengthSizesPlan,
   sizingResult,
   steppedEntry,
   stepRefused,
@@ -30,9 +31,10 @@ export function committedLength(state: Sizing, system: MeasurementSystem): RoofS
   const result = sizingResult(state, system);
   if (result.kind !== 'done') return stay(state);
   const metres = handMetres(state, system) ?? 0;
-  const said: RoofSaid = lengthSizesPicture(state.base, state.roof)
-    ? { kind: 'sized' }
-    : { kind: 'set', metres, measured: state.entry.measured };
+  const said: RoofSaid =
+    lengthSizesPicture(state.base, state.roof) || lengthSizesPlan(state)
+      ? { kind: 'sized' }
+      : { kind: 'set', metres, measured: state.entry.measured };
   return { state: idle(said, state.roof), commit: result.document };
 }
 
@@ -53,6 +55,7 @@ export function lengthPicked(
     base: document,
     entry: entryOf(metres, event.system, roof.edges[event.edge] === 'measured'),
     asking: false,
+    planRoofs: event.planRoofs ?? [],
   });
 }
 

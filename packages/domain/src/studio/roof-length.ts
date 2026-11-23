@@ -2,12 +2,14 @@ import {
   lengthHeld,
   PICTURE_SCALE_MAX,
   PICTURE_SCALE_MIN,
+  type PictureChoice,
   type Roof,
   type RoofEdgeTrust,
   type SetEdgeTrust,
   type StudioDocument,
 } from './document';
 import type { GroundPoint } from './ground';
+import { PICTURE_METRES_PER_UNIT_MAX, PICTURE_METRES_PER_UNIT_MIN } from './own-picture';
 import { type EditResult, faultOf, roofAt, withRoof } from './roof-check';
 import { SQUARE_EXACT_DEGREES } from './roof-draw';
 import { between, CORNER_GAP_M, cornerAfter, cornerAngle, edgeLengths } from './roof-shape';
@@ -35,24 +37,30 @@ export function onPicture(roof: Roof): boolean {
 }
 
 /**
- * Whether the picture keeps its own scale and no length of a roof traced on it is typed or measured
- * yet: the next one set on such a roof sizes the picture and every roof traced on it. A picture once
- * sized stays sized, though the length that sized it is split or deleted away.
+ * Whether a picture keeps an unsized scale and no length of a roof traced on it is typed or
+ * measured yet: the next one set on such a roof sizes the picture and every roof traced on it. A
+ * picture once sized stays sized, though the length that sized it is split or deleted away. The sky
+ * picture is unsized at its own scale; a picture of the company's own while its size is our guess
+ * (`T-M05-002d`) — a drone map's own scale is true, and never sized again.
  */
-export function lengthIsFirst(document: StudioDocument): boolean {
+export function lengthIsFirst(document: StudioDocument, on: PictureChoice = 'sky'): boolean {
+  const unsized =
+    on === 'sky'
+      ? document.pictureScale === 1
+      : on === 'own' && document.ownPicture?.scaleFrom === 'guess';
   return (
-    document.pictureScale === 1 &&
+    unsized &&
     document.roofs
-      .filter(onPicture)
+      .filter((roof) => onPicture(roof) && roof.tracedOn === on)
       // A plan's length came with the plan: it never sized the picture, so it leaves it unsized.
       .every((roof) => roof.edges.every((trust) => trust === 'traced' || trust === 'plan'))
   );
 }
 
-/** Whether a length set on this roof now would size the picture: a picture roof, and the first. */
+/** Whether a length set on this roof now would size its picture: a picture roof, and the first. */
 export function lengthSizesPicture(document: StudioDocument, roofIndex: number): boolean {
   const roof = document.roofs[roofIndex];
-  return roof !== undefined && onPicture(roof) && lengthIsFirst(document);
+  return roof !== undefined && onPicture(roof) && lengthIsFirst(document, roof.tracedOn);
 }
 
 /** Whether a typed length is far enough off the traced one to ask once before it is used. */
@@ -109,6 +117,31 @@ function stretched(
 }
 
 /**
+ * The picture stretched `k` times about the pin: the sky picture's scale, or a picture of the
+ * company's own — its size and its place — now sized by a person. `null` past five times either way.
+ */
+function pictureSized(
+  document: StudioDocument,
+  on: PictureChoice,
+  k: number,
+): StudioDocument | null {
+  if (on !== 'own' || document.ownPicture == null) {
+    const pictureScale = document.pictureScale * k;
+    const inRange = pictureScale >= PICTURE_SCALE_MIN && pictureScale <= PICTURE_SCALE_MAX;
+    return inRange ? { ...document, pictureScale } : null;
+  }
+  const own = document.ownPicture;
+  const metresPerUnit = own.metresPerUnit * k;
+  if (k < PICTURE_SCALE_MIN || k > PICTURE_SCALE_MAX) return null;
+  if (metresPerUnit < PICTURE_METRES_PER_UNIT_MIN || metresPerUnit > PICTURE_METRES_PER_UNIT_MAX)
+    return null;
+  return {
+    ...document,
+    ownPicture: { ...own, at: scaledAboutPin(own.at, k), metresPerUnit, scaleFrom: 'person' },
+  };
+}
+
+/**
  * The first true length: every corner of every roof, and the picture, stretched `k` times about
  * the pin; refused when the picture would stretch past five times or shrink past a fifth.
  */
@@ -118,17 +151,16 @@ function firstLengthSet(
   edges: readonly RoofEdgeTrust[],
   k: number,
 ): EditResult {
-  const pictureScale = document.pictureScale * k;
-  if (pictureScale < PICTURE_SCALE_MIN || pictureScale > PICTURE_SCALE_MAX) {
-    return { kind: 'refused', refusal: 'scale_out_of_range' };
-  }
-  // Only the roofs traced on the picture stretch with it: a typed or grid roof is in true metres.
+  const on = roofAt(document, roofIndex).tracedOn;
+  const sized = pictureSized(document, on, k);
+  if (sized === null) return { kind: 'refused', refusal: 'scale_out_of_range' };
+  // Only the roofs traced on that picture stretch with it: a typed or grid roof is in true metres.
   const roofs = document.roofs.map((r, i) => ({
     ...r,
-    corners: onPicture(r) ? r.corners.map((corner) => scaledAboutPin(corner, k)) : r.corners,
+    corners: r.tracedOn === on ? r.corners.map((corner) => scaledAboutPin(corner, k)) : r.corners,
     edges: i === roofIndex ? edges : r.edges,
   }));
-  const scaled = { ...document, roofs, pictureScale };
+  const scaled = { ...sized, roofs };
   // Every roof grows with the picture: each must stay inside the site's reach.
   for (const [i, roof] of roofs.entries()) {
     const fault = faultOf(scaled, i, roof.corners);

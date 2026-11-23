@@ -1,7 +1,10 @@
 import type {
+  AddCadPlan,
+  AddDesignPicture,
   CreateDesign,
   DesignDetail,
   DesignDocumentWire,
+  DesignPictureWire,
   DesignSet,
   EditTurnWire,
   GeoPoint,
@@ -99,12 +102,22 @@ export interface StudioRepository {
   giveEditTurn(id: string): Promise<void>;
   /** The sky picture of the design's site, fetched now, or why there is none. */
   skyPicture(id: string, signal?: AbortSignal): Promise<SkyPictureWire>;
+  /**
+   * A picture of the company's own read on the device, kept with the design (`T-M05-002d`); the
+   * same send again carries the same retry key. A refusal leaves as an `ApiError` naming its code.
+   */
+  addPicture(id: string, body: AddDesignPicture): Promise<DesignPictureWire>;
+  /** A CAD plan kept, and our server's read of it started; it answers the picture `reading`. */
+  addCadPlan(id: string, body: AddCadPlan): Promise<DesignPictureWire>;
+  /** A picture of the design's own as it stands, with short-lived links to its parts. */
+  picture(id: string, pictureId: string, signal?: AbortSignal): Promise<DesignPictureWire>;
 }
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
 export function createStudioRepository(api: ApiClient): StudioRepository {
   const routes = api.studio;
   const createKeys = createCreationKeys();
+  const pictureKeys = createCreationKeys();
   const at = (id: string) => ({ params: { id } });
   return {
     designsOf: (leadId, signal) =>
@@ -163,6 +176,30 @@ export function createStudioRepository(api: ApiClient): StudioRepository {
     },
     skyPicture: (id, signal) =>
       bodyAt(() => routes.skyPicture({ ...at(id), fetchOptions: { signal } }), 200),
+    addPicture: async (id, body) => {
+      const answer = await bodyOrRefusalAt(
+        () =>
+          routes.addPicture({ ...at(id), body, headers: pictureKeys.headersFor({ id, ...body }) }),
+        201,
+        422,
+      );
+      if (!answer.answered) throw actRefusal(answer.refusal.error);
+      pictureKeys.settle();
+      return answer.body;
+    },
+    addCadPlan: async (id, body) => {
+      const answer = await bodyOrRefusalAt(
+        () =>
+          routes.addCadPlan({ ...at(id), body, headers: pictureKeys.headersFor({ id, ...body }) }),
+        201,
+        422,
+      );
+      if (!answer.answered) throw actRefusal(answer.refusal.error);
+      pictureKeys.settle();
+      return answer.body;
+    },
+    picture: (id, pictureId, signal) =>
+      bodyAt(() => routes.picture({ params: { id, pictureId }, fetchOptions: { signal } }), 200),
   };
 }
 

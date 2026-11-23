@@ -4,7 +4,7 @@ import type { StudioPicture } from '@heliogrid/data/react';
 import type { PictureChoice } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { Pressable, ShellGlyph } from '@heliogrid/ui';
-import { useEffect, useId, useRef } from 'react';
+import { type ReactNode, useEffect, useId, useRef } from 'react';
 
 /** One picture to pick: its mark, its name, its line, and why it cannot be picked yet. */
 interface PictureOption {
@@ -23,7 +23,7 @@ function ChipTitle({
   canPick,
 }: {
   title: TranslatedText;
-  source: TranslatedText | null;
+  source: string | null;
   drawnOn: string | null;
   canPick: boolean;
 }) {
@@ -37,10 +37,32 @@ function ChipTitle({
   );
 }
 
+/** What the chip shows of the picture: its title, who gave it, its credit and its thumbnail. */
+function chipFacts(
+  picture: StudioPicture,
+  shown: PictureChoice,
+  words: StudioCanvasWords,
+  ownLine: string | null,
+) {
+  const sky = picture.kind === 'sky' ? picture : null;
+  const own = picture.kind === 'own' ? picture : null;
+  const ownTitle = own === null ? words.yourPicture : words.ownTitle(own.pictureKind);
+  const title = shown === 'none' ? words.noPicture : shown === 'own' ? ownTitle : words.skyPicture;
+  const pieces = sky?.pieces ?? own?.pieces ?? [];
+  const skySource = sky === null || shown !== 'sky' ? null : words.source(sky.source);
+  return {
+    title,
+    source: own === null ? skySource : ownLine,
+    credit: pictureCreditOf(picture, words),
+    thumb: pieces[Math.floor(pieces.length / 2)]?.image ?? null,
+  };
+}
+
 /**
  * The picture chip, top left: which picture the ground shows, who gave it, how sharp it is and its
  * credit line — always in view, never under a panel. A tap opens the three pictures: the sky
- * picture (picked by itself), your own (coming soon) or none.
+ * picture (picked by itself), your own — a tap opens the file picker, and a newer file replaces the
+ * one laid (`T-M05-002d`) — or none; and the plan's row, when a plan is laid.
  */
 export function StudioPictureChip({
   picture,
@@ -53,6 +75,10 @@ export function StudioPictureChip({
   open,
   onOpen,
   onPick,
+  ownLine,
+  onPickFile,
+  ownLaid,
+  planRow,
 }: {
   picture: StudioPicture;
   /** The picture the ground shows, by the person's pick or by itself. */
@@ -70,6 +96,14 @@ export function StudioPictureChip({
   open: boolean;
   onOpen: (open: boolean) => void;
   onPick: (choice: PictureChoice) => void;
+  /** Your picture's line on the chip — its date, or a drone map's sharpness — when it is shown. */
+  ownLine: string | null;
+  /** Your picture opens the system's file picker. */
+  onPickFile: () => void;
+  /** A picture of your own is laid: Your picture shows it again before it asks for a file. */
+  ownLaid: boolean;
+  /** The plan's row under the pictures: its name, its page, its eye and its lock. */
+  planRow: ReactNode;
 }) {
   const setOpen = onOpen;
   const holder = useRef<HTMLDivElement>(null);
@@ -112,9 +146,7 @@ export function StudioPictureChip({
     };
   }, [open, setOpen]);
 
-  const sky = picture.kind === 'sky' ? picture : null;
-  const title =
-    shown === 'none' ? words.noPicture : shown === 'own' ? words.yourPicture : words.skyPicture;
+  const { title, source, credit, thumb } = chipFacts(picture, shown, words, ownLine);
   const options: readonly PictureOption[] = [
     {
       choice: 'sky',
@@ -123,16 +155,9 @@ export function StudioPictureChip({
       line: sharpness === null ? words.skyLoading : words.skyLine(sharpness, takenOn),
       off: null,
     },
-    {
-      choice: 'own',
-      glyph: 'camera',
-      title: words.yourPicture,
-      line: words.yourLine,
-      off: words.yourComing,
-    },
+    { choice: 'own', glyph: 'camera', title: words.yourPicture, line: words.yourLine, off: null },
     { choice: 'none', glyph: 'grid', title: words.noPicture, line: words.noLine, off: null },
   ];
-  const thumb = sky?.pieces[Math.floor(sky.pieces.length / 2)]?.image ?? null;
 
   return (
     <div ref={holder} className="hg-studio-picture">
@@ -145,23 +170,25 @@ export function StudioPictureChip({
         onPress={() => setOpen(!open)}
       >
         <span className="hg-studio-chip-thumb" aria-hidden>
-          {thumb === null || shown !== 'sky' ? (
+          {thumb === null || shown === 'none' ? (
             <ShellGlyph name="image-off" size="sm" />
           ) : (
-            // A data picture fetched for this opening: there is no file to hand an image loader.
-            // biome-ignore lint/performance/noImgElement: the picture lives in memory alone.
-            <img src={thumb} alt="" />
+            // The sky picture lives in memory alone, and your picture's piece behind a link that
+            // lives five minutes: neither is a file to hand an image loader. Asked as the scene asks,
+            // so the browser keeps one copy the ground can read too.
+            // biome-ignore lint/performance/noImgElement: the picture lives in memory or a short-lived link.
+            <img src={thumb} alt="" crossOrigin="anonymous" />
           )}
         </span>
         <span className="hg-studio-chip-words">
           <ChipTitle
             title={title}
-            source={sky === null || shown !== 'sky' ? null : words.source(sky.source)}
+            source={source}
             drawnOn={shown === 'sky' ? drawnOn : null}
             canPick={canPick}
           />
-          {sky === null || shown !== 'sky' ? null : (
-            <span className="hg-studio-chip-credit">{sky.credit}</span>
+          {credit === null || shown === 'none' ? null : (
+            <span className="hg-studio-chip-credit">{credit}</span>
           )}
         </span>
       </Pressable>
@@ -183,8 +210,10 @@ export function StudioPictureChip({
               }}
               disabled={option.off !== null}
               onPress={() => {
-                onPick(option.choice);
                 setOpen(false);
+                // Your picture laid but put aside comes back as it was; shown, a tap picks another.
+                if (option.choice === 'own' && (!ownLaid || shown === 'own')) onPickFile();
+                else onPick(option.choice);
               }}
             >
               <ShellGlyph name={option.glyph} size="md" />
@@ -194,6 +223,7 @@ export function StudioPictureChip({
               </span>
             </Pressable>
           ))}
+          {planRow}
           <p className="hg-studio-picker-guide">{words.pictureGuide}</p>
         </div>
       ) : null}
@@ -205,10 +235,23 @@ export function StudioPictureChip({
  * Focus mode's picture chip: while a job is in hand the chip steps down to the provider's credit
  * line alone, which never leaves the screen (the provider's terms). With no sky picture, nothing.
  */
-export function StudioPictureCredit({ picture }: { picture: StudioPicture }) {
-  return picture.kind === 'sky' ? (
+export function StudioPictureCredit({
+  picture,
+  words,
+}: {
+  picture: StudioPicture;
+  words: StudioCanvasWords;
+}) {
+  const credit = pictureCreditOf(picture, words);
+  return credit === null ? null : (
     <div className="hg-studio-picture">
-      <p className="hg-studio-glass hg-studio-credit-only">{picture.credit}</p>
+      <p className="hg-studio-glass hg-studio-credit-only">{credit}</p>
     </div>
-  ) : null;
+  );
+}
+
+/** The picture's credit line: the provider's, or your file's name and whose it is. */
+export function pictureCreditOf(picture: StudioPicture, words: StudioCanvasWords): string | null {
+  if (picture.kind === 'sky') return picture.credit;
+  return picture.kind === 'own' ? words.ownCredit(picture.name) : null;
 }

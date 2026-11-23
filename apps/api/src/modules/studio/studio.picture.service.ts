@@ -51,10 +51,13 @@ export type PictureToKeep =
   | ({ readonly read: 'device' } & AddDesignPicture)
   | ({ readonly read: 'server' } & AddCadPlan);
 
-/** The one type each part of a picture is stored as. */
-const PART_TYPE: Readonly<Record<DesignPictureFileRole, FileContentType>> = {
-  piece: 'image/jpeg',
-  lines: 'application/json',
+/**
+ * The types each part of a picture is stored as: a piece is a JPEG, or — with see-through edges, a
+ * drone map's — a WebP, or a PNG where the device writes no WebP; lines are JSON.
+ */
+const PART_TYPES: Readonly<Record<DesignPictureFileRole, readonly FileContentType[]>> = {
+  piece: ['image/jpeg', 'image/webp', 'image/png'],
+  lines: ['application/json'],
 };
 
 function fileRefused(why: string): ContractException {
@@ -212,8 +215,8 @@ export class StudioPictureService implements OnModuleInit {
       if (part.role !== wanted) throw fileRefused(`A ${body.kind} keeps ${wanted} alone.`);
       if (part.page > body.facts.pages) throw fileRefused('A part is on a page past the last.');
       const stored = await this.designFile(tenantId, designId, part.fileId);
-      if (stored.contentType !== PART_TYPE[part.role]) {
-        throw fileRefused(`A part's file is not ${PART_TYPE[part.role]}.`);
+      if (!(PART_TYPES[part.role] as readonly string[]).includes(stored.contentType)) {
+        throw fileRefused(`A part's file is not ${PART_TYPES[part.role].join(' or ')}.`);
       }
       files.push(part);
     }

@@ -3,7 +3,14 @@ import type { GroundPoint, Roof, StudioView } from '@heliogrid/domain';
 import { type ThemePalette, theme } from '@heliogrid/theme';
 import { useFrame, useThree } from '@react-three/fiber';
 import { type RefObject, useEffect, useMemo } from 'react';
-import { type CanvasTexture, ExtrudeGeometry, Shape, type Texture, Vector3 } from 'three';
+import {
+  type CanvasTexture,
+  ExtrudeGeometry,
+  type Matrix3,
+  Shape,
+  type Texture,
+  Vector3,
+} from 'three';
 
 /** A roof in the top view lies flat on its picture: the marks over it sit where the picture is. */
 const FLAT = 0;
@@ -24,7 +31,8 @@ const RISE_PER_SECOND =
 const SETTLED_M = 1e-3;
 /** The ground that takes the roofs' soft shadow, in metres across. */
 const SHADOW_GROUND_M = 160;
-const SHADOW_LIFT_M = 0.005;
+/** Over your own picture (`StudioOwnGround`), so a roof's shadow falls on it too. */
+const SHADOW_LIFT_M = 0.04;
 const SHADOW_STRENGTH = 0.32;
 /** Walls, and a roof's top where there is no picture: matt plaster. */
 const PLASTER_ROUGHNESS = 0.92;
@@ -54,6 +62,11 @@ export interface RoofTopPicture {
   readonly east: number;
   readonly south: number;
   readonly north: number;
+  /**
+   * Your own picture, turned and sized where the document lays it: a cap's east and north mapped
+   * onto the texture by this matrix in place of the box (`T-M05-002d`, board 5.2).
+   */
+  readonly uv?: Matrix3;
 }
 
 /**
@@ -63,6 +76,12 @@ export interface RoofTopPicture {
  */
 function topOf(picture: RoofTopPicture): Texture {
   const top = picture.texture.clone();
+  if (picture.uv !== undefined) {
+    top.matrixAutoUpdate = false;
+    top.matrix.copy(picture.uv);
+    top.needsUpdate = true;
+    return top;
+  }
   const across = picture.east - picture.west;
   const along = picture.north - picture.south;
   top.repeat.set(1 / across, 1 / along);

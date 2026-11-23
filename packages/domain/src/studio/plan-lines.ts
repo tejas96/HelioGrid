@@ -228,6 +228,13 @@ function blockPlaced(
   return { entities: block.entities, place: insertTransform(insert, block.base) };
 }
 
+/** Lines read some other way — a PDF's paths — with their box; `null` for none. At most `max`. */
+export function planLinesDrawnOf(lines: readonly PlanLine[], max: number): PlanLinesDrawn | null {
+  if (lines.length === 0) return null;
+  const kept = lines.slice(0, max);
+  return { extent: extentOf(kept), lines: kept };
+}
+
 /** A line moved to where its block's inserts put it, every point kept to a thousandth. */
 function placedLine(line: PlanLine, place: Transform): PlanLine {
   const placed: number[] = [];
