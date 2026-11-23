@@ -28,7 +28,13 @@ export async function pieceOf(source: CanvasImageSource, cut: Cut): Promise<Devi
   const context = canvas.getContext('2d');
   if (context === null) throw new Error('no 2d canvas in this worker');
   context.drawImage(source, x0, y0, x1 - x0, y1 - y0, 0, 0, x1 - x0, y1 - y0);
-  return { bytes: await jpegOf(canvas), page: 1, role: 'piece', box: cut.box };
+  return {
+    bytes: await jpegOf(canvas),
+    contentType: 'image/jpeg',
+    page: 1,
+    role: 'piece',
+    box: cut.box,
+  };
 }
 
 /** The day a photo was taken, from its camera's own record; `null` when it carries none. */

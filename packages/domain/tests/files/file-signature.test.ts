@@ -21,6 +21,9 @@ const BINARY_DXF = [...ascii('AutoCAD Binary DXF\r\n'), 0x1a, 0x00, 0x00, 0x00];
 const TEXT_DXF = ascii('  0\nSECTION\n');
 const LINES = ascii(' \n{"page":1}');
 const ARRAY_JSON = ascii('[1,2]');
+/** A RIFF file's size sits between its two marks; any WebP holds `RIFF` then `WEBP` at byte 8. */
+const WEBP = [...ascii('RIFF'), 0x24, 0x10, 0x04, 0x00, ...ascii('WEBPVP8 ')];
+const WAV = [...ascii('RIFF'), 0x24, 0x10, 0x04, 0x00, ...ascii('WAVEfmt ')];
 const bytes = (values: readonly number[]) => Uint8Array.from(values);
 
 const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -53,6 +56,11 @@ describe('matchesFileSignature — each type holds only its own first bytes', ()
     ['image/vnd.dxf', BINARY_DXF.slice(0, 19), false],
     ['image/vnd.dxf', TEXT_DXF, false],
     ['image/vnd.dxf', DWG, false],
+    ['image/webp', WEBP, true],
+    ['image/webp', WAV, false],
+    ['image/webp', WEBP.slice(0, 11), false],
+    ['image/webp', PNG, false],
+    ['image/png', WEBP, false],
     ['application/json', LINES, true],
     ['application/json', ARRAY_JSON, false],
     ['application/json', [...LINES, 0x00], false],

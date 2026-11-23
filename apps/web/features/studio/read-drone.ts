@@ -1,4 +1,11 @@
-import { type DevicePart, type DeviceRead, dronePlan, NO_FACTS } from '@heliogrid/data';
+import {
+  type DevicePart,
+  type DeviceRead,
+  dronePlan,
+  droneRgbaOf,
+  NO_FACTS,
+} from '@heliogrid/data';
+import { FILE_MAX_BYTES } from '@heliogrid/domain';
 import { fromBlob, type GeoTIFFImage } from 'geotiff';
 import { jpegOf } from './read-photo';
 
@@ -11,9 +18,9 @@ import { jpegOf } from './read-photo';
 /** The GeoTIFF key value that names the metre as a projected system's unit. */
 const METRE_UNIT = 9001;
 const DATE_LENGTH = 10;
-const RGB = 3;
-const RGBA = 4;
-const OPAQUE = 255;
+/** WebP pieces keep a see-through edge at a JPEG's bytes. */
+const WEBP_QUALITY = 0.85;
+const HALF = 2;
 
 type Cut = Extract<ReturnType<typeof dronePlan>, { kind: 'cut' }>['cuts'][number];
 
@@ -25,25 +32,49 @@ async function flownOn(image: GeoTIFFImage): Promise<string | null> {
   return /^\d{4}-\d{2}-\d{2}$/.test(day) ? day : null;
 }
 
+/**
+ * A piece's bytes: a JPEG when every pixel shows; with see-through edges a WebP, or — where the
+ * device writes no WebP (Safari) — a PNG, at half its size when the whole would pass a file's limit.
+ */
+async function encoded(canvas: OffscreenCanvas, seeThrough: boolean) {
+  if (!seeThrough) return { bytes: await jpegOf(canvas), contentType: 'image/jpeg' as const };
+  const webp = await canvas.convertToBlob({ type: 'image/webp', quality: WEBP_QUALITY });
+  if (webp.type === 'image/webp') {
+    return { bytes: new Uint8Array(await webp.arrayBuffer()), contentType: 'image/webp' as const };
+  }
+  const png = await canvas.convertToBlob({ type: 'image/png' });
+  if (png.size <= FILE_MAX_BYTES) {
+    return { bytes: new Uint8Array(await png.arrayBuffer()), contentType: 'image/png' as const };
+  }
+  const half = new OffscreenCanvas(Math.ceil(canvas.width / HALF), Math.ceil(canvas.height / HALF));
+  half.getContext('2d')?.drawImage(canvas, 0, 0, half.width, half.height);
+  const small = await half.convertToBlob({ type: 'image/png' });
+  return { bytes: new Uint8Array(await small.arrayBuffer()), contentType: 'image/png' as const };
+}
+
 /** One cut read from the map at its step — YCbCr and palettes turned to RGB by geotiff.js. */
 async function pieceOf(image: GeoTIFFImage, cut: Cut, step: number): Promise<DevicePart> {
   const { x0, y0, x1, y1 } = cut.window;
   const width = Math.max(1, Math.round((x1 - x0) / step));
   const height = Math.max(1, Math.round((y1 - y0) / step));
-  const rgb = (await image.readRGB({
+  // The map's own see-through band comes too, where it has one.
+  const samples = (await image.readRGB({
     window: [x0, y0, x1, y1],
     width,
     height,
     interleave: true,
+    enableAlpha: true,
   })) as Uint8Array;
-  const rgba = new Uint8ClampedArray(width * height * RGBA);
-  for (let i = 0, j = 0; i < rgb.length; i += RGB, j += RGBA) {
-    rgba.set(rgb.subarray(i, i + RGB), j);
-    rgba[j + RGB] = OPAQUE;
-  }
+  const pixels = width * height;
+  const { rgba, seeThrough } = droneRgbaOf(
+    samples,
+    samples.length / pixels,
+    pixels,
+    image.getGDALNoData(),
+  );
   const canvas = new OffscreenCanvas(width, height);
   canvas.getContext('2d')?.putImageData(new ImageData(rgba, width, height), 0, 0);
-  return { bytes: await jpegOf(canvas), page: 1, role: 'piece', box: cut.box };
+  return { ...(await encoded(canvas, seeThrough)), page: 1, role: 'piece', box: cut.box };
 }
 
 export async function readDrone(

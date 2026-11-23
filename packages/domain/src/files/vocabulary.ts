@@ -18,6 +18,8 @@ export type StorageProvider = (typeof STORAGE_PROVIDERS)[number];
 export const FILE_CONTENT_TYPES = [
   'image/png',
   'image/jpeg',
+  /** A piece of a picture with see-through edges, a drone map's (`T-M05-002d`). */
+  'image/webp',
   'text/csv',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   /** A document the platform renders — an invoice's PDF (`M12-44`); no upload rule takes it. */

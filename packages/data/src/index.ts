@@ -104,6 +104,7 @@ export { NO_HELD_WORK } from './session/held-work';
 export type { SessionApi, SessionStore } from './session/types';
 export type { UpdateRequired, UpgradeStore } from './session/upgrade';
 export type { SettingsRepository } from './settings/repository';
+export { droneRgbaOf } from './studio/drone-pixels';
 export {
   type DevicePart,
   type DeviceRead,

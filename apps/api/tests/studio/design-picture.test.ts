@@ -4,7 +4,7 @@ import { HttpStatus } from '@nestjs/common';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { anUpload } from '../projects/stored-file';
 import { skipWithoutDatabase } from '../support/fixture';
-import { box, codeOf, JPEG, LINES, photoFacts, pictureCalls } from './picture-support';
+import { box, codeOf, JPEG, LINES, PNG, photoFacts, pictureCalls, WEBP } from './picture-support';
 import {
   aDesign,
   aLead,
@@ -144,6 +144,19 @@ describe.skipIf(skip)('A design’s own picture, over HTTP against a migrated da
     const other = await aSitedDesign();
     const made = await add(owner(), designId, await aPhoto(owner(), designId));
     expect((await read(owner(), other, made.body.id)).status).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('keeps a piece with see-through edges as a WebP, or a PNG where the device writes no WebP', async () => {
+    const designId = await aSitedDesign();
+    const body = await aPhoto(owner(), designId);
+    const [first, second] = body.files;
+    if (first === undefined || second === undefined) throw new Error('two pieces');
+    const files = [
+      { ...first, fileId: await stored(owner(), designId, WEBP, 'image/webp') },
+      { ...second, fileId: await stored(owner(), designId, PNG, 'image/png') },
+    ];
+    const reply = await add(owner(), designId, { ...body, files });
+    expect(reply.status).toBe(HttpStatus.CREATED);
   });
 
   it.each([

@@ -25,6 +25,15 @@ const metresPerUnitSchema = z
   .min(PICTURE_METRES_PER_UNIT_MIN)
   .max(PICTURE_METRES_PER_UNIT_MAX);
 
+/**
+ * The picture's closed sets: what a write takes, and what the database's enums hold (invariant
+ * `enum-parity`). A response reads each as an open set, so a newer value never breaks a reader.
+ */
+export const designPictureKindSchema = z.enum(DESIGN_PICTURE_KINDS);
+export const designPictureStateSchema = z.enum(DESIGN_PICTURE_STATES);
+export const designPictureRefusalSchema = z.enum(DESIGN_PICTURE_REFUSALS);
+export const designPictureFileRoleSchema = z.enum(DESIGN_PICTURE_FILE_ROLES);
+
 /** A PDF this long is read whole; a longer one is not a house's plans. */
 export const DESIGN_PICTURE_PAGES_MAX = 200;
 /** The most stored files one picture keeps: a drone map's 200 m at 3 cm is 49 pieces. */
@@ -67,7 +76,7 @@ const pictureFileRefSchema = z
   .object({
     fileId: uuidSchema,
     page: z.number().int().min(1).max(DESIGN_PICTURE_PAGES_MAX),
-    role: z.enum(DESIGN_PICTURE_FILE_ROLES),
+    role: designPictureFileRoleSchema,
     /** A piece's box; `null` for a page's lines, which carry their own extent. */
     box: pictureBoxSchema.nullable(),
   })
@@ -80,7 +89,7 @@ const pictureFileRefSchema = z
 /** Keep a picture read on the device: its facts and the files it already stored and confirmed. */
 export const addDesignPictureSchema = z
   .object({
-    kind: z.enum(DESIGN_PICTURE_KINDS),
+    kind: designPictureKindSchema,
     name: z.string().trim().min(1).max(DESIGN_PICTURE_NAME_MAX),
     facts: designPictureFactsSchema,
     files: z.array(pictureFileRefSchema).min(1).max(DESIGN_PICTURE_FILES_MAX),

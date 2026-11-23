@@ -25012,6 +25012,7 @@
                           "x-extensible-enum": [
                             "image/png",
                             "image/jpeg",
+                            "image/webp",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             "application/pdf",
@@ -26369,6 +26370,7 @@
                           "x-extensible-enum": [
                             "image/png",
                             "image/jpeg",
+                            "image/webp",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             "application/pdf",
@@ -27195,6 +27197,7 @@
                           "x-extensible-enum": [
                             "image/png",
                             "image/jpeg",
+                            "image/webp",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             "application/pdf",
@@ -30553,6 +30556,7 @@
                           "x-extensible-enum": [
                             "image/png",
                             "image/jpeg",
+                            "image/webp",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             "application/pdf",
@@ -35352,6 +35356,7 @@
                     "enum": [
                       "image/png",
                       "image/jpeg",
+                      "image/webp",
                       "text/csv",
                       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                       "application/pdf",
@@ -35420,6 +35425,7 @@
                           "x-extensible-enum": [
                             "image/png",
                             "image/jpeg",
+                            "image/webp",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             "application/pdf",
@@ -36045,6 +36051,7 @@
                       "x-extensible-enum": [
                         "image/png",
                         "image/jpeg",
+                        "image/webp",
                         "text/csv",
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         "application/pdf",
@@ -99134,6 +99141,7 @@
                           "x-extensible-enum": [
                             "image/png",
                             "image/jpeg",
+                            "image/webp",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             "application/pdf",
@@ -99960,6 +99968,7 @@
                           "x-extensible-enum": [
                             "image/png",
                             "image/jpeg",
+                            "image/webp",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             "application/pdf",
@@ -100716,6 +100725,7 @@
                           "x-extensible-enum": [
                             "image/png",
                             "image/jpeg",
+                            "image/webp",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             "application/pdf",
@@ -102329,6 +102339,7 @@
                           "x-extensible-enum": [
                             "image/png",
                             "image/jpeg",
+                            "image/webp",
                             "text/csv",
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             "application/pdf",

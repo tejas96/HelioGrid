@@ -98,7 +98,7 @@ export function useOwnPictureFlow(input: {
           files.store({
             subjectKind: 'design',
             subjectRef: input.designId,
-            contentType: part.role === 'piece' ? 'image/jpeg' : 'application/json',
+            contentType: part.contentType,
             bytes: part.bytes,
           }),
         ),

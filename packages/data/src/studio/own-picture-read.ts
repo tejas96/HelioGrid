@@ -38,6 +38,11 @@ import {
 /** One part a reader made: a JPEG piece with its box, or one page's plan lines. */
 export interface DevicePart {
   readonly bytes: Uint8Array;
+  /**
+   * A piece is a JPEG, or — with see-through edges, a drone map's — a WebP, or a PNG where the
+   * device writes no WebP; a page's lines are JSON.
+   */
+  readonly contentType: 'image/jpeg' | 'image/webp' | 'image/png' | 'application/json';
   readonly page: number;
   readonly role: DesignPictureFileRole;
   readonly box: {
@@ -161,7 +166,8 @@ export function dronePlan(file: DroneFile, pin: LatLon): DronePlan {
 /** One page's lines as the file the studio keeps. */
 export function linesPart(page: number, drawn: PlanLinesDrawn): DevicePart {
   const json = JSON.stringify({ page, extent: drawn.extent, lines: drawn.lines });
-  return { bytes: new TextEncoder().encode(json), page, role: 'lines', box: null };
+  const bytes = new TextEncoder().encode(json);
+  return { bytes, contentType: 'application/json', page, role: 'lines', box: null };
 }
 
 /** A DWG, or a binary DXF, handed to our server whole, up to its own limit. */

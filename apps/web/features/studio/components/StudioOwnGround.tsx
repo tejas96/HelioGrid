@@ -15,7 +15,10 @@ type Own = Extract<StudioPicture, { kind: 'own' }>;
 /** The texture is at most this many pixels a side: what every phone's graphics take. */
 const TEXTURE_MAX_PX = 4096;
 const ANISOTROPY = 8;
-/** Your picture lies a hair over the ground plane under it, under every roof. */
+/**
+ * Your picture is drawn after the plain ground plane, which it covers, and tests depth, so the roofs
+ * in front still stand over it; pulled a hair toward the camera, it never flickers on the plane.
+ */
 const OWN_ORDER = 2;
 const HALF_TURN_DEG = 180;
 const DEGREES = Math.PI / HALF_TURN_DEG;
@@ -106,9 +109,14 @@ export function StudioOwnGround({ picture }: { picture: Own }) {
         <planeGeometry args={[built.east - built.west, built.north - built.south]} />
         <meshBasicMaterial
           map={built.texture}
+          // A drone map's ragged edge is cut away, so the ground under it shows, never black; cut,
+          // not blended, so the picture stays under the roofs, drawn in the same pass as them.
+          alphaTest={0.5}
           toneMapped={false}
-          depthTest={false}
           depthWrite={false}
+          polygonOffset
+          polygonOffsetFactor={-1}
+          polygonOffsetUnits={-1}
         />
       </mesh>
     </group>

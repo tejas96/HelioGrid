@@ -22,6 +22,9 @@ import {
 
 /** A JPEG's first bytes: what the store holds it to. */
 export const JPEG = new Uint8Array(Buffer.from('ffd8ffe000104a464946', 'hex'));
+/** A WebP's and a PNG's first bytes: a drone map's pieces with see-through edges. */
+export const WEBP = new Uint8Array(Buffer.from('524946462410040057454250565038', 'hex'));
+export const PNG = new Uint8Array(Buffer.from('89504e470d0a1a0a0000000d', 'hex'));
 export const LINES = new TextEncoder().encode('{"page":1,"extent":{},"lines":[]}');
 export const DWG = new TextEncoder().encode('AC1032 a drawing');
 
