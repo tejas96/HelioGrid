@@ -1,6 +1,6 @@
 import type { Roof, StudioDocument } from './document';
 import { roofAreaM2, roofSurfaceM2, roofsAreaM2 } from './roof-free-ground';
-import { belongsTo, roofKindOf, standsOn } from './roof-kind';
+import { belongsTo, roofKindOf, roofWithItsParts, standsOn } from './roof-kind';
 import { type RoofFacts, roofMaterialNow, roofOwnHeightM } from './roof-levels';
 import type { RoofList, RoofRow, RoofSits } from './roof-list';
 import { roofNameOf } from './roof-names';
@@ -55,7 +55,11 @@ function sitsOf(
   // The first roof on the ground is the main roof, whatever it meets.
   const firstOnGround = document.roofs.findIndex((other) => holderOf(document, other) === null);
   if (index === firstOnGround) return { kind: 'main' };
-  const met = (worked.edges[index] ?? []).flat().find((stretch) => stretch.other !== null);
+  // What stands on the roof meets its edges too, and is not beside it.
+  const own = roofWithItsParts(document, index);
+  const met = (worked.edges[index] ?? [])
+    .flat()
+    .find((stretch) => stretch.other !== null && !own.includes(stretch.other));
   return met?.other == null ? { kind: 'ground' } : { kind: 'beside', roof: nameOf(met.other) };
 }
 

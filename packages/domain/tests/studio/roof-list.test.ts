@@ -54,6 +54,20 @@ describe('the rows of Roofs', () => {
     expect(shed?.areaM2).toBeLessThan(32.5);
   });
 
+  it.each([
+    ['its own stair room on its edge is not a roof beside it', [], { kind: 'ground' }],
+    [
+      'a roof beside it is named, past its own stair room',
+      [roofOf('next', box(45, 0, 4, 5))],
+      { kind: 'beside', roof: { kind: 'roof', number: 3 } },
+    ],
+  ] as const)('%s', (_why, more, sits) => {
+    const far = roofOf('far', box(40, 0, 5, 5));
+    const stair = stairOn(box(40, 0, 2, 2), 'far');
+    const rows = listOf(TERRACE, far, ...more, stair).rows;
+    expect(rows.find((row) => row.roof === 1)?.sits).toEqual(sits);
+  });
+
   it('a roof apart from every other sits on the ground by itself', () => {
     expect(listOf(TERRACE, roofOf('far', box(40, 0, 5, 5))).rows[1]?.sits).toEqual({
       kind: 'ground',
