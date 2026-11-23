@@ -8,6 +8,7 @@ import { studioHeightWords } from './studio-height';
 import { studioLengthWords } from './studio-length';
 import { studioPictureWords } from './studio-picture';
 import { studioRoofWords } from './studio-roof';
+import { studioRoofListWords } from './studio-roof-list';
 import { studioSizeWords } from './studio-size';
 
 type T = Translator['t'];
@@ -210,6 +211,7 @@ export function studioCanvasWords(t: T) {
     roofNotSetUp: (place: string | null) =>
       place === null ? t(CANVAS.roofNotSetUpNoPlace) : t(CANVAS.roofNotSetUp, { place }),
     ...studioRoofWords(t),
+    ...studioRoofListWords(t),
     ...studioLengthWords(t),
     ...studioSizeWords(t),
     ...studioHeightWords(t),
