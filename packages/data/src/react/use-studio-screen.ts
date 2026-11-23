@@ -121,7 +121,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     units,
     pin,
     pullOf: heightPullWith(facts, roof.magnetNow),
-    hitAt: (at, reachM) => seen.current(at, reachM),
+    hitAt: (at, reachM, open) => seen.current(at, reachM, open),
     magnetOn: roof.magnetNow,
   });
   const { roofSheet, numberInHand } = sheet.state;

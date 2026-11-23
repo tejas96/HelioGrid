@@ -1,11 +1,5 @@
 'use client';
-import {
-  ROOF_SHAPES,
-  ROOF_SHAPES_FIRST,
-  type RoofShape,
-  type RoofSheetRows,
-  type RoofSheetView,
-} from '@heliogrid/domain';
+import type { RoofSheetRows, RoofSheetView } from '@heliogrid/domain';
 import { Button, Pressable, Switch, useFormat } from '@heliogrid/ui';
 import { useState } from 'react';
 import { StudioKindChips } from './StudioKindChips';
@@ -15,13 +9,15 @@ import { StudioSheetNumber } from './StudioSheetNumber';
 import { NumberRow, type SheetFacts, SheetRow } from './StudioSheetRow';
 import { numberShownBy } from './sheet-number-shown';
 
+type ShapeRow = NonNullable<RoofSheetRows['shape']>;
+
 /** The shapes as pictures: the first five, and More shapes for the rest. */
-function ShapeTiles({ facts, now }: { facts: SheetFacts; now: RoofShape }) {
+function ShapeTiles({ facts, shape }: { facts: SheetFacts; shape: ShapeRow }) {
   const { studio, words } = facts;
-  const later = ROOF_SHAPES.slice(ROOF_SHAPES_FIRST);
+  const now = shape.is;
   // biome-ignore lint/plugin: whether More shapes is open is this tile set's own look
-  const [more, setMore] = useState(later.includes(now));
-  const shapes = more ? ROOF_SHAPES : ROOF_SHAPES.slice(0, ROOF_SHAPES_FIRST);
+  const [more, setMore] = useState(shape.isLater);
+  const shapes = more ? [...shape.first, ...shape.later] : shape.first;
   return (
     <>
       <fieldset className="hg-material-tiles" aria-label={words.rowShape}>
@@ -99,7 +95,7 @@ export function StudioSheetRows({
       )}
       {shape === null ? null : (
         <SheetRow facts={facts} rowKey="shape" label={words.rowShape} value={words.shape(shape.is)}>
-          <ShapeTiles facts={facts} now={shape.is} />
+          <ShapeTiles facts={facts} shape={shape} />
         </SheetRow>
       )}
       <HeightRow facts={facts} rows={rows} sheet={sheet} />

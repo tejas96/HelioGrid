@@ -27,11 +27,11 @@ const TERRACE: StudioDocumentWire['roofs'][number] = {
   height: null,
 };
 
-async function opened() {
+async function opened(roofs: StudioDocumentWire['roofs'] = [TERRACE]) {
   origin.designs = [aDesign(1)];
-  stored.document = { ...stored.document, roofs: [TERRACE] };
+  stored.document = { ...stored.document, roofs };
   const view = mountedOver(() => useStudioScreen(designId(1), IN_FORMATS));
-  await waitFor(() => expect(view.result.current.document?.roofs).toHaveLength(1));
+  await waitFor(() => expect(view.result.current.document?.roofs).toHaveLength(roofs.length));
   await waitFor(() => expect(view.result.current.editing.kind).toBe('editor'));
   act(() => view.result.current.moves.see('3d'));
   act(() => view.result.current.moves.openRoof(0));
@@ -141,6 +141,27 @@ describe('a tap on the model in 3D', () => {
     expect(view.result.current.sheetPart).toEqual({ kind: 'side', side: 0 });
     act(() => view.result.current.moves.tapRoof(down(40, 40), 0.3));
     expect(view.result.current.roofSheet).toBeNull();
+  });
+
+  it('a second tap on the open roof’s top picks the roof under it', async () => {
+    const stair: StudioDocumentWire['roofs'][number] = {
+      ...TERRACE,
+      id: '01a50000-0000-7000-8000-000000000912',
+      corners: [
+        { east: 2, north: 2 },
+        { east: 5, north: 2 },
+        { east: 5, north: 5 },
+        { east: 2, north: 5 },
+      ],
+      kind: { is: 'stair_room', setBy: 'system' },
+      on: TERRACE.id,
+    };
+    const view = await opened([TERRACE, stair]);
+    act(() => view.result.current.moves.closeRoof());
+    act(() => view.result.current.moves.tapRoof(down(3.5, 3.5), 0.3));
+    expect(view.result.current.roofSheet?.roof).toBe(1);
+    act(() => view.result.current.moves.tapRoof(down(3.5, 3.5), 0.3));
+    expect(view.result.current.roofSheet?.roof).toBe(0);
   });
 
   it('a wall arrow held lets the sheet step aside; let go, its height is the side’s', async () => {

@@ -59,7 +59,15 @@ export interface RoofSheetRows {
     readonly name: string | null;
     readonly confirmed: boolean;
   } | null;
-  readonly shape: { readonly is: RoofShape; readonly byPerson: boolean } | null;
+  readonly shape: {
+    readonly is: RoofShape;
+    readonly byPerson: boolean;
+    /** The picker's first tiles, and the rest behind More shapes. */
+    readonly first: readonly RoofShape[];
+    readonly later: readonly RoofShape[];
+    /** The shape now is behind More shapes: the picker opens with them shown. */
+    readonly isLater: boolean;
+  } | null;
   readonly height: {
     readonly from: HeightFrom;
     readonly ticks: readonly FloorTick[];
@@ -133,6 +141,9 @@ export interface SideSheetRows {
   readonly parapetHeight: RoofNumberShown | null;
   readonly setback: RoofNumberShown;
   readonly role: SideRole | null;
+  /** Its parapet height waits for a person: above what is checked on site. */
+  readonly heightWaits: boolean;
+  /** Something on the side waits for a person: its height, or a low side against a wall. */
   readonly waits: boolean;
 }
 

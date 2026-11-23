@@ -66,15 +66,19 @@ describe('a side’s sheet', () => {
     expect(sideOf(turned, 0, 0).role).toEqual({ kind: 'glass', is: true });
   });
 
-  it('a side’s parapet above 1.5 m waits', () => {
-    const high = roofNumberSet(
+  it.each([
+    [1.4, false],
+    [1.5, false],
+    [1.6, true],
+  ])('a side’s parapet of %s m waits: %s', (metres, waits) => {
+    const set = roofNumberSet(
       designOf(TERRACE),
       { roof: 0, key: 'parapet_height', side: 0 },
-      1.6,
+      metres,
       FACTS,
     );
-    expect(sideOf(high, 0, 0).waits).toBe(true);
-    expect(sideOf(high, 0, 1).waits).toBe(false);
+    expect(sideOf(set, 0, 0)).toMatchObject({ heightWaits: waits, waits });
+    expect(sideOf(set, 0, 1)).toMatchObject({ heightWaits: false, waits: false });
   });
 
   it('a side past the roof’s corners has no sheet', () => {

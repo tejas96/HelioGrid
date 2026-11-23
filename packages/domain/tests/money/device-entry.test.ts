@@ -29,12 +29,16 @@ type Platform =
   | ReadonlyMap<unknown, unknown>
   | ReadonlySet<unknown>;
 
+/** The two types are one and the same: a type that adds a field to another is not it. */
+type Same<A, B> =
+  (<G>() => G extends A ? 1 : 2) extends <G>() => G extends B ? 1 : 2 ? true : false;
 /**
  * The studio's design document, and a roof of it, hold lengths and heights, never money — proven
  * below by the document's own deeper walk (`documentHoldsMoney`), so the walk over every export
- * reads them as proven and does not spend its depth on them.
+ * reads them as proven and does not spend its depth on them. Only exactly them: a roof that gains
+ * a money field is walked as any other type.
  */
-type Proven = StudioDocument | Roof;
+type IsProven<T> = true extends Same<T, StudioDocument> | Same<T, Roof> ? true : false;
 
 /** Does a value of this type carry a money figure? Past the depth limit it is assumed to. */
 type HoldsMoney<
@@ -45,35 +49,39 @@ type HoldsMoney<
   ? true
   : T extends MinorUnits
     ? true
-    : T extends Platform | (Limit extends 8 ? Proven : never)
+    : T extends Platform
       ? false
-      : T extends (...args: never[]) => unknown
+      : (Limit extends 8 ? IsProven<T> : false) extends true
         ? false
-        : T extends readonly (infer Item)[]
-          ? HoldsMoney<Item, Deeper<Depth>, Limit>
-          : T extends object
-            ? true extends { [K in keyof T]-?: HoldsMoney<T[K], Deeper<Depth>, Limit> }[keyof T]
-              ? true
-              : false
-            : false;
+        : T extends (...args: never[]) => unknown
+          ? false
+          : T extends readonly (infer Item)[]
+            ? HoldsMoney<Item, Deeper<Depth>, Limit>
+            : T extends object
+              ? true extends { [K in keyof T]-?: HoldsMoney<T[K], Deeper<Depth>, Limit> }[keyof T]
+                ? true
+                : false
+              : false;
 
 /** Does a value of this type hand out a function that returns a money figure, at any depth? */
 type ComputesMoney<T, Depth extends unknown[] = []> =
   TooDeep<Depth> extends true
     ? true
-    : T extends Platform | Proven
+    : T extends Platform
       ? false
-      : T extends (...args: never[]) => infer Result
-        ? true extends HoldsMoney<Result>
-          ? true
-          : ComputesMoney<Result, Deeper<Depth>>
-        : T extends readonly (infer Item)[]
-          ? ComputesMoney<Item, Deeper<Depth>>
-          : T extends object
-            ? true extends { [K in keyof T]-?: ComputesMoney<T[K], Deeper<Depth>> }[keyof T]
-              ? true
-              : false
-            : false;
+      : IsProven<T> extends true
+        ? false
+        : T extends (...args: never[]) => infer Result
+          ? true extends HoldsMoney<Result>
+            ? true
+            : ComputesMoney<Result, Deeper<Depth>>
+          : T extends readonly (infer Item)[]
+            ? ComputesMoney<Item, Deeper<Depth>>
+            : T extends object
+              ? true extends { [K in keyof T]-?: ComputesMoney<T[K], Deeper<Depth>> }[keyof T]
+                ? true
+                : false
+              : false;
 
 type DeviceEntry = typeof deviceEntry;
 

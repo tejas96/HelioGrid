@@ -46,7 +46,15 @@ export const ROOF_SHAPES = [
 export type RoofShape = (typeof ROOF_SHAPES)[number];
 
 /** How many of the shapes are the picker's first tiles: Flat, Shed, Gable, Hip and Any shape. */
-export const ROOF_SHAPES_FIRST = 5;
+const ROOF_SHAPES_FIRST = 5;
+
+const FIRST_SHAPES: readonly RoofShape[] = ROOF_SHAPES.slice(0, ROOF_SHAPES_FIRST);
+const LATER_SHAPES: readonly RoofShape[] = ROOF_SHAPES.slice(ROOF_SHAPES_FIRST);
+
+/** The shape picker's first tiles, the rest behind More shapes, and whether `now` is among the rest. */
+export function shapePickOf(now: RoofShape) {
+  return { first: FIRST_SHAPES, later: LATER_SHAPES, isLater: LATER_SHAPES.includes(now) };
+}
 
 interface MaterialFacts {
   readonly group: RoofMaterialGroup;

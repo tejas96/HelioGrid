@@ -76,12 +76,11 @@ export function wallPullOf(
   const floorM = roofTopsM(document, facts)[index] ?? 0;
   const edges = edgesOf(document, index, facts);
   const own = sideEnds(roof, side);
-  // The roof's other sides with a wall: the height most of them stand at.
-  const others = edges.flatMap((stretches, i) =>
-    i === side
-      ? []
-      : stretches.filter((s) => s.wall).map(() => ({ i, metres: stretches[0]?.metres ?? 0 })),
-  );
+  // The roof's other sides with a wall, once each, at their wall's height.
+  const others = edges.flatMap((stretches, i) => {
+    const wall = i === side ? undefined : stretches.find((s) => s.wall);
+    return wall === undefined ? [] : [{ i, metres: wall.metres }];
+  });
   const sides: Level[] = others.map(({ i, metres: at }) => ({
     levelM: floorM + at,
     to: { kind: 'other_sides' },

@@ -67,7 +67,18 @@ describe('a roof’s sheet: one row per value it has', () => {
     expect(sheet.extras).toEqual([]);
     expect(sheet.parapet).toMatchObject({ allRound: true, byPerson: false, waits: false });
     expect(sheet.details).toMatchObject({ build: 'wall', measured: 'outside' });
-    expect(sheet.shape).toEqual({ is: 'flat', byPerson: false });
+    expect(sheet.shape).toMatchObject({ is: 'flat', byPerson: false, isLater: false });
+  });
+
+  it.each([
+    ['gable', false],
+    ['any', false],
+    ['monitor', true],
+    ['gambrel', true],
+  ] as const)('a %s roof opens the picker with More shapes shown: %s', (shape, later) => {
+    const row = sheetOf(designOf(shaped(shape)), 0).shape;
+    expect(row?.isLater).toBe(later);
+    expect(row?.[later ? 'later' : 'first']).toContain(shape);
   });
 
   it('a height between floors stands on none; on a floor, on it', () => {

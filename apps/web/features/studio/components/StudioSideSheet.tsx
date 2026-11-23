@@ -1,10 +1,5 @@
 'use client';
-import {
-  PARAPET_CHECK_ABOVE_M,
-  type RoofSheetRows,
-  type SideRole,
-  type SideSheetRows,
-} from '@heliogrid/domain';
+import type { RoofSheetRows, SideRole, SideSheetRows } from '@heliogrid/domain';
 import { Button, SegmentedControl, Switch } from '@heliogrid/ui';
 import { NumberRow, type SheetFacts, SheetRow } from './StudioSheetRow';
 
@@ -42,7 +37,7 @@ export function StudioSideRows({ facts, side }: { facts: SheetFacts; side: SideS
           facts={facts}
           shown={side.parapetHeight}
           label={words.rowNumber('parapet_height')}
-          waits={side.parapetHeight.value > PARAPET_CHECK_ABOVE_M}
+          waits={side.heightWaits}
           onSide
         />
       )}

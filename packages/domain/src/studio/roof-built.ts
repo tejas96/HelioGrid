@@ -1,4 +1,5 @@
 import type { Roof } from './document';
+import type { GroundPoint } from './ground';
 import { handFaces } from './roof-cuts';
 import {
   type FormedRoof,
@@ -10,7 +11,8 @@ import {
 import { roofKindOf, roofSidesOf } from './roof-kind';
 import { type RoofFacts, roofMaterialNow, roofShapeNow } from './roof-levels';
 import { materialSlopeDeg, type RoofShape } from './roof-material';
-import { type RoofSide, SIDE_ENDS, type SideEnd } from './roof-parts';
+import { type HandFaceSet, type RoofSide, SIDE_ENDS, type SideEnd } from './roof-parts';
+import { cornerAfter, distanceToSegment, pointInside, roofArea } from './roof-shape';
 
 /**
  * A stored roof as the kernel builds it (`T-M05-002`, part e): its shape and one slope, and all it
@@ -100,9 +102,30 @@ export function roofFormOf(roof: Roof, facts: RoofFacts, picks: FormPicks = {}):
   };
 }
 
+/** How near the outline a drawn face's corner may sit, in metres, and how much of it the faces may miss. */
+const FIT_M = 0.01;
+const FIT_SHARE = 0.01;
+
+/**
+ * Faces drawn by hand still fit the outline they were drawn on: inside it, and covering it. An
+ * outline changed since — a corner moved, added or taken away, a length set, a plan resized, by
+ * this app or by an older one that keeps faces it does not read — leaves them stale, and the roof
+ * stands flat until faces are drawn again.
+ */
+function facesFit(outline: readonly GroundPoint[], faces: readonly HandFaceSet[]): boolean {
+  const on = (point: GroundPoint) =>
+    pointInside(point, outline) ||
+    outline.some((a, i) => distanceToSegment(point, a, cornerAfter(outline, i)) < FIT_M);
+  if (!faces.every((face) => face.corners.every(on))) return false;
+  const area = roofArea(outline);
+  const covered = faces.reduce((sum, face) => sum + roofArea(face.corners), 0);
+  return Math.abs(covered - area) <= area * FIT_SHARE;
+}
+
 /** A stored roof's faces. */
 export function roofBuilt(roof: Roof, facts: RoofFacts, picks?: FormPicks): FormedRoof {
-  const drawn = roof.shape?.faces ?? [];
+  const stored = roof.shape?.faces ?? [];
+  const drawn = facesFit(roof.corners, stored) ? stored : [];
   // Any shape with faces a person drew: those faces, each at its own slope.
   if (roofShapeNow(roof, facts) === 'any' && drawn.length > 0) {
     const faces = handFaces(

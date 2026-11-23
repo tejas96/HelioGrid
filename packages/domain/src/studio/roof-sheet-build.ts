@@ -7,7 +7,7 @@ import { gableEnds } from './roof-forms';
 import { belongsTo, roofKindOf, roofSidesOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofHasWalls, roofOwnHeightM, roofShapeNow } from './roof-levels';
 import type { RoofRow } from './roof-list';
-import type { RoofShape } from './roof-material';
+import { type RoofShape, shapePickOf } from './roof-material';
 import { roofNameOf } from './roof-names';
 import { type NumberAt, PARAPET_CHECK_ABOVE_M, type RoofNumber } from './roof-numbers';
 import { parapetNow } from './roof-open-edges';
@@ -215,7 +215,9 @@ export function roofSheetRowsOf(
     areaM2: row.areaM2,
     kind,
     material: row.material,
-    shape: hole ? null : { is: shape, byPerson: roof.shape?.setBy === 'person' },
+    shape: hole
+      ? null
+      : { is: shape, byPerson: roof.shape?.setBy === 'person', ...shapePickOf(shape) },
     height: heightOf(document, roof, built !== null, facts, slide),
     slope,
     extras: extras.filter((each) => each !== null),
@@ -287,6 +289,7 @@ export function sideSheetRowsOf(
   const role = roofHasWalls(roof) ? roleOf(document, index, side, facts, latitude) : null;
   const low = role?.kind === 'low' && role.is ? lowSideOf(document, index, facts, latitude) : null;
   const bearing = sideBearing(roof.corners, side);
+  const heightWaits = parapetHeight !== null && parapetHeight.value > PARAPET_CHECK_ABOVE_M;
   return {
     roof: index,
     side,
@@ -297,8 +300,7 @@ export function sideSheetRowsOf(
     parapetHeight,
     setback,
     role,
-    waits:
-      (parapetHeight !== null && parapetHeight.value > PARAPET_CHECK_ABOVE_M) ||
-      (low?.againstWall ?? null) !== null,
+    heightWaits,
+    waits: heightWaits || (low?.againstWall ?? null) !== null,
   };
 }
