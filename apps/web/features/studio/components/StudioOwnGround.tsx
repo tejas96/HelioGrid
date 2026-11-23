@@ -1,7 +1,8 @@
 'use client';
 import type { StudioPicture } from '@heliogrid/data/react';
 import { useEffect, useState } from 'react';
-import { CanvasTexture, SRGBColorSpace } from 'three';
+import { CanvasTexture, Matrix3, SRGBColorSpace } from 'three';
+import type { RoofTopPicture } from './StudioRoofs';
 
 /**
  * Your photo or drone map on the ground (`T-M05-002d`, board 2.1, 3.1, 5.2): its pieces drawn on one
@@ -16,15 +17,18 @@ type Own = Extract<StudioPicture, { kind: 'own' }>;
 const TEXTURE_MAX_PX = 4096;
 const ANISOTROPY = 8;
 /**
- * Your picture is drawn after the plain ground plane, which it covers, and tests depth, so the roofs
- * in front still stand over it; pulled a hair toward the camera, it never flickers on the plane.
+ * Your picture lies over the ground plane and the grid (2 cm up), and under the roofs' shadow (4 cm
+ * up): the grid shows only round it, and the roofs stand on it and cast their shadow over it.
  */
+const OWN_LIFT_M = 0.03;
 const OWN_ORDER = 2;
 const HALF_TURN_DEG = 180;
 const DEGREES = Math.PI / HALF_TURN_DEG;
 
 interface Built {
   readonly texture: CanvasTexture;
+  /** The same picture on the walls' plaster: a roof's top never shows a see-through edge as black. */
+  readonly top: CanvasTexture;
   readonly west: number;
   readonly east: number;
   readonly south: number;
@@ -41,7 +45,14 @@ async function imageOf(url: string): Promise<HTMLImageElement> {
   return image;
 }
 
-async function builtOf(pieces: Own['pieces']): Promise<Built | null> {
+function textureOf(canvas: HTMLCanvasElement): CanvasTexture {
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  texture.anisotropy = ANISOTROPY;
+  return texture;
+}
+
+async function builtOf(pieces: Own['pieces'], plaster: string): Promise<Built | null> {
   const decoded = await Promise.allSettled(pieces.map((piece) => imageOf(piece.image)));
   const kept = pieces.flatMap((piece, i) => {
     const result = decoded[i];
@@ -71,30 +82,80 @@ async function builtOf(pieces: Own['pieces']): Promise<Built | null> {
       Math.round((piece.north - piece.south) * perUnit),
     );
   }
-  const texture = new CanvasTexture(canvas);
-  texture.colorSpace = SRGBColorSpace;
-  texture.anisotropy = ANISOTROPY;
-  return { texture, west, east, south, north };
+  const texture = textureOf(canvas);
+  // The roofs' tops take the picture at half its pixels: a roof is a small part of it.
+  const onPlaster = document.createElement('canvas');
+  onPlaster.width = Math.max(1, Math.round(canvas.width / 2));
+  onPlaster.height = Math.max(1, Math.round(canvas.height / 2));
+  const paint = onPlaster.getContext('2d');
+  if (paint === null) return null;
+  paint.fillStyle = plaster;
+  paint.fillRect(0, 0, onPlaster.width, onPlaster.height);
+  paint.drawImage(canvas, 0, 0, onPlaster.width, onPlaster.height);
+  return { texture, top: textureOf(onPlaster), west, east, south, north };
 }
 
-export function StudioOwnGround({ picture }: { picture: Own }) {
+/**
+ * The roofs' tops wear your picture where it lies (board 5.2): a cap's east and north turned back
+ * by the picture's turn, out of metres into its units, and into the texture's box.
+ */
+function roofTopOf(built: Built, laid: Own['laid']): RoofTopPicture {
+  const turn = laid.turnDeg * DEGREES;
+  const c = Math.cos(turn);
+  const s = Math.sin(turn);
+  const across = (built.east - built.west) * laid.metresPerUnit;
+  const along = (built.north - built.south) * laid.metresPerUnit;
+  const { east, north } = laid.at;
+  const uv = new Matrix3().set(
+    c / across,
+    -s / across,
+    (-c * east + s * north) / across - built.west / (built.east - built.west),
+    s / along,
+    c / along,
+    (-s * east - c * north) / along - built.south / (built.north - built.south),
+    0,
+    0,
+    1,
+  );
+  return { texture: built.top, west: 0, east: 0, south: 0, north: 0, uv };
+}
+
+export function StudioOwnGround({
+  picture,
+  onTop,
+  plaster,
+}: {
+  picture: Own;
+  /** The walls' colour, under the roofs' tops where the picture is see-through. */
+  plaster: string;
+  /** The picture the roofs' tops wear, once it is drawn; `null` while it is not. */
+  onTop: (top: RoofTopPicture | null) => void;
+}) {
   // biome-ignore lint/plugin: the web's WebGL texture, built from the pictures in the browser, is the platform's own object
   const [built, setBuilt] = useState<Built | null>(null);
   useEffect(() => {
     let live = true;
     let made: Built | null = null;
-    void builtOf(picture.pieces).then((next) => {
+    const dispose = (gone: Built | null) => {
+      gone?.texture.dispose();
+      gone?.top.dispose();
+    };
+    void builtOf(picture.pieces, plaster).then((next) => {
       made = next;
       if (live) setBuilt(next);
-      else next?.texture.dispose();
+      else dispose(next);
     });
     return () => {
       live = false;
-      made?.texture.dispose();
+      dispose(made);
     };
-  }, [picture.pieces]);
-  if (built === null) return null;
+  }, [picture.pieces, plaster]);
   const { laid } = picture;
+  useEffect(() => {
+    onTop(built === null ? null : roofTopOf(built, laid));
+    return () => onTop(null);
+  }, [built, laid, onTop]);
+  if (built === null) return null;
   return (
     <group
       position={[laid.at.east, 0, -laid.at.north]}
@@ -104,19 +165,16 @@ export function StudioOwnGround({ picture }: { picture: Own }) {
       <mesh
         renderOrder={OWN_ORDER}
         rotation-x={-Math.PI / 2}
-        position={[(built.west + built.east) / 2, 0, -(built.south + built.north) / 2]}
+        position={[(built.west + built.east) / 2, OWN_LIFT_M, -(built.south + built.north) / 2]}
       >
         <planeGeometry args={[built.east - built.west, built.north - built.south]} />
         <meshBasicMaterial
           map={built.texture}
           // A drone map's ragged edge is cut away, so the ground under it shows, never black; cut,
-          // not blended, so the picture stays under the roofs, drawn in the same pass as them.
+          // not blended, so the picture stays under the roofs, drawn in the same pass as them; it
+          // writes depth, so the grid under it (2 cm up) never draws over it.
           alphaTest={0.5}
           toneMapped={false}
-          depthWrite={false}
-          polygonOffset
-          polygonOffsetFactor={-1}
-          polygonOffsetUnits={-1}
         />
       </mesh>
     </group>

@@ -41,6 +41,17 @@ function scaledBox<B extends ClearGround>(box: B | null, scale: number): B | nul
 const scaledTop = (top: RoofTopPicture, scale: number): RoofTopPicture =>
   scaledBox(top, scale) ?? top;
 
+/** The picture the roofs' tops wear: the sky picture stretched, or your own where it lies. */
+function roofTopIn(
+  kind: StudioPicture['kind'],
+  sharp: RoofTopPicture | null,
+  own: RoofTopPicture | null,
+  scale: number,
+): RoofTopPicture | null {
+  if (kind === 'sky') return sharp === null ? null : scaledTop(sharp, scale);
+  return kind === 'own' ? own : null;
+}
+
 /** The camera before its first view is set: the rig flies it from here. */
 const CAMERA_START = { near: 0.5, far: 3_000, position: [0, 60, 60] as [number, number, number] };
 
@@ -168,6 +179,8 @@ export function StudioScene({
 }: StudioSceneProps) {
   // biome-ignore lint/plugin: the web's WebGL picture of the ground, handed on to the roofs' tops
   const [sharp, setSharp] = useState<RoofTopPicture | null>(null);
+  // biome-ignore lint/plugin: your picture's WebGL texture, handed on to the roofs' tops as the sky's is
+  const [ownTop, setOwnTop] = useState<RoofTopPicture | null>(null);
   const pictureScale = readScale ?? 1;
   // The share of its new size the model stands at while the first length grows it: 1 at rest.
   const sizing = useRef(1);
@@ -200,7 +213,9 @@ export function StudioScene({
             <meshBasicMaterial color={palette['canvas-sunken']} toneMapped={false} />
           </mesh>
         )}
-        {picture.kind === 'own' ? <StudioOwnGround picture={picture} /> : null}
+        {picture.kind === 'own' ? (
+          <StudioOwnGround picture={picture} plaster={palette['scene-wall']} onTop={setOwnTop} />
+        ) : null}
         {plan !== null && view === 'top' ? (
           <StudioPlanLines
             plan={plan}
@@ -232,7 +247,7 @@ export function StudioScene({
           palette={palette}
           heights={heights}
           storeyHeightM={storeyHeightM}
-          top={picture.kind === 'sky' && sharp !== null ? scaledTop(sharp, pictureScale) : null}
+          top={roofTopIn(picture.kind, sharp, ownTop, pictureScale)}
           rise={rise}
           sizing={sizing}
           marks={roofMarks}
