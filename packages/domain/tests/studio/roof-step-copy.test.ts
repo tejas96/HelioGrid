@@ -44,6 +44,15 @@ describe('Copy and Delete, from a roof’s row', () => {
     expect(document.roofs[1]?.corners[0]).toEqual(p(10 + COPY_GAP_M, 0));
   });
 
+  it('a stair room copied lands clear of its roof, and its copy is its own roof, not one tied to a roof it no longer lies on', () => {
+    const { document, state } = run([{ kind: 'copy_roof', roof: 1, ids: ['copy'] }], design);
+    const copy = document.roofs[3];
+    expect(copy?.id).toBe('copy');
+    expect(copy).not.toHaveProperty('kind');
+    expect(copy).not.toHaveProperty('on');
+    expect(state).toMatchObject({ kind: 'idle', roof: 3 });
+  });
+
   it('a copy with too few names for its parts makes nothing', () => {
     expect(run([{ kind: 'copy_roof', roof: 0, ids: ['copy'] }], design).commits).toBe(0);
   });

@@ -1,6 +1,8 @@
+'use client';
 import {
   NO_ROOF_SCENE,
   type RoofFacts,
+  type RoofHeight,
   type RoofSheetView,
   type StudioDocument,
 } from '@heliogrid/domain';
@@ -12,6 +14,7 @@ import {
   roofTopMarksOf,
   type WorkedBefore,
 } from '@heliogrid/domain/studio-kernel';
+import { useMemo, useRef } from 'react';
 import type { RoofModelShown } from './roof-model-shown';
 
 /**
@@ -32,19 +35,18 @@ const NOTHING: RoofModelShown = { scene: NO_ROOF_SCENE, topMarks: [], roofsAreaM
 export function roofModelShown(
   document: StudioDocument | null,
   facts: RoofFacts,
-  sheet: RoofSheetView | null,
+  /** The open sheet's roof and the height it stands at now, the one in hand included. */
+  inHand: { readonly roof: number; readonly height: RoofHeight } | null,
   /** The site's pin: its latitude says which way a one-way slope first faces. */
   pin: { readonly latitude: number } | null,
   memory: RoofMemory,
 ): RoofModelShown {
   if (document === null) return NOTHING;
   const roofs =
-    sheet === null
+    inHand === null
       ? document.roofs
       : document.roofs.map((roof, index) =>
-          index === sheet.roof
-            ? { ...roof, height: { metres: sheet.height.metres, setBy: sheet.height.setBy } }
-            : roof,
+          index === inHand.roof ? { ...roof, height: inHand.height } : roof,
         );
   const shown = { ...document, roofs };
   const worked = roofsWorked(shown, facts, pin?.latitude ?? 0, memory.before);
@@ -60,4 +62,28 @@ export function roofModelShown(
 export function heightPullWith(facts: RoofFacts, magnetOn: () => boolean) {
   return (design: StudioDocument, roof: number, metres: number, reachM: number) =>
     magnetOn() ? heightPullOf(design, roof, facts, metres, reachM) : null;
+}
+
+/**
+ * The model of the design drawn, built again only when the design drawn, the open sheet's roof or
+ * its height changes. The sheet is a new object on each render: the model reads the roof and the
+ * height it holds, never the object.
+ */
+export function useRoofModel(
+  shown: StudioDocument | null,
+  facts: RoofFacts,
+  sheet: RoofSheetView | null,
+  pin: { readonly latitude: number } | null,
+): RoofModelShown {
+  const memory = useRef<RoofMemory>({});
+  const open = sheet?.roof ?? null;
+  const held = sheet?.height.metres;
+  const setBy = sheet?.height.setBy;
+  return useMemo(() => {
+    const inHand =
+      open === null || held === undefined || setBy === undefined
+        ? null
+        : { roof: open, height: { metres: held, setBy } };
+    return roofModelShown(shown, facts, inHand, pin, memory.current);
+  }, [shown, facts, open, held, setBy, pin]);
 }

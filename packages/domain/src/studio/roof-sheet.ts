@@ -7,6 +7,8 @@ import {
   type RoofHeightShown,
   roofHeightOf,
 } from './roof-height';
+import { roofKindOf } from './roof-kind';
+import type { RoofKind } from './roof-parts';
 import { pointInside, roofArea, roofsBox } from './roof-shape';
 
 /**
@@ -55,6 +57,9 @@ export function roofSheetOf(
   };
 }
 
+/** The kinds whose sheet has nothing to set in 3D. */
+const NO_SHEET: readonly RoofKind[] = ['hole', 'dormer'];
+
 /**
  * The roof a 3D tap lands on: each roof is tried at the height it stands at now (`heights`, a
  * height in hand included), the tallest first, since it stands in front. `groundAt` answers where
@@ -65,8 +70,10 @@ export function roofHitAt(
   heights: readonly number[],
   groundAt: (heightM: number) => GroundPoint | null,
 ): number | null {
+  // A hole and a dormer have no height of their own to set: a tap on one lands on its roof.
   const byHeight = document.roofs
     .map((roof, index) => ({ roof, index, metres: heights[index] ?? 0 }))
+    .filter(({ roof }) => !NO_SHEET.includes(roofKindOf(roof)))
     .sort((a, b) => b.metres - a.metres);
   for (const { roof, index, metres } of byHeight) {
     const at = groundAt(metres);

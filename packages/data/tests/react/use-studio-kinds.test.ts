@@ -113,6 +113,15 @@ describe('the first roof, and a roof’s row', () => {
     origin.siteRoof = null;
   });
 
+  it('a hint this studio does not know, from a later host, is none: the first roof stores no type', async () => {
+    origin.siteRoof = 'green_roof';
+    const view = await opened([]);
+    draw(view, box(0, 0, 10, 8));
+    await waitFor(() => expect(saved()).toHaveLength(1));
+    expect(Object.keys(saved()[0] ?? {})).not.toContain('material');
+    origin.siteRoof = null;
+  });
+
   it('Copy takes what stands on the roof with it, and Delete on a row takes both away, each as one save', async () => {
     const stair = {
       ...TERRACE,
@@ -206,5 +215,34 @@ describe('the model the screen draws, and the moves on it', () => {
     act(() => view.result.current.moves.keepHeight());
     await waitFor(() => expect(saved()[1]?.height).toEqual({ metres: 4, setBy: 'person' }));
     expect(view.result.current.heightPull).toBeNull();
+  });
+});
+
+describe('the 3D sheet and the model, as other things change', () => {
+  it('Draw from 3D with a sheet open keeps its height and closes it first', async () => {
+    const view = await opened([TERRACE]);
+    act(() => view.result.current.moves.see('3d'));
+    act(() => view.result.current.moves.openRoof(0));
+    act(() => view.result.current.moves.slideHeight(4));
+    act(() => view.result.current.moves.draw());
+    expect(view.result.current.roofSheet).toBeNull();
+    expect(view.result.current.view).toBe('top');
+    expect(view.result.current.roofStep.kind).toBe('drawing');
+    await waitFor(() => expect(saved()[0]?.height).toEqual({ metres: 4, setBy: 'person' }));
+    // The model stands at the kept height, with nothing left in hand.
+    expect(view.result.current.scene.levels[0]?.topM).toBe(4);
+  });
+
+  it('while a sheet is open the model is built once: another render of the screen hands back the same one', async () => {
+    const view = await opened([TERRACE]);
+    act(() => view.result.current.moves.openRoof(0));
+    act(() => view.result.current.moves.slideHeight(4));
+    const { scene, topMarks } = view.result.current;
+    view.rerender();
+    expect(view.result.current.scene).toBe(scene);
+    expect(view.result.current.topMarks).toBe(topMarks);
+    // A new height is a new model.
+    act(() => view.result.current.moves.slideHeight(5));
+    expect(view.result.current.scene).not.toBe(scene);
   });
 });

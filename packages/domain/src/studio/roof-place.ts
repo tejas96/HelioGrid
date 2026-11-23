@@ -161,6 +161,6 @@ export function placedAt(
   const said = becameFacts({ ...document, roofs }, index, facts, joinWith ?? meeting.startsLike);
   return {
     roof: placed,
-    became: { roof: index, place, on, choices, joinWith, across, toCheck, ...said },
+    became: { roof: index, id: placed.id, place, on, choices, joinWith, across, toCheck, ...said },
   };
 }

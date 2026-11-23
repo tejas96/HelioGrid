@@ -16,11 +16,11 @@ import {
   stepRail,
   viewsOffered,
 } from '@heliogrid/domain';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { planOutlinesOf } from './own-picture-view';
 import { readOf } from './read';
 import { closePlacingOf, roofPlaceMoves } from './roof-place-moves';
-import { heightPullWith, type RoofMemory, roofModelShown } from './roof-scene-view';
+import { heightPullWith, useRoofModel } from './roof-scene-view';
 import { arrivalOf, framedWithCard, useSizeCardOpens } from './size-card';
 import {
   editingOf,
@@ -122,12 +122,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   });
   const { roofSheet } = sheet.state;
   const { shown } = roof.view;
-  // The model is the kernel's: built again only when the design drawn or a height in hand changes.
-  const memory = useRef<RoofMemory>({});
-  const model = useMemo(
-    () => roofModelShown(shown, facts, roofSheet, pin, memory.current),
-    [shown, facts, roofSheet, pin],
-  );
+  const model = useRoofModel(shown, facts, roofSheet, pin);
 
   return {
     read,
@@ -219,8 +214,11 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         if (next === 'top') void sheet.moves.done();
         setView(next);
       },
-      // Drawing happens in the top view only: the camera flies there first.
+      // Drawing happens in the top view only: the camera flies there first. A roof's sheet is the
+      // 3D view's: its height is kept and it closes, as when the top view is picked; a height
+      // that is refused keeps the sheet, and nothing is drawn.
       draw: () => {
+        if (!sheet.moves.done()) return;
         setView('top');
         roof.moves.draw();
       },

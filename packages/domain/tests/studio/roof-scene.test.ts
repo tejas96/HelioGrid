@@ -271,6 +271,17 @@ describe('holes and dormers in a sloped roof', () => {
     expect(walls?.top).toBe('none');
   });
 
+  it('a height someone set on a dormer does not lift it off its roof: its ridge stays 0.3 m under the main ridge', () => {
+    const steep = { ...MAIN, slope: { degrees: 30, setBy: 'person' } } as Roof;
+    const dormer = kindOf('dormer', 'dormer', box(5, 0.5, 2, 2), { on: 'main', ...sheet });
+    const set = { ...dormer, height: { metres: 2, setBy: 'person' } } as Roof;
+    const plain = roofSceneOf(designOf(steep, dormer), FACTS);
+    const scene = roofSceneOf(designOf(steep, set), FACTS);
+    expect(scene.faces).toEqual(plain.faces);
+    expect(scene.walls).toEqual(plain.walls);
+    expect(partsOf(scene.prisms, 1, 'body')).toEqual(partsOf(plain.prisms, 1, 'body'));
+  });
+
   it('a dormer on a shallow roof still shows: it stands on the highest point of the roof under it', () => {
     const dormer = kindOf('dormer', 'dormer', box(5, 0.5, 2, 2), { on: 'main', ...sheet });
     const plain = roofSceneOf(designOf(MAIN), FACTS);

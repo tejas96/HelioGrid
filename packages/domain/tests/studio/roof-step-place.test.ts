@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Roof } from '../../src/studio/document';
+import { kindLineOf } from '../../src/studio/roof-kind-line';
 import { cutToEdge, meetingOf } from '../../src/studio/roof-meet';
 import { joined, shapeOf } from '../../src/studio/roof-polygons';
 import { roofStepAfter } from '../../src/studio/roof-step';
@@ -27,6 +28,7 @@ describe('a new roof closes among the others', () => {
       kind: 'closed',
       became: {
         roof: 2,
+        id: 'new',
         place: 'inside',
         is: 'stair_room',
         on: 0,
@@ -217,6 +219,61 @@ describe('two sloped roofs of one material join by themselves', () => {
       kind: 'closed',
       became: { choices: ['building', 'join', 'open_shed'] },
     });
+  });
+});
+
+describe('a chip tapped after the design changed under the line', () => {
+  it('another roof stands where the new one stood: nothing changes, and the line leaves', () => {
+    const closed = run(draw(box(0, 0, 3, 3), HOUSE), HOUSE);
+    expect(kindLineOf(closed.state, closed.document)?.roof).toBe(2);
+    // The design read again, as another person left it: the shed is at that place now.
+    const theirs = designOf(TERRACE, SHED, roofOf('other', box(30, 0, 5, 5)));
+    expect(kindLineOf(closed.state, theirs)).toBeNull();
+    const after = roofStepAfter(
+      closed.state,
+      { kind: 'make', roof: 2, into: 'hole', facts: FACTS },
+      theirs,
+    );
+    expect(after.commit).toBeNull();
+    expect(saidOf(after.state)).toBeNull();
+  });
+
+  it('the joined roof given a height in 3D keeps it: a kind’s chip no longer parts it', () => {
+    const design = designOf(SHED);
+    const joined = run(draw(box(14, 0, 4, 8), design, 'wing'), design);
+    expect(kindLineOf(joined.state, joined.document)?.chips[0]).toEqual({
+      choice: 'join',
+      lit: true,
+    });
+    const one = joined.document.roofs[0] as Roof;
+    const taller = designOf({ ...one, height: { metres: 5, setBy: 'person' } });
+    expect(kindLineOf(joined.state, taller)).toBeNull();
+    const after = roofStepAfter(
+      joined.state,
+      { kind: 'make', roof: 0, into: 'building', facts: FACTS },
+      taller,
+    );
+    expect(after.commit).toBeNull();
+    expect(saidOf(after.state)).toBeNull();
+  });
+
+  it.each([
+    ['Join', { kind: 'join', roof: 2, with: 0, outline: box(0, 0, 10, 8) }],
+    [
+      'Cut to edge',
+      {
+        kind: 'cut_to_edge',
+        roof: 2,
+        corners: box(0, 0, 3, 3),
+        placing: { meeting: meetingOf(HOUSE, box(0, 0, 3, 3), FACTS), facts: FACTS },
+      },
+    ],
+  ] as const)('%s on a line gone stale changes nothing either', (_chip, event) => {
+    const closed = run(draw(box(0, 0, 3, 3), HOUSE), HOUSE);
+    const theirs = designOf(TERRACE, SHED, roofOf('other', box(30, 0, 5, 5)));
+    const after = roofStepAfter(closed.state, event, theirs);
+    expect(after.commit).toBeNull();
+    expect(saidOf(after.state)).toBeNull();
   });
 });
 

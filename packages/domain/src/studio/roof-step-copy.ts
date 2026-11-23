@@ -12,6 +12,7 @@ import {
   type RoofStepState,
   stay,
 } from './roof-step-state';
+import { roofSetFree } from './roof-sticks-out';
 
 /**
  * A roof's own moves among the others (`T-M05-002`, part e): it goes, or is copied beside itself,
@@ -78,10 +79,10 @@ export function copied(
   });
   const copy = document.roofs.length;
   const of = roofNameOf(document, event.roof) ?? { kind: 'roof', number: event.roof + 1 };
-  return {
-    state: idle({ kind: 'copied', roof: copy, of }, copy),
-    commit: { ...document, roofs: [...document.roofs, ...copies] },
-  };
+  // A stair room copied lands clear of the roof it stood on: its copy is its own roof, not one
+  // still tied to a roof it no longer lies on.
+  const commit = roofSetFree({ ...document, roofs: [...document.roofs, ...copies] }, copy);
+  return { state: idle({ kind: 'copied', roof: copy, of }, copy), commit };
 }
 
 /** Delete: the roof of a row, or the picked one, goes with what stands on it; the line names it. */

@@ -156,7 +156,8 @@ function roofParts(
     return { ...surfaces, levels: [], prisms: [...sheet, ...stands, ...parapets] };
   }
   // A dormer's walls stand from its roof's low edge up to its own, lifted, low edge.
-  const walled = top === null ? at : { ...at, topM: at.topM + top.liftM };
+  const dormer = kind === 'dormer' && top !== null;
+  const walled = dormer ? { ...at, topM: at.footM + top.liftM } : at;
   const body = sloped ? slopedWalls(walled) : flatBody(document, facts, at);
   return { ...surfaces, levels: [], prisms: [...body, ...parapets] };
 }

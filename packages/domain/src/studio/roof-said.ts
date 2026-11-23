@@ -89,6 +89,8 @@ export type RoofSaid =
 /** What a new roof became when it closed, and the chips that fix a wrong guess. */
 export interface RoofBecame {
   readonly roof: number;
+  /** That roof's own name in the design: the line holds only while the roof there is this one. */
+  readonly id: string;
   readonly place: RoofPlace;
   readonly is: RoofKind;
   /** The roof it stands on or is part of, by its place in the design. */
@@ -109,6 +111,8 @@ export interface RoofApart {
   readonly fresh: Roof;
   readonly met: Roof;
   readonly became: RoofBecame;
+  /** The one roof Join made: a chip parts it only while it stands as Join left it. */
+  readonly joined: Roof;
 }
 
 /** How a new roof meets the others and the market's roof facts: what places it when it closes. */

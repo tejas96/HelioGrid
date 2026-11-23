@@ -244547,7 +244547,7 @@
                         },
                         "siteRoof": {
                           "type": "string",
-                          "enum": [
+                          "x-extensible-enum": [
                             "concrete_flat",
                             "metal_shed",
                             "tile"
@@ -245325,7 +245325,7 @@
                         },
                         "siteRoof": {
                           "type": "string",
-                          "enum": [
+                          "x-extensible-enum": [
                             "concrete_flat",
                             "metal_shed",
                             "tile"
@@ -246091,7 +246091,7 @@
                         },
                         "siteRoof": {
                           "type": "string",
-                          "enum": [
+                          "x-extensible-enum": [
                             "concrete_flat",
                             "metal_shed",
                             "tile"

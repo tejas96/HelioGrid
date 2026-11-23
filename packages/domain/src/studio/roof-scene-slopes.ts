@@ -1,4 +1,4 @@
-import type { StudioDocument } from './document';
+import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { cutInto, facesHeightAt, facesWithout } from './roof-cuts';
 import type { BuiltFace } from './roof-faces';
@@ -94,7 +94,10 @@ export function slopedTops(
     const built = worked.built[index];
     if (shown == null || built == null) return null;
     const liftM = lifts[index] ?? 0;
-    const eaveM = (levels[index]?.topM ?? 0) + liftM;
+    // A dormer's low edge is counted from the roof it sits on, never from a height of its own.
+    const level = levels[index] ?? { footM: 0, topM: 0 };
+    const dormer = roofKindOf(document.roofs[index] as Roof) === 'dormer';
+    const eaveM = (dormer ? level.footM : level.topM) + liftM;
     const lifted = <P extends { readonly up: number }>(corner: P) => ({
       ...corner,
       up: eaveM + corner.up,

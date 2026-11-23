@@ -1,3 +1,4 @@
+import type { StudioDocument } from './document';
 import type { MeetChoice } from './roof-meeting';
 import type { RoofName } from './roof-names';
 import type { RoofBecame, RoofStepState } from './roof-step-state';
@@ -24,11 +25,21 @@ function lineOf(roof: number, became: RoofBecame, joined: RoofName | null): Kind
   return { roof, became, joined, chips };
 }
 
-export function kindLineOf(state: RoofStepState): KindLine | null {
+/**
+ * The line as it stands over the design now. The design can change under it from outside the roof
+ * step — a height kept in 3D, a save read again — and then it speaks of a roof that is no longer
+ * the one at its place: it is gone, never shown over another roof.
+ */
+export function kindLineOf(state: RoofStepState, document: StudioDocument | null): KindLine | null {
   const said = state.kind === 'idle' ? state.said : null;
+  if (document === null) return null;
   if (said?.kind === 'joined') {
-    return said.apart === undefined ? null : lineOf(said.roof, said.apart.became, said.name);
+    const apart = said.apart;
+    if (apart === undefined || document.roofs[said.roof] !== apart.joined) return null;
+    return lineOf(said.roof, apart.became, said.name);
   }
   if (said?.kind !== 'closed' && said?.kind !== 'cut') return null;
-  return said.became === undefined ? null : lineOf(said.became.roof, said.became, null);
+  const became = said.became;
+  if (became === undefined || document.roofs[became.roof]?.id !== became.id) return null;
+  return lineOf(became.roof, became, null);
 }

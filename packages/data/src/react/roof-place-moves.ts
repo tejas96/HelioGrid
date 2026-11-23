@@ -5,7 +5,7 @@ import {
   type RoofFacts,
   type RoofStepEvent,
   type RoofStepState,
-  type SiteRoofHint,
+  SITE_ROOF_HINTS,
   type StudioDocument,
 } from '@heliogrid/domain';
 import { edgesOf, meetingOf, meetingOfRoof, roofCutToEdge } from '@heliogrid/domain/studio-kernel';
@@ -22,13 +22,17 @@ import type { ClosePlacing, RoofPlaceMoves } from './roof-step-view';
 /** The placing for a roof closed on a design as it stands. */
 export function closePlacingOf(
   facts: RoofFacts,
-  /** What the host knows of the site's roof: the first roof starts as it. */
-  siteRoof: SiteRoofHint | null | undefined,
+  /**
+   * What the host knows of the site's roof: the first roof starts as it. A hint this studio does
+   * not know — a later host's — is none.
+   */
+  siteRoof: string | null | undefined,
 ): (document: StudioDocument) => ClosePlacing {
+  const hint = SITE_ROOF_HINTS.find((known) => known === siteRoof);
   return (document) => ({
     meet: (corners) => meetingOf(document, corners, facts),
     facts,
-    ...(siteRoof == null ? {} : { siteMaterial: materialForSite(siteRoof) }),
+    ...(hint === undefined ? {} : { siteMaterial: materialForSite(hint) }),
   });
 }
 
@@ -65,7 +69,7 @@ export function roofPlaceMoves({
   return {
     chooseKind: (choice) => {
       const design = latest.current?.present;
-      const line = kindLineOf(step.current);
+      const line = design === undefined ? null : kindLineOf(step.current, design);
       if (design === undefined || line === null) return;
       if (choice !== 'join' && choice !== 'cut_to_edge') {
         act({ kind: 'make', roof: line.roof, into: choice, facts });

@@ -24,13 +24,26 @@ import {
 
 type Event<K extends RoofStepEvent['kind']> = Extract<RoofStepEvent, { kind: K }>;
 
-/** What the line said a roof became, while it still says it. */
-function becameOf(state: RoofStepState, roof: number): RoofBecame | null {
+/**
+ * What the line said a roof became, while it still says it of that roof. The design can change
+ * under the line — a height kept in 3D, a save read again — so the roof at its place is checked
+ * by its own name: `stale` when another roof stands there now.
+ */
+function becameOf(
+  state: RoofStepState,
+  roof: number,
+  document: StudioDocument,
+): RoofBecame | 'stale' | null {
   if (state.kind !== 'idle') return null;
   const said = state.said;
   const became = said?.kind === 'closed' || said?.kind === 'cut' ? said.became : undefined;
-  return became !== undefined && became.roof === roof ? became : null;
+  if (became === undefined || became.roof !== roof) return null;
+  return document.roofs[roof]?.id === became.id ? became : 'stale';
 }
+
+/** The line leaves and nothing changes: what it spoke of is no longer what stands there. */
+const lineGone = (state: RoofStepState): RoofStepOutcome =>
+  stay(state.kind === 'idle' ? idle(null, state.roof) : state);
 
 /** Two roofs made one: the roof it met takes the joined outline, and the new roof is gone into it. */
 function joinedAs(
@@ -47,7 +60,8 @@ function joinedAs(
   const joined = met > roof ? met - 1 : met;
   const commit = withoutRoof(withOne, roof);
   const name = roofNameOf(commit, joined) ?? { kind: 'roof', number: joined + 1 };
-  const apart: RoofApart | undefined = became === null ? undefined : { fresh, met: target, became };
+  const apart: RoofApart | undefined =
+    became === null ? undefined : { fresh, met: target, became, joined: one };
   const said: RoofSaid = { kind: 'joined', roof: joined, name, ...(apart ? { apart } : {}) };
   return { state: idle(said, joined), commit };
 }
@@ -110,11 +124,14 @@ export function kindMade(
 ): RoofStepOutcome {
   const line = state.kind === 'idle' ? state.said : null;
   if (line?.kind === 'joined' && line.apart !== undefined && line.roof === event.roof) {
+    // Only the roof Join left is parted: one changed since keeps what it holds now.
+    if (document.roofs[line.roof] !== line.apart.joined) return lineGone(state);
     return parted({ ...line, apart: line.apart }, event, document);
   }
+  const became = becameOf(state, event.roof, document);
+  if (became === 'stale') return lineGone(state);
   const made = roofMadeInto(document, event.roof, event.into, event.facts);
   if (made === document) return stay(state);
-  const became = becameOf(state, event.roof);
   const now = becameFacts(made, event.roof, event.facts);
   const said: RoofSaid =
     became === null
@@ -132,7 +149,9 @@ export function joinedIn(
   const fresh = document.roofs[event.roof];
   const target = document.roofs[event.with];
   if (fresh === undefined || target === undefined || event.roof === event.with) return stay(state);
-  return joinedAs(document, event.roof, event.with, event.outline, becameOf(state, event.roof));
+  const became = becameOf(state, event.roof, document);
+  if (became === 'stale') return lineGone(state);
+  return joinedAs(document, event.roof, event.with, event.outline, became);
 }
 
 /** Cut to edge: the new roof on the corners it was cut back to, placed again by how it now meets the others. */
@@ -143,6 +162,7 @@ export function cutBack(
 ): RoofStepOutcome {
   const roof = document.roofs[event.roof];
   if (roof === undefined) return stay(state);
+  if (becameOf(state, event.roof, document) === 'stale') return lineGone(state);
   const cut = reshaped(roof, event.corners, [roof]);
   const placed = placedAt(document, cut, event.roof, event.placing);
   const roofs = document.roofs.map((each, i) => (i === event.roof ? placed.roof : each));

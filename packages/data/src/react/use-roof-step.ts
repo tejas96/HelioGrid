@@ -46,7 +46,7 @@ import {
   stepRefused,
   tracedLength,
 } from '@heliogrid/domain';
-import { type RefObject, useRef, useState } from 'react';
+import { type RefObject, useMemo, useRef, useState } from 'react';
 import { aKey } from '../client/creation-key';
 import type { ClosePlacing, RoofMoves, RoofStepView } from './roof-step-view';
 import { sizeCardIn, useUnitsFollow } from './size-card';
@@ -134,7 +134,12 @@ export function useRoofStep({
   const picked = magnetOf(helpersOff, false);
   // The pick last asked for wins until the account answers: the switch already shows it.
   const magnet = (next: boolean = askedOn.current ?? picked) => next && !free;
-  const shown = document === null ? null : roofStepShown(roofStep, document, units);
+  // The same design drawn is the same object from one render to the next: what is built from it
+  // — the 3D model, the marks — is built once.
+  const shown = useMemo(
+    () => (document === null ? null : roofStepShown(roofStep, document, units)),
+    [roofStep, document, units],
+  );
   const sizing = roofStep.kind === 'sizing' ? roofStep : null;
   const view: RoofStepView = {
     roofStep,
@@ -149,7 +154,7 @@ export function useRoofStep({
     draft:
       roofStep.kind === 'drawing' && document !== null ? draftViewOf(roofStep, document) : null,
     bar: document === null ? null : roofBarOf(roofStep, document, picture.kind === 'none', units),
-    kindLine: kindLineOf(roofStep),
+    kindLine: kindLineOf(roofStep, document),
     stepOff: {
       less: sizing === null || stepRefused(sizing, -1, units),
       more: sizing === null || stepRefused(sizing, 1, units),
