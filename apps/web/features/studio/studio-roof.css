@@ -33,6 +33,19 @@
   stroke-width: 5;
 }
 
+/* The dark line under a roof's sides, which keeps them seen on any picture; under the picked roof,
+   a soft wide line in its blue: its glow. A plain stroke, never a filter: a filter on every side
+   of 200 roofs is drawn again each frame, and the map then moves at a quarter of its speed. */
+.hg-roof-under {
+  stroke: color-mix(in srgb, var(--scene-shade) 55%, transparent);
+  stroke-width: 8;
+}
+
+.hg-roof-under[data-picked="true"] {
+  stroke: color-mix(in srgb, var(--hg-roof-ink) 35%, transparent);
+  stroke-width: 13;
+}
+
 .hg-roof-line {
   stroke: var(--hg-roof-ink);
   stroke-width: 2.5;
@@ -44,7 +57,6 @@
   stroke: var(--scene-mark);
   stroke-width: 2.5;
   stroke-dasharray: 7 6;
-  filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 80%, transparent));
 }
 
 .hg-roof-side[data-wall="true"] {
@@ -54,7 +66,6 @@
 
 .hg-roof-side[data-picked="true"] {
   stroke: var(--hg-roof-ink);
-  filter: drop-shadow(0 0 var(--sp-1) color-mix(in srgb, var(--hg-roof-ink) 85%, transparent));
 }
 
 .hg-roof-side[data-check="true"] {
@@ -91,7 +102,11 @@
   stroke: var(--scene-mark);
   stroke-width: 1.5;
   opacity: 0.9;
-  filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 85%, transparent));
+}
+
+.hg-roof-slope-shade {
+  stroke: color-mix(in srgb, var(--scene-shade) 55%, transparent);
+  stroke-width: 4;
 }
 
 .hg-roof-slope-tip {

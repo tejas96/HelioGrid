@@ -16,11 +16,11 @@ import {
   stepRail,
   viewsOffered,
 } from '@heliogrid/domain';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { planOutlinesOf } from './own-picture-view';
 import { readOf } from './read';
 import { closePlacingOf, roofPlaceMoves } from './roof-place-moves';
-import { heightPullWith, roofModelShown } from './roof-scene-view';
+import { heightPullWith, type RoofMemory, roofModelShown } from './roof-scene-view';
 import { arrivalOf, framedWithCard, useSizeCardOpens } from './size-card';
 import {
   editingOf,
@@ -123,8 +123,9 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const { roofSheet } = sheet.state;
   const { shown } = roof.view;
   // The model is the kernel's: built again only when the design drawn or a height in hand changes.
+  const memory = useRef<RoofMemory>({});
   const model = useMemo(
-    () => roofModelShown(shown, facts, roofSheet, pin),
+    () => roofModelShown(shown, facts, roofSheet, pin, memory.current),
     [shown, facts, roofSheet, pin],
   );
 

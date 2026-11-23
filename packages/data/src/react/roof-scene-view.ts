@@ -10,8 +10,17 @@ import {
   roofsAreaM2,
   roofsWorked,
   roofTopMarksOf,
+  type WorkedBefore,
 } from '@heliogrid/domain/studio-kernel';
 import type { RoofModelShown } from './roof-model-shown';
+
+/**
+ * What the kernel worked out of the design last drawn: the next one reuses every roof's answers an
+ * edit did not touch, so a corner dragged on a site of 200 roofs works out a handful of them.
+ */
+export interface RoofMemory {
+  before?: WorkedBefore;
+}
 
 const NOTHING: RoofModelShown = { scene: NO_ROOF_SCENE, topMarks: [], roofsAreaM2: 0 };
 
@@ -26,6 +35,7 @@ export function roofModelShown(
   sheet: RoofSheetView | null,
   /** The site's pin: its latitude says which way a one-way slope first faces. */
   pin: { readonly latitude: number } | null,
+  memory: RoofMemory,
 ): RoofModelShown {
   if (document === null) return NOTHING;
   const roofs =
@@ -37,7 +47,8 @@ export function roofModelShown(
             : roof,
         );
   const shown = { ...document, roofs };
-  const worked = roofsWorked(shown, facts, pin?.latitude ?? 0);
+  const worked = roofsWorked(shown, facts, pin?.latitude ?? 0, memory.before);
+  memory.before = { document: shown, worked };
   return {
     scene: roofSceneOf(shown, facts, worked),
     topMarks: roofTopMarksOf(shown, facts, worked),

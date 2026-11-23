@@ -232,15 +232,17 @@ describe('drawing a roof: the ghost corner and the close', () => {
     expect(draftClose(shed, [ROOF_1], 'id', 'sky', true).kind).toBe('closed');
   });
 
-  it('a design holds 50 roofs', () => {
-    const roofs = Array.from({ length: 50 }, (_, i) => ({
+  it.each([
+    ['the 200th roof closes', 199, 'closed'],
+    ['a design holds 200 roofs: the next is refused', 200, 'refused'],
+  ])('%s', (_why, standing, kind) => {
+    const roofs = Array.from({ length: standing }, (_, i) => ({
       ...ROOF_1,
       corners: ROOF_1.corners.map((c) => p(c.east + i * 10, c.north)),
     }));
-    expect(draftClose([p(0, 20), p(8, 20), p(8, 26)], roofs, 'id', 'sky', true)).toEqual({
-      kind: 'refused',
-      refusal: 'too_many_roofs',
-    });
+    const close = draftClose([p(0, 20), p(8, 20), p(8, 26)], roofs, 'id', 'sky', true);
+    expect(close.kind).toBe(kind);
+    if (close.kind === 'refused') expect(close.refusal).toBe('too_many_roofs');
   });
 });
 

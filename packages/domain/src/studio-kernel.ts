@@ -105,4 +105,4 @@ export {
   sideBearing,
 } from './studio/roof-slope-way';
 export { roofTopMarksOf } from './studio/roof-top-marks-build';
-export { type RoofsWorked, roofsWorked } from './studio/roof-worked';
+export { type RoofsWorked, roofsWorked, type WorkedBefore } from './studio/roof-worked';

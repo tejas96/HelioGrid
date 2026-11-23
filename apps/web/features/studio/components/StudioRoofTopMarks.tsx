@@ -32,6 +32,8 @@ export function RoofSideLines({
   }
   return (
     <>
+      {/* A dark line under the sides keeps them seen on any picture; under the picked roof, its glow. */}
+      <path className="hg-roof-under" data-pts={pts} data-closed="true" data-picked={picked} />
       <path
         className="hg-roof-fill"
         data-pts={pts}
@@ -52,14 +54,15 @@ export function RoofSideLines({
           />
         )),
       )}
-      {mark.slopes.map((slope) => (
-        <path
-          key={`${pointText(slope.from)};${pointText(slope.to)}`}
-          className="hg-roof-slope"
-          data-pts={`${pointText(slope.from)};${pointText(slope.to)}`}
-          markerEnd="url(#hg-roof-slope-tip)"
-        />
-      ))}
+      {mark.slopes.map((slope) => {
+        const line = `${pointText(slope.from)};${pointText(slope.to)}`;
+        return (
+          <g key={line}>
+            <path className="hg-roof-slope-shade" data-pts={line} />
+            <path className="hg-roof-slope" data-pts={line} markerEnd="url(#hg-roof-slope-tip)" />
+          </g>
+        );
+      })}
     </>
   );
 }
