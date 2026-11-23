@@ -4,13 +4,11 @@ import { roofKindOf } from './roof-kind';
 import { type RoofFacts, roofShapeNow } from './roof-levels';
 import type { RoofHit, RoofScene, SightAt } from './roof-scene';
 import { pointInside } from './roof-shape';
-import { farFrom, onFace, onWall, type Sight, sightAt, sightEnds } from './roof-sight';
+import { farFrom, onFace, onWall, SAME_M, type Sight, sightAt, sightEnds } from './roof-sight';
 import type { RoofsWorked } from './roof-worked';
 
 /** How far above the model the line of sight is first read, in metres. */
 const ABOVE_M = 50;
-/** Two heights this close are one: the nearer of two equal hits is the one listed first. */
-const SAME_M = 1e-6;
 
 interface Met {
   readonly up: number;

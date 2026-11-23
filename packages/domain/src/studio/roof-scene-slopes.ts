@@ -2,7 +2,7 @@ import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { cutInto, facesHeightAt, facesWithout } from './roof-cuts';
 import type { BuiltFace } from './roof-faces';
-import { roofKindOf, roofWithItsParts, standsOn } from './roof-kind';
+import { roofKindOf, standsOn } from './roof-kind';
 import { farApart, shapeOf, shapesArea, shared } from './roof-polygons';
 import type { RoofScene, SceneFace, SceneWall } from './roof-scene';
 import type { RoofsWorked } from './roof-worked';
@@ -84,10 +84,25 @@ function meetingSlopes(
   return pairs;
 }
 
-/** Roof `b` stands on roof `a` or is part of it, at any depth. */
+/**
+ * Roof `b` stands on roof `a` or is part of it, at any depth: its links — what it stands on, what
+ * it is part of — followed up until `a` is reached.
+ */
 function goesWith(document: StudioDocument, a: number, b: number): boolean {
-  const other = document.roofs[b] as Roof;
-  return standsOn(document, other) === a || roofWithItsParts(document, a).includes(b);
+  const target = document.roofs[a]?.id;
+  const byId = new Map(document.roofs.map((roof) => [roof.id, roof]));
+  const seen = new Set<string>();
+  const next: Roof[] = [document.roofs[b] as Roof];
+  for (let roof = next.pop(); roof !== undefined; roof = next.pop()) {
+    for (const id of [roof.on, roof.partOf]) {
+      if (id == null || seen.has(id)) continue;
+      if (id === target) return true;
+      seen.add(id);
+      const linked = byId.get(id);
+      if (linked !== undefined) next.push(linked);
+    }
+  }
+  return false;
 }
 
 /** Two outlines that share less ground than this, in square metres, only touch. */

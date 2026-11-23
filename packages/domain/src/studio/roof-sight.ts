@@ -7,8 +7,8 @@ import { pointInside } from './roof-shape';
  * where it meets a face or an upright wall, and where it starts — at the camera.
  */
 
-/** Two heights this close are one. */
-const SAME_M = 1e-6;
+/** Two heights this close are one: the nearer of two equal hits is the one listed first. */
+export const SAME_M = 1e-6;
 
 export interface Sight {
   readonly from: ModelPoint;

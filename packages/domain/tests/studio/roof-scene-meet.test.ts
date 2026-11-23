@@ -44,6 +44,18 @@ describe('two sloped roofs that meet', () => {
     expect(planArea(scene.faces.filter((face) => face.roof === 0))).toBeCloseTo(96, 6);
   });
 
+  it('a sloped shed on an upper floor that stands on the house, though part of another, cuts nothing from the house', () => {
+    const other = roofOf('other', box(12, 0, 6, 8));
+    const upper = kindOf('upper', 'upper_floor', box(2, 2, 6, 4), { on: 'house', partOf: 'other' });
+    const shed = kindOf('shed', 'open_shed', box(3, 3, 3, 2), {
+      ...sheet,
+      on: 'upper',
+      shape: { is: 'gable', setBy: 'person' },
+    });
+    const scene = roofSceneOf(designOf(HOUSE, other, upper, shed), FACTS);
+    expect(planArea(scene.faces.filter((face) => face.roof === 0))).toBeCloseTo(96, 6);
+  });
+
   it('two sloped roofs that only touch are left whole', () => {
     const next = roofOf('next', box(12, 0, 6, 8), sheet);
     const scene = roofSceneOf(designOf(HOUSE, next), FACTS);

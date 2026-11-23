@@ -247,8 +247,8 @@ function partsOfJob(facts: FocusFacts): FocusParts {
       ...roofs,
     };
   }
-  if (job === 'roofs') return { ...LOOKING_TOP, ...roofs };
-  if (job === 'looking' || job === 'sheet') return LOOKING_TOP;
+  if (job === 'roofs' || job === 'sheet') return { ...LOOKING_TOP, ...roofs };
+  if (job === 'looking') return LOOKING_TOP;
   const parts = { ...LOOKING_TOP, ...IN_A_JOB[job] };
   // On a phone the slider, or the keyboard, takes the low screen: the compass steps aside.
   return (job === 'sizing' || job === 'typing') && facts.phone

@@ -157,7 +157,19 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       },
     ],
     // A roof's sheet on a phone is a sheet across the foot, as Roofs is: the tools step aside
-    // (board 6.1); the north arrow stays.
+    // (board 6.1); the north arrow stays. It stays open in either view.
+    [
+      'sheet',
+      'top',
+      true,
+      {
+        pencil: 'hidden',
+        undoRedo: 'hidden',
+        layers: 'hidden',
+        zoom: 'hidden',
+        bottomBar: 'hidden',
+      },
+    ],
     [
       'sheet',
       '3d',
