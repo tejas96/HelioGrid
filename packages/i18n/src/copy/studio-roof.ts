@@ -6,11 +6,20 @@ import {
   LENGTH_MIN_M,
   ROOF_CORNERS_MAX,
   ROOFS_MAX,
+  type RoofBecame,
   type RoofSaid,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import { historyLine } from './studio-history';
+import {
+  roofBecameStatus,
+  roofBecameTitle,
+  roofCopiedLine,
+  roofDeletedLine,
+  roofJoinedLine,
+  roofMadeLine,
+} from './studio-roof-kinds';
 import {
   type DragFacts,
   type RoofTag,
@@ -162,10 +171,26 @@ function placedLine(t: T, said: Extract<RoofSaid, { kind: 'placed' }>): Translat
     : t(ROOF.placedBeside, { number: said.beside + 1 });
 }
 
+/** What a placed roof became, as one line: its second half, or its name where there is none. */
+function becameLine(t: T, became: RoofBecame, shown: RoofWordsShown): TranslatedText {
+  return roofBecameStatus(t, became, shown.heightOf) ?? roofBecameTitle(t, became);
+}
+
 function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedText {
   switch (said.kind) {
     case 'closed':
-      return t(ROOF.roofClosed, { height: shown.height });
+      // A roof placed among others says what it became; a first roof, where its height came from.
+      return said.became === undefined
+        ? t(ROOF.roofClosed, { height: shown.height })
+        : becameLine(t, said.became, shown);
+    case 'cut':
+      return becameLine(t, said.became, shown);
+    case 'made':
+      return roofMadeLine(t, said.name);
+    case 'joined':
+      return roofJoinedLine(t, said.name);
+    case 'copied':
+      return roofCopiedLine(t, said.of);
     case 'sized':
       return t(ROOF.roofSized);
     case 'set':
@@ -194,7 +219,7 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'roof_picked':
       return t(ROOF.roofPicked, { number: said.roof + 1, height: shown.heightOf(said.metres) });
     case 'roof_deleted':
-      return t(ROOF.roofDeleted);
+      return said.was === undefined ? t(ROOF.roofDeleted) : roofDeletedLine(t, said.was);
     case 'went_back':
       if (said.fault === 'too_far') return t(ROOF.wentBackFar);
       if (said.fault === 'too_close') return t(ROOF.wentBackClose);

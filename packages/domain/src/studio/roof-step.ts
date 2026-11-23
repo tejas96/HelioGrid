@@ -4,16 +4,7 @@ import { cornerAdded, cornerDragged, cornerRemoved } from './roof-edit';
 import { roofMoved, roofTurned } from './roof-move';
 import { roofMiddle } from './roof-shape';
 import { snapTargetsOf } from './roof-snap';
-import {
-  closed,
-  cornerUndone,
-  drawing,
-  pickedRoofOf,
-  spotAt,
-  stopped,
-  tapped,
-  withoutRoof,
-} from './roof-step-draw';
+import { closed, cornerUndone, drawing, spotAt, stopped, tapped } from './roof-step-draw';
 import {
   committedLength,
   lengthKept,
@@ -21,6 +12,7 @@ import {
   lengthStepped,
   thenKept,
 } from './roof-step-length';
+import { copied, cutBack, deleted, joinedIn, kindMade } from './roof-step-place';
 import {
   idle,
   type RoofGrip,
@@ -173,13 +165,11 @@ const ON: Handlers = {
         ? stay(held)
         : stay({ ...held, corners: [], wiped: held.corners, spot: null, refused: null }),
     ),
-  delete_roof: (state, _event, document) =>
-    inState(state, 'idle', (looking) => {
-      const roof = pickedRoofOf(looking, document);
-      return roof === null
-        ? stay(looking)
-        : { state: idle({ kind: 'roof_deleted' }, null), commit: withoutRoof(document, roof) };
-    }),
+  delete_roof: deleted,
+  make: kindMade,
+  join: joinedIn,
+  cut_to_edge: cutBack,
+  copy_roof: copied,
   cancel: stopped,
   hover: (state, { at }, document) =>
     inState(state, 'drawing', (held) => {

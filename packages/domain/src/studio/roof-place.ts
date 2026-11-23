@@ -1,9 +1,11 @@
 import type { Roof, StudioDocument } from './document';
-import { roofKindOf } from './roof-kind';
-import type { RoofFacts } from './roof-levels';
+import { belongsTo, roofKindOf, standsOn } from './roof-kind';
+import { type RoofFacts, roofOwnHeightM } from './roof-levels';
 import { firstSheetMaterial } from './roof-material';
 import type { RoofMeeting } from './roof-meeting';
+import { roofNameOf } from './roof-names';
 import type { RoofKind, RoofMaterialSet } from './roof-parts';
+import type { RoofBecame, RoofPlacing } from './roof-step-state';
 
 /**
  * A roof takes its place among the others (`T-M05-002`, part e): what it is, the roof it stands on
@@ -111,4 +113,46 @@ export function roofMadeInto(
     ...(material === undefined ? {} : { material }),
   };
   return { ...document, roofs: document.roofs.map((each, i) => (i === index ? made : each)) };
+}
+
+/** The kinds whose height is counted from the roof they stand on, and said on the line. */
+const SAID_ABOVE: readonly RoofKind[] = ['stair_room', 'upper_floor', 'open_shed'];
+
+/**
+ * What the line says of a roof in its place: what it is called, the roof it goes with or meets,
+ * and how high it stands on that roof. `meets` is the roof it meets where it stands on none.
+ */
+export function becameFacts(
+  document: StudioDocument,
+  index: number,
+  facts: RoofFacts,
+  meets: number | null = null,
+): Pick<RoofBecame, 'name' | 'beside' | 'aboveM' | 'is'> {
+  const roof = document.roofs[index] as Roof;
+  const kind = roofKindOf(roof);
+  const owner = belongsTo(document, roof) ?? meets;
+  const stands = SAID_ABOVE.includes(kind) && standsOn(document, roof) !== null;
+  return {
+    is: kind,
+    name: roofNameOf(document, index) ?? { kind: 'roof', number: index + 1 },
+    beside: owner === null ? null : roofNameOf(document, owner),
+    aboveM: stands ? roofOwnHeightM(document, roof, facts) : null,
+  };
+}
+
+/** A roof as it stands once placed, and what the line says it became. */
+export function placedAt(
+  document: StudioDocument,
+  roof: Roof,
+  index: number,
+  placing: RoofPlacing,
+): { readonly roof: Roof; readonly became: RoofBecame } {
+  const { meeting, facts } = placing;
+  const { place, on, choices, joinWith, toCheck } = meeting;
+  const placed = roofPlaced(document, roof, meeting, facts);
+  // The roof stands at `index` among the others: the line reads it there.
+  const roofs = [...document.roofs];
+  roofs[index] = placed;
+  const said = becameFacts({ ...document, roofs }, index, facts, joinWith ?? meeting.startsLike);
+  return { roof: placed, became: { roof: index, place, on, choices, joinWith, toCheck, ...said } };
 }

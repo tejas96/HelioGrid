@@ -139,16 +139,7 @@ export {
   roofHeightStepped,
 } from './roof-height';
 export * from './roof-kind';
-export {
-  LENGTH_ASK_SHARE,
-  LENGTH_MAX_M,
-  LENGTH_MIN_M,
-  lengthAsks,
-  lengthIsFirst,
-  lengthSet,
-  lengthSizesPicture,
-  onPicture,
-} from './roof-length';
+export * from './roof-length';
 export * from './roof-material';
 export * from './roof-meeting';
 export {
@@ -158,6 +149,7 @@ export {
   roofTurned,
   TURN_SNAP_DEGREES,
 } from './roof-move';
+export { type RoofName, roofNameOf, roofNumber } from './roof-names';
 export * from './roof-parts';
 export {
   between,
@@ -195,7 +187,9 @@ export { gripCorner, roofStepAfter } from './roof-step';
 export {
   type CornerRef,
   ROOF_STEP_START,
+  type RoofBecame,
   type RoofGrip,
+  type RoofPlacing,
   type RoofSaid,
   type RoofStepEvent,
   type RoofStepOutcome,
