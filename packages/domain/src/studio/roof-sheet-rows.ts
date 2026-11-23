@@ -39,6 +39,15 @@ export type SlopeWay =
   | ({ readonly kind: 'down' } & WayAt)
   | { readonly kind: 'faces'; readonly ways: readonly WayAt[] };
 
+/** A stair room's Stairs row: the stairs move to a side, or outside, without a drag. */
+export interface StairsRow {
+  /** Its sides another roof does not take, each with the way it looks. */
+  readonly sides: readonly { readonly side: number; readonly faces: CompassWay }[];
+  /** Where the stairs are: one of its sides, or outside on a roof's edge; `null` with none. */
+  readonly on: number | 'outside' | null;
+  readonly byPerson: boolean;
+}
+
 /** What a roof crosses as it is changed: allowed, lit on the model and marked to check. */
 export interface RoofCrossing {
   readonly kind: 'wall_above' | 'ridge_through' | 'sunk' | 'past_edge';
@@ -111,6 +120,8 @@ export interface RoofSheetRows {
   } | null;
   /** What it crosses now: lit on the model with a tag, each marked to check. */
   readonly crossings: readonly RoofCrossing[];
+  /** A stair room's Stairs row (E120): its sides that may hold them, and where they are. */
+  readonly stairs: StairsRow | null;
   /** Something on this sheet waits for a person: the sheet says once "Check it on site." */
   readonly waits: boolean;
 }
