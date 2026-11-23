@@ -140,6 +140,8 @@ export interface SideSheetRows {
   /** Its own parapet height, following the roof's until set; `null` where it has no wall. */
   readonly parapetHeight: RoofNumberShown | null;
   readonly setback: RoofNumberShown;
+  /** Its own overhang on a sloped roof, following the roof's until set; `null` where it has none. */
+  readonly overhang: RoofNumberShown | null;
   readonly role: SideRole | null;
   /** Its parapet height waits for a person: above what is checked on site. */
   readonly heightWaits: boolean;

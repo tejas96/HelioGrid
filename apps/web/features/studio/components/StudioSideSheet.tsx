@@ -42,6 +42,9 @@ export function StudioSideRows({ facts, side }: { facts: SheetFacts; side: SideS
         />
       )}
       <NumberRow facts={facts} shown={side.setback} label={words.rowNumber('setback')} onSide />
+      {side.overhang === null ? null : (
+        <NumberRow facts={facts} shown={side.overhang} label={words.rowNumber('overhang')} onSide />
+      )}
       {role === null ? null : <SideRoleRow facts={facts} role={role} />}
     </>
   );

@@ -166,23 +166,28 @@ function insideMeeting(base: RoofMeeting, under: Roof, facts: RoofFacts): RoofMe
   return { ...base, place: 'inside', kind, choices };
 }
 
+/** Cut to edge, after the other chips, only when it leaves the new roof in one piece (E020). */
+function withCut(
+  document: StudioDocument,
+  base: RoofMeeting,
+  overs: readonly Over[],
+  choices: readonly MeetChoice[],
+): MeetChoice[] {
+  const cut = cutToEdge(
+    document,
+    base.corners,
+    overs.map((over) => over.index),
+  );
+  return cut === null ? [...choices] : [...choices, 'cut_to_edge'];
+}
+
 /** A new roof partly over others: an upper floor that sticks out, or cut back to their edge. */
 function partlyOver(
   document: StudioDocument,
   base: RoofMeeting,
   overs: readonly Over[],
 ): RoofMeeting {
-  const choices: MeetChoice[] = ['upper_floor', 'open_shed'];
-  // Cut to edge is offered only when it leaves the new roof in one piece.
-  if (
-    cutToEdge(
-      document,
-      base.corners,
-      overs.map((over) => over.index),
-    ) !== null
-  ) {
-    choices.push('cut_to_edge');
-  }
+  const choices = withCut(document, base, overs, ['upper_floor', 'open_shed']);
   const across = overs.some((over) => over.index === base.startsLike && over.pieces > 1);
   return { ...base, place: 'partly_over', kind: 'upper_floor', choices, across };
 }
@@ -233,7 +238,8 @@ function overMeeting(
     startsLike: most.index,
   };
   if (most.ofOther < WHOLE) return partlyOver(document, base, overs);
-  return { ...base, place: 'over_whole', kind: 'open_shed', choices: ['open_shed', 'upper_floor'] };
+  const choices = withCut(document, base, overs, ['open_shed', 'upper_floor']);
+  return { ...base, place: 'over_whole', kind: 'open_shed', choices };
 }
 
 /**

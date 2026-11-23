@@ -1,9 +1,7 @@
 import { compassOf } from './compass';
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { roofFormOf } from './roof-built';
 import { roofCrossingsOf } from './roof-crossings';
-import { gableEnds } from './roof-forms';
 import { belongsTo, roofKindOf, roofSidesOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofHasWalls, roofOwnHeightM, roofShapeNow } from './roof-levels';
 import type { RoofRow } from './roof-list';
@@ -12,16 +10,8 @@ import { roofNameOf } from './roof-names';
 import { type NumberAt, PARAPET_CHECK_ABOVE_M, type RoofNumber } from './roof-numbers';
 import { parapetNow } from './roof-open-edges';
 import type { RoofKind } from './roof-parts';
-import {
-  floorAt,
-  floorTicks,
-  type RoofSheetRows,
-  type SideRole,
-  type SideSheetRows,
-  type SideWallWhy,
-  type SlopeWay,
-} from './roof-sheet-rows';
-import { formPicksOf, glassSideOf, lowSideOf, sideBearing } from './roof-slope-way';
+import { floorAt, floorTicks, type RoofSheetRows, type SlopeWay } from './roof-sheet-rows';
+import { glassSideOf, lowSideOf } from './roof-slope-way';
 import { STICKS_OUT_MIN_M, sticksOutM } from './roof-sticks-out';
 import { roofNumberOf } from './roof-values';
 import type { RoofsWorked } from './roof-worked';
@@ -42,9 +32,7 @@ const INSIDE_KINDS: readonly RoofKind[] = [
 ];
 
 /** The shapes whose slope runs one way, from their low side. */
-const ONE_WAY: readonly RoofShape[] = ['shed', 'monitor', 'curved', 'butterfly'];
-/** The shapes whose ends are a gable end or a hip. */
-const ENDED: readonly RoofShape[] = ['gable', 'hip'];
+export const ONE_WAY: readonly RoofShape[] = ['shed', 'monitor', 'curved', 'butterfly'];
 
 /** The numbers each shape adds below its slope. */
 const EXTRAS: Partial<Record<RoofShape, readonly RoofNumber[]>> = {
@@ -61,7 +49,7 @@ export interface HeightSlide {
   readonly max: number;
 }
 
-const nameOf = (document: StudioDocument, index: number) =>
+export const nameOf = (document: StudioDocument, index: number) =>
   roofNameOf(document, index) ?? { kind: 'roof' as const, number: index + 1 };
 
 /** The ways a sloped roof's faces look, the biggest face first, each way once. */
@@ -229,78 +217,5 @@ export function roofSheetRowsOf(
     waits:
       crossings.length > 0 ||
       [materialWaits, kind?.waits, slope?.waits, parapet?.waits].some((each) => each === true),
-  };
-}
-
-/** What a side is to its roof's shape, where the shape gives its sides a role. */
-function roleOf(
-  document: StudioDocument,
-  index: number,
-  side: number,
-  facts: RoofFacts,
-  latitude: number,
-): SideRole | null {
-  const roof = document.roofs[index] as Roof;
-  const shape = roofShapeNow(roof, facts);
-  if (ONE_WAY.includes(shape)) {
-    return { kind: 'low', is: lowSideOf(document, index, facts, latitude).side === side };
-  }
-  if (shape === 'sawtooth') {
-    const stored = roofSidesOf(roof).findIndex((each) => each.glass !== undefined);
-    const glass = stored >= 0 ? stored : glassSideOf(roof.corners, latitude).side;
-    return { kind: 'glass', is: glass === side };
-  }
-  if (!ENDED.includes(shape)) return null;
-  const turned = roofFormOf(roof, facts, formPicksOf(document, index, facts, latitude)).turned;
-  if (!gableEnds(roof.corners, turned === true).includes(side)) return null;
-  const own = roofSidesOf(roof)[side]?.end;
-  // A stored end this build does not know reads as the shape's own.
-  const end =
-    own === 'gable' ? 'gable' : own === 'hip' ? 'hip' : shape === 'gable' ? 'gable' : 'hip';
-  return { kind: 'end', end };
-}
-
-/** One side's sheet: which way it looks, its parapet and its setback, and its role in the shape. */
-export function sideSheetRowsOf(
-  document: StudioDocument,
-  index: number,
-  side: number,
-  facts: RoofFacts,
-  worked: RoofsWorked,
-  latitude: number,
-): SideSheetRows | null {
-  const roof = document.roofs[index];
-  if (roof === undefined || side < 0 || side >= roof.corners.length) return null;
-  const stretches = worked.edges[index]?.[side] ?? [];
-  const on = stretches.some((stretch) => stretch.wall);
-  const own = roofSidesOf(roof)[side]?.parapet;
-  const taken = stretches.find((stretch) => stretch.other !== null);
-  const why: SideWallWhy =
-    own !== undefined
-      ? { kind: 'person' }
-      : taken?.other != null && taken.state !== 'open' && taken.state !== 'person'
-        ? { kind: taken.state, with: nameOf(document, taken.other) }
-        : { kind: 'roof' };
-  const parapetHeight = on
-    ? roofNumberOf(document, { roof: index, key: 'parapet_height', side }, facts)
-    : null;
-  const setback = roofNumberOf(document, { roof: index, key: 'setback', side }, facts);
-  if (setback === null) return null;
-  const role = roofHasWalls(roof) ? roleOf(document, index, side, facts, latitude) : null;
-  const low = role?.kind === 'low' && role.is ? lowSideOf(document, index, facts, latitude) : null;
-  const bearing = sideBearing(roof.corners, side);
-  const heightWaits = parapetHeight !== null && parapetHeight.value > PARAPET_CHECK_ABOVE_M;
-  return {
-    roof: index,
-    side,
-    name: nameOf(document, index),
-    faces: compassOf(bearing),
-    bearing,
-    parapet: { on, why },
-    parapetHeight,
-    setback,
-    role,
-    heightWaits,
-    waits: heightWaits || (low?.againstWall ?? null) !== null,
   };
 }

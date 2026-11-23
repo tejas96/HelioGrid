@@ -15,8 +15,8 @@ import {
  * The numbers a roof's sheet sets beyond its height (`T-M05-002`, part e): for each, its slider's
  * track, how far typing takes it, the studio's own value, and how a person's value is kept. A roof
  * stores only what a person set: an absent value is the studio's, so a reset takes it away and a
- * later change of material or market still reaches it. A side's own parapet height and setback
- * follow its roof's until a person sets them.
+ * later change of material or market still reaches it. A side's own parapet height, setback and
+ * overhang follow its roof's until a person sets them.
  */
 export const ROOF_NUMBERS = [
   'slope',
@@ -34,7 +34,11 @@ export const ROOF_NUMBERS = [
 export type RoofNumber = (typeof ROOF_NUMBERS)[number];
 
 /** The numbers a side holds of its own. */
-export const SIDE_NUMBERS = ['parapet_height', 'setback'] as const satisfies readonly RoofNumber[];
+export const SIDE_NUMBERS = [
+  'parapet_height',
+  'setback',
+  'overhang',
+] as const satisfies readonly RoofNumber[];
 export type SideNumber = (typeof SIDE_NUMBERS)[number];
 
 /** How a number is shown: a length, an angle, a count, or a share of the roof's width. */
@@ -139,7 +143,11 @@ export interface NumberAt {
 }
 
 /** Where a side keeps each of its own numbers. */
-export const SIDE_FIELD = { parapet_height: 'parapetM', setback: 'setbackM' } as const;
+export const SIDE_FIELD = {
+  parapet_height: 'parapetM',
+  setback: 'setbackM',
+  overhang: 'overhangM',
+} as const;
 
 export const isSideNumber = (key: RoofNumber): key is SideNumber =>
   (SIDE_NUMBERS as readonly RoofNumber[]).includes(key);

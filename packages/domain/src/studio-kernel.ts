@@ -106,7 +106,7 @@ export {
 export type { ProfilePart, StandingWall } from './studio/roof-profile';
 export { roofSceneOf } from './studio/roof-scene-build';
 export { setbackLines } from './studio/roof-setback';
-export { type HeightSlide, roofSheetRowsOf, sideSheetRowsOf } from './studio/roof-sheet-build';
+export { type HeightSlide, roofSheetRowsOf } from './studio/roof-sheet-build';
 export {
   bearingsApart,
   COMPASS_WAYS,
@@ -124,3 +124,4 @@ export { roofTopMarksOf } from './studio/roof-top-marks-build';
 export { roofNumberOf } from './studio/roof-values';
 export { roofNumberReset, roofNumberSet } from './studio/roof-values-set';
 export { type RoofsWorked, roofsWorked, type WorkedBefore } from './studio/roof-worked';
+export { sideSheetRowsOf } from './studio/side-sheet-build';

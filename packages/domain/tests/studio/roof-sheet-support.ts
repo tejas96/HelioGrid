@@ -1,7 +1,8 @@
 import type { StudioDocument } from '../../src/studio/document';
 import { roofListOf } from '../../src/studio/roof-list-build';
-import { roofSheetRowsOf, sideSheetRowsOf } from '../../src/studio/roof-sheet-build';
+import { roofSheetRowsOf } from '../../src/studio/roof-sheet-build';
 import { roofsWorked } from '../../src/studio/roof-worked';
+import { sideSheetRowsOf } from '../../src/studio/side-sheet-build';
 import { box, FACTS, roofOf } from './roof-meet-support';
 
 /** A roof's sheet and a side's sheet, worked out as the studio does, for the sheet tests. */

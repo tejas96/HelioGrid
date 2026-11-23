@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { roofSideEnded, roofSideMarked } from '../../src/studio/roof-choices';
 import { ROOF_NUMBER_SPECS, type RoofNumber, roofNumberTyped } from '../../src/studio/roof-numbers';
-import { sideSheetRowsOf } from '../../src/studio/roof-sheet-build';
 import { roofNumberOf } from '../../src/studio/roof-values';
 import { roofNumberSet } from '../../src/studio/roof-values-set';
 import { roofsWorked } from '../../src/studio/roof-worked';
+import { sideSheetRowsOf } from '../../src/studio/side-sheet-build';
 import { box, designOf, FACTS, roofOf, TERRACE } from './roof-meet-support';
 import { LEAN, shaped, sideOf } from './roof-sheet-support';
 
@@ -79,6 +79,23 @@ describe('a side’s sheet', () => {
     );
     expect(sideOf(set, 0, 0)).toMatchObject({ heightWaits: waits, waits });
     expect(sideOf(set, 0, 1)).toMatchObject({ heightWaits: false, waits: false });
+  });
+
+  it('a sloped roof’s side has its own overhang: the roof’s until set, and set on that side alone', () => {
+    const gable = designOf(shaped('gable'));
+    const before = sideOf(gable, 0, 0).overhang;
+    expect(before).toMatchObject({ byPerson: false, value: FACTS.overhangM });
+    const set = roofNumberSet(gable, { roof: 0, key: 'overhang', side: 0 }, 0.9, FACTS);
+    expect(sideOf(set, 0, 0).overhang).toMatchObject({ byPerson: true, value: 0.9 });
+    expect(sideOf(set, 0, 1).overhang).toMatchObject({ byPerson: false, value: FACTS.overhangM });
+    expect(set.roofs[0]?.sides?.[0]?.overhangM).toBe(0.9);
+  });
+
+  it.each([
+    ['a flat roof’s side', designOf(TERRACE), 0, 1],
+    ['a side another roof meets', designOf(TERRACE, LEAN), 1, 3],
+  ])('%s has no overhang of its own', (_why, design, roof, side) => {
+    expect(sideOf(design, roof, side).overhang).toBeNull();
   });
 
   it('a side past the roof’s corners has no sheet', () => {

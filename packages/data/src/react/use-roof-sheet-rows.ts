@@ -5,6 +5,7 @@ import {
   type HeightPull,
   type History,
   historyAfter,
+  isSideNumber,
   type MeasurementSystem,
   type NumberAt,
   type RoofFacts,
@@ -63,9 +64,6 @@ function runForSlope(riseM: number, slopeDeg: number): number {
   return rises > 0 ? riseM / rises : 0;
 }
 
-/** The numbers a side holds of its own: on a side's sheet they are the side's. */
-const SIDE_KEYS: readonly RoofNumber[] = ['parapet_height', 'setback'];
-
 export function useRoofSheetRows({
   roof,
   latest,
@@ -120,7 +118,7 @@ export function useRoofSheetRows({
 
   const side = part.kind === 'side' ? part.side : null;
   const atOf = (key: RoofNumber): NumberAt | null =>
-    roof === null ? null : { roof, key, side: SIDE_KEYS.includes(key) ? side : null };
+    roof === null ? null : { roof, key, side: isSideNumber(key) ? side : null };
 
   /** One change to the design as it stands, kept with Undo; nothing when it changes nothing. */
   const apply = (next: (design: StudioDocument) => StudioDocument) => {

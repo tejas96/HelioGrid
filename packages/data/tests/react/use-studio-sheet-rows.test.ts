@@ -106,6 +106,15 @@ describe('a side’s sheet', () => {
     expect(saved()?.setback).toBeUndefined();
   });
 
+  it('a sloped roof’s side keeps its own overhang; the roof’s is not touched', async () => {
+    const view = await opened([{ ...TERRACE, shape: { is: 'gable', setBy: 'person' } }]);
+    act(() => view.result.current.moves.openSide(0));
+    expect(view.result.current.sideRows?.overhang?.byPerson).toBe(false);
+    act(() => view.result.current.moves.setNumber('overhang', 0.9));
+    await waitFor(() => expect(saved()?.sides?.[0]).toMatchObject({ overhangM: 0.9 }));
+    expect(saved()?.overhang).toBeUndefined();
+  });
+
   it('the phone’s back goes from a side’s sheet to the roof’s, then closes it', async () => {
     const view = await opened();
     act(() => view.result.current.moves.openSide(1));
