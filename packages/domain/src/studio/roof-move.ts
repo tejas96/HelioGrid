@@ -1,4 +1,4 @@
-import type { StudioDocument } from './document';
+import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { type DragResult, type EditRefusal, faultOf, roofAt, type TurnResult } from './roof-check';
 import { roofWithItsParts } from './roof-kind';
@@ -24,6 +24,19 @@ export const KEY_MOVE_M = 0.1;
 /** One arrow key on a turn handle turns the roof this far, in degrees. */
 export const KEY_TURN_DEGREES = 1;
 
+/** A roof's corners sent through `place`, and the faces drawn on it with them. */
+export function roofPlaced(roof: Roof, place: (corner: GroundPoint) => GroundPoint): Roof {
+  const faces = roof.shape?.faces;
+  const shape =
+    roof.shape === undefined || faces === undefined
+      ? roof.shape
+      : {
+          ...roof.shape,
+          faces: faces.map((face) => ({ ...face, corners: face.corners.map(place) })),
+        };
+  return { ...roof, corners: roof.corners.map(place), ...(shape === undefined ? {} : { shape }) };
+}
+
 /**
  * Roof `roofIndex` and what goes with it — what stands on it or is part of it — each corner sent
  * through `place`: the design after, and the first thing wrong with any roof that moved.
@@ -35,7 +48,7 @@ function carried(
 ): { readonly document: StudioDocument; readonly fault: EditRefusal | null } {
   const going = roofWithItsParts(document, roofIndex);
   const roofs = document.roofs.map((roof, i) =>
-    going.includes(i) ? { ...roof, corners: roof.corners.map(place) } : roof,
+    going.includes(i) ? roofPlaced(roof, place) : roof,
   );
   const faults = going.map((i) => faultOf(roofs[i]?.corners ?? []));
   return {

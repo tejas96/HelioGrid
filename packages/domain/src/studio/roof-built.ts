@@ -1,4 +1,5 @@
 import type { Roof } from './document';
+import { handFaces } from './roof-cuts';
 import {
   type FormedRoof,
   MANSARD_LOWER_DEG,
@@ -101,5 +102,18 @@ export function roofFormOf(roof: Roof, facts: RoofFacts, picks: FormPicks = {}):
 
 /** A stored roof's faces. */
 export function roofBuilt(roof: Roof, facts: RoofFacts, picks?: FormPicks): FormedRoof {
+  const drawn = roof.shape?.faces ?? [];
+  // Any shape with faces a person drew: those faces, each at its own slope.
+  if (roofShapeNow(roof, facts) === 'any' && drawn.length > 0) {
+    const faces = handFaces(
+      drawn.map((face) => ({
+        corners: face.corners,
+        slopeDeg: face.slope.degrees,
+        lowSide: face.lowSide,
+      })),
+    );
+    const topM = Math.max(0, ...faces.flatMap((face) => face.corners.map((corner) => corner.up)));
+    return { faces, topM, walls: [], built: 'any' };
+  }
   return roofFormed(roof.corners, roofFormOf(roof, facts, picks));
 }

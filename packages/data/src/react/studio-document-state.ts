@@ -270,12 +270,7 @@ export function useStudioDocument(designId: string, ready: boolean) {
             // The wire's lists are plain arrays; the studio holds them read-only.
             document: {
               ...document,
-              roofs: document.roofs.map(({ sides, ...roof }) => {
-                const lists = { corners: [...roof.corners], edges: [...roof.edges] };
-                return sides === undefined
-                  ? { ...roof, ...lists }
-                  : { ...roof, ...lists, sides: [...sides] };
-              }),
+              roofs: document.roofs.map(wireRoof),
             },
             opening,
           }),
@@ -293,4 +288,20 @@ export function useStudioDocument(designId: string, ready: boolean) {
     queue.start(stored.version);
   }, [stored, queue]);
   return { documentQuery, skyQuery, history, latest, setHistory, saving, queue };
+}
+
+/** A roof as the wire takes it: its lists plain arrays, as the studio holds them read-only. */
+function wireRoof({ sides, shape, ...roof }: StudioDocument['roofs'][number]) {
+  const lists = { corners: [...roof.corners], edges: [...roof.edges] };
+  return {
+    ...roof,
+    ...lists,
+    ...(sides === undefined ? {} : { sides: [...sides] }),
+    ...(shape === undefined ? {} : { shape: wireShape(shape) }),
+  };
+}
+
+function wireShape({ faces, ...shape }: NonNullable<StudioDocument['roofs'][number]['shape']>) {
+  if (faces === undefined) return shape;
+  return { ...shape, faces: faces.map((face) => ({ ...face, corners: [...face.corners] })) };
 }

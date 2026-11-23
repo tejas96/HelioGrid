@@ -1,6 +1,7 @@
 import { cornerRoom, ROOFS_MAX, type Roof, type StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { roofWithItsParts } from './roof-kind';
+import { roofPlaced } from './roof-move';
 import { roofNameOf } from './roof-names';
 import { roofsOverlap } from './roof-shape';
 import { pickedRoofOf, withoutRoof } from './roof-step-draw';
@@ -65,11 +66,13 @@ export function copied(
     group.map((i, k) => [(document.roofs[i] as Roof).id, event.ids[k] as string]),
   );
   const copies = group.map((i): Roof => {
-    const { on, partOf, ...roof } = document.roofs[i] as Roof;
+    const { on, partOf, ...roof } = roofPlaced(document.roofs[i] as Roof, (c) => ({
+      east: c.east + by.east,
+      north: c.north + by.north,
+    }));
     return {
       ...roof,
       id: idOf.get(roof.id) as string,
-      corners: roof.corners.map((c) => ({ east: c.east + by.east, north: c.north + by.north })),
       // A link inside the group goes to the copy; one out of it stays on the roof it named.
       ...(on === undefined ? {} : { on: idOf.get(on) ?? on }),
       ...(partOf === undefined ? {} : { partOf: idOf.get(partOf) ?? partOf }),
