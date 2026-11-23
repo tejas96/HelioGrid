@@ -156,6 +156,8 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         lengthLabels: 'hidden',
       },
     ],
+    // A roof's sheet on a phone is a sheet across the foot, as Roofs is: the tools step aside
+    // (board 6.1); the north arrow stays.
     [
       'sheet',
       '3d',
@@ -163,9 +165,12 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       {
         stepSwitcher: 'mark',
         pictureChip: 'credit',
+        pencil: 'hidden',
         magnet: 'hidden',
-        layers: 'switch',
-        sideViews: 'shown',
+        undoRedo: 'hidden',
+        layers: 'hidden',
+        sideViews: 'hidden',
+        zoom: 'hidden',
         compass: 'shown',
         otherHandles: 'hidden',
         lengthLabels: 'hidden',

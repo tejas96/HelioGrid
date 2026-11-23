@@ -208,8 +208,9 @@ const IN_3D: Partial<FocusParts> = {
 };
 
 /**
- * On a phone Roofs and the material picker are a sheet across the foot: the tools and the bar step
- * aside for it. On a desktop they open at the right, and everything stays.
+ * On a phone Roofs, the material picker and a roof's sheet are a sheet across the foot: the tools
+ * and the bar step aside for it (board 6.1). On a desktop they open at the right, and everything
+ * stays.
  */
 const ROOFS_ON_PHONE: Partial<FocusParts> = {
   pencil: 'hidden',
@@ -220,6 +221,9 @@ const ROOFS_ON_PHONE: Partial<FocusParts> = {
   bottomBar: 'hidden',
 };
 
+/** The jobs that open across a phone's foot. */
+const AT_THE_FOOT: readonly FocusJob[] = ['roofs', 'sheet'];
+
 const EDIT_PARTS: Partial<FocusParts> = {
   magnet: 'hidden',
   wipe: 'hidden',
@@ -229,7 +233,7 @@ const EDIT_PARTS: Partial<FocusParts> = {
 
 function partsOfJob(facts: FocusFacts): FocusParts {
   const job = facts.canEdit || facts.job === 'roofs' ? facts.job : 'looking';
-  const roofs = job === 'roofs' && facts.phone ? ROOFS_ON_PHONE : {};
+  const roofs = facts.phone && AT_THE_FOOT.includes(job) ? ROOFS_ON_PHONE : {};
   if (facts.view !== 'top') {
     const sheet: Partial<FocusParts> =
       job === 'sheet'
