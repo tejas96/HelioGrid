@@ -181,6 +181,7 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'sticks_out':
     case 'set_free':
     case 'side_wall':
+    case 'material_set':
       return roofPlaceLine(t, said, shown.heightOf) ?? t(ROOF.roofIdle);
     case 'sized':
       return t(ROOF.roofSized);

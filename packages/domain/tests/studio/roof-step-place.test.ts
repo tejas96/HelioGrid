@@ -89,15 +89,16 @@ describe('a new roof closes among the others', () => {
     });
   });
 
-  it('the chip of the kind it already is changes nothing', () => {
+  it('the lit chip, tapped, makes the guess the person’s as one change; tapped again it changes nothing', () => {
     const closed = run(draw(box(0, 0, 3, 3), HOUSE), HOUSE);
-    const again = roofStepAfter(
-      closed.state,
-      { kind: 'make', roof: 2, into: 'stair_room', facts: FACTS },
-      closed.document,
-    );
+    const make = { kind: 'make', roof: 2, into: 'stair_room', facts: FACTS } as const;
+    const mine = roofStepAfter(closed.state, make, closed.document);
+    expect(mine.commit?.roofs[2]?.kind).toEqual({ is: 'stair_room', setBy: 'person' });
+    // The line stays, as it does for every chip.
+    expect(saidOf(mine.state)).toMatchObject({ kind: 'closed', became: { is: 'stair_room' } });
+    const again = roofStepAfter(mine.state, make, mine.commit ?? closed.document);
     expect(again.commit).toBeNull();
-    expect(again.state).toBe(closed.state);
+    expect(again.state).toBe(mine.state);
   });
 });
 

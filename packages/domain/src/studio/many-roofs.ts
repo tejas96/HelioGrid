@@ -14,6 +14,7 @@ export {
 } from './roof-levels';
 export * from './roof-list';
 export * from './roof-material';
+export type { MaterialPick } from './roof-material-set';
 export * from './roof-meeting';
 export { type RoofName, roofNameOf, roofNumber } from './roof-names';
 export * from './roof-parts';

@@ -5,7 +5,7 @@ import { roofMoved, roofTurned } from './roof-move';
 import { roofNameOf } from './roof-names';
 import { roofMiddle } from './roof-shape';
 import { snapTargetsOf } from './roof-snap';
-import { copied, deleted, sideWalled } from './roof-step-copy';
+import { copied, deleted } from './roof-step-copy';
 import { cornerUndone, drawing, spotAt, stopped, tapped } from './roof-step-draw';
 import {
   committedLength,
@@ -14,6 +14,7 @@ import {
   lengthStepped,
   thenKept,
 } from './roof-step-length';
+import { materialSet, sideWalled } from './roof-step-own';
 import { closed, cutBack, joinedIn, kindMade } from './roof-step-place';
 import {
   idle,
@@ -193,6 +194,7 @@ const ON: Handlers = {
   cut_to_edge: cutBack,
   copy_roof: copied,
   side_wall: sideWalled,
+  material: materialSet,
   cancel: stopped,
   hover: (state, { at }, document) =>
     inState(state, 'drawing', (held) => {

@@ -51,6 +51,8 @@ export type RoofSaid =
       readonly walled: number;
       readonly sides: number;
     }
+  /** What a roof is made of was picked or confirmed: the roof stays picked, and no line is needed. */
+  | { readonly kind: 'material_set'; readonly roof: number }
   /** A roof copied beside itself, with what stands on it; the copy is picked to drag. */
   | { readonly kind: 'copied'; readonly roof: number; readonly of: RoofName }
   | { readonly kind: 'sized' }
