@@ -20,6 +20,7 @@ import { useMemo, useState } from 'react';
 import { planOutlinesOf } from './own-picture-view';
 import { readOf } from './read';
 import { closePlacingOf, roofPlaceMoves } from './roof-place-moves';
+import { roofModelShown } from './roof-scene-view';
 import { arrivalOf, framedWithCard, useSizeCardOpens } from './size-card';
 import {
   editingOf,
@@ -95,6 +96,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     setHelpersOff: (off) => void session.setStudioPicks({ studioHelpersOff: off }),
     helpersRefused: session.refusedPreferences.includes('studio'),
     startHeightM: groundRoofHeightM(formats),
+    facts,
     typedStart: { length: formats.typedRoofLengthM, width: formats.typedRoofWidthM },
     numberEntry: session.user?.numberEntry ?? 'slider',
     setNumberEntry: (entry) => void session.setStudioPicks({ numberEntry: entry }),
@@ -110,7 +112,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     latest,
     change,
     editable,
-    startHeightM: groundRoofHeightM(formats),
+    facts,
     units,
     outline: (index, metres) => {
       setView('top');
@@ -118,6 +120,12 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     },
   });
   const { roofSheet } = sheet.state;
+  const { shown } = roof.view;
+  // The model is the kernel's: built again only when the design drawn or a height in hand changes.
+  const model = useMemo(
+    () => roofModelShown(shown, facts, roofSheet, pin),
+    [shown, facts, roofSheet, pin],
+  );
 
   return {
     read,
@@ -142,6 +150,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     views,
     ...roof.view,
     ...sheet.state,
+    ...model,
     ...roofsWithSheet(
       roof.view.heights,
       framedWithCard(fit, document, roof.view.sizeCard),

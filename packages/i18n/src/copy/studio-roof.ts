@@ -12,7 +12,7 @@ import {
 import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import { historyLine } from './studio-history';
-import { kindLineWords, roofPlaceLine } from './studio-roof-kinds';
+import { kindLineWords, roofPlaceLine, roofTopWords } from './studio-roof-kinds';
 import {
   type DragFacts,
   type RoofTag,
@@ -180,6 +180,7 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'copied':
     case 'sticks_out':
     case 'set_free':
+    case 'side_wall':
       return roofPlaceLine(t, said, shown.heightOf) ?? t(ROOF.roofIdle);
     case 'sized':
       return t(ROOF.roofSized);
@@ -249,6 +250,7 @@ export function studioRoofWords(t: T) {
       if (said === null) return t(ROOF.roofIdle);
       return roofSaidLine(t, said, shown);
     },
+    ...roofTopWords(t),
     /** The line after a roof closes: what it became, why, and its chips. */
     kindLine: (line: KindLine, shown: RoofWordsShown) => kindLineWords(t, line, shown.heightOf),
     /** Why an edit is refused, said in the bar: the limits already formatted. */

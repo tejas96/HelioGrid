@@ -1,0 +1,164 @@
+'use client';
+import type { StudioScreen } from '@heliogrid/data/react';
+import type { MeasurementSystem } from '@heliogrid/domain';
+import type { StudioCanvasWords } from '@heliogrid/i18n';
+import { Pressable, useFormat } from '@heliogrid/ui';
+import { Fragment } from 'react';
+import { pointText } from './roof-marks-place';
+
+/**
+ * One roof's sides in the top view (`T-M05-002`, part e), inside the roofs' drawing: solid where a
+ * side has a wall, dashed where it has none, split exactly where another roof takes the side; the
+ * picked roof glows; a short line runs down each sloped face. A roof with no marks yet — the
+ * kernel's answer a frame behind — keeps its plain line.
+ */
+export function RoofSideLines({
+  studio,
+  index,
+  bad,
+}: {
+  studio: StudioScreen;
+  index: number;
+  /** The drag in hand would be refused: the roof is drawn red and dashed, whole. */
+  bad: boolean;
+}) {
+  const roof = studio.roofMarks[index];
+  const mark = studio.topMarks[index];
+  if (roof === undefined) return null;
+  const pts = roof.corners.map(pointText).join(';');
+  const picked = studio.handlesRoof === index;
+  if (mark === undefined || bad) {
+    return <path className="hg-roof-line" data-pts={pts} data-closed="true" data-bad={bad} />;
+  }
+  return (
+    <>
+      <path
+        className="hg-roof-fill"
+        data-pts={pts}
+        data-closed="true"
+        data-kind={mark.kind}
+        data-picked={picked}
+      />
+      {mark.sides.flatMap((stretches, side) =>
+        stretches.map((stretch, i) => (
+          <path
+            // biome-ignore lint/suspicious/noArrayIndexKey: a stretch is its place on its side
+            key={`${side}-${i}`}
+            className="hg-roof-side"
+            data-pts={`${pointText(stretch.from)};${pointText(stretch.to)}`}
+            data-wall={stretch.wall}
+            data-picked={picked}
+            data-check={mark.sticksOutM > 0}
+          />
+        )),
+      )}
+      {mark.slopes.map((slope) => (
+        <path
+          key={`${pointText(slope.from)};${pointText(slope.to)}`}
+          className="hg-roof-slope"
+          data-pts={`${pointText(slope.from)};${pointText(slope.to)}`}
+          markerEnd="url(#hg-roof-slope-tip)"
+        />
+      ))}
+    </>
+  );
+}
+
+/** The arrow's tip for a slope's line, drawn once in the roofs' drawing. */
+export function RoofSlopeTip() {
+  return (
+    <defs>
+      <marker
+        id="hg-roof-slope-tip"
+        viewBox="0 0 8 8"
+        refX="6"
+        refY="4"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto"
+      >
+        <path className="hg-roof-slope-tip" d="M1 1 7 4 1 7" />
+      </marker>
+    </defs>
+  );
+}
+
+/**
+ * The marks on the roofs that are not lines (`T-M05-002`, part e): "+3 m" on a roof that stands on
+ * another, the tag on one that sticks out past its roof, and — on the picked roof, for a person who
+ * may change it — a dot on each side: a tap adds or removes that side's wall, so a tap meant to pick
+ * never changes one.
+ */
+export function StudioRoofTopMarks({
+  studio,
+  words,
+  units,
+}: {
+  studio: StudioScreen;
+  words: StudioCanvasWords;
+  units: MeasurementSystem;
+}) {
+  const format = useFormat();
+  const picked = studio.handlesRoof;
+  const step = studio.roofStep;
+  // The picked roof's side dots show for an editor who is looking, with nothing in hand; while the
+  // plan is picked its own handles take the taps.
+  const dots =
+    studio.editing.kind === 'editor' && step.kind === 'idle' && studio.own.plan?.picked !== true;
+  // The side a person just took the wall off says so beside its dot, until the next act.
+  const off =
+    step.kind === 'idle' && step.said?.kind === 'side_wall' && !step.said.wall ? step.said : null;
+  return (
+    <>
+      {studio.topMarks.map((mark, index) => {
+        const roof = studio.roofMarks[index];
+        if (roof === undefined) return null;
+        return (
+          <Fragment key={roof.id}>
+            {mark.aboveM === null ? null : (
+              <span className="hg-roof-at" data-at={pointText(roof.middle)}>
+                <span className="hg-roof-above">
+                  {words.above(format.roofHeight(mark.aboveM, units))}
+                </span>
+              </span>
+            )}
+            {mark.sticksOutAt === null ? null : (
+              <span className="hg-roof-at" data-at={pointText(mark.sticksOutAt)} data-tag="true">
+                <span className="hg-roof-tag" data-tone="check">
+                  {words.sticksOutBy(format.roofLength(mark.sticksOutM, units, false))}
+                </span>
+              </span>
+            )}
+            {dots && picked === index
+              ? mark.dots.map((dot, side) => (
+                  <span
+                    // biome-ignore lint/suspicious/noArrayIndexKey: a side is its place in the roof
+                    key={side}
+                    className="hg-roof-at"
+                    data-at={pointText(dot.at)}
+                  >
+                    <Pressable
+                      className="hg-roof-hit"
+                      accessibilityLabel={words.sideDot(side + 1, dot.wall)}
+                      ripple="none"
+                      onPress={() => studio.moves.toggleSideWall(index, side)}
+                    >
+                      <span
+                        className="hg-roof-side-dot"
+                        data-hot={off !== null && off.roof === index && off.side === side}
+                      />
+                    </Pressable>
+                    {off !== null && off.roof === index && off.side === side ? (
+                      <span className="hg-roof-tag" role="status">
+                        {words.noWallOnSide}
+                      </span>
+                    ) : null}
+                  </span>
+                ))
+              : null}
+          </Fragment>
+        );
+      })}
+    </>
+  );
+}

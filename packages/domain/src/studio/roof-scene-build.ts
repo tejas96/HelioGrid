@@ -1,20 +1,15 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { roofBuilt } from './roof-built';
 import { facesWithout, movedIn } from './roof-cuts';
 import type { BuiltFace } from './roof-faces';
+import type { FormedRoof } from './roof-forms';
 import { roofKindOf, standsOn } from './roof-kind';
-import {
-  type RoofFacts,
-  roofFloorM,
-  roofHasWalls,
-  roofOwnHeightM,
-  roofSloped,
-} from './roof-levels';
+import { type RoofFacts, roofFloorM, roofHasWalls, roofOwnHeightM, roofTopsM } from './roof-levels';
 import { type FlatShape, shapeOf, shared, without } from './roof-polygons';
 import type { RoofScene, SceneFace, ScenePrism, SceneWall } from './roof-scene';
 import { parapetPrisms } from './roof-scene-parapets';
 import { pointInside } from './roof-shape';
+import { type RoofsWorked, roofsWorked } from './roof-worked';
 
 /**
  * The 3D model of a design's roofs (`T-M05-002`, part e), built from what the kernel knows: each
@@ -86,10 +81,9 @@ function wallsUnder(index: number, eaveM: number, faces: readonly BuiltFace[]): 
 /** A sloped roof: its faces above its low edge, cut round its holes, and the walls that stand in it. */
 function slopedTop(
   document: StudioDocument,
-  facts: RoofFacts,
+  built: FormedRoof,
   at: Standing,
 ): { faces: SceneFace[]; walls: SceneWall[] } {
-  const built = roofBuilt(at.roof, facts);
   const faces = holesIn(document, at.roof).reduce<readonly BuiltFace[]>(
     (left, hole) => facesWithout(left, hole.corners),
     built.faces,
@@ -173,13 +167,20 @@ function posts(document: StudioDocument, at: Standing, underTopM: number): Scene
 }
 
 /** One roof's solids and surfaces. A hole draws nothing of its own but its parapets. */
-function roofParts(document: StudioDocument, facts: RoofFacts, at: Standing): RoofScene {
+function roofParts(
+  document: StudioDocument,
+  facts: RoofFacts,
+  worked: RoofsWorked,
+  at: Standing,
+): RoofScene {
   const kind = roofKindOf(at.roof);
-  const parapets = parapetPrisms(document, at.index, facts, at.topM);
+  const stretches = worked.edges[at.index] ?? [];
+  const parapets = parapetPrisms(document, at.index, facts, at.topM, stretches);
   const none = { faces: [], walls: [], levels: [] };
   if (kind === 'hole') return { ...none, prisms: parapets };
-  const sloped = roofSloped(at.roof, facts);
-  const top = sloped ? slopedTop(document, facts, at) : { faces: [], walls: [] };
+  const built = worked.built[at.index] ?? null;
+  const sloped = built !== null;
+  const top = built === null ? { faces: [], walls: [] } : slopedTop(document, built, at);
   const stands = roofHasWalls(at.roof) ? [] : posts(document, at, at.footM);
   if (!roofHasWalls(at.roof)) {
     const sheet: ScenePrism[] = sloped
@@ -203,23 +204,24 @@ function roofParts(document: StudioDocument, facts: RoofFacts, at: Standing): Ro
 
 /** Where each roof stands and where its top is, above the ground. */
 function levelsOf(document: StudioDocument, facts: RoofFacts): RoofScene['levels'] {
+  const tops = roofTopsM(document, facts);
   return document.roofs.map((roof, index) => {
-    if (roofKindOf(roof) === 'hole') {
-      const part = document.roofs.findIndex((other) => other.id === roof.partOf);
-      const topM = part < 0 ? 0 : roofFloorM(document, part, facts);
-      return { footM: topM, topM };
-    }
-    const topM = roofFloorM(document, index, facts);
-    return { footM: topM - roofOwnHeightM(document, roof, facts), topM };
+    const topM = tops[index] ?? 0;
+    const hole = roofKindOf(roof) === 'hole';
+    return { footM: hole ? topM : topM - roofOwnHeightM(document, roof, facts), topM };
   });
 }
 
 /** The whole design as the 3D scene draws it. */
-export function roofSceneOf(document: StudioDocument, facts: RoofFacts): RoofScene {
+export function roofSceneOf(
+  document: StudioDocument,
+  facts: RoofFacts,
+  worked: RoofsWorked = roofsWorked(document, facts),
+): RoofScene {
   const levels = levelsOf(document, facts);
   const parts = document.roofs.map((roof, index) => {
     const { footM, topM } = levels[index] as RoofScene['levels'][number];
-    return roofParts(document, facts, { roof, index, footM, topM });
+    return roofParts(document, facts, worked, { roof, index, footM, topM });
   });
   return {
     prisms: parts.flatMap((part) => part.prisms),

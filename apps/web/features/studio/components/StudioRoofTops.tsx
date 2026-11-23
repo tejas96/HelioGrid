@@ -20,13 +20,17 @@ function HeightArrow({
   roof,
   middle,
   metres,
+  top,
 }: {
   studio: StudioScreen;
   words: StudioCanvasWords;
   units: MeasurementSystem;
   roof: number;
   middle: string;
+  /** The roof's own height, which the arrow changes and shows. */
   metres: number;
+  /** The roof's top above the ground, where the arrow stands. */
+  top: number;
 }) {
   const format = useFormat();
   const held = useRef<{ y: number; perMetre: number } | null>(null);
@@ -57,7 +61,7 @@ function HeightArrow({
       ref={holder}
       className="hg-roof-at"
       data-at={middle}
-      data-top={metres}
+      data-top={top}
       data-arrow="true"
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
@@ -114,13 +118,13 @@ export function StudioRoofTops({
                 className="hg-roof-picked-fill"
                 data-pts={roof.corners.map(pointText).join(';')}
                 data-closed="true"
-                data-top={studio.heights[index]?.metres ?? 0}
+                data-top={studio.scene.levels[index]?.topM ?? 0}
               />
               <path
                 className="hg-roof-picked-ring"
                 data-pts={roof.corners.map(pointText).join(';')}
                 data-closed="true"
-                data-top={studio.heights[index]?.metres ?? 0}
+                data-top={studio.scene.levels[index]?.topM ?? 0}
               />
             </g>
           ) : null,
@@ -128,6 +132,8 @@ export function StudioRoofTops({
       </svg>
       {studio.roofMarks.map((roof, index) => {
         const metres = studio.heights[index]?.metres ?? 0;
+        // A roof on another stands on that roof: its marks sit at its top above the ground.
+        const top = studio.scene.levels[index]?.topM ?? 0;
         const middle = pointText(roof.middle);
         if (index === open && editable) {
           return (
@@ -139,12 +145,15 @@ export function StudioRoofTops({
               roof={index}
               middle={middle}
               metres={metres}
+              top={top}
             />
           );
         }
+        // A hole has no height of its own: it is open down to the floor below.
+        if (studio.topMarks[index]?.kind === 'hole') return null;
         const height = format.roofHeight(metres, units);
         return (
-          <span key={roof.id} className="hg-roof-at" data-at={middle} data-top={metres}>
+          <span key={roof.id} className="hg-roof-at" data-at={middle} data-top={top}>
             <Pressable
               className="hg-roof-hit"
               accessibilityLabel={words.heightOf(index + 1, height)}

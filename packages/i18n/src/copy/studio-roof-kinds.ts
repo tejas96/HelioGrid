@@ -2,12 +2,14 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type {
   KindLine,
   MeetChoice,
+  NoWallWhy,
   RoofBecame,
   RoofKind,
   RoofName,
   RoofSaid,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import { shownAsSent } from './assembled';
 
 type T = Translator['t'];
 
@@ -51,6 +53,19 @@ const KIND = {
   copied: /*i18n*/ { id: 'Copy of {roof} · drag it onto its house' },
   deleted: /*i18n*/ { id: '{name} deleted · Undo brings it back' },
   sticksOut: /*i18n*/ { id: '{name} sticks out · to check' },
+  sticksOutBy: /*i18n*/ { id: 'Sticks out {length} · to check' },
+  wallsOn: /*i18n*/ {
+    id: '{count, plural, one {Parapet on # side} other {Parapet on # sides}}',
+  },
+  wallsAllRound: /*i18n*/ { id: 'Parapet all round' },
+  wallsNone: /*i18n*/ { id: 'No parapet on this roof' },
+  noWallOnSide: /*i18n*/ { id: 'No parapet on this side' },
+  sideWallOff: /*i18n*/ { id: 'Side {number}: take its parapet off' },
+  sideWallOn: /*i18n*/ { id: 'Side {number}: add a parapet' },
+  sharedNoWall: /*i18n*/ { id: 'Shared with {roof} · no parapet' },
+  noWallUnderStair: /*i18n*/ { id: 'No parapet where the stair room stands' },
+  noWallUnderFloor: /*i18n*/ { id: 'No parapet where the upper floor stands' },
+  noWallUnderWall: /*i18n*/ { id: 'No parapet where {roof}’s wall stands' },
   setFree: /*i18n*/ { id: '{name} is its own roof now · Undo puts it back' },
 } as const;
 
@@ -157,6 +172,11 @@ export function roofPlaceLine(
       return said.was === undefined ? null : t(KIND.deleted, { name: roofNameWord(t, said.was) });
     case 'sticks_out':
       return t(KIND.sticksOut, { name: roofNameWord(t, said.name) });
+    case 'side_wall':
+      if (said.walled === 0) return t(KIND.wallsNone);
+      return said.walled === said.sides
+        ? t(KIND.wallsAllRound)
+        : t(KIND.wallsOn, { count: said.walled });
     case 'set_free':
       return t(KIND.setFree, { name: roofNameWord(t, said.name) });
     default:
@@ -180,5 +200,29 @@ export function kindLineWords(t: T, line: KindLine, height: (metres: number) => 
       lit,
       label: meetChoiceWord(t, choice, became.beside),
     })),
+  };
+}
+
+/** Why a stretch of the picked roof's side has no parapet: the roof that takes it. */
+function noWallWhyLine(t: T, why: NoWallWhy): TranslatedText {
+  if (why.why === 'shared') return t(KIND.sharedNoWall, { roof: roofNameWord(t, why.name) });
+  if (why.name.kind === 'stair_room') return t(KIND.noWallUnderStair);
+  if (why.name.kind === 'upper_floor') return t(KIND.noWallUnderFloor);
+  return t(KIND.noWallUnderWall, { roof: roofNameWord(t, why.name) });
+}
+
+/** The words of the marks on a roof in the top view: its sides' dots and its tags. */
+export function roofTopWords(t: T) {
+  return {
+    /** A side's dot, spoken: what a tap on it does. */
+    sideDot: (number: number, wall: boolean) =>
+      t(wall ? KIND.sideWallOff : KIND.sideWallOn, { number }),
+    /** The tag by a side a person took the wall off. */
+    noWallOnSide: t(KIND.noWallOnSide),
+    noWallWhy: (why: NoWallWhy) => noWallWhyLine(t, why),
+    /** The tag on a roof past the edge of the roof it stands on: how far, already formatted. */
+    sticksOutBy: (length: string) => t(KIND.sticksOutBy, { length }),
+    /** A roof's height above the roof it stands on, on it in the top view: "+3.0 m". */
+    above: (height: string) => shownAsSent(`+${height}`),
   };
 }

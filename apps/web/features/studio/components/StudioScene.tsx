@@ -1,6 +1,6 @@
 'use client';
 import type { PlanShown, StudioPicture } from '@heliogrid/data/react';
-import type { GroundBox, Roof, StudioView, SunPosition } from '@heliogrid/domain';
+import type { GroundBox, RoofScene, StudioView, SunPosition } from '@heliogrid/domain';
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
@@ -129,15 +129,11 @@ export interface StudioSceneProps {
   drive: RefObject<StudioDrive | null>;
   /** Told the view's turn from north up, in radians, each time it changes. */
   onTurn: (turn: number) => void;
-  /** The roofs to stand on the ground: the design's, or the preview of what is in hand. */
-  roofs: readonly Roof[];
-  /** Each roof's height in metres, in the order of `roofs`. */
-  heights: readonly number[];
+  /** The 3D model of the roofs: the design's, or the preview of what is in hand. */
+  roofScene: RoofScene;
   /** How much the picture is stretched about the pin to its true size. */
   /** `null` until the design is read: its stored stretch then lands, never grown into. */
   pictureScale: number | null;
-  /** The height a roof on the ground starts at: one with no height of its own stands at it. */
-  startHeightM: number;
   /** The roofs' ground, which the view frames; `null` before a roof. */
   fit: GroundBox | null;
   /** A roof closed: the camera frames the roofs once for each new value. */
@@ -170,10 +166,8 @@ export function StudioScene({
   fallback,
   drive,
   onTurn,
-  roofs,
-  heights,
+  roofScene,
   pictureScale: readScale,
-  startHeightM,
   fit,
   frameOn,
   rise,
@@ -247,12 +241,10 @@ export function StudioScene({
         ) : null}
         <PinFollower label={pinLabel} screen={screen} />
         <StudioRoofs
-          roofs={roofs}
+          scene={roofScene}
           view={view}
           still={still}
           palette={palette}
-          heights={heights}
-          startHeightM={startHeightM}
           top={roofTopIn(picture.kind, sharp, ownTop, pictureScale)}
           rise={rise}
           sizing={sizing}

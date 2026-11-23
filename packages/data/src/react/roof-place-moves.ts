@@ -8,7 +8,7 @@ import {
   type SiteRoofHint,
   type StudioDocument,
 } from '@heliogrid/domain';
-import { meetingOf, meetingOfRoof, roofCutToEdge } from '@heliogrid/domain/studio-kernel';
+import { edgesOf, meetingOf, meetingOfRoof, roofCutToEdge } from '@heliogrid/domain/studio-kernel';
 import type { RefObject } from 'react';
 import { aKey } from '../client/creation-key';
 import type { ClosePlacing, RoofPlaceMoves } from './roof-step-view';
@@ -75,6 +75,15 @@ export function roofPlaceMoves({
       if (line.joined !== null) return;
       if (choice === 'join') join(design, line.roof, facts, act);
       else cut(design, line.roof, facts, act);
+    },
+    toggleSideWall: (roof, side) => {
+      const design = latest.current?.present;
+      if (design === undefined) return;
+      // A side has a wall where any stretch of it has one: a tap takes it off, else adds one.
+      const walls = edgesOf(design, roof, facts).map((stretches) => stretches.some((s) => s.wall));
+      const wall = walls[side] !== true;
+      const walled = walls.filter((has, i) => (i === side ? wall : has)).length;
+      act({ kind: 'side_wall', roof, side, wall, walled });
     },
     copyRoof: (roof) => {
       const design = latest.current?.present;

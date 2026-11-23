@@ -4,7 +4,7 @@ import type { GroundPoint } from './ground';
 import type { EditRefusal } from './roof-check';
 import { type DraftRefusal, draftClosesAt, draftGhost, draftTap } from './roof-draw';
 import { sizingResult } from './roof-entry';
-import { angleAt, between, cornerAngle, edgeLengths, roofArea, roofMiddle } from './roof-shape';
+import { angleAt, between, cornerAngle, edgeLengths, roofMiddle } from './roof-shape';
 import { type Guide, type Snapped, snapTargetsOf } from './roof-snap';
 import { gripCorner } from './roof-step';
 import { pickedRoofOf } from './roof-step-draw';
@@ -185,8 +185,6 @@ export type RoofBar =
   | { readonly kind: 'typing' }
   | {
       readonly kind: 'roofs';
-      /** All roofs' area, square metres. */
-      readonly area: number;
       readonly said: RoofSaid | null;
       /** Something went wrong: the bar takes the error colour. */
       readonly bad: boolean;
@@ -244,7 +242,6 @@ export function roofBarOf(
   const picked = state.kind === 'idle' ? pickedRoofOf(state, shown) : null;
   return {
     kind: 'roofs',
-    area: shown.roofs.reduce((sum, roof) => sum + roofArea(roof.corners), 0),
     said,
     bad: live !== null || said?.kind === 'went_back' || said?.kind === 'refused',
     sizing: state.kind === 'sizing',

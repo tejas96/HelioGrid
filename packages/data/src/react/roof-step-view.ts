@@ -89,6 +89,8 @@ export type ClosePlacing = NonNullable<Extract<RoofStepEvent, { kind: 'close' }>
 export interface RoofPlaceMoves {
   /** A chip on the line after a roof closes: a kind to make it, Join, or Cut to edge. */
   chooseKind(choice: MeetChoice): void;
+  /** A side's dot on the picked roof: its wall is added, or taken off. */
+  toggleSideWall(roof: number, side: number): void;
   /** Copy, from a roof's row: a copy beside it with what stands on it, picked to drag. */
   copyRoof(roof: number): void;
   /** Delete, from a roof's row: it goes with what stands on it. */

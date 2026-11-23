@@ -164,6 +164,7 @@ export function StudioRoofLengths({
   /** The edge a tap on the map last landed on: its length shows even where it gave way. */
   revealed: Revealed;
 }) {
+  const only = roofs.length > 1;
   return (
     <>
       <svg className="hg-roof-lines hg-roof-edge-taps" aria-hidden="true">
@@ -190,19 +191,23 @@ export function StudioRoofLengths({
         />
       ))}
       {roofs.flatMap((roof, index) =>
-        roof.edges.map((edge, i) => (
-          <EdgeLength
-            // biome-ignore lint/suspicious/noArrayIndexKey: an edge is its place in the roof; a length set or measured is drawn anew, its tick drawing in
-            key={`len${index}-${i}-${edge.trust}`}
-            edge={edge}
-            roof={index}
-            index={i}
-            studio={studio}
-            units={units}
-            words={words}
-            revealed={revealed !== null && revealed.roof === index && revealed.edge === i}
-          />
-        )),
+        roof.edges.map((edge, i) =>
+          // With more than one roof, only the picked roof shows its lengths from the picture: the
+          // others show the lengths a person set or measured.
+          only && index !== studio.handlesRoof && edge.about ? null : (
+            <EdgeLength
+              // biome-ignore lint/suspicious/noArrayIndexKey: an edge is its place in the roof; a length set or measured is drawn anew, its tick drawing in
+              key={`len${index}-${i}-${edge.trust}`}
+              edge={edge}
+              roof={index}
+              index={i}
+              studio={studio}
+              units={units}
+              words={words}
+              revealed={revealed !== null && revealed.roof === index && revealed.edge === i}
+            />
+          ),
+        ),
       )}
     </>
   );

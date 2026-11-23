@@ -27,21 +27,29 @@ function outsideM(point: GroundPoint, outline: readonly GroundPoint[]): number {
 }
 
 /**
- * How far the roof at `index` sticks out past the roof it lies on, in metres: the farthest of its
- * corners and the middles of its sides. 0 for a roof on the ground, and for one within its roof.
+ * How far the roof at `index` sticks out past the roof it lies on, in metres, and where: the
+ * farthest of its corners and the middles of its sides. 0 for a roof on the ground, and for one
+ * within its roof.
  */
-export function sticksOutM(document: StudioDocument, index: number): number {
+export function sticksOutFarthest(
+  document: StudioDocument,
+  index: number,
+): { readonly metres: number; readonly at: GroundPoint | null } {
   const roof = document.roofs[index];
   const holder = roof === undefined ? null : holderOf(document, roof);
-  if (roof === undefined || holder === null) return 0;
+  if (roof === undefined || holder === null) return { metres: 0, at: null };
   const middles = roof.corners.map((from, i) => {
     const to = cornerAfter(roof.corners, i);
     return { east: (from.east + to.east) / 2, north: (from.north + to.north) / 2 };
   });
-  const far = Math.max(
-    ...[...roof.corners, ...middles].map((point) => outsideM(point, holder.corners)),
-  );
-  return far < STICKS_OUT_MIN_M ? 0 : far;
+  const far = [...roof.corners, ...middles]
+    .map((at) => ({ at, metres: outsideM(at, holder.corners) }))
+    .reduce((best, each) => (each.metres > best.metres ? each : best));
+  return far.metres < STICKS_OUT_MIN_M ? { metres: 0, at: null } : far;
+}
+
+export function sticksOutM(document: StudioDocument, index: number): number {
+  return sticksOutFarthest(document, index).metres;
 }
 
 /** The first roof that sticks out farther after an edit than before it; `null` when none does. */

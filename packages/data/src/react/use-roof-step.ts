@@ -27,6 +27,7 @@ import {
   type NumberEntry,
   pickedAngleOf,
   ROOF_STEP_START,
+  type RoofFacts,
   type RoofStepEvent,
   type RoofStepState,
   roofBarOf,
@@ -34,6 +35,7 @@ import {
   roofHeightOf,
   roofMarksOf,
   roofMiddle,
+  roofStartHeightM,
   roofStepAfter,
   roofStepShown,
   roofsOnPlan,
@@ -68,6 +70,7 @@ export function useRoofStep({
   setHelpersOff,
   helpersRefused,
   startHeightM,
+  facts,
   typedStart,
   numberEntry,
   setNumberEntry,
@@ -90,6 +93,8 @@ export function useRoofStep({
   helpersRefused: boolean;
   /** The height a roof on the ground starts at: the market's plinth and one storey. */
   startHeightM: number;
+  /** The market's roof facts: the height a roof of each kind starts at. */
+  facts: RoofFacts;
   /** The market's start size for a typed roof. */
   typedStart: { readonly length: number; readonly width: number };
   numberEntry: NumberEntry;
@@ -133,7 +138,8 @@ export function useRoofStep({
   const sizing = roofStep.kind === 'sizing' ? roofStep : null;
   const view: RoofStepView = {
     roofStep,
-    heights: shown?.roofs.map((roof) => roofHeightOf(roof, startHeightM)) ?? [],
+    heights:
+      shown?.roofs.map((roof) => roofHeightOf(roof, roofStartHeightM(shown, roof, facts))) ?? [],
     startHeightM,
     job: focusJobOf(roofStep),
     magnet: picked,

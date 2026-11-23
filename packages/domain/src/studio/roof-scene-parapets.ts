@@ -1,7 +1,7 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import type { RoofFacts } from './roof-levels';
-import { edgesOf, parapetNow } from './roof-open-edges';
+import { type EdgeStretch, parapetNow } from './roof-open-edges';
 import type { ScenePrism } from './roof-scene';
 
 /**
@@ -116,6 +116,8 @@ export function parapetPrisms(
   index: number,
   facts: RoofFacts,
   footM: number,
+  /** The roof's sides, each split where another roof takes it. */
+  sides: readonly (readonly EdgeStretch[])[],
 ): ScenePrism[] {
   const roof = document.roofs[index] as Roof;
   const parapet = parapetNow(document, roof, facts);
@@ -126,7 +128,7 @@ export function parapetPrisms(
   const inward = anticlockwise ? 1 : -1;
   const onRoof = hole ? -inward : inward;
   const side = parapet.lengthsMeasured === 'inside' && !hole ? -onRoof : onRoof;
-  return edgesOf(document, index, facts).flatMap((stretches, at) => {
+  return sides.flatMap((stretches, at) => {
     const whole: Line = {
       from: corners[at] as GroundPoint,
       to: corners[(at + 1) % corners.length] as GroundPoint,

@@ -9,6 +9,7 @@ import type {
   SunPosition,
   ViewPlace,
 } from '@heliogrid/domain';
+import type { RoofModelShown } from './roof-model-shown';
 import type { RoofMoves, RoofPlaceMoves, RoofStepView } from './roof-step-view';
 import type { SkyFacts, StudioEditing, StudioPicture } from './studio-document-state';
 import type { StudioSaveState } from './studio-save-queue';
@@ -37,7 +38,7 @@ export interface StudioMoves extends RoofMoves, RoofSheetMoves, RoofPlaceMoves {
   back(): boolean;
 }
 
-export interface StudioScreen extends RoofStepView, RoofSheetState {
+export interface StudioScreen extends RoofStepView, RoofSheetState, RoofModelShown {
   readonly read: DesignRead;
   /** `null` until the document is read. */
   readonly document: StudioDocument | null;

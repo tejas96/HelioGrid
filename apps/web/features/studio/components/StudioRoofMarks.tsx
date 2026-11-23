@@ -22,6 +22,7 @@ import { StudioPlanHandles } from './StudioPlanHandles';
 import { StudioRoofEdit } from './StudioRoofEdit';
 import { edgeAt, type Revealed, StudioRoofLengths } from './StudioRoofLengths';
 import type { RoofMarksHandle, ScreenOf } from './StudioRoofs';
+import { RoofSideLines, RoofSlopeTip, StudioRoofTopMarks } from './StudioRoofTopMarks';
 import { StudioRoofTops } from './StudioRoofTops';
 import { StudioSizePreview } from './StudioSizePreview';
 
@@ -88,7 +89,7 @@ function circlePoints({ centre, metres }: HeldCircle): string {
 const GUIDE_REACH_M = 400;
 
 /**
- * Each roof's line, red and dashed for a drag that would be refused; the roof as it stood under a
+ * Each roof's sides, red and dashed for a drag that would be refused; the roof as it stood under a
  * move, a turn or a refused drag; the circle a held length keeps a dragged corner on; and the
  * magnet's guides, dashed right across the map, so they show past a finger.
  */
@@ -97,20 +98,12 @@ function RoofLines({ studio, drawing }: { studio: StudioScreen; drawing: boolean
   const bad = step.kind === 'dragging' && step.drag.fault !== null ? step.grip.roof : null;
   return (
     <svg className="hg-roof-lines" aria-hidden="true">
-      {studio.roofMarks.map((roof, index) => {
-        const pts = roof.corners.map(pointText).join(';');
-        return (
-          <g key={roof.id} data-quiet={drawing}>
-            <path className="hg-roof-halo" data-pts={pts} data-closed="true" />
-            <path
-              className="hg-roof-line"
-              data-pts={pts}
-              data-closed="true"
-              data-bad={bad === index}
-            />
-          </g>
-        );
-      })}
+      <RoofSlopeTip />
+      {studio.roofMarks.map((roof, index) => (
+        <g key={roof.id} data-quiet={drawing}>
+          <RoofSideLines studio={studio} index={index} bad={bad === index} />
+        </g>
+      ))}
       {studio.dragBefore === null ? null : (
         <path
           className="hg-roof-before"
@@ -138,6 +131,20 @@ function RoofLines({ studio, drawing }: { studio: StudioScreen; drawing: boolean
       )}
     </svg>
   );
+}
+
+/**
+ * Which roofs show their corners and handles, for a person who may change the design: the one roof
+ * of a design while looking, and with more roofs only the picked one; in a job, the roof it holds.
+ * While a roof is drawn, or the plan is picked and its own handles take the drags, none.
+ */
+function editsShown(studio: StudioScreen, handles: 'picked' | 'hidden') {
+  const off =
+    studio.editing.kind !== 'editor' ||
+    studio.roofStep.kind === 'drawing' ||
+    studio.own.plan?.picked === true;
+  const alone = studio.roofMarks.length === 1 && handles !== 'hidden';
+  return (index: number) => !off && (alone || index === studio.handlesRoof);
 }
 
 /**
@@ -229,12 +236,7 @@ export function StudioRoofMarks({
   }
   const drawing = step.kind === 'drawing';
   const tag = tagOf(studio, words, shown, aiming);
-  const editable = studio.editing.kind === 'editor';
-  // Corners show on every roof while looking; in a job, only on the roof it holds.
-  // While the plan is picked its own handles take the drags: the roofs' edit tools step aside.
-  const planPicked = studio.own.plan?.picked === true;
-  const editsOn = (index: number) =>
-    editable && !drawing && !planPicked && (handles !== 'hidden' || index === studio.handlesRoof);
+  const editsOn = editsShown(studio, handles);
   const closedJust = step.kind === 'idle' && step.said?.kind === 'closed' ? roofMarks.at(-1) : null;
   // A corner removed shrinks away where it stood, once, as its edges join.
   const gone = step.kind === 'idle' && step.said?.kind === 'corner_removed' ? step.said : null;
@@ -265,6 +267,7 @@ export function StudioRoofMarks({
           />
         ) : null,
       )}
+      <StudioRoofTopMarks studio={studio} words={words} units={units} />
       {studio.own.plan?.picked && view === 'top' ? (
         <StudioPlanHandles plan={studio.own.plan} studio={studio} words={words} press={press} />
       ) : null}

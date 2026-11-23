@@ -2,7 +2,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { StudioEditing, StudioScreen } from '@heliogrid/data/react';
 import type { FocusParts, MeasurementSystem, RoofBar, StudioView } from '@heliogrid/domain';
-import type { RoofWordsShown, StudioCanvasWords } from '@heliogrid/i18n';
+import type { StudioCanvasWords } from '@heliogrid/i18n';
 import {
   Button,
   IconButton,
@@ -12,6 +12,7 @@ import {
   useFormat,
 } from '@heliogrid/ui';
 import { type ReactNode, type Ref, useEffect, useRef } from 'react';
+import { roofsStatus } from './roof-bar-status';
 import { roofWordsShown } from './roof-words-shown';
 import { BAR_TOOL, MagnetRefused, MagnetSwitch, pillOf } from './StudioBarPills';
 import { StudioKindChips } from './StudioKindChips';
@@ -54,28 +55,10 @@ interface BarFacts {
   readonly magnetPart: FocusParts['magnet'];
 }
 
-/** The roofs' sentence: a refusal, what an act did, or what the view lets a person do. */
-function roofsStatus(
-  bar: Extract<RoofBar, { kind: 'roofs' }>,
-  facts: BarFacts,
-  shown: RoofWordsShown,
-): TranslatedText {
-  const { words } = facts;
-  if (bar.live !== null) return words.editRefusal(bar.live, shown, bar.liveHeld);
-  if (facts.crowded && facts.studio.roofStep.kind === 'dragging') return words.dragCrowded;
-  // Undo and Redo name themselves in every view.
-  const kind = bar.said?.kind;
-  if (kind === 'undone' || kind === 'redone') return words.roofLine(bar.said, false, shown);
-  // In 3D the outline is not changed: what a person does here is a roof's height — or, for a
-  // reader, looks at it.
-  if (facts.view !== 'top') return facts.editable ? words.roofIdle3d : words.roofIdle3dReader;
-  return words.roofLine(bar.said, bar.sizing, shown);
-}
-
 function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): BarView {
   const { words, format, units, studio, view } = facts;
   const shown = roofWordsShown(format, units, studio.startHeightM);
-  const area = words.roofArea(format.area(bar.area, units));
+  const area = words.roofArea(format.area(studio.roofsAreaM2, units));
   // A roof just closed: the line says what it became, and its chips fix a wrong guess.
   const line = view === 'top' ? studio.kindLine : null;
   const kind = line === null ? null : words.kindLine(line, shown);
