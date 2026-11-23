@@ -106,6 +106,14 @@ describe('a side’s sheet', () => {
     expect(saved()?.setback).toBeUndefined();
   });
 
+  it('a roof is saved with its corners kept to the centimetre', async () => {
+    const corners = TERRACE.corners.map((c) => ({ east: c.east + 0.123_456, north: c.north }));
+    const view = await opened([{ ...TERRACE, corners }]);
+    act(() => view.result.current.moves.setNumber('setback', 0));
+    await waitFor(() => expect(saved()?.setback).toBeDefined());
+    expect(saved()?.corners[1]).toEqual({ east: 8.12, north: 0 });
+  });
+
   it('a sloped roof’s side keeps its own overhang; the roof’s is not touched', async () => {
     const view = await opened([{ ...TERRACE, shape: { is: 'gable', setBy: 'person' } }]);
     act(() => view.result.current.moves.openSide(0));

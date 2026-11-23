@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Roof } from '../../src/studio/document';
 import { roofBuilt } from '../../src/studio/roof-built';
 import { lengthSet } from '../../src/studio/roof-length';
-import { roofMoved, roofTurned } from '../../src/studio/roof-move';
+import { roofMoved, roofToCentimetre, roofTurned } from '../../src/studio/roof-move';
 import { drawingsAfterPinMove } from '../../src/studio/site-moved';
 import { box, designOf, FACTS, p, roofOf } from './roof-meet-support';
 
@@ -82,6 +82,33 @@ describe('a roof of any shape with faces drawn by hand', () => {
     const roof = sized.kind === 'done' ? sized.document.roofs[0] : undefined;
     expect(roof?.corners[1]?.east).toBeCloseTo(10, 6);
     expect(roof === undefined ? false : sloped(roof)).toBe(true);
+  });
+
+  it('kept to the centimetre, its corners and faces round together and still fit', () => {
+    // Drawn off the centimetre, its south and north edges aslant, split at a point along each:
+    // kept to the centimetre, the split leaves its edges, and the faces miss 0.075 m² of it.
+    const south = (east: number) => p(east + 0.123_456, 0.137 * east + 0.654_321);
+    const north = (east: number) => p(east + 0.123_456, 9 - 0.071 * east + 0.654_321);
+    const split = 5.331_63;
+    const face = (corners: ReturnType<typeof p>[]) => ({
+      corners,
+      slope: { degrees: 20, setBy: 'person' as const },
+      lowSide: 0,
+    });
+    const roof = roofOf('odd', [south(0), south(12), north(12), north(0)], {
+      shape: {
+        is: 'any',
+        setBy: 'person',
+        faces: [
+          face([south(0), south(split), north(split), north(0)]),
+          face([south(split), south(12), north(12), north(split)]),
+        ],
+      },
+    });
+    const kept = roofToCentimetre(roof);
+    expect(kept.corners[0]).toEqual(p(0.12, 0.65));
+    expect(kept.shape?.faces?.[0]?.corners[1]).toEqual(p(5.46, 1.38));
+    expect(sloped(kept)).toBe(true);
   });
 
   it('a move carries its faces with it', () => {

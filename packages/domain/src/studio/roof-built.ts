@@ -12,7 +12,7 @@ import { roofKindOf, roofSidesOf } from './roof-kind';
 import { type RoofFacts, roofMaterialNow, roofShapeNow } from './roof-levels';
 import { materialSlopeDeg, type RoofShape } from './roof-material';
 import { type HandFaceSet, type RoofSide, SIDE_ENDS, type SideEnd } from './roof-parts';
-import { cornerAfter, distanceToSegment, pointInside, roofArea } from './roof-shape';
+import { cornerAfter, distanceToSegment, edgeLengths, pointInside, roofArea } from './roof-shape';
 
 /**
  * A stored roof as the kernel builds it (`T-M05-002`, part e): its shape and one slope, and all it
@@ -103,11 +103,10 @@ export function roofFormOf(roof: Roof, facts: RoofFacts, picks: FormPicks = {}):
 }
 
 /**
- * How near the outline a drawn face's corner may sit, in metres, and how much of its area the faces
- * may miss, in square metres: a corner moved a centimetre leaves them stale, on a roof of any size.
+ * How near the outline a drawn face's corner may sit, in metres; the faces may miss a band this
+ * wide along the outline, as a design kept to the centimetre does, and no more.
  */
 const FIT_M = 0.01;
-const FIT_M2 = 0.01;
 
 /**
  * Faces drawn by hand still fit the outline they were drawn on: inside it, and covering it. An
@@ -122,7 +121,8 @@ function facesFit(outline: readonly GroundPoint[], faces: readonly HandFaceSet[]
   if (!faces.every((face) => face.corners.every(on))) return false;
   const area = roofArea(outline);
   const covered = faces.reduce((sum, face) => sum + roofArea(face.corners), 0);
-  return Math.abs(covered - area) <= FIT_M2;
+  const around = edgeLengths(outline).reduce((sum, each) => sum + each, 0);
+  return Math.abs(covered - area) <= around * FIT_M;
 }
 
 /** A stored roof's faces. */

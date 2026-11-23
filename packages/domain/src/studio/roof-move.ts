@@ -37,6 +37,18 @@ export function roofPlaced(roof: Roof, place: (corner: GroundPoint) => GroundPoi
   return { ...roof, corners: roof.corners.map(place), ...(shape === undefined ? {} : { shape }) };
 }
 
+/** A stored corner is kept to the centimetre (E032): the stored design stays small at the cap. */
+const CM = 100;
+const toCentimetre = (corner: GroundPoint): GroundPoint => ({
+  east: Math.round(corner.east * CM) / CM,
+  north: Math.round(corner.north * CM) / CM,
+});
+
+/** A roof as it is stored: its corners, and the faces drawn on it, kept to the centimetre. */
+export function roofToCentimetre(roof: Roof): Roof {
+  return roofPlaced(roof, toCentimetre);
+}
+
 /**
  * Roof `roofIndex` and what goes with it — what stands on it or is part of it — each corner sent
  * through `place`: the design after, and the first thing wrong with any roof that moved.

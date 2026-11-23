@@ -15,6 +15,7 @@ import {
   type PictureChoice,
   type PictureStamp,
   type Read,
+  roofToCentimetre,
   type ShownPicture,
   SKY_PICTURE_GAPS,
   type SkyPictureGap,
@@ -291,7 +292,9 @@ export function useStudioDocument(designId: string, ready: boolean) {
 }
 
 /** A roof as the wire takes it: its lists plain arrays, as the studio holds them read-only. */
-function wireRoof({ sides, shape, ...roof }: StudioDocument['roofs'][number]) {
+/** A roof on the wire, kept to the centimetre (E032). */
+function wireRoof(drawn: StudioDocument['roofs'][number]) {
+  const { sides, shape, ...roof } = roofToCentimetre(drawn);
   const lists = { corners: [...roof.corners], edges: [...roof.edges] };
   return {
     ...roof,
