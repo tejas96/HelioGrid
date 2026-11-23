@@ -1,7 +1,7 @@
 'use client';
 import type { SizeCardView } from '@heliogrid/data/react';
 import type { MeasurementSystem } from '@heliogrid/domain';
-import { ProvenanceTier, useFormat } from '@heliogrid/ui';
+import { useFormat } from '@heliogrid/ui';
 import { pointText } from './roof-marks-place';
 import { StudioLengthLabel } from './StudioLengthLabel';
 
@@ -50,10 +50,7 @@ export function StudioSizePreview({
         ))}
         {/* The area is spoken with the card's numbers; on the map it is a mark to read at a glance. */}
         <span className="hg-roof-at" data-at={inside} aria-hidden="true">
-          <span className="hg-roof-tag hg-size-area">
-            {format.area(preview.area, units)}
-            <ProvenanceTier tier={preview.tier} />
-          </span>
+          <span className="hg-roof-tag hg-size-area">{format.area(preview.area, units)}</span>
         </span>
       </div>
     </>

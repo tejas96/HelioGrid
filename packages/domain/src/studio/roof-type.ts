@@ -1,5 +1,9 @@
 import type { MeasurementSystem } from '../format/pack';
-import { GROUND_REACH_M, ROOFS_MAX, type Roof, type StudioDocument } from './document';
+import { cornerRoom, GROUND_REACH_M, ROOFS_MAX, type Roof, type StudioDocument } from './document';
+
+/** A typed roof is a rectangle. */
+const TYPED_CORNERS = 4;
+
 import type { GroundPoint } from './ground';
 import { entryOf, entryRead, type LengthEntry, pairOf, pairOnItsWay } from './roof-entry';
 import { LENGTH_MAX_M, LENGTH_MIN_M } from './roof-length';
@@ -198,7 +202,8 @@ export function typedResult(
   if (length.kind === 'empty' || width.kind === 'empty') return { kind: 'empty' };
   const bounds = boundsRefusal(length.metres) ?? boundsRefusal(width.metres);
   if (bounds !== null) return { kind: 'refused', refusal: bounds };
-  if (document.roofs.length >= ROOFS_MAX) {
+  // A design with no room for a rectangle's four corners is as full as one with every roof.
+  if (document.roofs.length >= ROOFS_MAX || cornerRoom(document.roofs) < TYPED_CORNERS) {
     return { kind: 'refused', refusal: { kind: 'too_many_roofs' } };
   }
   const corners = typedCorners(size.place, document.roofs, length.metres, width.metres);

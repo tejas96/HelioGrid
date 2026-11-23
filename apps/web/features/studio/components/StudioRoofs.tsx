@@ -3,14 +3,8 @@ import type { GroundPoint, Roof, StudioView } from '@heliogrid/domain';
 import { type ThemePalette, theme } from '@heliogrid/theme';
 import { useFrame, useThree } from '@react-three/fiber';
 import { type RefObject, useEffect, useMemo } from 'react';
-import {
-  type CanvasTexture,
-  ExtrudeGeometry,
-  type Matrix3,
-  Shape,
-  type Texture,
-  Vector3,
-} from 'three';
+import { type CanvasTexture, ExtrudeGeometry, type Matrix3, Shape, type Texture } from 'three';
+import { type SceneScreen, screenOfFrame } from './scene-screen';
 
 /** A roof in the top view lies flat on its picture: the marks over it sit where the picture is. */
 const FLAT = 0;
@@ -178,11 +172,12 @@ export function StudioRoofs({
   still,
   palette,
   heights,
-  storeyHeightM,
+  startHeightM,
   top,
   rise,
   sizing,
   marks,
+  screen,
 }: {
   roofs: readonly Roof[];
   view: StudioView;
@@ -190,14 +185,16 @@ export function StudioRoofs({
   palette: ThemePalette;
   /** Each roof's height in metres, in the order of `roofs`. */
   heights: readonly number[];
-  /** The market's storey height: a roof with no height of its own stands at it. */
-  storeyHeightM: number;
+  /** The height a roof on the ground starts at: one with no height of its own stands at it. */
+  startHeightM: number;
   /** The sky picture the roofs' tops wear; `null` on the grid. */
   top: RoofTopPicture | null;
   rise: RoofRise;
   /** The share of its new size the model stands at while the first length grows it. */
   sizing: RefObject<number>;
   marks: RefObject<RoofMarksHandle | null>;
+  /** Where a scene point lands on the screen, for the camera as it stands in this frame. */
+  screen: SceneScreen;
 }) {
   const scene = useThree((three) => three.scene);
   const camera = useThree((three) => three.camera);
@@ -208,7 +205,6 @@ export function StudioRoofs({
   // biome-ignore lint/correctness/useExhaustiveDependencies: a new goal asks for one more frame
   useEffect(() => invalidate(), [goal, invalidate]);
 
-  const at = useMemo(() => new Vector3(), []);
   useFrame((_, delta) => {
     const now = rise.current;
     if (now !== goal) {
@@ -220,12 +216,12 @@ export function StudioRoofs({
       });
       invalidate();
     }
+    // The marks land where this frame draws the model: the camera as its controls just left it.
+    const project = screenOfFrame(screen, camera, size);
     marks.current?.place((point, heightM) => {
       // A mark on a roof's top stands at that roof's height, as far risen as the roof.
       const grown = sizing.current;
-      at.set(point.east * grown, rise.current * heightM, -point.north * grown).project(camera);
-      if (at.z > 1) return null;
-      return { x: ((at.x + 1) / 2) * size.width, y: ((1 - at.y) / 2) * size.height };
+      return project(point.east * grown, rise.current * heightM, -point.north * grown);
     });
   });
 
@@ -235,7 +231,7 @@ export function StudioRoofs({
         <RoofBlock
           key={roof.id}
           roof={roof}
-          metres={heights[index] ?? storeyHeightM}
+          metres={heights[index] ?? startHeightM}
           top={top}
           palette={palette}
           rise={rise}

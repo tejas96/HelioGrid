@@ -309,6 +309,17 @@ module.exports = {
       to: { path: '^@heliogrid/domain/server|^packages/domain/(src|dist)/server\\.' },
     },
     {
+      name: 'roof-kernel-has-its-own-entry',
+      severity: 'error',
+      comment:
+        'T-M05-002e: the design studio’s roof geometry (the wavefront, the faces, the shape library it hides) is on @heliogrid/domain/studio-kernel alone. The index is what every device bundles, the phone included, and the phone opens the studio as a page of the web app: nothing the index exports may reach the kernel, and the phone app never imports its entry.',
+      from: { path: '^packages/domain/src/index\\.ts$|^apps/mobile/' },
+      to: {
+        path: 'polygon-clipping|^@heliogrid/domain/studio-kernel|^packages/domain/(src|dist)/studio-kernel\\.|^packages/domain/src/studio/(wavefront-|roof-(faces|forms|profile|polygons|cuts|face-outline)\\.)',
+        reachable: true,
+      },
+    },
+    {
       name: 'no-raw-http-clients',
       severity: 'error',
       comment:

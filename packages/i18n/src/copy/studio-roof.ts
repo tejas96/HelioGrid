@@ -46,7 +46,9 @@ const ROOF = {
   closeShape: /*i18n*/ { id: 'Close shape' },
 
   roofArea: /*i18n*/ { id: 'Roof · {area}' },
-  roofClosed: /*i18n*/ { id: 'Height {height} is assumed. Drag a corner to fix the shape.' },
+  roofClosed: /*i18n*/ {
+    id: 'Height {height} is the usual storey here. Drag a corner to fix the shape.',
+  },
   roofIdle: /*i18n*/ { id: 'Drag a corner to fix the shape.' },
   roofPicked: /*i18n*/ { id: 'Roof {number} · height {height}. Drag a corner to fix the shape.' },
   roofIdle3d: /*i18n*/ { id: 'Tap the roof to change its height.' },

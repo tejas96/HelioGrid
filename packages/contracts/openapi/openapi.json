@@ -247308,6 +247308,15 @@
                                       "system",
                                       "person"
                                     ]
+                                  },
+                                  "tier": {
+                                    "type": "string",
+                                    "enum": [
+                                      "measured",
+                                      "derived",
+                                      "estimated",
+                                      "assumed"
+                                    ]
                                   }
                                 },
                                 "required": [
@@ -247316,6 +247325,536 @@
                                 ],
                                 "additionalProperties": false,
                                 "nullable": true
+                              },
+                              "kind": {
+                                "type": "object",
+                                "properties": {
+                                  "is": {
+                                    "type": "string",
+                                    "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                  },
+                                  "setBy": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "is",
+                                  "setBy"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "on": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "partOf": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "material": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 60
+                                  },
+                                  "fixedLike": {
+                                    "type": "string",
+                                    "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                  },
+                                  "setBy": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  },
+                                  "confirmed": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "setBy",
+                                  "confirmed"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "shape": {
+                                "type": "object",
+                                "properties": {
+                                  "is": {
+                                    "type": "string",
+                                    "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                  },
+                                  "setBy": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  },
+                                  "turned": {
+                                    "type": "boolean"
+                                  },
+                                  "teeth": {
+                                    "type": "object",
+                                    "properties": {
+                                      "count": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 60
+                                      },
+                                      "setBy": {
+                                        "type": "string",
+                                        "enum": [
+                                          "system",
+                                          "person"
+                                        ]
+                                      },
+                                      "tier": {
+                                        "type": "string",
+                                        "enum": [
+                                          "measured",
+                                          "derived",
+                                          "estimated",
+                                          "assumed"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "count",
+                                      "setBy"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "upperSlope": {
+                                    "type": "object",
+                                    "properties": {
+                                      "degrees": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 89
+                                      },
+                                      "setBy": {
+                                        "type": "string",
+                                        "enum": [
+                                          "system",
+                                          "person"
+                                        ]
+                                      },
+                                      "tier": {
+                                        "type": "string",
+                                        "enum": [
+                                          "measured",
+                                          "derived",
+                                          "estimated",
+                                          "assumed"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "degrees",
+                                      "setBy"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "breakIn": {
+                                    "type": "object",
+                                    "properties": {
+                                      "metres": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 2000
+                                      },
+                                      "setBy": {
+                                        "type": "string",
+                                        "enum": [
+                                          "system",
+                                          "person"
+                                        ]
+                                      },
+                                      "tier": {
+                                        "type": "string",
+                                        "enum": [
+                                          "measured",
+                                          "derived",
+                                          "estimated",
+                                          "assumed"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "metres",
+                                      "setBy"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "raisedHeight": {
+                                    "type": "object",
+                                    "properties": {
+                                      "metres": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 300
+                                      },
+                                      "setBy": {
+                                        "type": "string",
+                                        "enum": [
+                                          "system",
+                                          "person"
+                                        ]
+                                      },
+                                      "tier": {
+                                        "type": "string",
+                                        "enum": [
+                                          "measured",
+                                          "derived",
+                                          "estimated",
+                                          "assumed"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "metres",
+                                      "setBy"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "raisedWidth": {
+                                    "type": "object",
+                                    "properties": {
+                                      "metres": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 2000
+                                      },
+                                      "setBy": {
+                                        "type": "string",
+                                        "enum": [
+                                          "system",
+                                          "person"
+                                        ]
+                                      },
+                                      "tier": {
+                                        "type": "string",
+                                        "enum": [
+                                          "measured",
+                                          "derived",
+                                          "estimated",
+                                          "assumed"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "metres",
+                                      "setBy"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "valleyAt": {
+                                    "type": "object",
+                                    "properties": {
+                                      "share": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 1
+                                      },
+                                      "setBy": {
+                                        "type": "string",
+                                        "enum": [
+                                          "system",
+                                          "person"
+                                        ]
+                                      },
+                                      "tier": {
+                                        "type": "string",
+                                        "enum": [
+                                          "measured",
+                                          "derived",
+                                          "estimated",
+                                          "assumed"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "share",
+                                      "setBy"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "required": [
+                                  "is",
+                                  "setBy"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "slope": {
+                                "type": "object",
+                                "properties": {
+                                  "degrees": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 89
+                                  },
+                                  "setBy": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  },
+                                  "tier": {
+                                    "type": "string",
+                                    "enum": [
+                                      "measured",
+                                      "derived",
+                                      "estimated",
+                                      "assumed"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "degrees",
+                                  "setBy"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "overhang": {
+                                "type": "object",
+                                "properties": {
+                                  "metres": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 5
+                                  },
+                                  "setBy": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  },
+                                  "tier": {
+                                    "type": "string",
+                                    "enum": [
+                                      "measured",
+                                      "derived",
+                                      "estimated",
+                                      "assumed"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "metres",
+                                  "setBy"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "parapet": {
+                                "type": "object",
+                                "properties": {
+                                  "allRound": {
+                                    "type": "boolean"
+                                  },
+                                  "metres": {
+                                    "type": "number",
+                                    "minimum": 0.1,
+                                    "maximum": 3
+                                  },
+                                  "setBy": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  },
+                                  "tier": {
+                                    "type": "string",
+                                    "enum": [
+                                      "measured",
+                                      "derived",
+                                      "estimated",
+                                      "assumed"
+                                    ]
+                                  },
+                                  "build": {
+                                    "type": "string",
+                                    "enum": [
+                                      "wall",
+                                      "railing"
+                                    ]
+                                  },
+                                  "thickness": {
+                                    "type": "object",
+                                    "properties": {
+                                      "metres": {
+                                        "type": "number",
+                                        "minimum": 0.02,
+                                        "maximum": 1
+                                      },
+                                      "setBy": {
+                                        "type": "string",
+                                        "enum": [
+                                          "system",
+                                          "person"
+                                        ]
+                                      },
+                                      "tier": {
+                                        "type": "string",
+                                        "enum": [
+                                          "measured",
+                                          "derived",
+                                          "estimated",
+                                          "assumed"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "metres",
+                                      "setBy"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "lengthsMeasured": {
+                                    "type": "string",
+                                    "enum": [
+                                      "outside",
+                                      "inside"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "allRound",
+                                  "metres",
+                                  "setBy"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "setback": {
+                                "type": "object",
+                                "properties": {
+                                  "metres": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 20
+                                  },
+                                  "setBy": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  },
+                                  "tier": {
+                                    "type": "string",
+                                    "enum": [
+                                      "measured",
+                                      "derived",
+                                      "estimated",
+                                      "assumed"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "metres",
+                                  "setBy"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "sides": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "parapet": {
+                                      "type": "boolean"
+                                    },
+                                    "parapetM": {
+                                      "type": "number",
+                                      "minimum": 0.1,
+                                      "maximum": 3
+                                    },
+                                    "parapetBuild": {
+                                      "type": "string",
+                                      "enum": [
+                                        "wall",
+                                        "railing"
+                                      ]
+                                    },
+                                    "setbackM": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 20
+                                    },
+                                    "slopeDeg": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 89
+                                    },
+                                    "eaveM": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 300
+                                    },
+                                    "end": {
+                                      "type": "string",
+                                      "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                    },
+                                    "overhangM": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 5
+                                    },
+                                    "tier": {
+                                      "type": "string",
+                                      "enum": [
+                                        "measured",
+                                        "derived",
+                                        "estimated",
+                                        "assumed"
+                                      ]
+                                    },
+                                    "low": {
+                                      "type": "string",
+                                      "enum": [
+                                        "system",
+                                        "person"
+                                      ]
+                                    },
+                                    "glass": {
+                                      "type": "string",
+                                      "enum": [
+                                        "system",
+                                        "person"
+                                      ]
+                                    },
+                                    "stairsAt": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 4000
+                                    },
+                                    "stairsBy": {
+                                      "type": "string",
+                                      "enum": [
+                                        "system",
+                                        "person"
+                                      ]
+                                    }
+                                  },
+                                  "additionalProperties": false
+                                },
+                                "maxItems": 100
                               }
                             },
                             "required": [
@@ -247326,7 +247865,7 @@
                             ],
                             "additionalProperties": false
                           },
-                          "maxItems": 50
+                          "maxItems": 200
                         },
                         "pictureScale": {
                           "default": 1,
@@ -247466,6 +248005,9 @@
                           ],
                           "additionalProperties": false,
                           "nullable": true
+                        },
+                        "stairsSkipped": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
@@ -248122,6 +248664,15 @@
                                     "system",
                                     "person"
                                   ]
+                                },
+                                "tier": {
+                                  "type": "string",
+                                  "enum": [
+                                    "measured",
+                                    "derived",
+                                    "estimated",
+                                    "assumed"
+                                  ]
                                 }
                               },
                               "required": [
@@ -248130,6 +248681,536 @@
                               ],
                               "additionalProperties": false,
                               "nullable": true
+                            },
+                            "kind": {
+                              "type": "object",
+                              "properties": {
+                                "is": {
+                                  "type": "string",
+                                  "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                },
+                                "setBy": {
+                                  "type": "string",
+                                  "enum": [
+                                    "system",
+                                    "person"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "is",
+                                "setBy"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "on": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "partOf": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "material": {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 60
+                                },
+                                "fixedLike": {
+                                  "type": "string",
+                                  "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                },
+                                "setBy": {
+                                  "type": "string",
+                                  "enum": [
+                                    "system",
+                                    "person"
+                                  ]
+                                },
+                                "confirmed": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "type",
+                                "setBy",
+                                "confirmed"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "shape": {
+                              "type": "object",
+                              "properties": {
+                                "is": {
+                                  "type": "string",
+                                  "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                },
+                                "setBy": {
+                                  "type": "string",
+                                  "enum": [
+                                    "system",
+                                    "person"
+                                  ]
+                                },
+                                "turned": {
+                                  "type": "boolean"
+                                },
+                                "teeth": {
+                                  "type": "object",
+                                  "properties": {
+                                    "count": {
+                                      "type": "integer",
+                                      "minimum": 1,
+                                      "maximum": 60
+                                    },
+                                    "setBy": {
+                                      "type": "string",
+                                      "enum": [
+                                        "system",
+                                        "person"
+                                      ]
+                                    },
+                                    "tier": {
+                                      "type": "string",
+                                      "enum": [
+                                        "measured",
+                                        "derived",
+                                        "estimated",
+                                        "assumed"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "count",
+                                    "setBy"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "upperSlope": {
+                                  "type": "object",
+                                  "properties": {
+                                    "degrees": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 89
+                                    },
+                                    "setBy": {
+                                      "type": "string",
+                                      "enum": [
+                                        "system",
+                                        "person"
+                                      ]
+                                    },
+                                    "tier": {
+                                      "type": "string",
+                                      "enum": [
+                                        "measured",
+                                        "derived",
+                                        "estimated",
+                                        "assumed"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "degrees",
+                                    "setBy"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "breakIn": {
+                                  "type": "object",
+                                  "properties": {
+                                    "metres": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 2000
+                                    },
+                                    "setBy": {
+                                      "type": "string",
+                                      "enum": [
+                                        "system",
+                                        "person"
+                                      ]
+                                    },
+                                    "tier": {
+                                      "type": "string",
+                                      "enum": [
+                                        "measured",
+                                        "derived",
+                                        "estimated",
+                                        "assumed"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "metres",
+                                    "setBy"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "raisedHeight": {
+                                  "type": "object",
+                                  "properties": {
+                                    "metres": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 300
+                                    },
+                                    "setBy": {
+                                      "type": "string",
+                                      "enum": [
+                                        "system",
+                                        "person"
+                                      ]
+                                    },
+                                    "tier": {
+                                      "type": "string",
+                                      "enum": [
+                                        "measured",
+                                        "derived",
+                                        "estimated",
+                                        "assumed"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "metres",
+                                    "setBy"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "raisedWidth": {
+                                  "type": "object",
+                                  "properties": {
+                                    "metres": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 2000
+                                    },
+                                    "setBy": {
+                                      "type": "string",
+                                      "enum": [
+                                        "system",
+                                        "person"
+                                      ]
+                                    },
+                                    "tier": {
+                                      "type": "string",
+                                      "enum": [
+                                        "measured",
+                                        "derived",
+                                        "estimated",
+                                        "assumed"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "metres",
+                                    "setBy"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "valleyAt": {
+                                  "type": "object",
+                                  "properties": {
+                                    "share": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 1
+                                    },
+                                    "setBy": {
+                                      "type": "string",
+                                      "enum": [
+                                        "system",
+                                        "person"
+                                      ]
+                                    },
+                                    "tier": {
+                                      "type": "string",
+                                      "enum": [
+                                        "measured",
+                                        "derived",
+                                        "estimated",
+                                        "assumed"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "share",
+                                    "setBy"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": [
+                                "is",
+                                "setBy"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "slope": {
+                              "type": "object",
+                              "properties": {
+                                "degrees": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 89
+                                },
+                                "setBy": {
+                                  "type": "string",
+                                  "enum": [
+                                    "system",
+                                    "person"
+                                  ]
+                                },
+                                "tier": {
+                                  "type": "string",
+                                  "enum": [
+                                    "measured",
+                                    "derived",
+                                    "estimated",
+                                    "assumed"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "degrees",
+                                "setBy"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "overhang": {
+                              "type": "object",
+                              "properties": {
+                                "metres": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 5
+                                },
+                                "setBy": {
+                                  "type": "string",
+                                  "enum": [
+                                    "system",
+                                    "person"
+                                  ]
+                                },
+                                "tier": {
+                                  "type": "string",
+                                  "enum": [
+                                    "measured",
+                                    "derived",
+                                    "estimated",
+                                    "assumed"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "metres",
+                                "setBy"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "parapet": {
+                              "type": "object",
+                              "properties": {
+                                "allRound": {
+                                  "type": "boolean"
+                                },
+                                "metres": {
+                                  "type": "number",
+                                  "minimum": 0.1,
+                                  "maximum": 3
+                                },
+                                "setBy": {
+                                  "type": "string",
+                                  "enum": [
+                                    "system",
+                                    "person"
+                                  ]
+                                },
+                                "tier": {
+                                  "type": "string",
+                                  "enum": [
+                                    "measured",
+                                    "derived",
+                                    "estimated",
+                                    "assumed"
+                                  ]
+                                },
+                                "build": {
+                                  "type": "string",
+                                  "enum": [
+                                    "wall",
+                                    "railing"
+                                  ]
+                                },
+                                "thickness": {
+                                  "type": "object",
+                                  "properties": {
+                                    "metres": {
+                                      "type": "number",
+                                      "minimum": 0.02,
+                                      "maximum": 1
+                                    },
+                                    "setBy": {
+                                      "type": "string",
+                                      "enum": [
+                                        "system",
+                                        "person"
+                                      ]
+                                    },
+                                    "tier": {
+                                      "type": "string",
+                                      "enum": [
+                                        "measured",
+                                        "derived",
+                                        "estimated",
+                                        "assumed"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "metres",
+                                    "setBy"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "lengthsMeasured": {
+                                  "type": "string",
+                                  "enum": [
+                                    "outside",
+                                    "inside"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "allRound",
+                                "metres",
+                                "setBy"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "setback": {
+                              "type": "object",
+                              "properties": {
+                                "metres": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 20
+                                },
+                                "setBy": {
+                                  "type": "string",
+                                  "enum": [
+                                    "system",
+                                    "person"
+                                  ]
+                                },
+                                "tier": {
+                                  "type": "string",
+                                  "enum": [
+                                    "measured",
+                                    "derived",
+                                    "estimated",
+                                    "assumed"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "metres",
+                                "setBy"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "sides": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "parapet": {
+                                    "type": "boolean"
+                                  },
+                                  "parapetM": {
+                                    "type": "number",
+                                    "minimum": 0.1,
+                                    "maximum": 3
+                                  },
+                                  "parapetBuild": {
+                                    "type": "string",
+                                    "enum": [
+                                      "wall",
+                                      "railing"
+                                    ]
+                                  },
+                                  "setbackM": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 20
+                                  },
+                                  "slopeDeg": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 89
+                                  },
+                                  "eaveM": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 300
+                                  },
+                                  "end": {
+                                    "type": "string",
+                                    "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                  },
+                                  "overhangM": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 5
+                                  },
+                                  "tier": {
+                                    "type": "string",
+                                    "enum": [
+                                      "measured",
+                                      "derived",
+                                      "estimated",
+                                      "assumed"
+                                    ]
+                                  },
+                                  "low": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  },
+                                  "glass": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  },
+                                  "stairsAt": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 4000
+                                  },
+                                  "stairsBy": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  }
+                                },
+                                "additionalProperties": false
+                              },
+                              "maxItems": 100
                             }
                           },
                           "required": [
@@ -248140,7 +249221,7 @@
                           ],
                           "additionalProperties": false
                         },
-                        "maxItems": 50
+                        "maxItems": 200
                       },
                       "pictureScale": {
                         "default": 1,
@@ -248280,6 +249361,9 @@
                         ],
                         "additionalProperties": false,
                         "nullable": true
+                      },
+                      "stairsSkipped": {
+                        "type": "boolean"
                       }
                     },
                     "required": [

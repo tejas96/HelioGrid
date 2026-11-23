@@ -218,7 +218,7 @@ export function StudioRoofMarks({
   useLayoutEffect(() => {
     if (lastPlace.current !== null) place(lastPlace.current);
   });
-  const shown = roofWordsShown(format, units);
+  const shown = roofWordsShown(format, units, studio.startHeightM);
   const { roofStep: step, draft, roofMarks } = studio;
   if (view !== 'top') {
     return (

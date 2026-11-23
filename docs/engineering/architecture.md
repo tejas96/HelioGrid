@@ -110,14 +110,17 @@ failing at boot in the declaring module's injector.
 Owns: business logic, policy numbers, protocol constants, formatters, flow view-model
 types shared by platforms (Law 11), and the AUTHORIZATION POLICY — the twelve preset roles,
 the capability matrix, and the OR-across-roles / widest-wins-per-domain resolution
-(`src/authz/`, F2). Allowed deps: config. Platform scope: shared, pure TS
+(`src/authz/`, F2). Allowed deps: config, and `polygon-clipping` (pure JS, behind the studio kernel alone). Platform scope: shared, pure TS
 — no react, no node builtins, no clock/randomness/I-O (domain-purity gates). Belongs: a
 constant two screens read; a flow state machine; a permission rule. Never: fetch, storage,
 rendering; a session, a tenant or a request (the API resolves those and passes roles IN).
-TWO entry points: `.` for everyone, and `./server` (`src/server.ts`) for `apps/api` and `apps/worker`
+THREE entry points: `.` for everyone, `./server` (`src/server.ts`) for `apps/api` and `apps/worker`
 alone — the functions that compute a money figure (`F4-04`), and a business-identifier formatter
 when one is written. No package a device bundles imports `./server` (dependency-cruiser
-`devices-never-compute-money`).
+`devices-never-compute-money`). A third entry, `./studio-kernel` (`src/studio-kernel.ts`), holds the
+design studio's roof geometry — faces on any outline, roofs joined and cut, outlines moved in — and
+the one shape library it hides: the index never reaches it and the phone app never imports it
+(`roof-kernel-has-its-own-entry`), since the phone opens the studio as a page of the web app.
 Extension point: one folder per module slice (audit/, auth/, authz/, branding/, calling/, catalog/, certification/, commerce/, crm/, customer-link/, dashboards/, files/, format/, import/, market/, messaging/, money/, notifications/, payments/, pricing/, projects/, proposals/, rails/, search/, shell/, subject/, subsidy/, tasks/, tax/, tenancy/ today); each
 module appends its own capability rows when its slice begins.
 

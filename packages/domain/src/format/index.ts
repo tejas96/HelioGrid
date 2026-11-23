@@ -160,6 +160,14 @@ export {
   weakestTier,
 } from './qualified';
 export {
+  IN_ROOF_FACTS,
+  ROOF_FACTS_DEFAULT,
+  type RoofMarketFacts,
+  SETBACK_MEASURES,
+  type SetbackByEdge,
+  type SetbackMeasure,
+} from './roof-facts';
+export {
   type FamilyCoverage,
   isBrandFaceRun,
   lineBoxRaisedTo,

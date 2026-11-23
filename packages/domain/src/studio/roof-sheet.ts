@@ -1,4 +1,3 @@
-import type { ProvenanceTier } from '../format/qualified';
 import type { StudioDocument } from './document';
 import type { GroundBox, GroundPoint } from './ground';
 import {
@@ -9,7 +8,6 @@ import {
   roofHeightOf,
 } from './roof-height';
 import { pointInside, roofArea, roofsBox } from './roof-shape';
-import { roofAreaTier, scaleTierOf } from './roof-trust';
 
 /**
  * A roof's sheet in 3D (`T-M05-002`, part b): a tap on a roof opens it with the roof's area and
@@ -19,9 +17,8 @@ import { roofAreaTier, scaleTierOf } from './roof-trust';
 
 export interface RoofSheetView {
   readonly roof: number;
-  /** The roof's area, square metres, and its tier. */
+  /** The roof's area, square metres. */
   readonly area: number;
-  readonly areaTier: ProvenanceTier;
   /** The height as it stands now, the one in hand included. */
   readonly height: RoofHeightShown;
   /** The system's height, which Reset brings back and the slider marks. */
@@ -36,20 +33,19 @@ export interface RoofSheetView {
 export function roofSheetOf(
   document: StudioDocument,
   index: number,
-  storeyHeightM: number,
+  startHeightM: number,
   inHand: number | null,
 ): RoofSheetView | null {
   const roof = document.roofs[index];
   if (roof === undefined) return null;
-  const stands = roofHeightOf(roof, storeyHeightM);
+  const stands = roofHeightOf(roof, startHeightM);
   const height: RoofHeightShown =
     inHand === null ? stands : { metres: inHand, setBy: 'person', tier: 'estimated' };
   return {
     roof: index,
     area: roofArea(roof.corners),
-    areaTier: roofAreaTier(roof, scaleTierOf(document, roof.tracedOn)),
     height,
-    systemMetres: storeyHeightM,
+    systemMetres: startHeightM,
     slide: {
       min: ROOF_HEIGHT_SLIDER_MIN_M,
       max: ROOF_HEIGHT_SLIDER_MAX_M,

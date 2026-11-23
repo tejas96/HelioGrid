@@ -4,6 +4,7 @@ import {
   type FormatPack,
   focusOf,
   type GroundBox,
+  groundRoofHeightM,
   type History,
   historyAfter,
   type MeasurementSystem,
@@ -162,7 +163,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     helpersOff: session.user?.studioHelpersOff ?? [],
     setHelpersOff: (off) => void session.setStudioPicks({ studioHelpersOff: off }),
     helpersRefused: session.refusedPreferences.includes('studio'),
-    storeyHeightM: formats.storeyHeightM,
+    startHeightM: groundRoofHeightM(formats),
     typedStart: { length: formats.typedRoofLengthM, width: formats.typedRoofWidthM },
     numberEntry: session.user?.numberEntry ?? 'slider',
     setNumberEntry: (entry) => void session.setStudioPicks({ numberEntry: entry }),
@@ -177,7 +178,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     latest,
     change,
     editable,
-    storeyHeightM: formats.storeyHeightM,
+    startHeightM: groundRoofHeightM(formats),
     units,
     outline: (index, metres) => {
       setView('top');

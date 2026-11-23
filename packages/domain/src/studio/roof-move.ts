@@ -1,6 +1,7 @@
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { type DragResult, faultOf, roofAt, type TurnResult, withRoof } from './roof-check';
+import { type DragResult, type EditRefusal, faultOf, roofAt, type TurnResult } from './roof-check';
+import { roofWithItsParts } from './roof-kind';
 import { cornerAfter, roofMiddle } from './roof-shape';
 import { type Guide, guideOf, snapTargetsOf } from './roof-snap';
 
@@ -16,20 +17,38 @@ export const KEY_MOVE_M = 0.1;
 /** One arrow key on a turn handle turns the roof this far, in degrees. */
 export const KEY_TURN_DEGREES = 1;
 
-/** The whole roof moved by `by` metres east and north. */
+/**
+ * Roof `roofIndex` and what goes with it — what stands on it or is part of it — each corner sent
+ * through `place`: the design after, and the first thing wrong with any roof that moved.
+ */
+function carried(
+  document: StudioDocument,
+  roofIndex: number,
+  place: (corner: GroundPoint) => GroundPoint,
+): { readonly document: StudioDocument; readonly fault: EditRefusal | null } {
+  const going = roofWithItsParts(document, roofIndex);
+  const roofs = document.roofs.map((roof, i) =>
+    going.includes(i) ? { ...roof, corners: roof.corners.map(place) } : roof,
+  );
+  const faults = going.map((i) => faultOf(document, i, roofs[i]?.corners ?? []));
+  return {
+    document: { ...document, roofs },
+    fault: faults.find((fault) => fault !== null) ?? null,
+  };
+}
+
+/** The whole roof moved by `by` metres east and north, with what stands on it. */
 export function roofMoved(
   document: StudioDocument,
   roofIndex: number,
   by: GroundPoint,
 ): DragResult {
-  const roof = roofAt(document, roofIndex);
-  const corners = roof.corners.map((c) => ({ east: c.east + by.east, north: c.north + by.north }));
-  return {
-    document: withRoof(document, roofIndex, { ...roof, corners }),
-    snap: null,
-    fault: faultOf(document, roofIndex, corners),
-    guides: [],
-  };
+  roofAt(document, roofIndex);
+  const moved = carried(document, roofIndex, (c) => ({
+    east: c.east + by.east,
+    north: c.north + by.north,
+  }));
+  return { ...moved, snap: null, guides: [] };
 }
 
 /** The difference between two directions of lines, in degrees, folded into −90 to 90. */
@@ -45,7 +64,7 @@ function directionOf(a: GroundPoint, b: GroundPoint): number {
 }
 
 /**
- * The roof turned `degrees` anticlockwise about its middle. With the magnet on, within
+ * The roof turned `degrees` anticlockwise about its middle, with what stands on it. With the magnet on, within
  * `TURN_SNAP_DEGREES` of lining an edge up with another roof's edge, it lines up.
  */
 export function roofTurned(
@@ -86,14 +105,14 @@ export function roofTurned(
   const r = (applied * Math.PI) / 180;
   const cos = Math.cos(r);
   const sin = Math.sin(r);
-  const corners = roof.corners.map((c) => ({
+  // What stands on the roof turns with it, about the roof's own middle.
+  const turned = carried(document, roofIndex, (c) => ({
     east: middle.east + (c.east - middle.east) * cos - (c.north - middle.north) * sin,
     north: middle.north + (c.east - middle.east) * sin + (c.north - middle.north) * cos,
   }));
   return {
-    document: withRoof(document, roofIndex, { ...roof, corners }),
+    ...turned,
     snap: null,
-    fault: faultOf(document, roofIndex, corners),
     guides,
     degrees: applied,
     snapped: lined !== null,

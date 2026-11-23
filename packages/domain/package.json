@@ -13,6 +13,10 @@
     "./server": {
       "types": "./dist/server.d.ts",
       "default": "./dist/server.js"
+    },
+    "./studio-kernel": {
+      "types": "./dist/studio-kernel.d.ts",
+      "default": "./dist/studio-kernel.js"
     }
   },
   "scripts": {
@@ -26,6 +30,7 @@
   },
   "dependencies": {
     "@noble/hashes": "1.8.0",
+    "polygon-clipping": "0.15.7",
     "zod": "3.25.76"
   }
 }

@@ -9,7 +9,6 @@ import type {
   LengthSlide,
   labelLayoutOf,
   NumberEntry,
-  ProvenanceTier,
   RoofBar,
   RoofGrip,
   RoofHandles,
@@ -17,6 +16,7 @@ import type {
   RoofMarksView,
   RoofStepState,
   StudioDocument,
+  screenProjector,
   TypedRefusal,
 } from '@heliogrid/domain';
 
@@ -103,8 +103,6 @@ export interface SizeCardView {
     readonly area: number;
     /** Each length no person set yet — the market's start size — reads as "about". */
     readonly about: readonly boolean[];
-    /** The area's tier: `assumed` until both numbers are set (`F8-01`). */
-    readonly tier: ProvenanceTier;
   } | null;
   /** The preview cannot stand there: it is drawn in the error colour. */
   readonly previewBad: boolean;
@@ -139,7 +137,9 @@ export interface RoofStepView {
   readonly magnetRefused: boolean;
   /** The design to draw: the design, or the preview of what is in hand. */
   readonly shown: StudioDocument | null;
-  /** Each roof's height as it stands, in the order of `shown`'s roofs: its own, or the storey's. */
+  /** The height a roof on the ground starts at where none is set: the market's plinth and a storey. */
+  readonly startHeightM: number;
+  /** Each roof's height as it stands, in the order of `shown`'s roofs: its own, or its start. */
   readonly heights: readonly RoofHeightShown[];
   /** Each roof's marks, from the design drawn. */
   readonly roofMarks: readonly RoofMarksView[];
@@ -162,6 +162,11 @@ export interface RoofStepView {
   readonly numberEntry: NumberEntry;
   /** Where each length's label sits on the screen: along its edge, out past a short one. */
   readonly layoutLabels: typeof labelLayoutOf;
+  /**
+   * Where the scene's points land on the screen for a camera as it stands now: every mark the page
+   * keeps on the model is placed through it, in the frame being drawn (`T-M05-002`, part e).
+   */
+  readonly screenProjector: typeof screenProjector;
   /** The picked corner's angle, in whole degrees. */
   readonly pickedAngle: number | null;
   /** The guide lines a corner in hand is held on, drawn dashed across the map. */

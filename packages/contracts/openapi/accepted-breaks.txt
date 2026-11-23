@@ -1,1 +1,1 @@
-GET /designs/{id}/document added the new `plan` enum value to the `document/roofs/items/edges/items/` response property for the response status `200`
+GET /designs/{id}/document the `document/roofs` response property's maxItems was increased from `50` to `200` for the response status `200`

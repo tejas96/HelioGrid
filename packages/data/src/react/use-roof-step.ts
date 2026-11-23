@@ -39,6 +39,7 @@ import {
   STUDIO_HELPERS,
   type StudioDocument,
   type StudioHelper,
+  screenProjector,
   stepRefused,
   tracedLength,
 } from '@heliogrid/domain';
@@ -65,7 +66,7 @@ export function useRoofStep({
   helpersOff,
   setHelpersOff,
   helpersRefused,
-  storeyHeightM,
+  startHeightM,
   typedStart,
   numberEntry,
   setNumberEntry,
@@ -85,8 +86,8 @@ export function useRoofStep({
   helpersOff: readonly string[];
   setHelpersOff: (off: readonly StudioHelper[]) => void;
   helpersRefused: boolean;
-  /** The market's storey height: a roof with no height of its own stands at it. */
-  storeyHeightM: number;
+  /** The height a roof on the ground starts at: the market's plinth and one storey. */
+  startHeightM: number;
   /** The market's start size for a typed roof. */
   typedStart: { readonly length: number; readonly width: number };
   numberEntry: NumberEntry;
@@ -128,7 +129,8 @@ export function useRoofStep({
   const sizing = roofStep.kind === 'sizing' ? roofStep : null;
   const view: RoofStepView = {
     roofStep,
-    heights: shown?.roofs.map((roof) => roofHeightOf(roof, storeyHeightM)) ?? [],
+    heights: shown?.roofs.map((roof) => roofHeightOf(roof, startHeightM)) ?? [],
+    startHeightM,
     job: focusJobOf(roofStep),
     magnet: picked,
     magnetRefused: helpersRefused,
@@ -153,6 +155,7 @@ export function useRoofStep({
           },
     numberEntry,
     layoutLabels: labelLayoutOf,
+    screenProjector,
     pickedAngle: shown === null ? null : pickedAngleOf(roofStep, shown),
     guides: guidesOf(roofStep),
     dragTagAt: dragTagAt(roofStep),

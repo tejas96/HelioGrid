@@ -15,6 +15,10 @@
   stay on the index, because a screen renders what the server sent. Minting the brand, reading a
   figure out of a pack and labelling a figure one is handed compute nothing and stay on the index,
   each named with its reason on the reviewed list in `tests/money/device-entry.test.ts`.
+- **A third entry, `./studio-kernel` (`src/studio-kernel.ts`), holds the design studio's roof
+  geometry** and the one shape library it hides (`polygon-clipping`). Nothing the index exports
+  reaches it, and the phone app never imports it (dependency-cruiser
+  `roof-kernel-has-its-own-entry`).
 
 ## Local conventions
 

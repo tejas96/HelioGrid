@@ -99,7 +99,12 @@ export function StudioSizeCard({
   const refusal: TranslatedText | null =
     card.refusal === null
       ? null
-      : words.sizeRefusal(card.refusal, roofWordsShown(format, units), LENGTH_MIN_M, LENGTH_MAX_M);
+      : words.sizeRefusal(
+          card.refusal,
+          roofWordsShown(format, units, studio.startHeightM),
+          LENGTH_MIN_M,
+          LENGTH_MAX_M,
+        );
   const onKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {
     if (event.key === 'Escape') {
       event.preventDefault();
