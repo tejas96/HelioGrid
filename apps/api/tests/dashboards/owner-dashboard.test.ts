@@ -1,6 +1,6 @@
 import type { MoneyDue, RecordedPayment } from '@heliogrid/contracts';
 import { lead, subscription } from '@heliogrid/db';
-import { daysFrom, FOUNDER_ROLE, localDate, MS_PER_DAY } from '@heliogrid/domain';
+import { daysFrom, FOUNDER_ROLE, localDate, localInstant, MS_PER_DAY } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -222,12 +222,16 @@ describe.skipIf(skip)('the owner dashboard, over HTTP against a migrated databas
 
   it('counts the reader’s own overdue tasks on leads they may see (M13-10)', async () => {
     const before = (await dashboardOf(owner())).needsYou.myOverdueTasks;
+    // An hour ago, but never before today began on the company's clock: a task due yesterday is
+    // refused, so a run just past midnight would otherwise send one.
+    const now = Date.now();
+    const todayBegan = localInstant(localDate(now, KOLKATA), 0, KOLKATA);
     const added = await owner().call(
       'POST',
       `/leads/${made.teamLead}/tasks`,
       {
         kind: 'follow_up',
-        dueAt: new Date(Date.now() - HOUR_MS).toISOString(),
+        dueAt: new Date(Math.max(now - HOUR_MS, todayBegan)).toISOString(),
         assigneeId: ids.owner,
       },
       retryKey(),
