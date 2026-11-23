@@ -103,10 +103,12 @@ export function roofFormOf(roof: Roof, facts: RoofFacts, picks: FormPicks = {}):
 }
 
 /**
- * How near the outline a drawn face's corner may sit, in metres; the faces may miss a band this
- * wide along the outline, as a design kept to the centimetre does, and no more.
+ * How near the outline a drawn face's corner may sit, in metres: kept to the centimetre, an edge's
+ * ends and a corner along it each round on their own, up to a centimetre's diagonal apart. The
+ * faces may miss a band a centimetre wide along the outline, and no more.
  */
 const FIT_M = 0.01;
+const ON_EDGE_M = FIT_M * Math.SQRT2;
 
 /**
  * Faces drawn by hand still fit the outline they were drawn on: inside it, and covering it. An
@@ -117,7 +119,7 @@ const FIT_M = 0.01;
 function facesFit(outline: readonly GroundPoint[], faces: readonly HandFaceSet[]): boolean {
   const on = (point: GroundPoint) =>
     pointInside(point, outline) ||
-    outline.some((a, i) => distanceToSegment(point, a, cornerAfter(outline, i)) < FIT_M);
+    outline.some((a, i) => distanceToSegment(point, a, cornerAfter(outline, i)) <= ON_EDGE_M);
   if (!faces.every((face) => face.corners.every(on))) return false;
   const area = roofArea(outline);
   const covered = faces.reduce((sum, face) => sum + roofArea(face.corners), 0);

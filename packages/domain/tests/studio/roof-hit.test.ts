@@ -4,7 +4,7 @@ import type { GroundPoint } from '../../src/studio/ground';
 import { roofHitOf } from '../../src/studio/roof-hit';
 import { roofSceneOf } from '../../src/studio/roof-scene-build';
 import { roofsWorked } from '../../src/studio/roof-worked';
-import { box, designOf, FACTS, kindOf, stairOn, TERRACE } from './roof-meet-support';
+import { box, designOf, FACTS, kindOf, roofOf, stairOn, TERRACE } from './roof-meet-support';
 import { shaped } from './roof-sheet-support';
 
 /**
@@ -102,6 +102,13 @@ describe('a tap on the 3D model', () => {
     const level = low + 1.5;
     const hit = hitOf(design, (h) => ({ east: -1 + (level - h) * 10, north: 2.5 }));
     expect(hit).toEqual({ kind: 'side', roof: 0, side: 3 });
+  });
+
+  it('a camera just over a roof, looking up at a tower, meets the tower, not the roof behind it', () => {
+    const tower = roofOf('tower', box(10, 0, 4, 4), { height: { metres: 10, setBy: 'person' } });
+    // From 4 m up over the terrace's middle, up and east: the tower's west wall, 8 m up.
+    const up = (h: number) => (h < 4 ? null : { east: 5 + (h - 4) * 1.25, north: 2 });
+    expect(hitOf(designOf(TERRACE, tower), up)).toEqual({ kind: 'side', roof: 1, side: 3 });
   });
 
   it('a second tap on the open roof’s top picks the roof under it', () => {

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ringAreaM2 } from '../../src/studio/roof-polygons';
 import type { SceneFace } from '../../src/studio/roof-scene';
 import { roofSceneOf } from '../../src/studio/roof-scene-build';
-import { box, designOf, FACTS, roofOf } from './roof-meet-support';
+import { box, designOf, FACTS, kindOf, roofOf } from './roof-meet-support';
 
 /**
  * Two sloped roofs that meet (`T-M05-002`, part e, E083): a lower one run into a higher one is cut
@@ -32,6 +32,16 @@ describe('two sloped roofs that meet', () => {
     // The house's 96 m² and the porch's 12 m² outside it: the 3 m² both cover is counted once.
     expect(of(0) + of(1)).toBeCloseTo(96 + 12, 6);
     expect(of(1)).toBeLessThan(15);
+  });
+
+  it('a sloped open shed standing on the house roof leaves the house roof whole under it', () => {
+    const shed = kindOf('shed', 'open_shed', box(2, 2, 4, 4), {
+      ...sheet,
+      on: 'house',
+      shape: { is: 'gable', setBy: 'person' },
+    });
+    const scene = roofSceneOf(designOf(HOUSE, shed), FACTS);
+    expect(planArea(scene.faces.filter((face) => face.roof === 0))).toBeCloseTo(96, 6);
   });
 
   it('two sloped roofs that only touch are left whole', () => {

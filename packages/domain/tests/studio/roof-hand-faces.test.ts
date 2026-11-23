@@ -111,6 +111,31 @@ describe('a roof of any shape with faces drawn by hand', () => {
     expect(sloped(kept)).toBe(true);
   });
 
+  it('kept to the centimetre on a 30° edge, a face corner on the edge still fits', () => {
+    // The edge's ends and the corner along it each round on their own: here the corner ends
+    // 1.16 cm off the rounded edge, more than a centimetre, less than its square root of two.
+    const a = p(0.003, 0.0041);
+    const b = p(10.0051, 5.774_732_691_896_256);
+    const along = (from: ReturnType<typeof p>, to: ReturnType<typeof p>, t: number) =>
+      p(from.east + (to.east - from.east) * t, from.north + (to.north - from.north) * t);
+    const d = p(0.003, 8.0041);
+    const c = p(10.0051, 13.774_732_691_896_256);
+    const [split, splitTop] = [along(a, b, 0.676), along(d, c, 0.676)];
+    const face = (corners: ReturnType<typeof p>[]) => ({
+      corners,
+      slope: { degrees: 20, setBy: 'person' as const },
+      lowSide: 0,
+    });
+    const roof = roofOf('aslant', [a, b, c, d], {
+      shape: {
+        is: 'any',
+        setBy: 'person',
+        faces: [face([a, split, splitTop, d]), face([split, b, c, splitTop])],
+      },
+    });
+    expect(sloped(roofToCentimetre(roof))).toBe(true);
+  });
+
   it('a move carries its faces with it', () => {
     const moved = roofMoved(designOf(DRAWN), 0, p(10, 5)).document.roofs[0];
     expect(moved?.shape?.faces?.[0]?.corners[0]).toEqual(p(10, 5));

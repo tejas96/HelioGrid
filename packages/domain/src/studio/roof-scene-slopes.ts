@@ -2,7 +2,7 @@ import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { cutInto, facesHeightAt, facesWithout } from './roof-cuts';
 import type { BuiltFace } from './roof-faces';
-import { roofKindOf, standsOn } from './roof-kind';
+import { roofKindOf, roofWithItsParts, standsOn } from './roof-kind';
 import { farApart, shapeOf, shapesArea, shared } from './roof-polygons';
 import type { RoofScene, SceneFace, SceneWall } from './roof-scene';
 import type { RoofsWorked } from './roof-worked';
@@ -75,12 +75,19 @@ function meetingSlopes(
     for (const b of sloped.slice(i + 1)) {
       const one = (document.roofs[a] as Roof).corners;
       const other = (document.roofs[b] as Roof).corners;
-      if (farApart(one, other)) continue;
+      // A roof standing on another, or part of it, stands over it: it cuts nothing out of it.
+      if (farApart(one, other) || goesWith(document, a, b) || goesWith(document, b, a)) continue;
       if (shapesArea(shared([shapeOf(one)], [shapeOf(other)]) ?? []) < OVERLAP_M2) continue;
       pairs.push(ridge(a) >= ridge(b) ? [a, b] : [b, a]);
     }
   });
   return pairs;
+}
+
+/** Roof `b` stands on roof `a` or is part of it, at any depth. */
+function goesWith(document: StudioDocument, a: number, b: number): boolean {
+  const other = document.roofs[b] as Roof;
+  return standsOn(document, other) === a || roofWithItsParts(document, a).includes(b);
 }
 
 /** Two outlines that share less ground than this, in square metres, only touch. */
