@@ -39,6 +39,7 @@ import {
   STUDIO_HELPERS,
   type StudioDocument,
   type StudioHelper,
+  screenProjector,
   stepRefused,
   tracedLength,
 } from '@heliogrid/domain';
@@ -153,6 +154,7 @@ export function useRoofStep({
           },
     numberEntry,
     layoutLabels: labelLayoutOf,
+    screenProjector,
     pickedAngle: shown === null ? null : pickedAngleOf(roofStep, shown),
     guides: guidesOf(roofStep),
     dragTagAt: dragTagAt(roofStep),

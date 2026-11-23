@@ -5,7 +5,7 @@ import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { type ReactNode, type RefObject, useRef, useState } from 'react';
-import { MathUtils, Vector3 } from 'three';
+import { MathUtils } from 'three';
 import { type ClearGround, StudioCameraRig, type StudioDrive } from './StudioCameraRig';
 import { StudioOwnGround } from './StudioOwnGround';
 import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
@@ -17,6 +17,7 @@ import {
   StudioRoofs,
 } from './StudioRoofs';
 import { StudioScaleTween } from './StudioScaleTween';
+import { type SceneScreen, screenOfFrame } from './scene-screen';
 
 const RADIANS = MathUtils.DEG2RAD;
 /** The plain ground where there is no picture, wide enough that its edge is never seen. */
@@ -61,9 +62,6 @@ const GRID_LIFT_M = 0.02;
 const SKY_LIGHT = 1.1;
 const SUN_LIGHT = 2.4;
 const SHADOW_MAP_PX = 2048;
-/** The pin's point on the ground, where the marker's tip stands. */
-const PIN_POINT = new Vector3(0, 0, 0);
-
 /** The sun's light from where the sun stands, casting soft shadows over the site. */
 function SunLight({ sun, palette }: { sun: SunPosition; palette: ThemePalette }) {
   const azimuth = sun.azimuthDegrees * RADIANS;
@@ -96,17 +94,21 @@ function SunLight({ sun, palette }: { sun: SunPosition; palette: ThemePalette })
  * screen, and hides it while the pin is behind the camera. The marker is the page's own, never
  * drawn into the scene.
  */
-function PinFollower({ label }: { label: RefObject<HTMLElement | null> }) {
-  const at = new Vector3();
+function PinFollower({
+  label,
+  screen,
+}: {
+  label: RefObject<HTMLElement | null>;
+  screen: SceneScreen;
+}) {
   useFrame(({ camera, size }) => {
     const node = label.current;
     if (node === null) return;
-    at.copy(PIN_POINT).project(camera);
-    const behind = at.z > 1;
-    node.dataset.hidden = String(behind);
-    const x = ((at.x + 1) / 2) * size.width;
-    const y = ((1 - at.y) / 2) * size.height;
-    node.style.transform = `translate(-50%, -100%) translate(${x}px, ${y}px)`;
+    // The pin's point on the ground, where the marker's tip stands, in the frame being drawn.
+    const at = screenOfFrame(screen, camera, size)(0, 0, 0);
+    node.dataset.hidden = String(at === null);
+    if (at !== null)
+      node.style.transform = `translate(-50%, -100%) translate(${at.x}px, ${at.y}px)`;
   });
   return null;
 }
@@ -148,6 +150,8 @@ export interface StudioSceneProps {
   plan: PlanShown | null;
   /** Its closed outlines glow: it rests, unlocked, and a tap makes a roof. */
   planGlows: boolean;
+  /** Where a scene point lands on the screen: every mark on the model is placed through it. */
+  screen: SceneScreen;
 }
 
 /**
@@ -176,6 +180,7 @@ export function StudioScene({
   roofMarks,
   plan,
   planGlows,
+  screen,
 }: StudioSceneProps) {
   // biome-ignore lint/plugin: the web's WebGL picture of the ground, handed on to the roofs' tops
   const [sharp, setSharp] = useState<RoofTopPicture | null>(null);
@@ -240,7 +245,7 @@ export function StudioScene({
             infiniteGrid
           />
         ) : null}
-        <PinFollower label={pinLabel} />
+        <PinFollower label={pinLabel} screen={screen} />
         <StudioRoofs
           roofs={roofs}
           view={view}
@@ -252,6 +257,7 @@ export function StudioScene({
           rise={rise}
           sizing={sizing}
           marks={roofMarks}
+          screen={screen}
         />
       </StudioScaleTween>
       <StudioCameraRig

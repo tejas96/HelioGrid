@@ -239,6 +239,12 @@ export {
   typedStart,
 } from './roof-type';
 export {
+  type CameraPose,
+  type ScenePoint,
+  type ScreenProjector,
+  screenProjector,
+} from './screen-point';
+export {
   areaOfPlace,
   operatorAfterArea,
   type PlaceRegion,

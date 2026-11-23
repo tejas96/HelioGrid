@@ -17,6 +17,7 @@ import type {
   RoofMarksView,
   RoofStepState,
   StudioDocument,
+  screenProjector,
   TypedRefusal,
 } from '@heliogrid/domain';
 
@@ -162,6 +163,11 @@ export interface RoofStepView {
   readonly numberEntry: NumberEntry;
   /** Where each length's label sits on the screen: along its edge, out past a short one. */
   readonly layoutLabels: typeof labelLayoutOf;
+  /**
+   * Where the scene's points land on the screen for a camera as it stands now: every mark the page
+   * keeps on the model is placed through it, in the frame being drawn (`T-M05-002`, part e).
+   */
+  readonly screenProjector: typeof screenProjector;
   /** The picked corner's angle, in whole degrees. */
   readonly pickedAngle: number | null;
   /** The guide lines a corner in hand is held on, drawn dashed across the map. */

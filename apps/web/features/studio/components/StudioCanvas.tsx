@@ -151,6 +151,7 @@ export function StudioCanvas({
             frameOn={frameOn}
             rise={rise}
             roofMarks={roofMarks}
+            screen={studio.screenProjector}
             plan={studio.own.plan}
             planGlows={
               studio.own.plan !== null && !studio.own.plan.picked && !studio.own.plan.laid.locked
