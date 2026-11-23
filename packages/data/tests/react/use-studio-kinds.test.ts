@@ -131,3 +131,80 @@ describe('the first roof, and a roof’s row', () => {
     expect(stored.saves).toHaveLength(2);
   });
 });
+
+describe('the model the screen draws, and the moves on it', () => {
+  const stair = {
+    ...TERRACE,
+    id: '01a50000-0000-7000-8000-000000000913',
+    corners: box(0, 0, 3, 3),
+    kind: { is: 'stair_room', setBy: 'system' },
+    on: TERRACE.id,
+  } as StudioDocumentWire['roofs'][number];
+  const shed = {
+    ...TERRACE,
+    id: '01a50000-0000-7000-8000-000000000914',
+    corners: box(10, 0, 4, 8),
+    material: { type: 'trapezoidal_sheet', setBy: 'system', confirmed: false },
+  } as StudioDocumentWire['roofs'][number];
+
+  it('a roof on another stands on its top, is named by its kind, and its ground is counted once', async () => {
+    const view = await opened([TERRACE, stair]);
+    const { scene, topMarks, roofsAreaM2, heights } = view.result.current;
+    expect(scene.levels).toEqual([
+      { footM: 0, topM: 3 },
+      { footM: 3, topM: 6 },
+    ]);
+    expect(heights.map((height) => height.metres)).toEqual([3, 3]);
+    expect(topMarks[1]).toMatchObject({ name: { kind: 'stair_room', with: 1 }, aboveM: 3 });
+    expect(roofsAreaM2).toBeCloseTo(80, 6);
+  });
+
+  it('a side’s dot takes its wall off as one save, and the model follows', async () => {
+    const view = await opened([TERRACE]);
+    const walls = () =>
+      view.result.current.scene.prisms.filter((prism) => prism.part === 'parapet');
+    expect(walls()).toHaveLength(4);
+    act(() => view.result.current.moves.toggleSideWall(0, 2));
+    await waitFor(() => expect(saved()[0]?.sides?.[2]).toEqual({ parapet: false }));
+    expect(stored.saves).toHaveLength(1);
+    expect(walls()).toHaveLength(3);
+    expect(view.result.current.topMarks[0]?.dots.map((dot) => dot.wall)).toEqual([
+      true,
+      true,
+      false,
+      true,
+    ]);
+    const step = view.result.current.roofStep;
+    expect(step.kind === 'idle' && step.said).toMatchObject({ kind: 'side_wall', walled: 3 });
+    // The same dot again puts the wall back, as the person's own choice.
+    act(() => view.result.current.moves.toggleSideWall(0, 2));
+    await waitFor(() => expect(saved()[0]?.sides?.[2]).toEqual({ parapet: true }));
+  });
+
+  it('a height dragged near the next roof’s parapet top pulls level with it; with the magnet off it does not', async () => {
+    const view = await opened([TERRACE, shed]);
+    act(() => view.result.current.moves.openRoof(1));
+    act(() => view.result.current.moves.grabHeight());
+    act(() => view.result.current.moves.dragHeight(0.93));
+    expect(view.result.current.heightPull).toMatchObject({
+      levelM: 4,
+      to: { kind: 'parapet_top', roof: 0, name: { kind: 'roof', number: 1 } },
+    });
+    expect(view.result.current.roofSheet?.height.metres).toBe(4);
+    expect(view.result.current.scene.levels[1]?.topM).toBe(4);
+    // A height between every level and round value is free.
+    act(() => view.result.current.moves.dragHeight(1.3));
+    expect(view.result.current.heightPull).toBeNull();
+    expect(view.result.current.roofSheet?.height.metres).toBeCloseTo(4.3, 9);
+    act(() => view.result.current.moves.toggleMagnet());
+    act(() => view.result.current.moves.dragHeight(0.93));
+    expect(view.result.current.heightPull).toBeNull();
+    // A drag moves the height in steps of 0.1 m: free, it stands at 3.9 m.
+    expect(view.result.current.roofSheet?.height.metres).toBeCloseTo(3.9, 9);
+    act(() => view.result.current.moves.toggleMagnet());
+    act(() => view.result.current.moves.dragHeight(0.93));
+    act(() => view.result.current.moves.keepHeight());
+    await waitFor(() => expect(saved()[1]?.height).toEqual({ metres: 4, setBy: 'person' }));
+    expect(view.result.current.heightPull).toBeNull();
+  });
+});
