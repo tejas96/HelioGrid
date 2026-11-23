@@ -84,6 +84,7 @@ const SHEET = {
   crossRidge: /*i18n*/ { id: 'Ridge through {roof} · to check' },
   crossSunk: /*i18n*/ { id: 'Below {roof}’s parapet · to check' },
   crossEdge: /*i18n*/ { id: 'Past {roof}’s edge · to check' },
+  pickRoof: /*i18n*/ { id: 'Pick {roof}' },
   wallArrow: /*i18n*/ { id: 'Drag to change this side’s parapet height' },
   ridgeArrow: /*i18n*/ { id: 'Drag to change the ridge’s height' },
 } as const;
@@ -229,6 +230,8 @@ export function studioSheetWords(t: T) {
     makeGlass: t(SHEET.makeGlass),
     endTitle: t(SHEET.endTitle),
     end: (end: 'gable' | 'hip') => t(end === 'gable' ? SHEET.gableEnd : SHEET.hipEnd),
+    /** A roof's keyboard stop in the top view, spoken: Enter picks it. */
+    pickRoof: (roof: RoofName) => t(SHEET.pickRoof, { roof: roofNameWord(t, roof) }),
     wallArrow: t(SHEET.wallArrow),
     /** What a changed roof crosses, on the roof it crosses: allowed, and to check. */
     crossing: (crossing: RoofCrossing) =>

@@ -117,6 +117,8 @@ export function StudioRoofTopMarks({
   // plan is picked its own handles take the taps.
   const dots =
     studio.editing.kind === 'editor' && step.kind === 'idle' && studio.own.plan?.picked !== true;
+  // Each roof is a keyboard stop for an editor looking at the top view, nothing in hand.
+  const keys = dots;
   // The side a person just took the wall off says so beside its dot, until the next act.
   const off =
     step.kind === 'idle' && step.said?.kind === 'side_wall' && !step.said.wall ? step.said : null;
@@ -127,6 +129,21 @@ export function StudioRoofTopMarks({
         if (roof === undefined) return null;
         return (
           <Fragment key={roof.id}>
+            {/* A keyboard's way to each roof: Tab reaches it, Enter picks it, and its side dots
+                follow it. A tap on the map picks as it did: this stop takes no pointer. */}
+            {keys ? (
+              <span className="hg-roof-at" data-at={pointText(roof.middle)}>
+                <Pressable
+                  className="hg-roof-key"
+                  accessibilityLabel={words.pickRoof(mark.name)}
+                  accessibilityState={{ selected: picked === index }}
+                  ripple="none"
+                  onPress={() => studio.moves.pickRoof(index)}
+                >
+                  <span className="hg-roof-key-ring" aria-hidden="true" />
+                </Pressable>
+              </span>
+            ) : null}
             {mark.aboveM === null ? null : (
               <span className="hg-roof-at" data-at={pointText(roof.middle)}>
                 <span className="hg-roof-above">

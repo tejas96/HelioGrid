@@ -157,3 +157,25 @@
     0 0 0 calc(var(--hg-studio-line) * 2.5) var(--scene-mark),
     var(--e1);
 }
+
+/* A roof's keyboard stop: no pointer and nothing drawn, until a keyboard lands on it — then a ring
+   round the roof's middle says which roof Enter picks. */
+.hg-roof-at > .hg-roof-key {
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  inline-size: var(--sp-10);
+  block-size: var(--sp-10);
+  border-radius: var(--r-pill);
+  outline: none;
+}
+
+.hg-roof-key-ring {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: var(--r-pill);
+}
+
+.hg-roof-key:focus-visible .hg-roof-key-ring {
+  box-shadow: 0 0 0 var(--sp-0-5) var(--focus-ring);
+}

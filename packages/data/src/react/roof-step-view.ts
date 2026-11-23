@@ -91,6 +91,8 @@ export interface RoofPlaceMoves {
   chooseKind(choice: MeetChoice): void;
   /** A side's dot on the picked roof: its wall is added, or taken off. */
   toggleSideWall(roof: number, side: number): void;
+  /** A roof picked from the keyboard, as a tap picks it: its side dots follow it in the tab order. */
+  pickRoof(roof: number): void;
   /** Copy, from a roof's row: a copy beside it with what stands on it, picked to drag. */
   copyRoof(roof: number): void;
   /** Delete, from a roof's row: it goes with what stands on it. */
