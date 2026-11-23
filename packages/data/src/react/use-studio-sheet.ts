@@ -4,14 +4,38 @@ import type {
   History,
   MeasurementSystem,
   RoofFacts,
+  RoofHit,
   RoofStepEvent,
+  SightAt,
   StudioDocument,
   StudioView,
 } from '@heliogrid/domain';
-import type { RefObject } from 'react';
-import type { RoofSheetRowMoves, RoofSheetRowsState } from './roof-sheet-rows-view';
+import { type RefObject, useState } from 'react';
+import type {
+  RoofSheetRowMoves,
+  RoofSheetRowsState,
+  SheetPart,
+  SheetRowKey,
+} from './roof-sheet-rows-view';
 import { type RoofSheetMoves, type RoofSheetState, useRoofSheet } from './use-roof-sheet';
 import { useRoofSheetRows } from './use-roof-sheet-rows';
+
+/**
+ * What a tap shows once its roof's sheet is open: a face opens Slope, a side its own sheet, a
+ * gable's ridge turns (a hip's ridge does not turn: it opens Slope).
+ */
+function tapped(
+  hit: RoofHit,
+  showOn: (roof: number, part: SheetPart, row?: SheetRowKey | null) => void,
+  turnRidge: (roof: number) => boolean,
+) {
+  if (hit.kind === 'side') showOn(hit.roof, { kind: 'side', side: hit.side });
+  else if (hit.kind === 'face') showOn(hit.roof, ROOF, 'slope');
+  else if (hit.kind === 'ridge' && !turnRidge(hit.roof)) showOn(hit.roof, ROOF, 'slope');
+  else showOn(hit.roof, ROOF);
+}
+
+const ROOF: SheetPart = { kind: 'roof' };
 
 /**
  * A roof's sheet as the studio holds it (`T-M05-002`, part e): its height, and its other rows and
@@ -33,8 +57,10 @@ export function useStudioSheet(args: {
     metres: number,
     reachM: number,
   ) => HeightPull | null;
+  /** What a tap on the model lands on, as the kernel reads the design drawn. */
+  hitAt: (at: SightAt, reachM: number) => RoofHit | null;
 }): {
-  readonly state: RoofSheetState & RoofSheetRowsState;
+  readonly state: RoofSheetState & RoofSheetRowsState & { readonly arrowHeld: boolean };
   readonly moves: RoofSheetMoves & RoofSheetRowMoves;
   /** The side whose sheet shows over the roof's; `null` with none. */
   readonly side: number | null;
@@ -54,19 +80,49 @@ export function useStudioSheet(args: {
   const roof = sheet.state.roofSheet?.roof ?? null;
   const rows = useRoofSheetRows({ roof, latest, change, act, editable, facts, latitude, units });
   const part = rows.state.sheetPart;
+  // An arrow on the model held: the sheet steps aside for the magnet's pill until it is let go.
+  const [held, setHeld] = useState(false);
+  const holding =
+    <A extends unknown[]>(move: (...args: A) => void) =>
+    (...args: A) => {
+      setHeld(true);
+      move(...args);
+    };
+  const letting =
+    <A extends unknown[], R>(move: (...args: A) => R) =>
+    (...args: A): R => {
+      setHeld(false);
+      return move(...args);
+    };
   const done = () => {
     rows.moves.keepNumber();
     return sheet.moves.done();
   };
   return {
-    state: { ...sheet.state, ...rows.state },
+    state: { ...sheet.state, ...rows.state, arrowHeld: held },
     moves: {
       ...sheet.moves,
       ...rows.moves,
-      done,
+      grabHeight: holding(sheet.moves.grabHeight),
+      grabWall: holding(rows.moves.grabWall),
+      grabRidge: holding(rows.moves.grabRidge),
+      keepHeight: letting(sheet.moves.keepHeight),
+      keepNumber: letting(rows.moves.keepNumber),
+      done: letting(done),
       closeRoof: () => {
+        setHeld(false);
         rows.moves.dropNumber();
         sheet.moves.closeRoof();
+      },
+      openRoof: (index) => {
+        rows.moves.keepNumber();
+        sheet.moves.openRoof(index);
+      },
+      tapRoof: (at, reachM) => {
+        const hit = args.hitAt(at, reachM);
+        rows.moves.keepNumber();
+        if (!sheet.landOn(hit?.roof ?? null) || hit === null) return;
+        tapped(hit, rows.showOn, rows.moves.turnRidgeOf);
       },
     },
     side: part.kind === 'side' ? part.side : null,

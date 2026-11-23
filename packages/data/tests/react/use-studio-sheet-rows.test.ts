@@ -126,3 +126,31 @@ describe('a side’s sheet', () => {
     await waitFor(() => expect(saved()?.parapet).toMatchObject({ lengthsMeasured: 'inside' }));
   });
 });
+
+describe('a tap on the model in 3D', () => {
+  /** Straight down onto a point of the plan. */
+  const down = (east: number, north: number) => () => ({ east, north });
+
+  it('on a roof opens its sheet; on its edge, that side’s sheet; off every roof, it closes', async () => {
+    const view = await opened();
+    act(() => view.result.current.moves.closeRoof());
+    act(() => view.result.current.moves.tapRoof(down(4, 3), 0.3));
+    expect(view.result.current.roofSheet?.roof).toBe(0);
+    expect(view.result.current.sheetPart).toEqual({ kind: 'roof' });
+    act(() => view.result.current.moves.tapRoof(down(4, 0.1), 0.3));
+    expect(view.result.current.sheetPart).toEqual({ kind: 'side', side: 0 });
+    act(() => view.result.current.moves.tapRoof(down(40, 40), 0.3));
+    expect(view.result.current.roofSheet).toBeNull();
+  });
+
+  it('a wall arrow held lets the sheet step aside; let go, its height is the side’s', async () => {
+    const view = await opened();
+    act(() => view.result.current.moves.openSide(0));
+    act(() => view.result.current.moves.grabWall(1));
+    expect(view.result.current.arrowHeld).toBe(true);
+    act(() => view.result.current.moves.dragWall(0.5));
+    act(() => view.result.current.moves.keepNumber());
+    expect(view.result.current.arrowHeld).toBe(false);
+    await waitFor(() => expect(saved()?.sides?.[0]).toMatchObject({ parapetM: 1.5 }));
+  });
+});

@@ -3,21 +3,15 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { MeasurementSystem, RoofKind, RoofName } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { Pressable, useFormat } from '@heliogrid/ui';
-import { type PointerEvent, useRef } from 'react';
 import { pointText } from './roof-marks-place';
+import { DragArrow, LitSide, RidgeArrow } from './StudioRoofArrows';
 
 /** The kinds whose top carries no height pill. */
 const NO_HEIGHT: readonly RoofKind[] = ['hole', 'dormer'];
 
-/** A dragged height within this many pixels of a level pulls to it. */
-const PULL_PX = 8;
-
-/** One arrow key on the blue arrow: up or down a step. */
-const ARROW_STEP: Readonly<Record<string, 1 | -1>> = { ArrowUp: 1, ArrowDown: -1 };
-
 /**
- * The blue arrow on the open roof's top: a drag up or down changes the height, the walls follow
- * and the number beside it counts with them; let go, it is kept. Up and Down step it by a key.
+ * The open roof's own height arrow: a drag up or down changes its height, the walls follow; let
+ * go, it is kept. Up and Down step it by a key.
  */
 function HeightArrow({
   studio,
@@ -40,62 +34,20 @@ function HeightArrow({
   top: number;
 }) {
   const format = useFormat();
-  const held = useRef<{ y: number; perMetre: number } | null>(null);
-  const holder = useRef<HTMLSpanElement>(null);
   const { moves } = studio;
-  const onPointerDown = (event: PointerEvent<HTMLSpanElement>) => {
-    if (event.button !== 0) return;
-    event.stopPropagation();
-    event.currentTarget.setPointerCapture(event.pointerId);
-    // The placer measures how many screen pixels one metre up takes at the roof's top.
-    const perMetre = Number(holder.current?.dataset.perMetre ?? 0);
-    held.current = { y: event.clientY, perMetre };
-    moves.grabHeight();
-  };
-  const onPointerMove = (event: PointerEvent<HTMLSpanElement>) => {
-    const press = held.current;
-    if (press === null || press.perMetre <= 0) return;
-    // The magnet's reach is 0.1 m, or 8 pixels where that is more: the hook caps it.
-    moves.dragHeight((press.y - event.clientY) / press.perMetre, PULL_PX / press.perMetre);
-  };
-  const onPointerUp = (event: PointerEvent<HTMLSpanElement>) => {
-    if (held.current === null) return;
-    event.stopPropagation();
-    held.current = null;
-    moves.keepHeight();
-  };
   return (
-    <span
-      ref={holder}
-      className="hg-roof-at"
-      data-at={middle}
-      data-top={top}
-      data-arrow="true"
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
-    >
-      <Pressable
-        className="hg-roof-arrow"
-        accessibilityLabel={words.heightArrow(name)}
-        ripple="none"
-        focusGroup={{
-          tabbable: true,
-          onKey: (key) => {
-            const by = ARROW_STEP[key];
-            if (by === undefined) return false;
-            moves.stepHeight(by);
-            return true;
-          },
-        }}
-      >
-        <span className="hg-roof-arrow-stem" aria-hidden="true" />
-        <span className="hg-roof-len hg-roof-arrow-value" data-kind="typed">
-          {format.roofHeight(metres, units)}
-        </span>
-      </Pressable>
-    </span>
+    <DragArrow
+      kind="roof"
+      label={words.heightArrow(name)}
+      value={format.roofHeight(metres, units)}
+      at={middle}
+      top={top}
+      onGrab={moves.grabHeight}
+      // The magnet's reach is 0.1 m, or 8 pixels where that is more: the hook caps it.
+      onDrag={(risenM, reachM) => moves.dragHeight(risenM, reachM)}
+      onKeep={() => moves.keepHeight()}
+      onStep={moves.stepHeight}
+    />
   );
 }
 
@@ -168,6 +120,12 @@ export function StudioRoofTops({
         const name = studio.topMarks[index]?.name ?? { kind: 'roof' as const, number: index + 1 };
         const middle = pointText(roof.middle);
         if (index === open && editable) {
+          // A side's sheet shows its own wall's arrow; the roof's shows its height and its ridge.
+          if (studio.sheetPart.kind === 'side') {
+            return (
+              <LitSide key={roof.id} studio={studio} marks={roof} units={units} words={words} />
+            );
+          }
           return (
             <HeightArrow
               key={roof.id}
@@ -200,6 +158,7 @@ export function StudioRoofTops({
           </span>
         );
       })}
+      <RidgeArrow studio={studio} units={units} words={words} />
     </>
   );
 }

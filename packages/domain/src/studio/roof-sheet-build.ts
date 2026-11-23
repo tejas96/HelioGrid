@@ -1,5 +1,6 @@
 import { compassOf } from './compass';
 import type { Roof, StudioDocument } from './document';
+import type { GroundPoint } from './ground';
 import { roofFormOf } from './roof-built';
 import { gableEnds } from './roof-forms';
 import { belongsTo, roofKindOf, roofSidesOf, standsOn } from './roof-kind';
@@ -116,6 +117,32 @@ function kindRowOf({ document, index, roof }: RowFacts): RoofSheetRows['kind'] {
   return { is: kind, choices, waits: guessed || sticksOut };
 }
 
+/**
+ * The longest ridge edge of a sloped roof's faces — a shed's high edge — where its height arrow
+ * stands; `null` where it has none (a pyramid).
+ */
+function ridgeOf(
+  built: NonNullable<RoofsWorked['built'][number]>,
+): NonNullable<RoofSheetRows['slope']>['ridge'] {
+  let best: { from: GroundPoint; to: GroundPoint } | null = null;
+  let longest = 0;
+  for (const face of built.faces) {
+    for (let i = 0; i < face.edges.length; i += 1) {
+      const from = face.corners[i];
+      const to = face.corners[(i + 1) % face.corners.length];
+      if (face.edges[i] !== 'ridge' || from === undefined || to === undefined) continue;
+      const length = Math.hypot(to.east - from.east, to.north - from.north);
+      if (length <= longest) continue;
+      longest = length;
+      best = {
+        from: { east: from.east, north: from.north },
+        to: { east: to.east, north: to.north },
+      };
+    }
+  }
+  return best;
+}
+
 /** A sloped roof's slope, the way it runs, its ridge, and a low side against a taller wall. */
 function slopeRowOf(
   row: RowFacts,
@@ -133,6 +160,7 @@ function slopeRowOf(
     number,
     way: wayOf(built),
     ridgeAboveM: built.topM,
+    ridge: ridgeOf(built),
     lowAgainst,
     waits: lowAgainst !== null || glass?.toCheck === true,
   };

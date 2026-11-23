@@ -170,7 +170,10 @@ function placePath(path: SVGPathElement, screenOf: ScreenOf): void {
   const seen: Xy[] = [];
   for (const text of (path.dataset.pts ?? '').split(';')) {
     const point = readPoint(text);
-    const s = point === null ? null : screenOf(point, onTop(path));
+    // A point may carry its own height after its place: an upright face's top and foot.
+    const own = Number(text.split(' ')[2]);
+    const up = Number.isFinite(own) ? own : onTop(path);
+    const s = point === null ? null : screenOf(point, up);
     if (s !== null) seen.push(s);
   }
   const close = path.dataset.closed === 'true' ? 'Z' : '';

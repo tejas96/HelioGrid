@@ -96,6 +96,17 @@ describe('a roof’s sheet: one row per value it has', () => {
     expect(sheet.slope?.way).toEqual({ kind: 'faces', ways: expect.any(Array) });
     expect(sheet.slope?.way.kind === 'faces' && sheet.slope.way.ways).toHaveLength(2);
     expect(sheet.slope?.ridgeAboveM).toBeGreaterThan(0);
+    // The 12 × 8 gable's ridge runs east to west along its middle.
+    const ridge = sheet.slope?.ridge;
+    expect(ridge?.from.north).toBeCloseTo(4, 6);
+    expect(ridge?.to.north).toBeCloseTo(4, 6);
+    expect(Math.abs((ridge?.to.east ?? 0) - (ridge?.from.east ?? 0))).toBeGreaterThan(0);
+  });
+
+  it('a shed’s ridge is its high edge: north of the equator, its north side', () => {
+    const ridge = sheetOf(designOf(LEAN), 0).slope?.ridge;
+    expect(ridge?.from.north).toBeCloseTo(8, 6);
+    expect(ridge?.to.north).toBeCloseTo(8, 6);
   });
 
   it.each([

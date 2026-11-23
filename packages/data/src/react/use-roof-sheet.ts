@@ -3,7 +3,6 @@ import {
   type EditRefusal,
   entryMetres,
   entryOf,
-  type GroundPoint,
   HEIGHT_PULL_M,
   HEIGHT_PULL_MAX_M,
   type HeightPull,
@@ -18,10 +17,9 @@ import {
   roofHeightOf,
   roofHeightReset,
   roofHeightStepped,
-  roofHitAt,
   roofSheetOf,
   roofStartHeightM,
-  roofTopsM,
+  type SightAt,
   type StudioDocument,
 } from '@heliogrid/domain';
 import { type RefObject, useEffect, useRef, useState } from 'react';
@@ -29,8 +27,12 @@ import { type RefObject, useEffect, useRef, useState } from 'react';
 /** A roof's sheet in 3D: opened by a tap, its height changed by the arrow, the slider or a box. */
 export interface RoofSheetMoves {
   openRoof(roof: number): void;
-  /** A tap in 3D: the roof it lands on opens; off every roof, the sheet closes. */
-  tapRoof(groundAt: (heightM: number) => GroundPoint | null): void;
+  /**
+   * A tap on the model in 3D, as the kernel reads it (`roofHitOf`): what it lands on — a roof
+   * opens its sheet, a face its Slope, a side its own sheet, a gable's ridge turns; off every
+   * roof, the sheet closes. `reachM`: how far a finger's width reaches there, in metres.
+   */
+  tapRoof(at: SightAt, reachM: number): void;
   /** × or Esc: the sheet closes; a height still in hand goes, as the length box's × does. */
   closeRoof(): void;
   /** The slider moved: the walls follow; nothing is kept yet. */
@@ -101,7 +103,12 @@ export function useRoofSheet({
     metres: number,
     reachM: number,
   ) => HeightPull | null;
-}): { state: RoofSheetState; moves: RoofSheetMoves } {
+}): {
+  state: RoofSheetState;
+  moves: RoofSheetMoves;
+  /** The sheet lands on a roof — `null` closes it — keeping a height in hand first; `false` when refused. */
+  landOn(index: number | null): boolean;
+} {
   const [open, setOpen] = useState<{ roof: number } | null>(null);
   const [inHand, setInHand] = useState<number | null>(null);
   // The box keeps what was typed, a half-typed number included, until the sheet moves on.
@@ -163,17 +170,14 @@ export function useRoofSheet({
     hold(null);
     setOpen(null);
   };
-  /** Each roof's top above the ground now, the height in hand included: where a 3D tap meets it. */
-  const topsNow = (at: StudioDocument) => {
-    const held = hand.current;
-    const roofs = at.roofs.map((each, i) =>
-      i === roof && held !== null
-        ? { ...each, height: { metres: held, setBy: 'person' as const } }
-        : each,
-    );
-    return roofTopsM({ ...at, roofs }, facts);
-  };
   return {
+    landOn: (index) => {
+      if (index === roof) return true;
+      if (!keep()) return false;
+      if (index === null) setOpen(null);
+      else openRoof(index);
+      return true;
+    },
     state: {
       roofSheet,
       sheetFrame: roofSheet === null ? null : open,
@@ -184,15 +188,7 @@ export function useRoofSheet({
     },
     moves: {
       openRoof,
-      tapRoof: (groundAt) => {
-        const at = latest.current?.present;
-        if (at === undefined) return;
-        const hit = roofHitAt(at, topsNow(at), groundAt);
-        if (hit === roof) return;
-        if (!keep()) return;
-        if (hit === null) setOpen(null);
-        else openRoof(hit);
-      },
+      tapRoof: () => undefined,
       closeRoof: close,
       slideHeight: (metres) => {
         if (editable && roof !== null) hold(metres);

@@ -17,11 +17,11 @@ import {
   studioJobOf,
   viewsOffered,
 } from '@heliogrid/domain';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { planOutlinesOf } from './own-picture-view';
 import { readOf } from './read';
 import { closePlacingOf, roofPlaceMoves } from './roof-place-moves';
-import { heightPullWith, useRoofModel } from './roof-scene-view';
+import { heightPullWith, type RoofModelSeen, useRoofModel } from './roof-scene-view';
 import { arrivalOf, framedWithCard, useSizeCardOpens } from './size-card';
 import {
   editingOf,
@@ -109,6 +109,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const { roofStep } = roof.view;
 
   useSizeCardOpens(arrivalOf(document, picture, editing, editable, view), roof.moves.typeSize);
+  // A tap reads the model drawn, which is built after the sheet: it is read when the tap comes.
+  const seen = useRef<RoofModelSeen['hitAt']>(() => null);
   const sheet = useStudioSheet({
     document,
     latest,
@@ -119,10 +121,12 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     units,
     pin,
     pullOf: heightPullWith(facts, roof.magnetNow),
+    hitAt: (at, reachM) => seen.current(at, reachM),
   });
   const { roofSheet, numberInHand } = sheet.state;
   const { shown } = roof.view;
-  const model = useRoofModel(shown, facts, roofSheet, pin, sheet.side, numberInHand);
+  const { hitAt, ...model } = useRoofModel(shown, facts, roofSheet, pin, sheet.side, numberInHand);
+  seen.current = hitAt;
   const place = roofPlaceMoves({ latest, step, act, facts });
   // Drawing happens in the top view only: the camera flies there first. A roof's sheet is the 3D
   // view's: its height is kept and it closes, as when the top view is picked; a height that is

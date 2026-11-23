@@ -5134,7 +5134,7 @@ msgid "Any manager"
 msgstr "Any manager"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:106
+#: src/copy/studio-sheet.ts:108
 msgid "Any shape"
 msgstr "Any shape"
 
@@ -6151,7 +6151,7 @@ msgid "Business profile saved"
 msgstr "Business profile saved"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:110
+#: src/copy/studio-sheet.ts:112
 msgid "Butterfly"
 msgstr "Butterfly"
 
@@ -7985,7 +7985,7 @@ msgid "Current plan"
 msgstr "Current plan"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:109
+#: src/copy/studio-sheet.ts:111
 msgid "Curved"
 msgstr "Curved"
 
@@ -8803,6 +8803,16 @@ msgid "Drag to change the height of {name}"
 msgstr "Drag to change the height of {name}"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-sheet.ts:86
+msgid "Drag to change the ridge’s height"
+msgstr "Drag to change the ridge’s height"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-sheet.ts:85
+msgid "Drag to change this side’s parapet height"
+msgstr "Drag to change this side’s parapet height"
+
+#. js-lingui-explicit-id
 #: src/copy/studio-length.ts:17
 msgid "Drag, or − + for {step}. The first length sizes the whole roof."
 msgstr "Drag, or − + for {step}. The first length sizes the whole roof."
@@ -9001,7 +9011,7 @@ msgid "Earlier versions are kept as they were sent"
 msgstr "Earlier versions are kept as they were sent"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:118
+#: src/copy/studio-sheet.ts:120
 msgid "east"
 msgstr "east"
 
@@ -9830,7 +9840,7 @@ msgid "Fixed."
 msgstr "Fixed."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:102
+#: src/copy/studio-sheet.ts:104
 msgid "Flat"
 msgstr "Flat"
 
@@ -10135,7 +10145,7 @@ msgid "G+{floor}"
 msgstr "G+{floor}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:104
+#: src/copy/studio-sheet.ts:106
 msgid "Gable"
 msgstr "Gable"
 
@@ -10145,7 +10155,7 @@ msgid "Gable end"
 msgstr "Gable end"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:112
+#: src/copy/studio-sheet.ts:114
 msgid "Gambrel"
 msgstr "Gambrel"
 
@@ -10877,7 +10887,7 @@ msgstr "Highest DC voltage (V)"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-sheet.ts:82
-#: src/copy/studio-sheet.ts:105
+#: src/copy/studio-sheet.ts:107
 msgid "Hip"
 msgstr "Hip"
 
@@ -13131,7 +13141,7 @@ msgid "Mangalore tile"
 msgstr "Mangalore tile"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:111
+#: src/copy/studio-sheet.ts:113
 msgid "Mansard"
 msgstr "Mansard"
 
@@ -13511,7 +13521,7 @@ msgid "Money summary"
 msgstr "Money summary"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:108
+#: src/copy/studio-sheet.ts:110
 msgid "Monitor"
 msgstr "Monitor"
 
@@ -15236,7 +15246,7 @@ msgid "None saved yet. Someone who adds parts can save one."
 msgstr "None saved yet. Someone who adds parts can save one."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:116
+#: src/copy/studio-sheet.ts:118
 msgid "north"
 msgstr "north"
 
@@ -15247,12 +15257,12 @@ msgid "North"
 msgstr "North"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:117
+#: src/copy/studio-sheet.ts:119
 msgid "north-east"
 msgstr "north-east"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:123
+#: src/copy/studio-sheet.ts:125
 msgid "north-west"
 msgstr "north-west"
 
@@ -16926,7 +16936,7 @@ msgid "Overdue"
 msgstr "Overdue"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:95
+#: src/copy/studio-sheet.ts:97
 msgid "Overhang"
 msgstr "Overhang"
 
@@ -18826,7 +18836,7 @@ msgid "Quick mode used your company’s timeline, payment terms, and terms and c
 msgstr "Quick mode used your company’s timeline, payment terms, and terms and conditions."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:128
+#: src/copy/studio-sheet.ts:130
 msgid "Railing"
 msgstr "Railing"
 
@@ -18836,12 +18846,12 @@ msgid "Raised frame only"
 msgstr "Raised frame only"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:92
+#: src/copy/studio-sheet.ts:94
 msgid "Raised middle’s height"
 msgstr "Raised middle’s height"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:93
+#: src/copy/studio-sheet.ts:95
 msgid "Raised middle’s width"
 msgstr "Raised middle’s width"
 
@@ -20352,7 +20362,7 @@ msgid "Savings pass the net cost after {years} years"
 msgstr "Savings pass the net cost after {years} years"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:107
+#: src/copy/studio-sheet.ts:109
 msgid "Sawtooth"
 msgstr "Sawtooth"
 
@@ -21061,7 +21071,7 @@ msgid "Shares {roof}’s edge"
 msgstr "Shares {roof}’s edge"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:103
+#: src/copy/studio-sheet.ts:105
 msgid "Shed"
 msgstr "Shed"
 
@@ -21701,17 +21711,17 @@ msgid "Source"
 msgstr "Source"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:120
+#: src/copy/studio-sheet.ts:122
 msgid "south"
 msgstr "south"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:119
+#: src/copy/studio-sheet.ts:121
 msgid "south-east"
 msgstr "south-east"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:121
+#: src/copy/studio-sheet.ts:123
 msgid "south-west"
 msgstr "south-west"
 
@@ -22546,7 +22556,7 @@ msgid "Technology"
 msgstr "Technology"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:91
+#: src/copy/studio-sheet.ts:93
 msgid "Teeth"
 msgstr "Teeth"
 
@@ -25619,7 +25629,7 @@ msgid "Upper floor"
 msgstr "Upper floor"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:89
+#: src/copy/studio-sheet.ts:91
 msgid "Upper slope"
 msgstr "Upper slope"
 
@@ -26182,7 +26192,7 @@ msgid "Waking the lead…"
 msgstr "Waking the lead…"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:127
+#: src/copy/studio-sheet.ts:129
 msgid "Wall"
 msgstr "Wall"
 
@@ -26461,7 +26471,7 @@ msgid "Went dormant"
 msgstr "Went dormant"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:122
+#: src/copy/studio-sheet.ts:124
 msgid "west"
 msgstr "west"
 
@@ -26899,12 +26909,12 @@ msgid "Where the model stops"
 msgstr "Where the model stops"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:90
+#: src/copy/studio-sheet.ts:92
 msgid "Where the slope breaks"
 msgstr "Where the slope breaks"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:94
+#: src/copy/studio-sheet.ts:96
 msgid "Where the valley sits"
 msgstr "Where the valley sits"
 

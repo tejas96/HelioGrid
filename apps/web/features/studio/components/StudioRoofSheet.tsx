@@ -12,6 +12,7 @@ import {
   useFormat,
 } from '@heliogrid/ui';
 import { type KeyboardEvent, type Ref, useEffect, useRef } from 'react';
+import { MagnetSwitch } from './StudioBarPills';
 import { StudioSheetRows } from './StudioSheetRows';
 import { StudioDetailsRows, StudioSideRows } from './StudioSideSheet';
 
@@ -69,65 +70,70 @@ export function StudioRoofSheet({
     if (part.kind !== 'roof') moves.backToRoof();
     else close();
   };
+  const pill = <MagnetPill studio={studio} words={words} phone={phone} />;
+  if (phone && studio.arrowHeld) return pill;
   return (
-    <div
-      ref={phone ? footRef : sideRef}
-      className="hg-studio-glass hg-roof-sheet"
-      data-room={phone ? 'phone' : 'desktop'}
-      data-part={part.kind}
-      role="dialog"
-      aria-label={heading.title}
-      onKeyDown={onKeyDown}
-    >
-      <div className="hg-roof-sheet-head">
-        {back === null ? null : (
-          <IconButton label={words.sheetBack} variant="ghost" onClick={back}>
-            <ShellGlyph name="chevron-left" size="md" />
-          </IconButton>
-        )}
-        <span className="hg-roof-sheet-names">
-          <span ref={title} className="hg-roof-sheet-title" tabIndex={-1}>
-            {heading.title}
+    <>
+      {pill}
+      <div
+        ref={phone ? footRef : sideRef}
+        className="hg-studio-glass hg-roof-sheet"
+        data-room={phone ? 'phone' : 'desktop'}
+        data-part={part.kind}
+        role="dialog"
+        aria-label={heading.title}
+        onKeyDown={onKeyDown}
+      >
+        <div className="hg-roof-sheet-head">
+          {back === null ? null : (
+            <IconButton label={words.sheetBack} variant="ghost" onClick={back}>
+              <ShellGlyph name="chevron-left" size="md" />
+            </IconButton>
+          )}
+          <span className="hg-roof-sheet-names">
+            <span ref={title} className="hg-roof-sheet-title" tabIndex={-1}>
+              {heading.title}
+            </span>
+            <span className="hg-roof-sheet-line">{heading.line}</span>
+            {part.kind === 'roof' ? (
+              <span className="hg-roof-sheet-area">{format.area(rows.areaM2, units)}</span>
+            ) : null}
           </span>
-          <span className="hg-roof-sheet-line">{heading.line}</span>
-          {part.kind === 'roof' ? (
-            <span className="hg-roof-sheet-area">{format.area(rows.areaM2, units)}</span>
+          <span className="hg-roof-sheet-close">
+            <IconButton label={words.sheetClose} variant="ghost" onClick={close}>
+              <ShellGlyph name="close" size="md" />
+            </IconButton>
+          </span>
+        </div>
+        <div className="hg-roof-sheet-rows">
+          {part.kind === 'side' && side !== null ? (
+            <StudioSideRows facts={facts} side={side} />
+          ) : part.kind === 'details' ? (
+            <StudioDetailsRows facts={facts} rows={rows} />
+          ) : (
+            <StudioSheetRows facts={facts} rows={rows} sheet={sheet} />
+          )}
+          {waits ? (
+            <p className="hg-sheet-check">
+              <span className="hg-sheet-dot" aria-hidden="true" />
+              {words.checkOnSite}
+            </p>
           ) : null}
-        </span>
-        <span className="hg-roof-sheet-close">
-          <IconButton label={words.sheetClose} variant="ghost" onClick={close}>
-            <ShellGlyph name="close" size="md" />
-          </IconButton>
-        </span>
+        </div>
+        <SheetFoot
+          studio={studio}
+          rows={rows}
+          words={words}
+          onDone={() => {
+            if (moves.done()) landFocusOn(map);
+          }}
+          onDelete={() => {
+            moves.deleteRoofAt(rows.roof);
+            landFocusOn(map);
+          }}
+        />
       </div>
-      <div className="hg-roof-sheet-rows">
-        {part.kind === 'side' && side !== null ? (
-          <StudioSideRows facts={facts} side={side} />
-        ) : part.kind === 'details' ? (
-          <StudioDetailsRows facts={facts} rows={rows} />
-        ) : (
-          <StudioSheetRows facts={facts} rows={rows} sheet={sheet} />
-        )}
-        {waits ? (
-          <p className="hg-sheet-check">
-            <span className="hg-sheet-dot" aria-hidden="true" />
-            {words.checkOnSite}
-          </p>
-        ) : null}
-      </div>
-      <SheetFoot
-        studio={studio}
-        rows={rows}
-        words={words}
-        onDone={() => {
-          if (moves.done()) landFocusOn(map);
-        }}
-        onDelete={() => {
-          moves.deleteRoofAt(rows.roof);
-          landFocusOn(map);
-        }}
-      />
-    </div>
+    </>
   );
 }
 
@@ -183,6 +189,29 @@ function SheetFoot({
       >
         {words.sheetDone}
       </Button>
+    </div>
+  );
+}
+
+/**
+ * The magnet's pill in 3D: while an arrow is held on a phone the sheet steps aside for it (board
+ * 10.1); on a desktop, where the foot is free, it stands there with the sheet open.
+ */
+function MagnetPill({
+  studio,
+  words,
+  phone,
+}: {
+  studio: StudioScreen;
+  words: StudioCanvasWords;
+  phone: boolean;
+}) {
+  if (studio.editing.kind !== 'editor' || (phone && !studio.arrowHeld)) return null;
+  return (
+    <div className="hg-studio-glass hg-studio-bar" data-kind="pill">
+      <span className="hg-studio-bar-acts">
+        <MagnetSwitch studio={studio} words={words} />
+      </span>
     </div>
   );
 }

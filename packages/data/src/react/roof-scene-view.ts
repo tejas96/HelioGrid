@@ -5,11 +5,14 @@ import {
   type NumberAt,
   type RoofFacts,
   type RoofHeight,
+  type RoofHit,
   type RoofSheetView,
+  type SightAt,
   type StudioDocument,
 } from '@heliogrid/domain';
 import {
   heightPullOf,
+  roofHitOf,
   roofListOf,
   roofNumberSet,
   roofSceneOf,
@@ -40,6 +43,11 @@ const NOTHING: RoofModelShown = {
   sideRows: null,
 };
 
+/** The model drawn, and what a tap on it lands on: the screen hook's, never shown. */
+export interface RoofModelSeen extends RoofModelShown {
+  hitAt(at: SightAt, reachM: number): RoofHit | null;
+}
+
 /** The open sheet's roof, the side whose sheet shows over it, and the height slider's ends. */
 export interface SheetOpen {
   readonly roof: number;
@@ -63,8 +71,8 @@ export function roofModelShown(
   /** The sheet open over the model, and a number moving on its slider, not kept yet. */
   open: SheetOpen | null = null,
   numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
-): RoofModelShown {
-  if (document === null) return NOTHING;
+): RoofModelSeen {
+  if (document === null) return { ...NOTHING, hitAt: () => null };
   const roofs =
     inHand === null
       ? document.roofs
@@ -78,9 +86,11 @@ export function roofModelShown(
   const worked = roofsWorked(shown, facts, latitude, memory.before);
   memory.before = { document: shown, worked };
   const roofList = roofListOf(shown, facts, worked);
+  const scene = roofSceneOf(shown, facts, worked);
   const row = open === null ? undefined : roofList.rows.find((each) => each.roof === open.roof);
   return {
-    scene: roofSceneOf(shown, facts, worked),
+    scene,
+    hitAt: (at, reachM) => roofHitOf(shown, scene, worked, facts, at, reachM),
     topMarks: roofTopMarksOf(shown, facts, worked),
     roofList,
     roofsAreaM2: roofsAreaM2(shown),
@@ -114,7 +124,7 @@ export function useRoofModel(
   /** The side whose sheet shows over the roof's, and the number in hand. */
   side: number | null = null,
   numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
-): RoofModelShown {
+): RoofModelSeen {
   const memory = useRef<RoofMemory>({});
   const open = sheet?.roof ?? null;
   const held = sheet?.height.metres;

@@ -82,6 +82,8 @@ const SHEET = {
   hipEnd: /*i18n*/ { id: 'Hip' },
   openSide: /*i18n*/ { id: 'Side facing {way}: open its sheet' },
   openFace: /*i18n*/ { id: 'A face of {roof}: set its slope' },
+  wallArrow: /*i18n*/ { id: 'Drag to change this side’s parapet height' },
+  ridgeArrow: /*i18n*/ { id: 'Drag to change the ridge’s height' },
 } as const;
 
 const NUMBER: Record<RoofNumber, (typeof SHEET)[keyof typeof SHEET] | { readonly id: string }> = {
@@ -222,5 +224,7 @@ export function studioSheetWords(t: T) {
     /** A side on the model, spoken: a tap opens its sheet. */
     openSide: (way: CompassWay) => t(SHEET.openSide, { way: t(WAY[way]) }),
     openFace: (roof: RoofName) => t(SHEET.openFace, { roof: roofNameWord(t, roof) }),
+    wallArrow: t(SHEET.wallArrow),
+    ridgeArrow: t(SHEET.ridgeArrow),
   };
 }

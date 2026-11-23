@@ -1,4 +1,5 @@
 import type { CompassWay } from './compass';
+import type { GroundPoint } from './ground';
 import type { RoofSits } from './roof-list';
 import type { RoofMaterial, RoofShape } from './roof-material';
 import type { RoofName } from './roof-names';
@@ -62,6 +63,8 @@ export interface RoofSheetRows {
     readonly number: RoofNumberShown;
     readonly way: SlopeWay;
     readonly ridgeAboveM: number;
+    /** The ridge's longest run on the plan, where its height arrow stands; `null` with no ridge. */
+    readonly ridge: { readonly from: GroundPoint; readonly to: GroundPoint } | null;
     /** Its low side runs against a taller roof's wall: rain runs into it. */
     readonly lowAgainst: RoofName | null;
     readonly waits: boolean;

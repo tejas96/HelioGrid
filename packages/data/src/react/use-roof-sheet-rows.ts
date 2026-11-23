@@ -13,6 +13,7 @@ import {
 import {
   edgesOf,
   formPicksOf,
+  riseForSlope,
   roofFormOf,
   roofLengthsMeasuredTo,
   roofNumberReset,
@@ -20,12 +21,14 @@ import {
   roofParapetAllRound,
   roofParapetBuilt,
   roofRidgeTurned,
+  roofShapeNow,
   roofShapePicked,
   roofSideEnded,
   roofSideMarked,
   roofSideWallFollows,
+  slopeForRise,
 } from '@heliogrid/domain/studio-kernel';
-import { type RefObject, useEffect, useRef, useState } from 'react';
+import { type RefObject, useRef, useState } from 'react';
 import type {
   RoofSheetRowMoves,
   RoofSheetRowsState,
@@ -39,6 +42,21 @@ import type {
  * and the number in hand while a slider moves. Each value kept is one change, with Undo, through
  * the studio's history and save; the rules are domain's.
  */
+
+const ROOF_PART: SheetPart = { kind: 'roof' };
+
+/** What shows over the open roof, and which roof it belongs to. */
+interface Shows {
+  readonly roof: number | null;
+  readonly part: SheetPart;
+  readonly row: SheetRowKey | null;
+}
+
+/** How far a ridge's rise runs across at a slope: the run a dragged ridge keeps. */
+function runForSlope(riseM: number, slopeDeg: number): number {
+  const rises = riseForSlope(slopeDeg, 1);
+  return rises > 0 ? riseM / rises : 0;
+}
 
 /** The numbers a side holds of its own: on a side's sheet they are the side's. */
 const SIDE_KEYS: readonly RoofNumber[] = ['parapet_height', 'setback'];
@@ -63,20 +81,24 @@ export function useRoofSheetRows({
   /** The site's latitude: which way a one-way slope first faces, and a gable's ridge. */
   latitude: number;
   units: MeasurementSystem;
-}): { state: RoofSheetRowsState; moves: RoofSheetRowMoves } {
-  const [part, setPart] = useState<SheetPart>({ kind: 'roof' });
-  const [rowOpen, setRowOpen] = useState<SheetRowKey | null>(null);
+}): {
+  state: RoofSheetRowsState;
+  moves: RoofSheetRowMoves;
+  /** A tap on the model: what shows over `at`, the roof it opened — its sheet, a side, a row. */
+  showOn(at: number, part: SheetPart, row?: SheetRowKey | null): void;
+} {
+  // What shows over a roof belongs to that roof: another roof opened starts on its own sheet,
+  // every row closed, nothing in hand.
+  const [shows, setShows] = useState<Shows>({ roof: null, part: ROOF_PART, row: null });
   const [inHand, setInHand] = useState<{ at: NumberAt; value: number } | null>(null);
   const hand = useRef(inHand);
   hand.current = inHand;
-
-  // Each roof opened starts on its own sheet, every row closed, nothing in hand.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: a new roof is a new sheet
-  useEffect(() => {
-    setPart({ kind: 'roof' });
-    setRowOpen(null);
-    setInHand(null);
-  }, [roof]);
+  // What an arrow held when it was taken: a wall's height, or the ridge's rise and its run.
+  const grabbed = useRef<{ metres: number; runM: number }>({ metres: 0, runM: 0 });
+  const own = shows.roof === roof;
+  const part = own ? shows.part : ROOF_PART;
+  const rowOpen = own ? shows.row : null;
+  const show = (part: SheetPart, row: SheetRowKey | null = null) => setShows({ roof, part, row });
 
   const side = part.kind === 'side' ? part.side : null;
   const atOf = (key: RoofNumber): NumberAt | null =>
@@ -95,10 +117,25 @@ export function useRoofSheetRows({
     setInHand(null);
     if (held !== null) apply((design) => roofNumberSet(design, held.at, held.value, facts));
   };
+  /** A gable's ridge turned 90°, or back; `false` where the roof has no ridge that turns. */
+  const turnRidgeOf = (index: number): boolean => {
+    const at = latest.current;
+    const turning = at?.present.roofs[index];
+    if (!editable || at === null || turning === undefined) return false;
+    if (roofShapeNow(turning, facts) !== 'gable') return false;
+    const picks = formPicksOf(at.present, index, facts, latitude);
+    const turned = roofFormOf(turning, facts, picks).turned === true;
+    change(historyAfter(at, roofRidgeTurned(at.present, index, facts, turned)));
+    return true;
+  };
   const onSide = (act: (design: StudioDocument, index: number, at: number) => StudioDocument) =>
     apply((design) => (roof === null || side === null ? design : act(design, roof, side)));
 
   return {
+    showOn: (at, next, row = null) => {
+      keep();
+      setShows({ roof: at, part: next, row });
+    },
     state: {
       sheetPart: part,
       rowOpen,
@@ -106,7 +143,7 @@ export function useRoofSheetRows({
       numberTyped: (shown) => roofNumberTyped(shown, units),
     },
     moves: {
-      openRow: (key) => setRowOpen((open) => (open === key ? null : key)),
+      openRow: (key) => show(part, rowOpen === key ? null : key),
       slideNumber: (key, value) => {
         const at = atOf(key);
         if (!editable || at === null) return;
@@ -142,16 +179,15 @@ export function useRoofSheetRows({
         ),
       openSide: (at) => {
         keep();
-        setPart({ kind: 'side', side: at });
-        setRowOpen(null);
+        show({ kind: 'side', side: at });
       },
       openDetails: () => {
         keep();
-        setPart({ kind: 'details' });
+        show({ kind: 'details' });
       },
       backToRoof: () => {
         keep();
-        setPart({ kind: 'roof' });
+        show(ROOF_PART);
       },
       setSideWall: (on) => {
         if (roof === null || side === null) return;
@@ -166,14 +202,31 @@ export function useRoofSheetRows({
       sideWallFollows: () => onSide(roofSideWallFollows),
       markSide: (mark) => onSide((design, index, at) => roofSideMarked(design, index, at, mark)),
       endSide: (end) => onSide((design, index, at) => roofSideEnded(design, index, at, end)),
-      turnRidge: () =>
-        apply((design) => {
-          const at = roof === null ? undefined : design.roofs[roof];
-          if (roof === null || at === undefined) return design;
-          const picks = formPicksOf(design, roof, facts, latitude);
-          const turned = roofFormOf(at, facts, picks).turned === true;
-          return roofRidgeTurned(design, roof, facts, turned);
-        }),
+      turnRidge: () => {
+        if (roof !== null) turnRidgeOf(roof);
+      },
+      turnRidgeOf,
+      grabWall: (metres) => {
+        grabbed.current = { metres, runM: 0 };
+      },
+      dragWall: (risenM) => {
+        const at = atOf('parapet_height');
+        if (!editable || at === null || at.side == null) return;
+        const held = { at, value: Math.max(0, grabbed.current.metres + risenM) };
+        hand.current = held;
+        setInHand(held);
+      },
+      grabRidge: (riseM, slopeDeg) => {
+        grabbed.current = { metres: riseM, runM: runForSlope(riseM, slopeDeg) };
+      },
+      dragRidge: (risenM) => {
+        const at = atOf('slope');
+        const { metres, runM } = grabbed.current;
+        if (!editable || at === null || runM <= 0) return;
+        const held = { at, value: slopeForRise(Math.max(0, metres + risenM), runM) };
+        hand.current = held;
+        setInHand(held);
+      },
       dropNumber: () => {
         if (hand.current === null) return false;
         hand.current = null;

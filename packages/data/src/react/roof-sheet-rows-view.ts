@@ -75,6 +75,16 @@ export interface RoofSheetRowMoves {
   endSide(end: 'gable' | 'hip'): void;
   /** A gable's ridge turned 90°, or back. */
   turnRidge(): void;
+  /** A tap on a roof's ridge: a gable's turns; `false` where the ridge does not turn. */
+  turnRidgeOf(roof: number): boolean;
+  /** The open side's wall arrow taken, its parapet height as it stands. */
+  grabWall(metres: number): void;
+  /** The wall arrow moved by how far the pointer rose, in metres: the side's parapet height follows. */
+  dragWall(risenM: number): void;
+  /** The ridge's arrow taken, the ridge's height over the low edge and the slope as they stand. */
+  grabRidge(riseM: number, slopeDeg: number): void;
+  /** The ridge arrow moved by how far the pointer rose: the slope follows, its run kept. */
+  dragRidge(risenM: number): void;
   /** Undo with a number in hand puts it back first; `true` when there was one. */
   dropNumber(): boolean;
 }

@@ -78,6 +78,8 @@ export interface StudioScreen
   readonly sun: SunPosition | null;
   /** The ground the design's roofs cover, which the camera frames; `null` before a roof. */
   readonly fit: GroundBox | null;
+  /** An arrow on the model is held: the sheet steps aside for the magnet's pill. */
+  readonly arrowHeld: boolean;
   /** The 3D switch is marked new until the 3D view is first seen. */
   readonly offer3d: boolean;
   /** Which parts show for the job in hand, on a phone-width screen or a wider one (focus mode). */

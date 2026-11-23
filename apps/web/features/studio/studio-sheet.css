@@ -225,13 +225,16 @@
 }
 
 @media (width < 968px) {
+  /* From the foot, over the tools' rows when it grows, as Roofs is: never past the screen. */
   .hg-roof-sheet {
-    grid-row: 3;
+    grid-row: 2 / 4;
     grid-column: 1 / -1;
     justify-self: stretch;
     align-self: end;
+    z-index: 3;
     inline-size: auto;
-    max-block-size: 70dvh;
+    /* The roof stays in view above it: the rows scroll inside. */
+    max-block-size: min(100%, 60dvh);
   }
 
   .hg-roof-sheet-acts > :last-child {
