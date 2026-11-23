@@ -210,8 +210,9 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         const held = step.current.kind;
         if (next !== 'top' && (held === 'drawing' || held === 'typing')) act({ kind: 'cancel' });
         if (next === '3d') setSeen3d(true);
-        // A roof's sheet is the 3D view's: the top view keeps its height and closes it.
-        if (next === 'top') void sheet.moves.done();
+        // A roof's sheet is the 3D view's: the top view keeps its height and closes it. A height
+        // that is refused keeps the sheet and the view, with its reason showing.
+        if (next === 'top' && !sheet.moves.done()) return;
         setView(next);
       },
       // Drawing happens in the top view only: the camera flies there first. A roof's sheet is the

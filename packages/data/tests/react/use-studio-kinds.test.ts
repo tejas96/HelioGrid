@@ -233,6 +233,26 @@ describe('the 3D sheet and the model, as other things change', () => {
     expect(view.result.current.scene.levels[0]?.topM).toBe(4);
   });
 
+  it.each([
+    ['the top view picked', (view: View) => view.result.current.moves.see('top')],
+    ['Draw', (view: View) => view.result.current.moves.draw()],
+  ])(
+    '%s with a height that is refused keeps the sheet and the 3D view, with its reason',
+    async (_way, leave) => {
+      const view = await opened([TERRACE]);
+      act(() => view.result.current.moves.see('3d'));
+      act(() => view.result.current.moves.openRoof(0));
+      // 400 m is past the tallest a roof may stand.
+      act(() => view.result.current.moves.typeHeight({ main: '400', inches: '', measured: false }));
+      act(() => leave(view));
+      expect(view.result.current.view).toBe('3d');
+      expect(view.result.current.roofSheet?.roof).toBe(0);
+      expect(view.result.current.heightRefusal).toBe('too_long');
+      expect(view.result.current.roofStep.kind).toBe('idle');
+      expect(stored.saves).toHaveLength(0);
+    },
+  );
+
   it('while a sheet is open the model is built once: another render of the screen hands back the same one', async () => {
     const view = await opened([TERRACE]);
     act(() => view.result.current.moves.openRoof(0));
