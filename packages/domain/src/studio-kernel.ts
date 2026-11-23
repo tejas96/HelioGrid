@@ -58,6 +58,7 @@ export {
   roofShapeNow,
   roofSloped,
 } from './studio/roof-levels';
+export { roofListOf } from './studio/roof-list-build';
 export {
   cutToEdge,
   HOLE_MAX_M2,

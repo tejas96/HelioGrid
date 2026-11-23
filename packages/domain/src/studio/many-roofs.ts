@@ -12,6 +12,7 @@ export {
   roofStartHeightM,
   roofTopsM,
 } from './roof-levels';
+export * from './roof-list';
 export * from './roof-material';
 export * from './roof-meeting';
 export { type RoofName, roofNameOf, roofNumber } from './roof-names';
