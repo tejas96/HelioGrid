@@ -99,13 +99,20 @@ describe('a roof’s sheet: one row per value it has', () => {
 
   it('north of the equator a shed runs down to the south, the side that looks toward it', () => {
     const sheet = sheetOf(designOf(LEAN), 0);
-    expect(sheet.slope?.way).toMatchObject({ kind: 'down', way: 'south' });
+    // Its exact way in whole degrees, clockwise from north, shown beside the word (E097).
+    expect(sheet.slope?.way).toEqual({ kind: 'down', way: 'south', bearing: 180 });
   });
 
   it('a gable faces two ways, and its ridge stands above its low edge', () => {
     const sheet = sheetOf(designOf(shaped('gable')), 0);
-    expect(sheet.slope?.way).toEqual({ kind: 'faces', ways: expect.any(Array) });
-    expect(sheet.slope?.way.kind === 'faces' && sheet.slope.way.ways).toHaveLength(2);
+    // The 12 × 8 gable's faces look north and south, each with its exact way in degrees.
+    expect(sheet.slope?.way).toEqual({
+      kind: 'faces',
+      ways: [
+        { way: 'south', bearing: 180 },
+        { way: 'north', bearing: 0 },
+      ],
+    });
     expect(sheet.slope?.ridgeAboveM).toBeGreaterThan(0);
     // The 12 × 8 gable's ridge runs east to west along its middle.
     const ridge = sheet.slope?.ridge;

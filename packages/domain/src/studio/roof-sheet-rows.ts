@@ -29,9 +29,15 @@ export interface FloorTick {
 }
 
 /** Which way a sloped roof runs down, in words: one way, or the ways its faces look. */
+/** A way a slope runs down, as a word and in whole degrees clockwise from north (E097). */
+export interface WayAt {
+  readonly way: CompassWay;
+  readonly bearing: number;
+}
+
 export type SlopeWay =
-  | { readonly kind: 'down'; readonly way: CompassWay; readonly bearing: number }
-  | { readonly kind: 'faces'; readonly ways: readonly CompassWay[] };
+  | ({ readonly kind: 'down' } & WayAt)
+  | { readonly kind: 'faces'; readonly ways: readonly WayAt[] };
 
 /** What a roof crosses as it is changed: allowed, lit on the model and marked to check. */
 export interface RoofCrossing {

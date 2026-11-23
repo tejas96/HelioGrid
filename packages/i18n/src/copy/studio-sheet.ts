@@ -11,6 +11,7 @@ import type {
   RoofShape,
   SideWallWhy,
   SlopeWay,
+  WayAt,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { roofKindWord, roofNameWord } from './studio-roof-kinds';
@@ -50,6 +51,8 @@ const SHEET = {
   floorUp: /*i18n*/ { id: 'G+{floor}' },
   heightOnFloor: /*i18n*/ { id: '{height} · {floor}' },
   slopesDown: /*i18n*/ { id: 'Slopes down to the {way}' },
+  /** A way with its exact bearing: "south-west (225°)". */
+  wayAt: /*i18n*/ { id: '{way} ({degrees}°)' },
   facesTwo: /*i18n*/ { id: 'Faces {first} and {second}' },
   facesThree: /*i18n*/ { id: 'Faces {first}, {second} and {third}' },
   facesFour: /*i18n*/ { id: 'Faces {first}, {second}, {third} and {fourth}' },
@@ -146,8 +149,9 @@ const SHORT_MEASURED: Record<LengthsMeasured, { readonly id: string }> = {
 };
 
 function waysWord(t: T, way: SlopeWay): TranslatedText {
-  if (way.kind === 'down') return t(SHEET.slopesDown, { way: t(WAY[way.way]) });
-  const [first, second, third, fourth] = way.ways.map((each) => t(WAY[each]));
+  const at = (each: WayAt) => t(SHEET.wayAt, { way: t(WAY[each.way]), degrees: each.bearing });
+  if (way.kind === 'down') return t(SHEET.slopesDown, { way: at(way) });
+  const [first, second, third, fourth] = way.ways.map(at);
   switch (way.ways.length) {
     case 2:
       return t(SHEET.facesTwo, { first, second });

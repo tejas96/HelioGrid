@@ -10,7 +10,13 @@ import { roofNameOf } from './roof-names';
 import { type NumberAt, PARAPET_CHECK_ABOVE_M, type RoofNumber } from './roof-numbers';
 import { parapetNow } from './roof-open-edges';
 import type { RoofKind } from './roof-parts';
-import { floorAt, floorTicks, type RoofSheetRows, type SlopeWay } from './roof-sheet-rows';
+import {
+  floorAt,
+  floorTicks,
+  type RoofSheetRows,
+  type SlopeWay,
+  type WayAt,
+} from './roof-sheet-rows';
 import { glassSideOf, lowSideOf } from './roof-slope-way';
 import { STICKS_OUT_MIN_M, sticksOutM } from './roof-sticks-out';
 import { roofNumberOf } from './roof-values';
@@ -58,12 +64,15 @@ function wayOf(built: NonNullable<RoofsWorked['built'][number]>): SlopeWay {
     .filter((face) => !face.upper)
     .slice()
     .sort((a, b) => b.areaM2 - a.areaM2);
-  const ways = [...new Set(faces.map((face) => compassOf(face.downDeg)))];
-  const first = faces[0];
-  const way = ways[0];
-  if (ways.length === 1 && first !== undefined && way !== undefined) {
-    return { kind: 'down', way, bearing: first.downDeg };
+  // Each way once, at the way its biggest face runs down.
+  const ways: WayAt[] = [];
+  for (const face of faces) {
+    const way = compassOf(face.downDeg);
+    const bearing = Math.round(((face.downDeg % 360) + 360) % 360) % 360;
+    if (!ways.some((each) => each.way === way)) ways.push({ way, bearing });
   }
+  const [only] = ways;
+  if (ways.length === 1 && only !== undefined) return { kind: 'down', ...only };
   return { kind: 'faces', ways };
 }
 
