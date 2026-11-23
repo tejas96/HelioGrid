@@ -3738,19 +3738,19 @@ msgid "A lead outside your list"
 msgstr "तुमच्या यादीबाहेरची लीड"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:75
+#: src/copy/studio-roof.ts:77
 #: src/copy/studio-size.ts:20
 msgid "A length is at least {length}."
 msgstr "लांबी किमान {length} असावी."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:76
+#: src/copy/studio-roof.ts:78
 #: src/copy/studio-size.ts:21
 msgid "A length is at most {length}."
 msgstr "लांबी जास्तीत जास्त {length} असावी."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:77
+#: src/copy/studio-roof.ts:79
 msgid "A length you set would change. Change that length first."
 msgstr "तुम्ही ठरवलेली लांबी बदलेल. आधी ती लांबी बदला."
 
@@ -3947,12 +3947,12 @@ msgid "A roof has at most {max} corners"
 msgstr "एका छताला जास्तीत जास्त {max} कोपरे"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:83
+#: src/copy/studio-roof.ts:85
 msgid "A roof has at most {max} corners."
 msgstr "एका छताला जास्तीत जास्त {max} कोपरे असतात."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:82
+#: src/copy/studio-roof.ts:84
 msgid "A roof keeps at least 3 corners."
 msgstr "छताला किमान 3 कोपरे राहतात."
 
@@ -4351,7 +4351,7 @@ msgid "Add a contact"
 msgstr "संपर्क जोडा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:91
+#: src/copy/studio-roof.ts:93
 msgid "Add a corner on this edge"
 msgstr "या कडेवर कोपरा जोडा"
 
@@ -4776,7 +4776,7 @@ msgid "All languages"
 msgstr "सर्व भाषा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:55
+#: src/copy/studio-roof.ts:57
 msgid "All lengths sized from the one length you set."
 msgstr "तुम्ही ठरवलेल्या एका लांबीवरून सर्व लांब्या बदलल्या."
 
@@ -5835,7 +5835,7 @@ msgid "Both"
 msgstr "दोन्ही"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:81
+#: src/copy/studio-roof.ts:83
 msgid "Both lengths at this corner are set. Tap a length to change it."
 msgstr "या कोपऱ्याच्या दोन्ही लांब्या ठरलेल्या आहेत. बदलण्यासाठी एखाद्या लांबीवर टॅप करा."
 
@@ -7228,42 +7228,42 @@ msgid "Copy the link for {label}"
 msgstr "{label} ची लिंक कॉपी करा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:89
+#: src/copy/studio-roof.ts:91
 msgid "Corner {number}"
 msgstr "कोपरा {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:90
+#: src/copy/studio-roof.ts:92
 msgid "Corner 1: close the shape"
 msgstr "कोपरा 1: आकार बंद करा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:61
+#: src/copy/studio-roof.ts:63
 msgid "Corner added. Drag it into place."
 msgstr "कोपरा जोडला. तो ओढून जागी ठेवा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:59
+#: src/copy/studio-roof.ts:61
 msgid "Corner moved · {snap}. Undo puts it back."
 msgstr "कोपरा हलला · {snap}. पूर्ववत करा ने परत येईल."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:60
+#: src/copy/studio-roof.ts:62
 msgid "Corner moved. The length you set held."
 msgstr "कोपरा हलला. तुम्ही ठरवलेली लांबी तशीच राहिली."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:58
+#: src/copy/studio-roof.ts:60
 msgid "Corner moved. Undo puts it back."
 msgstr "कोपरा हलला. पूर्ववत करा ने परत येईल."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:62
+#: src/copy/studio-roof.ts:64
 msgid "Corner picked. Tap × to remove it."
 msgstr "कोपरा निवडला. काढण्यासाठी × वर टॅप करा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:63
+#: src/copy/studio-roof.ts:65
 msgid "Corner removed. Undo puts it back."
 msgstr "कोपरा काढला. पूर्ववत करा ने परत येईल."
 
@@ -8493,7 +8493,7 @@ msgid "Draft"
 msgstr "ड्राफ्ट"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:50
+#: src/copy/studio-roof.ts:52
 msgid "Drag a corner to fix the shape."
 msgstr "आकार नीट करण्यासाठी कोपरा ओढा."
 
@@ -8508,7 +8508,7 @@ msgid "Drag map to adjust"
 msgstr "जुळवण्यासाठी नकाशा ओढा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:74
+#: src/copy/studio-roof.ts:76
 msgid "Drag the corner. Zoom in for more room."
 msgstr "कोपरा ओढा. अधिक जागेसाठी झूम इन करा."
 
@@ -8726,17 +8726,17 @@ msgid "Earlier versions are kept as they were sent"
 msgstr "आधीची व्हर्जन पाठवली तशीच ठेवली जातात"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:93
+#: src/copy/studio-roof.ts:95
 msgid "Edge {number}: {length}. Change it"
 msgstr "कडा {number}: {length}. ती बदला"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:57
+#: src/copy/studio-roof.ts:59
 msgid "Edge set to {length} · measured on site."
 msgstr "कडा {length} केली · साइटवर मोजली."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:56
+#: src/copy/studio-roof.ts:58
 msgid "Edge set to {length}."
 msgstr "कडा {length} केली."
 
@@ -9042,7 +9042,7 @@ msgid "Every lead, design, proposal and project — kept"
 msgstr "प्रत्येक लीड, डिझाइन, प्रस्ताव आणि प्रोजेक्ट — सुरक्षित"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:86
+#: src/copy/studio-roof.ts:88
 msgid "Every length is yours. Drag a + out for an L."
 msgstr "प्रत्येक लांबी तुमची आहे. L साठी + बाहेर ओढा."
 
@@ -13207,7 +13207,7 @@ msgid "Move the plan"
 msgstr "आराखडा हलवा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:94
+#: src/copy/studio-roof.ts:96
 msgid "Move the roof"
 msgstr "छत हलवा"
 
@@ -17367,12 +17367,12 @@ msgid "Place the pin — tap the map, or press Enter to place it at the centre"
 msgstr "पिन लावा — नकाशावर टॅप करा, किंवा मध्यभागी लावण्यासाठी Enter दाबा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:87
+#: src/copy/studio-roof.ts:89
 msgid "Placed beside Roof {number}. Drag it onto the house."
 msgstr "छत {number} च्या शेजारी ठेवले. ते घरावर ओढा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:85
+#: src/copy/studio-roof.ts:87
 msgid "Placed on the pin. Drag it onto the house."
 msgstr "पिनवर ठेवले. ते घरावर ओढा."
 
@@ -18657,7 +18657,7 @@ msgid "Remove {tranche}"
 msgstr "{tranche} काढा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:92
+#: src/copy/studio-roof.ts:94
 msgid "Remove corner {number}"
 msgstr "कोपरा {number} काढा"
 
@@ -19149,7 +19149,7 @@ msgid "Roof {number}"
 msgstr "छत {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:51
+#: src/copy/studio-roof.ts:53
 msgid "Roof {number} · height {height}. Drag a corner to fix the shape."
 msgstr "छत {number} · उंची {height}. आकार नीट करण्यासाठी कोपरा ओढा."
 
@@ -19179,7 +19179,7 @@ msgid "Roof measured from satellite imagery. A site visit will confirm dimension
 msgstr "छताचे मोजमाप उपग्रह प्रतिमांवरून घेतले आहे. साइट भेटीत मापे, सावली आणि वीज जोडणीची सोय निश्चित होईल."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:64
+#: src/copy/studio-roof.ts:66
 msgid "Roof moved. Undo puts it back."
 msgstr "छत हलले. पूर्ववत करा ने परत येईल."
 
@@ -19194,7 +19194,7 @@ msgid "Roof size"
 msgstr "छताचे माप"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:65
+#: src/copy/studio-roof.ts:67
 msgid "Roof turned {degrees}°. Undo puts it back."
 msgstr "छत {degrees}° फिरले. पूर्ववत करा ने परत येईल."
 
@@ -19209,7 +19209,7 @@ msgid "Roof unsuitable"
 msgstr "छत योग्य नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:71
+#: src/copy/studio-roof.ts:73
 msgid "Roofs cannot overlap yet."
 msgstr "छते अजून एकमेकांवर येऊ शकत नाहीत."
 
@@ -19219,7 +19219,7 @@ msgid "Roofs cannot overlap yet. Tap outside the other roof."
 msgstr "छते अजून एकमेकांवर येऊ शकत नाहीत. दुसऱ्या छताबाहेर टॅप करा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:67
+#: src/copy/studio-roof.ts:69
 msgid "Roofs cannot overlap yet. The roof went back."
 msgstr "छते अजून एकमेकांवर येऊ शकत नाहीत. छत परत गेले."
 
@@ -20237,7 +20237,7 @@ msgid "Set the size in System first."
 msgstr "आधी सिस्टममध्ये साइज भरा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:54
+#: src/copy/studio-roof.ts:56
 msgid "Set the true length of the marked edge."
 msgstr "खूण केलेल्या कडेची खरी लांबी ठरवा."
 
@@ -21611,7 +21611,7 @@ msgid "Tap a part to pick or change it. Up to {max} brands each — {name} reads
 msgstr "पार्ट निवडण्यासाठी किंवा बदलण्यासाठी त्यावर टॅप करा. प्रत्येकासाठी {max} ब्रँडपर्यंत — {name} यांना ते पर्याय म्हणून दिसतील."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:53
+#: src/copy/studio-roof.ts:55
 msgid "Tap a roof to see its height."
 msgstr "छताची उंची पाहण्यासाठी छतावर टॅप करा."
 
@@ -21646,7 +21646,7 @@ msgid "Tap nearer the building."
 msgstr "इमारतीजवळ टॅप करा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:52
+#: src/copy/studio-roof.ts:54
 msgid "Tap the roof to change its height."
 msgstr "छताची उंची बदलण्यासाठी छतावर टॅप करा."
 
@@ -21944,12 +21944,12 @@ msgid "That code is used up"
 msgstr "तो कोड संपला आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:69
+#: src/copy/studio-roof.ts:71
 msgid "That corner was too close to another. The roof went back."
 msgstr "तो कोपरा दुसऱ्या कोपऱ्याच्या खूप जवळ होता. छत परत गेले."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:73
+#: src/copy/studio-roof.ts:75
 msgid "That corner would be too close to another."
 msgstr "तो कोपरा दुसऱ्या कोपऱ्याच्या खूप जवळ येईल."
 
@@ -22046,13 +22046,13 @@ msgid "That is taking too long to answer."
 msgstr "उत्तर यायला खूप वेळ लागत आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:72
+#: src/copy/studio-roof.ts:74
 #: src/copy/studio-size.ts:23
 msgid "That is too far from the pin."
 msgstr "हे पिनपासून खूप दूर आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:68
+#: src/copy/studio-roof.ts:70
 msgid "That is too far from the pin. The roof went back."
 msgstr "हे पिनपासून खूप दूर आहे. छत परत गेले."
 
@@ -22062,7 +22062,7 @@ msgid "That isn't a hex colour."
 msgstr "हा hex रंग नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:84
+#: src/copy/studio-roof.ts:86
 msgid "That length is far from the picture. Check the number."
 msgstr "ही लांबी चित्रापेक्षा खूप वेगळी आहे. आकडा तपासा."
 
@@ -22147,7 +22147,7 @@ msgid "That's taking too long to answer — they stay on this phone."
 msgstr "उत्तर यायला खूप वेळ लागत आहे — ते याच फोनवर राहतील."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:78
+#: src/copy/studio-roof.ts:80
 msgid "The {length} you set would change. Change that length first."
 msgstr "तुम्ही ठरवलेली {length} लांबी बदलेल. आधी ती लांबी बदला."
 
@@ -23955,12 +23955,12 @@ msgid "This week"
 msgstr "या आठवड्यात"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:70
+#: src/copy/studio-roof.ts:72
 msgid "Those edges would cross."
 msgstr "त्या कडा एकमेकांना छेदतील."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:66
+#: src/copy/studio-roof.ts:68
 msgid "Those edges would cross. The roof went back."
 msgstr "त्या कडा एकमेकांना छेदल्या असत्या. छत परत गेले."
 
@@ -24424,7 +24424,7 @@ msgid "Turn the plan"
 msgstr "आराखडा फिरवा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:95
+#: src/copy/studio-roof.ts:97
 msgid "Turn the roof"
 msgstr "छत फिरवा"
 
