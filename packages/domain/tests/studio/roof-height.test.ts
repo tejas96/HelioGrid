@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Roof, RoofHeight, StudioDocument } from '../../src/studio/document';
+import type { Roof, StudioDocument } from '../../src/studio/document';
 import { EMPTY_STUDIO_DOCUMENT } from '../../src/studio/document';
 import {
   roofHeightDragged,
@@ -7,6 +7,7 @@ import {
   roofHeightReset,
   roofHeightSet,
 } from '../../src/studio/roof-height';
+import type { RoofHeight } from '../../src/studio/roof-parts';
 
 const STOREY_M = 3;
 const roofOf = (height: RoofHeight | null): Roof => ({

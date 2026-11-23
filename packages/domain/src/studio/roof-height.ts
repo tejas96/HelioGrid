@@ -1,6 +1,8 @@
 import type { ProvenanceTier } from '../format/qualified';
-import type { Roof, StudioDocument, ValueSetter } from './document';
+import type { Roof, StudioDocument } from './document';
 import { type EditResult, roofAt, withRoof } from './roof-check';
+import { tierOf } from './roof-kind';
+import type { RoofHeight, ValueSetter } from './roof-parts';
 
 /**
  * A roof's height (`T-M05-002`, part b): the system sets it, a person may change it — by the blue
@@ -24,12 +26,10 @@ export interface RoofHeightShown {
   readonly tier: ProvenanceTier;
 }
 
-const TIER_OF: Record<ValueSetter, ProvenanceTier> = { system: 'assumed', person: 'estimated' };
-
 /** The height a roof stands at: its own, or the market's storey height when none is set. */
 export function roofHeightOf(roof: Roof, storeyHeightM: number): RoofHeightShown {
-  const height = roof.height ?? { metres: storeyHeightM, setBy: 'system' };
-  return { ...height, tier: TIER_OF[height.setBy] };
+  const height: RoofHeight = roof.height ?? { metres: storeyHeightM, setBy: 'system' };
+  return { metres: height.metres, setBy: height.setBy, tier: tierOf(height) };
 }
 
 /** A height held to the centimetre, so the stored value is the one shown. */

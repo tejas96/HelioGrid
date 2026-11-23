@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { billingContract, httpStatusFor } from '@heliogrid/contracts';
+import { billingContract, httpStatusFor, REQUEST_BODY_MAX_BYTES } from '@heliogrid/contracts';
 import type { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
@@ -13,8 +13,6 @@ import { assignRequestId, REQUEST_ID_HEADER } from './common/request-id';
 import { trustProxyHops } from './common/trusted-proxy';
 import { refuseUnstorableText } from './common/unstorable-text';
 import { ENV } from './config/env';
-
-const BODY_LIMIT_BYTES = 1_048_576;
 
 function isPayloadTooLarge(error: unknown): error is Error {
   if (!(error instanceof Error)) return false;
@@ -58,9 +56,12 @@ export async function createApp(): Promise<INestApplication> {
   // The gateway signs its message's exact bytes, so that one route keeps them raw; a parsed and
   // re-serialised body would never verify (`forward-compat.md`, webhooks). Every other route
   // keeps the parsed body, because the raw parser marks the body read and `json` then skips it.
-  app.use(billingContract.gatewayEvents.path, raw({ type: () => true, limit: BODY_LIMIT_BYTES }));
-  app.use(json({ limit: BODY_LIMIT_BYTES }));
-  app.use(urlencoded({ extended: true, limit: BODY_LIMIT_BYTES }));
+  app.use(
+    billingContract.gatewayEvents.path,
+    raw({ type: () => true, limit: REQUEST_BODY_MAX_BYTES }),
+  );
+  app.use(json({ limit: REQUEST_BODY_MAX_BYTES }));
+  app.use(urlencoded({ extended: true, limit: REQUEST_BODY_MAX_BYTES }));
   app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
     if (!isPayloadTooLarge(error)) {
       next(error);

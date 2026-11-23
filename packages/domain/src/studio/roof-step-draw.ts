@@ -2,6 +2,7 @@ import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { roofUnder } from './roof-check';
 import { draftClose, draftClosesAt, draftTap } from './roof-draw';
+import { roofWithItsParts } from './roof-kind';
 import { draftSpot, type Snapped, type SnapTargets, snapTargetsOf } from './roof-snap';
 import {
   type DraftLeft,
@@ -111,9 +112,14 @@ export function onGrid(
   };
 }
 
-/** The design without the roof at `index`; with no roof left, no picture is kept as drawn on. */
+/**
+ * The design without the roof at `index` and what goes with it — what stands on it or is part of
+ * it — so no roof is left standing on one that is gone; with no roof left, no picture is kept as
+ * drawn on.
+ */
 export function withoutRoof(document: StudioDocument, index: number): StudioDocument {
-  const roofs = document.roofs.filter((_, i) => i !== index);
+  const going = roofWithItsParts(document, index);
+  const roofs = document.roofs.filter((_, i) => !going.includes(i));
   return { ...document, roofs, drawnOn: roofs.length === 0 ? null : document.drawnOn };
 }
 

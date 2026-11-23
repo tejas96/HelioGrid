@@ -1,5 +1,15 @@
 import type { GroundPoint } from './ground';
 import type { LaidPicture, LaidPlan } from './own-picture';
+import type {
+  RoofHeight,
+  RoofKindSet,
+  RoofMaterialSet,
+  RoofParapet,
+  RoofShapeSet,
+  RoofSide,
+  SetDegrees,
+  SetMetres,
+} from './roof-parts';
 
 /**
  * The design document: everything a person makes in the studio, stored whole, one per design. It
@@ -56,8 +66,19 @@ export function lengthHeld(trust: RoofEdgeTrust): boolean {
   return trust === 'typed' || trust === 'measured' || trust === 'plan';
 }
 
-/** A design holds at most this many roofs. */
+/**
+ * A design holds at most this many roofs: what a studio lets a person draw. A reader takes more
+ * (`ROOFS_READ_MAX`) one release before any studio draws them (`CLAUDE.md` §8, expand then
+ * contract).
+ */
 export const ROOFS_MAX = 50;
+/** How many roofs a stored design may hold: 100 houses, each with a stair room (`T-M05-002`, part e). */
+export const ROOFS_READ_MAX = 200;
+/**
+ * How many corners a design's roofs hold in all, so a design at every cap stays under the save's
+ * size limit.
+ */
+export const CORNERS_TOTAL_MAX = 2_000;
 
 /**
  * How far from the pin a corner may lie, in metres east or north: far past any picture (about
@@ -68,19 +89,6 @@ export const GROUND_REACH_M = 2_000;
 /** How far the first true length may stretch or shrink the picture: five times either way. */
 export const PICTURE_SCALE_MIN = 0.2;
 export const PICTURE_SCALE_MAX = 5;
-
-/**
- * Who set a value: the system, from the market pack or a data source, or a person, by typing,
- * sliding or dragging (`T-M05-002`, *Values*). A reset hands the value back to the system.
- */
-export const VALUE_SETTERS = ['system', 'person'] as const;
-export type ValueSetter = (typeof VALUE_SETTERS)[number];
-
-/** A roof's height above the ground, in metres, and who set it (`roof-height.ts`). */
-export interface RoofHeight {
-  readonly metres: number;
-  readonly setBy: ValueSetter;
-}
 
 /** One roof's outline on the site's ground. */
 export interface Roof {
@@ -97,6 +105,38 @@ export interface Roof {
    * at the market's storey height, set by the system (`roofHeightOf`).
    */
   readonly height: RoofHeight | null;
+  /*
+   * Part e's fields. Each is absent on a roof stored before it, and an absent one reads as the
+   * studio's own value: a building on the ground, of the first material, flat, with the market's
+   * parapet and setback (`roof-kind.ts`).
+   */
+  /** What the roof is; absent, a building. */
+  readonly kind?: RoofKindSet;
+  /**
+   * The roof it stands on, by id: its height is counted from that roof's. Absent, or naming no
+   * roof of the design, it stands on the ground.
+   */
+  readonly on?: string;
+  /**
+   * The roof it belongs to, by id, where that is not the one it stands on: a hole's or a separate
+   * part's roof, or the roof an upper floor across two roofs covers most. It moves, copies and
+   * goes with that roof.
+   */
+  readonly partOf?: string;
+  readonly material?: RoofMaterialSet;
+  readonly shape?: RoofShapeSet;
+  /** The roof's one slope; a side or a face with its own carries it there. */
+  readonly slope?: SetDegrees;
+  /** How far a sloped roof's drip edge — its outline — lies past its walls. */
+  readonly overhang?: SetMetres;
+  readonly parapet?: RoofParapet;
+  /** The roof's one setback, in from the inside of its parapet. */
+  readonly setback?: SetMetres;
+  /**
+   * What each side holds of its own, one entry for each corner. A list that does not match the
+   * corners reads as no entry at all (`roofSidesOf`).
+   */
+  readonly sides?: readonly RoofSide[];
 }
 
 export interface StudioDocument {
@@ -119,6 +159,8 @@ export interface StudioDocument {
   readonly ownPicture?: LaidPicture | null;
   /** The plan laid over the ground, whichever picture shows; absent or `null` when none is laid. */
   readonly plan?: LaidPlan | null;
+  /** A person passed over "Where do the stairs reach the roof?": it is not asked again. */
+  readonly stairsSkipped?: boolean;
 }
 
 /** A design no one has changed yet. */

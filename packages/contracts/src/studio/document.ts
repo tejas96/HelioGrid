@@ -1,6 +1,5 @@
 import {
-  edgesCross,
-  GROUND_REACH_M,
+  CORNERS_TOTAL_MAX,
   PICTURE_CHOICES,
   PICTURE_METRES_PER_UNIT_MAX,
   PICTURE_METRES_PER_UNIT_MIN,
@@ -9,20 +8,15 @@ import {
   PICTURE_SCALE_SOURCES,
   PLAN_SEE_THROUGH_MAX,
   PLAN_SEE_THROUGH_MIN,
-  ROOF_CORNERS_MAX,
-  ROOF_CORNERS_MIN,
-  ROOF_EDGE_TRUSTS,
-  ROOF_HEIGHT_MAX_M,
-  ROOF_HEIGHT_MIN_M,
-  ROOFS_MAX,
+  ROOFS_READ_MAX,
   SKY_PICTURE_GAPS,
   SKY_PICTURE_SOURCES,
   STUDIO_DOCUMENT_SCHEMA,
-  VALUE_SETTERS,
 } from '@heliogrid/domain';
 import { z } from 'zod';
 import { extensibleEnum, memberRefSchema, uuidSchema } from '../common';
 import { errorEnvelopeWithFacts } from '../error';
+import { cornersIn, groundPointSchema, roofLinkFaults, roofSchema } from './roof';
 
 /**
  * The design document on the wire: one per design, saved whole on each change. Its shape is
@@ -31,42 +25,6 @@ import { errorEnvelopeWithFacts } from '../error';
  */
 
 const calendarDaySchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
-
-/** Metres east or north of the pin: a real number, within the site's reach. */
-const groundMetreSchema = z.number().finite().min(-GROUND_REACH_M).max(GROUND_REACH_M);
-const groundPointSchema = z.object({ east: groundMetreSchema, north: groundMetreSchema }).strict();
-
-const roofHeightSchema = z
-  .object({
-    metres: z.number().min(ROOF_HEIGHT_MIN_M).max(ROOF_HEIGHT_MAX_M),
-    setBy: z.enum(VALUE_SETTERS),
-  })
-  .strict();
-
-/**
- * One roof's outline (domain's `Roof`): its edges never cross, and each corner starts one edge.
- * `height` came after the first roofs: a roof sent or stored without it stands at the market's
- * storey height, set by the system.
- */
-export const roofSchema = z
-  .object({
-    id: uuidSchema,
-    corners: z.array(groundPointSchema).min(ROOF_CORNERS_MIN).max(ROOF_CORNERS_MAX),
-    edges: z.array(z.enum(ROOF_EDGE_TRUSTS)).min(ROOF_CORNERS_MIN).max(ROOF_CORNERS_MAX),
-    tracedOn: z.enum(PICTURE_CHOICES),
-    height: roofHeightSchema.nullable().default(null),
-  })
-  .strict()
-  .refine((roof) => roof.edges.length === roof.corners.length, {
-    message: 'Each corner starts one edge.',
-    path: ['edges'],
-  })
-  // The crossing check walks every pair of edges: it runs only on a corner count the roof may have,
-  // so an outsized body is refused by its count, not checked at length.
-  .refine((roof) => roof.corners.length <= ROOF_CORNERS_MAX && !edgesCross(roof.corners), {
-    message: 'The roof’s edges cross.',
-    path: ['corners'],
-  });
 
 /**
  * A picture of the company's own as it lies on the ground (domain's `LaidPicture`): which stored
@@ -104,14 +62,28 @@ export const studioDocumentSchema = z
       .object({ source: z.string().min(1).max(40), takenOn: calendarDaySchema.nullable() })
       .strict()
       .nullable(),
-    roofs: z.array(roofSchema).max(ROOFS_MAX).default([]),
+    roofs: z.array(roofSchema).max(ROOFS_READ_MAX).default([]),
     pictureScale: z.number().min(PICTURE_SCALE_MIN).max(PICTURE_SCALE_MAX).default(1),
     // Absent until a studio lays one: a reader from before them refuses any key it does not know,
     // so an answer carries neither until the release that writes them.
     ownPicture: laidPictureSchema.nullable().optional(),
     plan: laidPlanSchema.nullable().optional(),
+    stairsSkipped: z.boolean().optional(),
   })
-  .strict();
+  .strict()
+  .refine((document) => cornersIn(document.roofs) <= CORNERS_TOTAL_MAX, {
+    message: 'The design holds too many corners.',
+    path: ['roofs'],
+  })
+  .superRefine((document, ctx) => {
+    for (const fault of roofLinkFaults(document.roofs)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'A roof stands on, or is part of, another roof of the same design, never itself.',
+        path: ['roofs', fault.roof, fault.link],
+      });
+    }
+  });
 export type StudioDocumentWire = z.infer<typeof studioDocumentSchema>;
 
 /** Who holds the design's turn to edit; `null` when no one does. `mine`: the reader holds it. */

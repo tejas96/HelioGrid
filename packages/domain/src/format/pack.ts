@@ -6,6 +6,7 @@ import type { CalendarDate } from './holidays';
 import { IN_INSTALL_STEPS, type InstallStepRow } from './install-steps';
 import type { PackLabel } from './languages';
 import { IN_PROPOSAL_FACTS, type ProposalMarketFacts } from './proposal-facts';
+import { IN_ROOF_FACTS, type RoofMarketFacts } from './roof-facts';
 import { IN_UTILITIES, type UtilityDirectory } from './utility';
 import { type DisplayVocabulary, IN_VOCABULARY } from './vocabulary';
 
@@ -143,6 +144,8 @@ export interface FormatPack {
    */
   readonly typedRoofLengthM: number;
   readonly typedRoofWidthM: number;
+  /** `T-M05-002`, part e — what the market's roofs usually measure, and its roof types' order. */
+  readonly roof: RoofMarketFacts;
 }
 
 /**
@@ -202,4 +205,5 @@ export const IN_FORMATS: FormatPack = {
   storeyHeightM: 3,
   typedRoofLengthM: 10,
   typedRoofWidthM: 8,
+  roof: IN_ROOF_FACTS,
 };

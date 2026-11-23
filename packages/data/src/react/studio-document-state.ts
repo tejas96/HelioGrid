@@ -270,11 +270,12 @@ export function useStudioDocument(designId: string, ready: boolean) {
             // The wire's lists are plain arrays; the studio holds them read-only.
             document: {
               ...document,
-              roofs: document.roofs.map((roof) => ({
-                ...roof,
-                corners: [...roof.corners],
-                edges: [...roof.edges],
-              })),
+              roofs: document.roofs.map(({ sides, ...roof }) => {
+                const lists = { corners: [...roof.corners], edges: [...roof.edges] };
+                return sides === undefined
+                  ? { ...roof, ...lists }
+                  : { ...roof, ...lists, sides: [...sides] };
+              }),
             },
             opening,
           }),

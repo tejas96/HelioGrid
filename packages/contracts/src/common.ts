@@ -23,6 +23,12 @@ extendZodWithOpenApi(z);
 export const uuidSchema = z.string().uuid();
 
 /**
+ * The largest request body the api reads, in bytes: a larger one answers `PAYLOAD_TOO_LARGE`. A
+ * body that grows with what a person makes (a design's document) is capped so it stays under it.
+ */
+export const REQUEST_BODY_MAX_BYTES = 1_048_576;
+
+/**
  * The retry key every create route carries (`F4-07`): the same key sent again answers with the
  * record the first send made, never a second one. OPTIONAL, because an app in the field sends
  * none until it updates, and a request without one is applied exactly as before.

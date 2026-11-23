@@ -1,5 +1,6 @@
 import { GROUND_REACH_M, type Roof, type StudioDocument } from './document';
 import type { GroundPoint } from './ground';
+import { belongsTo, roofKindOf } from './roof-kind';
 import { between, CORNER_GAP_M, edgesCross, pointInside, roofsOverlap } from './roof-shape';
 import type { Guide, RoofSnap } from './roof-snap';
 
@@ -71,10 +72,34 @@ export function faultOf(
   if (corners.some((c, i) => corners.some((d, j) => j > i && between(c, d) < CORNER_GAP_M))) {
     return 'too_close';
   }
-  const overlaps = document.roofs.some(
-    (roof, i) => i !== index && roofsOverlap(corners, roof.corners),
+  return overlapsAnother(document, index, corners) ? 'would_overlap' : null;
+}
+
+/**
+ * Whether a roof's own place among the others is the ground's alone: a building that stands on no
+ * roof and is part of none. Any other roof — a stair room, an upper floor, an open shed, a hole —
+ * lies over or inside another by what it is.
+ */
+function onItsOwnGround(document: StudioDocument, roof: Roof): boolean {
+  return roofKindOf(roof) === 'building' && belongsTo(document, roof) === null;
+}
+
+/**
+ * Whether roof `index`, standing on these corners, would lie over another roof it has no business
+ * over: two buildings on the ground never overlap, while a roof that stands on another, is part of
+ * one or is an open shed is never refused for where it lies (`T-M05-002`, part e).
+ */
+function overlapsAnother(
+  document: StudioDocument,
+  index: number,
+  corners: readonly GroundPoint[],
+): boolean {
+  const moved = document.roofs[index];
+  if (moved !== undefined && !onItsOwnGround(document, moved)) return false;
+  return document.roofs.some(
+    (roof, i) =>
+      i !== index && onItsOwnGround(document, roof) && roofsOverlap(corners, roof.corners),
   );
-  return overlaps ? 'would_overlap' : null;
 }
 
 /** The roof a point lies inside, the last drawn first; `null` on open ground. */

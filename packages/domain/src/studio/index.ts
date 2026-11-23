@@ -10,6 +10,7 @@ export {
   roundPin,
 } from './coordinates';
 export {
+  CORNERS_TOTAL_MAX,
   EMPTY_STUDIO_DOCUMENT,
   GROUND_REACH_M,
   lengthHeld,
@@ -23,9 +24,9 @@ export {
   pictureUpdatedOver,
   ROOF_EDGE_TRUSTS,
   ROOFS_MAX,
+  ROOFS_READ_MAX,
   type Roof,
   type RoofEdgeTrust,
-  type RoofHeight,
   type SetEdgeTrust,
   type ShownPicture,
   SKY_PICTURE_GAPS,
@@ -36,8 +37,6 @@ export {
   STUDIO_DOCUMENT_SCHEMA,
   type StudioDocument,
   shownPicture,
-  VALUE_SETTERS,
-  type ValueSetter,
 } from './document';
 export * from './dxf-pairs';
 export * from './dxf-read';
@@ -136,6 +135,7 @@ export {
   roofHeightSet,
   roofHeightStepped,
 } from './roof-height';
+export * from './roof-kind';
 export {
   LENGTH_ASK_SHARE,
   LENGTH_MAX_M,
@@ -146,6 +146,7 @@ export {
   lengthSizesPicture,
   onPicture,
 } from './roof-length';
+export * from './roof-material';
 export {
   KEY_MOVE_M,
   KEY_TURN_DEGREES,
@@ -153,6 +154,7 @@ export {
   roofTurned,
   TURN_SNAP_DEGREES,
 } from './roof-move';
+export * from './roof-parts';
 export {
   between,
   CORNER_GAP_M,
@@ -238,12 +240,7 @@ export {
   typedRoof,
   typedStart,
 } from './roof-type';
-export {
-  type CameraPose,
-  type ScenePoint,
-  type ScreenProjector,
-  screenProjector,
-} from './screen-point';
+export * from './screen-point';
 export {
   areaOfPlace,
   operatorAfterArea,

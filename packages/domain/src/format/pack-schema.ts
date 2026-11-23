@@ -11,6 +11,7 @@ import {
 import { FORECAST_STAGES } from '../proposals/forecast-stage';
 import { CHECKLIST_ROW_MAKERS } from './checklist';
 import { type FormatPack, MEASUREMENT_SYSTEMS } from './pack';
+import { ROOF_FACTS_DEFAULT, SETBACK_MEASURES } from './roof-facts';
 
 const stageLabel = z.object({ stage: z.string(), label: packLabel });
 const partyLabel = z.object({ party: z.string(), label: packLabel });
@@ -32,6 +33,32 @@ const proposalFacts = z.object({
   lifetimeYears: packWhole,
   typicalTariffPerKwh: packAmount.nullable().default(null),
   forecastLikelihood: z.array(z.object({ stage: z.enum(FORECAST_STAGES), likelihood: packRate })),
+});
+
+const D = ROOF_FACTS_DEFAULT;
+const setbackOrNone = z.number().min(0).max(20).nullable().default(null);
+/** Each roof fact a row may leave out reads the code's value (`roof-facts.ts`). */
+const roofFacts = z.object({
+  plinthHeightM: z.number().min(0).max(5).default(D.plinthHeightM),
+  stairRoomHeightM: z.number().positive().max(20).default(D.stairRoomHeightM),
+  parapetHeightM: z.number().min(0.1).max(3).default(D.parapetHeightM),
+  wallThicknessM: z.number().min(0.02).max(1).default(D.wallThicknessM),
+  overhangM: z.number().min(0).max(5).default(D.overhangM),
+  setbackM: z.number().min(0).max(20).default(D.setbackM),
+  setbackByEdge: z
+    .object({
+      eave: setbackOrNone,
+      ridge: setbackOrNone,
+      hipOrValley: setbackOrNone,
+      gableEnd: setbackOrNone,
+    })
+    .nullable()
+    .default(D.setbackByEdge),
+  setbackMeasure: z.enum(SETBACK_MEASURES).default(D.setbackMeasure),
+  clearPathM: z.number().min(0).max(5).default(D.clearPathM),
+  materialOrder: z.array(z.string()).default([...D.materialOrder]),
+  firstSlopeDeg: z.record(z.number().min(0).max(89)).default({ ...D.firstSlopeDeg }),
+  openShedSlopeDeg: z.number().min(0).max(89).default(D.openShedSlopeDeg),
 });
 
 /** `pack.formats` as a row stores it, validated whole and re-minted (`T-FCORE-017`). */
@@ -97,4 +124,6 @@ export const FORMAT_PACK_SCHEMA: z.ZodType<FormatPack, z.ZodTypeDef, unknown> = 
   /** A pack stored before the typed roof reads a usual house roof, 10 × 8 m, until its next revision. */
   typedRoofLengthM: z.number().min(1).max(40).default(10),
   typedRoofWidthM: z.number().min(1).max(40).default(8),
+  /** A pack stored before part e's roofs reads the code's own values, each field by itself. */
+  roof: roofFacts.default({}),
 });
