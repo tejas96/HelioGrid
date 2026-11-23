@@ -1,5 +1,6 @@
 'use client';
 import {
+  type GroundPoint,
   NO_ROOF_LIST,
   NO_ROOF_SCENE,
   type NumberAt,
@@ -7,8 +8,15 @@ import {
   type RoofHeight,
   type RoofHit,
   type RoofSheetView,
+  type RoofsEdges,
   type SightAt,
+  type StairsDrop,
+  type StairsPlace,
   type StudioDocument,
+  stairsAsk,
+  stairsDropOf,
+  stairsOf,
+  stairsPlaced,
 } from '@heliogrid/domain';
 import {
   heightPullOf,
@@ -41,7 +49,24 @@ const NOTHING: RoofModelShown = {
   roofsAreaM2: 0,
   sheetRows: null,
   sideRows: null,
+  stairs: null,
+  stairsAsk: false,
 };
+
+/** The stairs where a drag holds them, else where they stand; and whether the bar asks for them. */
+function stairsSeen(
+  document: StudioDocument,
+  edges: RoofsEdges,
+  clearPathM: number,
+  inHand: StairsPlace | null,
+): Pick<RoofModelShown, 'stairs' | 'stairsAsk'> {
+  const stairs = stairsOf(
+    inHand === null ? document : stairsPlaced(document, inHand),
+    edges,
+    clearPathM,
+  );
+  return { stairs, stairsAsk: stairsAsk(document, stairs) };
+}
 
 /** The model drawn, and what a tap on it lands on: the screen hook's, never shown. */
 export interface RoofModelSeen extends RoofModelShown {
@@ -50,6 +75,8 @@ export interface RoofModelSeen extends RoofModelShown {
    * sheet is open — a second tap on its top picks the roof under it.
    */
   hitAt(at: SightAt, beside: SightAt, open: number | null): RoofHit | null;
+  /** Where the stairs land, dropped or tapped at a point of the plan. */
+  stairsDropAt(at: GroundPoint, reachM: number, magnet: boolean): StairsDrop | null;
 }
 
 /** The open sheet's roof, the side whose sheet shows over it, and the height slider's ends. */
@@ -75,8 +102,10 @@ export function roofModelShown(
   /** The sheet open over the model, and a number moving on its slider, not kept yet. */
   open: SheetOpen | null = null,
   numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
+  /** The stairs held by a drag, not kept yet: they show there. */
+  stairsInHand: StairsPlace | null = null,
 ): RoofModelSeen {
-  if (document === null) return { ...NOTHING, hitAt: () => null };
+  if (document === null) return { ...NOTHING, hitAt: () => null, stairsDropAt: () => null };
   const roofs =
     inHand === null
       ? document.roofs
@@ -106,6 +135,8 @@ export function roofModelShown(
       open === null || open.side === null
         ? null
         : sideSheetRowsOf(shown, open.roof, open.side, facts, worked, latitude),
+    ...stairsSeen(shown, worked.edges, facts.clearPathM, stairsInHand),
+    stairsDropAt: (at, reachM, magnet) => stairsDropOf(shown, worked.edges, at, reachM, magnet),
   };
 }
 
@@ -128,6 +159,7 @@ export function useRoofModel(
   /** The side whose sheet shows over the roof's, and the number in hand. */
   side: number | null = null,
   numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
+  stairsInHand: StairsPlace | null = null,
 ): RoofModelSeen {
   const memory = useRef<RoofMemory>({});
   const open = sheet?.roof ?? null;
@@ -144,6 +176,15 @@ export function useRoofModel(
       open === null || min === undefined || max === undefined
         ? null
         : { roof: open, side, slide: { min, max } };
-    return roofModelShown(shown, facts, inHand, pin, memory.current, sheetOpen, numberInHand);
-  }, [shown, facts, open, held, setBy, pin, side, numberInHand, min, max]);
+    return roofModelShown(
+      shown,
+      facts,
+      inHand,
+      pin,
+      memory.current,
+      sheetOpen,
+      numberInHand,
+      stairsInHand,
+    );
+  }, [shown, facts, open, held, setBy, pin, side, numberInHand, min, max, stairsInHand]);
 }

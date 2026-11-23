@@ -39,6 +39,7 @@ import { useRoofStep } from './use-roof-step';
 import { useRoofsPanel } from './use-roofs-panel';
 import { useSession } from './use-session';
 import { useStudioSheet } from './use-studio-sheet';
+import { useStudioStairs } from './use-studio-stairs';
 
 /**
  * The studio's canvas (`T-M05-002a`): the design, its document and the sky picture under it; each
@@ -126,8 +127,29 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   });
   const { roofSheet, numberInHand } = sheet.state;
   const { shown } = roof.view;
-  const { hitAt, ...model } = useRoofModel(shown, facts, roofSheet, pin, sheet.side, numberInHand);
+  const landAt = useRef<RoofModelSeen['stairsDropAt']>(() => null);
+  const stairs = useStudioStairs({
+    latest,
+    change,
+    editable,
+    dropAt: (at, reachM, magnet) => landAt.current(at, reachM, magnet),
+    magnetOn: roof.magnetNow,
+    // Outside: the sheet closes, and the next tap on an edge in the top view places the stairs.
+    toTop: () => {
+      if (sheet.moves.done()) setView('top');
+    },
+  });
+  const { hitAt, stairsDropAt, ...model } = useRoofModel(
+    shown,
+    facts,
+    roofSheet,
+    pin,
+    sheet.side,
+    numberInHand,
+    stairs.inHand,
+  );
   seen.current = hitAt;
+  landAt.current = stairsDropAt;
   const place = roofPlaceMoves({ latest, step, act, facts });
   // Drawing happens in the top view only: the camera flies there first. A roof's sheet is the 3D
   // view's: its height is kept and it closes, as when the top view is picked; a height that is
@@ -180,6 +202,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     ...roof.view,
     ...sheet.state,
     ...model,
+    ...stairs.view,
     ...panel.view,
     ...roofsWithSheet(
       roof.view.heights,
@@ -209,6 +232,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       ...sheet.moves,
       ...place,
       ...panel.moves,
+      ...stairs.moves,
       pickPicture: (choice) => {
         const at = latest.current;
         if (at === null || at.present.picture === choice) return;

@@ -18,6 +18,7 @@ import type { StudioSaveState } from './studio-save-queue';
 import type { DesignRead } from './use-design-screen';
 import type { OwnPictureMoves, OwnPictureView } from './use-own-picture-screen';
 import type { RoofSheetMoves, RoofSheetState } from './use-roof-sheet';
+import type { StairsMoves, StairsView } from './use-studio-stairs';
 
 /** The studio screen's view model (`T-M05-002`): what its hook assembles for the web and the phone. */
 
@@ -26,7 +27,8 @@ export interface StudioMoves
     RoofSheetMoves,
     RoofSheetRowMoves,
     RoofPlaceMoves,
-    RoofsPanelMoves {
+    RoofsPanelMoves,
+    StairsMoves {
   pickPicture(choice: PictureChoice): void;
   undo(): void;
   redo(): void;
@@ -50,7 +52,8 @@ export interface StudioScreen
     RoofSheetState,
     RoofSheetRowsState,
     RoofModelShown,
-    RoofsPanelView {
+    RoofsPanelView,
+    StairsView {
   readonly read: DesignRead;
   /** `null` until the document is read. */
   readonly document: StudioDocument | null;
