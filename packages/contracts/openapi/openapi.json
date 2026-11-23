@@ -244544,6 +244544,15 @@
                           "type": "string",
                           "pattern": "^\\+[1-9]\\d{6,14}$",
                           "nullable": true
+                        },
+                        "siteRoof": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "concrete_flat",
+                            "metal_shed",
+                            "tile"
+                          ],
+                          "nullable": true
                         }
                       },
                       "required": [
@@ -245313,6 +245322,15 @@
                           "type": "string",
                           "pattern": "^\\+[1-9]\\d{6,14}$",
                           "nullable": true
+                        },
+                        "siteRoof": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "concrete_flat",
+                            "metal_shed",
+                            "tile"
+                          ],
+                          "nullable": true
                         }
                       },
                       "required": [
@@ -246069,6 +246087,15 @@
                         "customerPhone": {
                           "type": "string",
                           "pattern": "^\\+[1-9]\\d{6,14}$",
+                          "nullable": true
+                        },
+                        "siteRoof": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "concrete_flat",
+                            "metal_shed",
+                            "tile"
+                          ],
                           "nullable": true
                         }
                       },

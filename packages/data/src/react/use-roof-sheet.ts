@@ -4,10 +4,14 @@ import {
   entryMetres,
   entryOf,
   type GroundPoint,
+  HEIGHT_PULL_M,
+  HEIGHT_PULL_MAX_M,
+  type HeightPull,
   type History,
   historyAfter,
   type LengthEntry,
   type MeasurementSystem,
+  type RoofFacts,
   type RoofSheetView,
   roofHeightDragged,
   roofHeightKept,
@@ -16,6 +20,8 @@ import {
   roofHeightStepped,
   roofHitAt,
   roofSheetOf,
+  roofStartHeightM,
+  roofTopsM,
   type StudioDocument,
 } from '@heliogrid/domain';
 import { type RefObject, useEffect, useRef, useState } from 'react';
@@ -37,9 +43,12 @@ export interface RoofSheetMoves {
   keepHeight(): void;
   /** Reset: the system's height comes back, as one change. */
   resetHeight(): void;
-  /** The blue arrow taken, and moved by how far the pointer rose, in metres. */
+  /**
+   * The blue arrow taken, and moved by how far the pointer rose, in metres. With the magnet on, a
+   * height within `reachM` of a level that exists pulls to it.
+   */
   grabHeight(): void;
-  dragHeight(risenM: number): void;
+  dragHeight(risenM: number, reachM?: number): void;
   /** Done: the height in hand is kept and the sheet closes; `false` when it is refused and stays. */
   done(): boolean;
   /** Edit outline in 2D: the height kept, the top view with this roof picked; `false` as Done. */
@@ -57,6 +66,8 @@ export interface RoofSheetState {
   readonly heightEntry: LengthEntry | null;
   /** Why the height in hand was not kept: it stays in the box until it is changed. */
   readonly heightRefusal: EditRefusal | null;
+  /** The level the dragged height is pulled to now: a level line and its tag; `null` when free. */
+  readonly heightPull: HeightPull | null;
 }
 
 /**
@@ -69,31 +80,51 @@ export function useRoofSheet({
   latest,
   change,
   editable,
-  startHeightM,
+  facts,
   units,
   outline,
+  pullOf,
 }: {
   document: StudioDocument | null;
   latest: RefObject<History<StudioDocument> | null>;
   change: (next: History<StudioDocument>) => void;
   editable: boolean;
-  startHeightM: number;
+  /** The market's roof facts: what a roof of each kind starts at, and where each one stands. */
+  facts: RoofFacts;
   units: MeasurementSystem;
   /** Edit outline in 2D: the top view, the roof picked, its height said. */
   outline: (roof: number, metres: number) => void;
+  /**
+   * The magnet for a dragged height, from the studio's kernel: the level a height pulls to, or
+   * `null` — while the magnet is off, or free for a moment — when it pulls to none.
+   */
+  pullOf: (
+    design: StudioDocument,
+    roof: number,
+    metres: number,
+    reachM: number,
+  ) => HeightPull | null;
 }): { state: RoofSheetState; moves: RoofSheetMoves } {
   const [open, setOpen] = useState<{ roof: number } | null>(null);
   const [inHand, setInHand] = useState<number | null>(null);
   // The box keeps what was typed, a half-typed number included, until the sheet moves on.
   const [typed, setTyped] = useState<LengthEntry | null>(null);
   const [refusal, setRefusal] = useState<EditRefusal | null>(null);
+  const [pull, setPull] = useState<HeightPull | null>(null);
   const hand = useRef<number | null>(null);
   hand.current = inHand;
   const grabbedAt = useRef(0);
 
   const roof = open?.roof ?? null;
+  /** The height the roof at `index` stands at where none is set: its kind's first height. */
+  const startOf = (design: StudioDocument, index: number) => {
+    const at = design.roofs[index];
+    return at === undefined ? 0 : roofStartHeightM(design, at, facts);
+  };
   const roofSheet =
-    roof === null || document === null ? null : roofSheetOf(document, roof, startHeightM, inHand);
+    roof === null || document === null
+      ? null
+      : roofSheetOf(document, roof, startOf(document, roof), inHand);
   // Undo, or a save read again, took the open roof away: its sheet goes with it.
   const gone = open !== null && roofSheet === null && document !== null;
   useEffect(() => {
@@ -101,20 +132,23 @@ export function useRoofSheet({
   }, [gone]);
 
   const standing = () => {
-    const at = latest.current?.present.roofs[roof ?? -1];
-    return at === undefined ? null : roofHeightOf(at, startHeightM).metres;
+    const design = latest.current?.present;
+    const at = design?.roofs[roof ?? -1];
+    if (design === undefined || at === undefined) return null;
+    return roofHeightOf(at, startOf(design, roof ?? -1)).metres;
   };
   const hold = (metres: number | null, entry: LengthEntry | null = null) => {
     hand.current = metres;
     setInHand(metres);
     setTyped(entry);
     setRefusal(null);
+    setPull(null);
   };
   /** The height in hand kept: `false` when it is refused and stays in the box with its reason. */
   const keep = (): boolean => {
     const at = latest.current;
     if (!editable || roof === null || at === null) return true;
-    const kept = roofHeightKept(at.present, roof, hand.current, startHeightM);
+    const kept = roofHeightKept(at.present, roof, hand.current, startOf(at.present, roof));
     if (kept?.kind === 'refused') {
       setRefusal(kept.refusal);
       return false;
@@ -132,11 +166,16 @@ export function useRoofSheet({
     hold(null);
     setOpen(null);
   };
-  /** The heights the roofs stand at now, the one in hand included: where a 3D tap meets them. */
-  const heightsNow = (at: StudioDocument) =>
-    at.roofs.map((each, i) =>
-      i === roof && hand.current !== null ? hand.current : roofHeightOf(each, startHeightM).metres,
+  /** Each roof's top above the ground now, the height in hand included: where a 3D tap meets it. */
+  const topsNow = (at: StudioDocument) => {
+    const held = hand.current;
+    const roofs = at.roofs.map((each, i) =>
+      i === roof && held !== null
+        ? { ...each, height: { metres: held, setBy: 'person' as const } }
+        : each,
     );
+    return roofTopsM({ ...at, roofs }, facts);
+  };
   return {
     state: {
       roofSheet,
@@ -144,13 +183,14 @@ export function useRoofSheet({
       heightEntry:
         roofSheet === null ? null : (typed ?? entryOf(roofSheet.height.metres, units, false)),
       heightRefusal: refusal,
+      heightPull: pull,
     },
     moves: {
       openRoof,
       tapRoof: (groundAt) => {
         const at = latest.current?.present;
         if (at === undefined) return;
-        const hit = roofHitAt(at, heightsNow(at), groundAt);
+        const hit = roofHitAt(at, topsNow(at), groundAt);
         if (hit === roof) return;
         if (!keep()) return;
         if (hit === null) setOpen(null);
@@ -178,10 +218,16 @@ export function useRoofSheet({
         change(historyAfter(at, roofHeightReset(at.present, roof)));
       },
       grabHeight: () => {
-        grabbedAt.current = hand.current ?? standing() ?? startHeightM;
+        grabbedAt.current = hand.current ?? standing() ?? 0;
       },
-      dragHeight: (risenM) => {
-        if (editable && roof !== null) hold(roofHeightDragged(grabbedAt.current, risenM));
+      dragHeight: (risenM, reachM = HEIGHT_PULL_M) => {
+        const design = latest.current?.present;
+        if (!editable || roof === null || design === undefined) return;
+        const dragged = roofHeightDragged(grabbedAt.current, risenM);
+        const reach = Math.min(Math.max(reachM, HEIGHT_PULL_M), HEIGHT_PULL_MAX_M);
+        const pulled = pullOf(design, roof, dragged, reach);
+        hold(pulled?.metres ?? dragged);
+        setPull(pulled);
       },
       done: () => {
         if (!keep()) return false;

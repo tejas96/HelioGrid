@@ -115,3 +115,17 @@ export function roofWithoutCorner(
     return sides.map((side, i) => (i === before ? joined : side)).filter((_, i) => i !== corner);
   });
 }
+
+/**
+ * A side's wall added or taken off by a person: that side says so from now on, whatever stands on
+ * the roof or beside it, until its sheet hands it back to the studio. The other sides keep what
+ * they hold.
+ */
+export function roofWithSideWall(roof: Roof, side: number, wall: boolean): Roof {
+  if (side < 0 || side >= roof.corners.length) return roof;
+  // A list that does not match the corners held nothing a reader would use: it starts afresh.
+  const held =
+    roof.sides?.length === roof.corners.length ? roof.sides : roof.corners.map(() => ({}));
+  const sides = held.map((each, i): RoofSide => (i === side ? { ...each, parapet: wall } : each));
+  return { ...roof, sides };
+}

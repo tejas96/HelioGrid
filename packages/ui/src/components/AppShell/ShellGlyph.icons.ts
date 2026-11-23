@@ -20,8 +20,56 @@ const InverterIcon = Lucide.createLucideIcon({
   ],
 });
 
+/*
+ * What a roof part is, for the design studio's chips and rows: Lucide draws none of these.
+ */
+
+/** Steps going up: a stair room. */
+const StepsIcon = Lucide.createLucideIcon({
+  name: 'steps',
+  node: [['path', { d: 'M3 20h5v-5h5v-5h5V5h3', key: 'steps' }]],
+});
+
+/** A sheet on two posts: an open shed. */
+const CanopyIcon = Lucide.createLucideIcon({
+  name: 'canopy',
+  node: [
+    ['path', { d: 'M2 9l10-4 10 4', key: 'sheet' }],
+    ['path', { d: 'M5 8v12', key: 'post-left' }],
+    ['path', { d: 'M19 8v12', key: 'post-right' }],
+  ],
+});
+
+/** A square cut in a square: a hole in a roof. */
+const OpeningIcon = Lucide.createLucideIcon({
+  name: 'opening',
+  node: [
+    ['rect', { x: '3.5', y: '3.5', width: '17', height: '17', rx: '2', key: 'roof' }],
+    ['rect', { x: '8.5', y: '8.5', width: '7', height: '7', rx: '1', key: 'hole' }],
+  ],
+});
+
+/** One box on another, set back: an upper floor. */
+const StoreysIcon = Lucide.createLucideIcon({
+  name: 'storeys',
+  node: [
+    ['rect', { x: '4', y: '12', width: '16', height: '8', rx: '1', key: 'lower' }],
+    ['rect', { x: '7', y: '4', width: '14', height: '8', rx: '1', key: 'upper' }],
+  ],
+});
+
+/** An arrow pushed back into a corner: a shape cut back to an edge. */
+const TrimIcon = Lucide.createLucideIcon({
+  name: 'trim',
+  node: [
+    ['path', { d: 'M4 4v16h16', key: 'edge' }],
+    ['path', { d: 'M9 15l6-6', key: 'shaft' }],
+    ['path', { d: 'M12 9h3v3', key: 'head' }],
+  ],
+});
+
 /**
- * Every icon `packages/ui` draws, for both halves (`F7-19`): Lucide's, and the two it lacks drawn
+ * Every icon `packages/ui` draws, for both halves (`F7-19`): Lucide's, and the ones it lacks drawn
  * in its style (24 box, 2 stroke, round ends). Named for the shape, never the product word it
  * stands for — the caller picks which shape means what.
  */
@@ -47,6 +95,7 @@ export const SHELL_GLYPHS = {
   'calendar-check': Lucide.CalendarCheckIcon,
   'calendar-clock': Lucide.CalendarClockIcon,
   camera: Lucide.CameraIcon,
+  canopy: CanopyIcon,
   cart: Lucide.ShoppingCartIcon,
   chat: Lucide.MessageCircleIcon,
   check: Lucide.CheckIcon,
@@ -106,6 +155,7 @@ export const SHELL_GLYPHS = {
   moon: Lucide.MoonIcon,
   move: Lucide.MoveIcon,
   note: Lucide.StickyNoteIcon,
+  opening: OpeningIcon,
   package: Lucide.PackageIcon,
   pair: Lucide.UsersRoundIcon,
   palette: Lucide.PaletteIcon,
@@ -136,8 +186,11 @@ export const SHELL_GLYPHS = {
   spark: Lucide.SparklesIcon,
   spreadsheet: Lucide.SheetIcon,
   star: Lucide.StarIcon,
+  steps: StepsIcon,
+  storeys: StoreysIcon,
   sun: Lucide.SunIcon,
   trash: Lucide.TrashIcon,
+  trim: TrimIcon,
   'trend-down': Lucide.TrendingDownIcon,
   'trend-up': Lucide.TrendingUpIcon,
   /** A turn about a middle: the same arrow as `retry`, named for the shape it is drawn as here. */

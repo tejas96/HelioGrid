@@ -4,7 +4,7 @@ import {
   type DesignWire,
   designActRefusedEnvelope,
 } from '@heliogrid/contracts';
-import type { DesignActRefusal } from '@heliogrid/domain';
+import type { DesignActRefusal, RoofType, SiteRoofHint } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import {
   type ContractException,
@@ -27,6 +27,17 @@ export function designWireOf(row: DesignRow): DesignWire {
   };
 }
 
+/**
+ * The lead's roof type in the studio's words. The studio names no record of this host's: a roof
+ * type it has no roof for (panels on the ground) is no hint.
+ */
+const SITE_ROOF: Record<RoofType, SiteRoofHint | null> = {
+  rcc_flat: 'concrete_flat',
+  metal_shed: 'metal_shed',
+  tile: 'tile',
+  ground_array: null,
+};
+
 /** A design opened: the studio's two blocks, the host's subject, and the reader's right to change it. */
 export function designDetailOf(facts: DesignFacts, canEdit: boolean): DesignDetail {
   return {
@@ -36,6 +47,7 @@ export function designDetailOf(facts: DesignFacts, canEdit: boolean): DesignDeta
       leadId: facts.leadId,
       customerName: facts.customerName,
       customerPhone: facts.customerPhone,
+      siteRoof: facts.roofType === null ? null : SITE_ROOF[facts.roofType],
     },
     canEdit,
   };

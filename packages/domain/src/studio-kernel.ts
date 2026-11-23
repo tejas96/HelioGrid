@@ -47,6 +47,7 @@ export {
   roofSurfaceM2,
   roofsAreaM2,
 } from './studio/roof-free-ground';
+export { heightPullOf } from './studio/roof-height-magnet';
 export {
   LEVEL_M,
   type RoofFacts,
@@ -63,12 +64,10 @@ export {
   HOLE_SIDE_MAX_M,
   type HoleMeets,
   holeMeets,
-  type MeetChoice,
   meetingOf,
-  type RoofMeeting,
-  type RoofPlace,
   STAIR_ROOM_MAX_M2,
 } from './studio/roof-meet';
+export { meetingOfRoof, roofCutToEdge } from './studio/roof-meet-standing';
 export {
   type EdgeState,
   type EdgeStretch,
@@ -91,6 +90,7 @@ export {
   without,
 } from './studio/roof-polygons';
 export type { ProfilePart, StandingWall } from './studio/roof-profile';
+export { roofSceneOf } from './studio/roof-scene-build';
 export { setbackLines } from './studio/roof-setback';
 export {
   bearingsApart,
@@ -104,3 +104,5 @@ export {
   lowSideOf,
   sideBearing,
 } from './studio/roof-slope-way';
+export { roofTopMarksOf } from './studio/roof-top-marks-build';
+export { type RoofsWorked, roofsWorked, type WorkedBefore } from './studio/roof-worked';

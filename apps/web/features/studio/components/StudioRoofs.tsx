@@ -1,9 +1,10 @@
 'use client';
-import type { GroundPoint, Roof, StudioView } from '@heliogrid/domain';
+import type { GroundPoint, RoofScene, StudioView } from '@heliogrid/domain';
 import { type ThemePalette, theme } from '@heliogrid/theme';
 import { useFrame, useThree } from '@react-three/fiber';
 import { type RefObject, useEffect, useMemo } from 'react';
-import { type CanvasTexture, ExtrudeGeometry, type Matrix3, Shape, type Texture } from 'three';
+import { type CanvasTexture, DoubleSide, type Matrix3, type Texture } from 'three';
+import { roofGeometries } from './roof-mesh';
 import { type SceneScreen, screenOfFrame } from './scene-screen';
 
 /** A roof in the top view lies flat on its picture: the marks over it sit where the picture is. */
@@ -84,77 +85,65 @@ function topOf(picture: RoofTopPicture): Texture {
   return top;
 }
 
-/** A roof block's height in metres at the rise now; below a hair it is not drawn. */
+/** The model's height at the rise now: one stretch for every roof; below a hair it is not drawn. */
 function standAt(
   node: { scale: { y: number }; visible: boolean; userData: { metres?: number } },
   rise: number,
 ) {
-  const metres = (node.userData.metres ?? 0) * rise;
-  node.scale.y = Math.max(metres, SHOWN_FROM_M);
-  node.visible = metres >= SHOWN_FROM_M;
-}
-
-function outlineOf(corners: readonly GroundPoint[]): Shape {
-  const shape = new Shape();
-  corners.forEach((corner, i) => {
-    if (i === 0) shape.moveTo(corner.east, corner.north);
-    else shape.lineTo(corner.east, corner.north);
-  });
-  shape.closePath();
-  return shape;
+  const risen = (node.userData.metres ?? 0) * rise;
+  node.scale.y = Math.max(rise, SHOWN_FROM_M);
+  node.visible = risen >= SHOWN_FROM_M;
 }
 
 /**
- * One roof standing on the ground: plaster walls and a plaster top. In the top view it lies flat
- * and the picture shows through; the picture on its top in 3D comes with the roof's close.
+ * Every roof of the design as two meshes (`T-M05-002`, part e): the walls, parapets and posts in
+ * plaster, and the tops and sloped faces wearing the ground's picture. Each height is counted from
+ * the ground, so one stretch of the group raises the whole model and nothing on a roof is stretched.
  */
-function RoofBlock({
-  roof,
-  metres,
+function RoofModel({
+  scene,
   top,
   palette,
   rise,
 }: {
-  roof: Roof;
-  /** The roof's height: its own, or the market's storey height. */
-  metres: number;
-  /** The picture its top wears; `null` on the grid, where the top is plaster. */
+  scene: RoofScene;
+  /** The picture the tops wear; `null` on the grid, where a top is plaster. */
   top: RoofTopPicture | null;
   palette: ThemePalette;
   rise: RoofRise;
 }) {
-  const geometry = useMemo(
-    () => new ExtrudeGeometry(outlineOf(roof.corners), { depth: 1, bevelEnabled: false }),
-    [roof.corners],
+  const model = useMemo(() => roofGeometries(scene), [scene]);
+  useEffect(
+    () => () => {
+      model.walls.dispose();
+      model.tops.dispose();
+    },
+    [model],
   );
-  useEffect(() => () => geometry.dispose(), [geometry]);
   const map = useMemo(() => (top === null ? null : topOf(top)), [top]);
   useEffect(() => () => map?.dispose(), [map]);
   return (
     <group
-      // The block is one metre tall: its group stretches it to the roof's height at the rise now.
       ref={(group) => {
         if (group !== null) standAt(group, rise.current);
       }}
-      name="roof"
-      userData={{ rises: true, metres }}
+      name="roofs"
+      userData={{ rises: true, metres: model.topM }}
     >
-      <mesh geometry={geometry} rotation-x={-Math.PI / 2} castShadow receiveShadow>
-        {/* The extruded shape's first group is its two caps, the second its walls. */}
+      <mesh geometry={model.walls} castShadow receiveShadow>
+        <meshStandardMaterial color={palette['scene-wall']} roughness={PLASTER_ROUGHNESS} />
+      </mesh>
+      <mesh geometry={model.tops} castShadow receiveShadow>
+        {/* A sloped face and an open shed's sheet are seen from under them too. */}
         {map === null ? (
           <meshStandardMaterial
-            attach="material-0"
             color={palette['scene-wall']}
             roughness={PLASTER_ROUGHNESS}
+            side={DoubleSide}
           />
         ) : (
-          <meshBasicMaterial attach="material-0" map={map} toneMapped={false} />
+          <meshBasicMaterial map={map} toneMapped={false} side={DoubleSide} />
         )}
-        <meshStandardMaterial
-          attach="material-1"
-          color={palette['scene-wall']}
-          roughness={PLASTER_ROUGHNESS}
-        />
       </mesh>
     </group>
   );
@@ -162,31 +151,26 @@ function RoofBlock({
 
 /**
  * The design's roofs in the scene (`T-M05-002`, part b): in the top view they lie flat, so the
- * picture shows and the page's marks draw them; in 3D they rise to the storey height, with walls,
+ * picture shows and the page's marks draw them; in 3D they rise to their heights, with walls,
  * the picture on their tops and a soft shadow. Each drawn frame tells the marks where the model
  * lands. Nothing draws unless something changes.
  */
 export function StudioRoofs({
-  roofs,
+  scene: model,
   view,
   still,
   palette,
-  heights,
-  startHeightM,
   top,
   rise,
   sizing,
   marks,
   screen,
 }: {
-  roofs: readonly Roof[];
+  /** The 3D model of the design drawn: the kernel's solids and faces. */
+  scene: RoofScene;
   view: StudioView;
   still: boolean;
   palette: ThemePalette;
-  /** Each roof's height in metres, in the order of `roofs`. */
-  heights: readonly number[];
-  /** The height a roof on the ground starts at: one with no height of its own stands at it. */
-  startHeightM: number;
   /** The sky picture the roofs' tops wear; `null` on the grid. */
   top: RoofTopPicture | null;
   rise: RoofRise;
@@ -227,17 +211,8 @@ export function StudioRoofs({
 
   return (
     <>
-      {roofs.map((roof, index) => (
-        <RoofBlock
-          key={roof.id}
-          roof={roof}
-          metres={heights[index] ?? startHeightM}
-          top={top}
-          palette={palette}
-          rise={rise}
-        />
-      ))}
-      {roofs.length > 0 ? (
+      <RoofModel scene={model} top={top} palette={palette} rise={rise} />
+      {model.levels.length > 0 ? (
         <mesh rotation-x={-Math.PI / 2} position-y={SHADOW_LIFT_M} receiveShadow>
           <planeGeometry args={[SHADOW_GROUND_M, SHADOW_GROUND_M]} />
           <shadowMaterial opacity={SHADOW_STRENGTH} />

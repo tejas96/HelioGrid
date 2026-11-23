@@ -1,5 +1,12 @@
+import { SITE_ROOF_HINTS } from '@heliogrid/domain';
 import { z } from 'zod';
-import { capturedAtSchema, memberRefSchema, phoneE164Schema, uuidSchema } from '../common';
+import {
+  capturedAtSchema,
+  extensibleEnum,
+  memberRefSchema,
+  phoneE164Schema,
+  uuidSchema,
+} from '../common';
 import { errorEnvelopeWithFacts } from '../error';
 import { studioSiteSchema } from './site';
 import {
@@ -31,6 +38,12 @@ export const designSubjectSchema = z.object({
   leadId: uuidSchema,
   customerName: z.string().nullable(),
   customerPhone: phoneE164Schema.nullable(),
+  /**
+   * What the host knows of the site's roof before any design: the first roof drawn starts as it.
+   * Absent from an api of before part e, and `null` where the host knows nothing: both read as
+   * none. An open set: a hint a later api adds reads as none on a studio that does not know it.
+   */
+  siteRoof: extensibleEnum(SITE_ROOF_HINTS).nullable().optional(),
 });
 export type DesignSubjectWire = z.infer<typeof designSubjectSchema>;
 

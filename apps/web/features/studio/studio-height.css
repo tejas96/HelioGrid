@@ -30,6 +30,20 @@
   filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 60%, transparent));
 }
 
+/* The magnet's level line: dashed, in the roof's blue, across the model at the height pulled to,
+   with a tag that names it. */
+.hg-roof-lines .hg-roof-level {
+  stroke: var(--hg-roof-ink);
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+  filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-mark) 90%, transparent));
+}
+
+.hg-roof-tag[data-tone="level"] {
+  background: var(--hg-roof-ink);
+  color: var(--scene-mark);
+}
+
 /* The blue arrow: a stem that grows up out of the roof's top, its height beside it. The holder
    sits on the top; the arrow stands up from it. */
 .hg-roof-at > .hg-roof-arrow {

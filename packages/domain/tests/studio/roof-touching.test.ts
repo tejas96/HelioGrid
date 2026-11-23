@@ -6,9 +6,9 @@ import { cornerDragged } from '../../src/studio/roof-edit';
 import { roofMoved } from '../../src/studio/roof-move';
 
 /**
- * The touching check of the release before part e's screens (`T-M05-002`, part e): two buildings on
- * the ground never overlap, and a roof that stands on another, is part of one or is an open shed is
- * never refused for where it lies — so a design a later studio saved stays editable here.
+ * No roof is refused for lying over another (`T-M05-002`, part e): a stair room on its roof, a hole
+ * in one, an open shed over one, an upper floor that sticks out, and two buildings a person drags
+ * together. A roof's own shape and the site's reach are still checked.
  */
 const p = (east: number, north: number): GroundPoint => ({ east, north });
 const box = (west: number, south: number, wide: number, deep: number) => [
@@ -42,19 +42,19 @@ const DUCT = roofOf('duct', box(6, 5, 1, 1), {
 const SHED = roofOf('shed', box(10, 0, 4, 8));
 const HOUSE = designOf(TERRACE, STAIR, TANK_ROOM, DUCT, SHED);
 
-describe('the touching check knows how roofs relate', () => {
+describe('no roof is refused for lying over another', () => {
   it.each([
     ['a stair room on its roof', 1],
     ['an upper floor on the stair room', 2],
     ['a hole in its roof', 3],
   ])('%s is never refused for lying over it', (_why, index) => {
     const roof = HOUSE.roofs[index] as Roof;
-    expect(faultOf(HOUSE, index, roof.corners)).toBeNull();
+    expect(faultOf(roof.corners)).toBeNull();
     expect(cornerDragged(HOUSE, index, 2, p(4, 4), false).fault).toBeNull();
   });
 
   it('the roof under a stair room is not refused for what stands on it', () => {
-    expect(faultOf(HOUSE, 0, TERRACE.corners)).toBeNull();
+    expect(faultOf(TERRACE.corners)).toBeNull();
     expect(cornerDragged(HOUSE, 0, 2, p(10, 9), false).fault).toBeNull();
   });
 
@@ -62,9 +62,9 @@ describe('the touching check knows how roofs relate', () => {
     const over = roofOf('over', box(-1, -1, 12, 10), {
       kind: { is: 'open_shed', setBy: 'system' },
     });
-    const design = designOf(TERRACE, over);
-    expect(faultOf(design, 1, over.corners)).toBeNull();
-    expect(faultOf(design, 0, TERRACE.corners)).toBeNull();
+    const _design = designOf(TERRACE, over);
+    expect(faultOf(over.corners)).toBeNull();
+    expect(faultOf(TERRACE.corners)).toBeNull();
   });
 
   it('a roof of a kind a later studio added, standing on another, is not refused either', () => {
@@ -77,13 +77,15 @@ describe('the touching check knows how roofs relate', () => {
     expect(cornerDragged(design, 0, 2, p(10, 9), false).fault).toBeNull();
   });
 
-  it('two buildings on the ground still never overlap', () => {
-    expect(roofMoved(HOUSE, 4, p(-2, 0)).fault).toBe('would_overlap');
-    expect(roofMoved(HOUSE, 0, p(2, 0)).fault).toBe('would_overlap');
+  it('two buildings on the ground may lie over each other too: what they are is the roof step’s to say', () => {
+    expect(roofMoved(HOUSE, 4, p(-2, 0)).fault).toBeNull();
+    expect(roofMoved(HOUSE, 0, p(2, 0)).fault).toBeNull();
   });
 
-  it('a building of a kind a later studio added is kept clear of others, as a building is', () => {
-    const later = roofOf('later', box(10, 0, 4, 8), { kind: { is: 'carport', setBy: 'person' } });
-    expect(roofMoved(designOf(TERRACE, later), 1, p(-2, 0)).fault).toBe('would_overlap');
+  it.each([
+    ['a corner past the site’s reach', p(2_001, 0), 'too_far'],
+    ['edges that cross', p(4, -3), 'would_cross'],
+  ])('a roof’s own shape is still checked: %s', (_why, to, fault) => {
+    expect(cornerDragged(designOf(TERRACE), 0, 2, to, false).fault).toBe(fault);
   });
 });

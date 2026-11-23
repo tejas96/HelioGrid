@@ -67,11 +67,12 @@ export function lengthHeld(trust: RoofEdgeTrust): boolean {
 }
 
 /**
- * A design holds at most this many roofs: what a studio lets a person draw. A reader takes more
- * (`ROOFS_READ_MAX`) one release before any studio draws them (`CLAUDE.md` §8, expand then
- * contract).
+ * A design holds at most this many roofs: what a studio lets a person draw. It comes from the frame
+ * budget: 200 roofs — 100 houses, each with a stair room — keep the scene within it. The readers
+ * took the same count (`ROOFS_READ_MAX`) one release before any studio drew them (`CLAUDE.md` §8,
+ * expand then contract).
  */
-export const ROOFS_MAX = 50;
+export const ROOFS_MAX = 200;
 /** How many roofs a stored design may hold: 100 houses, each with a stair room (`T-M05-002`, part e). */
 export const ROOFS_READ_MAX = 200;
 /**

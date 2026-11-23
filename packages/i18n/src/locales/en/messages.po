@@ -920,6 +920,11 @@ msgid "{count, plural, one {Opened # time} other {Opened # times}} · last {when
 msgstr "{count, plural, one {Opened # time} other {Opened # times}} · last {when} · {device}"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:58
+msgid "{count, plural, one {Parapet on # side} other {Parapet on # sides}}"
+msgstr "{count, plural, one {Parapet on # side} other {Parapet on # sides}}"
+
+#. js-lingui-explicit-id
 #: src/copy/home-today.ts:27
 msgid "{count, plural, one {person} other {people}}"
 msgstr "{count, plural, one {person} other {people}}"
@@ -1533,6 +1538,16 @@ msgid "{group} · {count}"
 msgstr "{group} · {count}"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:42
+msgid "{height} above {roof} · on posts · to check"
+msgstr "{height} above {roof} · on posts · to check"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:41
+msgid "{height} above {roof} · to check"
+msgstr "{height} above {roof} · to check"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:37
 msgid "{home}, switch home"
 msgstr "{home}, switch home"
@@ -1962,6 +1977,11 @@ msgid "{name} · customer"
 msgstr "{name} · customer"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof.ts:52
+msgid "{name} · height {height}. Drag a corner to fix the shape."
+msgstr "{name} · height {height}. Drag a corner to fix the shape."
+
+#. js-lingui-explicit-id
 #: src/copy/project-handover.ts:47
 msgid "{name} · its history stays on the project."
 msgstr "{name} · its history stays on the project."
@@ -2057,6 +2077,11 @@ msgid "{name} asks to join"
 msgstr "{name} asks to join"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:39
+msgid "{name} beside {roof}"
+msgstr "{name} beside {roof}"
+
+#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:30
 msgid "{name} can {list}."
 msgstr "{name} can {list}."
@@ -2107,6 +2132,11 @@ msgid "{name} declined the invite"
 msgstr "{name} declined the invite"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:55
+msgid "{name} deleted · Undo brings it back"
+msgstr "{name} deleted · Undo brings it back"
+
+#. js-lingui-explicit-id
 #: src/copy/reorder-list.ts:15
 msgid "{name} deleted. {remaining, plural, one {# remains} other {# remain}}."
 msgstr "{name} deleted. {remaining, plural, one {# remains} other {# remain}}."
@@ -2142,6 +2172,16 @@ msgid "{name} has waited a day with no owner"
 msgstr "{name} has waited a day with no owner"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-height.ts:28
+msgid "{name} height: {height}"
+msgstr "{name} height: {height}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:37
+msgid "{name} in {roof}"
+msgstr "{name} in {roof}"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-after-list.ts:265
 msgid "{name} is already a lead"
 msgstr "{name} is already a lead"
@@ -2165,6 +2205,11 @@ msgstr "{name} is at {stage}. Move it to {to}?"
 #: src/copy/reorder-list.ts:20
 msgid "{name} is first"
 msgstr "{name} is first"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:73
+msgid "{name} is its own roof now · Undo puts it back"
+msgstr "{name} is its own roof now · Undo puts it back"
 
 #. js-lingui-explicit-id
 #: src/copy/reorder-list.ts:21
@@ -2197,6 +2242,16 @@ msgid "{name} moved to position {position} of {total}."
 msgstr "{name} moved to position {position} of {total}."
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:38
+msgid "{name} of {roof}"
+msgstr "{name} of {roof}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:35
+msgid "{name} on {roof}"
+msgstr "{name} on {roof}"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-after-track.ts:49
 msgid "{name} opened it"
 msgstr "{name} opened it"
@@ -2205,6 +2260,11 @@ msgstr "{name} opened it"
 #: src/copy/customer-link-notices.ts:12
 msgid "{name} opened proposal {number}"
 msgstr "{name} opened proposal {number}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:36
+msgid "{name} over {roof}"
+msgstr "{name} over {roof}"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-builder-steps.ts:53
@@ -2252,6 +2312,11 @@ msgstr "{name} saved this design at {time}. Your last change is not saved."
 #: src/copy/payment-terms.ts:87
 msgid "{name} split"
 msgstr "{name} split"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:56
+msgid "{name} sticks out · to check"
+msgstr "{name} sticks out · to check"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-track.ts:74
@@ -3670,7 +3735,7 @@ msgid "A customer sends a friend. Add the friend and pick who sent them."
 msgstr "A customer sends a friend. Add the friend and pick who sent them."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:44
+#: src/copy/studio-roof.ts:43
 #: src/copy/studio-size.ts:24
 msgid "A design holds at most {max} roofs"
 msgstr "A design holds at most {max} roofs"
@@ -3701,12 +3766,12 @@ msgid "A good moment to call. No message delivery is claimed."
 msgstr "A good moment to call. No message delivery is claimed."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:25
+#: src/copy/studio-height.ts:30
 msgid "A height is at least {height}."
 msgstr "A height is at least {height}."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:26
+#: src/copy/studio-height.ts:31
 msgid "A height is at most {height}."
 msgstr "A height is at most {height}."
 
@@ -3738,19 +3803,19 @@ msgid "A lead outside your list"
 msgstr "A lead outside your list"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:77
+#: src/copy/studio-roof.ts:75
 #: src/copy/studio-size.ts:20
 msgid "A length is at least {length}."
 msgstr "A length is at least {length}."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:78
+#: src/copy/studio-roof.ts:76
 #: src/copy/studio-size.ts:21
 msgid "A length is at most {length}."
 msgstr "A length is at most {length}."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:79
+#: src/copy/studio-roof.ts:77
 msgid "A length you set would change. Change that length first."
 msgstr "A length you set would change. Change that length first."
 
@@ -3942,22 +4007,22 @@ msgid "A role of your own"
 msgstr "A role of your own"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:42
+#: src/copy/studio-roof.ts:41
 msgid "A roof has at most {max} corners"
 msgstr "A roof has at most {max} corners"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:85
+#: src/copy/studio-roof.ts:83
 msgid "A roof has at most {max} corners."
 msgstr "A roof has at most {max} corners."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:84
+#: src/copy/studio-roof.ts:82
 msgid "A roof keeps at least 3 corners."
 msgstr "A roof keeps at least 3 corners."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:43
+#: src/copy/studio-roof.ts:42
 msgid "A roof needs at least 3 corners"
 msgstr "A roof needs at least 3 corners"
 
@@ -3990,6 +4055,11 @@ msgstr "A skipped stage moves its tranche to the next one."
 #: src/copy/proposal-defaults-words.ts:131
 msgid "A sloped roof at golden hour"
 msgstr "A sloped roof at golden hour"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:46
+msgid "A storey above · to check"
+msgstr "A storey above · to check"
 
 #. js-lingui-explicit-id
 #: src/copy/actor-class.ts:33
@@ -4351,7 +4421,7 @@ msgid "Add a contact"
 msgstr "Add a contact"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:93
+#: src/copy/studio-roof.ts:91
 msgid "Add a corner on this edge"
 msgstr "Add a corner on this edge"
 
@@ -4776,7 +4846,7 @@ msgid "All languages"
 msgstr "All languages"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:57
+#: src/copy/studio-roof.ts:56
 msgid "All lengths sized from the one length you set."
 msgstr "All lengths sized from the one length you set."
 
@@ -5835,7 +5905,7 @@ msgid "Both"
 msgstr "Both"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:83
+#: src/copy/studio-roof.ts:81
 msgid "Both lengths at this corner are set. Tap a length to change it."
 msgstr "Both lengths at this corner are set. Tap a length to change it."
 
@@ -5912,6 +5982,11 @@ msgstr "Build one for {name} in about a minute."
 #: src/copy/proposal-after-lead.ts:21
 msgid "Build one in about a minute."
 msgstr "Build one in about a minute."
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:24
+msgid "Building"
+msgstr "Building"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:26
@@ -6421,6 +6496,11 @@ msgid "Changed on another device — reload"
 msgstr "Changed on another device — reload"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:51
+msgid "Changed to {name}. Undo puts it back."
+msgstr "Changed to {name}. Undo puts it back."
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:88
 msgid "Changed your mind, or it is not the same company?"
 msgstr "Changed your mind, or it is not the same company?"
@@ -6445,6 +6525,11 @@ msgstr "Check every page yourself. Best for a factory or an office."
 #: src/copy/role-matrix.ts:60
 msgid "Check in and out of a site, and log a visit and its outcome"
 msgstr "Check in and out of a site, and log a visit and its outcome"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:49
+msgid "Check it on site."
+msgstr "Check it on site."
 
 #. js-lingui-explicit-id
 #: src/copy/lead-designs.ts:39
@@ -6668,7 +6753,7 @@ msgid "Clear all"
 msgstr "Clear all"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:28
+#: src/copy/studio-roof.ts:30
 msgid "Clear every corner"
 msgstr "Clear every corner"
 
@@ -6755,7 +6840,7 @@ msgstr "close"
 #: src/copy/proposal-defaults-words.ts:66
 #: src/copy/roles-reference.ts:41
 #: src/copy/shell.ts:52
-#: src/copy/studio-height.ts:19
+#: src/copy/studio-height.ts:24
 #: src/copy/studio-picture.ts:34
 #: src/copy/usage-page.ts:94
 msgid "Close"
@@ -6772,7 +6857,7 @@ msgid "Close filters"
 msgstr "Close filters"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:46
+#: src/copy/studio-roof.ts:45
 msgid "Close shape"
 msgstr "Close shape"
 
@@ -6790,7 +6875,7 @@ msgid "Close the map"
 msgstr "Close the map"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:45
+#: src/copy/studio-roof.ts:44
 msgid "Close the shape, or tap Undo."
 msgstr "Close the shape, or tap Undo."
 
@@ -7213,6 +7298,11 @@ msgid "Copy number"
 msgstr "Copy number"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:54
+msgid "Copy of {roof} · drag it onto its house"
+msgstr "Copy of {roof} · drag it onto its house"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:99
 msgid "Copy or share"
 msgstr "Copy or share"
@@ -7228,42 +7318,42 @@ msgid "Copy the link for {label}"
 msgstr "Copy the link for {label}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:91
+#: src/copy/studio-roof.ts:89
 msgid "Corner {number}"
 msgstr "Corner {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:92
+#: src/copy/studio-roof.ts:90
 msgid "Corner 1: close the shape"
 msgstr "Corner 1: close the shape"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:63
+#: src/copy/studio-roof.ts:62
 msgid "Corner added. Drag it into place."
 msgstr "Corner added. Drag it into place."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:61
+#: src/copy/studio-roof.ts:60
 msgid "Corner moved · {snap}. Undo puts it back."
 msgstr "Corner moved · {snap}. Undo puts it back."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:62
+#: src/copy/studio-roof.ts:61
 msgid "Corner moved. The length you set held."
 msgstr "Corner moved. The length you set held."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:60
+#: src/copy/studio-roof.ts:59
 msgid "Corner moved. Undo puts it back."
 msgstr "Corner moved. Undo puts it back."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:64
+#: src/copy/studio-roof.ts:63
 msgid "Corner picked. Tap × to remove it."
 msgstr "Corner picked. Tap × to remove it."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:65
+#: src/copy/studio-roof.ts:64
 msgid "Corner removed. Undo puts it back."
 msgstr "Corner removed. Undo puts it back."
 
@@ -7854,6 +7944,11 @@ msgid "Customers open and answer their links"
 msgstr "Customers open and answer their links"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:32
+msgid "Cut to edge"
+msgstr "Cut to edge"
+
+#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:96
 #: src/copy/usage-page.ts:86
 msgid "Cycle"
@@ -8101,7 +8196,7 @@ msgid "Delete phase"
 msgstr "Delete phase"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:32
+#: src/copy/studio-roof.ts:33
 msgid "Delete roof"
 msgstr "Delete roof"
 
@@ -8416,7 +8511,7 @@ msgstr "done"
 #: src/copy/proposal-builder-sheets.ts:272
 #: src/copy/proposal-defaults-words.ts:28
 #: src/copy/studio-canvas.ts:49
-#: src/copy/studio-height.ts:18
+#: src/copy/studio-height.ts:23
 msgid "Done"
 msgstr "Done"
 
@@ -8463,6 +8558,11 @@ msgid "Dormant"
 msgstr "Dormant"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:29
+msgid "Dormer"
+msgstr "Dormer"
+
+#. js-lingui-explicit-id
 #: src/copy/stat-card.ts:15
 msgid "Down {delta}"
 msgstr "Down {delta}"
@@ -8493,7 +8593,7 @@ msgid "Draft"
 msgstr "Draft"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:52
+#: src/copy/studio-roof.ts:51
 msgid "Drag a corner to fix the shape."
 msgstr "Drag a corner to fix the shape."
 
@@ -8508,7 +8608,7 @@ msgid "Drag map to adjust"
 msgstr "Drag map to adjust"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:76
+#: src/copy/studio-roof.ts:74
 msgid "Drag the corner. Zoom in for more room."
 msgstr "Drag the corner. Zoom in for more room."
 
@@ -8518,9 +8618,9 @@ msgid "Drag the map until the pin is on the right place."
 msgstr "Drag the map until the pin is on the right place."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:22
-msgid "Drag to change the height of roof {number}"
-msgstr "Drag to change the height of roof {number}"
+#: src/copy/studio-height.ts:27
+msgid "Drag to change the height of {name}"
+msgstr "Drag to change the height of {name}"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-length.ts:17
@@ -8536,11 +8636,6 @@ msgstr "Draw a roof"
 #: src/copy/studio-canvas.ts:51
 msgid "Draw a roof first"
 msgstr "Draw a roof first"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:30
-msgid "Draw another roof"
-msgstr "Draw another roof"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-canvas.ts:95
@@ -8726,17 +8821,17 @@ msgid "Earlier versions are kept as they were sent"
 msgstr "Earlier versions are kept as they were sent"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:95
+#: src/copy/studio-roof.ts:93
 msgid "Edge {number}: {length}. Change it"
 msgstr "Edge {number}: {length}. Change it"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:59
+#: src/copy/studio-roof.ts:58
 msgid "Edge set to {length} · measured on site."
 msgstr "Edge set to {length} · measured on site."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:58
+#: src/copy/studio-roof.ts:57
 msgid "Edge set to {length}."
 msgstr "Edge set to {length}."
 
@@ -8794,7 +8889,7 @@ msgid "Edit name"
 msgstr "Edit name"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:17
+#: src/copy/studio-height.ts:22
 msgid "Edit outline in 2D"
 msgstr "Edit outline in 2D"
 
@@ -9042,7 +9137,7 @@ msgid "Every lead, design, proposal and project — kept"
 msgstr "Every lead, design, proposal and project — kept"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:88
+#: src/copy/studio-roof.ts:86
 msgid "Every length is yours. Drag a + out for an L."
 msgstr "Every length is yours. Drag a + out for an L."
 
@@ -9518,6 +9613,11 @@ msgstr "Fix the {count, plural, one {# row} other {# rows}}"
 #: src/copy/data-table.ts:28
 msgid "Fixed."
 msgstr "Fixed."
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:64
+msgid "Floor {floor} · {height}"
+msgstr "Floor {floor} · {height}"
 
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:137
@@ -10261,7 +10361,7 @@ msgstr "Heavy"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:14
-#: src/copy/studio-height.ts:13
+#: src/copy/studio-height.ts:18
 msgid "Height"
 msgstr "Height"
 
@@ -10271,7 +10371,7 @@ msgid "Height (mm)"
 msgstr "Height (mm)"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:49
+#: src/copy/studio-roof.ts:48
 msgid "Height {height} is the usual storey here. Drag a corner to fix the shape."
 msgstr "Height {height} is the usual storey here. Drag a corner to fix the shape."
 
@@ -10510,6 +10610,11 @@ msgstr "HJT"
 #: src/copy/roles-reference.ts:33
 msgid "Holder counts didn’t load"
 msgstr "Holder counts didn’t load"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:28
+msgid "Hole"
+msgstr "Hole"
 
 #. js-lingui-explicit-id
 #: src/copy/date-set.ts:15
@@ -11388,6 +11493,11 @@ msgid "Its link will say that the proposal is no longer active, with a name and 
 msgstr "Its link will say that the proposal is no longer active, with a name and a number to call. {name} is told."
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:48
+msgid "Its own roof type · same building"
+msgstr "Its own roof type · same building"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:107
 msgid "Its price is unchanged."
 msgstr "Its price is unchanged."
@@ -11401,6 +11511,16 @@ msgstr "Its specs and your price open here, beside the list."
 #: src/copy/invite-landing.ts:45
 msgid "Join {company}"
 msgstr "Join {company}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:31
+msgid "Join with {roof}"
+msgstr "Join with {roof}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:52
+msgid "Joined with {roof}"
+msgstr "Joined with {roof}"
 
 #. js-lingui-explicit-id
 #: src/copy/project-detail.ts:35
@@ -11892,6 +12012,16 @@ msgstr "Less than what is left — the rest stays due"
 #: src/copy/branding.ts:37
 msgid "Letterhead"
 msgstr "Letterhead"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:63
+msgid "Level with {roof}’s parapet top · {height}"
+msgstr "Level with {roof}’s parapet top · {height}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:62
+msgid "Level with {roof}’s top · {height}"
+msgstr "Level with {roof}’s top · {height}"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:156
@@ -12553,7 +12683,7 @@ msgid "made your own"
 msgstr "made your own"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:29
+#: src/copy/studio-roof.ts:31
 msgid "Magnet"
 msgstr "Magnet"
 
@@ -13207,7 +13337,7 @@ msgid "Move the plan"
 msgstr "Move the plan"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:96
+#: src/copy/studio-roof.ts:94
 msgid "Move the roof"
 msgstr "Move the roof"
 
@@ -13659,7 +13789,7 @@ msgid "New company on HelioGrid?"
 msgstr "New company on HelioGrid?"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:23
+#: src/copy/studio-roof-tags.ts:22
 msgid "New corner · drag it"
 msgstr "New corner · drag it"
 
@@ -14431,6 +14561,31 @@ msgstr "No owner yet. Give the lead to someone"
 #: src/copy/proposal-after-list.ts:47
 msgid "No panels yet"
 msgstr "No panels yet"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:65
+msgid "No parapet on this roof"
+msgstr "No parapet on this roof"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:66
+msgid "No parapet on this side"
+msgstr "No parapet on this side"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:72
+msgid "No parapet where {roof}’s wall stands"
+msgstr "No parapet where {roof}’s wall stands"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:70
+msgid "No parapet where the stair room stands"
+msgstr "No parapet where the stair room stands"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:71
+msgid "No parapet where the upper floor stands"
+msgstr "No parapet where the upper floor stands"
 
 #. js-lingui-explicit-id
 #: src/copy/payments-screen.ts:56
@@ -15886,6 +16041,11 @@ msgid "One per line · up to {count}"
 msgstr "One per line · up to {count}"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:53
+msgid "One roof, one outline"
+msgstr "One roof, one outline"
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:52
 msgid "One tap tells {first} you are still waiting."
 msgstr "One tap tells {first} you are still waiting."
@@ -16021,6 +16181,11 @@ msgid "Open Design {number}"
 msgstr "Open Design {number}"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:43
+msgid "Open down to the floor below"
+msgstr "Open down to the floor below"
+
+#. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:23
 msgid "Open existing"
 msgstr "Open existing"
@@ -16075,6 +16240,11 @@ msgstr "Open project {number}"
 #: src/copy/data-table.ts:29
 msgid "Open record"
 msgstr "Open record"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:27
+msgid "Open shed"
+msgstr "Open shed"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:51
@@ -16315,9 +16485,9 @@ msgid "Over {plan}’s limits"
 msgstr "Over {plan}’s limits"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:22
-msgid "Over a roof"
-msgstr "Over a roof"
+#: src/copy/studio-roof-kinds.ts:45
+msgid "Over both arms · to check"
+msgstr "Over both arms · to check"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-parts.ts:99
@@ -16551,6 +16721,11 @@ msgid "Parallel · in line"
 msgstr "Parallel · in line"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:61
+msgid "Parapet all round"
+msgstr "Parapet all round"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-defaults-words.ts:31
 msgid "Part {at} of {total}"
 msgstr "Part {at} of {total}"
@@ -16604,6 +16779,11 @@ msgid "Partial"
 msgstr "Partial"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:44
+msgid "Partly over {roof} · to check"
+msgstr "Partly over {roof} · to check"
+
+#. js-lingui-explicit-id
 #: src/copy/payments-screen.ts:34
 #: src/copy/proposal-defaults-words.ts:30
 msgid "Parts"
@@ -16618,6 +16798,16 @@ msgstr "passed over"
 #: src/copy/usage-page.ts:74
 msgid "Past {ceiling}, new uploads pause · files you have stay."
 msgstr "Past {ceiling}, new uploads pause · files you have stay."
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof.ts:40
+msgid "Past {reach} from the pin · this is another site"
+msgstr "Past {reach} from the pin · this is another site"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof.ts:68
+msgid "Past {reach} from the pin · this is another site. The roof went back."
+msgstr "Past {reach} from the pin · this is another site. The roof went back."
 
 #. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:58
@@ -17367,12 +17557,12 @@ msgid "Place the pin — tap the map, or press Enter to place it at the centre"
 msgstr "Place the pin — tap the map, or press Enter to place it at the centre"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:89
+#: src/copy/studio-roof.ts:87
 msgid "Placed beside Roof {number}. Drag it onto the house."
 msgstr "Placed beside Roof {number}. Drag it onto the house."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:87
+#: src/copy/studio-roof.ts:85
 msgid "Placed on the pin. Drag it onto the house."
 msgstr "Placed on the pin. Drag it onto the house."
 
@@ -18657,7 +18847,7 @@ msgid "Remove {tranche}"
 msgstr "Remove {tranche}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:94
+#: src/copy/studio-roof.ts:92
 msgid "Remove corner {number}"
 msgstr "Remove corner {number}"
 
@@ -18939,7 +19129,7 @@ msgid "Reset"
 msgstr "Reset"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:16
+#: src/copy/studio-height.ts:21
 msgid "Reset to {height}"
 msgstr "Reset to {height}"
 
@@ -19139,19 +19329,14 @@ msgid "Roof"
 msgstr "Roof"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:48
+#: src/copy/studio-roof.ts:47
 msgid "Roof · {area}"
 msgstr "Roof · {area}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:12
+#: src/copy/studio-roof-kinds.ts:23
 msgid "Roof {number}"
 msgstr "Roof {number}"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:53
-msgid "Roof {number} · height {height}. Drag a corner to fix the shape."
-msgstr "Roof {number} · height {height}. Drag a corner to fix the shape."
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-tags.ts:17
@@ -19164,12 +19349,7 @@ msgid "Roof {number} edge"
 msgstr "Roof {number} edge"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:23
-msgid "Roof {number} height: {height}"
-msgstr "Roof {number} height: {height}"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:33
+#: src/copy/studio-roof.ts:34
 msgid "Roof deleted. Undo brings it back."
 msgstr "Roof deleted. Undo brings it back."
 
@@ -19179,7 +19359,7 @@ msgid "Roof measured from satellite imagery. A site visit will confirm dimension
 msgstr "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:66
+#: src/copy/studio-roof.ts:65
 msgid "Roof moved. Undo puts it back."
 msgstr "Roof moved. Undo puts it back."
 
@@ -19194,7 +19374,7 @@ msgid "Roof size"
 msgstr "Roof size"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:67
+#: src/copy/studio-roof.ts:66
 msgid "Roof turned {degrees}°. Undo puts it back."
 msgstr "Roof turned {degrees}°. Undo puts it back."
 
@@ -19207,21 +19387,6 @@ msgstr "Roof type"
 #: src/copy/crm-vocabulary.ts:117
 msgid "Roof unsuitable"
 msgstr "Roof unsuitable"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:73
-msgid "Roofs cannot overlap yet."
-msgstr "Roofs cannot overlap yet."
-
-#. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:37
-msgid "Roofs cannot overlap yet. Tap outside the other roof."
-msgstr "Roofs cannot overlap yet. Tap outside the other roof."
-
-#. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:69
-msgid "Roofs cannot overlap yet. The roof went back."
-msgstr "Roofs cannot overlap yet. The roof went back."
 
 #. js-lingui-explicit-id
 #: src/copy/customer-page-sheets.ts:15
@@ -20152,6 +20317,11 @@ msgid "Sent with every request, and the only way above {limit}"
 msgstr "Sent with every request, and the only way above {limit}"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:30
+msgid "Separate part"
+msgstr "Separate part"
+
+#. js-lingui-explicit-id
 #: src/copy/invoice-document.ts:27
 msgid "Service code"
 msgstr "Service code"
@@ -20182,7 +20352,7 @@ msgid "Set by the component picker."
 msgstr "Set by the component picker."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:15
+#: src/copy/studio-height.ts:20
 msgid "Set by you."
 msgstr "Set by you."
 
@@ -20237,7 +20407,7 @@ msgid "Set the size in System first."
 msgstr "Set the size in System first."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:56
+#: src/copy/studio-roof.ts:55
 msgid "Set the true length of the marked edge."
 msgstr "Set the true length of the marked edge."
 
@@ -20377,6 +20547,16 @@ msgstr "Shared from a person’s own chat. No delivery is claimed."
 #: src/copy/owner-dashboard.ts:96
 msgid "Shared or opened"
 msgstr "Shared or opened"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:69
+msgid "Shared with {roof} · no parapet"
+msgstr "Shared with {roof} · no parapet"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:47
+msgid "Shares {roof}’s edge"
+msgstr "Shares {roof}’s edge"
 
 #. js-lingui-explicit-id
 #: src/copy/paged-document.ts:13
@@ -20549,7 +20729,17 @@ msgid "Shown to customers on every document"
 msgstr "Shown to customers on every document"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:24
+#: src/copy/studio-roof-kinds.ts:68
+msgid "Side {number}: add a parapet"
+msgstr "Side {number}: add a parapet"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:67
+msgid "Side {number}: take its parapet off"
+msgstr "Side {number}: take its parapet off"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-height.ts:29
 msgid "Side views"
 msgstr "Side views"
 
@@ -20758,7 +20948,7 @@ msgid "SLD, AC/DC and earthing layouts"
 msgstr "SLD, AC/DC and earthing layouts"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:20
+#: src/copy/studio-height.ts:25
 msgid "Slide the height"
 msgstr "Slide the height"
 
@@ -21036,6 +21226,11 @@ msgid "Stages"
 msgstr "Stages"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:25
+msgid "Stair room"
+msgstr "Stair room"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-builder-sheets.ts:117
 msgid "Standard"
 msgstr "Standard"
@@ -21244,6 +21439,11 @@ msgid "Steps appear here as the job moves."
 msgstr "Steps appear here as the job moves."
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:57
+msgid "Sticks out {length} · to check"
+msgstr "Sticks out {length} · to check"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:36
 msgid "Still checking whether you have answered this."
 msgstr "Still checking whether you have answered this."
@@ -21270,7 +21470,7 @@ msgid "Still works"
 msgstr "Still works"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:27
+#: src/copy/studio-roof.ts:29
 msgid "Stop drawing"
 msgstr "Stop drawing"
 
@@ -21586,7 +21786,7 @@ msgid "Tap a date to add a holiday"
 msgstr "Tap a date to add a holiday"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:40
+#: src/copy/studio-roof.ts:39
 msgid "Tap a little farther from it."
 msgstr "Tap a little farther from it."
 
@@ -21611,12 +21811,12 @@ msgid "Tap a part to pick or change it. Up to {max} brands each — {name} reads
 msgstr "Tap a part to pick or change it. Up to {max} brands each — {name} reads them as choices."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:55
+#: src/copy/studio-roof.ts:54
 msgid "Tap a roof to see its height."
 msgstr "Tap a roof to see its height."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:35
+#: src/copy/studio-roof.ts:36
 msgid "Tap a spot where the edges do not cross."
 msgstr "Tap a spot where the edges do not cross."
 
@@ -21636,17 +21836,12 @@ msgid "Tap an outline, or draw on the plan with the pencil."
 msgstr "Tap an outline, or draw on the plan with the pencil."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:26
+#: src/copy/studio-roof.ts:28
 msgid "Tap each corner of the roof"
 msgstr "Tap each corner of the roof"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:41
-msgid "Tap nearer the building."
-msgstr "Tap nearer the building."
-
-#. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:54
+#: src/copy/studio-roof.ts:53
 msgid "Tap the roof to change its height."
 msgstr "Tap the roof to change its height."
 
@@ -21949,7 +22144,7 @@ msgid "That corner was too close to another. The roof went back."
 msgstr "That corner was too close to another. The roof went back."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:75
+#: src/copy/studio-roof.ts:73
 msgid "That corner would be too close to another."
 msgstr "That corner would be too close to another."
 
@@ -22046,15 +22241,9 @@ msgid "That is taking too long to answer."
 msgstr "That is taking too long to answer."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:74
 #: src/copy/studio-size.ts:23
 msgid "That is too far from the pin."
 msgstr "That is too far from the pin."
-
-#. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:70
-msgid "That is too far from the pin. The roof went back."
-msgstr "That is too far from the pin. The roof went back."
 
 #. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:20
@@ -22062,7 +22251,7 @@ msgid "That isn't a hex colour."
 msgstr "That isn't a hex colour."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:86
+#: src/copy/studio-roof.ts:84
 msgid "That length is far from the picture. Check the number."
 msgstr "That length is far from the picture. Check the number."
 
@@ -22122,11 +22311,6 @@ msgid "That request is too large. Reduce it and retry."
 msgstr "That request is too large. Reduce it and retry."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:38
-msgid "That spot is too far from the pin"
-msgstr "That spot is too far from the pin"
-
-#. js-lingui-explicit-id
 #: src/copy/project-detail.ts:117
 msgid "That step is already ticked."
 msgstr "That step is already ticked."
@@ -22147,7 +22331,7 @@ msgid "That's taking too long to answer — they stay on this phone."
 msgstr "That's taking too long to answer — they stay on this phone."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:80
+#: src/copy/studio-roof.ts:78
 msgid "The {length} you set would change. Change that length first."
 msgstr "The {length} you set would change. Change that length first."
 
@@ -23235,7 +23419,7 @@ msgid "The trial ended"
 msgstr "The trial ended"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:14
+#: src/copy/studio-height.ts:19
 msgid "The usual storey height. Set the true height if you know it."
 msgstr "The usual storey height. Set the true height if you know it."
 
@@ -23477,14 +23661,9 @@ msgid "This design is not here"
 msgstr "This design is not here"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:34
+#: src/copy/studio-roof.ts:35
 msgid "This edge would cross another"
 msgstr "This edge would cross another"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:36
-msgid "This edge would run over another roof"
-msgstr "This edge would run over another roof"
 
 #. js-lingui-explicit-id
 #: src/copy/validation.ts:9
@@ -23960,7 +24139,7 @@ msgid "Those edges would cross."
 msgstr "Those edges would cross."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:68
+#: src/copy/studio-roof.ts:67
 msgid "Those edges would cross. The roof went back."
 msgstr "Those edges would cross. The roof went back."
 
@@ -24146,7 +24325,7 @@ msgid "Tomorrow, {from}–{to}"
 msgstr "Tomorrow, {from}–{to}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:39
+#: src/copy/studio-roof.ts:38
 msgid "Too close to another corner"
 msgstr "Too close to another corner"
 
@@ -24154,6 +24333,11 @@ msgstr "Too close to another corner"
 #: src/copy/billing-records.ts:69
 msgid "Too expensive"
 msgstr "Too expensive"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof.ts:37
+msgid "Too far for this site"
+msgstr "Too far for this site"
 
 #. js-lingui-explicit-id
 #: src/copy/owner-dashboard.ts:113
@@ -24424,12 +24608,12 @@ msgid "Turn the plan"
 msgstr "Turn the plan"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:97
+#: src/copy/studio-roof.ts:95
 msgid "Turn the roof"
 msgstr "Turn the roof"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:24
+#: src/copy/studio-roof-tags.ts:23
 msgid "Turned {degrees}°"
 msgstr "Turned {degrees}°"
 
@@ -24491,7 +24675,7 @@ msgid "Type the brand"
 msgstr "Type the brand"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:21
+#: src/copy/studio-height.ts:26
 msgid "Type the height"
 msgstr "Type the height"
 
@@ -24815,6 +24999,11 @@ msgstr "Uploading held photographs arrives with the survey capture."
 #: src/copy/project-toast.ts:26
 msgid "Uploading…"
 msgstr "Uploading…"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:26
+msgid "Upper floor"
+msgstr "Upper floor"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:33
@@ -25751,6 +25940,7 @@ msgstr "What is paused and what still works"
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:36
 #: src/copy/catalog-settings.ts:36
+#: src/copy/studio-roof-kinds.ts:33
 msgid "What it is"
 msgstr "What it is"
 
@@ -27395,7 +27585,7 @@ msgid "Your photo, language and theme"
 msgstr "Your photo, language and theme"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:31
+#: src/copy/studio-roof.ts:32
 msgid "Your pick was not saved."
 msgstr "Your pick was not saved."
 

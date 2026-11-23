@@ -1,4 +1,4 @@
-import type { MeasurementSystem } from '@heliogrid/domain';
+import { GROUND_REACH_M, type MeasurementSystem } from '@heliogrid/domain';
 import type { RoofWordsShown } from '@heliogrid/i18n';
 import type { useFormat } from '@heliogrid/ui';
 
@@ -13,5 +13,6 @@ export function roofWordsShown(
     length: (metres) => format.roofLength(metres, units, false),
     height: format.roofHeight(startHeightM, units),
     heightOf: (metres) => format.roofHeight(metres, units),
+    reach: format.length(GROUND_REACH_M, units),
   };
 }

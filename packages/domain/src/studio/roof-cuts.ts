@@ -1,6 +1,7 @@
 import type { GroundPoint } from './ground';
 import { type BuiltFace, type FaceCorner, type FaceEdge, riseOf } from './roof-faces';
 import { type FlatShape, ringAreaM2, shapeArea, shapeOf, shared, without } from './roof-polygons';
+import { pointInside } from './roof-shape';
 import { type PlanPoint, ringArea } from './wavefront-lines';
 import { runFront } from './wavefront-run';
 
@@ -96,6 +97,21 @@ function planeOf(corners: readonly FaceCorner[]): Plane {
 
 const upOn = (plane: Plane, point: GroundPoint) =>
   plane.a + plane.b * point.east + plane.c * point.north;
+
+/**
+ * How high a roof's faces stand at a point, above the roof's low edge: the face the point lies in,
+ * or on the edge of. `null` off every face.
+ */
+export function facesHeightAt(faces: readonly BuiltFace[], point: GroundPoint): number | null {
+  const under = faces.find((face) => {
+    const count = face.corners.length;
+    const onEdge = face.corners.some(
+      (corner, i) => farFrom(point, corner, face.corners[(i + 1) % count] as FaceCorner) < SAME_M,
+    );
+    return onEdge || pointInside(point, face.corners);
+  });
+  return under === undefined ? null : upOn(planeOf(under.corners), point);
+}
 
 /** How far a point lies from a segment. */
 function farFrom(point: GroundPoint, from: GroundPoint, to: GroundPoint): number {

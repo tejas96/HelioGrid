@@ -162,8 +162,8 @@ function firstLengthSet(
   }));
   const scaled = { ...sized, roofs };
   // Every roof grows with the picture: each must stay inside the site's reach.
-  for (const [i, roof] of roofs.entries()) {
-    const fault = faultOf(scaled, i, roof.corners);
+  for (const roof of roofs) {
+    const fault = faultOf(roof.corners);
     if (fault !== null) return { kind: 'refused', refusal: fault };
   }
   return { kind: 'done', document: scaled };
@@ -203,7 +203,7 @@ export function lengthSet(
       blocking ??= held;
       continue;
     }
-    const fault = faultOf(document, roofIndex, corners);
+    const fault = faultOf(corners);
     if (fault !== null) return { kind: 'refused', refusal: fault };
     return { kind: 'done', document: withRoof(document, roofIndex, { ...roof, corners, edges }) };
   }

@@ -60,13 +60,13 @@ describe('roofFromPlanOutline', () => {
     expect(result.document.drawnOn).toEqual(made.stamp);
   });
 
-  it('is refused over a roof that stands there, and with no plan laid', () => {
+  it('makes no second roof on an outline that has its roof, and none with no plan laid', () => {
     const design = withPlan({ scaleFrom: 'file', metresPerUnit: 0.001 });
     const once = roofFromPlanOutline(design, OUTLINE, made);
     if (once.kind !== 'made') throw new Error('first');
     expect(roofFromPlanOutline(once.document, OUTLINE, { ...made, id: 'roof-2' })).toEqual({
       kind: 'refused',
-      refusal: 'would_overlap',
+      refusal: 'no_outline',
     });
     expect(roofFromPlanOutline(EMPTY_STUDIO_DOCUMENT, OUTLINE, made)).toEqual({
       kind: 'refused',

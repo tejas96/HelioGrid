@@ -1,4 +1,4 @@
-import type { StudioScreen } from './use-studio-screen';
+import type { StudioScreen } from './studio-screen-view';
 
 /** The moments a phone marks with a tap, as the studio stands now (`T-M05-002`, part b). */
 export interface StudioMoments {
@@ -24,8 +24,10 @@ export function studioMomentsOf(studio: StudioScreen): StudioMoments {
   const said = step.kind === 'idle' ? step.said : null;
   const length = studio.lengthBox;
   const sheet = studio.roofSheet;
+  // A height pulled level is a snap too: named by the level, so each new one is felt once.
+  const pulled = studio.heightPull === null ? null : `level ${studio.heightPull.levelM}`;
   return {
-    snap: snap?.kind ?? null,
+    snap: snap?.kind ?? pulled,
     refused,
     closed: said?.kind === 'closed' ? said : null,
     lengthSide:

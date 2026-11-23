@@ -134,10 +134,8 @@ export function StudioCanvas({
             fallback={<p className="hg-studio-no-scene">{words.noScene}</p>}
             drive={drive}
             onTurn={(turn) => compass.current?.turn(turn)}
-            roofs={roofs}
-            heights={studio.heights.map((height) => height.metres)}
+            roofScene={studio.scene}
             pictureScale={studio.shown?.pictureScale ?? null}
-            startHeightM={studio.startHeightM}
             fit={
               frameOn === studio.own.landed ? (studio.own.landed?.box ?? studio.fit) : studio.fit
             }
@@ -202,14 +200,12 @@ export function StudioCanvas({
           parts={parts}
           canWipe={studio.bar?.kind === 'drawing' && studio.bar.canWipe}
           onWipe={moves.wipe}
-          hasRoof={studio.fit !== null}
           words={words}
           onView={moves.see}
           onUnits={moves.chooseUnits}
           onUndo={moves.undo}
           onRedo={moves.redo}
           onDraw={drawing ? moves.cancel : moves.draw}
-          onAddRoof={moves.draw}
           onZoomIn={() => drive.current?.zoomIn()}
           onZoomOut={() => drive.current?.zoomOut()}
           onHome={() => drive.current?.home()}

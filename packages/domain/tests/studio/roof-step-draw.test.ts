@@ -130,12 +130,12 @@ describe('the roof step: deleting a roof', () => {
       kind: 'idle',
       roof: null,
       picked: null,
-      said: { kind: 'roof_deleted' },
+      said: { kind: 'roof_deleted', was: { kind: 'roof', number: 1 } },
     });
     expect(roofBarOf(state, document, false, 'metric')).toEqual({
       kind: 'start',
       noPicture: false,
-      said: { kind: 'roof_deleted' },
+      said: { kind: 'roof_deleted', was: { kind: 'roof', number: 1 } },
     });
   });
 

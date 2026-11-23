@@ -14,6 +14,10 @@
       "types": "./dist/react/index.d.ts",
       "default": "./dist/react/index.js"
     },
+    "./react/studio": {
+      "types": "./dist/react/studio.d.ts",
+      "default": "./dist/react/studio.js"
+    },
     "./server": {
       "types": "./dist/server/index.d.ts",
       "default": "./dist/server/index.js"

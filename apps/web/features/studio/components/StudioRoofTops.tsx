@@ -1,10 +1,16 @@
 'use client';
 import type { StudioScreen } from '@heliogrid/data/react';
-import type { MeasurementSystem } from '@heliogrid/domain';
+import type { MeasurementSystem, RoofKind, RoofName } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { Pressable, useFormat } from '@heliogrid/ui';
 import { type PointerEvent, useRef } from 'react';
 import { pointText } from './roof-marks-place';
+
+/** The kinds whose top carries no height pill. */
+const NO_HEIGHT: readonly RoofKind[] = ['hole', 'dormer'];
+
+/** A dragged height within this many pixels of a level pulls to it. */
+const PULL_PX = 8;
 
 /** One arrow key on the blue arrow: up or down a step. */
 const ARROW_STEP: Readonly<Record<string, 1 | -1>> = { ArrowUp: 1, ArrowDown: -1 };
@@ -17,16 +23,21 @@ function HeightArrow({
   studio,
   words,
   units,
-  roof,
+  name,
   middle,
   metres,
+  top,
 }: {
   studio: StudioScreen;
   words: StudioCanvasWords;
   units: MeasurementSystem;
-  roof: number;
+  /** What the roof is called, for the arrow's spoken name. */
+  name: RoofName;
   middle: string;
+  /** The roof's own height, which the arrow changes and shows. */
   metres: number;
+  /** The roof's top above the ground, where the arrow stands. */
+  top: number;
 }) {
   const format = useFormat();
   const held = useRef<{ y: number; perMetre: number } | null>(null);
@@ -44,7 +55,8 @@ function HeightArrow({
   const onPointerMove = (event: PointerEvent<HTMLSpanElement>) => {
     const press = held.current;
     if (press === null || press.perMetre <= 0) return;
-    moves.dragHeight((press.y - event.clientY) / press.perMetre);
+    // The magnet's reach is 0.1 m, or 8 pixels where that is more: the hook caps it.
+    moves.dragHeight((press.y - event.clientY) / press.perMetre, PULL_PX / press.perMetre);
   };
   const onPointerUp = (event: PointerEvent<HTMLSpanElement>) => {
     if (held.current === null) return;
@@ -57,7 +69,7 @@ function HeightArrow({
       ref={holder}
       className="hg-roof-at"
       data-at={middle}
-      data-top={metres}
+      data-top={top}
       data-arrow="true"
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
@@ -66,7 +78,7 @@ function HeightArrow({
     >
       <Pressable
         className="hg-roof-arrow"
-        accessibilityLabel={words.heightArrow(roof + 1)}
+        accessibilityLabel={words.heightArrow(name)}
         ripple="none"
         focusGroup={{
           tabbable: true,
@@ -104,9 +116,20 @@ export function StudioRoofTops({
   const format = useFormat();
   const open = studio.roofSheet?.roof ?? null;
   const editable = studio.editing.kind === 'editor';
+  // The height in hand pulled level with something: a line across the model there, and its name.
+  const pull = studio.heightPull;
+  const level =
+    pull === null ? null : words.heightLevel(pull.to, format.roofHeight(pull.levelM, units));
   return (
     <>
       <svg className="hg-roof-lines" aria-hidden="true">
+        {pull === null ? null : (
+          <path
+            className="hg-roof-level"
+            data-pts={pull.line.map(pointText).join(';')}
+            data-top={pull.levelM}
+          />
+        )}
         {studio.roofMarks.map((roof, index) =>
           index === open ? (
             <g key={roof.id}>
@@ -114,20 +137,35 @@ export function StudioRoofTops({
                 className="hg-roof-picked-fill"
                 data-pts={roof.corners.map(pointText).join(';')}
                 data-closed="true"
-                data-top={studio.heights[index]?.metres ?? 0}
+                data-top={studio.scene.levels[index]?.topM ?? 0}
               />
               <path
                 className="hg-roof-picked-ring"
                 data-pts={roof.corners.map(pointText).join(';')}
                 data-closed="true"
-                data-top={studio.heights[index]?.metres ?? 0}
+                data-top={studio.scene.levels[index]?.topM ?? 0}
               />
             </g>
           ) : null,
         )}
       </svg>
+      {pull === null || level === null || pull.line[0] === undefined ? null : (
+        <span
+          className="hg-roof-at"
+          data-at={pointText(pull.line[0])}
+          data-top={pull.levelM}
+          data-tag="true"
+        >
+          <span className="hg-roof-tag" data-tone="level" role="status">
+            {level}
+          </span>
+        </span>
+      )}
       {studio.roofMarks.map((roof, index) => {
         const metres = studio.heights[index]?.metres ?? 0;
+        // A roof on another stands on that roof: its marks sit at its top above the ground.
+        const top = studio.scene.levels[index]?.topM ?? 0;
+        const name = studio.topMarks[index]?.name ?? { kind: 'roof' as const, number: index + 1 };
         const middle = pointText(roof.middle);
         if (index === open && editable) {
           return (
@@ -136,18 +174,22 @@ export function StudioRoofTops({
               studio={studio}
               words={words}
               units={units}
-              roof={index}
+              name={name}
               middle={middle}
               metres={metres}
+              top={top}
             />
           );
         }
+        // A hole and a dormer have no height of their own to set: a hole is open down to the floor
+        // below, and a dormer's ridge follows the roof it sits on.
+        if (NO_HEIGHT.includes(studio.topMarks[index]?.kind ?? 'building')) return null;
         const height = format.roofHeight(metres, units);
         return (
-          <span key={roof.id} className="hg-roof-at" data-at={middle} data-top={metres}>
+          <span key={roof.id} className="hg-roof-at" data-at={middle} data-top={top}>
             <Pressable
               className="hg-roof-hit"
-              accessibilityLabel={words.heightOf(index + 1, height)}
+              accessibilityLabel={words.heightOf(name, height)}
               ripple="none"
               onPress={() => studio.moves.openRoof(index)}
             >

@@ -78,6 +78,25 @@ describe.skipIf(skip)('The design record, over HTTP against a migrated database'
     expect(reply.body.canEdit).toBe(true);
   });
 
+  it.each([
+    ['a flat concrete roof', 'rcc_flat', 'concrete_flat'],
+    ['a metal shed', 'metal_shed', 'metal_shed'],
+    ['a tiled roof', 'tile', 'tile'],
+    ['panels on the ground, which is no roof', 'ground_array', null],
+    ['nothing yet', null, null],
+  ])(
+    'a design opened tells the studio what the lead says of the site’s roof: %s',
+    async (_why, roofType, siteRoof) => {
+      const leadId = await aLead(owner());
+      if (roofType !== null) {
+        const edit = { roofType, capturedAt: new Date().toISOString() };
+        expect((await owner().call('PATCH', `/leads/${leadId}`, edit)).status).toBe(HttpStatus.OK);
+      }
+      const made = await aDesign(owner(), leadId);
+      expect((await detailOf(owner(), made.design.id)).body.subject.siteRoof).toBe(siteRoof);
+    },
+  );
+
   it('a Sales Executive makes one on a lead they own, and reads none on a lead they do not', async () => {
     const mine = await aLead(owner());
     const theirs = await aLead(owner());

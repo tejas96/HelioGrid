@@ -47,6 +47,20 @@ describe('a 3D tap lands on the roof it meets, each at its own height (T-M05-002
     expect(roofHitAt(design, [3, 9], () => p(40, 40))).toBeNull();
     expect(roofHitAt(design, [3, 9], () => null)).toBeNull();
   });
+  it.each(['hole', 'dormer'])(
+    'a tap on a %s lands on the roof it is in: it has no height to set',
+    (is) => {
+      const part: Roof = {
+        ...roofOf([p(2, 2), p(4, 2), p(4, 4), p(2, 4)]),
+        id: 'part',
+        kind: { is, setBy: 'system' },
+        partOf: LOW.id,
+      };
+      const withPart: StudioDocument = { ...design, roofs: [LOW, TALL, part] };
+      // Its own level stands above the roof's, so only being left out keeps it from the tap.
+      expect(roofHitAt(withPart, [3, 9, 4], () => p(3, 3))).toBe(0);
+    },
+  );
 });
 
 describe('Edit outline in 2D picks the roof and says its height (T-M05-002)', () => {
@@ -56,7 +70,8 @@ describe('Edit outline in 2D picks the roof and says its height (T-M05-002)', ()
       kind: 'idle',
       roof: 1,
       picked: null,
-      said: { kind: 'roof_picked', roof: 1, metres: 9 },
+      // The line names the roof: the second roof on the ground is Roof 2.
+      said: { kind: 'roof_picked', roof: 1, metres: 9, name: { kind: 'roof', number: 2 } },
     });
   });
 });

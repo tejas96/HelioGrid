@@ -9,10 +9,13 @@ import {
   roofMaterialNow,
   roofSloped,
 } from './roof-levels';
+import type { MeetChoice, RoofMeeting } from './roof-meeting';
 import type { RoofKind } from './roof-parts';
 import {
+  type FlatShape,
   farApart,
   farFromEdge,
+  joined,
   MET_M,
   metWith,
   ringAreaM2,
@@ -31,39 +34,6 @@ import {
  * never changes what it is. No roof is refused for lying over another.
  */
 
-/** Where a new roof lies among the others. */
-export type RoofPlace = 'apart' | 'beside' | 'inside' | 'partly_over' | 'over_whole';
-
-/** A chip on the line after a roof closes: a kind to make it, or a move. */
-export type MeetChoice = RoofKind | 'join' | 'cut_to_edge';
-
-export interface RoofMeeting {
-  readonly place: RoofPlace;
-  /** The new roof's corners, moved onto the roofs it meets within 0.3 m. */
-  readonly corners: readonly GroundPoint[];
-  /** What it is first guessed to be, and the chips offered, the guess first. */
-  readonly kind: RoofKind;
-  readonly choices: readonly MeetChoice[];
-  /** The roof it stands on — the highest under it — and the one it belongs to: the one it covers most. */
-  readonly on: number | null;
-  readonly partOf: number | null;
-  /** The roof Join would join it with; `null` when it meets none at its own height. */
-  readonly joinWith: number | null;
-  /**
-   * The roof the new one starts like — made of the same thing, with the same shape: the roof it
-   * lies on, or the level neighbour it meets; `null` for a roof apart, which starts as the market's
-   * first roof does.
-   */
-  readonly startsLike: number | null;
-  /**
-   * Join is the first guess: the new roof starts like the neighbour it meets, so both are of one
-   * material, and that neighbour slopes — two sloped roofs side by side would cut through each other.
-   */
-  readonly joinFirst: boolean;
-  /** The guess rests on no measured height: it is marked to check. */
-  readonly toCheck: boolean;
-}
-
 /** A stair room is smaller than this; a bigger roof on a roof is an upper floor. */
 export const STAIR_ROOM_MAX_M2 = 20;
 /** Before heights are read, a roof inside another this small, or this narrow, is first a hole. */
@@ -80,6 +50,8 @@ interface Over {
   /** The share of the new roof this roof is under, and the share of this roof the new one covers. */
   readonly ofNew: number;
   readonly ofOther: number;
+  /** The pieces of ground the two share: two where the new roof bridges a gap in this one. */
+  readonly pieces: number;
 }
 
 function shortestSide(corners: readonly GroundPoint[]): number {
@@ -91,14 +63,22 @@ function shortestSide(corners: readonly GroundPoint[]): number {
   );
 }
 
+/** Shapes that are one outline with no hole in it: that outline, else `null`. */
+function oneOutline(shapes: readonly FlatShape[] | null): readonly GroundPoint[] | null {
+  const [only, ...more] = shapes ?? [];
+  return only === undefined || more.length > 0 || only.holes.length > 0 ? null : only.outer;
+}
+
 /** The roofs a new outline lies over, and how much of each. */
 function oversOf(document: StudioDocument, corners: readonly GroundPoint[]): Over[] {
   const area = ringAreaM2(corners);
   return document.roofs.flatMap((roof, index) => {
     if (farApart(corners, roof.corners)) return [];
-    const both = shapesArea(shared([shapeOf(corners)], [shapeOf(roof.corners)]) ?? []);
+    const ground = shared([shapeOf(corners)], [shapeOf(roof.corners)]) ?? [];
+    const both = shapesArea(ground);
     if (both < NO_GROUND_M2) return [];
-    return [{ index, areaM2: both, ofNew: both / area, ofOther: both / ringAreaM2(roof.corners) }];
+    const ofOther = both / ringAreaM2(roof.corners);
+    return [{ index, areaM2: both, ofNew: both / area, ofOther, pieces: ground.length }];
   });
 }
 
@@ -130,6 +110,8 @@ const apart = (corners: readonly GroundPoint[]): RoofMeeting => ({
   on: null,
   partOf: null,
   joinWith: null,
+  joined: null,
+  across: false,
   startsLike: null,
   joinFirst: false,
   toCheck: false,
@@ -145,8 +127,12 @@ function besideMeeting(
 ): RoofMeeting {
   // A new roof on the ground stands a plinth and a storey up until its height is read.
   const own = groundRoofHeightM({ storeyHeightM: facts.storeyHeightM, roof: facts });
+  // Join is for a neighbour at the new roof's height whose outline makes one outline with it.
+  const outlineWith = (index: number) =>
+    oneOutline(joined([shapeOf(corners)], [shapeOf((document.roofs[index] as Roof).corners)]));
   const level = beside.find(
-    (index) => Math.abs(roofFloorM(document, index, facts) - own) < LEVEL_M,
+    (index) =>
+      Math.abs(roofFloorM(document, index, facts) - own) < LEVEL_M && outlineWith(index) !== null,
   );
   const neighbour = level === undefined ? undefined : document.roofs[level];
   // Two sloped roofs of one material side by side would cut through each other: joined is the
@@ -165,6 +151,7 @@ function besideMeeting(
     place: 'beside',
     choices,
     joinWith: level ?? null,
+    joined: level === undefined ? null : outlineWith(level),
     startsLike,
     joinFirst,
   };
@@ -196,7 +183,8 @@ function partlyOver(
   ) {
     choices.push('cut_to_edge');
   }
-  return { ...base, place: 'partly_over', kind: 'upper_floor', choices };
+  const across = overs.some((over) => over.index === base.startsLike && over.pieces > 1);
+  return { ...base, place: 'partly_over', kind: 'upper_floor', choices, across };
 }
 
 /**

@@ -16,6 +16,7 @@ import {
   historyAfter,
   KEY_MOVE_M,
   KEY_TURN_DEGREES,
+  kindLineOf,
   type LengthEntry,
   labelLayoutOf,
   lengthSizesPicture,
@@ -26,6 +27,7 @@ import {
   type NumberEntry,
   pickedAngleOf,
   ROOF_STEP_START,
+  type RoofFacts,
   type RoofStepEvent,
   type RoofStepState,
   roofBarOf,
@@ -33,6 +35,7 @@ import {
   roofHeightOf,
   roofMarksOf,
   roofMiddle,
+  roofStartHeightM,
   roofStepAfter,
   roofStepShown,
   roofsOnPlan,
@@ -43,9 +46,9 @@ import {
   stepRefused,
   tracedLength,
 } from '@heliogrid/domain';
-import { type RefObject, useRef, useState } from 'react';
+import { type RefObject, useMemo, useRef, useState } from 'react';
 import { aKey } from '../client/creation-key';
-import type { RoofMoves, RoofStepView } from './roof-step-view';
+import type { ClosePlacing, RoofMoves, RoofStepView } from './roof-step-view';
 import { sizeCardIn, useUnitsFollow } from './size-card';
 import { type StudioPicture, stampOf, tracedOnOf } from './studio-document-state';
 
@@ -67,10 +70,12 @@ export function useRoofStep({
   setHelpersOff,
   helpersRefused,
   startHeightM,
+  facts,
   typedStart,
   numberEntry,
   setNumberEntry,
   planOutlines,
+  placingOf,
 }: {
   /** The design as it stands, as the screen last drew it. */
   document: StudioDocument | null;
@@ -88,12 +93,16 @@ export function useRoofStep({
   helpersRefused: boolean;
   /** The height a roof on the ground starts at: the market's plinth and one storey. */
   startHeightM: number;
+  /** The market's roof facts: the height a roof of each kind starts at. */
+  facts: RoofFacts;
   /** The market's start size for a typed roof. */
   typedStart: { readonly length: number; readonly width: number };
   numberEntry: NumberEntry;
   setNumberEntry: (entry: NumberEntry) => void;
   /** The laid plan's closed outlines, in its own units: a roof made from one is sized with it. */
   planOutlines: readonly (readonly number[])[];
+  /** What places a roof closed on a design as it stands: asked of the studio's kernel. */
+  placingOf: (document: StudioDocument) => ClosePlacing;
 }) {
   const [roofStep, setRoofStep] = useState<RoofStepState>(ROOF_STEP_START);
   const [free, setFree] = useState(false);
@@ -125,11 +134,17 @@ export function useRoofStep({
   const picked = magnetOf(helpersOff, false);
   // The pick last asked for wins until the account answers: the switch already shows it.
   const magnet = (next: boolean = askedOn.current ?? picked) => next && !free;
-  const shown = document === null ? null : roofStepShown(roofStep, document, units);
+  // The same design drawn is the same object from one render to the next: what is built from it
+  // — the 3D model, the marks — is built once.
+  const shown = useMemo(
+    () => (document === null ? null : roofStepShown(roofStep, document, units)),
+    [roofStep, document, units],
+  );
   const sizing = roofStep.kind === 'sizing' ? roofStep : null;
   const view: RoofStepView = {
     roofStep,
-    heights: shown?.roofs.map((roof) => roofHeightOf(roof, startHeightM)) ?? [],
+    heights:
+      shown?.roofs.map((roof) => roofHeightOf(roof, roofStartHeightM(shown, roof, facts))) ?? [],
     startHeightM,
     job: focusJobOf(roofStep),
     magnet: picked,
@@ -139,6 +154,7 @@ export function useRoofStep({
     draft:
       roofStep.kind === 'drawing' && document !== null ? draftViewOf(roofStep, document) : null,
     bar: document === null ? null : roofBarOf(roofStep, document, picture.kind === 'none', units),
+    kindLine: kindLineOf(roofStep, document),
     stepOff: {
       less: sizing === null || stepRefused(sizing, -1, units),
       more: sizing === null || stepRefused(sizing, 1, units),
@@ -171,14 +187,18 @@ export function useRoofStep({
   };
 
   // Close shape takes the ghost corner; a tap on the first corner closes the shape as drawn.
-  const closeWith = (ghost: boolean) =>
+  const closeWith = (ghost: boolean) => {
+    const design = latest.current?.present;
+    if (design === undefined) return;
     act({
       kind: 'close',
       id: aKey(),
       tracedOn: tracedOnOf(picture),
       stamp: stampOf(picture),
       ghost,
+      placing: placingOf(design),
     });
+  };
   const close = () => closeWith(true);
 
   const grid = picture.kind === 'none';
@@ -267,5 +287,6 @@ export function useRoofStep({
     typeSizePair: (text) => act({ kind: 'type_pair', text }),
     placeRoof: () => act({ kind: 'place', id: aKey(), stamp, system: units }),
   };
-  return { view, moves, step, act };
+  // The magnet as it works this moment: the person's pick, resting while Alt is held.
+  return { view, moves, step, act, magnetNow: () => magnet() };
 }

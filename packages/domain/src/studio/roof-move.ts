@@ -30,7 +30,7 @@ function carried(
   const roofs = document.roofs.map((roof, i) =>
     going.includes(i) ? { ...roof, corners: roof.corners.map(place) } : roof,
   );
-  const faults = going.map((i) => faultOf(document, i, roofs[i]?.corners ?? []));
+  const faults = going.map((i) => faultOf(roofs[i]?.corners ?? []));
   return {
     document: { ...document, roofs },
     fault: faults.find((fault) => fault !== null) ?? null,

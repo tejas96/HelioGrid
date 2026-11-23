@@ -1,13 +1,12 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { roofUnder } from './roof-check';
-import { draftClose, draftClosesAt, draftTap } from './roof-draw';
+import { draftClosesAt, draftTap } from './roof-draw';
 import { roofWithItsParts } from './roof-kind';
+import { roofPickedAt } from './roof-pick';
 import { draftSpot, type Snapped, type SnapTargets, snapTargetsOf } from './roof-snap';
 import {
   type DraftLeft,
   idle,
-  type RoofStepEvent,
   type RoofStepOutcome,
   type RoofStepState,
   stay,
@@ -32,15 +31,15 @@ export function tapped(
   document: StudioDocument,
 ): RoofStepOutcome {
   if (state.kind === 'idle' && state.picked !== null) return stay(idle(null, state.roof));
-  // A tap inside a roof picks it; on open ground, none.
-  if (state.kind === 'idle') return stay(idle(null, roofUnder(document.roofs, at)));
+  // A tap inside a roof picks it — the top one first, then the one under it; on open ground, none.
+  if (state.kind === 'idle') return stay(idle(null, roofPickedAt(document, at, state.roof)));
   if (state.kind !== 'drawing') return stay(state);
   const targets = snapTargetsOf(document.roofs);
   // On the grid the magnet's holds go first and the whole metre last: the corner is held level or
   // square, then lands on the grid; nothing snaps it again after.
   const grid = state.grid === true && state.magnet;
   const spot = grid ? onGrid(state, draftSpot(state.corners, at, targets, true).point) : at;
-  const tap = draftTap(state.corners, spot, targets, document.roofs, state.magnet && !grid);
+  const tap = draftTap(state.corners, spot, targets, state.magnet && !grid);
   if (tap.kind === 'same') return stay(state);
   if (tap.kind === 'refused') return stay({ ...state, refused: tap.refusal });
   // A new corner after the trash: the wiped corners are behind it, and Undo no longer brings them.
@@ -167,26 +166,6 @@ export function cornerUndone(state: RoofStepState): RoofStepOutcome {
     return stay({ ...state, corners: state.wiped, wiped: null, refused: null });
   }
   return stay({ ...state, corners: state.corners.slice(0, -1), refused: null });
-}
-
-export function closed(
-  state: RoofStepState,
-  event: Extract<RoofStepEvent, { kind: 'close' }>,
-  document: StudioDocument,
-): RoofStepOutcome {
-  if (state.kind !== 'drawing') return stay(state);
-  const close = draftClose(state.corners, document.roofs, event.id, event.tracedOn, event.ghost);
-  if (close.kind === 'refused') return stay({ ...state, refused: close.refusal });
-  // The first roof keeps the picture it was drawn on (M04-10).
-  const first = document.roofs.length === 0 && document.drawnOn === null;
-  return {
-    state: idle({ kind: 'closed' }, document.roofs.length),
-    commit: {
-      ...document,
-      roofs: [...document.roofs, close.roof],
-      drawnOn: first ? event.stamp : document.drawnOn,
-    },
-  };
 }
 
 /**

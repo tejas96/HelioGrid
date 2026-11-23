@@ -5,15 +5,18 @@ import type {
   GroundPoint,
   Guide,
   HeldCircle,
+  KindLine,
   LengthEntry,
   LengthSlide,
   labelLayoutOf,
+  MeetChoice,
   NumberEntry,
   RoofBar,
   RoofGrip,
   RoofHandles,
   RoofHeightShown,
   RoofMarksView,
+  RoofStepEvent,
   RoofStepState,
   StudioDocument,
   screenProjector,
@@ -77,6 +80,21 @@ export interface RoofMoves {
   typeSizePair(text: string): void;
   /** Place roof: the rectangle stands as one change. */
   placeRoof(): void;
+}
+
+/** What places a roof when it closes: how its outline meets the design's roofs, and the market's facts. */
+export type ClosePlacing = NonNullable<Extract<RoofStepEvent, { kind: 'close' }>['placing']>;
+
+/** A roof's place among the others (`T-M05-002`, part e): its chips, and Copy and Delete from its row. */
+export interface RoofPlaceMoves {
+  /** A chip on the line after a roof closes: a kind to make it, Join, or Cut to edge. */
+  chooseKind(choice: MeetChoice): void;
+  /** A side's dot on the picked roof: its wall is added, or taken off. */
+  toggleSideWall(roof: number, side: number): void;
+  /** Copy, from a roof's row: a copy beside it with what stands on it, picked to drag. */
+  copyRoof(roof: number): void;
+  /** Delete, from a roof's row: it goes with what stands on it. */
+  deleteRoofAt(roof: number): void;
 }
 
 /** The size card (part c) as the screen draws it. */
@@ -146,6 +164,8 @@ export interface RoofStepView {
   /** The roof being drawn, while drawing. */
   readonly draft: DraftView | null;
   readonly bar: RoofBar | null;
+  /** The line after a new roof closes: what it became, and its chips; `null` once it has left. */
+  readonly kindLine: KindLine | null;
   /** − or + on the length in the box would be refused: the button dims. */
   readonly stepOff: { readonly less: boolean; readonly more: boolean };
   /** The length in the box: the edge's traced length, the typed one, and whether it sizes all. */

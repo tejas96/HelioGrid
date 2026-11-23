@@ -1,12 +1,18 @@
 import type { MeasurementSystem } from '../format/pack';
 import type { PictureChoice, PictureStamp, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import type { DragResult, EditRefusal } from './roof-check';
+import type { DragResult } from './roof-check';
 import type { DraftRefusal } from './roof-draw';
 import type { LengthEntry, LengthInHand } from './roof-entry';
-import type { RoofSnap, Snapped } from './roof-snap';
+import type { RoofFacts } from './roof-levels';
+import type { RoofMeeting } from './roof-meeting';
+import type { RoofKind } from './roof-parts';
+import type { RoofPlacing, RoofSaid } from './roof-said';
+import type { Snapped } from './roof-snap';
 import type { TypedSize } from './roof-type';
 import type { StudioChange } from './studio-change';
+
+export type { RoofApart, RoofBecame, RoofPlacing, RoofSaid } from './roof-said';
 
 /**
  * The roof step's vocabulary (`T-M05-002`, part b): its states, the events that move it, and what
@@ -26,36 +32,6 @@ export type RoofGrip =
   | { readonly kind: 'plus'; readonly roof: number; readonly edge: number }
   | { readonly kind: 'move'; readonly roof: number }
   | { readonly kind: 'turn'; readonly roof: number };
-
-/** What the bar says after an act, until the next. */
-export type RoofSaid =
-  | { readonly kind: 'closed' }
-  | { readonly kind: 'sized' }
-  | { readonly kind: 'set'; readonly metres: number; readonly measured: boolean }
-  | { readonly kind: 'corner_moved'; readonly snap: RoofSnap | null }
-  | { readonly kind: 'corner_added' }
-  | { readonly kind: 'corner_picked' }
-  /** `at`: where the corner stood, which shrinks away there as its edges join. */
-  | { readonly kind: 'corner_removed'; readonly at: GroundPoint }
-  | { readonly kind: 'roof_moved' }
-  | { readonly kind: 'roof_turned'; readonly degrees: number }
-  /** Undo or Redo walked the design's history: the bar names it, and what it changed. */
-  | { readonly kind: 'undone'; readonly change: StudioChange }
-  | { readonly kind: 'redone'; readonly change: StudioChange }
-  /** A roof picked from its 3D sheet, to fix its outline here: its height, in metres. */
-  | { readonly kind: 'roof_picked'; readonly roof: number; readonly metres: number }
-  /** A roof deleted from the bar; Undo brings it back. */
-  | { readonly kind: 'roof_deleted' }
-  /** A typed roof placed (part c): on the sky picture it is dragged onto the house next. */
-  | {
-      readonly kind: 'placed';
-      readonly onPicture: boolean;
-      /** The roof it was placed beside; `null`: on the pin. */
-      readonly beside: number | null;
-    }
-  /** A drag let go with a fault: the roof went back. */
-  | { readonly kind: 'went_back'; readonly fault: EditRefusal }
-  | { readonly kind: 'refused'; readonly refusal: EditRefusal };
 
 export type RoofStepState =
   | {
@@ -149,8 +125,8 @@ export type RoofStepEvent =
   | { readonly kind: 'magnet'; readonly magnet: boolean }
   /** The trash while drawing: every corner goes, and drawing goes on. */
   | { readonly kind: 'wipe' }
-  /** The trash on a picked roof: the roof goes, as one change. */
-  | { readonly kind: 'delete_roof' }
+  /** Delete: the picked roof, or the roof of a row, goes with what stands on it, as one change. */
+  | { readonly kind: 'delete_roof'; readonly roof?: number }
   | { readonly kind: 'hover'; readonly at: GroundPoint | null }
   /** A tap on the ground; `system` keeps a length still in the box, which a tap outside sets. */
   | { readonly kind: 'tap'; readonly at: GroundPoint; readonly system: MeasurementSystem }
@@ -162,7 +138,49 @@ export type RoofStepEvent =
       readonly stamp: PictureStamp | null;
       /** Close shape takes the ghost corner; a tap on the first corner closes the shape as drawn. */
       readonly ghost: boolean;
+      /**
+       * How the closed outline meets the design's roofs, worked out by the studio's kernel for
+       * this close; `meet` is asked with the outline as it would close. Absent, the roof stands
+       * as drawn, a building.
+       */
+      readonly placing?: Omit<RoofPlacing, 'meeting'> & {
+        readonly meet: (corners: readonly GroundPoint[]) => RoofMeeting;
+      };
     }
+  /** A kind picked for a roof: a chip on the line after it closed, or its sheet's What it is row. */
+  | {
+      readonly kind: 'make';
+      readonly roof: number;
+      readonly into: RoofKind;
+      readonly facts: RoofFacts;
+    }
+  /** Join: the new roof and the roof it met become one, on the outline the kernel joined. */
+  | {
+      readonly kind: 'join';
+      readonly roof: number;
+      readonly with: number;
+      readonly outline: readonly GroundPoint[];
+    }
+  /** Cut to edge: the new roof takes the corners the kernel cut it back to, and is placed again. */
+  | {
+      readonly kind: 'cut_to_edge';
+      readonly roof: number;
+      readonly corners: readonly GroundPoint[];
+      readonly placing: RoofPlacing;
+    }
+  /**
+   * A side's dot tapped on the picked roof: its wall is added or taken off. `wall` is what the
+   * side has after the tap, and `walled` how many of the roof's sides then have one.
+   */
+  | {
+      readonly kind: 'side_wall';
+      readonly roof: number;
+      readonly side: number;
+      readonly wall: boolean;
+      readonly walled: number;
+    }
+  /** Copy, from a roof's row: `ids` names the copy and the copy of each roof that goes with it. */
+  | { readonly kind: 'copy_roof'; readonly roof: number; readonly ids: readonly string[] }
   | { readonly kind: 'cancel' }
   | { readonly kind: 'undo_corner' }
   | {

@@ -76,6 +76,7 @@ export {
   type RoofLabelAsk,
   type ScreenPoint,
 } from './label-layout';
+export * from './many-roofs';
 export * from './map-systems';
 export * from './own-picture';
 export * from './own-picture-acts';
@@ -138,18 +139,7 @@ export {
   roofHeightSet,
   roofHeightStepped,
 } from './roof-height';
-export * from './roof-kind';
-export {
-  LENGTH_ASK_SHARE,
-  LENGTH_MAX_M,
-  LENGTH_MIN_M,
-  lengthAsks,
-  lengthIsFirst,
-  lengthSet,
-  lengthSizesPicture,
-  onPicture,
-} from './roof-length';
-export * from './roof-material';
+export * from './roof-length';
 export {
   KEY_MOVE_M,
   KEY_TURN_DEGREES,
@@ -157,7 +147,6 @@ export {
   roofTurned,
   TURN_SNAP_DEGREES,
 } from './roof-move';
-export * from './roof-parts';
 export {
   between,
   CORNER_GAP_M,
@@ -194,7 +183,10 @@ export { gripCorner, roofStepAfter } from './roof-step';
 export {
   type CornerRef,
   ROOF_STEP_START,
+  type RoofApart,
+  type RoofBecame,
   type RoofGrip,
+  type RoofPlacing,
   type RoofSaid,
   type RoofStepEvent,
   type RoofStepOutcome,

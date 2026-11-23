@@ -170,7 +170,7 @@ export function cornerDragged(
   return {
     document: withRoof(document, roofIndex, { ...roof, corners: moved }),
     snap: placed.snap,
-    fault: faultOf(document, roofIndex, moved),
+    fault: faultOf(moved),
     guides: placed.guides,
   };
 }
@@ -221,7 +221,7 @@ export function cornerRemoved(
   const edges = roof.edges
     .map((trust, i): RoofEdgeTrust => (i === beforeEdge ? 'traced' : trust))
     .filter((_, i) => i !== corner);
-  const fault = faultOf(document, roofIndex, corners);
+  const fault = faultOf(corners);
   if (fault !== null) return { kind: 'refused', refusal: fault };
   const removed = roofWithoutCorner(roof, corner, { corners, edges });
   return { kind: 'done', document: withRoof(document, roofIndex, removed) };

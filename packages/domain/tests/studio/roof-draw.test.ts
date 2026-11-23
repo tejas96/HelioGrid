@@ -139,7 +139,7 @@ describe('drawing a roof: where a tap lands', () => {
 
 describe('drawing a roof: taps', () => {
   it('a tap adds a corner', () => {
-    expect(draftTap([p(0, 0)], p(8, 0), NO_SNAP_TARGETS, [], true)).toEqual({
+    expect(draftTap([p(0, 0)], p(8, 0), NO_SNAP_TARGETS, true)).toEqual({
       kind: 'added',
       corners: [p(0, 0), p(8, 0)],
       snap: null,
@@ -159,12 +159,12 @@ describe('drawing a roof: taps', () => {
     ['0.3 m from it is placed', [p(0, 0), p(8, 0), p(8, 6)], p(0, 0.3), 'added'],
   ])('%s', (_name, corners, at, kind) => {
     // Free, so no snap moves the tap: the gap alone decides.
-    expect(draftTap(corners, at, NO_SNAP_TARGETS, [], false).kind).toBe(kind);
+    expect(draftTap(corners, at, NO_SNAP_TARGETS, false).kind).toBe(kind);
   });
 
   it('a tap whose edge would cross an earlier one is refused', () => {
     const corners = [p(0, 0), p(8, 0), p(8, 6)];
-    expect(draftTap(corners, p(4, -3), NO_SNAP_TARGETS, [], true)).toEqual({
+    expect(draftTap(corners, p(4, -3), NO_SNAP_TARGETS, true)).toEqual({
       kind: 'refused',
       refusal: 'would_cross',
     });
@@ -172,16 +172,16 @@ describe('drawing a roof: taps', () => {
 
   it.each([
     ['inside another roof', [p(10, 3)], p(4, 3)],
-    ['an edge through another roof', [p(-3, 3)], p(11, 3)],
-  ])('a tap %s is refused', (_name, corners, at) => {
-    expect(draftTap(corners, at, NO_SNAP_TARGETS, [ROOF_1], true)).toEqual({
-      kind: 'refused',
-      refusal: 'would_overlap',
-    });
-  });
+    ['whose edge runs through another roof', [p(-3, 3)], p(11, 3)],
+  ])(
+    'a tap %s places its corner: no roof is refused for lying over another',
+    (_name, corners, at) => {
+      expect(draftTap(corners, at, NO_SNAP_TARGETS, false)).toMatchObject({ kind: 'added' });
+    },
+  );
 
   it('a tap far past the picture is refused', () => {
-    expect(draftTap([], p(2_001, 0), NO_SNAP_TARGETS, [], true)).toEqual({
+    expect(draftTap([], p(2_001, 0), NO_SNAP_TARGETS, true)).toEqual({
       kind: 'refused',
       refusal: 'too_far',
     });
@@ -218,9 +218,13 @@ describe('drawing a roof: the ghost corner and the close', () => {
     ['two corners', [p(0, 0), p(8, 0)], [], 'too_few_corners'],
     ['corners on one line', [p(0, 0), p(4, 0), p(8, 0)], [], 'would_cross'],
     ['a closing edge that crosses', [p(0, 0), p(8, 0), p(0, 6), p(8, 6)], [], 'would_cross'],
-    ['over roof 1', [p(4, 3), p(12, 3), p(12, 9), p(4, 9)], [ROOF_1], 'would_overlap'],
   ])('a close is refused: %s', (_name, corners, roofs, refusal) => {
     expect(draftClose(corners, roofs, 'id', 'sky', true)).toEqual({ kind: 'refused', refusal });
+  });
+
+  it('a roof drawn over another closes: how it meets it says what it is', () => {
+    const over = [p(4, 3), p(12, 3), p(12, 9), p(4, 9)];
+    expect(draftClose(over, [ROOF_1], 'id', 'sky', true)).toMatchObject({ kind: 'closed' });
   });
 
   it('a second roof beside the first closes', () => {
@@ -228,15 +232,17 @@ describe('drawing a roof: the ghost corner and the close', () => {
     expect(draftClose(shed, [ROOF_1], 'id', 'sky', true).kind).toBe('closed');
   });
 
-  it('a design holds 50 roofs', () => {
-    const roofs = Array.from({ length: 50 }, (_, i) => ({
+  it.each([
+    ['the 200th roof closes', 199, 'closed'],
+    ['a design holds 200 roofs: the next is refused', 200, 'refused'],
+  ])('%s', (_why, standing, kind) => {
+    const roofs = Array.from({ length: standing }, (_, i) => ({
       ...ROOF_1,
       corners: ROOF_1.corners.map((c) => p(c.east + i * 10, c.north)),
     }));
-    expect(draftClose([p(0, 20), p(8, 20), p(8, 26)], roofs, 'id', 'sky', true)).toEqual({
-      kind: 'refused',
-      refusal: 'too_many_roofs',
-    });
+    const close = draftClose([p(0, 20), p(8, 20), p(8, 26)], roofs, 'id', 'sky', true);
+    expect(close.kind).toBe(kind);
+    if (close.kind === 'refused') expect(close.refusal).toBe('too_many_roofs');
   });
 });
 

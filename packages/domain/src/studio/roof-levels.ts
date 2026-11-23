@@ -23,6 +23,14 @@ export interface RoofFacts extends RoofMarketFacts {
   readonly storeyHeightM: number;
 }
 
+/** The roof facts of a market's formats: its pack's roof values and its storey. */
+export function roofFactsOf(formats: {
+  readonly roof: RoofMarketFacts;
+  readonly storeyHeightM: number;
+}): RoofFacts {
+  return { ...formats.roof, storeyHeightM: formats.storeyHeightM };
+}
+
 /** A roof's height above what it stands on, in metres: its own, or its kind's first height. */
 export function roofOwnHeightM(document: StudioDocument, roof: Roof, facts: RoofFacts): number {
   if (roof.height !== null) return roof.height.metres;
@@ -55,6 +63,23 @@ export function roofFloorM(document: StudioDocument, index: number, facts: RoofF
   if (roof === undefined || roofKindOf(roof) !== 'hole') return total;
   const part = document.roofs.findIndex((other) => other.id === roof.partOf);
   return part < 0 ? 0 : Math.max(roofFloorM(document, part, facts) - facts.storeyHeightM, 0);
+}
+
+/** The height a roof stands at where none is set: its kind's first height. */
+export function roofStartHeightM(document: StudioDocument, roof: Roof, facts: RoofFacts): number {
+  return roofOwnHeightM(document, { ...roof, height: null }, facts);
+}
+
+/**
+ * Each roof's top above the ground, in the order of the design's roofs: its floor — its low edge
+ * where it slopes. A hole's is the top of the roof it is cut in, where its marks sit.
+ */
+export function roofTopsM(document: StudioDocument, facts: RoofFacts): number[] {
+  return document.roofs.map((roof, index) => {
+    if (roofKindOf(roof) !== 'hole') return roofFloorM(document, index, facts);
+    const part = document.roofs.findIndex((other) => other.id === roof.partOf);
+    return part < 0 ? 0 : roofFloorM(document, part, facts);
+  });
 }
 
 /** What a roof is made of: what is stored, read forgivingly, else the first material. */

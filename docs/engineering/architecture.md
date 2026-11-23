@@ -145,9 +145,11 @@ the one cross-platform transport and its three modes (browser · mobile · reque
 server), the stable DataError taxonomy, the internal repository registry (src/composition.ts),
 repositories, session store, and the react-query adapters under src/react/. Allowed deps:
 contracts, domain, config. Platform scope: shared frontend (core framework-free; react
-confined to src/react/ and src/server/). THREE entry points, all declared in package.json
+confined to src/react/ and src/server/). FOUR entry points, all declared in package.json
 exports and all named in package-index-only: `.` framework-free · `./react` the React Query
-adapter · `./server` one request-scoped context for a Next server render. Belongs: every new
+adapter · `./react/studio` the design studio's canvas hook, the one hook that asks domain's roof
+kernel, kept off the two entries the phone bundles (`roof-kernel-has-its-own-entry`) · `./server`
+one request-scoped context for a Next server render. Belongs: every new
 endpoint's repository + hook; a view model two screens draw from either of two sources is one hook
 (`src/react/use-proposal-reader-document.ts`: a version's document as the server sent it, or a
 sample). Never (all held by data-lean): db (the uuid subpath included), ui, theme, i18n,

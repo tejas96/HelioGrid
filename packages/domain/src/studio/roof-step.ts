@@ -2,18 +2,11 @@ import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { cornerAdded, cornerDragged, cornerRemoved } from './roof-edit';
 import { roofMoved, roofTurned } from './roof-move';
+import { roofNameOf } from './roof-names';
 import { roofMiddle } from './roof-shape';
 import { snapTargetsOf } from './roof-snap';
-import {
-  closed,
-  cornerUndone,
-  drawing,
-  pickedRoofOf,
-  spotAt,
-  stopped,
-  tapped,
-  withoutRoof,
-} from './roof-step-draw';
+import { copied, deleted, sideWalled } from './roof-step-copy';
+import { cornerUndone, drawing, spotAt, stopped, tapped } from './roof-step-draw';
 import {
   committedLength,
   lengthKept,
@@ -21,6 +14,7 @@ import {
   lengthStepped,
   thenKept,
 } from './roof-step-length';
+import { closed, cutBack, joinedIn, kindMade } from './roof-step-place';
 import {
   idle,
   type RoofGrip,
@@ -37,6 +31,7 @@ import {
   typingPaired,
   typingPlaced,
 } from './roof-step-type';
+import { roofSetFree, stuckOutBy } from './roof-sticks-out';
 
 /**
  * The roof step's reducer (`T-M05-002`, part b): drawing a roof, sizing an edge, dragging a corner or
@@ -100,6 +95,20 @@ const SAID_AFTER: Record<RoofGrip['kind'], (state: Dragging) => RoofSaid> = {
   turn: (state) => ({ kind: 'roof_turned', degrees: Math.round(state.degrees) }),
 };
 
+/** What a drag did to a roof's place: set it free of its roof, or left one past its roof's edge. */
+function placeSaid(
+  base: StudioDocument,
+  commit: StudioDocument,
+  dragged: StudioDocument,
+  roof: number,
+): RoofSaid | null {
+  const nameOf = (index: number) =>
+    roofNameOf(commit, index) ?? { kind: 'roof', number: index + 1 };
+  if (commit !== dragged) return { kind: 'set_free', roof, name: nameOf(roof) };
+  const out = stuckOutBy(base, commit);
+  return out === null ? null : { kind: 'sticks_out', roof: out, name: nameOf(out) };
+}
+
 function released(state: Dragging): RoofStepOutcome {
   const { drag, grip, base } = state;
   if (drag.fault === 'two_held')
@@ -113,7 +122,10 @@ function released(state: Dragging): RoofStepOutcome {
   }
   // A handle pressed and let go where it was changes nothing: no Undo step, no save.
   if (grip.kind !== 'plus' && drag.document === base) return stay(idle(null, grip.roof));
-  return { state: idle(SAID_AFTER[grip.kind](state), grip.roof), commit: drag.document };
+  // A roof dragged clear of the roof it stood on is its own roof; one left past its edge stays.
+  const commit = roofSetFree(drag.document, grip.roof);
+  const said = placeSaid(base, commit, drag.document, grip.roof) ?? SAID_AFTER[grip.kind](state);
+  return { state: idle(said, grip.roof), commit };
 }
 
 function cornerGone(state: RoofStepState, document: StudioDocument): RoofStepOutcome {
@@ -123,7 +135,9 @@ function cornerGone(state: RoofStepState, document: StudioDocument): RoofStepOut
     return stay(idle({ kind: 'refused', refusal: removed.refusal }, state.roof, state.picked));
   }
   const at = document.roofs[state.picked.roof]?.corners[state.picked.corner];
-  const said: RoofSaid | null = at === undefined ? null : { kind: 'corner_removed', at };
+  const gone: RoofSaid | null = at === undefined ? null : { kind: 'corner_removed', at };
+  // A roof made smaller keeps its new shape: what now sticks out past it is said, to check.
+  const said = placeSaid(document, removed.document, removed.document, state.picked.roof) ?? gone;
   return { state: idle(said, state.roof), commit: removed.document };
 }
 
@@ -173,13 +187,12 @@ const ON: Handlers = {
         ? stay(held)
         : stay({ ...held, corners: [], wiped: held.corners, spot: null, refused: null }),
     ),
-  delete_roof: (state, _event, document) =>
-    inState(state, 'idle', (looking) => {
-      const roof = pickedRoofOf(looking, document);
-      return roof === null
-        ? stay(looking)
-        : { state: idle({ kind: 'roof_deleted' }, null), commit: withoutRoof(document, roof) };
-    }),
+  delete_roof: deleted,
+  make: kindMade,
+  join: joinedIn,
+  cut_to_edge: cutBack,
+  copy_roof: copied,
+  side_wall: sideWalled,
   cancel: stopped,
   hover: (state, { at }, document) =>
     inState(state, 'drawing', (held) => {
@@ -227,8 +240,11 @@ const ON: Handlers = {
     inState(state, 'idle', (looking) =>
       stay(idle({ kind: undone ? 'undone' : 'redone', change }, looking.roof)),
     ),
-  pick_roof: (state, { roof, metres }) =>
-    inState(state, 'idle', () => stay(idle({ kind: 'roof_picked', roof, metres }, roof))),
+  pick_roof: (state, { roof, metres }, document) =>
+    inState(state, 'idle', () => {
+      const name = roofNameOf(document, roof) ?? undefined;
+      return stay(idle({ kind: 'roof_picked', roof, metres, name }, roof));
+    }),
 };
 
 /**

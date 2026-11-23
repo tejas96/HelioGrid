@@ -65,8 +65,6 @@ export interface FocusParts {
   readonly undoRedo: 'shown' | 'undo' | 'hidden';
   /** The trash beside Undo that wipes every corner of the drawing. */
   readonly wipe: 'shown' | 'hidden';
-  /** The + that starts another roof. */
-  readonly addRoof: 'shown' | 'hidden';
   /** The layers and the 2D/3D switch, or the switch alone. */
   readonly layers: 'shown' | 'switch' | 'hidden';
   readonly sideViews: 'shown' | 'hidden';
@@ -102,7 +100,6 @@ const LOOKING_TOP: FocusParts = {
   magnet: 'picked',
   undoRedo: 'shown',
   wipe: 'hidden',
-  addRoof: 'shown',
   layers: 'shown',
   sideViews: 'hidden',
   zoom: 'shown',
@@ -121,7 +118,6 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     magnet: 'shown',
     undoRedo: 'undo',
     wipe: 'shown',
-    addRoof: 'hidden',
     layers: 'hidden',
     zoom: 'hidden',
     otherHandles: 'hidden',
@@ -134,7 +130,6 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     pencil: 'hidden',
     magnet: 'hidden',
     undoRedo: 'hidden',
-    addRoof: 'hidden',
     layers: 'hidden',
     zoom: 'hidden',
     otherHandles: 'hidden',
@@ -146,7 +141,6 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     pencil: 'hidden',
     magnet: 'hidden',
     undoRedo: 'hidden',
-    addRoof: 'hidden',
     layers: 'hidden',
     zoom: 'hidden',
     otherHandles: 'hidden',
@@ -158,7 +152,6 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     pencil: 'hidden',
     magnet: 'hidden',
     undoRedo: 'hidden',
-    addRoof: 'hidden',
     layers: 'hidden',
     zoom: 'hidden',
     otherHandles: 'hidden',
@@ -173,7 +166,6 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     pencil: 'hidden',
     magnet: 'hidden',
     undoRedo: 'hidden',
-    addRoof: 'hidden',
     layers: 'hidden',
     otherHandles: 'hidden',
     // The rectangle's own lengths show; the other roofs' would crowd it at a shared wall.
@@ -185,7 +177,6 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
   picture: {
     stepSwitcher: 'mark',
     pictureChip: 'credit',
-    addRoof: 'hidden',
     otherHandles: 'hidden',
     bottomBar: 'drawing',
   },
@@ -195,7 +186,6 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
 const IN_3D: Partial<FocusParts> = {
   pencil: 'hidden',
   magnet: 'hidden',
-  addRoof: 'hidden',
   otherHandles: 'hidden',
   lengthLabels: 'hidden',
 };
@@ -205,7 +195,6 @@ const EDIT_PARTS: Partial<FocusParts> = {
   magnet: 'hidden',
   wipe: 'hidden',
   undoRedo: 'hidden',
-  addRoof: 'hidden',
   otherHandles: 'hidden',
 };
 
@@ -230,8 +219,7 @@ function partsOfJob(facts: FocusFacts): FocusParts {
 export function focusOf(facts: FocusFacts): FocusParts {
   const parts = partsOfJob(facts);
   const own = facts.canEdit ? parts : { ...parts, ...EDIT_PARTS };
-  const addRoof = own.addRoof === 'shown' && !facts.hasRoof ? 'hidden' : own.addRoof;
   const stepSwitcher =
     own.stepSwitcher === 'hidden' && facts.saveFailed ? 'mark' : own.stepSwitcher;
-  return { ...own, addRoof, stepSwitcher };
+  return { ...own, stepSwitcher };
 }

@@ -1,6 +1,7 @@
 'use client';
 import type { DesignDetail } from '@heliogrid/contracts';
-import { useLeaveAsk, useStudioScreen } from '@heliogrid/data/react';
+import { useLeaveAsk } from '@heliogrid/data/react';
+import { useStudioScreen } from '@heliogrid/data/react/studio';
 import { designPageWords, siteDetailsPageWords, studioCanvasWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import {
@@ -25,6 +26,7 @@ import './studio.css';
 import './studio-canvas.css';
 import './studio-picture.css';
 import './studio-roof.css';
+import './studio-roof-sides.css';
 import './studio-roof-controls.css';
 import './studio-length.css';
 import './studio-height.css';
