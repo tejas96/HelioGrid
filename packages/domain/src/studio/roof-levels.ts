@@ -1,7 +1,7 @@
 import type { RoofMarketFacts } from '../format/roof-facts';
 import type { Roof, StudioDocument } from './document';
 import { groundRoofHeightM } from './roof-height';
-import { roofKindOf, standsOn } from './roof-kind';
+import { roofKindOf, roofPlaceOf, standsOn } from './roof-kind';
 import {
   materialStart,
   ROOF_MATERIAL_START,
@@ -61,7 +61,7 @@ export function roofFloorM(document: StudioDocument, index: number, facts: RoofF
   }
   const roof = document.roofs[index];
   if (roof === undefined || roofKindOf(roof) !== 'hole') return total;
-  const part = document.roofs.findIndex((other) => other.id === roof.partOf);
+  const part = roofPlaceOf(document, roof.partOf);
   return part < 0 ? 0 : Math.max(roofFloorM(document, part, facts) - facts.storeyHeightM, 0);
 }
 
@@ -77,7 +77,7 @@ export function roofStartHeightM(document: StudioDocument, roof: Roof, facts: Ro
 export function roofTopsM(document: StudioDocument, facts: RoofFacts): number[] {
   return document.roofs.map((roof, index) => {
     if (roofKindOf(roof) !== 'hole') return roofFloorM(document, index, facts);
-    const part = document.roofs.findIndex((other) => other.id === roof.partOf);
+    const part = roofPlaceOf(document, roof.partOf);
     return part < 0 ? 0 : roofFloorM(document, part, facts);
   });
 }

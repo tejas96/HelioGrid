@@ -32,9 +32,27 @@ export function roofKindOf(roof: Roof): RoofKind {
   return is !== undefined && isRoofKind(is) ? is : 'building';
 }
 
+/** Each list of roofs' places by id, worked out once: a design's roofs are never changed in place. */
+const PLACES = new WeakMap<readonly Roof[], ReadonlyMap<string, number>>();
+
+/** Where the roof with this id sits in the design — the first, where two share it; −1 when none does. */
+export function roofPlaceOf(document: StudioDocument, id: string | undefined): number {
+  if (id === undefined) return -1;
+  let places = PLACES.get(document.roofs);
+  if (places === undefined) {
+    const found = new Map<string, number>();
+    document.roofs.forEach((roof, index) => {
+      if (!found.has(roof.id)) found.set(roof.id, index);
+    });
+    places = found;
+    PLACES.set(document.roofs, places);
+  }
+  return places.get(id) ?? -1;
+}
+
 function roofById(document: StudioDocument, id: string | undefined, self: Roof): number | null {
   if (id === undefined || id === self.id) return null;
-  const index = document.roofs.findIndex((roof) => roof.id === id);
+  const index = roofPlaceOf(document, id);
   return index < 0 ? null : index;
 }
 

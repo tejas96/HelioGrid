@@ -7,6 +7,7 @@ import {
   proposalStandingWord,
   proposalStartWords,
   QUICK_ADD,
+  siteDetailsPageWords,
   siteDetailsWords,
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/test';
@@ -21,7 +22,7 @@ import { withoutMapService } from '../support/studio';
  * `/proposals` (`SCR-M06-19`, `M06-48`, `T-M05-001b`): a rep or the owner, come to find a proposal
  * or start one. The lead's draft is on the list by its customer's name with its standing as a word;
  * *New proposal* asks who it is for first, and closing that capture makes neither a lead nor a
- * proposal. *With 3D design* makes a design and opens its Site details, whose Cancel comes back
+ * proposal. *With 3D design* makes a design and opens its Site details, whose way back comes back
  * here, where the 3D chip holds the new design and opens it.
  */
 const en = await createTranslator('en');
@@ -30,6 +31,7 @@ const LIST = proposalListWords(en.t, formats, null);
 const START = proposalStartWords(en.t, { name: CUSTOMER.name, segment: 'residential' });
 const ASK = proposalQuickAddWords(en.t, null);
 const SITE = siteDetailsWords(en.t, false);
+const PAGE_HEAD = siteDetailsPageWords(en.t);
 const DESIGN = designPageWords(en.t);
 
 /** A design row's name, as its open button speaks it: only the customer's name is read. */
@@ -76,12 +78,20 @@ test('With 3D design makes a design, Cancel on Site details comes back here, and
   await sheet.getByRole('button', { name: START.start }).click();
   await expect(page).toHaveURL(/\/designs\/[0-9a-f-]{36}\/site\?from=proposals$/);
 
-  await page.getByRole('button', { name: SITE.cancel }).click();
+  /* The way back is Cancel where the room is wide, and the trail's Proposals on the phone. */
+  await page
+    .getByRole('main')
+    .getByRole('button', {
+      name: test.info().project.name === 'desktop' ? SITE.cancel : PAGE_HEAD.proposals,
+      exact: true,
+    })
+    .click();
   await expect(page).toHaveURL(/\/proposals$/);
   const threeD = page.getByRole('button', { name: new RegExp(`^${LIST.filter('3d')}`) });
   await threeD.click();
   await expect(page.getByText(LIST.design.noPanels).first()).toBeVisible();
-  await expect(page.getByText(proposalStandingWord(en.t, 'draft'))).toHaveCount(0);
+  /* No proposal stands as a draft under the chip: only the design's own row is there. */
+  await expect(page.getByText(proposalStandingWord(en.t, 'draft'), { exact: true })).toHaveCount(0);
 
   // A table row opens through its named button, as a keyboard user does (tests/e2e/CLAUDE.md).
   const open = page.getByRole('button', { name: LIST.design.open(named(CUSTOMER.name)) });
