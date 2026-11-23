@@ -105,7 +105,12 @@ export function StudioRoofSheet({
             </IconButton>
           </span>
         </div>
-        <div className="hg-roof-sheet-rows">
+        {/* A side's sheet, Parapet details or the roof's: each slides in when it takes the place. */}
+        <div
+          key={part.kind === 'side' ? `side-${part.side}` : part.kind}
+          className="hg-roof-sheet-rows"
+          data-part={part.kind}
+        >
           {part.kind === 'side' && side !== null ? (
             <StudioSideRows facts={facts} side={side} />
           ) : part.kind === 'details' ? (
