@@ -36,18 +36,12 @@ describe('the size card view', () => {
   });
 
   it.each([
-    // what was typed → each length reads "about", the area's tier
-    ['nothing: the market’s start size', [], [true, true, true, true], 'assumed'],
-    [
-      'a whole pair',
-      [{ kind: 'type_pair', text: '13.2x8.6' }],
-      [false, false, false, false],
-      'estimated',
-    ],
-  ] as const)('%s', (_why, events, about, tier) => {
+    // what was typed → each length reads "about"
+    ['nothing: the market’s start size', [], [true, true, true, true]],
+    ['a whole pair', [{ kind: 'type_pair', text: '13.2x8.6' }], [false, false, false, false]],
+  ] as const)('%s', (_why, events, about) => {
     const card = cardAfter(events as readonly RoofStepEvent[]);
     expect(card?.preview?.about).toEqual(about);
-    expect(card?.preview?.tier).toBe(tier);
   });
 
   it('marks the market’s start size on each slider', () => {

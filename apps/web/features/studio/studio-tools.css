@@ -188,12 +188,6 @@
   align-items: center;
 }
 
-.hg-studio-bar-tier {
-  display: inline-flex;
-  margin-inline-start: var(--sp-2);
-  font-family: var(--font-sans);
-}
-
 /* A phone: the tools sit low, in thumb reach; the bar stands as a card across the foot with its
    acts one under the other, and the name moves into it. */
 @media (width < 968px) {

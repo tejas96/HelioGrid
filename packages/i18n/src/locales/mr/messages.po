@@ -10272,8 +10272,8 @@ msgstr "उंची (mm)"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof.ts:49
-msgid "Height {height} is assumed. Drag a corner to fix the shape."
-msgstr "उंची {height} गृहीत धरली आहे. आकार नीट करण्यासाठी कोपरा ओढा."
+msgid "Height {height} is the usual storey here. Drag a corner to fix the shape."
+msgstr "उंची {height} इथल्या नेहमीच्या मजल्याइतकी आहे. आकार नीट करण्यासाठी कोपरा ओढा."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:91

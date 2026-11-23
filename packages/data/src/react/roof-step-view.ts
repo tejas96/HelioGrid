@@ -9,7 +9,6 @@ import type {
   LengthSlide,
   labelLayoutOf,
   NumberEntry,
-  ProvenanceTier,
   RoofBar,
   RoofGrip,
   RoofHandles,
@@ -104,8 +103,6 @@ export interface SizeCardView {
     readonly area: number;
     /** Each length no person set yet — the market's start size — reads as "about". */
     readonly about: readonly boolean[];
-    /** The area's tier: `assumed` until both numbers are set (`F8-01`). */
-    readonly tier: ProvenanceTier;
   } | null;
   /** The preview cannot stand there: it is drawn in the error colour. */
   readonly previewBad: boolean;

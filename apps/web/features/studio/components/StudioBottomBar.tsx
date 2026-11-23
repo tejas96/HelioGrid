@@ -6,7 +6,6 @@ import type { RoofWordsShown, StudioCanvasWords } from '@heliogrid/i18n';
 import {
   Button,
   IconButton,
-  ProvenanceTier,
   RollingNumber,
   ShellGlyph,
   type ShellGlyphName,
@@ -89,14 +88,9 @@ function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): Ba
     mark: bar.bad ? 'alert-circle' : 'check',
     // The area counts to its new value each time it changes: the number rolls, the words stand.
     title: (
-      <>
-        <span className="hg-studio-bar-area">
-          <RollingNumber key={area} value={area} />
-        </span>
-        <span className="hg-studio-bar-tier">
-          <ProvenanceTier tier={bar.tier} />
-        </span>
-      </>
+      <span className="hg-studio-bar-area">
+        <RollingNumber key={area} value={area} />
+      </span>
     ),
     status: roofsStatus(bar, facts, shown),
     bad: bar.bad,
@@ -151,7 +145,7 @@ function readOnly(view: BarView, editing: StudioEditing, facts: BarFacts): BarVi
 
 /**
  * The one bottom bar of the roof step (`T-M05-002`, part b): a mark, the title — the site, what to
- * tap now, or the roofs' area with its tier — one sentence of where things stand, and the step's
+ * tap now, or the roofs' area — one sentence of where things stand, and the step's
  * acts. Before a roof: Draw myself (no picture: Draw on the grid). While drawing, a slim pill
  * instead: the magnet and Close shape. A closed roof stands at once — Undo takes it back. With a
  * roof: no acts; a roof picked adds the magnet and its trash. A refusal takes the error colour.

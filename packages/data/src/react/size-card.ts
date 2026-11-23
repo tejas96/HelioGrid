@@ -10,7 +10,6 @@ import {
   type RoofStepEvent,
   type RoofStepState,
   roofArea,
-  roofAreaTier,
   roofMiddle,
   roofsBox,
   type SizeCardArrival,
@@ -67,7 +66,7 @@ function previewOf(
   corners: readonly GroundPoint[],
   set: TypedSize['set'],
 ): NonNullable<SizeCardView['preview']> {
-  // The roof as Place roof would stand it: its lengths' trust and its area's tier.
+  // The roof as Place roof would stand it, with its lengths' trust.
   const roof = typedRoof(corners, 'preview', set);
   return {
     corners,
@@ -75,7 +74,6 @@ function previewOf(
     middle: roofMiddle(corners),
     area: roofArea(corners),
     about: roof.edges.map((trust) => !lengthHeld(trust)),
-    tier: roofAreaTier(roof, null),
   };
 }
 

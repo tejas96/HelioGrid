@@ -1,5 +1,4 @@
 import type { MeasurementSystem } from '../format/pack';
-import { type ProvenanceTier, weakestTier } from '../format/qualified';
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import type { EditRefusal } from './roof-check';
@@ -10,7 +9,6 @@ import { type Guide, type Snapped, snapTargetsOf } from './roof-snap';
 import { gripCorner } from './roof-step';
 import { pickedRoofOf } from './roof-step-draw';
 import type { CornerRef, RoofSaid, RoofStepState } from './roof-step-state';
-import { roofAreaTier, scaleTierOf } from './roof-trust';
 
 /**
  * What the roof step draws (`T-M05-002`, part b): the design or the preview of what is in hand,
@@ -187,9 +185,8 @@ export type RoofBar =
   | { readonly kind: 'typing' }
   | {
       readonly kind: 'roofs';
-      /** All roofs' area, square metres, and its tier: the weakest roof's. */
+      /** All roofs' area, square metres. */
       readonly area: number;
-      readonly tier: ProvenanceTier;
       readonly said: RoofSaid | null;
       /** Something went wrong: the bar takes the error colour. */
       readonly bad: boolean;
@@ -248,10 +245,6 @@ export function roofBarOf(
   return {
     kind: 'roofs',
     area: shown.roofs.reduce((sum, roof) => sum + roofArea(roof.corners), 0),
-    tier:
-      weakestTier(
-        shown.roofs.map((roof) => roofAreaTier(roof, scaleTierOf(shown, roof.tracedOn))),
-      ) ?? 'estimated',
     said,
     bad: live !== null || said?.kind === 'went_back' || said?.kind === 'refused',
     sizing: state.kind === 'sizing',

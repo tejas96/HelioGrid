@@ -8,7 +8,6 @@ import {
   type FocusAfter,
   IconButton,
   landFocusOn,
-  ProvenanceTier,
   ShellGlyph,
   Slider,
   useFormat,
@@ -137,7 +136,6 @@ export function StudioRoofSheet({
           {words.sheetRoof(sheet.roof + 1)}
         </span>
         <span className="hg-roof-sheet-area">{format.area(sheet.area, units)}</span>
-        <ProvenanceTier tier={sheet.areaTier} />
         <span className="hg-roof-sheet-close">
           <IconButton label={words.sheetClose} variant="ghost" onClick={closing(closed)}>
             <ShellGlyph name="close" size="md" />
@@ -147,7 +145,6 @@ export function StudioRoofSheet({
       <div className="hg-roof-sheet-row">
         <span className="hg-roof-sheet-label">{words.heightLabel}</span>
         <span className="hg-roof-sheet-value">{format.roofHeight(sheet.height.metres, units)}</span>
-        <ProvenanceTier tier={sheet.height.tier} />
         {editable ? (
           <span className="hg-roof-sheet-switch">
             <IconButton

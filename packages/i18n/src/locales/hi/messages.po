@@ -10272,8 +10272,8 @@ msgstr "ऊँचाई (mm)"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof.ts:49
-msgid "Height {height} is assumed. Drag a corner to fix the shape."
-msgstr "ऊँचाई {height} मानी गई है। आकार ठीक करने के लिए कोना खींचें।"
+msgid "Height {height} is the usual storey here. Drag a corner to fix the shape."
+msgstr "ऊँचाई {height} यहाँ की आम मंज़िल जितनी है। आकार ठीक करने के लिए कोना खींचें।"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:91

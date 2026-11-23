@@ -103,11 +103,10 @@ describe('the roof step: fixing the shape', () => {
     expect(state).toMatchObject({ said: { kind: 'roof_turned', degrees: 14 } });
   });
 
-  it('the bar after a roof: the area, its tier, and the reason it went back', () => {
+  it('the bar after a roof: the area and the reason it went back', () => {
     expect(roofBarOf(ROOF_STEP_START, drawn, false, 'metric')).toEqual({
       kind: 'roofs',
       area: 48,
-      tier: 'derived',
       said: null,
       bad: false,
       sizing: false,

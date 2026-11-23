@@ -1,4 +1,3 @@
-import type { ProvenanceTier } from '../format/qualified';
 import type { StudioDocument } from './document';
 import type { GroundBox, GroundPoint } from './ground';
 import {
@@ -9,7 +8,6 @@ import {
   roofHeightOf,
 } from './roof-height';
 import { pointInside, roofArea, roofsBox } from './roof-shape';
-import { roofAreaTier, scaleTierOf } from './roof-trust';
 
 /**
  * A roof's sheet in 3D (`T-M05-002`, part b): a tap on a roof opens it with the roof's area and
@@ -19,9 +17,8 @@ import { roofAreaTier, scaleTierOf } from './roof-trust';
 
 export interface RoofSheetView {
   readonly roof: number;
-  /** The roof's area, square metres, and its tier. */
+  /** The roof's area, square metres. */
   readonly area: number;
-  readonly areaTier: ProvenanceTier;
   /** The height as it stands now, the one in hand included. */
   readonly height: RoofHeightShown;
   /** The system's height, which Reset brings back and the slider marks. */
@@ -47,7 +44,6 @@ export function roofSheetOf(
   return {
     roof: index,
     area: roofArea(roof.corners),
-    areaTier: roofAreaTier(roof, scaleTierOf(document, roof.tracedOn)),
     height,
     systemMetres: storeyHeightM,
     slide: {
