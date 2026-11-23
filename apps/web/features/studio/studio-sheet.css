@@ -202,6 +202,11 @@
   color: var(--danger-text);
 }
 
+/* On a desktop the magnet's pill stands in the free room left of the sheet, never under it. */
+.hg-studio-bar[data-beside-sheet="true"] {
+  justify-self: start;
+}
+
 /* Delete at the start of the foot, away from × and Done. */
 .hg-roof-sheet-acts {
   display: flex;

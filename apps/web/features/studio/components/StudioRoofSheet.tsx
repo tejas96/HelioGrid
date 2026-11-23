@@ -213,7 +213,7 @@ function MagnetPill({
 }) {
   if (studio.editing.kind !== 'editor' || (phone && !studio.arrowHeld)) return null;
   return (
-    <div className="hg-studio-glass hg-studio-bar" data-kind="pill">
+    <div className="hg-studio-glass hg-studio-bar" data-kind="pill" data-beside-sheet={!phone}>
       <span className="hg-studio-bar-acts">
         <MagnetSwitch studio={studio} words={words} />
       </span>
