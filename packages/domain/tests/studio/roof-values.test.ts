@@ -5,9 +5,10 @@ import {
   ROOF_NUMBER_SPECS,
   ROOF_NUMBERS,
   type RoofNumber,
-  roofNumberOf,
-} from '../../src/studio/roof-values';
-import { roofNumberHeld, roofNumberReset, roofNumberSet } from '../../src/studio/roof-values-set';
+  roofNumberHeld,
+} from '../../src/studio/roof-numbers';
+import { roofNumberOf } from '../../src/studio/roof-values';
+import { roofNumberReset, roofNumberSet } from '../../src/studio/roof-values-set';
 import { box, designOf, FACTS, kindOf, roofOf, SHED, TERRACE } from './roof-meet-support';
 
 /**

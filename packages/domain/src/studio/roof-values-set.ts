@@ -1,29 +1,21 @@
 import type { Roof, StudioDocument } from './document';
 import { roofSidesOf } from './roof-kind';
 import { type RoofFacts, roofShapeNow } from './roof-levels';
-import { parapetNow } from './roof-open-edges';
-import type { RoofParapet, RoofShapeSet, RoofSide } from './roof-parts';
 import {
   isSideNumber,
   type NumberAt,
-  ROOF_NUMBER_SPECS,
   type RoofNumber,
+  roofNumberHeld,
   SIDE_FIELD,
-} from './roof-values';
+} from './roof-numbers';
+import { parapetNow } from './roof-open-edges';
+import type { RoofParapet, RoofShapeSet, RoofSide } from './roof-parts';
 
 /**
  * A person sets one of a roof's numbers, or resets it (`T-M05-002`, part e). A roof stores only
  * what a person set: a reset takes the value away, and a record left holding nothing of a
  * person's goes with it.
  */
-
-/** A value kept to its step's grain between the ends typing allows: nothing is refused. */
-export function roofNumberHeld(key: RoofNumber, value: number): number {
-  const { typed, slide, unit } = ROOF_NUMBER_SPECS[key];
-  const grain = unit === 'metres' ? 0.01 : slide.step;
-  const clamped = Math.min(typed.max, Math.max(typed.min, Number.isFinite(value) ? value : 0));
-  return Math.round(Math.round(clamped / grain) * grain * 100) / 100;
-}
 
 const PERSON = { setBy: 'person' } as const;
 

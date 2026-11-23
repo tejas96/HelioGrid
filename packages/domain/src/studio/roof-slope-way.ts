@@ -1,3 +1,4 @@
+import { COMPASS_WAYS, type CompassWay, compassOf } from './compass';
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import type { FormPicks } from './roof-built';
@@ -21,26 +22,6 @@ const RADIANS = Math.PI / 180;
 const FULL_TURN = 360;
 const HALF_TURN = 180;
 const FOUR = 4;
-
-/** The compass's eight ways, clockwise from north. */
-export const COMPASS_WAYS = [
-  'north',
-  'north_east',
-  'east',
-  'south_east',
-  'south',
-  'south_west',
-  'west',
-  'north_west',
-] as const;
-export type CompassWay = (typeof COMPASS_WAYS)[number];
-
-/** The compass way nearest a bearing in degrees clockwise from north. */
-export function compassOf(bearingDeg: number): CompassWay {
-  const step = FULL_TURN / COMPASS_WAYS.length;
-  const turned = ((bearingDeg % FULL_TURN) + FULL_TURN) % FULL_TURN;
-  return COMPASS_WAYS[Math.round(turned / step) % COMPASS_WAYS.length] as CompassWay;
-}
 
 /** The bearing the equator lies in from a place: south above it, north below it. */
 export function equatorBearing(latitude: number): number {
@@ -205,3 +186,5 @@ export function formPicksOf(
   if (ONE_WAY.includes(shape)) return { side: lowSideOf(document, index, facts, latitude).side };
   return RIDGED.includes(shape) ? { turned: gableTurnedFor(roof.corners, latitude) } : {};
 }
+
+export { COMPASS_WAYS, type CompassWay, compassOf };
