@@ -1,4 +1,4 @@
-import { lengthHeld, type RoofEdgeTrust, type StudioDocument } from './document';
+import { cornerRoom, lengthHeld, type RoofEdgeTrust, type StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { type DragResult, type EditResult, faultOf, roofAt, withRoof } from './roof-check';
 import {
@@ -178,7 +178,7 @@ export function cornerDragged(
 /** The + on an edge: a corner at its middle, ready to drag. Both halves are traced. */
 export function cornerAdded(document: StudioDocument, roofIndex: number, edge: number): EditResult {
   const roof = roofAt(document, roofIndex);
-  if (roof.corners.length >= ROOF_CORNERS_MAX) {
+  if (roof.corners.length >= ROOF_CORNERS_MAX || cornerRoom(document.roofs) < 1) {
     return { kind: 'refused', refusal: 'too_many_corners' };
   }
   const start = roof.corners[edge] as GroundPoint;

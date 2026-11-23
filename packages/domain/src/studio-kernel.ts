@@ -11,6 +11,7 @@
  * phone app needs.
  */
 
+export { roofBuilt, roofFormOf, roofSlopeDeg } from './studio/roof-built';
 export {
   type CutRoofs,
   cutInto,
@@ -43,7 +44,6 @@ export {
 export {
   roofAreaM2,
   roofGround,
-  roofSlopeDeg,
   roofSurfaceM2,
   roofsAreaM2,
   setbackLines,
@@ -69,7 +69,6 @@ export {
   type RoofMeeting,
   type RoofPlace,
   STAIR_ROOM_MAX_M2,
-  sameMaterial,
 } from './studio/roof-meet';
 export {
   type EdgeState,

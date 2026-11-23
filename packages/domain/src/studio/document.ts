@@ -75,10 +75,20 @@ export const ROOFS_MAX = 50;
 /** How many roofs a stored design may hold: 100 houses, each with a stair room (`T-M05-002`, part e). */
 export const ROOFS_READ_MAX = 200;
 /**
- * How many corners a design's roofs hold in all, so a design at every cap stays under the save's
- * size limit.
+ * How many corners a studio lets a design's roofs hold in all: with the roof cap it keeps a design
+ * that holds all it can under the save's size limit.
  */
 export const CORNERS_TOTAL_MAX = 2_000;
+/**
+ * How many corners a stored design may hold in all: every design a studio could store before the
+ * studio's own cap — 50 roofs of 100 corners — still reads.
+ */
+export const CORNERS_READ_MAX = 5_000;
+
+/** How many more corners a design's roofs may take. */
+export function cornerRoom(roofs: readonly { readonly corners: readonly unknown[] }[]): number {
+  return CORNERS_TOTAL_MAX - roofs.reduce((sum, roof) => sum + roof.corners.length, 0);
+}
 
 /**
  * How far from the pin a corner may lie, in metres east or north: far past any picture (about

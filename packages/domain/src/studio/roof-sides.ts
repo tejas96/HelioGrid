@@ -50,9 +50,48 @@ export function roofWithCorner(
   });
 }
 
+/** How far along the joined side a point of the two old sides lies, kept on the side. */
+function alongJoined(point: GroundPoint, from: GroundPoint, to: GroundPoint): number {
+  const dx = to.east - from.east;
+  const dy = to.north - from.north;
+  const length = Math.hypot(dx, dy);
+  if (length === 0) return 0;
+  const along = ((point.east - from.east) * dx + (point.north - from.north) * dy) / length;
+  return Math.min(Math.max(along, 0), length);
+}
+
+/** The point a distance along a side, from its first corner. */
+function pointAlong(from: GroundPoint, to: GroundPoint, metres: number): GroundPoint {
+  const length = Math.hypot(to.east - from.east, to.north - from.north) || 1;
+  const share = metres / length;
+  return {
+    east: from.east + (to.east - from.east) * share,
+    north: from.north + (to.north - from.north) * share,
+  };
+}
+
+/** Where the stairs on either of two sides stand on the ground; `null` when neither carries them. */
+function stairsStood(
+  kept: RoofSide,
+  gone: RoofSide,
+  ends: readonly [GroundPoint, GroundPoint, GroundPoint],
+): GroundPoint | null {
+  const [start, middle, end] = ends;
+  if (kept.stairsAt !== undefined) return pointAlong(start, middle, kept.stairsAt);
+  return gone.stairsAt === undefined ? null : pointAlong(middle, end, gone.stairsAt);
+}
+
+/** The marks only one side carries, taken from the side that goes where the side kept has none. */
+function marksJoined(kept: RoofSide, gone: RoofSide): RoofSide {
+  const low = kept.low ?? gone.low;
+  const glass = kept.glass ?? gone.glass;
+  return { ...(low === undefined ? {} : { low }), ...(glass === undefined ? {} : { glass }) };
+}
+
 /**
  * Corner `corner` removed: the side before it and the side after it join as one, which keeps the
- * settings of the side before; a mark only the side after carried moves onto the joined side.
+ * settings of the side before; a mark only the side after carried moves onto the joined side. The
+ * stairs stay where they stood, as near as the joined side comes to that spot.
  */
 export function roofWithoutCorner(
   roof: Roof,
@@ -64,19 +103,15 @@ export function roofWithoutCorner(
     const before = (corner - 1 + count) % count;
     const kept = sides[before] ?? {};
     const gone = sides[corner] ?? {};
-    const lengthBefore = between(
-      roof.corners[before] as GroundPoint,
-      cornerAfter(roof.corners, before),
-    );
-    const stairsMove = kept.stairsAt === undefined && gone.stairsAt !== undefined;
-    const joined: RoofSide = {
-      ...kept,
-      ...(kept.low === undefined && gone.low !== undefined ? { low: gone.low } : {}),
-      ...(kept.glass === undefined && gone.glass !== undefined ? { glass: gone.glass } : {}),
-      ...(stairsMove
-        ? { stairsAt: (gone.stairsAt ?? 0) + lengthBefore, stairsBy: gone.stairsBy }
-        : {}),
-    };
+    const start = roof.corners[before] as GroundPoint;
+    const end = cornerAfter(roof.corners, corner);
+    const stood = stairsStood(kept, gone, [start, roof.corners[corner] as GroundPoint, end]);
+    const { stairsAt: _at, stairsBy: _by, ...settings } = kept;
+    const stairs =
+      stood === null
+        ? {}
+        : { stairsAt: alongJoined(stood, start, end), stairsBy: kept.stairsBy ?? gone.stairsBy };
+    const joined: RoofSide = { ...settings, ...marksJoined(kept, gone), ...stairs };
     return sides.map((side, i) => (i === before ? joined : side)).filter((_, i) => i !== corner);
   });
 }

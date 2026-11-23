@@ -7,7 +7,7 @@ import {
   lowSideOf,
   sideBearing,
 } from '../../src/studio/roof-slope-way';
-import { box, designOf, FACTS, roofOf, TERRACE } from './roof-meet-support';
+import { box, designOf, FACTS, p, roofOf, TERRACE } from './roof-meet-support';
 
 /**
  * Which way a roof slopes (`T-M05-002`, part e): a person's tap first, then a taller wall it
@@ -123,6 +123,12 @@ describe('a gable’s ridge, and a sawtooth’s glass', () => {
       true,
     ],
     ['11% longer north–south: no longer near square', box(0, 0, 6, 6.7), PUNE, false],
+    [
+      'near square with a corner added on a straight side: still four sides to its faces',
+      [p(0, 0), p(3, 0), p(6, 0), p(6, 6.5), p(0, 6.5)],
+      PUNE,
+      true,
+    ],
   ] as const)('%s', (_why, corners, latitude, turned) => {
     expect(gableTurnedFor(corners, latitude)).toBe(turned);
   });

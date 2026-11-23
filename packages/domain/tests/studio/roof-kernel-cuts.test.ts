@@ -62,6 +62,22 @@ describe('cuts into the faces', () => {
     expect(Math.max(...duct.map((corner) => corner.up))).toBeCloseTo(2 * RISE, 6);
   });
 
+  it('a second hole in a face leaves it two holes, each once', () => {
+    const cut = facesWithout(facesWithout(house.faces, box(5, 1, 1, 1)), box(8, 1, 1, 1));
+    const south = cut.filter((face) => face.side === 0);
+    expect(south.map((face) => face.holes?.length)).toEqual([2]);
+    expect(south[0]?.areaM2).toBeCloseTo(48 - 2, 6);
+  });
+
+  it('a face cut in two by a slot keeps each hole in the piece it lies in', () => {
+    const holed = facesWithout(house.faces, box(2, 1, 1, 1));
+    // A slot right across the south face, from its eave to past the ridge.
+    const slit = facesWithout(holed, box(6, -1, 0.5, 6));
+    const south = slit.filter((face) => face.side === 0);
+    expect(south).toHaveLength(2);
+    expect(south.map((face) => face.holes?.length ?? 0).sort()).toEqual([0, 1]);
+  });
+
   it('a hole on the edge of a face changes the face’s own edge: a wall where it was cut', () => {
     const cut = facesWithout(house.faces, box(5, -1, 1, 2));
     const south = cut.filter((face) => face.side === 0);

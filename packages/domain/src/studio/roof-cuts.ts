@@ -134,8 +134,9 @@ function pieceOf(face: BuiltFace, shape: FlatShape, cut: FaceEdge): BuiltFace {
     areaM2,
     surfaceM2: areaM2 / Math.cos(face.slopeDeg * RADIANS),
   };
-  const holes = [...(face.holes ?? []), ...shape.holes.map(lifted)];
-  return holes.length === 0 ? piece : { ...piece, holes };
+  // The shape was cut from the face with its holes: the holes it has are all the piece's.
+  const { holes: _before, ...whole } = piece;
+  return shape.holes.length === 0 ? whole : { ...whole, holes: shape.holes.map(lifted) };
 }
 
 /** A face as a flat shape, with what is already cut out of it. */
@@ -201,7 +202,9 @@ export function cutInto(
 ): CutRoofs {
   const highShapes = higher.map(shapeOfFace);
   const cutLower = lower.flatMap((low) => {
-    const beside = without([shapeOfFace(low)], highShapes) ?? [];
+    const beside = without([shapeOfFace(low)], highShapes);
+    // A shape the library cannot resolve leaves the face as it was, never without its ground.
+    if (beside === null) return [low];
     const above = higher.flatMap((high) => winsOver(low, liftM, high));
     return [...beside, ...above].map((shape) => pieceOf(low, shape, 'valley'));
   });

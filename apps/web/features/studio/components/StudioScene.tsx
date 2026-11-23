@@ -136,8 +136,8 @@ export interface StudioSceneProps {
   /** How much the picture is stretched about the pin to its true size. */
   /** `null` until the design is read: its stored stretch then lands, never grown into. */
   pictureScale: number | null;
-  /** The market's storey height: a roof with no height of its own stands at it. */
-  storeyHeightM: number;
+  /** The height a roof on the ground starts at: one with no height of its own stands at it. */
+  startHeightM: number;
   /** The roofs' ground, which the view frames; `null` before a roof. */
   fit: GroundBox | null;
   /** A roof closed: the camera frames the roofs once for each new value. */
@@ -173,7 +173,7 @@ export function StudioScene({
   roofs,
   heights,
   pictureScale: readScale,
-  storeyHeightM,
+  startHeightM,
   fit,
   frameOn,
   rise,
@@ -252,7 +252,7 @@ export function StudioScene({
           still={still}
           palette={palette}
           heights={heights}
-          storeyHeightM={storeyHeightM}
+          startHeightM={startHeightM}
           top={roofTopIn(picture.kind, sharp, ownTop, pictureScale)}
           rise={rise}
           sizing={sizing}

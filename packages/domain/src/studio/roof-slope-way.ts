@@ -1,10 +1,11 @@
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
+import { outlineForFaces } from './roof-face-outline';
 import { gableEnds } from './roof-forms';
 import { roofSidesOf } from './roof-kind';
 import { LEVEL_M, type RoofFacts, roofFloorM, roofHasWalls } from './roof-levels';
 import { stretchesTaken } from './roof-polygons';
-import { ringArea } from './wavefront-lines';
+import { distance, type PlanPoint, ringArea } from './wavefront-lines';
 
 /**
  * Which way a roof slopes (`T-M05-002`, part e). A shed's low side comes first from a person's
@@ -147,20 +148,20 @@ const NEAR_SQUARE = 0.1;
  * four-sided roof with no clearly longer side, the ridge runs so one face looks toward the equator.
  */
 export function gableTurnedFor(corners: readonly GroundPoint[], latitude: number): boolean {
-  if (corners.length !== FOUR) return false;
-  const length = (side: number) => {
-    const from = corners[side] as GroundPoint;
-    const to = corners[(side + 1) % FOUR] as GroundPoint;
-    return Math.hypot(to.east - from.east, to.north - from.north);
-  };
+  // The roof as its faces see it: a corner added on a straight side does not make it five-sided.
+  const outline = outlineForFaces(corners);
+  if (outline.points.length !== FOUR) return false;
+  const length = (side: number) =>
+    distance(outline.points[side] as PlanPoint, outline.points[(side + 1) % FOUR] as PlanPoint);
   const even = length(0) + length(2);
   const odd = length(1) + length(3);
   if (Math.abs(even - odd) > NEAR_SQUARE * Math.max(even, odd)) return false;
   const equator = equatorBearing(latitude);
+  const sides = outline.sides.map((drawn) => drawn[0] as number);
   // The eaves are the sides that are not ends: the best of them should look at the equator.
   const off = (turned: boolean) => {
     const ends = gableEnds(corners, turned);
-    const eaves = [0, 1, 2, 3].filter((side) => !ends.includes(side));
+    const eaves = sides.filter((side) => !ends.includes(side));
     return Math.min(...eaves.map((side) => bearingsApart(sideBearing(corners, side), equator)));
   };
   return off(true) < off(false) - 1e-9;

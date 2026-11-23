@@ -16,7 +16,8 @@ import {
 /**
  * What part e stores on a roof, on the wire (`T-M05-002`, part e), one release before any studio
  * writes it: a design with roofs standing on roofs and sides with their own settings saves and
- * reads back whole; a link that cannot hold is never stored; a design may hold up to 200 roofs;
+ * reads back whole; a link in a ring is never stored, while one to a roof that is gone is kept and
+ * forgiven; a design may hold up to 200 roofs;
  * and another company still finds no design.
  */
 
@@ -103,17 +104,15 @@ describe.skipIf(skip)('What part e stores on a roof, over HTTP against a migrate
   });
 
   it.each([
-    [
-      'a roof standing on a roof the design does not hold',
-      [TERRACE, { ...STAIR, on: randomUUID() }],
-    ],
     ['a roof standing on itself', [TERRACE, { ...STAIR, on: STAIR.id }]],
     ['two roofs standing on each other', [{ ...TERRACE, on: STAIR.id }, STAIR]],
     [
-      'a roof that is part of a roof the design does not hold',
-      [TERRACE, { ...STAIR, partOf: randomUUID() }],
+      'a roof part of one that stands on it',
+      [
+        { ...TERRACE, partOf: STAIR.id },
+        { ...STAIR, on: TERRACE.id },
+      ],
     ],
-    ['a side list that does not match the corners', [{ ...TERRACE, sides: [{}, {}, {}] }]],
     [
       'a parapet taller than 3 m',
       [{ ...TERRACE, parapet: { allRound: true, metres: TALL_PARAPET_M, setBy: 'person' } }],
@@ -123,6 +122,13 @@ describe.skipIf(skip)('What part e stores on a roof, over HTTP against a migrate
     const reply = await save(owner(), designId, withRoofs(...roofs));
     expect(reply.status).toBe(HttpStatus.BAD_REQUEST);
     expect((await documentOf(owner(), designId)).body.version).toBe(0);
+  });
+
+  it('a link to a roof that is gone and a side list that no longer matches are saved as sent, never refused', async () => {
+    const designId = await aSitedDesign();
+    const loose = withRoofs({ ...TERRACE, sides: [{}, {}, {}] }, { ...STAIR, on: randomUUID() });
+    expect((await save(owner(), designId, loose)).status).toBe(HttpStatus.OK);
+    expect((await documentOf(owner(), designId)).body.document).toEqual(loose);
   });
 
   it('a design of 200 roofs saves and reads back; one more is refused', async () => {

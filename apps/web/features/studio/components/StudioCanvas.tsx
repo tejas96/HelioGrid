@@ -2,13 +2,7 @@
 import type { DesignDetail, TranslatedText } from '@heliogrid/contracts';
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import {
-  ShellGlyph,
-  useDesktopShell,
-  useFormat,
-  usePalette,
-  useReducedMotion,
-} from '@heliogrid/ui';
+import { ShellGlyph, useDesktopShell, usePalette, useReducedMotion } from '@heliogrid/ui';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useChromeRoom } from '../hooks/use-chrome-room';
@@ -60,7 +54,6 @@ export function StudioCanvas({
   /** Back to Site details; `null` for a reader who cannot change the design. */
   onSite: (() => void) | null;
 }) {
-  const format = useFormat();
   const palette = usePalette();
   const still = useReducedMotion();
   const desktop = useDesktopShell();
@@ -144,7 +137,7 @@ export function StudioCanvas({
             roofs={roofs}
             heights={studio.heights.map((height) => height.metres)}
             pictureScale={studio.shown?.pictureScale ?? null}
-            storeyHeightM={format.pack.storeyHeightM}
+            startHeightM={studio.startHeightM}
             fit={
               frameOn === studio.own.landed ? (studio.own.landed?.box ?? studio.fit) : studio.fit
             }

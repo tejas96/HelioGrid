@@ -26,9 +26,23 @@ export interface RoofHeightShown {
   readonly tier: ProvenanceTier;
 }
 
-/** The height a roof stands at: its own, or the market's storey height when none is set. */
-export function roofHeightOf(roof: Roof, storeyHeightM: number): RoofHeightShown {
-  const height: RoofHeight = roof.height ?? { metres: storeyHeightM, setBy: 'system' };
+/**
+ * The height a roof on the ground starts at where none is set: the market's plinth and one storey.
+ * Every reader of a roof's first height takes it from here.
+ */
+export function groundRoofHeightM(market: {
+  readonly storeyHeightM: number;
+  readonly roof: { readonly plinthHeightM: number };
+}): number {
+  return market.roof.plinthHeightM + market.storeyHeightM;
+}
+
+/**
+ * The height a roof stands at: its own, or `startHeightM` when none is set — for a roof on the
+ * ground, `groundRoofHeightM`.
+ */
+export function roofHeightOf(roof: Roof, startHeightM: number): RoofHeightShown {
+  const height: RoofHeight = roof.height ?? { metres: startHeightM, setBy: 'system' };
   return { metres: height.metres, setBy: height.setBy, tier: tierOf(height) };
 }
 
@@ -65,11 +79,11 @@ export function roofHeightKept(
   document: StudioDocument,
   index: number,
   inHand: number | null,
-  storeyHeightM: number,
+  startHeightM: number,
 ): EditResult | null {
   const roof = document.roofs[index];
   if (inHand === null || roof === undefined) return null;
-  const standing = roofHeightOf(roof, storeyHeightM).metres;
+  const standing = roofHeightOf(roof, startHeightM).metres;
   // In whole centimetres, as heights are kept: 3.05 against 3 is a change, 3.04 is not.
   if (Math.round(Math.abs(inHand - standing) * 100) < Math.round((ROOF_HEIGHT_STEP_M / 2) * 100)) {
     return null;

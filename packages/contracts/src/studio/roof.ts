@@ -71,7 +71,7 @@ const roofSideSchema = z
     parapetBuild: z.enum(PARAPET_BUILDS).optional(),
     setbackM: z.number().min(0).max(SETBACK_MAX_M).optional(),
     slopeDeg: z.number().min(0).max(SLOPE_MAX_DEG).optional(),
-    eaveM: z.number().min(ROOF_HEIGHT_MIN_M).max(ROOF_HEIGHT_MAX_M).optional(),
+    eaveM: z.number().min(0).max(ROOF_HEIGHT_MAX_M).optional(),
     end: storedName.optional(),
     overhangM: z.number().min(0).max(OVERHANG_MAX_M).optional(),
     tier: z.enum(PROVENANCE_TIERS).optional(),
@@ -153,16 +153,14 @@ export const roofSchema = z
     overhang: overhangSchema.optional(),
     parapet: roofParapetSchema.optional(),
     setback: setbackSchema.optional(),
+    // A list that does not match the corners is kept, and read as no entry at all (`roofSidesOf`):
+    // a studio that changed the corners and not the list is never refused its save.
     sides: z.array(roofSideSchema).max(ROOF_CORNERS_MAX).optional(),
   })
   .strict()
   .refine((roof) => roof.edges.length === roof.corners.length, {
     message: 'Each corner starts one edge.',
     path: ['edges'],
-  })
-  .refine((roof) => roof.sides === undefined || roof.sides.length === roof.corners.length, {
-    message: 'Each corner starts one side.',
-    path: ['sides'],
   })
   // The crossing check walks every pair of edges: it runs only on a corner count the roof may have,
   // so an outsized body is refused by its count, not checked at length.
@@ -179,38 +177,45 @@ export function cornersIn(roofs: readonly z.infer<typeof roofSchema>[]): number 
 type RoofLink = 'on' | 'partOf';
 type RoofWire = z.infer<typeof roofSchema>;
 
-/** Whether following one link up from roof `from` never ends: a ring of roofs. */
+/** Whether following a link up from roof `from` never ends: a ring of roofs. */
 function linkRings(
   roofs: readonly RoofWire[],
   byId: ReadonlyMap<string, number>,
   from: number,
-  link: RoofLink,
+  next: (roof: RoofWire) => string | undefined,
 ): boolean {
   let at: number | undefined = from;
   // A chain longer than the design has a ring in it.
   for (let steps = 0; at !== undefined && steps <= roofs.length; steps++) {
-    const next: string | undefined = roofs[at]?.[link];
-    at = next === undefined ? undefined : byId.get(next);
+    const to: string | undefined =
+      roofs[at] === undefined ? undefined : next(roofs[at] as RoofWire);
+    at = to === undefined ? undefined : byId.get(to);
   }
   return at !== undefined;
 }
 
 /**
- * The links that do not hold: one naming no other roof of the design, or one of a ring of roofs
- * that each stand on, or are part of, the next.
+ * The links that cannot hold: a roof that stands on, or is part of, itself, and a ring of roofs
+ * each of which stands on, is part of or belongs to the next — along the roof it stands on, the
+ * roof it is part of, and the roof it goes with (domain's `belongsTo`). A link to a roof the design
+ * no longer holds is no fault: it is kept, and read as standing on the ground (`standsOn`).
  */
 export function roofLinkFaults(
   roofs: readonly RoofWire[],
 ): { readonly roof: number; readonly link: RoofLink }[] {
   const byId = new Map(roofs.map((roof, index) => [roof.id, index]));
   const links: readonly RoofLink[] = ['on', 'partOf'];
+  const belongs = (roof: RoofWire) => roof.partOf ?? roof.on;
   return roofs.flatMap((roof, index) =>
     links
       .filter((link) => {
         const to = roof[link];
         if (to === undefined) return false;
-        const target = byId.get(to);
-        return target === undefined || target === index || linkRings(roofs, byId, target, link);
+        if (byId.get(to) === index) return true;
+        return (
+          linkRings(roofs, byId, index, (each) => each[link]) ||
+          linkRings(roofs, byId, index, belongs)
+        );
       })
       .map((link) => ({ roof: index, link })),
   );

@@ -1,10 +1,10 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
+import { roofBuilt, roofSlopeDeg } from './roof-built';
 import { movedIn } from './roof-cuts';
-import { roofFormed } from './roof-forms';
+import type { FaceEdge } from './roof-faces';
 import { belongsTo, roofKindOf, roofSidesOf, standsOn } from './roof-kind';
-import { type RoofFacts, roofHasWalls, roofMaterialNow, roofShapeNow } from './roof-levels';
-import { materialSlopeDeg } from './roof-material';
+import { type RoofFacts, roofHasWalls, roofSloped } from './roof-levels';
 import { type EdgeStretch, edgesOf, parapetNow } from './roof-open-edges';
 import {
   type FlatShape,
@@ -50,20 +50,27 @@ export function roofAreaM2(document: StudioDocument, index: number): number {
   return shapesArea(roofGround(document, index));
 }
 
-/** The area of every roof together, every spot once as seen from above; a hole is no roof. */
+/**
+ * The area of every roof together, every spot once as seen from above. A hole is no roof, save
+ * where another roof lies over it or shows through it: from above that spot is roof.
+ */
 export function roofsAreaM2(document: StudioDocument): number {
-  const shapes = (hole: boolean) =>
-    document.roofs
-      .filter((roof) => (roofKindOf(roof) === 'hole') === hole)
-      .map((roof) => shapeOf(roof.corners));
-  const all = joinedAll(shapes(false)) ?? [];
-  return shapesArea(without(all, shapes(true)) ?? all);
-}
-
-/** A roof's one slope in degrees: what is stored, else its material's first slope; 0 when flat. */
-export function roofSlopeDeg(roof: Roof, facts: RoofFacts): number {
-  if (roofShapeNow(roof, facts) === 'flat') return 0;
-  return roof.slope?.degrees ?? materialSlopeDeg(roofMaterialNow(roof), facts);
+  const roofs = document.roofs.map((roof, index) => ({ roof, index }));
+  const solid = roofs.filter(({ roof }) => roofKindOf(roof) !== 'hole');
+  const all = joinedAll(solid.map(({ roof }) => shapeOf(roof.corners))) ?? [];
+  const open = roofs
+    .filter(({ roof }) => roofKindOf(roof) === 'hole')
+    .flatMap(({ roof }) => {
+      const cutIn = belongsTo(document, roof);
+      const others = solid.filter(({ index }) => index !== cutIn);
+      return (
+        without(
+          [shapeOf(roof.corners)],
+          others.map((other) => shapeOf(other.roof.corners)),
+        ) ?? []
+      );
+    });
+  return shapesArea(without(all, open) ?? all);
 }
 
 /**
@@ -74,9 +81,7 @@ export function roofSurfaceM2(document: StudioDocument, index: number, facts: Ro
   const roof = document.roofs[index];
   if (roof === undefined) return 0;
   const area = roofAreaM2(document, index);
-  const shape = roofShapeNow(roof, facts);
-  if (shape === 'flat' || shape === 'any') return area;
-  const built = roofFormed(roof.corners, { shape, slopeDeg: roofSlopeDeg(roof, facts) });
+  const built = roofBuilt(roof, facts);
   const above = built.faces.reduce((sum, face) => sum + face.areaM2, 0);
   const along = built.faces.reduce((sum, face) => sum + face.surfaceM2, 0);
   return above === 0 ? area : (area * along) / above;
@@ -165,6 +170,30 @@ function ordered(ring: readonly GroundPoint[], pieces: readonly Piece[]): Piece[
   });
 }
 
+/** The pack's setback for a kind of edge, where it gives one; else the roof's own. */
+function setbackFor(kind: FaceEdge, own: number, facts: RoofFacts): number {
+  const by = facts.setbackByEdge;
+  if (kind === 'break') return 0;
+  if (by === null) return own;
+  if (kind === 'eave') return by.eave ?? own;
+  if (kind === 'ridge') return by.ridge ?? own;
+  if (kind === 'hip' || kind === 'valley') return by.hipOrValley ?? own;
+  return kind === 'gable_end' ? (by.gableEnd ?? own) : own;
+}
+
+/**
+ * A sloped roof's setback lines face by face, where the market gives a setback for each kind of
+ * edge — an eave, a ridge, a hip or a valley, a gable end — as fire rules do.
+ */
+function faceSetbackLines(roof: Roof, facts: RoofFacts): GroundPoint[][] {
+  const own = roof.setback?.metres ?? facts.setbackM;
+  return roofBuilt(roof, facts).faces.flatMap((face) => {
+    const along = facts.setbackMeasure === 'along_face' ? Math.cos(face.slopeDeg * RADIANS) : 1;
+    const distances = face.edges.map((kind) => setbackFor(kind, own, facts) * along);
+    return movedIn(face.corners, distances);
+  });
+}
+
 /**
  * A roof's setback line, ring by ring: the ground panels may use lies inside the rings that run
  * anticlockwise and outside the ones that run clockwise.
@@ -174,7 +203,9 @@ export function setbackLines(
   index: number,
   facts: RoofFacts,
 ): GroundPoint[][] {
-  if (document.roofs[index] === undefined) return [];
+  const roof = document.roofs[index];
+  if (roof === undefined) return [];
+  if (facts.setbackByEdge !== null && roofSloped(roof, facts)) return faceSetbackLines(roof, facts);
   const edges = edgesOf(document, index, facts);
   return roofGround(document, index).flatMap((ground) => {
     const lay = (ring: readonly GroundPoint[]) => {

@@ -137,7 +137,9 @@ export interface RoofStepView {
   readonly magnetRefused: boolean;
   /** The design to draw: the design, or the preview of what is in hand. */
   readonly shown: StudioDocument | null;
-  /** Each roof's height as it stands, in the order of `shown`'s roofs: its own, or the storey's. */
+  /** The height a roof on the ground starts at where none is set: the market's plinth and a storey. */
+  readonly startHeightM: number;
+  /** Each roof's height as it stands, in the order of `shown`'s roofs: its own, or its start. */
   readonly heights: readonly RoofHeightShown[];
   /** Each roof's marks, from the design drawn. */
   readonly roofMarks: readonly RoofMarksView[];

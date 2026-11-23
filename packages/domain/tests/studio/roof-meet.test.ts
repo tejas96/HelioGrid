@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { IN_FORMATS } from '../../src/format/pack';
+import { groundRoofHeightM, roofHeightOf } from '../../src/studio/roof-height';
 import { roofFloorM, roofOwnHeightM } from '../../src/studio/roof-levels';
 import { cutToEdge, holeMeets, meetingOf } from '../../src/studio/roof-meet';
 import { ringAreaM2 } from '../../src/studio/roof-polygons';
@@ -150,9 +152,43 @@ describe('a new roof over others: none is refused', () => {
     expect(met).toMatchObject({ place: 'partly_over', on: 1, partOf: 0 });
   });
 
-  it('over a stair room and its terrace: counted from the stair room', () => {
-    const design = designOf(TERRACE, stairOn(box(0, 0, 3, 3)));
-    expect(meet(box(0.5, 0.5, 2, 2), design).on).toBe(1);
+  it('a stair room on an upper floor lies in that floor, whatever is under it', () => {
+    const upper = kindOf('upper', 'upper_floor', box(4, 0, 6, 4), { on: 'terrace' });
+    const met = meet(box(5, 1, 3, 2), designOf(TERRACE, upper));
+    expect(met).toMatchObject({
+      place: 'inside',
+      kind: 'stair_room',
+      on: 1,
+      partOf: null,
+      startsLike: 1,
+    });
+  });
+
+  it('a duct drawn under an open shed is a hole in the walled roof beneath: a shed is a cover, not a floor', () => {
+    const tin = kindOf('tin', 'open_shed', box(-0.5, -0.5, 11, 9), { on: 'terrace' });
+    const met = meet(box(6, 5, 1, 1), designOf(TERRACE, tin));
+    expect(met).toMatchObject({ place: 'inside', kind: 'hole', on: 0 });
+  });
+
+  it('under an open shed with no roof beneath, it lies in the shed', () => {
+    const yard = kindOf('yard', 'open_shed', box(20, 0, 8, 8));
+    expect(meet(box(22, 2, 2, 2), designOf(TERRACE, yard))).toMatchObject({
+      place: 'inside',
+      on: 1,
+    });
+  });
+
+  it('half on an upper floor and half on the terrace beside it: partly over, counted from the floor', () => {
+    const upper = kindOf('upper', 'upper_floor', box(4, 0, 6, 4), { on: 'terrace' });
+    const met = meet(box(5, 3, 2, 2), designOf(TERRACE, upper));
+    expect(met).toMatchObject({ place: 'partly_over', on: 1 });
+  });
+
+  it('a new roof starts like the roof it lies on or meets, and like none when it stands apart', () => {
+    expect(meet(box(0, 0, 3, 3)).startsLike).toBe(0);
+    expect(meet(box(14, 2, 5, 4)).startsLike).toBe(1);
+    expect(meet(box(-0.5, -0.5, 11, 9), designOf(TERRACE)).startsLike).toBe(0);
+    expect(meet(box(30, 0, 5, 5)).startsLike).toBeNull();
   });
 });
 
@@ -202,6 +238,15 @@ describe('how high each roof stands', () => {
 
   it('a market with a plinth lifts every roof on the ground by it', () => {
     expect(roofFloorM(design, 1, { ...FACTS, plinthHeightM: 0.45 })).toBeCloseTo(6.45, 6);
+  });
+
+  it('the screens and the rules take a ground roof’s first height from one place', () => {
+    const raised = { ...IN_FORMATS, roof: { ...IN_FORMATS.roof, plinthHeightM: 0.45 } };
+    const facts = { ...raised.roof, storeyHeightM: raised.storeyHeightM };
+    expect(groundRoofHeightM(raised)).toBeCloseTo(3.45, 6);
+    expect(roofHeightOf(TERRACE, groundRoofHeightM(raised)).metres).toBe(
+      roofFloorM(design, 0, facts),
+    );
   });
 
   it('a hole under a second floor is open down to the floor below it', () => {

@@ -33,19 +33,19 @@ export interface RoofSheetView {
 export function roofSheetOf(
   document: StudioDocument,
   index: number,
-  storeyHeightM: number,
+  startHeightM: number,
   inHand: number | null,
 ): RoofSheetView | null {
   const roof = document.roofs[index];
   if (roof === undefined) return null;
-  const stands = roofHeightOf(roof, storeyHeightM);
+  const stands = roofHeightOf(roof, startHeightM);
   const height: RoofHeightShown =
     inHand === null ? stands : { metres: inHand, setBy: 'person', tier: 'estimated' };
   return {
     roof: index,
     area: roofArea(roof.corners),
     height,
-    systemMetres: storeyHeightM,
+    systemMetres: startHeightM,
     slide: {
       min: ROOF_HEIGHT_SLIDER_MIN_M,
       max: ROOF_HEIGHT_SLIDER_MAX_M,

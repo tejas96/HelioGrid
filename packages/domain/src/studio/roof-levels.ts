@@ -1,5 +1,6 @@
 import type { RoofMarketFacts } from '../format/roof-facts';
 import type { Roof, StudioDocument } from './document';
+import { groundRoofHeightM } from './roof-height';
 import { roofKindOf, standsOn } from './roof-kind';
 import {
   materialStart,
@@ -31,7 +32,7 @@ export function roofOwnHeightM(document: StudioDocument, roof: Roof, facts: Roof
   if (kind === 'upper_floor') return facts.storeyHeightM;
   if (kind === 'open_shed') return onRoof ? facts.stairRoomHeightM : facts.storeyHeightM;
   if (kind === 'dormer' || kind === 'hole') return 0;
-  return facts.plinthHeightM + facts.storeyHeightM;
+  return groundRoofHeightM({ storeyHeightM: facts.storeyHeightM, roof: facts });
 }
 
 /** No chain of roofs standing on roofs is longer: a guard against links stored in a ring. */

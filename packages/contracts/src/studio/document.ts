@@ -1,5 +1,5 @@
 import {
-  CORNERS_TOTAL_MAX,
+  CORNERS_READ_MAX,
   PICTURE_CHOICES,
   PICTURE_METRES_PER_UNIT_MAX,
   PICTURE_METRES_PER_UNIT_MIN,
@@ -71,7 +71,7 @@ export const studioDocumentSchema = z
     stairsSkipped: z.boolean().optional(),
   })
   .strict()
-  .refine((document) => cornersIn(document.roofs) <= CORNERS_TOTAL_MAX, {
+  .refine((document) => cornersIn(document.roofs) <= CORNERS_READ_MAX, {
     message: 'The design holds too many corners.',
     path: ['roofs'],
   })
@@ -79,7 +79,7 @@ export const studioDocumentSchema = z
     for (const fault of roofLinkFaults(document.roofs)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'A roof stands on, or is part of, another roof of the same design, never itself.',
+        message: 'A roof stands on, or is part of, another roof, never itself and never in a ring.',
         path: ['roofs', fault.roof, fault.link],
       });
     }

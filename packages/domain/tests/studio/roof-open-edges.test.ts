@@ -1,30 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import type { GroundPoint } from '../../src/studio/ground';
-import {
-  roofAreaM2,
-  roofSurfaceM2,
-  roofsAreaM2,
-  setbackLines,
-} from '../../src/studio/roof-free-ground';
 import { edgesOf, parapetNow } from '../../src/studio/roof-open-edges';
-import { ringAreaM2 } from '../../src/studio/roof-polygons';
 import { C_ROOF } from './roof-kernel-support';
-import {
-  box,
-  designOf,
-  FACTS,
-  kindOf,
-  p,
-  roofOf,
-  SHED,
-  stairOn,
-  TERRACE,
-} from './roof-meet-support';
+import { box, designOf, FACTS, kindOf, roofOf, SHED, stairOn, TERRACE } from './roof-meet-support';
 
 /**
- * Where a roof has a parapet, its area and its setback line (`T-M05-002`, part e): a parapet only
- * where the roof is open to the sky, split exactly where another roof starts; an area that leaves
- * out holes and what stands on the roof; a setback in from the inside of the parapet.
+ * Where a roof has a parapet (`T-M05-002`, part e): only where the roof is open to the sky, split
+ * exactly where another roof starts; a side a person tapped keeps their choice.
  */
 const PERSON = { setBy: 'person' } as const;
 /** Each side as its stretches: `from–to` and whether a wall stands there. */
@@ -150,6 +131,12 @@ describe('a parapet only where the roof is open to the sky', () => {
     expect(walls(duct(bare), 1)).toEqual(NONE);
   });
 
+  it('holes linked in a ring have no parapet to follow, and the reading ends', () => {
+    const a = kindOf('a', 'hole', box(2, 2, 1, 1), { partOf: 'b' });
+    const b = kindOf('b', 'hole', box(4, 2, 1, 1), { on: 'a' });
+    expect(parapetNow(designOf(a, b), a, FACTS).allRound).toBe(false);
+  });
+
   it('a parapet a person set is read as set: its height, its build, where the lengths were measured', () => {
     const set = {
       ...TERRACE,
@@ -170,102 +157,5 @@ describe('a parapet only where the roof is open to the sky', () => {
       lengthsMeasured: 'inside',
       byPerson: true,
     });
-  });
-});
-
-describe('a roof’s area', () => {
-  const stair = stairOn(box(0, 0, 3, 3));
-  const duct = kindOf('duct', 'hole', box(6, 5, 1, 1), { partOf: 'terrace' });
-
-  it('leaves out its holes and what stands on it', () => {
-    expect(roofAreaM2(designOf(TERRACE, stair, duct), 0)).toBeCloseTo(80 - 9 - 1, 6);
-    expect(roofAreaM2(designOf(TERRACE, stair, duct), 1)).toBeCloseTo(9, 6);
-  });
-
-  it('a roof covered by an open shed keeps its own area', () => {
-    const tin = kindOf('tin', 'open_shed', box(-0.5, -0.5, 11, 9), { on: 'terrace' });
-    expect(roofAreaM2(designOf(TERRACE, tin), 0)).toBeCloseTo(80, 6);
-  });
-
-  it('a separate part is carved out of the roof round it', () => {
-    const back = kindOf('back', 'separate_part', box(6, 0, 4, 8), { partOf: 'terrace' });
-    expect(roofAreaM2(designOf(TERRACE, back), 0)).toBeCloseTo(48, 6);
-  });
-
-  it('every roof together counts each spot once, as seen from above', () => {
-    expect(roofsAreaM2(designOf(TERRACE, stair, SHED))).toBeCloseTo(80 + 32, 6);
-    expect(roofsAreaM2(designOf(TERRACE, stair, duct, SHED))).toBeCloseTo(80 + 32 - 1, 6);
-    // An upper floor that sticks 2 m out past the terrace adds only what sticks out.
-    const out = kindOf('upper', 'upper_floor', box(-2, 0, 6, 4), { on: 'terrace' });
-    expect(roofsAreaM2(designOf(TERRACE, out))).toBeCloseTo(80 + 8, 6);
-    expect(roofsAreaM2(designOf())).toBe(0);
-  });
-
-  it('a sloped roof’s surface is its area from above over the cosine of its slope', () => {
-    const sloped = { ...SHED, slope: { degrees: 30, ...PERSON } };
-    expect(roofSurfaceM2(designOf(sloped), 0, FACTS)).toBeCloseTo(32 / Math.cos(Math.PI / 6), 6);
-    // A 30° roof is 15% bigger than it looks from above.
-    expect(roofSurfaceM2(designOf(sloped), 0, FACTS) / 32).toBeCloseTo(1.1547, 4);
-    expect(roofSurfaceM2(designOf(TERRACE), 0, FACTS)).toBeCloseTo(80, 6);
-  });
-});
-
-describe('the setback line', () => {
-  const area = (rings: GroundPoint[][]) =>
-    rings.map((ring) => ringAreaM2(ring)).sort((a, b) => a - b);
-
-  it('stands in from the inside of the parapet: the wall’s thickness, then the setback', () => {
-    const [ring] = setbackLines(designOf(TERRACE), 0, FACTS);
-    expect(ring).toContainEqual(p(0.73, 0.73));
-    expect(ringAreaM2(ring ?? [])).toBeCloseTo((10 - 1.46) * (8 - 1.46), 6);
-  });
-
-  it('lengths measured inside the parapet: the wall stands outside the outline, and only the setback is kept', () => {
-    const taped = {
-      ...TERRACE,
-      parapet: { allRound: true, metres: 1, ...PERSON, lengthsMeasured: 'inside' as const },
-    };
-    expect(setbackLines(designOf(taped), 0, FACTS)[0]).toContainEqual(p(0.5, 0.5));
-  });
-
-  it('where there is no parapet it is measured from the edge', () => {
-    const bare = { ...TERRACE, parapet: { allRound: false, metres: 1, ...PERSON } };
-    expect(area(setbackLines(designOf(bare), 0, FACTS))[0]).toBeCloseTo(9 * 7, 6);
-  });
-
-  it('a side with its own setback keeps it: down to 0 on a boundary side', () => {
-    const bare = {
-      ...TERRACE,
-      parapet: { allRound: false, metres: 1, ...PERSON },
-      sides: [{}, { setbackM: 0 }, {}, {}],
-    };
-    expect(area(setbackLines(designOf(bare), 0, FACTS))[0]).toBeCloseTo(9.5 * 7, 6);
-  });
-
-  it('a seam with a roof of the same height keeps no panel back', () => {
-    const bare = { ...TERRACE, parapet: { allRound: false, metres: 1, ...PERSON } };
-    const [ring] = setbackLines(designOf(bare, roofOf('next', box(10, 0, 4, 8))), 0, FACTS);
-    expect(ringAreaM2(ring ?? [])).toBeCloseTo(9.5 * 7, 6);
-  });
-
-  it('runs round what stands on the roof: a stair room in the middle is ringed, 0.5 m clear', () => {
-    const bare = { ...TERRACE, parapet: { allRound: false, metres: 1, ...PERSON } };
-    const rings = setbackLines(designOf(bare, stairOn(box(4, 3, 2, 2))), 0, FACTS);
-    expect(area(rings)).toEqual([expect.closeTo(3 * 3, 6), expect.closeTo(9 * 7, 6)]);
-  });
-
-  it('a taller wall against the roof counts as an edge', () => {
-    const bare = { ...TERRACE, parapet: { allRound: false, metres: 1, ...PERSON } };
-    const tall = roofOf('tall', box(10, 0, 4, 8), { height: { metres: 6, ...PERSON } });
-    expect(area(setbackLines(designOf(bare, tall), 0, FACTS))[0]).toBeCloseTo(9 * 7, 6);
-  });
-
-  it.each([
-    ['along the face: shorter as seen from above', 'along_face', Math.cos(Math.PI / 6)],
-    ['from above, where the market says so', 'from_above', 1],
-  ] as const)('on a sloped roof it is measured %s', (_why, setbackMeasure, share) => {
-    const sloped = { ...SHED, slope: { degrees: 30, ...PERSON } };
-    const [ring] = setbackLines(designOf(sloped), 0, { ...FACTS, setbackMeasure });
-    expect(ringAreaM2(ring ?? [])).toBeCloseTo((4 - share) * (8 - share), 6);
   });
 });

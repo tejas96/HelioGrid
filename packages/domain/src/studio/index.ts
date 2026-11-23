@@ -10,7 +10,9 @@ export {
   roundPin,
 } from './coordinates';
 export {
+  CORNERS_READ_MAX,
   CORNERS_TOTAL_MAX,
+  cornerRoom,
   EMPTY_STUDIO_DOCUMENT,
   GROUND_REACH_M,
   lengthHeld,
@@ -122,6 +124,7 @@ export {
   tracedLength,
 } from './roof-entry';
 export {
+  groundRoofHeightM,
   ROOF_HEIGHT_MAX_M,
   ROOF_HEIGHT_MIN_M,
   ROOF_HEIGHT_SLIDER_MAX_M,

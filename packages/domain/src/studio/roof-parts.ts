@@ -133,7 +133,7 @@ export interface RoofSide {
   readonly parapetBuild?: ParapetBuild;
   readonly setbackM?: number;
   readonly slopeDeg?: number;
-  /** The height of this side's eave, in metres, where it differs from the roof's low edge. */
+  /** How far this side's eave stands above the roof's low edge, in metres, where it is not on it. */
   readonly eaveM?: number;
   readonly end?: Stored<SideEnd>;
   readonly overhangM?: number;

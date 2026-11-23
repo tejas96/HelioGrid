@@ -1,13 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { EMPTY_STUDIO_DOCUMENT, type Roof, type StudioDocument } from '../../src/studio/document';
 import type { GroundPoint } from '../../src/studio/ground';
-import { faultOf } from '../../src/studio/roof-check';
-import { cornerAdded, cornerDragged, cornerRemoved } from '../../src/studio/roof-edit';
+import { cornerAdded, cornerRemoved } from '../../src/studio/roof-edit';
 import {
   belongsTo,
   roofKindOf,
   roofSidesOf,
-  roofsTied,
   roofWithItsParts,
   standsOn,
   tierOf,
@@ -123,13 +121,6 @@ describe('what a roof is, read forgivingly', () => {
     expect(roofWithItsParts(designOf(a, b), 0)).toEqual([0, 1]);
   });
 
-  it('ties a roof to the one it stands on, never to its neighbour', () => {
-    expect(roofsTied(HOUSE, 0, 1)).toBe(true);
-    expect(roofsTied(HOUSE, 3, 0)).toBe(true);
-    expect(roofsTied(HOUSE, 0, 4)).toBe(false);
-    expect(roofsTied(HOUSE, 0, 9)).toBe(false);
-  });
-
   it.each([
     ['no list', undefined, [{}, {}, {}, {}]],
     ['a list that matches', [{ parapet: false }, {}, {}, {}], [{ parapet: false }, {}, {}, {}]],
@@ -180,13 +171,26 @@ describe('edits keep what part e stores', () => {
     // Corner 0 goes: side 4 (before it) and side 0 (after it) join.
     const joined = done(cornerRemoved(five, 0, 0)).roofs[0];
     expect(joined?.corners).toHaveLength(4);
-    expect(joined?.sides).toEqual([
+    expect(joined?.sides?.slice(0, 3)).toEqual([
       { parapetM: 1.5 },
       {},
       { setbackM: 0, glass: 'system' },
-      // The half side before corner 0 was 4 m long: the stairs stand 7 m past its end.
-      { setbackM: 0, low: 'person', stairsAt: 11, stairsBy: 'system' },
     ]);
+    // The stairs stood at (7, 0); the joined side runs from (0, 4) to (10, 0): the nearest spot on it.
+    const last = joined?.sides?.[3];
+    expect(last).toMatchObject({ setbackM: 0, low: 'person', stairsBy: 'system' });
+    expect(last?.stairsAt).toBeCloseTo(86 / Math.hypot(10, 4), 6);
+  });
+
+  it('stairs past the end of a joined side are kept on it', () => {
+    // A corner pulled far out, then removed: the stairs stood beyond where the joined side ends.
+    const out = roofOf('r', [p(0, 0), p(10, 0), p(20, 4), p(10, 8), p(0, 8)], {
+      sides: [{}, { stairsAt: 10, stairsBy: 'person' }, {}, {}, {}],
+    });
+    const joined = done(cornerRemoved(designOf(out), 0, 2)).roofs[0];
+    // Sides 1 and 2 join as (10, 0) → (10, 8), 8 m long; the stairs stood near (19.3, 3.7).
+    expect(joined?.sides?.[1]?.stairsAt).toBeCloseTo(3.714, 2);
+    expect(joined?.sides?.[1]?.stairsAt).toBeLessThanOrEqual(8);
   });
 
   it.each([
@@ -210,6 +214,17 @@ describe('edits keep what part e stores', () => {
     );
     expect(commits).toBe(1);
     expect(document.roofs.map((roof) => roof.id)).toEqual(['shed']);
+  });
+
+  it('an upper floor across two roofs, when the one it stood on goes, stands on the one it belongs to', () => {
+    const across = roofOf('across', box(8, 2, 4, 4), { on: 'shed', partOf: 'terrace' });
+    const { document } = run(
+      [{ kind: 'tap', at: p(13, 1), system: 'metric' }, { kind: 'delete_roof' }],
+      designOf(TERRACE, SHED, across),
+    );
+    expect(document.roofs.map((roof) => roof.id)).toEqual(['terrace', 'across']);
+    expect(document.roofs[1]?.on).toBe('terrace');
+    expect(Object.keys(document.roofs[1] ?? {})).not.toContain('partOf');
   });
 
   it('deleting a stair room leaves the roof it stands on', () => {
@@ -241,51 +256,5 @@ describe('edits keep what part e stores', () => {
 
   it('a roof carried past the site’s reach is refused with its roof', () => {
     expect(roofMoved(designOf(TERRACE, STAIR), 0, p(1_995, 0)).fault).toBe('too_far');
-  });
-});
-
-describe('the touching check knows how roofs relate', () => {
-  it.each([
-    ['a stair room on its roof', 1],
-    ['an upper floor on the stair room', 2],
-    ['a hole in its roof', 3],
-  ])('%s is never refused for lying over it', (_why, index) => {
-    const roof = HOUSE.roofs[index] as Roof;
-    expect(faultOf(HOUSE, index, roof.corners)).toBeNull();
-    expect(cornerDragged(HOUSE, index, 2, p(4, 4), false).fault).toBeNull();
-  });
-
-  it('the roof under a stair room is not refused for what stands on it', () => {
-    expect(faultOf(HOUSE, 0, TERRACE.corners)).toBeNull();
-    expect(cornerDragged(HOUSE, 0, 2, p(10, 9), false).fault).toBeNull();
-  });
-
-  it('an open shed over a roof is not refused, though it stands on none', () => {
-    const over = roofOf('over', box(-1, -1, 12, 10), {
-      kind: { is: 'open_shed', setBy: 'system' },
-    });
-    const design = designOf(TERRACE, over);
-    expect(faultOf(design, 1, over.corners)).toBeNull();
-    expect(faultOf(design, 0, TERRACE.corners)).toBeNull();
-  });
-
-  it('a roof of a kind a later studio added, standing on another, is not refused either', () => {
-    const later = roofOf('later', box(2, 2, 3, 3), {
-      kind: { is: 'water_tank_room', setBy: 'person' },
-      on: 'terrace',
-    });
-    const design = designOf(TERRACE, later);
-    expect(roofMoved(design, 1, p(1, 1)).fault).toBeNull();
-    expect(cornerDragged(design, 0, 2, p(10, 9), false).fault).toBeNull();
-  });
-
-  it('two buildings on the ground still never overlap', () => {
-    expect(roofMoved(HOUSE, 4, p(-2, 0)).fault).toBe('would_overlap');
-    expect(roofMoved(HOUSE, 0, p(2, 0)).fault).toBe('would_overlap');
-  });
-
-  it('a building of a kind a later studio added is kept clear of others, as a building is', () => {
-    const later = roofOf('later', box(10, 0, 4, 8), { kind: { is: 'carport', setBy: 'person' } });
-    expect(roofMoved(designOf(TERRACE, later), 1, p(-2, 0)).fault).toBe('would_overlap');
   });
 });

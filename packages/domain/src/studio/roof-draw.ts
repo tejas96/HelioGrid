@@ -1,4 +1,4 @@
-import { GROUND_REACH_M, type PictureChoice, ROOFS_MAX, type Roof } from './document';
+import { cornerRoom, GROUND_REACH_M, type PictureChoice, ROOFS_MAX, type Roof } from './document';
 import type { GroundPoint } from './ground';
 import {
   angleAt,
@@ -121,6 +121,7 @@ export function draftClose(
   const ghost = withGhost ? draftGhost(corners) : null;
   const outline = ghost === null ? corners : [...corners, ghost];
   if (outline.length < ROOF_CORNERS_MIN) return { kind: 'refused', refusal: 'too_few_corners' };
+  if (outline.length > cornerRoom(roofs)) return { kind: 'refused', refusal: 'too_many_corners' };
   if (edgesCross(outline)) return { kind: 'refused', refusal: 'would_cross' };
   if (roofs.some((roof) => roofsOverlap(outline, roof.corners))) {
     return { kind: 'refused', refusal: 'would_overlap' };

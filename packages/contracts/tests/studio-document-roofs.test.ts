@@ -4,8 +4,8 @@ import { REQUEST_BODY_MAX_BYTES, saveDocumentSchema, studioDocumentSchema } from
 /**
  * What part e stores on a roof (`T-M05-002`, part e), read one release before any studio writes
  * it: a design that carries the new fields reads back as sent, so a studio of this release saves
- * them as it found them; a design from before them carries none; and a link that cannot hold is
- * never stored.
+ * them as it found them; a design from before them carries none; a link in a ring is never stored;
+ * and a link to a roof that is gone, or a side list that no longer matches, is kept and forgiven.
  */
 const OLD = { schemaVersion: 1, picture: null, drawnOn: null, pictureScale: 1 };
 const ID = (n: number) => `6f1e8c2a-0b7d-4c35-9a51-${String(n).padStart(12, '0')}`;
@@ -127,15 +127,21 @@ describe('what part e stores on a roof, on the wire', () => {
     ],
     ['a setback below zero', { setback: { metres: -0.01, ...PERSON } }],
     ['a slope of 90°', { slope: { degrees: 90, ...PERSON } }],
-    ['a side list shorter than the corners', { sides: [{}, {}, {}] }],
-    ['a side list longer than the corners', { sides: [{}, {}, {}, {}, {}] }],
     ['a side with a field it does not know', { sides: [{ gutter: true }, {}, {}, {}] }],
     ['a roof standing on itself', { on: ID(1) }],
     ['a roof that is part of itself', { partOf: ID(1) }],
-    ['a roof standing on a roof the design does not hold', { on: ID(9) }],
-    ['a roof that is part of a roof the design does not hold', { partOf: ID(9) }],
   ])('refuses %s', (_why, bad) => {
     expect(reads(withRoofs({ ...roofAt(1), ...bad }))).toBe(false);
+  });
+
+  it.each([
+    ['a side list shorter than the corners', { sides: [{}, {}, {}] }],
+    ['a side list longer than the corners', { sides: [{}, {}, {}, {}, {}] }],
+    ['a roof standing on a roof the design no longer holds', { on: ID(9) }],
+    ['a roof that is part of a roof the design no longer holds', { partOf: ID(9) }],
+  ])('%s is kept as it came, never refused: a reader forgives it', (_why, loose) => {
+    const sent = withRoofs({ ...roofAt(1), ...loose });
+    expect(studioDocumentSchema.parse(sent)).toEqual(sent);
   });
 
   it.each([
@@ -154,6 +160,13 @@ describe('what part e stores on a roof, on the wire', () => {
   ] as const)('refuses %s', (_why, link) => {
     const ring = withRoofs({ ...roofAt(1), [link]: ID(2) }, { ...roofAt(2), [link]: ID(1) });
     expect(reads(ring)).toBe(false);
+  });
+
+  it('refuses a ring made of both links: a roof part of one that stands on it', () => {
+    const ring = withRoofs({ ...roofAt(1), partOf: ID(2) }, { ...roofAt(2), on: ID(1) });
+    expect(reads(ring)).toBe(false);
+    // The same two with the links one way are a hole in the roof it stands... on nothing: they read.
+    expect(reads(withRoofs(roofAt(1), { ...roofAt(2), on: ID(1), partOf: ID(1) }))).toBe(true);
   });
 
   it('refuses a ring of three, and reads the same three standing in a row', () => {
@@ -187,15 +200,16 @@ describe('what part e stores on a roof, on the wire', () => {
   });
 
   it.each([
-    [2_000, true],
-    [2_001, false],
-  ])('a design of %s corners in all reads: %s', (corners, ok) => {
-    const roofs = Array.from({ length: 19 }, (_, i) => ring(i + 1, 100, null));
-    const last = ring(21, corners - 2_000 + 3, null);
-    expect(reads(withRoofs(...roofs, ring(20, 97, null), last))).toBe(ok);
+    [5_000, true],
+    [5_001, false],
+  ])('a stored design of %s corners in all reads: %s', (corners, ok) => {
+    // Every design a studio could store before part e — 50 roofs of 100 corners — still reads.
+    const roofs = Array.from({ length: 49 }, (_, i) => ring(i + 1, 100, null));
+    const last = ring(51, corners - 5_000 + 3, null);
+    expect(reads(withRoofs(...roofs, ring(50, 97, null), last))).toBe(ok);
   });
 
-  it('a design at every cap at once — 200 roofs, 2,000 corners, every roof and every side holding all it can — is a save the api reads', () => {
+  it('a design at every cap a studio writes to — 200 roofs, 2,000 corners, every roof and every side holding all it can — is a save the api reads', () => {
     const {
       corners: _c,
       edges: _e,

@@ -63,7 +63,10 @@ function HeightControls({
       {studio.heightRefusal === null ? null : (
         <span className="hg-roof-sheet-refused" role="alert">
           <ShellGlyph name="alert-circle" size="sm" />
-          {words.heightRefusal(studio.heightRefusal, roofWordsShown(format, units).heightOf)}
+          {words.heightRefusal(
+            studio.heightRefusal,
+            roofWordsShown(format, units, studio.startHeightM).heightOf,
+          )}
         </span>
       )}
       <span className="hg-roof-sheet-hint">

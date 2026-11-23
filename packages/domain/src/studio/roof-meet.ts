@@ -1,6 +1,7 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { LEVEL_M, type RoofFacts, roofFloorM, roofMaterialNow, roofSloped } from './roof-levels';
+import { groundRoofHeightM } from './roof-height';
+import { LEVEL_M, type RoofFacts, roofFloorM, roofHasWalls, roofSloped } from './roof-levels';
 import type { RoofKind } from './roof-parts';
 import {
   farApart,
@@ -41,7 +42,16 @@ export interface RoofMeeting {
   readonly partOf: number | null;
   /** The roof Join would join it with; `null` when it meets none at its own height. */
   readonly joinWith: number | null;
-  /** Join is the first guess: both roofs slope and are made of the same thing. */
+  /**
+   * The roof the new one starts like — made of the same thing, with the same shape: the roof it
+   * lies on, or the level neighbour it meets; `null` for a roof apart, which starts as the market's
+   * first roof does.
+   */
+  readonly startsLike: number | null;
+  /**
+   * Join is the first guess: the new roof starts like the neighbour it meets, so both are of one
+   * material, and that neighbour slopes — two sloped roofs side by side would cut through each other.
+   */
   readonly joinFirst: boolean;
   /** The guess rests on no measured height: it is marked to check. */
   readonly toCheck: boolean;
@@ -113,6 +123,7 @@ const apart = (corners: readonly GroundPoint[]): RoofMeeting => ({
   on: null,
   partOf: null,
   joinWith: null,
+  startsLike: null,
   joinFirst: false,
   toCheck: false,
 });
@@ -125,16 +136,24 @@ function besideMeeting(
   facts: RoofFacts,
 ): RoofMeeting {
   // A new roof on the ground stands a plinth and a storey up until its height is read.
-  const own = facts.plinthHeightM + facts.storeyHeightM;
+  const own = groundRoofHeightM({ storeyHeightM: facts.storeyHeightM, roof: facts });
   const level = beside.find(
     (index) => Math.abs(roofFloorM(document, index, facts) - own) < LEVEL_M,
   );
   const neighbour = level === undefined ? undefined : document.roofs[level];
-  // Two sloped roofs side by side would cut through each other: joined is the likely truth.
+  // The new roof starts like this neighbour: where it slopes, two sloped roofs of one material meet.
   const joinFirst = neighbour !== undefined && roofSloped(neighbour, facts);
   const choices: MeetChoice[] = ['building', 'open_shed'];
   if (level !== undefined) choices.splice(joinFirst ? 0 : 1, 0, 'join');
-  return { ...apart(corners), place: 'beside', choices, joinWith: level ?? null, joinFirst };
+  const startsLike = level ?? beside[0] ?? null;
+  return {
+    ...apart(corners),
+    place: 'beside',
+    choices,
+    joinWith: level ?? null,
+    startsLike,
+    joinFirst,
+  };
 }
 
 /** A new roof inside one other: its kind by its size and what it lies in, and the chips for the rest. */
@@ -166,6 +185,24 @@ function partlyOver(
   return { ...base, place: 'partly_over', kind: 'upper_floor', choices };
 }
 
+/**
+ * The roof a new outline lies inside, of the roofs under it: the highest one that covers it whole
+ * and is bigger than it. An open shed is a cover, not a floor: a roof drawn under one lies in the
+ * walled roof beneath, where there is one. `null` when a higher roof takes only part of it.
+ */
+function holderOf(document: StudioDocument, overs: readonly Over[], facts: RoofFacts): Over | null {
+  const floor = (over: Over) => roofFloorM(document, over.index, facts);
+  const walled = (over: Over) => roofHasWalls(document.roofs[over.index] as Roof);
+  const covering = overs.filter((over) => over.ofNew >= WHOLE && over.ofOther < WHOLE);
+  const floors = covering.filter(walled);
+  const pool = floors.length > 0 ? floors : covering;
+  if (pool.length === 0) return null;
+  const holder = pool.reduce((a, b) => (floor(b) > floor(a) ? b : a));
+  // A walled roof higher than the holder that takes only part of the outline: it is partly over that one.
+  const above = overs.some((over) => walled(over) && floor(over) > floor(holder) + LEVEL_M);
+  return above ? null : holder;
+}
+
 /** A new roof with ground over other roofs: inside one, over a whole one, or partly over. */
 function overMeeting(
   document: StudioDocument,
@@ -173,6 +210,12 @@ function overMeeting(
   overs: readonly Over[],
   facts: RoofFacts,
 ): RoofMeeting {
+  const holder = holderOf(document, overs, facts);
+  if (holder !== null) {
+    // It stands on the roof it lies in, whatever lies under that one.
+    const base = { ...apart(corners), on: holder.index, toCheck: true, startsLike: holder.index };
+    return insideMeeting(base, document.roofs[holder.index] as Roof, facts);
+  }
   // It is counted from the highest roof under it, and belongs to the roof it covers most.
   const highest = overs.reduce((a, b) =>
     roofFloorM(document, b.index, facts) > roofFloorM(document, a.index, facts) ? b : a,
@@ -180,9 +223,13 @@ function overMeeting(
   const most = overs.reduce((a, b) => (b.areaM2 > a.areaM2 ? b : a));
   const partOf = most.index === highest.index ? null : most.index;
   // Until heights are read the new roof is taken as the higher one: marked to check.
-  const base = { ...apart(corners), on: highest.index, partOf, toCheck: true };
-  const within = overs.length === 1 && most.ofNew >= WHOLE && most.ofOther < WHOLE;
-  if (within) return insideMeeting(base, document.roofs[most.index] as Roof, facts);
+  const base = {
+    ...apart(corners),
+    on: highest.index,
+    partOf,
+    toCheck: true,
+    startsLike: most.index,
+  };
   if (most.ofOther < WHOLE) return partlyOver(document, base, overs);
   return { ...base, place: 'over_whole', kind: 'open_shed', choices: ['open_shed', 'upper_floor'] };
 }
@@ -221,11 +268,6 @@ export function cutToEdge(
     ) ?? [];
   const piece = left[0];
   return left.length === 1 && piece !== undefined && piece.holes.length === 0 ? piece.outer : null;
-}
-
-/** Whether two roofs are made of the same thing: Join is the first guess for two sloped ones that are. */
-export function sameMaterial(a: Roof, b: Roof): boolean {
-  return roofMaterialNow(a) === roofMaterialNow(b);
 }
 
 /** Room for a sum's last digit, in metres. */

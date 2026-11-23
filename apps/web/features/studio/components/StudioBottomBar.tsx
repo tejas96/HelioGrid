@@ -71,7 +71,7 @@ function roofsStatus(
 
 function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): BarView {
   const { words, format, units, studio, view } = facts;
-  const shown = roofWordsShown(format, units);
+  const shown = roofWordsShown(format, units, studio.startHeightM);
   const area = words.roofArea(format.area(bar.area, units));
   // A roof picked in the top view: the magnet for the drags to come, and the trash that deletes it.
   const picked = facts.editable && view === 'top' && bar.picked !== null;
@@ -112,7 +112,10 @@ function startBar(name: TranslatedText, place: string | null, facts: BarFacts): 
   return {
     mark: noPicture ? 'ruler' : 'pencil',
     title: name,
-    status: said === null ? why : words.roofLine(said, false, roofWordsShown(format, units)),
+    status:
+      said === null
+        ? why
+        : words.roofLine(said, false, roofWordsShown(format, units, studio.startHeightM)),
     bad: false,
     // With no picture, typing the size is the main way; drawing on the grid sits beside it.
     acts: noPicture

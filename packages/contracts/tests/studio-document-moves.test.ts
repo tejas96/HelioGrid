@@ -92,6 +92,18 @@ const LATER: StudioDocument = studioDocumentSchema.parse({
   stairsSkipped: false,
 });
 
+/** An upper floor across the terrace and the shed: it stands on the shed, and belongs to the terrace. */
+const ACROSS: StudioDocument['roofs'][number] = {
+  id: ID(6),
+  corners: box(8, 2, 4, 4),
+  edges: [...TRACED],
+  tracedOn: 'sky',
+  height: null,
+  kind: { is: 'upper_floor', ...SYSTEM },
+  on: ID(4),
+  partOf: ID(1),
+};
+
 const doneOf = (result: { kind: string; document?: StudioDocument }): StudioDocument => {
   if (result.kind !== 'done' || result.document === undefined)
     throw new Error('the edit was refused');
@@ -100,9 +112,9 @@ const doneOf = (result: { kind: string; document?: StudioDocument }): StudioDocu
 const at = (east: number, north: number) => ({ east, north });
 
 /** Events run over the design as the studio runs them: the last commit is the design after. */
-function stepped(events: readonly RoofStepEvent[]): StudioDocument {
+function stepped(events: readonly RoofStepEvent[], from: StudioDocument = LATER): StudioDocument {
   let state = ROOF_STEP_START;
-  let document = LATER;
+  let document = from;
   for (const event of events) {
     const outcome = roofStepAfter(state, event, document);
     state = outcome.state;
@@ -146,6 +158,16 @@ const MOVES: readonly (readonly [string, () => StudioDocument, number])[] = [
     1,
   ],
   [
+    // The upper floor across two roofs stands on the shed and belongs to the terrace.
+    'the shed deleted from under a roof that stood on it and belonged elsewhere',
+    () =>
+      stepped([{ kind: 'tap', at: at(13, 1), system: 'metric' }, { kind: 'delete_roof' }], {
+        ...LATER,
+        roofs: [...LATER.roofs, ACROSS],
+      }),
+    4,
+  ],
+  [
     'another roof drawn beside the shed',
     () =>
       stepped([
@@ -170,6 +192,13 @@ describe('this release’s edits on a design a later studio saved', () => {
       expect(studioDocumentSchema.parse(JSON.parse(JSON.stringify(after)))).toEqual(after);
     },
   );
+
+  it('a roof left when the one it stood on goes stands on the roof it belongs to', () => {
+    const after = MOVES.find(([why]) => why.startsWith('the shed deleted'))?.[1]();
+    const left = after?.roofs.at(-1);
+    expect(left).toMatchObject({ id: ID(6), on: ID(1) });
+    expect(Object.keys(left ?? {})).not.toContain('partOf');
+  });
 
   it('an edit keeps what the later studio stored on the roofs it did not touch', () => {
     const after = roofMoved(LATER, 3, at(5, 0)).document;

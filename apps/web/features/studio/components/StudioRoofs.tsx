@@ -172,7 +172,7 @@ export function StudioRoofs({
   still,
   palette,
   heights,
-  storeyHeightM,
+  startHeightM,
   top,
   rise,
   sizing,
@@ -185,8 +185,8 @@ export function StudioRoofs({
   palette: ThemePalette;
   /** Each roof's height in metres, in the order of `roofs`. */
   heights: readonly number[];
-  /** The market's storey height: a roof with no height of its own stands at it. */
-  storeyHeightM: number;
+  /** The height a roof on the ground starts at: one with no height of its own stands at it. */
+  startHeightM: number;
   /** The sky picture the roofs' tops wear; `null` on the grid. */
   top: RoofTopPicture | null;
   rise: RoofRise;
@@ -231,7 +231,7 @@ export function StudioRoofs({
         <RoofBlock
           key={roof.id}
           roof={roof}
-          metres={heights[index] ?? storeyHeightM}
+          metres={heights[index] ?? startHeightM}
           top={top}
           palette={palette}
           rise={rise}

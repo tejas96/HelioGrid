@@ -32,7 +32,12 @@ export interface ParapetNow {
 }
 
 /** Whether a roof starts with a parapet all round: a flat roof of a material that has one, on its own walls. */
-function startsWithParapet(document: StudioDocument, roof: Roof, facts: RoofFacts): boolean {
+function startsWithParapet(
+  document: StudioDocument,
+  roof: Roof,
+  facts: RoofFacts,
+  depth: number,
+): boolean {
   const kind = roofKindOf(roof);
   // A stair room's top holds tanks, not a wall; an open shed and a dormer have no edge to guard.
   if (kind === 'stair_room' || kind === 'open_shed' || kind === 'dormer') return false;
@@ -40,15 +45,25 @@ function startsWithParapet(document: StudioDocument, roof: Roof, facts: RoofFact
     // A duct's first parapet follows its roof's.
     const part = belongsTo(document, roof);
     const round = part === null ? undefined : document.roofs[part];
-    return round !== undefined && parapetNow(document, round, facts).allRound;
+    // Holes cut in holes, link after link: past any real depth the links run in a ring.
+    if (round === undefined || depth > HOLES_DEEP) return false;
+    return parapetNow(document, round, facts, depth + 1).allRound;
   }
   return !roofSloped(roof, facts) && materialStart(roofMaterialNow(roof), facts).parapet;
 }
 
-export function parapetNow(document: StudioDocument, roof: Roof, facts: RoofFacts): ParapetNow {
+/** No hole is cut in a hole in a hole this deep. */
+const HOLES_DEEP = 8;
+
+export function parapetNow(
+  document: StudioDocument,
+  roof: Roof,
+  facts: RoofFacts,
+  depth = 0,
+): ParapetNow {
   const stored = roof.parapet;
   return {
-    allRound: stored?.allRound ?? startsWithParapet(document, roof, facts),
+    allRound: stored?.allRound ?? startsWithParapet(document, roof, facts, depth),
     metres: stored?.metres ?? facts.parapetHeightM,
     thicknessM: stored?.thickness?.metres ?? facts.wallThicknessM,
     build: stored?.build ?? 'wall',

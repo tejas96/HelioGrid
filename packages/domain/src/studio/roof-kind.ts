@@ -66,16 +66,6 @@ export function roofWithItsParts(document: StudioDocument, index: number): reado
   return found;
 }
 
-/** Whether two roofs are tied: one stands on the other, is part of it, or goes with it. */
-export function roofsTied(document: StudioDocument, one: number, other: number): boolean {
-  const a = document.roofs[one];
-  const b = document.roofs[other];
-  if (a === undefined || b === undefined) return false;
-  const tiedTo = (roof: Roof, to: number) =>
-    standsOn(document, roof) === to || belongsTo(document, roof) === to;
-  return tiedTo(a, other) || tiedTo(b, one);
-}
-
 const NO_SIDE: RoofSide = {};
 
 /**

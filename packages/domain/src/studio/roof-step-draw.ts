@@ -1,4 +1,4 @@
-import type { StudioDocument } from './document';
+import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { roofUnder } from './roof-check';
 import { draftClose, draftClosesAt, draftTap } from './roof-draw';
@@ -113,13 +113,35 @@ export function onGrid(
 }
 
 /**
+ * A roof left standing after others went: a link to a roof that is gone is dropped. A roof that
+ * stood on one roof and belonged to another (an upper floor across two) now stands on the one it
+ * belongs to.
+ */
+function relinked(roof: Roof, gone: ReadonlySet<string>): Roof {
+  const { on, partOf, ...rest } = roof;
+  const keptOn = on !== undefined && !gone.has(on) ? on : undefined;
+  const keptPart = partOf !== undefined && !gone.has(partOf) ? partOf : undefined;
+  if (keptOn === on && keptPart === partOf) return roof;
+  if (keptOn === undefined && on !== undefined && keptPart !== undefined)
+    return { ...rest, on: keptPart };
+  return {
+    ...rest,
+    ...(keptOn === undefined ? {} : { on: keptOn }),
+    ...(keptPart === undefined ? {} : { partOf: keptPart }),
+  };
+}
+
+/**
  * The design without the roof at `index` and what goes with it — what stands on it or is part of
  * it — so no roof is left standing on one that is gone; with no roof left, no picture is kept as
  * drawn on.
  */
 export function withoutRoof(document: StudioDocument, index: number): StudioDocument {
   const going = roofWithItsParts(document, index);
-  const roofs = document.roofs.filter((_, i) => !going.includes(i));
+  const gone = new Set(going.map((i) => (document.roofs[i] as Roof).id));
+  const roofs = document.roofs
+    .filter((_, i) => !going.includes(i))
+    .map((roof) => relinked(roof, gone));
   return { ...document, roofs, drawnOn: roofs.length === 0 ? null : document.drawnOn };
 }
 
