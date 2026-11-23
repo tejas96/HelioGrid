@@ -30,17 +30,24 @@ export interface StairsMoves {
   placeStairs(): void;
   /** The bar's Skip: the question is not asked again. */
   skipStairs(): void;
-  /** Esc while placing: nothing is placed, and the question stays. */
-  stopPlacingStairs(): void;
-  /** A tap in the top view while placing: `true` when it placed the stairs. */
-  tapStairs(at: GroundPoint, reachM: number): boolean;
+  /** Esc or back while placing: nothing is placed, and the question stays; `false` when not placing. */
+  stopPlacingStairs(): boolean;
+  /**
+   * A tap in the top view while placing: `true` when the tap was the stairs'. `beside`: the ground
+   * a finger's width to the side, which sets the reach.
+   */
+  tapStairs(at: GroundPoint, beside: GroundPoint | null): boolean;
   grabStairs(): void;
-  dragStairs(at: GroundPoint, reachM: number): void;
+  dragStairs(at: GroundPoint, beside: GroundPoint | null): void;
   /** Let go: the stairs land where the drag holds them; off every side, they stay where they were. */
   dropStairs(): void;
   /** The Stairs row: one of the stair room's sides, at its middle, or Outside — a tap on an edge next. */
   stairsOnSide(room: number, side: number | 'outside', atM: number): void;
 }
+
+/** How far a finger's width reaches on the ground there, in metres. */
+const reachOf = (at: GroundPoint, beside: GroundPoint | null) =>
+  beside === null ? 0 : Math.hypot(beside.east - at.east, beside.north - at.north);
 
 export function useStudioStairs(args: {
   latest: RefObject<History<StudioDocument> | null>;
@@ -75,10 +82,14 @@ export function useStudioStairs(args: {
       setPlacing(false);
       apply(stairsPassed);
     },
-    stopPlacingStairs: () => setPlacing(false),
-    tapStairs: (at, reachM) => {
+    stopPlacingStairs: () => {
       if (!placing) return false;
-      const drop = dropAt(at, reachM, magnetOn());
+      setPlacing(false);
+      return true;
+    },
+    tapStairs: (at, beside) => {
+      if (!placing) return false;
+      const drop = dropAt(at, reachOf(at, beside), magnetOn());
       if (drop === null) return true;
       setPlacing(false);
       place(drop);
@@ -89,8 +100,8 @@ export function useStudioStairs(args: {
       setHeld(true);
       setLanding(null);
     },
-    dragStairs: (at, reachM) => {
-      if (held) setLanding(dropAt(at, reachM, magnetOn()));
+    dragStairs: (at, beside) => {
+      if (held) setLanding(dropAt(at, reachOf(at, beside), magnetOn()));
     },
     dropStairs: () => {
       if (held && landing !== null) place(landing);

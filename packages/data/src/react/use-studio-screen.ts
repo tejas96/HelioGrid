@@ -280,6 +280,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       draw,
       showPictures: setPicturesOpen,
       back: () =>
+        // Esc while placing the stairs stops it first; the question stays.
+        stairs.moves.stopPlacingStairs() ||
         studioBack({
           panelOpen: panel.view.panel.open !== 'none',
           closePanel: panel.moves.closePanel,

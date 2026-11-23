@@ -49,7 +49,9 @@ describe('the stairs', () => {
     const view = await opened([TERRACE, STAIR]);
     expect(view.result.current.stairs).toMatchObject({ roof: 1, side: 1, byPerson: false });
     act(() => view.result.current.moves.grabStairs());
-    act(() => view.result.current.moves.dragStairs({ east: 5, north: 5.9 }, 0.3));
+    act(() =>
+      view.result.current.moves.dragStairs({ east: 5, north: 5.9 }, { east: 5.3, north: 5.9 }),
+    );
     expect(view.result.current.stairsLanding).toMatchObject({ roof: 0, side: 2, outside: true });
     // While held, the mark and its strip show where it would land.
     expect(view.result.current.stairs).toMatchObject({ roof: 0, side: 2, outside: true });
@@ -64,7 +66,7 @@ describe('the stairs', () => {
     const view = await opened([TERRACE, STAIR]);
     const saves = stored.saves.length;
     act(() => view.result.current.moves.grabStairs());
-    act(() => view.result.current.moves.dragStairs({ east: 5, north: 3 }, 0.3));
+    act(() => view.result.current.moves.dragStairs({ east: 5, north: 3 }, { east: 5.3, north: 3 }));
     act(() => view.result.current.moves.dropStairs());
     expect(view.result.current.stairs).toMatchObject({ roof: 1, side: 1 });
     expect(stored.saves.length).toBe(saves);
@@ -77,11 +79,26 @@ describe('the stairs', () => {
     expect(view.result.current.stairsPlacing).toBe(true);
     let placed = false;
     act(() => {
-      placed = view.result.current.moves.tapStairs({ east: 7.9, north: 3 }, 0.3);
+      placed = view.result.current.moves.tapStairs(
+        { east: 7.9, north: 3 },
+        { east: 8.2, north: 3 },
+      );
     });
     expect(placed).toBe(true);
     await waitFor(() => expect(saved()?.roofs[0]?.sides?.[1]).toMatchObject({ stairsAt: 3 }));
     expect(view.result.current.stairsPlacing).toBe(false);
+  });
+
+  it('back, or Esc, while placing stops placing; the question stays', async () => {
+    const view = await opened([TERRACE]);
+    act(() => view.result.current.moves.placeStairs());
+    let backed = false;
+    act(() => {
+      backed = view.result.current.moves.back();
+    });
+    expect(backed).toBe(true);
+    expect(view.result.current.stairsPlacing).toBe(false);
+    expect(view.result.current.stairsAsk).toBe(true);
   });
 
   it('Skip is one save: it is not asked again', async () => {

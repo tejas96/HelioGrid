@@ -24,6 +24,7 @@ export type SheetRowKey =
   | 'slope'
   | 'parapet'
   | 'setback'
+  | 'stairs'
   | RoofNumber;
 
 /** Which sheet shows over the roof: its own, one side's, or its parapet's details. */

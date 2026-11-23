@@ -25,6 +25,7 @@ import type { RoofMarksHandle, ScreenOf } from './StudioRoofs';
 import { RoofSideLines, RoofSlopeTip, StudioRoofTopMarks } from './StudioRoofTopMarks';
 import { StudioRoofTops } from './StudioRoofTops';
 import { StudioSizePreview } from './StudioSizePreview';
+import { StudioStairsMarks } from './StudioStairsMarks';
 
 type Tag = { text: TranslatedText; bad: boolean; at: string };
 
@@ -271,6 +272,7 @@ export function StudioRoofMarks({
         ) : null,
       )}
       <StudioRoofTopMarks studio={studio} words={words} units={units} />
+      <StudioStairsMarks studio={studio} words={words} press={press} drive={drive} />
       {studio.own.plan?.picked && view === 'top' ? (
         <StudioPlanHandles plan={studio.own.plan} studio={studio} words={words} press={press} />
       ) : null}

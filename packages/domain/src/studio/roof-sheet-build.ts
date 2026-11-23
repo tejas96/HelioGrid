@@ -10,6 +10,7 @@ import { roofNameOf } from './roof-names';
 import { type NumberAt, PARAPET_CHECK_ABOVE_M, type RoofNumber } from './roof-numbers';
 import { parapetNow } from './roof-open-edges';
 import type { RoofKind } from './roof-parts';
+import { edgeLengths } from './roof-shape';
 import {
   floorAt,
   floorTicks,
@@ -194,9 +195,11 @@ function stairsRowOf(
 ): StairsRow {
   const roof = document.roofs[index] as Roof;
   const stairs = stairsOf(document, worked.edges, facts.clearPathM);
+  const lengths = edgeLengths(roof.corners);
   const sides = stairsSidesOf(document, worked.edges, index).map((side) => ({
     side,
     faces: compassOf(sideBearing(roof.corners, side)),
+    middleM: (lengths[side] ?? 0) / 2,
   }));
   const on =
     stairs === null

@@ -179,3 +179,39 @@
 .hg-roof-key:focus-visible .hg-roof-key-ring {
   box-shadow: 0 0 0 var(--sp-0-5) var(--focus-ring);
 }
+
+/* The stairs (board 7): the green strip of the clear path in front of them, and the round mark
+   where they reach the roof — a drag moves it; held, it glows. */
+.hg-roof-lines .hg-stairs-strip {
+  fill: color-mix(in srgb, var(--scene-clear) 42%, transparent);
+  stroke: var(--scene-clear);
+  stroke-width: 1.5;
+  pointer-events: none;
+}
+
+.hg-roof-at[data-stairs="true"] {
+  touch-action: none;
+}
+
+.hg-stairs-mark {
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  inline-size: var(--sp-8);
+  block-size: var(--sp-8);
+  border-radius: var(--r-pill);
+  background: var(--scene-mark);
+  color: var(--scene-shade);
+  box-shadow:
+    0 0 0 calc(var(--hg-studio-line) * 2) var(--scene-clear),
+    var(--e1);
+  cursor: grab;
+}
+
+.hg-stairs-mark[data-hot="true"] {
+  cursor: grabbing;
+  box-shadow:
+    0 0 0 calc(var(--hg-studio-line) * 2.5) var(--scene-clear),
+    0 0 0 var(--sp-2) color-mix(in srgb, var(--scene-clear) 30%, transparent),
+    var(--e1);
+}

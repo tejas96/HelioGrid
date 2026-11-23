@@ -246,3 +246,28 @@
     flex: 1 1 0;
   }
 }
+
+/* A row's choices, one per line of words (the Stairs row): the chosen one is ink words inside an
+   ink outline on the fill it had, OneOhm's quiet choice. */
+.hg-sheet-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.hg-sheet-choice {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--sp-3);
+  border-radius: var(--r-pill);
+  border: var(--hg-studio-line) solid var(--line-strong);
+  color: var(--text-secondary);
+}
+
+.hg-sheet-choice[aria-checked="true"] {
+  border-color: var(--ink);
+  color: var(--text-primary);
+}

@@ -56,6 +56,48 @@ export interface BarFacts {
 }
 
 /**
+ * The stairs' moment in the bar, at rest with nothing else to say (board 7): while placing, the
+ * one line that says to tap an edge; while the mark is held, that it moves; with no stairs, the
+ * card that asks where they reach the roof, with Skip and Place; with stairs guessed, that a drag
+ * moves them. `null` with nothing about the stairs to say.
+ */
+function stairsBar(
+  bar: Extract<RoofBar, { kind: 'roofs' }>,
+  facts: BarFacts,
+  next: BarAct,
+): BarView | null {
+  const { studio, words } = facts;
+  const quiet = bar.said === null && bar.live === null && !bar.sizing && bar.picked === null;
+  if (!quiet || facts.view !== 'top') return null;
+  const slim = (status: TranslatedText): BarView => ({
+    slim: true,
+    mark: 'check',
+    title: null,
+    status,
+    bad: false,
+    acts: [next],
+  });
+  if (studio.stairsPlacing) return slim(words.stairsPlacing);
+  if (studio.stairsHeld) return slim(words.stairsMoving);
+  if (studio.stairsAsk && facts.editable) {
+    return {
+      slim: false,
+      mark: 'steps',
+      title: words.stairsAskTitle,
+      status: words.stairsAskStatus,
+      bad: false,
+      acts: [
+        { key: 'skip', label: words.stairsSkip, secondary: true, onPress: studio.moves.skipStairs },
+        { key: 'place', label: words.stairsPlace, onPress: studio.moves.placeStairs },
+      ],
+    };
+  }
+  return studio.stairs !== null && !studio.stairs.byPerson && facts.editable
+    ? slim(words.stairsPlaced)
+    : null;
+}
+
+/**
  * With a roof: the next step, and a moment's words. A roof just closed is a card for that moment —
  * what it became, why, and the chips that fix a wrong guess.
  */
@@ -73,6 +115,8 @@ function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): Ba
     iconRight: 'chevron-right',
     coming: words.stepComing,
   };
+  const stairs = kind === null ? stairsBar(bar, facts, next) : null;
+  if (stairs !== null) return stairs;
   return {
     slim: kind === null,
     mark: bar.bad ? 'alert-circle' : 'check',

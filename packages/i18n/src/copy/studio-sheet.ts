@@ -148,6 +148,9 @@ const SHORT_MEASURED: Record<LengthsMeasured, { readonly id: string }> = {
   inside: SHEET.measuredInsideShort,
 };
 
+/** A compass way in words: "north-east". */
+export const compassWord = (t: T, way: CompassWay): TranslatedText => t(WAY[way]);
+
 function waysWord(t: T, way: SlopeWay): TranslatedText {
   const at = (each: WayAt) => t(SHEET.wayAt, { way: t(WAY[each.way]), degrees: each.bearing });
   if (way.kind === 'down') return t(SHEET.slopesDown, { way: at(way) });

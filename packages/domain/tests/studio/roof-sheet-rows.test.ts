@@ -85,8 +85,8 @@ describe('a roof’s sheet: one row per value it has', () => {
     const design = designOf(TERRACE, stairOn(box(0, 0, 3, 3)));
     expect(sheetOf(design, 1).stairs).toEqual({
       sides: [
-        { side: 1, faces: 'east' },
-        { side: 2, faces: 'north' },
+        { side: 1, faces: 'east', middleM: 1.5 },
+        { side: 2, faces: 'north', middleM: 1.5 },
       ],
       on: 1,
       byPerson: false,

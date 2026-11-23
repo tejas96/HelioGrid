@@ -41,8 +41,12 @@ export type SlopeWay =
 
 /** A stair room's Stairs row: the stairs move to a side, or outside, without a drag. */
 export interface StairsRow {
-  /** Its sides another roof does not take, each with the way it looks. */
-  readonly sides: readonly { readonly side: number; readonly faces: CompassWay }[];
+  /** Its sides that open onto the roof, each with the way it looks and its middle, in metres along it. */
+  readonly sides: readonly {
+    readonly side: number;
+    readonly faces: CompassWay;
+    readonly middleM: number;
+  }[];
   /** Where the stairs are: one of its sides, or outside on a roof's edge; `null` with none. */
   readonly on: number | 'outside' | null;
   readonly byPerson: boolean;
