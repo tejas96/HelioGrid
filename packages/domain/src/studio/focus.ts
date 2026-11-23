@@ -22,6 +22,8 @@ export const FOCUS_JOBS = [
   'sizing',
   'typing',
   'sheet',
+  /** A card of your picture's is open: North, the plan's or its unit (`T-M05-002d`). */
+  'picture',
 ] as const;
 export type FocusJob = (typeof FOCUS_JOBS)[number];
 
@@ -176,6 +178,15 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
     otherHandles: 'hidden',
     // The rectangle's own lengths show; the other roofs' would crowd it at a shared wall.
     lengthLabels: 'draft',
+    bottomBar: 'drawing',
+  },
+  // Your picture's card (`T-M05-002d`, board 2.1, 4.1): the card is the job — its picture shows,
+  // the chip steps down to its credit, the foot is the slim pill; Undo and the pencil stay.
+  picture: {
+    stepSwitcher: 'mark',
+    pictureChip: 'credit',
+    addRoof: 'hidden',
+    otherHandles: 'hidden',
     bottomBar: 'drawing',
   },
 };

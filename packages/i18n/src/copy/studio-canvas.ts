@@ -6,6 +6,7 @@ import { MAP_SURFACE } from './map-surface';
 import { designPageWords } from './site-details';
 import { studioHeightWords } from './studio-height';
 import { studioLengthWords } from './studio-length';
+import { studioPictureWords } from './studio-picture';
 import { studioRoofWords } from './studio-roof';
 import { studioSizeWords } from './studio-size';
 
@@ -212,6 +213,7 @@ export function studioCanvasWords(t: T) {
     ...studioLengthWords(t),
     ...studioSizeWords(t),
     ...studioHeightWords(t),
+    ...studioPictureWords(t),
     noScene: t(CANVAS.noScene),
   };
 }

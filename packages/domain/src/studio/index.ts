@@ -20,6 +20,7 @@ export {
   type PictureChoice,
   type PictureStamp,
   pictureNewerThanDrawn,
+  pictureUpdatedOver,
   ROOF_EDGE_TRUSTS,
   ROOFS_MAX,
   type Roof,
@@ -74,8 +75,14 @@ export {
   type RoofLabelAsk,
   type ScreenPoint,
 } from './label-layout';
+export * from './map-systems';
 export * from './own-picture';
+export * from './own-picture-acts';
+export * from './own-picture-lay';
+export * from './pdf-page-pick';
 export * from './plan-lines';
+export * from './plan-outline';
+export { planSizedByLength, roofsOnPlan } from './plan-sizing';
 export type {
   DragResult,
   EditRefusal,
@@ -107,6 +114,7 @@ export {
   type LengthEntry,
   type LengthInHand,
   type LengthSlide,
+  lengthSizesPlan,
   lengthSlide,
   pairOf,
   pairOnItsWay,
@@ -163,7 +171,7 @@ export {
   roofsBox,
   roofsOverlap,
 } from './roof-shape';
-export { type RoofSheetView, roofHitAt, roofSheetOf } from './roof-sheet';
+export { type RoofSheetView, roofHitAt, roofSheetOf, roofsWithSheet } from './roof-sheet';
 export {
   draftSpot,
   type Guide,

@@ -1,5 +1,6 @@
 'use client';
 import type {
+  DesignPictureWire,
   EditTurnWire,
   MemberRef,
   SkyPicturePiece,
@@ -9,7 +10,10 @@ import {
   EDIT_TURN_RENEW_SECONDS,
   type History,
   historyOf,
+  type LaidPicture,
   type NoPictureReason,
+  type PictureChoice,
+  type PictureStamp,
   type Read,
   type ShownPicture,
   SKY_PICTURE_GAPS,
@@ -37,6 +41,20 @@ export type StudioPicture =
       readonly pieces: readonly SkyPicturePiece[];
       /** The softer picture round the sharp one; empty where the api gave none. */
       readonly around: readonly SkyPicturePiece[];
+    }
+  /**
+   * The company's own photo or drone map (`T-M05-002d`): its pieces in the picture's own units,
+   * laid on the ground by `laid`. A drone map's sharpness, and whether its place was read.
+   */
+  | {
+      readonly kind: 'own';
+      readonly pictureKind: 'photo' | 'drone';
+      readonly name: string;
+      readonly takenOn: string | null;
+      readonly metresPerPixel: number | null;
+      readonly placeRead: boolean;
+      readonly laid: LaidPicture;
+      readonly pieces: readonly SkyPicturePiece[];
     }
   | { readonly kind: 'none'; readonly reason: NoPictureReason };
 
@@ -74,14 +92,65 @@ export function skyReadOf(read: Read<SkyPictureWire>): SkyPictureRead {
   return { kind: 'ready', takenOn: read.value.takenOn };
 }
 
-/** What the ground shows: the sky picture with its facts when it is the one shown. */
-export function pictureOf(shown: ShownPicture, sky: Read<SkyPictureWire>): StudioPicture {
+/** The sky picture's sharpness and date, read whether it shows or not: the picker names them. */
+export interface SkyFacts {
+  readonly metresPerPixel: number;
+  readonly takenOn: string | null;
+}
+
+export function skyFactsOf(read: Read<SkyPictureWire>): SkyFacts | null {
+  if (read.kind !== 'ready' || read.value.kind !== 'picture') return null;
+  return { metresPerPixel: read.value.metresPerPixel, takenOn: read.value.takenOn };
+}
+
+/** Your picture's pieces, each with its box in the picture's own units. */
+export function piecesOf(picture: DesignPictureWire): readonly SkyPicturePiece[] {
+  return picture.files.flatMap((part) =>
+    part.role === 'piece' && part.box !== null ? [{ image: part.url, ...part.box }] : [],
+  );
+}
+
+/**
+ * What the ground shows: the sky picture with its facts, or the company's own laid where the
+ * document lays it, once each is read.
+ */
+export function pictureOf(
+  shown: ShownPicture,
+  sky: Read<SkyPictureWire>,
+  own: { readonly read: Read<DesignPictureWire>; readonly laid: LaidPicture | null },
+): StudioPicture {
   if (shown.kind === 'none') return shown;
   if (shown.kind === 'sky' && sky.kind === 'ready' && sky.value.kind === 'picture') {
     const { kind: _picture, around, ...facts } = sky.value;
     return { kind: 'sky', ...facts, around: around ?? [] };
   }
+  if (shown.kind === 'own' && own.read.kind === 'ready' && own.laid !== null) {
+    const picture = own.read.value;
+    const pieces = piecesOf(picture);
+    return {
+      kind: 'own',
+      pictureKind: picture.kind === 'drone' ? 'drone' : 'photo',
+      name: picture.name,
+      takenOn: picture.facts?.takenOn ?? null,
+      metresPerPixel: picture.kind === 'drone' ? (picture.facts?.metresPerUnit ?? null) : null,
+      placeRead: picture.facts?.centre != null,
+      laid: own.laid,
+      pieces,
+    };
+  }
   return { kind: 'waiting' };
+}
+
+/** The picture a roof is drawn on, kept so a newer one is told apart; `null` on the bare grid. */
+export function stampOf(picture: StudioPicture): PictureStamp | null {
+  if (picture.kind === 'sky') return { source: picture.source, takenOn: picture.takenOn };
+  if (picture.kind === 'own') return { source: 'own', takenOn: picture.takenOn };
+  return null;
+}
+
+/** The picture a roof drawn now is traced on. */
+export function tracedOnOf(picture: StudioPicture): PictureChoice {
+  return picture.kind === 'sky' || picture.kind === 'own' ? picture.kind : 'none';
 }
 
 /** Whether the reader may change the design now, and if not, whose turn it is. */

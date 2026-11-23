@@ -19,6 +19,7 @@ import {
   type LengthEntry,
   labelLayoutOf,
   lengthSizesPicture,
+  lengthSizesPlan,
   lengthSlide,
   type MeasurementSystem,
   magnetOf,
@@ -34,6 +35,7 @@ import {
   roofMiddle,
   roofStepAfter,
   roofStepShown,
+  roofsOnPlan,
   STUDIO_HELPERS,
   type StudioDocument,
   type StudioHelper,
@@ -44,7 +46,7 @@ import { type RefObject, useRef, useState } from 'react';
 import { aKey } from '../client/creation-key';
 import type { RoofMoves, RoofStepView } from './roof-step-view';
 import { sizeCardIn, useUnitsFollow } from './size-card';
-import type { StudioPicture } from './studio-document-state';
+import { type StudioPicture, stampOf, tracedOnOf } from './studio-document-state';
 
 export type { RoofMoves, RoofStepView, SizeCardView } from './roof-step-view';
 
@@ -67,6 +69,7 @@ export function useRoofStep({
   typedStart,
   numberEntry,
   setNumberEntry,
+  planOutlines,
 }: {
   /** The design as it stands, as the screen last drew it. */
   document: StudioDocument | null;
@@ -88,6 +91,8 @@ export function useRoofStep({
   typedStart: { readonly length: number; readonly width: number };
   numberEntry: NumberEntry;
   setNumberEntry: (entry: NumberEntry) => void;
+  /** The laid plan's closed outlines, in its own units: a roof made from one is sized with it. */
+  planOutlines: readonly (readonly number[])[];
 }) {
   const [roofStep, setRoofStep] = useState<RoofStepState>(ROOF_STEP_START);
   const [free, setFree] = useState(false);
@@ -143,7 +148,7 @@ export function useRoofStep({
         : {
             traced: tracedLength(sizing.base, sizing.roof, sizing.edge),
             typed: handMetres(sizing, units),
-            first: lengthSizesPicture(sizing.base, sizing.roof),
+            first: lengthSizesPicture(sizing.base, sizing.roof) || lengthSizesPlan(sizing),
             slide: lengthSlide(tracedLength(sizing.base, sizing.roof, sizing.edge), units),
           },
     numberEntry,
@@ -167,15 +172,14 @@ export function useRoofStep({
     act({
       kind: 'close',
       id: aKey(),
-      tracedOn: picture.kind === 'sky' ? 'sky' : 'none',
-      stamp: picture.kind === 'sky' ? { source: picture.source, takenOn: picture.takenOn } : null,
+      tracedOn: tracedOnOf(picture),
+      stamp: stampOf(picture),
       ghost,
     });
   const close = () => closeWith(true);
 
   const grid = picture.kind === 'none';
-  const stamp =
-    picture.kind === 'sky' ? { source: picture.source, takenOn: picture.takenOn } : null;
+  const stamp = stampOf(picture);
   const sizeEntry = (which: 'length' | 'width', entry: LengthEntry) =>
     act(
       which === 'length'
@@ -214,7 +218,10 @@ export function useRoofStep({
     close,
     closeAsDrawn: () => closeWith(false),
     cancel: () => act({ kind: 'cancel' }),
-    pickLength: (roof, edge) => act({ kind: 'pick_length', roof, edge, system: units }),
+    pickLength: (roof, edge) => {
+      const planRoofs = document === null ? [] : roofsOnPlan(document, planOutlines);
+      act({ kind: 'pick_length', roof, edge, system: units, planRoofs });
+    },
     typeLength: (entry) => act({ kind: 'type', entry }),
     slideLength: (metres) => {
       const now = step.current;

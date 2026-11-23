@@ -16,8 +16,12 @@ export type Revealed = { readonly roof: number; readonly edge: number } | null;
  */
 export function edgeAt(layer: HTMLElement, x: number, y: number): Revealed {
   const box = layer.getBoundingClientRect();
-  const point = new DOMPoint(x - box.left, y - box.top);
   for (const band of layer.querySelectorAll<SVGPathElement>('path.hg-roof-edge-tap')) {
+    // An SVGPoint, not a DOMPoint: Android's web view before Chrome 134 refuses any other.
+    const point = band.ownerSVGElement?.createSVGPoint();
+    if (point === undefined) continue;
+    point.x = x - box.left;
+    point.y = y - box.top;
     if (band.isPointInStroke(point)) {
       return { roof: Number(band.dataset.tapRoof), edge: Number(band.dataset.tapEdge) };
     }

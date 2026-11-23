@@ -64,8 +64,12 @@ export function useDrawPress(
   const hold = useAimHold();
   // biome-ignore lint/plugin: where the aiming finger is on the page, which the loupe follows
   const [aim, setAim] = useState<{ x: number; y: number } | null>(null);
-  const groundAt = (x: number, y: number): GroundPoint | null =>
-    drive.current?.groundAt(x, y, 0) ?? null;
+  // While drawing, a spot near the plan lies on its corner or its line (`T-M05-002d`, board 4.6).
+  const magnet = studio.bar?.kind === 'drawing' && studio.bar.magnet;
+  const groundAt = (x: number, y: number): GroundPoint | null => {
+    const at = drive.current?.groundAt(x, y, 0) ?? null;
+    return drawing ? studio.ownMoves.snapSpot(at, magnet) : at;
+  };
   const stopAiming = () => {
     hold.stop();
     drive.current?.hold(false);

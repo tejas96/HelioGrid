@@ -16,22 +16,36 @@ const SET_TIER: Record<Exclude<RoofEdgeTrust, 'traced'>, ProvenanceTier> = {
 };
 
 /**
- * The tier of the length that sized the picture: `null` while the picture keeps its own scale. The
- * design keeps no record of which length came first, so the honest tier is the weakest of the
- * lengths a person set (`F8-04`); a scaled picture whose set length was split away is estimated.
+ * The tier of the length that sized a picture, for the roofs traced on it: `null` while the picture
+ * keeps a scale of its own that holds. The design keeps no record of which length came first, so
+ * the honest tier is the weakest of the lengths a person set on those roofs (`F8-04`); a picture
+ * sized and then split from its set length is estimated. A picture of the company's own at our
+ * guessed size is `assumed` until a length is set (`T-M05-002d`); a drone map's own scale holds.
  */
-export function scaleTierOf(document: StudioDocument): ProvenanceTier | null {
-  // A typed or grid roof's lengths never sized the picture: only a picture roof's count, and of
-  // those only a length someone set — a plan's came with the plan.
+export function scaleTierOf(
+  document: StudioDocument,
+  tracedOn: PictureChoice = 'sky',
+): ProvenanceTier | null {
+  if (tracedOn === 'none') return null;
+  // A typed or grid roof's lengths never sized the picture: only the roofs on this picture count,
+  // and of those only a length someone set — a plan's came with the plan.
   const set = document.roofs
-    .filter(onPicture)
+    .filter((roof) => onPicture(roof) && roof.tracedOn === tracedOn)
     .flatMap((roof) =>
       roof.edges.flatMap((trust) =>
         trust === 'traced' || trust === 'plan' ? [] : [SET_TIER[trust]],
       ),
     );
   if (set.length > 0) return weakestTier(set);
-  return document.pictureScale === 1 ? null : 'estimated';
+  if (tracedOn === 'sky') return document.pictureScale === 1 ? null : 'estimated';
+  switch (document.ownPicture?.scaleFrom) {
+    case 'file':
+      return null;
+    case 'guess':
+      return 'assumed';
+    default:
+      return 'estimated';
+  }
 }
 
 /**

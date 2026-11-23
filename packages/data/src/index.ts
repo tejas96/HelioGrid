@@ -104,6 +104,23 @@ export { NO_HELD_WORK } from './session/held-work';
 export type { SessionApi, SessionStore } from './session/types';
 export type { UpdateRequired, UpgradeStore } from './session/upgrade';
 export type { SettingsRepository } from './settings/repository';
+export {
+  type DevicePart,
+  type DeviceRead,
+  type DronePlan,
+  dronePlan,
+  dxfRead,
+  type FirstLay,
+  METRES_PER_POINT_AT_1_100,
+  NO_FACTS,
+  type PdfPage,
+  type PictureReader,
+  pdfPageOf,
+  pdfPlan,
+  photoPlan,
+  readerOf,
+  toServer,
+} from './studio/own-picture-read';
 export type { PlacesRepository, StudioRepository } from './studio/studio-repository';
 export { DesignActRefusedError } from './studio/studio-repository';
 export type { SimilarTenant, TenantRepository } from './tenant/repository';

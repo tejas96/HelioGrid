@@ -82,3 +82,45 @@ export interface LaidPlan extends LaidPicture {
   /** The PDF page laid, from 1; a DWG or DXF has one. */
   readonly page: number;
 }
+
+/**
+ * Why a file picked as Your picture is not laid (board 1.4, 3.2): it is no picture or plan, it is
+ * broken, its PDF is locked by a password, a CAD plan past its limit or with more lines than one
+ * stored file holds, a drone map of another place,
+ * a PDF with no plan in it, or the file could not reach our server.
+ */
+export const OWN_PICTURE_REFUSALS = [
+  'not_a_picture',
+  'broken',
+  'password',
+  'too_large',
+  'too_many_lines',
+  'elsewhere',
+  'no_plan',
+  'no_connection',
+] as const;
+export type OwnPictureRefusal = (typeof OWN_PICTURE_REFUSALS)[number];
+
+/** The files the picker offers, by the name's end: what the device reads, and what our server does. */
+export const OWN_PICTURE_FILE_ENDS = {
+  photo: ['jpg', 'jpeg', 'png', 'webp'],
+  drone: ['tif', 'tiff'],
+  plan: ['pdf', 'dxf'],
+  cad: ['dwg'],
+} as const;
+
+/**
+ * What the bar says about your picture (board 2.3, 2.4, 3.1, 4.3–5.5): what to do next with it, or
+ * what an act just did, until the next change.
+ */
+export const OWN_PICTURE_SAYS = [
+  'tap_outline',
+  'made_from_plan',
+  'plan_to_size',
+  'drone_in_place',
+  'set_one_length',
+  'photo_to_size',
+  'plan_locked',
+  'plan_removed',
+] as const;
+export type OwnPictureSay = (typeof OWN_PICTURE_SAYS)[number];

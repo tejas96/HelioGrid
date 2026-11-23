@@ -205,6 +205,12 @@ export function StudioBottomBar({
   const pill = pillOf(studio, words, part === 'hidden', phone);
   let shown = startBar(name, place, facts);
   if (bar?.kind === 'roofs') shown = roofsBar(bar, facts);
+  // Your picture's line (`T-M05-002d`): what to do next with it, or what an act just did. Before a
+  // roof the pencil and the outlines are the way in, so the bar holds no act of its own.
+  const say = studio.own.say;
+  if (say !== null) {
+    shown = { ...shown, status: words.ownSay(say), acts: bar?.kind === 'roofs' ? shown.acts : [] };
+  }
   if (!editable) shown = readOnly(shown, editing, facts);
   const { mark, title, status, bad } = shown;
   const acts = part === 'status' ? [] : shown.acts;
@@ -220,7 +226,8 @@ export function StudioBottomBar({
     const next =
       holder?.querySelector<HTMLButtonElement>('button[data-variant="primary"]:not(:disabled)') ??
       holder?.querySelector<HTMLButtonElement>('button:not(:disabled)');
-    next?.focus();
+    // A bar with no act of its own (a pill's Lock, Hide or Remove just done) takes focus itself.
+    (next ?? document.querySelector<HTMLElement>('.hg-studio-bar.hg-focus-target'))?.focus();
   }, [kind]);
   // The size card holds Place roof while the phone's keyboard covers the foot: nothing shows here.
   if (pill === null && bar?.kind === 'typing') {
@@ -238,7 +245,8 @@ export function StudioBottomBar({
   return (
     <div
       ref={barRef}
-      className="hg-studio-glass hg-studio-bar"
+      className="hg-studio-glass hg-studio-bar hg-focus-target"
+      tabIndex={-1}
       data-tone={bad ? 'bad' : undefined}
       data-hidden={part === 'hidden'}
       inert={part === 'hidden'}

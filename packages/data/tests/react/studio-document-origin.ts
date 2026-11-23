@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { StudioDocumentWire } from '@heliogrid/contracts';
 import { afterEach } from 'vitest';
 import { refusal, send, writeBodyOf } from './origin-wire';
+import { PICTURE_ROUTES } from './studio-picture-origin';
 
 /**
  * A design's document through the real client (`T-M05-002`): the origin keeps one document, takes
@@ -76,4 +77,4 @@ const sky: Route = (req, res, path) => {
 };
 
 /** The document's routes, which the studio origin answers beside its own. */
-export const DOCUMENT_ROUTES: readonly Route[] = [read, save, turn, sky];
+export const DOCUMENT_ROUTES: readonly Route[] = [read, save, turn, sky, ...PICTURE_ROUTES];

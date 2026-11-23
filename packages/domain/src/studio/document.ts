@@ -142,16 +142,23 @@ export type NoPictureReason = 'picked' | SkyPictureGap;
 /** The picture the ground shows. While the sky picture is still on its way, the ground waits for it. */
 export type ShownPicture =
   | { readonly kind: 'sky' }
+  /** The company's own photo or drone map (`T-M05-002d`). */
+  | { readonly kind: 'own' }
   | { readonly kind: 'waiting' }
   | { readonly kind: 'none'; readonly reason: NoPictureReason };
 
 /**
- * The picture is picked by itself — the sky picture first, then the company's own, then none —
- * unless a person picked one. A company's own picture is added in a later part of the roof step;
- * until it is, picking it shows none, as a picked "none" does.
+ * The picture is picked by itself — the sky picture first, then none — unless a person picked one.
+ * The company's own shows when it is picked and one is laid (`T-M05-002d`); picked with none laid,
+ * the ground shows none, as a picked "none" does.
  */
-export function shownPicture(choice: PictureChoice | null, sky: SkyPictureRead): ShownPicture {
-  if (choice === 'none' || choice === 'own') return { kind: 'none', reason: 'picked' };
+export function shownPicture(
+  choice: PictureChoice | null,
+  sky: SkyPictureRead,
+  ownLaid = false,
+): ShownPicture {
+  if (choice === 'own') return ownLaid ? { kind: 'own' } : { kind: 'none', reason: 'picked' };
+  if (choice === 'none') return { kind: 'none', reason: 'picked' };
   if (sky.kind === 'loading') return { kind: 'waiting' };
   if (sky.kind === 'none') return { kind: 'none', reason: sky.gap };
   return { kind: 'sky' };
@@ -167,4 +174,17 @@ export function pictureNewerThanDrawn(
 ): boolean {
   if (drawnOn === null || drawnOn.takenOn === null || fetchedTakenOn === null) return false;
   return fetchedTakenOn > drawnOn.takenOn;
+}
+
+/**
+ * The picture the roofs were drawn on is newer now (`T-M05-002d`, board 5.1): the sky picture for
+ * roofs drawn on it, your own for roofs drawn on yours — never one for the other.
+ */
+export function pictureUpdatedOver(
+  drawnOn: PictureStamp | null,
+  skyTakenOn: string | null,
+  ownTakenOn: string | null,
+): boolean {
+  const own = drawnOn?.source === 'own';
+  return pictureNewerThanDrawn(drawnOn, own ? ownTakenOn : skyTakenOn);
 }

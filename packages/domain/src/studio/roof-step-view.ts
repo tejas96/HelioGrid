@@ -1,20 +1,11 @@
 import type { MeasurementSystem } from '../format/pack';
 import { type ProvenanceTier, weakestTier } from '../format/qualified';
-import { lengthHeld, type RoofEdgeTrust, type StudioDocument } from './document';
+import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import type { EditRefusal } from './roof-check';
 import { type DraftRefusal, draftClosesAt, draftGhost, draftTap } from './roof-draw';
 import { sizingResult } from './roof-entry';
-import { lengthIsFirst, onPicture } from './roof-length';
-import {
-  angleAt,
-  between,
-  cornerAfter,
-  cornerAngle,
-  edgeLengths,
-  roofArea,
-  roofMiddle,
-} from './roof-shape';
+import { angleAt, between, cornerAngle, edgeLengths, roofArea, roofMiddle } from './roof-shape';
 import { type Guide, type Snapped, snapTargetsOf } from './roof-snap';
 import { gripCorner } from './roof-step';
 import { pickedRoofOf } from './roof-step-draw';
@@ -39,50 +30,6 @@ export function roofStepShown(
     return result.kind === 'done' ? result.document : state.base;
   }
   return document;
-}
-
-/** One edge as its label shows it. */
-export interface EdgeView {
-  readonly from: GroundPoint;
-  readonly to: GroundPoint;
-  readonly metres: number;
-  readonly trust: RoofEdgeTrust;
-  /** No person set it — from the picture, or the market's usual size: its label reads "about". */
-  readonly about: boolean;
-  /** The longest length from the picture, before any is set: type it first. */
-  readonly pulse: boolean;
-}
-
-/** One roof as its marks show it. */
-export interface RoofMarksView {
-  readonly id: string;
-  readonly corners: readonly GroundPoint[];
-  readonly middle: GroundPoint;
-  readonly edges: readonly EdgeView[];
-}
-
-export function roofMarksOf(document: StudioDocument): readonly RoofMarksView[] {
-  const first = lengthIsFirst(document);
-  return document.roofs.map((roof) => {
-    const lengths = edgeLengths(roof.corners);
-    const longest = lengths.indexOf(Math.max(...lengths));
-    // Type it first: on a picture roof, the length that will size the picture; on a typed or grid
-    // roof, its longest while none of its own is set.
-    const pulses = onPicture(roof) ? first : !roof.edges.some(lengthHeld);
-    return {
-      id: roof.id,
-      corners: roof.corners,
-      middle: roofMiddle(roof.corners),
-      edges: lengths.map((metres, i) => ({
-        from: roof.corners[i] as GroundPoint,
-        to: cornerAfter(roof.corners, i),
-        metres,
-        trust: roof.edges[i] ?? 'traced',
-        about: !lengthHeld(roof.edges[i] ?? 'traced'),
-        pulse: pulses && i === longest,
-      })),
-    };
-  });
 }
 
 /** The angle at the picked corner, in whole degrees, shown beside its ×; `null` with none picked. */
@@ -296,13 +243,15 @@ export function roofBarOf(
   const shown = roofStepShown(state, document, system);
   const said = state.kind === 'idle' ? state.said : null;
   if (shown.roofs.length === 0) return { kind: 'start', noPicture, said };
-  const scale = scaleTierOf(shown);
   const { refusal: live, held: liveHeld } = liveRefusal(state, system);
   const picked = state.kind === 'idle' ? pickedRoofOf(state, shown) : null;
   return {
     kind: 'roofs',
     area: shown.roofs.reduce((sum, roof) => sum + roofArea(roof.corners), 0),
-    tier: weakestTier(shown.roofs.map((roof) => roofAreaTier(roof, scale))) ?? 'estimated',
+    tier:
+      weakestTier(
+        shown.roofs.map((roof) => roofAreaTier(roof, scaleTierOf(shown, roof.tracedOn))),
+      ) ?? 'estimated',
     said,
     bad: live !== null || said?.kind === 'went_back' || said?.kind === 'refused',
     sizing: state.kind === 'sizing',
@@ -311,3 +260,5 @@ export function roofBarOf(
     picked,
   };
 }
+
+export { type EdgeView, type RoofMarksView, roofMarksOf } from './roof-marks-view';

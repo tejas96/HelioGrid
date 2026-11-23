@@ -1,5 +1,5 @@
 'use client';
-import type { StudioPicture } from '@heliogrid/data/react';
+import type { PlanShown, StudioPicture } from '@heliogrid/data/react';
 import type { GroundBox, Roof, StudioView, SunPosition } from '@heliogrid/domain';
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
@@ -7,7 +7,9 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { type ReactNode, type RefObject, useRef, useState } from 'react';
 import { MathUtils, Vector3 } from 'three';
 import { type ClearGround, StudioCameraRig, type StudioDrive } from './StudioCameraRig';
+import { StudioOwnGround } from './StudioOwnGround';
 import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
+import { StudioPlanLines } from './StudioPlanLines';
 import {
   type RoofMarksHandle,
   type RoofRise,
@@ -131,6 +133,10 @@ export interface StudioSceneProps {
   rise: RoofRise;
   /** The page's marks on the roofs, told each frame where the model lands. */
   roofMarks: RefObject<RoofMarksHandle | null>;
+  /** The plan over the ground (`T-M05-002d`), drawn in the top view alone; `null` with none. */
+  plan: PlanShown | null;
+  /** Its closed outlines glow: it rests, unlocked, and a tap makes a roof. */
+  planGlows: boolean;
 }
 
 /**
@@ -157,6 +163,8 @@ export function StudioScene({
   frameOn,
   rise,
   roofMarks,
+  plan,
+  planGlows,
 }: StudioSceneProps) {
   // biome-ignore lint/plugin: the web's WebGL picture of the ground, handed on to the roofs' tops
   const [sharp, setSharp] = useState<RoofTopPicture | null>(null);
@@ -192,7 +200,17 @@ export function StudioScene({
             <meshBasicMaterial color={palette['canvas-sunken']} toneMapped={false} />
           </mesh>
         )}
-        {picture.kind === 'none' ? (
+        {picture.kind === 'own' ? <StudioOwnGround picture={picture} /> : null}
+        {plan !== null && view === 'top' ? (
+          <StudioPlanLines
+            plan={plan}
+            ink={palette['scene-line']}
+            glow={palette['scene-mark']}
+            glowing={planGlows}
+          />
+        ) : null}
+        {/* No picture: the grid is the ground. Your own picture lies on it, and it shows round it. */}
+        {picture.kind === 'none' || picture.kind === 'own' ? (
           <Grid
             position={[0, GRID_LIFT_M, 0]}
             cellSize={1}

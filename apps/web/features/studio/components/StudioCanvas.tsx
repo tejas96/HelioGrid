@@ -10,16 +10,18 @@ import {
   useReducedMotion,
 } from '@heliogrid/ui';
 import dynamic from 'next/dynamic';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useChromeRoom } from '../hooks/use-chrome-room';
 import { useDrawPress } from '../hooks/use-draw-press';
 import { useMapKeys } from '../hooks/use-map-keys';
+import { useNewestFrame } from '../hooks/use-newest-frame';
 import { useStudioHaptics } from '../hooks/use-studio-haptics';
 import { StudioBottomBar } from './StudioBottomBar';
 import type { StudioDrive } from './StudioCameraRig';
 import { StudioCanvasHead } from './StudioCanvasHead';
 import { StudioCanvasNotes } from './StudioCanvasNotes';
 import type { StudioCompassHandle } from './StudioCompass';
+import { StudioFilePick } from './StudioFilePick';
 import { StudioLoupe } from './StudioLoupe';
 import { StudioRoofMarks } from './StudioRoofMarks';
 import { StudioRoofSheet } from './StudioRoofSheet';
@@ -79,12 +81,18 @@ export function StudioCanvas({
   const roofs = studio.shown?.roofs ?? [];
   const parts = studio.focus(desktop === false);
 
-  // A tap on the map: in the top view it shows a length that gave way; in 3D it opens the roof
-  // it lands on, met at each roof's own height.
+  // A tap on the map: in the top view it is the plan's, or it shows a length that gave way; in 3D
+  // it opens the roof it lands on, met at each roof's own height.
   useStudioHaptics(studio);
   const { aim, aimAt, handlers } = useDrawPress(studio, drive, (x, y) => {
-    if (view === 'top') roofMarks.current?.revealAt(x, y);
-    else moves.tapRoof((heightM) => drive.current?.groundAt(x, y, heightM) ?? null);
+    if (view !== 'top') {
+      moves.tapRoof((heightM) => drive.current?.groundAt(x, y, heightM) ?? null);
+      return;
+    }
+    // The plan takes the tap first: an outline makes its roof (`T-M05-002d`, board 4.3).
+    const spot = drive.current?.groundAt(x, y, 0) ?? null;
+    if (spot !== null && studio.ownMoves.tapPlan(spot)) return;
+    roofMarks.current?.revealAt(x, y);
   });
   // A roof that closes is framed in the room between the bars: the camera stays in the top view,
   // where its lengths are set next.
@@ -100,128 +108,144 @@ export function StudioCanvas({
   // The size card opening frames its rectangle with the roofs, once: sliding then never moves the map.
   const typing = roofStep.kind === 'typing';
   const typingFrame = useMemo(() => (typing ? {} : null), [typing]);
+  // The newest ask for a frame: a landing's own box is framed only while the landing is it.
+  const frameOn = useNewestFrame([sheetFraming, typingFrame, closed, studio.own.landed]);
+  // A later frame ends the landing, so the camera never flies back to it when that frame clears.
+  const { landed } = studio.own;
+  const { landingDone } = studio.ownMoves;
+  useEffect(() => {
+    if (landed !== null && frameOn !== landed) landingDone();
+  }, [frameOn, landed, landingDone]);
 
   return (
-    <div ref={frame} className="hg-studio" data-view={view} data-drawing={drawing}>
-      <div
-        ref={scene}
-        className="hg-studio-scene"
-        role="application"
-        aria-label={words.mapKeys}
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: the map takes the focus to answer its keys, as a map does
-        tabIndex={0}
-        onKeyDown={onKeyDown}
-        {...handlers}
-      >
-        <StudioScene
-          picture={picture}
-          view={view}
-          sun={sun ?? NOON_OVERHEAD}
-          palette={palette}
-          free={room}
-          still={still}
-          pinLabel={pin}
-          fallback={<p className="hg-studio-no-scene">{words.noScene}</p>}
-          drive={drive}
-          onTurn={(turn) => compass.current?.turn(turn)}
-          roofs={roofs}
-          heights={studio.heights.map((height) => height.metres)}
-          pictureScale={studio.shown?.pictureScale ?? null}
-          storeyHeightM={format.pack.storeyHeightM}
-          fit={studio.fit}
-          frameOn={sheetFraming ?? typingFrame ?? closed}
-          rise={rise}
-          roofMarks={roofMarks}
-        />
-      </div>
-      <StudioRoofMarks
-        handle={roofMarks}
-        studio={studio}
-        view={view}
-        units={studio.units}
-        words={words}
-        aiming={aim !== null}
-        lengths={parts.lengthLabels}
-        handles={parts.otherHandles}
-        drive={drive}
-        onAim={aimAt}
-        onCrowded={setCrowded}
-        map={scene}
-      />
-      {aim !== null ? (
-        <StudioLoupe at={aim} studio={studio} units={studio.units} drive={drive} />
-      ) : null}
-      {/* The marker says what it is: a word beside it only repeats the glyph, so it is spoken alone. */}
-      <span
-        ref={pin}
-        role="img"
-        aria-label={words.pin}
-        className="hg-studio-pin"
-        data-hidden="true"
-        data-gone={roofs.length > 0 || drawing}
-      >
-        <ShellGlyph name="pin" tone="current" />
-      </span>
-      <StudioCanvasHead
-        headRef={top}
-        compass={compass}
-        studio={studio}
-        parts={parts}
-        words={words}
-        onBack={onBack}
-        onSite={onSite}
-        phone={desktop === false}
-      />
-      <StudioCanvasNotes studio={studio} words={words} />
-      <StudioToolRail
-        view={view}
-        views={studio.views}
-        units={studio.units}
-        editable={editable}
-        canUndo={studio.canUndo}
-        canRedo={studio.canRedo}
-        drawing={drawing}
-        newView={studio.offer3d}
-        parts={parts}
-        canWipe={studio.bar?.kind === 'drawing' && studio.bar.canWipe}
-        onWipe={moves.wipe}
-        hasRoof={studio.fit !== null}
-        words={words}
-        onView={moves.see}
-        onUnits={moves.chooseUnits}
-        onUndo={moves.undo}
-        onRedo={moves.redo}
-        onDraw={drawing ? moves.cancel : moves.draw}
-        onAddRoof={moves.draw}
-        onZoomIn={() => drive.current?.zoomIn()}
-        onZoomOut={() => drive.current?.zoomOut()}
-        onHome={() => drive.current?.home()}
-      />
-      {studio.roofSheet !== null && view !== 'top' ? (
-        <StudioRoofSheet
-          sheetRef={bottom}
-          sheet={studio.roofSheet}
+    <StudioFilePick studio={studio} words={words}>
+      <div ref={frame} className="hg-studio" data-view={view} data-drawing={drawing}>
+        <div
+          ref={scene}
+          className="hg-studio-scene"
+          role="application"
+          aria-label={words.mapKeys}
+          // biome-ignore lint/a11y/noNoninteractiveTabindex: the map takes the focus to answer its keys, as a map does
+          tabIndex={0}
+          onKeyDown={onKeyDown}
+          {...handlers}
+        >
+          <StudioScene
+            picture={picture}
+            view={view}
+            sun={sun ?? NOON_OVERHEAD}
+            palette={palette}
+            free={room}
+            still={still}
+            pinLabel={pin}
+            fallback={<p className="hg-studio-no-scene">{words.noScene}</p>}
+            drive={drive}
+            onTurn={(turn) => compass.current?.turn(turn)}
+            roofs={roofs}
+            heights={studio.heights.map((height) => height.metres)}
+            pictureScale={studio.shown?.pictureScale ?? null}
+            storeyHeightM={format.pack.storeyHeightM}
+            fit={
+              frameOn === studio.own.landed ? (studio.own.landed?.box ?? studio.fit) : studio.fit
+            }
+            frameOn={frameOn}
+            rise={rise}
+            roofMarks={roofMarks}
+            plan={studio.own.plan}
+            planGlows={
+              studio.own.plan !== null && !studio.own.plan.picked && !studio.own.plan.laid.locked
+            }
+          />
+        </div>
+        <StudioRoofMarks
+          handle={roofMarks}
           studio={studio}
+          view={view}
           units={studio.units}
           words={words}
+          aiming={aim !== null}
+          lengths={parts.lengthLabels}
+          handles={parts.otherHandles}
+          drive={drive}
+          onAim={aimAt}
+          onCrowded={setCrowded}
           map={scene}
         />
-      ) : (
-        <StudioBottomBar
-          barRef={bottom}
-          name={name}
+        {aim !== null ? (
+          <StudioLoupe at={aim} studio={studio} units={studio.units} drive={drive} />
+        ) : null}
+        {/* The marker says what it is: a word beside it only repeats the glyph, so it is spoken alone. */}
+        <span
+          ref={pin}
+          role="img"
+          aria-label={words.pin}
+          className="hg-studio-pin"
+          data-hidden="true"
+          data-gone={roofs.length > 0 || drawing}
+        >
+          <ShellGlyph name="pin" tone="current" />
+        </span>
+        <StudioCanvasHead
+          headRef={top}
+          compass={compass}
           studio={studio}
-          view={view}
-          units={studio.units}
-          editing={editing}
-          place={detail.site.address}
+          parts={parts}
           words={words}
-          part={parts.bottomBar}
-          magnet={parts.magnet}
-          crowded={crowded}
+          onBack={onBack}
+          onSite={onSite}
           phone={desktop === false}
         />
-      )}
-    </div>
+        <StudioCanvasNotes studio={studio} words={words} />
+        <StudioToolRail
+          view={view}
+          views={studio.views}
+          units={studio.units}
+          editable={editable}
+          canUndo={studio.canUndo}
+          canRedo={studio.canRedo}
+          drawing={drawing}
+          newView={studio.offer3d}
+          parts={parts}
+          canWipe={studio.bar?.kind === 'drawing' && studio.bar.canWipe}
+          onWipe={moves.wipe}
+          hasRoof={studio.fit !== null}
+          words={words}
+          onView={moves.see}
+          onUnits={moves.chooseUnits}
+          onUndo={moves.undo}
+          onRedo={moves.redo}
+          onDraw={drawing ? moves.cancel : moves.draw}
+          onAddRoof={moves.draw}
+          onZoomIn={() => drive.current?.zoomIn()}
+          onZoomOut={() => drive.current?.zoomOut()}
+          onHome={() => drive.current?.home()}
+        />
+        {studio.roofSheet !== null && view !== 'top' ? (
+          <StudioRoofSheet
+            sheetRef={bottom}
+            sheet={studio.roofSheet}
+            studio={studio}
+            units={studio.units}
+            words={words}
+            map={scene}
+          />
+        ) : (
+          <StudioBottomBar
+            barRef={bottom}
+            name={name}
+            studio={studio}
+            view={view}
+            units={studio.units}
+            editing={editing}
+            place={detail.site.address}
+            words={words}
+            part={parts.bottomBar}
+            magnet={parts.magnet}
+            crowded={crowded}
+            phone={desktop === false}
+          />
+        )}
+      </div>
+    </StudioFilePick>
   );
 }
