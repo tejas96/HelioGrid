@@ -88,6 +88,7 @@ export const COLOR_TOKENS = [
   'scene-shade',
   'scene-line',
   'scene-bad',
+  'scene-setback',
   // The solar-glass hero.
   'panel',
   'panel-deep',

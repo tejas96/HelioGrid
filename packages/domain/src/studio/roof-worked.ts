@@ -1,10 +1,12 @@
 import type { Roof, StudioDocument } from './document';
+import type { GroundPoint } from './ground';
 import { roofBuilt } from './roof-built';
 import type { FormedRoof } from './roof-forms';
 import { roofKindOf } from './roof-kind';
 import { type RoofFacts, roofSloped, roofTopsM } from './roof-levels';
 import { type EdgeStretch, edgesOf } from './roof-open-edges';
 import { farApart } from './roof-polygons';
+import { setbackLines } from './roof-setback';
 import { formPicksOf } from './roof-slope-way';
 
 /**
@@ -17,6 +19,8 @@ export interface RoofsWorked {
   readonly edges: readonly (readonly (readonly EdgeStretch[])[])[];
   /** Each sloped roof's faces and standing walls; `null` for a flat roof and for a hole. */
   readonly built: readonly (FormedRoof | null)[];
+  /** Each roof's setback line, ring by ring; none for a hole, whose roof's line runs round it. */
+  readonly setbacks: readonly (readonly (readonly GroundPoint[])[])[];
 }
 
 /** A design and what was worked out of it: the next design reuses what an edit did not touch. */
@@ -74,6 +78,10 @@ export function roofsWorked(
       if (kept(index)) return before?.worked.built[index] ?? null;
       if (roofKindOf(roof) === 'hole' || !roofSloped(roof, facts)) return null;
       return roofBuilt(roof, facts, formPicksOf(document, index, facts, latitude));
+    }),
+    setbacks: document.roofs.map((roof, index) => {
+      if (kept(index)) return before?.worked.setbacks[index] ?? [];
+      return roofKindOf(roof) === 'hole' ? [] : setbackLines(document, index, facts);
     }),
   };
 }

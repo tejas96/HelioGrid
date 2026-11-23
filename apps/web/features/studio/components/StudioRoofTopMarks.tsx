@@ -54,6 +54,15 @@ export function RoofSideLines({
           />
         )),
       )}
+      {/* The setback line: in from the parapet, round what stands on the roof (board 7.1). */}
+      {mark.setback.map((ring) => (
+        <path
+          key={ring.map(pointText).join(';')}
+          className="hg-roof-setback"
+          data-pts={ring.map(pointText).join(';')}
+          data-closed="true"
+        />
+      ))}
       {mark.slopes.map((slope) => {
         const line = `${pointText(slope.from)};${pointText(slope.to)}`;
         return (
@@ -122,6 +131,13 @@ export function StudioRoofTopMarks({
               <span className="hg-roof-at" data-at={pointText(roof.middle)}>
                 <span className="hg-roof-above">
                   {words.above(format.roofHeight(mark.aboveM, units))}
+                </span>
+              </span>
+            )}
+            {mark.lowAgainst === null ? null : (
+              <span className="hg-roof-at" data-at={pointText(mark.lowAgainst.at)} data-tag="true">
+                <span className="hg-roof-tag" data-tone="check">
+                  {words.lowAgainst(mark.lowAgainst.roof)}
                 </span>
               </span>
             )}

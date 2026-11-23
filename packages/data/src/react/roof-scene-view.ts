@@ -91,7 +91,7 @@ export function roofModelShown(
   return {
     scene,
     hitAt: (at, reachM) => roofHitOf(shown, scene, worked, facts, at, reachM),
-    topMarks: roofTopMarksOf(shown, facts, worked),
+    topMarks: roofTopMarksOf(shown, facts, worked, latitude),
     roofList,
     roofsAreaM2: roofsAreaM2(shown),
     sheetRows:

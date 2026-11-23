@@ -144,7 +144,8 @@
 .hg-roof-at > .hg-roof-above,
 .hg-roof-lines .hg-roof-under[data-picked="true"],
 .hg-roof-lines .hg-roof-level,
-.hg-roof-lines .hg-roof-slope {
+.hg-roof-lines .hg-roof-slope,
+.hg-roof-lines .hg-roof-setback {
   animation: hg-fade-in var(--dur-standard) var(--ease-enter) backwards;
 }
 
