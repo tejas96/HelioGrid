@@ -79,12 +79,15 @@ export interface RoofSheetRowMoves {
   turnRidgeOf(roof: number): boolean;
   /** The open side's wall arrow taken, its parapet height as it stands. */
   grabWall(metres: number): void;
-  /** The wall arrow moved by how far the pointer rose, in metres: the side's parapet height follows. */
-  dragWall(risenM: number): void;
+  /**
+   * The wall arrow moved by how far the pointer rose, in metres: the side's parapet height
+   * follows. With the magnet on, a height within `reachM` of a level that exists pulls to it.
+   */
+  dragWall(risenM: number, reachM?: number): void;
   /** The ridge's arrow taken, the ridge's height over the low edge and the slope as they stand. */
   grabRidge(riseM: number, slopeDeg: number): void;
   /** The ridge arrow moved by how far the pointer rose: the slope follows, its run kept. */
-  dragRidge(risenM: number): void;
+  dragRidge(risenM: number, reachM?: number): void;
   /** Undo with a number in hand puts it back first; `true` when there was one. */
   dropNumber(): boolean;
 }

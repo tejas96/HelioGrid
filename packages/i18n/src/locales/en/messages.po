@@ -1739,7 +1739,7 @@ msgid "{left} of this cycle’s {total} days remain on {date}."
 msgstr "{left} of this cycle’s {total} days remain on {date}."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:20
+#: src/copy/studio-roof-tags.ts:21
 msgid "{length} held"
 msgstr "{length} held"
 
@@ -2227,7 +2227,7 @@ msgid "{name} is first"
 msgstr "{name} is first"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-kinds.ts:73
+#: src/copy/studio-roof-kinds.ts:75
 msgid "{name} is its own roof now · Undo puts it back"
 msgstr "{name} is its own roof now · Undo puts it back"
 
@@ -11358,6 +11358,11 @@ msgid "inside"
 msgstr "inside"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-tags.ts:19
+msgid "Inside Roof {number}’s parapet"
+msgstr "Inside Roof {number}’s parapet"
+
+#. js-lingui-explicit-id
 #: src/copy/studio-sheet.ts:44
 msgid "Inside the parapet"
 msgstr "Inside the parapet"
@@ -12335,6 +12340,11 @@ msgid "Level with {roof}’s parapet top · {height}"
 msgstr "Level with {roof}’s parapet top · {height}"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:66
+msgid "Level with {roof}’s ridge · {height}"
+msgstr "Level with {roof}’s ridge · {height}"
+
+#. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:62
 msgid "Level with {roof}’s top · {height}"
 msgstr "Level with {roof}’s top · {height}"
@@ -12391,7 +12401,7 @@ msgid "Lines under your address"
 msgstr "Lines under your address"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:19
+#: src/copy/studio-roof-tags.ts:20
 msgid "Lines up with corner {number}"
 msgstr "Lines up with corner {number}"
 
@@ -14171,7 +14181,7 @@ msgid "New company on HelioGrid?"
 msgstr "New company on HelioGrid?"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:22
+#: src/copy/studio-roof-tags.ts:23
 msgid "New corner · drag it"
 msgstr "New corner · drag it"
 
@@ -14950,28 +14960,28 @@ msgid "No parapet"
 msgstr "No parapet"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-kinds.ts:65
+#: src/copy/studio-roof-kinds.ts:67
 msgid "No parapet on this roof"
 msgstr "No parapet on this roof"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-kinds.ts:66
+#: src/copy/studio-roof-kinds.ts:68
 msgid "No parapet on this side"
 msgstr "No parapet on this side"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-kinds.ts:72
+#: src/copy/studio-roof-kinds.ts:74
 #: src/copy/studio-sheet.ts:73
 msgid "No parapet where {roof}’s wall stands"
 msgstr "No parapet where {roof}’s wall stands"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-kinds.ts:70
+#: src/copy/studio-roof-kinds.ts:72
 msgid "No parapet where the stair room stands"
 msgstr "No parapet where the stair room stands"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-kinds.ts:71
+#: src/copy/studio-roof-kinds.ts:73
 msgid "No parapet where the upper floor stands"
 msgstr "No parapet where the upper floor stands"
 
@@ -20041,6 +20051,11 @@ msgid "Same as {name}"
 msgstr "Same as {name}"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:65
+msgid "Same as the other sides · {height}"
+msgstr "Same as the other sides · {height}"
+
+#. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:42
 msgid "Same hue, darkened to {ratio}:1."
 msgstr "Same hue, darkened to {ratio}:1."
@@ -21060,7 +21075,7 @@ msgid "Shared or opened"
 msgstr "Shared or opened"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-kinds.ts:69
+#: src/copy/studio-roof-kinds.ts:71
 #: src/copy/studio-sheet.ts:72
 msgid "Shared with {roof} · no parapet"
 msgstr "Shared with {roof} · no parapet"
@@ -21246,12 +21261,12 @@ msgid "Shown to customers on every document"
 msgstr "Shown to customers on every document"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-kinds.ts:68
+#: src/copy/studio-roof-kinds.ts:70
 msgid "Side {number}: add a parapet"
 msgstr "Side {number}: add a parapet"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-kinds.ts:67
+#: src/copy/studio-roof-kinds.ts:69
 msgid "Side {number}: take its parapet off"
 msgstr "Side {number}: take its parapet off"
 
@@ -25236,7 +25251,7 @@ msgid "Turn the roof"
 msgstr "Turn the roof"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:23
+#: src/copy/studio-roof-tags.ts:24
 msgid "Turned {degrees}°"
 msgstr "Turned {degrees}°"
 
@@ -27306,7 +27321,7 @@ msgid "worse"
 msgstr "worse"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:21
+#: src/copy/studio-roof-tags.ts:22
 msgid "Would cross"
 msgstr "Would cross"
 

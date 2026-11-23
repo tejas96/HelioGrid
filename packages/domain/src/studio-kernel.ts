@@ -11,6 +11,7 @@
  * phone app needs.
  */
 
+export { ridgePullOf, wallPullOf } from './studio/roof-arrow-magnet';
 export { roofBuilt, roofFormOf, roofSlopeDeg } from './studio/roof-built';
 export {
   roofLengthsMeasuredTo,
@@ -87,6 +88,7 @@ export {
   type ParapetNow,
   parapetNow,
 } from './studio/roof-open-edges';
+export { parapetInsidesOf } from './studio/roof-parapet-inside';
 export {
   type FlatShape,
   joined,

@@ -16,6 +16,7 @@ const TAG = {
   snapSquareCorner: /*i18n*/ { id: 'Square corner' },
   snapRoofCorner: /*i18n*/ { id: 'Roof {number} corner' },
   snapRoofEdge: /*i18n*/ { id: 'Roof {number} edge' },
+  snapInsideParapet: /*i18n*/ { id: 'Inside Roof {number}’s parapet' },
   snapLinesUp: /*i18n*/ { id: 'Lines up with corner {number}' },
   snapHeld: /*i18n*/ { id: '{length} held' },
   tagCross: /*i18n*/ { id: 'Would cross' },
@@ -71,6 +72,8 @@ export function snapName(t: T, snap: RoofSnap, shown: LengthShown): TranslatedTe
       return t(TAG.snapRoofCorner, { number: snap.owner.roof + 1 });
     case 'edge_of':
       return t(TAG.snapRoofEdge, { number: snap.owner.roof + 1 });
+    case 'inside_parapet':
+      return t(TAG.snapInsideParapet, { number: snap.owner.roof + 1 });
     case 'lines_up':
       if (snap.along === 'square') return t(TAG.snapSquareInLine);
       if (snap.along === 'parallel') return t(TAG.snapParallelInLine);

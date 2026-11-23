@@ -162,7 +162,7 @@ export function LitSide({
           at={at}
           top={top + wall.value}
           onGrab={() => moves.grabWall(wall.value)}
-          onDrag={(risenM) => moves.dragWall(risenM)}
+          onDrag={(risenM, reachM) => moves.dragWall(risenM, reachM)}
           onKeep={moves.keepNumber}
           onStep={(by) => moves.setNumber('parapet_height', wall.value + by * wall.slide.step)}
         />
@@ -199,7 +199,7 @@ export function RidgeArrow({
       at={at}
       top={low + slope.ridgeAboveM}
       onGrab={() => moves.grabRidge(slope.ridgeAboveM, degrees)}
-      onDrag={(risenM) => moves.dragRidge(risenM)}
+      onDrag={(risenM, reachM) => moves.dragRidge(risenM, reachM)}
       onKeep={moves.keepNumber}
       onStep={(by) => moves.setNumber('slope', degrees + by * slope.number.slide.step)}
     />

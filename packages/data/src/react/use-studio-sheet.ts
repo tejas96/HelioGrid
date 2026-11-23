@@ -57,6 +57,8 @@ export function useStudioSheet(args: {
     metres: number,
     reachM: number,
   ) => HeightPull | null;
+  /** The magnet is on, and not held off for a moment. */
+  magnetOn: () => boolean;
   /** What a tap on the model lands on, as the kernel reads the design drawn. */
   hitAt: (at: SightAt, reachM: number) => RoofHit | null;
 }): {
@@ -78,7 +80,17 @@ export function useStudioSheet(args: {
   const latitude = pin?.latitude ?? 0;
   const sheet = useRoofSheet(args);
   const roof = sheet.state.roofSheet?.roof ?? null;
-  const rows = useRoofSheetRows({ roof, latest, change, act, editable, facts, latitude, units });
+  const rows = useRoofSheetRows({
+    roof,
+    latest,
+    change,
+    act,
+    editable,
+    facts,
+    latitude,
+    units,
+    magnetOn: args.magnetOn,
+  });
   const part = rows.state.sheetPart;
   // An arrow on the model held: the sheet steps aside for the magnet's pill until it is let go.
   const [held, setHeld] = useState(false);
@@ -99,7 +111,13 @@ export function useStudioSheet(args: {
     return sheet.moves.done();
   };
   return {
-    state: { ...sheet.state, ...rows.state, arrowHeld: held },
+    state: {
+      ...sheet.state,
+      ...rows.state,
+      // One level line at a time: the height's, or a wall's or a ridge's.
+      heightPull: sheet.state.heightPull ?? rows.pull,
+      arrowHeld: held,
+    },
     moves: {
       ...sheet.moves,
       ...rows.moves,

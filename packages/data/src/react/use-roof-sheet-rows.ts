@@ -1,5 +1,8 @@
 'use client';
 import {
+  HEIGHT_PULL_M,
+  HEIGHT_PULL_MAX_M,
+  type HeightPull,
   type History,
   historyAfter,
   type MeasurementSystem,
@@ -13,6 +16,7 @@ import {
 import {
   edgesOf,
   formPicksOf,
+  ridgePullOf,
   riseForSlope,
   roofFormOf,
   roofLengthsMeasuredTo,
@@ -27,6 +31,7 @@ import {
   roofSideMarked,
   roofSideWallFollows,
   slopeForRise,
+  wallPullOf,
 } from '@heliogrid/domain/studio-kernel';
 import { type RefObject, useRef, useState } from 'react';
 import type {
@@ -70,6 +75,7 @@ export function useRoofSheetRows({
   facts,
   latitude,
   units,
+  magnetOn,
 }: {
   /** The roof whose sheet is open; `null` with none open. */
   roof: number | null;
@@ -81,11 +87,15 @@ export function useRoofSheetRows({
   /** The site's latitude: which way a one-way slope first faces, and a gable's ridge. */
   latitude: number;
   units: MeasurementSystem;
+  /** The magnet is on, and not held off for a moment. */
+  magnetOn: () => boolean;
 }): {
   state: RoofSheetRowsState;
   moves: RoofSheetRowMoves;
   /** A tap on the model: what shows over `at`, the roof it opened — its sheet, a side, a row. */
   showOn(at: number, part: SheetPart, row?: SheetRowKey | null): void;
+  /** The level a dragged wall or ridge is pulled to now: a level line and its tag; `null` when free. */
+  pull: HeightPull | null;
 } {
   // What shows over a roof belongs to that roof: another roof opened starts on its own sheet,
   // every row closed, nothing in hand.
@@ -95,6 +105,14 @@ export function useRoofSheetRows({
   hand.current = inHand;
   // What an arrow held when it was taken: a wall's height, or the ridge's rise and its run.
   const grabbed = useRef<{ metres: number; runM: number }>({ metres: 0, runM: 0 });
+  const [pull, setPull] = useState<HeightPull | null>(null);
+  /** A number moved by an arrow: held in hand, and the level it pulled to, if any. */
+  const holdArrow = (at: NumberAt, value: number, pulled: HeightPull | null) => {
+    const held = { at, value };
+    hand.current = held;
+    setInHand(held);
+    setPull(pulled);
+  };
   const own = shows.roof === roof;
   const part = own ? shows.part : ROOF_PART;
   const rowOpen = own ? shows.row : null;
@@ -112,6 +130,7 @@ export function useRoofSheetRows({
     if (after !== at.present) change(historyAfter(at, after));
   };
   const keep = () => {
+    setPull(null);
     const held = hand.current;
     hand.current = null;
     setInHand(null);
@@ -132,6 +151,7 @@ export function useRoofSheetRows({
     apply((design) => (roof === null || side === null ? design : act(design, roof, side)));
 
   return {
+    pull,
     showOn: (at, next, row = null) => {
       keep();
       setShows({ roof: at, part: next, row });
@@ -209,25 +229,32 @@ export function useRoofSheetRows({
       grabWall: (metres) => {
         grabbed.current = { metres, runM: 0 };
       },
-      dragWall: (risenM) => {
+      dragWall: (risenM, reachM = HEIGHT_PULL_M) => {
         const at = atOf('parapet_height');
-        if (!editable || at === null || at.side == null) return;
-        const held = { at, value: Math.max(0, grabbed.current.metres + risenM) };
-        hand.current = held;
-        setInHand(held);
+        const design = latest.current?.present;
+        if (!editable || at === null || at.side == null || design === undefined) return;
+        const dragged = Math.max(0, grabbed.current.metres + risenM);
+        const reach = Math.min(Math.max(reachM, HEIGHT_PULL_M), HEIGHT_PULL_MAX_M);
+        const pulled = magnetOn()
+          ? wallPullOf(design, at.roof, at.side, facts, dragged, reach)
+          : null;
+        holdArrow(at, pulled?.metres ?? dragged, pulled);
       },
       grabRidge: (riseM, slopeDeg) => {
         grabbed.current = { metres: riseM, runM: runForSlope(riseM, slopeDeg) };
       },
-      dragRidge: (risenM) => {
+      dragRidge: (risenM, reachM = HEIGHT_PULL_M) => {
         const at = atOf('slope');
+        const design = latest.current?.present;
         const { metres, runM } = grabbed.current;
-        if (!editable || at === null || runM <= 0) return;
-        const held = { at, value: slopeForRise(Math.max(0, metres + risenM), runM) };
-        hand.current = held;
-        setInHand(held);
+        if (!editable || at === null || runM <= 0 || design === undefined) return;
+        const dragged = Math.max(0, metres + risenM);
+        const reach = Math.min(Math.max(reachM, HEIGHT_PULL_M), HEIGHT_PULL_MAX_M);
+        const pulled = magnetOn() ? ridgePullOf(design, at.roof, facts, dragged, reach) : null;
+        holdArrow(at, slopeForRise(pulled?.metres ?? dragged, runM), pulled);
       },
       dropNumber: () => {
+        setPull(null);
         if (hand.current === null) return false;
         hand.current = null;
         setInHand(null);

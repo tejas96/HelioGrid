@@ -9,7 +9,7 @@ import type { MaterialPick } from './roof-material-set';
 import type { RoofMeeting } from './roof-meeting';
 import type { RoofKind } from './roof-parts';
 import type { RoofPlacing, RoofSaid } from './roof-said';
-import type { Snapped } from './roof-snap';
+import type { Snapped, SnapTargets } from './roof-snap';
 import type { TypedSize } from './roof-type';
 import type { StudioChange } from './studio-change';
 
@@ -80,6 +80,8 @@ export type RoofStepState =
       readonly degrees: number;
       /** The magnet pulls the corner in hand, as it does while drawing. */
       readonly magnet: boolean;
+      /** The inside faces of the roofs' parapets: a roof moved onto another pulls to them. */
+      readonly insides?: SnapTargets['edges'];
     };
 
 /** A drawing stopped with corners placed: what Undo takes up again. */
@@ -204,6 +206,8 @@ export type RoofStepEvent =
       readonly at: GroundPoint;
       readonly system: MeasurementSystem;
       readonly magnet: boolean;
+      /** The inside faces of the roofs' parapets, from the kernel: what a moved roof pulls to. */
+      readonly insides?: SnapTargets['edges'];
     }
   | { readonly kind: 'drag'; readonly at: GroundPoint }
   | { readonly kind: 'release' }

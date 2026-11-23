@@ -61,6 +61,8 @@ export function snapTargetsOf(roofs: readonly Roof[], except?: number): SnapTarg
 export type RoofSnap =
   | { readonly kind: 'corner_of'; readonly owner: SnapOwner }
   | { readonly kind: 'edge_of'; readonly owner: SnapOwner }
+  /** Against the inside of a roof's parapet: a roof dragged onto it stands clear of the wall. */
+  | { readonly kind: 'inside_parapet'; readonly owner: SnapOwner }
   /** Square to the roof's long side. */
   | { readonly kind: 'square' }
   /** Parallel to the roof's long side. */

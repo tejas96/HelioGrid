@@ -46,6 +46,7 @@ import {
   stepRefused,
   tracedLength,
 } from '@heliogrid/domain';
+import { parapetInsidesOf } from '@heliogrid/domain/studio-kernel';
 import { type RefObject, useMemo, useRef, useState } from 'react';
 import { aKey } from '../client/creation-key';
 import type { ClosePlacing, RoofMoves, RoofStepView } from './roof-step-view';
@@ -257,7 +258,20 @@ export function useRoofStep({
     stepLength: (by) => act({ kind: 'step', by, system: units }),
     setLength: () => act({ kind: 'set', system: units }),
     confirmLength: (use) => act({ kind: 'confirm', use, system: units }),
-    grab: (grip, at) => act({ kind: 'grab', grip, at, system: units, magnet: magnet() }),
+    grab: (grip, at) => {
+      const design = latest.current?.present;
+      // A roof moved onto another pulls to the inside of its parapet, which the kernel knows.
+      const insides =
+        grip.kind === 'move' && design !== undefined ? parapetInsidesOf(design, facts) : undefined;
+      act({
+        kind: 'grab',
+        grip,
+        at,
+        system: units,
+        magnet: magnet(),
+        ...(insides === undefined ? {} : { insides }),
+      });
+    },
     drag: (at) => act({ kind: 'drag', at }),
     release: () => act({ kind: 'release' }),
     pickCorner: (corner) => act({ kind: 'pick_corner', corner }),

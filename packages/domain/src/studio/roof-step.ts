@@ -4,7 +4,7 @@ import { cornerAdded, cornerDragged, cornerRemoved } from './roof-edit';
 import { roofMoved, roofTurned } from './roof-move';
 import { roofNameOf } from './roof-names';
 import { roofMiddle } from './roof-shape';
-import { snapTargetsOf } from './roof-snap';
+import { type SnapTargets, snapTargetsOf } from './roof-snap';
 import { copied, deleted } from './roof-step-copy';
 import { cornerUndone, drawing, spotAt, stopped, tapped } from './roof-step-draw';
 import {
@@ -54,6 +54,7 @@ function grabbed(
   grip: RoofGrip,
   at: GroundPoint,
   magnet: boolean,
+  insides: SnapTargets['edges'] = [],
 ): RoofStepState | null {
   if (document.roofs[grip.roof] === undefined) return null;
   let base = document;
@@ -63,7 +64,7 @@ function grabbed(
     base = added.document;
   }
   const drag = { document: base, snap: null, fault: null, guides: [] };
-  return { kind: 'dragging', grip, base, from: at, drag, degrees: 0, magnet };
+  return { kind: 'dragging', grip, base, from: at, drag, degrees: 0, magnet, insides };
 }
 
 /** The turn from where the handle was taken to where it is now, about the roof's middle. */
@@ -77,13 +78,13 @@ function turnOf(state: Dragging, at: GroundPoint): number {
 }
 
 function dragged(state: Dragging, at: GroundPoint): RoofStepState {
-  const { grip, base, from, magnet } = state;
+  const { grip, base, from, magnet, insides } = state;
   const corner = gripCorner(grip);
   if (corner !== null)
     return { ...state, drag: cornerDragged(base, grip.roof, corner, at, magnet) };
   if (grip.kind === 'move') {
     const by = { east: at.east - from.east, north: at.north - from.north };
-    return { ...state, drag: roofMoved(base, grip.roof, by) };
+    return { ...state, drag: roofMoved(base, grip.roof, by, magnet ? (insides ?? []) : null) };
   }
   const turn = roofTurned(base, grip.roof, turnOf(state, at), magnet);
   return { ...state, drag: turn, degrees: turn.degrees };
@@ -221,11 +222,11 @@ const ON: Handlers = {
     inState(state, 'sizing', (sizing) =>
       use ? committedLength(sizing, system) : stay({ ...sizing, asking: false }),
     ),
-  grab: (state, { grip, at, system, magnet }, document) =>
+  grab: (state, { grip, at, system, magnet, insides }, document) =>
     state.kind === 'drawing' || state.kind === 'typing'
       ? stay(state)
       : thenKept(state, system, document, (kept, now) =>
-          stay(grabbed(now, grip, at, magnet) ?? kept),
+          stay(grabbed(now, grip, at, magnet, insides) ?? kept),
         ),
   drag: (state, { at }) => inState(state, 'dragging', (held) => stay(dragged(held, at))),
   release: (state) => inState(state, 'dragging', released),
