@@ -66,7 +66,6 @@ export function studioFlowWords(
     DESIGN_TITLE: design.named(FIRST_DESIGN),
     DESIGN_HOLDING: design.holdingTitle,
     DESIGN_NEEDS_SITE: design.holdingLine('roof', false),
-    DESIGN_NEXT_ROOF: design.holdingLine('roof', true),
     DESIGN_EDIT_SITE: design.editSite,
   };
 }

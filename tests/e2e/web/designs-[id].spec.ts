@@ -61,11 +61,16 @@ test('the Site step opens Site details in the studio’s place, and every way ba
   await withoutMapService(page);
   await saveSiteThroughApi(page, design.id);
   const named = DESIGN.named(design.ordinal);
-  const siteStep = page.getByRole('button', { name: STUDIO.changeSite });
+  /* A design with no roof and no sky picture opens on the size card, and the steps wait under it:
+     the card's close lets the Site step be pressed. */
+  const openSite = async () => {
+    await page.getByRole('button', { name: STUDIO.sizeClose }).click();
+    await page.getByRole('button', { name: STUDIO.changeSite }).click();
+  };
 
   /* The rail opens on the site, done: a press opens its form as a change, not a start. */
   await page.goto(`/designs/${design.id}`);
-  await siteStep.click();
+  await openSite();
   await expect(page).toHaveURL(new RegExp(`/designs/${design.id}/site`));
   await expect(page.getByRole('heading', { name: PAGE.title })).toBeVisible();
   await expect(page.getByRole('button', { name: CHANGE.start })).toBeVisible();
@@ -76,11 +81,14 @@ test('the Site step opens Site details in the studio’s place, and every way ba
   await page.getByRole('button', { name: named }).click();
   await expect(page.getByRole('navigation', { name: STUDIO.steps })).toBeVisible();
 
-  /* Cancel goes back to the studio too, and so does the save. */
-  await siteStep.click();
-  await page.getByRole('button', { name: CHANGE.cancel }).click();
-  await expect(page.getByRole('navigation', { name: STUDIO.steps })).toBeVisible();
-  await siteStep.click();
+  /* Where the room is wide the form's bar holds Cancel, which goes back to the studio too; the
+     phone's way back is the trail above. The save goes back as well. */
+  if (test.info().project.name === 'desktop') {
+    await openSite();
+    await page.getByRole('button', { name: CHANGE.cancel }).click();
+    await expect(page.getByRole('navigation', { name: STUDIO.steps })).toBeVisible();
+  }
+  await openSite();
   await page.getByRole('button', { name: CHANGE.start }).click();
   await expect(page).toHaveURL(new RegExp(`/designs/${design.id}(\\?|$)`));
   await expect(page.getByRole('navigation', { name: STUDIO.steps })).toBeVisible();

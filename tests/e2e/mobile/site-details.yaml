@@ -1,7 +1,6 @@
 # Site details (`SCR-M05-01`, T-M05-001a): the design's site opens at its address with the lead's
 # address and state filled and no location yet, so *Start design* says why it is off; Coordinates takes the two numbers a rep types, the pin
-# stands under the map, and *Start design* saves the site and opens the design, which now names
-# its next step.
+# stands under the map, and *Start design* saves the site and opens the design's studio.
 appId: com.heliogrid.app
 ---
 - openLink: heliogrid://designs/${DESIGN_ID}/site
@@ -39,7 +38,9 @@ appId: com.heliogrid.app
     direction: DOWN
     centerElement: true
 - tapOn: ${SITE_START}
-# The design's page: the site's address and its next step are one run of text; the step ends it.
+# The site is saved and has its place, so the studio's page opens in Site details' place: the web
+# studio it shows is not served on this lane, so the flow reads only that Site details has gone.
 - extendedWaitUntil:
-    visible: '[\s\S]*${DESIGN_NEXT_ROOF}'
+    notVisible: ${SITE_START}
     timeout: 15000
+- assertNotVisible: ${SITE_BY_COORDINATES}
