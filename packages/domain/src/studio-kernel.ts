@@ -41,6 +41,44 @@ export {
   slopeForRise,
 } from './studio/roof-forms';
 export {
+  roofAreaM2,
+  roofGround,
+  roofSlopeDeg,
+  roofSurfaceM2,
+  roofsAreaM2,
+  setbackLines,
+} from './studio/roof-free-ground';
+export {
+  LEVEL_M,
+  type RoofFacts,
+  roofFloorM,
+  roofHasWalls,
+  roofMaterialNow,
+  roofOwnHeightM,
+  roofShapeNow,
+  roofSloped,
+} from './studio/roof-levels';
+export {
+  cutToEdge,
+  HOLE_MAX_M2,
+  HOLE_SIDE_MAX_M,
+  type HoleMeets,
+  holeMeets,
+  type MeetChoice,
+  meetingOf,
+  type RoofMeeting,
+  type RoofPlace,
+  STAIR_ROOM_MAX_M2,
+  sameMaterial,
+} from './studio/roof-meet';
+export {
+  type EdgeState,
+  type EdgeStretch,
+  edgesOf,
+  type ParapetNow,
+  parapetNow,
+} from './studio/roof-open-edges';
+export {
   type FlatShape,
   joined,
   MET_M,
@@ -55,3 +93,15 @@ export {
   without,
 } from './studio/roof-polygons';
 export type { ProfilePart, StandingWall } from './studio/roof-profile';
+export {
+  bearingsApart,
+  COMPASS_WAYS,
+  type CompassWay,
+  compassOf,
+  equatorBearing,
+  gableTurnedFor,
+  glassSideOf,
+  type LowSide,
+  lowSideOf,
+  sideBearing,
+} from './studio/roof-slope-way';

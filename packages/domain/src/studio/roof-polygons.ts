@@ -16,6 +16,8 @@ export interface FlatShape {
 
 /** Edges within this of each other count as met, in metres. */
 export const MET_M = 0.3;
+/** `MET_M` with room for a sum's last digit: a roof drawn 0.3 m off is met. */
+const MET_REACH_M = MET_M + 1e-9;
 /** A sliver smaller than this is no shape, in square metres. */
 const NO_SHAPE_M2 = 1e-4;
 
@@ -90,6 +92,17 @@ export function joined(a: readonly FlatShape[], b: readonly FlatShape[]): FlatSh
   return operated(polygonClipping.union, a, b);
 }
 
+/** Everything a set of shapes covers, joined in one pass. */
+export function joinedAll(shapes: readonly FlatShape[]): FlatShape[] | null {
+  const [first, ...rest] = shapes;
+  if (first === undefined) return [];
+  try {
+    return shapesOf(polygonClipping.union(polygonOf(first), ...rest.map(polygonOf)));
+  } catch {
+    return null;
+  }
+}
+
 /** What both sets cover. */
 export function shared(a: readonly FlatShape[], b: readonly FlatShape[]): FlatShape[] | null {
   if (b.length === 0) return [];
@@ -117,13 +130,13 @@ function nearestOn(point: GroundPoint, from: GroundPoint, to: GroundPoint) {
 /** A corner moved onto another roof where it lies within `MET_M` of it: its corner first, else its edge. */
 function metPoint(point: GroundPoint, onto: readonly GroundPoint[]): GroundPoint {
   const corner = onto.find(
-    (other) => Math.hypot(other.east - point.east, other.north - point.north) <= MET_M,
+    (other) => Math.hypot(other.east - point.east, other.north - point.north) <= MET_REACH_M,
   );
   if (corner !== undefined) return corner;
   let best: { at: GroundPoint; far: number } | null = null;
   onto.forEach((from, i) => {
     const near = nearestOn(point, from, onto[(i + 1) % onto.length] as GroundPoint);
-    if (near.far <= MET_M && (best === null || near.far < best.far)) best = near;
+    if (near.far <= MET_REACH_M && (best === null || near.far < best.far)) best = near;
   });
   return (best as { at: GroundPoint } | null)?.at ?? point;
 }
@@ -141,6 +154,21 @@ export function metWith(ring: readonly GroundPoint[], onto: readonly GroundPoint
   });
 }
 
+/** Whether two sets of points lie too far apart to meet: their boxes are more than `MET_M` apart. */
+export function farApart(one: readonly GroundPoint[], other: readonly GroundPoint[]): boolean {
+  const reach = (points: readonly GroundPoint[], pick: (point: GroundPoint) => number) => {
+    const values = points.map(pick);
+    return [Math.min(...values) - MET_REACH_M, Math.max(...values) + MET_REACH_M] as const;
+  };
+  const east = (point: GroundPoint) => point.east;
+  const north = (point: GroundPoint) => point.north;
+  const [west, eastmost] = reach(one, east);
+  const [south, northmost] = reach(one, north);
+  const [otherWest, otherEast] = reach(other, east);
+  const [otherSouth, otherNorth] = reach(other, north);
+  return otherWest > eastmost || otherEast < west || otherSouth > northmost || otherNorth < south;
+}
+
 /** One stretch of a side: from one share of its length to another, 0 at its first corner. */
 export interface Stretch {
   readonly from: number;
@@ -153,7 +181,7 @@ const NO_STRETCH = 1e-6;
 /** Where along a side a point of it lies, as a share of the side; `null` when it is off the side. */
 function shareOn(point: GroundPoint, from: GroundPoint, to: GroundPoint): number | null {
   const near = nearestOn(point, from, to);
-  return near.far <= MET_M ? near.share : null;
+  return near.far <= MET_REACH_M ? near.share : null;
 }
 
 /** Whether a point lies inside a ring, its edge left out. */
@@ -169,11 +197,18 @@ function inside(point: GroundPoint, ring: readonly GroundPoint[]): boolean {
   return within;
 }
 
+/** How far a point lies from a ring's edge, in metres. */
+export function farFromEdge(point: GroundPoint, ring: readonly GroundPoint[]): number {
+  return Math.min(
+    ...ring.map(
+      (from, i) => nearestOn(point, from, ring[(i + 1) % ring.length] as GroundPoint).far,
+    ),
+  );
+}
+
 /** Whether a point lies on a ring's edge, or within `MET_M` of it. */
 function onEdge(point: GroundPoint, ring: readonly GroundPoint[]): boolean {
-  return ring.some(
-    (from, i) => nearestOn(point, from, ring[(i + 1) % ring.length] as GroundPoint).far <= MET_M,
-  );
+  return farFromEdge(point, ring) <= MET_REACH_M;
 }
 
 /**
@@ -185,6 +220,7 @@ export function stretchesTaken(
   to: GroundPoint,
   other: readonly GroundPoint[],
 ): Stretch[] {
+  if (farApart([from, to], other)) return [];
   const cuts = new Set<number>([0, 1]);
   other.forEach((corner, i) => {
     const share = shareOn(corner, from, to);
