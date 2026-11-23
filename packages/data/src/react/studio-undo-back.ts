@@ -13,6 +13,9 @@ import {
 
 /** What is open over the studio, and the acts that close it, for the phone's system back. */
 export interface StudioBackFacts {
+  /** The pencil's two buttons, Roofs or the material picker is open. */
+  readonly panelOpen: boolean;
+  closePanel(): void;
   readonly picturesOpen: boolean;
   closePictures(): void;
   readonly sheetOpen: boolean;
@@ -22,13 +25,16 @@ export interface StudioBackFacts {
 }
 
 /**
- * The phone's system back, as Esc is the desktop's: the top thing open closes — the pictures, a
- * roof's sheet, the job in hand, a picked corner. `false` with nothing open:
+ * The phone's system back, as Esc is the desktop's: the top thing open closes — what the pencil
+ * opened (the material picker, Roofs, its two buttons), the pictures, a roof's sheet, the job in
+ * hand, a picked corner. `false` with nothing open:
  * the way back leaves the studio.
  */
 export function studioBack(facts: StudioBackFacts): boolean {
   const { step, act } = facts;
-  if (facts.picturesOpen) facts.closePictures();
+  // What the pencil opened is on top: the picker goes back to Roofs, Roofs and the buttons close.
+  if (facts.panelOpen) facts.closePanel();
+  else if (facts.picturesOpen) facts.closePictures();
   // A height the sheet refuses keeps it open, as Done does.
   else if (facts.sheetOpen) facts.closeSheet();
   else if (step.kind !== 'idle') act({ kind: 'cancel' });

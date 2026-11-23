@@ -1,5 +1,6 @@
 'use client';
 import {
+  NO_ROOF_LIST,
   NO_ROOF_SCENE,
   type RoofFacts,
   type RoofHeight,
@@ -8,6 +9,7 @@ import {
 } from '@heliogrid/domain';
 import {
   heightPullOf,
+  roofListOf,
   roofSceneOf,
   roofsAreaM2,
   roofsWorked,
@@ -25,7 +27,12 @@ export interface RoofMemory {
   before?: WorkedBefore;
 }
 
-const NOTHING: RoofModelShown = { scene: NO_ROOF_SCENE, topMarks: [], roofsAreaM2: 0 };
+const NOTHING: RoofModelShown = {
+  scene: NO_ROOF_SCENE,
+  topMarks: [],
+  roofList: NO_ROOF_LIST,
+  roofsAreaM2: 0,
+};
 
 /**
  * The design as it stands, or the preview of what is in hand, with the open sheet's height where
@@ -54,6 +61,7 @@ export function roofModelShown(
   return {
     scene: roofSceneOf(shown, facts, worked),
     topMarks: roofTopMarksOf(shown, facts, worked),
+    roofList: roofListOf(shown, facts, worked),
     roofsAreaM2: roofsAreaM2(shown),
   };
 }

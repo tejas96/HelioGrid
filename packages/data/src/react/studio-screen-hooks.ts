@@ -2,6 +2,7 @@
 
 export type { PlanShown, UnitCard } from './own-picture-view';
 export type { RoofMoves, RoofPlaceMoves, RoofStepView, SizeCardView } from './roof-step-view';
+export type { RoofsPanelMoves, RoofsPanelView } from './roofs-panel-view';
 export type { StudioEditing, StudioPicture } from './studio-document-state';
 export type { StudioMoments } from './studio-haptics';
 export { studioHapticOf, studioMomentsOf } from './studio-haptics';

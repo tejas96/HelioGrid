@@ -36,6 +36,7 @@ import { useDesignScreen } from './use-design-screen';
 import { useOwnPictureScreen } from './use-own-picture-screen';
 import { useRoofSheet } from './use-roof-sheet';
 import { useRoofStep } from './use-roof-step';
+import { useRoofsPanel } from './use-roofs-panel';
 import { useSession } from './use-session';
 
 /**
@@ -123,6 +124,32 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const { roofSheet } = sheet.state;
   const { shown } = roof.view;
   const model = useRoofModel(shown, facts, roofSheet, pin);
+  const place = roofPlaceMoves({ latest, step, act, facts });
+  // Drawing happens in the top view only: the camera flies there first. A roof's sheet is the 3D
+  // view's: its height is kept and it closes, as when the top view is picked; a height that is
+  // refused keeps the sheet, and nothing is drawn.
+  const draw = () => {
+    if (!sheet.moves.done()) return;
+    setView('top');
+    roof.moves.draw();
+  };
+  const panel = useRoofsPanel({
+    document,
+    latest,
+    list: model.roofList,
+    facts,
+    editable,
+    view,
+    drawing: roofStep.kind === 'drawing',
+    sheet: roofSheet,
+    act,
+    draw,
+    stopDrawing: roof.moves.cancel,
+    openSheet: sheet.moves.openRoof,
+    closeSheet: sheet.moves.done,
+    copyRoof: place.copyRoof,
+    deleteRoof: place.deleteRoofAt,
+  });
 
   return {
     read,
@@ -148,6 +175,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     ...roof.view,
     ...sheet.state,
     ...model,
+    ...panel.view,
     ...roofsWithSheet(
       roof.view.heights,
       framedWithCard(fit, document, roof.view.sizeCard),
@@ -170,7 +198,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     moves: {
       ...roof.moves,
       ...sheet.moves,
-      ...roofPlaceMoves({ latest, step, act, facts }),
+      ...place,
+      ...panel.moves,
       pickPicture: (choice) => {
         const at = latest.current;
         if (at === null || at.present.picture === choice) return;
@@ -215,17 +244,12 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         if (next === 'top' && !sheet.moves.done()) return;
         setView(next);
       },
-      // Drawing happens in the top view only: the camera flies there first. A roof's sheet is the
-      // 3D view's: its height is kept and it closes, as when the top view is picked; a height
-      // that is refused keeps the sheet, and nothing is drawn.
-      draw: () => {
-        if (!sheet.moves.done()) return;
-        setView('top');
-        roof.moves.draw();
-      },
+      draw,
       showPictures: setPicturesOpen,
       back: () =>
         studioBack({
+          panelOpen: panel.view.panel.open !== 'none',
+          closePanel: panel.moves.closePanel,
           picturesOpen,
           closePictures: () => setPicturesOpen(false),
           sheetOpen: roofSheet !== null,
