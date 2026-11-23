@@ -28,6 +28,13 @@ describe('the roof a tap picks', () => {
     expect(roofPickedAt(HOUSE, at, picked)).toBe(roof);
   });
 
+  it('an open shed over the whole terrace is bigger than it, and still the top roof', () => {
+    const shed = kindOf('over', 'open_shed', box(-1, -1, 12, 10), { on: 'terrace' });
+    const covered = designOf(shed, TERRACE);
+    expect(roofPickedAt(covered, p(5, 5), null)).toBe(0);
+    expect(roofPickedAt(covered, p(5, 5), 0)).toBe(1);
+  });
+
   it('two roofs on the ground over each other: the smaller first, then the bigger', () => {
     const over = designOf(TERRACE, roofOf('yard', box(-5, -5, 30, 30)));
     expect(roofPickedAt(over, p(5, 5), null)).toBe(0);

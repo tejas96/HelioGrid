@@ -89,6 +89,7 @@ export {
   without,
 } from './studio/roof-polygons';
 export type { ProfilePart, StandingWall } from './studio/roof-profile';
+export { roofSceneOf } from './studio/roof-scene-build';
 export { setbackLines } from './studio/roof-setback';
 export {
   bearingsApart,

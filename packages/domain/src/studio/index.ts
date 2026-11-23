@@ -153,6 +153,7 @@ export {
 } from './roof-move';
 export { type RoofName, roofNameOf, roofNumber } from './roof-names';
 export * from './roof-parts';
+export * from './roof-scene';
 export {
   between,
   CORNER_GAP_M,
