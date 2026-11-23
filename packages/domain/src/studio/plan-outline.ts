@@ -61,6 +61,16 @@ export function planEdgeTrust(plan: LaidPlan): 'plan' | 'traced' {
   return plan.scaleFrom === 'guess' ? 'traced' : 'plan';
 }
 
+/** Whether two outlines stand on the same corners, wherever each starts its round. */
+function sameOutline(one: readonly GroundPoint[], other: readonly GroundPoint[]): boolean {
+  if (one.length !== other.length) return false;
+  return one.every((corner) =>
+    other.some(
+      (each) => Math.hypot(each.east - corner.east, each.north - corner.north) < CORNER_GAP_M,
+    ),
+  );
+}
+
 /**
  * A roof made from a tapped closed outline of the plan (board 4.4): its corners the outline's on
  * the ground, its edges exact when the plan's scale holds, checked as a drawn roof is. The first
@@ -85,6 +95,9 @@ export function roofFromPlanOutline(
     max: ROOF_CORNERS_MAX,
   });
   if (corners === null) return { kind: 'refused', refusal: 'no_outline' };
+  // An outline that already made its roof makes no second one on top of it.
+  const standing = document.roofs.some((roof) => sameOutline(roof.corners, corners));
+  if (standing) return { kind: 'refused', refusal: 'no_outline' };
   const close = draftClose(corners, document.roofs, made.id, made.tracedOn, false);
   if (close.kind === 'refused') return close;
   const trust = planEdgeTrust(plan);

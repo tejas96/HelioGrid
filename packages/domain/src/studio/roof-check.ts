@@ -1,13 +1,13 @@
 import { GROUND_REACH_M, type Roof, type StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { belongsTo, roofKindOf } from './roof-kind';
-import { between, CORNER_GAP_M, edgesCross, pointInside, roofsOverlap } from './roof-shape';
+import { between, CORNER_GAP_M, edgesCross, pointInside } from './roof-shape';
 import type { Guide, RoofSnap } from './roof-snap';
 
 /**
  * What every change to a standing roof answers (`T-M05-002`, part b): the design after it, or why
  * it is not made. Every change works on the whole document, so one change is one Undo, and is
- * checked the same way: no edges that cross, no roof over another, nothing past the site's reach.
+ * checked the same way: no edges that cross, nothing past the site's reach. No roof is refused for
+ * lying over another (`T-M05-002`, part e).
  */
 
 /** Why a change is not made. */
@@ -15,7 +15,6 @@ export type EditRefusal =
   | 'too_short'
   | 'too_long'
   | 'would_cross'
-  | 'would_overlap'
   | 'too_far'
   /** Two corners would stand within `CORNER_GAP_M` of each other. */
   | 'too_close'
@@ -57,12 +56,8 @@ export function roofAt(document: StudioDocument, index: number): Roof {
   return roof;
 }
 
-/** What is wrong with a roof standing on these corners among the design's other roofs. */
-export function faultOf(
-  document: StudioDocument,
-  index: number,
-  corners: readonly GroundPoint[],
-): EditRefusal | null {
+/** What is wrong with a roof standing on these corners: its own shape, and the site's reach. */
+export function faultOf(corners: readonly GroundPoint[]): EditRefusal | null {
   if (
     corners.some((c) => Math.abs(c.east) > GROUND_REACH_M || Math.abs(c.north) > GROUND_REACH_M)
   ) {
@@ -72,34 +67,7 @@ export function faultOf(
   if (corners.some((c, i) => corners.some((d, j) => j > i && between(c, d) < CORNER_GAP_M))) {
     return 'too_close';
   }
-  return overlapsAnother(document, index, corners) ? 'would_overlap' : null;
-}
-
-/**
- * Whether a roof's own place among the others is the ground's alone: a building that stands on no
- * roof and is part of none. Any other roof — a stair room, an upper floor, an open shed, a hole —
- * lies over or inside another by what it is.
- */
-function onItsOwnGround(document: StudioDocument, roof: Roof): boolean {
-  return roofKindOf(roof) === 'building' && belongsTo(document, roof) === null;
-}
-
-/**
- * Whether roof `index`, standing on these corners, would lie over another roof it has no business
- * over: two buildings on the ground never overlap, while a roof that stands on another, is part of
- * one or is an open shed is never refused for where it lies (`T-M05-002`, part e).
- */
-function overlapsAnother(
-  document: StudioDocument,
-  index: number,
-  corners: readonly GroundPoint[],
-): boolean {
-  const moved = document.roofs[index];
-  if (moved !== undefined && !onItsOwnGround(document, moved)) return false;
-  return document.roofs.some(
-    (roof, i) =>
-      i !== index && onItsOwnGround(document, roof) && roofsOverlap(corners, roof.corners),
-  );
+  return null;
 }
 
 /** The roof a point lies inside, the last drawn first; `null` on open ground. */

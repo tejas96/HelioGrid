@@ -40,7 +40,7 @@ export function tapped(
   // square, then lands on the grid; nothing snaps it again after.
   const grid = state.grid === true && state.magnet;
   const spot = grid ? onGrid(state, draftSpot(state.corners, at, targets, true).point) : at;
-  const tap = draftTap(state.corners, spot, targets, document.roofs, state.magnet && !grid);
+  const tap = draftTap(state.corners, spot, targets, state.magnet && !grid);
   if (tap.kind === 'same') return stay(state);
   if (tap.kind === 'refused') return stay({ ...state, refused: tap.refusal });
   // A new corner after the trash: the wiped corners are behind it, and Undo no longer brings them.

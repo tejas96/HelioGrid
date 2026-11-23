@@ -103,7 +103,7 @@ export function planSizedByLength(
     roofs,
   };
   for (const i of planRoofs) {
-    const fault = faultOf(sized, i, roofs[i]?.corners ?? []);
+    const fault = faultOf(roofs[i]?.corners ?? []);
     if (fault !== null) return { kind: 'refused', refusal: fault };
   }
   return { kind: 'done', document: sized };

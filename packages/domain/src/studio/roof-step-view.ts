@@ -139,7 +139,7 @@ export function draftViewOf(
   const tap =
     spot === null || closing
       ? null
-      : draftTap(corners, spot.point, snapTargetsOf(document.roofs), document.roofs, state.magnet);
+      : draftTap(corners, spot.point, snapTargetsOf(document.roofs), state.magnet);
   return {
     corners,
     edges: corners.slice(1).map((corner, i) => edgeOf(corners[i] as GroundPoint, corner)),

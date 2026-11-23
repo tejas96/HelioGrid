@@ -19,7 +19,6 @@ const TAG = {
   snapLinesUp: /*i18n*/ { id: 'Lines up with corner {number}' },
   snapHeld: /*i18n*/ { id: '{length} held' },
   tagCross: /*i18n*/ { id: 'Would cross' },
-  tagOver: /*i18n*/ { id: 'Over a roof' },
   tagNewCorner: /*i18n*/ { id: 'New corner · drag it' },
   tagTurned: /*i18n*/ { id: 'Turned {degrees}°' },
 } as const;
@@ -53,13 +52,8 @@ export interface DragFacts {
 }
 
 /** A tag that is one fixed word, or a turn by its size. */
-export function tagWord(
-  t: T,
-  kind: 'cross' | 'over' | 'new' | 'turned',
-  degrees = 0,
-): TranslatedText {
+export function tagWord(t: T, kind: 'cross' | 'new' | 'turned', degrees = 0): TranslatedText {
   if (kind === 'cross') return t(TAG.tagCross);
-  if (kind === 'over') return t(TAG.tagOver);
   if (kind === 'new') return t(TAG.tagNewCorner);
   return t(TAG.tagTurned, { degrees: Math.round(Math.abs(degrees)) });
 }

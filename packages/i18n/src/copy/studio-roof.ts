@@ -33,8 +33,6 @@ const ROOF = {
   roofDeleted: /*i18n*/ { id: 'Roof deleted. Undo brings it back.' },
   drawCrossTitle: /*i18n*/ { id: 'This edge would cross another' },
   drawCrossLine: /*i18n*/ { id: 'Tap a spot where the edges do not cross.' },
-  drawOverTitle: /*i18n*/ { id: 'This edge would run over another roof' },
-  drawOverLine: /*i18n*/ { id: 'Roofs cannot overlap yet. Tap outside the other roof.' },
   drawFarTitle: /*i18n*/ { id: 'That spot is too far from the pin' },
   drawCloseTitle: /*i18n*/ { id: 'Too close to another corner' },
   drawCloseLine: /*i18n*/ { id: 'Tap a little farther from it.' },
@@ -66,11 +64,9 @@ const ROOF = {
   roofMoved: /*i18n*/ { id: 'Roof moved. Undo puts it back.' },
   roofTurned: /*i18n*/ { id: 'Roof turned {degrees}°. Undo puts it back.' },
   wentBackCross: /*i18n*/ { id: 'Those edges would cross. The roof went back.' },
-  wentBackOver: /*i18n*/ { id: 'Roofs cannot overlap yet. The roof went back.' },
   wentBackFar: /*i18n*/ { id: 'That is too far from the pin. The roof went back.' },
   wentBackClose: /*i18n*/ { id: 'That corner was too close to another. The roof went back.' },
   editCross: /*i18n*/ { id: 'Those edges would cross.' },
-  editOver: /*i18n*/ { id: 'Roofs cannot overlap yet.' },
   editFar: /*i18n*/ { id: 'That is too far from the pin.' },
   editClose: /*i18n*/ { id: 'That corner would be too close to another.' },
   dragCrowded: /*i18n*/ { id: 'Drag the corner. Zoom in for more room.' },
@@ -112,7 +108,6 @@ const DRAW_REFUSAL: Record<
   (t: T) => { title: TranslatedText; line: TranslatedText }
 > = {
   would_cross: (t) => ({ title: t(ROOF.drawCrossTitle), line: t(ROOF.drawCrossLine) }),
-  would_overlap: (t) => ({ title: t(ROOF.drawOverTitle), line: t(ROOF.drawOverLine) }),
   too_far: (t) => ({ title: t(ROOF.drawFarTitle), line: t(ROOF.drawFarLine) }),
   too_close: (t) => ({ title: t(ROOF.drawCloseTitle), line: t(ROOF.drawCloseLine) }),
   too_many_corners: (t) => ({
@@ -136,8 +131,6 @@ function editRefusalLine(
   switch (refusal) {
     case 'would_cross':
       return t(ROOF.editCross);
-    case 'would_overlap':
-      return t(ROOF.editOver);
     case 'too_far':
       return t(ROOF.editFar);
     case 'too_close':
@@ -203,7 +196,6 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'roof_deleted':
       return t(ROOF.roofDeleted);
     case 'went_back':
-      if (said.fault === 'would_overlap') return t(ROOF.wentBackOver);
       if (said.fault === 'too_far') return t(ROOF.wentBackFar);
       if (said.fault === 'too_close') return t(ROOF.wentBackClose);
       return t(ROOF.wentBackCross);
@@ -255,7 +247,6 @@ export function studioRoofWords(t: T) {
     /** The tag beside the spot while drawing: why it cannot go there, its snap, or its angle. */
     spotTag: (spot: SpotFacts, shown: RoofWordsShown): RoofTag | null => {
       if (spot.refusal === 'would_cross') return { text: tagWord(t, 'cross'), bad: true };
-      if (spot.refusal === 'would_overlap') return { text: tagWord(t, 'over'), bad: true };
       if (spot.refusal !== null) return { text: DRAW_REFUSAL[spot.refusal](t).title, bad: true };
       if (spot.snap !== null) return { text: snapName(t, spot.snap, shown), bad: false };
       // The angle the next corner makes: digits and the degree sign, never translated.
@@ -264,7 +255,6 @@ export function studioRoofWords(t: T) {
     /** The tag beside the drag in hand: why it would go back, its turn, a new corner, or its snap. */
     dragTag: (drag: DragFacts, shown: RoofWordsShown): RoofTag | null => {
       if (drag.fault === 'would_cross') return { text: tagWord(t, 'cross'), bad: true };
-      if (drag.fault === 'would_overlap') return { text: tagWord(t, 'over'), bad: true };
       if (drag.fault === 'too_close') return { text: DRAW_REFUSAL.too_close(t).title, bad: true };
       // Any other refusal is a sentence: the bar says it; the tag beside the finger stays short.
       if (drag.fault !== null) return null;

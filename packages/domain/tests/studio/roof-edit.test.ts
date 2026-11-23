@@ -129,12 +129,9 @@ describe('a later length fixes its own edge', () => {
     });
   });
 
-  it('a length that would push the roof over another is refused', () => {
+  it('a length that pushes the roof over another is set: no roof is refused for lying over another', () => {
     const design = designOf(roofOf(RECT, ['traced', 'typed', 'traced', 'traced']), SHED);
-    expect(lengthSet(design, 0, 0, 9, 'typed')).toEqual({
-      kind: 'refused',
-      refusal: 'would_overlap',
-    });
+    expect(lengthSet(design, 0, 0, 9, 'typed').kind).toBe('done');
   });
 });
 
@@ -199,7 +196,7 @@ describe('dragging a corner', () => {
 
   it.each([
     ['across the roof: the edges cross', [], p(4, -3), 'would_cross'],
-    ['into another roof', [SHED], p(10, 7), 'would_overlap'],
+    ['into another roof: it may lie over it', [SHED], p(10, 7), null],
   ])('%s', (_name, others, to, fault) => {
     expect(cornerDragged(designOf(roofOf(RECT), ...others), 0, 2, to, true).fault).toBe(fault);
   });
@@ -243,8 +240,8 @@ describe('moving and turning a roof', () => {
     expect(drag.fault).toBeNull();
   });
 
-  it('a move onto another roof is a fault', () => {
-    expect(roofMoved(designOf(roofOf(RECT), SHED), 0, p(2, 0)).fault).toBe('would_overlap');
+  it('a move onto another roof is no fault', () => {
+    expect(roofMoved(designOf(roofOf(RECT), SHED), 0, p(2, 0)).fault).toBeNull();
   });
 
   it('turns about its middle and keeps its area', () => {
