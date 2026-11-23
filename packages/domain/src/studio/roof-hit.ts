@@ -64,7 +64,7 @@ function onWall(
   sight: Sight,
   from: GroundPoint,
   to: GroundPoint,
-  footM: number,
+  footAt: (share: number) => number,
   topAt: (share: number) => number,
 ): number | null {
   // Along the sight, plan points move linearly with height: find the height where it crosses the wall's line.
@@ -82,7 +82,7 @@ function onWall(
   if (span === 0) return null;
   const share = ((point.east - from.east) * wall.e + (point.north - from.north) * wall.n) / span;
   if (share < 0 || share > 1) return null;
-  return up >= footM - SAME_M && up <= topAt(share) + SAME_M ? up : null;
+  return up >= footAt(share) - SAME_M && up <= topAt(share) + SAME_M ? up : null;
 }
 
 /** How far a plan point lies from a segment, in metres. */
@@ -144,16 +144,27 @@ function metAll(document: StudioDocument, scene: RoofScene, sight: Sight): Met[]
   for (const face of scene.faces)
     add(onFace(sight, face.corners), face.roof, { kind: 'face', roof: face.roof });
   for (const prism of scene.prisms) {
-    if (prism.top !== 'none') {
+    // A parapet that rises with a sloped face is met on its walls alone.
+    if (prism.top !== 'none' && prism.rise === undefined) {
       const at = sightAt(sight, prism.topM);
       const inside =
         pointInside(at, prism.outer) && !prism.holes.some((hole) => pointInside(at, hole));
       add(inside ? prism.topM : null, prism.roof, { kind: 'roof', roof: prism.roof });
     }
-    for (const ring of [prism.outer, ...prism.holes]) {
+    for (const [k, ring] of [prism.outer, ...prism.holes].entries()) {
       ring.forEach((from, i) => {
-        const to = ring[(i + 1) % ring.length] as GroundPoint;
-        const up = onWall(sight, from, to, prism.footM, () => prism.topM);
+        const j = (i + 1) % ring.length;
+        const to = ring[j] as GroundPoint;
+        const rise = k === 0 ? prism.rise : undefined;
+        const lift = (share: number) =>
+          rise === undefined ? 0 : (rise[i] ?? 0) + ((rise[j] ?? 0) - (rise[i] ?? 0)) * share;
+        const up = onWall(
+          sight,
+          from,
+          to,
+          (share) => prism.footM + lift(share),
+          (share) => prism.topM + lift(share),
+        );
         if (up === null) return;
         // A wall is met as its roof's side, or its hole's: the side is named once the hit is chosen.
         const inHole = onHole(document, prism.roof, from, to);
@@ -166,7 +177,7 @@ function metAll(document: StudioDocument, scene: RoofScene, sight: Sight): Met[]
       sight,
       wall.from,
       wall.to,
-      wall.footM,
+      () => wall.footM,
       (share) => wall.fromTopM + (wall.toTopM - wall.fromTopM) * share,
     );
     add(up, wall.roof, { kind: 'side', roof: wall.roof, side: -1 });

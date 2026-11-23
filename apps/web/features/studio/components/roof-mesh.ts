@@ -48,13 +48,35 @@ function upRing<P extends GroundPoint>(ring: readonly P[], left: boolean): reado
   return turn(ring) >= 0 === left ? ring : [...ring].reverse();
 }
 
-/** A flat cap over an outline with holes, at one height, facing up or down. */
+/** How far a solid's corner rises with the face it stands on; 0 for a solid that stands level. */
+type Rise = (corner: GroundPoint) => number;
+const LEVEL: Rise = () => 0;
+
+function riseOf(prism: ScenePrism): Rise {
+  const { rise } = prism;
+  if (rise === undefined) return LEVEL;
+  const at = new Map(prism.outer.map((corner, i) => [corner, rise[i] ?? 0]));
+  return (corner) => at.get(corner) ?? 0;
+}
+
+/** A triangle's normal, from its corners: a cap that rises with a face leans with it. */
+function normalOf(a: Vertex, b: Vertex, c: Vertex): number[] {
+  // In the scene east is x, up is y and north is −z.
+  const [ux, uy, uz] = [b.east - a.east, b.up - a.up, a.north - b.north];
+  const [vx, vy, vz] = [c.east - a.east, c.up - a.up, a.north - c.north];
+  const n = [uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx];
+  const length = Math.hypot(...n) || 1;
+  return n.map((each) => each / length);
+}
+
+/** A cap over an outline with holes, at one height and its corners' rise, facing up or down. */
 function cap(
   into: Triangles,
   outer: readonly GroundPoint[],
   holes: readonly (readonly GroundPoint[])[],
   up: number,
   facing: 1 | -1,
+  rise: Rise = LEVEL,
 ) {
   const points = [...outer, ...holes.flat()];
   const found = ShapeUtils.triangulateShape(
@@ -67,7 +89,13 @@ function cap(
     // Seen from the side it faces, a triangle runs anticlockwise.
     const left = (b.east - a.east) * (c.north - a.north) - (b.north - a.north) * (c.east - a.east);
     const [second, third] = left > 0 === facing > 0 ? [b, c] : [c, b];
-    triangle(into, { ...a, up }, { ...second, up }, { ...third, up }, [0, facing, 0]);
+    const corners = [a, second, third].map((at) => ({ ...at, up: up + rise(at) })) as [
+      Vertex,
+      Vertex,
+      Vertex,
+    ];
+    const normal = rise === LEVEL ? [0, facing, 0] : normalOf(...corners);
+    triangle(into, ...corners, normal);
   }
 }
 
@@ -79,24 +107,35 @@ function wall(
   foot: number,
   fromTop: number,
   toTop: number,
+  /** Where the foot rises with a face: its height at the `to` end. */
+  toFoot: number = foot,
 ) {
   const east = to.east - from.east;
   const north = to.north - from.north;
   const length = Math.hypot(east, north) || 1;
   const normal = [north / length, 0, east / length];
   const low = { ...from, up: foot };
-  const lowTo = { ...to, up: foot };
+  const lowTo = { ...to, up: toFoot };
   triangle(into, low, lowTo, { ...to, up: toTop }, normal);
   triangle(into, low, { ...to, up: toTop }, { ...from, up: fromTop }, normal);
 }
 
 /** A solid's walls: outward round its outline, and into each hole. */
-function walls(into: Triangles, prism: ScenePrism) {
+function walls(into: Triangles, prism: ScenePrism, rise: Rise) {
   const rings = [anticlockwise(prism.outer), ...prism.holes.map(clockwise)];
   for (const ring of rings) {
     ring.forEach((from, i) => {
       const to = ring[(i + 1) % ring.length] as GroundPoint;
-      wall(into, from, to, prism.footM, prism.topM, prism.topM);
+      const [up, upTo] = [rise(from), rise(to)];
+      wall(
+        into,
+        from,
+        to,
+        prism.footM + up,
+        prism.topM + up,
+        prism.topM + upTo,
+        prism.footM + upTo,
+      );
     });
   }
 }
@@ -149,12 +188,13 @@ export function roofGeometries(scene: RoofScene): RoofGeometries {
   const tops = empty();
   let topM = 0;
   for (const prism of scene.prisms) {
-    topM = Math.max(topM, prism.topM);
-    walls(plaster, prism);
+    const rise = riseOf(prism);
+    topM = Math.max(topM, prism.topM + Math.max(0, ...(prism.rise ?? [])));
+    walls(plaster, prism, rise);
     const holes = prism.holes.map(clockwise);
     const outer = anticlockwise(prism.outer);
     if (prism.top !== 'none')
-      cap(prism.top === 'roof' ? tops : plaster, outer, holes, prism.topM, 1);
+      cap(prism.top === 'roof' ? tops : plaster, outer, holes, prism.topM, 1, rise);
     // A sheet on posts is seen from under it too.
     if (prism.part === 'sheet') cap(plaster, outer, holes, prism.footM, -1);
   }

@@ -145,7 +145,8 @@ function roofParts(
 ): RoofScene {
   const kind = roofKindOf(at.roof);
   const stretches = worked.edges[at.index] ?? [];
-  const parapets = parapetPrisms(document, at.index, facts, at.topM, stretches);
+  const faces = top === null ? [] : (worked.built[at.index]?.faces ?? []);
+  const parapets = parapetPrisms(document, at.index, facts, at.topM, stretches, faces);
   const none = { faces: [], walls: [], levels: [] };
   if (kind === 'hole') return { ...none, prisms: parapets };
   const sloped = top !== null;

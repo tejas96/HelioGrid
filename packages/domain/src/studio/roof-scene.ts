@@ -32,6 +32,11 @@ export interface ScenePrism {
   readonly topM: number;
   /** Its top is the roof's own top: it wears the picture. A sloped roof's walls have none. */
   readonly top: 'roof' | 'plain' | 'none';
+  /**
+   * A parapet on a sloped roof stands on the face at its edge: how far the face rises at each
+   * corner of `outer`, added to its foot and its top there. Absent, it stands level.
+   */
+  readonly rise?: readonly number[];
 }
 
 /** A point of the model: on the ground's plan, and its height above the ground. */

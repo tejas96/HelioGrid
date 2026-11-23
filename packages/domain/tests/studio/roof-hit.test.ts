@@ -93,6 +93,17 @@ describe('a tap on the 3D model', () => {
     });
   });
 
+  it('a parapet that climbs a gable end is met high up, where it stands', () => {
+    const walled = [{ parapet: true }, { parapet: true }, { parapet: true }, { parapet: true }];
+    const design = designOf(shaped('gable', { sides: walled }));
+    const low = roofSceneOf(design, FACTS, roofsWorked(design, FACTS, 18.5)).levels[0]?.topM ?? 0;
+    // From the west, gently down, a quarter along the end: its parapet stands 0.9 to 1.9 m over the
+    // low edge there, and is met 1.4 m up, above where a level parapet would stop.
+    const level = low + 1.5;
+    const hit = hitOf(design, (h) => ({ east: -1 + (level - h) * 10, north: 2.5 }));
+    expect(hit).toEqual({ kind: 'side', roof: 0, side: 3 });
+  });
+
   it('a second tap on the open roof’s top picks the roof under it', () => {
     const design = designOf(TERRACE, stairOn(box(1, 1, 3, 3)));
     expect(hitOf(design, down(2.5, 2.5), 1)).toEqual({ kind: 'roof', roof: 0 });
