@@ -217,6 +217,7 @@ export {
   roofMarksOf,
   roofStepShown,
 } from './roof-step-view';
+export { STICKS_OUT_MIN_M, sticksOutM } from './roof-sticks-out';
 export {
   edgeTier,
   roofAreaTier,

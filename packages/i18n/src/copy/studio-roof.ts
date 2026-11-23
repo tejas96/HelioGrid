@@ -34,10 +34,10 @@ const ROOF = {
   roofDeleted: /*i18n*/ { id: 'Roof deleted. Undo brings it back.' },
   drawCrossTitle: /*i18n*/ { id: 'This edge would cross another' },
   drawCrossLine: /*i18n*/ { id: 'Tap a spot where the edges do not cross.' },
-  drawFarTitle: /*i18n*/ { id: 'That spot is too far from the pin' },
+  drawFarTitle: /*i18n*/ { id: 'Too far for this site' },
   drawCloseTitle: /*i18n*/ { id: 'Too close to another corner' },
   drawCloseLine: /*i18n*/ { id: 'Tap a little farther from it.' },
-  drawFarLine: /*i18n*/ { id: 'Tap nearer the building.' },
+  drawFarLine: /*i18n*/ { id: 'Past {reach} from the pin · this is another site' },
   drawManyTitle: /*i18n*/ { id: 'A roof has at most {max} corners' },
   drawFewTitle: /*i18n*/ { id: 'A roof needs at least 3 corners' },
   drawRoofsTitle: /*i18n*/ { id: 'A design holds at most {max} roofs' },
@@ -65,10 +65,11 @@ const ROOF = {
   roofMoved: /*i18n*/ { id: 'Roof moved. Undo puts it back.' },
   roofTurned: /*i18n*/ { id: 'Roof turned {degrees}°. Undo puts it back.' },
   wentBackCross: /*i18n*/ { id: 'Those edges would cross. The roof went back.' },
-  wentBackFar: /*i18n*/ { id: 'That is too far from the pin. The roof went back.' },
+  wentBackFar: /*i18n*/ {
+    id: 'Past {reach} from the pin · this is another site. The roof went back.',
+  },
   wentBackClose: /*i18n*/ { id: 'That corner was too close to another. The roof went back.' },
   editCross: /*i18n*/ { id: 'Those edges would cross.' },
-  editFar: /*i18n*/ { id: 'That is too far from the pin.' },
   editClose: /*i18n*/ { id: 'That corner would be too close to another.' },
   dragCrowded: /*i18n*/ { id: 'Drag the corner. Zoom in for more room.' },
   editShort: /*i18n*/ { id: 'A length is at least {length}.' },
@@ -102,14 +103,19 @@ export interface RoofWordsShown {
   readonly height: string;
   /** A roof's own height in metres, formatted. */
   readonly heightOf: (metres: number) => string;
+  /** How far from the pin one site reaches, formatted: a roof past it is another site. */
+  readonly reach: string;
 }
 
 const DRAW_REFUSAL: Record<
   DraftRefusal,
-  (t: T) => { title: TranslatedText; line: TranslatedText }
+  (t: T, shown: RoofWordsShown) => { title: TranslatedText; line: TranslatedText }
 > = {
   would_cross: (t) => ({ title: t(ROOF.drawCrossTitle), line: t(ROOF.drawCrossLine) }),
-  too_far: (t) => ({ title: t(ROOF.drawFarTitle), line: t(ROOF.drawFarLine) }),
+  too_far: (t, { reach }) => ({
+    title: t(ROOF.drawFarTitle),
+    line: t(ROOF.drawFarLine, { reach }),
+  }),
   too_close: (t) => ({ title: t(ROOF.drawCloseTitle), line: t(ROOF.drawCloseLine) }),
   too_many_corners: (t) => ({
     title: t(ROOF.drawManyTitle, { max: ROOF_CORNERS_MAX }),
@@ -133,7 +139,7 @@ function editRefusalLine(
     case 'would_cross':
       return t(ROOF.editCross);
     case 'too_far':
-      return t(ROOF.editFar);
+      return t(ROOF.drawFarLine, { reach: shown.reach });
     case 'too_close':
       return t(ROOF.editClose);
     case 'too_short':
@@ -172,6 +178,8 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'made':
     case 'joined':
     case 'copied':
+    case 'sticks_out':
+    case 'set_free':
       return roofPlaceLine(t, said, shown.heightOf) ?? t(ROOF.roofIdle);
     case 'sized':
       return t(ROOF.roofSized);
@@ -203,7 +211,7 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'roof_deleted':
       return roofPlaceLine(t, said, shown.heightOf) ?? t(ROOF.roofDeleted);
     case 'went_back':
-      if (said.fault === 'too_far') return t(ROOF.wentBackFar);
+      if (said.fault === 'too_far') return t(ROOF.wentBackFar, { reach: shown.reach });
       if (said.fault === 'too_close') return t(ROOF.wentBackClose);
       return t(ROOF.wentBackCross);
     case 'refused':
@@ -219,8 +227,10 @@ export function studioRoofWords(t: T) {
     /** The one line before the first corner: what to do. It goes with the first tap. */
     drawHint: t(ROOF.drawHint),
     /** Why a corner or a close is refused: what the tag by the line says, and what is read out. */
-    drawRefusal: (refusal: DraftRefusal): { title: TranslatedText; line: TranslatedText } =>
-      DRAW_REFUSAL[refusal](t),
+    drawRefusal: (
+      refusal: DraftRefusal,
+      shown: RoofWordsShown,
+    ): { title: TranslatedText; line: TranslatedText } => DRAW_REFUSAL[refusal](t, shown),
     /** The filled pencil's name while drawing: a tap stops. */
     stopDrawing: t(ROOF.stopDrawing),
     /** The trash while drawing: every corner goes, and drawing goes on. */
@@ -255,7 +265,8 @@ export function studioRoofWords(t: T) {
     /** The tag beside the spot while drawing: why it cannot go there, its snap, or its angle. */
     spotTag: (spot: SpotFacts, shown: RoofWordsShown): RoofTag | null => {
       if (spot.refusal === 'would_cross') return { text: tagWord(t, 'cross'), bad: true };
-      if (spot.refusal !== null) return { text: DRAW_REFUSAL[spot.refusal](t).title, bad: true };
+      if (spot.refusal !== null)
+        return { text: DRAW_REFUSAL[spot.refusal](t, shown).title, bad: true };
       if (spot.snap !== null) return { text: snapName(t, spot.snap, shown), bad: false };
       // The angle the next corner makes: digits and the degree sign, never translated.
       return spot.angle === null ? null : { text: shownAsSent(`${spot.angle}°`), bad: false };
@@ -263,7 +274,8 @@ export function studioRoofWords(t: T) {
     /** The tag beside the drag in hand: why it would go back, its turn, a new corner, or its snap. */
     dragTag: (drag: DragFacts, shown: RoofWordsShown): RoofTag | null => {
       if (drag.fault === 'would_cross') return { text: tagWord(t, 'cross'), bad: true };
-      if (drag.fault === 'too_close') return { text: DRAW_REFUSAL.too_close(t).title, bad: true };
+      if (drag.fault === 'too_close')
+        return { text: DRAW_REFUSAL.too_close(t, shown).title, bad: true };
       // Any other refusal is a sentence: the bar says it; the tag beside the finger stays short.
       if (drag.fault !== null) return null;
       if (drag.grip === 'turn') return { text: tagWord(t, 'turned', drag.degrees), bad: false };

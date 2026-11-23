@@ -3,7 +3,8 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { RoofBar } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { theme } from '@heliogrid/theme';
-import { Button, IconButton, ShellGlyph, Text } from '@heliogrid/ui';
+import { Button, IconButton, ShellGlyph, Text, useFormat } from '@heliogrid/ui';
+import { roofWordsShown } from './roof-words-shown';
 import { picturePillOf } from './StudioPicturePills';
 
 /** The round tools in the bar take the tool columns' size. */
@@ -52,7 +53,9 @@ export function DrawPill({
   studio,
   words,
 }: PillFacts & { bar: Extract<RoofBar, { kind: 'drawing' }> }) {
-  const refusal = bar.refused === null ? null : words.drawRefusal(bar.refused);
+  const format = useFormat();
+  const shown = roofWordsShown(format, studio.units, studio.startHeightM);
+  const refusal = bar.refused === null ? null : words.drawRefusal(bar.refused, shown);
   return (
     <>
       <MagnetSwitch studio={studio} words={words} />

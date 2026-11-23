@@ -1,6 +1,6 @@
 import { GROUND_REACH_M, type Roof, type StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { between, CORNER_GAP_M, edgesCross, pointInside } from './roof-shape';
+import { between, CORNER_GAP_M, edgesCross } from './roof-shape';
 import type { Guide, RoofSnap } from './roof-snap';
 
 /**
@@ -66,17 +66,6 @@ export function faultOf(corners: readonly GroundPoint[]): EditRefusal | null {
   if (edgesCross(corners)) return 'would_cross';
   if (corners.some((c, i) => corners.some((d, j) => j > i && between(c, d) < CORNER_GAP_M))) {
     return 'too_close';
-  }
-  return null;
-}
-
-/** The roof a point lies inside, the last drawn first; `null` on open ground. */
-export function roofUnder(
-  roofs: readonly { readonly corners: readonly GroundPoint[] }[],
-  at: GroundPoint,
-): number | null {
-  for (let i = roofs.length - 1; i >= 0; i--) {
-    if (pointInside(at, (roofs[i] as (typeof roofs)[number]).corners)) return i;
   }
   return null;
 }

@@ -53,6 +53,10 @@ export type RoofSaid =
     }
   /** A new roof cut back to the edge of the roof it lay over, and what it is now. */
   | { readonly kind: 'cut'; readonly became: RoofBecame }
+  /** An edit left a roof past the edge of the roof it stands on: it stays, marked to check. */
+  | { readonly kind: 'sticks_out'; readonly roof: number; readonly name: RoofName }
+  /** A roof dragged clear of the roof it stood on: it is its own roof now. */
+  | { readonly kind: 'set_free'; readonly roof: number; readonly name: RoofName }
   /** A roof copied beside itself, with what stands on it; the copy is picked to drag. */
   | { readonly kind: 'copied'; readonly roof: number; readonly of: RoofName }
   | { readonly kind: 'sized' }

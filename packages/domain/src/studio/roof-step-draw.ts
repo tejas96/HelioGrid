@@ -1,8 +1,8 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { roofUnder } from './roof-check';
 import { draftClosesAt, draftTap } from './roof-draw';
 import { roofWithItsParts } from './roof-kind';
+import { roofPickedAt } from './roof-pick';
 import { draftSpot, type Snapped, type SnapTargets, snapTargetsOf } from './roof-snap';
 import {
   type DraftLeft,
@@ -31,8 +31,8 @@ export function tapped(
   document: StudioDocument,
 ): RoofStepOutcome {
   if (state.kind === 'idle' && state.picked !== null) return stay(idle(null, state.roof));
-  // A tap inside a roof picks it; on open ground, none.
-  if (state.kind === 'idle') return stay(idle(null, roofUnder(document.roofs, at)));
+  // A tap inside a roof picks it — the top one first, then the one under it; on open ground, none.
+  if (state.kind === 'idle') return stay(idle(null, roofPickedAt(document, at, state.roof)));
   if (state.kind !== 'drawing') return stay(state);
   const targets = snapTargetsOf(document.roofs);
   // On the grid the magnet's holds go first and the whole metre last: the corner is held level or

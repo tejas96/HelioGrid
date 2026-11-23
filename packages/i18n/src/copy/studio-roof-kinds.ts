@@ -50,6 +50,8 @@ const KIND = {
   oneOutline: /*i18n*/ { id: 'One roof, one outline' },
   copied: /*i18n*/ { id: 'Copy of {roof} · drag it onto its house' },
   deleted: /*i18n*/ { id: '{name} deleted · Undo brings it back' },
+  sticksOut: /*i18n*/ { id: '{name} sticks out · to check' },
+  setFree: /*i18n*/ { id: '{name} is its own roof now · Undo puts it back' },
 } as const;
 
 const KIND_WORD: Record<RoofKind, (typeof KIND)[keyof typeof KIND]> = {
@@ -153,6 +155,10 @@ export function roofPlaceLine(
       return t(KIND.copied, { roof: roofNameWord(t, said.of) });
     case 'roof_deleted':
       return said.was === undefined ? null : t(KIND.deleted, { name: roofNameWord(t, said.was) });
+    case 'sticks_out':
+      return t(KIND.sticksOut, { name: roofNameWord(t, said.name) });
+    case 'set_free':
+      return t(KIND.setFree, { name: roofNameWord(t, said.name) });
     default:
       return null;
   }
