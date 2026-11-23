@@ -1,9 +1,11 @@
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
+import type { FormPicks } from './roof-built';
 import { outlineForFaces } from './roof-face-outline';
 import { gableEnds } from './roof-forms';
 import { roofSidesOf } from './roof-kind';
-import { LEVEL_M, type RoofFacts, roofFloorM, roofHasWalls } from './roof-levels';
+import { LEVEL_M, type RoofFacts, roofFloorM, roofHasWalls, roofShapeNow } from './roof-levels';
+import type { RoofShape } from './roof-material';
 import { stretchesTaken } from './roof-polygons';
 import { distance, type PlanPoint, ringArea } from './wavefront-lines';
 
@@ -180,4 +182,26 @@ export function glassSideOf(
 ): { readonly side: number; readonly toCheck: boolean } {
   const pole = (equatorBearing(latitude) + HALF_TURN) % FULL_TURN;
   return { side: sideToward(corners, pole), toCheck: Math.abs(latitude) < NEAR_EQUATOR_DEG };
+}
+
+/** The shapes whose slope runs one way from a side: the studio picks that side where no one has. */
+const ONE_WAY: readonly RoofShape[] = ['shed', 'monitor', 'curved', 'butterfly'];
+const RIDGED: readonly RoofShape[] = ['gable', 'gambrel'];
+
+/**
+ * What the studio picks for a roof's form where no person has: a one-way roof's low side, the side
+ * a sawtooth's glass faces, and whether a gable's ridge is turned to look at the equator.
+ */
+export function formPicksOf(
+  document: StudioDocument,
+  index: number,
+  facts: RoofFacts,
+  latitude: number,
+): FormPicks {
+  const roof = document.roofs[index];
+  if (roof === undefined) return {};
+  const shape = roofShapeNow(roof, facts);
+  if (shape === 'sawtooth') return { side: glassSideOf(roof.corners, latitude).side };
+  if (ONE_WAY.includes(shape)) return { side: lowSideOf(document, index, facts, latitude).side };
+  return RIDGED.includes(shape) ? { turned: gableTurnedFor(roof.corners, latitude) } : {};
 }

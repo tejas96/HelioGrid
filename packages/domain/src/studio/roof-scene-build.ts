@@ -1,8 +1,10 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
+import { roofOverhangM } from './roof-built';
 import { movedIn } from './roof-cuts';
-import { roofKindOf, standsOn } from './roof-kind';
+import { roofKindOf, roofSidesOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofFloorM, roofHasWalls, roofOwnHeightM, roofTopsM } from './roof-levels';
+import type { EdgeStretch } from './roof-open-edges';
 import { type FlatShape, shapeOf, shared, without } from './roof-polygons';
 import type { RoofScene, ScenePrism } from './roof-scene';
 import { parapetPrisms } from './roof-scene-parapets';
@@ -61,16 +63,26 @@ function flatBody(document: StudioDocument, facts: RoofFacts, at: Standing): Sce
   return [...body, ...floors];
 }
 
-/** A sloped roof's walls up to its low edge, inside its overhang, with no top of their own. */
-function slopedWalls(at: Standing): ScenePrism[] {
-  const over = at.roof.overhang?.metres ?? 0;
-  const inside =
-    over > 0
-      ? movedIn(
-          at.roof.corners,
-          at.roof.corners.map(() => over),
-        )
-      : [at.roof.corners];
+/**
+ * A sloped roof's walls up to its low edge, inside its overhang, with no top of their own. A side
+ * that another roof meets has no overhang: the wall stands at the outline there, against that
+ * roof. A roof too small to keep its overhang keeps its walls at its outline.
+ */
+function slopedWalls(
+  at: Standing,
+  facts: RoofFacts,
+  stretches: readonly (readonly EdgeStretch[])[],
+): ScenePrism[] {
+  const own = roofOverhangM(at.roof, facts);
+  const sides = roofSidesOf(at.roof);
+  const overs = at.roof.corners.map((_, side) => {
+    const met = (stretches[side] ?? []).some(
+      (each) => each.state !== 'open' && each.other !== null,
+    );
+    return met ? 0 : (sides[side]?.overhangM ?? own);
+  });
+  const moved = overs.some((over) => over > 0) ? movedIn(at.roof.corners, overs) : [];
+  const inside = moved.length > 0 ? moved : [at.roof.corners];
   // A roof whose low edge is at its foot has no wall to stand: a dormer no higher than its roof.
   if (at.topM - at.footM < SAME_M) return [];
   return inside.map(
@@ -158,7 +170,7 @@ function roofParts(
   // A dormer's walls stand from its roof's low edge up to its own, lifted, low edge.
   const dormer = kind === 'dormer' && top !== null;
   const walled = dormer ? { ...at, topM: at.footM + top.liftM } : at;
-  const body = sloped ? slopedWalls(walled) : flatBody(document, facts, at);
+  const body = sloped ? slopedWalls(walled, facts, stretches) : flatBody(document, facts, at);
   return { ...surfaces, levels: [], prisms: [...body, ...parapets] };
 }
 
