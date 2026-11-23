@@ -46,7 +46,6 @@ export {
   roofGround,
   roofSurfaceM2,
   roofsAreaM2,
-  setbackLines,
 } from './studio/roof-free-ground';
 export {
   LEVEL_M,
@@ -92,6 +91,7 @@ export {
   without,
 } from './studio/roof-polygons';
 export type { ProfilePart, StandingWall } from './studio/roof-profile';
+export { setbackLines } from './studio/roof-setback';
 export {
   bearingsApart,
   COMPASS_WAYS,

@@ -1,12 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { GroundPoint } from '../../src/studio/ground';
-import {
-  roofAreaM2,
-  roofSurfaceM2,
-  roofsAreaM2,
-  setbackLines,
-} from '../../src/studio/roof-free-ground';
+import { roofAreaM2, roofSurfaceM2, roofsAreaM2 } from '../../src/studio/roof-free-ground';
 import { ringAreaM2 } from '../../src/studio/roof-polygons';
+import { setbackLines } from '../../src/studio/roof-setback';
 import {
   box,
   designOf,
@@ -58,6 +54,12 @@ describe('a roof’s area', () => {
     const tin = kindOf('tin', 'open_shed', box(5, 4, 4, 4), { on: 'terrace' });
     expect(roofsAreaM2(designOf(TERRACE, duct))).toBeCloseTo(79, 6);
     expect(roofsAreaM2(designOf(TERRACE, duct, tin))).toBeCloseTo(80, 6);
+  });
+
+  it('a duct in a separate part is no roof: the roof that part is carved from does not cover it', () => {
+    const back = kindOf('back', 'separate_part', box(6, 0, 4, 8), { partOf: 'terrace' });
+    const vent = kindOf('vent', 'hole', box(7, 3, 1, 1), { partOf: 'back' });
+    expect(roofsAreaM2(designOf(TERRACE, back, vent))).toBeCloseTo(79, 6);
   });
 
   it('a roof’s surface follows each side’s own slope: an uneven gable is not one slope’s', () => {
@@ -157,6 +159,44 @@ describe('the setback line', () => {
     // A flat roof has no ridge or eave: it keeps its one setback.
     const bare = { ...TERRACE, parapet: { allRound: false, metres: 1, ...PERSON } };
     expect(area(setbackLines(designOf(bare), 0, facts))[0]).toBeCloseTo(9 * 7, 6);
+  });
+
+  it('with a setback for each kind of edge, the line still runs round a duct in a sloped roof', () => {
+    const sloped = { ...SHED, slope: { degrees: 30, ...PERSON } };
+    const byEdge = { eave: 0, ridge: 0.45, hipOrValley: null, gableEnd: null };
+    const facts = { ...FACTS, setbackMeasure: 'from_above' as const, setbackByEdge: byEdge };
+    // A duct in the west face, 10.5–11.5 east, 3–4 north.
+    const vent = kindOf('vent', 'hole', box(10.5, 3, 1, 1), { partOf: 'shed' });
+    const rings = setbackLines(designOf(sloped, vent), 0, facts);
+    // The east face keeps its 1.55 × 7 m. The duct's 0.5 m ring reaches right across the west
+    // face's free strip, from 2.5 to 4.5 north: what is left of it is 2 m to the south and 3 m north.
+    expect(area(rings)).toEqual([
+      expect.closeTo(1.55 * 2, 6),
+      expect.closeTo(1.55 * 3, 6),
+      expect.closeTo(1.55 * 7, 6),
+    ]);
+  });
+
+  it('with a setback for each kind of edge, a side keeps its own and a seam keeps none', () => {
+    const byEdge = { eave: 0.3, ridge: 0.45, hipOrValley: null, gableEnd: null };
+    const facts = { ...FACTS, setbackMeasure: 'from_above' as const, setbackByEdge: byEdge };
+    // The east eave (side 1) keeps a person's 1 m; the west eave keeps the market's 0.3 m.
+    const own = {
+      ...SHED,
+      slope: { degrees: 30, ...PERSON },
+      sides: [{}, { setbackM: 1 }, {}, {}],
+    };
+    expect(area(setbackLines(designOf(own), 0, facts))).toEqual([
+      expect.closeTo((2 - 1 - 0.45) * 7, 6),
+      expect.closeTo((2 - 0.3 - 0.45) * 7, 6),
+    ]);
+    // A sloped roof of the same height along the whole east eave: that eave is a seam.
+    const sloped = { ...SHED, slope: { degrees: 30, ...PERSON } };
+    const next = { ...SHED, id: 'next', corners: box(14, 0, 4, 8) };
+    expect(area(setbackLines(designOf(sloped, next), 0, facts))).toEqual([
+      expect.closeTo((2 - 0.3 - 0.45) * 7, 6),
+      expect.closeTo((2 - 0.45) * 7, 6),
+    ]);
   });
 
   it.each([

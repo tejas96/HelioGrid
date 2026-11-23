@@ -99,6 +99,20 @@ describe('a new roof beside the others', () => {
     expect(met.choices).toEqual(['join', 'building', 'open_shed']);
   });
 
+  it.each([
+    ['of the neighbour’s material and sloped: Join first', 'trapezoidal_sheet', 'gable', true],
+    ['of another material: Join is offered, not first', 'clay_tile', 'gable', false],
+    ['of the neighbour’s material and flat: not first', 'trapezoidal_sheet', 'flat', false],
+  ] as const)('a roof that already says what it is, %s', (_why, type, shape, first) => {
+    const as = roofOf('moved', box(14, 2, 5, 4), {
+      material: { type, setBy: 'person', confirmed: true },
+      shape: { is: shape, setBy: 'person' },
+    });
+    const met = meetingOf(HOUSE, as.corners, FACTS, as);
+    expect(met).toMatchObject({ place: 'beside', joinWith: 1, joinFirst: first });
+    expect(met.choices[0]).toBe(first ? 'join' : 'building');
+  });
+
   it('along the edge of a roof at another height: no Join', () => {
     const tall = roofOf('tall', box(0, 0, 10, 8), { height: { metres: 6, setBy: 'person' } });
     const met = meet(box(10, 0, 4, 8), designOf(tall));

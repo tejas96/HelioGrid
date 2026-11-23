@@ -1,7 +1,14 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { groundRoofHeightM } from './roof-height';
-import { LEVEL_M, type RoofFacts, roofFloorM, roofHasWalls, roofSloped } from './roof-levels';
+import {
+  LEVEL_M,
+  type RoofFacts,
+  roofFloorM,
+  roofHasWalls,
+  roofMaterialNow,
+  roofSloped,
+} from './roof-levels';
 import type { RoofKind } from './roof-parts';
 import {
   farApart,
@@ -134,6 +141,7 @@ function besideMeeting(
   corners: readonly GroundPoint[],
   beside: readonly number[],
   facts: RoofFacts,
+  as: Roof | undefined,
 ): RoofMeeting {
   // A new roof on the ground stands a plinth and a storey up until its height is read.
   const own = groundRoofHeightM({ storeyHeightM: facts.storeyHeightM, roof: facts });
@@ -141,8 +149,14 @@ function besideMeeting(
     (index) => Math.abs(roofFloorM(document, index, facts) - own) < LEVEL_M,
   );
   const neighbour = level === undefined ? undefined : document.roofs[level];
-  // The new roof starts like this neighbour: where it slopes, two sloped roofs of one material meet.
-  const joinFirst = neighbour !== undefined && roofSloped(neighbour, facts);
+  // Two sloped roofs of one material side by side would cut through each other: joined is the
+  // likely truth. A roof just drawn starts like this neighbour, so it is what the neighbour is; a
+  // roof that already says what it is made of and how it is shaped is taken at its word.
+  const alike =
+    neighbour !== undefined &&
+    (as === undefined ||
+      (roofSloped(as, facts) && roofMaterialNow(as) === roofMaterialNow(neighbour)));
+  const joinFirst = neighbour !== undefined && alike && roofSloped(neighbour, facts);
   const choices: MeetChoice[] = ['building', 'open_shed'];
   if (level !== undefined) choices.splice(joinFirst ? 0 : 1, 0, 'join');
   const startsLike = level ?? beside[0] ?? null;
@@ -242,13 +256,16 @@ export function meetingOf(
   document: StudioDocument,
   drawn: readonly GroundPoint[],
   facts: RoofFacts,
+  /** The roof as it is, where it already says what it is made of: a copy, or a roof moved here. */
+  as?: Roof,
 ): RoofMeeting {
   let corners = [...drawn];
   for (const roof of document.roofs) corners = metWith(corners, roof.corners);
   const overs = oversOf(document, corners);
   if (overs.length > 0) return overMeeting(document, corners, overs, facts);
   const beside = besideOf(document, corners);
-  return beside.length === 0 ? apart(corners) : besideMeeting(document, corners, beside, facts);
+  if (beside.length === 0) return apart(corners);
+  return besideMeeting(document, corners, beside, facts, as);
 }
 
 /**

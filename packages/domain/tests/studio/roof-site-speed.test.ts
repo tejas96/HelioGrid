@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { roofAreaM2, roofsAreaM2, setbackLines } from '../../src/studio/roof-free-ground';
+import { roofAreaM2, roofsAreaM2 } from '../../src/studio/roof-free-ground';
 import { roofFloorM } from '../../src/studio/roof-levels';
 import { meetingOf } from '../../src/studio/roof-meet';
 import { edgesOf } from '../../src/studio/roof-open-edges';
+import { setbackLines } from '../../src/studio/roof-setback';
 import { box, designOf, FACTS, roofOf, stairOn } from './roof-meet-support';
 
 /**
