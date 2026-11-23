@@ -13,6 +13,11 @@ export interface RoofsPanelView {
   readonly pencil: PencilDoes;
   /** What is open: the pencil's two buttons, Roofs, or the material picker. */
   readonly panel: RoofsPanel;
+  /**
+   * The row of Roofs that is lit while it is open: the next roof that waits after a pick, the row
+   * gone back to, else the roof picked on the model.
+   */
+  readonly litRow: number | null;
   /** The material picker, while it is open. */
   readonly materialPicker: MaterialPickerView | null;
   /** The open roof's sheet was opened from a row of Roofs: it carries Back to the list. */

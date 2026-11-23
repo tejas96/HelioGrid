@@ -17,9 +17,11 @@ import { StudioCanvasNotes } from './StudioCanvasNotes';
 import type { StudioCompassHandle } from './StudioCompass';
 import { StudioFilePick } from './StudioFilePick';
 import { StudioLoupe } from './StudioLoupe';
+import { StudioMaterialPicker } from './StudioMaterialPicker';
 import { StudioRoofMarks } from './StudioRoofMarks';
 import { StudioRoofSheet } from './StudioRoofSheet';
 import type { RoofMarksHandle } from './StudioRoofs';
+import { StudioRoofsList } from './StudioRoofsList';
 import { StudioToolRail } from './StudioToolRail';
 
 /** The sun the scene is lit by before the site's own is known: high, so nothing waits on it. */
@@ -189,13 +191,13 @@ export function StudioCanvas({
         />
         <StudioCanvasNotes studio={studio} words={words} />
         <StudioToolRail
+          studio={studio}
           view={view}
           views={studio.views}
           units={studio.units}
           editable={editable}
           canUndo={studio.canUndo}
           canRedo={studio.canRedo}
-          drawing={drawing}
           newView={studio.offer3d}
           parts={parts}
           canWipe={studio.bar?.kind === 'drawing' && studio.bar.canWipe}
@@ -205,7 +207,6 @@ export function StudioCanvas({
           onUnits={moves.chooseUnits}
           onUndo={moves.undo}
           onRedo={moves.redo}
-          onDraw={drawing ? moves.cancel : moves.draw}
           onZoomIn={() => drive.current?.zoomIn()}
           onZoomOut={() => drive.current?.zoomOut()}
           onHome={() => drive.current?.home()}
@@ -234,6 +235,12 @@ export function StudioCanvas({
             crowded={crowded}
             phone={desktop === false}
           />
+        )}
+        {studio.panel.open === 'roofs' ? (
+          <StudioRoofsList studio={studio} units={studio.units} words={words} />
+        ) : null}
+        {studio.materialPicker === null ? null : (
+          <StudioMaterialPicker picker={studio.materialPicker} studio={studio} words={words} />
         )}
       </div>
     </StudioFilePick>

@@ -6,6 +6,7 @@ import {
   nextWaiting,
   pencilDoes,
   ROOFS_PANEL_START,
+  type RoofBar,
   type RoofFacts,
   type RoofList,
   type RoofSheetView,
@@ -33,6 +34,7 @@ export function useRoofsPanel({
   view,
   drawing,
   sheet,
+  bar,
   act,
   draw,
   stopDrawing,
@@ -51,6 +53,8 @@ export function useRoofsPanel({
   drawing: boolean;
   /** The roof's sheet that is open; `null` with none. */
   sheet: RoofSheetView | null;
+  /** The roof step's bar, which knows the roof picked on the model. */
+  bar: RoofBar | null;
   act: (event: RoofStepEvent) => void;
   draw: () => void;
   stopDrawing: () => void;
@@ -63,6 +67,7 @@ export function useRoofsPanel({
   const [panel, setPanel] = useState<RoofsPanel>(ROOFS_PANEL_START);
   const [fromRoofs, setFromRoofs] = useState(false);
   const sheetRoof = sheet?.roof ?? null;
+  const picked = bar?.kind === 'roofs' ? bar.picked : null;
   const send = (event: RoofsPanelEvent) => setPanel((state) => roofsPanelAfter(state, event));
   const pencil = pencilDoes({
     roofs: document?.roofs.length ?? 0,
@@ -90,6 +95,7 @@ export function useRoofsPanel({
     view: {
       pencil,
       panel,
+      litRow: panel.open === 'roofs' ? (panel.lit ?? sheetRoof ?? picked) : null,
       materialPicker: document === null ? null : materialPickerOf(document, panel, facts),
       sheetFromRoofs: fromRoofs && sheetRoof !== null,
     },

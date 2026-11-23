@@ -24,6 +24,8 @@ export const FOCUS_JOBS = [
   'sheet',
   /** A card of your picture's is open: North, the plan's or its unit (`T-M05-002d`). */
   'picture',
+  /** Roofs or the material picker is open (`T-M05-002`, part e); a reader may open them too. */
+  'roofs',
 ] as const;
 export type FocusJob = (typeof FOCUS_JOBS)[number];
 
@@ -45,6 +47,19 @@ export function focusJobOf(step: RoofStepState): FocusJob {
   return JOB_OF_STEP[step.kind];
 }
 
+/**
+ * The studio's job in hand: what is open over the roof step comes first — Roofs or the material
+ * picker, then a roof's sheet, then a card of your picture's.
+ */
+export function studioJobOf(
+  step: FocusJob,
+  open: { readonly roofs: boolean; readonly sheet: boolean; readonly picture: boolean },
+): FocusJob {
+  if (open.roofs) return 'roofs';
+  if (open.sheet) return 'sheet';
+  return open.picture ? 'picture' : step;
+}
+
 /** What the studio shows of each part. `hidden` steps aside; every other value is on screen. */
 export interface FocusParts {
   /**
@@ -54,7 +69,7 @@ export interface FocusParts {
   readonly stepSwitcher: 'shown' | 'mark' | 'hidden';
   /** The picture chip whole, or its credit line alone. */
   readonly pictureChip: 'shown' | 'credit';
-  /** The pencil that starts a drawing; `filled` while it draws. */
+  /** The pencil, the one door to the roofs: it draws or opens Roofs; `filled` while it draws. */
   readonly pencil: 'shown' | 'filled' | 'hidden';
   /**
    * The magnet, in the bottom bar: while a corner is drawn, and — `picked` — while a roof is picked,
@@ -110,7 +125,7 @@ const LOOKING_TOP: FocusParts = {
 };
 
 /** What a job keeps in the top view; the rest of the parts are the looking ones. */
-const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusParts>> = {
+const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial<FocusParts>> = {
   drawing: {
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
@@ -182,16 +197,30 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet'>, Partial<FocusPart
   },
 };
 
-/** The 3D view holds no drawing tool, no handle and no length label (`T-M05-002`, part a). */
+/**
+ * The 3D view holds no handle and no length label (`T-M05-002`, part a); its pencil opens Roofs
+ * (part e).
+ */
 const IN_3D: Partial<FocusParts> = {
-  pencil: 'hidden',
   magnet: 'hidden',
   otherHandles: 'hidden',
   lengthLabels: 'hidden',
 };
 
-const EDIT_PARTS: Partial<FocusParts> = {
+/**
+ * On a phone Roofs and the material picker are a sheet across the foot: the tools and the bar step
+ * aside for it. On a desktop they open at the right, and everything stays.
+ */
+const ROOFS_ON_PHONE: Partial<FocusParts> = {
   pencil: 'hidden',
+  undoRedo: 'hidden',
+  layers: 'hidden',
+  sideViews: 'hidden',
+  zoom: 'hidden',
+  bottomBar: 'hidden',
+};
+
+const EDIT_PARTS: Partial<FocusParts> = {
   magnet: 'hidden',
   wipe: 'hidden',
   undoRedo: 'hidden',
@@ -199,14 +228,22 @@ const EDIT_PARTS: Partial<FocusParts> = {
 };
 
 function partsOfJob(facts: FocusFacts): FocusParts {
-  const job = facts.canEdit ? facts.job : 'looking';
+  const job = facts.canEdit || facts.job === 'roofs' ? facts.job : 'looking';
+  const roofs = job === 'roofs' && facts.phone ? ROOFS_ON_PHONE : {};
   if (facts.view !== 'top') {
     const sheet: Partial<FocusParts> =
       job === 'sheet'
         ? { stepSwitcher: 'mark', pictureChip: 'credit', layers: 'switch', bottomBar: 'hidden' }
         : {};
-    return { ...LOOKING_TOP, ...IN_3D, sideViews: facts.hasRoof ? 'shown' : 'hidden', ...sheet };
+    return {
+      ...LOOKING_TOP,
+      ...IN_3D,
+      sideViews: facts.hasRoof ? 'shown' : 'hidden',
+      ...sheet,
+      ...roofs,
+    };
   }
+  if (job === 'roofs') return { ...LOOKING_TOP, ...roofs };
   if (job === 'looking' || job === 'sheet') return LOOKING_TOP;
   const parts = { ...LOOKING_TOP, ...IN_A_JOB[job] };
   // On a phone the slider, or the keyboard, takes the low screen: the compass steps aside.
@@ -218,7 +255,12 @@ function partsOfJob(facts: FocusFacts): FocusParts {
 /** Which parts the studio shows for the job in hand. */
 export function focusOf(facts: FocusFacts): FocusParts {
   const parts = partsOfJob(facts);
-  const own = facts.canEdit ? parts : { ...parts, ...EDIT_PARTS };
+  // A reader draws nothing: their pencil opens Roofs, once a roof stands.
+  const reader: Partial<FocusParts> = {
+    ...EDIT_PARTS,
+    pencil: facts.hasRoof ? parts.pencil : 'hidden',
+  };
+  const own = facts.canEdit ? parts : { ...parts, ...reader };
   const stepSwitcher =
     own.stepSwitcher === 'hidden' && facts.saveFailed ? 'mark' : own.stepSwitcher;
   return { ...own, stepSwitcher };

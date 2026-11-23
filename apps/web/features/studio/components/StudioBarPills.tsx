@@ -8,7 +8,7 @@ import { roofWordsShown } from './roof-words-shown';
 import { picturePillOf } from './StudioPicturePills';
 
 /** The round tools in the bar take the tool columns' size. */
-export const BAR_TOOL = theme.layout['button-h-md'];
+const BAR_TOOL = theme.layout['button-h-md'];
 
 interface PillFacts {
   readonly studio: StudioScreen;

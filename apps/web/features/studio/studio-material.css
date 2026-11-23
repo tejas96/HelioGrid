@@ -1,0 +1,105 @@
+/* What a roof is made of: the picker's picture tiles, its groups and a type of one's own
+   (`T-M05-002`, part e). The panel that holds them is Roofs' (`studio-roofs.css`). */
+/* The picker's tiles: a picture of each type with its name under it. */
+.hg-material-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--sp-20), 1fr));
+  gap: var(--sp-2);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.hg-material-tiles .hg-material-tile {
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: var(--sp-1);
+  min-block-size: var(--sp-20);
+  padding: var(--sp-2) var(--sp-1);
+  box-sizing: border-box;
+  border-radius: var(--r-md);
+  background: var(--hg-control-fill);
+  box-shadow: inset 0 0 0 var(--hg-studio-line) var(--line-soft);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* The roof's own type: ink words in an ink outline on the fill it had. */
+.hg-material-tiles .hg-material-tile[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 var(--sp-0-5) var(--text-primary);
+}
+
+.hg-studio-material-picture {
+  flex: none;
+  inline-size: var(--sp-10);
+  block-size: calc(var(--sp-6) + var(--sp-1));
+}
+
+/* The picture of the roof's own type draws in once as the list opens. */
+.hg-material-tile[aria-pressed="true"] .hg-studio-material-picture {
+  animation: hg-material-in var(--dur-emphasised) var(--ease-enter) 1 both;
+}
+
+@keyframes hg-material-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hg-material-tile-more {
+  display: grid;
+  place-items: center;
+  block-size: calc(var(--sp-6) + var(--sp-1));
+  color: var(--text-secondary);
+}
+
+.hg-material-tile-name {
+  font-size: var(--fs-caption);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.hg-material-line {
+  margin: 0;
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-material-groups,
+.hg-material-other {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-material-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.hg-material-group-name {
+  padding: 0;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* A phone: three tiles to a row. */
+@media (width < 968px) {
+  .hg-material-tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

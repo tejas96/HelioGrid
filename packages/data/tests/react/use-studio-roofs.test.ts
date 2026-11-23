@@ -117,6 +117,22 @@ describe('Roofs', () => {
     expect(view.result.current.panel).toEqual({ open: 'roofs', lit: 2 });
   });
 
+  it('opens on the row of the roof picked on the model; Back opens it on the sheet’s row; closed, no row is lit', async () => {
+    const view = await opened(HOUSE);
+    expect(view.result.current.litRow).toBeNull();
+    act(() => view.result.current.moves.openRoofs());
+    expect(view.result.current.litRow).toBeNull();
+    act(() => view.result.current.moves.closePanel());
+    // A tap on the shed in the top view picks it: Roofs then opens on its row.
+    act(() => view.result.current.moves.tap({ east: 12, north: 4 }));
+    act(() => view.result.current.moves.openRoofs());
+    expect(view.result.current.litRow).toBe(2);
+    act(() => view.result.current.moves.pickRow(1));
+    expect(view.result.current.litRow).toBeNull();
+    act(() => view.result.current.moves.backToRoofs());
+    expect(view.result.current.litRow).toBe(1);
+  });
+
   it('Copy and Delete on a row close Roofs, are one save each, and the line names what went', async () => {
     const view = await opened(HOUSE);
     act(() => view.result.current.moves.openRoofs());

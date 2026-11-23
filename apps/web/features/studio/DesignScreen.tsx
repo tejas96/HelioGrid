@@ -28,6 +28,8 @@ import './studio-picture.css';
 import './studio-roof.css';
 import './studio-roof-sides.css';
 import './studio-roof-controls.css';
+import './studio-roofs.css';
+import './studio-material.css';
 import './studio-length.css';
 import './studio-height.css';
 import './studio-motion.css';

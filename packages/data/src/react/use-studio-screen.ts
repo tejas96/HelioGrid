@@ -14,6 +14,7 @@ import {
   type StudioView,
   sceneSunAt,
   stepRail,
+  studioJobOf,
   viewsOffered,
 } from '@heliogrid/domain';
 import { useMemo, useState } from 'react';
@@ -142,6 +143,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     view,
     drawing: roofStep.kind === 'drawing',
     sheet: roofSheet,
+    bar: roof.view.bar,
     act,
     draw,
     stopDrawing: roof.moves.cancel,
@@ -188,7 +190,11 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     ...undoRedoOf(editable, roofStep, history),
     focus: (phone) =>
       focusOf({
-        job: roofSheet !== null ? 'sheet' : own.view.cardOpen ? 'picture' : roof.view.job,
+        job: studioJobOf(roof.view.job, {
+          roofs: panel.view.panel.open === 'roofs' || panel.view.panel.open === 'picker',
+          sheet: roofSheet !== null,
+          picture: own.view.cardOpen,
+        }),
         view,
         phone,
         canEdit: editable,

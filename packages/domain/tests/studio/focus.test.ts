@@ -1,13 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EMPTY_STUDIO_DOCUMENT } from '../../src/studio/document';
-import {
-  FOCUS_JOBS,
-  type FocusFacts,
-  type FocusParts,
-  focusJobOf,
-  focusOf,
-} from '../../src/studio/focus';
-import type { RoofGrip, RoofStepState } from '../../src/studio/roof-step-state';
+import { FOCUS_JOBS, type FocusFacts, type FocusParts, focusOf } from '../../src/studio/focus';
 
 const FACTS: FocusFacts = {
   job: 'looking',
@@ -157,7 +149,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       '3d',
       true,
       {
-        pencil: 'hidden',
         magnet: 'hidden',
         sideViews: 'shown',
         compass: 'shown',
@@ -172,7 +163,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       {
         stepSwitcher: 'mark',
         pictureChip: 'credit',
-        pencil: 'hidden',
         magnet: 'hidden',
         layers: 'switch',
         sideViews: 'shown',
@@ -189,11 +179,39 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       {
         stepSwitcher: 'mark',
         pictureChip: 'credit',
-        pencil: 'hidden',
         magnet: 'hidden',
         layers: 'switch',
         sideViews: 'shown',
         compass: 'shown',
+        otherHandles: 'hidden',
+        lengthLabels: 'hidden',
+        bottomBar: 'hidden',
+      },
+    ],
+    // Roofs and the material picker: a sheet across a phone's foot, a panel at a desktop's right.
+    ['roofs', 'top', false, {}],
+    [
+      'roofs',
+      'top',
+      true,
+      {
+        pencil: 'hidden',
+        undoRedo: 'hidden',
+        layers: 'hidden',
+        zoom: 'hidden',
+        bottomBar: 'hidden',
+      },
+    ],
+    [
+      'roofs',
+      '3d',
+      true,
+      {
+        pencil: 'hidden',
+        magnet: 'hidden',
+        undoRedo: 'hidden',
+        layers: 'hidden',
+        zoom: 'hidden',
         otherHandles: 'hidden',
         lengthLabels: 'hidden',
         bottomBar: 'hidden',
@@ -230,7 +248,6 @@ describe('focus mode: the edge cases', () => {
     const reader = partsOf({ job: 'drawing', canEdit: false });
     expect(reader).toMatchObject({
       stepSwitcher: 'shown',
-      pencil: 'hidden',
       magnet: 'hidden',
       wipe: 'hidden',
       undoRedo: 'hidden',
@@ -239,41 +256,22 @@ describe('focus mode: the edge cases', () => {
     });
   });
 
+  it.each([
+    ['with a roof it opens Roofs', true, 'shown'],
+    ['with no roof there is nothing to open', false, 'hidden'],
+  ] as const)('a reader’s pencil: %s', (_why, hasRoof, pencil) => {
+    expect(partsOf({ canEdit: false, hasRoof }).pencil).toBe(pencil);
+  });
+
+  it('a reader’s Roofs on a phone takes the tools’ and the bar’s place, as an editor’s does', () => {
+    expect(partsOf({ job: 'roofs', canEdit: false, phone: true })).toMatchObject({
+      pencil: 'hidden',
+      layers: 'hidden',
+      bottomBar: 'hidden',
+    });
+  });
+
   it('before a roof stands, 3D offers no side views', () => {
     expect(partsOf({ view: '3d', hasRoof: false }).sideViews).toBe('hidden');
-  });
-});
-
-describe('the job a drag holds: a corner the magnet guides, or a whole roof', () => {
-  const dragging = (grip: RoofGrip): RoofStepState => ({
-    kind: 'dragging',
-    grip,
-    base: EMPTY_STUDIO_DOCUMENT,
-    from: { east: 0, north: 0 },
-    drag: { document: EMPTY_STUDIO_DOCUMENT, snap: null, fault: null, guides: [] },
-    degrees: 0,
-    magnet: true,
-  });
-  it.each([
-    ['a corner', dragging({ kind: 'corner', roof: 0, corner: 1 }), 'dragging'],
-    ['a + pulled out', dragging({ kind: 'plus', roof: 0, edge: 1 }), 'dragging'],
-    ['the move handle', dragging({ kind: 'move', roof: 0 }), 'moving'],
-    ['the turn handle', dragging({ kind: 'turn', roof: 0 }), 'moving'],
-    ['nothing in hand', { kind: 'idle', roof: null, picked: null, said: null } as const, 'looking'],
-    [
-      'a roof being drawn',
-      {
-        kind: 'drawing',
-        corners: [],
-        pointer: null,
-        spot: null,
-        refused: null,
-        magnet: true,
-        wiped: null,
-      } as const,
-      'drawing',
-    ],
-  ])('%s: %s', (_why, step, job) => {
-    expect(focusJobOf(step)).toBe(job);
   });
 });

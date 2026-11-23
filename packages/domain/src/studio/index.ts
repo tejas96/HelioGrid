@@ -56,6 +56,7 @@ export {
   type FocusParts,
   focusJobOf,
   focusOf,
+  studioJobOf,
 } from './focus';
 export { coordinateOf, type GroundBox, type GroundPoint, groundOf } from './ground';
 export {

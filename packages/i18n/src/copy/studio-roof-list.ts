@@ -54,6 +54,8 @@ const LIST = {
   useOther: /*i18n*/ { id: 'Use {name}' },
   useIt: /*i18n*/ { id: 'Use it' },
   fragile: /*i18n*/ { id: '{material}, fragile' },
+  // The bar's next step, after the roofs.
+  nextObjects: /*i18n*/ { id: 'Add roof objects' },
 } as const;
 
 const MATERIAL: Record<RoofMaterial, { id: string }> = {
@@ -165,5 +167,7 @@ export function studioRoofListWords(t: T) {
     otherLine: t(LIST.otherLine),
     /** "Use Kota stone", or "Use it" before a name is typed. */
     useOther: (name: string) => (name === '' ? t(LIST.useIt) : t(LIST.useOther, { name })),
+    /** The bar's one act once a roof stands: on to the next step. */
+    nextObjects: t(LIST.nextObjects),
   };
 }
