@@ -2953,7 +2953,7 @@ msgid "{role} · {company}"
 msgstr "{role} · {company}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:68
+#: src/copy/studio-sheet.ts:67
 msgid "{roof} · faces {way}"
 msgstr "{roof} · {way} दिशेला"
 
@@ -3791,11 +3791,6 @@ msgid "A draft for {name}"
 msgstr "{name} यांच्यासाठी ड्राफ्ट"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:85
-msgid "A face of {roof}: set its slope"
-msgstr "{roof} चा एक भाग: त्याचा उतार ठरवा"
-
-#. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:15
 msgid "A field you leave unset falls through: tax to the market rate, pickers and ranking to their defaults."
 msgstr "तुम्ही रिकामे सोडलेले फील्ड डिफॉल्टवर जाते: कर बाजार दरावर, निवड याद्या आणि क्रम त्यांच्या डिफॉल्टवर."
@@ -4299,7 +4294,7 @@ msgid "Above {limit}, many banks stop one UPI payment. Use bank transfer — the
 msgstr "{limit} पेक्षा जास्त असल्यास अनेक बँका एक UPI पेमेंट थांबवतात. बँक ट्रान्सफर वापरा — संदेशात खाते आणि IFSC असतात."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:86
+#: src/copy/studio-sheet.ts:83
 msgid "Above {roof} · to check"
 msgstr "{roof} च्या वर · तपासायचे आहे"
 
@@ -5139,7 +5134,7 @@ msgid "Any manager"
 msgstr "कोणताही मॅनेजर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:120
+#: src/copy/studio-sheet.ts:117
 msgid "Any shape"
 msgstr "कोणताही आकार"
 
@@ -5598,7 +5593,7 @@ msgstr "तुमच्या निर्णयाची वाट"
 #: src/copy/project-detail.ts:22
 #: src/copy/proposal-builder-frame.ts:55
 #: src/copy/studio-canvas.ts:18
-#: src/copy/studio-sheet.ts:66
+#: src/copy/studio-sheet.ts:65
 msgid "Back"
 msgstr "मागे"
 
@@ -5697,7 +5692,7 @@ msgid "Back to the proposal"
 msgstr "प्रस्तावाकडे परत"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:72
+#: src/copy/studio-sheet.ts:71
 msgid "Back to the roof’s parapet"
 msgstr "परत छताच्या कठड्यावर"
 
@@ -5818,7 +5813,7 @@ msgid "Before dispatch"
 msgstr "डिस्पॅचपूर्वी"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:88
+#: src/copy/studio-sheet.ts:85
 msgid "Below {roof}’s parapet · to check"
 msgstr "{roof} च्या कठड्याखाली · तपासायचे आहे"
 
@@ -6161,7 +6156,7 @@ msgid "Business profile saved"
 msgstr "व्यवसाय प्रोफाइल जतन केली"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:124
+#: src/copy/studio-sheet.ts:121
 msgid "Butterfly"
 msgstr "बटरफ्लाय"
 
@@ -7995,7 +7990,7 @@ msgid "Current plan"
 msgstr "सध्याचा प्लॅन"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:123
+#: src/copy/studio-sheet.ts:120
 msgid "Curved"
 msgstr "वक्र"
 
@@ -8813,12 +8808,12 @@ msgid "Drag to change the height of {name}"
 msgstr "{name} ची उंची बदलण्यासाठी ओढा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:91
+#: src/copy/studio-sheet.ts:88
 msgid "Drag to change the ridge’s height"
 msgstr "कळसाची उंची बदलण्यासाठी ओढा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:90
+#: src/copy/studio-sheet.ts:87
 msgid "Drag to change this side’s parapet height"
 msgstr "या बाजूच्या कठड्याची उंची बदलण्यासाठी ओढा"
 
@@ -9021,7 +9016,7 @@ msgid "Earlier versions are kept as they were sent"
 msgstr "आधीची व्हर्जन पाठवली तशीच ठेवली जातात"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:132
+#: src/copy/studio-sheet.ts:129
 msgid "east"
 msgstr "पूर्व"
 
@@ -9850,7 +9845,7 @@ msgid "Fixed."
 msgstr "दुरुस्त झाले."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:116
+#: src/copy/studio-sheet.ts:113
 msgid "Flat"
 msgstr "सपाट"
 
@@ -10155,17 +10150,17 @@ msgid "G+{floor}"
 msgstr "G+{floor}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:118
+#: src/copy/studio-sheet.ts:115
 msgid "Gable"
 msgstr "गेबल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:82
+#: src/copy/studio-sheet.ts:81
 msgid "Gable end"
 msgstr "गेबल टोक"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:126
+#: src/copy/studio-sheet.ts:123
 msgid "Gambrel"
 msgstr "गॅम्ब्रेल"
 
@@ -10311,7 +10306,7 @@ msgstr "{name} यांना सोपवणे निश्चित झा�
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-list.ts:82
-#: src/copy/studio-sheet.ts:78
+#: src/copy/studio-sheet.ts:77
 msgid "Glass"
 msgstr "काच"
 
@@ -10600,7 +10595,7 @@ msgid "Happy with your solar?"
 msgstr "तुमच्या सोलरवर समाधानी आहात?"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:69
+#: src/copy/studio-sheet.ts:68
 msgid "Has a parapet"
 msgstr "कठडा आहे"
 
@@ -10896,8 +10891,8 @@ msgid "Highest DC voltage (V)"
 msgstr "कमाल DC व्होल्टेज (V)"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:83
-#: src/copy/studio-sheet.ts:119
+#: src/copy/studio-sheet.ts:82
+#: src/copy/studio-sheet.ts:116
 msgid "Hip"
 msgstr "हिप"
 
@@ -12994,7 +12989,7 @@ msgid "Low"
 msgstr "कमी"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:75
+#: src/copy/studio-sheet.ts:74
 msgid "Low side"
 msgstr "खालची बाजू"
 
@@ -13094,12 +13089,12 @@ msgid "Make someone else an EPC Owner first"
 msgstr "आधी दुसऱ्या कोणाला EPC मालक करा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:80
+#: src/copy/studio-sheet.ts:79
 msgid "Make the glass face this way"
 msgstr "काच या दिशेला करा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:77
+#: src/copy/studio-sheet.ts:76
 msgid "Make this the low side"
 msgstr "ही खालची बाजू करा"
 
@@ -13161,7 +13156,7 @@ msgid "Mangalore tile"
 msgstr "मंगलोरी कौल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:125
+#: src/copy/studio-sheet.ts:122
 msgid "Mansard"
 msgstr "मॅनसार्ड"
 
@@ -13541,7 +13536,7 @@ msgid "Money summary"
 msgstr "रकमेचा सारांश"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:122
+#: src/copy/studio-sheet.ts:119
 msgid "Monitor"
 msgstr "मॉनिटर"
 
@@ -14965,7 +14960,7 @@ msgid "No panels yet"
 msgstr "अजून पॅनेल नाहीत"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:70
+#: src/copy/studio-sheet.ts:69
 msgid "No parapet"
 msgstr "कठडा नाही"
 
@@ -14981,7 +14976,7 @@ msgstr "या बाजूला कठडा नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:74
-#: src/copy/studio-sheet.ts:74
+#: src/copy/studio-sheet.ts:73
 msgid "No parapet where {roof}’s wall stands"
 msgstr "जिथे {roof} ची भिंत आहे तिथे कठडा नाही"
 
@@ -15266,7 +15261,7 @@ msgid "None saved yet. Someone who adds parts can save one."
 msgstr "अजून काहीही जतन केलेले नाही. पार्ट जोडू शकणारी व्यक्ती एक जतन करू शकते."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:130
+#: src/copy/studio-sheet.ts:127
 msgid "north"
 msgstr "उत्तर"
 
@@ -15277,12 +15272,12 @@ msgid "North"
 msgstr "उत्तर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:131
+#: src/copy/studio-sheet.ts:128
 msgid "north-east"
 msgstr "ईशान्य"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:137
+#: src/copy/studio-sheet.ts:134
 msgid "north-west"
 msgstr "वायव्य"
 
@@ -16956,7 +16951,7 @@ msgid "Overdue"
 msgstr "मुदत संपली"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:102
+#: src/copy/studio-sheet.ts:99
 msgid "Overhang"
 msgstr "छज्जा"
 
@@ -17202,7 +17197,7 @@ msgid "Parapet details"
 msgstr "कठड्याचा तपशील"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:71
+#: src/copy/studio-sheet.ts:70
 msgid "Parapet height"
 msgstr "कठड्याची उंची"
 
@@ -17296,7 +17291,7 @@ msgid "Past {reach} from the pin · this is another site. The roof went back."
 msgstr "पिनपासून {reach} च्या पुढे · ही दुसरी साइट आहे. छत परत गेले."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:89
+#: src/copy/studio-sheet.ts:86
 msgid "Past {roof}’s edge · to check"
 msgstr "{roof} च्या कडेबाहेर · तपासायचे आहे"
 
@@ -18861,7 +18856,7 @@ msgid "Quick mode used your company’s timeline, payment terms, and terms and c
 msgstr "झटपट मोडने तुमच्या कंपनीची टाइमलाइन, पेमेंट अटी आणि नियम व अटी वापरल्या."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:142
+#: src/copy/studio-sheet.ts:139
 msgid "Railing"
 msgstr "रेलिंग"
 
@@ -18871,12 +18866,12 @@ msgid "Raised frame only"
 msgstr "फक्त उंच फ्रेम"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:99
+#: src/copy/studio-sheet.ts:96
 msgid "Raised middle’s height"
 msgstr "उंचावलेल्या मधल्या भागाची उंची"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:100
+#: src/copy/studio-sheet.ts:97
 msgid "Raised middle’s width"
 msgstr "उंचावलेल्या मधल्या भागाची रुंदी"
 
@@ -19805,7 +19800,7 @@ msgid "Revoke invite for {name}"
 msgstr "आमंत्रण मागे घ्या: {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:87
+#: src/copy/studio-sheet.ts:84
 msgid "Ridge through {roof} · to check"
 msgstr "कळस {roof} मधून आरपार · तपासायचे आहे"
 
@@ -20397,7 +20392,7 @@ msgid "Savings pass the net cost after {years} years"
 msgstr "{years} वर्षांनंतर बचत निव्वळ खर्चापेक्षा जास्त होते"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:121
+#: src/copy/studio-sheet.ts:118
 msgid "Sawtooth"
 msgstr "सॉटूथ"
 
@@ -21096,7 +21091,7 @@ msgstr "शेअर केला किंवा उघडला"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:71
-#: src/copy/studio-sheet.ts:73
+#: src/copy/studio-sheet.ts:72
 msgid "Shared with {roof} · no parapet"
 msgstr "{roof} सोबत सामायिक · कठडा नाही"
 
@@ -21106,7 +21101,7 @@ msgid "Shares {roof}’s edge"
 msgstr "{roof} सोबत एक कड सामायिक"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:117
+#: src/copy/studio-sheet.ts:114
 msgid "Shed"
 msgstr "शेड"
 
@@ -21289,11 +21284,6 @@ msgstr "बाजू {number}: कठडा जोडा"
 #: src/copy/studio-roof-kinds.ts:69
 msgid "Side {number}: take its parapet off"
 msgstr "बाजू {number}: तिचा कठडा काढा"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:84
-msgid "Side facing {way}: open its sheet"
-msgstr "{way} दिशेची बाजू: तिची शीट उघडा"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-height.ts:22
@@ -21746,17 +21736,17 @@ msgid "Source"
 msgstr "स्रोत"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:134
+#: src/copy/studio-sheet.ts:131
 msgid "south"
 msgstr "दक्षिण"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:133
+#: src/copy/studio-sheet.ts:130
 msgid "south-east"
 msgstr "आग्नेय"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:135
+#: src/copy/studio-sheet.ts:132
 msgid "south-west"
 msgstr "नैऋत्य"
 
@@ -22591,7 +22581,7 @@ msgid "Technology"
 msgstr "तंत्रज्ञान"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:98
+#: src/copy/studio-sheet.ts:95
 msgid "Teeth"
 msgstr "दाते"
 
@@ -23268,7 +23258,7 @@ msgid "the generation"
 msgstr "वीजनिर्मिती"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:79
+#: src/copy/studio-sheet.ts:78
 msgid "The glass faces this way"
 msgstr "काच या दिशेला आहे"
 
@@ -24288,7 +24278,7 @@ msgid "This edge would cross another"
 msgstr "ही कडा दुसरीला छेदेल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:81
+#: src/copy/studio-sheet.ts:80
 msgid "This end"
 msgstr "हे टोक"
 
@@ -24393,7 +24383,7 @@ msgid "This is paused for your company. Reading and export still work."
 msgstr "हे तुमच्या कंपनीसाठी थांबवले आहे. पाहणे आणि एक्सपोर्ट अजूनही चालू आहेत."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:76
+#: src/copy/studio-sheet.ts:75
 msgid "This is the low side"
 msgstr "ही खालची बाजू आहे"
 
@@ -24711,7 +24701,7 @@ msgid "This screen arrives in a later update."
 msgstr "ही स्क्रीन पुढच्या एखाद्या अपडेटमध्ये येईल."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:67
+#: src/copy/studio-sheet.ts:66
 msgid "This side"
 msgstr "ही बाजू"
 
@@ -25261,11 +25251,6 @@ msgid "Turn the plan"
 msgstr "आराखडा फिरवा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:65
-msgid "Turn the ridge"
-msgstr "कळस फिरवा"
-
-#. js-lingui-explicit-id
 #: src/copy/studio-roof.ts:90
 msgid "Turn the roof"
 msgstr "छत फिरवा"
@@ -25664,7 +25649,7 @@ msgid "Upper floor"
 msgstr "वरचा मजला"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:96
+#: src/copy/studio-sheet.ts:93
 msgid "Upper slope"
 msgstr "वरचा उतार"
 
@@ -26227,7 +26212,7 @@ msgid "Waking the lead…"
 msgstr "लीड परत आणली जात आहे…"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:141
+#: src/copy/studio-sheet.ts:138
 msgid "Wall"
 msgstr "भिंत"
 
@@ -26506,7 +26491,7 @@ msgid "Went dormant"
 msgstr "निष्क्रिय झाली"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:136
+#: src/copy/studio-sheet.ts:133
 msgid "west"
 msgstr "पश्चिम"
 
@@ -26944,12 +26929,12 @@ msgid "Where the model stops"
 msgstr "मॉडल कुठे थांबते"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:97
+#: src/copy/studio-sheet.ts:94
 msgid "Where the slope breaks"
 msgstr "उतार कुठे बदलतो"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:101
+#: src/copy/studio-sheet.ts:98
 msgid "Where the valley sits"
 msgstr "दरी कुठे आहे"
 

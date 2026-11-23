@@ -62,7 +62,6 @@ const SHEET = {
   slideIt: /*i18n*/ { id: 'Slide {name}' },
   moreShapes: /*i18n*/ { id: 'More shapes' },
   fewerShapes: /*i18n*/ { id: 'Fewer shapes' },
-  turnRidge: /*i18n*/ { id: 'Turn the ridge' },
   back: /*i18n*/ { id: 'Back' },
   thisSide: /*i18n*/ { id: 'This side' },
   sideOf: /*i18n*/ { id: '{roof} · faces {way}' },
@@ -81,8 +80,6 @@ const SHEET = {
   endTitle: /*i18n*/ { id: 'This end' },
   gableEnd: /*i18n*/ { id: 'Gable end' },
   hipEnd: /*i18n*/ { id: 'Hip' },
-  openSide: /*i18n*/ { id: 'Side facing {way}: open its sheet' },
-  openFace: /*i18n*/ { id: 'A face of {roof}: set its slope' },
   crossWall: /*i18n*/ { id: 'Above {roof} · to check' },
   crossRidge: /*i18n*/ { id: 'Ridge through {roof} · to check' },
   crossSunk: /*i18n*/ { id: 'Below {roof}’s parapet · to check' },
@@ -211,7 +208,6 @@ export function studioSheetWords(t: T) {
     shape: (shape: RoofShape) => t(SHAPE[shape]),
     moreShapes: t(SHEET.moreShapes),
     fewerShapes: t(SHEET.fewerShapes),
-    turnRidge: t(SHEET.turnRidge),
     sheetBack: t(SHEET.back),
     thisSide: t(SHEET.thisSide),
     /** A side's sheet's line: "Roof 1 · faces south-west". */
@@ -233,9 +229,6 @@ export function studioSheetWords(t: T) {
     makeGlass: t(SHEET.makeGlass),
     endTitle: t(SHEET.endTitle),
     end: (end: 'gable' | 'hip') => t(end === 'gable' ? SHEET.gableEnd : SHEET.hipEnd),
-    /** A side on the model, spoken: a tap opens its sheet. */
-    openSide: (way: CompassWay) => t(SHEET.openSide, { way: t(WAY[way]) }),
-    openFace: (roof: RoofName) => t(SHEET.openFace, { roof: roofNameWord(t, roof) }),
     wallArrow: t(SHEET.wallArrow),
     /** What a changed roof crosses, on the roof it crosses: allowed, and to check. */
     crossing: (crossing: RoofCrossing) =>

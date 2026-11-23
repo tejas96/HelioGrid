@@ -91,7 +91,7 @@ export function StudioRoofSheet({
             </IconButton>
           )}
           <span className="hg-roof-sheet-names">
-            <span ref={title} className="hg-roof-sheet-title" tabIndex={-1}>
+            <span ref={title} className="hg-roof-sheet-title hg-focus-target" tabIndex={-1}>
               {heading.title}
             </span>
             <span className="hg-roof-sheet-line">{heading.line}</span>
