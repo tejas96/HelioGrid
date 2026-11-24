@@ -38,7 +38,6 @@ export function useGlide(
     const write = (point: GroundPoint) => {
       shown.current = point;
       mark.dataset.at = pointText(point);
-      moved.current();
     };
     const from = shown.current;
     if (from === null || !glide || (from.east === at.east && from.north === at.north)) {
@@ -54,6 +53,8 @@ export function useGlide(
         east: from.east + (at.east - from.east) * s,
         north: from.north + (at.north - from.north) * s,
       });
+      // Between renders nothing lays the marks: each step lays them again.
+      moved.current();
       if (s < 1) frame = requestAnimationFrame(step);
     };
     frame = requestAnimationFrame(step);

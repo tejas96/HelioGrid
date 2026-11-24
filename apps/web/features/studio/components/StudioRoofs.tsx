@@ -170,10 +170,10 @@ function usePlayed(
   still: boolean,
   invalidate: () => void,
 ) {
-  // The model the motion moves into: a later model, with no motion of its own, ends it at once.
-  const into = useRef<RoofScene | null>(null);
+  // The motion with the model it moves into: a later model, with no motion of its own, is drawn
+  // whole at once, in the same render.
   // biome-ignore lint/plugin: the motion playing is the 3D scene's own animation, as its frame clock is
-  const [playing, setPlaying] = useState<RoofSceneMotion | null>(null);
+  const [playing, setPlaying] = useState<{ motion: RoofSceneMotion; into: RoofScene } | null>(null);
   const started = useRef<number | null>(null);
   const seconds =
     (still ? theme.motion.durations.fade : theme.motion.durations.emphasised) / MS_PER_SECOND;
@@ -181,25 +181,19 @@ function usePlayed(
   useEffect(() => {
     if (motion === null || view === 'top') return;
     started.current = null;
-    into.current = model;
-    setPlaying(motion);
+    setPlaying({ motion, into: model });
     invalidate();
   }, [motion?.id]);
-  useEffect(() => {
-    if (into.current !== null && model !== into.current) {
-      into.current = null;
-      setPlaying(null);
-    }
-  }, [model]);
+  const now = playing !== null && playing.into === model ? playing.motion : null;
   useFrame(({ clock }) => {
-    if (playing === null) return;
+    if (now === null) return;
     if (started.current === null) started.current = clock.elapsedTime;
     // Played: one state change takes the moving parts back into the model. Until then each frame
     // asks for the next: the scene draws only when asked.
     if (clock.elapsedTime - started.current >= seconds) setPlaying(null);
     else invalidate();
   });
-  return { motion: playing, started, seconds };
+  return { motion: now, started, seconds };
 }
 
 /**

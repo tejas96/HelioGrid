@@ -147,6 +147,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     sheet.side,
     numberInHand,
     stairs.inHand,
+    sheet.state.heightHeld,
   );
   seen.current = hitAt;
   const stairsMoment = stairs.seen(model);

@@ -35,6 +35,20 @@ const STAIR: WireRoof = {
 };
 
 describe('the model’s motion', () => {
+  it('a change made in an open sheet moves at once: the sheet’s own height is no hand', async () => {
+    origin.designs = [aDesign(2)];
+    stored.document = { ...stored.document, roofs: [TERRACE] };
+    const view = mountedOver(() => useStudioScreen(designId(2), IN_FORMATS));
+    await waitFor(() => expect(view.result.current.document?.roofs).toHaveLength(1));
+    await waitFor(() => expect(view.result.current.editing.kind).toBe('editor'));
+    act(() => view.result.current.moves.see('3d'));
+    act(() => view.result.current.moves.openRoof(0));
+    act(() => view.result.current.moves.setParapetAllRound(false));
+    expect(view.result.current.motion?.moves.map((move) => move.kind)).toEqual(['sink']);
+    // Its save lands before the next test reads the origin.
+    await waitFor(() => expect(stored.saves.length).toBeGreaterThan(0));
+  });
+
   it('a stair room deleted shrinks away; Undo brings it back rising from its roof, a new motion', async () => {
     origin.designs = [aDesign(1)];
     stored.document = { ...stored.document, roofs: [TERRACE, STAIR] };

@@ -130,6 +130,8 @@ export function roofModelShown(
   numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
   /** The stairs held by a drag, not kept yet: they show there. */
   stairsInHand: StairsPlace | null = null,
+  /** A height in hand on the open sheet: the sheet's height alone is no hand. */
+  heightHeld = false,
 ): RoofModelSeen {
   if (document === null) return { ...NOTHING, hitAt: () => null, stairsDropAt: () => null };
   const roofs =
@@ -165,7 +167,7 @@ export function roofModelShown(
     motion: motionOf(
       memory,
       { document: shown, scene },
-      inHand !== null || numberInHand !== null || stairsInHand !== null,
+      heightHeld || numberInHand !== null || stairsInHand !== null,
     ),
     stairsDropAt: (at, reachM, magnet) => stairsDropOf(shown, worked.edges, at, reachM, magnet),
   };
@@ -191,6 +193,7 @@ export function useRoofModel(
   side: number | null = null,
   numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
   stairsInHand: StairsPlace | null = null,
+  heightHeld = false,
 ): RoofModelSeen {
   const memory = useRef<RoofMemory>({});
   const open = sheet?.roof ?? null;
@@ -216,6 +219,20 @@ export function useRoofModel(
       sheetOpen,
       numberInHand,
       stairsInHand,
+      heightHeld,
     );
-  }, [shown, facts, open, held, setBy, pin, side, numberInHand, min, max, stairsInHand]);
+  }, [
+    shown,
+    facts,
+    open,
+    held,
+    setBy,
+    pin,
+    side,
+    numberInHand,
+    min,
+    max,
+    stairsInHand,
+    heightHeld,
+  ]);
 }

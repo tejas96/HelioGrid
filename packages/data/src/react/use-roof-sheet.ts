@@ -70,6 +70,8 @@ export interface RoofSheetState {
   readonly heightRefusal: EditRefusal | null;
   /** The level the dragged height is pulled to now: a level line and its tag; `null` when free. */
   readonly heightPull: HeightPull | null;
+  /** A height is in hand — slid, dragged or typed, not kept yet: the model follows it. */
+  readonly heightHeld: boolean;
 }
 
 /**
@@ -185,6 +187,7 @@ export function useRoofSheet({
         roofSheet === null ? null : (typed ?? entryOf(roofSheet.height.metres, units, false)),
       heightRefusal: refusal,
       heightPull: pull,
+      heightHeld: inHand !== null,
     },
     moves: {
       openRoof,
