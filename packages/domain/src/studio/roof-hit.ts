@@ -1,5 +1,6 @@
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
+import { handFaceAt } from './roof-hand-faces';
 import { roofKindOf } from './roof-kind';
 import { type RoofFacts, roofShapeNow } from './roof-levels';
 import type { RoofHit, RoofScene, SightAt } from './roof-scene';
@@ -55,6 +56,12 @@ function onHole(document: StudioDocument, roof: number, from: GroundPoint, to: G
   });
 }
 
+/** A face met: on an Any-shape roof standing in faces drawn by hand, which of them. */
+function faceHitOf(document: StudioDocument, roof: number, at: GroundPoint | null): RoofHit {
+  const drawn = at === null ? null : handFaceAt(document, roof, at);
+  return { kind: 'face', roof, ...(drawn === null ? {} : { face: drawn }) };
+}
+
 /**
  * Every top, face and wall of the model the line of sight meets between its two ends: from the
  * camera on, never behind it.
@@ -67,8 +74,10 @@ function metAll(document: StudioDocument, scene: RoofScene, sight: Sight): Met[]
     if (up === null || up < low || up > high) return;
     met.push({ up, hit, roof, at: sightAt(sight, up), inHole });
   };
-  for (const face of scene.faces)
-    add(onFace(sight, face.corners), face.roof, { kind: 'face', roof: face.roof });
+  for (const face of scene.faces) {
+    const up = onFace(sight, face.corners);
+    add(up, face.roof, faceHitOf(document, face.roof, up === null ? null : sightAt(sight, up)));
+  }
   for (const prism of scene.prisms) {
     // A parapet that rises with a sloped face is met on its walls alone.
     if (prism.top !== 'none' && prism.rise === undefined) {

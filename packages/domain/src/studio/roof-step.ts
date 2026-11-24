@@ -4,9 +4,10 @@ import { cornerAdded, cornerDragged, cornerRemoved } from './roof-edit';
 import { roofMoved, roofTurned } from './roof-move';
 import { roofNameOf } from './roof-names';
 import { roofMiddle } from './roof-shape';
-import { type SnapTargets, snapTargetsOf } from './roof-snap';
+import type { SnapTargets } from './roof-snap';
 import { copied, deleted } from './roof-step-copy';
-import { cornerUndone, drawing, spotAt, stopped, tapped } from './roof-step-draw';
+import { cornerUndone, drawing, drawTargetsOf, spotAt, stopped, tapped } from './roof-step-draw';
+import { faceClosed, facesDrawn } from './roof-step-faces';
 import {
   committedLength,
   lengthKept,
@@ -163,6 +164,7 @@ function inState<K extends RoofStepState['kind']>(
 const ON: Handlers = {
   draw: (state, { magnet, grid }) =>
     state.kind === 'drawing' ? stay(state) : stay(drawing(magnet, [], grid ?? false)),
+  draw_faces: facesDrawn,
   type_size: typingOpened,
   type_entry: (state, event) => inState(state, 'typing', (typing) => typingEntered(typing, event)),
   type_pair: (state, { text }) => inState(state, 'typing', (typing) => typingPaired(typing, text)),
@@ -179,7 +181,7 @@ const ON: Handlers = {
       return stay({ ...state, left: { ...state.left, magnet } });
     return inState(state, 'drawing', (held) => {
       const { pointer } = held;
-      const targets = snapTargetsOf(document.roofs);
+      const targets = drawTargetsOf(held, document);
       return stay({ ...held, magnet, spot: spotAt({ ...held, magnet }, pointer, targets) });
     });
   },
@@ -199,7 +201,7 @@ const ON: Handlers = {
   cancel: stopped,
   hover: (state, { at }, document) =>
     inState(state, 'drawing', (held) => {
-      const targets = snapTargetsOf(document.roofs);
+      const targets = drawTargetsOf(held, document);
       // The pointer moved on: a refusal of the last tap is behind it; the spot says its own.
       return stay({ ...held, pointer: at, spot: spotAt(held, at, targets), refused: null });
     }),
@@ -208,7 +210,10 @@ const ON: Handlers = {
       ? thenKept(state, system, document, (kept) => stay(kept))
       : tapped(state, at, document),
   undo_corner: cornerUndone,
-  close: closed,
+  close: (state, event, document) =>
+    state.kind === 'drawing' && state.faces !== undefined
+      ? faceClosed(state, event)
+      : closed(state, event, document),
   pick_length: (state, event, document) =>
     state.kind === 'typing'
       ? stay(state)

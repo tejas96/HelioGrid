@@ -1,6 +1,8 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
+import { handFacesOf } from './roof-built';
 import type { BuiltFace } from './roof-faces';
+import { handFacesKept } from './roof-hand-faces';
 import { roofKindOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofOwnHeightM, roofShapeNow } from './roof-levels';
 import { roofNameOf } from './roof-names';
@@ -119,6 +121,10 @@ function markOf(
     }),
   );
   const out = sticksOutFarthest(document, index);
+  // An Any-shape roof's faces drawn by hand show while they are drawn, each with its arrow, before
+  // the roof stands in them; once they cover it they are what the kernel built.
+  const kept = roofShapeNow(roof, facts) === 'any' ? handFacesKept(roof) : [];
+  const hand = handFacesOf(roof, kept, facts);
   const stands = SAYS_ABOVE.includes(kind) && standsOn(document, roof) !== null;
   return {
     kind,
@@ -128,7 +134,8 @@ function markOf(
     aboveM: stands ? roofOwnHeightM(document, roof, facts) : null,
     sticksOutM: out.metres,
     sticksOutAt: out.at,
-    slopes: (worked.built[index]?.faces ?? []).map(slopeOf),
+    faces: hand.map((face) => face.corners.map(({ east, north }) => ({ east, north }))),
+    slopes: (hand.length > 0 ? hand : (worked.built[index]?.faces ?? [])).map(slopeOf),
     // A roof with no parapet of its own has none to lose: there is nothing to say why.
     noWall: parapetNow(document, roof, facts).allRound ? (taken[0] ?? null) : null,
     setback: worked.setbacks[index] ?? [],
