@@ -2776,7 +2776,7 @@ msgid "{pin}, draggable"
 msgstr "{pin}, खींचा जा सकता है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:102
+#: src/copy/studio-canvas.ts:100
 msgid "{place} · roof not set up yet"
 msgstr "{place} · छत अभी तय नहीं"
 
@@ -8863,7 +8863,7 @@ msgid "Drag, or − + for {step}. The first length sizes the whole roof."
 msgstr "खींचें, या {step} के लिए − + दबाएँ। पहली लंबाई पूरी छत का माप तय करती है।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:101
+#: src/copy/studio-canvas.ts:99
 msgid "Draw a roof"
 msgstr "छत बनाएँ"
 
@@ -8876,16 +8876,6 @@ msgstr "पहले छत बनाएँ"
 #: src/copy/studio-faces.ts:35
 msgid "Draw again"
 msgstr "फिर से बनाएँ"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:99
-msgid "Draw myself"
-msgstr "खुद बनाऊँ"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:100
-msgid "Draw on the grid"
-msgstr "ग्रिड पर बनाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-faces.ts:34
@@ -20010,7 +20000,7 @@ msgid "Roof moved. Undo puts it back."
 msgstr "छत खिसकी। पहले जैसा करें से वापस होगी।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:103
+#: src/copy/studio-canvas.ts:101
 msgid "Roof not set up yet"
 msgstr "छत अभी तय नहीं"
 
@@ -23089,7 +23079,7 @@ msgid "The {length} you set would change. Change that length first."
 msgstr "आपकी तय की गई {length} लंबाई बदल जाएगी। पहले वह लंबाई बदलें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:104
+#: src/copy/studio-canvas.ts:102
 msgid "The 3D view cannot start on this device. Try another browser."
 msgstr "इस डिवाइस पर 3D व्यू शुरू नहीं हो सकता। दूसरा ब्राउज़र आज़माएँ।"
 

@@ -137,7 +137,7 @@ function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): Ba
   };
 }
 
-/** Before a roof: the site's name and where it is, and the one way to begin. */
+/** Before a roof: the site's name and where it is; with no picture, typing the size. */
 function startBar(name: TranslatedText, place: string | null, facts: BarFacts): BarView {
   const { words, studio, format, units } = facts;
   const { picture, bar } = studio;
@@ -155,19 +155,9 @@ function startBar(name: TranslatedText, place: string | null, facts: BarFacts): 
     title: name,
     status: deleted ?? why,
     bad: false,
-    // With no picture, typing the size is the main way; drawing on the grid sits beside it.
-    acts: noPicture
-      ? [
-          {
-            key: 'draw',
-            label: words.drawOnGrid,
-            icon: 'pencil',
-            secondary: true,
-            onPress: studio.moves.draw,
-          },
-          { key: 'type', label: words.typeSize, onPress: studio.moves.typeSize },
-        ]
-      : [{ key: 'draw', label: words.drawMyself, icon: 'pencil', onPress: studio.moves.draw }],
+    // The pencil is the one door to drawing (E042): the bar keeps no second one. With no picture,
+    // typing the size is the way the pencil does not offer.
+    acts: noPicture ? [{ key: 'type', label: words.typeSize, onPress: studio.moves.typeSize }] : [],
   };
 }
 
