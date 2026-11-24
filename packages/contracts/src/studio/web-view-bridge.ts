@@ -30,14 +30,30 @@ export const webViewBackSchema = z.object({ v: version, kind: z.literal('back') 
 export type WebViewBack = z.infer<typeof webViewBackSchema>;
 
 /**
+ * Phone → page: how far the phone's own bars (the clock's bar, the home bar or Android's buttons)
+ * reach over the page, in CSS pixels, sent when the page asks (`insets-needed`) and again when they
+ * change. The studio runs its map under them and keeps its controls clear. A page older than this
+ * reads it as `null`.
+ */
+export const webViewInsetsSchema = z.object({
+  v: version,
+  kind: z.literal('insets'),
+  top: z.number().nonnegative(),
+  right: z.number().nonnegative(),
+  bottom: z.number().nonnegative(),
+  left: z.number().nonnegative(),
+});
+export type WebViewInsets = z.infer<typeof webViewInsetsSchema>;
+
+/**
  * Page → phone. `token-needed`: the page is ready, or its token lapsed — send one. `leave`: the
  * person pressed the way back; the phone goes back a screen. `site`: the person asked to change the
  * site details; the phone opens its own Site details in the studio's place. `haptic`: the phone taps
  * — a light `selection` on a snap, a close or the slider's tick, a short `impact` on a refusal
  * (`T-M05-002`, part b). `back-here`: the page takes the system back itself — the phone sends it
  * `back` and goes no further, until `back-gone` says the page stopped listening; a phone that never
- * hears it leaves the screen on back, as before. A
- * phone app older than a kind reads it as `null` and does nothing.
+ * hears it leaves the screen on back, as before. `insets-needed`: the page runs under the phone's
+ * bars — send `insets`. A phone app older than a kind reads it as `null` and does nothing.
  */
 export const webViewAskSchema = z.discriminatedUnion('kind', [
   z.object({ v: version, kind: z.literal('token-needed') }),
@@ -45,6 +61,7 @@ export const webViewAskSchema = z.discriminatedUnion('kind', [
   z.object({ v: version, kind: z.literal('site') }),
   z.object({ v: version, kind: z.literal('back-here') }),
   z.object({ v: version, kind: z.literal('back-gone') }),
+  z.object({ v: version, kind: z.literal('insets-needed') }),
   z.object({ v: version, kind: z.literal('haptic'), strength: z.enum(['selection', 'impact']) }),
 ]);
 export type WebViewAsk = z.infer<typeof webViewAskSchema>;

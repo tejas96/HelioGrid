@@ -23,6 +23,7 @@ import {
   RADIUS,
   type Shadow,
   SPACING,
+  STUDIO_CHROME,
 } from './tokens/layout';
 import {
   AMBIENT,
@@ -125,7 +126,7 @@ function rootDeclarations(): Declarations {
   type['doc-preview-scale'] = DOCUMENT_PREVIEW_SCALE;
 
   const sizes: Record<string, string> = {};
-  for (const group of [SPACING, LAYOUT, RADIUS, PRINT]) {
+  for (const group of [SPACING, LAYOUT, RADIUS, PRINT, STUDIO_CHROME.desk]) {
     for (const [k, v] of Object.entries(group)) sizes[k] = px(v);
   }
 
@@ -223,6 +224,11 @@ const springEasings = Object.fromEntries(
 );
 
 /** `dist/tokens.css`: the faces, every token in light, dark and field, and reduced motion. */
+/** The studio's phone chrome: the same names, smaller, below the desktop breakpoint. */
+const studioPhone: Declarations = Object.fromEntries(
+  Object.entries(STUDIO_CHROME.phone).map(([k, v]) => [k, px(v)]),
+);
+
 export function renderTokensCss(keyframes: string, fieldRules: string): string {
   const dark = (selector: string) =>
     block(selector, DARK_DECLS).replace('{\n', '{\n  color-scheme:dark;\n');
@@ -239,6 +245,7 @@ export function renderTokensCss(keyframes: string, fieldRules: string): string {
     `@media print{\n${block(':root,:root[data-theme="dark"],:root:not([data-theme="light"])', PAPER_DECLS).replace('{\n', '{\n  color-scheme:light;\n')}}\n`,
     `@supports (transition-timing-function:linear(0,1)){\n${block(':root', springEasings)}}\n`,
     `@media (prefers-reduced-motion:reduce){\n${block(':root', reducedMotion)}}\n`,
+    `@media (width < ${px(LAYOUT['bp-desktop'])}){\n${block(':root', studioPhone)}}\n`,
     `@media (pointer:coarse){\n${block(':root', { 'fs-field-value': px(FIELD_VALUE_TOUCH) })}}\n`,
     keyframes,
     fieldRules,

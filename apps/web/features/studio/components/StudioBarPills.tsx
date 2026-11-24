@@ -2,13 +2,9 @@
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { RoofBar } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { theme } from '@heliogrid/theme';
 import { Button, IconButton, ShellGlyph, Text, useFormat } from '@heliogrid/ui';
 import { roofWordsShown } from './roof-words-shown';
 import { picturePillOf } from './StudioPicturePills';
-
-/** The round tools in the bar take the tool columns' size. */
-const BAR_TOOL = theme.layout['button-h-md'];
 
 interface PillFacts {
   readonly studio: StudioScreen;
@@ -19,34 +15,17 @@ interface PillFacts {
 export function MagnetSwitch({ studio, words }: PillFacts) {
   return (
     <span className="hg-studio-magnet">
-      <IconButton
-        label={words.magnet}
-        size={BAR_TOOL}
-        pressed={studio.magnet}
-        onClick={studio.moves.toggleMagnet}
-      >
+      <IconButton label={words.magnet} pressed={studio.magnet} onClick={studio.moves.toggleMagnet}>
         <ShellGlyph name="magnet" size="md" tone="current" />
       </IconButton>
     </span>
   );
 }
 
-/** A save of the magnet's pick the server refused: said beside the switch, with a retry. */
-export function MagnetRefused({ studio, words }: PillFacts) {
-  if (!studio.magnetRefused) return null;
-  return (
-    <span className="hg-studio-pill-refused" role="alert">
-      {words.magnetNotSaved}
-      <Button variant="secondary" size="sm" onClick={studio.moves.retryMagnet}>
-        {words.tryAgain}
-      </Button>
-    </span>
-  );
-}
-
 /**
- * The foot while drawing: one slim pill, no sentence, so the map keeps its room — the magnet, and
- * Close shape once the shape can close. A refusal is the tag by the line, and is read out here.
+ * The foot while drawing: one slim pill, no sentence, so the map keeps its room — Type the size
+ * before the first corner, and Close shape once the shape can close; the magnet is in the left
+ * tool column. A refusal is the tag by the line, and is read out here.
  */
 export function DrawPill({
   bar,
@@ -62,7 +41,6 @@ export function DrawPill({
       {bar.face === null ? null : (
         <span className="hg-studio-pill-text">{words.faceDrawing(bar.face)}</span>
       )}
-      <MagnetSwitch studio={studio} words={words} />
       {/* Before the first corner, typing the size is one tap away; the first corner takes it away. */}
       {bar.hint ? (
         <Button variant="secondary" size="md" onClick={studio.moves.typeSize}>
@@ -79,7 +57,6 @@ export function DrawPill({
           {words.closeShape}
         </Button>
       ) : null}
-      <MagnetRefused studio={studio} words={words} />
       <span role="status" className="hg-studio-pill-status">
         {refusal === null ? null : <Text spokenOnly>{`${refusal.title}. ${refusal.line}`}</Text>}
       </span>

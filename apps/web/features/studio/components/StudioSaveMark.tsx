@@ -2,7 +2,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { StudioEditing, StudioSaveState } from '@heliogrid/data/react';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { theme } from '@heliogrid/theme';
 import { IconButton, Menu, type MenuItem, ShellGlyph } from '@heliogrid/ui';
 import { useRef } from 'react';
 
@@ -95,7 +94,7 @@ export function StudioSaveMark({
           align="end"
           items={items}
           trigger={
-            <IconButton label={mark.text} variant="ghost" size={theme.layout['button-h-sm']}>
+            <IconButton label={mark.text} variant="ghost">
               {glyph}
             </IconButton>
           }

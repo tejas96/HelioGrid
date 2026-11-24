@@ -1,7 +1,6 @@
 'use client';
 import type { StepPlace, StudioStep } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { theme } from '@heliogrid/theme';
 import { Button, IconButton, Menu, type MenuItem, ShellGlyph } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 import { useOwnSize } from '../hooks/use-own-size';
@@ -142,12 +141,7 @@ export function StudioStepSwitcher({
     if (place === undefined) return null;
     if (place.step === 'site' && onSite === null) {
       return (
-        <IconButton
-          label={words.back}
-          variant="ghost"
-          size={theme.layout['button-h-sm']}
-          onClick={onLeave}
-        >
+        <IconButton label={words.back} variant="ghost" onClick={onLeave}>
           <ShellGlyph name="chevron-left" size="md" />
         </IconButton>
       );
@@ -158,7 +152,6 @@ export function StudioStepSwitcher({
       <IconButton
         label={label}
         variant="ghost"
-        size={theme.layout['button-h-sm']}
         {...(go !== null && 'open' in go
           ? { onClick: go.open }
           : {

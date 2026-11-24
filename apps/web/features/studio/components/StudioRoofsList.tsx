@@ -2,14 +2,10 @@
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { MeasurementSystem, RoofRow } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { theme } from '@heliogrid/theme';
 import { IconButton, Pressable, ShellGlyph, type ShellGlyphName, useFormat } from '@heliogrid/ui';
 import { useEffect, useRef } from 'react';
 import { usePressAway } from '../hooks/use-press-away';
 import { ROOF_KIND_GLYPH } from './roof-kind-glyph';
-
-/** A row's Copy and Delete, and the sheet's ×: smaller than the tools, still a 44 px target. */
-const ROW_TOOL = theme.layout['button-h-sm'];
 
 /** A row's picture: what the roof is; a building that is not the main roof is drawn as one more. */
 function glyphOf(row: RoofRow): ShellGlyphName {
@@ -77,7 +73,6 @@ function RoofsRow({
           <IconButton
             label={words.rowCopy(row.name)}
             variant="ghost"
-            size={ROW_TOOL}
             onClick={() => moves.copyRow(row.roof)}
           >
             <ShellGlyph name="copy" size="sm" />
@@ -85,7 +80,6 @@ function RoofsRow({
           <IconButton
             label={words.rowDelete(row.name)}
             variant="ghost"
-            size={ROW_TOOL}
             onClick={() => moves.deleteRow(row.roof)}
           >
             <ShellGlyph name="trash" size="sm" />
@@ -133,12 +127,7 @@ export function StudioRoofsList({
         <span className="hg-roofs-title" tabIndex={-1}>
           {words.roofsHead(roofList.count, format.area(roofList.areaM2, units))}
         </span>
-        <IconButton
-          label={words.roofsClose}
-          variant="ghost"
-          size={ROW_TOOL}
-          onClick={moves.closePanel}
-        >
+        <IconButton label={words.roofsClose} variant="ghost" onClick={moves.closePanel}>
           <ShellGlyph name="close" size="sm" />
         </IconButton>
       </div>

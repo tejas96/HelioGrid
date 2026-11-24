@@ -21,8 +21,8 @@
   display: grid;
   flex: none;
   place-items: center;
-  inline-size: var(--sp-8);
-  block-size: var(--sp-8);
+  inline-size: var(--studio-thumb);
+  block-size: var(--studio-thumb);
   overflow: hidden;
   border-radius: var(--r-sm);
   background: var(--fill);
@@ -222,8 +222,28 @@
 }
 
 @media (width < 968px) {
+  /* A phone's chip is one slim line high: the source and its credit, each on one line. */
+  .hg-studio-chip {
+    gap: var(--sp-2);
+    padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-1);
+  }
+
+  .hg-studio-chip-credit {
+    -webkit-line-clamp: 1;
+  }
+
   .hg-studio-picture-card {
     justify-self: stretch;
     inline-size: auto;
   }
+}
+
+/* A picture file refused: said in the pill in the error colour, with its retry. */
+.hg-studio-pill-refused {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding-inline: var(--sp-2) 0;
+  color: var(--danger-text);
+  font-size: var(--fs-caption);
 }

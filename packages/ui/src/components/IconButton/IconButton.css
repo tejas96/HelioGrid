@@ -1,5 +1,6 @@
-/* IconButton — a perfect circle. The `size` prop is the VISUAL diameter and lands inline; the
-   44px minimum target is this file's, so a caller cannot shrink the hit box below the floor.
+/* IconButton — a perfect circle. The `size` prop is the VISUAL diameter and lands inline as
+   `--hg-icon-button-size`; the 44px minimum target is this file's, so a caller cannot shrink the
+   hit box below the floor.
 
    The ghost variant reads --control-edge rather than hardcoding `none`: an inline none beats field
    mode's blanket rule, which would leave the lowest-contrast control in the system without an edge
@@ -7,6 +8,8 @@
    by its fill — the opposite of what holds it (F7-15) — with a glass light and a hairline. */
 
 .hg-icon-button {
+  inline-size: var(--hg-icon-button-size);
+  block-size: var(--hg-icon-button-size);
   min-width: 44px;
   min-height: 44px;
   border-radius: 50%;

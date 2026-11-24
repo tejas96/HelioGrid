@@ -3,17 +3,20 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { FocusParts, MeasurementSystem, StudioView, ViewPlace } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { theme } from '@heliogrid/theme';
 import { IconButton, Menu, ShellGlyph } from '@heliogrid/ui';
+import { MagnetSwitch } from './StudioBarPills';
 import { StudioPencil } from './StudioPencil';
 import { Shown } from './StudioShown';
 
-/** The circle size of the studio's tools: small, so they never cover the map. */
-const TOOL = theme.layout['button-h-md'];
+/** The magnet stands while a corner is drawn, and while a roof is picked for the drags to come. */
+function magnetShown(part: FocusParts['magnet'], studio: StudioScreen): boolean {
+  if (part === 'shown') return true;
+  return part === 'picked' && studio.bar?.kind === 'roofs' && studio.bar.picked !== null;
+}
 
 /**
  * The two small columns of round tools. Left: what changes the model — the pencil, the one door
- * to the roofs (`StudioPencil`), the trash that clears every corner of the drawing, Undo and Redo
+ * to the roofs (`StudioPencil`) under the magnet while a corner is drawn or a roof is picked, the trash that clears every corner of the drawing, Undo and Redo
  * (Undo alone while drawing). Right: how the model is seen — the view menu (the
  * views on offer, metres or feet), the 2D and 3D switch, Zoom in, Zoom out and Back to the pin. A
  * view that waits for a roof says why on a tap. The road view and the sun join with their parts.
@@ -77,27 +80,32 @@ export function StudioToolRail({
   return (
     <>
       <div className="hg-studio-tools" data-side="left">
+        {/* The magnet comes and goes at the column's top: on a phone, where the column stands on
+            the foot, the tools under it never move, and no gap is kept for it. */}
+        {editable && magnetShown(parts.magnet, studio) ? (
+          <MagnetSwitch studio={studio} words={words} />
+        ) : null}
         <Shown when={parts.pencil !== 'hidden'}>
           <StudioPencil studio={studio} words={words} />
         </Shown>
         {/* The trash shows only while drawing. */}
         {editable && parts.wipe === 'shown' ? (
           <Shown when={canWipe}>
-            <IconButton label={words.wipeCorners} size={TOOL} onClick={onWipe}>
+            <IconButton label={words.wipeCorners} onClick={onWipe}>
               <ShellGlyph name="trash" size="md" />
             </IconButton>
           </Shown>
         ) : null}
         {editable ? (
           <Shown when={parts.undoRedo !== 'hidden'}>
-            <IconButton label={words.undo} disabled={!canUndo} onClick={onUndo} size={TOOL}>
+            <IconButton label={words.undo} disabled={!canUndo} onClick={onUndo}>
               <ShellGlyph name="undo" size="md" />
             </IconButton>
           </Shown>
         ) : null}
         {editable ? (
           <Shown when={parts.undoRedo === 'shown'}>
-            <IconButton label={words.redo} disabled={!canRedo} onClick={onRedo} size={TOOL}>
+            <IconButton label={words.redo} disabled={!canRedo} onClick={onRedo}>
               <ShellGlyph name="redo" size="md" />
             </IconButton>
           </Shown>
@@ -110,7 +118,7 @@ export function StudioToolRail({
             selection="single"
             align="end"
             trigger={
-              <IconButton label={words.view} size={TOOL}>
+              <IconButton label={words.view}>
                 <ShellGlyph name="layers" size="md" />
               </IconButton>
             }
@@ -145,7 +153,6 @@ export function StudioToolRail({
           <span className="hg-studio-tool-new" data-new={newView}>
             <IconButton
               label={view === 'top' ? words.threeDView : words.topView}
-              size={TOOL}
               {...(view === 'top' && threeD?.lock != null
                 ? { disabled: true, disabledReason: words.stepLock(threeD.lock) }
                 : { onClick: () => onView(view === 'top' ? '3d' : 'top') })}
@@ -161,7 +168,7 @@ export function StudioToolRail({
             selection="single"
             align="end"
             trigger={
-              <IconButton label={words.sideViews} size={TOOL}>
+              <IconButton label={words.sideViews}>
                 <ShellGlyph name="eye" size="md" />
               </IconButton>
             }
@@ -179,14 +186,14 @@ export function StudioToolRail({
         </Shown>
         <Shown when={parts.zoom === 'shown'}>
           <span className="hg-studio-zoom">
-            <IconButton label={words.zoomIn} size={TOOL} onClick={onZoomIn}>
+            <IconButton label={words.zoomIn} onClick={onZoomIn}>
               <ShellGlyph name="plus" size="md" />
             </IconButton>
-            <IconButton label={words.zoomOut} size={TOOL} onClick={onZoomOut}>
+            <IconButton label={words.zoomOut} onClick={onZoomOut}>
               <ShellGlyph name="minus" size="md" />
             </IconButton>
           </span>
-          <IconButton label={words.backToPin} size={TOOL} onClick={onHome}>
+          <IconButton label={words.backToPin} onClick={onHome}>
             <ShellGlyph name="recentre" size="md" />
           </IconButton>
         </Shown>

@@ -2776,11 +2776,6 @@ msgid "{pin}, draggable"
 msgstr "{pin}, खींचा जा सकता है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:100
-msgid "{place} · roof not set up yet"
-msgstr "{place} · छत अभी तय नहीं"
-
-#. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:53
 msgid "{place} of {total}"
 msgstr "{total} में से {place}"
@@ -20010,11 +20005,6 @@ msgid "Roof moved. Undo puts it back."
 msgstr "छत खिसकी। पहले जैसा करें से वापस होगी।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:101
-msgid "Roof not set up yet"
-msgstr "छत अभी तय नहीं"
-
-#. js-lingui-explicit-id
 #: src/copy/studio-size.ts:11
 msgid "Roof size"
 msgstr "छत का नाप"
@@ -23089,7 +23079,7 @@ msgid "The {length} you set would change. Change that length first."
 msgstr "आपकी तय की गई {length} लंबाई बदल जाएगी। पहले वह लंबाई बदलें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:102
+#: src/copy/studio-canvas.ts:100
 msgid "The 3D view cannot start on this device. Try another browser."
 msgstr "इस डिवाइस पर 3D व्यू शुरू नहीं हो सकता। दूसरा ब्राउज़र आज़माएँ।"
 

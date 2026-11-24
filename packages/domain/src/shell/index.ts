@@ -43,6 +43,8 @@ export {
   showsOwnerDashboard,
   waitingHomeBlocks,
 } from './home';
+export type { MessageTone } from './message';
+export { goesByItself, MESSAGE_DWELL_MS, MESSAGE_TONES, worstMessage } from './message';
 export type {
   PreferenceSource,
   ProfilePreferencesFacts,

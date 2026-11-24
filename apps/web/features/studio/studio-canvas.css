@@ -8,9 +8,13 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   grid-template-rows: auto 1fr auto;
-  gap: var(--sp-3);
-  padding: max(var(--sp-4), env(safe-area-inset-top)) max(var(--sp-4), env(safe-area-inset-right))
-    max(var(--sp-4), env(safe-area-inset-bottom)) max(var(--sp-4), env(safe-area-inset-left));
+  gap: var(--studio-gap);
+  /* The browser's safe areas, or — inside the phone app, where the map runs under the phone's own
+     bars — how far those bars reach (`use-phone-insets.ts`). */
+  padding: max(var(--studio-edge), env(safe-area-inset-top), var(--hg-phone-inset-top, 0px))
+    max(var(--studio-edge), env(safe-area-inset-right), var(--hg-phone-inset-right, 0px))
+    max(var(--studio-edge), env(safe-area-inset-bottom), var(--hg-phone-inset-bottom, 0px))
+    max(var(--studio-edge), env(safe-area-inset-left), var(--hg-phone-inset-left, 0px));
   /* Clip, not hide: a hidden box still scrolls when a focus or a number's rolling digits reach past
      its foot, and the whole studio slid up under its own bars. */
   overflow: clip;
@@ -71,8 +75,8 @@
   display: inline-grid;
   flex: none;
   place-items: center;
-  min-inline-size: var(--button-h-sm);
-  min-block-size: var(--button-h-sm);
+  min-inline-size: var(--studio-tool);
+  min-block-size: var(--studio-tool);
   margin-inline-start: var(--sp-1);
 }
 
@@ -109,7 +113,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
-  padding: var(--sp-1);
+  padding: var(--studio-pill-pad);
   border-radius: var(--r-pill);
   font-size: var(--fs-body-sm);
 }
@@ -148,22 +152,6 @@
   stroke: var(--accent);
 }
 
-/* Notes in the middle of the canvas, under the head: a save someone else made first, a closed
-   lead, a newer picture. */
-.hg-studio-note {
-  grid-row: 2;
-  grid-column: 2;
-  align-self: start;
-  justify-self: center;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  max-inline-size: 100%;
-  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
-  border-radius: var(--r-lg);
-  font-size: var(--fs-body-sm);
-}
-
 /* The compass stands in the head's right corner, level with the steps; on a phone's one row it
    takes the room left after the steps, so it still ends in the corner. */
 .hg-studio-compass {
@@ -173,14 +161,38 @@
   margin-inline-start: auto;
 }
 
+/* Every round control in the studio takes the studio's own size: smaller on a phone, so the roof
+   keeps the screen. A circle drawn under the touch floor keeps a 44 px target round it. */
+.hg-studio .hg-icon-button {
+  position: relative;
+  inline-size: var(--studio-tool);
+  block-size: var(--studio-tool);
+  flex-shrink: 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* A worded button stands as high as the round tools beside it. */
+.hg-studio .hg-button:is([data-size="sm"], [data-size="md"]) {
+  position: relative;
+  block-size: var(--studio-tool);
+  min-height: 0;
+}
+
+.hg-studio .hg-button:is([data-size="sm"], [data-size="md"])::before,
+.hg-studio .hg-icon-button::before {
+  content: "";
+  position: absolute;
+  inset: min(0px, calc((var(--studio-tool) - var(--touch-min)) / 2));
+}
+
+.hg-studio .hg-icon-button .hg-shell-glyph[data-size="md"] {
+  inline-size: var(--studio-glyph);
+  block-size: var(--studio-glyph);
+}
+
 /* A phone: the head keeps the desktop's grid, a little tighter. */
 @media (width < 968px) {
-  .hg-studio {
-    gap: var(--sp-2);
-    padding: max(var(--sp-3), env(safe-area-inset-top)) max(var(--sp-3), env(safe-area-inset-right))
-      max(var(--sp-3), env(safe-area-inset-bottom)) max(var(--sp-3), env(safe-area-inset-left));
-  }
-
   .hg-studio-canvas-head {
     gap: var(--sp-2);
   }

@@ -113,7 +113,7 @@
   align-items: center;
   inline-size: max-content;
   max-inline-size: var(--hg-tag-room);
-  min-block-size: calc(var(--sp-5) + var(--sp-0-5));
+  min-block-size: var(--studio-tag-h);
   padding-block: var(--sp-0-5);
   padding-inline: var(--sp-2);
   border-radius: var(--r-xs);

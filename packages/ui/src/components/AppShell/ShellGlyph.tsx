@@ -22,6 +22,7 @@ export function ShellGlyph({
       fill={fill === 'ink' ? 'currentColor' : (fill ?? 'none')}
       {...(label === undefined ? { 'aria-hidden': true } : { role: 'img', 'aria-label': label })}
       className="hg-shell-glyph"
+      data-size={size}
       data-tone={ink === undefined ? tone : undefined}
       style={ink === undefined ? undefined : { color: ink }}
     />
