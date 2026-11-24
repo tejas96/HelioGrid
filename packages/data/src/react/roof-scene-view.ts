@@ -9,6 +9,7 @@ import {
   type RoofHit,
   type RoofSheetView,
   type RoofsEdges,
+  type SceneDrawn,
   type SightAt,
   type StairsDrop,
   type StairsPlace,
@@ -28,6 +29,7 @@ import {
   roofsAreaM2,
   roofsWorked,
   roofTopMarksOf,
+  sceneMotionOf,
   sideSheetRowsOf,
   type WorkedBefore,
 } from '@heliogrid/domain/studio-kernel';
@@ -40,6 +42,20 @@ import type { RoofModelShown } from './roof-model-shown';
  */
 export interface RoofMemory {
   before?: WorkedBefore;
+  /** The model last drawn, which the next one moves on from, and how many motions it has played. */
+  drawn?: SceneDrawn;
+  motions?: number;
+}
+
+/** The model's move into the design now, numbered so the screen plays each once; `null` with none. */
+function motionOf(memory: RoofMemory, now: SceneDrawn): RoofModelShown['motion'] {
+  const before = memory.drawn;
+  memory.drawn = now;
+  if (before === undefined || before.document === now.document) return null;
+  const motion = sceneMotionOf(before, now);
+  if (motion === null) return null;
+  memory.motions = (memory.motions ?? 0) + 1;
+  return { ...motion, id: memory.motions };
 }
 
 const NOTHING: RoofModelShown = {
@@ -51,6 +67,7 @@ const NOTHING: RoofModelShown = {
   sideRows: null,
   stairs: null,
   stairsAsk: false,
+  motion: null,
 };
 
 /** The stairs where a drag holds them, else where they stand; and whether the bar asks for them. */
@@ -136,6 +153,7 @@ export function roofModelShown(
         ? null
         : sideSheetRowsOf(shown, open.roof, open.side, facts, worked, latitude),
     ...stairsSeen(shown, worked.edges, facts.clearPathM, stairsInHand),
+    motion: motionOf(memory, { document: shown, scene }),
     stairsDropAt: (at, reachM, magnet) => stairsDropOf(shown, worked.edges, at, reachM, magnet),
   };
 }

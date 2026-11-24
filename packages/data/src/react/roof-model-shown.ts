@@ -3,6 +3,7 @@ import type {
   RoofScene,
   RoofSheetRows,
   RoofTopMark,
+  SceneMotion,
   SideSheetRows,
   StairsShown,
 } from '@heliogrid/domain';
@@ -25,4 +26,6 @@ export interface RoofModelShown {
   readonly stairs: StairsShown | null;
   /** No stairs, none guessed, and not skipped: the bar asks where they reach the roof. */
   readonly stairsAsk: boolean;
+  /** How the model moves into the last change, numbered so the screen plays it once. */
+  readonly motion: (SceneMotion & { readonly id: number }) | null;
 }
