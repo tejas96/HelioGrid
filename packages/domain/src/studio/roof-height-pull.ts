@@ -8,8 +8,14 @@ import type { RoofName } from './roof-names';
 
 /** What a height pulled level with. */
 export type HeightLevel =
-  /** Another roof's top, or the top of its parapet. */
-  | { readonly kind: 'roof_top' | 'parapet_top'; readonly roof: number; readonly name: RoofName }
+  /** Another roof's top, the top of its parapet, or its ridge. */
+  | {
+      readonly kind: 'roof_top' | 'parapet_top' | 'ridge';
+      readonly roof: number;
+      readonly name: RoofName;
+    }
+  /** A wall dragged level with the roof's other sides. */
+  | { readonly kind: 'other_sides' }
   /** A whole floor: 0 is the ground floor's roof, 1 the floor above it. */
   | { readonly kind: 'floor'; readonly floors: number }
   /** A round value: said by the number alone. */

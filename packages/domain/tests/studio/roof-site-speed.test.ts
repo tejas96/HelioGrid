@@ -20,7 +20,7 @@ const FELT_MS = 400;
 const SLOWER = 4;
 const FRAME_MS = 16;
 
-const site = designOf(
+const SITE = designOf(
   ...Array.from({ length: HOUSES }, (_, i) => {
     const west = (i % ACROSS) * PITCH;
     const south = Math.floor(i / ACROSS) * PITCH;
@@ -31,7 +31,9 @@ const site = designOf(
   }).flat(),
 );
 
+/** The site as a drag leaves it: a new list of roofs, so nothing worked out for the last one is reused. */
 function wholeSite(): number {
+  const site = { ...SITE, roofs: [...SITE.roofs] };
   let sum = roofsAreaM2(site);
   site.roofs.forEach((_, index) => {
     sum += roofAreaM2(site, index) + roofFloorM(site, index, FACTS);
@@ -42,7 +44,7 @@ function wholeSite(): number {
 
 describe('200 roofs worked out together', () => {
   it('the site holds 200 roofs', () => {
-    expect(site.roofs).toHaveLength(2 * HOUSES);
+    expect(SITE.roofs).toHaveLength(2 * HOUSES);
   });
 
   it('every roof’s parapets, setback and area, and the site’s area, within a quarter of a felt wait', () => {
@@ -54,8 +56,12 @@ describe('200 roofs worked out together', () => {
   });
 
   it('one roof’s share — what a dragged corner works out again — within a frame on that phone', () => {
-    const one = () =>
-      edgesOf(site, 0, FACTS).length + setbackLines(site, 0, FACTS).length + roofAreaM2(site, 0);
+    const one = () => {
+      const site = { ...SITE, roofs: [...SITE.roofs] };
+      return (
+        edgesOf(site, 0, FACTS).length + setbackLines(site, 0, FACTS).length + roofAreaM2(site, 0)
+      );
+    };
     one();
     const started = Date.now();
     const RUNS = 50;
@@ -64,7 +70,7 @@ describe('200 roofs worked out together', () => {
   });
 
   it('a new roof placed among 200 is met within a frame on that phone', () => {
-    const place = () => meetingOf(site, box(4, 3, 2, 2), FACTS).kind;
+    const place = () => meetingOf(SITE, box(4, 3, 2, 2), FACTS).kind;
     expect(place()).toBe('stair_room');
     const started = Date.now();
     const RUNS = 20;

@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useChromeRoom } from '../hooks/use-chrome-room';
 import { useDrawPress } from '../hooks/use-draw-press';
+import { useFacesFrame } from '../hooks/use-faces-frame';
 import { useMapKeys } from '../hooks/use-map-keys';
 import { useNewestFrame } from '../hooks/use-newest-frame';
 import { useStudioHaptics } from '../hooks/use-studio-haptics';
@@ -17,10 +18,15 @@ import { StudioCanvasNotes } from './StudioCanvasNotes';
 import type { StudioCompassHandle } from './StudioCompass';
 import { StudioFilePick } from './StudioFilePick';
 import { StudioLoupe } from './StudioLoupe';
+import { StudioMaterialPicker } from './StudioMaterialPicker';
 import { StudioRoofMarks } from './StudioRoofMarks';
 import { StudioRoofSheet } from './StudioRoofSheet';
 import type { RoofMarksHandle } from './StudioRoofs';
+import { StudioRoofsList } from './StudioRoofsList';
 import { StudioToolRail } from './StudioToolRail';
+
+/** A finger's half-width on the screen: a side or a ridge this near a tap is the one tapped. */
+const FINGER_PX = 22;
 
 /** The sun the scene is lit by before the site's own is known: high, so nothing waits on it. */
 const NOON_OVERHEAD = { azimuthDegrees: 180, elevationDegrees: 60 } as const;
@@ -58,7 +64,7 @@ export function StudioCanvas({
   const still = useReducedMotion();
   const desktop = useDesktopShell();
   // The sheet takes the bar's place: the room is measured again when one swaps for the other.
-  const { frame, top, bottom, room } = useChromeRoom(studio.roofSheet !== null);
+  const { frame, top, bottom, side, room } = useChromeRoom(studio.roofSheet !== null);
   const pin = useRef<HTMLSpanElement>(null);
   const drive = useRef<StudioDrive | null>(null);
   const compass = useRef<StudioCompassHandle>(null);
@@ -79,11 +85,15 @@ export function StudioCanvas({
   useStudioHaptics(studio);
   const { aim, aimAt, handlers } = useDrawPress(studio, drive, (x, y) => {
     if (view !== 'top') {
-      moves.tapRoof((heightM) => drive.current?.groundAt(x, y, heightM) ?? null);
+      const at = (heightM: number) => drive.current?.groundAt(x, y, heightM) ?? null;
+      moves.tapRoof(at, (h) => drive.current?.groundAt(x + FINGER_PX, y, h) ?? null);
       return;
     }
-    // The plan takes the tap first: an outline makes its roof (`T-M05-002d`, board 4.3).
     const spot = drive.current?.groundAt(x, y, 0) ?? null;
+    // Placing the stairs: the tap on an edge is theirs.
+    const beside = drive.current?.groundAt(x + FINGER_PX, y, 0) ?? null;
+    if (spot !== null && moves.tapStairs(spot, beside)) return;
+    // The plan takes the tap next: an outline makes its roof (`T-M05-002d`, board 4.3).
     if (spot !== null && studio.ownMoves.tapPlan(spot)) return;
     roofMarks.current?.revealAt(x, y);
   });
@@ -95,14 +105,21 @@ export function StudioCanvas({
   // biome-ignore lint/correctness/useExhaustiveDependencies: the measured room is what asks for a new frame
   const sheetFraming = useMemo(
     () => (studio.sheetFrame === null ? null : {}),
-    [studio.sheetFrame, room.bottom],
+    [studio.sheetFrame, room.bottom, room.right],
   );
   const closed = said?.kind === 'closed' ? said : null;
   // The size card opening frames its rectangle with the roofs, once: sliding then never moves the map.
   const typing = roofStep.kind === 'typing';
   const typingFrame = useMemo(() => (typing ? {} : null), [typing]);
   // The newest ask for a frame: a landing's own box is framed only while the landing is it.
-  const frameOn = useNewestFrame([sheetFraming, typingFrame, closed, studio.own.landed]);
+  const facesFrame = useFacesFrame(roofStep, room);
+  const frameOn = useNewestFrame([
+    sheetFraming,
+    typingFrame,
+    facesFrame,
+    closed,
+    studio.own.landed,
+  ]);
   // A later frame ends the landing, so the camera never flies back to it when that frame clears.
   const { landed } = studio.own;
   const { landingDone } = studio.ownMoves;
@@ -159,6 +176,10 @@ export function StudioCanvas({
           lengths={parts.lengthLabels}
           handles={parts.otherHandles}
           drive={drive}
+          fingerAt={(x, y) => ({
+            here: drive.current?.groundAt(x, y, 0) ?? null,
+            beside: drive.current?.groundAt(x + FINGER_PX, y, 0) ?? null,
+          })}
           onAim={aimAt}
           onCrowded={setCrowded}
           map={scene}
@@ -189,13 +210,13 @@ export function StudioCanvas({
         />
         <StudioCanvasNotes studio={studio} words={words} />
         <StudioToolRail
+          studio={studio}
           view={view}
           views={studio.views}
           units={studio.units}
           editable={editable}
           canUndo={studio.canUndo}
           canRedo={studio.canRedo}
-          drawing={drawing}
           newView={studio.offer3d}
           parts={parts}
           canWipe={studio.bar?.kind === 'drawing' && studio.bar.canWipe}
@@ -205,19 +226,20 @@ export function StudioCanvas({
           onUnits={moves.chooseUnits}
           onUndo={moves.undo}
           onRedo={moves.redo}
-          onDraw={drawing ? moves.cancel : moves.draw}
           onZoomIn={() => drive.current?.zoomIn()}
           onZoomOut={() => drive.current?.zoomOut()}
           onHome={() => drive.current?.home()}
         />
-        {studio.roofSheet !== null && view !== 'top' ? (
+        {studio.roofSheet !== null ? (
           <StudioRoofSheet
-            sheetRef={bottom}
+            footRef={bottom}
+            sideRef={side}
             sheet={studio.roofSheet}
             studio={studio}
             units={studio.units}
             words={words}
             map={scene}
+            phone={desktop === false}
           />
         ) : (
           <StudioBottomBar
@@ -234,6 +256,12 @@ export function StudioCanvas({
             crowded={crowded}
             phone={desktop === false}
           />
+        )}
+        {studio.panel.open === 'roofs' ? (
+          <StudioRoofsList studio={studio} units={studio.units} words={words} />
+        ) : null}
+        {studio.materialPicker === null ? null : (
+          <StudioMaterialPicker picker={studio.materialPicker} studio={studio} words={words} />
         )}
       </div>
     </StudioFilePick>

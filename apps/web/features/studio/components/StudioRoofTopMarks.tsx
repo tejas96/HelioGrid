@@ -9,7 +9,8 @@ import { pointText } from './roof-marks-place';
 /**
  * One roof's sides in the top view (`T-M05-002`, part e), inside the roofs' drawing: solid where a
  * side has a wall, dashed where it has none, split exactly where another roof takes the side; the
- * picked roof glows; a short line runs down each sloped face. A roof with no marks yet — the
+ * picked roof glows; a short line runs down each sloped face, and an Any-shape roof's faces drawn
+ * by hand show as they are drawn. A roof with no marks yet — the
  * kernel's answer a frame behind — keeps its plain line.
  */
 export function RoofSideLines({
@@ -54,6 +55,20 @@ export function RoofSideLines({
           />
         )),
       )}
+      {/* The setback line: in from the parapet, round what stands on the roof (board 7.1). */}
+      {mark.setback.map((ring) => (
+        <path
+          key={ring.map(pointText).join(';')}
+          className="hg-roof-setback"
+          data-pts={ring.map(pointText).join(';')}
+          data-closed="true"
+        />
+      ))}
+      {/* An Any-shape roof's faces drawn by hand, each its own ring (board 5.10). */}
+      {mark.faces.map((ring) => {
+        const line = ring.map(pointText).join(';');
+        return <path key={line} className="hg-roof-face" data-pts={line} data-closed="true" />;
+      })}
       {mark.slopes.map((slope) => {
         const line = `${pointText(slope.from)};${pointText(slope.to)}`;
         return (
@@ -108,6 +123,8 @@ export function StudioRoofTopMarks({
   // plan is picked its own handles take the taps.
   const dots =
     studio.editing.kind === 'editor' && step.kind === 'idle' && studio.own.plan?.picked !== true;
+  // Each roof is a keyboard stop for an editor looking at the top view, nothing in hand.
+  const keys = dots;
   // The side a person just took the wall off says so beside its dot, until the next act.
   const off =
     step.kind === 'idle' && step.said?.kind === 'side_wall' && !step.said.wall ? step.said : null;
@@ -118,10 +135,32 @@ export function StudioRoofTopMarks({
         if (roof === undefined) return null;
         return (
           <Fragment key={roof.id}>
+            {/* A keyboard's way to each roof: Tab reaches it, Enter picks it, and its side dots
+                follow it. A tap on the map picks as it did: this stop takes no pointer. */}
+            {keys ? (
+              <span className="hg-roof-at" data-at={pointText(roof.middle)}>
+                <Pressable
+                  className="hg-roof-key"
+                  accessibilityLabel={words.pickRoof(mark.name)}
+                  accessibilityState={{ selected: picked === index }}
+                  ripple="none"
+                  onPress={() => studio.moves.pickRoof(index)}
+                >
+                  <span className="hg-roof-key-ring" aria-hidden="true" />
+                </Pressable>
+              </span>
+            ) : null}
             {mark.aboveM === null ? null : (
               <span className="hg-roof-at" data-at={pointText(roof.middle)}>
                 <span className="hg-roof-above">
                   {words.above(format.roofHeight(mark.aboveM, units))}
+                </span>
+              </span>
+            )}
+            {mark.lowAgainst === null ? null : (
+              <span className="hg-roof-at" data-at={pointText(mark.lowAgainst.at)} data-tag="true">
+                <span className="hg-roof-tag" data-tone="check">
+                  {words.lowAgainst(mark.lowAgainst.roof)}
                 </span>
               </span>
             )}

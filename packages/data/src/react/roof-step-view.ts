@@ -85,6 +85,8 @@ export interface RoofMoves {
 
 /** What places a roof when it closes: how its outline meets the design's roofs, and the market's facts. */
 export type ClosePlacing = NonNullable<Extract<RoofStepEvent, { kind: 'close' }>['placing']>;
+/** What a close carries beyond its corners: how a roof is placed, or how a face closes onto its roof. */
+export type ClosingWith = Pick<Extract<RoofStepEvent, { kind: 'close' }>, 'placing' | 'face'>;
 
 /** A roof's place among the others (`T-M05-002`, part e): its chips, and Copy and Delete from its row. */
 export interface RoofPlaceMoves {
@@ -92,6 +94,8 @@ export interface RoofPlaceMoves {
   chooseKind(choice: MeetChoice): void;
   /** A side's dot on the picked roof: its wall is added, or taken off. */
   toggleSideWall(roof: number, side: number): void;
+  /** A roof picked from the keyboard, as a tap picks it: its side dots follow it in the tab order. */
+  pickRoof(roof: number): void;
   /** Copy, from a roof's row: a copy beside it with what stands on it, picked to drag. */
   copyRoof(roof: number): void;
   /** Delete, from a roof's row: it goes with what stands on it. */

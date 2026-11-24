@@ -113,6 +113,7 @@ export const SHELL_GLYPHS = {
   cog: Lucide.SettingsIcon,
   columns: Lucide.Columns2Icon,
   command: Lucide.CommandIcon,
+  copy: Lucide.CopyIcon,
   'credit-card': Lucide.CreditCardIcon,
   document: Lucide.FileTextIcon,
   dot: Lucide.DotIcon,

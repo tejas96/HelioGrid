@@ -1,4 +1,5 @@
 import type { ProvenanceTier } from '../format/qualified';
+import type { GroundPoint } from './ground';
 import type { RoofFixedLike, RoofMaterial, RoofShape } from './roof-material';
 
 /**
@@ -37,6 +38,8 @@ export const OVERHANG_MAX_M = 5;
 export const SLOPE_MAX_DEG = 89;
 /** A sawtooth roof has at most this many teeth. */
 export const ROOF_TEETH_MAX = 60;
+/** A roof of any shape holds at most this many faces drawn by hand. */
+export const ROOF_HAND_FACES_MAX = 32;
 /** A name a person types for a roof type not on the list. */
 export const MATERIAL_NAME_MAX = 60;
 
@@ -149,6 +152,14 @@ export interface RoofSide {
 }
 
 /** The shape of a roof's top (`roof-material.ts`), and what each shape needs beyond the one slope. */
+/** One face of a roof of any shape, drawn by hand. */
+export interface HandFaceSet {
+  readonly corners: readonly GroundPoint[];
+  readonly slope: SetDegrees;
+  /** The face's side it slopes down to, side i running from corner i to corner i + 1. */
+  readonly lowSide: number;
+}
+
 export interface RoofShapeSet {
   readonly is: Stored<RoofShape>;
   readonly setBy: ValueSetter;
@@ -156,6 +167,11 @@ export interface RoofShapeSet {
   readonly turned?: boolean;
   /** A sawtooth's teeth. */
   readonly teeth?: ValueSource & { readonly count: number };
+  /**
+   * Any shape: the faces a person drew, each with its slope and its low side (a side of the face,
+   * from its first corner). They stand with the roof: a move or a turn carries them.
+   */
+  readonly faces?: readonly HandFaceSet[];
   /** A mansard's or a gambrel's upper slope; the roof's slope is its lower one. */
   readonly upperSlope?: SetDegrees;
   /** How far in from the edge a mansard's or a gambrel's slope breaks. */

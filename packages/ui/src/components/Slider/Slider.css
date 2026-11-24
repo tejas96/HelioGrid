@@ -215,3 +215,35 @@
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
+
+/* A named point on the track (a roof's floor): a short tick the thumb passes over. */
+.hg-slider-tick {
+  position: absolute;
+  top: 50%;
+  inline-size: 1px;
+  block-size: var(--sp-2);
+  background: var(--text-tertiary);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Each tick's word under the track, under its tick: the row starts where the track does. */
+.hg-slider-ticks {
+  position: relative;
+  block-size: var(--sp-4);
+  margin-block-start: var(--sp-1);
+}
+
+.hg-slider-ticks[data-steppers="true"] {
+  margin-inline: calc(44px + 10px);
+}
+
+.hg-slider-tick-word {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}

@@ -247618,6 +247618,82 @@
                                       "setBy"
                                     ],
                                     "additionalProperties": false
+                                  },
+                                  "faces": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "corners": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "east": {
+                                                "type": "number",
+                                                "minimum": -2000,
+                                                "maximum": 2000
+                                              },
+                                              "north": {
+                                                "type": "number",
+                                                "minimum": -2000,
+                                                "maximum": 2000
+                                              }
+                                            },
+                                            "required": [
+                                              "east",
+                                              "north"
+                                            ],
+                                            "additionalProperties": false
+                                          },
+                                          "minItems": 3,
+                                          "maxItems": 100
+                                        },
+                                        "slope": {
+                                          "type": "object",
+                                          "properties": {
+                                            "degrees": {
+                                              "type": "number",
+                                              "minimum": 0,
+                                              "maximum": 89
+                                            },
+                                            "setBy": {
+                                              "type": "string",
+                                              "enum": [
+                                                "system",
+                                                "person"
+                                              ]
+                                            },
+                                            "tier": {
+                                              "type": "string",
+                                              "enum": [
+                                                "measured",
+                                                "derived",
+                                                "estimated",
+                                                "assumed"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "degrees",
+                                            "setBy"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        "lowSide": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 99
+                                        }
+                                      },
+                                      "required": [
+                                        "corners",
+                                        "slope",
+                                        "lowSide"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "maxItems": 32
                                   }
                                 },
                                 "required": [
@@ -248974,6 +249050,82 @@
                                     "setBy"
                                   ],
                                   "additionalProperties": false
+                                },
+                                "faces": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "corners": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "east": {
+                                              "type": "number",
+                                              "minimum": -2000,
+                                              "maximum": 2000
+                                            },
+                                            "north": {
+                                              "type": "number",
+                                              "minimum": -2000,
+                                              "maximum": 2000
+                                            }
+                                          },
+                                          "required": [
+                                            "east",
+                                            "north"
+                                          ],
+                                          "additionalProperties": false
+                                        },
+                                        "minItems": 3,
+                                        "maxItems": 100
+                                      },
+                                      "slope": {
+                                        "type": "object",
+                                        "properties": {
+                                          "degrees": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "maximum": 89
+                                          },
+                                          "setBy": {
+                                            "type": "string",
+                                            "enum": [
+                                              "system",
+                                              "person"
+                                            ]
+                                          },
+                                          "tier": {
+                                            "type": "string",
+                                            "enum": [
+                                              "measured",
+                                              "derived",
+                                              "estimated",
+                                              "assumed"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "degrees",
+                                          "setBy"
+                                        ],
+                                        "additionalProperties": false
+                                      },
+                                      "lowSide": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 99
+                                      }
+                                    },
+                                    "required": [
+                                      "corners",
+                                      "slope",
+                                      "lowSide"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "maxItems": 32
                                 }
                               },
                               "required": [

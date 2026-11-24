@@ -12,6 +12,12 @@ export interface SliderWords {
   increase: (name?: TranslatedText) => TranslatedText;
 }
 
+/** A named point on the track: a roof's floor, G, G+1… */
+export interface SliderTick {
+  readonly value: number;
+  readonly label: TranslatedText;
+}
+
 export interface SliderProps {
   value?: number;
   /**
@@ -42,6 +48,11 @@ export interface SliderProps {
    * storey height — a tick a person can slide back to. Outside the ends, no mark.
    */
   mark?: number;
+  /**
+   * Named points on the track, each a tick with its word under the track (`T-M05-002`, a roof's
+   * floors). With them, − and + step from one to the next; a drag still sets any value.
+   */
+  ticks?: readonly SliderTick[];
   /** Custom value formatter — overrides value + unit. */
   format?: (value: number) => string;
   /** 44px minus/plus buttons either side. On by default (MS12-26). */

@@ -144,7 +144,11 @@
 .hg-roof-at > .hg-roof-above,
 .hg-roof-lines .hg-roof-under[data-picked="true"],
 .hg-roof-lines .hg-roof-level,
-.hg-roof-lines .hg-roof-slope {
+.hg-roof-lines .hg-roof-slope,
+.hg-roof-lines .hg-roof-setback,
+.hg-roof-lines .hg-roof-side-face,
+.hg-roof-lines .hg-roof-side-lit,
+.hg-roof-lines .hg-roof-crossed {
   animation: hg-fade-in var(--dur-standard) var(--ease-enter) backwards;
 }
 
@@ -156,5 +160,22 @@
 @media (prefers-reduced-motion: reduce) {
   .hg-roof-dot[data-ghost="true"] {
     animation: none;
+  }
+}
+
+/* A sheet's part takes the place — a side's, Parapet details, the roof's again: it slides in from
+   the way it was opened, the roof's own from the start, a side's from the end. */
+.hg-roof-sheet-rows {
+  animation: hg-sheet-part-in var(--dur-standard) var(--ease-enter) backwards;
+}
+
+.hg-roof-sheet-rows[data-part="roof"] {
+  --hg-part-from: calc(-1 * var(--sp-4));
+}
+
+@keyframes hg-sheet-part-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--hg-part-from, var(--sp-4)));
   }
 }

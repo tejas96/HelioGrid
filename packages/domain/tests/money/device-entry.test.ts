@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import * as deviceEntry from '../../src/index';
 import type { MinorUnits } from '../../src/money/minor-units';
 import * as serverEntry from '../../src/server';
+import type { Roof, StudioDocument } from '../../src/studio/document';
 
 /* `F4-04`: no device computes a money figure. The index is what every device bundles, so anything on
    it that hands out a function returning a figure — the export itself, a member of an exported
@@ -28,20 +29,36 @@ type Platform =
   | ReadonlyMap<unknown, unknown>
   | ReadonlySet<unknown>;
 
+/** The two types are one and the same: a type that adds a field to another is not it. */
+type Same<A, B> =
+  (<G>() => G extends A ? 1 : 2) extends <G>() => G extends B ? 1 : 2 ? true : false;
+/**
+ * The studio's design document, and a roof of it, hold lengths and heights, never money — proven
+ * below by the document's own deeper walk (`documentHoldsMoney`), so the walk over every export
+ * reads them as proven and does not spend its depth on them. Only exactly them: a roof that gains
+ * a money field is walked as any other type.
+ */
+type IsProven<T> = true extends Same<T, StudioDocument> | Same<T, Roof> ? true : false;
+
 /** Does a value of this type carry a money figure? Past the depth limit it is assumed to. */
-type HoldsMoney<T, Depth extends unknown[] = []> =
-  TooDeep<Depth> extends true
+type HoldsMoney<
+  T,
+  Depth extends unknown[] = [],
+  Limit extends number = 8,
+> = Depth['length'] extends Limit
+  ? true
+  : T extends MinorUnits
     ? true
-    : T extends MinorUnits
-      ? true
-      : T extends Platform
+    : T extends Platform
+      ? false
+      : (Limit extends 8 ? IsProven<T> : false) extends true
         ? false
         : T extends (...args: never[]) => unknown
           ? false
           : T extends readonly (infer Item)[]
-            ? HoldsMoney<Item, Deeper<Depth>>
+            ? HoldsMoney<Item, Deeper<Depth>, Limit>
             : T extends object
-              ? true extends { [K in keyof T]-?: HoldsMoney<T[K], Deeper<Depth>> }[keyof T]
+              ? true extends { [K in keyof T]-?: HoldsMoney<T[K], Deeper<Depth>, Limit> }[keyof T]
                 ? true
                 : false
               : false;
@@ -52,17 +69,19 @@ type ComputesMoney<T, Depth extends unknown[] = []> =
     ? true
     : T extends Platform
       ? false
-      : T extends (...args: never[]) => infer Result
-        ? true extends HoldsMoney<Result>
-          ? true
-          : ComputesMoney<Result, Deeper<Depth>>
-        : T extends readonly (infer Item)[]
-          ? ComputesMoney<Item, Deeper<Depth>>
-          : T extends object
-            ? true extends { [K in keyof T]-?: ComputesMoney<T[K], Deeper<Depth>> }[keyof T]
-              ? true
-              : false
-            : false;
+      : IsProven<T> extends true
+        ? false
+        : T extends (...args: never[]) => infer Result
+          ? true extends HoldsMoney<Result>
+            ? true
+            : ComputesMoney<Result, Deeper<Depth>>
+          : T extends readonly (infer Item)[]
+            ? ComputesMoney<Item, Deeper<Depth>>
+            : T extends object
+              ? true extends { [K in keyof T]-?: ComputesMoney<T[K], Deeper<Depth>> }[keyof T]
+                ? true
+                : false
+              : false;
 
 type DeviceEntry = typeof deviceEntry;
 
@@ -143,7 +162,15 @@ type ReviewedComputesNothing =
 /** `true` only when the set is empty; otherwise the type NAMES what is in it, so the error does. */
 type NoneOf<Names> = [Names] extends [never] ? true : { unreviewed: Names };
 
+/** The design document, walked to its bottom on its own: a roof's faces lie twelve deep. */
+type DocumentHoldsMoney = HoldsMoney<StudioDocument, [], 12>;
+
 describe('the device entry — what every screen bundles', () => {
+  it('the design document holds no money figure, at any depth', () => {
+    const documentHoldsMoney: DocumentHoldsMoney = false;
+    expect(documentHoldsMoney).toBe(false);
+  });
+
   it('exports no function that returns a money figure it computed', () => {
     const noneUnreviewed: NoneOf<Exclude<ReturnsMoney, ReviewedComputesNothing>> = true;
     expect(noneUnreviewed).toBe(true);

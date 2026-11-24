@@ -17,6 +17,7 @@ import {
   formatPhone,
   formatRoofHeight,
   formatRoofLength,
+  formatRoofSlope,
   formatTime,
   formatWeekday,
   IN_FORMATS,
@@ -99,6 +100,8 @@ export interface MarketFormat {
   roofHeight: (metres: number, system: MeasurementSystem) => string;
   /** An area held in square metres, whole: `66 m²`, `706 sq ft`. */
   area: (squareMetres: number, system: MeasurementSystem) => string;
+  /** A roof's slope: `30°`, or `3/12 · 14°` where feet are used (`T-M05-002`). */
+  roofSlope: (degrees: number, system: MeasurementSystem) => string;
   /** A day's name in the reader's words, on the pack's zone — `Monday`. */
   weekday: (value: string) => string;
   /** Resolved ISO week start, 1 = Monday … 7 = Sunday. `Calendar`'s first column reads this. */
@@ -145,6 +148,7 @@ export function createFormat(
     roofLength: (metres, system, traced) => formatRoofLength(pack, metres, system, traced),
     roofHeight: (metres, system) => formatRoofHeight(pack, metres, system),
     area: (squareMetres, system) => formatArea(pack, squareMetres, system),
+    roofSlope: (degrees, system) => formatRoofSlope(pack, degrees, system),
     weekday: (value) => formatWeekday(pack, value, language),
     firstDayOfWeek: pack.firstDayOfWeek,
     monthNames: (style) => monthNames(pack, language, style),

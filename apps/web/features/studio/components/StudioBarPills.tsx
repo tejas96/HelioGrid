@@ -8,7 +8,7 @@ import { roofWordsShown } from './roof-words-shown';
 import { picturePillOf } from './StudioPicturePills';
 
 /** The round tools in the bar take the tool columns' size. */
-export const BAR_TOOL = theme.layout['button-h-md'];
+const BAR_TOOL = theme.layout['button-h-md'];
 
 interface PillFacts {
   readonly studio: StudioScreen;
@@ -58,6 +58,10 @@ export function DrawPill({
   const refusal = bar.refused === null ? null : words.drawRefusal(bar.refused, shown);
   return (
     <>
+      {/* A face drawn by hand is named by its number on its roof (board 5.10). */}
+      {bar.face === null ? null : (
+        <span className="hg-studio-pill-text">{words.faceDrawing(bar.face)}</span>
+      )}
       <MagnetSwitch studio={studio} words={words} />
       {/* Before the first corner, typing the size is one tap away; the first corner takes it away. */}
       {bar.hint ? (

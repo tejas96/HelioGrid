@@ -62,10 +62,11 @@ export function bindHands(rig: CameraControlsImpl, top: boolean): void {
 /** How far the camera stands to frame `radius` metres of ground in the room between the bars. */
 export function fitDistance(
   size: { readonly width: number; readonly height: number },
-  free: { readonly top: number; readonly bottom: number },
+  free: { readonly top: number; readonly bottom: number; readonly right?: number },
   radius: number = FRAME_RADIUS_M,
 ): number {
   const freeHeight = Math.max(1, size.height - free.top - free.bottom);
+  const freeWidth = Math.max(1, size.width - (free.right ?? 0));
   const reach = radius / Math.tan((fieldOfView() / 2) * RADIANS);
-  return Math.max(reach / (freeHeight / size.height), reach / (size.width / size.height));
+  return Math.max(reach / (freeHeight / size.height), reach / (freeWidth / size.height));
 }

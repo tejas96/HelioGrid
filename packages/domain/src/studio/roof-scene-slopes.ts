@@ -3,6 +3,7 @@ import type { GroundPoint } from './ground';
 import { cutInto, facesHeightAt, facesWithout } from './roof-cuts';
 import type { BuiltFace } from './roof-faces';
 import { roofKindOf, standsOn } from './roof-kind';
+import { farApart, shapeOf, shapesArea, shared } from './roof-polygons';
 import type { RoofScene, SceneFace, SceneWall } from './roof-scene';
 import type { RoofsWorked } from './roof-worked';
 
@@ -55,8 +56,60 @@ function dormerLift(
   return Math.max(mainTopM - ownTopM - DORMER_UNDER_RIDGE_M, under);
 }
 
+/**
+ * Two sloped roofs whose outlines overlap, neither a dormer — a porch gable run into the house
+ * roof: the lower is cut into the higher where they meet (E083). Each pair once, the one whose
+ * ridge stands higher first.
+ */
+function meetingSlopes(
+  document: StudioDocument,
+  worked: RoofsWorked,
+  levels: RoofScene['levels'],
+): [higher: number, lower: number][] {
+  const ridge = (index: number) => (levels[index]?.topM ?? 0) + (worked.built[index]?.topM ?? 0);
+  const sloped = document.roofs.flatMap((roof, index) =>
+    worked.built[index] == null || roofKindOf(roof) === 'dormer' ? [] : [index],
+  );
+  const pairs: [number, number][] = [];
+  sloped.forEach((a, i) => {
+    for (const b of sloped.slice(i + 1)) {
+      const one = (document.roofs[a] as Roof).corners;
+      const other = (document.roofs[b] as Roof).corners;
+      // A roof standing on another, or part of it, stands over it: it cuts nothing out of it.
+      if (farApart(one, other) || goesWith(document, a, b) || goesWith(document, b, a)) continue;
+      if (shapesArea(shared([shapeOf(one)], [shapeOf(other)]) ?? []) < OVERLAP_M2) continue;
+      pairs.push(ridge(a) >= ridge(b) ? [a, b] : [b, a]);
+    }
+  });
+  return pairs;
+}
+
+/**
+ * Roof `b` stands on roof `a` or is part of it, at any depth: its links — what it stands on, what
+ * it is part of — followed up until `a` is reached.
+ */
+function goesWith(document: StudioDocument, a: number, b: number): boolean {
+  const target = document.roofs[a]?.id;
+  const byId = new Map(document.roofs.map((roof) => [roof.id, roof]));
+  const seen = new Set<string>();
+  const next: Roof[] = [document.roofs[b] as Roof];
+  for (let roof = next.pop(); roof !== undefined; roof = next.pop()) {
+    for (const id of [roof.on, roof.partOf]) {
+      if (id == null || seen.has(id)) continue;
+      if (id === target) return true;
+      seen.add(id);
+      const linked = byId.get(id);
+      if (linked !== undefined) next.push(linked);
+    }
+  }
+  return false;
+}
+
+/** Two outlines that share less ground than this, in square metres, only touch. */
+const OVERLAP_M2 = 0.01;
+
 /** Each sloped roof's faces as they show, above its own low edge, and each dormer's lift. */
-function facesShown(document: StudioDocument, worked: RoofsWorked) {
+function facesShown(document: StudioDocument, worked: RoofsWorked, levels: RoofScene['levels']) {
   const faces = worked.built.map((built) => built?.faces ?? null);
   const lifts = document.roofs.map(() => 0);
   document.roofs.forEach((roof, index) => {
@@ -79,6 +132,15 @@ function facesShown(document: StudioDocument, worked: RoofsWorked) {
     });
     faces[index] = main;
   });
+  for (const [higher, lower] of meetingSlopes(document, worked, levels)) {
+    const high = faces[higher];
+    const low = faces[lower];
+    if (high == null || low == null) continue;
+    const liftM = (levels[lower]?.topM ?? 0) - (levels[higher]?.topM ?? 0);
+    const cut = cutInto(high, low, liftM);
+    faces[higher] = cut.higher;
+    faces[lower] = cut.lower;
+  }
   return { faces, lifts };
 }
 
@@ -88,7 +150,7 @@ export function slopedTops(
   worked: RoofsWorked,
   levels: RoofScene['levels'],
 ): readonly (SlopedTop | null)[] {
-  const { faces, lifts } = facesShown(document, worked);
+  const { faces, lifts } = facesShown(document, worked, levels);
   return document.roofs.map((_, index): SlopedTop | null => {
     const shown = faces[index];
     const built = worked.built[index];

@@ -4,10 +4,11 @@ import type { GroundPoint } from './ground';
 import type { EditRefusal } from './roof-check';
 import { type DraftRefusal, draftClosesAt, draftGhost, draftTap } from './roof-draw';
 import { sizingResult } from './roof-entry';
+import { handFacesKept } from './roof-hand-faces';
 import { angleAt, between, cornerAngle, edgeLengths, roofMiddle } from './roof-shape';
-import { type Guide, type Snapped, snapTargetsOf } from './roof-snap';
+import type { Guide, Snapped } from './roof-snap';
 import { gripCorner } from './roof-step';
-import { pickedRoofOf } from './roof-step-draw';
+import { drawTargetsOf, keptOnFaceRoof, pickedRoofOf } from './roof-step-draw';
 import type { CornerRef, RoofSaid, RoofStepState } from './roof-step-state';
 
 /**
@@ -136,10 +137,11 @@ export function draftViewOf(
   const closing = state.pointer !== null && draftClosesAt(corners, state.pointer);
   // A tap on the first corner closes the shape as drawn: the ghost is not offered under it.
   const ghost = closing ? null : draftGhost(state.corners);
+  const targets = drawTargetsOf(state, document);
   const tap =
     spot === null || closing
       ? null
-      : draftTap(corners, spot.point, snapTargetsOf(document.roofs), state.magnet);
+      : keptOnFaceRoof(state, document, draftTap(corners, spot.point, targets, state.magnet));
   return {
     corners,
     edges: corners.slice(1).map((corner, i) => edgeOf(corners[i] as GroundPoint, corner)),
@@ -176,6 +178,8 @@ export type RoofBar =
       readonly magnet: boolean;
       /** No corner yet: the one line that says what to do shows. */
       readonly hint: boolean;
+      /** A face drawn by hand (Any shape): its number on its roof, which the pill names. */
+      readonly face: number | null;
       /** The trash shows: two corners or more, which one Undo would not clear. */
       readonly canWipe: boolean;
       /** Undo has a corner to take off, or the wiped corners to bring back. */
@@ -212,6 +216,16 @@ function liveRefusal(
   return { refusal: result.refusal, held };
 }
 
+/** The number of the face being drawn on its roof: one past the faces it keeps. */
+function faceNumberOf(
+  state: Extract<RoofStepState, { kind: 'drawing' }>,
+  document: StudioDocument,
+): number | null {
+  if (state.faces === undefined) return null;
+  const roof = document.roofs[state.faces];
+  return roof === undefined ? null : handFacesKept(roof).length + 1;
+}
+
 export function roofBarOf(
   state: RoofStepState,
   document: StudioDocument,
@@ -229,7 +243,9 @@ export function roofBarOf(
       refused: state.refused ?? view.spotRefusal,
       canClose: view.canClose,
       magnet: state.magnet,
-      hint: state.corners.length === 0 && state.wiped === null,
+      // A face has no size to type: the hint and its Type the size are the roof's alone.
+      hint: state.faces === undefined && state.corners.length === 0 && state.wiped === null,
+      face: faceNumberOf(state, document),
       canWipe: state.corners.length >= 2,
       canUndo: state.corners.length > 0 || state.wiped !== null,
     };

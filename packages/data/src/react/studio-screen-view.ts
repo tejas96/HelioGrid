@@ -3,6 +3,7 @@ import type {
   GroundBox,
   MeasurementSystem,
   PictureChoice,
+  StairsMoment,
   StepPlace,
   StudioDocument,
   StudioView,
@@ -10,17 +11,31 @@ import type {
   ViewPlace,
 } from '@heliogrid/domain';
 import type { RoofModelShown } from './roof-model-shown';
+import type { RoofSheetRowMoves, RoofSheetRowsState } from './roof-sheet-rows-view';
 import type { RoofMoves, RoofPlaceMoves, RoofStepView } from './roof-step-view';
+import type { RoofsPanelMoves, RoofsPanelView } from './roofs-panel-view';
 import type { SkyFacts, StudioEditing, StudioPicture } from './studio-document-state';
 import type { StudioSaveState } from './studio-save-queue';
 import type { DesignRead } from './use-design-screen';
 import type { OwnPictureMoves, OwnPictureView } from './use-own-picture-screen';
 import type { RoofSheetMoves, RoofSheetState } from './use-roof-sheet';
+import type { StairsMoves, StairsView } from './use-studio-stairs';
 
 /** The studio screen's view model (`T-M05-002`): what its hook assembles for the web and the phone. */
 
-export interface StudioMoves extends RoofMoves, RoofSheetMoves, RoofPlaceMoves {
+export interface StudioMoves
+  extends RoofMoves,
+    RoofSheetMoves,
+    RoofSheetRowMoves,
+    RoofPlaceMoves,
+    RoofsPanelMoves,
+    StairsMoves {
   pickPicture(choice: PictureChoice): void;
+  /**
+   * Draw an Any-shape roof's faces by hand, from its Faces row: in the top view, the next face; a
+   * roof standing in its faces has them drawn again.
+   */
+  drawFaces(roof: number): void;
   undo(): void;
   redo(): void;
   chooseUnits(system: MeasurementSystem): void;
@@ -38,7 +53,13 @@ export interface StudioMoves extends RoofMoves, RoofSheetMoves, RoofPlaceMoves {
   back(): boolean;
 }
 
-export interface StudioScreen extends RoofStepView, RoofSheetState, RoofModelShown {
+export interface StudioScreen
+  extends RoofStepView,
+    RoofSheetState,
+    RoofSheetRowsState,
+    RoofModelShown,
+    RoofsPanelView,
+    StairsView {
   readonly read: DesignRead;
   /** `null` until the document is read. */
   readonly document: StudioDocument | null;
@@ -66,6 +87,10 @@ export interface StudioScreen extends RoofStepView, RoofSheetState, RoofModelSho
   readonly sun: SunPosition | null;
   /** The ground the design's roofs cover, which the camera frames; `null` before a roof. */
   readonly fit: GroundBox | null;
+  /** An arrow on the model is held: the sheet steps aside for the magnet's pill. */
+  readonly arrowHeld: boolean;
+  /** What the bar says about the stairs when it has nothing else to say; `null` for nothing. */
+  readonly stairsMoment: StairsMoment | null;
   /** The 3D switch is marked new until the 3D view is first seen. */
   readonly offer3d: boolean;
   /** Which parts show for the job in hand, on a phone-width screen or a wider one (focus mode). */

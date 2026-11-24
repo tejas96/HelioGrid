@@ -154,19 +154,44 @@ export function metWith(ring: readonly GroundPoint[], onto: readonly GroundPoint
   });
 }
 
+interface Box {
+  readonly west: number;
+  readonly east: number;
+  readonly south: number;
+  readonly north: number;
+}
+
+/** Each set of points' box, worked out once: a design's corners are never changed in place. */
+const BOXES = new WeakMap<readonly GroundPoint[], Box>();
+
+function boxOf(points: readonly GroundPoint[]): Box {
+  const known = BOXES.get(points);
+  if (known !== undefined) return known;
+  let west = Number.POSITIVE_INFINITY;
+  let east = Number.NEGATIVE_INFINITY;
+  let south = Number.POSITIVE_INFINITY;
+  let north = Number.NEGATIVE_INFINITY;
+  for (const point of points) {
+    west = Math.min(west, point.east);
+    east = Math.max(east, point.east);
+    south = Math.min(south, point.north);
+    north = Math.max(north, point.north);
+  }
+  const box = { west, east, south, north };
+  BOXES.set(points, box);
+  return box;
+}
+
 /** Whether two sets of points lie too far apart to meet: their boxes are more than `MET_M` apart. */
 export function farApart(one: readonly GroundPoint[], other: readonly GroundPoint[]): boolean {
-  const reach = (points: readonly GroundPoint[], pick: (point: GroundPoint) => number) => {
-    const values = points.map(pick);
-    return [Math.min(...values) - MET_REACH_M, Math.max(...values) + MET_REACH_M] as const;
-  };
-  const east = (point: GroundPoint) => point.east;
-  const north = (point: GroundPoint) => point.north;
-  const [west, eastmost] = reach(one, east);
-  const [south, northmost] = reach(one, north);
-  const [otherWest, otherEast] = reach(other, east);
-  const [otherSouth, otherNorth] = reach(other, north);
-  return otherWest > eastmost || otherEast < west || otherSouth > northmost || otherNorth < south;
+  const a = boxOf(one);
+  const b = boxOf(other);
+  return (
+    b.west - MET_REACH_M > a.east + MET_REACH_M ||
+    b.east + MET_REACH_M < a.west - MET_REACH_M ||
+    b.south - MET_REACH_M > a.north + MET_REACH_M ||
+    b.north + MET_REACH_M < a.south - MET_REACH_M
+  );
 }
 
 /** One stretch of a side: from one share of its length to another, 0 at its first corner. */

@@ -11,8 +11,9 @@ import {
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
+import { studioFacesWords } from './studio-faces';
 import { historyLine } from './studio-history';
-import { kindLineWords, roofNameWord, roofPlaceLine, roofTopWords } from './studio-roof-kinds';
+import { kindLineWords, roofPlaceLine, roofTopWords } from './studio-roof-kinds';
 import {
   type DragFacts,
   type RoofTag,
@@ -44,14 +45,9 @@ const ROOF = {
   drawFixLine: /*i18n*/ { id: 'Close the shape, or tap Undo.' },
   closeShape: /*i18n*/ { id: 'Close shape' },
 
-  roofArea: /*i18n*/ { id: 'Roof · {area}' },
   roofClosed: /*i18n*/ {
     id: 'Height {height} is the usual storey here. Drag a corner to fix the shape.',
   },
-  roofIdle: /*i18n*/ { id: 'Drag a corner to fix the shape.' },
-  roofPicked: /*i18n*/ { id: '{name} · height {height}. Drag a corner to fix the shape.' },
-  roofIdle3d: /*i18n*/ { id: 'Tap the roof to change its height.' },
-  roofIdle3dReader: /*i18n*/ { id: 'Tap a roof to see its height.' },
   roofSizing: /*i18n*/ { id: 'Set the true length of the marked edge.' },
   roofSized: /*i18n*/ { id: 'All lengths sized from the one length you set.' },
   roofSet: /*i18n*/ { id: 'Edge set to {length}.' },
@@ -126,6 +122,9 @@ const DRAW_REFUSAL: Record<
     title: t(ROOF.drawRoofsTitle, { max: ROOFS_MAX }),
     line: t(ROOF.drawFixLine),
   }),
+  outside_roof: (t) => studioFacesWords(t).faceOutside,
+  over_face: (t) => studioFacesWords(t).faceOver,
+  too_many_faces: (t) => studioFacesWords(t).facesMany,
 };
 
 function editRefusalLine(
@@ -169,7 +168,8 @@ function placedLine(t: T, said: Extract<RoofSaid, { kind: 'placed' }>): Translat
     : t(ROOF.placedBeside, { number: said.beside + 1 });
 }
 
-function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedText {
+/** What an act just did, in a line; `null` for an act that has no more to say than the model shows. */
+function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedText | null {
   switch (said.kind) {
     case 'closed':
       // A roof placed among others says what it became; a first roof, where its height came from.
@@ -181,7 +181,10 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'sticks_out':
     case 'set_free':
     case 'side_wall':
-      return roofPlaceLine(t, said, shown.heightOf) ?? t(ROOF.roofIdle);
+    case 'material_set':
+      return roofPlaceLine(t, said, shown.heightOf);
+    case 'faces_drawn':
+      return studioFacesWords(t).facesDrawn(said.count);
     case 'sized':
       return t(ROOF.roofSized);
     case 'set':
@@ -208,10 +211,8 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'redone':
       return historyLine(t, false, said.change);
     case 'roof_picked':
-      return t(ROOF.roofPicked, {
-        name: roofNameWord(t, said.name ?? { kind: 'roof', number: said.roof + 1 }),
-        height: shown.heightOf(said.metres),
-      });
+      // The picked roof is ringed on the model, and Roofs and its sheet name it.
+      return null;
     case 'roof_deleted':
       return roofPlaceLine(t, said, shown.heightOf) ?? t(ROOF.roofDeleted);
     case 'went_back':
@@ -245,13 +246,17 @@ export function studioRoofWords(t: T) {
     closeShape: t(ROOF.closeShape),
     /** The trash on a picked roof. */
     deleteRoof: t(ROOF.deleteRoof),
-    /** "Roof · 66 m²": the area already formatted. */
-    roofArea: (area: string) => t(ROOF.roofArea, { area }),
-    /** What the bar says of the roofs: after an act, while a length is in the box, or at rest. */
-    roofLine: (said: RoofSaid | null, sizing: boolean, shown: RoofWordsShown): TranslatedText => {
+    /**
+     * A moment's words in the bar: what an act just did, or what a length in the box waits for;
+     * `null` at rest, where the bar holds the next step alone.
+     */
+    roofLine: (
+      said: RoofSaid | null,
+      sizing: boolean,
+      shown: RoofWordsShown,
+    ): TranslatedText | null => {
       if (sizing) return t(ROOF.roofSizing);
-      if (said === null) return t(ROOF.roofIdle);
-      return roofSaidLine(t, said, shown);
+      return said === null ? null : roofSaidLine(t, said, shown);
     },
     ...roofTopWords(t),
     /** The line after a roof closes: what it became, why, and its chips. */
@@ -264,9 +269,6 @@ export function studioRoofWords(t: T) {
     ): TranslatedText => editRefusalLine(t, refusal, shown, held),
     /** A corner held among crowded dots: a closer look gives it room. */
     dragCrowded: t(ROOF.dragCrowded),
-    /** The bar at rest in 3D, where a roof's height is changed and its outline is not. */
-    roofIdle3d: t(ROOF.roofIdle3d),
-    roofIdle3dReader: t(ROOF.roofIdle3dReader),
     /** The tag beside the spot while drawing: why it cannot go there, its snap, or its angle. */
     spotTag: (spot: SpotFacts, shown: RoofWordsShown): RoofTag | null => {
       if (spot.refusal === 'would_cross') return { text: tagWord(t, 'cross'), bad: true };

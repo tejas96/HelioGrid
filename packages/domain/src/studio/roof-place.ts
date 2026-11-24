@@ -94,7 +94,7 @@ export function roofPlaced(
 
 /**
  * A roof made into another kind by a person — a chip on the line after it closes, or the What it
- * is row of its sheet. It keeps the roof it lay on: a stair room made a hole is cut in that roof,
+ * is row of its sheet. The kind it already is, picked, makes the studio's guess the person's. It keeps the roof it lay on: a stair room made a hole is cut in that roof,
  * a hole made a stair room stands on it, and a building stands on the ground. A height and a
  * material the studio gave go back to the new kind's own; a person's stay.
  */
@@ -105,7 +105,15 @@ export function roofMadeInto(
   facts: RoofFacts,
 ): StudioDocument {
   const roof = document.roofs[index];
-  if (roof === undefined || roofKindOf(roof) === kind) return document;
+  if (roof === undefined) return document;
+  if (roofKindOf(roof) === kind) {
+    // The kind it already is, picked by a person: the studio's guess is theirs now, and waits no
+    // more. A building is what a roof is with no word on it: there is nothing to make theirs.
+    const guessed = roof.kind !== undefined && roof.kind.setBy !== 'person';
+    if (!guessed) return document;
+    const mine: Roof = { ...roof, kind: { is: kind, setBy: 'person' } };
+    return { ...document, roofs: document.roofs.map((each, i) => (i === index ? mine : each)) };
+  }
   const under = roof.on ?? roof.partOf;
   const like = document.roofs.find((other) => other.id === under);
   const kept = unplaced(roof);

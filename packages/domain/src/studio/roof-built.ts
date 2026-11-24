@@ -1,9 +1,18 @@
 import type { Roof } from './document';
-import { type FormedRoof, type RoofForm, roofFormed, type SideOwn } from './roof-forms';
-import { roofSidesOf } from './roof-kind';
+import { handFaces } from './roof-cuts';
+import type { BuiltFace } from './roof-faces';
+import {
+  type FormedRoof,
+  MANSARD_LOWER_DEG,
+  type RoofForm,
+  roofFormed,
+  type SideOwn,
+} from './roof-forms';
+import { handFacesDrawn } from './roof-hand-faces';
+import { roofKindOf, roofSidesOf } from './roof-kind';
 import { type RoofFacts, roofMaterialNow, roofShapeNow } from './roof-levels';
-import { materialSlopeDeg } from './roof-material';
-import { type RoofSide, SIDE_ENDS, type SideEnd } from './roof-parts';
+import { materialSlopeDeg, type RoofShape } from './roof-material';
+import { type HandFaceSet, type RoofSide, SIDE_ENDS, type SideEnd } from './roof-parts';
 
 /**
  * A stored roof as the kernel builds it (`T-M05-002`, part e): its shape and one slope, and all it
@@ -12,10 +21,38 @@ import { type RoofSide, SIDE_ENDS, type SideEnd } from './roof-parts';
  * reads the roof, so its faces, its surface and its setback are built from the same form.
  */
 
-/** A roof's one slope in degrees: what is stored, else its material's first slope; 0 when flat. */
+/** The shapes with a steep lower slope and a shallower upper one. */
+const TWO_SLOPES: readonly RoofShape[] = ['mansard', 'gambrel'];
+export const hasTwoSlopes = (shape: RoofShape) => TWO_SLOPES.includes(shape);
+
+/**
+ * The slope a sloped roof starts with, in degrees: a mansard's or a gambrel's steep lower slope,
+ * an open shed's the market's for a sheet on posts, any other roof's its material's.
+ */
+export function roofFirstSlopeDeg(roof: Roof, facts: RoofFacts): number {
+  if (hasTwoSlopes(roofShapeNow(roof, facts))) return MANSARD_LOWER_DEG;
+  if (roofKindOf(roof) === 'open_shed') return facts.openShedSlopeDeg;
+  // A material that starts flat, given a sloped shape by a person, starts as a sloped slab does.
+  const material = materialSlopeDeg(roofMaterialNow(roof), facts);
+  return material > 0 ? material : SLOPED_SLAB_DEG;
+}
+
+/** A sloped concrete slab's first slope, as tiles laid on RCC start. */
+export const SLOPED_SLAB_DEG = 20;
+
+/**
+ * How far a sloped roof's drip edge lies past its walls: what is stored, else the market's. A
+ * dormer starts with none: it is cut into a roof, and its walls stand at its outline.
+ */
+export function roofOverhangM(roof: Roof, facts: RoofFacts): number {
+  if (roof.overhang !== undefined) return roof.overhang.metres;
+  return roofKindOf(roof) === 'dormer' ? 0 : facts.overhangM;
+}
+
+/** A roof's one slope in degrees: what is stored, else its first slope; 0 when flat. */
 export function roofSlopeDeg(roof: Roof, facts: RoofFacts): number {
   if (roofShapeNow(roof, facts) === 'flat') return 0;
-  return roof.slope?.degrees ?? materialSlopeDeg(roofMaterialNow(roof), facts);
+  return roof.slope?.degrees ?? roofFirstSlopeDeg(roof, facts);
 }
 
 function ownOf(side: RoofSide): SideOwn {
@@ -28,22 +65,32 @@ function ownOf(side: RoofSide): SideOwn {
 }
 
 /**
- * The form a stored roof is built in. `side` is the side a shed's low edge is, a sawtooth's glass
- * faces or a strip roof is measured from, where the roof stores none (`roof-slope-way.ts` finds
- * it). A roof of faces drawn by hand is built flat until its faces are stored.
+ * What the studio picks for a roof's form where no person has (`roof-slope-way.ts`): the side a
+ * shed's low edge is, a sawtooth's glass faces or a strip roof is measured from, and whether a
+ * gable's ridge is turned.
  */
-export function roofFormOf(roof: Roof, facts: RoofFacts, side?: number): RoofForm {
+export interface FormPicks {
+  readonly side?: number;
+  readonly turned?: boolean;
+}
+
+/**
+ * The form a stored roof is built in. What the roof stores wins over the studio's picks. A roof of
+ * faces drawn by hand is built flat until its faces are stored.
+ */
+export function roofFormOf(roof: Roof, facts: RoofFacts, picks: FormPicks = {}): RoofForm {
   const shape = roofShapeNow(roof, facts);
   if (shape === 'flat' || shape === 'any') return { shape: 'flat', slopeDeg: 0 };
   const sides = roofSidesOf(roof);
   const marked = sides.findIndex((each) => each.low !== undefined || each.glass !== undefined);
   const owns = sides.map(ownOf);
   const stored = roof.shape;
-  const from = marked >= 0 ? marked : side;
+  const from = marked >= 0 ? marked : picks.side;
+  const turned = stored?.turned ?? picks.turned;
   return {
     shape,
     slopeDeg: roofSlopeDeg(roof, facts),
-    ...(stored?.turned === undefined ? {} : { turned: stored.turned }),
+    ...(turned === undefined ? {} : { turned }),
     ...(from === undefined ? {} : { side: from }),
     ...(stored?.teeth === undefined ? {} : { teeth: stored.teeth.count }),
     ...(stored?.upperSlope === undefined ? {} : { upperSlopeDeg: stored.upperSlope.degrees }),
@@ -55,7 +102,39 @@ export function roofFormOf(roof: Roof, facts: RoofFacts, side?: number): RoofFor
   };
 }
 
+/**
+ * The slope a face drawn by hand stands at: its own where a person set it, else its roof's as it
+ * is now — the roof's Slope row, or what its material and kind start it at. The degrees a face
+ * stores beside `setBy: 'system'` are for a reader that does not follow the roof.
+ */
+export function handFaceSlopeDeg(roof: Roof, face: HandFaceSet, facts: RoofFacts): number {
+  return face.slope.setBy === 'person' ? face.slope.degrees : roofSlopeDeg(roof, facts);
+}
+
+/** A roof's faces drawn by hand as the kernel builds them, each at the slope it stands at. */
+export function handFacesOf(
+  roof: Roof,
+  faces: readonly HandFaceSet[],
+  facts: RoofFacts,
+): BuiltFace[] {
+  return handFaces(
+    faces.map((face) => ({
+      corners: face.corners,
+      slopeDeg: handFaceSlopeDeg(roof, face, facts),
+      lowSide: face.lowSide,
+    })),
+  );
+}
+
 /** A stored roof's faces. */
-export function roofBuilt(roof: Roof, facts: RoofFacts, side?: number): FormedRoof {
-  return roofFormed(roof.corners, roofFormOf(roof, facts, side));
+export function roofBuilt(roof: Roof, facts: RoofFacts, picks?: FormPicks): FormedRoof {
+  const stored = roof.shape?.faces ?? [];
+  const drawn = handFacesDrawn(roof) === 'whole' ? stored : [];
+  // Any shape with faces a person drew: those faces, each at its own slope.
+  if (roofShapeNow(roof, facts) === 'any' && drawn.length > 0) {
+    const faces = handFacesOf(roof, drawn, facts);
+    const topM = Math.max(0, ...faces.flatMap((face) => face.corners.map((corner) => corner.up)));
+    return { faces, topM, walls: [], built: 'any' };
+  }
+  return roofFormed(roof.corners, roofFormOf(roof, facts, picks));
 }

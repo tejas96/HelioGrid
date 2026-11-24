@@ -11,7 +11,15 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import type { SliderProps } from './Slider.types';
 import { SliderTrack } from './SliderTrack.native';
-import { fillPercent, formatValue, markPercent, nudged, stepperOff } from './slider-math';
+import {
+  fillPercent,
+  formatValue,
+  markPercent,
+  nudged,
+  stepperOff,
+  tickNudged,
+  ticksOnTrack,
+} from './slider-math';
 
 interface NativeSliderProps extends SliderProps {
   style?: StyleProp<ViewStyle>;
@@ -63,6 +71,7 @@ export function Slider({
   hint,
   words,
   mark,
+  ticks,
   format,
   steppers = true,
   disabled = false,
@@ -78,11 +87,19 @@ export function Slider({
 
   const live = (next: number) => onInput?.(next);
   const commit = (next: number) => onCommit?.(next);
+  const stepped = (direction: -1 | 1) =>
+    ticks === undefined || ticks.length === 0
+      ? nudged(value, direction, min, max, step)
+      : tickNudged(value, direction, ticks, step);
   const nudge = (direction: number) => {
-    const next = nudged(value, direction, min, max, step);
+    const next = stepped(direction < 0 ? -1 : 1);
+    if (next === null) return;
     live(next);
     commit(next);
   };
+  const off = (direction: -1 | 1) =>
+    stepperOff(direction, value, min, max, disabled) || stepped(direction) === null;
+  const onTrack = ticksOnTrack(ticks, min, max);
 
   return (
     <View style={style}>
@@ -99,7 +116,7 @@ export function Slider({
       <View style={styles.row}>
         {steppers ? (
           <StepButton
-            disabled={stepperOff(-1, value, min, max, disabled)}
+            disabled={off(-1)}
             glyph="minus"
             label={words.decrease(label)}
             onPress={() => nudge(-1)}
@@ -115,19 +132,35 @@ export function Slider({
           onNudge={nudge}
           percent={percent}
           mark={markPercent(mark, min, max)}
+          ticks={onTrack.map(({ percent: at }) => at)}
           shown={shown}
           step={step}
           value={value}
         />
         {steppers ? (
           <StepButton
-            disabled={stepperOff(1, value, min, max, disabled)}
+            disabled={off(1)}
             glyph="plus"
             label={words.increase(label)}
             onPress={() => nudge(1)}
           />
         ) : null}
       </View>
+      {onTrack.length === 0 ? null : (
+        <View
+          style={[styles.ticks, steppers ? styles.ticksBesideSteppers : undefined]}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
+          {onTrack.map(({ tick, percent: at }) => (
+            <View key={tick.value} style={[styles.tickWord, { left: `${at}%` }]}>
+              <Text variant="caption" color="secondary" style={styles.tickText}>
+                {tick.label}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
       {provenanceNode === null ? null : <View style={styles.underTrack}>{provenanceNode}</View>}
       {hint !== undefined ? (
         <Text variant="caption" color="tertiary" style={styles.underTrack}>
@@ -166,6 +199,25 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: theme.radius['r-pill'],
+  },
+  /* Each tick's word under its tick: the row starts where the track does. */
+  ticks: {
+    height: 18,
+    marginTop: theme.spacing['sp-1'],
+  },
+  ticksBesideSteppers: {
+    marginHorizontal: 44 + 10,
+  },
+  /* A word centred on its tick: a wide box centred on the point, the word in its middle. */
+  tickWord: {
+    position: 'absolute',
+    top: 0,
+    width: 48,
+    marginLeft: -24,
+    alignItems: 'center',
+  },
+  tickText: {
+    fontVariant: ['tabular-nums'],
   },
   underTrack: {
     marginTop: theme.spacing['sp-2'],

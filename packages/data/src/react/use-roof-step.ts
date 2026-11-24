@@ -47,9 +47,10 @@ import {
   tagPlaceOf,
   tracedLength,
 } from '@heliogrid/domain';
+import { parapetInsidesOf } from '@heliogrid/domain/studio-kernel';
 import { type RefObject, useMemo, useRef, useState } from 'react';
 import { aKey } from '../client/creation-key';
-import type { ClosePlacing, RoofMoves, RoofStepView } from './roof-step-view';
+import type { ClosingWith, RoofMoves, RoofStepView } from './roof-step-view';
 import { sizeCardIn, useUnitsFollow } from './size-card';
 import { type StudioPicture, stampOf, tracedOnOf } from './studio-document-state';
 
@@ -76,7 +77,7 @@ export function useRoofStep({
   numberEntry,
   setNumberEntry,
   planOutlines,
-  placingOf,
+  closingOf,
 }: {
   /** The design as it stands, as the screen last drew it. */
   document: StudioDocument | null;
@@ -102,8 +103,8 @@ export function useRoofStep({
   setNumberEntry: (entry: NumberEntry) => void;
   /** The laid plan's closed outlines, in its own units: a roof made from one is sized with it. */
   planOutlines: readonly (readonly number[])[];
-  /** What places a roof closed on a design as it stands: asked of the studio's kernel. */
-  placingOf: (document: StudioDocument) => ClosePlacing;
+  /** What a close carries, asked of the kernel: a roof's place, or a face closed onto roof `faces`. */
+  closingOf: (document: StudioDocument, faces: number | undefined) => ClosingWith;
 }) {
   const [roofStep, setRoofStep] = useState<RoofStepState>(ROOF_STEP_START);
   const [free, setFree] = useState(false);
@@ -198,7 +199,7 @@ export function useRoofStep({
       tracedOn: tracedOnOf(picture),
       stamp: stampOf(picture),
       ghost,
-      placing: placingOf(design),
+      ...closingOf(design, step.current.kind === 'drawing' ? step.current.faces : undefined),
     });
   };
   const close = () => closeWith(true);
@@ -259,7 +260,20 @@ export function useRoofStep({
     stepLength: (by) => act({ kind: 'step', by, system: units }),
     setLength: () => act({ kind: 'set', system: units }),
     confirmLength: (use) => act({ kind: 'confirm', use, system: units }),
-    grab: (grip, at) => act({ kind: 'grab', grip, at, system: units, magnet: magnet() }),
+    grab: (grip, at) => {
+      const design = latest.current?.present;
+      // A roof moved onto another pulls to the inside of its parapet, which the kernel knows.
+      const insides =
+        grip.kind === 'move' && design !== undefined ? parapetInsidesOf(design, facts) : undefined;
+      act({
+        kind: 'grab',
+        grip,
+        at,
+        system: units,
+        magnet: magnet(),
+        ...(insides === undefined ? {} : { insides }),
+      });
+    },
     drag: (at) => act({ kind: 'drag', at }),
     release: () => act({ kind: 'release' }),
     pickCorner: (corner) => act({ kind: 'pick_corner', corner }),
@@ -289,6 +303,7 @@ export function useRoofStep({
     typeSizePair: (text) => act({ kind: 'type_pair', text }),
     placeRoof: () => act({ kind: 'place', id: aKey(), stamp, system: units }),
   };
-  // The magnet as it works this moment: the person's pick, resting while Alt is held.
-  return { view, moves, step, act, magnetNow: () => magnet() };
+  const startFaces = (roof: number) => act({ kind: 'draw_faces', roof, magnet: magnet() });
+  // The magnet as it works now (resting while Alt is held); startFaces: draw roof `roof`'s faces.
+  return { view, moves, step, act, magnetNow: () => magnet(), startFaces };
 }

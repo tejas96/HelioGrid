@@ -58,3 +58,36 @@ export function markPercent(mark: number | undefined, min: number, max: number):
   if (mark === undefined || mark < min || mark > max) return null;
   return fillPercent(mark, min, max);
 }
+
+/** Within half a step a value stands on a tick. */
+const ON_TICK = 0.5;
+
+/**
+ * − or + where the track has named ticks: the next tick beyond the value that way; `null` past
+ * the last, so the stepper rests.
+ */
+export function tickNudged(
+  value: number,
+  direction: number,
+  ticks: readonly { readonly value: number }[],
+  step: number,
+): number | null {
+  const near = step * ON_TICK;
+  const values = ticks.map((tick) => tick.value).sort((a, b) => a - b);
+  const next =
+    direction > 0
+      ? values.find((tick) => tick > value + near)
+      : values.reverse().find((tick) => tick < value - near);
+  return next ?? null;
+}
+
+/** The ticks on the track, each with its place in percent; a tick off the track is left out. */
+export function ticksOnTrack<Tick extends { readonly value: number }>(
+  ticks: readonly Tick[] | undefined,
+  min: number,
+  max: number,
+): { readonly tick: Tick; readonly percent: number }[] {
+  return (ticks ?? [])
+    .filter((tick) => tick.value >= min && tick.value <= max)
+    .map((tick) => ({ tick, percent: fillPercent(tick.value, min, max) }));
+}

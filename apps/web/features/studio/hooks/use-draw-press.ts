@@ -25,13 +25,19 @@ function historyKey(
 const OWN_KEYS = '[role="dialog"], [role="menu"], [role="listbox"], [contenteditable="true"]';
 
 /**
- * The desktop's roof keys, for an editor with nothing in hand: D draws another roof in one press,
- * and Delete removes the roof picked in the top view, with what stands on it.
+ * The desktop's roof keys, with nothing in hand: R opens Roofs for anyone once a roof stands; for
+ * an editor D draws another roof in one press, and Delete removes the roof picked in the top view,
+ * with what stands on it.
  */
 function roofKey(event: KeyboardEvent, studio: StudioScreen): void {
-  const free = studio.editing.kind === 'editor' && studio.roofStep.kind === 'idle';
-  if (!free || event.metaKey || event.ctrlKey || event.altKey) return;
-  if (event.key.toLowerCase() === 'd') {
+  if (studio.roofStep.kind !== 'idle' || event.metaKey || event.ctrlKey || event.altKey) return;
+  const key = event.key.toLowerCase();
+  if (key === 'r' && studio.roofList.rows.length > 0) {
+    event.preventDefault();
+    studio.moves.openRoofs();
+  }
+  if (studio.editing.kind !== 'editor') return;
+  if (key === 'd') {
     event.preventDefault();
     studio.moves.draw();
   }
@@ -73,7 +79,7 @@ function drawKey(
  * The web's press on the map (a platform adapter, `T-M05-002` part b): a tap places a corner while
  * drawing, or lets a picked corner go; a drag is the camera's. On a phone a finger held still
  * while drawing aims, with the loupe, and places on lift; a mouse shows the spot as it moves. Esc
- * puts back what is in hand; D draws another roof and Delete removes the picked one.
+ * puts back what is in hand; R opens Roofs, D draws another roof and Delete removes the picked one.
  */
 export function useDrawPress(
   studio: StudioScreen,

@@ -156,8 +156,10 @@ describe('a person makes a roof another kind', () => {
     });
   });
 
-  it('picking the kind it already is changes nothing: no Undo step', () => {
-    expect(roofMadeInto(design, 2, 'stair_room', FACTS)).toBe(design);
+  it('picking the kind the studio guessed makes the guess the person’s, once: again it changes nothing', () => {
+    const mine = roofMadeInto(design, 2, 'stair_room', FACTS);
+    expect(mine.roofs[2]?.kind).toEqual({ is: 'stair_room', setBy: 'person' });
+    expect(roofMadeInto(mine, 2, 'stair_room', FACTS)).toBe(mine);
     expect(roofMadeInto(design, 9, 'hole', FACTS)).toBe(design);
   });
 

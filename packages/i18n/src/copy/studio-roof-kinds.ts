@@ -62,6 +62,8 @@ const KIND = {
   levelTop: /*i18n*/ { id: 'Level with {roof}’s top · {height}' },
   levelParapet: /*i18n*/ { id: 'Level with {roof}’s parapet top · {height}' },
   levelFloor: /*i18n*/ { id: 'Floor {floor} · {height}' },
+  levelSides: /*i18n*/ { id: 'Same as the other sides · {height}' },
+  levelRidge: /*i18n*/ { id: 'Level with {roof}’s ridge · {height}' },
   wallsNone: /*i18n*/ { id: 'No parapet on this roof' },
   noWallOnSide: /*i18n*/ { id: 'No parapet on this side' },
   sideWallOff: /*i18n*/ { id: 'Side {number}: take its parapet off' },
@@ -237,7 +239,9 @@ export function roofTopWords(t: T) {
         const floor = shownAsSent(to.floors === 0 ? 'G' : `G+${to.floors}`);
         return t(KIND.levelFloor, { floor, height });
       }
+      if (to.kind === 'other_sides') return t(KIND.levelSides, { height });
       const roof = roofNameWord(t, to.name);
+      if (to.kind === 'ridge') return t(KIND.levelRidge, { roof, height });
       return t(to.kind === 'roof_top' ? KIND.levelTop : KIND.levelParapet, { roof, height });
     },
     /** A roof's height above the roof it stands on, on it in the top view: "+3.0 m". */

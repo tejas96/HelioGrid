@@ -1,17 +1,35 @@
 'use client';
 import {
+  type GroundPoint,
+  NO_ROOF_LIST,
   NO_ROOF_SCENE,
+  type NumberAt,
   type RoofFacts,
   type RoofHeight,
+  type RoofHit,
   type RoofSheetView,
+  type RoofsEdges,
+  type SightAt,
+  type StairsDrop,
+  type StairsPlace,
   type StudioDocument,
+  stairsAsk,
+  stairsDropOf,
+  stairsOf,
+  stairsPlaced,
 } from '@heliogrid/domain';
 import {
+  handFaceRowsOf,
   heightPullOf,
+  roofHitOf,
+  roofListOf,
+  roofNumberSet,
   roofSceneOf,
+  roofSheetRowsOf,
   roofsAreaM2,
   roofsWorked,
   roofTopMarksOf,
+  sideSheetRowsOf,
   type WorkedBefore,
 } from '@heliogrid/domain/studio-kernel';
 import { useMemo, useRef } from 'react';
@@ -25,7 +43,51 @@ export interface RoofMemory {
   before?: WorkedBefore;
 }
 
-const NOTHING: RoofModelShown = { scene: NO_ROOF_SCENE, topMarks: [], roofsAreaM2: 0 };
+const NOTHING: RoofModelShown = {
+  scene: NO_ROOF_SCENE,
+  topMarks: [],
+  roofList: NO_ROOF_LIST,
+  roofsAreaM2: 0,
+  sheetRows: null,
+  sideRows: null,
+  faceRows: null,
+  stairs: null,
+  stairsAsk: false,
+};
+
+/** The stairs where a drag holds them, else where they stand; and whether the bar asks for them. */
+function stairsSeen(
+  document: StudioDocument,
+  edges: RoofsEdges,
+  clearPathM: number,
+  inHand: StairsPlace | null,
+): Pick<RoofModelShown, 'stairs' | 'stairsAsk'> {
+  const stairs = stairsOf(
+    inHand === null ? document : stairsPlaced(document, inHand),
+    edges,
+    clearPathM,
+  );
+  return { stairs, stairsAsk: stairsAsk(document, stairs) };
+}
+
+/** The model drawn, and what a tap on it lands on: the screen hook's, never shown. */
+export interface RoofModelSeen extends RoofModelShown {
+  /**
+   * `beside`: the tap's line of sight a finger's half-width to the side. `open`: the roof whose
+   * sheet is open — a second tap on its top picks the roof under it.
+   */
+  hitAt(at: SightAt, beside: SightAt, open: number | null): RoofHit | null;
+  /** Where the stairs land, dropped or tapped at a point of the plan. */
+  stairsDropAt(at: GroundPoint, reachM: number, magnet: boolean): StairsDrop | null;
+}
+
+/** The open sheet's roof, the side whose sheet shows over it, and the height slider's ends. */
+export interface SheetOpen {
+  readonly roof: number;
+  readonly side: number | null;
+  readonly face: number | null;
+  readonly slide: { readonly min: number; readonly max: number };
+}
 
 /**
  * The design as it stands, or the preview of what is in hand, with the open sheet's height where
@@ -40,21 +102,48 @@ export function roofModelShown(
   /** The site's pin: its latitude says which way a one-way slope first faces. */
   pin: { readonly latitude: number } | null,
   memory: RoofMemory,
-): RoofModelShown {
-  if (document === null) return NOTHING;
+  /** The sheet open over the model, and a number moving on its slider, not kept yet. */
+  open: SheetOpen | null = null,
+  numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
+  /** The stairs held by a drag, not kept yet: they show there. */
+  stairsInHand: StairsPlace | null = null,
+): RoofModelSeen {
+  if (document === null) return { ...NOTHING, hitAt: () => null, stairsDropAt: () => null };
   const roofs =
     inHand === null
       ? document.roofs
       : document.roofs.map((roof, index) =>
           index === inHand.roof ? { ...roof, height: inHand.height } : roof,
         );
-  const shown = { ...document, roofs };
-  const worked = roofsWorked(shown, facts, pin?.latitude ?? 0, memory.before);
+  const held = { ...document, roofs };
+  const shown =
+    numberInHand === null ? held : roofNumberSet(held, numberInHand.at, numberInHand.value, facts);
+  const latitude = pin?.latitude ?? 0;
+  const worked = roofsWorked(shown, facts, latitude, memory.before);
   memory.before = { document: shown, worked };
+  const roofList = roofListOf(shown, facts, worked);
+  const scene = roofSceneOf(shown, facts, worked);
+  const row = open === null ? undefined : roofList.rows.find((each) => each.roof === open.roof);
   return {
-    scene: roofSceneOf(shown, facts, worked),
-    topMarks: roofTopMarksOf(shown, facts, worked),
+    scene,
+    hitAt: (at, beside, open) => roofHitOf(shown, scene, worked, facts, at, beside, open),
+    topMarks: roofTopMarksOf(shown, facts, worked, latitude),
+    roofList,
     roofsAreaM2: roofsAreaM2(shown),
+    sheetRows:
+      open === null || row === undefined
+        ? null
+        : roofSheetRowsOf(shown, open.roof, facts, worked, row, latitude, open.slide),
+    sideRows:
+      open === null || open.side === null
+        ? null
+        : sideSheetRowsOf(shown, open.roof, open.side, facts, worked, latitude),
+    faceRows:
+      open === null || open.face === null
+        ? null
+        : handFaceRowsOf(shown, open.roof, open.face, facts),
+    ...stairsSeen(shown, worked.edges, facts.clearPathM, stairsInHand),
+    stairsDropAt: (at, reachM, magnet) => stairsDropOf(shown, worked.edges, at, reachM, magnet),
   };
 }
 
@@ -74,16 +163,37 @@ export function useRoofModel(
   facts: RoofFacts,
   sheet: RoofSheetView | null,
   pin: { readonly latitude: number } | null,
-): RoofModelShown {
+  /** The side whose sheet shows over the roof's, and the number in hand. */
+  side: number | null = null,
+  numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
+  stairsInHand: StairsPlace | null = null,
+  /** The face drawn by hand whose sheet shows over the roof's. */
+  face: number | null = null,
+): RoofModelSeen {
   const memory = useRef<RoofMemory>({});
   const open = sheet?.roof ?? null;
   const held = sheet?.height.metres;
   const setBy = sheet?.height.setBy;
+  const min = sheet?.slide.min;
+  const max = sheet?.slide.max;
   return useMemo(() => {
     const inHand =
       open === null || held === undefined || setBy === undefined
         ? null
         : { roof: open, height: { metres: held, setBy } };
-    return roofModelShown(shown, facts, inHand, pin, memory.current);
-  }, [shown, facts, open, held, setBy, pin]);
+    const sheetOpen =
+      open === null || min === undefined || max === undefined
+        ? null
+        : { roof: open, side, face, slide: { min, max } };
+    return roofModelShown(
+      shown,
+      facts,
+      inHand,
+      pin,
+      memory.current,
+      sheetOpen,
+      numberInHand,
+      stairsInHand,
+    );
+  }, [shown, facts, open, held, setBy, pin, side, face, numberInHand, min, max, stairsInHand]);
 }

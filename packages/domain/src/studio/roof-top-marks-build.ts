@@ -1,10 +1,13 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
+import { handFacesOf } from './roof-built';
 import type { BuiltFace } from './roof-faces';
+import { handFacesKept } from './roof-hand-faces';
 import { roofKindOf, standsOn } from './roof-kind';
-import { type RoofFacts, roofOwnHeightM } from './roof-levels';
+import { type RoofFacts, roofOwnHeightM, roofShapeNow } from './roof-levels';
 import { roofNameOf } from './roof-names';
 import { type EdgeStretch, parapetNow } from './roof-open-edges';
+import { lowSideOf } from './roof-slope-way';
 import { sticksOutFarthest } from './roof-sticks-out';
 import type { NoWallWhy, RoofTopMark, SideDot, SideStretchMark } from './roof-top-marks';
 import type { RoofsWorked } from './roof-worked';
@@ -61,12 +64,36 @@ function slopeOf(face: BuiltFace): { from: GroundPoint; to: GroundPoint } {
 /** The kinds that stand on another roof and say their height on it. */
 const SAYS_ABOVE = ['stair_room', 'upper_floor', 'open_shed'];
 
+/** A one-way roof's low side against a taller roof's wall: the middle of that side, and the roof. */
+function lowAgainstOf(
+  document: StudioDocument,
+  facts: RoofFacts,
+  roof: Roof,
+  index: number,
+  latitude: number,
+): RoofTopMark['lowAgainst'] {
+  if (!ONE_WAY.includes(roofShapeNow(roof, facts))) return null;
+  const low = lowSideOf(document, index, facts, latitude);
+  if (low.againstWall === null) return null;
+  const from = roof.corners[low.side] as GroundPoint;
+  const to = roof.corners[(low.side + 1) % roof.corners.length] as GroundPoint;
+  const name = roofNameOf(document, low.againstWall) ?? {
+    kind: 'roof' as const,
+    number: low.againstWall + 1,
+  };
+  return { at: along(from, to, 1 / 2), roof: name };
+}
+
+/** The shapes whose slope runs one way, from a low side. */
+const ONE_WAY: readonly string[] = ['shed', 'monitor', 'curved', 'butterfly'];
+
 function markOf(
   document: StudioDocument,
   facts: RoofFacts,
   worked: RoofsWorked,
   roof: Roof,
   index: number,
+  latitude: number,
 ): RoofTopMark {
   const kind = roofKindOf(roof);
   const edges = worked.edges[index] ?? [];
@@ -94,6 +121,10 @@ function markOf(
     }),
   );
   const out = sticksOutFarthest(document, index);
+  // An Any-shape roof's faces drawn by hand show while they are drawn, each with its arrow, before
+  // the roof stands in them; once they cover it they are what the kernel built.
+  const kept = roofShapeNow(roof, facts) === 'any' ? handFacesKept(roof) : [];
+  const hand = handFacesOf(roof, kept, facts);
   const stands = SAYS_ABOVE.includes(kind) && standsOn(document, roof) !== null;
   return {
     kind,
@@ -103,9 +134,12 @@ function markOf(
     aboveM: stands ? roofOwnHeightM(document, roof, facts) : null,
     sticksOutM: out.metres,
     sticksOutAt: out.at,
-    slopes: (worked.built[index]?.faces ?? []).map(slopeOf),
+    faces: hand.map((face) => face.corners.map(({ east, north }) => ({ east, north }))),
+    slopes: (hand.length > 0 ? hand : (worked.built[index]?.faces ?? [])).map(slopeOf),
     // A roof with no parapet of its own has none to lose: there is nothing to say why.
     noWall: parapetNow(document, roof, facts).allRound ? (taken[0] ?? null) : null,
+    setback: worked.setbacks[index] ?? [],
+    lowAgainst: lowAgainstOf(document, facts, roof, index, latitude),
   };
 }
 
@@ -113,6 +147,10 @@ export function roofTopMarksOf(
   document: StudioDocument,
   facts: RoofFacts,
   worked: RoofsWorked,
+  /** The site's latitude: which way a one-way slope first faces. */
+  latitude = 0,
 ): RoofTopMark[] {
-  return document.roofs.map((roof, index) => markOf(document, facts, worked, roof, index));
+  return document.roofs.map((roof, index) =>
+    markOf(document, facts, worked, roof, index, latitude),
+  );
 }

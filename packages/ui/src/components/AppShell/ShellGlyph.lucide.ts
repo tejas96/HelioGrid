@@ -37,6 +37,7 @@ export {
   CloudOffIcon,
   Columns2Icon,
   CommandIcon,
+  CopyIcon,
   CreditCardIcon,
   createLucideIcon,
   DiamondIcon,

@@ -46,8 +46,17 @@ export interface RoofTopMark {
   readonly sticksOutM: number;
   /** The corner of it farthest past that roof, where the tag sits; `null` within it. */
   readonly sticksOutAt: GroundPoint | null;
+  /**
+   * The faces drawn by hand on an Any-shape roof, each a ring of corners: drawn as the person
+   * draws them, before they cover the roof and after.
+   */
+  readonly faces: readonly (readonly GroundPoint[])[];
   /** A short line down each sloped face, from higher to lower. */
   readonly slopes: readonly { readonly from: GroundPoint; readonly to: GroundPoint }[];
   /** The first stretch another roof takes the wall from; `null` where none does. */
   readonly noWall: NoWallWhy | null;
+  /** Its setback line, ring by ring: drawn orange and dashed, round what stands on it too. */
+  readonly setback: readonly (readonly GroundPoint[])[];
+  /** Its low side against a taller roof's wall, where the tag sits; `null` where it is not. */
+  readonly lowAgainst: { readonly at: GroundPoint; readonly roof: RoofName } | null;
 }

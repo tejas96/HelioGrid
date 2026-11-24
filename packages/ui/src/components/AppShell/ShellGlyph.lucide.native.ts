@@ -44,6 +44,7 @@ export { default as ClockIcon } from 'lucide-react-native/icons/clock';
 export { default as CloudOffIcon } from 'lucide-react-native/icons/cloud-off';
 export { default as Columns2Icon } from 'lucide-react-native/icons/columns-2';
 export { default as CommandIcon } from 'lucide-react-native/icons/command';
+export { default as CopyIcon } from 'lucide-react-native/icons/copy';
 export { default as CreditCardIcon } from 'lucide-react-native/icons/credit-card';
 export { default as DiamondIcon } from 'lucide-react-native/icons/diamond';
 export { default as DotIcon } from 'lucide-react-native/icons/dot';
