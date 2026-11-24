@@ -10,23 +10,49 @@ import { type FlatShape, joinedAll, shapeOf, shapesArea, without } from './roof-
  * roof's surface along its slope.
  */
 
+/** Each list of roofs' takings, worked out once: a design's roofs are never changed in place. */
+const TAKEN = new WeakMap<readonly Roof[], readonly (readonly Roof[])[]>();
+
 /** What is taken out of a roof's own ground: its holes, its separate parts, and what stands on it on walls. */
-export function takenOutOf(document: StudioDocument, index: number): Roof[] {
-  return document.roofs.filter((other, at) => {
-    if (at === index) return false;
-    const kind = roofKindOf(other);
-    if (kind === 'hole' || kind === 'separate_part') return belongsTo(document, other) === index;
-    // A roof covered by an open shed keeps its own area.
-    return standsOn(document, other) === index && roofHasWalls(other);
-  });
+export function takenOutOf(document: StudioDocument, index: number): readonly Roof[] {
+  let all = TAKEN.get(document.roofs);
+  if (all === undefined) {
+    const lists: Roof[][] = document.roofs.map(() => []);
+    document.roofs.forEach((other) => {
+      const kind = roofKindOf(other);
+      const owner =
+        kind === 'hole' || kind === 'separate_part'
+          ? belongsTo(document, other)
+          : // A roof covered by an open shed keeps its own area.
+            roofHasWalls(other)
+            ? standsOn(document, other)
+            : null;
+      if (owner !== null) lists[owner]?.push(other);
+    });
+    all = lists;
+    TAKEN.set(document.roofs, all);
+  }
+  return all[index] ?? [];
 }
 
+/** Each list of roofs' grounds, each worked out once when first asked for. */
+const GROUNDS = new WeakMap<readonly Roof[], (readonly FlatShape[] | undefined)[]>();
+
 /** A roof's own ground: its outline without what is taken out of it. */
-export function roofGround(document: StudioDocument, index: number): FlatShape[] {
+export function roofGround(document: StudioDocument, index: number): readonly FlatShape[] {
   const roof = document.roofs[index];
   if (roof === undefined) return [];
+  let grounds = GROUNDS.get(document.roofs);
+  if (grounds === undefined) {
+    grounds = [];
+    GROUNDS.set(document.roofs, grounds);
+  }
+  const known = grounds[index];
+  if (known !== undefined) return known;
   const out = takenOutOf(document, index).map((other) => shapeOf(other.corners));
-  return without([shapeOf(roof.corners)], out) ?? [shapeOf(roof.corners)];
+  const ground = without([shapeOf(roof.corners)], out) ?? [shapeOf(roof.corners)];
+  grounds[index] = ground;
+  return ground;
 }
 
 /** A roof's own area as seen from above, in square metres. */

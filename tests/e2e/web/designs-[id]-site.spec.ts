@@ -1,9 +1,9 @@
 import {
   createTranslator,
-  designPageWords,
   leadDockWords,
   siteDetailsPageWords,
   siteDetailsWords,
+  studioCanvasWords,
 } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
@@ -30,7 +30,7 @@ const en = await createTranslator('en');
 const DOCK = leadDockWords(en.t);
 const PAGE = siteDetailsPageWords(en.t);
 const SITE = siteDetailsWords(en.t, false);
-const DESIGN = designPageWords(en.t);
+const STUDIO = studioCanvasWords(en.t);
 
 const SITE_PATH = /\/designs\/[0-9a-f-]{36}\/site$/;
 const DESIGN_PATH = /\/designs\/[0-9a-f-]{36}$/;
@@ -92,8 +92,9 @@ test('Create design opens Site details with the lead filled, and typed coordinat
   /* Start design saves the site and opens the design's own page. */
   await start.click();
   await expect(page).toHaveURL(DESIGN_PATH);
-  await expect(page.getByRole('heading', { name: DESIGN.named(1) })).toBeVisible();
-  await expect(page.getByText(DESIGN.holdingLine('roof', true))).toBeVisible();
+  /* The site has its place, so the studio opens on it: with no roof and no sky picture, on the
+     size card that makes the first roof. */
+  await expect(page.getByRole('form', { name: STUDIO.sizeTitle })).toBeVisible();
 });
 
 test('a site that does not save says so and keeps what was typed', async ({ page }) => {
