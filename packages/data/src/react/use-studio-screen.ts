@@ -148,6 +148,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     sheet.side,
     numberInHand,
     stairs.inHand,
+    sheet.state.heightHeld,
     sheet.face,
   );
   seen.current = hitAt;

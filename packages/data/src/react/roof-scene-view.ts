@@ -9,6 +9,7 @@ import {
   type RoofHit,
   type RoofSheetView,
   type RoofsEdges,
+  type SceneDrawn,
   type SightAt,
   type StairsDrop,
   type StairsPlace,
@@ -29,6 +30,7 @@ import {
   roofsAreaM2,
   roofsWorked,
   roofTopMarksOf,
+  sceneMotionOf,
   sideSheetRowsOf,
   type WorkedBefore,
 } from '@heliogrid/domain/studio-kernel';
@@ -41,6 +43,29 @@ import type { RoofModelShown } from './roof-model-shown';
  */
 export interface RoofMemory {
   before?: WorkedBefore;
+  /** The model last drawn, which the next one moves on from, and how many motions it has played. */
+  drawn?: SceneDrawn;
+  motions?: number;
+}
+
+/**
+ * The model's move into the design now, numbered so the screen plays each once; `null` with none.
+ * While a drag or a slider holds a value the model follows the hand and nothing moves: the drawn
+ * model it moves on from stays the last one kept, so letting go compares kept with kept.
+ */
+export function motionOf(
+  memory: RoofMemory,
+  now: SceneDrawn,
+  holding: boolean,
+): RoofModelShown['motion'] {
+  if (holding) return null;
+  const before = memory.drawn;
+  memory.drawn = now;
+  if (before === undefined || before.document === now.document) return null;
+  const motion = sceneMotionOf(before, now);
+  if (motion === null) return null;
+  memory.motions = (memory.motions ?? 0) + 1;
+  return { ...motion, id: memory.motions };
 }
 
 const NOTHING: RoofModelShown = {
@@ -53,6 +78,7 @@ const NOTHING: RoofModelShown = {
   faceRows: null,
   stairs: null,
   stairsAsk: false,
+  motion: null,
 };
 
 /** The stairs where a drag holds them, else where they stand; and whether the bar asks for them. */
@@ -107,6 +133,8 @@ export function roofModelShown(
   numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
   /** The stairs held by a drag, not kept yet: they show there. */
   stairsInHand: StairsPlace | null = null,
+  /** A height in hand on the open sheet: the sheet's height alone is no hand. */
+  heightHeld = false,
 ): RoofModelSeen {
   if (document === null) return { ...NOTHING, hitAt: () => null, stairsDropAt: () => null };
   const roofs =
@@ -143,6 +171,11 @@ export function roofModelShown(
         ? null
         : handFaceRowsOf(shown, open.roof, open.face, facts),
     ...stairsSeen(shown, worked.edges, facts.clearPathM, stairsInHand),
+    motion: motionOf(
+      memory,
+      { document: shown, scene },
+      heightHeld || numberInHand !== null || stairsInHand !== null,
+    ),
     stairsDropAt: (at, reachM, magnet) => stairsDropOf(shown, worked.edges, at, reachM, magnet),
   };
 }
@@ -167,6 +200,7 @@ export function useRoofModel(
   side: number | null = null,
   numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
   stairsInHand: StairsPlace | null = null,
+  heightHeld = false,
   /** The face drawn by hand whose sheet shows over the roof's. */
   face: number | null = null,
 ): RoofModelSeen {
@@ -194,6 +228,21 @@ export function useRoofModel(
       sheetOpen,
       numberInHand,
       stairsInHand,
+      heightHeld,
     );
-  }, [shown, facts, open, held, setBy, pin, side, face, numberInHand, min, max, stairsInHand]);
+  }, [
+    shown,
+    facts,
+    open,
+    held,
+    setBy,
+    pin,
+    side,
+    face,
+    numberInHand,
+    min,
+    max,
+    stairsInHand,
+    heightHeld,
+  ]);
 }

@@ -113,6 +113,7 @@ export {
 } from './studio/roof-polygons';
 export type { ProfilePart, StandingWall } from './studio/roof-profile';
 export { roofSceneOf } from './studio/roof-scene-build';
+export { sceneMotionOf } from './studio/roof-scene-motion';
 export { setbackLines } from './studio/roof-setback';
 export { type HeightSlide, roofSheetRowsOf } from './studio/roof-sheet-build';
 export {

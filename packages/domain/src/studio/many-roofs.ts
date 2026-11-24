@@ -21,6 +21,12 @@ export { type RoofName, roofNameOf, roofNumber } from './roof-names';
 export * from './roof-numbers';
 export * from './roof-parts';
 export * from './roof-scene';
+export type {
+  SceneDrawn,
+  SceneMotion,
+  SceneMove,
+  SceneMoveKind,
+} from './roof-scene-motion';
 export * from './roof-sheet-rows';
 export * from './roof-stairs';
 export * from './roof-stairs-moment';

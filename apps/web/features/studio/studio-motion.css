@@ -179,3 +179,8 @@
     transform: translateX(var(--hg-part-from, var(--sp-4)));
   }
 }
+
+/* The stairs' clear strip fades in where the stairs land (the mark glides there). */
+.hg-roof-lines .hg-stairs-strip {
+  animation: hg-fade-in var(--dur-emphasised) var(--ease-enter) backwards;
+}

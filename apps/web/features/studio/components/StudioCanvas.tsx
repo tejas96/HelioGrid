@@ -152,6 +152,7 @@ export function StudioCanvas({
             drive={drive}
             onTurn={(turn) => compass.current?.turn(turn)}
             roofScene={studio.scene}
+            roofMotion={studio.motion}
             pictureScale={studio.shown?.pictureScale ?? null}
             fit={
               frameOn === studio.own.landed ? (studio.own.landed?.box ?? studio.fit) : studio.fit
