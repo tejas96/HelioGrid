@@ -30,6 +30,27 @@
   filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 60%, transparent));
 }
 
+/* The side lit by a tap (board 6.3): its wall's top, or its edge where it has none, drawn thick
+   in the roof's blue. */
+.hg-roof-lines .hg-roof-side-face {
+  fill: color-mix(in srgb, var(--hg-roof-ink) 55%, transparent);
+  stroke: none;
+}
+
+.hg-roof-lines .hg-roof-side-lit {
+  stroke: var(--hg-roof-ink);
+  stroke-width: 7;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 var(--sp-1) color-mix(in srgb, var(--hg-roof-ink) 60%, transparent));
+}
+
+/* A roof the open one crosses (board 10.3): ringed in the check colour. */
+.hg-roof-lines .hg-roof-crossed {
+  fill: color-mix(in srgb, var(--warning) 18%, transparent);
+  stroke: var(--warning);
+  stroke-width: 3;
+}
+
 /* The magnet's level line: dashed, in the roof's blue, across the model at the height pulled to,
    with a tag that names it. */
 .hg-roof-lines .hg-roof-level {
@@ -108,88 +129,6 @@
   }
 }
 
-/* The sheet: a card in the bar's place on a desktop, a short sheet across the foot on a phone. */
-.hg-roof-sheet {
-  grid-row: 3;
-  grid-column: 1 / -1;
-  justify-self: center;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  inline-size: min(100%, calc(var(--sp-24) * 5));
-  min-inline-size: 0;
-  padding: var(--sp-3) var(--sp-3) var(--sp-4) var(--sp-4);
-  border-radius: var(--r-xl);
-  animation: hg-sheet-up var(--dur-emphasised) var(--ease-enter) 1 both;
-}
-
-.hg-roof-sheet-head,
-.hg-roof-sheet-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  min-inline-size: 0;
-}
-
-.hg-roof-sheet-title {
-  font-family: var(--font-display);
-  font-size: var(--fs-card-title);
-  color: var(--text-primary);
-}
-
-.hg-roof-sheet-area,
-.hg-roof-sheet-value {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  color: var(--text-primary);
-}
-
-.hg-roof-sheet-area {
-  font-size: var(--fs-body-sm);
-  color: var(--text-secondary);
-}
-
-.hg-roof-sheet-value {
-  font-size: var(--fs-body-lg);
-  font-weight: var(--fw-bold);
-}
-
-.hg-roof-sheet-label {
-  min-inline-size: var(--sp-16);
-  font-size: var(--fs-body-sm);
-  color: var(--text-secondary);
-}
-
-.hg-roof-sheet-close,
-.hg-roof-sheet-switch {
-  margin-inline-start: auto;
-}
-
-.hg-roof-sheet-refused {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  font-size: var(--fs-body-sm);
-  color: var(--danger-text);
-}
-
-.hg-roof-sheet-hint {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0 var(--sp-2);
-  font-size: var(--fs-caption);
-  color: var(--text-secondary);
-}
-
-.hg-roof-sheet-acts {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--sp-2);
-}
-
 @keyframes hg-sheet-up {
   from {
     opacity: 0;
@@ -198,16 +137,5 @@
   to {
     opacity: 1;
     transform: none;
-  }
-}
-
-@media (width < 968px) {
-  .hg-roof-sheet {
-    justify-self: stretch;
-    inline-size: auto;
-  }
-
-  .hg-roof-sheet-acts > * {
-    flex: 1 1 0;
   }
 }

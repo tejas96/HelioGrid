@@ -5,10 +5,11 @@ import type { DragResult } from './roof-check';
 import type { DraftRefusal } from './roof-draw';
 import type { LengthEntry, LengthInHand } from './roof-entry';
 import type { RoofFacts } from './roof-levels';
+import type { MaterialPick } from './roof-material-set';
 import type { RoofMeeting } from './roof-meeting';
 import type { RoofKind } from './roof-parts';
 import type { RoofPlacing, RoofSaid } from './roof-said';
-import type { Snapped } from './roof-snap';
+import type { Snapped, SnapTargets } from './roof-snap';
 import type { TypedSize } from './roof-type';
 import type { StudioChange } from './studio-change';
 
@@ -79,6 +80,8 @@ export type RoofStepState =
       readonly degrees: number;
       /** The magnet pulls the corner in hand, as it does while drawing. */
       readonly magnet: boolean;
+      /** The inside faces of the roofs' parapets: a roof moved onto another pulls to them. */
+      readonly insides?: SnapTargets['edges'];
     };
 
 /** A drawing stopped with corners placed: what Undo takes up again. */
@@ -179,6 +182,8 @@ export type RoofStepEvent =
       readonly wall: boolean;
       readonly walled: number;
     }
+  /** What a roof is made of: a person's pick, or Confirm, which keeps the guess (`pick` absent). */
+  | { readonly kind: 'material'; readonly roof: number; readonly pick?: MaterialPick }
   /** Copy, from a roof's row: `ids` names the copy and the copy of each roof that goes with it. */
   | { readonly kind: 'copy_roof'; readonly roof: number; readonly ids: readonly string[] }
   | { readonly kind: 'cancel' }
@@ -201,6 +206,8 @@ export type RoofStepEvent =
       readonly at: GroundPoint;
       readonly system: MeasurementSystem;
       readonly magnet: boolean;
+      /** The inside faces of the roofs' parapets, from the kernel: what a moved roof pulls to. */
+      readonly insides?: SnapTargets['edges'];
     }
   | { readonly kind: 'drag'; readonly at: GroundPoint }
   | { readonly kind: 'release' }

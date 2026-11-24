@@ -238,3 +238,29 @@ describe('what part e stores on a roof, on the wire', () => {
     );
   });
 });
+
+describe('a roof of any shape: its faces drawn by hand, read one release before any studio draws them', () => {
+  const face = (west: number, lowSide = 0) => ({
+    corners: square(west, 0, 4).slice(0, 3),
+    slope: { degrees: 20, ...PERSON },
+    lowSide,
+  });
+  const anyShape = (faces: unknown[]) => ({
+    ...roofAt(1),
+    shape: { is: 'any', ...PERSON, faces },
+  });
+
+  it('faces drawn by hand read back as sent, so a save keeps them', () => {
+    const sent = withRoofs(anyShape([face(0), face(4, 2)]));
+    expect(studioDocumentSchema.parse(sent)).toEqual(sent);
+  });
+
+  it.each([
+    ['a face of two corners', [{ ...face(0), corners: square(0, 0, 4).slice(0, 2) }]],
+    ['a low side past the face’s corners', [face(0, 64)]],
+    ['a field a face does not hold', [{ ...face(0), colour: 'red' }]],
+    ['more faces than a roof holds', Array.from({ length: 33 }, () => face(0))],
+  ])('%s is refused', (_why, faces) => {
+    expect(reads(withRoofs(anyShape(faces)))).toBe(false);
+  });
+});

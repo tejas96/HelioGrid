@@ -11,7 +11,18 @@
  * phone app needs.
  */
 
+export { ridgePullOf, wallPullOf } from './studio/roof-arrow-magnet';
 export { roofBuilt, roofFormOf, roofSlopeDeg } from './studio/roof-built';
+export {
+  roofLengthsMeasuredTo,
+  roofParapetAllRound,
+  roofParapetBuilt,
+  roofRidgeTurned,
+  roofShapePicked,
+  roofSideEnded,
+  roofSideMarked,
+  roofSideWallFollows,
+} from './studio/roof-choices';
 export {
   type CutRoofs,
   cutInto,
@@ -48,6 +59,7 @@ export {
   roofsAreaM2,
 } from './studio/roof-free-ground';
 export { heightPullOf } from './studio/roof-height-magnet';
+export { roofHitOf } from './studio/roof-hit';
 export {
   LEVEL_M,
   type RoofFacts,
@@ -58,6 +70,7 @@ export {
   roofShapeNow,
   roofSloped,
 } from './studio/roof-levels';
+export { roofListOf } from './studio/roof-list-build';
 export {
   cutToEdge,
   HOLE_MAX_M2,
@@ -75,6 +88,7 @@ export {
   type ParapetNow,
   parapetNow,
 } from './studio/roof-open-edges';
+export { parapetInsidesOf } from './studio/roof-parapet-inside';
 export {
   type FlatShape,
   joined,
@@ -92,12 +106,14 @@ export {
 export type { ProfilePart, StandingWall } from './studio/roof-profile';
 export { roofSceneOf } from './studio/roof-scene-build';
 export { setbackLines } from './studio/roof-setback';
+export { type HeightSlide, roofSheetRowsOf } from './studio/roof-sheet-build';
 export {
   bearingsApart,
   COMPASS_WAYS,
   type CompassWay,
   compassOf,
   equatorBearing,
+  formPicksOf,
   gableTurnedFor,
   glassSideOf,
   type LowSide,
@@ -105,4 +121,7 @@ export {
   sideBearing,
 } from './studio/roof-slope-way';
 export { roofTopMarksOf } from './studio/roof-top-marks-build';
+export { roofNumberOf } from './studio/roof-values';
+export { roofNumberReset, roofNumberSet } from './studio/roof-values-set';
 export { type RoofsWorked, roofsWorked, type WorkedBefore } from './studio/roof-worked';
+export { sideSheetRowsOf } from './studio/side-sheet-build';

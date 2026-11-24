@@ -1,30 +1,31 @@
 'use client';
 import type { TranslatedText } from '@heliogrid/contracts';
+import type { StudioScreen } from '@heliogrid/data/react';
 import type { FocusParts, MeasurementSystem, StudioView, ViewPlace } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { theme } from '@heliogrid/theme';
 import { IconButton, Menu, ShellGlyph } from '@heliogrid/ui';
+import { StudioPencil } from './StudioPencil';
 import { Shown } from './StudioShown';
 
 /** The circle size of the studio's tools: small, so they never cover the map. */
 const TOOL = theme.layout['button-h-md'];
 
 /**
- * The two small columns of round tools. Left: what changes the model — the pencil that draws a
- * roof, the first or another (filled while drawing: a tap stops), the trash that clears every
- * corner of the drawing,
- * Undo and Redo (Undo alone while drawing). Right: how the model is seen — the view menu (the
+ * The two small columns of round tools. Left: what changes the model — the pencil, the one door
+ * to the roofs (`StudioPencil`), the trash that clears every corner of the drawing, Undo and Redo
+ * (Undo alone while drawing). Right: how the model is seen — the view menu (the
  * views on offer, metres or feet), the 2D and 3D switch, Zoom in, Zoom out and Back to the pin. A
  * view that waits for a roof says why on a tap. The road view and the sun join with their parts.
  */
 export function StudioToolRail({
+  studio,
   view,
   views,
   units,
   editable,
   canUndo,
   canRedo,
-  drawing,
   newView,
   parts,
   canWipe,
@@ -33,24 +34,21 @@ export function StudioToolRail({
   onUnits,
   onUndo,
   onRedo,
-  onDraw,
   onWipe,
   onZoomIn,
   onZoomOut,
   onHome,
 }: {
+  /** The studio, for the pencil and what it opens. */
+  studio: StudioScreen;
   view: StudioView;
   views: readonly ViewPlace[];
   units: MeasurementSystem;
   editable: boolean;
   canUndo: boolean;
   canRedo: boolean;
-  /** A roof is being drawn: the pencil is pressed. */
-  drawing: boolean;
   /** The 3D view just opened for the first roof: its circle carries a small dot until seen. */
   newView: boolean;
-  /** The pencil: draw a roof. */
-  onDraw: () => void;
   /** Which parts show for the job in hand (focus mode). */
   parts: FocusParts;
   /** Two corners or more are drawn: the trash can clear them, which one Undo would not. */
@@ -79,20 +77,10 @@ export function StudioToolRail({
   return (
     <>
       <div className="hg-studio-tools" data-side="left">
-        {editable ? (
-          <Shown when={parts.pencil !== 'hidden'}>
-            <IconButton
-              label={drawing ? words.stopDrawing : words.drawRoof}
-              size={TOOL}
-              variant={drawing ? 'dark' : 'surface'}
-              pressed={drawing}
-              onClick={onDraw}
-            >
-              <ShellGlyph name="pencil" size="md" />
-            </IconButton>
-          </Shown>
-        ) : null}
-        {/* The trash shows only while drawing: no + for another roof, which is the pencil's job. */}
+        <Shown when={parts.pencil !== 'hidden'}>
+          <StudioPencil studio={studio} words={words} />
+        </Shown>
+        {/* The trash shows only while drawing. */}
         {editable && parts.wipe === 'shown' ? (
           <Shown when={canWipe}>
             <IconButton label={words.wipeCorners} size={TOOL} onClick={onWipe}>

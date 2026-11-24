@@ -1,0 +1,248 @@
+/* A roof's sheet and a side's sheet (`T-M05-002`, part e, board section 6). */
+/* The sheet (board section 6): on a desktop at the right, under the head, as Roofs is; on a phone
+   from the foot, in the bar's place. Its rows scroll inside it; its head and foot stay. */
+.hg-roof-sheet {
+  grid-row: 2 / 4;
+  grid-column: 2;
+  justify-self: end;
+  align-self: start;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  inline-size: min(100%, calc(var(--sp-24) * 4.5));
+  max-block-size: 100%;
+  min-inline-size: 0;
+  box-sizing: border-box;
+  padding: var(--sp-3);
+  border-radius: var(--r-xl);
+  animation: hg-sheet-up var(--dur-emphasised) var(--ease-enter) 1 both;
+}
+
+.hg-roof-sheet-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-inline-size: 0;
+}
+
+.hg-roof-sheet-names {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--sp-2);
+  min-inline-size: 0;
+  padding-inline-start: var(--sp-1);
+}
+
+.hg-roof-sheet-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-card-title);
+  color: var(--text-primary);
+}
+
+.hg-roof-sheet-line {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-roof-sheet-area {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-secondary);
+}
+
+.hg-roof-sheet-close {
+  margin-inline-start: auto;
+}
+
+/* The rows scroll, the head and the foot stay. */
+.hg-roof-sheet-rows {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* A row: its name, its value and its dot; a hairline under it. */
+.hg-sheet-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding-block-end: var(--sp-1);
+  box-shadow: inset 0 calc(-1 * var(--hg-studio-line)) 0 var(--line-soft);
+}
+
+.hg-sheet-row[data-open="true"] {
+  padding-block-end: var(--sp-3);
+}
+
+.hg-sheet-row-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-block-size: calc(var(--sp-10) + var(--sp-1));
+  padding-inline: var(--sp-1);
+  border-radius: var(--r-md);
+  color: var(--text-primary);
+  text-align: start;
+}
+
+.hg-sheet-row-label {
+  flex: none;
+  inline-size: 40%;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-sheet-row-value {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--sp-1);
+  min-inline-size: 0;
+  font-size: var(--fs-body-sm);
+  color: var(--text-primary);
+}
+
+.hg-sheet-row-chevron {
+  display: grid;
+  flex: none;
+  place-items: center;
+  color: var(--text-secondary);
+  transform: rotate(180deg);
+  transition: transform var(--dur-standard) var(--ease-standard);
+}
+
+.hg-sheet-row-chevron[data-open="true"] {
+  transform: none;
+}
+
+.hg-sheet-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding-inline: var(--sp-1);
+  animation: hg-row-open var(--dur-standard) var(--ease-enter) 1 both;
+}
+
+/* Waits for a person: a small amber dot, said once on the sheet as "Check it on site." */
+.hg-sheet-dot {
+  flex: none;
+  inline-size: var(--sp-2);
+  block-size: var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--warning);
+}
+
+.hg-sheet-check {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: var(--sp-2) 0 0;
+  padding-inline: var(--sp-1);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+/* A line under a row: the way a roof slopes, a low side against a wall, why a side has no parapet. */
+.hg-sheet-line {
+  margin: 0;
+  padding: var(--sp-1) var(--sp-1) var(--sp-2);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-sheet-line[data-waits="true"] {
+  color: var(--warning-text);
+}
+
+.hg-sheet-number {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-sheet-number-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.hg-sheet-number-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-lg);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+/* A reset is a 44 px target, drawn as a link. */
+.hg-sheet-reset {
+  display: flex;
+}
+
+.hg-sheet-reset > .hg-button[data-variant="ghost"] {
+  padding-inline: var(--sp-1);
+  text-decoration: underline;
+  text-underline-offset: var(--sp-0-5);
+}
+
+.hg-roof-sheet-refused {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-body-sm);
+  color: var(--danger-text);
+}
+
+/* On a desktop the magnet's pill stands in the free room left of the sheet, never under it. */
+.hg-studio-bar[data-beside-sheet="true"] {
+  justify-self: start;
+}
+
+/* Delete at the start of the foot, away from × and Done. */
+.hg-roof-sheet-acts {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-roof-sheet-acts > :last-child {
+  margin-inline-start: auto;
+}
+
+@keyframes hg-row-open {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--sp-2)));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (width < 968px) {
+  /* From the foot, over the tools' rows when it grows, as Roofs is: never past the screen. */
+  .hg-roof-sheet {
+    grid-row: 2 / 4;
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    align-self: end;
+    z-index: 3;
+    inline-size: auto;
+    /* The roof stays in view above it: the rows scroll inside. */
+    max-block-size: min(100%, 60dvh);
+  }
+
+  .hg-roof-sheet-acts > :last-child {
+    flex: 1 1 0;
+  }
+}

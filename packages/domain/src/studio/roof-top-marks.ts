@@ -50,4 +50,8 @@ export interface RoofTopMark {
   readonly slopes: readonly { readonly from: GroundPoint; readonly to: GroundPoint }[];
   /** The first stretch another roof takes the wall from; `null` where none does. */
   readonly noWall: NoWallWhy | null;
+  /** Its setback line, ring by ring: drawn orange and dashed, round what stands on it too. */
+  readonly setback: readonly (readonly GroundPoint[])[];
+  /** Its low side against a taller roof's wall, where the tag sits; `null` where it is not. */
+  readonly lowAgainst: { readonly at: GroundPoint; readonly roof: RoofName } | null;
 }

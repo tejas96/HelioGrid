@@ -73,13 +73,13 @@ describe('a roof’s height: kept, refused, reset, undone', () => {
     expect(stored.saves).toHaveLength(0);
   });
 
-  it('Edit outline in 2D keeps the height, opens the top view with the roof picked', async () => {
+  it('the top view keeps the height and the sheet, and picks the roof', async () => {
     const view = await opened();
     act(() => view.result.current.moves.slideHeight(5));
-    act(() => void view.result.current.moves.editOutline());
+    act(() => view.result.current.moves.see('top'));
     await waitFor(() => expect(lastHeight()).toEqual({ metres: 5, setBy: 'person' }));
     expect(view.result.current.view).toBe('top');
-    expect(view.result.current.roofSheet).toBeNull();
+    expect(view.result.current.roofSheet?.roof).toBe(0);
     expect(view.result.current.roofStep).toMatchObject({
       kind: 'idle',
       roof: 0,

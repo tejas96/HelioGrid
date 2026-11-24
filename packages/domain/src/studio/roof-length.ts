@@ -12,6 +12,7 @@ import type { GroundPoint } from './ground';
 import { PICTURE_METRES_PER_UNIT_MAX, PICTURE_METRES_PER_UNIT_MIN } from './own-picture';
 import { type EditResult, faultOf, roofAt, withRoof } from './roof-check';
 import { SQUARE_EXACT_DEGREES } from './roof-draw';
+import { roofPlaced } from './roof-move';
 import { between, CORNER_GAP_M, cornerAfter, cornerAngle, edgeLengths } from './roof-shape';
 
 /**
@@ -156,8 +157,7 @@ function firstLengthSet(
   if (sized === null) return { kind: 'refused', refusal: 'scale_out_of_range' };
   // Only the roofs traced on that picture stretch with it: a typed or grid roof is in true metres.
   const roofs = document.roofs.map((r, i) => ({
-    ...r,
-    corners: r.tracedOn === on ? r.corners.map((corner) => scaledAboutPin(corner, k)) : r.corners,
+    ...(r.tracedOn === on ? roofPlaced(r, (corner) => scaledAboutPin(corner, k)) : r),
     edges: i === roofIndex ? edges : r.edges,
   }));
   const scaled = { ...sized, roofs };

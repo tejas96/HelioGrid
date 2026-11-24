@@ -56,6 +56,7 @@ export {
   type FocusParts,
   focusJobOf,
   focusOf,
+  studioJobOf,
 } from './focus';
 export { coordinateOf, type GroundBox, type GroundPoint, groundOf } from './ground';
 export {
@@ -144,6 +145,7 @@ export {
   KEY_MOVE_M,
   KEY_TURN_DEGREES,
   roofMoved,
+  roofToCentimetre,
   roofTurned,
   TURN_SNAP_DEGREES,
 } from './roof-move';

@@ -1,9 +1,9 @@
 import { cornerRoom, ROOFS_MAX, type Roof, type StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { roofWithItsParts } from './roof-kind';
+import { roofPlaced } from './roof-move';
 import { roofNameOf } from './roof-names';
 import { roofsOverlap } from './roof-shape';
-import { roofWithSideWall } from './roof-sides';
 import { pickedRoofOf, withoutRoof } from './roof-step-draw';
 import {
   idle,
@@ -15,9 +15,8 @@ import {
 import { roofSetFree } from './roof-sticks-out';
 
 /**
- * A roof's own moves among the others (`T-M05-002`, part e): it goes, or is copied beside itself,
- * with what stands on it, and a side's wall is added or taken off. Each is one change, with Undo,
- * and the line says what it did.
+ * Copy and Delete (`T-M05-002`, part e): a roof goes, or is copied beside itself, with what stands
+ * on it. Each is one change, with Undo, and the line names the roof.
  */
 
 type Event<K extends RoofStepEvent['kind']> = Extract<RoofStepEvent, { kind: K }>;
@@ -67,11 +66,13 @@ export function copied(
     group.map((i, k) => [(document.roofs[i] as Roof).id, event.ids[k] as string]),
   );
   const copies = group.map((i): Roof => {
-    const { on, partOf, ...roof } = document.roofs[i] as Roof;
+    const { on, partOf, ...roof } = roofPlaced(document.roofs[i] as Roof, (c) => ({
+      east: c.east + by.east,
+      north: c.north + by.north,
+    }));
     return {
       ...roof,
       id: idOf.get(roof.id) as string,
-      corners: roof.corners.map((c) => ({ east: c.east + by.east, north: c.north + by.north })),
       // A link inside the group goes to the copy; one out of it stays on the roof it named.
       ...(on === undefined ? {} : { on: idOf.get(on) ?? on }),
       ...(partOf === undefined ? {} : { partOf: idOf.get(partOf) ?? partOf }),
@@ -96,29 +97,4 @@ export function deleted(
   const was = roof === null ? null : roofNameOf(document, roof);
   if (roof === null || was === null) return stay(state);
   return { state: idle({ kind: 'roof_deleted', was }, null), commit: withoutRoof(document, roof) };
-}
-
-/** A side's dot tapped: the wall on that side is the person's from now on; the roof stays picked. */
-export function sideWalled(
-  state: RoofStepState,
-  event: Event<'side_wall'>,
-  document: StudioDocument,
-): RoofStepOutcome {
-  const roof = document.roofs[event.roof];
-  if (state.kind !== 'idle' || roof === undefined) return stay(state);
-  const next = roofWithSideWall(roof, event.side, event.wall);
-  if (next === roof) return stay(state);
-  const { roof: at, side, wall, walled } = event;
-  const said = {
-    kind: 'side_wall',
-    roof: at,
-    side,
-    wall,
-    walled,
-    sides: roof.corners.length,
-  } as const;
-  return {
-    state: idle(said, at),
-    commit: { ...document, roofs: document.roofs.map((each, i) => (i === at ? next : each)) },
-  };
 }

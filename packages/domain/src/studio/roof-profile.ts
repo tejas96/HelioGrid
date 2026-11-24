@@ -61,6 +61,11 @@ function acrossOf(corners: readonly GroundPoint[], side: number): Across | null 
   return { line, least, span: Math.max(...reaches) - least };
 }
 
+/** How far an outline reaches across from one of its sides, in metres; 0 where it has no such side. */
+export function reachAcrossM(corners: readonly GroundPoint[], side: number): number {
+  return acrossOf(corners, side)?.span ?? 0;
+}
+
 /** The strip of ground between two distances in. */
 function stripOf(across: Across, part: ProfilePart): FlatShape {
   const { line, least } = across;

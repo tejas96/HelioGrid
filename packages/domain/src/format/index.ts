@@ -91,6 +91,7 @@ export {
   formatLength,
   formatRoofHeight,
   formatRoofLength,
+  formatRoofSlope,
   metresOfFeetAndInches,
   PROCUREMENT_SYSTEM,
   resolveMeasurementSystem,

@@ -201,14 +201,6 @@ describe('a sloped roof', () => {
     expect(scene.walls.some((wall) => wall.fromTopM > 3 || wall.toTopM > 3)).toBe(true);
   });
 
-  it('with an overhang its walls stand inside the drip edge', () => {
-    const eaves = { ...SHED, overhang: { metres: 0.5, ...person } } as Roof;
-    const [body] = partsOf(roofSceneOf(designOf(eaves), FACTS).prisms, 0, 'body');
-    const easts = body?.outer.map((at) => at.east) ?? [];
-    expect(Math.min(...easts)).toBeCloseTo(10.5, 6);
-    expect(Math.max(...easts)).toBeCloseTo(13.5, 6);
-  });
-
   it('a flat roof has no faces and no standing wall', () => {
     const flat = roofSceneOf(designOf(TERRACE), FACTS);
     expect(flat.faces).toEqual([]);

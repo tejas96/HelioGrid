@@ -32,6 +32,11 @@ export interface ScenePrism {
   readonly topM: number;
   /** Its top is the roof's own top: it wears the picture. A sloped roof's walls have none. */
   readonly top: 'roof' | 'plain' | 'none';
+  /**
+   * A parapet on a sloped roof stands on the face at its edge: how far the face rises at each
+   * corner of `outer`, added to its foot and its top there. Absent, it stands level.
+   */
+  readonly rise?: readonly number[];
 }
 
 /** A point of the model: on the ground's plan, and its height above the ground. */
@@ -70,3 +75,21 @@ export interface RoofScene {
 }
 
 export const NO_ROOF_SCENE: RoofScene = { prisms: [], faces: [], walls: [], levels: [] };
+
+/**
+ * What a tap on the 3D model lands on (`T-M05-002`, part e, board 5.2, 5.3, 6.3): the nearest
+ * thing the tap's line of sight meets — a roof's top, a sloped face, a side (its wall, or its edge
+ * where it has none) or a ridge. A side is met within `reachM` of its edge, so a finger finds a
+ * thin wall; a ridge within `reachM` of its line.
+ */
+export type RoofHit =
+  | { readonly kind: 'roof'; readonly roof: number }
+  | { readonly kind: 'face'; readonly roof: number }
+  | { readonly kind: 'side'; readonly roof: number; readonly side: number }
+  | { readonly kind: 'ridge'; readonly roof: number };
+
+/**
+ * Where the tap's line of sight crosses each height, on the ground's plan; `null` where it does
+ * not (behind the camera). Two heights make the line.
+ */
+export type SightAt = (heightM: number) => GroundPoint | null;

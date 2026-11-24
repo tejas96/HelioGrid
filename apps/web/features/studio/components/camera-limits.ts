@@ -42,11 +42,12 @@ export interface ClearGround {
  */
 export function seenPerMetre(
   size: { readonly width: number; readonly height: number },
-  free: { readonly top: number; readonly bottom: number },
+  free: { readonly top: number; readonly bottom: number; readonly right?: number },
 ) {
   const down = Math.tan((FOV_DEGREES / 2) * RADIANS);
   const room = Math.max(1, size.height - free.top - free.bottom) / size.height;
-  return { across: down * (size.width / size.height), along: down * room };
+  const wide = Math.max(1, size.width - (free.right ?? 0)) / size.height;
+  return { across: down * wide, along: down * room };
 }
 
 /** The farthest the camera stands with the picture still filling the room between the bars. */
@@ -91,7 +92,7 @@ export function reachOf(
   clear: ClearGround | null,
   metresPerPixel: number | null,
   size: { readonly width: number; readonly height: number },
-  free: { readonly top: number; readonly bottom: number },
+  free: { readonly top: number; readonly bottom: number; readonly right?: number },
 ): { readonly nearest: number; readonly farthest: number } {
   const farthest = clear === null ? DISTANCE_MAX : farthestOver(clear, seenPerMetre(size, free));
   return { nearest: Math.min(closestOver(metresPerPixel, size), farthest), farthest };

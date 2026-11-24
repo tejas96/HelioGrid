@@ -1,0 +1,287 @@
+/* The pencil with its badge and two buttons, Roofs, and the material picker (`T-M05-002`, part e),
+   as the approved board draws them. */
+
+/* The pencil's holder: the count sits on its top corner, its two buttons beside it. */
+.hg-studio-pencil {
+  position: relative;
+  display: inline-flex;
+}
+
+.hg-studio-pencil-badge {
+  position: absolute;
+  inset-block-start: calc(-1 * (var(--sp-1) + var(--sp-0-5)));
+  inset-inline-end: calc(-1 * (var(--sp-1) + var(--sp-0-5)));
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-inline-size: var(--sp-5);
+  block-size: var(--sp-5);
+  padding-inline: var(--sp-1);
+  box-sizing: border-box;
+  border-radius: var(--r-pill);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  box-shadow:
+    0 0 0 var(--sp-0-5) var(--hg-ground),
+    var(--e1);
+  pointer-events: none;
+}
+
+/* A roof waits to be checked: the badge is amber, with a ring, so it is not colour alone. */
+.hg-studio-pencil-badge[data-waits="true"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  box-shadow:
+    inset 0 0 0 var(--sp-0-5) var(--warning),
+    0 0 0 var(--sp-0-5) var(--hg-ground),
+    var(--e1);
+}
+
+/* The two buttons: one glass pill beside the pencil, Roofs first. */
+.hg-studio-fan {
+  position: absolute;
+  inset-inline-start: calc(100% + var(--sp-2));
+  inset-block-start: calc(50% - var(--button-h-md) / 2 - var(--sp-1));
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-0-5);
+  padding: var(--sp-1);
+  border-radius: var(--r-pill);
+  animation: hg-fade-in var(--dur-standard) var(--ease-enter) 1 both;
+}
+
+.hg-studio-fan .hg-studio-fan-roofs {
+  gap: var(--sp-2);
+  block-size: var(--button-h-md);
+  padding-inline: var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--fill);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Draw sits bare in the pill: the tools' own glass is the pill's here. */
+.hg-studio-tools .hg-studio-fan .hg-icon-button {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.hg-studio-fan-glyph,
+.hg-studio-fan-draw {
+  position: relative;
+  display: inline-grid;
+}
+
+/* A roof waits: a small amber dot on the Roofs glyph, as on the pencil. */
+.hg-studio-fan-glyph[data-waits="true"]::after,
+.hg-roofs-row-glyph[data-waits="true"]::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(-1 * var(--sp-0-5));
+  inset-inline-end: calc(-1 * var(--sp-0-5));
+  inline-size: var(--sp-2);
+  block-size: var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--warning);
+  box-shadow: 0 0 0 var(--sp-0-5) var(--hg-ground);
+}
+
+/* Draw: the pencil with a small plus at its corner. */
+.hg-studio-fan-draw > :last-child {
+  position: absolute;
+  inset-block-start: calc(-1 * var(--sp-1));
+  inset-inline-end: calc(-1 * var(--sp-2));
+  color: var(--accent-text);
+}
+
+/* Roofs and the picker: at the right under the head on a desktop, as a roof's sheet is. */
+.hg-roofs-panel {
+  grid-row: 2 / 4;
+  grid-column: 2;
+  justify-self: end;
+  align-self: start;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  inline-size: min(100%, calc(var(--sp-24) * 4.5));
+  max-block-size: 100%;
+  box-sizing: border-box;
+  padding: var(--sp-2);
+  border-radius: var(--r-lg);
+  overflow: auto;
+  overscroll-behavior: contain;
+  animation: hg-sheet-up var(--dur-emphasised) var(--ease-enter) 1 both;
+}
+
+.hg-roofs-panel[data-kind="picker"] {
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+}
+
+.hg-roofs-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding-inline-start: var(--sp-2);
+}
+
+.hg-roofs-panel[data-kind="picker"] .hg-roofs-head {
+  padding-inline-start: var(--sp-1);
+}
+
+.hg-roofs-title {
+  flex: 1;
+  min-inline-size: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-body-lg);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.hg-roofs-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A row: the picture of what the roof is, its name over what it is made of and where it sits,
+   its area, and its acts. Its own press lies under all of it. */
+.hg-roofs-row {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-block-size: calc(var(--sp-12) + var(--sp-2));
+  padding-inline-start: var(--sp-2);
+  border-radius: var(--r-md);
+}
+
+.hg-roofs-row > * {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hg-roofs-row > .hg-roofs-row-pick {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: auto;
+}
+
+.hg-roofs-row-pick:hover {
+  background: var(--fill-hover);
+}
+
+/* The lit row is the quiet choice: the control fill, never the accent wash. */
+.hg-roofs-row-pick[aria-pressed="true"] {
+  background: var(--fill);
+}
+
+.hg-roofs-row-glyph {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--sp-8);
+  block-size: var(--sp-8);
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
+  box-shadow: inset 0 0 0 var(--hg-studio-line) var(--line-soft);
+  color: var(--text-secondary);
+}
+
+.hg-roofs-row-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-inline-size: 0;
+}
+
+.hg-roofs-row-name {
+  font-weight: var(--fw-medium);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+/* One line of words that wraps as words do: in a long language where it sits runs on below. */
+.hg-roofs-row-sub {
+  font-size: var(--fs-caption);
+  line-height: 1.2;
+  color: var(--text-secondary);
+}
+
+.hg-roofs-row-made {
+  position: relative;
+}
+
+/* It waits to be checked: amber and stronger; the dot on the row's picture says so too. */
+.hg-roofs-row-made[data-waits="true"] {
+  color: var(--warning-text);
+  font-weight: var(--fw-medium);
+}
+
+.hg-roofs-row-made-press {
+  position: absolute;
+  inset-block-start: calc((100% - var(--touch-min)) / 2);
+  inset-inline-start: 0;
+  inline-size: 100%;
+  pointer-events: auto;
+}
+
+/* Where it sits follows what it is made of, a dot between them. */
+.hg-roofs-row-made + .hg-roofs-row-sits::before {
+  content: " · ";
+  white-space: pre;
+}
+
+.hg-roofs-row-area {
+  flex: none;
+  min-inline-size: var(--sp-12);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.hg-roofs-row-acts {
+  display: inline-flex;
+  flex: none;
+  color: var(--text-secondary);
+  pointer-events: auto;
+}
+
+.hg-roofs-acts {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+}
+
+/* A phone: a sheet across the foot, in the bar's place. */
+@media (width < 968px) {
+  .hg-roofs-panel {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    align-self: end;
+    inline-size: auto;
+    border-radius: var(--r-xl);
+  }
+
+  .hg-roofs-acts > * {
+    flex: 1 1 0;
+  }
+}

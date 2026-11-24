@@ -142,6 +142,14 @@ describe('a new roof over others: none is refused', () => {
     expect(met.choices).toEqual(['open_shed', 'upper_floor']);
   });
 
+  it('over a whole roof and past one edge: an open shed, or cut back to the edge', () => {
+    const drawn = box(0, 0, 14, 8);
+    const met = meet(drawn, designOf(TERRACE));
+    expect(met).toMatchObject({ place: 'over_whole', kind: 'open_shed' });
+    expect(met.choices).toEqual(['open_shed', 'upper_floor', 'cut_to_edge']);
+    expect(ringAreaM2(cutToEdge(designOf(TERRACE), drawn) ?? [])).toBeCloseTo(4 * 8, 6);
+  });
+
   it('partly over a roof: an upper floor that sticks out, or cut back to the edge', () => {
     const drawn = box(9.3, 0, 4.7, 8);
     const met = meet(drawn, designOf(TERRACE));

@@ -5,6 +5,8 @@ import {
   type RoofFacts,
   type RoofStepEvent,
   type RoofStepState,
+  roofHeightOf,
+  roofStartHeightM,
   SITE_ROOF_HINTS,
   type StudioDocument,
 } from '@heliogrid/domain';
@@ -88,6 +90,13 @@ export function roofPlaceMoves({
       const wall = walls[side] !== true;
       const walled = walls.filter((has, i) => (i === side ? wall : has)).length;
       act({ kind: 'side_wall', roof, side, wall, walled });
+    },
+    pickRoof: (index) => {
+      const design = latest.current?.present;
+      const roof = design?.roofs[index];
+      if (design === undefined || roof === undefined) return;
+      const metres = roofHeightOf(roof, roofStartHeightM(design, roof, facts)).metres;
+      act({ kind: 'pick_roof', roof: index, metres });
     },
     copyRoof: (roof) => {
       const design = latest.current?.present;

@@ -12,6 +12,7 @@ import {
   ROOF_CORNERS_MAX,
   ROOF_CORNERS_MIN,
   ROOF_EDGE_TRUSTS,
+  ROOF_HAND_FACES_MAX,
   ROOF_HEIGHT_MAX_M,
   ROOF_HEIGHT_MIN_M,
   ROOF_TEETH_MAX,
@@ -102,6 +103,27 @@ const roofShapeSchema = z
     valleyAt: z
       .object({ share: z.number().min(0).max(1), ...valueSource })
       .strict()
+      .optional(),
+    // Any shape's faces drawn by hand: read and kept from this release, drawn from the next.
+    faces: z
+      .array(
+        z
+          .object({
+            corners: z.array(groundPointSchema).min(ROOF_CORNERS_MIN).max(ROOF_CORNERS_MAX),
+            slope: setDegrees,
+            lowSide: z
+              .number()
+              .int()
+              .min(0)
+              .max(ROOF_CORNERS_MAX - 1),
+          })
+          .strict()
+          .refine((face) => face.lowSide < face.corners.length, {
+            message: 'The low side is one of the face’s own sides.',
+            path: ['lowSide'],
+          }),
+      )
+      .max(ROOF_HAND_FACES_MAX)
       .optional(),
   })
   .strict();

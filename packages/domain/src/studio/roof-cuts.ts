@@ -60,14 +60,14 @@ export function movedIn(
 }
 
 /** A face's plane: the height at a place is `a + b · east + c · north`. */
-interface Plane {
+export interface Plane {
   readonly a: number;
   readonly b: number;
   readonly c: number;
 }
 
 /** The plane through a face's corners: the three that span it widest. */
-function planeOf(corners: readonly FaceCorner[]): Plane {
+export function planeOf(corners: readonly FaceCorner[]): Plane {
   const first = corners[0] as FaceCorner;
   let widest = 0;
   let pair: readonly [FaceCorner, FaceCorner] = [first, first];
@@ -95,7 +95,7 @@ function planeOf(corners: readonly FaceCorner[]): Plane {
   return { a: first.up - b * first.east - c * first.north, b, c };
 }
 
-const upOn = (plane: Plane, point: GroundPoint) =>
+export const upOn = (plane: Plane, point: GroundPoint) =>
   plane.a + plane.b * point.east + plane.c * point.north;
 
 /**

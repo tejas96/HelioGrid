@@ -131,6 +131,12 @@
   font-size: var(--fs-caption);
 }
 
+/* With nothing to say the live region stays, out of the row: it takes no gap in the pill. */
+.hg-studio-pill-text:empty {
+  position: absolute;
+  padding: 0;
+}
+
 .hg-studio-pill-spin {
   inline-size: var(--sp-3);
   block-size: var(--sp-3);

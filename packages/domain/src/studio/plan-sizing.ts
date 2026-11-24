@@ -4,6 +4,7 @@ import { PICTURE_METRES_PER_UNIT_MAX, PICTURE_METRES_PER_UNIT_MIN } from './own-
 import { planOutlineCorners } from './plan-outline';
 import { type EditResult, faultOf } from './roof-check';
 import { LENGTH_MAX_M, LENGTH_MIN_M } from './roof-length';
+import { roofPlaced } from './roof-move';
 import {
   between,
   CORNER_GAP_M,
@@ -91,8 +92,7 @@ export function planSizedByLength(
   const roofs = document.roofs.map((r, i) =>
     planRoofs.includes(i)
       ? {
-          ...r,
-          corners: r.corners.map(scaled),
+          ...roofPlaced(r, scaled),
           edges: r.edges.map((_, j) => (i === roofIndex && j === edge ? trust : ('plan' as const))),
         }
       : r,

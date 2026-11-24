@@ -26,6 +26,8 @@ const PICKED: RoofStepState = { ...IDLE, roof: 0, picked: { roof: 0, corner: 1 }
 function run(open: Partial<StudioBackFacts>) {
   const done: string[] = [];
   const facts: StudioBackFacts = {
+    panelOpen: false,
+    closePanel: () => done.push('panel'),
     picturesOpen: false,
     closePictures: () => done.push('pictures'),
     sheetOpen: false,
@@ -40,6 +42,12 @@ function run(open: Partial<StudioBackFacts>) {
 describe('the system back closes the top thing open first (T-M05-002)', () => {
   it.each([
     // what is open → handled here, what closed
+    [
+      'what the pencil opened, over the pictures and a sheet',
+      { panelOpen: true, picturesOpen: true, sheetOpen: true },
+      true,
+      ['panel'],
+    ],
     [
       'the pictures, over a sheet and a draft',
       { picturesOpen: true, sheetOpen: true, step: DRAWING },

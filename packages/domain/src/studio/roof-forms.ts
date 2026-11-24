@@ -59,10 +59,16 @@ export interface FormedRoof extends BuiltRoof {
 const FOUR = 4;
 const CURVED_FEWEST = 4;
 const CURVED_MOST = 8;
-const TEETH_DEFAULT = 3;
+/** What a shape takes where its roof stores none: a sawtooth's teeth, a mansard's upper slope and break, a monitor's lift. */
+export const TEETH_DEFAULT = 3;
 const HALF = 0.5;
-const MANSARD_UPPER_DEG = 25;
-const MANSARD_BREAK_M = 0.6;
+/** A mansard's or a gambrel's steep lower slope, where its roof stores none. */
+export const MANSARD_LOWER_DEG = 60;
+export const MANSARD_UPPER_DEG = 25;
+export const MANSARD_BREAK_M = 0.6;
+export const RAISED_HEIGHT_M = 1;
+/** A monitor's raised middle is this share of the roof's width where none is set. */
+export const RAISED_WIDTH_SHARE = 0.25;
 const RADIANS = Math.PI / 180;
 
 const lengthOf = (corners: readonly GroundPoint[], side: number) => {
@@ -193,8 +199,8 @@ function partsOf(form: RoofForm): (across: number) => ProfilePart[] {
       ];
     }
     if (form.shape === 'monitor') {
-      const width = Math.min(Math.max(form.raisedWidthM ?? across / FOUR, 0), across);
-      const lift = Math.max(form.raisedHeightM ?? 1, 0);
+      const width = Math.min(Math.max(form.raisedWidthM ?? across * RAISED_WIDTH_SHARE, 0), across);
+      const lift = Math.max(form.raisedHeightM ?? RAISED_HEIGHT_M, 0);
       const edge = (across - width) / 2;
       const shoulder = rise * edge;
       const ridge = shoulder + lift + (rise * width) / 2;
