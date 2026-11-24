@@ -4,6 +4,9 @@ import type {
   LabelPlace,
   RoofHandles,
   RoofLabelAsk,
+  ScreenPoint,
+  TagAsk,
+  TagRoom,
 } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import type { ScreenOf } from './StudioRoofs';
@@ -26,6 +29,12 @@ const PICKED_OUT_PX = 30;
 const COLUMN_GAP_PX = 8;
 /** On a phone the tool columns stand beside the roof: a label keeps between them. */
 const PHONE_BELOW = theme.layout['bp-desktop'];
+/** How far a tag stands from its spot: across, and up or down. */
+const TAG_GAP_PX = theme.spacing['sp-4'];
+const TAG_CLEAR_PX = theme.spacing['sp-3'];
+
+/** The tag layout, from the studio's hook: where a tag sits beside its spot. */
+export type PlaceTag = (ask: TagAsk) => ScreenPoint;
 
 /** The label layout, from the studio's hook: where each length sits for the points it is given. */
 export type LayoutLabels = (
@@ -178,10 +187,9 @@ function placePath(path: SVGPathElement, screenOf: ScreenOf): void {
   path.setAttribute('d', seen.length < 2 ? '' : `${line.join(' ')}${close}`);
 }
 
-/** On a phone, the room the tool columns leave: a label never sits under one. */
-function toolRoomOf(layer: HTMLElement): ToolRoom | null {
+/** The room the two tool columns leave on the map, in the layer's pixels. */
+function columnsRoomOf(layer: HTMLElement): ToolRoom {
   const frame = layer.getBoundingClientRect();
-  if (frame.width >= PHONE_BELOW) return null;
   const studio = layer.parentElement;
   const left = studio?.querySelector('.hg-studio-tools[data-side="left"]')?.getBoundingClientRect();
   const right = studio
@@ -189,8 +197,57 @@ function toolRoomOf(layer: HTMLElement): ToolRoom | null {
     ?.getBoundingClientRect();
   return {
     left: left === undefined || left.width === 0 ? 0 : left.right - frame.left + COLUMN_GAP_PX,
-    right: right === undefined ? frame.width : right.left - frame.left - COLUMN_GAP_PX,
+    right:
+      right === undefined || right.width === 0
+        ? frame.width
+        : right.left - frame.left - COLUMN_GAP_PX,
   };
+}
+
+/**
+ * The room a tag stays inside: off the map's edges and clear of the tool columns, at every width,
+ * since the spot it names can be right beside one.
+ */
+function tagRoomOf(layer: HTMLElement, columns: ToolRoom): TagRoom {
+  return {
+    left: Math.max(columns.left, COLUMN_GAP_PX),
+    right: Math.min(columns.right, layer.clientWidth - COLUMN_GAP_PX),
+    top: COLUMN_GAP_PX,
+  };
+}
+
+/** A tag beside its spot; an angle or an area in the tag's look sits on its spot's middle instead. */
+const BESIDE_TAG = '.hg-roof-at > .hg-roof-tag:not(.hg-roof-angle, .hg-size-area)';
+
+/**
+ * Each tag beside a spot, laid inside the room: its words wrap at the room's width, then it stands
+ * on whichever side of its spot keeps it whole. Its holder is laid first. Every width is set before
+ * any size is read, so the page lays out once for all of them.
+ */
+function placeTags(layer: HTMLElement, room: TagRoom, placeTag: PlaceTag): void {
+  const width = `${Math.max(room.right - room.left, 0)}px`;
+  const tags = [...layer.querySelectorAll<HTMLElement>(BESIDE_TAG)].flatMap((tag) => {
+    const holder = tag.parentElement;
+    const spot = holder === null || holder.hidden ? undefined : laid.get(holder);
+    return spot === undefined ? [] : [{ tag, spot }];
+  });
+  for (const { tag } of tags) tag.style.setProperty('--hg-tag-room', width);
+  const places = tags.map(({ tag, spot }) =>
+    placeTag({
+      spot,
+      width: tag.offsetWidth,
+      height: tag.offsetHeight,
+      room,
+      gap: TAG_GAP_PX,
+      clear: TAG_CLEAR_PX,
+    }),
+  );
+  tags.forEach(({ tag }, i) => {
+    const place = places[i];
+    if (place === undefined) return;
+    tag.style.setProperty('--hg-tag-x', `${place.x}px`);
+    tag.style.setProperty('--hg-tag-y', `${place.y}px`);
+  });
 }
 
 /**
@@ -224,12 +281,14 @@ export function placeRoofMarks(
   screenOf: ScreenOf,
   handlesOf: (roof: number, gap: number) => RoofHandles | null,
   layout: LayoutLabels,
+  placeTag: PlaceTag,
 ): boolean {
   for (const node of layer.querySelectorAll<HTMLElement>('[data-at]')) placePoint(node, screenOf);
   for (const node of layer.querySelectorAll<HTMLElement>('[data-arrow]')) {
     measureRise(node, screenOf);
   }
-  const room = toolRoomOf(layer);
+  const columns = columnsRoomOf(layer);
+  const room = layer.clientWidth < PHONE_BELOW ? columns : null;
   for (const node of layer.querySelectorAll<HTMLElement>('[data-edge]')) {
     placeEdge(node, screenOf, room, layout);
   }
@@ -239,5 +298,6 @@ export function placeRoofMarks(
   for (const path of layer.querySelectorAll<SVGPathElement>('path[data-pts]')) {
     placePath(path, screenOf);
   }
+  placeTags(layer, tagRoomOf(layer, columns), placeTag);
   return markNear(layer);
 }

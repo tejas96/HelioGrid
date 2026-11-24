@@ -44,6 +44,7 @@ import {
   type StudioHelper,
   screenProjector,
   stepRefused,
+  tagPlaceOf,
   tracedLength,
 } from '@heliogrid/domain';
 import { type RefObject, useMemo, useRef, useState } from 'react';
@@ -171,6 +172,7 @@ export function useRoofStep({
           },
     numberEntry,
     layoutLabels: labelLayoutOf,
+    placeTag: tagPlaceOf,
     screenProjector,
     pickedAngle: shown === null ? null : pickedAngleOf(roofStep, shown),
     guides: guidesOf(roofStep),

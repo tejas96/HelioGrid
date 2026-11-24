@@ -75,6 +75,9 @@ export {
   labelLayoutOf,
   type RoofLabelAsk,
   type ScreenPoint,
+  type TagAsk,
+  type TagRoom,
+  tagPlaceOf,
 } from './label-layout';
 export * from './many-roofs';
 export * from './map-systems';
