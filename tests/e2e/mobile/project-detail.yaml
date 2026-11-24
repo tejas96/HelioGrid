@@ -42,8 +42,9 @@ appId: com.heliogrid.app
     index: 1
 - waitForAnimationToEnd
 - inputText: ${REASON}
-# The reason is many lines, so Return writes a new one: the keyboard is put away instead.
-- hideKeyboard
+# The reason is one line, so Return closes the keyboard and sends nothing. Never hideKeyboard: on
+# Android it is a Back, which closes the sheet when no keyboard is up, as on CI's emulator.
+- pressKey: Enter
 - tapOn: ${MARK_NOT_NEEDED}
 - extendedWaitUntil:
     visible: ${ROW_NOT_NEEDED}
