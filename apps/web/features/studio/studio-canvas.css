@@ -9,10 +9,12 @@
   grid-template-columns: auto 1fr auto;
   grid-template-rows: auto 1fr auto;
   gap: var(--studio-gap);
-  padding: max(var(--studio-edge), env(safe-area-inset-top))
-    max(var(--studio-edge), env(safe-area-inset-right))
-    max(var(--studio-edge), env(safe-area-inset-bottom))
-    max(var(--studio-edge), env(safe-area-inset-left));
+  /* The browser's safe areas, or — inside the phone app, where the map runs under the phone's own
+     bars — how far those bars reach (`use-phone-insets.ts`). */
+  padding: max(var(--studio-edge), env(safe-area-inset-top), var(--hg-phone-inset-top, 0px))
+    max(var(--studio-edge), env(safe-area-inset-right), var(--hg-phone-inset-right, 0px))
+    max(var(--studio-edge), env(safe-area-inset-bottom), var(--hg-phone-inset-bottom, 0px))
+    max(var(--studio-edge), env(safe-area-inset-left), var(--hg-phone-inset-left, 0px));
   /* Clip, not hide: a hidden box still scrolls when a focus or a number's rolling digits reach past
      its foot, and the whole studio slid up under its own bars. */
   overflow: clip;

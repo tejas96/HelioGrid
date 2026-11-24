@@ -2,6 +2,7 @@ import {
   readSiteMapMessage,
   WEB_VIEW_BRIDGE_VERSION,
   type WebViewBack,
+  type WebViewInsets,
   type WebViewLend,
   webViewAskSchema,
 } from '@heliogrid/contracts';
@@ -12,6 +13,7 @@ import { LeadDetailStates, tapHaptic } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import { WEB_URL } from '../../../env';
 import { useHardwareBack } from '../../shared/use-hardware-back';
@@ -41,6 +43,7 @@ export function StudioWebView({
   savedAt,
   onLeave,
   onSite,
+  onUnderBars,
 }: {
   designId: string;
   /** When Site details last saved a change; a new one opens the page again. */
@@ -48,6 +51,11 @@ export function StudioWebView({
   onLeave: () => void;
   /** The page asked to change the site details: the phone opens its own Site details. */
   onSite: () => void;
+  /**
+   * Whether the page keeps clear of the phone's bars itself (it asked `insets-needed`): only then
+   * may it run under them. A page that failed to load does not: its state stays inside them.
+   */
+  onUnderBars: (under: boolean) => void;
 }) {
   const view = useRef<StudioView>(null);
   const lendToken = useLendToken();
@@ -58,6 +66,27 @@ export function StudioWebView({
   const [failed, setFailed] = useState(false);
   // The page said it takes the system back (`back-here`); a load starts it over.
   const takesBack = useRef(false);
+  // The page runs under the phone's bars and asked how far they reach (`insets-needed`); a load
+  // starts it over. Each change of the bars is sent again.
+  const { top, right, bottom, left } = useSafeAreaInsets();
+  const wantsInsets = useRef(false);
+  const sendInsets = () => {
+    const insets: WebViewInsets = {
+      v: WEB_VIEW_BRIDGE_VERSION,
+      kind: 'insets',
+      top,
+      right,
+      bottom,
+      left,
+    };
+    view.current?.postMessage(JSON.stringify(insets));
+  };
+  const latestSend = useRef(sendInsets);
+  latestSend.current = sendInsets;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: a change of any bar is a new message
+  useEffect(() => {
+    if (wantsInsets.current) latestSend.current();
+  }, [top, right, bottom, left]);
   const navigation = useNavigation();
   // Android's back: to the page when it takes it, else out; never while Site details is over it.
   useHardwareBack(() => {
@@ -76,6 +105,10 @@ export function StudioWebView({
     loadedFor.current = savedAt;
     view.current?.reload();
   }, [savedAt]);
+  // A page that failed to load keeps clear of nothing: its state stands inside the phone's bars.
+  useEffect(() => {
+    if (failed) onUnderBars(false);
+  }, [failed, onUnderBars]);
   if (failed) {
     return (
       <View ref={frame} style={styles.page}>
@@ -113,6 +146,12 @@ export function StudioWebView({
           tapHaptic(asked.strength);
           return;
         }
+        if (asked.kind === 'insets-needed') {
+          wantsInsets.current = true;
+          sendInsets();
+          onUnderBars(true);
+          return;
+        }
         if (asked.kind === 'back-here' || asked.kind === 'back-gone') {
           takesBack.current = asked.kind === 'back-here';
           return;
@@ -124,6 +163,9 @@ export function StudioWebView({
       }}
       onLoadStart={() => {
         takesBack.current = false;
+        // The new page asks for the bars again; the studio stays under them meanwhile, so a reload
+        // (back from a saved Site details) never jumps.
+        wantsInsets.current = false;
       }}
       onError={() => setFailed(true)}
       onHttpError={(event) => {
@@ -132,6 +174,10 @@ export function StudioWebView({
       onContentProcessDidTerminate={() => setFailed(true)}
       onRenderProcessGone={() => setFailed(true)}
       bounces={false}
+      // The page lays itself out under the phone's bars and keeps clear of them by `insets`: iOS
+      // adds no inset of its own.
+      contentInsetAdjustmentBehavior="never"
+      automaticallyAdjustContentInsets={false}
       // iOS lays its own up / down / done bar over the page's sheet above the keyboard: the studio's
       // sheets have their own Done, so the bar only hides it.
       hideKeyboardAccessoryView

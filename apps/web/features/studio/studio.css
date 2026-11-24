@@ -10,6 +10,12 @@
   --hg-site-bar-bottom: var(--hg-shell-foot-clear);
 }
 
+/* Inside the phone app the page runs under the phone's bars: its states start below the clock's
+   bar. The foot already keeps clear of the bottom bar (`--hg-shell-foot-clear`). */
+:root[data-phone-insets] .hg-studio-page {
+  padding-block-start: calc(var(--sp-6) + var(--hg-phone-inset-top));
+}
+
 .hg-studio-head {
   display: flex;
   flex-direction: column;

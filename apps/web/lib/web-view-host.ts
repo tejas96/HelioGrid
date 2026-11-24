@@ -3,7 +3,9 @@ import {
   readSiteMapMessage,
   WEB_VIEW_BRIDGE_VERSION,
   type WebViewAsk,
+  type WebViewInsets,
   webViewBackSchema,
+  webViewInsetsSchema,
   webViewLendSchema,
 } from '@heliogrid/contracts';
 import type { BorrowedToken } from '@heliogrid/data';
@@ -61,6 +63,25 @@ export function backFromPhone(onBack: () => void): () => void {
     window.removeEventListener('message', heard);
     document.removeEventListener('message', heard);
     ask({ v: WEB_VIEW_BRIDGE_VERSION, kind: 'back-gone' });
+  };
+}
+
+/**
+ * How far the phone's own bars reach over this page: asked for once, and heard again whenever they
+ * change. Returns the way to stop listening.
+ */
+export function insetsFromPhone(onInsets: (insets: WebViewInsets) => void): () => void {
+  const heard = (event: Event) => {
+    const insets = readSiteMapMessage(webViewInsetsSchema, (event as MessageEvent).data);
+    if (insets !== null) onInsets(insets);
+  };
+  // iOS hands a message to the window, Android to the document.
+  window.addEventListener('message', heard);
+  document.addEventListener('message', heard);
+  ask({ v: WEB_VIEW_BRIDGE_VERSION, kind: 'insets-needed' });
+  return () => {
+    window.removeEventListener('message', heard);
+    document.removeEventListener('message', heard);
   };
 }
 

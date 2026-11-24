@@ -18,6 +18,7 @@ import { inPhoneWebView, leaveToPhone, siteToPhone } from '../../lib/web-view-ho
 import { StudioCanvas } from './components/StudioCanvas';
 import { SITE_DETAILS_WIDE_FROM } from './constants';
 import { usePhoneBack } from './hooks/use-phone-back';
+import { usePhoneInsets } from './hooks/use-phone-insets';
 import { StudioPageHead } from './StudioPageHead';
 import { type StudioMoves, useStudioMoves } from './use-studio-moves';
 import { useStudioSubject } from './use-studio-subject';
@@ -70,6 +71,8 @@ export function DesignScreen({
     if (studio.unsent) leave.ask(go);
     else go();
   };
+  // Inside the phone app the studio runs under the phone's bars, its controls clear of them.
+  usePhoneInsets();
   // The phone's system back: the leave ask closes first, then what is open; then the way back.
   usePhoneBack(() => {
     if (leave.asking) leave.stay();
