@@ -2761,7 +2761,7 @@ msgid "{pin}, draggable"
 msgstr "{pin}, draggable"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:101
+#: src/copy/studio-canvas.ts:99
 msgid "{place} · roof not set up yet"
 msgstr "{place} · roof not set up yet"
 
@@ -8828,7 +8828,7 @@ msgid "Drag, or − + for {step}. The first length sizes the whole roof."
 msgstr "Drag, or − + for {step}. The first length sizes the whole roof."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:100
+#: src/copy/studio-canvas.ts:98
 msgid "Draw a roof"
 msgstr "Draw a roof"
 
@@ -8836,16 +8836,6 @@ msgstr "Draw a roof"
 #: src/copy/studio-canvas.ts:54
 msgid "Draw a roof first"
 msgstr "Draw a roof first"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:98
-msgid "Draw myself"
-msgstr "Draw myself"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:99
-msgid "Draw on the grid"
-msgstr "Draw on the grid"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-builder-flow.ts:26
@@ -19925,7 +19915,7 @@ msgid "Roof moved. Undo puts it back."
 msgstr "Roof moved. Undo puts it back."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:102
+#: src/copy/studio-canvas.ts:100
 msgid "Roof not set up yet"
 msgstr "Roof not set up yet"
 
@@ -22999,7 +22989,7 @@ msgid "The {length} you set would change. Change that length first."
 msgstr "The {length} you set would change. Change that length first."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:103
+#: src/copy/studio-canvas.ts:101
 msgid "The 3D view cannot start on this device. Try another browser."
 msgstr "The 3D view cannot start on this device. Try another browser."
 
