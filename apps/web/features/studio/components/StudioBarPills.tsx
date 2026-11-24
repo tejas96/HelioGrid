@@ -58,6 +58,10 @@ export function DrawPill({
   const refusal = bar.refused === null ? null : words.drawRefusal(bar.refused, shown);
   return (
     <>
+      {/* A face drawn by hand is named by its number on its roof (board 5.10). */}
+      {bar.face === null ? null : (
+        <span className="hg-studio-pill-text">{words.faceDrawing(bar.face)}</span>
+      )}
       <MagnetSwitch studio={studio} words={words} />
       {/* Before the first corner, typing the size is one tap away; the first corner takes it away. */}
       {bar.hint ? (

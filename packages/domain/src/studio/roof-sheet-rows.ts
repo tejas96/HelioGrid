@@ -1,5 +1,6 @@
 import type { CompassWay } from './compass';
 import type { GroundPoint } from './ground';
+import type { HandFacesDrawn } from './roof-hand-faces';
 import type { RoofSits } from './roof-list';
 import type { RoofMaterial, RoofShape } from './roof-material';
 import type { RoofName } from './roof-names';
@@ -96,7 +97,11 @@ export interface RoofSheetRows {
   /** A sloped roof's slope, the way it runs and how high its ridge stands over its low edge. */
   readonly slope: {
     readonly number: RoofNumberShown;
-    readonly way: SlopeWay;
+    /**
+     * The way it runs down; `null` on an Any-shape roof whose faces are not all drawn: it stands
+     * flat, and its slope is the one each face starts with.
+     */
+    readonly way: SlopeWay | null;
     readonly ridgeAboveM: number;
     /** The ridge's longest run on the plan, where its height arrow stands; `null` with no ridge. */
     readonly ridge: { readonly from: GroundPoint; readonly to: GroundPoint } | null;
@@ -126,6 +131,11 @@ export interface RoofSheetRows {
   readonly crossings: readonly RoofCrossing[];
   /** A stair room's Stairs row (E120): its sides that may hold them, and where they are. */
   readonly stairs: StairsRow | null;
+  /**
+   * An Any-shape roof's Faces row (E082): how far its faces are drawn by hand, and how many it
+   * keeps; `null` for any other shape.
+   */
+  readonly faces: { readonly drawn: HandFacesDrawn; readonly count: number } | null;
   /** Something on this sheet waits for a person: the sheet says once "Check it on site." */
   readonly waits: boolean;
 }

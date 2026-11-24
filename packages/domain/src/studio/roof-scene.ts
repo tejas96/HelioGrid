@@ -84,7 +84,8 @@ export const NO_ROOF_SCENE: RoofScene = { prisms: [], faces: [], walls: [], leve
  */
 export type RoofHit =
   | { readonly kind: 'roof'; readonly roof: number }
-  | { readonly kind: 'face'; readonly roof: number }
+  /** `face`: on an Any-shape roof standing in faces drawn by hand, which of them. */
+  | { readonly kind: 'face'; readonly roof: number; readonly face?: number }
   | { readonly kind: 'side'; readonly roof: number; readonly side: number }
   | { readonly kind: 'ridge'; readonly roof: number };
 

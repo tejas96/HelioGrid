@@ -105,7 +105,7 @@ describe('a roof’s sheet: one row per value it has', () => {
   it('a shed: Height of low edge, a slope that runs one way, an overhang', () => {
     const sheet = sheetOf(designOf(LEAN), 0);
     expect(sheet.height.from).toEqual({ kind: 'low_edge' });
-    expect(sheet.slope?.way.kind).toBe('down');
+    expect(sheet.slope?.way?.kind).toBe('down');
     expect(sheet.slope?.ridgeAboveM).toBeGreaterThan(0);
     expect(sheet.overhang).not.toBeNull();
   });

@@ -125,6 +125,7 @@ export {
   stepRefused,
   tracedLength,
 } from './roof-entry';
+export * from './roof-hand-faces';
 export {
   groundRoofHeightM,
   ROOF_HEIGHT_MAX_M,

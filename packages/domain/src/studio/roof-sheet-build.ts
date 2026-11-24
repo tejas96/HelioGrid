@@ -2,6 +2,7 @@ import { compassOf } from './compass';
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { roofCrossingsOf } from './roof-crossings';
+import { handFacesDrawn, handFacesKept } from './roof-hand-faces';
 import { belongsTo, roofKindOf, roofSidesOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofHasWalls, roofOwnHeightM, roofShapeNow } from './roof-levels';
 import type { RoofRow } from './roof-list';
@@ -159,7 +160,7 @@ function slopeRowOf(
   const lowAgainst = wall === null ? null : nameOf(document, wall);
   return {
     number,
-    way: wayOf(built),
+    way: shape === 'any' && built.built !== 'any' ? null : wayOf(built),
     ridgeAboveM: built.topM,
     ridge: ridgeOf(built),
     lowAgainst,
@@ -253,6 +254,10 @@ export function roofSheetRowsOf(
     details,
     crossings,
     stairs: roofKindOf(roof) === 'stair_room' ? stairsRowOf(document, index, facts, worked) : null,
+    faces:
+      shape === 'any' && !hole
+        ? { drawn: handFacesDrawn(roof), count: handFacesKept(roof).length }
+        : null,
     waits:
       crossings.length > 0 ||
       [materialWaits, kind?.waits, slope?.waits, parapet?.waits].some((each) => each === true),

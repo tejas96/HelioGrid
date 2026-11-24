@@ -140,6 +140,8 @@ export interface NumberAt {
   readonly roof: number;
   readonly key: RoofNumber;
   readonly side?: number | null;
+  /** On an Any-shape roof, the face drawn by hand whose own slope this is (`slope` alone). */
+  readonly face?: number | null;
 }
 
 /** Where a side keeps each of its own numbers. */

@@ -4,6 +4,7 @@ import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import { MAP_SURFACE } from './map-surface';
 import { designPageWords } from './site-details';
+import { studioFacesWords } from './studio-faces';
 import { studioHeightWords } from './studio-height';
 import { studioLengthWords } from './studio-length';
 import { studioPictureWords } from './studio-picture';
@@ -214,6 +215,7 @@ export function studioCanvasWords(t: T) {
     ...studioSizeWords(t),
     ...studioSheetWords(t),
     ...studioStairsWords(t),
+    ...studioFacesWords(t),
     ...studioHeightWords(t),
     ...studioPictureWords(t),
     noScene: t(CANVAS.noScene),

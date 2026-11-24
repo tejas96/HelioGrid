@@ -27,10 +27,13 @@ export function magnetOf(off: readonly string[], free: boolean): boolean {
 }
 
 /**
- * Who owns a corner or an edge a spot can snap to. The design's other roofs now; the building and
- * its neighbours from the height map join here (part g).
+ * Who owns a corner or an edge a spot can snap to: the design's other roofs, and while a roof's
+ * faces are drawn by hand, the faces drawn before. The building and its neighbours from the height
+ * map join here (part g).
  */
-export type SnapOwner = { readonly kind: 'roof'; readonly roof: number };
+export type SnapOwner =
+  | { readonly kind: 'roof'; readonly roof: number }
+  | { readonly kind: 'face'; readonly roof: number; readonly face: number };
 
 /** What a spot can snap to besides the roof in hand. */
 export interface SnapTargets {

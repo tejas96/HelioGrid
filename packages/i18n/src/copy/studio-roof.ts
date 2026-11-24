@@ -11,6 +11,7 @@ import {
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
+import { studioFacesWords } from './studio-faces';
 import { historyLine } from './studio-history';
 import { kindLineWords, roofPlaceLine, roofTopWords } from './studio-roof-kinds';
 import {
@@ -121,6 +122,9 @@ const DRAW_REFUSAL: Record<
     title: t(ROOF.drawRoofsTitle, { max: ROOFS_MAX }),
     line: t(ROOF.drawFixLine),
   }),
+  outside_roof: (t) => studioFacesWords(t).faceOutside,
+  over_face: (t) => studioFacesWords(t).faceOver,
+  too_many_faces: (t) => studioFacesWords(t).facesMany,
 };
 
 function editRefusalLine(
@@ -179,6 +183,8 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'side_wall':
     case 'material_set':
       return roofPlaceLine(t, said, shown.heightOf);
+    case 'faces_drawn':
+      return studioFacesWords(t).facesDrawn(said.count);
     case 'sized':
       return t(ROOF.roofSized);
     case 'set':

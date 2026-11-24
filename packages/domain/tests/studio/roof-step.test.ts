@@ -117,6 +117,7 @@ describe('the roof step: drawing', () => {
       hint: false,
       canWipe: true,
       canUndo: true,
+      face: null,
     });
   });
 
