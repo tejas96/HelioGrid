@@ -18,6 +18,7 @@ import {
   edgesOf,
   formPicksOf,
   handFaceLowSet,
+  holeFitOf,
   ridgePullOf,
   riseForSlope,
   roofFormOf,
@@ -100,6 +101,12 @@ export function useRoofSheetRows({
   // every row closed, nothing in hand.
   const [shows, setShows] = useState<Shows>({ roof: null, part: ROOF_PART, row: null });
   const [inHand, setInHand] = useState<{ at: NumberAt; value: number } | null>(null);
+  // The number turned to typing, on the sheet it was turned on: another sheet shown never opens with it.
+  const [started, setStarted] = useState<{
+    shows: Shows;
+    key: SheetRowKey;
+    digit: string | null;
+  } | null>(null);
   const hand = useRef(inHand);
   hand.current = inHand;
   // What an arrow held when it was taken: a wall's height, or the ridge's rise and its run.
@@ -154,10 +161,14 @@ export function useRoofSheetRows({
   const onSide = (act: (design: StudioDocument, index: number, at: number) => StudioDocument) =>
     apply((design) => (roof === null || side === null ? design : act(design, roof, side)));
 
+  // A sheet closed leaves no number turned to typing: opened again, no box takes the focus.
+  if (roof === null && started !== null) setStarted(null);
+
   return {
     pull,
     showOn: (at, next, row = null) => {
       keep();
+      setStarted(null);
       setShows({ roof: at, part: next, row });
     },
     state: {
@@ -165,9 +176,16 @@ export function useRoofSheetRows({
       rowOpen,
       numberInHand: inHand,
       numberTyped: (shown) => roofNumberTyped(shown, units),
+      numberStarted:
+        started?.shows.roof === roof && started.shows.part === part
+          ? { key: started.key, digit: started.digit }
+          : null,
     },
     moves: {
-      openRow: (key) => show(part, rowOpen === key ? null : key),
+      openRow: (key) => {
+        setStarted(null);
+        show(part, rowOpen === key ? null : key);
+      },
       slideNumber: (key, value) => {
         const at = atOf(key);
         if (!editable || at === null) return;
@@ -176,14 +194,20 @@ export function useRoofSheetRows({
         setInHand(held);
       },
       keepNumber: keep,
+      startNumber: (key, digit) => {
+        if (editable && roof !== null)
+          setStarted({ shows: { roof, part, row: rowOpen }, key, digit });
+      },
       setNumber: (key, value) => {
         const at = atOf(key);
         hand.current = null;
         setInHand(null);
+        setStarted(null);
         if (at !== null) apply((design) => roofNumberSet(design, at, value, facts));
       },
       resetNumber: (key) => {
         const at = atOf(key);
+        setStarted(null);
         hand.current = null;
         setInHand(null);
         if (at !== null) apply((design) => roofNumberReset(design, at, facts));
@@ -191,7 +215,8 @@ export function useRoofSheetRows({
       pickShape: (shape) =>
         apply((design) => (roof === null ? design : roofShapePicked(design, roof, shape, facts))),
       makeKind: (kind) => {
-        if (editable && roof !== null) act({ kind: 'make', roof, into: kind, facts });
+        if (editable && roof !== null)
+          act({ kind: 'make', roof, into: kind, facts, fitHole: holeFitOf });
       },
       setParapetAllRound: (on) =>
         apply((design) => (roof === null ? design : roofParapetAllRound(design, roof, on, facts))),

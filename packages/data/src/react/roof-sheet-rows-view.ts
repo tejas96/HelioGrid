@@ -47,6 +47,11 @@ export interface RoofSheetRowsState {
   readonly numberInHand: { readonly at: NumberAt; readonly value: number } | null;
   /** A number as its box takes it, in the reader's units. */
   numberTyped(shown: RoofNumberShown): RoofNumberTyped;
+  /**
+   * The number a person turned to typing, on the sheet showing now — by its keyboard switch, or by
+   * a digit typed on its slider, which its box opens holding: that box alone takes the focus.
+   */
+  readonly numberStarted: { readonly key: SheetRowKey; readonly digit: string | null } | null;
 }
 
 export interface RoofSheetRowMoves {
@@ -58,6 +63,11 @@ export interface RoofSheetRowMoves {
   keepNumber(): void;
   /** A number typed, or stepped by − and +: kept at once. */
   setNumber(key: RoofNumber, value: number): void;
+  /**
+   * A number turned to typing — by its keyboard switch, or a digit typed on its slider (`digit`),
+   * which its box opens holding: its box takes the focus.
+   */
+  startNumber(key: SheetRowKey, digit: string | null): void;
   /** The reset: the studio's value comes back, or on a side the roof's. */
   resetNumber(key: RoofNumber): void;
   pickShape(shape: RoofShape): void;

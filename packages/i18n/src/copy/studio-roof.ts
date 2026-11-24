@@ -180,6 +180,7 @@ function roofSaidLine(t: T, said: RoofSaid, shown: RoofWordsShown): TranslatedTe
     case 'copied':
     case 'sticks_out':
     case 'set_free':
+    case 'notched':
     case 'side_wall':
     case 'material_set':
       return roofPlaceLine(t, said, shown.heightOf);

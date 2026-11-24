@@ -6,8 +6,9 @@ import { NumberRow, type SheetFacts, SheetRow } from './StudioSheetRow';
 /**
  * A side's sheet (`T-M05-002`, part e, board 6.3): opened by a tap on one side on the model, it
  * holds that side's parapet, its parapet height and its own setback, each with a reset to the
- * roof's; on a sloped roof, what the side is to the shape — the low side, the glass side, or an
- * end that is a gable end or a hip.
+ * roof's; on a sloped roof its own overhang and, where it rises as a face of its own, its slope and
+ * how far its eave is raised; and what the side is to the shape — the low side, the glass side, or
+ * an end that is a gable end or a hip.
  */
 export function StudioSideRows({ facts, side }: { facts: SheetFacts; side: SideSheetRows }) {
   const { studio, words } = facts;
@@ -44,6 +45,12 @@ export function StudioSideRows({ facts, side }: { facts: SheetFacts; side: SideS
       <NumberRow facts={facts} shown={side.setback} label={words.rowNumber('setback')} onSide />
       {side.overhang === null ? null : (
         <NumberRow facts={facts} shown={side.overhang} label={words.rowNumber('overhang')} onSide />
+      )}
+      {side.slope === null ? null : (
+        <NumberRow facts={facts} shown={side.slope} label={words.rowNumber('slope')} onSide />
+      )}
+      {side.eave === null ? null : (
+        <NumberRow facts={facts} shown={side.eave} label={words.rowNumber('eave')} onSide />
       )}
       {role === null ? null : <SideRoleRow facts={facts} role={role} />}
     </>

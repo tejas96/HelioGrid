@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { roofShapeNow } from '../../src/studio/roof-levels';
 import { roofMaterialPicked } from '../../src/studio/roof-material-set';
 import {
   type NumberAt,
@@ -54,6 +55,19 @@ describe('each number starts as the studio’s own value', () => {
     expect(shown(HOUSE, at(1, 'slope'), facts).value).toBe(6);
   });
 
+  const sheet = { type: 'trapezoidal_sheet', setBy: 'system', confirmed: false } as const;
+  it.each([
+    ['an open shed with no shape set starts as a Shed', 'open_shed', undefined, 'shed'],
+    ['an open shed keeps the shape a person picked', 'open_shed', 'flat', 'flat'],
+    ['a building of the same sheet starts as its material does', 'building', undefined, 'gable'],
+  ] as const)('%s', (_, is, picked, shape) => {
+    const roof = kindOf('canopy', is, box(1, 1, 3, 3), {
+      material: sheet,
+      ...(picked === undefined ? {} : { shape: { is: picked, setBy: 'person' } }),
+    });
+    expect(roofShapeNow(roof, FACTS)).toBe(shape);
+  });
+
   it('an overhang is the market’s; a dormer, cut into its roof, starts with none', () => {
     const dormer = kindOf('dormer', 'dormer', box(11, 1, 2, 2), {
       partOf: 'shed',
@@ -77,7 +91,9 @@ describe('each number starts as the studio’s own value', () => {
 });
 
 describe('a person’s value is kept, and a reset leaves the roof as it was', () => {
-  it.each(ROOF_NUMBERS.map((key) => [key] as const))('%s', (key) => {
+  // A side's eave is a side's alone: the roof holds none (below).
+  const roofs = ROOF_NUMBERS.filter((key) => key !== 'eave');
+  it.each(roofs.map((key) => [key] as const))('%s', (key) => {
     const { slide } = ROOF_NUMBER_SPECS[key];
     const value = slide.min + slide.step * 3;
     const set = roofNumberSet(HOUSE, at(1, key), value, FACTS);
@@ -200,9 +216,18 @@ describe('a side’s own parapet height and setback', () => {
   });
 
   it('a number no side holds of its own is the roof’s, whichever side asks', () => {
-    expect(shown(HOUSE, at(1, 'slope', 2)).side).toBeNull();
-    const set = roofNumberSet(HOUSE, at(1, 'slope', 2), 20, FACTS);
-    expect(set.roofs[1]?.slope).toEqual({ degrees: 20, setBy: 'person' });
+    expect(shown(HOUSE, at(1, 'upper_slope', 2)).side).toBeNull();
+    const set = roofNumberSet(HOUSE, at(1, 'upper_slope', 2), 20, FACTS);
+    expect(set.roofs[1]?.shape?.upperSlope).toEqual({ degrees: 20, setBy: 'person' });
     expect(set.roofs[1]?.sides).toBeUndefined();
+  });
+
+  it('an eave is a side’s alone: set on the roof it changes nothing', () => {
+    expect(roofNumberSet(HOUSE, at(1, 'eave'), 1, FACTS)).toEqual(HOUSE);
+  });
+
+  it('a reset that leaves no side holding anything leaves no sides stored', () => {
+    const reset = roofNumberReset(tall, at(0, 'parapet_height', 2), FACTS);
+    expect(reset.roofs[0]).toEqual(TERRACE);
   });
 });

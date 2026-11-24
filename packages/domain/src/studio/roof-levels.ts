@@ -87,11 +87,16 @@ export function roofMaterialNow(roof: Roof): RoofMaterial {
   return roof.material === undefined ? ROOF_MATERIAL_START : roofMaterialOf(roof.material.type);
 }
 
-/** A roof's shape: what is stored where this build knows it, else what its material starts as. */
+/**
+ * A roof's shape: what is stored where this build knows it, else what it starts as — an open
+ * shed one slope, a sheet on posts, and any other roof what its material starts as.
+ */
 export function roofShapeNow(roof: Roof, facts: RoofFacts): RoofShape {
   const stored = roof.shape?.is;
   const known = ROOF_SHAPES.find((shape) => shape === stored);
-  return known ?? materialStart(roofMaterialNow(roof), facts).shape;
+  if (known !== undefined) return known;
+  if (roofKindOf(roof) === 'open_shed') return 'shed';
+  return materialStart(roofMaterialNow(roof), facts).shape;
 }
 
 /** Whether a roof's top slopes: every shape but flat. */

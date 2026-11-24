@@ -6,12 +6,12 @@ import { useTranslate } from '@heliogrid/i18n/react';
 import { Button, IconButton, ShellGlyph, Slider, Switch, useFormat } from '@heliogrid/ui';
 import type { KeyboardEvent } from 'react';
 import { StudioEntryBoxes } from './StudioEntryBoxes';
+import { digitOnSlider } from './slider-digit';
 
 type Sizing = Extract<RoofStepState, { kind: 'sizing' }>;
 
 /** Each edge opened, and each switch to the box, gives the box a new focus number. */
 const FOCUS_PER_ROOF = 1_000;
-const ONE_DIGIT = /^[0-9]$/;
 
 /**
  * The length field (`T-M05-002`, part b): opened by a tap on a length, at the top. A slider first —
@@ -51,11 +51,11 @@ export function StudioLengthBox({
       return;
     }
     // A digit typed on the slider: the person wants to type. The box opens with that digit.
-    const onSlider = event.target instanceof HTMLInputElement && event.target.type === 'range';
-    if (!typing && onSlider && ONE_DIGIT.test(event.key)) {
+    const digit = digitOnSlider(event);
+    if (!typing && digit !== null) {
       event.preventDefault();
       moves.chooseNumberEntry('box');
-      moves.typeLength({ ...entry, main: event.key, inches: '' });
+      moves.typeLength({ ...entry, main: digit, inches: '' });
     }
   };
   return (

@@ -43,3 +43,16 @@ export interface RoofMeeting {
   /** The guess rests on no measured height: it is marked to check. */
   readonly toCheck: boolean;
 }
+
+/**
+ * How a hole fits the roof it is cut in, as the kernel works it out (`holeFitOf`): clear inside
+ * stays as it is; along the roof's edge, the roof's outline takes the notch in its place; touching
+ * at a corner alone, the hole moves clear onto these corners.
+ */
+export type HoleFit =
+  | { readonly kind: 'inside' }
+  | { readonly kind: 'notch'; readonly outline: readonly GroundPoint[] }
+  | { readonly kind: 'moved'; readonly corners: readonly GroundPoint[] };
+
+/** How a hole on these corners fits the roof on those: asked of the kernel, which knows the shapes. */
+export type HoleFitter = (roof: readonly GroundPoint[], hole: readonly GroundPoint[]) => HoleFit;

@@ -7,7 +7,7 @@ import type { LengthEntry, LengthInHand } from './roof-entry';
 import type { HandFaceClosed } from './roof-hand-faces';
 import type { RoofFacts } from './roof-levels';
 import type { MaterialPick } from './roof-material-set';
-import type { RoofMeeting } from './roof-meeting';
+import type { HoleFitter, RoofMeeting } from './roof-meeting';
 import type { RoofKind } from './roof-parts';
 import type { RoofPlacing, RoofSaid } from './roof-said';
 import type { Snapped, SnapTargets } from './roof-snap';
@@ -171,6 +171,8 @@ export type RoofStepEvent =
       readonly roof: number;
       readonly into: RoofKind;
       readonly facts: RoofFacts;
+      /** How the roof, made a hole, fits the roof it is cut in (E015). */
+      readonly fitHole: HoleFitter;
     }
   /** Join: the new roof and the roof it met become one, on the outline the kernel joined. */
   | {

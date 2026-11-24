@@ -6,7 +6,7 @@ import { joined, shapeOf } from '../../src/studio/roof-polygons';
 import { roofStepAfter } from '../../src/studio/roof-step';
 import { ROOF_STEP_START } from '../../src/studio/roof-step-state';
 import { box, designOf, FACTS, p, roofOf, SHED, TERRACE } from './roof-meet-support';
-import { draw, run, saidOf } from './roof-step-support';
+import { draw, KERNEL, run, saidOf } from './roof-step-support';
 
 /**
  * The roof step among many roofs (`T-M05-002`, part e): a closed roof takes its place and the line
@@ -54,9 +54,10 @@ describe('a new roof closes among the others', () => {
   });
 
   it('a chip makes it another kind: one tap, one change, the line stays with that chip lit', () => {
-    const closed = run(draw(box(0, 0, 3, 3), HOUSE), HOUSE);
+    // A stair room clear of the terrace's walls: made a hole, it stays a hole.
+    const closed = run(draw(box(4, 3, 3, 3), HOUSE), HOUSE);
     const { state, document, commits } = run(
-      [{ kind: 'make', roof: 2, into: 'hole', facts: FACTS }],
+      [{ kind: 'make', roof: 2, into: 'hole', ...KERNEL }],
       closed.document,
     );
     expect(commits).toBe(1);
@@ -73,7 +74,7 @@ describe('a new roof closes among the others', () => {
     });
     const after = roofStepAfter(
       closed.state,
-      { kind: 'make', roof: 2, into: 'hole', facts: FACTS },
+      { kind: 'make', roof: 2, into: 'hole', ...KERNEL },
       closed.document,
     );
     expect(saidOf(after.state)).toMatchObject({
@@ -91,7 +92,7 @@ describe('a new roof closes among the others', () => {
 
   it('the lit chip, tapped, makes the guess the person’s as one change; tapped again it changes nothing', () => {
     const closed = run(draw(box(0, 0, 3, 3), HOUSE), HOUSE);
-    const make = { kind: 'make', roof: 2, into: 'stair_room', facts: FACTS } as const;
+    const make = { kind: 'make', roof: 2, into: 'stair_room', ...KERNEL } as const;
     const mine = roofStepAfter(closed.state, make, closed.document);
     expect(mine.commit?.roofs[2]?.kind).toEqual({ is: 'stair_room', setBy: 'person' });
     // The line stays, as it does for every chip.
@@ -148,7 +149,7 @@ describe('Join and Cut to edge', () => {
     const closed = run(draw(drawn, design, 'shed'), design);
     expect(closed.document.roofs[1]).toMatchObject({ kind: { is: 'upper_floor' }, on: 'terrace' });
     const corners = cutToEdge(design, drawn) ?? [];
-    const placing = { meeting: meetingOf(design, corners, FACTS), facts: FACTS };
+    const placing = { meeting: meetingOf(design, corners, FACTS), ...KERNEL };
     const after = roofStepAfter(
       closed.state,
       { kind: 'cut_to_edge', roof: 1, corners, placing },
@@ -198,7 +199,7 @@ describe('two sloped roofs of one material join by themselves', () => {
     (_chip, into, kind) => {
       const after = roofStepAfter(
         closed.state,
-        { kind: 'make', roof: 0, into, facts: FACTS },
+        { kind: 'make', roof: 0, into, ...KERNEL },
         closed.document,
       );
       expect(after.commit?.roofs[0]).toEqual(SHED);
@@ -232,7 +233,7 @@ describe('a chip tapped after the design changed under the line', () => {
     expect(kindLineOf(closed.state, theirs)).toBeNull();
     const after = roofStepAfter(
       closed.state,
-      { kind: 'make', roof: 2, into: 'hole', facts: FACTS },
+      { kind: 'make', roof: 2, into: 'hole', ...KERNEL },
       theirs,
     );
     expect(after.commit).toBeNull();
@@ -251,7 +252,7 @@ describe('a chip tapped after the design changed under the line', () => {
     expect(kindLineOf(joined.state, taller)).toBeNull();
     const after = roofStepAfter(
       joined.state,
-      { kind: 'make', roof: 0, into: 'building', facts: FACTS },
+      { kind: 'make', roof: 0, into: 'building', ...KERNEL },
       taller,
     );
     expect(after.commit).toBeNull();
@@ -266,7 +267,7 @@ describe('a chip tapped after the design changed under the line', () => {
         kind: 'cut_to_edge',
         roof: 2,
         corners: box(0, 0, 3, 3),
-        placing: { meeting: meetingOf(HOUSE, box(0, 0, 3, 3), FACTS), facts: FACTS },
+        placing: { meeting: meetingOf(HOUSE, box(0, 0, 3, 3), FACTS), ...KERNEL },
       },
     ],
   ] as const)('%s on a line gone stale changes nothing either', (_chip, event) => {
