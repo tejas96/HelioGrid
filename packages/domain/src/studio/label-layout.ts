@@ -258,3 +258,41 @@ export function labelLayoutOf(
     labels.map((label, e) => ({ ...label.place, shown: (shown[r] as boolean[])[e] as boolean })),
   );
 }
+
+/** The free room on the screen a tag stays inside, in CSS pixels: the map less what stands on it. */
+export interface TagRoom {
+  readonly left: number;
+  readonly right: number;
+  readonly top: number;
+}
+
+/** A tag beside a spot — what it snapped to, or why it cannot go there — as the screen measured it. */
+export interface TagAsk {
+  readonly spot: ScreenPoint;
+  readonly width: number;
+  readonly height: number;
+  readonly room: TagRoom;
+  /** How far the tag's near side stands from the spot, across. */
+  readonly gap: number;
+  /** How far the tag's near side stands from the spot, up or down. */
+  readonly clear: number;
+}
+
+/**
+ * Where a tag beside a spot sits: its top-left corner, from the spot. It stands above and to the
+ * right of the spot; to the left where the right has no room, so its words are never cut at the
+ * map's edge; held inside the room where neither side has it; below where the top has none.
+ */
+export function tagPlaceOf({ spot, width, height, room, gap, clear }: TagAsk): ScreenPoint {
+  const right = spot.x + gap;
+  const left = spot.x - gap - width;
+  const start =
+    right + width <= room.right
+      ? right
+      : left >= room.left
+        ? left
+        : Math.max(room.left, Math.min(right, room.right - width));
+  const above = spot.y - clear - height;
+  const top = above >= room.top ? above : spot.y + clear;
+  return { x: start - spot.x, y: top - spot.y };
+}

@@ -8,6 +8,7 @@ import {
   labelLayoutOf,
   type RoofLabelAsk,
   type ScreenPoint,
+  tagPlaceOf,
 } from '../../src/studio/label-layout';
 
 const HEIGHT = 20;
@@ -231,5 +232,33 @@ describe('labels keep off every handle (T-M05-002)', () => {
     )[0]?.[0];
     expect(set?.shown).toBe(true);
     expect(labelLayoutOf([roofOf(SQUARE)])[0]?.[0]?.shown).toBe(true);
+  });
+});
+
+describe('a tag beside a spot stays inside the room', () => {
+  const room = { left: 8, right: 367, top: 8 };
+  const place = (x: number, y: number, width = 100) =>
+    tagPlaceOf({ spot: xy(x, y), width, height: 22, room, gap: 16, clear: 12 });
+
+  it.each([
+    // case → spot x, tag width, offset across
+    ['room on the right: it stands right of the spot', 200, 100, 16],
+    ['its far side just on the right edge: still right', 251, 100, 16],
+    ['one pixel past the right edge: it turns to the left', 252, 100, -116],
+    ['right at the map edge: left', 367, 100, -116],
+    ['turned left, its far side just on the left edge', 324, 300, -316],
+    ['no room either side: held against the right edge', 200, 300, -133],
+    ['wider than the room: from its left edge', 200, 400, -192],
+  ])('%s', (_case, x, width, across) => {
+    expect(place(x, 100, width).x).toBe(across);
+  });
+
+  it.each([
+    // case → spot y, offset up or down
+    ['room above: it stands above the spot', 100, -34],
+    ['its top just on the room top: still above', 42, -34],
+    ['one pixel past the top: it drops below', 41, 12],
+  ])('%s', (_case, y, down) => {
+    expect(place(200, y).y).toBe(down);
   });
 });
