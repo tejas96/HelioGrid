@@ -1,5 +1,6 @@
 import { METRES_PER_FOOT } from '../format/measurement';
 import type { MeasurementSystem } from '../format/pack';
+import { ROOF_HEIGHT_MAX_M } from './roof-height';
 import {
   OVERHANG_MAX_M,
   PARAPET_HEIGHT_MAX_M,
@@ -15,8 +16,8 @@ import {
  * The numbers a roof's sheet sets beyond its height (`T-M05-002`, part e): for each, its slider's
  * track, how far typing takes it, the studio's own value, and how a person's value is kept. A roof
  * stores only what a person set: an absent value is the studio's, so a reset takes it away and a
- * later change of material or market still reaches it. A side's own parapet height, setback and
- * overhang follow its roof's until a person sets them.
+ * later change of material or market still reaches it. A side's own parapet height, setback,
+ * overhang, slope and eave follow its roof's until a person sets them.
  */
 export const ROOF_NUMBERS = [
   'slope',
@@ -27,6 +28,7 @@ export const ROOF_NUMBERS = [
   'raised_width',
   'valley',
   'overhang',
+  'eave',
   'parapet_height',
   'setback',
   'thickness',
@@ -38,6 +40,8 @@ export const SIDE_NUMBERS = [
   'parapet_height',
   'setback',
   'overhang',
+  'slope',
+  'eave',
 ] as const satisfies readonly RoofNumber[];
 export type SideNumber = (typeof SIDE_NUMBERS)[number];
 
@@ -104,6 +108,12 @@ export const ROOF_NUMBER_SPECS: Record<RoofNumber, RoofNumberSpec> = {
     slide: { min: 0, max: 1.5, step: 0.05 },
     typed: { min: 0, max: OVERHANG_MAX_M },
   },
+  // A side's eave raised above the roof's low edge: an off-centre ridge, a split-level roof.
+  eave: {
+    unit: 'metres',
+    slide: { min: 0, max: 3, step: 0.05 },
+    typed: { min: 0, max: ROOF_HEIGHT_MAX_M },
+  },
   parapet_height: {
     unit: 'metres',
     slide: { min: 0.3, max: 2, step: 0.05 },
@@ -149,6 +159,8 @@ export const SIDE_FIELD = {
   parapet_height: 'parapetM',
   setback: 'setbackM',
   overhang: 'overhangM',
+  slope: 'slopeDeg',
+  eave: 'eaveM',
 } as const;
 
 export const isSideNumber = (key: RoofNumber): key is SideNumber =>

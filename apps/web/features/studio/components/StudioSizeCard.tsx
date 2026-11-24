@@ -8,8 +8,8 @@ import { Button, IconButton, Input, ShellGlyph, Slider, useFormat } from '@helio
 import type { KeyboardEvent } from 'react';
 import { roofWordsShown } from './roof-words-shown';
 import { StudioEntryBoxes } from './StudioEntryBoxes';
+import { digitOnSlider } from './slider-digit';
 
-const ONE_DIGIT = /^[0-9]$/;
 type Which = 'length' | 'width';
 
 /** One number of the card, on one row: its word, then the slider and its value, or the boxes. */
@@ -119,16 +119,16 @@ export function StudioSizeCard({
     }
     // A digit typed on a slider: the person wants to type. The boxes open with that digit.
     const target = event.target;
-    const onSlider = target instanceof HTMLInputElement && target.type === 'range';
-    if (!boxes && onSlider && ONE_DIGIT.test(event.key)) {
+    const digit = digitOnSlider(event);
+    if (!boxes && digit !== null && target instanceof HTMLElement) {
       event.preventDefault();
       moves.chooseNumberEntry('box');
       if (pairBox) {
-        moves.typeSizePair(event.key);
+        moves.typeSizePair(digit);
         return;
       }
       const which: Which = target.closest('[data-which="width"]') === null ? 'length' : 'width';
-      moves.typeSizeEntry(which, { main: event.key, inches: '', measured: false });
+      moves.typeSizeEntry(which, { main: digit, inches: '', measured: false });
     }
   };
   const pairText =

@@ -1,6 +1,8 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { draftClose } from './roof-draw';
+import { belongsTo, roofKindOf } from './roof-kind';
+import type { HoleFitter } from './roof-meeting';
 import { roofNameOf } from './roof-names';
 import { becameFacts, placedAt, roofMadeInto } from './roof-place';
 import { reshaped } from './roof-reshape';
@@ -39,6 +41,63 @@ function becameOf(
   const became = said?.kind === 'closed' || said?.kind === 'cut' ? said.became : undefined;
   if (became === undefined || became.roof !== roof) return null;
   return document.roofs[roof]?.id === became.id ? became : 'stale';
+}
+
+/**
+ * A roof that is now a hole, fitted to the roof it is cut in (E015): clear inside it stays; along
+ * that roof's edge it is a notch in its outline instead, and goes; at a corner alone it moves
+ * clear. `notched`: the roof that took the notch, where it did.
+ *
+ * Only a hole a person picked becomes a notch: one the studio guessed on a close keeps its chips,
+ * so a wrong guess stays one tap. Nor does a roof whose faces were drawn by hand take a notch: its
+ * faces would no longer cover it.
+ */
+function holeFitted(
+  document: StudioDocument,
+  index: number,
+  fitHole: HoleFitter,
+  picked: boolean,
+): { readonly document: StudioDocument; readonly notched: number | null } {
+  const hole = document.roofs[index];
+  const owner = hole === undefined ? null : belongsTo(document, hole);
+  const roof = owner === null ? undefined : document.roofs[owner];
+  if (hole === undefined || roof === undefined || roofKindOf(hole) !== 'hole') {
+    return { document, notched: null };
+  }
+  const fit = fitHole(roof.corners, hole.corners);
+  const faced = (roof.shape?.faces?.length ?? 0) > 0;
+  if (fit.kind === 'inside' || (fit.kind === 'notch' && (!picked || faced))) {
+    return { document, notched: null };
+  }
+  if (fit.kind === 'moved') {
+    const moved = { ...hole, corners: fit.corners };
+    return {
+      document: { ...document, roofs: document.roofs.map((r, i) => (i === index ? moved : r)) },
+      notched: null,
+    };
+  }
+  const cut = reshaped(roof, fit.outline, [roof, hole]);
+  const withCut = { ...document, roofs: document.roofs.map((r) => (r === roof ? cut : r)) };
+  const commit = withoutRoof(withCut, index);
+  return { document: commit, notched: commit.roofs.findIndex((r) => r.id === roof.id) };
+}
+
+/**
+ * An act that made a roof a hole, its hole fitted: a notch says so, and the line leaves. `picked`:
+ * a person picked the kind; else the studio guessed it.
+ */
+function asFitted(
+  outcome: RoofStepOutcome,
+  index: number,
+  fitHole: HoleFitter,
+  picked: boolean,
+): RoofStepOutcome {
+  if (outcome.commit === null) return outcome;
+  const fitted = holeFitted(outcome.commit, index, fitHole, picked);
+  if (fitted.notched === null) return { ...outcome, commit: fitted.document };
+  const roof = fitted.notched;
+  const name = roofNameOf(fitted.document, roof) ?? { kind: 'roof', number: roof + 1 };
+  return { state: idle({ kind: 'notched', roof, name }, roof), commit: fitted.document };
 }
 
 /** The line leaves and nothing changes: what it spoke of is no longer what stands there. */
@@ -94,7 +153,8 @@ export function closed(
   if (meeting.joinFirst && meeting.joined !== null && meeting.joinWith !== null) {
     return joinedAs(commit, index, meeting.joinWith, meeting.joined, placed.became);
   }
-  return { state: idle({ kind: 'closed', became: placed.became }, index), commit };
+  const outcome = { state: idle({ kind: 'closed', became: placed.became }, index), commit };
+  return asFitted(outcome, index, rest.fitHole, false);
 }
 
 /** A kind's chip on a joined roof: the two stand apart again, and the new one is that kind. */
@@ -113,7 +173,7 @@ function parted(
     kind: 'closed',
     became: { ...became, ...now, roof: index, joinWith: joined.roof },
   };
-  return { state: idle(said, index), commit: made };
+  return asFitted({ state: idle(said, index), commit: made }, index, event.fitHole, true);
 }
 
 /** A kind picked: on the line after a close its chip lights and the line stays; from a sheet it is said. */
@@ -137,7 +197,7 @@ export function kindMade(
     became === null
       ? { kind: 'made', roof: event.roof, is: now.is, name: now.name }
       : { kind: 'closed', became: { ...became, ...now, beside: now.beside ?? became.beside } };
-  return { state: idle(said, event.roof), commit: made };
+  return asFitted({ state: idle(said, event.roof), commit: made }, event.roof, event.fitHole, true);
 }
 
 /** Join: the new roof and the roof it met become one, and the line's chips can still part them. */
@@ -166,8 +226,9 @@ export function cutBack(
   const cut = reshaped(roof, event.corners, [roof]);
   const placed = placedAt(document, cut, event.roof, event.placing);
   const roofs = document.roofs.map((each, i) => (i === event.roof ? placed.roof : each));
-  return {
+  const outcome = {
     state: idle({ kind: 'cut', became: placed.became }, event.roof),
     commit: { ...document, roofs },
   };
+  return asFitted(outcome, event.roof, event.placing.fitHole, false);
 }

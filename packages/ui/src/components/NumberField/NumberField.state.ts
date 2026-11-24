@@ -22,6 +22,8 @@ import type {
 export interface NumberDraftOptions {
   /** None: the field is unset and edits as an empty draft. */
   value: number | undefined;
+  /** `NumberFieldProps.startDraft`: typed before the field was drawn, held until its first focus. */
+  startDraft?: string;
   onCommit?: (value: number) => void;
   onClear?: () => void;
   min?: number;
@@ -72,7 +74,9 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
   const plainText = (figure: number | undefined) => displayNumber(figure, opts.precision);
   const resting = (figure: number | undefined) =>
     figure === undefined || opts.idle === undefined ? plainText(figure) : opts.idle(figure);
-  const [draft, showDraft] = useState(() => resting(value));
+  const [draft, showDraft] = useState(() => opts.startDraft ?? resting(value));
+  /* What was typed before the field was drawn: its first focus keeps it in place of the figure. */
+  const typedFirst = useRef(opts.startDraft);
   /* The draft as last set, ahead of the render: a phone reports keystrokes faster than it renders,
      and an edit read against the rendered draft would take the digits before it as a paste. */
   const latestDraft = useRef(draft);
@@ -99,7 +103,9 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
   const restingText = resting(value);
   const keepsDraft = pastLimit(value);
   useEffect(() => {
-    if (!focus && !focused.current && !keepsDraft) setDraft(restingText);
+    if (!focus && !focused.current && !keepsDraft && typedFirst.current === undefined) {
+      setDraft(restingText);
+    }
   }, [restingText, focus, keepsDraft, setDraft]);
 
   const clearNotes = () => {
@@ -181,7 +187,9 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
       clearNotes();
       const shown = plainText(value);
       shownAtFocus.current = shown;
-      setDraft(shown);
+      const typed = typedFirst.current;
+      typedFirst.current = undefined;
+      setDraft(typed ?? shown);
     },
     onBlur: () => {
       focused.current = false;
@@ -225,6 +233,7 @@ export function useNumberField(props: NumberFieldProps): {
   const formCommits = useFieldCommits();
   const draft = useNumberFieldDraft({
     value,
+    ...(props.startDraft === undefined ? {} : { startDraft: props.startDraft }),
     onCommit,
     onClear,
     min,

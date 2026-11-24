@@ -10,7 +10,6 @@ import {
   guidesOf,
   type History,
   handlesRoofOf,
-  handMetres,
   heldCircleOf,
   heldCornerOf,
   historyAfter,
@@ -19,9 +18,6 @@ import {
   kindLineOf,
   type LengthEntry,
   labelLayoutOf,
-  lengthSizesPicture,
-  lengthSizesPlan,
-  lengthSlide,
   type MeasurementSystem,
   magnetOf,
   type NumberEntry,
@@ -45,13 +41,12 @@ import {
   screenProjector,
   stepRefused,
   tagPlaceOf,
-  tracedLength,
 } from '@heliogrid/domain';
 import { parapetInsidesOf } from '@heliogrid/domain/studio-kernel';
 import { type RefObject, useMemo, useRef, useState } from 'react';
 import { aKey } from '../client/creation-key';
 import type { ClosingWith, RoofMoves, RoofStepView } from './roof-step-view';
-import { sizeCardIn, useUnitsFollow } from './size-card';
+import { lengthBoxIn, sizeCardIn, useUnitsFollow } from './size-card';
 import { type StudioPicture, stampOf, tracedOnOf } from './studio-document-state';
 
 export type { RoofMoves, RoofStepView, SizeCardView } from './roof-step-view';
@@ -162,15 +157,7 @@ export function useRoofStep({
       more: sizing === null || stepRefused(sizing, 1, units),
     },
     sizeCard: sizeCardIn(roofStep, document, units, numberEntry),
-    lengthBox:
-      sizing === null
-        ? null
-        : {
-            traced: tracedLength(sizing.base, sizing.roof, sizing.edge),
-            typed: handMetres(sizing, units),
-            first: lengthSizesPicture(sizing.base, sizing.roof) || lengthSizesPlan(sizing),
-            slide: lengthSlide(tracedLength(sizing.base, sizing.roof, sizing.edge), units),
-          },
+    lengthBox: lengthBoxIn(roofStep, units),
     numberEntry,
     layoutLabels: labelLayoutOf,
     placeTag: tagPlaceOf,

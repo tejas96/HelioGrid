@@ -69,6 +69,14 @@ export function belongsTo(document: StudioDocument, roof: Roof): number | null {
   return roofById(document, roof.partOf, roof) ?? standsOn(document, roof);
 }
 
+/** What is carved out of a roof's top: its holes, and its separate parts, which stand on their own. */
+export function carvedOutOf(document: StudioDocument, roof: Roof): readonly Roof[] {
+  return document.roofs.filter((other) => {
+    const kind = roofKindOf(other);
+    return (kind === 'hole' || kind === 'separate_part') && other.partOf === roof.id;
+  });
+}
+
 /**
  * Every roof that goes with roof `index`, itself first: what stands on it or is part of it, and
  * what goes with those in turn. A design whose links run in a ring ends where it began.

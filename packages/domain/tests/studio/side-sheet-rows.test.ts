@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { roofSideEnded, roofSideMarked } from '../../src/studio/roof-choices';
 import { ROOF_NUMBER_SPECS, type RoofNumber, roofNumberTyped } from '../../src/studio/roof-numbers';
 import { roofNumberOf } from '../../src/studio/roof-values';
-import { roofNumberSet } from '../../src/studio/roof-values-set';
+import { roofNumberReset, roofNumberSet } from '../../src/studio/roof-values-set';
 import { roofsWorked } from '../../src/studio/roof-worked';
 import { sideSheetRowsOf } from '../../src/studio/side-sheet-build';
 import { box, designOf, FACTS, roofOf, TERRACE } from './roof-meet-support';
@@ -45,6 +45,17 @@ describe('a side’s sheet', () => {
     const sides = [0, 1, 2, 3].map((side) => sideOf(designOf(LEAN), 0, side).role);
     expect(sides.filter((role) => role?.kind === 'low' && role.is)).toHaveLength(1);
     expect(sides.every((role) => role?.kind === 'low')).toBe(true);
+  });
+
+  it('an open shed slopes one way: its low side is said, and could be another side', () => {
+    const shed = roofOf('canopy', box(2, 2, 4, 3), {
+      kind: { is: 'open_shed', setBy: 'system' },
+      on: 'terrace',
+      material: { type: 'trapezoidal_sheet', setBy: 'system', confirmed: false },
+    });
+    const roles = [0, 1, 2, 3].map((side) => sideOf(designOf(TERRACE, shed), 1, side).role);
+    expect(roles.every((role) => role?.kind === 'low')).toBe(true);
+    expect(roles.filter((role) => role?.kind === 'low' && role.is)).toHaveLength(1);
   });
 
   it('a gable’s two ends are gable ends, its eaves have no role; a hip end turns it', () => {
@@ -102,6 +113,55 @@ describe('a side’s sheet', () => {
     const worked = roofsWorked(designOf(TERRACE), FACTS);
     expect(sideSheetRowsOf(designOf(TERRACE), 0, 4, FACTS, worked, 0)).toBeNull();
     expect(sideSheetRowsOf(designOf(TERRACE), 0, -1, FACTS, worked, 0)).toBeNull();
+  });
+});
+
+describe('a side’s own slope and eave', () => {
+  const gable = designOf(shaped('gable'));
+  const at = (side: number, key: RoofNumber) => ({ roof: 0, key, side });
+
+  it.each([
+    ['a gable’s eave side has its own slope and eave', gable, 0, true],
+    ['a gable end has no slope of its own', gable, 1, false],
+    ['every side of a hip slopes', designOf(shaped('hip')), 1, true],
+    ['every side of a mansard slopes', designOf(shaped('mansard')), 3, true],
+    ['a flat roof’s side has none', designOf(TERRACE), 0, false],
+    ['a shed slopes one way, from the roof’s own slope', designOf(LEAN), 0, false],
+  ] as const)('%s', (_why, design, side, has) => {
+    const sheet = sideOf(design, 0, side);
+    expect(sheet.slope !== null).toBe(has);
+    expect(sheet.eave !== null).toBe(has);
+  });
+
+  it('follows the roof’s until a person sets it; a reset brings the roof’s back', () => {
+    const roofs = sideOf(gable, 0, 0);
+    expect(roofs.slope).toMatchObject({ byPerson: false, side: 0 });
+    expect(roofs.eave).toMatchObject({ value: 0, byPerson: false, system: 0 });
+    const steep = roofNumberSet(
+      roofNumberSet(gable, at(0, 'slope'), 35, FACTS),
+      at(0, 'eave'),
+      0.5,
+      FACTS,
+    );
+    expect(steep.roofs[0]?.sides?.[0]).toEqual({ slopeDeg: 35, eaveM: 0.5 });
+    const mine = sideOf(steep, 0, 0);
+    expect(mine.slope).toMatchObject({ value: 35, byPerson: true, system: roofs.slope?.value });
+    expect(mine.eave).toMatchObject({ value: 0.5, byPerson: true, system: 0 });
+    // The other sides keep the roof's.
+    expect(sideOf(steep, 0, 2).slope?.byPerson).toBe(false);
+    const back = roofNumberReset(
+      roofNumberReset(steep, at(0, 'slope'), FACTS),
+      at(0, 'eave'),
+      FACTS,
+    );
+    expect(back.roofs[0]).toEqual(gable.roofs[0]);
+  });
+
+  it('the roof’s own slope still sets every side a person has not set', () => {
+    const one = roofNumberSet(gable, at(0, 'slope'), 35, FACTS);
+    const roof = roofNumberSet(one, { roof: 0, key: 'slope' }, 20, FACTS);
+    expect(sideOf(roof, 0, 0).slope?.value).toBe(35);
+    expect(sideOf(roof, 0, 2).slope?.value).toBe(20);
   });
 });
 

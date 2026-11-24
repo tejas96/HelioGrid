@@ -1,4 +1,5 @@
 import type { StudioDocument } from '../../src/studio/document';
+import { holeFitOf } from '../../src/studio/roof-hole-fit';
 import { meetingOf } from '../../src/studio/roof-meet';
 import { roofStepAfter } from '../../src/studio/roof-step';
 import {
@@ -7,6 +8,9 @@ import {
   type RoofStepState,
 } from '../../src/studio/roof-step-state';
 import { type box, FACTS, p } from './roof-meet-support';
+
+/** What the studio's hook hands an act from the kernel: the market's facts and how a hole fits. */
+export const KERNEL = { facts: FACTS, fitHole: holeFitOf } as const;
 
 /** The roof step run over a design, event by event, as the studio's hook runs it. */
 export function run(events: readonly RoofStepEvent[], from: StudioDocument) {
@@ -43,7 +47,11 @@ export const draw = (
     tracedOn: 'sky',
     stamp: null,
     ghost: false,
-    placing: { meet: (outline) => meetingOf(design, outline, FACTS), facts: FACTS, ...more },
+    placing: {
+      meet: (outline) => meetingOf(design, outline, FACTS),
+      ...KERNEL,
+      ...more,
+    },
   },
 ];
 export const saidOf = (state: RoofStepState) => (state.kind === 'idle' ? state.said : null);

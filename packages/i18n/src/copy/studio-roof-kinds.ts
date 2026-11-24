@@ -73,6 +73,7 @@ const KIND = {
   noWallUnderFloor: /*i18n*/ { id: 'No parapet where the upper floor stands' },
   noWallUnderWall: /*i18n*/ { id: 'No parapet where {roof}’s wall stands' },
   setFree: /*i18n*/ { id: '{name} is its own roof now · Undo puts it back' },
+  notched: /*i18n*/ { id: 'Cut from {name}’s edge · Undo puts it back' },
 } as const;
 
 const KIND_WORD: Record<RoofKind, (typeof KIND)[keyof typeof KIND]> = {
@@ -185,6 +186,8 @@ export function roofPlaceLine(
         : t(KIND.wallsOn, { count: said.walled });
     case 'set_free':
       return t(KIND.setFree, { name: roofNameWord(t, said.name) });
+    case 'notched':
+      return t(KIND.notched, { name: roofNameWord(t, said.name) });
     default:
       return null;
   }

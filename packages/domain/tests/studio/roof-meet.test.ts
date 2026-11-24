@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { IN_FORMATS } from '../../src/format/pack';
 import { groundRoofHeightM, roofHeightOf } from '../../src/studio/roof-height';
 import { roofFloorM, roofOwnHeightM } from '../../src/studio/roof-levels';
-import { cutToEdge, holeMeets, meetingOf } from '../../src/studio/roof-meet';
+import { cutToEdge, meetingOf } from '../../src/studio/roof-meet';
 import { ringAreaM2 } from '../../src/studio/roof-polygons';
 import {
   box,
@@ -274,16 +274,5 @@ describe('how high each roof stands', () => {
   it('a hole under a second floor is open down to the floor below it', () => {
     const tall = designOf({ ...TERRACE, height: { metres: 6, setBy: 'person' } }, DUCT);
     expect(roofFloorM(tall, 1, FACTS)).toBeCloseTo(3, 6);
-  });
-});
-
-describe('how a hole meets its roof’s edge', () => {
-  it.each([
-    ['clear inside', box(4, 3, 1, 1), 'inside'],
-    ['along the edge: it changes the outline', box(4, 0, 1, 1), 'on_edge'],
-    ['0.2 m from the edge: along it', box(4, 0.2, 1, 1), 'on_edge'],
-    ['at a corner alone: it is moved clear', [p(10, 8), p(9, 7.5), p(9.5, 7)], 'corner_only'],
-  ] as const)('%s', (_why, hole, meets) => {
-    expect(holeMeets(TERRACE.corners, hole)).toBe(meets);
   });
 });

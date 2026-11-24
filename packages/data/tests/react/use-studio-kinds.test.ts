@@ -54,7 +54,8 @@ const saved = () => stored.saves.at(-1)?.roofs ?? [];
 describe('a new roof takes its place when it closes', () => {
   it('drawn on the terrace it is a stair room on it, saved once, and its chips fix a wrong guess in one save each', async () => {
     const view = await opened([TERRACE]);
-    draw(view, box(0, 0, 3, 3));
+    // Clear of the terrace's walls: made a hole, it stays a hole (one on the walls is a notch).
+    draw(view, box(4, 3, 3, 3));
     await waitFor(() => expect(saved()).toHaveLength(2));
     expect(saved()[1]).toMatchObject({
       kind: { is: 'stair_room', setBy: 'system' },
@@ -120,6 +121,28 @@ describe('the first roof, and a roof’s row', () => {
     await waitFor(() => expect(saved()).toHaveLength(1));
     expect(Object.keys(saved()[0] ?? {})).not.toContain('material');
     origin.siteRoof = null;
+  });
+
+  it('Hole picked in a stair room’s sheet on the terrace’s walls: the terrace takes the notch, and the sheet goes to it', async () => {
+    const stair = {
+      ...TERRACE,
+      id: '01a50000-0000-7000-8000-000000000913',
+      corners: box(0, 0, 3, 3),
+      kind: { is: 'stair_room', setBy: 'system' },
+      on: TERRACE.id,
+    } as StudioDocumentWire['roofs'][number];
+    // A roof after it slides into its place once it is gone: the sheet must not land on that one.
+    const shed = {
+      ...TERRACE,
+      id: '01a50000-0000-7000-8000-000000000914',
+      corners: box(20, 0, 4, 4),
+    };
+    const view = await opened([TERRACE, stair, shed]);
+    act(() => view.result.current.moves.openRoof(1));
+    act(() => view.result.current.moves.makeKind('hole'));
+    await waitFor(() => expect(saved()).toHaveLength(2));
+    expect(saved()[0]?.corners).toHaveLength(6);
+    expect(view.result.current.roofSheet?.roof).toBe(0);
   });
 
   it('Copy takes what stands on the roof with it, and Delete on a row takes both away, each as one save', async () => {

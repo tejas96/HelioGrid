@@ -3,7 +3,7 @@ import type { GroundPoint } from './ground';
 import type { EditRefusal } from './roof-check';
 import type { RoofFacts } from './roof-levels';
 import type { RoofMaterial } from './roof-material';
-import type { MeetChoice, RoofMeeting, RoofPlace } from './roof-meeting';
+import type { HoleFitter, MeetChoice, RoofMeeting, RoofPlace } from './roof-meeting';
 import type { RoofName } from './roof-names';
 import type { RoofKind } from './roof-parts';
 import type { RoofSnap } from './roof-snap';
@@ -33,6 +33,8 @@ export type RoofSaid =
       readonly name: RoofName;
       readonly apart?: RoofApart;
     }
+  /** A hole along a roof's edge became a notch in that roof's outline (E015): the roof it is in now. */
+  | { readonly kind: 'notched'; readonly roof: number; readonly name: RoofName }
   /** A new roof cut back to the edge of the roof it lay over, and what it is now. */
   | { readonly kind: 'cut'; readonly became: RoofBecame }
   /** An edit left a roof past the edge of the roof it stands on: it stays, marked to check. */
@@ -125,4 +127,6 @@ export interface RoofPlacing {
   readonly facts: RoofFacts;
   /** What the host knows the site's roof is made of: the design's first roof starts as it. */
   readonly siteMaterial?: RoofMaterial;
+  /** How a roof placed as a hole fits the roof it is cut in (E015). */
+  readonly fitHole: HoleFitter;
 }

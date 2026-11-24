@@ -13,6 +13,7 @@ import {
 import {
   edgesOf,
   handFaceClosed,
+  holeFitOf,
   meetingOf,
   meetingOfRoof,
   roofCutToEdge,
@@ -47,6 +48,7 @@ export function closingOf(
           placing: {
             meet: (corners) => meetingOf(document, corners, facts),
             facts,
+            fitHole: holeFitOf,
             ...(hint === undefined ? {} : { siteMaterial: materialForSite(hint) }),
           },
         }
@@ -69,7 +71,7 @@ function cut(design: StudioDocument, roof: number, facts: RoofFacts, act: Act) {
   const corners = roofCutToEdge(design, roof);
   if (corners === null) return;
   const meeting = meetingOfRoof(design, roof, corners, facts);
-  act({ kind: 'cut_to_edge', roof, corners, placing: { meeting, facts } });
+  act({ kind: 'cut_to_edge', roof, corners, placing: { meeting, facts, fitHole: holeFitOf } });
 }
 
 export function roofPlaceMoves({
@@ -89,7 +91,7 @@ export function roofPlaceMoves({
       const line = design === undefined ? null : kindLineOf(step.current, design);
       if (design === undefined || line === null) return;
       if (choice !== 'join' && choice !== 'cut_to_edge') {
-        act({ kind: 'make', roof: line.roof, into: choice, facts });
+        act({ kind: 'make', roof: line.roof, into: choice, facts, fitHole: holeFitOf });
         return;
       }
       // Join and Cut to edge act on a roof that stands by itself: a joined one is parted first.

@@ -102,6 +102,7 @@ const NUMBER: Record<RoofNumber, (typeof SHEET)[keyof typeof SHEET] | { readonly
   raised_width: /*i18n*/ { id: 'Raised middle’s width' },
   valley: /*i18n*/ { id: 'Where the valley sits' },
   overhang: /*i18n*/ { id: 'Overhang' },
+  eave: /*i18n*/ { id: 'Eave raised by' },
   parapet_height: SHEET.parapetHeight,
   setback: SHEET.setback,
   thickness: SHEET.thickness,

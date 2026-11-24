@@ -97,6 +97,9 @@ function roofWith(
     }
     case 'overhang':
       return { ...roof, overhang: metres };
+    case 'eave':
+      // Only a side holds its own eave: the roof has none to set.
+      return roof;
     case 'setback':
       return { ...roof, setback: metres };
     case 'thickness':
@@ -115,7 +118,7 @@ export function tidy<T extends object>(record: T): T {
 
 /**
  * A roof with no empty record left on it: a shape or a parapet that holds only what the studio
- * would give is not stored, so a reset leaves the roof as it was before a person touched it.
+ * would give, or sides that hold nothing, are not stored, so a reset leaves the roof as it was before a person touched it.
  */
 export function roofSettled(document: StudioDocument, roof: Roof, facts: RoofFacts): Roof {
   const shape = roof.shape === undefined ? undefined : tidy(roof.shape);
@@ -126,10 +129,13 @@ export function roofSettled(document: StudioDocument, roof: Roof, facts: RoofFac
     parapet?.setBy === 'system' &&
     parapet.allRound === start.allRound &&
     Object.keys(parapet).length === BARE_PARAPET_KEYS;
+  // Sides that each hold nothing of their own are no sides at all.
+  const bareSides = roof.sides?.every((side) => Object.keys(side).length === 0) === true;
   return tidy({
     ...roof,
     shape: bareShape ? undefined : shape,
     parapet: bareParapet ? undefined : parapet,
+    sides: bareSides ? undefined : roof.sides,
   });
 }
 

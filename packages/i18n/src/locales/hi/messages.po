@@ -5164,7 +5164,7 @@ msgid "Any manager"
 msgstr "कोई भी मैनेजर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:122
+#: src/copy/studio-sheet.ts:123
 msgid "Any shape"
 msgstr "कोई भी आकार"
 
@@ -6196,7 +6196,7 @@ msgid "Business profile saved"
 msgstr "व्यवसाय प्रोफ़ाइल सहेजी गई"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:126
+#: src/copy/studio-sheet.ts:127
 msgid "Butterfly"
 msgstr "बटरफ़्लाई"
 
@@ -8030,7 +8030,7 @@ msgid "Current plan"
 msgstr "मौजूदा प्लान"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:125
+#: src/copy/studio-sheet.ts:126
 msgid "Curved"
 msgstr "घुमावदार"
 
@@ -8167,6 +8167,11 @@ msgstr "ग्राहक मिलाए गए"
 #: src/copy/proposal-builder-flow.ts:98
 msgid "Customers open and answer their links"
 msgstr "ग्राहक अपने लिंक खोलकर जवाब देते हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-kinds.ts:76
+msgid "Cut from {name}’s edge · Undo puts it back"
+msgstr "{name} के किनारे से काटा गया · पहले जैसा करें से वापस होगा"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:32
@@ -9056,9 +9061,14 @@ msgid "Earlier versions are kept as they were sent"
 msgstr "पिछले वर्शन वैसे ही रखे जाते हैं जैसे भेजे गए थे"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:134
+#: src/copy/studio-sheet.ts:135
 msgid "east"
 msgstr "पूर्व"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-sheet.ts:105
+msgid "Eave raised by"
+msgstr "ओलती कितनी ऊपर"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof.ts:89
@@ -9910,7 +9920,7 @@ msgid "Fixed."
 msgstr "ठीक हो गया।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:118
+#: src/copy/studio-sheet.ts:119
 msgid "Flat"
 msgstr "सपाट"
 
@@ -10215,7 +10225,7 @@ msgid "G+{floor}"
 msgstr "G+{floor}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:120
+#: src/copy/studio-sheet.ts:121
 msgid "Gable"
 msgstr "गेबल"
 
@@ -10225,7 +10235,7 @@ msgid "Gable end"
 msgstr "गेबल सिरा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:128
+#: src/copy/studio-sheet.ts:129
 msgid "Gambrel"
 msgstr "गैम्ब्रेल"
 
@@ -10957,7 +10967,7 @@ msgstr "अधिकतम DC वोल्टेज (V)"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-sheet.ts:86
-#: src/copy/studio-sheet.ts:121
+#: src/copy/studio-sheet.ts:122
 msgid "Hip"
 msgstr "हिप"
 
@@ -13221,7 +13231,7 @@ msgid "Mangalore tile"
 msgstr "मैंगलोर टाइल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:127
+#: src/copy/studio-sheet.ts:128
 msgid "Mansard"
 msgstr "मैनसार्ड"
 
@@ -13606,7 +13616,7 @@ msgid "Money summary"
 msgstr "रकम का सारांश"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:124
+#: src/copy/studio-sheet.ts:125
 msgid "Monitor"
 msgstr "मॉनिटर"
 
@@ -15336,7 +15346,7 @@ msgid "None saved yet. Someone who adds parts can save one."
 msgstr "अभी कोई सहेजा नहीं गया। जो पार्ट जोड़ सकता है वह एक सहेज सकता है।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:132
+#: src/copy/studio-sheet.ts:133
 msgid "north"
 msgstr "उत्तर"
 
@@ -15347,12 +15357,12 @@ msgid "North"
 msgstr "उत्तर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:133
+#: src/copy/studio-sheet.ts:134
 msgid "north-east"
 msgstr "उत्तर-पूर्व"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:139
+#: src/copy/studio-sheet.ts:140
 msgid "north-west"
 msgstr "उत्तर-पश्चिम"
 
@@ -18976,7 +18986,7 @@ msgid "Quick mode used your company’s timeline, payment terms, and terms and c
 msgstr "झटपट मोड ने आपकी कंपनी की टाइमलाइन, भुगतान शर्तें और नियम व शर्तें इस्तेमाल कीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:144
+#: src/copy/studio-sheet.ts:145
 msgid "Railing"
 msgstr "रेलिंग"
 
@@ -20512,7 +20522,7 @@ msgid "Savings pass the net cost after {years} years"
 msgstr "{years} साल बाद बचत शुद्ध लागत से ज़्यादा हो जाती है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:123
+#: src/copy/studio-sheet.ts:124
 msgid "Sawtooth"
 msgstr "सॉटूथ"
 
@@ -21221,7 +21231,7 @@ msgid "Shares {roof}’s edge"
 msgstr "{roof} के साथ एक किनारा साझा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:119
+#: src/copy/studio-sheet.ts:120
 msgid "Shed"
 msgstr "शेड"
 
@@ -21867,17 +21877,17 @@ msgid "Source"
 msgstr "स्रोत"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:136
+#: src/copy/studio-sheet.ts:137
 msgid "south"
 msgstr "दक्षिण"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:135
+#: src/copy/studio-sheet.ts:136
 msgid "south-east"
 msgstr "दक्षिण-पूर्व"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:137
+#: src/copy/studio-sheet.ts:138
 msgid "south-west"
 msgstr "दक्षिण-पश्चिम"
 
@@ -26368,7 +26378,7 @@ msgid "Waking the lead…"
 msgstr "लीड वापस लाई जा रही है…"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:143
+#: src/copy/studio-sheet.ts:144
 msgid "Wall"
 msgstr "दीवार"
 
@@ -26647,7 +26657,7 @@ msgid "Went dormant"
 msgstr "निष्क्रिय हुई"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:138
+#: src/copy/studio-sheet.ts:139
 msgid "west"
 msgstr "पश्चिम"
 

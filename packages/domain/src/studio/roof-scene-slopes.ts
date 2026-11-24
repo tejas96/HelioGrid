@@ -2,7 +2,7 @@ import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { cutInto, facesHeightAt, facesWithout } from './roof-cuts';
 import type { BuiltFace } from './roof-faces';
-import { roofKindOf, standsOn } from './roof-kind';
+import { carvedOutOf, roofKindOf, standsOn } from './roof-kind';
 import { farApart, shapeOf, shapesArea, shared } from './roof-polygons';
 import type { RoofScene, SceneFace, SceneWall } from './roof-scene';
 import type { RoofsWorked } from './roof-worked';
@@ -115,10 +115,11 @@ function facesShown(document: StudioDocument, worked: RoofsWorked, levels: RoofS
   document.roofs.forEach((roof, index) => {
     const built = worked.built[index];
     if (built == null || roofKindOf(roof) === 'dormer') return;
-    // A hole is cut out of the faces it lies in.
-    let main = document.roofs
-      .filter((other) => roofKindOf(other) === 'hole' && other.partOf === roof.id)
-      .reduce<readonly BuiltFace[]>((left, hole) => facesWithout(left, hole.corners), built.faces);
+    // A hole, and a separate part, is cut out of the faces it lies in.
+    let main = carvedOutOf(document, roof).reduce<readonly BuiltFace[]>(
+      (left, part) => facesWithout(left, part.corners),
+      built.faces,
+    );
     document.roofs.forEach((other, dormer) => {
       const own = worked.built[dormer];
       if (roofKindOf(other) !== 'dormer' || standsOn(document, other) !== index || own == null) {

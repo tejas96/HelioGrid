@@ -3,7 +3,11 @@ import {
   entryRead,
   type GroundBox,
   type GroundPoint,
+  handMetres,
   lengthHeld,
+  lengthSizesPicture,
+  lengthSizesPlan,
+  lengthSlide,
   type MeasurementSystem,
   type NumberEntry,
   pairOf,
@@ -19,12 +23,13 @@ import {
   TYPED_SLIDE_MAX_M,
   TYPED_SLIDE_MIN_M,
   type TypedSize,
+  tracedLength,
   typedCorners,
   typedResult,
   typedRoof,
 } from '@heliogrid/domain';
 import { type RefObject, useEffect, useRef } from 'react';
-import type { SizeCardView } from './roof-step-view';
+import type { RoofStepView, SizeCardView } from './roof-step-view';
 import type { StudioEditing, StudioPicture } from './studio-document-state';
 
 /**
@@ -60,6 +65,21 @@ export function sizeCardIn(
   return state.kind === 'typing' && document !== null
     ? sizeCardOf(state, document, units, numberEntry)
     : null;
+}
+
+/** The length box while one length is in hand: the picture's length, the typed one, and the slider's ends. */
+export function lengthBoxIn(
+  state: RoofStepState,
+  units: MeasurementSystem,
+): RoofStepView['lengthBox'] {
+  if (state.kind !== 'sizing') return null;
+  const traced = tracedLength(state.base, state.roof, state.edge);
+  return {
+    traced,
+    typed: handMetres(state, units),
+    first: lengthSizesPicture(state.base, state.roof) || lengthSizesPlan(state),
+    slide: lengthSlide(traced, units),
+  };
 }
 
 function previewOf(
