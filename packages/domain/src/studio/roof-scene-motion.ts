@@ -96,7 +96,27 @@ interface Found {
 }
 
 /** The moves of one roof found in both models. */
-function changed(before: SceneDrawn, after: SceneDrawn, was: number, now: number): Found[] {
+/** Each roof's parapet pieces in a model, counted once. */
+function parapetsOf(scene: RoofScene): Map<number, number> {
+  const counts = new Map<number, number>();
+  for (const prism of scene.prisms) {
+    if (isParapet(prism)) counts.set(prism.roof, (counts.get(prism.roof) ?? 0) + 1);
+  }
+  return counts;
+}
+
+interface Counts {
+  readonly before: Map<number, number>;
+  readonly after: Map<number, number>;
+}
+
+function changed(
+  before: SceneDrawn,
+  after: SceneDrawn,
+  was: number,
+  now: number,
+  counts: Counts,
+): Found[] {
   const old = before.document.roofs[was] as Roof;
   const roof = after.document.roofs[now] as Roof;
   if (!sameCorners(old, roof)) return [];
@@ -128,13 +148,11 @@ function changed(before: SceneDrawn, after: SceneDrawn, was: number, now: number
     holds: { roof: now, pick: 'top' },
   });
   if (!facesWere && facesNow) found.push(top('fold'));
-  else if (facesNow && (old.shape?.turned ?? false) !== (roof.shape?.turned ?? false)) {
+  else if (facesNow && old.shape?.turned !== roof.shape?.turned) {
     found.push(top('turn'));
   }
-  const walls = (drawn: SceneDrawn, at: number) =>
-    drawn.scene.prisms.filter((prism) => prism.roof === at && isParapet(prism)).length;
-  const wallsWere = walls(before, was);
-  const wallsNow = walls(after, now);
+  const wallsWere = counts.before.get(was) ?? 0;
+  const wallsNow = counts.after.get(now) ?? 0;
   if (wallsNow < wallsWere) {
     found.push({
       move: {
@@ -161,9 +179,10 @@ function changed(before: SceneDrawn, after: SceneDrawn, was: number, now: number
 export function sceneMotionOf(before: SceneDrawn, after: SceneDrawn): SceneMotion | null {
   const wasAt = new Map(before.document.roofs.map((roof, index) => [roof.id, index]));
   const nowIds = new Set(after.document.roofs.map((roof) => roof.id));
+  const counts = { before: parapetsOf(before.scene), after: parapetsOf(after.scene) };
   const found: Found[] = after.document.roofs.flatMap((roof, now): Found[] => {
     const was = wasAt.get(roof.id);
-    if (was !== undefined) return changed(before, after, was, now);
+    if (was !== undefined) return changed(before, after, was, now, counts);
     // A new roof — or one Undo brings back — rises from the roof it stands on, or grows from the ground.
     const kind = standsOn(after.document, roof) === null ? 'grow' : 'rise';
     return [

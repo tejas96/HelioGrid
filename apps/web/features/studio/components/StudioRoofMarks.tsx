@@ -275,7 +275,15 @@ export function StudioRoofMarks({
         ) : null,
       )}
       <StudioRoofTopMarks studio={studio} words={words} units={units} />
-      <StudioStairsMarks studio={studio} words={words} press={press} fingerAt={fingerAt} />
+      <StudioStairsMarks
+        studio={studio}
+        words={words}
+        press={press}
+        fingerAt={fingerAt}
+        placeAgain={() => {
+          if (lastPlace.current !== null) place(lastPlace.current);
+        }}
+      />
       {studio.own.plan?.picked && view === 'top' ? (
         <StudioPlanHandles plan={studio.own.plan} studio={studio} words={words} press={press} />
       ) : null}

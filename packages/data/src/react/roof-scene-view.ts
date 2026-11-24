@@ -47,8 +47,17 @@ export interface RoofMemory {
   motions?: number;
 }
 
-/** The model's move into the design now, numbered so the screen plays each once; `null` with none. */
-function motionOf(memory: RoofMemory, now: SceneDrawn): RoofModelShown['motion'] {
+/**
+ * The model's move into the design now, numbered so the screen plays each once; `null` with none.
+ * While a drag or a slider holds a value the model follows the hand and nothing moves: the drawn
+ * model it moves on from stays the last one kept, so letting go compares kept with kept.
+ */
+export function motionOf(
+  memory: RoofMemory,
+  now: SceneDrawn,
+  holding: boolean,
+): RoofModelShown['motion'] {
+  if (holding) return null;
   const before = memory.drawn;
   memory.drawn = now;
   if (before === undefined || before.document === now.document) return null;
@@ -153,7 +162,11 @@ export function roofModelShown(
         ? null
         : sideSheetRowsOf(shown, open.roof, open.side, facts, worked, latitude),
     ...stairsSeen(shown, worked.edges, facts.clearPathM, stairsInHand),
-    motion: motionOf(memory, { document: shown, scene }),
+    motion: motionOf(
+      memory,
+      { document: shown, scene },
+      inHand !== null || numberInHand !== null || stairsInHand !== null,
+    ),
     stairsDropAt: (at, reachM, magnet) => stairsDropOf(shown, worked.edges, at, reachM, magnet),
   };
 }

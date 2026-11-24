@@ -14,20 +14,31 @@ import { eased } from '../components/StudioRoofMotion';
 export function useGlide(
   node: RefObject<HTMLElement | null>,
   to: GroundPoint,
-  glide: boolean,
-  /** The mark is drawn: a mark drawn again takes its place at once. */
-  drawn: boolean,
+  how: {
+    readonly glide: boolean;
+    /** The mark is drawn: a mark drawn again takes its place at once. */
+    readonly drawn: boolean;
+    /** Lays the mark where its new place lands on the screen. */
+    readonly moved: () => void;
+  },
 ) {
+  const { glide, drawn } = how;
+  const moved = useRef(how.moved);
+  moved.current = how.moved;
   const shown = useRef<GroundPoint | null>(null);
   // Keyed on the point's two numbers: a render that brings the same point leaves a glide running.
   const { east, north } = to;
   useLayoutEffect(() => {
     const at = { east, north };
     const mark = node.current;
-    if (mark === null || !drawn) return;
+    if (mark === null || !drawn) {
+      shown.current = null;
+      return;
+    }
     const write = (point: GroundPoint) => {
       shown.current = point;
       mark.dataset.at = pointText(point);
+      moved.current();
     };
     const from = shown.current;
     if (from === null || !glide || (from.east === at.east && from.north === at.north)) {

@@ -106,9 +106,12 @@ function RoofModel({
   map,
   palette,
   rise,
+  highest,
   children,
 }: {
   scene: RoofScene;
+  /** The whole model's highest point: while parts move on their own, the group still stands. */
+  highest: number;
   /** The picture the tops wear; `null` on the grid, where a top is plaster. */
   map: Texture | null;
   palette: ThemePalette;
@@ -130,7 +133,7 @@ function RoofModel({
         if (group !== null) standAt(group, rise.current);
       }}
       name="roofs"
-      userData={{ rises: true, metres: model.topM }}
+      userData={{ rises: true, metres: Math.max(model.topM, highest) }}
     >
       <mesh geometry={model.walls} castShadow receiveShadow>
         <meshStandardMaterial color={palette['scene-wall']} roughness={PLASTER_ROUGHNESS} />
@@ -162,10 +165,13 @@ type RoofSceneMotion = SceneMotion & { readonly id: number };
  */
 function usePlayed(
   motion: RoofSceneMotion | null,
+  model: RoofScene,
   view: StudioView,
   still: boolean,
   invalidate: () => void,
 ) {
+  // The model the motion moves into: a later model, with no motion of its own, ends it at once.
+  const into = useRef<RoofScene | null>(null);
   // biome-ignore lint/plugin: the motion playing is the 3D scene's own animation, as its frame clock is
   const [playing, setPlaying] = useState<RoofSceneMotion | null>(null);
   const started = useRef<number | null>(null);
@@ -175,9 +181,16 @@ function usePlayed(
   useEffect(() => {
     if (motion === null || view === 'top') return;
     started.current = null;
+    into.current = model;
     setPlaying(motion);
     invalidate();
   }, [motion?.id]);
+  useEffect(() => {
+    if (into.current !== null && model !== into.current) {
+      into.current = null;
+      setPlaying(null);
+    }
+  }, [model]);
   useFrame(({ clock }) => {
     if (playing === null) return;
     if (started.current === null) started.current = clock.elapsedTime;
@@ -254,10 +267,17 @@ export function StudioRoofs({
 
   const map = useMemo(() => (top === null ? null : topOf(top)), [top]);
   useEffect(() => () => map?.dispose(), [map]);
-  const playing = usePlayed(motion, view, still, invalidate);
+  const playing = usePlayed(motion, model, view, still, invalidate);
+  const highest = Math.max(0, ...model.levels.map((level) => level.topM));
   return (
     <>
-      <RoofModel scene={playing.motion?.still ?? model} map={map} palette={palette} rise={rise}>
+      <RoofModel
+        scene={playing.motion?.still ?? model}
+        highest={highest}
+        map={map}
+        palette={palette}
+        rise={rise}
+      >
         {playing.motion?.moves.map((move, index) => (
           <RoofMove
             // biome-ignore lint/suspicious/noArrayIndexKey: a motion's moves are fixed while it plays

@@ -27,12 +27,15 @@ export function StudioStairsMarks({
   words,
   press,
   fingerAt,
+  placeAgain,
 }: {
   studio: StudioScreen;
   words: StudioCanvasWords;
   press: ReturnType<typeof useRoofPress>;
   /** The ground under a point of the screen, and a finger's half-width to its side. */
   fingerAt: (clientX: number, clientY: number) => FingerAt;
+  /** Lays the marks again where the camera last put them: a glide's step moves only its mark. */
+  placeAgain: () => void;
 }) {
   const holder = useRef<HTMLSpanElement>(null);
   const reach = useRef<GroundPoint>({ east: 0, north: 0 });
@@ -40,7 +43,7 @@ export function StudioStairsMarks({
   // Moved from the row, or by Undo, the mark glides there; a drag holds it where the hand is.
   const at = studio.stairs?.at ?? NOWHERE;
   const drawn = studio.stairs !== null && studio.view === 'top';
-  useGlide(holder, at, !still && !studio.stairsHeld, drawn);
+  useGlide(holder, at, { glide: !still && !studio.stairsHeld, drawn, moved: placeAgain });
   const { stairs, stairsLanding: landing, stairsHeld: held } = studio;
   // The stairs are the top view's, as the setback line is.
   if (stairs === null || !drawn) return null;
@@ -67,7 +70,8 @@ export function StudioStairsMarks({
     <>
       <svg className="hg-roof-lines" aria-hidden="true">
         <path
-          key={pointText(stairs.at)}
+          // Held, the strip follows the hand; let go, it fades in where the stairs land.
+          key={held ? 'held' : pointText(stairs.at)}
           className="hg-stairs-strip"
           data-pts={stairs.strip.map(pointText).join(';')}
           data-closed="true"

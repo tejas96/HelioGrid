@@ -77,9 +77,13 @@ describe('the model moves into a change', () => {
     expect(kinds(before, after)).toEqual(moves);
   });
 
-  it('a gable’s ridge turned rotates its faces', () => {
+  it.each([
+    ['as it first runs', false],
+    // The studio's own pick turned, nothing stored: the first turn stores `turned: false`.
+    ['where the studio first turned it', true],
+  ])('a gable’s ridge turned %s rotates its faces', (_why, turnedNow) => {
     const gable = designOf(shaped('gable'));
-    expect(kinds(gable, roofRidgeTurned(gable, 0, FACTS, false))).toEqual(['turn']);
+    expect(kinds(gable, roofRidgeTurned(gable, 0, FACTS, turnedNow))).toEqual(['turn']);
   });
 
   it.each([
