@@ -8,7 +8,6 @@ import { FirstRunProfileScreen } from '../../screens/first-run-profile';
 import { LeadDetailScreen } from '../../screens/lead-detail';
 import { LeadImportScreen } from '../../screens/lead-import';
 import { LeadInboxScreen } from '../../screens/lead-inbox';
-import { LeadsListScreen } from '../../screens/leads-list';
 import {
   ProjectDetailScreen,
   ProjectDocumentsScreen,
@@ -16,23 +15,21 @@ import {
 } from '../../screens/project-detail';
 import { ProjectHandoverScreen } from '../../screens/project-handover';
 import { ProjectPaymentsScreen } from '../../screens/project-payments';
-import { ProjectsBoardScreen } from '../../screens/projects-board';
 import { ProposalBuilderScreen } from '../../screens/proposal-builder';
 import { ProposalDocumentScreen } from '../../screens/proposal-document';
 import { ProposalLinksScreen } from '../../screens/proposal-links';
 import { ProposalTrackScreen } from '../../screens/proposal-track';
 import { ProposalVersionsScreen } from '../../screens/proposal-versions';
-import { ProposalsListScreen } from '../../screens/proposals-list';
 import { QuickAddLeadScreen } from '../../screens/quick-add-lead';
 import { RoleExplainerScreen } from '../../screens/role-explainer';
 import { SearchScreen } from '../../screens/search';
-import { SettingsRowScreen, SettingsScreen } from '../../screens/settings';
+import { SettingsRowScreen } from '../../screens/settings';
 import { SetupInviteTeamScreen } from '../../screens/setup-invite-team';
 import { SetupLanguageScreen } from '../../screens/setup-language';
 import { SetupReadyScreen } from '../../screens/setup-ready';
 import { SetupWhatYouSellScreen } from '../../screens/setup-what-you-sell';
-import { PlaceholderScreen, ShellScreen } from '../../screens/shell';
-import { doorRoute, placeholderRoutes } from '../../screens/shell/doors';
+import { PlaceholderScreen } from '../../screens/shell';
+import { doorRoute, PAGE_PLACEHOLDER_DOORS, placeholderRoutes } from '../../screens/shell/doors';
 import { SiteDetailsScreen } from '../../screens/site-details';
 import {
   firstRunRoute,
@@ -46,6 +43,7 @@ import {
   useOwesWhatYouSellStep,
   useShowsShell,
 } from '../guards';
+import { MainTabs } from './tabs';
 
 /**
  * Authenticated routes.
@@ -74,7 +72,11 @@ function proposalScreenId({
 }
 
 export const appScreens = {
-  Shell: { screen: ShellScreen, if: useShowsShell },
+  /**
+   * Home and the pill's other destinations, as tabs that stay drawn once opened (`tabs.ts`); every
+   * page below opens over them.
+   */
+  Main: { screen: MainTabs, if: useShowsShell },
   /** The step after a join that named the account from the invite (`SCR-M01-09`); the landing opens it. */
   [firstRunRoute]: { screen: FirstRunProfileScreen, if: useHasHome },
   /** The role card at first run (`SCR-M01-10`); First-Run Profile or the landing opens it. */
@@ -92,17 +94,15 @@ export const appScreens = {
   /** Then the corridor's end: two doors, and the first taken closes setup (`SCR-M01-06`, `M01-26`). */
   SetupReady: { screen: SetupReadyScreen, if: useOwesReadyStep },
   /*
-   * Every door whose module has not landed, drawn by `PlaceholderScreen` at domain's address for it:
-   * one row per door of `PLACEHOLDER_DOORS` (`screens/shell/doors.ts`), so a door, its route and its
-   * link cannot disagree. A module's screen takes its door out of that list and its row in here.
+   * Every action door whose module has not landed, drawn by `PlaceholderScreen` at domain's address
+   * for it: one row per door of `PAGE_PLACEHOLDER_DOORS` (`screens/shell/doors.ts`), so a door, its
+   * route and its link cannot disagree; the pill's own placeholder doors are tabs (`tabs.ts`).
    */
-  ...placeholderRoutes((door) => ({
+  ...placeholderRoutes(PAGE_PLACEHOLDER_DOORS, (door) => ({
     screen: PlaceholderScreen,
     if: useHasHome,
     linking: DOOR_SEGMENT[door],
   })),
-  /** The Leads list (`SCR-M02-03`), the pill's Leads door. */
-  [doorRoute.leads]: { screen: LeadsListScreen, if: useHasHome, linking: DOOR_SEGMENT.leads },
   /** The morning triage (`SCR-M02-02`): the Leads screen opens it, as the web's `/leads/inbox`. */
   LeadInbox: { screen: LeadInboxScreen, if: useHasHome, linking: `${DOOR_SEGMENT.leads}/inbox` },
   /**
@@ -134,12 +134,6 @@ export const appScreens = {
     if: useHasHome,
     linking: 'designs/:designId/site',
   },
-  /** The Projects board (`SCR-M08-01`), the pill's Projects door. */
-  [doorRoute.projects]: {
-    screen: ProjectsBoardScreen,
-    if: useHasHome,
-    linking: DOOR_SEGMENT.projects,
-  },
   /**
    * One project (`SCR-M08-02`) at `projects/<id>`, the address the board, a project notice and
    * *Mark won* open (`subjectAddressOf`); its checklist and its handover sit under it.
@@ -169,12 +163,6 @@ export const appScreens = {
     screen: ProjectPaymentsScreen,
     if: useHasHome,
     linking: `${DOOR_SEGMENT.projects}/:projectId/payments`,
-  },
-  /** The Proposals list (`SCR-M06-19`), the pill's Proposals door. */
-  [doorRoute.proposals]: {
-    screen: ProposalsListScreen,
-    if: useHasHome,
-    linking: DOOR_SEGMENT.proposals,
   },
   /**
    * One proposal after it is built (`SCR-M06-18`) at `proposals/<id>`, the address the list, a
@@ -222,8 +210,7 @@ export const appScreens = {
    * `/customers/merge`: Lead Detail's More menu opens it with this lead's customer.
    */
   CustomerMerge: { screen: CustomerMergeScreen, if: useHasHome, linking: 'customers/merge' },
-  /** `More` opens the settings list (`SCR-SHELL-01`, *More: the settings list*); a row's screen replaces its placeholder when it lands. */
-  [doorRoute.more]: { screen: SettingsScreen, if: useHasHome, linking: DOOR_SEGMENT.more },
+  /** A settings row (`SCR-SHELL-01`, *More: the settings list*); a row's screen replaces its placeholder when it lands. */
   SettingsRow: {
     screen: SettingsRowScreen,
     if: useHasHome,

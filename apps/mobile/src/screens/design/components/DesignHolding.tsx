@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useRef } from 'react';
 import { View } from 'react-native';
 import { ShellPage } from '../../shell/components/ShellPage';
+import { tabRoute } from '../../shell/doors';
+import { useOpenTab } from '../../shell/use-open-tab';
 import { styles } from '../styles';
 
 /**
@@ -24,6 +26,7 @@ export function DesignHolding({
   const t = useTranslate();
   const format = useFormat();
   const navigation = useNavigation();
+  const openTab = useOpenTab();
   const page = siteDetailsPageWords(t);
   const words = designPageWords(t);
   const frame = useRef<View>(null);
@@ -54,7 +57,7 @@ export function DesignHolding({
           <LeadDetailStates
             read={read.kind === 'ready' ? { kind: 'loading' } : read}
             words={page.states}
-            onBackToList={() => navigation.navigate('Leads')}
+            onBackToList={() => openTab(tabRoute.leads)}
             focusAfter={frame}
           />
         ) : (

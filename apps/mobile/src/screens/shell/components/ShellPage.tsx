@@ -5,9 +5,7 @@ import { useTranslate } from '@heliogrid/i18n/react';
 import { type FocusHandle, LargeTitle, MobileTopBar, ShellAction, ShellGlyph } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import type { ReactNode, Ref } from 'react';
-import { useRef, useState } from 'react';
-import type { View } from 'react-native';
-import { usePillItems } from '../use-pill-items';
+import { useState } from 'react';
 import { GrievanceNote } from './GrievanceNote';
 import { ShellFrame, type ShellFrameProps } from './ShellFrame';
 import { ShellTopBar } from './ShellTopBar';
@@ -71,12 +69,9 @@ export function ShellPage({
 }) {
   const t = useTranslate();
   const screen = useShellScreen();
-  const actionRef = useRef<View>(null);
   const navigation = useNavigation();
   // biome-ignore lint/plugin/screen-assembly: the native scroll view's offset, told as it scrolls; only the phone's drill-down bar lifts on it
   const [scrolled, setScrolled] = useState(false);
-  const items = usePillItems(screen.shell, actionRef, onAction);
-  const lit = inView !== undefined && items.some((item) => item.key === inView);
   return (
     <ShellFrame
       topBar={
@@ -103,8 +98,9 @@ export function ShellPage({
           />
         )
       }
-      items={items}
-      inView={lit ? inView : undefined}
+      pill={screen.shell.destinations !== null}
+      inView={inView}
+      onAction={onAction}
       onScrolledChange={drillDown === undefined ? undefined : setScrolled}
       stickyHead={stickyHead}
       lead={

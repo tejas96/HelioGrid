@@ -23,6 +23,8 @@ import {
 import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import { ShellPage } from '../shell/components/ShellPage';
+import { tabRoute } from '../shell/doors';
+import { useOpenTab } from '../shell/use-open-tab';
 import { sitePinTilesOf } from './components/SitePinTiles';
 import { useToDesign } from './hooks/use-to-design';
 import { styles } from './styles';
@@ -89,6 +91,7 @@ export function SiteDetailsScreen({ route }: Props) {
   const { t, locale } = useI18n();
   const format = useFormat();
   const navigation = useNavigation();
+  const openTab = useOpenTab();
   const { designId } = route.params;
   const toDesign = useToDesign();
   const screen = useSiteDetailsScreen(
@@ -108,7 +111,7 @@ export function SiteDetailsScreen({ route }: Props) {
   const leave = () => {
     if (shown?.started) toDesign(designId, false);
     else if (navigation.canGoBack()) navigation.goBack();
-    else navigation.navigate('Leads');
+    else openTab(tabRoute.leads);
   };
   const subject = shown?.detail.subject ?? null;
   /* A reader without the design grant has nothing to fill here: the design's own page shows the site. */
@@ -139,7 +142,7 @@ export function SiteDetailsScreen({ route }: Props) {
           <LeadDetailStates
             read={read.kind === 'ready' ? { kind: 'loading' } : read}
             words={page.states}
-            onBackToList={() => navigation.navigate('Leads')}
+            onBackToList={() => openTab(tabRoute.leads)}
             focusAfter={frame}
           />
         ) : (

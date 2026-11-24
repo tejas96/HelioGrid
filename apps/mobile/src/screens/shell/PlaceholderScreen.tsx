@@ -18,8 +18,7 @@ export function PlaceholderScreen(): ReactNode {
   const t = useTranslate();
   const shell = useShell();
   /* Typed to the routes the placeholder rows make (`doors.ts`): a route it cannot draw fails tsc. */
-  const route =
-    useRoute<RouteProp<Pick<ReactNavigation.RootParamList, PlaceholderRoute>, PlaceholderRoute>>();
+  const route = useRoute<RouteProp<Record<PlaceholderRoute, undefined>, PlaceholderRoute>>();
   const door = placeholderDoorOf(route.name);
   return (
     <ShellPage inView={door}>

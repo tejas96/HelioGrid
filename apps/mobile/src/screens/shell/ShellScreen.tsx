@@ -1,5 +1,5 @@
 import { useHomeToday, useMyDay, useShellScreen } from '@heliogrid/data/react';
-import { SETTINGS_SEGMENT, type SettingsRow } from '@heliogrid/domain';
+import { SETTINGS_SEGMENT, type SettingsRow, type StandingDestination } from '@heliogrid/domain';
 import {
   accessRemovedWords,
   BLOCK,
@@ -21,8 +21,14 @@ import {
   ShellGlyph,
   useFormat,
 } from '@heliogrid/ui';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { useRef } from 'react';
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import {
+  type ParamListBase,
+  useFocusEffect,
+  useIsFocused,
+  useNavigation,
+} from '@react-navigation/native';
+import { type ComponentProps, useCallback, useRef } from 'react';
 import { useWindowDimensions, type View } from 'react-native';
 import { FirstRunMark } from './components/FirstRunMark';
 import { GrievanceNote } from './components/GrievanceNote';
@@ -33,9 +39,10 @@ import { MyDayHome } from './components/MyDayHome';
 import { OwnerHome } from './components/OwnerHome';
 import { ShellFrame } from './components/ShellFrame';
 import { ShellTopBar } from './components/ShellTopBar';
-import { doorRoute } from './doors';
+import { tabRoute } from './doors';
+import { usePillActionRef } from './pill-slot';
 import { switcherWidth } from './styles';
-import { usePillItems } from './use-pill-items';
+import { useOpenDoor } from './use-open-tab';
 
 /**
  * The phone shell (`SCR-SHELL-01`): the person's home inside the top bar and the pill. Every fact
@@ -55,16 +62,16 @@ export function ShellScreen() {
   const navigation = useNavigation();
   const { shell, grievance, connection } = screen;
   const titleRef = useRef<View>(null);
-  const actionRef = useRef<View>(null);
-  const items = usePillItems(shell, actionRef);
-  const inFront = useIsFocused();
+  const actionRef = usePillActionRef();
+  const openDoor = useOpenDoor();
+  usePreloadTabs(shell.destinations);
   const note = <GrievanceNote open={grievance.isOpen} onClose={grievance.close} />;
 
   if (!connection.online)
     return <NoConnection {...connectionWords(t)} onRetry={connection.retry} />;
   if (shell.accessRemoved) {
     return (
-      <ShellFrame topBar={<ShellTopBar screen={screen} nameOnly />} items={[]}>
+      <ShellFrame topBar={<ShellTopBar screen={screen} nameOnly />} pill={false}>
         <AccessRemoved
           {...accessRemovedWords(t, shell.companyName)}
           onAction={screen.signOut}
@@ -82,7 +89,11 @@ export function ShellScreen() {
   const openRow = (row: SettingsRow) =>
     navigation.navigate('SettingsRow', { segment: SETTINGS_SEGMENT[row] });
   return (
-    <ShellFrame topBar={<ShellTopBar screen={screen} />} items={items} inView="home">
+    <ShellFrame
+      topBar={<ShellTopBar screen={screen} />}
+      pill={shell.destinations !== null}
+      inView="home"
+    >
       {home === null || head === null ? null : (
         <>
           <HomeHead
@@ -103,7 +114,7 @@ export function ShellScreen() {
                   size="prominent"
                   fullWidth
                   icon={<ShellGlyph name="plus" size="md" tone="inverse" />}
-                  onClick={() => navigation.navigate(doorRoute[verb])}
+                  onClick={() => openDoor(verb)}
                 >
                   {verbLabel(t, verb)}
                 </Button>
@@ -124,12 +135,37 @@ export function ShellScreen() {
           )}
         </>
       )}
-      {/* A mark points at THIS screen's controls. Under a door a link opened, the home is mounted
-          but not in front, and its mark would draw over the door: it waits for the home. */}
-      {inFront ? (
-        <FirstRunMark shell={shell} anchors={{ switchHome: titleRef, action: actionRef }} />
-      ) : null}
+      <MarkInFront shell={shell} anchors={{ switchHome: titleRef, action: actionRef }} />
       {note}
     </ShellFrame>
+  );
+}
+
+/**
+ * A mark points at THIS screen's controls. Under a door a link opened, the home is mounted but not
+ * in front, and its mark would draw over the door: it waits for the home. Only the mark reads
+ * focus, so the whole home is not drawn again each time a tab is left or shown.
+ */
+function MarkInFront(props: ComponentProps<typeof FirstRunMark>) {
+  return useIsFocused() ? <FirstRunMark {...props} /> : null;
+}
+
+/**
+ * The person's other tabs, drawn once the home is in front and the phone is idle: the first tap
+ * on a destination then shows a page already drawn, not one built while the person waits. Run from
+ * the focus event, so it draws nothing again itself.
+ */
+function usePreloadTabs(destinations: readonly StandingDestination[] | null) {
+  const tabs = useNavigation<BottomTabNavigationProp<ParamListBase>>();
+  useFocusEffect(
+    useCallback(() => {
+      if (destinations === null) return undefined;
+      const idle = requestIdleCallback(() => {
+        for (const destination of destinations) {
+          if (destination !== 'home') tabs.preload(tabRoute[destination]);
+        }
+      });
+      return () => cancelIdleCallback(idle);
+    }, [destinations, tabs]),
   );
 }

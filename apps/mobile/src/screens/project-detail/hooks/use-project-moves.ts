@@ -5,7 +5,8 @@ import { useI18n } from '@heliogrid/i18n/react';
 import { useNavigation } from '@react-navigation/native';
 import { Linking, Share } from 'react-native';
 import { useProjectFilePick } from '../../shared/use-file-pick';
-import { doorRoute } from '../../shell/doors';
+import { tabRoute } from '../../shell/doors';
+import { useOpenTab } from '../../shell/use-open-tab';
 
 /**
  * The project's ways out on the phone — the platform adapter: back to where it was opened from,
@@ -15,12 +16,13 @@ import { doorRoute } from '../../shell/doors';
  */
 export function useProjectMoves(projectId: string, screen: ProjectScreen) {
   const navigation = useNavigation();
+  const openTab = useOpenTab();
   const { locale } = useI18n();
   const project = screen.read.kind === 'ready' ? screen.read.value.project : null;
   return {
     back: () => {
       if (navigation.canGoBack()) navigation.goBack();
-      else navigation.navigate(doorRoute.projects);
+      else openTab(tabRoute.projects);
     },
     toProject: () => navigation.navigate('ProjectDetail', { projectId }),
     documents: () => navigation.navigate('ProjectDocuments', { projectId }),

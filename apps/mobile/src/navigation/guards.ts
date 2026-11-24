@@ -22,7 +22,7 @@ export const useIsPastBoot = () => useNavigationLanding() !== 'wait';
 
 /** The App group's first screens: the shell, the step that makes a company, or a setup step that company owes. */
 type AppEntry =
-  | 'Shell'
+  | 'Main'
   | 'CompanySetup'
   | 'SetupLanguage'
   | 'SetupWhatYouSell'
@@ -37,8 +37,8 @@ type AppEntry =
  * an empty navigator is a hard throw.
  */
 const ROUTE_OF_LANDING: Record<Exclude<SessionLanding, 'wait' | 'door'>, AppEntry> = {
-  home: 'Shell',
-  'access-removed': 'Shell',
+  home: 'Main',
+  'access-removed': 'Main',
   'company-step': 'CompanySetup',
   'language-step': 'SetupLanguage',
   'what-you-sell-step': 'SetupWhatYouSell',
@@ -64,7 +64,7 @@ export const useEntry = (): AppEntry | null => {
   const landing = useNavigationLanding();
   return landing === 'wait' || landing === 'door' ? null : ROUTE_OF_LANDING[landing];
 };
-export const useShowsShell = () => useEntry() === 'Shell';
+export const useShowsShell = () => useEntry() === 'Main';
 export const useHasNoTenant = () => useEntry() === 'CompanySetup';
 export const useOwesLanguageStep = () => useEntry() === 'SetupLanguage';
 export const useOwesWhatYouSellStep = () => useEntry() === 'SetupWhatYouSell';

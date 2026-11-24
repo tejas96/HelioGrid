@@ -2,7 +2,8 @@ import type { ComposedMessage } from '@heliogrid/contracts';
 import { DOOR_SEGMENT, SETTINGS_SEGMENT } from '@heliogrid/domain';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { Linking, Platform, Share } from 'react-native';
-import { doorRoute } from '../shell/doors';
+import { tabRoute } from '../shell/doors';
+import { useOpenTab } from '../shell/use-open-tab';
 import { openInside } from './open-inside';
 import { openOutside } from './open-outside';
 
@@ -23,6 +24,7 @@ export const proposalBuildAddress = (proposalId: string): string =>
  */
 export function useProposalMoves() {
   const navigation = useNavigation();
+  const openTab = useOpenTab();
   /**
    * Hands the text to the share sheet; `handedOn` runs once the person took it somewhere. Android
    * answers "shared" even when the person backs out of the chooser, so there nothing is claimed —
@@ -45,9 +47,9 @@ export function useProposalMoves() {
       if (proposalId !== undefined) {
         navigation.dispatch(StackActions.popTo('ProposalTrack', { proposalId }));
       } else if (navigation.canGoBack()) navigation.goBack();
-      else navigation.navigate(doorRoute.proposals);
+      else openTab(tabRoute.proposals);
     },
-    toList: () => navigation.navigate(doorRoute.proposals),
+    toList: () => openTab(tabRoute.proposals),
     toProposal: (proposalId: string) => navigation.navigate('ProposalTrack', { proposalId }),
     /** The track screen with its share sheet open — the document's and the versions' *Share*. */
     toShare: (proposalId: string) =>

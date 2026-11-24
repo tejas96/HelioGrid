@@ -12,14 +12,14 @@ import { appScreens } from './routes/app';
 import { authScreens } from './routes/auth';
 import { openScreens } from './routes/open';
 
-/** The home's route name, held to the route map: a renamed home fails to compile here. */
-const HOME: keyof typeof appScreens = 'Shell';
+/** The tabs that hold the home, held to the route map: a renamed group fails to compile here. */
+const HOME: keyof typeof appScreens = 'Main';
 
 /**
  * The home goes under a screen that opened alone. A link followed after sign-in is restored as the
  * stack's only route (`lastUnhandled` below), and Back from it would leave the app; with the home
  * first, Back reaches the home. Only where the home exists: the Auth group and the company step
- * hold no `Shell`.
+ * hold no `Main`.
  */
 function homeUnderALoneScreen(state: NavigationState) {
   if (!state.routeNames.includes(HOME) || state.routes[0]?.name === HOME) return undefined;

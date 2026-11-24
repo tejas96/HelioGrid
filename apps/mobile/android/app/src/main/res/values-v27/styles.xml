@@ -1,21 +1,21 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!--
       API 27+ ONLY: the first level that can draw dark buttons on a light bottom bar.
 
       The three system buttons are dark on the light page and light on the dark one (`hg_light_bars`).
       - API 27–34: the bar is opaque and takes `navigationBarColor`.
-      - API 35+: the app draws under the bar and the colour is ignored; with 3-button
-        navigation the system lays its own contrast scrim, LIGHT because the buttons are dark.
-        The scrim is left on: page content scrolls under the bar, and a sheet's dark backdrop
-        covers it, so the buttons must stay readable over anything.
-      Without `windowLightNavigationBar` the buttons are light and that scrim is dark grey.
+      - API 35+: the app draws under the bar and the colour is ignored. The system's contrast scrim
+        is off, because it drew a grey band that is not the page's colour; the app paints the page's
+        own colour under the three buttons instead (`src/appearance/button-bar.tsx`), so they stay
+        readable over anything, and a sheet still runs to the screen's foot.
 
       Gesture navigation draws only the system's own handle and is unchanged.
     -->
     <style name="AppTheme.SystemBars" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:navigationBarColor">@color/hg_canvas</item>
         <item name="android:windowLightNavigationBar">@bool/hg_light_bars</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
     </style>
 
 </resources>
