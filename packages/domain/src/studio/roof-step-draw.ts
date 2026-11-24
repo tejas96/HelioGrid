@@ -1,9 +1,16 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { draftClosesAt, draftTap } from './roof-draw';
+import { type DraftTap, draftClosesAt, draftTap } from './roof-draw';
+import { cornerOffRoof, handFaceTargets } from './roof-hand-faces';
 import { roofWithItsParts } from './roof-kind';
 import { roofPickedAt } from './roof-pick';
-import { draftSpot, type Snapped, type SnapTargets, snapTargetsOf } from './roof-snap';
+import {
+  draftSpot,
+  NO_SNAP_TARGETS,
+  type Snapped,
+  type SnapTargets,
+  snapTargetsOf,
+} from './roof-snap';
 import {
   type DraftLeft,
   idle,
@@ -25,6 +32,27 @@ export function roofHeld(state: RoofStepState): number | null {
   return null;
 }
 
+type Drawing = Extract<RoofStepState, { kind: 'drawing' }>;
+
+/**
+ * What a corner drawn now pulls to: the design's roofs; while a face is drawn, its roof's outline
+ * and the faces drawn on it before.
+ */
+export function drawTargetsOf(state: Drawing, document: StudioDocument): SnapTargets {
+  if (state.faces === undefined) return snapTargetsOf(document.roofs);
+  const roof = document.roofs[state.faces];
+  return roof === undefined ? NO_SNAP_TARGETS : handFaceTargets(roof, state.faces);
+}
+
+/** A face's corner stays on its roof: one tapped off it is refused where it falls. */
+export function keptOnFaceRoof(state: Drawing, document: StudioDocument, tap: DraftTap): DraftTap {
+  if (state.faces === undefined || tap.kind !== 'added') return tap;
+  const roof = document.roofs[state.faces];
+  const corner = tap.corners.at(-1);
+  const off = roof === undefined || corner === undefined || cornerOffRoof(roof, corner);
+  return off ? { kind: 'refused', refusal: 'outside_roof' } : tap;
+}
+
 export function tapped(
   state: RoofStepState,
   at: GroundPoint,
@@ -34,12 +62,16 @@ export function tapped(
   // A tap inside a roof picks it — the top one first, then the one under it; on open ground, none.
   if (state.kind === 'idle') return stay(idle(null, roofPickedAt(document, at, state.roof)));
   if (state.kind !== 'drawing') return stay(state);
-  const targets = snapTargetsOf(document.roofs);
+  const targets = drawTargetsOf(state, document);
   // On the grid the magnet's holds go first and the whole metre last: the corner is held level or
   // square, then lands on the grid; nothing snaps it again after.
   const grid = state.grid === true && state.magnet;
   const spot = grid ? onGrid(state, draftSpot(state.corners, at, targets, true).point) : at;
-  const tap = draftTap(state.corners, spot, targets, state.magnet && !grid);
+  const tap = keptOnFaceRoof(
+    state,
+    document,
+    draftTap(state.corners, spot, targets, state.magnet && !grid),
+  );
   if (tap.kind === 'same') return stay(state);
   if (tap.kind === 'refused') return stay({ ...state, refused: tap.refusal });
   // A new corner after the trash: the wiped corners are behind it, and Undo no longer brings them.
@@ -53,11 +85,15 @@ export function tapped(
   });
 }
 
-/** A fresh drawing: no corners yet, the magnet as picked. */
+/**
+ * A fresh drawing: no corners yet, the magnet as picked. `faces`: the roof whose next face is
+ * drawn by hand; a face is never drawn on the bare grid's whole metres.
+ */
 export function drawing(
   magnet: boolean,
   corners: readonly GroundPoint[] = [],
   grid = false,
+  faces?: number,
 ): RoofStepState {
   return {
     kind: 'drawing',
@@ -67,7 +103,7 @@ export function drawing(
     refused: null,
     magnet,
     wiped: null,
-    grid,
+    ...(faces === undefined ? { grid } : { grid: false, faces }),
   };
 }
 
@@ -153,6 +189,7 @@ export function stopped(state: RoofStepState): RoofStepOutcome {
     corners: state.corners,
     magnet: state.magnet,
     grid: state.grid ?? false,
+    ...(state.faces === undefined ? {} : { faces: state.faces }),
   };
   return stay({ kind: 'idle', roof: null, picked: null, said: null, left });
 }
@@ -160,7 +197,9 @@ export function stopped(state: RoofStepState): RoofStepOutcome {
 /** Undo while drawing, or just after stopping: the last corner goes, or what was wiped comes back. */
 export function cornerUndone(state: RoofStepState): RoofStepOutcome {
   if (state.kind === 'idle' && state.left)
-    return stay(drawing(state.left.magnet, state.left.corners, state.left.grid ?? false));
+    return stay(
+      drawing(state.left.magnet, state.left.corners, state.left.grid ?? false, state.left.faces),
+    );
   if (state.kind !== 'drawing') return stay(state);
   if (state.corners.length === 0 && state.wiped !== null) {
     return stay({ ...state, corners: state.wiped, wiped: null, refused: null });

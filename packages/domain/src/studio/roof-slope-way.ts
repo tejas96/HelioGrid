@@ -47,7 +47,7 @@ export function bearingsApart(a: number, b: number): number {
 }
 
 /** The side that looks nearest a bearing; the first of two that look alike. */
-function sideToward(corners: readonly GroundPoint[], bearingDeg: number): number {
+export function sideToward(corners: readonly GroundPoint[], bearingDeg: number): number {
   let best = 0;
   corners.forEach((_, side) => {
     const nearer =

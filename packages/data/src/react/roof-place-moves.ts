@@ -10,10 +10,16 @@ import {
   SITE_ROOF_HINTS,
   type StudioDocument,
 } from '@heliogrid/domain';
-import { edgesOf, meetingOf, meetingOfRoof, roofCutToEdge } from '@heliogrid/domain/studio-kernel';
+import {
+  edgesOf,
+  handFaceClosed,
+  meetingOf,
+  meetingOfRoof,
+  roofCutToEdge,
+} from '@heliogrid/domain/studio-kernel';
 import type { RefObject } from 'react';
 import { aKey } from '../client/creation-key';
-import type { ClosePlacing, RoofPlaceMoves } from './roof-step-view';
+import type { ClosingWith, RoofPlaceMoves } from './roof-step-view';
 
 /**
  * A roof's place among the others (`T-M05-002`, part e), asked of the studio's kernel: how a
@@ -22,20 +28,29 @@ import type { ClosePlacing, RoofPlaceMoves } from './roof-step-view';
  */
 
 /** The placing for a roof closed on a design as it stands. */
-export function closePlacingOf(
+export function closingOf(
   facts: RoofFacts,
   /**
    * What the host knows of the site's roof: the first roof starts as it. A hint this studio does
    * not know — a later host's — is none.
    */
   siteRoof: string | null | undefined,
-): (document: StudioDocument) => ClosePlacing {
+  /** The site's pin: its latitude says which side a face drawn by hand first slopes down to. */
+  pin: { readonly latitude: number } | null,
+): (document: StudioDocument, faces: number | undefined) => ClosingWith {
   const hint = SITE_ROOF_HINTS.find((known) => known === siteRoof);
-  return (document) => ({
-    meet: (corners) => meetingOf(document, corners, facts),
-    facts,
-    ...(hint === undefined ? {} : { siteMaterial: materialForSite(hint) }),
-  });
+  const latitude = pin?.latitude ?? 0;
+  // A roof closed takes its place among the others; a face drawn by hand closes onto roof `faces`.
+  return (document, faces) =>
+    faces === undefined
+      ? {
+          placing: {
+            meet: (corners) => meetingOf(document, corners, facts),
+            facts,
+            ...(hint === undefined ? {} : { siteMaterial: materialForSite(hint) }),
+          },
+        }
+      : { face: (corners) => handFaceClosed(document, faces, corners, facts, latitude) };
 }
 
 type Act = (event: RoofStepEvent) => void;

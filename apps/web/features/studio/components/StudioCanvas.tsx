@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useChromeRoom } from '../hooks/use-chrome-room';
 import { useDrawPress } from '../hooks/use-draw-press';
+import { useFacesFrame } from '../hooks/use-faces-frame';
 import { useMapKeys } from '../hooks/use-map-keys';
 import { useNewestFrame } from '../hooks/use-newest-frame';
 import { useStudioHaptics } from '../hooks/use-studio-haptics';
@@ -111,7 +112,14 @@ export function StudioCanvas({
   const typing = roofStep.kind === 'typing';
   const typingFrame = useMemo(() => (typing ? {} : null), [typing]);
   // The newest ask for a frame: a landing's own box is framed only while the landing is it.
-  const frameOn = useNewestFrame([sheetFraming, typingFrame, closed, studio.own.landed]);
+  const facesFrame = useFacesFrame(roofStep, room);
+  const frameOn = useNewestFrame([
+    sheetFraming,
+    typingFrame,
+    facesFrame,
+    closed,
+    studio.own.landed,
+  ]);
   // A later frame ends the landing, so the camera never flies back to it when that frame clears.
   const { landed } = studio.own;
   const { landingDone } = studio.ownMoves;

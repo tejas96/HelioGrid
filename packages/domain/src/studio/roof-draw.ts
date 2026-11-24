@@ -1,5 +1,6 @@
 import { cornerRoom, GROUND_REACH_M, type PictureChoice, ROOFS_MAX, type Roof } from './document';
 import type { GroundPoint } from './ground';
+import type { HandFaceRefusal } from './roof-hand-faces';
 import {
   angleAt,
   between,
@@ -27,7 +28,9 @@ export type DraftRefusal =
   | 'too_far'
   | 'too_many_corners'
   | 'too_few_corners'
-  | 'too_many_roofs';
+  | 'too_many_roofs'
+  /** A face drawn by hand (Any shape): it leaves its roof, lies over a face, or is one too many. */
+  | HandFaceRefusal;
 
 export type DraftTap =
   | {

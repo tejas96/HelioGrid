@@ -457,6 +457,21 @@ msgid "{count, plural, one {# dormant lead, show it} other {# dormant leads, sho
 msgstr "{count, plural, one {# निष्क्रिय लीड, दिखाएँ} other {# निष्क्रिय लीड्स, दिखाएँ}}"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:30
+msgid "{count, plural, one {# face · draw the rest} other {# faces · draw the rest}}"
+msgstr "{count, plural, one {# हिस्सा · बाकी बनाएँ} other {# हिस्से · बाकी बनाएँ}}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:25
+msgid "{count, plural, one {# face drawn · tap it in 3D to set its slope} other {# faces drawn · tap one in 3D to set its slope}}"
+msgstr "{count, plural, one {# हिस्सा बना · उसकी ढलान के लिए 3D में उस पर टैप करें} other {# हिस्से बने · ढलान के लिए 3D में किसी एक पर टैप करें}}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:33
+msgid "{count, plural, one {# face} other {# faces}}"
+msgstr "{count, plural, one {# हिस्सा} other {# हिस्से}}"
+
+#. js-lingui-explicit-id
 #: src/copy/job-tray.ts:13
 msgid "{count, plural, one {# failed} other {# failed}}"
 msgstr "{count, plural, one {# विफल} other {# विफल}}"
@@ -1739,7 +1754,7 @@ msgid "{left} of this cycle’s {total} days remain on {date}."
 msgstr "{date} को इस चक्र के {total} में से {left} दिन बाकी हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:21
+#: src/copy/studio-roof-tags.ts:23
 msgid "{length} held"
 msgstr "{length} वैसी ही रही"
 
@@ -2329,7 +2344,7 @@ msgid "{name} removed."
 msgstr "{name} हटाई गई।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:30
+#: src/copy/studio-canvas.ts:31
 msgid "{name} saved this design at {time}. Your last change is not saved."
 msgstr "{name} ने यह डिज़ाइन {time} पर सेव किया। आपका पिछला बदलाव सेव नहीं हुआ।"
 
@@ -2484,7 +2499,7 @@ msgid "{number} · {place}"
 msgstr "{number} · {place}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:49
+#: src/copy/studio-canvas.ts:50
 msgid "{number} · {step}"
 msgstr "{number} · {step}"
 
@@ -2761,7 +2776,7 @@ msgid "{pin}, draggable"
 msgstr "{pin}, खींचा जा सकता है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:101
+#: src/copy/studio-canvas.ts:100
 msgid "{place} · roof not set up yet"
 msgstr "{place} · छत अभी तय नहीं"
 
@@ -2953,7 +2968,7 @@ msgid "{role} · {company}"
 msgstr "{role} · {company}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:70
+#: src/copy/studio-sheet.ts:71
 msgid "{roof} · faces {way}"
 msgstr "{roof} · {way} की ओर"
 
@@ -3665,7 +3680,7 @@ msgid "3D preview coming soon"
 msgstr "3D प्रीव्यू जल्द आ रहा है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:81
+#: src/copy/studio-canvas.ts:82
 msgid "3D view"
 msgstr "3D व्यू"
 
@@ -3785,7 +3800,7 @@ msgid "A customer sends a friend. Add the friend and pick who sent them."
 msgstr "कोई ग्राहक किसी दोस्त को भेजता है। दोस्त को जोड़ें और चुनें कि किसने भेजा।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:43
+#: src/copy/studio-roof.ts:44
 #: src/copy/studio-size.ts:24
 msgid "A design holds at most {max} roofs"
 msgstr "एक डिज़ाइन में ज़्यादा से ज़्यादा {max} छतें"
@@ -3794,6 +3809,11 @@ msgstr "एक डिज़ाइन में ज़्यादा से ज�
 #: src/copy/proposal-after-track.ts:42
 msgid "A draft for {name}"
 msgstr "{name} के लिए ड्राफ़्ट"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:16
+msgid "A face stays on its roof. Tap inside the roof or on its edge."
+msgstr "हिस्सा अपनी छत पर ही रहता है। छत के अंदर या उसके किनारे पर टैप करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:15
@@ -3853,19 +3873,19 @@ msgid "A lead outside your list"
 msgstr "आपकी सूची से बाहर की लीड"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:70
+#: src/copy/studio-roof.ts:71
 #: src/copy/studio-size.ts:20
 msgid "A length is at least {length}."
 msgstr "लंबाई कम से कम {length} हो।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:71
+#: src/copy/studio-roof.ts:72
 #: src/copy/studio-size.ts:21
 msgid "A length is at most {length}."
 msgstr "लंबाई ज़्यादा से ज़्यादा {length} हो।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:72
+#: src/copy/studio-roof.ts:73
 msgid "A length you set would change. Change that length first."
 msgstr "आपकी तय की गई लंबाई बदल जाएगी। पहले वह लंबाई बदलें।"
 
@@ -4057,22 +4077,27 @@ msgid "A role of your own"
 msgstr "आपकी अपनी भूमिका"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:41
+#: src/copy/studio-roof.ts:42
 msgid "A roof has at most {max} corners"
 msgstr "एक छत में ज़्यादा से ज़्यादा {max} कोने"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:78
+#: src/copy/studio-roof.ts:79
 msgid "A roof has at most {max} corners."
 msgstr "एक छत में ज़्यादा से ज़्यादा {max} कोने होते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:77
+#: src/copy/studio-faces.ts:22
+msgid "A roof holds at most this many. Tap Undo, and draw fewer, bigger faces."
+msgstr "एक छत में इससे ज़्यादा हिस्से नहीं हो सकते। पहले जैसा करें पर टैप करें, और कम पर बड़े हिस्से बनाएँ।"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof.ts:78
 msgid "A roof keeps at least 3 corners."
 msgstr "छत में कम से कम 3 कोने रहते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:42
+#: src/copy/studio-roof.ts:43
 msgid "A roof needs at least 3 corners"
 msgstr "छत के लिए कम से कम 3 कोने चाहिए"
 
@@ -4299,7 +4324,7 @@ msgid "Above {limit}, many banks stop one UPI payment. Use bank transfer — the
 msgstr "{limit} से ऊपर कई बैंक एक UPI भुगतान रोक देते हैं। बैंक ट्रांसफ़र इस्तेमाल करें — संदेश में खाता और IFSC होते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:86
+#: src/copy/studio-sheet.ts:87
 msgid "Above {roof} · to check"
 msgstr "{roof} से ऊपर · जाँचना है"
 
@@ -4481,7 +4506,7 @@ msgid "Add a contact"
 msgstr "संपर्क जोड़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:86
+#: src/copy/studio-roof.ts:87
 msgid "Add a corner on this edge"
 msgstr "इस किनारे पर कोना जोड़ें"
 
@@ -4787,7 +4812,7 @@ msgid "Adding {name}"
 msgstr "{name} जोड़ी जा रही है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:67
+#: src/copy/studio-canvas.ts:68
 msgid "Adding your own picture is coming soon"
 msgstr "अपनी तस्वीर जोड़ना जल्द आ रहा है"
 
@@ -4911,7 +4936,7 @@ msgid "All languages"
 msgstr "सभी भाषाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:51
+#: src/copy/studio-roof.ts:52
 msgid "All lengths sized from the one length you set."
 msgstr "आपकी तय की गई एक लंबाई से सभी लंबाइयाँ बदल गईं।"
 
@@ -5139,7 +5164,7 @@ msgid "Any manager"
 msgstr "कोई भी मैनेजर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:121
+#: src/copy/studio-sheet.ts:122
 msgid "Any shape"
 msgstr "कोई भी आकार"
 
@@ -5536,6 +5561,11 @@ msgid "At handover"
 msgstr "सौंपते समय"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:21
+msgid "At most {max} faces"
+msgstr "ज़्यादा से ज़्यादा {max} हिस्से"
+
+#. js-lingui-explicit-id
 #: src/copy/usage-page.ts:29
 msgid "At the cap"
 msgstr "सीमा पर"
@@ -5597,8 +5627,8 @@ msgstr "आपके फ़ैसले का इंतज़ार"
 #: src/copy/lead-import.ts:25
 #: src/copy/project-detail.ts:22
 #: src/copy/proposal-builder-frame.ts:55
-#: src/copy/studio-canvas.ts:19
-#: src/copy/studio-sheet.ts:68
+#: src/copy/studio-canvas.ts:20
+#: src/copy/studio-sheet.ts:69
 msgid "Back"
 msgstr "पीछे"
 
@@ -5618,7 +5648,7 @@ msgid "Back to {name}’s lead"
 msgstr "{name} की लीड पर वापस"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:51
+#: src/copy/studio-canvas.ts:52
 msgid "Back to {step}"
 msgstr "{step} पर वापस"
 
@@ -5631,6 +5661,11 @@ msgstr "वापस {value} पर"
 #: src/copy/studio-sheet.ts:63
 msgid "Back to {value}, as the other sides"
 msgstr "वापस {value} पर, बाकी तरफ़ों जैसा"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-sheet.ts:64
+msgid "Back to {value}, as the roof"
+msgstr "वापस {value} पर, छत जैसा"
 
 #. js-lingui-explicit-id
 #: src/copy/roles-reference.ts:42
@@ -5687,7 +5722,7 @@ msgid "Back to the list"
 msgstr "सूची पर वापस"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:92
+#: src/copy/studio-canvas.ts:93
 msgid "Back to the pin"
 msgstr "पिन पर वापस जाएँ"
 
@@ -5697,7 +5732,7 @@ msgid "Back to the proposal"
 msgstr "प्रस्ताव पर वापस"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:74
+#: src/copy/studio-sheet.ts:75
 msgid "Back to the roof’s parapet"
 msgstr "वापस छत की मुंडेर पर"
 
@@ -5818,7 +5853,7 @@ msgid "Before dispatch"
 msgstr "डिस्पैच से पहले"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:88
+#: src/copy/studio-sheet.ts:89
 msgid "Below {roof}’s parapet · to check"
 msgstr "{roof} की मुंडेर से नीचे · जाँचना है"
 
@@ -6021,7 +6056,7 @@ msgid "Both"
 msgstr "दोनों"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:76
+#: src/copy/studio-roof.ts:77
 msgid "Both lengths at this corner are set. Tap a length to change it."
 msgstr "इस कोने की दोनों लंबाइयाँ तय हैं। बदलने के लिए किसी लंबाई पर टैप करें।"
 
@@ -6161,7 +6196,7 @@ msgid "Business profile saved"
 msgstr "व्यवसाय प्रोफ़ाइल सहेजी गई"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:125
+#: src/copy/studio-sheet.ts:126
 msgid "Butterfly"
 msgstr "बटरफ़्लाई"
 
@@ -6713,7 +6748,7 @@ msgid "Check your connection, then try again."
 msgstr "अपना कनेक्शन जाँचें, फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:77
+#: src/copy/studio-canvas.ts:78
 msgid "Checked"
 msgstr "जाँच लिया"
 
@@ -6895,7 +6930,7 @@ msgid "Clear all"
 msgstr "सब हटाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:30
+#: src/copy/studio-roof.ts:31
 msgid "Clear every corner"
 msgstr "सभी कोने हटाएँ"
 
@@ -7005,7 +7040,7 @@ msgid "Close Roofs"
 msgstr "छतें बंद करें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:45
+#: src/copy/studio-roof.ts:46
 msgid "Close shape"
 msgstr "आकार बंद करें"
 
@@ -7023,7 +7058,7 @@ msgid "Close the map"
 msgstr "नक्शा बंद करें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:44
+#: src/copy/studio-roof.ts:45
 msgid "Close the shape, or tap Undo."
 msgstr "आकार बंद करें, या पहले जैसा करें पर टैप करें।"
 
@@ -7487,42 +7522,42 @@ msgid "Copy the link for {label}"
 msgstr "{label} का लिंक कॉपी करें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:84
+#: src/copy/studio-roof.ts:85
 msgid "Corner {number}"
 msgstr "कोना {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:85
+#: src/copy/studio-roof.ts:86
 msgid "Corner 1: close the shape"
 msgstr "कोना 1: आकार बंद करें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:57
+#: src/copy/studio-roof.ts:58
 msgid "Corner added. Drag it into place."
 msgstr "कोना जुड़ा। उसे खींचकर जगह पर रखें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:55
+#: src/copy/studio-roof.ts:56
 msgid "Corner moved · {snap}. Undo puts it back."
 msgstr "कोना हिला · {snap}। पहले जैसा करें से वापस होगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:56
+#: src/copy/studio-roof.ts:57
 msgid "Corner moved. The length you set held."
 msgstr "कोना हिला। आपकी तय की गई लंबाई वही रही।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:54
+#: src/copy/studio-roof.ts:55
 msgid "Corner moved. Undo puts it back."
 msgstr "कोना हिला। पहले जैसा करें से वापस होगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:58
+#: src/copy/studio-roof.ts:59
 msgid "Corner picked. Tap × to remove it."
 msgstr "कोना चुना। हटाने के लिए × पर टैप करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:59
+#: src/copy/studio-roof.ts:60
 msgid "Corner removed. Undo puts it back."
 msgstr "कोना हटाया। पहले जैसा करें से वापस होगा।"
 
@@ -7995,7 +8030,7 @@ msgid "Current plan"
 msgstr "मौजूदा प्लान"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:124
+#: src/copy/studio-sheet.ts:125
 msgid "Curved"
 msgstr "घुमावदार"
 
@@ -8391,7 +8426,7 @@ msgid "Delete phase"
 msgstr "चरण हटाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:33
+#: src/copy/studio-roof.ts:34
 msgid "Delete roof"
 msgstr "छत हटाएँ"
 
@@ -8705,7 +8740,7 @@ msgstr "हो गया"
 #: src/copy/proposal-builder-sheets.ts:245
 #: src/copy/proposal-builder-sheets.ts:272
 #: src/copy/proposal-defaults-words.ts:28
-#: src/copy/studio-canvas.ts:52
+#: src/copy/studio-canvas.ts:53
 #: src/copy/studio-height.ts:18
 msgid "Done"
 msgstr "हो गया"
@@ -8798,7 +8833,7 @@ msgid "Drag map to adjust"
 msgstr "ठीक करने के लिए नक्शा खींचें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:69
+#: src/copy/studio-roof.ts:70
 msgid "Drag the corner. Zoom in for more room."
 msgstr "कोना खींचें। ज़्यादा जगह के लिए ज़ूम इन करें।"
 
@@ -8813,12 +8848,12 @@ msgid "Drag to change the height of {name}"
 msgstr "{name} की ऊँचाई बदलने के लिए खींचें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:92
+#: src/copy/studio-sheet.ts:93
 msgid "Drag to change the ridge’s height"
 msgstr "शिखर की ऊँचाई बदलने के लिए खींचें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:91
+#: src/copy/studio-sheet.ts:92
 msgid "Drag to change this side’s parapet height"
 msgstr "इस तरफ़ की मुंडेर की ऊँचाई बदलने के लिए खींचें"
 
@@ -8828,24 +8863,24 @@ msgid "Drag, or − + for {step}. The first length sizes the whole roof."
 msgstr "खींचें, या {step} के लिए − + दबाएँ। पहली लंबाई पूरी छत का माप तय करती है।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:100
+#: src/copy/studio-canvas.ts:99
 msgid "Draw a roof"
 msgstr "छत बनाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:54
+#: src/copy/studio-canvas.ts:55
 msgid "Draw a roof first"
 msgstr "पहले छत बनाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:98
-msgid "Draw myself"
-msgstr "खुद बनाऊँ"
+#: src/copy/studio-faces.ts:35
+msgid "Draw again"
+msgstr "फिर से बनाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:99
-msgid "Draw on the grid"
-msgstr "ग्रिड पर बनाएँ"
+#: src/copy/studio-faces.ts:34
+msgid "Draw the faces"
+msgstr "हिस्से बनाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-builder-flow.ts:26
@@ -9021,22 +9056,22 @@ msgid "Earlier versions are kept as they were sent"
 msgstr "पिछले वर्शन वैसे ही रखे जाते हैं जैसे भेजे गए थे"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:133
+#: src/copy/studio-sheet.ts:134
 msgid "east"
 msgstr "पूर्व"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:88
+#: src/copy/studio-roof.ts:89
 msgid "Edge {number}: {length}. Change it"
 msgstr "किनारा {number}: {length}। इसे बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:53
+#: src/copy/studio-roof.ts:54
 msgid "Edge set to {length} · measured on site."
 msgstr "किनारा {length} किया · साइट पर नापा।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:52
+#: src/copy/studio-roof.ts:53
 msgid "Edge set to {length}."
 msgstr "किनारा {length} किया।"
 
@@ -9337,7 +9372,7 @@ msgid "Every lead, design, proposal and project — kept"
 msgstr "हर लीड, डिज़ाइन, प्रस्ताव और प्रोजेक्ट — सुरक्षित"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:81
+#: src/copy/studio-roof.ts:82
 msgid "Every length is yours. Drag a + out for an L."
 msgstr "हर लंबाई आपकी है। L के लिए + बाहर खींचें।"
 
@@ -9563,6 +9598,26 @@ msgid "Extra voice"
 msgstr "अतिरिक्त वॉइस"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:14
+msgid "Face {number}"
+msgstr "हिस्सा {number}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-tags.ts:19
+msgid "Face {number} corner"
+msgstr "हिस्सा {number} का कोना"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-tags.ts:20
+msgid "Face {number} edge"
+msgstr "हिस्सा {number} का किनारा"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:28
+msgid "Faces"
+msgstr "हिस्से"
+
+#. js-lingui-explicit-id
 #: src/copy/studio-sheet.ts:59
 msgid "Faces {count} ways"
 msgstr "{count} दिशाओं की ओर"
@@ -9581,6 +9636,11 @@ msgstr "{first}, {second} और {third} की ओर"
 #: src/copy/studio-sheet.ts:58
 msgid "Faces {first}, {second}, {third} and {fourth}"
 msgstr "{first}, {second}, {third} और {fourth} की ओर"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:18
+msgid "Faces meet at their edges, never over each other. Move a corner, or tap Undo."
+msgstr "हिस्से अपने किनारों पर मिलते हैं, एक-दूसरे के ऊपर कभी नहीं। कोना हटाएँ, या पहले जैसा करें पर टैप करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:95
@@ -9618,13 +9678,13 @@ msgstr "परिवार का घर"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:34
-#: src/copy/studio-canvas.ts:88
+#: src/copy/studio-canvas.ts:89
 #: src/copy/studio-length.ts:12
 msgid "Feet"
 msgstr "फ़ुट"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:67
+#: src/copy/studio-sheet.ts:68
 msgid "Fewer shapes"
 msgstr "कम आकार"
 
@@ -9800,7 +9860,7 @@ msgid "Finish later takes you to your company profile, the next step. You can fi
 msgstr "बाद में पूरा करें आपको अगले चरण, कंपनी प्रोफ़ाइल पर ले जाता है। दोनों जवाब वहाँ पूरे कर सकते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:55
+#: src/copy/studio-canvas.ts:56
 msgid "Finish the step before first"
 msgstr "पहले पिछला कदम पूरा करें"
 
@@ -9850,7 +9910,7 @@ msgid "Fixed."
 msgstr "ठीक हो गया।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:117
+#: src/copy/studio-sheet.ts:118
 msgid "Flat"
 msgstr "सपाट"
 
@@ -10051,7 +10111,7 @@ msgid "From the company profile. Only {owner} can change it."
 msgstr "कंपनी प्रोफ़ाइल से। इसे सिर्फ़ {owner} बदल सकते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:83
+#: src/copy/studio-canvas.ts:84
 msgid "From the east"
 msgstr "पूर्व से"
 
@@ -10083,17 +10143,17 @@ msgid "From the link named {label}. Call to confirm, then mark the deal won."
 msgstr "‘{label}’ नाम के लिंक से। पुष्टि के लिए कॉल करें, फिर डील जीती चिह्नित करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:82
+#: src/copy/studio-canvas.ts:83
 msgid "From the north"
 msgstr "उत्तर से"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:84
+#: src/copy/studio-canvas.ts:85
 msgid "From the south"
 msgstr "दक्षिण से"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:85
+#: src/copy/studio-canvas.ts:86
 msgid "From the west"
 msgstr "पश्चिम से"
 
@@ -10155,17 +10215,17 @@ msgid "G+{floor}"
 msgstr "G+{floor}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:119
+#: src/copy/studio-sheet.ts:120
 msgid "Gable"
 msgstr "गेबल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:84
+#: src/copy/studio-sheet.ts:85
 msgid "Gable end"
 msgstr "गेबल सिरा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:127
+#: src/copy/studio-sheet.ts:128
 msgid "Gambrel"
 msgstr "गैम्ब्रेल"
 
@@ -10311,7 +10371,7 @@ msgstr "{name} को सौंपना पक्का नहीं हुआ 
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-list.ts:82
-#: src/copy/studio-sheet.ts:80
+#: src/copy/studio-sheet.ts:81
 msgid "Glass"
 msgstr "काँच"
 
@@ -10438,7 +10498,7 @@ msgid "Good morning, {name}"
 msgstr "सुप्रभात, {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:62
+#: src/copy/studio-canvas.ts:63
 msgid "Google"
 msgstr "Google"
 
@@ -10600,7 +10660,7 @@ msgid "Happy with your solar?"
 msgstr "अपने सोलर से खुश हैं?"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:71
+#: src/copy/studio-sheet.ts:72
 msgid "Has a parapet"
 msgstr "मुंडेर है"
 
@@ -10651,7 +10711,7 @@ msgid "Height (mm)"
 msgstr "ऊँचाई (mm)"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:47
+#: src/copy/studio-roof.ts:48
 msgid "Height {height} is the usual storey here. Drag a corner to fix the shape."
 msgstr "ऊँचाई {height} यहाँ की आम मंज़िल जितनी है। आकार ठीक करने के लिए कोना खींचें।"
 
@@ -10896,8 +10956,8 @@ msgid "Highest DC voltage (V)"
 msgstr "अधिकतम DC वोल्टेज (V)"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:85
-#: src/copy/studio-sheet.ts:120
+#: src/copy/studio-sheet.ts:86
+#: src/copy/studio-sheet.ts:121
 msgid "Hip"
 msgstr "हिप"
 
@@ -11368,7 +11428,7 @@ msgid "inside"
 msgstr "अंदर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:19
+#: src/copy/studio-roof-tags.ts:21
 msgid "Inside Roof {number}’s parapet"
 msgstr "छत {number} की मुंडेर के अंदर"
 
@@ -12325,7 +12385,7 @@ msgid "Length × width"
 msgstr "लंबाई × चौड़ाई"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:86
+#: src/copy/studio-canvas.ts:87
 msgid "Lengths"
 msgstr "लंबाई"
 
@@ -12411,7 +12471,7 @@ msgid "Lines under your address"
 msgstr "आपके पते के नीचे की पंक्तियाँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:20
+#: src/copy/studio-roof-tags.ts:22
 msgid "Lines up with corner {number}"
 msgstr "कोना {number} की सीध में"
 
@@ -12721,7 +12781,7 @@ msgid "Loading the rows"
 msgstr "पंक्तियाँ लोड हो रही हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:65
+#: src/copy/studio-canvas.ts:66
 msgid "Loading the sky picture"
 msgstr "आसमान की तस्वीर लोड हो रही है"
 
@@ -12994,7 +13054,7 @@ msgid "Low"
 msgstr "निचला"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:77
+#: src/copy/studio-sheet.ts:78
 msgid "Low side"
 msgstr "निचली तरफ़"
 
@@ -13039,7 +13099,7 @@ msgid "made your own"
 msgstr "आपके अपने बनाए"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:31
+#: src/copy/studio-roof.ts:32
 msgid "Magnet"
 msgstr "मैग्नेट"
 
@@ -13094,12 +13154,12 @@ msgid "Make someone else an EPC Owner first"
 msgstr "पहले किसी और को EPC मालिक बनाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:82
+#: src/copy/studio-sheet.ts:83
 msgid "Make the glass face this way"
 msgstr "काँच इस ओर करें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:79
+#: src/copy/studio-sheet.ts:80
 msgid "Make this the low side"
 msgstr "इसे निचली तरफ़ बनाएँ"
 
@@ -13161,7 +13221,7 @@ msgid "Mangalore tile"
 msgstr "मैंगलोर टाइल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:126
+#: src/copy/studio-sheet.ts:127
 msgid "Mansard"
 msgstr "मैनसार्ड"
 
@@ -13171,7 +13231,7 @@ msgid "Map columns"
 msgstr "कॉलम मिलाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:94
+#: src/copy/studio-canvas.ts:95
 msgid "Map. Arrow keys move it, plus and minus zoom, and 0 goes back to the pin."
 msgstr "नक्शा। तीर वाली कुंजियाँ इसे खिसकाती हैं, प्लस और माइनस ज़ूम करते हैं, और 0 पिन पर वापस ले जाता है।"
 
@@ -13457,7 +13517,7 @@ msgstr "तरीका"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:33
-#: src/copy/studio-canvas.ts:87
+#: src/copy/studio-canvas.ts:88
 msgid "Metres"
 msgstr "मीटर"
 
@@ -13546,7 +13606,7 @@ msgid "Money summary"
 msgstr "रकम का सारांश"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:123
+#: src/copy/studio-sheet.ts:124
 msgid "Monitor"
 msgstr "मॉनिटर"
 
@@ -13643,7 +13703,7 @@ msgid "More for Design {number}"
 msgstr "डिज़ाइन {number} के और विकल्प"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:66
+#: src/copy/studio-sheet.ts:67
 msgid "More shapes"
 msgstr "और आकार"
 
@@ -13744,7 +13804,7 @@ msgid "Move the plan"
 msgstr "नक्शा खिसकाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:89
+#: src/copy/studio-roof.ts:90
 msgid "Move the roof"
 msgstr "छत खिसकाएँ"
 
@@ -14201,7 +14261,7 @@ msgid "New company on HelioGrid?"
 msgstr "HelioGrid पर नई कंपनी?"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:23
+#: src/copy/studio-roof-tags.ts:25
 msgid "New corner · drag it"
 msgstr "नया कोना · इसे खींचें"
 
@@ -14506,7 +14566,7 @@ msgid "Next step"
 msgstr "अगला चरण"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:50
+#: src/copy/studio-canvas.ts:51
 msgid "Next step: {step}"
 msgstr "अगला चरण: {step}"
 
@@ -14683,7 +14743,7 @@ msgid "No connection — your typing stays here"
 msgstr "कनेक्शन नहीं — आपका लिखा यहीं सुरक्षित है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:22
+#: src/copy/studio-canvas.ts:23
 msgid "No connection · not saved"
 msgstr "कनेक्शन नहीं · सेव नहीं हुआ"
 
@@ -14975,7 +15035,7 @@ msgid "No panels yet"
 msgstr "अभी पैनल नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:72
+#: src/copy/studio-sheet.ts:73
 msgid "No parapet"
 msgstr "मुंडेर नहीं"
 
@@ -14991,7 +15051,7 @@ msgstr "इस तरफ़ मुंडेर नहीं"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:74
-#: src/copy/studio-sheet.ts:76
+#: src/copy/studio-sheet.ts:77
 msgid "No parapet where {roof}’s wall stands"
 msgstr "जहाँ {roof} की दीवार है वहाँ मुंडेर नहीं"
 
@@ -15021,12 +15081,12 @@ msgid "No photo was taken here."
 msgstr "यहाँ कोई फ़ोटो नहीं ली गई।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:60
+#: src/copy/studio-canvas.ts:61
 msgid "No picture"
 msgstr "कोई तस्वीर नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:70
+#: src/copy/studio-canvas.ts:71
 msgid "No picture: type the size, or draw on the grid."
 msgstr "कोई तस्वीर नहीं: नाप लिखें, या ग्रिड पर बनाएँ।"
 
@@ -15183,7 +15243,7 @@ msgid "No size yet"
 msgstr "अभी आकार नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:71
+#: src/copy/studio-canvas.ts:72
 msgid "No sky picture is set up yet. Type the size, or draw on the grid."
 msgstr "आसमान की तस्वीर अभी सेट नहीं है। नाप लिखें, या ग्रिड पर बनाएँ।"
 
@@ -15276,23 +15336,23 @@ msgid "None saved yet. Someone who adds parts can save one."
 msgstr "अभी कोई सहेजा नहीं गया। जो पार्ट जोड़ सकता है वह एक सहेज सकता है।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:131
+#: src/copy/studio-sheet.ts:132
 msgid "north"
 msgstr "उत्तर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:93
+#: src/copy/studio-canvas.ts:94
 #: src/copy/studio-picture.ts:32
 msgid "North"
 msgstr "उत्तर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:132
+#: src/copy/studio-sheet.ts:133
 msgid "north-east"
 msgstr "उत्तर-पूर्व"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:138
+#: src/copy/studio-sheet.ts:139
 msgid "north-west"
 msgstr "उत्तर-पश्चिम"
 
@@ -15545,6 +15605,11 @@ msgid "Not done. This proposal was withdrawn or replaced already."
 msgstr "नहीं हुआ। यह प्रस्ताव पहले ही वापस लिया या बदला जा चुका है।"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:29
+msgid "Not drawn yet"
+msgstr "अभी बनाए नहीं"
+
+#. js-lingui-explicit-id
 #: src/copy/charts.ts:13
 msgid "Not enough data"
 msgstr "पर्याप्त डेटा नहीं"
@@ -15693,7 +15758,7 @@ msgid "Not resolved yet — this period's rollup is still being read."
 msgstr "अभी तय नहीं — इस अवधि का जोड़ अभी पढ़ा जा रहा है।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:26
+#: src/copy/studio-canvas.ts:27
 msgid "Not saved"
 msgstr "सेव नहीं हुआ"
 
@@ -16236,7 +16301,7 @@ msgid "Numbered list"
 msgstr "क्रमांकित सूची"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:44
+#: src/copy/studio-canvas.ts:45
 msgid "Objects"
 msgstr "चीज़ें"
 
@@ -16281,6 +16346,11 @@ msgstr "बंद"
 #: src/copy/proposal-defaults-words.ts:36
 msgid "Off · {name}"
 msgstr "बंद · {name}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:15
+msgid "Off the roof"
+msgstr "छत से बाहर"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-document-cover.ts:31
@@ -16747,7 +16817,7 @@ msgid "Open the usage screen and the subscription invoice list"
 msgstr "उपयोग स्क्रीन और सब्सक्रिप्शन बिलों की सूची खोलें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:34
+#: src/copy/studio-canvas.ts:35
 msgid "Open their version"
 msgstr "उनका वर्शन खोलें"
 
@@ -16836,7 +16906,7 @@ msgid "Opening the report you kept."
 msgstr "आपकी रखी हुई रिपोर्ट खुल रही है।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:36
+#: src/copy/studio-canvas.ts:37
 msgid "Opening the studio"
 msgstr "स्टूडियो खुल रहा है"
 
@@ -16975,6 +17045,11 @@ msgid "Over {plan}’s limits"
 msgstr "{plan} की सीमाओं से ऊपर"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:17
+msgid "Over another face"
+msgstr "दूसरे हिस्से के ऊपर"
+
+#. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:45
 msgid "Over both arms · to check"
 msgstr "दोनों भुजाओं के ऊपर · जाँचना है"
@@ -16986,7 +17061,7 @@ msgid "Overdue"
 msgstr "समय निकल गया"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:103
+#: src/copy/studio-sheet.ts:104
 msgid "Overhang"
 msgstr "छज्जा"
 
@@ -17196,7 +17271,7 @@ msgstr "पैनल का प्रकार"
 #: src/copy/catalog-settings.ts:138
 #: src/copy/proposal-after-versions.ts:69
 #: src/copy/proposal-builder-sheets.ts:105
-#: src/copy/studio-canvas.ts:45
+#: src/copy/studio-canvas.ts:46
 msgid "Panels"
 msgstr "पैनल"
 
@@ -17232,7 +17307,7 @@ msgid "Parapet details"
 msgstr "मुंडेर का ब्योरा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:73
+#: src/copy/studio-sheet.ts:74
 msgid "Parapet height"
 msgstr "मुंडेर की ऊँचाई"
 
@@ -17316,17 +17391,17 @@ msgid "Past {ceiling}, new uploads pause · files you have stay."
 msgstr "{ceiling} के बाद नए अपलोड रुक जाते हैं · आपकी फ़ाइलें रहती हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:40
+#: src/copy/studio-roof.ts:41
 msgid "Past {reach} from the pin · this is another site"
 msgstr "पिन से {reach} से आगे · यह दूसरी साइट है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:63
+#: src/copy/studio-roof.ts:64
 msgid "Past {reach} from the pin · this is another site. The roof went back."
 msgstr "पिन से {reach} से आगे · यह दूसरी साइट है। छत वापस गई।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:89
+#: src/copy/studio-sheet.ts:90
 msgid "Past {roof}’s edge · to check"
 msgstr "{roof} के किनारे से बाहर · जाँचना है"
 
@@ -17773,7 +17848,7 @@ msgid "Photo uploading"
 msgstr "फ़ोटो अपलोड हो रही है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:66
+#: src/copy/studio-canvas.ts:67
 msgid "Photo, drone map or plan, from above"
 msgstr "ऊपर से फ़ोटो, ड्रोन मैप या नक्शा"
 
@@ -17803,7 +17878,7 @@ msgid "Pick {kind}"
 msgstr "{kind} चुनें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:90
+#: src/copy/studio-sheet.ts:91
 msgid "Pick {roof}"
 msgstr "{roof} चुनें"
 
@@ -18002,17 +18077,17 @@ msgid "Pickers"
 msgstr "चयन सूचियाँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:76
+#: src/copy/studio-canvas.ts:77
 msgid "Picture updated · check the outline"
 msgstr "तस्वीर नई है · आउटलाइन जाँचें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:61
+#: src/copy/studio-canvas.ts:62
 msgid "Picture: {name}"
 msgstr "तस्वीर: {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:91
+#: src/copy/studio-canvas.ts:92
 msgid "Pin"
 msgstr "पिन"
 
@@ -18088,12 +18163,12 @@ msgid "Place the pin — tap the map, or press Enter to place it at the centre"
 msgstr "पिन लगाएँ — नक्शे पर टैप करें, या बीच में लगाने के लिए Enter दबाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:82
+#: src/copy/studio-roof.ts:83
 msgid "Placed beside Roof {number}. Drag it onto the house."
 msgstr "छत {number} के बगल में रखी गई। इसे घर पर खींचें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:80
+#: src/copy/studio-roof.ts:81
 msgid "Placed on the pin. Drag it onto the house."
 msgstr "पिन पर रखी गई। इसे घर पर खींचें।"
 
@@ -18901,7 +18976,7 @@ msgid "Quick mode used your company’s timeline, payment terms, and terms and c
 msgstr "झटपट मोड ने आपकी कंपनी की टाइमलाइन, भुगतान शर्तें और नियम व शर्तें इस्तेमाल कीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:143
+#: src/copy/studio-sheet.ts:144
 msgid "Railing"
 msgstr "रेलिंग"
 
@@ -18911,12 +18986,12 @@ msgid "Raised frame only"
 msgstr "केवल ऊँचा फ़्रेम"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:100
+#: src/copy/studio-sheet.ts:101
 msgid "Raised middle’s height"
 msgstr "उठे बीच की ऊँचाई"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:101
+#: src/copy/studio-sheet.ts:102
 msgid "Raised middle’s width"
 msgstr "उठे बीच की चौड़ाई"
 
@@ -19277,7 +19352,7 @@ msgid "Red items stop Generate. Amber items only warn."
 msgstr "लाल बातें प्रस्ताव बनने से रोकती हैं। पीली बातें सिर्फ़ चेतावनी देती हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:90
+#: src/copy/studio-canvas.ts:91
 msgid "Redo"
 msgstr "फिर करें"
 
@@ -19408,7 +19483,7 @@ msgid "Remove {tranche}"
 msgstr "{tranche} हटाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:87
+#: src/copy/studio-roof.ts:88
 msgid "Remove corner {number}"
 msgstr "कोना {number} हटाएँ"
 
@@ -19758,7 +19833,7 @@ msgid "Restored {name}"
 msgstr "{name} वापस लाया गया"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:47
+#: src/copy/studio-canvas.ts:48
 msgid "Result"
 msgstr "नतीजा"
 
@@ -19845,7 +19920,7 @@ msgid "Revoke invite for {name}"
 msgstr "आमंत्रण वापस लें: {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:87
+#: src/copy/studio-sheet.ts:88
 msgid "Ridge through {roof} · to check"
 msgstr "शिखर {roof} के आर-पार · जाँचना है"
 
@@ -19885,7 +19960,7 @@ msgstr "भूमिकाओं की जानकारी"
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:64
 #: src/copy/site-details.ts:13
-#: src/copy/studio-canvas.ts:43
+#: src/copy/studio-canvas.ts:44
 msgid "Roof"
 msgstr "छत"
 
@@ -19905,7 +19980,7 @@ msgid "Roof {number} edge"
 msgstr "छत {number} का किनारा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:34
+#: src/copy/studio-roof.ts:35
 msgid "Roof deleted. Undo brings it back."
 msgstr "छत हटाई। पहले जैसा करें से वापस आएगी।"
 
@@ -19920,12 +19995,12 @@ msgid "Roof measured from satellite imagery. A site visit will confirm dimension
 msgstr "छत का माप सैटेलाइट इमेजरी से लिया गया है। साइट विज़िट से माप, छाया और बिजली कनेक्शन की पहुँच की पुष्टि होगी।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:60
+#: src/copy/studio-roof.ts:61
 msgid "Roof moved. Undo puts it back."
 msgstr "छत खिसकी। पहले जैसा करें से वापस होगी।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:102
+#: src/copy/studio-canvas.ts:101
 msgid "Roof not set up yet"
 msgstr "छत अभी तय नहीं"
 
@@ -19935,7 +20010,7 @@ msgid "Roof size"
 msgstr "छत का नाप"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:61
+#: src/copy/studio-roof.ts:62
 msgid "Roof turned {degrees}°. Undo puts it back."
 msgstr "छत {degrees}° घूमी। पहले जैसा करें से वापस होगी।"
 
@@ -20153,12 +20228,12 @@ msgid "Sanctioned load check skipped"
 msgstr "स्वीकृत लोड की जाँच नहीं हुई"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:63
+#: src/copy/studio-canvas.ts:64
 msgid "Satellite · {sharpness} a pixel"
 msgstr "सैटेलाइट · {sharpness} प्रति पिक्सेल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:64
+#: src/copy/studio-canvas.ts:65
 msgid "Satellite · {sharpness} a pixel · taken {date}"
 msgstr "सैटेलाइट · {sharpness} प्रति पिक्सेल · {date} में ली गई"
 
@@ -20282,7 +20357,7 @@ msgstr "अपनी कंपनी प्रोफ़ाइल सहेजे
 #: src/copy/project-toast.ts:23
 #: src/copy/proposal-builder-frame.ts:61
 #: src/copy/proposal-builder-steps.ts:17
-#: src/copy/studio-canvas.ts:20
+#: src/copy/studio-canvas.ts:21
 msgid "Saved"
 msgstr "सहेजा गया"
 
@@ -20396,7 +20471,7 @@ msgstr "दोनों सहेजता है; आप इन्हें अ
 #. js-lingui-explicit-id
 #: src/copy/proposal-builder-frame.ts:62
 #: src/copy/proposal-builder-steps.ts:18
-#: src/copy/studio-canvas.ts:21
+#: src/copy/studio-canvas.ts:22
 msgid "Saving"
 msgstr "सहेजा जा रहा है"
 
@@ -20437,7 +20512,7 @@ msgid "Savings pass the net cost after {years} years"
 msgstr "{years} साल बाद बचत शुद्ध लागत से ज़्यादा हो जाती है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:122
+#: src/copy/studio-sheet.ts:123
 msgid "Sawtooth"
 msgstr "सॉटूथ"
 
@@ -20983,7 +21058,7 @@ msgid "Set the size in System first."
 msgstr "पहले सिस्टम में साइज़ भरें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:50
+#: src/copy/studio-roof.ts:51
 msgid "Set the true length of the marked edge."
 msgstr "निशान वाले किनारे की असली लंबाई तय करें।"
 
@@ -21136,7 +21211,7 @@ msgstr "शेयर किया या खोला गया"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:71
-#: src/copy/studio-sheet.ts:75
+#: src/copy/studio-sheet.ts:76
 msgid "Shared with {roof} · no parapet"
 msgstr "{roof} के साथ साझा · मुंडेर नहीं"
 
@@ -21146,7 +21221,7 @@ msgid "Shares {roof}’s edge"
 msgstr "{roof} के साथ एक किनारा साझा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:118
+#: src/copy/studio-sheet.ts:119
 msgid "Shed"
 msgstr "शेड"
 
@@ -21451,7 +21526,7 @@ msgstr "सिंगल फ़ेज़"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-parts.ts:77
-#: src/copy/studio-canvas.ts:38
+#: src/copy/studio-canvas.ts:39
 msgid "Site"
 msgstr "साइट"
 
@@ -21494,7 +21569,7 @@ msgid "Site visit"
 msgstr "साइट विज़िट"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:39
+#: src/copy/studio-canvas.ts:40
 msgid "Site: change the place and details"
 msgstr "साइट: जगह और विवरण बदलें"
 
@@ -21536,7 +21611,7 @@ msgid "Skipped during setup · your first proposal needs it"
 msgstr "सेटअप में छोड़ा गया · आपके पहले प्रस्ताव को इसकी ज़रूरत होगी"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:58
+#: src/copy/studio-canvas.ts:59
 msgid "Sky picture"
 msgstr "आसमान की तस्वीर"
 
@@ -21556,7 +21631,7 @@ msgid "SLD, AC/DC and earthing layouts"
 msgstr "SLD, AC/DC और अर्थिंग लेआउट"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:65
+#: src/copy/studio-sheet.ts:66
 msgid "Slide {name}"
 msgstr "{name} स्लाइड करें"
 
@@ -21574,6 +21649,11 @@ msgstr "अंक स्लाइड करें"
 #: src/copy/studio-sheet.ts:33
 msgid "Slope"
 msgstr "ढलान"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:36
+msgid "Slopes down"
+msgstr "ढलान की दिशा"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-sheet.ts:53
@@ -21707,7 +21787,7 @@ msgid "Someone else"
 msgstr "कोई और"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:31
+#: src/copy/studio-canvas.ts:32
 msgid "Someone saved this design at {time}. Your last change is not saved."
 msgstr "किसी ने यह डिज़ाइन {time} पर सेव किया। आपका पिछला बदलाव सेव नहीं हुआ।"
 
@@ -21787,17 +21867,17 @@ msgid "Source"
 msgstr "स्रोत"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:135
+#: src/copy/studio-sheet.ts:136
 msgid "south"
 msgstr "दक्षिण"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:134
+#: src/copy/studio-sheet.ts:135
 msgid "south-east"
 msgstr "दक्षिण-पूर्व"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:136
+#: src/copy/studio-sheet.ts:137
 msgid "south-west"
 msgstr "दक्षिण-पश्चिम"
 
@@ -22020,7 +22100,7 @@ msgid "Step {number}"
 msgstr "चरण {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:53
+#: src/copy/studio-canvas.ts:54
 msgid "Step {number} of {total}"
 msgstr "{total} में से चरण {number}"
 
@@ -22072,7 +22152,7 @@ msgstr "चरण 2 / 2 · एक बार पढ़ें, फिर मिल
 #. js-lingui-explicit-id
 #: src/copy/proposal-builder-frame.ts:52
 #: src/copy/stepper.ts:14
-#: src/copy/studio-canvas.ts:48
+#: src/copy/studio-canvas.ts:49
 msgid "Steps"
 msgstr "चरण"
 
@@ -22128,7 +22208,7 @@ msgid "Stone-coated metal tile"
 msgstr "पत्थर-लेपित धातु टाइल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:29
+#: src/copy/studio-roof.ts:30
 msgid "Stop drawing"
 msgstr "बनाना रोकें"
 
@@ -22444,7 +22524,7 @@ msgid "Tap a date to add a holiday"
 msgstr "छुट्टी जोड़ने के लिए कोई तारीख़ टैप करें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:39
+#: src/copy/studio-roof.ts:40
 msgid "Tap a little farther from it."
 msgstr "उससे थोड़ा दूर टैप करें।"
 
@@ -22469,7 +22549,7 @@ msgid "Tap a part to pick or change it. Up to {max} brands each — {name} reads
 msgstr "पार्ट चुनने या बदलने के लिए उस पर टैप करें। हर पार्ट के लिए {max} ब्रांड तक — {name} इन्हें विकल्पों के रूप में देखेंगे।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:36
+#: src/copy/studio-roof.ts:37
 msgid "Tap a spot where the edges do not cross."
 msgstr "ऐसी जगह टैप करें जहाँ किनारे न कटें।"
 
@@ -22489,7 +22569,7 @@ msgid "Tap an outline, or draw on the plan with the pencil."
 msgstr "आउटलाइन पर टैप करें, या पेंसिल से नक्शे पर बनाएँ।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:28
+#: src/copy/studio-roof.ts:29
 msgid "Tap each corner of the roof"
 msgstr "छत के हर कोने पर टैप करें"
 
@@ -22647,7 +22727,7 @@ msgid "Technology"
 msgstr "तकनीक"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:99
+#: src/copy/studio-sheet.ts:100
 msgid "Teeth"
 msgstr "दाँते"
 
@@ -22797,12 +22877,12 @@ msgid "That code is used up"
 msgstr "वह कोड खर्च हो चुका है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:66
+#: src/copy/studio-roof.ts:67
 msgid "That corner was too close to another. The roof went back."
 msgstr "वह कोना दूसरे कोने के बहुत पास था। छत वापस गई।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:68
+#: src/copy/studio-roof.ts:69
 msgid "That corner would be too close to another."
 msgstr "वह कोना दूसरे कोने के बहुत पास होगा।"
 
@@ -22909,7 +22989,7 @@ msgid "That isn't a hex colour."
 msgstr "यह hex रंग नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:79
+#: src/copy/studio-roof.ts:80
 msgid "That length is far from the picture. Check the number."
 msgstr "यह लंबाई तस्वीर से बहुत अलग है। संख्या जाँचें।"
 
@@ -22994,12 +23074,12 @@ msgid "Thatch or kutcha"
 msgstr "छप्पर या कच्ची छत"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:73
+#: src/copy/studio-roof.ts:74
 msgid "The {length} you set would change. Change that length first."
 msgstr "आपकी तय की गई {length} लंबाई बदल जाएगी। पहले वह लंबाई बदलें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:103
+#: src/copy/studio-canvas.ts:102
 msgid "The 3D view cannot start on this device. Try another browser."
 msgstr "इस डिवाइस पर 3D व्यू शुरू नहीं हो सकता। दूसरा ब्राउज़र आज़माएँ।"
 
@@ -23324,7 +23404,7 @@ msgid "the generation"
 msgstr "उत्पादन"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:81
+#: src/copy/studio-sheet.ts:82
 msgid "The glass faces this way"
 msgstr "काँच इस ओर है"
 
@@ -23727,7 +23807,7 @@ msgid "the picture change"
 msgstr "तस्वीर का बदलाव"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:69
+#: src/copy/studio-canvas.ts:70
 msgid "The picture is a guide. Lengths you set are the true size."
 msgstr "तस्वीर सिर्फ़ गाइड है। आपकी तय की गई लंबाइयाँ ही असली माप हैं।"
 
@@ -23987,7 +24067,7 @@ msgid "The size you sell most often"
 msgstr "जो आकार आप सबसे ज़्यादा बेचते हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:72
+#: src/copy/studio-canvas.ts:73
 msgid "The sky picture did not load. Type the size, or draw on the grid."
 msgstr "आसमान की तस्वीर नहीं खुली। नाप लिखें, या ग्रिड पर बनाएँ।"
 
@@ -24217,7 +24297,7 @@ msgid "There is no open wait."
 msgstr "कोई इंतज़ार चालू नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:73
+#: src/copy/studio-canvas.ts:74
 msgid "There is no sky picture of this place. Type the size, or draw on the grid."
 msgstr "इस जगह की आसमान की तस्वीर नहीं है। नाप लिखें, या ग्रिड पर बनाएँ।"
 
@@ -24339,12 +24419,12 @@ msgid "This design is not here"
 msgstr "यह डिज़ाइन यहाँ नहीं है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:35
+#: src/copy/studio-roof.ts:36
 msgid "This edge would cross another"
 msgstr "यह किनारा दूसरे को काटेगा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:83
+#: src/copy/studio-sheet.ts:84
 msgid "This end"
 msgstr "यह सिरा"
 
@@ -24449,7 +24529,7 @@ msgid "This is paused for your company. Reading and export still work."
 msgstr "यह आपकी कंपनी के लिए रुका हुआ है। देखना और एक्सपोर्ट अब भी काम करते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:78
+#: src/copy/studio-sheet.ts:79
 msgid "This is the low side"
 msgstr "यह निचली तरफ़ है"
 
@@ -24474,7 +24554,7 @@ msgid "This lead is already won. Its project is on the board."
 msgstr "यह लीड पहले ही जीती जा चुकी है। इसका प्रोजेक्ट बोर्ड पर है।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:35
+#: src/copy/studio-canvas.ts:36
 msgid "This lead is closed. Changes are not saved."
 msgstr "यह लीड बंद है। बदलाव सेव नहीं होते।"
 
@@ -24767,7 +24847,7 @@ msgid "This screen arrives in a later update."
 msgstr "यह स्क्रीन बाद के किसी अपडेट में आएगी।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:69
+#: src/copy/studio-sheet.ts:70
 msgid "This side"
 msgstr "यह तरफ़"
 
@@ -24782,7 +24862,7 @@ msgid "This step did not load"
 msgstr "यह चरण लोड नहीं हुआ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:56
+#: src/copy/studio-canvas.ts:57
 msgid "This step is coming soon"
 msgstr "यह चरण जल्द आ रहा है"
 
@@ -24827,12 +24907,12 @@ msgid "This week"
 msgstr "इस हफ़्ते"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:67
+#: src/copy/studio-roof.ts:68
 msgid "Those edges would cross."
 msgstr "वे किनारे एक-दूसरे को काटेंगे।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:62
+#: src/copy/studio-roof.ts:63
 msgid "Those edges would cross. The roof went back."
 msgstr "वे किनारे एक-दूसरे को काटते। छत वापस गई।"
 
@@ -25029,7 +25109,7 @@ msgid "Tomorrow, {from}–{to}"
 msgstr "कल, {from}–{to}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:38
+#: src/copy/studio-roof.ts:39
 msgid "Too close to another corner"
 msgstr "दूसरे कोने के बहुत पास"
 
@@ -25039,7 +25119,7 @@ msgid "Too expensive"
 msgstr "बहुत महँगा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:37
+#: src/copy/studio-roof.ts:38
 msgid "Too far for this site"
 msgstr "इस साइट के लिए बहुत दूर"
 
@@ -25079,7 +25159,7 @@ msgid "Too many visits right now. Please try again in a few minutes."
 msgstr "अभी पेज पर बहुत भीड़ है। कृपया कुछ मिनट बाद फिर कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:80
+#: src/copy/studio-canvas.ts:81
 msgid "Top view"
 msgstr "ऊपर से व्यू"
 
@@ -25103,6 +25183,16 @@ msgstr "कुल स्थापित क्षमता"
 #: src/copy/plan-selection.ts:55
 msgid "Total today"
 msgstr "आज कुल"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:37
+msgid "Toward {way}"
+msgstr "{way} की ओर"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:38
+msgid "Toward {way} · {degrees}°"
+msgstr "{way} की ओर · {degrees}°"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-defaults-words.ts:80
@@ -25212,7 +25302,7 @@ msgstr "इनवॉइस नंबर का कोई हिस्सा आ�
 #: src/copy/roles-reference.ts:34
 #: src/copy/sign-in.ts:40
 #: src/copy/site-details.ts:77
-#: src/copy/studio-canvas.ts:27
+#: src/copy/studio-canvas.ts:28
 msgid "Try again"
 msgstr "फिर से कोशिश करें"
 
@@ -25317,12 +25407,12 @@ msgid "Turn the plan"
 msgstr "नक्शा घुमाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:90
+#: src/copy/studio-roof.ts:91
 msgid "Turn the roof"
 msgstr "छत घुमाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:24
+#: src/copy/studio-roof-tags.ts:26
 msgid "Turned {degrees}°"
 msgstr "{degrees}° घूमी"
 
@@ -25359,7 +25449,7 @@ msgid "Type"
 msgstr "प्रकार"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:64
+#: src/copy/studio-sheet.ts:65
 msgid "Type {name}"
 msgstr "{name} टाइप करें"
 
@@ -25409,7 +25499,7 @@ msgid "Type the size"
 msgstr "नाप लिखें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:68
+#: src/copy/studio-canvas.ts:69
 msgid "Type the size instead"
 msgstr "इसके बजाय नाप लिखें"
 
@@ -25446,7 +25536,7 @@ msgstr "आपकी फ़ाइल के अपने हेडर के न
 #: src/copy/my-day.ts:54
 #: src/copy/project-toast.ts:17
 #: src/copy/remove-roles.ts:32
-#: src/copy/studio-canvas.ts:89
+#: src/copy/studio-canvas.ts:90
 msgid "Undo"
 msgstr "पहले जैसा करें"
 
@@ -25715,7 +25805,7 @@ msgid "Upper floor"
 msgstr "ऊपरी मंज़िल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:97
+#: src/copy/studio-sheet.ts:98
 msgid "Upper slope"
 msgstr "ऊपरी ढलान"
 
@@ -26038,12 +26128,12 @@ msgstr "वर्शन"
 #. js-lingui-explicit-id
 #: src/copy/lead-designs.ts:28
 #: src/copy/proposal-after-versions.ts:43
-#: src/copy/studio-canvas.ts:79
+#: src/copy/studio-canvas.ts:80
 msgid "View"
 msgstr "देखें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:28
+#: src/copy/studio-canvas.ts:29
 msgid "View only"
 msgstr "सिर्फ़ देखें"
 
@@ -26058,7 +26148,7 @@ msgid "View only — an owner or Operations edits."
 msgstr "सिर्फ़ देखने के लिए — मालिक या ऑपरेशंस बदलाव करते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:29
+#: src/copy/studio-canvas.ts:30
 msgid "View only · {name} is editing"
 msgstr "सिर्फ़ देखें · {name} बदल रहे हैं"
 
@@ -26278,7 +26368,7 @@ msgid "Waking the lead…"
 msgstr "लीड वापस लाई जा रही है…"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:142
+#: src/copy/studio-sheet.ts:143
 msgid "Wall"
 msgstr "दीवार"
 
@@ -26557,7 +26647,7 @@ msgid "Went dormant"
 msgstr "निष्क्रिय हुई"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:137
+#: src/copy/studio-sheet.ts:138
 msgid "west"
 msgstr "पश्चिम"
 
@@ -27000,12 +27090,12 @@ msgid "Where the model stops"
 msgstr "मॉडल कहाँ रुकता है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:98
+#: src/copy/studio-sheet.ts:99
 msgid "Where the slope breaks"
 msgstr "ढलान कहाँ बदलती है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:102
+#: src/copy/studio-sheet.ts:103
 msgid "Where the valley sits"
 msgstr "घाटी कहाँ है"
 
@@ -27223,7 +27313,7 @@ msgid "Win rate"
 msgstr "जीत दर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:46
+#: src/copy/studio-canvas.ts:47
 msgid "Wiring"
 msgstr "वायरिंग"
 
@@ -27397,7 +27487,7 @@ msgid "worse"
 msgstr "खराब"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:22
+#: src/copy/studio-roof-tags.ts:24
 msgid "Would cross"
 msgstr "कटेगा"
 
@@ -28148,12 +28238,12 @@ msgid "Your language was not saved"
 msgstr "आपकी भाषा सहेजी नहीं गई"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:23
+#: src/copy/studio-canvas.ts:24
 msgid "Your last change is not saved yet. If you leave now, it is lost."
 msgstr "आपका पिछला बदलाव अभी सेव नहीं हुआ है। अभी छोड़ेंगे तो यह खो जाएगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:40
+#: src/copy/studio-canvas.ts:41
 msgid "Your last change is not saved yet. Site details open once it is."
 msgstr "आपका पिछला बदलाव अभी सहेजा नहीं गया है। सहेजे जाने के बाद साइट का विवरण खुलेगा।"
 
@@ -28337,12 +28427,12 @@ msgid "Your photo, language and theme"
 msgstr "आपकी फ़ोटो, भाषा और थीम"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:32
+#: src/copy/studio-roof.ts:33
 msgid "Your pick was not saved."
 msgstr "आपकी पसंद सेव नहीं हुई।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:59
+#: src/copy/studio-canvas.ts:60
 msgid "Your picture"
 msgstr "आपकी तस्वीर"
 

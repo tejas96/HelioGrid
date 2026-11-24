@@ -61,6 +61,7 @@ const SHEET = {
   lowAgainst: /*i18n*/ { id: 'Low side against {roof}’s wall · rain runs into it' },
   reset: /*i18n*/ { id: 'Back to {value}' },
   resetSide: /*i18n*/ { id: 'Back to {value}, as the other sides' },
+  resetFace: /*i18n*/ { id: 'Back to {value}, as the roof' },
   typeIt: /*i18n*/ { id: 'Type {name}' },
   slideIt: /*i18n*/ { id: 'Slide {name}' },
   moreShapes: /*i18n*/ { id: 'More shapes' },
@@ -210,6 +211,8 @@ export function studioSheetWords(t: T) {
     lowAgainst: (roof: RoofName) => t(SHEET.lowAgainst, { roof: roofNameWord(t, roof) }),
     /** A reset: back to the studio's value, or on a side to the roof's; the value formatted. */
     reset: (value: string, onSide = false) => t(onSide ? SHEET.resetSide : SHEET.reset, { value }),
+    /** A face drawn by hand's own slope: its reset brings the roof's back. */
+    resetFace: (value: string) => t(SHEET.resetFace, { value }),
     /** The small switch beside a number, spoken: to the box, or back to the slider. */
     typeIt: (name: TranslatedText) => t(SHEET.typeIt, { name }),
     slideIt: (name: TranslatedText) => t(SHEET.slideIt, { name }),

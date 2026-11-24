@@ -1,6 +1,6 @@
 import type { Roof } from './document';
-import type { GroundPoint } from './ground';
 import { handFaces } from './roof-cuts';
+import type { BuiltFace } from './roof-faces';
 import {
   type FormedRoof,
   MANSARD_LOWER_DEG,
@@ -8,11 +8,11 @@ import {
   roofFormed,
   type SideOwn,
 } from './roof-forms';
+import { handFacesDrawn } from './roof-hand-faces';
 import { roofKindOf, roofSidesOf } from './roof-kind';
 import { type RoofFacts, roofMaterialNow, roofShapeNow } from './roof-levels';
 import { materialSlopeDeg, type RoofShape } from './roof-material';
 import { type HandFaceSet, type RoofSide, SIDE_ENDS, type SideEnd } from './roof-parts';
-import { cornerAfter, distanceToSegment, edgeLengths, pointInside, roofArea } from './roof-shape';
 
 /**
  * A stored roof as the kernel builds it (`T-M05-002`, part e): its shape and one slope, and all it
@@ -103,43 +103,36 @@ export function roofFormOf(roof: Roof, facts: RoofFacts, picks: FormPicks = {}):
 }
 
 /**
- * How near the outline a drawn face's corner may sit, in metres: kept to the centimetre, an edge's
- * ends and a corner along it each round on their own, up to a centimetre's diagonal apart. The
- * faces may miss a band a centimetre wide along the outline, and no more.
+ * The slope a face drawn by hand stands at: its own where a person set it, else its roof's as it
+ * is now — the roof's Slope row, or what its material and kind start it at. The degrees a face
+ * stores beside `setBy: 'system'` are for a reader that does not follow the roof.
  */
-const FIT_M = 0.01;
-const ON_EDGE_M = FIT_M * Math.SQRT2;
+export function handFaceSlopeDeg(roof: Roof, face: HandFaceSet, facts: RoofFacts): number {
+  return face.slope.setBy === 'person' ? face.slope.degrees : roofSlopeDeg(roof, facts);
+}
 
-/**
- * Faces drawn by hand still fit the outline they were drawn on: inside it, and covering it. An
- * outline changed since — a corner moved, added or taken away, a length set, a plan resized, by
- * this app or by an older one that keeps faces it does not read — leaves them stale, and the roof
- * stands flat until faces are drawn again.
- */
-function facesFit(outline: readonly GroundPoint[], faces: readonly HandFaceSet[]): boolean {
-  const on = (point: GroundPoint) =>
-    pointInside(point, outline) ||
-    outline.some((a, i) => distanceToSegment(point, a, cornerAfter(outline, i)) <= ON_EDGE_M);
-  if (!faces.every((face) => face.corners.every(on))) return false;
-  const area = roofArea(outline);
-  const covered = faces.reduce((sum, face) => sum + roofArea(face.corners), 0);
-  const around = edgeLengths(outline).reduce((sum, each) => sum + each, 0);
-  return Math.abs(covered - area) <= around * FIT_M;
+/** A roof's faces drawn by hand as the kernel builds them, each at the slope it stands at. */
+export function handFacesOf(
+  roof: Roof,
+  faces: readonly HandFaceSet[],
+  facts: RoofFacts,
+): BuiltFace[] {
+  return handFaces(
+    faces.map((face) => ({
+      corners: face.corners,
+      slopeDeg: handFaceSlopeDeg(roof, face, facts),
+      lowSide: face.lowSide,
+    })),
+  );
 }
 
 /** A stored roof's faces. */
 export function roofBuilt(roof: Roof, facts: RoofFacts, picks?: FormPicks): FormedRoof {
   const stored = roof.shape?.faces ?? [];
-  const drawn = facesFit(roof.corners, stored) ? stored : [];
+  const drawn = handFacesDrawn(roof) === 'whole' ? stored : [];
   // Any shape with faces a person drew: those faces, each at its own slope.
   if (roofShapeNow(roof, facts) === 'any' && drawn.length > 0) {
-    const faces = handFaces(
-      drawn.map((face) => ({
-        corners: face.corners,
-        slopeDeg: face.slope.degrees,
-        lowSide: face.lowSide,
-      })),
-    );
+    const faces = handFacesOf(roof, drawn, facts);
     const topM = Math.max(0, ...faces.flatMap((face) => face.corners.map((corner) => corner.up)));
     return { faces, topM, walls: [], built: 'any' };
   }

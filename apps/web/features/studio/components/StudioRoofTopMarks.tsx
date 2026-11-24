@@ -9,7 +9,8 @@ import { pointText } from './roof-marks-place';
 /**
  * One roof's sides in the top view (`T-M05-002`, part e), inside the roofs' drawing: solid where a
  * side has a wall, dashed where it has none, split exactly where another roof takes the side; the
- * picked roof glows; a short line runs down each sloped face. A roof with no marks yet — the
+ * picked roof glows; a short line runs down each sloped face, and an Any-shape roof's faces drawn
+ * by hand show as they are drawn. A roof with no marks yet — the
  * kernel's answer a frame behind — keeps its plain line.
  */
 export function RoofSideLines({
@@ -63,6 +64,11 @@ export function RoofSideLines({
           data-closed="true"
         />
       ))}
+      {/* An Any-shape roof's faces drawn by hand, each its own ring (board 5.10). */}
+      {mark.faces.map((ring) => {
+        const line = ring.map(pointText).join(';');
+        return <path key={line} className="hg-roof-face" data-pts={line} data-closed="true" />;
+      })}
       {mark.slopes.map((slope) => {
         const line = `${pointText(slope.from)};${pointText(slope.to)}`;
         return (

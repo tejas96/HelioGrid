@@ -2,6 +2,7 @@
 import type { RoofSheetRows, RoofSheetView } from '@heliogrid/domain';
 import { Button, Pressable, Switch, useFormat } from '@heliogrid/ui';
 import { useState } from 'react';
+import { StudioFacesRow } from './StudioFaceRows';
 import { StudioKindChips } from './StudioKindChips';
 import { StudioShapePicture } from './StudioShapePicture';
 import { HeightRow } from './StudioSheetHeight';
@@ -44,6 +45,37 @@ function ShapeTiles({ facts, shape }: { facts: SheetFacts; shape: ShapeRow }) {
   );
 }
 
+/**
+ * A sloped roof's Slope row, the way it runs down — once it has one — and a low side against a
+ * taller roof's wall.
+ */
+function SlopeRows({ facts, rows }: { facts: SheetFacts; rows: RoofSheetRows }) {
+  const { units, words } = facts;
+  const format = useFormat();
+  const { slope, shape } = rows;
+  if (slope === null) return null;
+  const lower = shape?.is === 'mansard' || shape?.is === 'gambrel';
+  const ridge = slope.ridgeAboveM > 0 ? format.roofHeight(slope.ridgeAboveM, units) : null;
+  return (
+    <>
+      <NumberRow
+        facts={facts}
+        shown={slope.number}
+        label={words.rowNumber('slope', lower)}
+        waits={slope.waits}
+      />
+      {slope.way === null ? null : (
+        <p className="hg-sheet-line">{words.slopeWay(slope.way, ridge)}</p>
+      )}
+      {slope.lowAgainst === null ? null : (
+        <p className="hg-sheet-line" data-waits="true">
+          {words.lowAgainst(slope.lowAgainst)}
+        </p>
+      )}
+    </>
+  );
+}
+
 /** Every row of a roof's sheet that this roof has a use for, in the board's order. */
 export function StudioSheetRows({
   facts,
@@ -58,9 +90,7 @@ export function StudioSheetRows({
   const format = useFormat();
   const { moves } = studio;
   const text = numberShownBy(format, units);
-  const height = (metres: number) => format.roofHeight(metres, units);
-  const { kind, material, shape, slope, parapet, details } = rows;
-  const lower = shape?.is === 'mansard' || shape?.is === 'gambrel';
+  const { kind, material, shape, parapet, details } = rows;
   return (
     <>
       {kind === null ? null : (
@@ -99,25 +129,9 @@ export function StudioSheetRows({
           <ShapeTiles facts={facts} shape={shape} />
         </SheetRow>
       )}
+      <StudioFacesRow facts={facts} rows={rows} />
       <HeightRow facts={facts} rows={rows} sheet={sheet} />
-      {slope === null ? null : (
-        <>
-          <NumberRow
-            facts={facts}
-            shown={slope.number}
-            label={words.rowNumber('slope', lower)}
-            waits={slope.waits}
-          />
-          <p className="hg-sheet-line">
-            {words.slopeWay(slope.way, slope.ridgeAboveM > 0 ? height(slope.ridgeAboveM) : null)}
-          </p>
-          {slope.lowAgainst === null ? null : (
-            <p className="hg-sheet-line" data-waits="true">
-              {words.lowAgainst(slope.lowAgainst)}
-            </p>
-          )}
-        </>
-      )}
+      <SlopeRows facts={facts} rows={rows} />
       {rows.extras.map((shown) => (
         <NumberRow key={shown.key} facts={facts} shown={shown} label={words.rowNumber(shown.key)} />
       ))}

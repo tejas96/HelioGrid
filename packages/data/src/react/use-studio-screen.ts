@@ -20,7 +20,7 @@ import {
 import { useMemo, useRef, useState } from 'react';
 import { planOutlinesOf } from './own-picture-view';
 import { readOf } from './read';
-import { closePlacingOf, roofPlaceMoves } from './roof-place-moves';
+import { closingOf, roofPlaceMoves } from './roof-place-moves';
 import { heightPullWith, type RoofModelSeen, useRoofModel } from './roof-scene-view';
 import { arrivalOf, framedWithCard, useSizeCardOpens } from './size-card';
 import {
@@ -30,8 +30,9 @@ import {
   useSaveRetries,
   useStudioDocument,
 } from './studio-document-state';
+import { framedForFaces, studioFacesMoves } from './studio-faces-moves';
 import type { StudioScreen } from './studio-screen-view';
-import { historyStep, studioBack, undoRedoOf } from './studio-undo-back';
+import { studioBack, undoRedoMoves, undoRedoOf } from './studio-undo-back';
 import { useStudioPicture } from './use-design-picture';
 import { useDesignScreen } from './use-design-screen';
 import { useOwnPictureScreen } from './use-own-picture-screen';
@@ -104,7 +105,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     numberEntry: session.user?.numberEntry ?? 'slider',
     setNumberEntry: (entry) => void session.setStudioPicks({ numberEntry: entry }),
     planOutlines: planOutlinesOf(own.view.plan),
-    placingOf: closePlacingOf(facts, opened?.subject.siteRoof),
+    closingOf: closingOf(facts, opened?.subject.siteRoof, pin),
   });
   const { step, act } = roof;
   const { roofStep } = roof.view;
@@ -148,6 +149,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     numberInHand,
     stairs.inHand,
     sheet.state.heightHeld,
+    sheet.face,
   );
   seen.current = hitAt;
   const stairsMoment = stairs.seen(model);
@@ -160,6 +162,18 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     setView('top');
     roof.moves.draw();
   };
+  const faces = studioFacesMoves({
+    latest,
+    change,
+    editable,
+    step,
+    act,
+    closeSheet: sheet.moves.done,
+    toTop: () => setView('top'),
+    startFaces: roof.startFaces,
+    pickShape: sheet.moves.pickShape,
+    sheet: roofSheet,
+  });
   const panel = useRoofsPanel({
     document,
     latest,
@@ -208,7 +222,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     ...panel.view,
     ...roofsWithSheet(
       roof.view.heights,
-      framedWithCard(fit, document, roof.view.sizeCard),
+      framedWithCard(framedForFaces(fit, document, roofStep), document, roof.view.sizeCard),
       roofSheet,
       document,
     ),
@@ -240,29 +254,9 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         if (at === null || at.present.picture === choice) return;
         change(historyAfter(at, { ...at.present, picture: choice }));
       },
-      // While drawing, Undo takes the last corner off; with a length or a drag in hand, it puts
-      // that back first.
-      undo: () => {
-        // A height or a number in hand is put back first, as a length or a drag is.
-        if (sheet.dropInHand()) return;
-        const now = step.current.kind;
-        const left = step.current.kind === 'idle' && Boolean(step.current.left);
-        if (now === 'drawing' || left) act({ kind: 'undo_corner' });
-        else if (now === 'sizing' || now === 'dragging' || now === 'typing')
-          act({ kind: 'cancel' });
-        else if (latest.current !== null) {
-          const back = historyStep(latest.current, true);
-          act({ kind: 'history', undone: true, change: back.change });
-          change(back.next);
-        }
-      },
-      redo: () => {
-        if (step.current.kind === 'idle' && latest.current !== null) {
-          const on = historyStep(latest.current, false);
-          act({ kind: 'history', undone: false, change: on.change });
-          change(on.next);
-        }
-      },
+      ...undoRedoMoves({ dropInHand: sheet.dropInHand, step, act, walk: faces.walk }),
+      drawFaces: faces.drawFaces,
+      pickShape: faces.pickShape,
       chooseUnits: (system) => void session.setUnitPreference(system),
       openTheirs: () => void documentQuery.refetch(),
       retry: () => void queue.flush(),

@@ -13,6 +13,8 @@ import {
 } from '@heliogrid/ui';
 import { type KeyboardEvent, type Ref, useEffect, useRef } from 'react';
 import { MagnetSwitch } from './StudioBarPills';
+import { StudioFaceRows } from './StudioFaceRows';
+import type { SheetFacts } from './StudioSheetRow';
 import { StudioSheetRows } from './StudioSheetRows';
 import { StudioDetailsRows, StudioSideRows } from './StudioSideSheet';
 
@@ -20,7 +22,8 @@ import { StudioDetailsRows, StudioSideRows } from './StudioSideSheet';
  * A roof's sheet (`T-M05-002`, part e, board section 6): one row per value — what it is, what it
  * is made of, its shape, its height, its slope and the shape's own numbers, its parapet, its
  * setback and the parapet's details. A side tapped on the model shows its own sheet in the roof's
- * place, and Parapet details is its own short sheet; Back returns to the roof's. On a phone it
+ * place, as does a face drawn by hand on an Any-shape roof, and Parapet details is its own short
+ * sheet; Back returns to the roof's. On a phone it
  * opens from the foot in the bar's place; on a desktop at the right, under the head. Delete sits at
  * the start of the foot, away from × and Done. A reader sees the values and no control.
  */
@@ -47,7 +50,7 @@ export function StudioRoofSheet({
   phone: boolean;
 }) {
   const format = useFormat();
-  const { moves, sheetRows: rows, sideRows: side, sheetPart: part } = studio;
+  const { moves, sheetRows: rows, sheetPart: part } = studio;
   const title = useRef<HTMLSpanElement>(null);
   // A sheet opened lands focus on its title, so a keyboard or a screen reader starts there.
   // biome-ignore lint/correctness/useExhaustiveDependencies: each roof or side opened is a new place to land
@@ -58,7 +61,7 @@ export function StudioRoofSheet({
   const facts = { studio, units, words, phone };
   const heading = headingOf(studio, rows, words, (metres) => format.roofHeight(metres, units));
   const back = backOf(studio);
-  const waits = part.kind === 'side' ? (side?.waits ?? false) : rows.waits;
+  const waits = waitsOf(studio, rows);
   const close = () => {
     moves.closeRoof();
     landFocusOn(map);
@@ -105,19 +108,9 @@ export function StudioRoofSheet({
             </IconButton>
           </span>
         </div>
-        {/* A side's sheet, Parapet details or the roof's: each slides in when it takes the place. */}
-        <div
-          key={part.kind === 'side' ? `side-${part.side}` : part.kind}
-          className="hg-roof-sheet-rows"
-          data-part={part.kind}
-        >
-          {part.kind === 'side' && side !== null ? (
-            <StudioSideRows facts={facts} side={side} />
-          ) : part.kind === 'details' ? (
-            <StudioDetailsRows facts={facts} rows={rows} />
-          ) : (
-            <StudioSheetRows facts={facts} rows={rows} sheet={sheet} />
-          )}
+        {/* A side's sheet, a face's, Parapet details or the roof's: each slides in when it takes the place. */}
+        <div key={partKeyOf(part)} className="hg-roof-sheet-rows" data-part={part.kind}>
+          <PartRows facts={facts} rows={rows} sheet={sheet} />
           {waits ? (
             <p className="hg-sheet-check">
               <span className="hg-sheet-dot" aria-hidden="true" />
@@ -142,6 +135,41 @@ export function StudioRoofSheet({
   );
 }
 
+/** What a part's rows slide in by: a new key each time another part takes the place. */
+function partKeyOf(part: StudioScreen['sheetPart']): string {
+  if (part.kind === 'side') return `side-${part.side}`;
+  return part.kind === 'face' ? `face-${part.face}` : part.kind;
+}
+
+/** Whether the part shown waits for a person: its sheet then says once "Check it on site." */
+function waitsOf(studio: StudioScreen, rows: RoofSheetRows): boolean {
+  const part = studio.sheetPart;
+  if (part.kind === 'side') return studio.sideRows?.waits ?? false;
+  return part.kind === 'face' ? false : rows.waits;
+}
+
+/** The rows of the part shown: a side's, a face's, Parapet details or the roof's own. */
+function PartRows({
+  facts,
+  rows,
+  sheet,
+}: {
+  facts: SheetFacts;
+  rows: RoofSheetRows;
+  sheet: RoofSheetView;
+}) {
+  const { studio } = facts;
+  const part = studio.sheetPart;
+  if (part.kind === 'side' && studio.sideRows !== null) {
+    return <StudioSideRows facts={facts} side={studio.sideRows} />;
+  }
+  if (part.kind === 'face' && studio.faceRows !== null) {
+    return <StudioFaceRows facts={facts} face={studio.faceRows} />;
+  }
+  if (part.kind === 'details') return <StudioDetailsRows facts={facts} rows={rows} />;
+  return <StudioSheetRows facts={facts} rows={rows} sheet={sheet} />;
+}
+
 /** The sheet's head: the roof's name and where it sits, a side's way, or Parapet details. */
 function headingOf(
   studio: StudioScreen,
@@ -155,6 +183,10 @@ function headingOf(
     return { title: words.thisSide, line: words.sideOf(side.name, side.faces) };
   }
   if (part.kind === 'details') return { title: words.rowDetails, line: name };
+  // A face Undo took away leaves the roof's own sheet, as its rows do.
+  if (part.kind === 'face' && studio.faceRows !== null) {
+    return { title: words.faceDrawing(part.face + 1), line: name };
+  }
   return { title: name, line: words.rowSits(rows.sits, heightOf) };
 }
 

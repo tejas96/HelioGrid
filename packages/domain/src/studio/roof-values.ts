@@ -8,6 +8,7 @@ import {
   RAISED_WIDTH_SHARE,
   TEETH_DEFAULT,
 } from './roof-forms';
+import { handFacesKept } from './roof-hand-faces';
 import { roofSidesOf } from './roof-kind';
 import { type RoofFacts, roofShapeNow } from './roof-levels';
 import {
@@ -90,8 +91,34 @@ function storedOf(roof: Roof, key: RoofNumber): number | undefined {
   }
 }
 
-/** A number as it stands: a side's own where the side is named, else the roof's. */
+/**
+ * A number as it stands: a side's own where the side is named, a face's own slope where a face
+ * drawn by hand is named, else the roof's. A face follows its roof's slope until a person sets its
+ * own: its reset brings the roof's back.
+ */
 export function roofNumberOf(
+  document: StudioDocument,
+  at: NumberAt,
+  facts: RoofFacts,
+): RoofNumberShown | null {
+  const shown = roofNumberAt(document, at, facts);
+  const roof = document.roofs[at.roof];
+  const face = at.key === 'slope' && at.face != null ? at.face : null;
+  const slope = roof === undefined || face === null ? undefined : handFacesKept(roof)[face]?.slope;
+  if (shown === null || slope === undefined) return shown;
+  // A face no person set follows the roof's slope as it is now, whatever it stores.
+  const value = slope.setBy === 'person' ? slope.degrees : shown.value;
+  return {
+    ...shown,
+    value,
+    byPerson: slope.setBy === 'person',
+    system: shown.value,
+    outside: value < shown.slide.min || value > shown.slide.max,
+  };
+}
+
+/** A number as it stands on the roof, or on a side named. */
+function roofNumberAt(
   document: StudioDocument,
   at: NumberAt,
   facts: RoofFacts,

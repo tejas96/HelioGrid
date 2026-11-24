@@ -1,4 +1,6 @@
 import type { Roof, StudioDocument } from './document';
+import { roofSlopeDeg } from './roof-built';
+import { handFaceSlopeSet } from './roof-hand-face-set';
 import { roofSidesOf } from './roof-kind';
 import { type RoofFacts, roofShapeNow } from './roof-levels';
 import {
@@ -40,6 +42,18 @@ export function roofWithSide(roof: Roof, side: number, change: (held: RoofSide) 
   return { ...roof, sides: roofSidesOf(roof).map((each, i) => (i === side ? change(each) : each)) };
 }
 
+/**
+ * The faces drawn by hand that no person gave a slope of their own take the roof's (E082): the
+ * Slope row sets every face of an Any-shape roof a person has not set, as it does a gable's.
+ */
+function withFacesFollowing(roof: Roof, facts: RoofFacts): Roof {
+  const faces = roof.shape?.faces;
+  if (roof.shape === undefined || faces === undefined) return roof;
+  const slope = { degrees: roofSlopeDeg(roof, facts), setBy: 'system' } as const;
+  const follow = faces.map((face) => (face.slope.setBy === 'person' ? face : { ...face, slope }));
+  return { ...roof, shape: { ...roof.shape, faces: follow } };
+}
+
 /** The roof with a person's value for one of its numbers; `undefined` takes the value away. */
 function roofWith(
   document: StudioDocument,
@@ -53,7 +67,7 @@ function roofWith(
   const shape = shapeRecordOf(roof, facts);
   switch (key) {
     case 'slope':
-      return { ...roof, slope: degrees };
+      return withFacesFollowing({ ...roof, slope: degrees }, facts);
     case 'upper_slope':
       return { ...roof, shape: { ...shape, upperSlope: degrees } };
     case 'break_in':
@@ -128,6 +142,9 @@ function changed(
   const roof = document.roofs[at.roof];
   if (roof === undefined) return document;
   const { key } = at;
+  if (key === 'slope' && at.face != null) {
+    return handFaceSlopeSet(document, at.roof, at.face, value, facts);
+  }
   const side = at.side ?? null;
   const made =
     side !== null && isSideNumber(key)

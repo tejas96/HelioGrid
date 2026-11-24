@@ -28,6 +28,7 @@ export function StudioSheetNumber({
   units,
   words,
   onSide = false,
+  onFace = false,
   ticks,
   withHead = true,
   onSlide,
@@ -43,6 +44,8 @@ export function StudioSheetNumber({
   words: StudioCanvasWords;
   /** A side's own number: its reset goes back to the roof's. */
   onSide?: boolean;
+  /** A face drawn by hand's own slope: its reset goes back to the roof's slope. */
+  onFace?: boolean;
   /** Named points on the track: the height's floors. */
   ticks?: readonly SliderTick[];
   onSlide: (value: number) => void;
@@ -102,7 +105,9 @@ export function StudioSheetNumber({
       {editable && shown.byPerson ? (
         <span className="hg-sheet-reset">
           <Button variant="ghost" size="md" onClick={onReset}>
-            {words.reset(text({ ...shown, value: shown.system }), onSide)}
+            {onFace
+              ? words.resetFace(text({ ...shown, value: shown.system }))
+              : words.reset(text({ ...shown, value: shown.system }), onSide)}
           </Button>
         </span>
       ) : null}

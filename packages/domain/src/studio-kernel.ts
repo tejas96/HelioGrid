@@ -58,6 +58,14 @@ export {
   roofSurfaceM2,
   roofsAreaM2,
 } from './studio/roof-free-ground';
+export {
+  handFaceClosed,
+  handFaceLowSet,
+  handFaceLowSideOf,
+  handFaceRowsOf,
+  handFaceSlopeSet,
+  handFacesCleared,
+} from './studio/roof-hand-face-set';
 export { heightPullOf } from './studio/roof-height-magnet';
 export { roofHitOf } from './studio/roof-hit';
 export {

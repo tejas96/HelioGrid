@@ -20,6 +20,7 @@ import {
   stairsPlaced,
 } from '@heliogrid/domain';
 import {
+  handFaceRowsOf,
   heightPullOf,
   roofHitOf,
   roofListOf,
@@ -74,6 +75,7 @@ const NOTHING: RoofModelShown = {
   roofsAreaM2: 0,
   sheetRows: null,
   sideRows: null,
+  faceRows: null,
   stairs: null,
   stairsAsk: false,
   motion: null,
@@ -109,6 +111,7 @@ export interface RoofModelSeen extends RoofModelShown {
 export interface SheetOpen {
   readonly roof: number;
   readonly side: number | null;
+  readonly face: number | null;
   readonly slide: { readonly min: number; readonly max: number };
 }
 
@@ -163,6 +166,10 @@ export function roofModelShown(
       open === null || open.side === null
         ? null
         : sideSheetRowsOf(shown, open.roof, open.side, facts, worked, latitude),
+    faceRows:
+      open === null || open.face === null
+        ? null
+        : handFaceRowsOf(shown, open.roof, open.face, facts),
     ...stairsSeen(shown, worked.edges, facts.clearPathM, stairsInHand),
     motion: motionOf(
       memory,
@@ -194,6 +201,8 @@ export function useRoofModel(
   numberInHand: { readonly at: NumberAt; readonly value: number } | null = null,
   stairsInHand: StairsPlace | null = null,
   heightHeld = false,
+  /** The face drawn by hand whose sheet shows over the roof's. */
+  face: number | null = null,
 ): RoofModelSeen {
   const memory = useRef<RoofMemory>({});
   const open = sheet?.roof ?? null;
@@ -209,7 +218,7 @@ export function useRoofModel(
     const sheetOpen =
       open === null || min === undefined || max === undefined
         ? null
-        : { roof: open, side, slide: { min, max } };
+        : { roof: open, side, face, slide: { min, max } };
     return roofModelShown(
       shown,
       facts,
@@ -229,6 +238,7 @@ export function useRoofModel(
     setBy,
     pin,
     side,
+    face,
     numberInHand,
     min,
     max,

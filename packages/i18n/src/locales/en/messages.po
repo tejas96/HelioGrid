@@ -457,6 +457,21 @@ msgid "{count, plural, one {# dormant lead, show it} other {# dormant leads, sho
 msgstr "{count, plural, one {# dormant lead, show it} other {# dormant leads, show them}}"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:30
+msgid "{count, plural, one {# face · draw the rest} other {# faces · draw the rest}}"
+msgstr "{count, plural, one {# face · draw the rest} other {# faces · draw the rest}}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:25
+msgid "{count, plural, one {# face drawn · tap it in 3D to set its slope} other {# faces drawn · tap one in 3D to set its slope}}"
+msgstr "{count, plural, one {# face drawn · tap it in 3D to set its slope} other {# faces drawn · tap one in 3D to set its slope}}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:33
+msgid "{count, plural, one {# face} other {# faces}}"
+msgstr "{count, plural, one {# face} other {# faces}}"
+
+#. js-lingui-explicit-id
 #: src/copy/job-tray.ts:13
 msgid "{count, plural, one {# failed} other {# failed}}"
 msgstr "{count, plural, one {# failed} other {# failed}}"
@@ -1739,7 +1754,7 @@ msgid "{left} of this cycle’s {total} days remain on {date}."
 msgstr "{left} of this cycle’s {total} days remain on {date}."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:21
+#: src/copy/studio-roof-tags.ts:23
 msgid "{length} held"
 msgstr "{length} held"
 
@@ -2329,7 +2344,7 @@ msgid "{name} removed."
 msgstr "{name} removed."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:30
+#: src/copy/studio-canvas.ts:31
 msgid "{name} saved this design at {time}. Your last change is not saved."
 msgstr "{name} saved this design at {time}. Your last change is not saved."
 
@@ -2484,7 +2499,7 @@ msgid "{number} · {place}"
 msgstr "{number} · {place}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:49
+#: src/copy/studio-canvas.ts:50
 msgid "{number} · {step}"
 msgstr "{number} · {step}"
 
@@ -2761,7 +2776,7 @@ msgid "{pin}, draggable"
 msgstr "{pin}, draggable"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:101
+#: src/copy/studio-canvas.ts:100
 msgid "{place} · roof not set up yet"
 msgstr "{place} · roof not set up yet"
 
@@ -2953,7 +2968,7 @@ msgid "{role} · {company}"
 msgstr "{role} · {company}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:70
+#: src/copy/studio-sheet.ts:71
 msgid "{roof} · faces {way}"
 msgstr "{roof} · faces {way}"
 
@@ -3665,7 +3680,7 @@ msgid "3D preview coming soon"
 msgstr "3D preview coming soon"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:81
+#: src/copy/studio-canvas.ts:82
 msgid "3D view"
 msgstr "3D view"
 
@@ -3785,7 +3800,7 @@ msgid "A customer sends a friend. Add the friend and pick who sent them."
 msgstr "A customer sends a friend. Add the friend and pick who sent them."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:43
+#: src/copy/studio-roof.ts:44
 #: src/copy/studio-size.ts:24
 msgid "A design holds at most {max} roofs"
 msgstr "A design holds at most {max} roofs"
@@ -3794,6 +3809,11 @@ msgstr "A design holds at most {max} roofs"
 #: src/copy/proposal-after-track.ts:42
 msgid "A draft for {name}"
 msgstr "A draft for {name}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:16
+msgid "A face stays on its roof. Tap inside the roof or on its edge."
+msgstr "A face stays on its roof. Tap inside the roof or on its edge."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:15
@@ -3853,19 +3873,19 @@ msgid "A lead outside your list"
 msgstr "A lead outside your list"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:70
+#: src/copy/studio-roof.ts:71
 #: src/copy/studio-size.ts:20
 msgid "A length is at least {length}."
 msgstr "A length is at least {length}."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:71
+#: src/copy/studio-roof.ts:72
 #: src/copy/studio-size.ts:21
 msgid "A length is at most {length}."
 msgstr "A length is at most {length}."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:72
+#: src/copy/studio-roof.ts:73
 msgid "A length you set would change. Change that length first."
 msgstr "A length you set would change. Change that length first."
 
@@ -4057,22 +4077,27 @@ msgid "A role of your own"
 msgstr "A role of your own"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:41
+#: src/copy/studio-roof.ts:42
 msgid "A roof has at most {max} corners"
 msgstr "A roof has at most {max} corners"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:78
+#: src/copy/studio-roof.ts:79
 msgid "A roof has at most {max} corners."
 msgstr "A roof has at most {max} corners."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:77
+#: src/copy/studio-faces.ts:22
+msgid "A roof holds at most this many. Tap Undo, and draw fewer, bigger faces."
+msgstr "A roof holds at most this many. Tap Undo, and draw fewer, bigger faces."
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof.ts:78
 msgid "A roof keeps at least 3 corners."
 msgstr "A roof keeps at least 3 corners."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:42
+#: src/copy/studio-roof.ts:43
 msgid "A roof needs at least 3 corners"
 msgstr "A roof needs at least 3 corners"
 
@@ -4299,7 +4324,7 @@ msgid "Above {limit}, many banks stop one UPI payment. Use bank transfer — the
 msgstr "Above {limit}, many banks stop one UPI payment. Use bank transfer — the message carries the account and IFSC."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:86
+#: src/copy/studio-sheet.ts:87
 msgid "Above {roof} · to check"
 msgstr "Above {roof} · to check"
 
@@ -4481,7 +4506,7 @@ msgid "Add a contact"
 msgstr "Add a contact"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:86
+#: src/copy/studio-roof.ts:87
 msgid "Add a corner on this edge"
 msgstr "Add a corner on this edge"
 
@@ -4787,7 +4812,7 @@ msgid "Adding {name}"
 msgstr "Adding {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:67
+#: src/copy/studio-canvas.ts:68
 msgid "Adding your own picture is coming soon"
 msgstr "Adding your own picture is coming soon"
 
@@ -4911,7 +4936,7 @@ msgid "All languages"
 msgstr "All languages"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:51
+#: src/copy/studio-roof.ts:52
 msgid "All lengths sized from the one length you set."
 msgstr "All lengths sized from the one length you set."
 
@@ -5139,7 +5164,7 @@ msgid "Any manager"
 msgstr "Any manager"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:121
+#: src/copy/studio-sheet.ts:122
 msgid "Any shape"
 msgstr "Any shape"
 
@@ -5536,6 +5561,11 @@ msgid "At handover"
 msgstr "At handover"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:21
+msgid "At most {max} faces"
+msgstr "At most {max} faces"
+
+#. js-lingui-explicit-id
 #: src/copy/usage-page.ts:29
 msgid "At the cap"
 msgstr "At the cap"
@@ -5597,8 +5627,8 @@ msgstr "Awaiting your decision"
 #: src/copy/lead-import.ts:25
 #: src/copy/project-detail.ts:22
 #: src/copy/proposal-builder-frame.ts:55
-#: src/copy/studio-canvas.ts:19
-#: src/copy/studio-sheet.ts:68
+#: src/copy/studio-canvas.ts:20
+#: src/copy/studio-sheet.ts:69
 msgid "Back"
 msgstr "Back"
 
@@ -5618,7 +5648,7 @@ msgid "Back to {name}’s lead"
 msgstr "Back to {name}’s lead"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:51
+#: src/copy/studio-canvas.ts:52
 msgid "Back to {step}"
 msgstr "Back to {step}"
 
@@ -5631,6 +5661,11 @@ msgstr "Back to {value}"
 #: src/copy/studio-sheet.ts:63
 msgid "Back to {value}, as the other sides"
 msgstr "Back to {value}, as the other sides"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-sheet.ts:64
+msgid "Back to {value}, as the roof"
+msgstr "Back to {value}, as the roof"
 
 #. js-lingui-explicit-id
 #: src/copy/roles-reference.ts:42
@@ -5687,7 +5722,7 @@ msgid "Back to the list"
 msgstr "Back to the list"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:92
+#: src/copy/studio-canvas.ts:93
 msgid "Back to the pin"
 msgstr "Back to the pin"
 
@@ -5697,7 +5732,7 @@ msgid "Back to the proposal"
 msgstr "Back to the proposal"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:74
+#: src/copy/studio-sheet.ts:75
 msgid "Back to the roof’s parapet"
 msgstr "Back to the roof’s parapet"
 
@@ -5818,7 +5853,7 @@ msgid "Before dispatch"
 msgstr "Before dispatch"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:88
+#: src/copy/studio-sheet.ts:89
 msgid "Below {roof}’s parapet · to check"
 msgstr "Below {roof}’s parapet · to check"
 
@@ -6021,7 +6056,7 @@ msgid "Both"
 msgstr "Both"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:76
+#: src/copy/studio-roof.ts:77
 msgid "Both lengths at this corner are set. Tap a length to change it."
 msgstr "Both lengths at this corner are set. Tap a length to change it."
 
@@ -6161,7 +6196,7 @@ msgid "Business profile saved"
 msgstr "Business profile saved"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:125
+#: src/copy/studio-sheet.ts:126
 msgid "Butterfly"
 msgstr "Butterfly"
 
@@ -6713,7 +6748,7 @@ msgid "Check your connection, then try again."
 msgstr "Check your connection, then try again."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:77
+#: src/copy/studio-canvas.ts:78
 msgid "Checked"
 msgstr "Checked"
 
@@ -6895,7 +6930,7 @@ msgid "Clear all"
 msgstr "Clear all"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:30
+#: src/copy/studio-roof.ts:31
 msgid "Clear every corner"
 msgstr "Clear every corner"
 
@@ -7005,7 +7040,7 @@ msgid "Close Roofs"
 msgstr "Close Roofs"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:45
+#: src/copy/studio-roof.ts:46
 msgid "Close shape"
 msgstr "Close shape"
 
@@ -7023,7 +7058,7 @@ msgid "Close the map"
 msgstr "Close the map"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:44
+#: src/copy/studio-roof.ts:45
 msgid "Close the shape, or tap Undo."
 msgstr "Close the shape, or tap Undo."
 
@@ -7487,42 +7522,42 @@ msgid "Copy the link for {label}"
 msgstr "Copy the link for {label}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:84
+#: src/copy/studio-roof.ts:85
 msgid "Corner {number}"
 msgstr "Corner {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:85
+#: src/copy/studio-roof.ts:86
 msgid "Corner 1: close the shape"
 msgstr "Corner 1: close the shape"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:57
+#: src/copy/studio-roof.ts:58
 msgid "Corner added. Drag it into place."
 msgstr "Corner added. Drag it into place."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:55
+#: src/copy/studio-roof.ts:56
 msgid "Corner moved · {snap}. Undo puts it back."
 msgstr "Corner moved · {snap}. Undo puts it back."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:56
+#: src/copy/studio-roof.ts:57
 msgid "Corner moved. The length you set held."
 msgstr "Corner moved. The length you set held."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:54
+#: src/copy/studio-roof.ts:55
 msgid "Corner moved. Undo puts it back."
 msgstr "Corner moved. Undo puts it back."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:58
+#: src/copy/studio-roof.ts:59
 msgid "Corner picked. Tap × to remove it."
 msgstr "Corner picked. Tap × to remove it."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:59
+#: src/copy/studio-roof.ts:60
 msgid "Corner removed. Undo puts it back."
 msgstr "Corner removed. Undo puts it back."
 
@@ -7995,7 +8030,7 @@ msgid "Current plan"
 msgstr "Current plan"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:124
+#: src/copy/studio-sheet.ts:125
 msgid "Curved"
 msgstr "Curved"
 
@@ -8391,7 +8426,7 @@ msgid "Delete phase"
 msgstr "Delete phase"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:33
+#: src/copy/studio-roof.ts:34
 msgid "Delete roof"
 msgstr "Delete roof"
 
@@ -8705,7 +8740,7 @@ msgstr "done"
 #: src/copy/proposal-builder-sheets.ts:245
 #: src/copy/proposal-builder-sheets.ts:272
 #: src/copy/proposal-defaults-words.ts:28
-#: src/copy/studio-canvas.ts:52
+#: src/copy/studio-canvas.ts:53
 #: src/copy/studio-height.ts:18
 msgid "Done"
 msgstr "Done"
@@ -8798,7 +8833,7 @@ msgid "Drag map to adjust"
 msgstr "Drag map to adjust"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:69
+#: src/copy/studio-roof.ts:70
 msgid "Drag the corner. Zoom in for more room."
 msgstr "Drag the corner. Zoom in for more room."
 
@@ -8813,12 +8848,12 @@ msgid "Drag to change the height of {name}"
 msgstr "Drag to change the height of {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:92
+#: src/copy/studio-sheet.ts:93
 msgid "Drag to change the ridge’s height"
 msgstr "Drag to change the ridge’s height"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:91
+#: src/copy/studio-sheet.ts:92
 msgid "Drag to change this side’s parapet height"
 msgstr "Drag to change this side’s parapet height"
 
@@ -8828,24 +8863,24 @@ msgid "Drag, or − + for {step}. The first length sizes the whole roof."
 msgstr "Drag, or − + for {step}. The first length sizes the whole roof."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:100
+#: src/copy/studio-canvas.ts:99
 msgid "Draw a roof"
 msgstr "Draw a roof"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:54
+#: src/copy/studio-canvas.ts:55
 msgid "Draw a roof first"
 msgstr "Draw a roof first"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:98
-msgid "Draw myself"
-msgstr "Draw myself"
+#: src/copy/studio-faces.ts:35
+msgid "Draw again"
+msgstr "Draw again"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:99
-msgid "Draw on the grid"
-msgstr "Draw on the grid"
+#: src/copy/studio-faces.ts:34
+msgid "Draw the faces"
+msgstr "Draw the faces"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-builder-flow.ts:26
@@ -9021,22 +9056,22 @@ msgid "Earlier versions are kept as they were sent"
 msgstr "Earlier versions are kept as they were sent"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:133
+#: src/copy/studio-sheet.ts:134
 msgid "east"
 msgstr "east"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:88
+#: src/copy/studio-roof.ts:89
 msgid "Edge {number}: {length}. Change it"
 msgstr "Edge {number}: {length}. Change it"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:53
+#: src/copy/studio-roof.ts:54
 msgid "Edge set to {length} · measured on site."
 msgstr "Edge set to {length} · measured on site."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:52
+#: src/copy/studio-roof.ts:53
 msgid "Edge set to {length}."
 msgstr "Edge set to {length}."
 
@@ -9337,7 +9372,7 @@ msgid "Every lead, design, proposal and project — kept"
 msgstr "Every lead, design, proposal and project — kept"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:81
+#: src/copy/studio-roof.ts:82
 msgid "Every length is yours. Drag a + out for an L."
 msgstr "Every length is yours. Drag a + out for an L."
 
@@ -9563,6 +9598,26 @@ msgid "Extra voice"
 msgstr "Extra voice"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:14
+msgid "Face {number}"
+msgstr "Face {number}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-tags.ts:19
+msgid "Face {number} corner"
+msgstr "Face {number} corner"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-tags.ts:20
+msgid "Face {number} edge"
+msgstr "Face {number} edge"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:28
+msgid "Faces"
+msgstr "Faces"
+
+#. js-lingui-explicit-id
 #: src/copy/studio-sheet.ts:59
 msgid "Faces {count} ways"
 msgstr "Faces {count} ways"
@@ -9581,6 +9636,11 @@ msgstr "Faces {first}, {second} and {third}"
 #: src/copy/studio-sheet.ts:58
 msgid "Faces {first}, {second}, {third} and {fourth}"
 msgstr "Faces {first}, {second}, {third} and {fourth}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:18
+msgid "Faces meet at their edges, never over each other. Move a corner, or tap Undo."
+msgstr "Faces meet at their edges, never over each other. Move a corner, or tap Undo."
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:95
@@ -9618,13 +9678,13 @@ msgstr "Family home"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:34
-#: src/copy/studio-canvas.ts:88
+#: src/copy/studio-canvas.ts:89
 #: src/copy/studio-length.ts:12
 msgid "Feet"
 msgstr "Feet"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:67
+#: src/copy/studio-sheet.ts:68
 msgid "Fewer shapes"
 msgstr "Fewer shapes"
 
@@ -9800,7 +9860,7 @@ msgid "Finish later takes you to your company profile, the next step. You can fi
 msgstr "Finish later takes you to your company profile, the next step. You can finish both answers there."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:55
+#: src/copy/studio-canvas.ts:56
 msgid "Finish the step before first"
 msgstr "Finish the step before first"
 
@@ -9850,7 +9910,7 @@ msgid "Fixed."
 msgstr "Fixed."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:117
+#: src/copy/studio-sheet.ts:118
 msgid "Flat"
 msgstr "Flat"
 
@@ -10051,7 +10111,7 @@ msgid "From the company profile. Only {owner} can change it."
 msgstr "From the company profile. Only {owner} can change it."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:83
+#: src/copy/studio-canvas.ts:84
 msgid "From the east"
 msgstr "From the east"
 
@@ -10083,17 +10143,17 @@ msgid "From the link named {label}. Call to confirm, then mark the deal won."
 msgstr "From the link named {label}. Call to confirm, then mark the deal won."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:82
+#: src/copy/studio-canvas.ts:83
 msgid "From the north"
 msgstr "From the north"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:84
+#: src/copy/studio-canvas.ts:85
 msgid "From the south"
 msgstr "From the south"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:85
+#: src/copy/studio-canvas.ts:86
 msgid "From the west"
 msgstr "From the west"
 
@@ -10155,17 +10215,17 @@ msgid "G+{floor}"
 msgstr "G+{floor}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:119
+#: src/copy/studio-sheet.ts:120
 msgid "Gable"
 msgstr "Gable"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:84
+#: src/copy/studio-sheet.ts:85
 msgid "Gable end"
 msgstr "Gable end"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:127
+#: src/copy/studio-sheet.ts:128
 msgid "Gambrel"
 msgstr "Gambrel"
 
@@ -10311,7 +10371,7 @@ msgstr "Giving it to {name} is not confirmed — no answer came. Try again."
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-list.ts:82
-#: src/copy/studio-sheet.ts:80
+#: src/copy/studio-sheet.ts:81
 msgid "Glass"
 msgstr "Glass"
 
@@ -10438,7 +10498,7 @@ msgid "Good morning, {name}"
 msgstr "Good morning, {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:62
+#: src/copy/studio-canvas.ts:63
 msgid "Google"
 msgstr "Google"
 
@@ -10600,7 +10660,7 @@ msgid "Happy with your solar?"
 msgstr "Happy with your solar?"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:71
+#: src/copy/studio-sheet.ts:72
 msgid "Has a parapet"
 msgstr "Has a parapet"
 
@@ -10651,7 +10711,7 @@ msgid "Height (mm)"
 msgstr "Height (mm)"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:47
+#: src/copy/studio-roof.ts:48
 msgid "Height {height} is the usual storey here. Drag a corner to fix the shape."
 msgstr "Height {height} is the usual storey here. Drag a corner to fix the shape."
 
@@ -10896,8 +10956,8 @@ msgid "Highest DC voltage (V)"
 msgstr "Highest DC voltage (V)"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:85
-#: src/copy/studio-sheet.ts:120
+#: src/copy/studio-sheet.ts:86
+#: src/copy/studio-sheet.ts:121
 msgid "Hip"
 msgstr "Hip"
 
@@ -11368,7 +11428,7 @@ msgid "inside"
 msgstr "inside"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:19
+#: src/copy/studio-roof-tags.ts:21
 msgid "Inside Roof {number}’s parapet"
 msgstr "Inside Roof {number}’s parapet"
 
@@ -12325,7 +12385,7 @@ msgid "Length × width"
 msgstr "Length × width"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:86
+#: src/copy/studio-canvas.ts:87
 msgid "Lengths"
 msgstr "Lengths"
 
@@ -12411,7 +12471,7 @@ msgid "Lines under your address"
 msgstr "Lines under your address"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:20
+#: src/copy/studio-roof-tags.ts:22
 msgid "Lines up with corner {number}"
 msgstr "Lines up with corner {number}"
 
@@ -12721,7 +12781,7 @@ msgid "Loading the rows"
 msgstr "Loading the rows"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:65
+#: src/copy/studio-canvas.ts:66
 msgid "Loading the sky picture"
 msgstr "Loading the sky picture"
 
@@ -12994,7 +13054,7 @@ msgid "Low"
 msgstr "Low"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:77
+#: src/copy/studio-sheet.ts:78
 msgid "Low side"
 msgstr "Low side"
 
@@ -13039,7 +13099,7 @@ msgid "made your own"
 msgstr "made your own"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:31
+#: src/copy/studio-roof.ts:32
 msgid "Magnet"
 msgstr "Magnet"
 
@@ -13094,12 +13154,12 @@ msgid "Make someone else an EPC Owner first"
 msgstr "Make someone else an EPC Owner first"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:82
+#: src/copy/studio-sheet.ts:83
 msgid "Make the glass face this way"
 msgstr "Make the glass face this way"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:79
+#: src/copy/studio-sheet.ts:80
 msgid "Make this the low side"
 msgstr "Make this the low side"
 
@@ -13161,7 +13221,7 @@ msgid "Mangalore tile"
 msgstr "Mangalore tile"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:126
+#: src/copy/studio-sheet.ts:127
 msgid "Mansard"
 msgstr "Mansard"
 
@@ -13171,7 +13231,7 @@ msgid "Map columns"
 msgstr "Map columns"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:94
+#: src/copy/studio-canvas.ts:95
 msgid "Map. Arrow keys move it, plus and minus zoom, and 0 goes back to the pin."
 msgstr "Map. Arrow keys move it, plus and minus zoom, and 0 goes back to the pin."
 
@@ -13457,7 +13517,7 @@ msgstr "Method"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:33
-#: src/copy/studio-canvas.ts:87
+#: src/copy/studio-canvas.ts:88
 msgid "Metres"
 msgstr "Metres"
 
@@ -13546,7 +13606,7 @@ msgid "Money summary"
 msgstr "Money summary"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:123
+#: src/copy/studio-sheet.ts:124
 msgid "Monitor"
 msgstr "Monitor"
 
@@ -13643,7 +13703,7 @@ msgid "More for Design {number}"
 msgstr "More for Design {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:66
+#: src/copy/studio-sheet.ts:67
 msgid "More shapes"
 msgstr "More shapes"
 
@@ -13744,7 +13804,7 @@ msgid "Move the plan"
 msgstr "Move the plan"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:89
+#: src/copy/studio-roof.ts:90
 msgid "Move the roof"
 msgstr "Move the roof"
 
@@ -14201,7 +14261,7 @@ msgid "New company on HelioGrid?"
 msgstr "New company on HelioGrid?"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:23
+#: src/copy/studio-roof-tags.ts:25
 msgid "New corner · drag it"
 msgstr "New corner · drag it"
 
@@ -14506,7 +14566,7 @@ msgid "Next step"
 msgstr "Next step"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:50
+#: src/copy/studio-canvas.ts:51
 msgid "Next step: {step}"
 msgstr "Next step: {step}"
 
@@ -14683,7 +14743,7 @@ msgid "No connection — your typing stays here"
 msgstr "No connection — your typing stays here"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:22
+#: src/copy/studio-canvas.ts:23
 msgid "No connection · not saved"
 msgstr "No connection · not saved"
 
@@ -14975,7 +15035,7 @@ msgid "No panels yet"
 msgstr "No panels yet"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:72
+#: src/copy/studio-sheet.ts:73
 msgid "No parapet"
 msgstr "No parapet"
 
@@ -14991,7 +15051,7 @@ msgstr "No parapet on this side"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:74
-#: src/copy/studio-sheet.ts:76
+#: src/copy/studio-sheet.ts:77
 msgid "No parapet where {roof}’s wall stands"
 msgstr "No parapet where {roof}’s wall stands"
 
@@ -15021,12 +15081,12 @@ msgid "No photo was taken here."
 msgstr "No photo was taken here."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:60
+#: src/copy/studio-canvas.ts:61
 msgid "No picture"
 msgstr "No picture"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:70
+#: src/copy/studio-canvas.ts:71
 msgid "No picture: type the size, or draw on the grid."
 msgstr "No picture: type the size, or draw on the grid."
 
@@ -15183,7 +15243,7 @@ msgid "No size yet"
 msgstr "No size yet"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:71
+#: src/copy/studio-canvas.ts:72
 msgid "No sky picture is set up yet. Type the size, or draw on the grid."
 msgstr "No sky picture is set up yet. Type the size, or draw on the grid."
 
@@ -15276,23 +15336,23 @@ msgid "None saved yet. Someone who adds parts can save one."
 msgstr "None saved yet. Someone who adds parts can save one."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:131
+#: src/copy/studio-sheet.ts:132
 msgid "north"
 msgstr "north"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:93
+#: src/copy/studio-canvas.ts:94
 #: src/copy/studio-picture.ts:32
 msgid "North"
 msgstr "North"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:132
+#: src/copy/studio-sheet.ts:133
 msgid "north-east"
 msgstr "north-east"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:138
+#: src/copy/studio-sheet.ts:139
 msgid "north-west"
 msgstr "north-west"
 
@@ -15545,6 +15605,11 @@ msgid "Not done. This proposal was withdrawn or replaced already."
 msgstr "Not done. This proposal was withdrawn or replaced already."
 
 #. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:29
+msgid "Not drawn yet"
+msgstr "Not drawn yet"
+
+#. js-lingui-explicit-id
 #: src/copy/charts.ts:13
 msgid "Not enough data"
 msgstr "Not enough data"
@@ -15693,7 +15758,7 @@ msgid "Not resolved yet — this period's rollup is still being read."
 msgstr "Not resolved yet — this period's rollup is still being read."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:26
+#: src/copy/studio-canvas.ts:27
 msgid "Not saved"
 msgstr "Not saved"
 
@@ -16236,7 +16301,7 @@ msgid "Numbered list"
 msgstr "Numbered list"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:44
+#: src/copy/studio-canvas.ts:45
 msgid "Objects"
 msgstr "Objects"
 
@@ -16281,6 +16346,11 @@ msgstr "Off"
 #: src/copy/proposal-defaults-words.ts:36
 msgid "Off · {name}"
 msgstr "Off · {name}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:15
+msgid "Off the roof"
+msgstr "Off the roof"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-document-cover.ts:31
@@ -16747,7 +16817,7 @@ msgid "Open the usage screen and the subscription invoice list"
 msgstr "Open the usage screen and the subscription invoice list"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:34
+#: src/copy/studio-canvas.ts:35
 msgid "Open their version"
 msgstr "Open their version"
 
@@ -16836,7 +16906,7 @@ msgid "Opening the report you kept."
 msgstr "Opening the report you kept."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:36
+#: src/copy/studio-canvas.ts:37
 msgid "Opening the studio"
 msgstr "Opening the studio"
 
@@ -16975,6 +17045,11 @@ msgid "Over {plan}’s limits"
 msgstr "Over {plan}’s limits"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:17
+msgid "Over another face"
+msgstr "Over another face"
+
+#. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:45
 msgid "Over both arms · to check"
 msgstr "Over both arms · to check"
@@ -16986,7 +17061,7 @@ msgid "Overdue"
 msgstr "Overdue"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:103
+#: src/copy/studio-sheet.ts:104
 msgid "Overhang"
 msgstr "Overhang"
 
@@ -17196,7 +17271,7 @@ msgstr "Panel type"
 #: src/copy/catalog-settings.ts:138
 #: src/copy/proposal-after-versions.ts:69
 #: src/copy/proposal-builder-sheets.ts:105
-#: src/copy/studio-canvas.ts:45
+#: src/copy/studio-canvas.ts:46
 msgid "Panels"
 msgstr "Panels"
 
@@ -17232,7 +17307,7 @@ msgid "Parapet details"
 msgstr "Parapet details"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:73
+#: src/copy/studio-sheet.ts:74
 msgid "Parapet height"
 msgstr "Parapet height"
 
@@ -17316,17 +17391,17 @@ msgid "Past {ceiling}, new uploads pause · files you have stay."
 msgstr "Past {ceiling}, new uploads pause · files you have stay."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:40
+#: src/copy/studio-roof.ts:41
 msgid "Past {reach} from the pin · this is another site"
 msgstr "Past {reach} from the pin · this is another site"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:63
+#: src/copy/studio-roof.ts:64
 msgid "Past {reach} from the pin · this is another site. The roof went back."
 msgstr "Past {reach} from the pin · this is another site. The roof went back."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:89
+#: src/copy/studio-sheet.ts:90
 msgid "Past {roof}’s edge · to check"
 msgstr "Past {roof}’s edge · to check"
 
@@ -17773,7 +17848,7 @@ msgid "Photo uploading"
 msgstr "Photo uploading"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:66
+#: src/copy/studio-canvas.ts:67
 msgid "Photo, drone map or plan, from above"
 msgstr "Photo, drone map or plan, from above"
 
@@ -17803,7 +17878,7 @@ msgid "Pick {kind}"
 msgstr "Pick {kind}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:90
+#: src/copy/studio-sheet.ts:91
 msgid "Pick {roof}"
 msgstr "Pick {roof}"
 
@@ -18002,17 +18077,17 @@ msgid "Pickers"
 msgstr "Pickers"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:76
+#: src/copy/studio-canvas.ts:77
 msgid "Picture updated · check the outline"
 msgstr "Picture updated · check the outline"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:61
+#: src/copy/studio-canvas.ts:62
 msgid "Picture: {name}"
 msgstr "Picture: {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:91
+#: src/copy/studio-canvas.ts:92
 msgid "Pin"
 msgstr "Pin"
 
@@ -18088,12 +18163,12 @@ msgid "Place the pin — tap the map, or press Enter to place it at the centre"
 msgstr "Place the pin — tap the map, or press Enter to place it at the centre"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:82
+#: src/copy/studio-roof.ts:83
 msgid "Placed beside Roof {number}. Drag it onto the house."
 msgstr "Placed beside Roof {number}. Drag it onto the house."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:80
+#: src/copy/studio-roof.ts:81
 msgid "Placed on the pin. Drag it onto the house."
 msgstr "Placed on the pin. Drag it onto the house."
 
@@ -18901,7 +18976,7 @@ msgid "Quick mode used your company’s timeline, payment terms, and terms and c
 msgstr "Quick mode used your company’s timeline, payment terms, and terms and conditions."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:143
+#: src/copy/studio-sheet.ts:144
 msgid "Railing"
 msgstr "Railing"
 
@@ -18911,12 +18986,12 @@ msgid "Raised frame only"
 msgstr "Raised frame only"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:100
+#: src/copy/studio-sheet.ts:101
 msgid "Raised middle’s height"
 msgstr "Raised middle’s height"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:101
+#: src/copy/studio-sheet.ts:102
 msgid "Raised middle’s width"
 msgstr "Raised middle’s width"
 
@@ -19277,7 +19352,7 @@ msgid "Red items stop Generate. Amber items only warn."
 msgstr "Red items stop Generate. Amber items only warn."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:90
+#: src/copy/studio-canvas.ts:91
 msgid "Redo"
 msgstr "Redo"
 
@@ -19408,7 +19483,7 @@ msgid "Remove {tranche}"
 msgstr "Remove {tranche}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:87
+#: src/copy/studio-roof.ts:88
 msgid "Remove corner {number}"
 msgstr "Remove corner {number}"
 
@@ -19758,7 +19833,7 @@ msgid "Restored {name}"
 msgstr "Restored {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:47
+#: src/copy/studio-canvas.ts:48
 msgid "Result"
 msgstr "Result"
 
@@ -19845,7 +19920,7 @@ msgid "Revoke invite for {name}"
 msgstr "Revoke invite for {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:87
+#: src/copy/studio-sheet.ts:88
 msgid "Ridge through {roof} · to check"
 msgstr "Ridge through {roof} · to check"
 
@@ -19885,7 +19960,7 @@ msgstr "Roles reference"
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:64
 #: src/copy/site-details.ts:13
-#: src/copy/studio-canvas.ts:43
+#: src/copy/studio-canvas.ts:44
 msgid "Roof"
 msgstr "Roof"
 
@@ -19905,7 +19980,7 @@ msgid "Roof {number} edge"
 msgstr "Roof {number} edge"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:34
+#: src/copy/studio-roof.ts:35
 msgid "Roof deleted. Undo brings it back."
 msgstr "Roof deleted. Undo brings it back."
 
@@ -19920,12 +19995,12 @@ msgid "Roof measured from satellite imagery. A site visit will confirm dimension
 msgstr "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:60
+#: src/copy/studio-roof.ts:61
 msgid "Roof moved. Undo puts it back."
 msgstr "Roof moved. Undo puts it back."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:102
+#: src/copy/studio-canvas.ts:101
 msgid "Roof not set up yet"
 msgstr "Roof not set up yet"
 
@@ -19935,7 +20010,7 @@ msgid "Roof size"
 msgstr "Roof size"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:61
+#: src/copy/studio-roof.ts:62
 msgid "Roof turned {degrees}°. Undo puts it back."
 msgstr "Roof turned {degrees}°. Undo puts it back."
 
@@ -20153,12 +20228,12 @@ msgid "Sanctioned load check skipped"
 msgstr "Sanctioned load check skipped"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:63
+#: src/copy/studio-canvas.ts:64
 msgid "Satellite · {sharpness} a pixel"
 msgstr "Satellite · {sharpness} a pixel"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:64
+#: src/copy/studio-canvas.ts:65
 msgid "Satellite · {sharpness} a pixel · taken {date}"
 msgstr "Satellite · {sharpness} a pixel · taken {date}"
 
@@ -20282,7 +20357,7 @@ msgstr "Save your company profile and continue setting up HelioGrid"
 #: src/copy/project-toast.ts:23
 #: src/copy/proposal-builder-frame.ts:61
 #: src/copy/proposal-builder-steps.ts:17
-#: src/copy/studio-canvas.ts:20
+#: src/copy/studio-canvas.ts:21
 msgid "Saved"
 msgstr "Saved"
 
@@ -20396,7 +20471,7 @@ msgstr "Saves both; you can change them in your company profile."
 #. js-lingui-explicit-id
 #: src/copy/proposal-builder-frame.ts:62
 #: src/copy/proposal-builder-steps.ts:18
-#: src/copy/studio-canvas.ts:21
+#: src/copy/studio-canvas.ts:22
 msgid "Saving"
 msgstr "Saving"
 
@@ -20437,7 +20512,7 @@ msgid "Savings pass the net cost after {years} years"
 msgstr "Savings pass the net cost after {years} years"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:122
+#: src/copy/studio-sheet.ts:123
 msgid "Sawtooth"
 msgstr "Sawtooth"
 
@@ -20983,7 +21058,7 @@ msgid "Set the size in System first."
 msgstr "Set the size in System first."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:50
+#: src/copy/studio-roof.ts:51
 msgid "Set the true length of the marked edge."
 msgstr "Set the true length of the marked edge."
 
@@ -21136,7 +21211,7 @@ msgstr "Shared or opened"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:71
-#: src/copy/studio-sheet.ts:75
+#: src/copy/studio-sheet.ts:76
 msgid "Shared with {roof} · no parapet"
 msgstr "Shared with {roof} · no parapet"
 
@@ -21146,7 +21221,7 @@ msgid "Shares {roof}’s edge"
 msgstr "Shares {roof}’s edge"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:118
+#: src/copy/studio-sheet.ts:119
 msgid "Shed"
 msgstr "Shed"
 
@@ -21451,7 +21526,7 @@ msgstr "Single phase"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-parts.ts:77
-#: src/copy/studio-canvas.ts:38
+#: src/copy/studio-canvas.ts:39
 msgid "Site"
 msgstr "Site"
 
@@ -21494,7 +21569,7 @@ msgid "Site visit"
 msgstr "Site visit"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:39
+#: src/copy/studio-canvas.ts:40
 msgid "Site: change the place and details"
 msgstr "Site: change the place and details"
 
@@ -21536,7 +21611,7 @@ msgid "Skipped during setup · your first proposal needs it"
 msgstr "Skipped during setup · your first proposal needs it"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:58
+#: src/copy/studio-canvas.ts:59
 msgid "Sky picture"
 msgstr "Sky picture"
 
@@ -21556,7 +21631,7 @@ msgid "SLD, AC/DC and earthing layouts"
 msgstr "SLD, AC/DC and earthing layouts"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:65
+#: src/copy/studio-sheet.ts:66
 msgid "Slide {name}"
 msgstr "Slide {name}"
 
@@ -21574,6 +21649,11 @@ msgstr "Slide the numbers"
 #: src/copy/studio-sheet.ts:33
 msgid "Slope"
 msgstr "Slope"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:36
+msgid "Slopes down"
+msgstr "Slopes down"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-sheet.ts:53
@@ -21707,7 +21787,7 @@ msgid "Someone else"
 msgstr "Someone else"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:31
+#: src/copy/studio-canvas.ts:32
 msgid "Someone saved this design at {time}. Your last change is not saved."
 msgstr "Someone saved this design at {time}. Your last change is not saved."
 
@@ -21787,17 +21867,17 @@ msgid "Source"
 msgstr "Source"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:135
+#: src/copy/studio-sheet.ts:136
 msgid "south"
 msgstr "south"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:134
+#: src/copy/studio-sheet.ts:135
 msgid "south-east"
 msgstr "south-east"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:136
+#: src/copy/studio-sheet.ts:137
 msgid "south-west"
 msgstr "south-west"
 
@@ -22020,7 +22100,7 @@ msgid "Step {number}"
 msgstr "Step {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:53
+#: src/copy/studio-canvas.ts:54
 msgid "Step {number} of {total}"
 msgstr "Step {number} of {total}"
 
@@ -22072,7 +22152,7 @@ msgstr "Step 2 of 2 · read it once, then merge"
 #. js-lingui-explicit-id
 #: src/copy/proposal-builder-frame.ts:52
 #: src/copy/stepper.ts:14
-#: src/copy/studio-canvas.ts:48
+#: src/copy/studio-canvas.ts:49
 msgid "Steps"
 msgstr "Steps"
 
@@ -22128,7 +22208,7 @@ msgid "Stone-coated metal tile"
 msgstr "Stone-coated metal tile"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:29
+#: src/copy/studio-roof.ts:30
 msgid "Stop drawing"
 msgstr "Stop drawing"
 
@@ -22444,7 +22524,7 @@ msgid "Tap a date to add a holiday"
 msgstr "Tap a date to add a holiday"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:39
+#: src/copy/studio-roof.ts:40
 msgid "Tap a little farther from it."
 msgstr "Tap a little farther from it."
 
@@ -22469,7 +22549,7 @@ msgid "Tap a part to pick or change it. Up to {max} brands each — {name} reads
 msgstr "Tap a part to pick or change it. Up to {max} brands each — {name} reads them as choices."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:36
+#: src/copy/studio-roof.ts:37
 msgid "Tap a spot where the edges do not cross."
 msgstr "Tap a spot where the edges do not cross."
 
@@ -22489,7 +22569,7 @@ msgid "Tap an outline, or draw on the plan with the pencil."
 msgstr "Tap an outline, or draw on the plan with the pencil."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:28
+#: src/copy/studio-roof.ts:29
 msgid "Tap each corner of the roof"
 msgstr "Tap each corner of the roof"
 
@@ -22647,7 +22727,7 @@ msgid "Technology"
 msgstr "Technology"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:99
+#: src/copy/studio-sheet.ts:100
 msgid "Teeth"
 msgstr "Teeth"
 
@@ -22797,12 +22877,12 @@ msgid "That code is used up"
 msgstr "That code is used up"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:66
+#: src/copy/studio-roof.ts:67
 msgid "That corner was too close to another. The roof went back."
 msgstr "That corner was too close to another. The roof went back."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:68
+#: src/copy/studio-roof.ts:69
 msgid "That corner would be too close to another."
 msgstr "That corner would be too close to another."
 
@@ -22909,7 +22989,7 @@ msgid "That isn't a hex colour."
 msgstr "That isn't a hex colour."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:79
+#: src/copy/studio-roof.ts:80
 msgid "That length is far from the picture. Check the number."
 msgstr "That length is far from the picture. Check the number."
 
@@ -22994,12 +23074,12 @@ msgid "Thatch or kutcha"
 msgstr "Thatch or kutcha"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:73
+#: src/copy/studio-roof.ts:74
 msgid "The {length} you set would change. Change that length first."
 msgstr "The {length} you set would change. Change that length first."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:103
+#: src/copy/studio-canvas.ts:102
 msgid "The 3D view cannot start on this device. Try another browser."
 msgstr "The 3D view cannot start on this device. Try another browser."
 
@@ -23324,7 +23404,7 @@ msgid "the generation"
 msgstr "the generation"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:81
+#: src/copy/studio-sheet.ts:82
 msgid "The glass faces this way"
 msgstr "The glass faces this way"
 
@@ -23727,7 +23807,7 @@ msgid "the picture change"
 msgstr "the picture change"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:69
+#: src/copy/studio-canvas.ts:70
 msgid "The picture is a guide. Lengths you set are the true size."
 msgstr "The picture is a guide. Lengths you set are the true size."
 
@@ -23987,7 +24067,7 @@ msgid "The size you sell most often"
 msgstr "The size you sell most often"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:72
+#: src/copy/studio-canvas.ts:73
 msgid "The sky picture did not load. Type the size, or draw on the grid."
 msgstr "The sky picture did not load. Type the size, or draw on the grid."
 
@@ -24217,7 +24297,7 @@ msgid "There is no open wait."
 msgstr "There is no open wait."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:73
+#: src/copy/studio-canvas.ts:74
 msgid "There is no sky picture of this place. Type the size, or draw on the grid."
 msgstr "There is no sky picture of this place. Type the size, or draw on the grid."
 
@@ -24339,12 +24419,12 @@ msgid "This design is not here"
 msgstr "This design is not here"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:35
+#: src/copy/studio-roof.ts:36
 msgid "This edge would cross another"
 msgstr "This edge would cross another"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:83
+#: src/copy/studio-sheet.ts:84
 msgid "This end"
 msgstr "This end"
 
@@ -24449,7 +24529,7 @@ msgid "This is paused for your company. Reading and export still work."
 msgstr "This is paused for your company. Reading and export still work."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:78
+#: src/copy/studio-sheet.ts:79
 msgid "This is the low side"
 msgstr "This is the low side"
 
@@ -24474,7 +24554,7 @@ msgid "This lead is already won. Its project is on the board."
 msgstr "This lead is already won. Its project is on the board."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:35
+#: src/copy/studio-canvas.ts:36
 msgid "This lead is closed. Changes are not saved."
 msgstr "This lead is closed. Changes are not saved."
 
@@ -24767,7 +24847,7 @@ msgid "This screen arrives in a later update."
 msgstr "This screen arrives in a later update."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:69
+#: src/copy/studio-sheet.ts:70
 msgid "This side"
 msgstr "This side"
 
@@ -24782,7 +24862,7 @@ msgid "This step did not load"
 msgstr "This step did not load"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:56
+#: src/copy/studio-canvas.ts:57
 msgid "This step is coming soon"
 msgstr "This step is coming soon"
 
@@ -24827,12 +24907,12 @@ msgid "This week"
 msgstr "This week"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:67
+#: src/copy/studio-roof.ts:68
 msgid "Those edges would cross."
 msgstr "Those edges would cross."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:62
+#: src/copy/studio-roof.ts:63
 msgid "Those edges would cross. The roof went back."
 msgstr "Those edges would cross. The roof went back."
 
@@ -25029,7 +25109,7 @@ msgid "Tomorrow, {from}–{to}"
 msgstr "Tomorrow, {from}–{to}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:38
+#: src/copy/studio-roof.ts:39
 msgid "Too close to another corner"
 msgstr "Too close to another corner"
 
@@ -25039,7 +25119,7 @@ msgid "Too expensive"
 msgstr "Too expensive"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:37
+#: src/copy/studio-roof.ts:38
 msgid "Too far for this site"
 msgstr "Too far for this site"
 
@@ -25079,7 +25159,7 @@ msgid "Too many visits right now. Please try again in a few minutes."
 msgstr "Too many visits right now. Please try again in a few minutes."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:80
+#: src/copy/studio-canvas.ts:81
 msgid "Top view"
 msgstr "Top view"
 
@@ -25103,6 +25183,16 @@ msgstr "Total capacity installed"
 #: src/copy/plan-selection.ts:55
 msgid "Total today"
 msgstr "Total today"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:37
+msgid "Toward {way}"
+msgstr "Toward {way}"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-faces.ts:38
+msgid "Toward {way} · {degrees}°"
+msgstr "Toward {way} · {degrees}°"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-defaults-words.ts:80
@@ -25212,7 +25302,7 @@ msgstr "Try a part of the invoice number."
 #: src/copy/roles-reference.ts:34
 #: src/copy/sign-in.ts:40
 #: src/copy/site-details.ts:77
-#: src/copy/studio-canvas.ts:27
+#: src/copy/studio-canvas.ts:28
 msgid "Try again"
 msgstr "Try again"
 
@@ -25317,12 +25407,12 @@ msgid "Turn the plan"
 msgstr "Turn the plan"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:90
+#: src/copy/studio-roof.ts:91
 msgid "Turn the roof"
 msgstr "Turn the roof"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:24
+#: src/copy/studio-roof-tags.ts:26
 msgid "Turned {degrees}°"
 msgstr "Turned {degrees}°"
 
@@ -25359,7 +25449,7 @@ msgid "Type"
 msgstr "Type"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:64
+#: src/copy/studio-sheet.ts:65
 msgid "Type {name}"
 msgstr "Type {name}"
 
@@ -25409,7 +25499,7 @@ msgid "Type the size"
 msgstr "Type the size"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:68
+#: src/copy/studio-canvas.ts:69
 msgid "Type the size instead"
 msgstr "Type the size instead"
 
@@ -25446,7 +25536,7 @@ msgstr "Under your file’s own headers, so each row is easy to find and fix."
 #: src/copy/my-day.ts:54
 #: src/copy/project-toast.ts:17
 #: src/copy/remove-roles.ts:32
-#: src/copy/studio-canvas.ts:89
+#: src/copy/studio-canvas.ts:90
 msgid "Undo"
 msgstr "Undo"
 
@@ -25715,7 +25805,7 @@ msgid "Upper floor"
 msgstr "Upper floor"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:97
+#: src/copy/studio-sheet.ts:98
 msgid "Upper slope"
 msgstr "Upper slope"
 
@@ -26038,12 +26128,12 @@ msgstr "Versions"
 #. js-lingui-explicit-id
 #: src/copy/lead-designs.ts:28
 #: src/copy/proposal-after-versions.ts:43
-#: src/copy/studio-canvas.ts:79
+#: src/copy/studio-canvas.ts:80
 msgid "View"
 msgstr "View"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:28
+#: src/copy/studio-canvas.ts:29
 msgid "View only"
 msgstr "View only"
 
@@ -26058,7 +26148,7 @@ msgid "View only — an owner or Operations edits."
 msgstr "View only — an owner or Operations edits."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:29
+#: src/copy/studio-canvas.ts:30
 msgid "View only · {name} is editing"
 msgstr "View only · {name} is editing"
 
@@ -26278,7 +26368,7 @@ msgid "Waking the lead…"
 msgstr "Waking the lead…"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:142
+#: src/copy/studio-sheet.ts:143
 msgid "Wall"
 msgstr "Wall"
 
@@ -26557,7 +26647,7 @@ msgid "Went dormant"
 msgstr "Went dormant"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:137
+#: src/copy/studio-sheet.ts:138
 msgid "west"
 msgstr "west"
 
@@ -27000,12 +27090,12 @@ msgid "Where the model stops"
 msgstr "Where the model stops"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:98
+#: src/copy/studio-sheet.ts:99
 msgid "Where the slope breaks"
 msgstr "Where the slope breaks"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-sheet.ts:102
+#: src/copy/studio-sheet.ts:103
 msgid "Where the valley sits"
 msgstr "Where the valley sits"
 
@@ -27223,7 +27313,7 @@ msgid "Win rate"
 msgstr "Win rate"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:46
+#: src/copy/studio-canvas.ts:47
 msgid "Wiring"
 msgstr "Wiring"
 
@@ -27397,7 +27487,7 @@ msgid "worse"
 msgstr "worse"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:22
+#: src/copy/studio-roof-tags.ts:24
 msgid "Would cross"
 msgstr "Would cross"
 
@@ -28148,12 +28238,12 @@ msgid "Your language was not saved"
 msgstr "Your language was not saved"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:23
+#: src/copy/studio-canvas.ts:24
 msgid "Your last change is not saved yet. If you leave now, it is lost."
 msgstr "Your last change is not saved yet. If you leave now, it is lost."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:40
+#: src/copy/studio-canvas.ts:41
 msgid "Your last change is not saved yet. Site details open once it is."
 msgstr "Your last change is not saved yet. Site details open once it is."
 
@@ -28337,12 +28427,12 @@ msgid "Your photo, language and theme"
 msgstr "Your photo, language and theme"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof.ts:32
+#: src/copy/studio-roof.ts:33
 msgid "Your pick was not saved."
 msgstr "Your pick was not saved."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:59
+#: src/copy/studio-canvas.ts:60
 msgid "Your picture"
 msgstr "Your picture"
 

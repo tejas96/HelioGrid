@@ -40,7 +40,7 @@ function BarLine({ status, bad }: Pick<BarView, 'status' | 'bad'>) {
 
 /**
  * The one bottom bar of the roof step (`T-M05-002`, parts b and e). Before a roof it is a card:
- * the site, where things stand, and Draw myself (no picture: Draw on the grid). While drawing, a
+ * the site and where things stand (no picture: Type the size); the pencil draws. While drawing, a
  * slim pill: the magnet and Close shape. With a roof it is slim again: a moment's words when there
  * is one — what an act did, a refusal in the error colour — and the next step; a roof just closed
  * is a card for that moment, with what it became and its chips. It never names a roof, its area or
@@ -95,7 +95,7 @@ export function StudioBottomBar({
   const { mark, title, status, bad, chips, acts, tools } = shown;
   const actsHolder = useRef<HTMLSpanElement>(null);
   const kind = pill === null ? (bar?.kind ?? 'start') : `pill-${bar?.kind}`;
-  // A bar act that swaps the bar (Draw myself, Close shape, Cancel) takes its own button away:
+  // A bar act that swaps the bar (Close shape, Cancel) takes its own button away:
   // focus goes to the new bar's main act, never lost to the page.
   // biome-ignore lint/correctness/useExhaustiveDependencies: the bar's kind is what swaps the acts
   useEffect(() => {
