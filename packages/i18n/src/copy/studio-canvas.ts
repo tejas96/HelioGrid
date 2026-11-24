@@ -97,8 +97,6 @@ const CANVAS = {
   },
 
   drawRoof: /*i18n*/ { id: 'Draw a roof' },
-  roofNotSetUp: /*i18n*/ { id: '{place} · roof not set up yet' },
-  roofNotSetUpNoPlace: /*i18n*/ { id: 'Roof not set up yet' },
   noScene: /*i18n*/ { id: 'The 3D view cannot start on this device. Try another browser.' },
 } as const;
 
@@ -206,9 +204,6 @@ export function studioCanvasWords(t: T) {
     /** The map's own name for a screen reader, with the keys that move it. */
     mapKeys: t(CANVAS.mapKeys),
     drawRoof: t(CANVAS.drawRoof),
-    /** "Vishrambag, Sangli · roof not set up yet". */
-    roofNotSetUp: (place: string | null) =>
-      place === null ? t(CANVAS.roofNotSetUpNoPlace) : t(CANVAS.roofNotSetUp, { place }),
     ...studioRoofWords(t),
     ...studioRoofListWords(t),
     ...studioLengthWords(t),

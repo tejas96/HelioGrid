@@ -2,13 +2,10 @@
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { MaterialPickerView, MaterialTile } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { theme } from '@heliogrid/theme';
 import { Button, IconButton, Input, Pressable, SegmentedControl, ShellGlyph } from '@heliogrid/ui';
 import { useEffect, useRef } from 'react';
 import { usePressAway } from '../hooks/use-press-away';
 import { StudioMaterialPicture } from './StudioMaterialPicture';
-
-const HEAD_TOOL = theme.layout['button-h-sm'];
 
 interface PickerFacts {
   readonly picker: MaterialPickerView;
@@ -171,7 +168,6 @@ export function StudioMaterialPicker({ picker, studio, words }: PickerFacts) {
           <IconButton
             label={words.firstTypes}
             variant="ghost"
-            size={HEAD_TOOL}
             onClick={() => moves.pickerMode(mode === 'other' ? 'all' : 'first')}
           >
             <ShellGlyph name="chevron-left" size="sm" />
@@ -180,12 +176,7 @@ export function StudioMaterialPicker({ picker, studio, words }: PickerFacts) {
         <span className="hg-roofs-title" tabIndex={-1}>
           {title}
         </span>
-        <IconButton
-          label={words.pickerClose}
-          variant="ghost"
-          size={HEAD_TOOL}
-          onClick={moves.closePanel}
-        >
+        <IconButton label={words.pickerClose} variant="ghost" onClick={moves.closePanel}>
           <ShellGlyph name="close" size="sm" />
         </IconButton>
       </div>

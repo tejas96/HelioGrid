@@ -1,13 +1,9 @@
 'use client';
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { theme } from '@heliogrid/theme';
 import { IconButton, Pressable, ShellGlyph, useFormat } from '@heliogrid/ui';
 import { useRef } from 'react';
 import { usePressAway } from '../hooks/use-press-away';
-
-/** The circle size of the studio's tools. */
-const TOOL = theme.layout['button-h-md'];
 
 /**
  * The pencil, the one door to the roofs (`T-M05-002`, part e): it does what the moment needs. With
@@ -41,7 +37,6 @@ export function StudioPencil({
     <span ref={holder} className="hg-studio-pencil" data-open={fan}>
       <IconButton
         label={label}
-        size={TOOL}
         variant={pencil === 'stop' ? 'dark' : 'surface'}
         pressed={open}
         onClick={moves.tapPencil}
@@ -65,12 +60,7 @@ export function StudioPencil({
             </span>
             {shown}
           </Pressable>
-          <IconButton
-            label={words.drawRoof}
-            variant="ghost"
-            size={TOOL}
-            onClick={moves.drawAnother}
-          >
+          <IconButton label={words.drawRoof} variant="ghost" onClick={moves.drawAnother}>
             <span className="hg-studio-fan-draw">
               <ShellGlyph name="pencil" size="md" />
               <ShellGlyph name="plus" size="xs" tone="current" />

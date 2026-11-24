@@ -72,7 +72,7 @@ export interface FocusParts {
   /** The pencil, the one door to the roofs: it draws or opens Roofs; `filled` while it draws. */
   readonly pencil: 'shown' | 'filled' | 'hidden';
   /**
-   * The magnet, in the bottom bar: while a corner is drawn, and — `picked` — while a roof is picked,
+   * The magnet, in the left tool column: while a corner is drawn, and — `picked` — while a roof is picked,
    * for the drags to come. A drag in hand keeps it as it was set (Alt frees one move).
    */
   readonly magnet: 'shown' | 'picked' | 'hidden';

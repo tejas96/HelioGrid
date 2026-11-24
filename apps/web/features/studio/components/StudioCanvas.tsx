@@ -1,5 +1,4 @@
 'use client';
-import type { DesignDetail, TranslatedText } from '@heliogrid/contracts';
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { ShellGlyph, useDesktopShell, usePalette, useReducedMotion } from '@heliogrid/ui';
@@ -14,7 +13,6 @@ import { useStudioHaptics } from '../hooks/use-studio-haptics';
 import { StudioBottomBar } from './StudioBottomBar';
 import type { StudioDrive } from './StudioCameraRig';
 import { StudioCanvasHead } from './StudioCanvasHead';
-import { StudioCanvasNotes } from './StudioCanvasNotes';
 import type { StudioCompassHandle } from './StudioCompass';
 import { StudioFilePick } from './StudioFilePick';
 import { StudioLoupe } from './StudioLoupe';
@@ -39,22 +37,18 @@ const StudioScene = dynamic(() => import('./StudioScene').then((scene) => scene.
 /**
  * The studio's canvas (`T-M05-002a`, `T-M05-002b`): the scene on the whole screen and the thin
  * glass parts over it — the steps with the save mark, the compass, the picture chip, the two
- * tool columns and the one bottom bar — and the marks on the roofs. While a roof is drawn, a tap on
+ * tool columns and the one bottom bar, there only with a message — and the marks on the roofs. While a roof is drawn, a tap on
  * the map places a corner and a drag still moves it; on a phone a finger held still aims with the
  * loupe. Focus mode sets aside every part the job in hand does not use. It holds only how the model
  * is seen and touched; every fact and every rule is the studio hook's.
  */
 export function StudioCanvas({
-  detail,
   studio,
-  name,
   words,
   onBack,
   onSite,
 }: {
-  detail: DesignDetail;
   studio: StudioScreen;
-  name: TranslatedText;
   words: StudioCanvasWords;
   onBack: () => void;
   /** Back to Site details; `null` for a reader who cannot change the design. */
@@ -209,7 +203,6 @@ export function StudioCanvas({
           onSite={onSite}
           phone={desktop === false}
         />
-        <StudioCanvasNotes studio={studio} words={words} />
         <StudioToolRail
           studio={studio}
           view={view}
@@ -231,7 +224,7 @@ export function StudioCanvas({
           onZoomOut={() => drive.current?.zoomOut()}
           onHome={() => drive.current?.home()}
         />
-        {studio.roofSheet !== null ? (
+        {studio.roofSheet === null ? null : (
           <StudioRoofSheet
             footRef={bottom}
             sideRef={side}
@@ -242,22 +235,20 @@ export function StudioCanvas({
             map={scene}
             phone={desktop === false}
           />
-        ) : (
-          <StudioBottomBar
-            barRef={bottom}
-            name={name}
-            studio={studio}
-            view={view}
-            units={studio.units}
-            editing={editing}
-            place={detail.site.address}
-            words={words}
-            part={parts.bottomBar}
-            magnet={parts.magnet}
-            crowded={crowded}
-            phone={desktop === false}
-          />
         )}
+        <StudioBottomBar
+          barRef={studio.roofSheet === null ? bottom : null}
+          studio={studio}
+          view={view}
+          units={studio.units}
+          editing={editing}
+          words={words}
+          part={parts.bottomBar}
+          crowded={crowded}
+          phone={desktop === false}
+          sheet={studio.roofSheet !== null}
+          onAway={() => scene.current?.focus()}
+        />
         {studio.panel.open === 'roofs' ? (
           <StudioRoofsList studio={studio} units={studio.units} words={words} />
         ) : null}

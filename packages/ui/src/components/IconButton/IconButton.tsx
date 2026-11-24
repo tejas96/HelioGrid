@@ -6,6 +6,14 @@ import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
 import { isStatedOff } from '../Button/Button.logic';
 import type { IconButtonProps } from './IconButton.types';
 
+/** The diameter lands as a custom property, so a surface with its own scale (the studio) can size it. */
+type SizeVars = CSSProperties & Record<'--hg-icon-button-size', string>;
+
+const sizeVars = (size: number, style: CSSProperties | undefined): SizeVars => ({
+  '--hg-icon-button-size': `${size}px`,
+  ...style,
+});
+
 interface WebIconButtonProps extends IconButtonProps {
   className?: string;
   /** Lands on the circle — the DS contract for `style`. */
@@ -44,7 +52,7 @@ export function IconButton({
       type="button"
       className={classNames('hg-icon-button', className)}
       data-variant={variant}
-      style={{ width: size, height: size, ...style }}
+      style={sizeVars(size, style)}
       aria-label={label}
       disabled={disabled && !stated}
       aria-disabled={disabled ? true : undefined}
@@ -73,7 +81,7 @@ export function IconButton({
         href={href}
         className={classNames('hg-icon-button', className)}
         data-variant={variant}
-        style={{ width: size, height: size, ...style }}
+        style={sizeVars(size, style)}
         aria-label={label}
       >
         {children}

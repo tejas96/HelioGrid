@@ -2776,11 +2776,6 @@ msgid "{pin}, draggable"
 msgstr "{pin}, draggable"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:100
-msgid "{place} · roof not set up yet"
-msgstr "{place} · roof not set up yet"
-
-#. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:53
 msgid "{place} of {total}"
 msgstr "{place} of {total}"
@@ -20010,11 +20005,6 @@ msgid "Roof moved. Undo puts it back."
 msgstr "Roof moved. Undo puts it back."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:101
-msgid "Roof not set up yet"
-msgstr "Roof not set up yet"
-
-#. js-lingui-explicit-id
 #: src/copy/studio-size.ts:11
 msgid "Roof size"
 msgstr "Roof size"
@@ -23089,7 +23079,7 @@ msgid "The {length} you set would change. Change that length first."
 msgstr "The {length} you set would change. Change that length first."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:102
+#: src/copy/studio-canvas.ts:100
 msgid "The 3D view cannot start on this device. Try another browser."
 msgstr "The 3D view cannot start on this device. Try another browser."
 

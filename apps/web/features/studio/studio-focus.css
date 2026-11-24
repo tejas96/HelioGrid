@@ -30,6 +30,16 @@
   pointer-events: none;
 }
 
+/* A bar with nothing to say takes no room: the roof keeps the foot. It stays in the page as a
+   flat line at the foot's bottom edge, under a message too, so the camera's room never counts a
+   passing message and the roof does not jump. */
+.hg-studio-bar[data-empty] {
+  align-self: end;
+  block-size: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 /* While a roof is drawn the pencil is filled with ink: the mode is on, and the pencil ends it. */
 .hg-studio-tools .hg-icon-button[data-variant="dark"] {
   background: var(--text-primary);
@@ -40,6 +50,16 @@
 .hg-studio-bar[data-kind="pill"] {
   gap: var(--sp-2);
   padding: var(--sp-1);
+}
+
+/* A pill with nothing to press or read (between a drawing's corners) keeps only its live region:
+   no glass is drawn round nothing. */
+.hg-studio-bar[data-kind="pill"]:not(:has(button, .hg-studio-pill-text:not(:empty))) {
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 /* The magnet's holder is the button's own size: no text line under it to stretch the pill. */
@@ -67,16 +87,6 @@
 .hg-studio-bar-acts > .hg-studio-magnet,
 .hg-studio-bar-acts > .hg-icon-button {
   flex: none;
-}
-
-/* A pick of the magnet the server refused: said in the pill, with its retry. */
-.hg-studio-pill-refused {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  padding-inline: var(--sp-2) 0;
-  color: var(--danger-text);
-  font-size: var(--fs-caption);
 }
 
 /* Before the first corner: one line under the head that says what to do. */

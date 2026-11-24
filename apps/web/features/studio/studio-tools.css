@@ -102,87 +102,78 @@
   color: var(--text-primary);
 }
 
-.hg-studio-bar .hg-button[data-stated="true"][data-variant="primary"] {
-  background: var(--action-primary);
-  color: var(--text-inverse);
-  box-shadow: var(--e2);
-}
-
-.hg-studio-bar .hg-button[data-stated="true"][data-variant="secondary"] {
-  background: var(--hg-control-fill);
-  color: var(--text-primary);
-  box-shadow:
-    inset 0 0 0 var(--hg-studio-line) var(--line-strong),
-    var(--e1);
-}
-
-/* The one bottom bar. */
+/* The one bottom bar: there only with a message — its sign, its line, its one act and ×. */
 .hg-studio-bar {
   grid-row: 3;
   grid-column: 1 / -1;
   justify-self: center;
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
   max-inline-size: 100%;
   min-inline-size: 0;
-  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
+  padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-3);
   border-radius: var(--r-pill);
 }
 
-.hg-studio-bar-mark {
+.hg-studio-bar-sign {
   display: grid;
   flex: none;
   place-items: center;
-  inline-size: var(--sp-8);
-  block-size: var(--sp-8);
-  border-radius: var(--r-pill);
-  background: var(--accent-subtle);
   color: var(--accent-text);
+}
+
+.hg-studio-bar[data-tone="warning"] .hg-studio-bar-sign {
+  color: var(--warning-text);
 }
 
 .hg-studio-bar-words {
   display: flex;
-  align-items: baseline;
-  gap: var(--sp-2);
+  flex-direction: column;
+  gap: var(--sp-0-5);
   min-inline-size: 0;
 }
 
 .hg-studio-bar-name {
-  flex: none;
   font-family: var(--font-display);
   font-size: var(--fs-body-lg);
 }
 
-.hg-studio-bar-status {
-  overflow: hidden;
+.hg-studio-bar-line {
   font-size: var(--fs-body-sm);
-  color: var(--text-secondary);
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  color: var(--text-primary);
+}
+
+.hg-studio-bar[data-tone="error"] .hg-studio-bar-sign,
+.hg-studio-bar[data-tone="error"] .hg-studio-bar-line {
+  color: var(--danger-text);
 }
 
 .hg-studio-bar-acts {
   display: flex;
   flex: none;
-  gap: var(--sp-2);
+  align-items: center;
+  gap: var(--sp-1);
 }
 
-/* A new roof's chips sit under its line: the bar is a card, its words one under the other, and
+/* While a job holds the foot (the drawing pill, the size card, a roof's sheet), a message that must
+   not wait stands just above it, between the tool columns. */
+.hg-studio-bar[data-above-job="true"] {
+  grid-row: 2;
+  grid-column: 2;
+  align-self: end;
+}
+
+/* A message that asks a choice (a new roof's kind, the stairs) is a card: its title over its line,
    the chips one row that scrolls sideways where they do not fit. */
-.hg-studio-bar[data-chips="true"] {
+.hg-studio-bar[data-kind="card"] {
   align-items: flex-start;
+  padding: var(--sp-2) var(--sp-1) var(--sp-2) var(--sp-3);
   border-radius: var(--r-xl);
 }
 
-.hg-studio-bar[data-chips="true"] .hg-studio-bar-words {
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--sp-0-5);
-}
-
-.hg-studio-bar[data-chips="true"] .hg-studio-bar-status {
-  white-space: normal;
+.hg-studio-bar[data-kind="card"] .hg-studio-bar-sign {
+  padding-block-start: var(--sp-0-5);
 }
 
 .hg-studio-kind-chips {
@@ -200,67 +191,10 @@
   flex: none;
 }
 
-/* The bar's mark: a tick once a roof stands, the error colour when something is refused. */
-.hg-studio-bar-mark[data-mark="check"] {
-  background: var(--success-bg);
-  color: var(--success-text);
-}
-
-.hg-studio-bar[data-tone="bad"] .hg-studio-bar-mark {
-  background: var(--danger-bg);
-  color: var(--danger-text);
-}
-
-.hg-studio-bar[data-tone="bad"] .hg-studio-bar-status {
-  color: var(--danger-text);
-}
-
-.hg-studio-bar-name {
-  display: inline-flex;
-  align-items: center;
-}
-
-/* A phone: the tools sit low, in thumb reach; the bar stands as a card across the foot with its
-   acts one under the other, and the name moves into it. */
+/* A phone: the tools sit low, in thumb reach; the bar spans the foot when its words need it. */
 @media (width < 968px) {
   .hg-studio-tools {
     align-self: end;
-  }
-
-  .hg-studio-bar {
-    justify-self: stretch;
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--sp-3);
-    padding: var(--sp-3);
-    border-radius: var(--r-xl);
-  }
-
-  .hg-studio-bar-mark {
-    display: none;
-  }
-
-  .hg-studio-bar-words {
-    flex-direction: column;
-    gap: var(--sp-0-5);
-  }
-
-  .hg-studio-bar-status {
-    white-space: normal;
-  }
-
-  /* The two acts side by side, the main one at the right; a language too long for one row puts
-     them one under the other. */
-  .hg-studio-bar-acts {
-    flex-wrap: wrap;
-  }
-
-  .hg-studio-bar-acts > * {
-    flex: 1 1 0;
-  }
-
-  .hg-studio-bar-acts .hg-button {
-    inline-size: 100%;
   }
 
   /* The chip row fades at its end, so it reads as one that scrolls. */

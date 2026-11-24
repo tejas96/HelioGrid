@@ -1,3 +1,4 @@
+import { MESSAGE_DWELL_MS } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useMemo, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -62,7 +63,7 @@ export function ToastHost({
   focusAfter,
   position = 'bottom-center',
   max = 3,
-  duration = 4000,
+  duration = MESSAGE_DWELL_MS,
   // Derived, not typed — see the web half. The nav's height is the thing being cleared.
   offset = theme.layout['bottomnav-h'] + theme.spacing['sp-6'],
   style,

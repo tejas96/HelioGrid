@@ -1,0 +1,8 @@
+language css
+
+// The studio's chrome takes the studio's own size, which is smaller on a phone (STUDIO_CHROME in
+// packages/theme/src/tokens/layout.ts), never the app's button heights.
+CssDashedIdentifier() as $token where {
+  $token <: r"--button-h-(?:sm|md|lg)",
+  register_diagnostic(span=$token, message="The studio's chrome takes its own size, not the app's button heights — use var(--studio-tool) (STUDIO_CHROME).")
+}

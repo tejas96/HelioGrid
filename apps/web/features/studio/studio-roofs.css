@@ -45,7 +45,7 @@
 .hg-studio-fan {
   position: absolute;
   inset-inline-start: calc(100% + var(--sp-2));
-  inset-block-start: calc(50% - var(--button-h-md) / 2 - var(--sp-1));
+  inset-block-start: calc(50% - var(--studio-tool) / 2 - var(--sp-1));
   z-index: 3;
   display: flex;
   align-items: center;
@@ -57,7 +57,7 @@
 
 .hg-studio-fan .hg-studio-fan-roofs {
   gap: var(--sp-2);
-  block-size: var(--button-h-md);
+  block-size: var(--studio-tool);
   padding-inline: var(--sp-3);
   border-radius: var(--r-pill);
   background: var(--fill);

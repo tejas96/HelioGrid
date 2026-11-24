@@ -1,3 +1,4 @@
+import { MESSAGE_DWELL_MS } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
@@ -36,7 +37,7 @@ export function ToastHost({
   focusAfter,
   position = 'bottom-center',
   max = 3,
-  duration = 4000,
+  duration = MESSAGE_DWELL_MS,
   offset,
   className,
   style,

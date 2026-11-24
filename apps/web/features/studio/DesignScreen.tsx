@@ -99,9 +99,7 @@ export function DesignScreen({
   return (
     <>
       <StudioCanvas
-        detail={detail}
         studio={studio}
-        name={words.designName(detail.site.name, detail.design.ordinal)}
         words={words}
         onBack={() => back(detail.subject.leadId)}
         onSite={detail.canEdit ? toSite : null}

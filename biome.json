@@ -420,6 +420,18 @@
       "includes": ["**/packages/ui/src/**/*.{css}", "!**/node_modules/**", "!**/dist/**"]
     },
     {
+      "path": "./packages/config/biome/studio-scale.grit",
+      "includes": [
+        "**/apps/web/features/studio/**/*.{ts,tsx}",
+        "!**/node_modules/**",
+        "!**/.next/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/studio-scale-css.grit",
+      "includes": ["**/apps/web/features/studio/**/*.css", "!**/node_modules/**", "!**/.next/**"]
+    },
+    {
       "path": "./packages/config/biome/screen-size-css.grit",
       "includes": [
         "**/apps/mobile/src/**/*.{css}",

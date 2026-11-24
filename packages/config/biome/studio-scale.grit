@@ -1,0 +1,16 @@
+// The studio's chrome takes the studio's own size, which is smaller on a phone (STUDIO_CHROME in
+// packages/theme/src/tokens/layout.ts): its round tools never set a size of their own, and no part
+// reads the app's button heights for its chrome. The studio's CSS sizes every circle once.
+or {
+  JsxAttribute(name="size") as $size where {
+    $size <: within or {
+      JsxOpeningElement(name="IconButton"),
+      JsxSelfClosingElement(name="IconButton")
+    } ,
+    register_diagnostic(span=$size, message="A studio round tool sets no size — the studio's CSS gives every circle var(--studio-tool), smaller on a phone.")
+  },
+  JsStringLiteralExpression() as $token where {
+    $token <: r"[\x22\x27]button-h-(?:sm|md|lg)[\x22\x27]",
+    register_diagnostic(span=$token, message="The studio's chrome takes its own size, not the app's button heights — use var(--studio-tool) (STUDIO_CHROME).")
+  }
+}

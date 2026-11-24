@@ -232,7 +232,8 @@ function SheetFoot({
 
 /**
  * The magnet's pill in 3D: while an arrow is held on a phone the sheet steps aside for it (board
- * 10.1); on a desktop, where the foot is free, it stands there with the sheet open.
+ * 10.1); on a desktop, where the foot is free, it stands there with the sheet open. In the top
+ * view the left tool column holds the magnet, so the sheet adds none.
  */
 function MagnetPill({
   studio,
@@ -243,7 +244,8 @@ function MagnetPill({
   words: StudioCanvasWords;
   phone: boolean;
 }) {
-  if (studio.editing.kind !== 'editor' || (phone && !studio.arrowHeld)) return null;
+  if (studio.editing.kind !== 'editor' || studio.view === 'top') return null;
+  if (phone && !studio.arrowHeld) return null;
   return (
     <div className="hg-studio-glass hg-studio-bar" data-kind="pill" data-beside-sheet={!phone}>
       <span className="hg-studio-bar-acts">
