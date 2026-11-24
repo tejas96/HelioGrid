@@ -81,6 +81,19 @@ describe('a roof’s sheet: one row per value it has', () => {
     expect(row?.[later ? 'later' : 'first']).toContain(shape);
   });
 
+  it('a stair room’s sheet has a Stairs row: its sides open onto the roof, and where they are', () => {
+    const design = designOf(TERRACE, stairOn(box(0, 0, 3, 3)));
+    expect(sheetOf(design, 1).stairs).toEqual({
+      sides: [
+        { side: 1, faces: 'east', middleM: 1.5 },
+        { side: 2, faces: 'north', middleM: 1.5 },
+      ],
+      on: 1,
+      byPerson: false,
+    });
+    expect(sheetOf(design, 0).stairs).toBeNull();
+  });
+
   it('a height between floors stands on none; on a floor, on it', () => {
     const between = { ...TERRACE, height: { metres: 5, setBy: 'person' as const } };
     expect(sheetOf(designOf(between), 0).height.floor).toBeNull();

@@ -34,6 +34,19 @@ describe('Copy and Delete, from a roof’s row', () => {
     });
   });
 
+  it('a copy leaves the stairs where a person placed them: the copy holds none', () => {
+    const placed = {
+      ...stair,
+      sides: [{}, { stairsAt: 1.5, stairsBy: 'person' as const }, {}, {}],
+    };
+    const { document } = run(
+      [{ kind: 'copy_roof', roof: 0, ids: ['copy', 'copy-stair'] }],
+      designOf(TERRACE, placed, SHED),
+    );
+    expect(document.roofs[1]?.sides?.[1]?.stairsAt).toBe(1.5);
+    expect(document.roofs[4]?.sides?.some((side) => side.stairsAt !== undefined)).toBe(false);
+  });
+
   it('a copy keeps what the roof is made of and whether it was confirmed', () => {
     const made = {
       ...TERRACE,

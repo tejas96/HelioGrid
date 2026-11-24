@@ -4,6 +4,7 @@ import type {
   RoofSheetRows,
   RoofTopMark,
   SideSheetRows,
+  StairsShown,
 } from '@heliogrid/domain';
 
 /** What the studio's kernel works out of the design drawn, for the screen to draw. */
@@ -20,4 +21,8 @@ export interface RoofModelShown {
   readonly sheetRows: RoofSheetRows | null;
   /** The open side's sheet; `null` with no side open. */
   readonly sideRows: SideSheetRows | null;
+  /** Where the stairs reach the roof, and their clear strip — where a drag holds them, there. */
+  readonly stairs: StairsShown | null;
+  /** No stairs, none guessed, and not skipped: the bar asks where they reach the roof. */
+  readonly stairsAsk: boolean;
 }

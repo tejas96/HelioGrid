@@ -88,8 +88,11 @@ export function StudioCanvas({
       moves.tapRoof(at, (h) => drive.current?.groundAt(x + FINGER_PX, y, h) ?? null);
       return;
     }
-    // The plan takes the tap first: an outline makes its roof (`T-M05-002d`, board 4.3).
     const spot = drive.current?.groundAt(x, y, 0) ?? null;
+    // Placing the stairs: the tap on an edge is theirs.
+    const beside = drive.current?.groundAt(x + FINGER_PX, y, 0) ?? null;
+    if (spot !== null && moves.tapStairs(spot, beside)) return;
+    // The plan takes the tap next: an outline makes its roof (`T-M05-002d`, board 4.3).
     if (spot !== null && studio.ownMoves.tapPlan(spot)) return;
     roofMarks.current?.revealAt(x, y);
   });
@@ -165,6 +168,10 @@ export function StudioCanvas({
           lengths={parts.lengthLabels}
           handles={parts.otherHandles}
           drive={drive}
+          fingerAt={(x, y) => ({
+            here: drive.current?.groundAt(x, y, 0) ?? null,
+            beside: drive.current?.groundAt(x + FINGER_PX, y, 0) ?? null,
+          })}
           onAim={aimAt}
           onCrowded={setCrowded}
           map={scene}

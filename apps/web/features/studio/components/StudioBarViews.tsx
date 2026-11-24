@@ -56,6 +56,43 @@ export interface BarFacts {
 }
 
 /**
+ * The stairs' moment in the bar, at rest with nothing else to say (board 7), drawn from the
+ * studio's `stairsMoment`: the line to tap an edge, the line while the mark moves, the card that
+ * asks with Skip and Place, or the line that a drag moves a guess.
+ */
+function stairsBar(
+  bar: Extract<RoofBar, { kind: 'roofs' }>,
+  facts: BarFacts,
+  next: BarAct,
+): BarView | null {
+  const { studio, words } = facts;
+  const moment = studio.stairsMoment;
+  const quiet = bar.said === null && bar.live === null && !bar.sizing && bar.picked === null;
+  if (moment === null || !quiet || facts.view !== 'top') return null;
+  if (moment === 'ask') {
+    return {
+      slim: false,
+      mark: 'steps',
+      title: words.stairsAskTitle,
+      status: words.stairsAskStatus,
+      bad: false,
+      acts: [
+        { key: 'skip', label: words.stairsSkip, secondary: true, onPress: studio.moves.skipStairs },
+        { key: 'place', label: words.stairsPlace, onPress: studio.moves.placeStairs },
+      ],
+    };
+  }
+  return {
+    slim: true,
+    mark: 'check',
+    title: null,
+    status: words.stairsLine(moment),
+    bad: false,
+    acts: [next],
+  };
+}
+
+/**
  * With a roof: the next step, and a moment's words. A roof just closed is a card for that moment —
  * what it became, why, and the chips that fix a wrong guess.
  */
@@ -73,6 +110,8 @@ function roofsBar(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): Ba
     iconRight: 'chevron-right',
     coming: words.stepComing,
   };
+  const stairs = kind === null ? stairsBar(bar, facts, next) : null;
+  if (stairs !== null) return stairs;
   return {
     slim: kind === null,
     mark: bar.bad ? 'alert-circle' : 'check',

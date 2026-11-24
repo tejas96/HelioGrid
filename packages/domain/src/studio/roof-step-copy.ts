@@ -70,8 +70,11 @@ export function copied(
       east: c.east + by.east,
       north: c.north + by.north,
     }));
+    // The stairs stay where a person placed them: the copy holds none.
+    const sides = roof.sides?.map(({ stairsAt: _at, stairsBy: _by, ...side }) => side);
     return {
       ...roof,
+      ...(sides === undefined ? {} : { sides }),
       id: idOf.get(roof.id) as string,
       // A link inside the group goes to the copy; one out of it stays on the roof it named.
       ...(on === undefined ? {} : { on: idOf.get(on) ?? on }),

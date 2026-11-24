@@ -7,6 +7,7 @@ import { StudioShapePicture } from './StudioShapePicture';
 import { HeightRow } from './StudioSheetHeight';
 import { StudioSheetNumber } from './StudioSheetNumber';
 import { NumberRow, type SheetFacts, SheetRow } from './StudioSheetRow';
+import { StudioStairsRow } from './StudioStairsRow';
 import { numberShownBy } from './sheet-number-shown';
 
 type ShapeRow = NonNullable<RoofSheetRows['shape']>;
@@ -154,6 +155,7 @@ export function StudioSheetRows({
       {rows.setback === null ? null : (
         <NumberRow facts={facts} shown={rows.setback} label={words.rowNumber('setback')} />
       )}
+      <StudioStairsRow facts={facts} room={rows.roof} row={rows.stairs} />
       {details === null ? null : (
         <SheetRow
           facts={facts}

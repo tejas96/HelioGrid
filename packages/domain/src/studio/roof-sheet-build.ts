@@ -10,14 +10,17 @@ import { roofNameOf } from './roof-names';
 import { type NumberAt, PARAPET_CHECK_ABOVE_M, type RoofNumber } from './roof-numbers';
 import { parapetNow } from './roof-open-edges';
 import type { RoofKind } from './roof-parts';
+import { edgeLengths } from './roof-shape';
 import {
   floorAt,
   floorTicks,
   type RoofSheetRows,
   type SlopeWay,
+  type StairsRow,
   type WayAt,
 } from './roof-sheet-rows';
-import { glassSideOf, lowSideOf } from './roof-slope-way';
+import { glassSideOf, lowSideOf, sideBearing } from './roof-slope-way';
+import { stairsOf, stairsSidesOf } from './roof-stairs';
 import { STICKS_OUT_MIN_M, sticksOutM } from './roof-sticks-out';
 import { roofNumberOf } from './roof-values';
 import type { RoofsWorked } from './roof-worked';
@@ -183,6 +186,32 @@ function parapetRowsOf(row: RowFacts): Pick<RoofSheetRows, 'parapet' | 'details'
   };
 }
 
+/** A stair room's Stairs row: its open sides, each by the way it looks, and where the stairs are. */
+function stairsRowOf(
+  document: StudioDocument,
+  index: number,
+  facts: RoofFacts,
+  worked: RoofsWorked,
+): StairsRow {
+  const roof = document.roofs[index] as Roof;
+  const stairs = stairsOf(document, worked.edges, facts.clearPathM);
+  const lengths = edgeLengths(roof.corners);
+  const sides = stairsSidesOf(document, worked.edges, index).map((side) => ({
+    side,
+    faces: compassOf(sideBearing(roof.corners, side)),
+    middleM: (lengths[side] ?? 0) / 2,
+  }));
+  const on =
+    stairs === null
+      ? null
+      : stairs.roof === index
+        ? stairs.side
+        : stairs.outside
+          ? 'outside'
+          : null;
+  return { sides, on, byPerson: stairs?.byPerson ?? false };
+}
+
 /** The roof's sheet, row by row. */
 export function roofSheetRowsOf(
   document: StudioDocument,
@@ -223,6 +252,7 @@ export function roofSheetRowsOf(
     setback: hole ? null : numberOf(at, 'setback'),
     details,
     crossings,
+    stairs: roofKindOf(roof) === 'stair_room' ? stairsRowOf(document, index, facts, worked) : null,
     waits:
       crossings.length > 0 ||
       [materialWaits, kind?.waits, slope?.waits, parapet?.waits].some((each) => each === true),

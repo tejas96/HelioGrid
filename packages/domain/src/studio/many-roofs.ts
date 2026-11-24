@@ -22,6 +22,8 @@ export * from './roof-numbers';
 export * from './roof-parts';
 export * from './roof-scene';
 export * from './roof-sheet-rows';
+export * from './roof-stairs';
+export * from './roof-stairs-moment';
 export { STICKS_OUT_MIN_M, sticksOutM } from './roof-sticks-out';
 export * from './roof-top-marks';
 export * from './roofs-panel';
