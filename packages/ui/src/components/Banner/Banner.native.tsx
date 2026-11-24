@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { Children, isValidElement, useEffect, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import { colors, type ThemeColor } from '../../primitives/Color/colors';
@@ -33,6 +33,8 @@ function Glyph({ name, color }: { name: BannerGlyph; color: ThemeColor }) {
 /**
  * Without a title the body IS the statement, so it keeps the tone colour and a heavier weight.
  * Under a title it steps back to --text-secondary at 400: the title is the fact, this is detail.
+ * A body of parts (rows, a working) is laid out in a box: inside a `Text` a part is an inline view
+ * with no width, so its own words wrap at nothing and the banner grows tall and empty.
  */
 function Body({
   title,
@@ -43,6 +45,10 @@ function Body({
   children: ReactNode;
   tone: ThemeColor;
 }) {
+  const parts = Children.toArray(children);
+  if (parts.length > 0 && parts.every(isValidElement)) {
+    return <View style={title === undefined ? undefined : styles.bodyUnderTitle}>{children}</View>;
+  }
   if (title === undefined) {
     return (
       <Text variant="body-sm" style={[styles.bodyAlone, { color: tone }]}>

@@ -1,7 +1,7 @@
 import { useUpdateRequired } from '@heliogrid/data/react';
 import type { NavigationState } from '@react-navigation/native';
 import { usePushRegistration } from '../push/usePushRegistration';
-import { BillingDenialHost, UpdateRequired } from '../screens/shell';
+import { BillingDenialHost, PillHost, PillSlotProvider, UpdateRequired } from '../screens/shell';
 import { linkingOptions } from './linking';
 import { NavigationPhaseProvider } from './phase';
 import { navigationRef } from './ref';
@@ -34,15 +34,19 @@ export function AppNavigation() {
   if (refusal !== null) return <UpdateRequired refusal={refusal} />;
   return (
     <NavigationPhaseProvider>
-      <Navigation
-        ref={navigationRef}
-        linking={linkingOptions}
-        initialState={kept}
-        onStateChange={(state) => {
-          kept = state;
-        }}
-        onUnhandledAction={reportUnhandledAction}
-      />
+      {/* The one pill, over every page and under every sheet: a page in front claims it. */}
+      <PillSlotProvider>
+        <Navigation
+          ref={navigationRef}
+          linking={linkingOptions}
+          initialState={kept}
+          onStateChange={(state) => {
+            kept = state;
+          }}
+          onUnhandledAction={reportUnhandledAction}
+        />
+        <PillHost />
+      </PillSlotProvider>
       <BillingDenialHost />
     </NavigationPhaseProvider>
   );

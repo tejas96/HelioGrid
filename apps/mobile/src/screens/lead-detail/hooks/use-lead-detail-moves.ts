@@ -9,6 +9,8 @@ import { useEffect } from 'react';
 import { Linking, Share } from 'react-native';
 import { useFilePick } from '../../shared/use-file-pick';
 import { useProposalMoves } from '../../shared/use-proposal-moves';
+import { tabRoute } from '../../shell/doors';
+import { useOpenTab } from '../../shell/use-open-tab';
 
 /**
  * Lead Detail's ways out on the phone — the platform adapter: back to where it was opened from,
@@ -19,6 +21,7 @@ import { useProposalMoves } from '../../shared/use-proposal-moves';
  */
 export function useLeadDetailMoves(files: LeadFiles) {
   const navigation = useNavigation();
+  const openTab = useOpenTab();
   const pick = useFilePick();
   const proposal = useProposalMoves();
   /* Where the lead's proposals lead: the builder, a proposal's own page, a sibling lead. */
@@ -38,9 +41,9 @@ export function useLeadDetailMoves(files: LeadFiles) {
     designs,
     back: () => {
       if (navigation.canGoBack()) navigation.goBack();
-      else navigation.navigate('Leads');
+      else openTab(tabRoute.leads);
     },
-    toLeads: () => navigation.navigate('Leads'),
+    toLeads: () => openTab(tabRoute.leads),
     dial: (phoneE164: string) => {
       void Linking.openURL(`tel:${phoneE164}`).catch(() => undefined);
     },

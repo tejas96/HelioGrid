@@ -1,5 +1,7 @@
 import { useDesignScreen } from '@heliogrid/data/react';
 import { type StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { tabRoute } from '../shell/doors';
+import { useOpenTab } from '../shell/use-open-tab';
 import { DesignHolding } from './components/DesignHolding';
 import { StudioPage } from './components/StudioPage';
 
@@ -17,13 +19,14 @@ type Props = StaticScreenProps<{
  */
 export function DesignScreen({ route }: Props) {
   const navigation = useNavigation();
+  const openTab = useOpenTab();
   const { designId, siteSavedAt } = route.params;
   const { read } = useDesignScreen(designId);
   const detail = read.kind === 'ready' ? read.value : null;
   const back = () => {
     if (navigation.canGoBack()) navigation.goBack();
     else if (detail !== null) navigation.navigate('LeadDetail', { leadId: detail.subject.leadId });
-    else navigation.navigate('Leads');
+    else openTab(tabRoute.leads);
   };
   if (detail !== null && detail.site.pin !== null) {
     // Site details open over the studio; their save, Cancel and the system back come back to it.

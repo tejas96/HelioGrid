@@ -6,7 +6,8 @@ import { type NeedOpen, OwnerDashboard, percentOfBasisPoints, useFormat } from '
 import { useNavigation } from '@react-navigation/native';
 import { useRef } from 'react';
 import { Share, View } from 'react-native';
-import { doorRoute } from '../doors';
+import { tabRoute } from '../doors';
+import { useOpenTab } from '../use-open-tab';
 
 /**
  * The owner dashboard on the EPC Owner's and the Sales Manager's home (`SCR-M13-01`): the phone's
@@ -18,6 +19,7 @@ export function OwnerHome() {
   const t = useTranslate();
   const format = useFormat();
   const navigation = useNavigation();
+  const openTab = useOpenTab();
   const board = useOwnerDashboard();
   const shell = useShell();
   const frame = useRef<View>(null);
@@ -40,7 +42,7 @@ export function OwnerHome() {
       case 'my_overdue_tasks':
         return shell.homes.includes(MY_DAY_PRESET)
           ? shell.chooseHome(MY_DAY_PRESET)
-          : navigation.navigate(doorRoute.leads);
+          : openTab(tabRoute.leads);
     }
   };
   const onExport = () => {
@@ -61,7 +63,7 @@ export function OwnerHome() {
         needsYou={board.needsYou}
         winRate={board.winRate}
         onNeed={onNeed}
-        onForecastStage={() => navigation.navigate(doorRoute.proposals)}
+        onForecastStage={() => openTab(tabRoute.proposals)}
         onSetTarget={board.setTarget}
         targetSaving={board.targetSaving}
         targetFailed={board.targetFailed}

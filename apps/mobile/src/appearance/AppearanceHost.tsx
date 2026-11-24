@@ -2,6 +2,7 @@ import type { Appearance } from '@heliogrid/domain';
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { StatusBar, Appearance as SystemAppearance, useColorScheme } from 'react-native';
 import { keepAppearance, readAppearance } from './appearance-storage';
+import { ButtonBarBand } from './button-bar';
 
 interface AppearanceChoice {
   readonly appearance: Appearance;
@@ -42,7 +43,7 @@ export function AppearanceHost({ children }: { children: ReactNode }) {
         translucent
         backgroundColor="transparent"
       />
-      {children}
+      <ButtonBarBand>{children}</ButtonBarBand>
     </AppearanceContext.Provider>
   );
 }

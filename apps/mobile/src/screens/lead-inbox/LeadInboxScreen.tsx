@@ -7,6 +7,8 @@ import { useRef } from 'react';
 import { View } from 'react-native';
 import { ShellNotFoundState } from '../shell/components/ShellNotFoundState';
 import { ShellPage } from '../shell/components/ShellPage';
+import { tabRoute } from '../shell/doors';
+import { useOpenTab } from '../shell/use-open-tab';
 import { InboxToasts } from './components/InboxToasts';
 
 /**
@@ -21,6 +23,7 @@ export function LeadInboxScreen() {
   const { t } = useI18n();
   const format = useFormat();
   const navigation = useNavigation();
+  const openTab = useOpenTab();
   const words = leadInboxWords(t);
   /* Where the screen reader goes once a returned act's line or the bulk line is cleared. */
   const page = useRef<View>(null);
@@ -46,7 +49,7 @@ export function LeadInboxScreen() {
       drillDown={{
         title: words.title,
         back: words.backToLeads,
-        onBack: () => navigation.navigate('Leads'),
+        onBack: () => openTab(tabRoute.leads),
         ...(summary === undefined ? {} : { summary }),
       }}
     >

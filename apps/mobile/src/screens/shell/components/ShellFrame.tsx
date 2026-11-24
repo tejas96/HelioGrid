@@ -1,19 +1,16 @@
-import { SHELL } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
 import {
   BarScrollContext,
-  BottomNav,
-  type BottomNavItem,
   BrandBloom,
   colors,
   createBarScroll,
   KeyboardFrame,
-  useKeyboardUp,
 } from '@heliogrid/ui';
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, RefreshControl, StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useCoverButtonBar } from '../../../appearance';
+import { useClaimPill } from '../pill-slot';
 import { styles, underPill } from '../styles';
 import { ShellBillingStrip } from './ShellBillingStrip';
 
@@ -24,10 +21,12 @@ const FROST_DISTANCE = theme.layout['topbar-h-mobile'];
 
 export interface ShellFrameProps {
   topBar: ReactNode;
-  /** The pill's items; none hides the pill, as Frame 8 does. */
-  items: BottomNavItem[];
-  /** The item in view, or none on a door the pill does not name. */
+  /** The page sits in the shell with the pill: a person with no destinations has none, as Frame 8. */
+  pill: boolean;
+  /** The pill's item in view, or none on a door the pill does not name. */
   inView?: string;
+  /** The pill action's press on the page the action itself opened: it opens again in place. */
+  onAction?: () => void;
   /** Told when content first scrolls under the bar and when it comes back to the top. */
   onScrolledChange?: (scrolled: boolean) => void;
   /**
@@ -60,14 +59,14 @@ export interface ShellFrameProps {
 /**
  * The shell's arrangement (`SCR-SHELL-01`): the top bar stays put under the status band, the
  * content scrolls under it — the frame tells the bar how far, so its frosted band comes in with the
- * distance rather than all at once (`BarScrollContext`) — and under the pill, and the pill floats in a frame that ends at the
- * device's own home-indicator inset — read at run time, never a typed number (`F7-50`). While the
- * keyboard is up the pill steps aside, so it never covers the field being typed in.
+ * distance rather than all at once (`BarScrollContext`) — and under the pill, which is drawn once
+ * over every page (`PillHost`): the page in front claims it, and leaves room for it at its foot.
  */
 export function ShellFrame({
   topBar,
-  items,
+  pill: withPill,
   inView,
+  onAction,
   onScrolledChange,
   stickyHead,
   lead,
@@ -77,10 +76,11 @@ export function ShellFrame({
   pull,
   children,
 }: ShellFrameProps) {
-  const t = useTranslate();
   const insets = useSafeAreaInsets();
-  const pill = items.length > 0 && foot === undefined;
-  const keyboardUp = useKeyboardUp();
+  const pill = withPill && foot === undefined;
+  useClaimPill(pill, inView, onAction);
+  /* An act bar paints under the system buttons itself (`FormActionBar`). */
+  useCoverButtonBar(foot !== undefined);
   const scroll = useMemo(createBarScroll, []);
   const band = useBand(scroll);
   /* The held head takes the page's colour only once it is held, so a lead's glow above it is never
@@ -98,7 +98,7 @@ export function ShellFrame({
         <PinnedTop band={band} reach={insets.top}>
           {topBar}
           {/* SCR-SHELL-06: pinned under the bar, outside the scroll; Frame 8 (no pill) reads nothing. */}
-          {items.length > 0 && stripless !== true ? <ShellBillingStrip /> : null}
+          {withPill && stripless !== true ? <ShellBillingStrip /> : null}
         </PinnedTop>
         <View style={styles.region}>
           {/* A page with fields keeps the field typed in, its line and the act bar above the keyboard,
@@ -151,11 +151,6 @@ export function ShellFrame({
           </KeyboardFrame>
           <TopFade band={band} />
         </View>
-        {pill && !keyboardUp ? (
-          <View pointerEvents="box-none" style={[styles.pillFrame, { bottom: insets.bottom }]}>
-            <BottomNav label={t(SHELL.mainNavigation)} items={items} value={inView} />
-          </View>
-        ) : null}
       </SafeAreaView>
     </BarScrollContext.Provider>
   );

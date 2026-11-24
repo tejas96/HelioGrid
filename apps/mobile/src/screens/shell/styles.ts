@@ -1,12 +1,23 @@
 import { theme } from '@heliogrid/theme';
 import { colors } from '@heliogrid/ui';
 import { StyleSheet } from 'react-native';
+import { buttonBarHeight } from '../../appearance';
+
+/**
+ * Where the pill's frame ends, from the screen's foot. Above Android's three-button bar the bar
+ * already parts the pill from the edge, so the pill keeps `sp-2` above it, not `--bottomnav-gap`.
+ */
+export const pillFrameBottom = (insetBottom: number) =>
+  buttonBarHeight(insetBottom) > 0
+    ? insetBottom - (theme.layout['bottomnav-gap'] - theme.spacing['sp-2'])
+    : insetBottom;
 
 /**
  * How far a screen under the pill must scroll past its last row so the pill never covers it:
  * `--bottomnav-h` is the pill and its gap, above the device's home-indicator inset (`F7-50`).
  */
-export const underPill = (insetBottom: number) => theme.layout['bottomnav-h'] + insetBottom;
+export const underPill = (insetBottom: number) =>
+  theme.layout['bottomnav-h'] + pillFrameBottom(insetBottom);
 
 /**
  * The switcher spans the page's column: a home title and its preset share one row, and the menu's

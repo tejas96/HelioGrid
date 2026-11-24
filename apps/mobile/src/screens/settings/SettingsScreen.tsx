@@ -5,7 +5,8 @@ import { useTranslate } from '@heliogrid/i18n/react';
 import { SettingsList } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { ShellPage } from '../shell/components/ShellPage';
-import { doorRoute } from '../shell/doors';
+import { tabRoute } from '../shell/doors';
+import { useOpenTab } from '../shell/use-open-tab';
 
 /**
  * The page behind `More` on the pill (`SCR-SHELL-01`, *More: the settings list*): the settings
@@ -17,6 +18,7 @@ export function SettingsScreen() {
   const t = useTranslate();
   const settings = useSettingsScreen();
   const navigation = useNavigation();
+  const openTab = useOpenTab();
   const list = settingsListFor(t, settings.roles);
   const words = settingsWords(t);
   const open = (row: SettingsRow) =>
@@ -32,7 +34,7 @@ export function SettingsScreen() {
         onOpen={open}
         workLists={{
           items: settings.workLists.map((key) => ({ key, name: destinationLabel(t, key) })),
-          onOpen: (key) => navigation.navigate(doorRoute[key]),
+          onOpen: (key) => openTab(tabRoute[key]),
         }}
       />
     </ShellPage>

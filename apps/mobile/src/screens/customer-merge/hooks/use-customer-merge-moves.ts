@@ -2,6 +2,8 @@ import type { CustomerMergeScreen } from '@heliogrid/data/react';
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 import { Linking } from 'react-native';
 import { linkingOptions } from '../../../navigation/linking';
+import { tabRoute } from '../../shell/doors';
+import { useOpenTab } from '../../shell/use-open-tab';
 
 /**
  * Customer Merge's ways out on the phone — the platform adapter: back to the lead it was opened
@@ -9,12 +11,13 @@ import { linkingOptions } from '../../../navigation/linking';
  */
 export function useCustomerMergeMoves() {
   const navigation = useNavigation();
+  const openTab = useOpenTab();
   return {
     cancel: () => {
       if (navigation.canGoBack()) navigation.goBack();
-      else navigation.navigate('Leads');
+      else openTab(tabRoute.leads);
     },
-    toLeads: () => navigation.navigate('Leads'),
+    toLeads: () => openTab(tabRoute.leads),
     openLead: (address: string) => {
       void Linking.openURL(`${linkingOptions.prefixes[0]}${address}`).catch(() => undefined);
     },

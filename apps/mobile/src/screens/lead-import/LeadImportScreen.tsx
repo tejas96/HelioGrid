@@ -6,6 +6,8 @@ import { type StaticScreenProps, useNavigation } from '@react-navigation/native'
 import { useMemo } from 'react';
 import { View } from 'react-native';
 import { ShellPage } from '../shell/components/ShellPage';
+import { tabRoute } from '../shell/doors';
+import { useOpenTab } from '../shell/use-open-tab';
 import { usePickSpreadsheet } from './hooks/use-pick-spreadsheet';
 import { styles } from './styles';
 
@@ -21,11 +23,12 @@ type Props = StaticScreenProps<{ job?: string } | undefined>;
 export function LeadImportScreen({ route }: Props) {
   const { t } = useI18n();
   const navigation = useNavigation();
+  const openTab = useOpenTab();
   const words = useMemo(() => leadImportWords(t), [t]);
   const notes = useMemo(() => catalogImportNotes(t), [t]);
   const screen = useLeadImportScreen(route.params?.job ?? null);
   const requestFile = usePickSpreadsheet(screen);
-  const toLeads = () => navigation.navigate('Leads');
+  const toLeads = () => openTab(tabRoute.leads);
   const file = screen.job;
   return (
     <ShellPage
