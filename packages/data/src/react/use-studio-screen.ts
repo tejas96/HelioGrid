@@ -127,19 +127,19 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   });
   const { roofSheet, numberInHand } = sheet.state;
   const { shown } = roof.view;
-  const landAt = useRef<RoofModelSeen['stairsDropAt']>(() => null);
   const stairs = useStudioStairs({
     latest,
     change,
     editable,
-    dropAt: (at, reachM, magnet) => landAt.current(at, reachM, magnet),
     magnetOn: roof.magnetNow,
     // Outside: the sheet closes, and the next tap on an edge in the top view places the stairs.
     toTop: () => {
-      if (sheet.moves.done()) setView('top');
+      const closed = sheet.moves.done();
+      if (closed) setView('top');
+      return closed;
     },
   });
-  const { hitAt, stairsDropAt, ...model } = useRoofModel(
+  const { hitAt, ...model } = useRoofModel(
     shown,
     facts,
     roofSheet,
@@ -149,7 +149,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     stairs.inHand,
   );
   seen.current = hitAt;
-  landAt.current = stairsDropAt;
+  const stairsMoment = stairs.seen(model);
   const place = roofPlaceMoves({ latest, step, act, facts });
   // Drawing happens in the top view only: the camera flies there first. A roof's sheet is the 3D
   // view's: its height is kept and it closes, as when the top view is picked; a height that is
@@ -203,6 +203,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     ...sheet.state,
     ...model,
     ...stairs.view,
+    stairsMoment,
     ...panel.view,
     ...roofsWithSheet(
       roof.view.heights,

@@ -3,6 +3,7 @@ import type {
   GroundBox,
   MeasurementSystem,
   PictureChoice,
+  StairsMoment,
   StepPlace,
   StudioDocument,
   StudioView,
@@ -83,6 +84,8 @@ export interface StudioScreen
   readonly fit: GroundBox | null;
   /** An arrow on the model is held: the sheet steps aside for the magnet's pill. */
   readonly arrowHeld: boolean;
+  /** What the bar says about the stairs when it has nothing else to say; `null` for nothing. */
+  readonly stairsMoment: StairsMoment | null;
   /** The 3D switch is marked new until the 3D view is first seen. */
   readonly offer3d: boolean;
   /** Which parts show for the job in hand, on a phone-width screen or a wider one (focus mode). */

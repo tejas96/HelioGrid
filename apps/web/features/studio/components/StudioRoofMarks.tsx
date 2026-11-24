@@ -1,7 +1,7 @@
 'use client';
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { StudioScreen } from '@heliogrid/data/react';
-import type { HeldCircle, MeasurementSystem, StudioView } from '@heliogrid/domain';
+import type { GroundPoint, HeldCircle, MeasurementSystem, StudioView } from '@heliogrid/domain';
 import type { RoofWordsShown, StudioCanvasWords } from '@heliogrid/i18n';
 import { type FocusAfter, useFormat } from '@heliogrid/ui';
 import {
@@ -166,6 +166,7 @@ export function StudioRoofMarks({
   lengths,
   handles,
   drive,
+  besideAt,
   onAim,
   onCrowded,
   map,
@@ -183,6 +184,8 @@ export function StudioRoofMarks({
   handles: 'picked' | 'hidden';
   /** The camera, which tells a drag on a mark where on the ground it is. */
   drive: RefObject<StudioDrive | null>;
+  /** The ground a finger's half-width to the side of a point of the screen: a drag's reach. */
+  besideAt: (clientX: number, clientY: number) => GroundPoint | null;
   /** A finger's drag on a mark shows the loupe. */
   onAim: (at: { x: number; y: number } | null) => void;
   /** Told when the corner held becomes crowded on the screen, or stops being. */
@@ -272,7 +275,7 @@ export function StudioRoofMarks({
         ) : null,
       )}
       <StudioRoofTopMarks studio={studio} words={words} units={units} />
-      <StudioStairsMarks studio={studio} words={words} press={press} drive={drive} />
+      <StudioStairsMarks studio={studio} words={words} press={press} besideAt={besideAt} />
       {studio.own.plan?.picked && view === 'top' ? (
         <StudioPlanHandles plan={studio.own.plan} studio={studio} words={words} press={press} />
       ) : null}

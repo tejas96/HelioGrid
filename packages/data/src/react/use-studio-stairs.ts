@@ -4,12 +4,18 @@ import {
   type History,
   historyAfter,
   type StairsDrop,
+  type StairsMoment,
   type StairsPlace,
   type StudioDocument,
+  stairsMomentOf,
   stairsPassed,
   stairsPlaced,
 } from '@heliogrid/domain';
-import { type RefObject, useState } from 'react';
+import { type RefObject, useRef, useState } from 'react';
+import type { RoofModelSeen } from './roof-scene-view';
+
+/** What the stairs read of the model drawn. */
+type StairsSeen = Pick<RoofModelSeen, 'stairs' | 'stairsAsk' | 'stairsDropAt'>;
 
 /**
  * The stairs in the studio (`T-M05-002`, part e, E119–E122, board 7): the mark dragged to another
@@ -39,11 +45,16 @@ export interface StairsMoves {
   tapStairs(at: GroundPoint, beside: GroundPoint | null): boolean;
   grabStairs(): void;
   dragStairs(at: GroundPoint, beside: GroundPoint | null): void;
-  /** Let go: the stairs land where the drag holds them; off every side, they stay where they were. */
+  /** Let go: the stairs land where the drag holds them; off every side, or where they stood, nothing is sent. */
   dropStairs(): void;
+  /** The system took the press away mid-drag: the stairs stay where they were. */
+  cancelStairs(): void;
   /** The Stairs row: one of the stair room's sides, at its middle, or Outside — a tap on an edge next. */
   stairsOnSide(room: number, side: number | 'outside', atM: number): void;
 }
+
+/** Two places along a side this close are one, in metres. */
+const SAME_M = 1e-6;
 
 /** How far a finger's width reaches on the ground there, in metres. */
 const reachOf = (at: GroundPoint, beside: GroundPoint | null) =>
@@ -53,17 +64,26 @@ export function useStudioStairs(args: {
   latest: RefObject<History<StudioDocument> | null>;
   change: (next: History<StudioDocument>) => void;
   editable: boolean;
-  /** Where the stairs land at a point of the plan, as the kernel reads the design drawn. */
-  dropAt: (at: GroundPoint, reachM: number, magnet: boolean) => StairsDrop | null;
   magnetOn: () => boolean;
-  /** Placing happens in the top view: Outside in the sheet goes there first. */
-  toTop: () => void;
+  /** Placing happens in the top view: Outside in the sheet goes there first; `false` when the sheet stays. */
+  toTop: () => boolean;
 }): {
   readonly view: StairsView;
   readonly moves: StairsMoves;
   readonly inHand: StairsPlace | null;
+  /**
+   * The model drawn, read once it is built (after this hook): where the stairs land and stand, and
+   * what the bar says of them.
+   */
+  seen(model: StairsSeen): StairsMoment | null;
 } {
-  const { latest, change, editable, dropAt, magnetOn } = args;
+  const { latest, change, editable, magnetOn } = args;
+  // The model is built after this hook: a drag or a tap reads it when it comes.
+  const drawn = useRef<StairsSeen | null>(null);
+  // Where the stairs stood before the drag: while held, the model shows them where they are held.
+  const stood = useRef<StairsPlace | null>(null);
+  const dropAt = (at: GroundPoint, reachM: number, magnet: boolean) =>
+    drawn.current?.stairsDropAt(at, reachM, magnet) ?? null;
   const [placing, setPlacing] = useState(false);
   const [held, setHeld] = useState(false);
   const [landing, setLanding] = useState<StairsDrop | null>(null);
@@ -104,7 +124,18 @@ export function useStudioStairs(args: {
       if (held) setLanding(dropAt(at, reachOf(at, beside), magnetOn()));
     },
     dropStairs: () => {
-      if (held && landing !== null) place(landing);
+      const now = stood.current;
+      const moved =
+        landing !== null &&
+        (now === null ||
+          now.roof !== landing.roof ||
+          now.side !== landing.side ||
+          Math.abs(now.atM - landing.atM) > SAME_M);
+      if (held && moved && landing !== null) place(landing);
+      setHeld(false);
+      setLanding(null);
+    },
+    cancelStairs: () => {
       setHeld(false);
       setLanding(null);
     },
@@ -113,13 +144,18 @@ export function useStudioStairs(args: {
         place({ roof: room, side, atM });
         return;
       }
-      args.toTop();
-      setPlacing(editable);
+      if (args.toTop()) setPlacing(editable);
     },
   };
   return {
     view: { stairsPlacing: placing, stairsHeld: held, stairsLanding: landing },
     moves,
     inHand: held && landing !== null ? landing : null,
+    seen: (model) => {
+      drawn.current = model;
+      if (!held) stood.current = model.stairs;
+      const facts = { placing, held, ask: model.stairsAsk, stairs: model.stairs, editable };
+      return stairsMomentOf(facts);
+    },
   };
 }

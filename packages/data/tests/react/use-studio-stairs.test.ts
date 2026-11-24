@@ -72,6 +72,31 @@ describe('the stairs', () => {
     expect(stored.saves.length).toBe(saves);
   });
 
+  it('a press the system takes away mid-drag leaves the stairs where they were, and sends nothing', async () => {
+    const view = await opened([TERRACE, STAIR]);
+    const saves = stored.saves.length;
+    act(() => view.result.current.moves.grabStairs());
+    act(() =>
+      view.result.current.moves.dragStairs({ east: 5, north: 5.9 }, { east: 5.3, north: 5.9 }),
+    );
+    act(() => view.result.current.moves.cancelStairs());
+    expect(view.result.current.stairs).toMatchObject({ roof: 1, side: 1, byPerson: false });
+    expect(stored.saves.length).toBe(saves);
+  });
+
+  it('a drop where the stairs already stand sends nothing, and the guess stays a guess', async () => {
+    const view = await opened([TERRACE, STAIR]);
+    const saves = stored.saves.length;
+    act(() => view.result.current.moves.grabStairs());
+    act(() =>
+      view.result.current.moves.dragStairs({ east: 3.05, north: 1.6 }, { east: 3.35, north: 1.6 }),
+    );
+    act(() => view.result.current.moves.dropStairs());
+    expect(view.result.current.stairs).toMatchObject({ roof: 1, side: 1, byPerson: false });
+    expect(view.result.current.stairsMoment).toBe('guessed');
+    expect(stored.saves.length).toBe(saves);
+  });
+
   it('with no stair room the bar asks; Place, then a tap on an edge places them', async () => {
     const view = await opened([TERRACE]);
     expect(view.result.current.stairsAsk).toBe(true);

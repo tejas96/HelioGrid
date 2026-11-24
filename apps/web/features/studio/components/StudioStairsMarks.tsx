@@ -3,13 +3,9 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { GroundPoint } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { Pressable, ShellGlyph } from '@heliogrid/ui';
-import { type RefObject, useRef } from 'react';
+import { useRef } from 'react';
 import type { useRoofPress } from '../hooks/use-roof-press';
 import { pointText } from './roof-marks-place';
-import type { StudioDrive } from './StudioCameraRig';
-
-/** A finger's width on the screen: a side this near the dragged mark takes it. */
-const FINGER_PX = 44;
 
 /**
  * The stairs in the top view (`T-M05-002`, part e, board 7): the round mark where they reach the
@@ -21,12 +17,13 @@ export function StudioStairsMarks({
   studio,
   words,
   press,
-  drive,
+  besideAt,
 }: {
   studio: StudioScreen;
   words: StudioCanvasWords;
   press: ReturnType<typeof useRoofPress>;
-  drive: RefObject<StudioDrive | null>;
+  /** The ground a finger's half-width to the side of a point of the screen. */
+  besideAt: (clientX: number, clientY: number) => GroundPoint | null;
 }) {
   const holder = useRef<HTMLSpanElement>(null);
   const reach = useRef(0);
@@ -36,17 +33,12 @@ export function StudioStairsMarks({
   const editable = studio.editing.kind === 'editor';
   const { moves } = studio;
   // How far a finger's width reaches on the ground, read where the mark is when the drag starts.
-  const measure = () => {
+  const measure = (at: GroundPoint | null) => {
     const box = holder.current?.getBoundingClientRect();
-    if (box === undefined) return;
-    const x = box.left + box.width / 2;
-    const y = box.top + box.height / 2;
-    const here = drive.current?.groundAt(x, y, 0) ?? null;
-    const there = drive.current?.groundAt(x + FINGER_PX, y, 0) ?? null;
+    const there =
+      box === undefined ? null : besideAt(box.left + box.width / 2, box.top + box.height / 2);
     reach.current =
-      here === null || there === null
-        ? 0
-        : Math.hypot(there.east - here.east, there.north - here.north);
+      at === null || there === null ? 0 : Math.hypot(there.east - at.east, there.north - at.north);
   };
   const beside = (at: GroundPoint): GroundPoint => ({
     east: at.east + reach.current,
@@ -69,14 +61,14 @@ export function StudioStairsMarks({
         data-stairs="true"
         {...(editable
           ? press({
-              dragAtOnce: true,
-              onDragStart: () => {
-                measure();
+              // A tap that barely moves is no drag: the guess stays a guess.
+              onDragStart: (at) => {
+                measure(at);
                 moves.grabStairs();
               },
               onDrag: (at) => moves.dragStairs(at, beside(at)),
               onDragEnd: () => moves.dropStairs(),
-              onDragCancel: () => moves.dropStairs(),
+              onDragCancel: () => moves.cancelStairs(),
             })
           : {})}
       >

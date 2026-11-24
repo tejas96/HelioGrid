@@ -9,8 +9,9 @@ import {
   stairsPlaced,
   stairsSidesOf,
 } from '../../src/studio/roof-stairs';
+import { stairsMomentOf } from '../../src/studio/roof-stairs-moment';
 import { roofsWorked } from '../../src/studio/roof-worked';
-import { box, designOf, FACTS, p, SHED, stairOn, TERRACE } from './roof-meet-support';
+import { box, designOf, FACTS, p, roofOf, SHED, stairOn, TERRACE } from './roof-meet-support';
 
 /**
  * The stairs and their clear path (`T-M05-002`, part e, E119–E122, board 7): a stair room's stairs
@@ -74,6 +75,26 @@ describe('where the stairs reach the roof', () => {
     expect(holding).toEqual([[1, 2]]);
   });
 
+  it('a stored place on a side another roof now takes is passed over: the guess stands', () => {
+    // The stairs were put on the terrace's east edge; the shed now takes that side.
+    const placed = stairsPlaced(CORNER, { roof: 0, side: 1, atM: 4 });
+    expect(shown(designOf(...placed.roofs, SHED))).toMatchObject({
+      roof: 1,
+      side: 1,
+      byPerson: false,
+    });
+  });
+
+  it('a stair room whose sides all look off its roof gives way to another that opens onto it', () => {
+    // The first stair room covers the whole of a small roof apart; the second is the terrace's.
+    const hut = roofOf('hut', box(20, 0, 2, 2));
+    const shut = { ...stairOn(box(20, 0, 2, 2), 'hut'), id: 'stair-1' };
+    expect(shown(designOf(TERRACE, hut, shut, stairOn(box(0, 0, 3, 3))))).toMatchObject({
+      roof: 3,
+      byPerson: false,
+    });
+  });
+
   it.each([
     ['no stair room: it asks', designOf(TERRACE), true],
     ['passed over: it asks no more', stairsPassed(designOf(TERRACE)), false],
@@ -81,6 +102,25 @@ describe('where the stairs reach the roof', () => {
     ['no roof yet: nothing to ask', designOf(), false],
   ])('%s', (_why, design, asks) => {
     expect(stairsAsk(design, shown(design))).toBe(asks);
+  });
+});
+
+describe('what the bar says about the stairs', () => {
+  const guessed = shown(CORNER);
+  const base = { placing: false, held: false, ask: false, stairs: guessed, editable: true };
+  it.each([
+    ['placing first', { placing: true, held: true, ask: true }, 'placing'],
+    ['held next', { held: true, ask: true }, 'moving'],
+    ['no stairs: it asks', { ask: true, stairs: null }, 'ask'],
+    ['a guess says a drag moves it', {}, 'guessed'],
+    [
+      'a person’s stairs: nothing',
+      { stairs: shown(stairsPlaced(CORNER, { roof: 1, side: 2, atM: 1 })) },
+      null,
+    ],
+    ['a reader: nothing', { editable: false, ask: true, stairs: null }, null],
+  ] as const)('%s', (_why, facts, moment) => {
+    expect(stairsMomentOf({ ...base, ...facts })).toBe(moment);
   });
 });
 
@@ -110,6 +150,11 @@ describe('dragging the stairs', () => {
     ],
   ] as const)('%s', (_why, at, magnet, roof, side, atM, pulled) => {
     expect(drop(CORNER, at, magnet)).toMatchObject({ roof, side, atM, pulled });
+  });
+
+  it('a stair room’s side that looks off its roof takes no stairs', () => {
+    // The corner stair room's south side lies on the terrace's south edge, which the room takes.
+    expect(drop(CORNER, p(1.5, 0.05), false)).toBeNull();
   });
 
   it('a roof edge takes outside stairs; a stair room’s side does not', () => {

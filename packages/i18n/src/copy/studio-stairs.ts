@@ -1,5 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { StairsDrop, StairsRow } from '@heliogrid/domain';
+import type { StairsDrop, StairsMoment, StairsRow } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { compassWord } from './studio-sheet';
 
@@ -36,6 +36,13 @@ export function studioStairsWords(t: T) {
     stairsAskTitle: t(STAIRS.askTitle),
     stairsAskStatus: t(STAIRS.askStatus),
     stairsPlacing: t(STAIRS.placing),
+    /** The bar's slim line for a stairs moment that is not the question. */
+    stairsLine: (moment: Exclude<StairsMoment, 'ask'>): TranslatedText =>
+      moment === 'placing'
+        ? t(STAIRS.placing)
+        : moment === 'moving'
+          ? t(STAIRS.moving)
+          : t(STAIRS.placed),
     stairsSkip: t(STAIRS.skip),
     stairsPlace: t(STAIRS.place),
     stairsMoving: t(STAIRS.moving),

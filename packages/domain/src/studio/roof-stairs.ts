@@ -114,31 +114,49 @@ export function stairsSidesOf(document: StudioDocument, edges: RoofsEdges, room:
   );
 }
 
-/** The stairs as stored, or a stair room's first guess; `null` with neither. */
+/** Whether a side may hold the stairs now: no other roof takes it there, and a stair room's opens onto its roof. */
+function holds(document: StudioDocument, edges: RoofsEdges, place: StairsPlace): boolean {
+  const roof = document.roofs[place.roof];
+  if (roof === undefined || place.side >= roof.corners.length) return false;
+  if (isStairRoom(roof)) return stairsSidesOf(document, edges, place.roof).includes(place.side);
+  const length = lengthOf(ends(roof, place.side)) || 1;
+  return !takenAt(edges, place.roof, place.side, place.atM / length);
+}
+
+/** The stairs a person placed, while their side may still hold them. */
+function storedPlace(document: StudioDocument, edges: RoofsEdges) {
+  for (const [roof, standing] of document.roofs.entries()) {
+    const side = roofSidesOf(standing).findIndex((each) => each.stairsAt !== undefined);
+    const stored = roofSidesOf(standing)[side];
+    if (stored?.stairsAt === undefined) continue;
+    const place = { roof, side, atM: stored.stairsAt };
+    // A side another roof has come to take, or one that now looks off its roof, holds them no more.
+    return holds(document, edges, place)
+      ? { ...place, byPerson: stored.stairsBy === 'person' }
+      : null;
+  }
+  return null;
+}
+
+/** The stairs as stored, or the first guess: the stair room side that opens onto the most roof. */
 function stairsPlaceOf(
   document: StudioDocument,
   edges: RoofsEdges,
 ): (StairsPlace & { readonly byPerson: boolean }) | null {
-  for (const [roof, standing] of document.roofs.entries()) {
-    const side = roofSidesOf(standing).findIndex((each) => each.stairsAt !== undefined);
-    const stored = roofSidesOf(standing)[side];
-    if (stored?.stairsAt !== undefined) {
-      return { roof, side, atM: stored.stairsAt, byPerson: stored.stairsBy === 'person' };
+  const stored = storedPlace(document, edges);
+  if (stored !== null) return stored;
+  let best: { roof: number; side: number; run: number } | null = null;
+  for (const [room, standing] of document.roofs.entries()) {
+    if (!isStairRoom(standing) || standsOn(document, standing) === null) continue;
+    for (const side of stairsSidesOf(document, edges, room)) {
+      const run = openInFront(document, standing, side);
+      if (best === null || run > best.run) best = { roof: room, side, run };
     }
   }
-  const room = document.roofs.findIndex(
-    (roof) => isStairRoom(roof) && standsOn(document, roof) !== null,
-  );
-  const standing = document.roofs[room];
-  if (standing === undefined) return null;
-  const sides = stairsSidesOf(document, edges, room);
-  const best = sides.reduce<{ side: number; run: number } | null>((found, side) => {
-    const run = openInFront(document, standing, side);
-    return found === null || run > found.run ? { side, run } : found;
-  }, null);
-  if (best === null || best.run <= 0) return null;
+  const standing = best === null ? undefined : document.roofs[best.roof];
+  if (best === null || standing === undefined) return null;
   return {
-    roof: room,
+    roof: best.roof,
     side: best.side,
     atM: lengthOf(ends(standing, best.side)) / 2,
     byPerson: false,
@@ -214,7 +232,8 @@ function dropOn(
 ): (StairsDrop & { readonly far: number }) | null {
   const roof = document.roofs[at.roof] as Roof;
   const near = onSide(roof, at.side, point);
-  if (near.length === 0 || takenAt(edges, at.roof, at.side, near.run / near.length)) return null;
+  if (near.length === 0) return null;
+  if (!holds(document, edges, { ...at, atM: near.run })) return null;
   const pull = magnet ? pulledTo(near.run, near.length, isStairRoom(roof)) : null;
   const atM = pull?.atM ?? near.run;
   return {

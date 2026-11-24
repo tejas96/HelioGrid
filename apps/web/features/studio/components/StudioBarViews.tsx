@@ -56,10 +56,9 @@ export interface BarFacts {
 }
 
 /**
- * The stairs' moment in the bar, at rest with nothing else to say (board 7): while placing, the
- * one line that says to tap an edge; while the mark is held, that it moves; with no stairs, the
- * card that asks where they reach the roof, with Skip and Place; with stairs guessed, that a drag
- * moves them. `null` with nothing about the stairs to say.
+ * The stairs' moment in the bar, at rest with nothing else to say (board 7), drawn from the
+ * studio's `stairsMoment`: the line to tap an edge, the line while the mark moves, the card that
+ * asks with Skip and Place, or the line that a drag moves a guess.
  */
 function stairsBar(
   bar: Extract<RoofBar, { kind: 'roofs' }>,
@@ -67,19 +66,10 @@ function stairsBar(
   next: BarAct,
 ): BarView | null {
   const { studio, words } = facts;
+  const moment = studio.stairsMoment;
   const quiet = bar.said === null && bar.live === null && !bar.sizing && bar.picked === null;
-  if (!quiet || facts.view !== 'top') return null;
-  const slim = (status: TranslatedText): BarView => ({
-    slim: true,
-    mark: 'check',
-    title: null,
-    status,
-    bad: false,
-    acts: [next],
-  });
-  if (studio.stairsPlacing) return slim(words.stairsPlacing);
-  if (studio.stairsHeld) return slim(words.stairsMoving);
-  if (studio.stairsAsk && facts.editable) {
+  if (moment === null || !quiet || facts.view !== 'top') return null;
+  if (moment === 'ask') {
     return {
       slim: false,
       mark: 'steps',
@@ -92,9 +82,14 @@ function stairsBar(
       ],
     };
   }
-  return studio.stairs !== null && !studio.stairs.byPerson && facts.editable
-    ? slim(words.stairsPlaced)
-    : null;
+  return {
+    slim: true,
+    mark: 'check',
+    title: null,
+    status: words.stairsLine(moment),
+    bad: false,
+    acts: [next],
+  };
 }
 
 /**

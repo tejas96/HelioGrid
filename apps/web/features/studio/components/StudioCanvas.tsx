@@ -168,6 +168,7 @@ export function StudioCanvas({
           lengths={parts.lengthLabels}
           handles={parts.otherHandles}
           drive={drive}
+          besideAt={(x, y) => drive.current?.groundAt(x + FINGER_PX, y, 0) ?? null}
           onAim={aimAt}
           onCrowded={setCrowded}
           map={scene}
