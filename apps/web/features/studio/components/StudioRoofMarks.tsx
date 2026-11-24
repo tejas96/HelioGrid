@@ -204,6 +204,8 @@ export function StudioRoofMarks({
   handlesOf.current = studio.handlesOf;
   const layout = useRef(studio.layoutLabels);
   layout.current = studio.layoutLabels;
+  const placeTag = useRef(studio.placeTag);
+  placeTag.current = studio.placeTag;
   const place = (screenOf: ScreenOf) => {
     lastPlace.current = screenOf;
     if (layer.current !== null) {
@@ -213,6 +215,7 @@ export function StudioRoofMarks({
         screenOf,
         (roof, gap) => handlesOf.current(roof, gap),
         layout.current,
+        placeTag.current,
       );
       if (crowded !== wasCrowded.current) {
         wasCrowded.current = crowded;

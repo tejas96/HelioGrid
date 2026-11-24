@@ -105,19 +105,23 @@
   pointer-events: auto;
 }
 
-/* A tag beside the spot: what it snapped to, or why it cannot go there. */
+/* A tag beside the spot: what it snapped to, or why it cannot go there. The marks layer lays it
+   on the side of the spot that keeps it whole, and its words wrap where the room ends. */
 .hg-roof-at > .hg-roof-tag {
-  transform: translate(var(--sp-4), calc(-1 * (var(--sp-8) + var(--sp-0-5))));
+  transform: translate(var(--hg-tag-x), var(--hg-tag-y));
   display: inline-flex;
   align-items: center;
-  block-size: calc(var(--sp-5) + var(--sp-0-5));
+  inline-size: max-content;
+  max-inline-size: var(--hg-tag-room);
+  min-block-size: calc(var(--sp-5) + var(--sp-0-5));
+  padding-block: var(--sp-0-5);
   padding-inline: var(--sp-2);
   border-radius: var(--r-xs);
   background: var(--scene-shade);
   color: var(--scene-mark);
   font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
   font-weight: var(--fw-medium);
-  white-space: nowrap;
   box-shadow: var(--e2);
   pointer-events: none;
 }

@@ -21,6 +21,7 @@ import type {
   StudioDocument,
   screenProjector,
   TypedRefusal,
+  tagPlaceOf,
 } from '@heliogrid/domain';
 
 /** The roof step's moves (`T-M05-002`, part b): drawing, the length box, and the fixes on a roof. */
@@ -186,6 +187,8 @@ export interface RoofStepView {
   readonly numberEntry: NumberEntry;
   /** Where each length's label sits on the screen: along its edge, out past a short one. */
   readonly layoutLabels: typeof labelLayoutOf;
+  /** Where a tag beside a spot sits: on the side that keeps its words whole on the screen. */
+  readonly placeTag: typeof tagPlaceOf;
   /**
    * Where the scene's points land on the screen for a camera as it stands now: every mark the page
    * keeps on the model is placed through it, in the frame being drawn (`T-M05-002`, part e).
