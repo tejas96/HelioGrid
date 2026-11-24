@@ -60,7 +60,7 @@ export function StudioDraftMarks({
           />
         ) : null}
       </svg>
-      <div className="hg-roof-on">
+      <div className="hg-roof-on" data-draft="true">
         {draft.corners.map((corner, i) => (
           <span
             // biome-ignore lint/suspicious/noArrayIndexKey: a corner is its place in the draft

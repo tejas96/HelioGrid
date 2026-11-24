@@ -65,6 +65,12 @@
   box-shadow:
     0 0 0 var(--sp-0-5) var(--scene-mark),
     var(--e2);
+}
+
+/* While a roof is drawn, a press anywhere on the map places a corner and the pointer's spot follows
+   it: the draft's marks show only, so the pointer goes through them to the map. The first corner's
+   close is the one mark that acts. */
+.hg-roof-on[data-draft="true"] > .hg-roof-at > :not(.hg-roof-hit) {
   pointer-events: none;
 }
 
