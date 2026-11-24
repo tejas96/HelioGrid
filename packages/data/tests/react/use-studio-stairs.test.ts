@@ -62,6 +62,18 @@ describe('the stairs', () => {
     expect(view.result.current.stairsHeld).toBe(false);
   });
 
+  it('a quick flick — the grab and its one move in the same moment — still lands, one save', async () => {
+    const view = await opened([TERRACE, STAIR]);
+    act(() => {
+      view.result.current.moves.grabStairs();
+      view.result.current.moves.dragStairs({ east: 5, north: 5.9 }, { east: 5.3, north: 5.9 });
+    });
+    act(() => view.result.current.moves.dropStairs());
+    await waitFor(() =>
+      expect(saved()?.roofs[0]?.sides?.[2]).toMatchObject({ stairsBy: 'person' }),
+    );
+  });
+
   it('let go off every side, they stay where they were and nothing is sent', async () => {
     const view = await opened([TERRACE, STAIR]);
     const saves = stored.saves.length;

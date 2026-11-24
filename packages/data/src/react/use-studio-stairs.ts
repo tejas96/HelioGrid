@@ -6,16 +6,20 @@ import {
   type StairsDrop,
   type StairsMoment,
   type StairsPlace,
+  type StairsShown,
   type StudioDocument,
   stairsMomentOf,
   stairsPassed,
   stairsPlaced,
 } from '@heliogrid/domain';
 import { type RefObject, useRef, useState } from 'react';
-import type { RoofModelSeen } from './roof-scene-view';
 
-/** What the stairs read of the model drawn. */
-type StairsSeen = Pick<RoofModelSeen, 'stairs' | 'stairsAsk' | 'stairsDropAt'>;
+/** What the stairs read of the model drawn (`RoofModelSeen`'s, which this file may not import). */
+interface StairsSeen {
+  readonly stairs: StairsShown | null;
+  readonly stairsAsk: boolean;
+  stairsDropAt(at: GroundPoint, reachM: number, magnet: boolean): StairsDrop | null;
+}
 
 /**
  * The stairs in the studio (`T-M05-002`, part e, E119–E122, board 7): the mark dragged to another
@@ -85,8 +89,19 @@ export function useStudioStairs(args: {
   const dropAt = (at: GroundPoint, reachM: number, magnet: boolean) =>
     drawn.current?.stairsDropAt(at, reachM, magnet) ?? null;
   const [placing, setPlacing] = useState(false);
-  const [held, setHeld] = useState(false);
-  const [landing, setLanding] = useState<StairsDrop | null>(null);
+  const [held, setHeldShown] = useState(false);
+  // A grab and its first move can come in one event, before a render: the hand is kept in refs.
+  const holding = useRef(false);
+  const landed = useRef<StairsDrop | null>(null);
+  const [landing, setLandingShown] = useState<StairsDrop | null>(null);
+  const setHeld = (on: boolean) => {
+    holding.current = on;
+    setHeldShown(on);
+  };
+  const setLanding = (drop: StairsDrop | null) => {
+    landed.current = drop;
+    setLandingShown(drop);
+  };
 
   const apply = (next: (design: StudioDocument) => StudioDocument) => {
     const at = latest.current;
@@ -121,17 +136,18 @@ export function useStudioStairs(args: {
       setLanding(null);
     },
     dragStairs: (at, beside) => {
-      if (held) setLanding(dropAt(at, reachOf(at, beside), magnetOn()));
+      if (holding.current) setLanding(dropAt(at, reachOf(at, beside), magnetOn()));
     },
     dropStairs: () => {
       const now = stood.current;
+      const landing = landed.current;
       const moved =
         landing !== null &&
         (now === null ||
           now.roof !== landing.roof ||
           now.side !== landing.side ||
           Math.abs(now.atM - landing.atM) > SAME_M);
-      if (held && moved && landing !== null) place(landing);
+      if (holding.current && moved && landing !== null) place(landing);
       setHeld(false);
       setLanding(null);
     },

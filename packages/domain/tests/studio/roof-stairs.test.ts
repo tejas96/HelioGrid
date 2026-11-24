@@ -152,6 +152,14 @@ describe('dragging the stairs', () => {
     expect(drop(CORNER, at, magnet)).toMatchObject({ roof, side, atM, pulled });
   });
 
+  it('the stretch of a stair room’s side that another roof takes holds no stairs; the rest does', () => {
+    // A tank room against the corner stair room's east side, along its northern metre.
+    const tank = { ...stairOn(box(3, 2, 2, 1)), id: 'tank' };
+    const design = designOf(TERRACE, stairOn(box(0, 0, 3, 3)), tank);
+    expect(drop(design, p(3.05, 2.6), false)).toBeNull();
+    expect(drop(design, p(3.05, 0.8), false)).toMatchObject({ roof: 1, side: 1 });
+  });
+
   it('a stair room’s side that looks off its roof takes no stairs', () => {
     // The corner stair room's south side lies on the terrace's south edge, which the room takes.
     expect(drop(CORNER, p(1.5, 0.05), false)).toBeNull();

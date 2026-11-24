@@ -118,9 +118,9 @@ export function stairsSidesOf(document: StudioDocument, edges: RoofsEdges, room:
 function holds(document: StudioDocument, edges: RoofsEdges, place: StairsPlace): boolean {
   const roof = document.roofs[place.roof];
   if (roof === undefined || place.side >= roof.corners.length) return false;
-  if (isStairRoom(roof)) return stairsSidesOf(document, edges, place.roof).includes(place.side);
   const length = lengthOf(ends(roof, place.side)) || 1;
-  return !takenAt(edges, place.roof, place.side, place.atM / length);
+  if (takenAt(edges, place.roof, place.side, place.atM / length)) return false;
+  return !isStairRoom(roof) || stairsSidesOf(document, edges, place.roof).includes(place.side);
 }
 
 /** The stairs a person placed, while their side may still hold them. */
