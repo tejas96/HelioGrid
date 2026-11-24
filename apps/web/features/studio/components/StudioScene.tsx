@@ -1,6 +1,6 @@
 'use client';
 import type { PlanShown, StudioPicture } from '@heliogrid/data/react';
-import type { GroundBox, RoofScene, StudioView, SunPosition } from '@heliogrid/domain';
+import type { GroundBox, RoofScene, SceneMotion, StudioView, SunPosition } from '@heliogrid/domain';
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
@@ -131,6 +131,8 @@ export interface StudioSceneProps {
   onTurn: (turn: number) => void;
   /** The 3D model of the roofs: the design's, or the preview of what is in hand. */
   roofScene: RoofScene;
+  /** How the model moves into the last change. */
+  roofMotion: (SceneMotion & { readonly id: number }) | null;
   /** How much the picture is stretched about the pin to its true size. */
   /** `null` until the design is read: its stored stretch then lands, never grown into. */
   pictureScale: number | null;
@@ -167,6 +169,7 @@ export function StudioScene({
   drive,
   onTurn,
   roofScene,
+  roofMotion,
   pictureScale: readScale,
   fit,
   frameOn,
@@ -250,6 +253,7 @@ export function StudioScene({
           sizing={sizing}
           marks={roofMarks}
           screen={screen}
+          motion={roofMotion}
         />
       </StudioScaleTween>
       <StudioCameraRig

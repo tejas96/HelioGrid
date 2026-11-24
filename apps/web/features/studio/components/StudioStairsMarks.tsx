@@ -2,10 +2,13 @@
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { GroundPoint } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { Pressable, ShellGlyph } from '@heliogrid/ui';
+import { Pressable, ShellGlyph, useReducedMotion } from '@heliogrid/ui';
 import { useRef } from 'react';
+import { useGlide } from '../hooks/use-glide';
 import type { useRoofPress } from '../hooks/use-roof-press';
 import { pointText } from './roof-marks-place';
+
+const NOWHERE: GroundPoint = { east: 0, north: 0 };
 
 /** The ground under a point of the screen, and a finger's half-width to its side. */
 export interface FingerAt {
@@ -33,9 +36,14 @@ export function StudioStairsMarks({
 }) {
   const holder = useRef<HTMLSpanElement>(null);
   const reach = useRef<GroundPoint>({ east: 0, north: 0 });
+  const still = useReducedMotion();
+  // Moved from the row, or by Undo, the mark glides there; a drag holds it where the hand is.
+  const at = studio.stairs?.at ?? NOWHERE;
+  const drawn = studio.stairs !== null && studio.view === 'top';
+  useGlide(holder, at, !still && !studio.stairsHeld, drawn);
   const { stairs, stairsLanding: landing, stairsHeld: held } = studio;
   // The stairs are the top view's, as the setback line is.
-  if (stairs === null || studio.view !== 'top') return null;
+  if (stairs === null || !drawn) return null;
   const editable = studio.editing.kind === 'editor';
   const { moves } = studio;
   // A finger's half-width on the ground, as a step east and north, read at the mark when the drag
@@ -59,6 +67,7 @@ export function StudioStairsMarks({
     <>
       <svg className="hg-roof-lines" aria-hidden="true">
         <path
+          key={pointText(stairs.at)}
           className="hg-stairs-strip"
           data-pts={stairs.strip.map(pointText).join(';')}
           data-closed="true"
@@ -67,7 +76,6 @@ export function StudioStairsMarks({
       <span
         ref={holder}
         className="hg-roof-at"
-        data-at={pointText(stairs.at)}
         data-stairs="true"
         {...(editable
           ? press({

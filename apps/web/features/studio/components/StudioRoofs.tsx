@@ -1,10 +1,11 @@
 'use client';
-import type { GroundPoint, RoofScene, StudioView } from '@heliogrid/domain';
+import type { GroundPoint, RoofScene, SceneMotion, StudioView } from '@heliogrid/domain';
 import { type ThemePalette, theme } from '@heliogrid/theme';
 import { useFrame, useThree } from '@react-three/fiber';
-import { type RefObject, useEffect, useMemo } from 'react';
+import { type ReactNode, type RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { type CanvasTexture, DoubleSide, type Matrix3, type Texture } from 'three';
 import { roofGeometries } from './roof-mesh';
+import { quietKind, RoofMove } from './StudioRoofMotion';
 import { type SceneScreen, screenOfFrame } from './scene-screen';
 
 /** A roof in the top view lies flat on its picture: the marks over it sit where the picture is. */
@@ -102,15 +103,18 @@ function standAt(
  */
 function RoofModel({
   scene,
-  top,
+  map,
   palette,
   rise,
+  children,
 }: {
   scene: RoofScene;
   /** The picture the tops wear; `null` on the grid, where a top is plaster. */
-  top: RoofTopPicture | null;
+  map: Texture | null;
   palette: ThemePalette;
   rise: RoofRise;
+  /** The parts moving into a change, drawn in the same risen group. */
+  children?: ReactNode;
 }) {
   const model = useMemo(() => roofGeometries(scene), [scene]);
   useEffect(
@@ -120,8 +124,6 @@ function RoofModel({
     },
     [model],
   );
-  const map = useMemo(() => (top === null ? null : topOf(top)), [top]);
-  useEffect(() => () => map?.dispose(), [map]);
   return (
     <group
       ref={(group) => {
@@ -145,8 +147,46 @@ function RoofModel({
           <meshBasicMaterial map={map} toneMapped={false} side={DoubleSide} />
         )}
       </mesh>
+      {children}
     </group>
   );
+}
+
+/** A motion and the model it moves into, with its id: the screen plays each id once. */
+type RoofSceneMotion = SceneMotion & { readonly id: number };
+
+/**
+ * The motion playing now: a new one starts in 3D (in the top view the roofs lie flat, and
+ * nothing moves), runs its time from the frame it is first drawn, and ends — the model whole
+ * again — once played.
+ */
+function usePlayed(
+  motion: RoofSceneMotion | null,
+  view: StudioView,
+  still: boolean,
+  invalidate: () => void,
+) {
+  // biome-ignore lint/plugin: the motion playing is the 3D scene's own animation, as its frame clock is
+  const [playing, setPlaying] = useState<RoofSceneMotion | null>(null);
+  const started = useRef<number | null>(null);
+  const seconds =
+    (still ? theme.motion.durations.fade : theme.motion.durations.emphasised) / MS_PER_SECOND;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: a new motion is its id
+  useEffect(() => {
+    if (motion === null || view === 'top') return;
+    started.current = null;
+    setPlaying(motion);
+    invalidate();
+  }, [motion?.id]);
+  useFrame(({ clock }) => {
+    if (playing === null) return;
+    if (started.current === null) started.current = clock.elapsedTime;
+    // Played: one state change takes the moving parts back into the model. Until then each frame
+    // asks for the next: the scene draws only when asked.
+    if (clock.elapsedTime - started.current >= seconds) setPlaying(null);
+    else invalidate();
+  });
+  return { motion: playing, started, seconds };
 }
 
 /**
@@ -165,6 +205,7 @@ export function StudioRoofs({
   sizing,
   marks,
   screen,
+  motion,
 }: {
   /** The 3D model of the design drawn: the kernel's solids and faces. */
   scene: RoofScene;
@@ -179,6 +220,8 @@ export function StudioRoofs({
   marks: RefObject<RoofMarksHandle | null>;
   /** Where a scene point lands on the screen, for the camera as it stands in this frame. */
   screen: SceneScreen;
+  /** How the model moves into the last change; each is played once, in 3D. */
+  motion: RoofSceneMotion | null;
 }) {
   const scene = useThree((three) => three.scene);
   const camera = useThree((three) => three.camera);
@@ -209,9 +252,25 @@ export function StudioRoofs({
     });
   });
 
+  const map = useMemo(() => (top === null ? null : topOf(top)), [top]);
+  useEffect(() => () => map?.dispose(), [map]);
+  const playing = usePlayed(motion, view, still, invalidate);
   return (
     <>
-      <RoofModel scene={model} top={top} palette={palette} rise={rise} />
+      <RoofModel scene={playing.motion?.still ?? model} map={map} palette={palette} rise={rise}>
+        {playing.motion?.moves.map((move, index) => (
+          <RoofMove
+            // biome-ignore lint/suspicious/noArrayIndexKey: a motion's moves are fixed while it plays
+            key={`${playing.motion?.id}-${index}`}
+            move={still ? { ...move, kind: quietKind(move.kind) } : move}
+            started={playing.started}
+            seconds={playing.seconds}
+            palette={palette}
+            map={map}
+            roughness={PLASTER_ROUGHNESS}
+          />
+        ))}
+      </RoofModel>
       {model.levels.length > 0 ? (
         <mesh rotation-x={-Math.PI / 2} position-y={SHADOW_LIFT_M} receiveShadow>
           <planeGeometry args={[SHADOW_GROUND_M, SHADOW_GROUND_M]} />
