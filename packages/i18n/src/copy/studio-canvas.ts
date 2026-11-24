@@ -94,8 +94,6 @@ const CANVAS = {
     id: 'Map. Arrow keys move it, plus and minus zoom, and 0 goes back to the pin.',
   },
 
-  drawMyself: /*i18n*/ { id: 'Draw myself' },
-  drawOnGrid: /*i18n*/ { id: 'Draw on the grid' },
   drawRoof: /*i18n*/ { id: 'Draw a roof' },
   roofNotSetUp: /*i18n*/ { id: '{place} · roof not set up yet' },
   roofNotSetUpNoPlace: /*i18n*/ { id: 'Roof not set up yet' },
@@ -205,8 +203,6 @@ export function studioCanvasWords(t: T) {
     north: t(CANVAS.north),
     /** The map's own name for a screen reader, with the keys that move it. */
     mapKeys: t(CANVAS.mapKeys),
-    drawMyself: t(CANVAS.drawMyself),
-    drawOnGrid: t(CANVAS.drawOnGrid),
     drawRoof: t(CANVAS.drawRoof),
     /** "Vishrambag, Sangli · roof not set up yet". */
     roofNotSetUp: (place: string | null) =>
