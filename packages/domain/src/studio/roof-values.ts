@@ -53,6 +53,9 @@ function systemOf(document: StudioDocument, roof: Roof, key: RoofNumber, facts: 
       return 1 / 2;
     case 'overhang':
       return roofOverhangM({ ...roof, overhang: undefined }, facts);
+    case 'eave':
+      // A side's eave stands on the roof's low edge until a person raises it.
+      return 0;
     case 'parapet_height':
       return facts.parapetHeightM;
     case 'setback':
@@ -82,6 +85,9 @@ function storedOf(roof: Roof, key: RoofNumber): number | undefined {
       return shape?.valleyAt?.share;
     case 'overhang':
       return roof.overhang?.metres;
+    case 'eave':
+      // Only a side holds its own eave.
+      return undefined;
     case 'parapet_height':
       return parapet?.setBy === 'person' ? parapet.metres : undefined;
     case 'setback':

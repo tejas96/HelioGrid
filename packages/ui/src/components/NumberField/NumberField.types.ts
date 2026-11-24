@@ -62,6 +62,12 @@ export interface NumberFieldProps {
   /** Fires once, on blur or Enter. Never per keystroke, unless `commits` is `as-typed`. */
   onCommit?: (value: number) => void;
   /**
+   * What the person already typed before the field was drawn — a digit typed on a slider that
+   * turned into this field. The field opens holding it, as typed and not yet sent: it is focused
+   * with it (give a `focusRequest`) and sends it like any typing, on blur or Enter.
+   */
+  startDraft?: string;
+  /**
    * The person emptied a field that held a figure — a price taken away (`M01-37`). Without it an
    * empty draft restores the last figure, as before.
    */

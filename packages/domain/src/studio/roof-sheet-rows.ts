@@ -173,6 +173,13 @@ export interface SideSheetRows {
   readonly setback: RoofNumberShown;
   /** Its own overhang on a sloped roof, following the roof's until set; `null` where it has none. */
   readonly overhang: RoofNumberShown | null;
+  /**
+   * Its own slope and how far its eave stands above the roof's low edge, following the roof's
+   * until set: on a roof built side by side (gable, hip, mansard, gambrel), and never on a gable
+   * end, which has no face. `null` where the side has none.
+   */
+  readonly slope: RoofNumberShown | null;
+  readonly eave: RoofNumberShown | null;
   readonly role: SideRole | null;
   /** Its parapet height waits for a person: above what is checked on site. */
   readonly heightWaits: boolean;

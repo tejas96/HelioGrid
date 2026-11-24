@@ -1,11 +1,12 @@
 'use client';
-import type { PlanShown, StudioPicture } from '@heliogrid/data/react';
+import { type PlanShown, type StudioPicture, useSceneDetail } from '@heliogrid/data/react';
 import type { GroundBox, RoofScene, SceneMotion, StudioView, SunPosition } from '@heliogrid/domain';
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { type ReactNode, type RefObject, useRef, useState } from 'react';
 import { MathUtils } from 'three';
+import { deviceHintsNow } from '../hooks/use-device-hints';
 import { type ClearGround, StudioCameraRig, type StudioDrive } from './StudioCameraRig';
 import { StudioOwnGround } from './StudioOwnGround';
 import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
@@ -58,12 +59,22 @@ const CAMERA_START = { near: 0.5, far: 3_000, position: [0, 60, 60] as [number, 
 
 /** How high the grid lies over the ground, so the two never fight. */
 const GRID_LIFT_M = 0.02;
-/** The light: the sky's fill, the sun's strength, and the sharpness of its shadow map. */
+/** The light: the sky's fill and the sun's strength. */
 const SKY_LIGHT = 1.1;
 const SUN_LIGHT = 2.4;
-const SHADOW_MAP_PX = 2048;
-/** The sun's light from where the sun stands, casting soft shadows over the site. */
-function SunLight({ sun, palette }: { sun: SunPosition; palette: ThemePalette }) {
+/**
+ * The sun's light from where the sun stands, casting soft shadows over the site. Its shadow map
+ * is as sharp as the view's detail allows; a new size is a new light, as three.js keeps a map once made.
+ */
+function SunLight({
+  sun,
+  palette,
+  shadowMapPx,
+}: {
+  sun: SunPosition;
+  palette: ThemePalette;
+  shadowMapPx: number;
+}) {
   const azimuth = sun.azimuthDegrees * RADIANS;
   const elevation = sun.elevationDegrees * RADIANS;
   const across = Math.cos(elevation) * SUN_DISTANCE_M;
@@ -78,7 +89,7 @@ function SunLight({ sun, palette }: { sun: SunPosition; palette: ThemePalette })
         ]}
         intensity={SUN_LIGHT}
         castShadow
-        shadow-mapSize={[SHADOW_MAP_PX, SHADOW_MAP_PX]}
+        shadow-mapSize={[shadowMapPx, shadowMapPx]}
         shadow-camera-left={-SHADOW_HALF_M}
         shadow-camera-right={SHADOW_HALF_M}
         shadow-camera-top={SHADOW_HALF_M}
@@ -112,6 +123,13 @@ function PinFollower({
   });
   return null;
 }
+
+/** Hands each drawn frame's gap to the view's detail, which steps down while frames run slow. */
+function FrameClock({ onFrame }: { onFrame: (gapMs: number) => void }) {
+  useFrame((_, delta) => onFrame(delta * MS_PER_S));
+  return null;
+}
+const MS_PER_S = 1_000;
 
 export interface StudioSceneProps {
   picture: StudioPicture;
@@ -155,7 +173,7 @@ export interface StudioSceneProps {
 /**
  * The studio's one canvas (`T-M05-002a`): the site's ground with its picture, the pin, the real sun
  * for the place and the hour, and a camera that flies between the top view, the 3D view and the
- * side views. It draws only when something changes.
+ * side views. It draws only when something changes, and as much detail as the device keeps smooth.
  */
 export function StudioScene({
   picture,
@@ -186,18 +204,23 @@ export function StudioScene({
   const pictureScale = readScale ?? 1;
   // The share of its new size the model stands at while the first length grows it: 1 at rest.
   const sizing = useRef(1);
+  // A weak device draws less detail and the same numbers (G034).
+  const detail = useSceneDetail(deviceHintsNow());
+  const { look } = detail;
   return (
     <Canvas
       frameloop="demand"
-      shadows="soft"
-      dpr={[1, 2]}
+      shadows={look.softShadows ? 'soft' : 'basic'}
+      dpr={[1, look.maxPixelRatio]}
       camera={CAMERA_START}
       fallback={fallback}
+      data-scene-detail={detail.detail}
     >
+      <FrameClock onFrame={detail.frameDrawn} />
       <color attach="background" args={[palette.canvas]} />
       {/* The far ground fades into the page; the camera rig sets how far, from its own distance. */}
       <fog attach="fog" args={[palette.canvas, CAMERA_START.far, CAMERA_START.far]} />
-      <SunLight sun={sun} palette={palette} />
+      <SunLight key={look.shadowMapPx} sun={sun} palette={palette} shadowMapPx={look.shadowMapPx} />
       <StudioScaleTween scale={readScale} still={still} factor={sizing}>
         {picture.kind === 'sky' ? (
           // The first true length stretches the picture about the pin with every roof on it.

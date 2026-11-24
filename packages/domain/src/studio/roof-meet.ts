@@ -14,9 +14,7 @@ import type { RoofKind } from './roof-parts';
 import {
   type FlatShape,
   farApart,
-  farFromEdge,
   joined,
-  MET_M,
   metWith,
   ringAreaM2,
   shapeOf,
@@ -279,25 +277,4 @@ export function cutToEdge(
     ) ?? [];
   const piece = left[0];
   return left.length === 1 && piece !== undefined && piece.holes.length === 0 ? piece.outer : null;
-}
-
-/** Room for a sum's last digit, in metres. */
-const SUM_SLACK_M = 1e-9;
-
-/** How a hole meets the roof it is drawn in: clear inside, along its edge, or at a corner alone. */
-export type HoleMeets = 'inside' | 'on_edge' | 'corner_only';
-
-/**
- * How a hole meets its roof's edge. One that runs along the edge changes the outline instead of
- * cutting a hole; one that touches at a corner alone is moved clear of it.
- */
-export function holeMeets(roof: readonly GroundPoint[], hole: readonly GroundPoint[]): HoleMeets {
-  const near = (point: GroundPoint) => farFromEdge(point, roof) <= MET_M + SUM_SLACK_M;
-  const alongEdge = hole.some((corner, i) => {
-    const next = hole[(i + 1) % hole.length] as GroundPoint;
-    const middle = { east: (corner.east + next.east) / 2, north: (corner.north + next.north) / 2 };
-    return near(corner) && near(next) && near(middle);
-  });
-  if (alongEdge) return 'on_edge';
-  return hole.some(near) ? 'corner_only' : 'inside';
 }

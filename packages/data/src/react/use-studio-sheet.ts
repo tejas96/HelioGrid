@@ -141,6 +141,22 @@ export function useStudioSheet(args: {
         rows.moves.keepNumber();
         sheet.moves.openRoof(index);
       },
+      // A roof made a hole along its roof's edge is a notch in that roof now, and is gone: its
+      // sheet goes to the roof that took the notch, never to the roof that slid into its place.
+      makeKind: (kind) => {
+        const before = latest.current?.present;
+        const open = sheet.state.roofSheet?.roof;
+        const was = open === undefined ? undefined : before?.roofs[open];
+        rows.moves.makeKind(kind);
+        const now = latest.current?.present;
+        if (was === undefined || now === undefined || now.roofs.some((r) => r.id === was.id))
+          return;
+        // The roof that took the notch is the one whose outline this act changed.
+        const into = now.roofs.findIndex(
+          (r) => before?.roofs.find((b) => b.id === r.id)?.corners !== r.corners,
+        );
+        sheet.landOn(into < 0 ? null : into);
+      },
       tapRoof: (at, beside) => {
         const hit = args.hitAt(at, beside, sheet.state.roofSheet?.roof ?? null);
         rows.moves.keepNumber();

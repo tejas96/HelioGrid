@@ -7,6 +7,7 @@ import { roofWordsShown } from './roof-words-shown';
 import { StudioEntryBoxes } from './StudioEntryBoxes';
 import { NumberHead } from './StudioSheetNumber';
 import { type SheetFacts, SheetRow } from './StudioSheetRow';
+import { boxOnDigit } from './slider-digit';
 
 /** The height: the slider marked with the floors, − and + a floor each; a box to type it. */
 export function HeightRow({
@@ -29,18 +30,31 @@ export function HeightRow({
   const on = rows.height.floor;
   const value = on === null ? height : words.heightOnFloor(height, words.floor(on.floor));
   const head = (
-    <NumberHead value={value} name={label} outside={sheet.outside} studio={studio} words={words} />
+    <NumberHead
+      value={value}
+      name={label}
+      numberKey="height"
+      outside={sheet.outside}
+      studio={studio}
+      words={words}
+    />
   );
+  // A digit typed on the slider opens the box holding it (G027), and the focus goes to it.
+  const onKeyDown = boxOnDigit(typing, (digit) => {
+    moves.chooseNumberEntry('box');
+    moves.startNumber('height', null);
+    moves.typeHeight({ main: digit, inches: '', measured: false });
+  });
   return (
     <SheetRow facts={facts} rowKey="height" label={label} value={value} always openValue={head}>
-      <div className="hg-sheet-number">
+      <fieldset className="hg-sheet-number" aria-label={label} onKeyDown={onKeyDown}>
         {facts.phone ? <div className="hg-sheet-number-head">{head}</div> : null}
         {typing && studio.heightEntry !== null ? (
           <StudioEntryBoxes
             entry={studio.heightEntry}
             units={units}
             label={label}
-            focusRequest={sheet.roof + 1}
+            focusRequest={studio.numberStarted?.key === 'height' ? sheet.roof + 1 : 0}
             onEntry={moves.typeHeight}
             words={words}
           />
@@ -79,7 +93,7 @@ export function HeightRow({
             </Button>
           </span>
         ) : null}
-      </div>
+      </fieldset>
     </SheetRow>
   );
 }

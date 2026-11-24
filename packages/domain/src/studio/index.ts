@@ -241,6 +241,7 @@ export {
   typedRoof,
   typedStart,
 } from './roof-type';
+export * from './scene-detail';
 export * from './screen-point';
 export {
   areaOfPlace,

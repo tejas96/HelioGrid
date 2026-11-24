@@ -68,6 +68,7 @@ export {
 } from './studio/roof-hand-face-set';
 export { heightPullOf } from './studio/roof-height-magnet';
 export { roofHitOf } from './studio/roof-hit';
+export { type HoleMeets, holeFitOf, holeMeets } from './studio/roof-hole-fit';
 export {
   LEVEL_M,
   type RoofFacts,
@@ -83,8 +84,6 @@ export {
   cutToEdge,
   HOLE_MAX_M2,
   HOLE_SIDE_MAX_M,
-  type HoleMeets,
-  holeMeets,
   meetingOf,
   STAIR_ROOM_MAX_M2,
 } from './studio/roof-meet';

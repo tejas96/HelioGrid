@@ -27,6 +27,8 @@ export type { OwnPictureJob, PictureFile } from './use-own-picture';
 export type { OwnPictureMoves, OwnPictureView } from './use-own-picture-screen';
 export { useAimHold, useRepeatPress } from './use-press-timing';
 export type { RoofsOffSiteAsk } from './use-roofs-off-site';
+export type { SceneDetailView } from './use-scene-detail';
+export { useSceneDetail } from './use-scene-detail';
 export type {
   SiteDetailsMoves,
   SiteDetailsRead,

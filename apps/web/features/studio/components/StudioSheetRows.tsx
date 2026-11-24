@@ -6,7 +6,6 @@ import { StudioFacesRow } from './StudioFaceRows';
 import { StudioKindChips } from './StudioKindChips';
 import { StudioShapePicture } from './StudioShapePicture';
 import { HeightRow } from './StudioSheetHeight';
-import { StudioSheetNumber } from './StudioSheetNumber';
 import { NumberRow, type SheetFacts, SheetRow } from './StudioSheetRow';
 import { StudioStairsRow } from './StudioStairsRow';
 import { numberShownBy } from './sheet-number-shown';
@@ -76,6 +75,52 @@ function SlopeRows({ facts, rows }: { facts: SheetFacts; rows: RoofSheetRows }) 
   );
 }
 
+type ParapetRow = NonNullable<RoofSheetRows['parapet']>;
+
+/**
+ * The Parapet row: its switch on the row's own line, so a parapet all round is one tap once the
+ * sheet is open (E115); while it is on, its height is the row under it. A reader sees the value.
+ */
+function ParapetRows({ facts, parapet }: { facts: SheetFacts; parapet: ParapetRow }) {
+  const { studio, units, words } = facts;
+  const text = numberShownBy(useFormat(), units);
+  const value = words.parapetValue(parapet.allRound, text(parapet.height));
+  if (studio.editing.kind !== 'editor') {
+    return (
+      <SheetRow
+        facts={facts}
+        rowKey="parapet"
+        label={words.rowParapet}
+        value={value}
+        waits={parapet.waits}
+      />
+    );
+  }
+  return (
+    <>
+      <div className="hg-sheet-row">
+        <div className="hg-sheet-row-head">
+          <span className="hg-sheet-row-label">{words.rowParapet}</span>
+          <span className="hg-sheet-row-value">{value}</span>
+          <Switch
+            checked={parapet.allRound}
+            ariaLabel={words.parapetAllRound}
+            onChange={studio.moves.setParapetAllRound}
+          />
+        </div>
+      </div>
+      {parapet.allRound ? (
+        <NumberRow
+          facts={facts}
+          shown={parapet.height}
+          label={words.rowNumber('parapet_height')}
+          waits={parapet.waits}
+        />
+      ) : null}
+    </>
+  );
+}
+
 /** Every row of a roof's sheet that this roof has a use for, in the board's order. */
 export function StudioSheetRows({
   facts,
@@ -138,34 +183,7 @@ export function StudioSheetRows({
       {rows.overhang === null ? null : (
         <NumberRow facts={facts} shown={rows.overhang} label={words.rowNumber('overhang')} />
       )}
-      {parapet === null ? null : (
-        <SheetRow
-          facts={facts}
-          rowKey="parapet"
-          label={words.rowParapet}
-          value={words.parapetValue(parapet.allRound, text(parapet.height))}
-          waits={parapet.waits}
-        >
-          <Switch
-            checked={parapet.allRound}
-            label={words.parapetAllRound}
-            onChange={moves.setParapetAllRound}
-          />
-          {parapet.allRound ? (
-            <StudioSheetNumber
-              shown={parapet.height}
-              name={words.rowNumber('parapet_height')}
-              studio={studio}
-              units={units}
-              words={words}
-              onSlide={(value) => moves.slideNumber('parapet_height', value)}
-              onKeep={moves.keepNumber}
-              onSet={(value) => moves.setNumber('parapet_height', value)}
-              onReset={() => moves.resetNumber('parapet_height')}
-            />
-          ) : null}
-        </SheetRow>
-      )}
+      {parapet === null ? null : <ParapetRows facts={facts} parapet={parapet} />}
       {rows.setback === null ? null : (
         <NumberRow facts={facts} shown={rows.setback} label={words.rowNumber('setback')} />
       )}

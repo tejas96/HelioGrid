@@ -148,6 +148,7 @@ export function NumberRow({
         <NumberHead
           value={text(shown)}
           name={label}
+          numberKey={key}
           outside={shown.outside}
           studio={studio}
           words={words}
