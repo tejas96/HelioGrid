@@ -17,6 +17,7 @@ import {
 import {
   edgesOf,
   formPicksOf,
+  handFaceLowSet,
   ridgePullOf,
   riseForSlope,
   roofFormOf,
@@ -117,8 +118,13 @@ export function useRoofSheetRows({
   const show = (part: SheetPart, row: SheetRowKey | null = null) => setShows({ roof, part, row });
 
   const side = part.kind === 'side' ? part.side : null;
-  const atOf = (key: RoofNumber): NumberAt | null =>
-    roof === null ? null : { roof, key, side: isSideNumber(key) ? side : null };
+  const face = part.kind === 'face' ? part.face : null;
+  const atOf = (key: RoofNumber): NumberAt | null => {
+    if (roof === null) return null;
+    // A face's sheet holds its own slope alone.
+    if (face !== null && key === 'slope') return { roof, key, face };
+    return { roof, key, side: isSideNumber(key) ? side : null };
+  };
 
   /** One change to the design as it stands, kept with Undo; nothing when it changes nothing. */
   const apply = (next: (design: StudioDocument) => StudioDocument) => {
@@ -219,6 +225,10 @@ export function useRoofSheetRows({
       },
       sideWallFollows: () => onSide(roofSideWallFollows),
       markSide: (mark) => onSide((design, index, at) => roofSideMarked(design, index, at, mark)),
+      setFaceLow: (low) =>
+        apply((design) =>
+          roof === null || face === null ? design : handFaceLowSet(design, roof, face, low),
+        ),
       endSide: (end) => onSide((design, index, at) => roofSideEnded(design, index, at, end)),
       turnRidge: () => {
         if (roof !== null) turnRidgeOf(roof);

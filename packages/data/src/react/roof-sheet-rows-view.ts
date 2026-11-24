@@ -25,13 +25,19 @@ export type SheetRowKey =
   | 'parapet'
   | 'setback'
   | 'stairs'
+  | 'faces'
+  | 'low'
   | RoofNumber;
 
-/** Which sheet shows over the roof: its own, one side's, or its parapet's details. */
+/**
+ * Which sheet shows over the roof: its own, one side's, its parapet's details, or one face's of an
+ * Any-shape roof standing in faces drawn by hand.
+ */
 export type SheetPart =
   | { readonly kind: 'roof' }
   | { readonly kind: 'side'; readonly side: number }
-  | { readonly kind: 'details' };
+  | { readonly kind: 'details' }
+  | { readonly kind: 'face'; readonly face: number };
 
 export interface RoofSheetRowsState {
   readonly sheetPart: SheetPart;
@@ -64,7 +70,7 @@ export interface RoofSheetRowMoves {
   openSide(side: number): void;
   /** Parapet details, as its own short sheet. */
   openDetails(): void;
-  /** Back: from a side's sheet or Parapet details to the roof's. */
+  /** Back: from a side's sheet, a face's or Parapet details to the roof's. */
   backToRoof(): void;
   /** The open side's parapet, on or off; a person's from then on. */
   setSideWall(on: boolean): void;
@@ -72,6 +78,8 @@ export interface RoofSheetRowMoves {
   sideWallFollows(): void;
   /** The open side made the shed's low side, or the side the glass faces. */
   markSide(mark: 'low' | 'glass'): void;
+  /** The open face of an Any-shape roof made to slope down to one of its sides. */
+  setFaceLow(side: number): void;
   /** The open end made a gable end or a hip. */
   endSide(end: 'gable' | 'hip'): void;
   /** A gable's ridge turned 90°, or back. */

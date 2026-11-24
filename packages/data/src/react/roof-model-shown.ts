@@ -1,4 +1,5 @@
 import type {
+  HandFaceRows,
   RoofList,
   RoofScene,
   RoofSheetRows,
@@ -21,6 +22,8 @@ export interface RoofModelShown {
   readonly sheetRows: RoofSheetRows | null;
   /** The open side's sheet; `null` with no side open. */
   readonly sideRows: SideSheetRows | null;
+  /** The open face's sheet, on an Any-shape roof standing in faces drawn by hand; `null` with none. */
+  readonly faceRows: HandFaceRows | null;
   /** Where the stairs reach the roof, and their clear strip — where a drag holds them, there. */
   readonly stairs: StairsShown | null;
   /** No stairs, none guessed, and not skipped: the bar asks where they reach the roof. */

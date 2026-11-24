@@ -30,6 +30,9 @@ function tapped(
   turnRidge: (roof: number) => boolean,
 ) {
   if (hit.kind === 'side') showOn(hit.roof, { kind: 'side', side: hit.side });
+  // A face drawn by hand opens its own sheet; any other face, the roof's Slope.
+  else if (hit.kind === 'face' && hit.face !== undefined)
+    showOn(hit.roof, { kind: 'face', face: hit.face });
   else if (hit.kind === 'face') showOn(hit.roof, ROOF, 'slope');
   else if (hit.kind === 'ridge' && !turnRidge(hit.roof)) showOn(hit.roof, ROOF, 'slope');
   else showOn(hit.roof, ROOF);
@@ -66,6 +69,8 @@ export function useStudioSheet(args: {
   readonly moves: RoofSheetMoves & RoofSheetRowMoves;
   /** The side whose sheet shows over the roof's; `null` with none. */
   readonly side: number | null;
+  /** The face drawn by hand whose sheet shows over the roof's; `null` with none. */
+  readonly face: number | null;
   /** Undo puts back what is in hand first: `true` when something was. */
   dropInHand(): boolean;
   /**
@@ -144,6 +149,7 @@ export function useStudioSheet(args: {
       },
     },
     side: part.kind === 'side' ? part.side : null,
+    face: part.kind === 'face' ? part.face : null,
     dropInHand: () => sheet.moves.dropHeight() || rows.moves.dropNumber(),
     viewing: (next) => {
       if (!sheet.moves.keep()) return false;

@@ -1,5 +1,6 @@
 import {
   type History,
+  handFacesDrawn,
   historyRedone,
   historyUndone,
   type RoofStepEvent,
@@ -56,11 +57,33 @@ export function undoRedoOf(
   if (!editable || roofStep.kind === 'typing') return { canUndo: false, canRedo: false };
   // While drawing, Undo takes a corner off or brings wiped ones back; just after a stop, it takes
   // the stopped drawing up again.
+  // Between the faces drawn by hand, with no corner in hand, they walk the history: Undo takes the
+  // last face back, and drawing goes on.
+  const walks = roofStep.kind === 'idle' || facesBetween(roofStep);
   const back =
-    roofStep.kind === 'drawing'
+    roofStep.kind === 'drawing' && !walks
       ? roofStep.corners.length > 0 || roofStep.wiped !== null
       : (roofStep.kind === 'idle' && Boolean(roofStep.left)) || (history?.past.length ?? 0) > 0;
-  return { canUndo: back, canRedo: roofStep.kind === 'idle' && (history?.future.length ?? 0) > 0 };
+  return { canUndo: back, canRedo: walks && (history?.future.length ?? 0) > 0 };
+}
+
+/** Drawing faces by hand, between two faces: no corner placed and none wiped to bring back. */
+export function facesBetween(step: RoofStepState): boolean {
+  return (
+    step.kind === 'drawing' &&
+    step.faces !== undefined &&
+    step.corners.length === 0 &&
+    step.wiped === null
+  );
+}
+
+/**
+ * Faces are drawn on a roof only while it is of any shape with ground left to cover: a step
+ * through the history that leaves it otherwise ends the drawing.
+ */
+export function facesStillDrawn(document: StudioDocument, roof: number): boolean {
+  const held = document.roofs[roof];
+  return held?.shape?.is === 'any' && handFacesDrawn(held) !== 'whole';
 }
 
 /** One step back or on through the design's history, and what that step changes, for the bar. */
@@ -74,4 +97,33 @@ export function historyStep(
     ? studioChangeOf(next.present, history.present)
     : studioChangeOf(history.present, next.present);
   return { next, change };
+}
+
+/**
+ * Undo and Redo. A height, a number, a length or a drag in hand is put back first; while drawing,
+ * Undo takes the last corner off; between faces drawn by hand, and with nothing in hand, they walk
+ * the design's history (`walk`).
+ */
+export function undoRedoMoves(args: {
+  dropInHand: () => boolean;
+  step: { readonly current: RoofStepState };
+  act: (event: RoofStepEvent) => void;
+  walk: (undone: boolean) => void;
+}) {
+  const { step, act, walk } = args;
+  return {
+    undo: () => {
+      if (args.dropInHand()) return;
+      const now = step.current;
+      const left = now.kind === 'idle' && Boolean(now.left);
+      if (facesBetween(now)) walk(true);
+      else if (now.kind === 'drawing' || left) act({ kind: 'undo_corner' });
+      else if (now.kind === 'sizing' || now.kind === 'dragging' || now.kind === 'typing')
+        act({ kind: 'cancel' });
+      else walk(true);
+    },
+    redo: () => {
+      if (step.current.kind === 'idle' || facesBetween(step.current)) walk(false);
+    },
+  };
 }

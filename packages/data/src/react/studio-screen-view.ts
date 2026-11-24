@@ -31,6 +31,11 @@ export interface StudioMoves
     RoofsPanelMoves,
     StairsMoves {
   pickPicture(choice: PictureChoice): void;
+  /**
+   * Draw an Any-shape roof's faces by hand, from its Faces row: in the top view, the next face; a
+   * roof standing in its faces has them drawn again.
+   */
+  drawFaces(roof: number): void;
   undo(): void;
   redo(): void;
   chooseUnits(system: MeasurementSystem): void;

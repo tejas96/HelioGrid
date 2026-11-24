@@ -84,6 +84,8 @@ export interface RoofMoves {
 
 /** What places a roof when it closes: how its outline meets the design's roofs, and the market's facts. */
 export type ClosePlacing = NonNullable<Extract<RoofStepEvent, { kind: 'close' }>['placing']>;
+/** What a close carries beyond its corners: how a roof is placed, or how a face closes onto its roof. */
+export type ClosingWith = Pick<Extract<RoofStepEvent, { kind: 'close' }>, 'placing' | 'face'>;
 
 /** A roof's place among the others (`T-M05-002`, part e): its chips, and Copy and Delete from its row. */
 export interface RoofPlaceMoves {
