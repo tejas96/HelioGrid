@@ -121,12 +121,15 @@ export function NumberRow({
   shown,
   label,
   onSide = false,
+  onFace = false,
   waits = false,
 }: {
   facts: SheetFacts;
   shown: RoofNumberShown;
   label: TranslatedText;
   onSide?: boolean;
+  /** A face drawn by hand's own slope: its reset goes back to the roof's. */
+  onFace?: boolean;
   waits?: boolean;
 }) {
   const { studio, units, words } = facts;
@@ -159,6 +162,7 @@ export function NumberRow({
         units={units}
         words={words}
         onSide={onSide}
+        onFace={onFace}
         onSlide={(value) => moves.slideNumber(key, value)}
         onKeep={moves.keepNumber}
         onSet={(value) => moves.setNumber(key, value)}
