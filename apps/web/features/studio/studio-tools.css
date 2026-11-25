@@ -1,7 +1,9 @@
 /* The studio's two tool columns and its one bottom bar (`T-M05-002a`). */
 /* The two columns of round tools. */
+/* They stand over the middle and the foot together, so a bar or a panel coming and going at the
+   foot never moves them. */
 .hg-studio-tools {
-  grid-row: 2;
+  grid-row: 2 / 4;
   align-self: center;
   display: flex;
   flex-direction: column;
@@ -25,17 +27,47 @@
   background: var(--glass-strong);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
+  /* Its own layer over the map, as the blur gave it: drawn above the scene, never under it. */
+  isolation: isolate;
   box-shadow:
     inset 0 0 0 var(--hg-studio-line) var(--line-soft),
     var(--e3);
 }
 
-/* Zoom in and Zoom out, one pair, on every screen: a finger can pinch, but the buttons are the
-   one way that needs no gesture, and the phone keeps every feature the desktop has. */
+/* Zoom in and Zoom out, one pill at the bottom right, on every screen: a finger can pinch, but
+   the buttons are the one way that needs no gesture, and the phone keeps every feature the desktop
+   has. */
 .hg-studio-zoom {
+  grid-row: 2 / 4;
+  grid-column: 3;
+  align-self: end;
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
+}
+
+.hg-studio-zoom-pill {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-pill);
+}
+
+/* The two halves sit bare in the pill, a hairline between them. */
+.hg-studio-zoom-pill .hg-icon-button {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.hg-studio-zoom-pill .hg-icon-button + .hg-icon-button {
+  border-block-start: var(--hg-studio-line) solid var(--line-strong);
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+}
+
+.hg-studio-zoom-pill .hg-icon-button:first-child {
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
 }
 
 /* The compass: the needle alone, in the head's right corner, turning about its middle. Its white
@@ -110,7 +142,8 @@
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  max-inline-size: 100%;
+  /* Between the tool columns, which share its row. */
+  max-inline-size: calc(100% - 2 * (var(--studio-tool) + var(--studio-gap)));
   min-inline-size: 0;
   padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-3);
   border-radius: var(--r-pill);
@@ -164,6 +197,22 @@
   align-self: end;
 }
 
+/* A panel at the foot reaches up into the middle row: the message stands over the panel's top edge,
+   above it, so it is never hidden under it. */
+.hg-studio[data-panel="true"] .hg-studio-bar[data-above-job="true"] {
+  grid-row: 2 / 4;
+  grid-column: 1 / -1;
+  align-self: end;
+  z-index: 4;
+  /* Over the panel's top edge: its measured height (`use-chrome-room.ts`). */
+  /* Never past the room it has: over a tall picker the message stays in view under the head. A
+     margin's percentage reads the width, so the cap is the screen's height. */
+  margin-block-end: min(
+    calc(var(--hg-foot-room, 0px) + var(--studio-gap)),
+    calc(100dvh - var(--studio-tool) * 4)
+  );
+}
+
 /* A message that asks a choice (a new roof's kind, the stairs) is a card: its title over its line,
    the chips one row that scrolls sideways where they do not fit. */
 .hg-studio-bar[data-kind="card"] {
@@ -191,10 +240,28 @@
   flex: none;
 }
 
-/* A phone: the tools sit low, in thumb reach; the bar spans the foot when its words need it. */
+/* An upright phone: the tools sit low, in thumb reach, over the bar, which spans the foot when its
+   words need it. */
 @media (width < 968px) {
-  .hg-studio-tools {
+  .hg-studio[data-upright="true"] .hg-studio-tools,
+  .hg-studio[data-upright="true"] .hg-studio-zoom {
+    grid-row: 2;
+  }
+
+  .hg-studio[data-upright="true"] .hg-studio-tools {
     align-self: end;
+  }
+
+  .hg-studio[data-upright="true"] .hg-studio-bar {
+    max-inline-size: 100%;
+  }
+}
+
+/* A phone, upright or held sideways. */
+@media (width < 968px) {
+  /* The right column stands on the zoom pill. */
+  .hg-studio-tools[data-side="right"] {
+    margin-block-end: calc(2 * var(--studio-tool) + var(--sp-2));
   }
 
   /* The chip row fades at its end, so it reads as one that scrolls. */

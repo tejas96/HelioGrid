@@ -309,7 +309,7 @@ export function roofHandles(corners: readonly GroundPoint[], gap: number): RoofH
   };
 }
 
-/** The ground the roofs cover, which the camera frames and Back to the pin fits; `null` with none. */
+/** The ground the roofs cover, which the camera frames; `null` with none. */
 export function roofsBox(
   roofs: readonly { readonly corners: readonly GroundPoint[] }[],
 ): GroundBox | null {

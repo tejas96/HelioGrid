@@ -137,8 +137,10 @@ export interface StudioSceneProps {
   sun: SunPosition;
   palette: ThemePalette;
   /** The room the bars take at the top and the foot, in CSS pixels: the view frames the rest. */
-  free: { readonly top: number; readonly bottom: number; readonly right?: number };
+  free: { readonly top: number; readonly bottom: number };
   still: boolean;
+  /** A panel opened at the foot (Roofs, the picker): the view stays still while the roofs stay clear of it. */
+  keepView: boolean;
   /** The page's pin marker, which the scene keeps on the pin as the camera moves. */
   pinLabel: RefObject<HTMLElement | null>;
   /** What shows where the device cannot draw 3D. */
@@ -182,6 +184,7 @@ export function StudioScene({
   palette,
   free,
   still,
+  keepView,
   pinLabel,
   fallback,
   drive,
@@ -283,6 +286,7 @@ export function StudioScene({
         view={view}
         free={free}
         still={still}
+        keepView={keepView}
         clear={scaledBox(clearGroundOf(picture), pictureScale)}
         metresPerPixel={picture.kind === 'sky' ? picture.metresPerPixel * pictureScale : null}
         drive={drive}

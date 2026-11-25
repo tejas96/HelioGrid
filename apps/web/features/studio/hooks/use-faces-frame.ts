@@ -8,9 +8,9 @@ import { useMemo } from 'react';
  */
 export function useFacesFrame(
   step: RoofStepState,
-  room: { readonly bottom: number; readonly right?: number },
+  room: { readonly bottom: number },
 ): object | null {
   const roof = step.kind === 'drawing' ? (step.faces ?? null) : null;
   // biome-ignore lint/correctness/useExhaustiveDependencies: the measured room is what asks for a new frame
-  return useMemo(() => (roof === null ? null : {}), [roof, room.bottom, room.right]);
+  return useMemo(() => (roof === null ? null : {}), [roof, room.bottom]);
 }

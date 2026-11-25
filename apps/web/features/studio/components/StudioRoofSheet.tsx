@@ -23,13 +23,13 @@ import { StudioDetailsRows, StudioSideRows } from './StudioSideSheet';
  * is made of, its shape, its height, its slope and the shape's own numbers, its parapet, its
  * setback and the parapet's details. A side tapped on the model shows its own sheet in the roof's
  * place, as does a face drawn by hand on an Any-shape roof, and Parapet details is its own short
- * sheet; Back returns to the roof's. On a phone it
- * opens from the foot in the bar's place; on a desktop at the right, under the head. Delete sits at
+ * sheet; Back returns to the roof's. It opens from the foot in the bar's place on every screen, at
+ * most 40 % of the screen high, its rows scrolling inside; the camera frames above it. Delete sits at
  * the start of the foot, away from × and Done. A reader sees the values and no control.
  */
 export function StudioRoofSheet({
   footRef,
-  sideRef,
+  covered,
   sheet,
   studio,
   units,
@@ -37,10 +37,10 @@ export function StudioRoofSheet({
   map,
   phone,
 }: {
-  /** On a phone the sheet takes the bar's place at the foot: the camera frames above it. */
-  footRef: Ref<HTMLDivElement>;
-  /** On a desktop it stands at the right: the model keeps the room left of it. */
-  sideRef: Ref<HTMLDivElement>;
+  /** The sheet takes the bar's place at the foot: the camera frames above it. `null` while a panel covers it. */
+  footRef: Ref<HTMLDivElement> | null;
+  /** The material picker opened from it stands in its place: the sheet waits, unseen, to come back. */
+  covered: boolean;
   sheet: RoofSheetView;
   studio: StudioScreen;
   units: MeasurementSystem;
@@ -52,11 +52,12 @@ export function StudioRoofSheet({
   const format = useFormat();
   const { moves, sheetRows: rows, sheetPart: part } = studio;
   const title = useRef<HTMLSpanElement>(null);
-  // A sheet opened lands focus on its title, so a keyboard or a screen reader starts there.
+  // A sheet opened, or shown again as the picker that covered it closes, lands focus on its title,
+  // so a keyboard or a screen reader starts there.
   // biome-ignore lint/correctness/useExhaustiveDependencies: each roof or side opened is a new place to land
   useEffect(() => {
-    title.current?.focus();
-  }, [sheet.roof, part]);
+    if (!covered) title.current?.focus();
+  }, [sheet.roof, part, covered]);
   if (rows === null) return null;
   const facts = { studio, units, words, phone };
   const heading = headingOf(studio, rows, words, (metres) => format.roofHeight(metres, units));
@@ -79,7 +80,8 @@ export function StudioRoofSheet({
     <>
       {pill}
       <div
-        ref={phone ? footRef : sideRef}
+        ref={footRef}
+        hidden={covered}
         className="hg-studio-glass hg-roof-sheet"
         data-room={phone ? 'phone' : 'desktop'}
         data-part={part.kind}

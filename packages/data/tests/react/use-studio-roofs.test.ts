@@ -55,8 +55,8 @@ async function opened(roofs: StudioDocumentWire['roofs'], editor = true) {
 }
 const saved = () => stored.saves.at(-1)?.roofs ?? [];
 
-describe('the pencil does what the moment needs', () => {
-  it('with no roof it draws at once', async () => {
+describe('the pencil draws; Roofs has its own button', () => {
+  it('the pencil draws, and while a roof is drawn a tap stops', async () => {
     const view = await opened([]);
     expect(view.result.current.pencil).toBe('draw');
     act(() => view.result.current.moves.tapPencil());
@@ -66,27 +66,25 @@ describe('the pencil does what the moment needs', () => {
     expect(view.result.current.roofStep.kind).toBe('idle');
   });
 
-  it('with roofs it opens Roofs and Draw; Draw is the second tap; a second tap on the pencil closes them', async () => {
+  it('with roofs the pencil still draws at once, and closes Roofs first', async () => {
     const view = await opened(HOUSE);
-    expect(view.result.current.pencil).toBe('fan');
+    act(() => view.result.current.moves.tapRoofs());
+    expect(view.result.current.panel).toEqual({ open: 'roofs', lit: null });
     act(() => view.result.current.moves.tapPencil());
-    expect(view.result.current.panel).toEqual({ open: 'fan' });
-    act(() => view.result.current.moves.tapPencil());
-    expect(view.result.current.panel).toEqual({ open: 'none' });
-    act(() => view.result.current.moves.tapPencil());
-    act(() => view.result.current.moves.drawAnother());
     expect(view.result.current.panel).toEqual({ open: 'none' });
     expect(view.result.current.roofStep.kind).toBe('drawing');
   });
 
-  it('in 3D, and for a person who may only view, it opens Roofs at once', async () => {
+  it('Roofs opens and closes on its button, in 3D and for a person who may only view', async () => {
     const view = await opened(HOUSE);
     act(() => view.result.current.moves.see('3d'));
-    expect(view.result.current.pencil).toBe('roofs');
-    act(() => view.result.current.moves.tapPencil());
+    act(() => view.result.current.moves.tapRoofs());
     expect(view.result.current.panel).toEqual({ open: 'roofs', lit: null });
+    act(() => view.result.current.moves.tapRoofs());
+    expect(view.result.current.panel).toEqual({ open: 'none' });
     const reader = await opened(HOUSE, false);
-    expect(reader.result.current.pencil).toBe('roofs');
+    act(() => reader.result.current.moves.tapRoofs());
+    expect(reader.result.current.panel).toEqual({ open: 'roofs', lit: null });
     origin.roles = [DESIGNS_ROLE];
   });
 });
@@ -106,7 +104,7 @@ describe('Roofs', () => {
 
   it('a row picks its roof and opens its sheet in the list’s place; Back opens Roofs on that row', async () => {
     const view = await opened(HOUSE);
-    act(() => view.result.current.moves.openRoofs());
+    act(() => view.result.current.moves.tapRoofs());
     act(() => view.result.current.moves.pickRow(2));
     expect(view.result.current.panel).toEqual({ open: 'none' });
     expect(view.result.current.roofSheet?.roof).toBe(2);
@@ -120,12 +118,12 @@ describe('Roofs', () => {
   it('opens on the row of the roof picked on the model; Back opens it on the sheet’s row; closed, no row is lit', async () => {
     const view = await opened(HOUSE);
     expect(view.result.current.litRow).toBeNull();
-    act(() => view.result.current.moves.openRoofs());
+    act(() => view.result.current.moves.tapRoofs());
     expect(view.result.current.litRow).toBeNull();
     act(() => view.result.current.moves.closePanel());
     // A tap on the shed in the top view picks it: Roofs then opens on its row.
     act(() => view.result.current.moves.tap({ east: 12, north: 4 }));
-    act(() => view.result.current.moves.openRoofs());
+    act(() => view.result.current.moves.tapRoofs());
     expect(view.result.current.litRow).toBe(2);
     act(() => view.result.current.moves.pickRow(1));
     expect(view.result.current.litRow).toBeNull();
@@ -135,11 +133,11 @@ describe('Roofs', () => {
 
   it('Copy and Delete on a row close Roofs, are one save each, and the line names what went', async () => {
     const view = await opened(HOUSE);
-    act(() => view.result.current.moves.openRoofs());
+    act(() => view.result.current.moves.tapRoofs());
     act(() => view.result.current.moves.copyRow(2));
     expect(view.result.current.panel).toEqual({ open: 'none' });
     await waitFor(() => expect(saved()).toHaveLength(4));
-    act(() => view.result.current.moves.openRoofs());
+    act(() => view.result.current.moves.tapRoofs());
     act(() => view.result.current.moves.deleteRow(1));
     expect(view.result.current.panel).toEqual({ open: 'none' });
     await waitFor(() => expect(saved().map((roof) => roof.id)).not.toContain(STAIR.id));
@@ -155,7 +153,7 @@ describe('Roofs', () => {
 describe('what a roof is made of', () => {
   it('Confirm on the terrace confirms it and the stair room on it in one save, and Roofs comes back with the shed lit', async () => {
     const view = await opened(HOUSE);
-    act(() => view.result.current.moves.openRoofs());
+    act(() => view.result.current.moves.tapRoofs());
     act(() => view.result.current.moves.openMaterial(0, 'roofs'));
     expect(view.result.current.materialPicker).toMatchObject({
       roof: 0,
@@ -199,7 +197,7 @@ describe('what a roof is made of', () => {
 
   it('the phone’s back closes the picker to Roofs, then Roofs', async () => {
     const view = await opened(HOUSE);
-    act(() => view.result.current.moves.openRoofs());
+    act(() => view.result.current.moves.tapRoofs());
     act(() => view.result.current.moves.openMaterial(2, 'roofs'));
     let handled = false;
     act(() => {

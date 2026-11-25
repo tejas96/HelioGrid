@@ -5,7 +5,6 @@ import { roofsWorked } from '../../src/studio/roof-worked';
 import {
   materialPickerOf,
   nextWaiting,
-  pencilDoes,
   ROOFS_PANEL_START,
   type RoofsPanel,
   type RoofsPanelEvent,
@@ -13,51 +12,26 @@ import {
 } from '../../src/studio/roofs-panel';
 import { box, designOf, FACTS, kindOf, SHED, stairOn, TERRACE } from './roof-meet-support';
 
-/**
- * The pencil and what it opens (`T-M05-002`, part e): it does what the moment needs, and of its
- * two buttons, Roofs and the material picker one is open at a time.
- */
+/** Roofs and the material picker (`T-M05-002`, part e): one of them is open at a time. */
 const opened = (...events: RoofsPanelEvent[]) =>
   events.reduce<RoofsPanel>(roofsPanelAfter, ROOFS_PANEL_START);
 
-describe('a tap on the pencil', () => {
-  it.each([
-    ['no roof yet, in the top view: it draws', { roofs: 0, top: true }, 'draw'],
-    [
-      'no roof yet, in 3D: it still draws — the camera flies to the top view',
-      { roofs: 0, top: false },
-      'draw',
-    ],
-    ['roofs stand, in the top view: Roofs and Draw', { roofs: 3, top: true }, 'fan'],
-    ['roofs stand, in 3D: Roofs at once', { roofs: 3, top: false }, 'roofs'],
-    ['a roof is being drawn: it stops', { roofs: 3, top: true, drawing: true }, 'stop'],
-    [
-      'a person who may only view: Roofs at once',
-      { roofs: 3, top: true, editable: false },
-      'roofs',
-    ],
-    [
-      'a person who may only view, with no roof: Roofs, never Draw',
-      { roofs: 0, top: true, editable: false },
-      'roofs',
-    ],
-  ] as const)('%s', (_why, facts, does) => {
-    expect(pencilDoes({ drawing: false, editable: true, ...facts })).toBe(does);
-  });
-});
-
 describe('what is open', () => {
-  it('the pencil opens its two buttons, and a second tap closes them', () => {
-    expect(opened({ kind: 'pencil', does: 'fan' })).toEqual({ open: 'fan' });
-    expect(opened({ kind: 'pencil', does: 'fan' }, { kind: 'pencil', does: 'fan' })).toEqual({
-      open: 'none',
-    });
+  it('the Roofs button opens Roofs, and a second tap closes it', () => {
+    expect(opened({ kind: 'roofs' })).toEqual({ open: 'roofs', lit: null });
+    expect(opened({ kind: 'roofs' }, { kind: 'roofs' })).toEqual({ open: 'none' });
   });
 
-  it('Roofs takes the buttons’ place; × or Esc closes it', () => {
-    const roofs = opened({ kind: 'pencil', does: 'fan' }, { kind: 'roofs' });
-    expect(roofs).toEqual({ open: 'roofs', lit: null });
-    expect(roofsPanelAfter(roofs, { kind: 'close' })).toEqual({ open: 'none' });
+  it('the Roofs button closes the picker too, wherever it was opened from', () => {
+    for (const from of ['roofs', 'sheet'] as const) {
+      expect(opened({ kind: 'material', roof: 1, from }, { kind: 'roofs' })).toEqual({
+        open: 'none',
+      });
+    }
+  });
+
+  it('× or Esc closes Roofs', () => {
+    expect(opened({ kind: 'roofs' }, { kind: 'close' })).toEqual({ open: 'none' });
   });
 
   it('the picker opened from Roofs goes back to Roofs on ×, with its roof’s row lit', () => {

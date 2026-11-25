@@ -1,11 +1,9 @@
 import type { GroundPoint } from '@heliogrid/domain';
 
-/** What the page's own controls ask of the camera: the zoom buttons, Back to the pin, the arrow keys. */
+/** What the page's own controls ask of the camera: the zoom buttons and the arrow keys. */
 export interface StudioDrive {
   zoomIn(): void;
   zoomOut(): void;
-  /** The view as it opens: the roofs framed, or the pin in the middle before a roof. */
-  home(): void;
   /** One arrow key's move: `east` and `north` are each -1, 0 or 1. */
   nudge(east: number, north: number): void;
   /**

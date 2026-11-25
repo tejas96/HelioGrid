@@ -7,11 +7,11 @@ import type {
   RoofsPanel,
 } from '@heliogrid/domain';
 
-/** What the pencil opens, as the screen draws it (`T-M05-002`, part e). */
+/** Roofs and the material picker, as the screen draws them (`T-M05-002`, part e). */
 export interface RoofsPanelView {
   /** What a tap on the pencil does now. */
   readonly pencil: PencilDoes;
-  /** What is open: the pencil's two buttons, Roofs, or the material picker. */
+  /** What is open: Roofs, the material picker, or nothing. */
   readonly panel: RoofsPanel;
   /**
    * The row of Roofs that is lit while it is open: the next roof that waits after a pick, the row
@@ -25,11 +25,10 @@ export interface RoofsPanelView {
 }
 
 export interface RoofsPanelMoves {
-  /** The pencil: it draws, stops the drawing, opens its two buttons, or opens Roofs. */
+  /** The pencil: it draws — what is open closes first — or, while a roof is drawn, it stops. */
   tapPencil(): void;
-  /** Draw, the pencil's second button: another roof. */
-  drawAnother(): void;
-  openRoofs(): void;
+  /** The Roofs button, or R: Roofs opens, or — while it or its picker is open — it closes. */
+  tapRoofs(): void;
   /** ×, Esc or a tap outside: what is open closes, back to where it was opened from. */
   closePanel(): void;
   /** A row of Roofs: its roof is picked, the camera flies to it, and its sheet takes the list's place. */

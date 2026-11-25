@@ -3,6 +3,9 @@
    The grid lets every click through to the scene except on a part. */
 .hg-studio {
   --hg-studio-line: calc(var(--sp-0-5) / 2);
+  /* The glass keeps its tint but blurs nothing behind it: over a live 3D map the blur is redrawn on
+     every frame the map moves, a cost a phone feels and a person hardly sees. */
+  --glass-blur: none;
   position: fixed;
   inset: 0;
   display: grid;
@@ -45,11 +48,22 @@
   background: var(--glass-strong);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
+  /* Its own layer over the map, as the blur gave it: drawn above the scene, never under it. */
+  isolation: isolate;
   box-shadow:
     inset 0 0 0 var(--hg-studio-line) var(--line-soft),
     var(--e3);
   color: var(--text-primary);
   pointer-events: auto;
+}
+
+/* The panels at the foot (a roof's sheet, Roofs, the material picker) are the glass's colour, solid:
+   a person reads rows in them, so nothing of the map shows through, and nothing behind them is
+   redrawn as the map moves. */
+.hg-studio-glass.hg-roof-sheet,
+.hg-studio-glass.hg-roofs-panel {
+  /* biome-ignore lint/plugin/raw-white-css: the glass's own colour, solid — a panel of rows is a card, as a tile is */
+  background: var(--surface);
 }
 
 /* The head: the steps in the middle of the canvas, the compass in the right corner and the picture
@@ -196,4 +210,13 @@
   .hg-studio-canvas-head {
     gap: var(--sp-2);
   }
+}
+
+/* The phone's keyboard is up (`use-keyboard-room.ts`): the studio fits the screen above it, so a
+   sheet at the foot sits on the keyboard and the roof is framed above the sheet. The keyboard
+   covers the home bar, so the foot keeps only the studio's edge. */
+.hg-studio[data-keyboard="true"] {
+  inset: var(--hg-seen-top, 0px) 0 auto;
+  block-size: var(--hg-seen-height, 100%);
+  padding-block-end: var(--studio-edge);
 }

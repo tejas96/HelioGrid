@@ -3,7 +3,7 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { MeasurementSystem, RoofRow } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { IconButton, Pressable, ShellGlyph, type ShellGlyphName, useFormat } from '@heliogrid/ui';
-import { useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 import { usePressAway } from '../hooks/use-press-away';
 import { ROOF_KIND_GLYPH } from './roof-kind-glyph';
 
@@ -98,10 +98,13 @@ function RoofsRow({
  * Delete are on each row. A person who may only view sees the same rows with nothing to change.
  */
 export function StudioRoofsList({
+  footRef,
   studio,
   units,
   words,
 }: {
+  /** Roofs holds the foot, in the bar's place: the camera frames above it. */
+  footRef: RefObject<HTMLDivElement | null> | null;
   studio: StudioScreen;
   units: MeasurementSystem;
   words: StudioCanvasWords;
@@ -109,7 +112,7 @@ export function StudioRoofsList({
   const format = useFormat();
   const panel = useRef<HTMLDivElement>(null);
   const { roofList, litRow, moves } = studio;
-  usePressAway(panel, true, moves.closePanel, '.hg-studio-pencil');
+  usePressAway(panel, true, moves.closePanel, '.hg-studio-roofs-button');
   // Roofs opened lands focus on its lit row, else on its head: a keyboard starts there.
   useEffect(() => {
     const row = panel.current?.querySelector<HTMLElement>('[data-lit="true"] .hg-roofs-row-pick');
@@ -118,7 +121,10 @@ export function StudioRoofsList({
   }, []);
   return (
     <div
-      ref={panel}
+      ref={(node) => {
+        panel.current = node;
+        if (footRef !== null) footRef.current = node;
+      }}
       className="hg-studio-glass hg-roofs-panel"
       role="dialog"
       aria-label={words.roofsName}

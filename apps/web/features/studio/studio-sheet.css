@@ -1,17 +1,18 @@
 /* A roof's sheet and a side's sheet (`T-M05-002`, part e, board section 6). */
-/* The sheet (board section 6): on a desktop at the right, under the head, as Roofs is; on a phone
-   from the foot, in the bar's place. Its rows scroll inside it; its head and foot stay. */
+/* The sheet (board section 6): from the foot on every screen, in the bar's place, as Roofs is; at
+   most 40 % of the screen high, so the roof stays in view above it. Its rows scroll inside it; its
+   head and foot stay. */
 .hg-roof-sheet {
   grid-row: 2 / 4;
-  grid-column: 2;
-  justify-self: end;
-  align-self: start;
+  grid-column: 1 / -1;
+  justify-self: center;
+  align-self: end;
   z-index: 2;
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
   inline-size: min(100%, calc(var(--sp-24) * 4.5));
-  max-block-size: 100%;
+  max-block-size: min(100%, 40dvh);
   min-inline-size: 0;
   box-sizing: border-box;
   padding: var(--sp-3);
@@ -233,20 +234,16 @@
   }
 }
 
+/* An upright phone: the width of the screen, over the tools' rows, as Roofs is. Held sideways, it
+   keeps its own width, as on a desktop. */
 @media (width < 968px) {
-  /* From the foot, over the tools' rows when it grows, as Roofs is: never past the screen. */
-  .hg-roof-sheet {
-    grid-row: 2 / 4;
-    grid-column: 1 / -1;
+  .hg-studio[data-upright="true"] .hg-roof-sheet {
     justify-self: stretch;
-    align-self: end;
     z-index: 3;
     inline-size: auto;
-    /* The roof stays in view above it: the rows scroll inside. */
-    max-block-size: min(100%, 60dvh);
   }
 
-  .hg-roof-sheet-acts > :last-child {
+  .hg-studio[data-upright="true"] .hg-roof-sheet-acts > :last-child {
     flex: 1 1 0;
   }
 }
@@ -274,4 +271,22 @@
 .hg-sheet-choice[aria-checked="true"] {
   border-color: var(--ink);
   color: var(--text-primary);
+}
+
+/* Typing a number with the keyboard up: the sheet keeps its head, the row being typed and its foot,
+   so the roof above stays in view (board A6). */
+.hg-studio[data-keyboard="true"] .hg-roof-sheet-rows > :not(:focus-within) {
+  display: none;
+}
+
+.hg-studio[data-keyboard="true"] .hg-roof-sheet {
+  max-block-size: 100%;
+}
+
+/* A phone held sideways, a short screen: 40 % would leave one row, so the sheet may grow to 70 %;
+   it stands between the tool columns, and the map stays seen on either side. */
+@media (width < 968px) {
+  .hg-studio[data-upright="false"] .hg-roof-sheet {
+    max-block-size: min(100%, 70dvh);
+  }
 }

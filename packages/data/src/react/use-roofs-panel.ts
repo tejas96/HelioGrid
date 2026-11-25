@@ -4,7 +4,6 @@ import {
   type MaterialPick,
   materialPickerOf,
   nextWaiting,
-  pencilDoes,
   ROOFS_PANEL_START,
   type RoofBar,
   type RoofFacts,
@@ -15,7 +14,6 @@ import {
   type RoofsPanelEvent,
   roofsPanelAfter,
   type StudioDocument,
-  type StudioView,
 } from '@heliogrid/domain';
 import { roofListOf, roofsWorked } from '@heliogrid/domain/studio-kernel';
 import { type RefObject, useState } from 'react';
@@ -23,15 +21,14 @@ import type { RoofsPanelMoves, RoofsPanelView } from './roofs-panel-view';
 
 /**
  * The pencil, Roofs and the material picker (`T-M05-002`, part e): what is open is domain's small
- * state machine; this holds it and joins it to the roof step and the roof's sheet.
+ * state machine; this holds it and joins it to the roof step and the roof's sheet. The pencil only
+ * draws; Roofs has its own button.
  */
 export function useRoofsPanel({
   document,
   latest,
   list,
   facts,
-  editable,
-  view,
   drawing,
   sheet,
   bar,
@@ -48,8 +45,6 @@ export function useRoofsPanel({
   /** The rows of Roofs for the design drawn. */
   list: RoofList;
   facts: RoofFacts;
-  editable: boolean;
-  view: StudioView;
   drawing: boolean;
   /** The roof's sheet that is open; `null` with none. */
   sheet: RoofSheetView | null;
@@ -69,12 +64,7 @@ export function useRoofsPanel({
   const sheetRoof = sheet?.roof ?? null;
   const picked = bar?.kind === 'roofs' ? bar.picked : null;
   const send = (event: RoofsPanelEvent) => setPanel((state) => roofsPanelAfter(state, event));
-  const pencil = pencilDoes({
-    roofs: document?.roofs.length ?? 0,
-    drawing,
-    editable,
-    top: view === 'top',
-  });
+  const pencil = drawing ? 'stop' : 'draw';
 
   /** A type picked or confirmed on the picker's roof: one change, then on to the next roof that waits. */
   const setMaterial = (pick?: MaterialPick) => {
@@ -101,15 +91,14 @@ export function useRoofsPanel({
     },
     moves: {
       tapPencil: () => {
-        if (pencil === 'draw') draw();
-        else if (pencil === 'stop') stopDrawing();
-        else send({ kind: 'pencil', does: pencil });
-      },
-      drawAnother: () => {
+        if (drawing) {
+          stopDrawing();
+          return;
+        }
         send({ kind: 'close_all' });
         draw();
       },
-      openRoofs: () => send({ kind: 'roofs' }),
+      tapRoofs: () => send({ kind: 'roofs' }),
       closePanel: () => send({ kind: 'close' }),
       pickRow: (roof) => {
         send({ kind: 'close_all' });

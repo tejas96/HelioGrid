@@ -6,6 +6,7 @@ import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { IconButton, Menu, ShellGlyph } from '@heliogrid/ui';
 import { MagnetSwitch } from './StudioBarPills';
 import { StudioPencil } from './StudioPencil';
+import { StudioRoofsButton } from './StudioRoofsButton';
 import { Shown } from './StudioShown';
 
 /** The magnet stands while a corner is drawn, and while a roof is picked for the drags to come. */
@@ -15,10 +16,12 @@ function magnetShown(part: FocusParts['magnet'], studio: StudioScreen): boolean 
 }
 
 /**
- * The two small columns of round tools. Left: what changes the model — the pencil, the one door
- * to the roofs (`StudioPencil`) under the magnet while a corner is drawn or a roof is picked, the trash that clears every corner of the drawing, Undo and Redo
- * (Undo alone while drawing). Right: how the model is seen — the view menu (the
- * views on offer, metres or feet), the 2D and 3D switch, Zoom in, Zoom out and Back to the pin. A
+ * The two small columns of round tools, and the zoom pill under the right one. Left: what changes the model — Roofs with their count once
+ * a roof stands (`StudioRoofsButton`), the pencil that draws (`StudioPencil`), both under the
+ * magnet while a corner is drawn or a roof is picked, the trash that clears every corner of the
+ * drawing, Undo and Redo (Undo alone while drawing). Right: how the model is seen — the view menu (the
+ * views on offer, metres or feet), the 2D and 3D switch; Zoom in and Zoom out in one pill at the
+ * bottom right. A
  * view that waits for a roof says why on a tap. The road view and the sun join with their parts.
  */
 export function StudioToolRail({
@@ -40,7 +43,6 @@ export function StudioToolRail({
   onWipe,
   onZoomIn,
   onZoomOut,
-  onHome,
 }: {
   /** The studio, for the pencil and what it opens. */
   studio: StudioScreen;
@@ -65,8 +67,6 @@ export function StudioToolRail({
   onRedo: () => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
-  /** Back to the pin: the view as it opens. */
-  onHome: () => void;
 }) {
   const sideName: Record<StudioView, TranslatedText> = {
     top: words.topView,
@@ -84,6 +84,12 @@ export function StudioToolRail({
             the foot, the tools under it never move, and no gap is kept for it. */}
         {editable && magnetShown(parts.magnet, studio) ? (
           <MagnetSwitch studio={studio} words={words} />
+        ) : null}
+        {/* Roofs comes with the first roof and keeps no gap before it; a job only fades it. */}
+        {studio.roofList.count > 0 ? (
+          <Shown when={parts.roofs === 'shown'}>
+            <StudioRoofsButton studio={studio} words={words} />
+          </Shown>
         ) : null}
         <Shown when={parts.pencil !== 'hidden'}>
           <StudioPencil studio={studio} words={words} />
@@ -119,7 +125,7 @@ export function StudioToolRail({
             align="end"
             trigger={
               <IconButton label={words.view}>
-                <ShellGlyph name="layers" size="md" />
+                <ShellGlyph name="sliders" size="md" />
               </IconButton>
             }
             items={[
@@ -161,41 +167,18 @@ export function StudioToolRail({
             </IconButton>
           </span>
         </Shown>
-        {/* The 3D tool: the camera glides to each side of the model. */}
-        <Shown when={parts.sideViews === 'shown'}>
-          <Menu
-            label={words.sideViews}
-            selection="single"
-            align="end"
-            trigger={
-              <IconButton label={words.sideViews}>
-                <ShellGlyph name="eye" size="md" />
-              </IconButton>
-            }
-            items={views
-              .filter((place) => place.view !== 'top')
-              .map((place) => ({
-                key: place.view,
-                label: sideName[place.view],
-                selected: view === place.view,
-                ...(place.lock === null
-                  ? { onSelect: () => onView(place.view) }
-                  : { disabled: true, disabledReason: words.stepLock(place.lock) }),
-              }))}
-          />
-        </Shown>
+      </div>
+      {/* Zoom: one pill at the bottom right, Zoom in over Zoom out. */}
+      <div className="hg-studio-zoom">
         <Shown when={parts.zoom === 'shown'}>
-          <span className="hg-studio-zoom">
-            <IconButton label={words.zoomIn} onClick={onZoomIn}>
+          <span className="hg-studio-glass hg-studio-zoom-pill">
+            <IconButton label={words.zoomIn} variant="ghost" onClick={onZoomIn}>
               <ShellGlyph name="plus" size="md" />
             </IconButton>
-            <IconButton label={words.zoomOut} onClick={onZoomOut}>
+            <IconButton label={words.zoomOut} variant="ghost" onClick={onZoomOut}>
               <ShellGlyph name="minus" size="md" />
             </IconButton>
           </span>
-          <IconButton label={words.backToPin} onClick={onHome}>
-            <ShellGlyph name="recentre" size="md" />
-          </IconButton>
         </Shown>
       </div>
     </>
