@@ -48,7 +48,6 @@ export function HeightRow({
   return (
     <SheetRow facts={facts} rowKey="height" label={label} value={value} always openValue={head}>
       <fieldset className="hg-sheet-number" aria-label={label} onKeyDown={onKeyDown}>
-        {facts.phone ? <div className="hg-sheet-number-head">{head}</div> : null}
         {typing && studio.heightEntry !== null ? (
           <StudioEntryBoxes
             entry={studio.heightEntry}

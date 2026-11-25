@@ -18,7 +18,6 @@ import type {
 export type SheetRowKey =
   | 'kind'
   | 'material'
-  | 'details'
   | 'shape'
   | 'height'
   | 'slope'
@@ -30,13 +29,12 @@ export type SheetRowKey =
   | RoofNumber;
 
 /**
- * Which sheet shows over the roof: its own, one side's, its parapet's details, or one face's of an
- * Any-shape roof standing in faces drawn by hand.
+ * Which sheet shows over the roof: its own, one side's, or one face's of an Any-shape roof standing
+ * in faces drawn by hand. The parapet's details are rows of the roof's own, under its switch.
  */
 export type SheetPart =
   | { readonly kind: 'roof' }
   | { readonly kind: 'side'; readonly side: number }
-  | { readonly kind: 'details' }
   | { readonly kind: 'face'; readonly face: number };
 
 export interface RoofSheetRowsState {
@@ -78,9 +76,7 @@ export interface RoofSheetRowMoves {
   setLengthsMeasured(to: LengthsMeasured): void;
   /** A side tapped on the model: it lights, and its sheet shows in the roof's place. */
   openSide(side: number): void;
-  /** Parapet details, as its own short sheet. */
-  openDetails(): void;
-  /** Back: from a side's sheet, a face's or Parapet details to the roof's. */
+  /** Back: from a side's sheet or a face's to the roof's. */
   backToRoof(): void;
   /** The open side's parapet, on or off; a person's from then on. */
   setSideWall(on: boolean): void;

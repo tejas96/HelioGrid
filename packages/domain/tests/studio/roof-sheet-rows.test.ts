@@ -67,7 +67,7 @@ describe('the height slider’s floors', () => {
 });
 
 describe('a roof’s sheet: one row per value it has', () => {
-  it('a flat concrete terrace: height from ground with its floors, a parapet, its details; no slope', () => {
+  it('a flat concrete terrace: height from ground with its floors, a parapet with its details; no slope', () => {
     const sheet = sheetOf(designOf(TERRACE), 0);
     expect(sheet.kind).toBeNull();
     expect(sheet.height.from).toEqual({ kind: 'ground' });
@@ -77,8 +77,16 @@ describe('a roof’s sheet: one row per value it has', () => {
     expect(sheet.slope).toBeNull();
     expect(sheet.overhang).toBeNull();
     expect(sheet.extras).toEqual([]);
-    expect(sheet.parapet).toMatchObject({ allRound: true, byPerson: false, waits: false });
-    expect(sheet.details).toMatchObject({ build: 'wall', measured: 'outside' });
+    expect(sheet.parapet).toMatchObject({
+      allRound: true,
+      byPerson: false,
+      waits: false,
+      walls: true,
+      apart: null,
+      build: 'wall',
+      measured: 'outside',
+    });
+    expect(sheet.parapet?.thickness?.value).toBe(FACTS.wallThicknessM);
     expect(sheet.shape).toMatchObject({ is: 'flat', byPerson: false, isLater: false });
   });
 
@@ -202,11 +210,9 @@ describe('a roof’s sheet: one row per value it has', () => {
     expect(sheet.kind?.choices[0]).toBe('dormer');
   });
 
-  it('an open shed has no walls: no parapet row and no parapet details', () => {
+  it('an open shed has no walls: no parapet row', () => {
     const canopy = kindOf('canopy', 'open_shed', box(1, 1, 3, 3), { on: 'terrace' });
-    const sheet = sheetOf(designOf(TERRACE, canopy), 1);
-    expect(sheet.parapet).toBeNull();
-    expect(sheet.details).toBeNull();
+    expect(sheetOf(designOf(TERRACE, canopy), 1).parapet).toBeNull();
   });
 
   it.each([

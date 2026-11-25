@@ -21,6 +21,17 @@ describe('a roof moved on another, the magnet on', () => {
     expect(west?.from.east).toBeCloseTo(FACTS.wallThicknessM, 6);
   });
 
+  it('a railing’s inside face stands its 5 cm in, never the wall’s thickness', () => {
+    const rail = {
+      ...TERRACE,
+      parapet: { allRound: true, metres: 1, setBy: 'person' as const, build: 'railing' as const },
+    };
+    const west = parapetInsidesOf(designOf(rail), FACTS).find(
+      (edge) => edge.owner.roof === 0 && edge.from.east === edge.to.east && edge.from.east < 1,
+    );
+    expect(west?.from.east).toBeCloseTo(0.05, 6);
+  });
+
   it.each([
     [
       'near the parapet’s inside face, it pulls against it',

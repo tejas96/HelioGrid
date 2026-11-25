@@ -6,7 +6,7 @@ import type { FaceEdge } from './roof-faces';
 import { roofGround, takenOutOf } from './roof-free-ground';
 import { roofSidesOf } from './roof-kind';
 import { type RoofFacts, roofSloped } from './roof-levels';
-import { type EdgeStretch, edgesOf, parapetNow } from './roof-open-edges';
+import { type EdgeStretch, edgesOf, parapetInM, parapetNow } from './roof-open-edges';
 import { farFromEdge } from './roof-polygons';
 
 /**
@@ -65,7 +65,7 @@ function piecesOf(
   const along =
     facts.setbackMeasure === 'along_face' ? Math.cos(roofSlopeDeg(roof, facts) * RADIANS) : 1;
   const setback = (roof.setback?.metres ?? facts.setbackM) * along;
-  const wallIn = parapet.lengthsMeasured === 'outside' ? parapet.thicknessM : 0;
+  const wallIn = parapetInM(parapet);
   return ring.flatMap((from, i): Piece[] => {
     const to = ring[(i + 1) % ring.length] as GroundPoint;
     const side = sideUnder(roof, from, to);
@@ -147,7 +147,7 @@ function faceSetbackLines(
   const roof = document.roofs[index] as Roof;
   const own = roof.setback?.metres ?? facts.setbackM;
   const parapet = parapetNow(document, roof, facts);
-  const wallIn = parapet.lengthsMeasured === 'outside' ? parapet.thicknessM : 0;
+  const wallIn = parapetInM(parapet);
   const edges = edgesOf(document, index, facts);
   let faces = roofBuilt(roof, facts).faces;
   for (const out of takenOutOf(document, index)) faces = facesWithout(faces, out.corners);

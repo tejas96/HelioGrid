@@ -116,6 +116,16 @@ describe('the setback line', () => {
     expect(setbackLines(designOf(taped), 0, FACTS)[0]).toContainEqual(p(0.5, 0.5));
   });
 
+  it('a railing stands in its own 5 cm, never the wall’s thickness, then the setback', () => {
+    const rail = {
+      ...TERRACE,
+      parapet: { allRound: true, metres: 1, ...PERSON, build: 'railing' as const },
+    };
+    const [ring] = setbackLines(designOf(rail), 0, FACTS);
+    expect(ring).toContainEqual(p(0.55, 0.55));
+    expect(ringAreaM2(ring ?? [])).toBeCloseTo((10 - 1.1) * (8 - 1.1), 6);
+  });
+
   it('where there is no parapet it is measured from the edge', () => {
     const bare = { ...TERRACE, parapet: { allRound: false, metres: 1, ...PERSON } };
     expect(area(setbackLines(designOf(bare), 0, FACTS))[0]).toBeCloseTo(9 * 7, 6);

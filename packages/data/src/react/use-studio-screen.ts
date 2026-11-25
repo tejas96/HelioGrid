@@ -292,7 +292,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
           viewOpen,
           closeView: () => setViewOpen(false),
           sheetOpen: roofSheet !== null,
-          // A side's sheet and Parapet details go back to the roof's; the roof's sheet closes.
+          // A side's sheet and a face's go back to the roof's; the roof's sheet closes.
           closeSheet: sheet.back,
           step: step.current,
           act,

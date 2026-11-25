@@ -9,12 +9,13 @@ import type { RoofRow } from './roof-list';
 import { type RoofShape, shapePickOf } from './roof-material';
 import { roofNameOf } from './roof-names';
 import { type NumberAt, PARAPET_CHECK_ABOVE_M, type RoofNumber } from './roof-numbers';
-import { parapetNow } from './roof-open-edges';
+import { type EdgeStretch, parapetNow } from './roof-open-edges';
 import type { RoofKind } from './roof-parts';
 import { edgeLengths } from './roof-shape';
 import {
   floorAt,
   floorTicks,
+  type ParapetApart,
   type RoofSheetRows,
   type SlopeWay,
   type StairsRow,
@@ -168,22 +169,48 @@ function slopeRowOf(
   };
 }
 
-/** The parapet's row and its details; both `null` for a roof with no walls of its own. */
-function parapetRowsOf(row: RowFacts): Pick<RoofSheetRows, 'parapet' | 'details'> {
+/** The parapet's row and everything about its wall; `null` for a roof with no walls of its own. */
+function parapetRowOf(
+  row: RowFacts,
+  edges: readonly (readonly EdgeStretch[])[],
+): RoofSheetRows['parapet'] {
   const { document, roof, facts } = row;
-  if (!roofHasWalls(roof)) return { parapet: null, details: null };
+  if (!roofHasWalls(roof)) return null;
   const parapet = parapetNow(document, roof, facts);
   const height = numberOf(row, 'parapet_height');
   const thickness = numberOf(row, 'thickness');
-  if (height === null || thickness === null) return { parapet: null, details: null };
+  if (height === null || thickness === null) return null;
+  const walls = edges.some((side) => side.some((stretch) => stretch.wall));
   return {
-    parapet: {
-      allRound: parapet.allRound,
-      byPerson: parapet.byPerson,
-      height,
-      waits: parapet.allRound && height.value > PARAPET_CHECK_ABOVE_M,
-    },
-    details: { thickness, build: parapet.build, measured: parapet.lengthsMeasured },
+    allRound: parapet.allRound,
+    byPerson: parapet.byPerson,
+    walls,
+    apart: apartOf(roof, edges, parapet.allRound),
+    build: parapet.build,
+    height,
+    thickness: parapet.build === 'railing' ? null : thickness,
+    measured: parapet.lengthsMeasured,
+    waits: walls && height.value > PARAPET_CHECK_ABOVE_M,
+  };
+}
+
+/** The sides a person set apart from the switch, and how many sides then have a wall. */
+function apartOf(
+  roof: Roof,
+  edges: readonly (readonly EdgeStretch[])[],
+  allRound: boolean,
+): ParapetApart | null {
+  const sides = roofSidesOf(roof);
+  const apart = roof.corners.flatMap((_, side) => {
+    const own = sides[side]?.parapet;
+    return own !== undefined && own !== allRound ? [side] : [];
+  });
+  const [only] = apart;
+  if (only === undefined) return null;
+  return {
+    walled: edges.filter((side) => side.some((stretch) => stretch.wall)).length,
+    of: roof.corners.length,
+    only: apart.length === 1 ? compassOf(sideBearing(roof.corners, only)) : null,
   };
 }
 
@@ -231,7 +258,7 @@ export function roofSheetRowsOf(
   const hole = roofKindOf(roof) === 'hole';
   const kind = kindRowOf(at);
   const slope = built === null ? null : slopeRowOf(at, built);
-  const { parapet, details } = parapetRowsOf(at);
+  const parapet = parapetRowOf(at, worked.edges[index] ?? []);
   const extras = built === null ? [] : (EXTRAS[shape] ?? []).map((key) => numberOf(at, key));
   const materialWaits = row.material !== null && !row.material.confirmed;
   const crossings = roofCrossingsOf(document, index, facts);
@@ -249,9 +276,8 @@ export function roofSheetRowsOf(
     slope,
     extras: extras.filter((each) => each !== null),
     overhang: built === null ? null : numberOf(at, 'overhang'),
-    parapet,
     setback: hole ? null : numberOf(at, 'setback'),
-    details,
+    parapet,
     crossings,
     stairs: roofKindOf(roof) === 'stair_room' ? stairsRowOf(document, index, facts, worked) : null,
     faces:

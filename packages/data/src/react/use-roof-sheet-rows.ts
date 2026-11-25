@@ -46,7 +46,7 @@ import type {
 
 /**
  * A roof's sheet beyond its height, and a side's sheet (`T-M05-002`, part e, board section 6):
- * which sheet shows — the roof's, one side's, or Parapet details — which row is open on a phone,
+ * which sheet shows — the roof's, one side's or one face's — which row is open on a phone,
  * and the number in hand while a slider moves. Each value kept is one change, with Undo, through
  * the studio's history and save; the rules are domain's.
  */
@@ -229,10 +229,6 @@ export function useRoofSheetRows({
       openSide: (at) => {
         keep();
         show({ kind: 'side', side: at });
-      },
-      openDetails: () => {
-        keep();
-        show({ kind: 'details' });
       },
       backToRoof: () => {
         keep();

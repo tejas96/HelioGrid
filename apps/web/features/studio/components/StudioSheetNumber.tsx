@@ -31,7 +31,6 @@ export function StudioSheetNumber({
   onSide = false,
   onFace = false,
   ticks,
-  withHead = true,
   onSlide,
   onKeep,
   onSet,
@@ -53,8 +52,6 @@ export function StudioSheetNumber({
   onKeep: () => void;
   onSet: (value: number) => void;
   onReset: () => void;
-  /** Its value and its keyboard switch over the slider; off where the row's own line holds them. */
-  withHead?: boolean;
 }) {
   const t = useTranslate();
   const text = numberShownBy(useFormat(), units);
@@ -66,18 +63,6 @@ export function StudioSheetNumber({
   });
   return (
     <fieldset className="hg-sheet-number" aria-label={name} onKeyDown={onKeyDown}>
-      {withHead ? (
-        <div className="hg-sheet-number-head">
-          <NumberHead
-            value={text(shown)}
-            name={name}
-            numberKey={shown.key}
-            outside={shown.outside}
-            studio={studio}
-            words={words}
-          />
-        </div>
-      ) : null}
       {!editable ? null : typing ? (
         <NumberBox shown={shown} name={name} studio={studio} onSet={onSet} />
       ) : (
