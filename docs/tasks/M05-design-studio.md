@@ -90,6 +90,7 @@ Provenance); a new part only when none of these can hold the job.
   built.
 - Lengths are stored in metres and shown in the user's metres or feet (`F3-23`).
 - A number is set by sliding first, never by the keyboard first: `packages/ui`'s `Slider`, with − and + either side, the value shown large beside it and the system's value marked on the track. One small switch beside the value turns it into a box to type, and back; the pick follows the user to every device. On a desktop, a digit typed while the slider has focus switches to the box by itself. A slider's ends come from the value's sense (a length: its value from the picture or the drawing ± 30 %; a height: 2 to 20 m, and for a taller building on to the floor two above its roof, up to 60 m, its floor words thinned so they never crowd), and a value outside them is typed; a step or a drag from a typed value outside them moves from that value, never back onto the track.
+- Owner ruling 2026-11-25: slider or box is the moment's pick, never stored; clients stopped reading and sending it in #447. The contract step is still to come: drop `numberEntry` from `PATCH /users/me` and the session projection, then the `user_account.number_entry` column, once no supported app version sends or reads it.
 
 **Look and motion.** Hyper-real, never toy-like: the picture lies on the ground, the materials
 are real, the sky has the real sun for the place, the date and the hour, and soft shadows follow

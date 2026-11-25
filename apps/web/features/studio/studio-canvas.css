@@ -164,7 +164,8 @@
     color-mix(in srgb, var(--scene-shade) 60%, transparent);
 }
 
-:is(.hg-studio-head-steps, .hg-studio-head-end) .hg-shell-glyph {
+/* Only the row's own marks: a menu that opens from them keeps its own colours. */
+:is(.hg-studio-head-steps, .hg-studio-head-end) .hg-shell-glyph:not(.hg-menu-list *) {
   filter: drop-shadow(
     0 var(--hg-studio-line) var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 70%, transparent)
   );
@@ -187,8 +188,9 @@
 
 :is(.hg-studio-head-steps, .hg-studio-head-end)
   :is(.hg-icon-button, .hg-button)
-  .hg-shell-glyph[data-tone="secondary"],
-.hg-studio-save .hg-shell-glyph:is([data-tone="success"], [data-tone="secondary"]) {
+  .hg-shell-glyph[data-tone="secondary"]:not(.hg-menu-list *),
+.hg-studio-save
+  .hg-shell-glyph:is([data-tone="success"], [data-tone="secondary"]):not(.hg-menu-list *) {
   color: var(--scene-mark);
 }
 
