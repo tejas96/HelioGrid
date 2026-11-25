@@ -31,6 +31,7 @@ import {
   useStudioDocument,
 } from './studio-document-state';
 import { framedForFaces, studioFacesMoves } from './studio-faces-moves';
+import { heldViewOf } from './studio-held-view';
 import type { StudioScreen } from './studio-screen-view';
 import { studioBack, undoRedoMoves, undoRedoOf, useUndoSlots } from './studio-undo-back';
 import { useStudioPicture } from './use-design-picture';
@@ -227,6 +228,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       document,
     ),
     offer3d: roofClosed && !seen3d,
+    heldView: heldViewOf(fit, roofStep, panel.view.panel),
     picturesOpen,
     viewOpen,
     sun,

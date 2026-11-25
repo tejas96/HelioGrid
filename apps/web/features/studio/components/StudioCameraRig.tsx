@@ -1,4 +1,5 @@
 'use client';
+import type { StudioScreen } from '@heliogrid/data/react';
 import type { StudioView } from '@heliogrid/domain';
 import { CameraControls } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -57,7 +58,7 @@ export function StudioCameraRig({
   view,
   free,
   still,
-  keepView,
+  heldView,
   clear,
   metresPerPixel,
   drive,
@@ -68,8 +69,8 @@ export function StudioCameraRig({
   view: StudioView;
   free: { readonly top: number; readonly bottom: number };
   still: boolean;
-  /** A panel opened at the foot (Roofs, the picker): the view stays still while the roofs stay clear of it. */
-  keepView: boolean;
+  /** The view stays still as the bars change (drawing, Roofs, the picker) while `clear` is in sight. */
+  heldView: StudioScreen['heldView'];
   /** The roofs' ground: the view frames them when it opens. */
   fit: GroundBox | null;
   /**
@@ -179,8 +180,7 @@ export function StudioCameraRig({
     free,
     {
       still,
-      keep: keepView,
-      fit,
+      held: heldView,
       view,
       flying: () => controls.current !== null && inFlight(controls.current),
     },

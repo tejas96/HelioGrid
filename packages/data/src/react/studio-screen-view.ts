@@ -15,6 +15,7 @@ import type { RoofSheetRowMoves, RoofSheetRowsState } from './roof-sheet-rows-vi
 import type { RoofMoves, RoofPlaceMoves, RoofStepView } from './roof-step-view';
 import type { RoofsPanelMoves, RoofsPanelView } from './roofs-panel-view';
 import type { SkyFacts, StudioEditing, StudioPicture } from './studio-document-state';
+import type { HeldView } from './studio-held-view';
 import type { StudioSaveState } from './studio-save-queue';
 import type { DesignRead } from './use-design-screen';
 import type { OwnPictureMoves, OwnPictureView } from './use-own-picture-screen';
@@ -91,6 +92,8 @@ export interface StudioScreen
   readonly sun: SunPosition | null;
   /** The ground the design's roofs cover, which the camera frames; `null` before a roof. */
   readonly fit: GroundBox | null;
+  /** The view stays as the bars change (drawing, Roofs, the picker); `null`: it settles mid-room. */
+  readonly heldView: HeldView | null;
   /** An arrow on the model is held: the sheet steps aside for the magnet's pill. */
   readonly arrowHeld: boolean;
   /** What the bar says about the stairs when it has nothing else to say; `null` for nothing. */
