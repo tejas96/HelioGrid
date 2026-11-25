@@ -1,7 +1,6 @@
 'use client';
 import {
   cornerNearest,
-  draftClosesAt,
   draftViewOf,
   dragBeforeOf,
   dragTagAt,
@@ -39,12 +38,14 @@ import {
   type StudioDocument,
   type StudioHelper,
   screenProjector,
+  snapMarkOf,
   stepRefused,
   tagPlaceOf,
 } from '@heliogrid/domain';
 import { parapetInsidesOf } from '@heliogrid/domain/studio-kernel';
 import { type RefObject, useMemo, useRef, useState } from 'react';
 import { aKey } from '../client/creation-key';
+import { pointerMoves } from './roof-step-pointer';
 import type { ClosingWith, RoofMoves, RoofStepView } from './roof-step-view';
 import { lengthBoxIn, sizeCardIn, useUnitsFollow } from './size-card';
 import { type StudioPicture, stampOf, tracedOnOf } from './studio-document-state';
@@ -165,6 +166,7 @@ export function useRoofStep({
     pickedAngle: shown === null ? null : pickedAngleOf(roofStep, shown),
     guides: guidesOf(roofStep),
     dragTagAt: dragTagAt(roofStep),
+    snapMark: snapMarkOf(roofStep),
     dragBefore: dragBeforeOf(roofStep),
     heldCircle: heldCircleOf(roofStep),
     heldCorner: heldCornerOf(roofStep),
@@ -221,13 +223,7 @@ export function useRoofStep({
     },
     wipe: () => act({ kind: 'wipe' }),
     deleteRoof: () => act({ kind: 'delete_roof' }),
-    hover: (at) => act({ kind: 'hover', at }),
-    // A tap on the first corner closes the shape, whether it lands on the dot or beside it.
-    tap: (at) => {
-      const now = step.current;
-      if (now.kind === 'drawing' && draftClosesAt(now.corners, at)) closeWith(false);
-      else act({ kind: 'tap', at, system: units });
-    },
+    ...pointerMoves(act, step, () => closeWith(false), units),
     close,
     closeAsDrawn: () => closeWith(false),
     cancel: () => act({ kind: 'cancel' }),
@@ -261,7 +257,6 @@ export function useRoofStep({
         ...(insides === undefined ? {} : { insides }),
       });
     },
-    drag: (at) => act({ kind: 'drag', at }),
     release: () => act({ kind: 'release' }),
     pickCorner: (corner) => act({ kind: 'pick_corner', corner }),
     nudgeRoof: (roof, kind, x, y) => {

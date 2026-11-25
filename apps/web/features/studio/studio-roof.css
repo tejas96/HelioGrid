@@ -84,6 +84,12 @@
   filter: drop-shadow(0 0 var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 60%, transparent));
 }
 
+/* A line near the spot that does not pull it yet: faint, so a pull is never a surprise. */
+.hg-roof-guide[data-soft="true"] {
+  opacity: 0.5;
+  stroke-dasharray: 2 7;
+}
+
 /* A mark's holder: a point on the screen. Its child centres on it. */
 .hg-roof-at {
   position: absolute;
@@ -165,4 +171,31 @@
 /* Until the camera first lays the marks, none shows: never a frame at the screen's corner. */
 .hg-roof-marks:not([data-placed]) > * {
   visibility: hidden;
+}
+
+/* The magnet's mark on the spot it holds: a ring where two lines cross, a diamond on a wall's middle. */
+.hg-roof-at > .hg-roof-snap {
+  inline-size: var(--sp-5);
+  block-size: var(--sp-5);
+  border: var(--sp-0-5) solid var(--scene-mark);
+  border-radius: var(--r-pill);
+  box-shadow:
+    0 0 0 calc(var(--hg-studio-line) * 1.5) var(--hg-roof-ink),
+    var(--e2);
+  pointer-events: none;
+  animation: hg-roof-snap var(--dur-fast) var(--ease-standard) 1 both;
+}
+
+.hg-roof-at > .hg-roof-snap[data-mark="middle"] {
+  inline-size: var(--sp-3);
+  block-size: var(--sp-3);
+  border-radius: 0;
+  rotate: 45deg;
+}
+
+@keyframes hg-roof-snap {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
 }

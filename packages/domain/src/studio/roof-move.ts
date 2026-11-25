@@ -2,15 +2,25 @@ import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { type DragResult, type EditRefusal, faultOf, roofAt, type TurnResult } from './roof-check';
 import { roofWithItsParts } from './roof-kind';
-import { between, cornerAfter, nearestOnSegment, roofMiddle } from './roof-shape';
+import { between, cornerAfter, roofMiddle } from './roof-shape';
 import {
   type Guide,
   guideOf,
-  type RoofSnap,
   SNAP_M,
+  SNAP_SOFT_REACHES,
   type SnapTargets,
   snapTargetsOf,
 } from './roof-snap';
+import {
+  cornerLinesOf,
+  heldOn,
+  holdAt,
+  lineCross,
+  linesCross,
+  type SnapLine,
+  wallLinesOf,
+} from './roof-snap-lines';
+import { longSideOf } from './roof-snap-spot';
 
 /**
  * Moving and turning a whole roof once it stands (`T-M05-002`, part b): the move and turn handles,
@@ -69,27 +79,30 @@ function carried(
   };
 }
 
-/** The nearest pull of any of a roof's corners onto a line: how far it moves, and onto what. */
+/** A pull of the roof: how far it moves, onto what, and the line it is held on. */
+interface Pull {
+  readonly by: GroundPoint;
+  readonly line: SnapLine;
+  readonly corner: GroundPoint;
+}
+
+/** The nearest pull of any of a roof's corners onto a line, within reach. */
 function pullOf(
   corners: readonly GroundPoint[],
-  lines: readonly {
-    readonly from: GroundPoint;
-    readonly to: GroundPoint;
-    readonly snap: RoofSnap;
-  }[],
-) {
-  let best: { by: GroundPoint; snap: RoofSnap; guide: Guide; reach: number } | null = null;
+  lines: readonly SnapLine[],
+  reach: number,
+): Pull | null {
+  let best: (Pull & { reach: number }) | null = null;
   for (const corner of corners) {
     for (const line of lines) {
-      const on = nearestOnSegment(corner, line.from, line.to);
-      const reach = between(on, corner);
-      if (reach > SNAP_M || (best !== null && reach >= best.reach)) continue;
-      const way = { east: line.to.east - line.from.east, north: line.to.north - line.from.north };
+      const on = heldOn(corner, line);
+      const off = between(on, corner);
+      if (off > reach || (best !== null && off >= best.reach)) continue;
       best = {
         by: { east: on.east - corner.east, north: on.north - corner.north },
-        snap: line.snap,
-        guide: guideOf(line.from, way),
-        reach,
+        line,
+        corner: on,
+        reach: off,
       };
     }
   }
@@ -97,47 +110,135 @@ function pullOf(
 }
 
 /**
+ * A second pull along the first line: the roof slides on the line it is held on until one of its
+ * corners meets another line that crosses it, within reach — so it sits in the corner the two make.
+ */
+function slideOnto(
+  corners: readonly GroundPoint[],
+  first: SnapLine,
+  lines: readonly SnapLine[],
+  reach: number,
+): Pull | null {
+  const way = first.guide.way;
+  let best: (Pull & { reach: number }) | null = null;
+  for (const line of lines) {
+    if (line === first || line.only || linesCross(first, line) === null) continue;
+    for (const corner of corners) {
+      const slid = lineCross(corner, way, line.guide.through, line.guide.way);
+      if (slid === null) continue;
+      const off = between(slid, corner);
+      if (off > reach || (best !== null && off >= best.reach)) continue;
+      best = {
+        by: { east: slid.east - corner.east, north: slid.north - corner.north },
+        line,
+        corner: slid,
+        reach: off,
+      };
+    }
+  }
+  return best;
+}
+
+/**
+ * The lines a little out of reach of the moved roof's corners, not holding it: drawn faint, so a
+ * pull is never a surprise.
+ */
+function softNear(
+  corners: readonly GroundPoint[],
+  lines: readonly SnapLine[],
+  holding: readonly (SnapLine | undefined)[],
+  reach: number,
+): Guide[] {
+  return lines
+    .filter((line) => !holding.includes(line))
+    .filter((line) => {
+      const off = Math.min(...corners.map((corner) => between(corner, heldOn(corner, line))));
+      return off > reach && off <= reach * SNAP_SOFT_REACHES;
+    })
+    .map((line) => ({ ...line.guide, soft: true }) as const);
+}
+
+/** Other roofs' wall lines, and the lines through their corners along the moved roof's sides. */
+function withCornerLines(targets: SnapTargets, corners: readonly GroundPoint[]): SnapLine[] {
+  const walls = wallLinesOf(targets);
+  const long = longSideOf(corners);
+  return long === null ? walls : [...walls, ...cornerLinesOf(targets, long, walls)];
+}
+
+/**
  * The whole roof moved by `by` metres east and north, with what stands on it. With the magnet on
- * (`pullTo` given), a corner within reach of another roof's edge, or of the inside face of a
- * roof's parapet (`pullTo`), pulls the roof onto it, and the line shows as a guide.
+ * (`pullTo` given), a corner within reach of another roof's wall or its line past the wall's ends,
+ * or of the inside face of a roof's parapet (`pullTo`), pulls the roof onto it; then it slides on
+ * that line to a second wall line that crosses it, when one is within reach. Each line shows as a
+ * guide.
  */
 export function roofMoved(
   document: StudioDocument,
   roofIndex: number,
   by: GroundPoint,
   pullTo: SnapTargets['edges'] | null = null,
+  /** How near a corner must come to pull, in metres: the screen's reach at this zoom. */
+  reach: number = SNAP_M,
 ): DragResult {
   const roof = roofAt(document, roofIndex);
   const going = new Set(roofWithItsParts(document, roofIndex));
   const corners = roof.corners.map((c) => ({ east: c.east + by.east, north: c.north + by.north }));
-  const lines =
+  const others = snapTargetsOf(document.roofs, roofIndex);
+  const lines: SnapLine[] =
     pullTo === null
       ? []
       : [
-          ...snapTargetsOf(document.roofs, roofIndex).edges.map((edge) => ({
-            ...edge,
-            snap: { kind: 'edge_of', owner: edge.owner } as const,
-          })),
-          ...pullTo.map((edge) => ({
-            ...edge,
-            snap: { kind: 'inside_parapet', owner: edge.owner } as const,
-          })),
-        ].filter((line) => !going.has(line.owner.roof));
-  const pulled = pullOf(corners, lines);
+          ...withCornerLines(
+            {
+              corners: others.corners.filter((corner) => !going.has(corner.owner.roof)),
+              edges: others.edges.filter((edge) => !going.has(edge.owner.roof)),
+            },
+            roof.corners,
+          ),
+          ...pullTo
+            .filter((edge) => !going.has(edge.owner.roof))
+            .map((edge) => ({
+              guide: guideOf(edge.from, {
+                east: edge.to.east - edge.from.east,
+                north: edge.to.north - edge.from.north,
+              }),
+              hold: { kind: 'inside_parapet', owner: edge.owner } as const,
+              walls: [{ from: edge.from, to: edge.to, owner: edge.owner }],
+              only: true as const,
+            })),
+        ];
+  const first = pullOf(corners, lines, reach);
+  const pulled =
+    first === null
+      ? corners
+      : corners.map((c) => ({ east: c.east + first.by.east, north: c.north + first.by.north }));
+  const second = first === null ? null : slideOnto(pulled, first.line, lines, reach);
   const shift = {
-    east: by.east + (pulled?.by.east ?? 0),
-    north: by.north + (pulled?.by.north ?? 0),
+    east: by.east + (first?.by.east ?? 0) + (second?.by.east ?? 0),
+    north: by.north + (first?.by.north ?? 0) + (second?.by.north ?? 0),
   };
   const moved = carried(document, roofIndex, (c) => ({
     east: c.east + shift.east,
     north: c.north + shift.north,
   }));
+  const placed = corners.map((c) =>
+    moveBy(c, { east: shift.east - by.east, north: shift.north - by.north }),
+  );
+  const soft = softNear(placed, lines, [first?.line, second?.line], reach);
+  if (first === null) return { ...moved, snap: null, guides: soft };
+  const held = holdAt(first.line, second === null ? first.corner : moveBy(first.corner, second.by));
+  if (second === null) return { ...moved, snap: held, guides: [first.line.guide, ...soft] };
   return {
     ...moved,
-    snap: pulled?.snap ?? null,
-    guides: pulled === null ? [] : [pulled.guide],
+    snap: { kind: 'cross', first: held, second: holdAt(second.line, second.corner) },
+    guides: [first.line.guide, second.line.guide, ...soft],
   };
 }
+
+const moveBy = (point: GroundPoint, by: GroundPoint): GroundPoint => ({
+  east: point.east + by.east,
+  north: point.north + by.north,
+});
 
 /** The difference between two directions of lines, in degrees, folded into −90 to 90. */
 function lineTurn(from: number, to: number): number {

@@ -9,7 +9,9 @@ import {
   ROOF_CORNERS_MAX,
   ROOF_CORNERS_MIN,
 } from './roof-shape';
-import { draftSpot, type RoofSnap, SNAP_M, type SnapTargets } from './roof-snap';
+import { type RoofSnap, SNAP_M, type SnapTargets } from './roof-snap';
+import { lineCross } from './roof-snap-lines';
+import { draftSpot } from './roof-snap-spot';
 
 /**
  * Drawing a new roof in the top view (`T-M05-002`, part b): each tap places a corner, snapped to
@@ -48,8 +50,10 @@ export function draftTap(
   at: GroundPoint,
   targets: SnapTargets,
   magnet: boolean,
+  /** How near a spot must come to snap, in metres: the screen's reach at this zoom. */
+  reach: number = SNAP_M,
 ): DraftTap {
-  const { point, snap } = draftSpot(corners, at, targets, magnet);
+  const { point, snap } = draftSpot(corners, at, targets, magnet, reach);
   const last = corners.at(-1);
   if (last !== undefined && between(last, point) < CORNER_GAP_M) return { kind: 'same' };
   if (corners.some((corner) => between(corner, point) < CORNER_GAP_M)) {
@@ -68,21 +72,47 @@ export function draftTap(
  * Whether a tap at this spot closes the shape: it lands on the first corner, within the snap's
  * reach, once the shape has corners enough to close — with the ghost's fourth, three will do.
  */
-export function draftClosesAt(corners: readonly GroundPoint[], at: GroundPoint): boolean {
+export function draftClosesAt(
+  corners: readonly GroundPoint[],
+  at: GroundPoint,
+  reach: number = SNAP_M,
+): boolean {
   const first = corners[0];
   const enough = corners.length + (draftGhost(corners) === null ? 0 : 1) >= ROOF_CORNERS_MIN;
-  return first !== undefined && enough && between(first, at) <= SNAP_M;
+  return first !== undefined && enough && between(first, at) <= reach;
 }
 
 /**
- * The fourth corner offered after three with a square middle one: it makes the rectangle, so Close
- * shape finishes a rectangle in three corners. Any other tap drops it, for it is a fourth corner.
+ * The corner that closes the shape square, offered once every corner so far but the two ends is
+ * square: the last side turns square and runs on to meet a side square to the first. After three
+ * corners it makes the rectangle, so Close shape finishes a rectangle in three; an L, a U or any
+ * shape of square corners closes the same way. Any other tap drops it, for it is one more corner.
+ * None when the two closing sides would run along each other, or the corner would cross a side or
+ * stand on an end.
  */
 export function draftGhost(corners: readonly GroundPoint[]): GroundPoint | null {
-  if (corners.length !== 3) return null;
-  const [a, b, c] = corners as [GroundPoint, GroundPoint, GroundPoint];
-  if (Math.abs(angleAt(a, b, c) - 90) > SQUARE_EXACT_DEGREES) return null;
-  return { east: a.east + c.east - b.east, north: a.north + c.north - b.north };
+  const count = corners.length;
+  if (count < 3) return null;
+  for (let i = 1; i < count - 1; i += 1) {
+    const at = angleAt(
+      corners[i - 1] as GroundPoint,
+      corners[i] as GroundPoint,
+      corners[i + 1] as GroundPoint,
+    );
+    if (Math.abs(at - 90) > SQUARE_EXACT_DEGREES) return null;
+  }
+  const first = corners[0] as GroundPoint;
+  const second = corners[1] as GroundPoint;
+  const before = corners[count - 2] as GroundPoint;
+  const last = corners[count - 1] as GroundPoint;
+  const squareTo = (from: GroundPoint, to: GroundPoint) => ({
+    east: -(to.north - from.north),
+    north: to.east - from.east,
+  });
+  const ghost = lineCross(last, squareTo(before, last), first, squareTo(first, second));
+  if (ghost === null) return null;
+  if (between(ghost, last) < CORNER_GAP_M || between(ghost, first) < CORNER_GAP_M) return null;
+  return edgesCross([...corners, ghost]) ? null : ghost;
 }
 
 export type DraftClose =

@@ -4,9 +4,10 @@ import type { GroundPoint } from './ground';
 import type { EditRefusal } from './roof-check';
 import { type DraftRefusal, draftClosesAt, draftGhost, draftTap } from './roof-draw';
 import { sizingResult } from './roof-entry';
+import { type FollowAlong, followAlong } from './roof-follow';
 import { handFacesKept } from './roof-hand-faces';
 import { angleAt, between, cornerAngle, edgeLengths, roofMiddle } from './roof-shape';
-import type { Guide, Snapped } from './roof-snap';
+import { type Guide, SNAP_M, type SnapOwner, type Snapped } from './roof-snap';
 import { gripCorner } from './roof-step';
 import { drawTargetsOf, keptOnFaceRoof, pickedRoofOf } from './roof-step-draw';
 import type { CornerRef, RoofSaid, RoofStepState } from './roof-step-state';
@@ -48,6 +49,24 @@ export function dragTagAt(state: RoofStepState): GroundPoint | null {
 }
 
 /**
+ * The mark on the spot the magnet holds (`T-M05-002`, part e): a ring where two lines cross, a
+ * diamond on a wall's middle — on the spot while drawing, on the corner in hand while dragging one.
+ */
+export function snapMarkOf(
+  state: RoofStepState,
+): { readonly at: GroundPoint; readonly mark: 'cross' | 'middle' } | null {
+  const held =
+    state.kind === 'drawing' && state.spot !== null
+      ? { snap: state.spot.snap, at: state.spot.point }
+      : state.kind === 'dragging' && gripCorner(state.grip) !== null
+        ? { snap: state.drag.snap, at: dragTagAt(state) }
+        : null;
+  if (held === null || held.snap === null || held.at === null) return null;
+  if (held.snap.kind === 'cross') return { at: held.at, mark: 'cross' };
+  return held.snap.kind === 'middle_of' ? { at: held.at, mark: 'middle' } : null;
+}
+
+/**
  * The roof whose + dots and move and turn handles show (`T-M05-002`, part b): the one a job holds,
  * or the one picked while looking — a lone roof always is. Every roof keeps its corners.
  */
@@ -83,9 +102,12 @@ export interface HeldCircle {
 
 /** The circle of the set length a corner drag holds, or `null` when it holds none. */
 export function heldCircleOf(state: RoofStepState): HeldCircle | null {
-  if (state.kind !== 'dragging' || state.drag.snap?.kind !== 'held') return null;
-  const { centre, metres } = state.drag.snap;
-  return { centre, metres };
+  if (state.kind !== 'dragging') return null;
+  const { snap } = state.drag;
+  // A typed length resting on a wall line keeps its circle in view: it still holds the corner.
+  const held = snap?.kind === 'cross' ? snap.first : snap;
+  if (held?.kind !== 'held') return null;
+  return { centre: held.centre, metres: held.metres };
 }
 
 /** An edge of the draft, with its length. */
@@ -113,6 +135,8 @@ export interface DraftView {
   readonly canClose: boolean;
   /** The pointer is within reach of the first corner and a tap closes: that dot grows and glows. */
   readonly closing: boolean;
+  /** The corners Follow would add along the outline the drawing's ends stand on, drawn as a ghost. */
+  readonly follow: FollowAlong | null;
 }
 
 /** The guide lines the corner in hand is held on: the spot while drawing, the corner dragged. */
@@ -134,14 +158,19 @@ export function draftViewOf(
   const before = corners.at(-2);
   // Within reach of the first corner a tap closes: no corner is added there, so none is refused
   // and no angle is named.
-  const closing = state.pointer !== null && draftClosesAt(corners, state.pointer);
+  const reach = state.reach ?? SNAP_M;
+  const closing = state.pointer !== null && draftClosesAt(corners, state.pointer, reach);
   // A tap on the first corner closes the shape as drawn: the ghost is not offered under it.
   const ghost = closing ? null : draftGhost(state.corners);
   const targets = drawTargetsOf(state, document);
   const tap =
     spot === null || closing
       ? null
-      : keptOnFaceRoof(state, document, draftTap(corners, spot.point, targets, state.magnet));
+      : keptOnFaceRoof(
+          state,
+          document,
+          draftTap(corners, spot.point, targets, state.magnet, reach),
+        );
   return {
     corners,
     edges: corners.slice(1).map((corner, i) => edgeOf(corners[i] as GroundPoint, corner)),
@@ -155,6 +184,7 @@ export function draftViewOf(
         : Math.round(angleAt(before, last, spot.point)),
     canClose: corners.length + (ghost === null ? 0 : 1) >= 3,
     closing,
+    follow: closing ? null : followAlong(corners, targets),
   };
 }
 
@@ -184,6 +214,8 @@ export type RoofBar =
       readonly canWipe: boolean;
       /** Undo has a corner to take off, or the wiped corners to bring back. */
       readonly canUndo: boolean;
+      /** Follow is offered, naming the roof (or face) it follows: the slim pill's second act. */
+      readonly follow: SnapOwner | null;
     }
   /** Type the size (part c): the slim pill's Place roof; the card's view says whether it can. */
   | { readonly kind: 'typing' }
@@ -248,6 +280,7 @@ export function roofBarOf(
       face: faceNumberOf(state, document),
       canWipe: state.corners.length >= 2,
       canUndo: state.corners.length > 0 || state.wiped !== null,
+      follow: view.follow?.owner ?? null,
     };
   }
   if (state.kind === 'typing') return { kind: 'typing' };

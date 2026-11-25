@@ -166,16 +166,16 @@ export {
 } from './roof-shape';
 export { type RoofSheetView, roofHitAt, roofSheetOf, roofsWithSheet } from './roof-sheet';
 export {
-  draftSpot,
   type Guide,
-  longSideOf,
   magnetOf,
   NO_SNAP_TARGETS,
+  type RoofHold,
   type RoofSnap,
   SNAP_M,
   type SnapOwner,
   type Snapped,
   type SnapTargets,
+  snapReachM,
   snapTargetsOf,
 } from './roof-snap';
 export { gripCorner, roofStepAfter } from './roof-step';
@@ -209,6 +209,7 @@ export {
   roofBarOf,
   roofMarksOf,
   roofStepShown,
+  snapMarkOf,
 } from './roof-step-view';
 export {
   edgeTier,

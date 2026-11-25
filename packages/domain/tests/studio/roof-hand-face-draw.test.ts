@@ -112,10 +112,10 @@ describe('drawing the faces in the roof step', () => {
       ...taps(SOUTH_HALF),
       'close',
       tap(p(0, 2)),
-      { kind: 'hover', at: p(4, 2.3) },
+      { kind: 'hover', at: p(2.5, 2.3) },
     ]);
     expect(state.kind === 'drawing' ? state.spot : null).toMatchObject({
-      point: p(4, 2),
+      point: p(2.5, 2),
       snap: { kind: 'edge_of', owner: { kind: 'face', roof: 0, face: 0 } },
     });
   });

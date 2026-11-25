@@ -1,21 +1,42 @@
 import type { Roof } from './document';
 import type { GroundPoint } from './ground';
-import { between, cornerAfter, nearestOnSegment } from './roof-shape';
+import { cornerAfter } from './roof-shape';
 
 /**
- * What a corner snaps to while drawn or dragged (`T-M05-002`, part b): the design's other roofs,
- * and the magnet's holds — square or parallel to the roof's long side, level with an earlier corner
- * — each with the guide line it is held on.
+ * What a corner snaps to while drawn or dragged (`T-M05-002`, parts b and e): the design's other
+ * roofs — their corners, the middles of their walls and their walls' lines right across the map —
+ * and the magnet's holds — square or parallel to the roof's long side (or, for a roof's first side,
+ * to the roof beside it), level with an earlier corner — each with the guide line it is held on.
+ * Where two lines hold at once, the corner takes the point where they cross.
  */
 
-/** How near a spot must come to a corner, an edge or a line-up to snap onto it, in metres. */
+/** How near a spot must come to snap when no reach is told, in metres: the reach's old fixed size. */
 export const SNAP_M = 0.5;
 /**
  * How near a new side must come to square with, or parallel to, the roof's long side to be held
  * there, in degrees: gentle, so a wall that is truly a little off is drawn as tapped. A hold never
- * moves the corner more than `SNAP_M` either, so a long side drawn zoomed out is not pulled far.
+ * moves the corner more than the reach either, so a long side drawn zoomed out is not pulled far.
  */
 export const SNAP_DEGREES = 2;
+/**
+ * How near a spot must come to snap, on the screen, in CSS pixels: a finger covers more than a
+ * mouse. The same on every zoom, so the magnet feels the same zoomed in or out.
+ */
+export const SNAP_REACH_PX = { touch: 20, mouse: 12 } as const;
+/** The reach is never more than this on the ground, in metres, however far out the view is. */
+export const SNAP_REACH_MAX_M = 1;
+/** A line this many reaches away shows faint before it pulls, so a pull is never a surprise. */
+export const SNAP_SOFT_REACHES = 1.5;
+/** Two lines give a corner where they cross only when they meet at least this steeply, in degrees. */
+export const CROSS_MIN_DEGREES = 10;
+/** A corner within this of a roof's wall stands on it, in metres: a snapped corner, less rounding. */
+export const ON_WALL_M = 1e-3;
+
+/** The reach on the ground for a view that shows `metresPerPixel`, under a finger or a mouse. */
+export function snapReachM(metresPerPixel: number, touch: boolean): number {
+  const pixels = touch ? SNAP_REACH_PX.touch : SNAP_REACH_PX.mouse;
+  return Math.min(SNAP_REACH_MAX_M, metresPerPixel * pixels);
+}
 
 /**
  * Whether the magnet is on (`T-M05-002`, part b): one switch, on until a person turns it off, and
@@ -60,10 +81,18 @@ export function snapTargetsOf(roofs: readonly Roof[], except?: number): SnapTarg
   };
 }
 
-/** What a spot snapped to, named on the small label beside it. */
-export type RoofSnap =
+/** One line a spot is held on, as its small label names it. */
+export type RoofHold =
   | { readonly kind: 'corner_of'; readonly owner: SnapOwner }
   | { readonly kind: 'edge_of'; readonly owner: SnapOwner }
+  /** On the line of another roof's wall, past the wall's end. */
+  | { readonly kind: 'wall_line'; readonly owner: SnapOwner }
+  /** On the middle of another roof's wall. */
+  | { readonly kind: 'middle_of'; readonly owner: SnapOwner }
+  /** A roof's first side, square or parallel to the roof beside it. */
+  | { readonly kind: 'frame'; readonly along: 'square' | 'parallel'; readonly owner: SnapOwner }
+  /** Level with another roof's corner, along the roof in hand, when the two are not square. */
+  | { readonly kind: 'lines_up_with'; readonly owner: SnapOwner }
   /** Against the inside of a roof's parapet: a roof dragged onto it stands clear of the wall. */
   | { readonly kind: 'inside_parapet'; readonly owner: SnapOwner }
   /** Square to the roof's long side. */
@@ -84,10 +113,19 @@ export type RoofSnap =
   /** A set length kept: the corner runs on the circle of `metres` round `centre`. */
   | { readonly kind: 'held'; readonly metres: number; readonly centre: GroundPoint };
 
-/** A guide drawn across the map: the line through `through`, running `way` (one metre long). */
+/** What a spot snapped to: one hold, or the point where two cross. */
+export type RoofSnap =
+  | RoofHold
+  | { readonly kind: 'cross'; readonly first: RoofHold; readonly second: RoofHold };
+
+/**
+ * A guide drawn across the map: the line through `through`, running `way` (one metre long).
+ * `soft`: a line near the spot that does not pull it yet, drawn faint.
+ */
 export interface Guide {
   readonly through: GroundPoint;
   readonly way: GroundPoint;
+  readonly soft?: true;
 }
 
 /** A guide through `through`, running `way`, scaled to one metre. */
@@ -101,156 +139,4 @@ export interface Snapped {
   readonly snap: RoofSnap | null;
   /** The lines the spot is held on, drawn dashed across the map; none when nothing holds it. */
   readonly guides: readonly Guide[];
-}
-
-/** A spot on another roof's corner, then on its edge, when one lies within `SNAP_M`. */
-export function snapToTargets(at: GroundPoint, targets: SnapTargets): Snapped | null {
-  const corner = targets.corners.find((target) => between(target.at, at) <= SNAP_M);
-  if (corner !== undefined) {
-    return { point: corner.at, snap: { kind: 'corner_of', owner: corner.owner }, guides: [] };
-  }
-  let best: Snapped | null = null;
-  let bestReach = SNAP_M;
-  for (const edge of targets.edges) {
-    const on = nearestOnSegment(at, edge.from, edge.to);
-    const reach = between(on, at);
-    if (reach <= bestReach) {
-      bestReach = reach;
-      const guide = { through: edge.from, way: unit(edge.from, edge.to) };
-      best = { point: on, snap: { kind: 'edge_of', owner: edge.owner }, guides: [guide] };
-    }
-  }
-  return best;
-}
-
-function unit(from: GroundPoint, to: GroundPoint): GroundPoint {
-  const reach = between(from, to) || 1;
-  return { east: (to.east - from.east) / reach, north: (to.north - from.north) / reach };
-}
-
-function dot(a: GroundPoint, b: GroundPoint): number {
-  return a.east * b.east + a.north * b.north;
-}
-
-function along(from: GroundPoint, way: GroundPoint, metres: number): GroundPoint {
-  return { east: from.east + way.east * metres, north: from.north + way.north * metres };
-}
-
-/** Square to a way: a quarter turn. */
-const across = (way: GroundPoint): GroundPoint => ({ east: -way.north, north: way.east });
-
-/**
- * The roof's long side so far, as a way (one metre long): what every hold is measured against, so
- * one side drawn a little off never bends the next. `null` before two corners.
- */
-export function longSideOf(corners: readonly GroundPoint[]): GroundPoint | null {
-  let best: { from: GroundPoint; to: GroundPoint; reach: number } | null = null;
-  for (let i = 1; i < corners.length; i += 1) {
-    const from = corners[i - 1] as GroundPoint;
-    const to = corners[i] as GroundPoint;
-    const reach = between(from, to);
-    if (reach > 0 && (best === null || reach > best.reach)) best = { from, to, reach };
-  }
-  return best === null ? null : unit(best.from, best.to);
-}
-
-const free = (at: GroundPoint): Snapped => ({ point: at, snap: null, guides: [] });
-
-/** The new side held square or parallel to the long side, when it leans within `SNAP_DEGREES`. */
-function heldWay(
-  long: GroundPoint,
-  last: GroundPoint,
-  at: GroundPoint,
-): { way: GroundPoint; reach: number; along: 'square' | 'parallel' } | null {
-  const side = { east: at.east - last.east, north: at.north - last.north };
-  for (const [way, along] of [
-    [long, 'parallel'],
-    [across(long), 'square'],
-  ] as const) {
-    const lean = dot(side, way);
-    const off = Math.abs(side.east * way.north - side.north * way.east);
-    if ((Math.atan2(off, Math.abs(lean)) * 180) / Math.PI > SNAP_DEGREES) continue;
-    const sign = lean < 0 ? -1 : 1;
-    const held = { east: way.east * sign, north: way.north * sign };
-    if (off > SNAP_M) return null;
-    return { way: held, reach: Math.abs(lean), along };
-  }
-  return null;
-}
-
-/** An earlier corner a spot moving along `way` from `last` comes level with, within `SNAP_M`. */
-function levelWith(
-  earlier: readonly GroundPoint[],
-  last: GroundPoint,
-  way: GroundPoint,
-  reach: number,
-): { corner: number; reach: number } | null {
-  let found: { corner: number; reach: number } | null = null;
-  earlier.forEach((corner, index) => {
-    const level = dot(way, { east: corner.east - last.east, north: corner.north - last.north });
-    const off = Math.abs(level - reach);
-    if (level > 0 && off <= SNAP_M && (found === null || off < Math.abs(found.reach - reach))) {
-      found = { corner: index, reach: level };
-    }
-  });
-  return found;
-}
-
-/** A free spot still lines up with an earlier corner, along the long side's frame. */
-function linedUp(earlier: readonly GroundPoint[], long: GroundPoint, at: GroundPoint): Snapped {
-  let point = at;
-  let snap: RoofSnap | null = null;
-  const guides: Guide[] = [];
-  for (const axis of [long, across(long)]) {
-    let best: { corner: number; off: number } | null = null;
-    earlier.forEach((corner, index) => {
-      const off = dot(axis, { east: corner.east - point.east, north: corner.north - point.north });
-      if (Math.abs(off) <= SNAP_M && (best === null || Math.abs(off) < Math.abs(best.off))) {
-        best = { corner: index, off };
-      }
-    });
-    const found = best as { corner: number; off: number } | null;
-    if (found !== null) {
-      point = along(point, axis, found.off);
-      snap = { kind: 'lines_up', corner: found.corner, along: null };
-      guides.push({ through: earlier[found.corner] as GroundPoint, way: across(axis) });
-    }
-  }
-  return { point, snap, guides };
-}
-
-/**
- * Where a tap lands while drawing, with the magnet on: onto another roof's corner or edge; else
- * held square or parallel to the roof's long side, within `SNAP_DEGREES`; and level with an earlier
- * corner. Each hold comes with the guide it is held on. With the magnet off, exactly where tapped.
- */
-export function draftSpot(
-  corners: readonly GroundPoint[],
-  at: GroundPoint,
-  targets: SnapTargets,
-  magnet: boolean,
-): Snapped {
-  if (!magnet) return free(at);
-  const onTarget = snapToTargets(at, targets);
-  if (onTarget !== null) return onTarget;
-  const last = corners.at(-1);
-  const long = longSideOf(corners);
-  if (last === undefined || long === null || between(last, at) === 0) return free(at);
-  // The corners a line-up can name: not the last, whose line the new side already starts on.
-  const earlier = corners.slice(0, -1);
-  const held = heldWay(long, last, at);
-  // A free spot never lines up with the corner before last: on the last side's own line, that
-  // would make a straight-through corner.
-  if (held === null) return linedUp(corners.slice(0, -2), long, at);
-  const level = levelWith(earlier, last, held.way, held.reach);
-  const guides: Guide[] = [{ through: last, way: held.way }];
-  if (level === null) {
-    return { point: along(last, held.way, held.reach), snap: { kind: held.along }, guides };
-  }
-  guides.push({ through: earlier[level.corner] as GroundPoint, way: across(held.way) });
-  return {
-    point: along(last, held.way, level.reach),
-    snap: { kind: 'lines_up', corner: level.corner, along: held.along },
-    guides,
-  };
 }

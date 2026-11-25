@@ -47,6 +47,12 @@ export function DrawPill({
           {words.typeSize}
         </Button>
       ) : null}
+      {/* Follow, only while it can act: the shared wall's corners, and the roof closes (board 8). */}
+      {bar.follow === null ? null : (
+        <Button variant="secondary" size="md" onClick={studio.moves.follow}>
+          {words.follow(bar.follow)}
+        </Button>
+      )}
       {bar.canClose ? (
         <Button
           variant="primary"

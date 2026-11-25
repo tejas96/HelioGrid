@@ -20,9 +20,16 @@ import type {
   RoofStepState,
   StudioDocument,
   screenProjector,
+  snapMarkOf,
   TypedRefusal,
   tagPlaceOf,
 } from '@heliogrid/domain';
+
+/** What a pointer sees of the ground: metres a CSS pixel there, and whether it is a finger. */
+export interface PointerScale {
+  readonly metresPerPixel: number;
+  readonly touch: boolean;
+}
 
 /** The roof step's moves (`T-M05-002`, part b): drawing, the length box, and the fixes on a roof. */
 export interface RoofMoves {
@@ -38,10 +45,16 @@ export interface RoofMoves {
   wipe(): void;
   /** The trash on a picked roof: it goes, as one change; Undo brings it back. */
   deleteRoof(): void;
-  /** The pointer over the ground while drawing; `null` when it leaves. */
-  hover(at: GroundPoint | null): void;
+  /**
+   * The pointer over the ground while drawing; `null` when it leaves. `scale`, here and on a tap or
+   * a drag: the ground the view shows a pixel there, and whether a finger holds it — the magnet's
+   * reach is the same on the screen at any zoom.
+   */
+  hover(at: GroundPoint | null, scale?: PointerScale): void;
   /** A tap on the ground: a corner while drawing, else it lets a picked corner go. */
-  tap(at: GroundPoint): void;
+  tap(at: GroundPoint, scale?: PointerScale): void;
+  /** Follow: the corners of the shared wall are added, and the roof closes along it. */
+  follow(): void;
   /** Close shape: with three square corners, the ghost gives the fourth. */
   close(): void;
   /** A tap on the first corner: the shape closes as drawn, a triangle from three. */
@@ -62,7 +75,7 @@ export interface RoofMoves {
   /** The answer to "the picture shows about …": use the typed length, or change it. */
   confirmLength(use: boolean): void;
   grab(grip: RoofGrip, at: GroundPoint): void;
-  drag(at: GroundPoint): void;
+  drag(at: GroundPoint, scale?: PointerScale): void;
   release(): void;
   pickCorner(corner: CornerRef | null): void;
   /**
@@ -200,6 +213,8 @@ export interface RoofStepView {
   readonly guides: readonly Guide[];
   /** Where a drag's tag sits. */
   readonly dragTagAt: GroundPoint | null;
+  /** The magnet's mark on the spot it holds: a ring where two lines cross, a diamond on a middle. */
+  readonly snapMark: ReturnType<typeof snapMarkOf>;
   /** The roof as it stood before the drag in hand: a turn's or a move's start, or where a refused
    * drag goes back to. */
   readonly dragBefore: readonly GroundPoint[] | null;

@@ -1,9 +1,10 @@
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { cornerAdded, cornerDragged, cornerRemoved } from './roof-edit';
+import { followAlong } from './roof-follow';
 import { roofMoved, roofTurned } from './roof-move';
 import { roofNameOf } from './roof-names';
-import { roofMiddle } from './roof-shape';
+import { ROOF_CORNERS_MAX, roofMiddle } from './roof-shape';
 import type { SnapTargets } from './roof-snap';
 import { copied, deleted } from './roof-step-copy';
 import { cornerUndone, drawing, drawTargetsOf, spotAt, stopped, tapped } from './roof-step-draw';
@@ -79,13 +80,14 @@ function turnOf(state: Dragging, at: GroundPoint): number {
 }
 
 function dragged(state: Dragging, at: GroundPoint): RoofStepState {
-  const { grip, base, from, magnet, insides } = state;
+  const { grip, base, from, magnet, insides, reach } = state;
   const corner = gripCorner(grip);
   if (corner !== null)
-    return { ...state, drag: cornerDragged(base, grip.roof, corner, at, magnet) };
+    return { ...state, drag: cornerDragged(base, grip.roof, corner, at, magnet, reach) };
   if (grip.kind === 'move') {
     const by = { east: at.east - from.east, north: at.north - from.north };
-    return { ...state, drag: roofMoved(base, grip.roof, by, magnet ? (insides ?? []) : null) };
+    const pullTo = magnet ? (insides ?? []) : null;
+    return { ...state, drag: roofMoved(base, grip.roof, by, pullTo, reach) };
   }
   const turn = roofTurned(base, grip.roof, turnOf(state, at), magnet);
   return { ...state, drag: turn, degrees: turn.degrees };
@@ -199,16 +201,30 @@ const ON: Handlers = {
   side_wall: sideWalled,
   material: materialSet,
   cancel: stopped,
-  hover: (state, { at }, document) =>
+  hover: (state, { at, reach }, document) =>
     inState(state, 'drawing', (held) => {
-      const targets = drawTargetsOf(held, document);
+      const told = reach === undefined ? held : { ...held, reach };
+      const targets = drawTargetsOf(told, document);
       // The pointer moved on: a refusal of the last tap is behind it; the spot says its own.
-      return stay({ ...held, pointer: at, spot: spotAt(held, at, targets), refused: null });
+      return stay({ ...told, pointer: at, spot: spotAt(told, at, targets), refused: null });
     }),
-  tap: (state, { at, system }, document) =>
-    state.kind === 'sizing'
-      ? thenKept(state, system, document, (kept) => stay(kept))
-      : tapped(state, at, document),
+  tap: (state, { at, system, reach }, document) => {
+    if (state.kind === 'sizing') return thenKept(state, system, document, (kept) => stay(kept));
+    const told = state.kind === 'drawing' && reach !== undefined ? { ...state, reach } : state;
+    return tapped(told, at, document);
+  },
+  follow: (state, _event, document) =>
+    inState(state, 'drawing', (held) => {
+      const along = followAlong(held.corners, drawTargetsOf(held, document));
+      if (along === null || held.corners.length + along.corners.length > ROOF_CORNERS_MAX)
+        return stay(held);
+      return stay({
+        ...held,
+        corners: [...held.corners, ...along.corners],
+        spot: null,
+        refused: null,
+      });
+    }),
   undo_corner: cornerUndone,
   close: (state, event, document) =>
     state.kind === 'drawing' && state.faces !== undefined
@@ -233,7 +249,10 @@ const ON: Handlers = {
       : thenKept(state, system, document, (kept, now) =>
           stay(grabbed(now, grip, at, magnet, insides) ?? kept),
         ),
-  drag: (state, { at }) => inState(state, 'dragging', (held) => stay(dragged(held, at))),
+  drag: (state, { at, reach }) =>
+    inState(state, 'dragging', (held) =>
+      stay(dragged(reach === undefined ? held : { ...held, reach }, at)),
+    ),
   release: (state) => inState(state, 'dragging', released),
   pick_corner: (state, { corner }) =>
     inState(state, 'idle', (looking) =>
