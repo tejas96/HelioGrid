@@ -12,7 +12,7 @@ import {
   roofArea,
   segmentsCross,
 } from './roof-shape';
-import type { SnapTargets } from './roof-snap';
+import { ringTargets, type SnapTargets } from './roof-snap';
 
 /**
  * The faces a person draws on a roof of any shape (`T-M05-002`, part e, E082, board 5.10), as far
@@ -171,12 +171,7 @@ export function handFaceTargets(roof: Roof, index: number): SnapTargets {
       owner: { kind: 'face', roof: index, face: at } as const,
     })),
   ];
-  return {
-    corners: rings.flatMap(({ ring, owner }) => ring.map((at) => ({ at, owner }))),
-    edges: rings.flatMap(({ ring, owner }) =>
-      ring.map((from, i) => ({ from, to: cornerAfter(ring, i), owner })),
-    ),
-  };
+  return ringTargets(rings);
 }
 
 /** The sides of a face that lie along the roof's outline: where rain can leave the roof. */

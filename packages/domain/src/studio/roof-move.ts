@@ -12,7 +12,6 @@ import {
   snapTargetsOf,
 } from './roof-snap';
 import {
-  cornerLinesOf,
   heldOn,
   holdAt,
   lineCross,
@@ -20,7 +19,6 @@ import {
   type SnapLine,
   wallLinesOf,
 } from './roof-snap-lines';
-import { longSideOf } from './roof-snap-spot';
 
 /**
  * Moving and turning a whole roof once it stands (`T-M05-002`, part b): the move and turn handles,
@@ -158,13 +156,6 @@ function softNear(
     .map((line) => ({ ...line.guide, soft: true }) as const);
 }
 
-/** Other roofs' wall lines, and the lines through their corners along the moved roof's sides. */
-function withCornerLines(targets: SnapTargets, corners: readonly GroundPoint[]): SnapLine[] {
-  const walls = wallLinesOf(targets);
-  const long = longSideOf(corners);
-  return long === null ? walls : [...walls, ...cornerLinesOf(targets, long, walls)];
-}
-
 /**
  * The whole roof moved by `by` metres east and north, with what stands on it. With the magnet on
  * (`pullTo` given), a corner within reach of another roof's wall or its line past the wall's ends,
@@ -188,12 +179,16 @@ export function roofMoved(
     pullTo === null
       ? []
       : [
-          ...withCornerLines(
+          // Wall lines only: a roof moved slides onto walls and their lines; lining it up with another
+          // roof's corner is left to its corners' own drags, which keeps a move smooth at the cap.
+          ...wallLinesOf(
             {
-              corners: others.corners.filter((corner) => !going.has(corner.owner.roof)),
+              corners: [],
               edges: others.edges.filter((edge) => !going.has(edge.owner.roof)),
             },
-            roof.corners,
+            // A pull and the slide after it move the roof up to a reach each: the lines that can
+            // hold it, and the ones a little further that show faint.
+            { points: corners, within: reach * (1 + SNAP_SOFT_REACHES) },
           ),
           ...pullTo
             .filter((edge) => !going.has(edge.owner.roof))

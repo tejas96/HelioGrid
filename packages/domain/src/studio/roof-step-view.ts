@@ -166,11 +166,9 @@ export function draftViewOf(
   const tap =
     spot === null || closing
       ? null
-      : keptOnFaceRoof(
-          state,
-          document,
-          draftTap(corners, spot.point, targets, state.magnet, reach),
-        );
+      : // The spot is snapped already, as a tap there would be: it is checked where it stands, and
+        // the magnet is not asked again on every pointer move.
+        keptOnFaceRoof(state, document, draftTap(corners, spot.point, targets, false, reach));
   return {
     corners,
     edges: corners.slice(1).map((corner, i) => edgeOf(corners[i] as GroundPoint, corner)),

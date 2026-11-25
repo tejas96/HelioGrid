@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
+import { cornerDragged } from '../../src/studio/roof-edit';
 import { roofAreaM2, roofsAreaM2 } from '../../src/studio/roof-free-ground';
 import { roofFloorM } from '../../src/studio/roof-levels';
 import { meetingOf } from '../../src/studio/roof-meet';
+import { roofMoved } from '../../src/studio/roof-move';
 import { edgesOf } from '../../src/studio/roof-open-edges';
 import { setbackLines } from '../../src/studio/roof-setback';
+import { SNAP_REACH_MAX_M, snapTargetsOf } from '../../src/studio/roof-snap';
+import { draftSpot } from '../../src/studio/roof-snap-spot';
 import { box, designOf, FACTS, roofOf, stairOn } from './roof-meet-support';
 
 /**
@@ -76,5 +80,50 @@ describe('200 roofs worked out together', () => {
     const RUNS = 20;
     for (let i = 0; i < RUNS; i++) place();
     expect((Date.now() - started) / RUNS).toBeLessThan(FRAME_MS / SLOWER);
+  });
+
+  // A pointer move while drawing asks the magnet once, for the spot; the draft's view and the bar
+  // check the spot where it stands. A drag step asks once for the corner or the roof in hand.
+  const PER_MOVE = 1;
+  const timed = (run: () => unknown, runs: number) => {
+    run();
+    const started = Date.now();
+    for (let i = 0; i < runs; i++) run();
+    return (Date.now() - started) / runs;
+  };
+
+  /** 200 roofs of ten corners, each turned a little more than the last: no two walls share a line. */
+  const TURNED = designOf(
+    ...Array.from({ length: 2 * HOUSES }, (_, i) => {
+      const turn = (i * 0.7 * Math.PI) / 180;
+      const corners = Array.from({ length: 10 }, (_, k) => {
+        const at = (k / 10) * 2 * Math.PI + turn;
+        return {
+          east: (i % 20) * PITCH + 5 * Math.cos(at),
+          north: Math.floor(i / 20) * PITCH + 5 * Math.sin(at),
+        };
+      });
+      return roofOf(`turned-${i}`, corners);
+    }),
+  );
+
+  it('the magnet over 200 roofs: a pointer move while drawing within a frame on that phone', () => {
+    const targets = snapTargetsOf(TURNED.roofs);
+    const drawn = [
+      { east: -20, north: -20 },
+      { east: -10, north: -20 },
+    ];
+    const ms = timed(
+      () => draftSpot(drawn, { east: 10.2, north: 0.3 }, targets, true, SNAP_REACH_MAX_M),
+      20,
+    );
+    expect(ms * PER_MOVE).toBeLessThan(FRAME_MS / SLOWER);
+  });
+
+  it('the magnet over 200 roofs: a corner dragged and a roof moved, each within a frame on that phone', () => {
+    const corner = timed(() => cornerDragged(TURNED, 0, 1, { east: 5.2, north: 0.3 }, true), 20);
+    const moved = timed(() => roofMoved(TURNED, 0, { east: 0.3, north: 0.3 }, []), 20);
+    expect(corner).toBeLessThan(FRAME_MS / SLOWER);
+    expect(moved).toBeLessThan(FRAME_MS / SLOWER);
   });
 });

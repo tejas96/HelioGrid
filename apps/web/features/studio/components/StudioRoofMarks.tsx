@@ -253,7 +253,7 @@ export function StudioRoofMarks({
   useLayoutEffect(() => {
     if (lastPlace.current !== null) place(lastPlace.current);
   });
-  const shown = roofWordsShown(format, units, studio.startHeightM);
+  const shown = roofWordsShown(format, units, studio.startHeightM, studio.topMarks);
   const { roofStep: step, draft, roofMarks } = studio;
   if (view !== 'top') {
     return (

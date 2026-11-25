@@ -34,23 +34,15 @@ function stepAfter(events: readonly RoofStepEvent[]): RoofStepState {
 describe('heldViewOf', () => {
   it.each([
     ['drawing, no roof, no corner yet', null, [DRAW], SHUT, { clear: null }],
+    // While drawing the map never moves, even with a corner off a zoomed-in screen: a corner
+    // tapped next must land under the finger.
+    ['drawing, one corner on open ground', null, [DRAW, tapAt(20, -4)], SHUT, { clear: null }],
     [
-      'drawing, one corner on open ground',
-      null,
-      [DRAW, tapAt(20, -4)],
-      SHUT,
-      {
-        clear: { west: 20, east: 20, south: -4, north: -4 },
-      },
-    ],
-    [
-      'drawing beside a roof that may be off screen: only the corners drawn',
+      'drawing beside a roof, a corner off the screen: still held',
       ROOF,
-      [DRAW, tapAt(20, -4)],
+      [DRAW, tapAt(20, -4), tapAt(900, -4)],
       SHUT,
-      {
-        clear: { west: 20, east: 20, south: -4, north: -4 },
-      },
+      { clear: null },
     ],
     ['drawing beside a roof, no corner yet', ROOF, [DRAW], SHUT, { clear: null }],
     ['Roofs or the picker open', ROOF, [], ROOFS, { clear: ROOF }],

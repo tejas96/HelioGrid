@@ -107,7 +107,7 @@ export function StudioSizeCard({
       ? null
       : words.sizeRefusal(
           card.refusal,
-          roofWordsShown(format, units, studio.startHeightM),
+          roofWordsShown(format, units, studio.startHeightM, studio.topMarks),
           LENGTH_MIN_M,
           LENGTH_MAX_M,
         );

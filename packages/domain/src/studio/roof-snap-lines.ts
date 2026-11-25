@@ -3,7 +3,6 @@ import { between, nearestOnSegment } from './roof-shape';
 import {
   CROSS_MIN_DEGREES,
   type Guide,
-  guideOf,
   ON_WALL_M,
   type RoofHold,
   SNAP_DEGREES,
@@ -111,28 +110,66 @@ export function linesCross(a: SnapLine, b: SnapLine): GroundPoint | null {
   return lineCross(a.guide.through, a.guide.way, b.guide.through, b.guide.way);
 }
 
-/** Two lines that are one: the same way and through the same place, to a millimetre. */
-function sameLine(a: SnapLine, b: SnapLine): boolean {
-  return linesAngle(a.guide.way, b.guide.way) < 0.01 && offLine(b.guide.through, a) <= ON_WALL_M;
+/** Two lines a hundredth of a degree and a millimetre apart, or nearer, are one line. */
+const SAME_RADIANS = (0.01 * Math.PI) / 180;
+
+/**
+ * A line as a key: its way, turned to point east (or north), as an angle, and how far it runs
+ * from the ground's origin square to that way — each rounded, so two lines that are one share a
+ * key. A key looks a line up at once: a site's lines are never compared pair by pair.
+ */
+function lineKey({ through, way }: Guide): string {
+  const flip = way.east < 0 || (way.east === 0 && way.north < 0) ? -1 : 1;
+  const east = way.east * flip;
+  const north = way.north * flip;
+  const offset = through.east * north - through.north * east;
+  return `${Math.round(Math.atan2(north, east) / SAME_RADIANS)}|${Math.round(offset / ON_WALL_M)}`;
+}
+
+/** The spots a line must pass near to count, and how near, in metres. */
+export interface Near {
+  readonly points: readonly GroundPoint[];
+  readonly within: number;
 }
 
 /**
- * The walls of the design's other roofs, each as the line it runs on, right across the map: walls
- * on one line make one line that keeps every one of them, named for the first.
+ * Whether the line through `through`, running `way` (any length), passes within `near.within` of
+ * one of its spots: squares only, no root, so a site of 200 roofs is narrowed to the few lines
+ * that can matter before any line is worked out or compared with another.
  */
-export function wallLinesOf(targets: SnapTargets): SnapLine[] {
+function passesNear(through: GroundPoint, way: GroundPoint, near: Near): boolean {
+  const reach = near.within * near.within * (way.east * way.east + way.north * way.north);
+  return near.points.some((point) => {
+    const across =
+      (point.east - through.east) * way.north - (point.north - through.north) * way.east;
+    return across * across <= reach;
+  });
+}
+
+/**
+ * The walls of the design's other roofs that run near the spots, each as the line it runs on,
+ * right across the map: walls on one line make one line that keeps every one of them, named for
+ * the first.
+ */
+export function wallLinesOf(targets: SnapTargets, near: Near): SnapLine[] {
   const lines: SnapLine[] = [];
+  const byKey = new Map<string, number>();
   for (const edge of targets.edges) {
-    if (between(edge.from, edge.to) === 0) continue;
+    const run = { east: edge.to.east - edge.from.east, north: edge.to.north - edge.from.north };
+    if ((run.east === 0 && run.north === 0) || !passesNear(edge.from, run, near)) continue;
+    const way = unit(edge.from, edge.to);
     const wall: SnapWall = { from: edge.from, to: edge.to, owner: edge.owner };
     const line: SnapLine = {
-      guide: guideOf(edge.from, unit(edge.from, edge.to)),
+      guide: { through: edge.from, way },
       hold: { kind: 'wall_line', owner: edge.owner },
       walls: [wall],
     };
-    const kept = lines.findIndex((other) => sameLine(other, line));
-    if (kept < 0) lines.push(line);
-    else {
+    const key = lineKey(line.guide);
+    const kept = byKey.get(key);
+    if (kept === undefined) {
+      byKey.set(key, lines.length);
+      lines.push(line);
+    } else {
       const other = lines[kept] as SnapLine;
       lines[kept] = { ...other, walls: [...(other.walls ?? []), wall] };
     }
@@ -141,26 +178,35 @@ export function wallLinesOf(targets: SnapTargets): SnapLine[] {
 }
 
 /**
- * The lines through other roofs' corners, square and parallel to the roof in hand — only where
- * they are not a wall's line already: a wall through that corner within `SNAP_DEGREES` of the line
- * is the line a person means, so it holds instead. They count when the roofs are not square.
+ * The lines through other roofs' corners, square and parallel to the roof in hand, that run near
+ * the spots — only where they are not a wall's line already: a wall at that corner within
+ * `SNAP_DEGREES` of the line is the line a person means, so it holds instead. They count when the
+ * roofs are not square.
  */
-export function cornerLinesOf(targets: SnapTargets, long: GroundPoint, walls: readonly SnapLine[]) {
+export function cornerLinesOf(
+  targets: SnapTargets,
+  long: GroundPoint,
+  walls: readonly SnapLine[],
+  near: Near,
+): SnapLine[] {
   const lines: SnapLine[] = [];
+  const known = new Set(walls.map(({ guide }) => lineKey(guide)));
   for (const corner of targets.corners) {
-    const ownWalls = walls.filter(({ walls: on }) =>
-      (on ?? []).some(
-        ({ from, to }) =>
-          between(from, corner.at) <= ON_WALL_M || between(to, corner.at) <= ON_WALL_M,
-      ),
-    );
     for (const way of [long, across(long)]) {
-      if (ownWalls.some((wall) => linesAngle(wall.guide.way, way) <= SNAP_DEGREES)) continue;
+      if (!passesNear(corner.at, way, near)) continue;
+      const ownWall = [corner.before, corner.after].some(
+        (end) =>
+          between(end, corner.at) > 0 && linesAngle(unit(end, corner.at), way) <= SNAP_DEGREES,
+      );
+      if (ownWall) continue;
       const line: SnapLine = {
         guide: { through: corner.at, way },
         hold: { kind: 'lines_up_with', owner: corner.owner },
       };
-      if (![...walls, ...lines].some((kept) => sameLine(kept, line))) lines.push(line);
+      const key = lineKey(line.guide);
+      if (known.has(key)) continue;
+      known.add(key);
+      lines.push(line);
     }
   }
   return lines;
@@ -168,10 +214,12 @@ export function cornerLinesOf(targets: SnapTargets, long: GroundPoint, walls: re
 
 /** A spot on another roof's corner, else on the middle of its wall, when one lies within reach. */
 export function snapToPoints(at: GroundPoint, targets: SnapTargets, reach: number): Snapped | null {
+  // Squared distances: no root for the many points far from the spot.
+  const square = (east: number, north: number) => (east - at.east) ** 2 + (north - at.north) ** 2;
   let best: Snapped | null = null;
-  let bestReach = reach;
+  let bestReach = reach * reach;
   for (const corner of targets.corners) {
-    const off = between(corner.at, at);
+    const off = square(corner.at.east, corner.at.north);
     if (off <= bestReach) {
       bestReach = off;
       best = { point: corner.at, snap: { kind: 'corner_of', owner: corner.owner }, guides: [] };
@@ -179,14 +227,12 @@ export function snapToPoints(at: GroundPoint, targets: SnapTargets, reach: numbe
   }
   if (best !== null) return best;
   for (const edge of targets.edges) {
-    const middle = {
-      east: (edge.from.east + edge.to.east) / 2,
-      north: (edge.from.north + edge.to.north) / 2,
-    };
-    const off = between(middle, at);
+    const east = (edge.from.east + edge.to.east) / 2;
+    const north = (edge.from.north + edge.to.north) / 2;
+    const off = square(east, north);
     if (off <= bestReach) {
       bestReach = off;
-      best = { point: middle, snap: { kind: 'middle_of', owner: edge.owner }, guides: [] };
+      best = { point: { east, north }, snap: { kind: 'middle_of', owner: edge.owner }, guides: [] };
     }
   }
   return best;

@@ -5,6 +5,7 @@ import {
   LENGTH_MAX_M,
   LENGTH_MIN_M,
   ROOF_CORNERS_MAX,
+  type RoofName,
   type RoofSaid,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
@@ -84,6 +85,8 @@ export interface RoofWordsShown {
   readonly heightOf: (metres: number) => string;
   /** How far from the pin one site reaches, formatted: a roof past it is another site. */
   readonly reach: string;
+  /** What roof `index` is called: the name the Roofs list gives it. */
+  readonly roofName: (index: number) => RoofName;
 }
 
 function editRefusalLine(

@@ -5,7 +5,13 @@ import { draftGhost } from '../../src/studio/roof-draw';
 import { cornerDragged } from '../../src/studio/roof-edit';
 import { followAlong } from '../../src/studio/roof-follow';
 import { roofMoved } from '../../src/studio/roof-move';
-import { SNAP_M, SNAP_REACH_MAX_M, snapReachM, snapTargetsOf } from '../../src/studio/roof-snap';
+import {
+  NO_SNAP_TARGETS,
+  SNAP_M,
+  SNAP_REACH_MAX_M,
+  snapReachM,
+  snapTargetsOf,
+} from '../../src/studio/roof-snap';
 import { draftSpot } from '../../src/studio/roof-snap-spot';
 import { roofStepAfter } from '../../src/studio/roof-step';
 import type { RoofStepState } from '../../src/studio/roof-step-state';
@@ -105,6 +111,18 @@ describe('the magnet knows every roof: wall lines past their ends (T-M05-002, pa
     expect(spot.snap).toEqual(
       along === null ? null : { kind: 'frame', along, owner: { kind: 'roof', roof: 0 } },
     );
+  });
+});
+
+describe('two holds together never move a corner further than the reach', () => {
+  it.each([
+    // square (0.35 m sideways) and level with corner 1 (0.4 m along): 0.53 m in all
+    ['both would move it 0.53 m: square alone', p(20.35, 10.6), p(20, 10.6), 'square'],
+    ['both move it 0.36 m: square and level', p(20.2, 10.7), p(20, 11), 'lines_up'],
+  ] as const)('%s', (_why, at, point, kind) => {
+    const spot = draftSpot([p(0, 11), p(0, 0), p(20, 0)], at, NO_SNAP_TARGETS, true);
+    near(spot.point, point);
+    expect(spot.snap?.kind).toBe(kind);
   });
 });
 

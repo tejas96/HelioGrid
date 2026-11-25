@@ -1,7 +1,14 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import { type DraftRefusal, ROOF_CORNERS_MAX, ROOFS_MAX, type SnapOwner } from '@heliogrid/domain';
+import {
+  type DraftRefusal,
+  ROOF_CORNERS_MAX,
+  ROOFS_MAX,
+  type RoofName,
+  type SnapOwner,
+} from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { studioFacesWords } from './studio-faces';
+import { roofNameWord } from './studio-roof-kinds';
 
 type T = Translator['t'];
 
@@ -23,7 +30,7 @@ const DRAW = {
   drawRoofsTitle: /*i18n*/ { id: 'A design holds at most {max} roofs' },
   drawFixLine: /*i18n*/ { id: 'Close the shape, or tap Undo.' },
   closeShape: /*i18n*/ { id: 'Close shape' },
-  followRoof: /*i18n*/ { id: 'Follow Roof {number}' },
+  followRoof: /*i18n*/ { id: 'Follow {roof}' },
   followFace: /*i18n*/ { id: 'Follow Face {number}' },
 } as const;
 
@@ -79,9 +86,9 @@ export function studioRoofDrawWords(t: T) {
     magnetNotSaved: t(DRAW.magnetNotSaved),
     closeShape: t(DRAW.closeShape),
     /** Follow, in the slim pill while drawing: the roof (or face) whose wall it closes along. */
-    follow: (owner: SnapOwner): TranslatedText =>
+    follow: (owner: SnapOwner, roofName: (index: number) => RoofName): TranslatedText =>
       owner.kind === 'face'
         ? t(DRAW.followFace, { number: owner.face + 1 })
-        : t(DRAW.followRoof, { number: owner.roof + 1 }),
+        : t(DRAW.followRoof, { roof: roofNameWord(t, roofName(owner.roof)) }),
   };
 }

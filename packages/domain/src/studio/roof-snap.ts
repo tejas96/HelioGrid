@@ -1,6 +1,6 @@
 import type { Roof } from './document';
 import type { GroundPoint } from './ground';
-import { cornerAfter } from './roof-shape';
+import { cornerAfter, cornerBefore } from './roof-shape';
 
 /**
  * What a corner snaps to while drawn or dragged (`T-M05-002`, parts b and e): the design's other
@@ -56,9 +56,17 @@ export type SnapOwner =
   | { readonly kind: 'roof'; readonly roof: number }
   | { readonly kind: 'face'; readonly roof: number; readonly face: number };
 
-/** What a spot can snap to besides the roof in hand. */
+/**
+ * What a spot can snap to besides the roof in hand. Each corner keeps its outline's corners before
+ * and after it, so a line through it can tell it is one of the two sides that meet there.
+ */
 export interface SnapTargets {
-  readonly corners: readonly { readonly at: GroundPoint; readonly owner: SnapOwner }[];
+  readonly corners: readonly {
+    readonly at: GroundPoint;
+    readonly owner: SnapOwner;
+    readonly before: GroundPoint;
+    readonly after: GroundPoint;
+  }[];
   readonly edges: readonly {
     readonly from: GroundPoint;
     readonly to: GroundPoint;
@@ -68,17 +76,34 @@ export interface SnapTargets {
 
 export const NO_SNAP_TARGETS: SnapTargets = { corners: [], edges: [] };
 
-/** The corners and edges of the design's roofs, except the roof at `except` — the one in hand. */
-export function snapTargetsOf(roofs: readonly Roof[], except?: number): SnapTargets {
-  const others = roofs.flatMap((roof, index) =>
-    index === except ? [] : [{ roof, owner: { kind: 'roof', roof: index } as const }],
-  );
+/** The corners and edges of outlines, each kept with whose it is. */
+export function ringTargets(
+  rings: readonly { readonly ring: readonly GroundPoint[]; readonly owner: SnapOwner }[],
+): SnapTargets {
   return {
-    corners: others.flatMap(({ roof, owner }) => roof.corners.map((at) => ({ at, owner }))),
-    edges: others.flatMap(({ roof, owner }) =>
-      roof.corners.map((from, i) => ({ from, to: cornerAfter(roof.corners, i), owner })),
+    corners: rings.flatMap(({ ring, owner }) =>
+      ring.map((at, i) => ({
+        at,
+        owner,
+        before: cornerBefore(ring, i),
+        after: cornerAfter(ring, i),
+      })),
+    ),
+    edges: rings.flatMap(({ ring, owner }) =>
+      ring.map((from, i) => ({ from, to: cornerAfter(ring, i), owner })),
     ),
   };
+}
+
+/** The corners and edges of the design's roofs, except the roof at `except` — the one in hand. */
+export function snapTargetsOf(roofs: readonly Roof[], except?: number): SnapTargets {
+  return ringTargets(
+    roofs.flatMap((roof, index) =>
+      index === except
+        ? []
+        : [{ ring: roof.corners, owner: { kind: 'roof', roof: index } as const }],
+    ),
+  );
 }
 
 /** One line a spot is held on, as its small label names it. */

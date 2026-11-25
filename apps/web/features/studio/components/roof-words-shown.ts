@@ -1,4 +1,4 @@
-import { GROUND_REACH_M, type MeasurementSystem } from '@heliogrid/domain';
+import { GROUND_REACH_M, type MeasurementSystem, type RoofName } from '@heliogrid/domain';
 import type { RoofWordsShown } from '@heliogrid/i18n';
 import type { useFormat } from '@heliogrid/ui';
 
@@ -8,8 +8,11 @@ export function roofWordsShown(
   units: MeasurementSystem,
   /** The height a roof on the ground starts at, which the line after a close names. */
   startHeightM: number,
+  /** Each roof's marks, with the name the Roofs list gives it: a tag names a roof the same way. */
+  marks: readonly { readonly name: RoofName }[],
 ): RoofWordsShown {
   return {
+    roofName: (index) => marks[index]?.name ?? { kind: 'roof', number: index + 1 },
     length: (metres) => format.roofLength(metres, units, false),
     height: format.roofHeight(startHeightM, units),
     heightOf: (metres) => format.roofHeight(metres, units),

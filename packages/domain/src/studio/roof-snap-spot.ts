@@ -4,6 +4,7 @@ import {
   type RoofHold,
   SNAP_DEGREES,
   SNAP_M,
+  SNAP_SOFT_REACHES,
   type SnapOwner,
   type Snapped,
   type SnapTargets,
@@ -106,7 +107,8 @@ function linedUp(
       }
     });
     const found = best as { corner: number; off: number } | null;
-    if (found !== null) {
+    // A second line-up never takes the corner further than the reach from where it was tapped.
+    if (found !== null && between(along(point, axis, found.off), at) <= reach) {
       point = along(point, axis, found.off);
       const snap: RoofHold = { kind: 'lines_up', corner: found.corner, along: null };
       const guide = { through: earlier[found.corner] as GroundPoint, way: across(axis) };
@@ -161,7 +163,8 @@ function ownHolds(
   const heldSnap: RoofHold = { kind: held.along };
   const heldLine = { guide: { through: last, way: held.way }, hold: heldSnap };
   const level = levelWith(earlier, last, held.way, held.reach, reach);
-  if (level === null) {
+  // The two holds together never move the corner further than the reach: past it, square alone.
+  if (level === null || between(along(last, held.way, level.reach), at) > reach) {
     return {
       point: along(last, held.way, held.reach),
       lines: [{ line: heldLine, snap: heldSnap }],
@@ -199,9 +202,11 @@ export function draftSpot(
   const onPoint = snapToPoints(at, targets, reach);
   if (onPoint !== null) return onPoint;
   const own = ownHolds(corners, at, targets, reach);
-  const walls = wallLinesOf(targets);
+  // Only the lines that can pull or show faint here: the rest of the site is never compared.
+  const around = { points: [at], within: reach * SNAP_SOFT_REACHES };
+  const walls = wallLinesOf(targets, around);
   const long = longSideOf(corners);
-  const lines = long === null ? walls : [...walls, ...cornerLinesOf(targets, long, walls)];
+  const lines = long === null ? walls : [...walls, ...cornerLinesOf(targets, long, walls, around)];
   const { near, soft } = linesNear(at, lines, reach);
   const withSoft = (snapped: Snapped): Snapped =>
     soft.length === 0 ? snapped : { ...snapped, guides: [...snapped.guides, ...soft] };
