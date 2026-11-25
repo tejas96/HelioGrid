@@ -86,6 +86,20 @@
   }
 }
 
+/* At a phone's foot the panel stands in the foot's slot, not under the chip. */
+.hg-studio-picker[data-at="foot"] {
+  position: static;
+  inline-size: auto;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.hg-studio-picker-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
 .hg-studio-picker-row {
   display: flex;
   align-items: center;

@@ -9,7 +9,7 @@ import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
 import { useFilePick } from './StudioFilePick';
 import { StudioLengthBox } from './StudioLengthBox';
 import { StudioPictureCards } from './StudioPictureCards';
-import { StudioPictureChip, StudioPictureCredit } from './StudioPictureChip';
+import { pictureCreditOf, StudioPictureChip, StudioPictureCredit } from './StudioPictureChip';
 import { StudioPlanRow } from './StudioPlanRow';
 import { StudioSaveMark } from './StudioSaveMark';
 import { StudioSizeCard } from './StudioSizeCard';
@@ -80,6 +80,7 @@ export function StudioCanvasHead({
   onBack,
   onSite,
   phone,
+  foot,
 }: {
   headRef: Ref<HTMLDivElement>;
   /** The compass in the head's right corner, which the camera turns. */
@@ -93,13 +94,15 @@ export function StudioCanvasHead({
   onSite: (() => void) | null;
   /** A phone-width screen: the size card holds Place roof while the keyboard is up. */
   phone: boolean;
+  /** On a phone, the canvas's foot, where the picture panel opens; `null` on a wide screen. */
+  foot: HTMLElement | null;
 }) {
   const { roofStep } = studio;
   return (
     <div ref={headRef} className="hg-studio-canvas-head">
       <HeadSteps studio={studio} parts={parts} words={words} onBack={onBack} onSite={onSite} />
       <StudioCompass handle={compass} words={words} off={parts.compass === 'hidden'} />
-      <HeadPicture studio={studio} parts={parts} words={words} phone={phone} />
+      <HeadPicture studio={studio} parts={parts} words={words} phone={phone} foot={foot} />
       <DrawHint studio={studio} words={words} />
       {roofStep.kind === 'sizing' ? (
         <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
@@ -112,6 +115,7 @@ export function StudioCanvasHead({
           units={studio.units}
           words={words}
           phone={phone}
+          credit={phone ? pictureCreditOf(studio.picture, words) : null}
         />
       ) : null}
     </div>
@@ -124,11 +128,13 @@ function HeadPicture({
   parts,
   words,
   phone,
+  foot,
 }: {
   studio: StudioScreen;
   parts: FocusParts;
   words: StudioCanvasWords;
   phone: boolean;
+  foot: HTMLElement | null;
 }) {
   const format = useFormat();
   const pickFile = useFilePick();
@@ -139,8 +145,9 @@ function HeadPicture({
   const { skyFacts } = studio;
   const drawnOn = document?.drawnOn?.takenOn ?? null;
   if (parts.pictureChip === 'credit') {
-    // On a phone your picture's open card carries the credit as its last line (ruling 8).
-    return phone && studio.own.cardOpen ? null : (
+    // On a phone your picture's open card and the size card carry the credit as their last line
+    // (ruling 8): the card stands where the credit was.
+    return phone && (studio.own.cardOpen || studio.sizeCard !== null) ? null : (
       <StudioPictureCredit picture={picture} words={words} />
     );
   }
@@ -168,6 +175,7 @@ function HeadPicture({
       onPickFile={pickFile}
       ownLaid={studio.document?.ownPicture != null}
       planRow={<StudioPlanRow plan={studio.own.plan} studio={studio} words={words} />}
+      foot={foot}
     />
   );
 }

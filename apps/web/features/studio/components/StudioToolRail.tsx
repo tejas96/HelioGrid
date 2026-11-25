@@ -1,13 +1,14 @@
 'use client';
-import type { TranslatedText } from '@heliogrid/contracts';
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { FocusParts, MeasurementSystem, StudioView, ViewPlace } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { IconButton, Menu, ShellGlyph } from '@heliogrid/ui';
+import { IconButton, ShellGlyph } from '@heliogrid/ui';
+import { useRef } from 'react';
 import { MagnetSwitch } from './StudioBarPills';
 import { StudioPencil } from './StudioPencil';
 import { StudioRoofsButton } from './StudioRoofsButton';
 import { Shown } from './StudioShown';
+import { StudioViewPanel } from './StudioViewPanel';
 
 /** The magnet stands while a corner is drawn, and while a roof is picked for the drags to come. */
 function magnetShown(part: FocusParts['magnet'], studio: StudioScreen): boolean {
@@ -16,13 +17,14 @@ function magnetShown(part: FocusParts['magnet'], studio: StudioScreen): boolean 
 }
 
 /**
- * The two small columns of round tools, and the zoom pill under the right one. Left: what changes the model — Roofs with their count once
- * a roof stands (`StudioRoofsButton`), the pencil that draws (`StudioPencil`), both under the
- * magnet while a corner is drawn or a roof is picked, the trash that clears every corner of the
- * drawing, Undo and Redo (Undo alone while drawing). Right: how the model is seen — the view menu (the
- * views on offer, metres or feet), the 2D and 3D switch; Zoom in and Zoom out in one pill at the
- * bottom right. A
- * view that waits for a roof says why on a tap. The road view and the sun join with their parts.
+ * The two columns of round tools, standing on the foot (the studio tools board, round 4). Left,
+ * what changes the model, the pencil always in the bottom place: the magnet while a corner is drawn
+ * or a roof is picked, Roofs with their count once a roof stands (`StudioRoofsButton`), Redo, the
+ * trash that clears every corner of the drawing, Undo, then the pencil (×, while drawing). Right,
+ * how the model is seen: View (`StudioViewPanel`), the 2D and 3D switch once a roof stands, and Zoom
+ * in over Zoom out in one pill. A tool comes only once it can act and takes no place before; a tool
+ * coming moves only the ones above it. Undo and Redo keep the place they took (`undoSlotsOf`), dim
+ * while they cannot act.
  */
 export function StudioToolRail({
   studio,
@@ -35,6 +37,7 @@ export function StudioToolRail({
   newView,
   parts,
   canWipe,
+  foot,
   words,
   onView,
   onUnits,
@@ -58,6 +61,8 @@ export function StudioToolRail({
   parts: FocusParts;
   /** Two corners or more are drawn: the trash can clear them, which one Undo would not. */
   canWipe: boolean;
+  /** On a phone, the canvas's foot, where the View panel opens; `null` on a wide screen. */
+  foot: HTMLElement | null;
   /** The trash while drawing: every corner goes, and drawing goes on. */
   onWipe: () => void;
   words: StudioCanvasWords;
@@ -68,108 +73,73 @@ export function StudioToolRail({
   onZoomIn: () => void;
   onZoomOut: () => void;
 }) {
-  const sideName: Record<StudioView, TranslatedText> = {
-    top: words.topView,
-    '3d': words.threeDView,
-    north: words.fromNorth,
-    east: words.fromEast,
-    south: words.fromSouth,
-    west: words.fromWest,
-  };
-  const threeD = views.find((place) => place.view === '3d');
+  const pencil = useRef<HTMLSpanElement>(null);
+  const opener = useRef<HTMLSpanElement>(null);
+  const { viewOpen, moves } = studio;
   return (
     <>
       <div className="hg-studio-tools" data-side="left">
-        {/* The magnet comes and goes at the column's top: on a phone, where the column stands on
-            the foot, the tools under it never move, and no gap is kept for it. */}
-        {editable && magnetShown(parts.magnet, studio) ? (
+        <Shown when={editable && magnetShown(parts.magnet, studio)} focusTo={pencil}>
           <MagnetSwitch studio={studio} words={words} />
-        ) : null}
-        {/* Roofs comes with the first roof and keeps no gap before it; a job only fades it. */}
-        {studio.roofList.count > 0 ? (
-          <Shown when={parts.roofs === 'shown'}>
-            <StudioRoofsButton studio={studio} words={words} />
-          </Shown>
-        ) : null}
-        <Shown when={parts.pencil !== 'hidden'}>
-          <StudioPencil studio={studio} words={words} />
         </Shown>
-        {/* The trash shows only while drawing. */}
-        {editable && parts.wipe === 'shown' ? (
-          <Shown when={canWipe}>
-            <IconButton label={words.wipeCorners} onClick={onWipe}>
-              <ShellGlyph name="trash" size="md" />
-            </IconButton>
-          </Shown>
-        ) : null}
-        {editable ? (
-          <Shown when={parts.undoRedo !== 'hidden'}>
-            <IconButton label={words.undo} disabled={!canUndo} onClick={onUndo}>
-              <ShellGlyph name="undo" size="md" />
-            </IconButton>
-          </Shown>
-        ) : null}
-        {editable ? (
-          <Shown when={parts.undoRedo === 'shown'}>
-            <IconButton label={words.redo} disabled={!canRedo} onClick={onRedo}>
-              <ShellGlyph name="redo" size="md" />
-            </IconButton>
-          </Shown>
-        ) : null}
+        <Shown when={studio.roofList.count > 0 && parts.roofs === 'shown'} focusTo={pencil}>
+          <StudioRoofsButton studio={studio} words={words} />
+        </Shown>
+        <Shown when={editable && parts.redo === 'shown'} off={!canRedo} focusTo={pencil}>
+          <IconButton label={words.redo} disabled={!canRedo} onClick={onRedo}>
+            <ShellGlyph name="redo" size="md" />
+          </IconButton>
+        </Shown>
+        <Shown when={editable && parts.wipe === 'shown' && canWipe} focusTo={pencil}>
+          <IconButton label={words.wipeCorners} onClick={onWipe}>
+            <ShellGlyph name="trash" size="md" />
+          </IconButton>
+        </Shown>
+        <Shown when={editable && parts.undo === 'shown'} off={!canUndo} focusTo={pencil}>
+          <IconButton label={words.undo} disabled={!canUndo} onClick={onUndo}>
+            <ShellGlyph name="undo" size="md" />
+          </IconButton>
+        </Shown>
+        <Shown when={parts.pencil !== 'hidden'}>
+          <span ref={pencil} className="hg-studio-pencil">
+            <StudioPencil studio={studio} words={words} />
+          </span>
+        </Shown>
       </div>
       <div className="hg-studio-tools" data-side="right">
-        <Shown when={parts.layers === 'shown'}>
-          <Menu
-            label={words.view}
-            selection="single"
-            align="end"
-            trigger={
-              <IconButton label={words.view}>
-                <ShellGlyph name="sliders" size="md" />
-              </IconButton>
-            }
-            items={[
-              ...views.map((place) => ({
-                key: place.view,
-                label: sideName[place.view],
-                selected: view === place.view,
-                ...(place.lock === null
-                  ? { onSelect: () => onView(place.view) }
-                  : { disabled: true, disabledReason: words.stepLock(place.lock) }),
-              })),
-              { separator: true },
-              {
-                key: 'metric',
-                label: words.metres,
-                meta: words.unitMetres,
-                selected: units === 'metric',
-                onSelect: () => onUnits('metric'),
-              },
-              {
-                key: 'imperial',
-                label: words.feet,
-                meta: words.unitFeet,
-                selected: units === 'imperial',
-                onSelect: () => onUnits('imperial'),
-              },
-            ]}
-          />
+        <Shown when={parts.layers === 'shown' || parts.layers === 'menu'}>
+          <span ref={opener} className="hg-studio-view-opener">
+            <IconButton
+              label={words.view}
+              pressed={viewOpen}
+              onClick={() => moves.showView(!viewOpen)}
+            >
+              <ShellGlyph name="sliders" size="md" />
+            </IconButton>
+            <StudioViewPanel
+              open={viewOpen}
+              view={view}
+              views={views}
+              units={units}
+              words={words}
+              opener={opener}
+              foot={foot}
+              onView={onView}
+              onUnits={onUnits}
+              onClose={() => moves.showView(false)}
+            />
+          </span>
         </Shown>
-        <Shown when={parts.layers !== 'hidden'}>
+        <Shown when={parts.layers === 'shown' || parts.layers === 'switch'}>
           <span className="hg-studio-tool-new" data-new={newView}>
             <IconButton
               label={view === 'top' ? words.threeDView : words.topView}
-              {...(view === 'top' && threeD?.lock != null
-                ? { disabled: true, disabledReason: words.stepLock(threeD.lock) }
-                : { onClick: () => onView(view === 'top' ? '3d' : 'top') })}
+              onClick={() => onView(view === 'top' ? '3d' : 'top')}
             >
               <ShellGlyph name={view === 'top' ? 'box' : 'grid'} size="md" />
             </IconButton>
           </span>
         </Shown>
-      </div>
-      {/* Zoom: one pill at the bottom right, Zoom in over Zoom out. */}
-      <div className="hg-studio-zoom">
         <Shown when={parts.zoom === 'shown'}>
           <span className="hg-studio-glass hg-studio-zoom-pill">
             <IconButton label={words.zoomIn} variant="ghost" onClick={onZoomIn}>

@@ -49,15 +49,8 @@ export {
   editTurnOpenTo,
   editTurnUntil,
 } from './edit-turn';
-export {
-  FOCUS_JOBS,
-  type FocusFacts,
-  type FocusJob,
-  type FocusParts,
-  focusJobOf,
-  focusOf,
-  studioJobOf,
-} from './focus';
+export { type FocusFacts, type FocusParts, focusOf } from './focus';
+export { FOCUS_JOBS, type FocusJob, focusJobOf, studioJobOf } from './focus-job';
 export { coordinateOf, type GroundBox, type GroundPoint, groundOf } from './ground';
 export {
   type History,
@@ -275,6 +268,13 @@ export {
 } from './steps';
 export { STUDIO_CHANGES, type StudioChange, studioChangeOf } from './studio-change';
 export { type SunPosition, sceneSunAt, sunAt } from './sun';
+export {
+  type HistorySeen,
+  historySeenAfter,
+  NOTHING_SEEN,
+  type UndoSlots,
+  undoSlotsOf,
+} from './undo-slots';
 export {
   OPENING_VIEW,
   STUDIO_VIEWS,

@@ -6,6 +6,11 @@ export interface History<State> {
   readonly past: readonly State[];
   readonly present: State;
   readonly future: readonly State[];
+  /**
+   * Something was undone since the design opened: Redo has come, and keeps its place in the tools
+   * for the rest of the session, dim while nothing waits to be redone (`undoSlotsOf`).
+   */
+  readonly undone?: true;
 }
 
 /** A history that starts at what the design holds when it opens. */
@@ -15,7 +20,12 @@ export function historyOf<State>(present: State): History<State> {
 
 /** One more change. */
 export function historyAfter<State>(history: History<State>, next: State): History<State> {
-  return { past: [...history.past, history.present], present: next, future: [] };
+  return {
+    past: [...history.past, history.present],
+    present: next,
+    future: [],
+    ...(history.undone ? { undone: true as const } : {}),
+  };
 }
 
 /** One change back; the same history when there is none. */
@@ -26,6 +36,7 @@ export function historyUndone<State>(history: History<State>): History<State> {
     past: history.past.slice(0, -1),
     present: previous,
     future: [history.present, ...history.future],
+    undone: true,
   };
 }
 
@@ -33,5 +44,10 @@ export function historyUndone<State>(history: History<State>): History<State> {
 export function historyRedone<State>(history: History<State>): History<State> {
   const [next, ...later] = history.future;
   if (next === undefined) return history;
-  return { past: [...history.past, history.present], present: next, future: later };
+  return {
+    past: [...history.past, history.present],
+    present: next,
+    future: later,
+    ...(history.undone ? { undone: true as const } : {}),
+  };
 }

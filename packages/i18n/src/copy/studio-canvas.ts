@@ -78,6 +78,10 @@ const CANVAS = {
   pictureChecked: /*i18n*/ { id: 'Checked' },
 
   view: /*i18n*/ { id: 'View' },
+  closeView: /*i18n*/ { id: 'Close View' },
+  units: /*i18n*/ { id: 'Measurement units' },
+  picture: /*i18n*/ { id: 'Picture' },
+  closePicture: /*i18n*/ { id: 'Close Picture' },
   topView: /*i18n*/ { id: 'Top view' },
   threeDView: /*i18n*/ { id: '3D view' },
   fromNorth: /*i18n*/ { id: 'From the north' },
@@ -182,6 +186,13 @@ export function studioCanvasWords(t: T) {
     pictureUpdated: t(CANVAS.pictureUpdated),
     pictureChecked: t(CANVAS.pictureChecked),
     view: t(CANVAS.view),
+    /** The View panel's ×: it closes the panel (its title row's one act). */
+    closeView: t(CANVAS.closeView),
+    /** The name of the metres-or-feet choice in the View panel. */
+    units: t(CANVAS.units),
+    /** The picture panel's title, over its three pictures. */
+    picture: t(CANVAS.picture),
+    closePicture: t(CANVAS.closePicture),
     topView: t(CANVAS.topView),
     threeDView: t(CANVAS.threeDView),
     fromNorth: t(CANVAS.fromNorth),

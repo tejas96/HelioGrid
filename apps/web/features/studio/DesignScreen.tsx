@@ -36,6 +36,7 @@ import './studio-height.css';
 import './studio-sheet.css';
 import './studio-motion.css';
 import './studio-tools.css';
+import './studio-view.css';
 import './studio-focus.css';
 
 /**

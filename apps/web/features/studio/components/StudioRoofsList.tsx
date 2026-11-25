@@ -3,9 +3,10 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { MeasurementSystem, RoofRow } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { IconButton, Pressable, ShellGlyph, type ShellGlyphName, useFormat } from '@heliogrid/ui';
-import { type RefObject, useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useId, useRef } from 'react';
 import { usePressAway } from '../hooks/use-press-away';
 import { ROOF_KIND_GLYPH } from './roof-kind-glyph';
+import { StudioPanelHead } from './StudioPanelHead';
 
 /** A row's picture: what the roof is; a building that is not the main roof is drawn as one more. */
 function glyphOf(row: RoofRow): ShellGlyphName {
@@ -111,13 +112,14 @@ export function StudioRoofsList({
 }) {
   const format = useFormat();
   const panel = useRef<HTMLDivElement>(null);
+  const title = useId();
   const { roofList, litRow, moves } = studio;
   usePressAway(panel, true, moves.closePanel, '.hg-studio-roofs-button');
   // Roofs opened lands focus on its lit row, else on its head: a keyboard starts there.
   useEffect(() => {
     const row = panel.current?.querySelector<HTMLElement>('[data-lit="true"] .hg-roofs-row-pick');
     row?.scrollIntoView({ block: 'nearest' });
-    (row ?? panel.current?.querySelector<HTMLElement>('.hg-roofs-title'))?.focus();
+    (row ?? panel.current?.querySelector<HTMLElement>('.hg-studio-panel-title'))?.focus();
   }, []);
   return (
     <div
@@ -129,14 +131,12 @@ export function StudioRoofsList({
       role="dialog"
       aria-label={words.roofsName}
     >
-      <div className="hg-roofs-head">
-        <span className="hg-roofs-title" tabIndex={-1}>
-          {words.roofsHead(roofList.count, format.area(roofList.areaM2, units))}
-        </span>
-        <IconButton label={words.roofsClose} variant="ghost" onClick={moves.closePanel}>
-          <ShellGlyph name="close" size="sm" />
-        </IconButton>
-      </div>
+      <StudioPanelHead
+        id={title}
+        title={words.roofsHead(roofList.count, format.area(roofList.areaM2, units))}
+        closeLabel={words.roofsClose}
+        onClose={moves.closePanel}
+      />
       <ul className="hg-roofs-rows">
         {roofList.rows.map((row) => (
           <RoofsRow

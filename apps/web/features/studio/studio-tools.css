@@ -1,10 +1,11 @@
 /* The studio's two tool columns and its one bottom bar (`T-M05-002a`). */
-/* The two columns of round tools. */
-/* They stand over the middle and the foot together, so a bar or a panel coming and going at the
-   foot never moves them. */
+/* The two columns of round tools: left changes the model, right shows it. Both stand on the foot on
+   every screen, so a thumb or a mouse finds each tool in the same place on a phone and a laptop,
+   and the pencil, in the left column's bottom place, never moves. They stand over the middle and
+   the foot together, so a bar or a panel coming and going at the foot never moves them. */
 .hg-studio-tools {
   grid-row: 2 / 4;
-  align-self: center;
+  align-self: end;
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
@@ -34,21 +35,23 @@
     var(--e3);
 }
 
-/* Zoom in and Zoom out, one pill at the bottom right, on every screen: a finger can pinch, but
-   the buttons are the one way that needs no gesture, and the phone keeps every feature the desktop
-   has. */
-.hg-studio-zoom {
-  grid-row: 2 / 4;
-  grid-column: 3;
-  align-self: end;
-  display: flex;
-  flex-direction: column;
-}
-
+/* Zoom in and Zoom out, one pill at the right column's foot, on every screen: a finger can pinch,
+   but the buttons are the one way that needs no gesture and no second finger, and the phone keeps
+   every feature the desktop has. */
 .hg-studio-zoom-pill {
   display: flex;
   flex-direction: column;
   border-radius: var(--r-pill);
+}
+
+/* Each half is at least a whole touch target high, so the two never share a tap: the extra room
+   goes only sideways. */
+.hg-studio-zoom-pill .hg-icon-button {
+  block-size: max(var(--studio-tool), var(--touch-min));
+}
+
+.hg-studio-zoom-pill .hg-icon-button::before {
+  inset-block: 0;
 }
 
 /* The two halves sit bare in the pill, a hairline between them. */
@@ -240,34 +243,35 @@
   flex: none;
 }
 
-/* An upright phone: the tools sit low, in thumb reach, over the bar, which spans the foot when its
-   words need it. */
-@media (width < 968px) {
-  .hg-studio[data-upright="true"] .hg-studio-tools,
-  .hg-studio[data-upright="true"] .hg-studio-zoom {
-    grid-row: 2;
-  }
-
-  .hg-studio[data-upright="true"] .hg-studio-tools {
-    align-self: end;
-  }
-
-  .hg-studio[data-upright="true"] .hg-studio-bar {
-    max-inline-size: 100%;
-  }
-}
-
 /* A phone, upright or held sideways. */
 @media (width < 968px) {
-  /* The right column stands on the zoom pill. */
-  .hg-studio-tools[data-side="right"] {
-    margin-block-end: calc(2 * var(--studio-tool) + var(--sp-2));
-  }
-
   /* The chip row fades at its end, so it reads as one that scrolls. */
   .hg-studio-kind-chips {
     padding-inline-end: var(--sp-6);
     -webkit-mask-image: linear-gradient(90deg, var(--text-primary) 85%, transparent);
     mask-image: linear-gradient(90deg, var(--text-primary) 85%, transparent);
+  }
+}
+
+/* An upright phone, a card at the foot: it takes the whole width, as Roofs does, so its words and
+   chips are never squeezed between the tool columns. The tools stand just above it; a card with a
+   row of chips (a new roof's kind, just after Close shape) takes their place instead, and they come
+   back to the same places when it goes. A card standing above a job keeps the columns as they are. */
+@media (width < 968px) {
+  .hg-studio[data-upright="true"]:has(.hg-studio-bar[data-kind="card"]:not([data-above-job="true"]))
+    .hg-studio-tools {
+    grid-row: 2;
+  }
+
+  .hg-studio[data-upright="true"]:has(
+      .hg-studio-bar[data-kind="card"]:not([data-above-job="true"]) .hg-studio-kind-chips
+    )
+    .hg-studio-tools {
+    display: none;
+  }
+
+  .hg-studio[data-upright="true"] .hg-studio-bar[data-kind="card"]:not([data-above-job="true"]) {
+    justify-self: stretch;
+    max-inline-size: 100%;
   }
 }

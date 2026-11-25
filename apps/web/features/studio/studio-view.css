@@ -1,0 +1,108 @@
+/* The View panel and a phone's foot slot (the studio tools board, round 4). */
+/* The View panel (`StudioViewPanel.tsx`): beside its button on a wide screen, growing up from its
+   foot so it never runs past the screen's bottom; at the foot on a phone. Its rows are the picture
+   panel's: a chosen row is the control fill, with a tick. */
+.hg-studio-view-opener {
+  position: relative;
+  display: inline-flex;
+}
+
+.hg-studio-view-panel {
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  box-sizing: border-box;
+  padding: var(--sp-2);
+  border-radius: var(--r-lg);
+  overflow: auto;
+  overscroll-behavior: contain;
+  pointer-events: auto;
+}
+
+.hg-studio-view-panel[data-at="beside"] {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: calc(100% + var(--sp-2));
+  inline-size: calc(var(--sp-24) * 2.75);
+  max-block-size: calc(100dvh - var(--studio-tool) * 4);
+}
+
+.hg-studio-view-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-studio-view-group + .hg-studio-view-group {
+  padding-block-start: var(--sp-1);
+  border-block-start: var(--hg-studio-line) solid var(--line-soft);
+}
+
+.hg-studio-view-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  inline-size: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  text-align: start;
+  color: var(--text-primary);
+}
+
+.hg-studio-view-row[aria-checked="true"] {
+  background: var(--fill);
+  font-weight: var(--fw-medium);
+}
+
+.hg-studio-view-word {
+  flex: 1;
+  min-inline-size: 0;
+  font-size: var(--fs-body-sm);
+}
+
+.hg-studio-view-meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-studio-view-tick {
+  inline-size: var(--sp-4);
+}
+
+/* A phone's foot: the View and picture panels open here, where the thumb is, in the tools' and the
+   bar's place (`focus.ts`, the menu job), as Roofs opens. Empty, it is nothing. */
+.hg-studio-foot-slot {
+  grid-row: 2 / 4;
+  grid-column: 1 / -1;
+  align-self: end;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.hg-studio-foot-slot:empty {
+  display: none;
+}
+
+.hg-studio-foot-slot > * {
+  pointer-events: auto;
+  max-block-size: min(100%, 50dvh);
+  border-radius: var(--r-xl);
+  animation: hg-sheet-up var(--dur-emphasised) var(--ease-enter) 1 both;
+}
+
+/* At a phone's foot the views stand in two columns: the panel stays short. */
+.hg-studio-foot-slot .hg-studio-view-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* The panel's × is a bare ghost, not one of the column's round glass tools it stands among. */
+.hg-studio-tools .hg-studio-view-panel .hg-icon-button {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}

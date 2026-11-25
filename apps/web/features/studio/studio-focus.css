@@ -1,21 +1,27 @@
 /* Focus mode and the drawing magnet (`T-M05-002`, part b). */
-/* Focus mode (`T-M05-002`, part b): a part the job in hand does not use fades out and keeps its
-   place, so nothing else moves; it comes back when the job ends. Set aside, it takes no tap. */
+/* Focus mode (`T-M05-002`, part b): a tool the job in hand does not use is out of its column — no
+   place, no tap — and rises back into its place when the job ends. The columns stand on the foot,
+   so only the tools above it move (`StudioShown.tsx`). */
 .hg-studio-focus {
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
   opacity: 1;
-  transition: opacity var(--dur-fast) var(--ease-standard);
+  transform: none;
+  transition:
+    opacity var(--dur-fast) var(--ease-standard),
+    transform var(--dur-fast) var(--ease-standard);
+}
+
+@starting-style {
+  .hg-studio-focus {
+    opacity: 0;
+    transform: translateY(var(--sp-1));
+  }
 }
 
 .hg-studio-focus[data-hidden="true"] {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.hg-studio-tools .hg-studio-focus[data-hidden="true"] > * {
-  pointer-events: none;
+  display: none;
 }
 
 /* The bar and the head's parts fade with focus mode, as the tools do. */

@@ -32,7 +32,7 @@ import {
 } from './studio-document-state';
 import { framedForFaces, studioFacesMoves } from './studio-faces-moves';
 import type { StudioScreen } from './studio-screen-view';
-import { studioBack, undoRedoMoves, undoRedoOf } from './studio-undo-back';
+import { studioBack, undoRedoMoves, undoRedoOf, useUndoSlots } from './studio-undo-back';
 import { useStudioPicture } from './use-design-picture';
 import { useDesignScreen } from './use-design-screen';
 import { useOwnPictureScreen } from './use-own-picture-screen';
@@ -63,6 +63,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const units = session.user?.unitPreference ?? 'metric';
   const [seen3d, setSeen3d] = useState(false);
   const [picturesOpen, setPicturesOpen] = useState(false);
+  const [viewOpen, setViewOpen] = useState(false);
   const pin = opened === null ? null : opened.site.pin;
   // The sun is read once for the opening: the scene does not move with the clock.
   const sun = useMemo(() => (pin === null ? null : sceneSunAt(pin, Date.now())), [pin]);
@@ -191,6 +192,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     deleteRoof: place.deleteRoofAt,
   });
 
+  const slots = useUndoSlots(editable, roofStep, history);
   return {
     read,
     document,
@@ -226,6 +228,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     ),
     offer3d: roofClosed && !seen3d,
     picturesOpen,
+    viewOpen,
     sun,
     ...undoRedoOf(editable, roofStep, history),
     focus: (phone) =>
@@ -234,12 +237,14 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
           roofs: panel.view.panel.open === 'roofs' || panel.view.panel.open === 'picker',
           sheet: roofSheet !== null,
           picture: own.view.cardOpen,
+          menu: phone && (picturesOpen || viewOpen), // beside its button nothing else moves
         }),
         view,
         phone,
         canEdit: editable,
         hasRoof: roofClosed,
         saveFailed: saving.kind === 'failed' || saving.kind === 'refused',
+        slots,
       }),
     moves: {
       ...roof.moves,
@@ -273,6 +278,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       },
       draw,
       showPictures: setPicturesOpen,
+      showView: setViewOpen,
       back: () =>
         // Esc while placing the stairs stops it first; the question stays.
         stairs.moves.stopPlacingStairs() ||
@@ -281,6 +287,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
           closePanel: panel.moves.closePanel,
           picturesOpen,
           closePictures: () => setPicturesOpen(false),
+          viewOpen,
+          closeView: () => setViewOpen(false),
           sheetOpen: roofSheet !== null,
           // A side's sheet and Parapet details go back to the roof's; the roof's sheet closes.
           closeSheet: sheet.back,

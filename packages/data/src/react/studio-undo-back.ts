@@ -2,13 +2,18 @@ import {
   type History,
   handFacesDrawn,
   historyRedone,
+  historySeenAfter,
   historyUndone,
+  NOTHING_SEEN,
   type RoofStepEvent,
   type RoofStepState,
   type StudioChange,
   type StudioDocument,
   studioChangeOf,
+  type UndoSlots,
+  undoSlotsOf,
 } from '@heliogrid/domain';
+import { useRef } from 'react';
 
 /** What stepping back does in the studio: Undo and Redo, and the phone's system back. */
 
@@ -19,6 +24,9 @@ export interface StudioBackFacts {
   closePanel(): void;
   readonly picturesOpen: boolean;
   closePictures(): void;
+  /** The View panel is open. */
+  readonly viewOpen: boolean;
+  closeView(): void;
   readonly sheetOpen: boolean;
   closeSheet(): void;
   readonly step: RoofStepState;
@@ -27,7 +35,7 @@ export interface StudioBackFacts {
 
 /**
  * The phone's system back, as Esc is the desktop's: the top thing open closes — what the pencil
- * opened (the material picker, Roofs), the pictures, a roof's sheet, the job in
+ * opened (the material picker, Roofs), the pictures, the View panel, a roof's sheet, the job in
  * hand, a picked corner. `false` with nothing open:
  * the way back leaves the studio.
  */
@@ -36,6 +44,7 @@ export function studioBack(facts: StudioBackFacts): boolean {
   // An open panel is on top: the picker goes back to Roofs, Roofs closes.
   if (facts.panelOpen) facts.closePanel();
   else if (facts.picturesOpen) facts.closePictures();
+  else if (facts.viewOpen) facts.closeView();
   // A height the sheet refuses keeps it open, as Done does.
   else if (facts.sheetOpen) facts.closeSheet();
   else if (step.kind !== 'idle') act({ kind: 'cancel' });
@@ -65,6 +74,20 @@ export function undoRedoOf(
       ? roofStep.corners.length > 0 || roofStep.wiped !== null
       : (roofStep.kind === 'idle' && Boolean(roofStep.left)) || (history?.past.length ?? 0) > 0;
   return { canUndo: back, canRedo: walks && (history?.future.length ?? 0) > 0 };
+}
+
+/**
+ * Which of Undo and Redo have come (`undoSlotsOf`), from what the history has held this session:
+ * kept when "Open theirs" starts the history again, so they keep their places in the tools.
+ */
+export function useUndoSlots(
+  editable: boolean,
+  roofStep: RoofStepState,
+  history: History<StudioDocument> | null,
+): UndoSlots {
+  const seen = useRef(NOTHING_SEEN);
+  seen.current = historySeenAfter(seen.current, history);
+  return undoSlotsOf(roofStep, editable ? seen.current : NOTHING_SEEN);
 }
 
 /** Drawing faces by hand, between two faces: no corner placed and none wiped to bring back. */

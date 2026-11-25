@@ -57,11 +57,14 @@
   pointer-events: auto;
 }
 
-/* The panels at the foot (a roof's sheet, Roofs, the material picker) are the glass's colour, solid:
+/* The panels (a roof's sheet, Roofs, the material picker, View; the pictures at a phone's foot) are
+   the glass's colour, solid:
    a person reads rows in them, so nothing of the map shows through, and nothing behind them is
    redrawn as the map moves. */
 .hg-studio-glass.hg-roof-sheet,
-.hg-studio-glass.hg-roofs-panel {
+.hg-studio-glass.hg-roofs-panel,
+.hg-studio-glass.hg-studio-view-panel,
+.hg-studio-glass.hg-studio-picker[data-at="foot"] {
   /* biome-ignore lint/plugin/raw-white-css: the glass's own colour, solid — a panel of rows is a card, as a tile is */
   background: var(--surface);
 }

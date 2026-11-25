@@ -7,6 +7,7 @@ import { type RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { useChromeRoom } from '../hooks/use-chrome-room';
 import { useDrawPress } from '../hooks/use-draw-press';
 import { useFacesFrame } from '../hooks/use-faces-frame';
+import { useFootSlot } from '../hooks/use-foot-slot';
 import { useKeyboardRoom } from '../hooks/use-keyboard-room';
 import { useMapKeys } from '../hooks/use-map-keys';
 import { useNewestFrame } from '../hooks/use-newest-frame';
@@ -107,7 +108,9 @@ export function StudioCanvas({
   const editable = editing.kind === 'editor';
   const drawing = roofStep.kind === 'drawing';
   const roofs = studio.shown?.roofs ?? [];
-  const parts = studio.focus(desktop === false && upright);
+  // An upright phone opens its panels at the foot, in the tools' place.
+  const phoneFoot = desktop === false && upright;
+  const parts = studio.focus(phoneFoot);
 
   // A tap on the map: in the top view it is the plan's, or it shows a length that gave way; in 3D
   // it opens the roof it lands on, met at each roof's own height.
@@ -156,6 +159,8 @@ export function StudioCanvas({
   useEffect(() => {
     if (landed !== null && frameOn !== landed) landingDone();
   }, [frameOn, landed, landingDone]);
+
+  const footSlot = useFootSlot(phoneFoot);
 
   return (
     <StudioFilePick studio={studio} words={words}>
@@ -245,6 +250,7 @@ export function StudioCanvas({
           onBack={onBack}
           onSite={onSite}
           phone={desktop === false}
+          foot={footSlot.node}
         />
         <StudioToolRail
           studio={studio}
@@ -257,6 +263,7 @@ export function StudioCanvas({
           newView={studio.offer3d}
           parts={parts}
           canWipe={studio.bar?.kind === 'drawing' && studio.bar.canWipe}
+          foot={footSlot.node}
           onWipe={moves.wipe}
           words={words}
           onView={moves.see}
@@ -299,6 +306,7 @@ export function StudioCanvas({
             words={words}
           />
         ) : null}
+        <div ref={footSlot.ref} className="hg-studio-foot-slot" />
         {studio.materialPicker === null ? null : (
           <StudioMaterialPicker
             footRef={bottom}

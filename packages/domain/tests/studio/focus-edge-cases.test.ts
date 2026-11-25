@@ -8,6 +8,7 @@ const FACTS: FocusFacts = {
   canEdit: true,
   hasRoof: true,
   saveFailed: false,
+  slots: { undo: true, redo: true },
 };
 const partsOf = (facts: Partial<FocusFacts>) => focusOf({ ...FACTS, ...facts });
 
@@ -31,7 +32,8 @@ describe('focus mode: the edge cases', () => {
       stepSwitcher: 'shown',
       magnet: 'hidden',
       wipe: 'hidden',
-      undoRedo: 'hidden',
+      undo: 'hidden',
+      redo: 'hidden',
       otherHandles: 'hidden',
       bottomBar: 'main',
     });

@@ -1,5 +1,5 @@
-import { gripCorner } from './roof-step';
-import type { RoofStepState } from './roof-step-state';
+import type { FocusJob } from './focus-job';
+import type { UndoSlots } from './undo-slots';
 import type { StudioView } from './views';
 
 /**
@@ -8,57 +8,6 @@ import type { StudioView } from './views';
  * back when the job ends. The picture's credit line never hides (the provider's terms). The screen
  * fades each part in and out; this file alone decides which.
  */
-
-/**
- * The job in hand. `looking` is no job: everything a person may use is there. `dragging` is a
- * corner (or a new one from a +), which the magnet guides; `moving` is the whole roof, moved or
- * turned.
- */
-export const FOCUS_JOBS = [
-  'looking',
-  'drawing',
-  'dragging',
-  'moving',
-  'sizing',
-  'typing',
-  'sheet',
-  /** A card of your picture's is open: North, the plan's or its unit (`T-M05-002d`). */
-  'picture',
-  /** Roofs or the material picker is open (`T-M05-002`, part e); a reader may open them too. */
-  'roofs',
-] as const;
-export type FocusJob = (typeof FOCUS_JOBS)[number];
-
-const JOB_OF_STEP: Record<RoofStepState['kind'], FocusJob> = {
-  idle: 'looking',
-  drawing: 'drawing',
-  sizing: 'sizing',
-  typing: 'typing',
-  dragging: 'dragging',
-};
-
-/**
- * The job the roof step has in hand. A drag holds a corner — or a new one from a + — which the
- * magnet guides, or the whole roof, moved or turned. A roof's sheet is the
- * studio's own job, beside the roof step.
- */
-export function focusJobOf(step: RoofStepState): FocusJob {
-  if (step.kind === 'dragging' && gripCorner(step.grip) === null) return 'moving';
-  return JOB_OF_STEP[step.kind];
-}
-
-/**
- * The studio's job in hand: what is open over the roof step comes first — Roofs or the material
- * picker, then a roof's sheet, then a card of your picture's.
- */
-export function studioJobOf(
-  step: FocusJob,
-  open: { readonly roofs: boolean; readonly sheet: boolean; readonly picture: boolean },
-): FocusJob {
-  if (open.roofs) return 'roofs';
-  if (open.sheet) return 'sheet';
-  return open.picture ? 'picture' : step;
-}
 
 /** What the studio shows of each part. `hidden` steps aside; every other value is on screen. */
 export interface FocusParts {
@@ -78,12 +27,17 @@ export interface FocusParts {
    * for the drags to come. A drag in hand keeps it as it was set (Alt frees one move).
    */
   readonly magnet: 'shown' | 'picked' | 'hidden';
-  /** Undo and Redo, or — while drawing, where Undo takes off a corner — Undo alone. */
-  readonly undoRedo: 'shown' | 'undo' | 'hidden';
+  /** Undo: once it has come (`undoSlotsOf`), while the job uses it. */
+  readonly undo: 'shown' | 'hidden';
+  /** Redo: once something was undone, and never while drawing, where Undo takes off a corner. */
+  readonly redo: 'shown' | 'hidden';
   /** The trash beside Undo that wipes every corner of the drawing. */
   readonly wipe: 'shown' | 'hidden';
-  /** The layers and the 2D/3D switch, or the switch alone. */
-  readonly layers: 'shown' | 'switch' | 'hidden';
+  /**
+   * The view menu and the 2D/3D switch; the switch alone; or the menu alone, before a roof stands,
+   * when 3D has nothing to show.
+   */
+  readonly layers: 'shown' | 'switch' | 'menu' | 'hidden';
   /** Zoom in and Zoom out. */
   readonly zoom: 'shown' | 'hidden';
   /** The north arrow. */
@@ -107,6 +61,8 @@ export interface FocusFacts {
   readonly hasRoof: boolean;
   /** The last save failed: its mark shows whatever the job. */
   readonly saveFailed: boolean;
+  /** Which of Undo and Redo have come (`undoSlotsOf`). */
+  readonly slots: UndoSlots;
 }
 
 const LOOKING_TOP: FocusParts = {
@@ -115,7 +71,8 @@ const LOOKING_TOP: FocusParts = {
   pencil: 'shown',
   roofs: 'shown',
   magnet: 'picked',
-  undoRedo: 'shown',
+  undo: 'shown',
+  redo: 'shown',
   wipe: 'hidden',
   layers: 'shown',
   zoom: 'shown',
@@ -126,14 +83,18 @@ const LOOKING_TOP: FocusParts = {
 };
 
 /** What a job keeps in the top view; the rest of the parts are the looking ones. */
-const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial<FocusParts>> = {
+const IN_A_JOB: Record<
+  Exclude<FocusJob, 'looking' | 'sheet' | 'roofs' | 'menu'>,
+  Partial<FocusParts>
+> = {
   drawing: {
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
     roofs: 'hidden',
     pencil: 'filled',
     magnet: 'shown',
-    undoRedo: 'undo',
+    undo: 'shown',
+    redo: 'hidden',
     wipe: 'shown',
     layers: 'hidden',
     zoom: 'hidden',
@@ -147,7 +108,8 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial
     roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
-    undoRedo: 'hidden',
+    undo: 'hidden',
+    redo: 'hidden',
     layers: 'hidden',
     zoom: 'hidden',
     otherHandles: 'hidden',
@@ -159,7 +121,8 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial
     roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
-    undoRedo: 'hidden',
+    undo: 'hidden',
+    redo: 'hidden',
     layers: 'hidden',
     zoom: 'hidden',
     otherHandles: 'hidden',
@@ -171,7 +134,8 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial
     roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
-    undoRedo: 'hidden',
+    undo: 'hidden',
+    redo: 'hidden',
     layers: 'hidden',
     zoom: 'hidden',
     otherHandles: 'hidden',
@@ -186,7 +150,8 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial
     roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
-    undoRedo: 'hidden',
+    undo: 'hidden',
+    redo: 'hidden',
     layers: 'hidden',
     otherHandles: 'hidden',
     // The rectangle's own lengths show; the other roofs' would crowd it at a shared wall.
@@ -216,9 +181,12 @@ const IN_3D: Partial<FocusParts> = {
  * (board 6.1); on a desktop it stands between the tool columns, and they stay.
  */
 const ROOFS_ON_PHONE: Partial<FocusParts> = {
+  magnet: 'hidden',
+  wipe: 'hidden',
   pencil: 'hidden',
   roofs: 'hidden',
-  undoRedo: 'hidden',
+  undo: 'hidden',
+  redo: 'hidden',
   layers: 'hidden',
   zoom: 'hidden',
   bottomBar: 'hidden',
@@ -232,14 +200,24 @@ const AT_THE_FOOT: readonly FocusJob[] = ['roofs', 'sheet'];
 const EDIT_PARTS: Partial<FocusParts> = {
   magnet: 'hidden',
   wipe: 'hidden',
-  undoRedo: 'hidden',
+  undo: 'hidden',
+  redo: 'hidden',
   otherHandles: 'hidden',
 };
 
+/** The jobs a reader may open too: they only show. */
+const OPEN_TO_READERS: readonly FocusJob[] = ['roofs', 'menu'];
+
+/** What a job that opens at the foot takes from the other parts. */
+function atTheFoot(job: FocusJob, phone: boolean): Partial<FocusParts> {
+  if (AT_THE_FOOT.includes(job)) return phone ? ROOFS_ON_PHONE : ROOFS_ON_DESKTOP;
+  // A menu opens at the foot only on a phone; beside its button nothing else moves.
+  return job === 'menu' && phone ? ROOFS_ON_PHONE : {};
+}
+
 function partsOfJob(facts: FocusFacts): FocusParts {
-  const job = facts.canEdit || facts.job === 'roofs' ? facts.job : 'looking';
-  const atFoot = AT_THE_FOOT.includes(job);
-  const roofs = atFoot ? (facts.phone ? ROOFS_ON_PHONE : ROOFS_ON_DESKTOP) : {};
+  const job = facts.canEdit || OPEN_TO_READERS.includes(facts.job) ? facts.job : 'looking';
+  const roofs = atTheFoot(job, facts.phone);
   if (facts.view !== 'top') {
     const sheet: Partial<FocusParts> =
       job === 'sheet'
@@ -252,7 +230,7 @@ function partsOfJob(facts: FocusFacts): FocusParts {
       ...roofs,
     };
   }
-  if (job === 'roofs' || job === 'sheet') return { ...LOOKING_TOP, ...roofs };
+  if (job === 'roofs' || job === 'sheet' || job === 'menu') return { ...LOOKING_TOP, ...roofs };
   if (job === 'looking') return LOOKING_TOP;
   const parts = { ...LOOKING_TOP, ...IN_A_JOB[job] };
   // On a phone the slider, or the keyboard, takes the low screen: the compass steps aside.
@@ -266,9 +244,16 @@ export function focusOf(facts: FocusFacts): FocusParts {
   const parts = partsOfJob(facts);
   // Roofs has nothing to open until a roof stands. A reader draws nothing, and opens Roofs.
   const roofs = facts.hasRoof ? parts.roofs : 'hidden';
-  const own = facts.canEdit
-    ? { ...parts, roofs }
-    : { ...parts, ...EDIT_PARTS, pencil: 'hidden' as const, roofs };
+  // 3D has nothing to show before a roof stands: the view menu stays, the switch waits.
+  const layers = facts.hasRoof || parts.layers !== 'shown' ? parts.layers : 'menu';
+  const slotted = {
+    ...parts,
+    roofs,
+    layers,
+    undo: facts.slots.undo ? parts.undo : ('hidden' as const),
+    redo: facts.slots.redo ? parts.redo : ('hidden' as const),
+  };
+  const own = facts.canEdit ? slotted : { ...slotted, ...EDIT_PARTS, pencil: 'hidden' as const };
   const stepSwitcher =
     own.stepSwitcher === 'hidden' && facts.saveFailed ? 'mark' : own.stepSwitcher;
   return { ...own, stepSwitcher };
