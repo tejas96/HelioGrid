@@ -100,6 +100,7 @@ export function Slider({
   const off = (direction: -1 | 1) =>
     stepperOff(direction, value, min, max, disabled) || stepped(direction) === null;
   const onTrack = ticksOnTrack(ticks, min, max);
+  const named = onTrack.filter(({ tick }) => tick.label !== undefined);
 
   return (
     <View style={style}>
@@ -146,13 +147,13 @@ export function Slider({
           />
         ) : null}
       </View>
-      {onTrack.length === 0 ? null : (
+      {named.length === 0 ? null : (
         <View
           style={[styles.ticks, steppers ? styles.ticksBesideSteppers : undefined]}
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
         >
-          {onTrack.map(({ tick, percent: at }) => (
+          {named.map(({ tick, percent: at }) => (
             <View key={tick.value} style={[styles.tickWord, { left: `${at}%` }]}>
               <Text variant="caption" color="secondary" style={styles.tickText}>
                 {tick.label}

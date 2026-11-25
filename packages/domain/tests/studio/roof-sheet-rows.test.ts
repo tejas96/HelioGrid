@@ -29,6 +29,18 @@ describe('the height slider’s floors', () => {
     expect(found[0]?.floor).toBe(first);
   });
 
+  it('every floor of a house’s slider has its word', () => {
+    expect(ticks.every((tick) => tick.named)).toBe(true);
+  });
+
+  it('a tall slider names one floor in three, from G, so the words never crowd', () => {
+    const tall = floorTicks(plinth, storey, { min: 2, max: 60 });
+    expect(tall).toHaveLength(19);
+    expect(tall.filter((tick) => tick.named).map((tick) => tick.floor)).toEqual([
+      0, 3, 6, 9, 12, 15, 18,
+    ]);
+  });
+
   it('a market with no storey has no floors', () => {
     expect(floorTicks(plinth, 0, SLIDE)).toEqual([]);
   });

@@ -27,7 +27,12 @@ export interface FloorTick {
   readonly metres: number;
   /** 0 for G, 1 for G+1, … */
   readonly floor: number;
+  /** Its word shows under the track: every floor of a house, one in a few of a tall block's. */
+  readonly named: boolean;
 }
+
+/** The most floor words under the track before they crowd a phone's sheet. */
+const NAMED_FLOORS_MAX = 8;
 
 /** Which way a sloped roof runs down, in words: one way, or the ways its faces look. */
 /** A way a slope runs down, as a word and in whole degrees clockwise from north (E097). */
@@ -193,14 +198,15 @@ export function floorTicks(
   storeyM: number,
   slide: { readonly min: number; readonly max: number },
 ): FloorTick[] {
-  const ticks: FloorTick[] = [];
-  if (!(storeyM > 0)) return ticks;
+  if (!(storeyM > 0)) return [];
+  const floors: { metres: number; floor: number }[] = [];
   for (let floor = 0; ; floor += 1) {
     const metres = Math.round((plinthM + storeyM * (floor + 1)) * 100) / 100;
     if (metres > slide.max) break;
-    if (metres >= slide.min) ticks.push({ metres, floor });
+    if (metres >= slide.min) floors.push({ metres, floor });
   }
-  return ticks;
+  const every = Math.ceil(floors.length / NAMED_FLOORS_MAX);
+  return floors.map((at) => ({ ...at, named: at.floor % every === 0 }));
 }
 
 /** A height this near a floor stands on it. */

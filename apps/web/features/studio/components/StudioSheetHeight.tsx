@@ -67,7 +67,7 @@ export function HeightRow({
             mark={sheet.systemMetres}
             ticks={rows.height.ticks.map((tick) => ({
               value: tick.metres,
-              label: words.floor(tick.floor),
+              ...(tick.named ? { label: words.floor(tick.floor) } : {}),
             }))}
             label={label}
             labelSpokenOnly

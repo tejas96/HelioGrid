@@ -15,7 +15,8 @@ export interface SliderWords {
 /** A named point on the track: a roof's floor, G, G+1… */
 export interface SliderTick {
   readonly value: number;
-  readonly label: TranslatedText;
+  /** Its word under the track; without one the tick is a mark only, so many ticks never crowd. */
+  readonly label?: TranslatedText;
 }
 
 export interface SliderProps {

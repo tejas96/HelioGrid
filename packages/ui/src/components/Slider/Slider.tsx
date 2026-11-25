@@ -93,6 +93,7 @@ export function Slider({
   const off = (direction: -1 | 1) =>
     stepperOff(direction, value, min, max, disabled) || stepped(direction) === null;
   const onTrack = ticksOnTrack(ticks, min, max);
+  const named = onTrack.filter(({ tick }) => tick.label !== undefined);
   /* A props object or a bare tier — `Provenance`'s own resolver decides, at the
      12px type floor. `"unmarked"` comes back null and the slot collapses. */
   const provenanceNode = renderProvenance(provenance, { size: 12 });
@@ -168,9 +169,9 @@ export function Slider({
           />
         ) : null}
       </div>
-      {onTrack.length === 0 ? null : (
+      {named.length === 0 ? null : (
         <div className="hg-slider-ticks" data-steppers={steppers} aria-hidden="true">
-          {onTrack.map(({ tick, percent: at }) => (
+          {named.map(({ tick, percent: at }) => (
             <span key={tick.value} className="hg-slider-tick-word" style={{ left: `${at}%` }}>
               {tick.label}
             </span>
