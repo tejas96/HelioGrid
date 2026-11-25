@@ -2207,11 +2207,6 @@ msgid "{name} has waited a day with no owner"
 msgstr "{name} एक दिन से किसी को नहीं सौंपी गई"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:21
-msgid "{name} height: {height}"
-msgstr "{name} की ऊँचाई: {height}"
-
-#. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:37
 msgid "{name} in {roof}"
 msgstr "{roof} में {name}"
@@ -3831,12 +3826,12 @@ msgid "A good moment to call. No message delivery is claimed."
 msgstr "कॉल करने का अच्छा समय है। संदेश पहुँचने का दावा नहीं किया जाता।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:22
+#: src/copy/studio-height.ts:20
 msgid "A height is at least {height}."
 msgstr "ऊँचाई कम से कम {height} हो।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:23
+#: src/copy/studio-height.ts:21
 msgid "A height is at most {height}."
 msgstr "ऊँचाई ज़्यादा से ज़्यादा {height} हो।"
 
@@ -7007,7 +7002,7 @@ msgstr "बंद करें"
 #: src/copy/proposal-defaults-words.ts:66
 #: src/copy/roles-reference.ts:41
 #: src/copy/shell.ts:52
-#: src/copy/studio-height.ts:19
+#: src/copy/studio-height.ts:18
 #: src/copy/studio-picture.ts:34
 #: src/copy/studio-roof-list.ts:41
 #: src/copy/usage-page.ts:94
@@ -8746,7 +8741,7 @@ msgstr "हो गया"
 #: src/copy/proposal-builder-sheets.ts:272
 #: src/copy/proposal-defaults-words.ts:28
 #: src/copy/studio-canvas.ts:53
-#: src/copy/studio-height.ts:18
+#: src/copy/studio-height.ts:17
 msgid "Done"
 msgstr "हो गया"
 
@@ -8848,7 +8843,7 @@ msgid "Drag the map until the pin is on the right place."
 msgstr "नक्शा तब तक खींचें जब तक पिन सही जगह पर न आ जाए।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-height.ts:20
+#: src/copy/studio-height.ts:19
 msgid "Drag to change the height of {name}"
 msgstr "{name} की ऊँचाई बदलने के लिए खींचें"
 

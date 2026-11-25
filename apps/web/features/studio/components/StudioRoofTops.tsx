@@ -1,13 +1,10 @@
 'use client';
 import type { StudioScreen } from '@heliogrid/data/react';
-import type { MeasurementSystem, RoofKind, RoofName } from '@heliogrid/domain';
+import type { MeasurementSystem, RoofName } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { Pressable, useFormat } from '@heliogrid/ui';
+import { useFormat } from '@heliogrid/ui';
 import { pointText } from './roof-marks-place';
 import { Crossings, DragArrow, LitSide, RidgeArrow } from './StudioRoofArrows';
-
-/** The kinds whose top carries no height pill. */
-const NO_HEIGHT: readonly RoofKind[] = ['hole', 'dormer'];
 
 /**
  * The open roof's own height arrow: a drag up or down changes its height, the walls follow; let
@@ -51,10 +48,43 @@ function HeightArrow({
   );
 }
 
+/** The open roof's own mark: its height arrow, or on a side's sheet that side lit. */
+function OpenRoofMarks({
+  studio,
+  words,
+  units,
+  index,
+}: {
+  studio: StudioScreen;
+  words: StudioCanvasWords;
+  units: MeasurementSystem;
+  index: number;
+}) {
+  const roof = studio.roofMarks[index];
+  if (roof === undefined) return null;
+  // A side's sheet shows its own wall's arrow; the roof's shows its height and its ridge.
+  if (studio.sheetPart.kind === 'side') {
+    return <LitSide studio={studio} marks={roof} units={units} words={words} />;
+  }
+  return (
+    <HeightArrow
+      studio={studio}
+      words={words}
+      units={units}
+      name={studio.topMarks[index]?.name ?? { kind: 'roof', number: index + 1 }}
+      middle={pointText(roof.middle)}
+      metres={studio.heights[index]?.metres ?? 0}
+      // A roof on another stands on that roof: its marks sit at its top above the ground.
+      top={studio.scene.levels[index]?.topM ?? 0}
+    />
+  );
+}
+
 /**
- * The marks on the roofs in 3D (`T-M05-002`, part b): the result and its height only — each roof's
- * height on its top, a tap on it opening the roof's sheet; the open roof wears a blue ring, a soft
- * fill and the blue arrow. No outline, no length, no corner, no handle.
+ * The marks on the roofs in 3D (`T-M05-002`, part b): none on a roof at rest — a tap on the roof
+ * itself opens its sheet, and the Roofs list opens it from the keyboard; the open roof wears a
+ * blue ring, a soft fill and the blue arrow with its height. No outline, no length, no corner, no
+ * handle.
  */
 export function StudioRoofTops({
   studio,
@@ -113,51 +143,9 @@ export function StudioRoofTops({
           </span>
         </span>
       )}
-      {studio.roofMarks.map((roof, index) => {
-        const metres = studio.heights[index]?.metres ?? 0;
-        // A roof on another stands on that roof: its marks sit at its top above the ground.
-        const top = studio.scene.levels[index]?.topM ?? 0;
-        const name = studio.topMarks[index]?.name ?? { kind: 'roof' as const, number: index + 1 };
-        const middle = pointText(roof.middle);
-        if (index === open && editable) {
-          // A side's sheet shows its own wall's arrow; the roof's shows its height and its ridge.
-          if (studio.sheetPart.kind === 'side') {
-            return (
-              <LitSide key={roof.id} studio={studio} marks={roof} units={units} words={words} />
-            );
-          }
-          return (
-            <HeightArrow
-              key={roof.id}
-              studio={studio}
-              words={words}
-              units={units}
-              name={name}
-              middle={middle}
-              metres={metres}
-              top={top}
-            />
-          );
-        }
-        // A hole and a dormer have no height of their own to set: a hole is open down to the floor
-        // below, and a dormer's ridge follows the roof it sits on.
-        if (NO_HEIGHT.includes(studio.topMarks[index]?.kind ?? 'building')) return null;
-        const height = format.roofHeight(metres, units);
-        return (
-          <span key={roof.id} className="hg-roof-at" data-at={middle} data-top={top}>
-            <Pressable
-              className="hg-roof-hit"
-              accessibilityLabel={words.heightOf(name, height)}
-              ripple="none"
-              onPress={() => studio.moves.openRoof(index)}
-            >
-              <span className="hg-roof-height" data-open={index === open}>
-                {words.heightPill(height)}
-              </span>
-            </Pressable>
-          </span>
-        );
-      })}
+      {open === null || !editable ? null : (
+        <OpenRoofMarks studio={studio} words={words} units={units} index={open} />
+      )}
       <RidgeArrow studio={studio} units={units} words={words} />
       <Crossings studio={studio} words={words} />
     </>

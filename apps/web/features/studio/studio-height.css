@@ -1,22 +1,5 @@
-/* The 3D view's marks and a roof's sheet (`T-M05-002`, part b, the board's 5.1 to 5.3): each roof's
-   height on its top, the open roof's blue ring, soft fill and blue arrow, and the sheet. */
-
-/* A roof's height on its top: an up arrow and the number, on a dark pill; a tap opens the sheet. */
-.hg-roof-height {
-  display: inline-flex;
-  align-items: center;
-  block-size: var(--sp-6);
-  padding-inline: var(--sp-2);
-  border-radius: var(--r-pill);
-  background: var(--scene-shade);
-  color: var(--scene-mark);
-  font-family: var(--font-mono);
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-medium);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  box-shadow: var(--e2);
-}
+/* The 3D view's marks and a roof's sheet (`T-M05-002`, part b, the board's 5.1 to 5.3): the open
+   roof's blue ring, soft fill and blue arrow, and the sheet. A roof at rest carries no mark. */
 
 /* The open roof: a blue ring round its top and a soft blue fill; both fade in once. */
 .hg-roof-lines .hg-roof-picked-fill {
