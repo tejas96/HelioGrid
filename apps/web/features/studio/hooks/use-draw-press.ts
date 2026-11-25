@@ -3,6 +3,7 @@ import { type StudioScreen, useAimHold } from '@heliogrid/data/react';
 import type { GroundPoint } from '@heliogrid/domain';
 import { type PointerEvent, type RefObject, useEffect, useRef, useState } from 'react';
 import type { StudioDrive } from '../components/StudioCameraRig';
+import { pointerScaleAt } from '../snap-reach';
 
 /** A press that moves less than this, in CSS pixels, is a tap; more moves the map. */
 const TAP_PX = 6;
@@ -112,7 +113,7 @@ export function useDrawPress(
       if (press.current?.moved !== false) return;
       drive.current?.hold(true);
       setAim({ x, y });
-      moves.hover(groundAt(x, y));
+      moves.hover(groundAt(x, y), pointerScaleAt(drive.current, x, y, true));
     });
   };
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
@@ -124,7 +125,13 @@ export function useDrawPress(
     if (!drawing) return;
     if (aim !== null) setAim({ x: event.clientX, y: event.clientY });
     const hovering = aim !== null || (event.pointerType === 'mouse' && event.buttons === 0);
-    if (hovering) moves.hover(groundAt(event.clientX, event.clientY));
+    if (hovering) {
+      const { clientX: x, clientY: y } = event;
+      moves.hover(
+        groundAt(x, y),
+        pointerScaleAt(drive.current, x, y, event.pointerType !== 'mouse'),
+      );
+    }
   };
   const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
     const held = press.current;
@@ -135,8 +142,10 @@ export function useDrawPress(
     if (!drawing) onTapAt(event.clientX, event.clientY);
     // In 3D a tap is the roofs' own (their sheet): the ground under it is not what was tapped.
     if (studio.view !== 'top') return;
-    const at = groundAt(event.clientX, event.clientY);
-    if (at !== null) moves.tap(at);
+    const { clientX: x, clientY: y } = event;
+    const at = groundAt(x, y);
+    if (at !== null)
+      moves.tap(at, pointerScaleAt(drive.current, x, y, event.pointerType !== 'mouse'));
   };
   // Esc puts back what is in hand: the draft (one Undo takes it up again), the length in the box, a
   // drag, a picked corner. Backspace takes the

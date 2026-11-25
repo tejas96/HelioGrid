@@ -33,7 +33,7 @@ export function DrawPill({
   words,
 }: PillFacts & { bar: Extract<RoofBar, { kind: 'drawing' }> }) {
   const format = useFormat();
-  const shown = roofWordsShown(format, studio.units, studio.startHeightM);
+  const shown = roofWordsShown(format, studio.units, studio.startHeightM, studio.topMarks);
   const refusal = bar.refused === null ? null : words.drawRefusal(bar.refused, shown);
   return (
     <>
@@ -47,6 +47,12 @@ export function DrawPill({
           {words.typeSize}
         </Button>
       ) : null}
+      {/* Follow, only while it can act: the shared wall's corners, and the roof closes (board 8). */}
+      {bar.follow === null ? null : (
+        <Button variant="secondary" size="md" onClick={studio.moves.follow}>
+          {words.follow(bar.follow, shown.roofName)}
+        </Button>
+      )}
       {bar.canClose ? (
         <Button
           variant="primary"

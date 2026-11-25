@@ -69,6 +69,24 @@ describe('stopping a drawing, deleting a roof', () => {
     await waitFor(() => expect(stored.saves.at(-1)?.roofs).toHaveLength(2));
   });
 
+  it('Follow adds the shared corner and closes the roof along the wall, as one save', async () => {
+    const view = await opened([RECTANGLE]);
+    act(() => view.result.current.moves.draw());
+    for (const at of [
+      { east: 8, north: 4 },
+      { east: 15, north: 4 },
+      { east: 15, north: -2 },
+      { east: 4, north: -2 },
+      { east: 4, north: 0 },
+    ]) {
+      act(() => view.result.current.moves.tap(at));
+    }
+    act(() => view.result.current.moves.follow());
+    expect(view.result.current.document?.roofs[1]?.corners).toContainEqual({ east: 8, north: 0 });
+    expect(view.result.current.roofStep.kind).not.toBe('drawing');
+    await waitFor(() => expect(stored.saves.at(-1)?.roofs).toHaveLength(2));
+  });
+
   it('the trash on a picked roof is one save; Undo brings the roof back', async () => {
     const view = await opened([RECTANGLE]);
     act(() => view.result.current.moves.tap({ east: 4, north: 3 }));

@@ -110,7 +110,7 @@ function stairsMessage(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts
 /** With a roof: a roof just closed is a card with its kind and chips; else a moment's words. */
 function roofsMessage(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts): BarView | null {
   const { words, format, units, studio, view } = facts;
-  const shown = roofWordsShown(format, units, studio.startHeightM);
+  const shown = roofWordsShown(format, units, studio.startHeightM, studio.topMarks);
   const line = view === 'top' ? studio.kindLine : null;
   const kind = line === null ? null : words.kindLine(line, shown);
   if (kind !== null) {
@@ -147,7 +147,11 @@ function startMessage(facts: BarFacts): BarView | null {
   const { picture, bar } = studio;
   const said = bar?.kind === 'start' ? bar.said : null;
   if (said !== null) {
-    const deleted = words.roofLine(said, false, roofWordsShown(format, units, studio.startHeightM));
+    const deleted = words.roofLine(
+      said,
+      false,
+      roofWordsShown(format, units, studio.startHeightM, studio.topMarks),
+    );
     if (deleted !== null) return message(`start-${saidId(said)}`, { tone: 'info', line: deleted });
   }
   if (picture.kind !== 'none') return null;

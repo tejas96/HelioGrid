@@ -1,5 +1,10 @@
 'use client';
-import { type PlanShown, type StudioPicture, useSceneDetail } from '@heliogrid/data/react';
+import {
+  type PlanShown,
+  type StudioPicture,
+  type StudioScreen,
+  useSceneDetail,
+} from '@heliogrid/data/react';
 import type { GroundBox, RoofScene, SceneMotion, StudioView, SunPosition } from '@heliogrid/domain';
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
@@ -139,8 +144,8 @@ export interface StudioSceneProps {
   /** The room the bars take at the top and the foot, in CSS pixels: the view frames the rest. */
   free: { readonly top: number; readonly bottom: number };
   still: boolean;
-  /** A panel opened at the foot (Roofs, the picker): the view stays still while the roofs stay clear of it. */
-  keepView: boolean;
+  /** The view stays still as the bars change (drawing, Roofs, the picker) while `clear` is in sight. */
+  heldView: StudioScreen['heldView'];
   /** The page's pin marker, which the scene keeps on the pin as the camera moves. */
   pinLabel: RefObject<HTMLElement | null>;
   /** What shows where the device cannot draw 3D. */
@@ -184,7 +189,7 @@ export function StudioScene({
   palette,
   free,
   still,
-  keepView,
+  heldView,
   pinLabel,
   fallback,
   drive,
@@ -286,7 +291,7 @@ export function StudioScene({
         view={view}
         free={free}
         still={still}
-        keepView={keepView}
+        heldView={heldView}
         clear={scaledBox(clearGroundOf(picture), pictureScale)}
         metresPerPixel={picture.kind === 'sky' ? picture.metresPerPixel * pictureScale : null}
         drive={drive}

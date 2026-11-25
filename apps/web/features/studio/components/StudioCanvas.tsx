@@ -61,9 +61,7 @@ function footRefsOf(
   foot: RefObject<HTMLDivElement | null>,
 ) {
   const of = (part: typeof holder) => (holder === part ? foot : null);
-  // Roofs and the picker leave the view where it is while the roofs stay clear of them.
-  const keepsView = holder === 'roofs' || holder === 'picker';
-  return { sheet: of('sheet'), roofs: of('roofs'), bar: of('bar'), keepsView };
+  return { sheet: of('sheet'), roofs: of('roofs'), bar: of('bar') };
 }
 
 /**
@@ -188,7 +186,7 @@ export function StudioCanvas({
             palette={palette}
             free={room}
             still={still}
-            keepView={foot.keepsView}
+            heldView={studio.heldView}
             pinLabel={pin}
             fallback={<p className="hg-studio-no-scene">{words.noScene}</p>}
             drive={drive}

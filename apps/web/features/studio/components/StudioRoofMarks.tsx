@@ -74,6 +74,17 @@ function tagOf(
   return tag === null ? null : { ...tag, at: pointText(studio.dragTagAt) };
 }
 
+/** The magnet's mark on the spot it holds: a ring where two lines cross, a diamond on a middle. */
+function SnapMark({ mark }: { mark: StudioScreen['snapMark'] }) {
+  if (mark === null) return null;
+  const at = pointText(mark.at);
+  return (
+    <span key={at} className="hg-roof-at" data-at={at}>
+      <span className="hg-roof-snap" data-mark={mark.mark} />
+    </span>
+  );
+}
+
 /** A held length's circle as a closed line of ground points, fine enough to read as round. */
 const CIRCLE_STEPS = 72;
 function circlePoints({ centre, metres }: HeldCircle): string {
@@ -112,7 +123,7 @@ function RoofLines({ studio, drawing }: { studio: StudioScreen; drawing: boolean
           data-closed="true"
         />
       )}
-      {studio.guides.map(({ through, way }) => {
+      {studio.guides.map(({ through, way, soft }) => {
         const from = pointText({
           east: through.east - way.east * GUIDE_REACH_M,
           north: through.north - way.north * GUIDE_REACH_M,
@@ -121,7 +132,14 @@ function RoofLines({ studio, drawing }: { studio: StudioScreen; drawing: boolean
           east: through.east + way.east * GUIDE_REACH_M,
           north: through.north + way.north * GUIDE_REACH_M,
         });
-        return <path key={`${from};${to}`} className="hg-roof-guide" data-pts={`${from};${to}`} />;
+        return (
+          <path
+            key={`${from};${to}`}
+            className="hg-roof-guide"
+            data-soft={soft === true ? 'true' : undefined}
+            data-pts={`${from};${to}`}
+          />
+        );
       })}
       {studio.heldCircle === null ? null : (
         <path
@@ -235,7 +253,7 @@ export function StudioRoofMarks({
   useLayoutEffect(() => {
     if (lastPlace.current !== null) place(lastPlace.current);
   });
-  const shown = roofWordsShown(format, units, studio.startHeightM);
+  const shown = roofWordsShown(format, units, studio.startHeightM, studio.topMarks);
   const { roofStep: step, draft, roofMarks } = studio;
   if (view !== 'top') {
     return (
@@ -301,6 +319,7 @@ export function StudioRoofMarks({
           onOverFirst={studio.moves.hover}
         />
       )}
+      <SnapMark mark={studio.snapMark} />
       {tag === null ? null : (
         <span className="hg-roof-at" data-at={tag.at} data-tag="true">
           <span className="hg-roof-tag" data-tone={tag.bad ? 'bad' : undefined} role="status">

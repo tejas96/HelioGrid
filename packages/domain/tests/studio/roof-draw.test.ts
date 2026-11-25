@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { Roof } from '../../src/studio/document';
 import type { GroundPoint } from '../../src/studio/ground';
 import { draftClose, draftClosesAt, draftGhost, draftTap } from '../../src/studio/roof-draw';
-import { draftSpot, magnetOf, NO_SNAP_TARGETS, snapTargetsOf } from '../../src/studio/roof-snap';
+import { magnetOf, NO_SNAP_TARGETS, snapTargetsOf } from '../../src/studio/roof-snap';
+import { draftSpot } from '../../src/studio/roof-snap-spot';
 
 const p = (east: number, north: number): GroundPoint => ({ east, north });
 const near = (a: GroundPoint, b: GroundPoint) => {
@@ -120,10 +121,10 @@ describe('drawing a roof: where a tap lands', () => {
       p(8, 6),
     ],
     [
-      '0.4 m off roof 1’s edge: snaps onto it',
-      p(8.4, 3),
+      '0.4 m off roof 1’s edge, off its middle: snaps onto it',
+      p(8.4, 2),
       { kind: 'edge_of', owner: { kind: 'roof', roof: 0 } },
-      p(8, 3),
+      p(8, 2),
     ],
     ['0.6 m off: free', p(8.6, 3), null, p(8.6, 3)],
   ] as const)('%s', (_name, at, snap, point) => {

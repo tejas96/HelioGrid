@@ -53,6 +53,13 @@ export function StudioDraftMarks({
             />
           </>
         ) : null}
+        {/* Follow's path: the shared wall's corners the slim pill's Follow would add. */}
+        {draft.follow !== null && last !== undefined && draft.corners[0] !== undefined ? (
+          <path
+            className="hg-roof-ghost"
+            data-pts={[last, ...draft.follow.corners, draft.corners[0]].map(pointText).join(';')}
+          />
+        ) : null}
         {draft.ghost !== null && last !== undefined && draft.corners[0] !== undefined ? (
           <path
             className="hg-roof-ghost"

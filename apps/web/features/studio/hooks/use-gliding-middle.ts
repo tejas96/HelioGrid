@@ -9,17 +9,17 @@ import { eased } from '../components/StudioRoofMotion';
 /** Room kept between the roofs and a panel's top edge, in CSS pixels, before the view must move. */
 const CLEAR_PX = 16;
 
-/** Whether every corner of the roofs' ground lands in the free room on the screen. */
+/** Whether every corner of the held ground lands in the free room on the screen. */
 function roofsClear(
   camera: PerspectiveCamera,
-  fit: GroundBox,
+  ground: GroundBox,
   size: { readonly width: number; readonly height: number },
   free: { readonly top: number; readonly bottom: number },
 ): boolean {
   camera.updateMatrixWorld();
   const corner = new Vector3();
-  for (const east of [fit.west, fit.east]) {
-    for (const north of [fit.south, fit.north]) {
+  for (const east of [ground.west, ground.east]) {
+    for (const north of [ground.south, ground.north]) {
       corner.set(east, 0, -north).project(camera);
       const y = ((1 - corner.y) / 2) * size.height;
       if (y < free.top + CLEAR_PX || y > size.height - free.bottom - CLEAR_PX) return false;
@@ -30,8 +30,9 @@ function roofsClear(
 
 /**
  * The view's middle in the free room between the bars (a platform adapter). The map moves only when
- * it must: a panel opened at the foot (Roofs, the picker) leaves the view where it is while the
- * roofs stay clear of it, and the view comes back to the same place as the panel closes. Otherwise
+ * it must: while a roof is drawn, or Roofs or the picker is open, the bars changing leave the view
+ * where it is while what is drawn stays clear of them — a corner tapped stays under the finger —
+ * and the view comes back to the middle once that ends. Otherwise
  * the middle glides over the emphasised duration as the panel slides, never a jump of the whole
  * picture. Under reduced motion, and on the first measure, it is there at once.
  */
@@ -41,8 +42,8 @@ export function useGlidingMiddle(
   free: { readonly top: number; readonly bottom: number },
   how: {
     readonly still: boolean;
-    readonly keep: boolean;
-    readonly fit: GroundBox | null;
+    /** The view held still as the bars change, while its ground stays clear of them; `null` settles it. */
+    readonly held: { readonly clear: GroundBox | null } | null;
     /** The view on show: a new one is laid again, never kept. */
     readonly view: string;
     /** The camera is still flying to a pose: what it shows now is not where it lands. */
@@ -54,8 +55,9 @@ export function useGlidingMiddle(
   // What the middle was last laid for: kept only while the screen and the view stay the same.
   const laidFor = useRef('');
   const { width, height } = size;
-  const { still, keep, fit, view, flying } = how;
-  // biome-ignore lint/correctness/useExhaustiveDependencies: the room and the panel are what move the middle; the roofs' box is read as it stands
+  const { still, held, view, flying } = how;
+  const holding = held !== null;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the room and the hold are what move the middle; the held ground is read as it stands
   useEffect(() => {
     camera.fov = fieldOfView();
     const now = `${width}x${height}:${view}`;
@@ -72,10 +74,9 @@ export function useGlidingMiddle(
     if (
       from !== null &&
       same &&
-      keep &&
-      fit !== null &&
+      held !== null &&
       !flying() &&
-      roofsClear(camera, fit, size, free)
+      (held.clear === null || roofsClear(camera, held.clear, size, free))
     ) {
       invalidate();
       return;
@@ -94,5 +95,5 @@ export function useGlidingMiddle(
     };
     frame = requestAnimationFrame(step);
     return () => cancelAnimationFrame(frame);
-  }, [free.top, free.bottom, width, height, camera, invalidate, still, keep, view]);
+  }, [free.top, free.bottom, width, height, camera, invalidate, still, holding, view]);
 }

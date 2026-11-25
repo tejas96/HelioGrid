@@ -5,7 +5,6 @@ import {
   type RoofName,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
-import { shownAsSent } from './assembled';
 import { roofNameWord } from './studio-roof-kinds';
 
 type T = Translator['t'];
@@ -18,7 +17,6 @@ const HEIGHT = {
   sheetDone: /*i18n*/ { id: 'Done' },
   sheetClose: /*i18n*/ { id: 'Close' },
   heightArrow: /*i18n*/ { id: 'Drag to change the height of {name}' },
-  heightOf: /*i18n*/ { id: '{name} height: {height}' },
   heightLow: /*i18n*/ { id: 'A height is at least {height}.' },
   heightHigh: /*i18n*/ { id: 'A height is at most {height}.' },
 } as const;
@@ -31,11 +29,6 @@ export function studioHeightWords(t: T) {
     sheetDone: t(HEIGHT.sheetDone),
     sheetClose: t(HEIGHT.sheetClose),
     heightArrow: (name: RoofName) => t(HEIGHT.heightArrow, { name: roofNameWord(t, name) }),
-    /** A roof's height spoken: the pill on its top shows the arrow and the number alone. */
-    heightOf: (name: RoofName, height: string) =>
-      t(HEIGHT.heightOf, { name: roofNameWord(t, name), height }),
-    /** The pill on a roof's top: an up arrow and the height, never translated. */
-    heightPill: (height: string) => shownAsSent(`↑ ${height}`),
     /** Why a typed height is not kept: its limit already formatted by `heightOf`. */
     heightRefusal: (refusal: EditRefusal, heightOf: (metres: number) => string) =>
       refusal === 'too_long'

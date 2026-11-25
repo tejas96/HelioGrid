@@ -7,7 +7,13 @@ export type {
   SheetPart,
   SheetRowKey,
 } from './roof-sheet-rows-view';
-export type { RoofMoves, RoofPlaceMoves, RoofStepView, SizeCardView } from './roof-step-view';
+export type {
+  PointerScale,
+  RoofMoves,
+  RoofPlaceMoves,
+  RoofStepView,
+  SizeCardView,
+} from './roof-step-view';
 export type { RoofsPanelMoves, RoofsPanelView } from './roofs-panel-view';
 export type { StudioEditing, StudioPicture } from './studio-document-state';
 export type { StudioMoments } from './studio-haptics';

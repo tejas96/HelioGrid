@@ -5,12 +5,13 @@ import { cornerOffRoof, handFaceTargets } from './roof-hand-faces';
 import { roofWithItsParts } from './roof-kind';
 import { roofPickedAt } from './roof-pick';
 import {
-  draftSpot,
   NO_SNAP_TARGETS,
+  SNAP_M,
   type Snapped,
   type SnapTargets,
   snapTargetsOf,
 } from './roof-snap';
+import { draftSpot } from './roof-snap-spot';
 import {
   type DraftLeft,
   idle,
@@ -66,11 +67,12 @@ export function tapped(
   // On the grid the magnet's holds go first and the whole metre last: the corner is held level or
   // square, then lands on the grid; nothing snaps it again after.
   const grid = state.grid === true && state.magnet;
-  const spot = grid ? onGrid(state, draftSpot(state.corners, at, targets, true).point) : at;
+  const reach = state.reach ?? SNAP_M;
+  const spot = grid ? onGrid(state, draftSpot(state.corners, at, targets, true, reach).point) : at;
   const tap = keptOnFaceRoof(
     state,
     document,
-    draftTap(state.corners, spot, targets, state.magnet && !grid),
+    draftTap(state.corners, spot, targets, state.magnet && !grid, reach),
   );
   if (tap.kind === 'same') return stay(state);
   if (tap.kind === 'refused') return stay({ ...state, refused: tap.refusal });
@@ -230,10 +232,11 @@ export function spotAt(
 ): Snapped | null {
   if (at === null) return null;
   const first = state.corners[0];
-  if (first !== undefined && draftClosesAt(state.corners, at)) {
+  const reach = state.reach ?? SNAP_M;
+  if (first !== undefined && draftClosesAt(state.corners, at, reach)) {
     return { point: first, snap: null, guides: [] };
   }
-  const spot = draftSpot(state.corners, at, targets, state.magnet);
+  const spot = draftSpot(state.corners, at, targets, state.magnet, reach);
   // On the grid the held spot then lands on the whole metre, as the tap will.
   return state.grid === true && state.magnet ? { ...spot, point: onGrid(state, spot.point) } : spot;
 }

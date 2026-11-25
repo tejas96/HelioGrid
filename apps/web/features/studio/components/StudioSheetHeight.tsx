@@ -82,7 +82,7 @@ export function HeightRow({
             <ShellGlyph name="alert-circle" size="sm" />
             {words.heightRefusal(
               studio.heightRefusal,
-              roofWordsShown(format, units, studio.startHeightM).heightOf,
+              roofWordsShown(format, units, studio.startHeightM, studio.topMarks).heightOf,
             )}
           </span>
         )}

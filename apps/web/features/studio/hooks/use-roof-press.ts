@@ -1,7 +1,9 @@
 'use client';
+import type { PointerScale } from '@heliogrid/data/react';
 import type { GroundPoint } from '@heliogrid/domain';
 import { type MouseEvent, type PointerEvent, type RefObject, useRef } from 'react';
 import type { StudioDrive } from '../components/StudioCameraRig';
+import { pointerScaleAt } from '../snap-reach';
 
 /** A press that moves less than this, in CSS pixels, is a tap; more is a drag. */
 const TAP_PX = 6;
@@ -9,7 +11,8 @@ const TAP_PX = 6;
 export interface PressActs {
   /** Told where on the ground the drag took hold. */
   onDragStart?: (at: GroundPoint | null) => void;
-  onDrag?: (at: GroundPoint) => void;
+  /** `scale`: what the pointer sees of the ground there, for the magnet's reach (`pointerScaleAt`). */
+  onDrag?: (at: GroundPoint, scale?: PointerScale) => void;
   onDragEnd?: () => void;
   /** The system took the press away mid-drag (a pinch, an edge swipe): what was in hand goes back. */
   onDragCancel?: () => void;
@@ -36,7 +39,9 @@ export function useRoofPress(
     drive.current?.groundAt(event.clientX, event.clientY, 0) ?? null;
   const dragged = (event: PointerEvent<HTMLElement>, acts: PressActs) => {
     const at = groundOf(event);
-    if (at !== null) acts.onDrag?.(at);
+    const touch = event.pointerType !== 'mouse';
+    if (at !== null)
+      acts.onDrag?.(at, pointerScaleAt(drive.current, event.clientX, event.clientY, touch));
     if (event.pointerType !== 'mouse') onAim({ x: event.clientX, y: event.clientY });
   };
   return (acts: PressActs) => ({

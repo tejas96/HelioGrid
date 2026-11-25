@@ -31,7 +31,7 @@ const middleOf = (edge: EdgeView): GroundPoint => ({
 function dragOf(studio: StudioScreen, grip: RoofGrip, at: GroundPoint): PressActs {
   return {
     onDragStart: () => studio.moves.grab(grip, at),
-    onDrag: (to) => studio.moves.drag(to),
+    onDrag: (to, scale) => studio.moves.drag(to, scale),
     onDragEnd: () => studio.moves.release(),
     onDragCancel: () => studio.moves.cancel(),
   };
@@ -97,7 +97,7 @@ function CornerDots({ facts }: { facts: RoofFacts }) {
           const held = roof.corners[nearest] ?? corner;
           studio.moves.grab({ kind: 'corner', roof: index, corner: nearest }, held);
         },
-        onDrag: (to) => studio.moves.drag(to),
+        onDrag: (to, scale) => studio.moves.drag(to, scale),
         onDragEnd: () => studio.moves.release(),
         onDragCancel: () => studio.moves.cancel(),
         onTap: () => pick(i),
@@ -190,7 +190,7 @@ function RoofHandles({ facts }: { facts: RoofFacts }) {
         onDragStart: (at) => {
           if (at !== null) studio.moves.grab({ kind, roof: index }, at);
         },
-        onDrag: (to) => studio.moves.drag(to),
+        onDrag: (to, scale) => studio.moves.drag(to, scale),
         onDragEnd: () => studio.moves.release(),
         onDragCancel: () => studio.moves.cancel(),
       })}

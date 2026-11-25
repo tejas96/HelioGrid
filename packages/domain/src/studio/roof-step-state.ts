@@ -72,6 +72,8 @@ export type RoofStepState =
        * and pull to its outline and the faces drawn before; it closes into a face of the roof.
        */
       readonly faces?: number;
+      /** How near a spot must come to snap, in metres: the screen's reach as last told. */
+      readonly reach?: number;
     }
   /** Type the size (part c): the card's two numbers and where the rectangle grows from. */
   | ({ readonly kind: 'typing' } & TypedSize)
@@ -93,6 +95,8 @@ export type RoofStepState =
       readonly magnet: boolean;
       /** The inside faces of the roofs' parapets: a roof moved onto another pulls to them. */
       readonly insides?: SnapTargets['edges'];
+      /** How near a corner must come to pull, in metres: the screen's reach as last told. */
+      readonly reach?: number;
     };
 
 /** A drawing stopped with corners placed: what Undo takes up again. */
@@ -145,9 +149,17 @@ export type RoofStepEvent =
   | { readonly kind: 'wipe' }
   /** Delete: the picked roof, or the roof of a row, goes with what stands on it, as one change. */
   | { readonly kind: 'delete_roof'; readonly roof?: number }
-  | { readonly kind: 'hover'; readonly at: GroundPoint | null }
+  /** `reach`, on each spot told: how near it must come to snap, in metres, at the view's zoom. */
+  | { readonly kind: 'hover'; readonly at: GroundPoint | null; readonly reach?: number }
   /** A tap on the ground; `system` keeps a length still in the box, which a tap outside sets. */
-  | { readonly kind: 'tap'; readonly at: GroundPoint; readonly system: MeasurementSystem }
+  | {
+      readonly kind: 'tap';
+      readonly at: GroundPoint;
+      readonly system: MeasurementSystem;
+      readonly reach?: number;
+    }
+  /** Follow: the corners of the outline the drawing's ends stand on, added after its last corner. */
+  | { readonly kind: 'follow' }
   | {
       readonly kind: 'close';
       readonly id: string;
@@ -231,7 +243,7 @@ export type RoofStepEvent =
       /** The inside faces of the roofs' parapets, from the kernel: what a moved roof pulls to. */
       readonly insides?: SnapTargets['edges'];
     }
-  | { readonly kind: 'drag'; readonly at: GroundPoint }
+  | { readonly kind: 'drag'; readonly at: GroundPoint; readonly reach?: number }
   | { readonly kind: 'release' }
   | { readonly kind: 'pick_corner'; readonly corner: CornerRef | null }
   /** Undo or Redo with nothing in hand: the design steps back or on. */
