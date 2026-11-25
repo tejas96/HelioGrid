@@ -3,7 +3,7 @@ import type { GroundPoint } from './ground';
 import { type Plane, planeOf, upOn } from './roof-cuts';
 import type { BuiltFace } from './roof-faces';
 import type { RoofFacts } from './roof-levels';
-import { type EdgeStretch, parapetNow } from './roof-open-edges';
+import { type EdgeStretch, parapetNow, RAIL_M } from './roof-open-edges';
 import type { ScenePrism } from './roof-scene';
 
 /**
@@ -12,8 +12,7 @@ import type { ScenePrism } from './roof-scene';
  * outside it where the lengths were measured inside the walls. A railing is posts and a rail.
  */
 
-/** A railing's post and its rail are this thick, and its posts at most this far apart, in metres. */
-const RAIL_M = 0.05;
+/** A railing's posts stand at most this far apart, in metres. */
 const RAIL_POSTS_M = 1.5;
 
 interface Line {

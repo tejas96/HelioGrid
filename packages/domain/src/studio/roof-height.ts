@@ -11,14 +11,53 @@ import type { RoofHeight, ValueSetter } from './roof-parts';
  * person sets is estimated.
  */
 
-/** The sheet's slider runs from a low shed to a tall house; a height past its ends is typed. */
+/**
+ * The sheet's slider runs from a low shed to a tall house; a taller building's runs on to two
+ * floors above its roof, up to a tower's 60 m. A height past its ends is typed.
+ */
 export const ROOF_HEIGHT_SLIDER_MIN_M = 2;
 export const ROOF_HEIGHT_SLIDER_MAX_M = 20;
+export const ROOF_HEIGHT_SLIDER_TOP_M = 60;
+/** The floors a slider reaches above the roof, so a building's next floor is a slide away. */
+const SLIDER_FLOORS_ABOVE = 2;
 /** One step of the slider and of the arrow: 10 cm. */
 export const ROOF_HEIGHT_STEP_M = 0.1;
 /** A typed height stands between a low wall and a tall tower. */
 export const ROOF_HEIGHT_MIN_M = 0.3;
 export const ROOF_HEIGHT_MAX_M = 300;
+
+/** A height held to the centimetre, so the stored value is the one shown. */
+const toCentimetre = (metres: number) => Math.round(metres * 100) / 100;
+
+/** The height slider's ends and its step. */
+export interface RoofHeightSlide {
+  readonly min: number;
+  readonly max: number;
+  readonly step: number;
+}
+
+/**
+ * The slider for a roof that stands at `standsM`: 2 to 20 m, or to the floor two above it where
+ * that is higher, never past 60 m. The stored height sets it, never the one in hand, so the ends
+ * stay still while the thumb moves.
+ */
+export function roofHeightSlide(
+  standsM: number,
+  floors: { readonly plinthHeightM: number; readonly storeyHeightM: number },
+): RoofHeightSlide {
+  const { plinthHeightM: plinth, storeyHeightM: storey } = floors;
+  const reach =
+    storey > 0
+      ? plinth + storey * Math.ceil((standsM + storey * SLIDER_FLOORS_ABOVE - plinth) / storey)
+      : standsM;
+  const top = Math.min(ROOF_HEIGHT_SLIDER_TOP_M, Math.max(ROOF_HEIGHT_SLIDER_MAX_M, reach));
+  // The top sits on the slider's 10 cm grid, so the end can be reached and the top floor is on it.
+  const steps = Math.ceil(
+    toCentimetre((top - ROOF_HEIGHT_SLIDER_MIN_M) / ROOF_HEIGHT_STEP_M) - 1e-9,
+  );
+  const max = toCentimetre(ROOF_HEIGHT_SLIDER_MIN_M + steps * ROOF_HEIGHT_STEP_M);
+  return { min: ROOF_HEIGHT_SLIDER_MIN_M, max, step: ROOF_HEIGHT_STEP_M };
+}
 
 export interface RoofHeightShown {
   readonly metres: number;
@@ -46,9 +85,6 @@ export function roofHeightOf(roof: Roof, startHeightM: number): RoofHeightShown 
   return { metres: height.metres, setBy: height.setBy, tier: tierOf(height) };
 }
 
-/** A height held to the centimetre, so the stored value is the one shown. */
-const toCentimetre = (metres: number) => Math.round(metres * 100) / 100;
-
 /** A person sets the roof's height: typed, slid or dragged. */
 export function roofHeightSet(document: StudioDocument, index: number, metres: number): EditResult {
   if (!Number.isFinite(metres) || metres < ROOF_HEIGHT_MIN_M) {
@@ -65,9 +101,12 @@ export function roofHeightReset(document: StudioDocument, index: number): Studio
   return withRoof(document, index, { ...roofAt(document, index), height: null });
 }
 
-/** One step up or down, by the arrow's keys or − and +: whole steps, kept on the slider's track. */
-export function roofHeightStepped(metres: number, by: 1 | -1): number {
-  return roofHeightDragged(metres, by * ROOF_HEIGHT_STEP_M);
+/**
+ * One step up or down, by the arrow's keys: a whole step, kept on the slider's track — or, from a
+ * height typed past an end, kept within what can be typed.
+ */
+export function roofHeightStepped(metres: number, by: 1 | -1, slide: RoofHeightSlide): number {
+  return roofHeightDragged(metres, by * ROOF_HEIGHT_STEP_M, slide);
 }
 
 /**
@@ -93,11 +132,18 @@ export function roofHeightKept(
 
 /**
  * Where the blue arrow puts the height while it is dragged: the height it was grabbed at plus how
- * far the pointer rose, in whole steps, kept on the slider's track. A height typed past the track
- * moves back onto it only when the arrow moves.
+ * far the pointer rose, in whole steps, kept on the slider's track. Grabbed past an end — a tower
+ * typed at 70 m — it is kept within what can be typed instead, so a nudge never drops it onto the
+ * track.
  */
-export function roofHeightDragged(grabbedAt: number, risenM: number): number {
+export function roofHeightDragged(
+  grabbedAt: number,
+  risenM: number,
+  slide: RoofHeightSlide,
+): number {
   const steps = Math.round((grabbedAt + risenM) / ROOF_HEIGHT_STEP_M);
   const metres = toCentimetre(steps * ROOF_HEIGHT_STEP_M);
-  return Math.min(ROOF_HEIGHT_SLIDER_MAX_M, Math.max(ROOF_HEIGHT_SLIDER_MIN_M, metres));
+  const low = grabbedAt < slide.min ? ROOF_HEIGHT_MIN_M : slide.min;
+  const high = grabbedAt > slide.max ? ROOF_HEIGHT_MAX_M : slide.max;
+  return Math.min(high, Math.max(low, metres));
 }

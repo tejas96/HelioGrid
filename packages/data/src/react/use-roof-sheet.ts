@@ -130,7 +130,7 @@ export function useRoofSheet({
   const roofSheet =
     roof === null || document === null
       ? null
-      : roofSheetOf(document, roof, startOf(document, roof), inHand);
+      : roofSheetOf(document, roof, startOf(document, roof), inHand, facts);
   // Undo, or a save read again, took the open roof away: its sheet goes with it.
   const gone = open !== null && roofSheet === null && document !== null;
   useEffect(() => {
@@ -201,8 +201,8 @@ export function useRoofSheet({
       },
       stepHeight: (by) => {
         const now = hand.current ?? standing();
-        if (!editable || now === null) return;
-        hold(roofHeightStepped(now, by));
+        if (!editable || now === null || roofSheet === null) return;
+        hold(roofHeightStepped(now, by, roofSheet.slide));
         keep();
       },
       keepHeight: () => void keep(),
@@ -219,8 +219,8 @@ export function useRoofSheet({
       },
       dragHeight: (risenM, reachM = HEIGHT_PULL_M) => {
         const design = latest.current?.present;
-        if (!editable || roof === null || design === undefined) return;
-        const dragged = roofHeightDragged(grabbedAt.current, risenM);
+        if (!editable || roof === null || design === undefined || roofSheet === null) return;
+        const dragged = roofHeightDragged(grabbedAt.current, risenM, roofSheet.slide);
         const reach = Math.min(Math.max(reachM, HEIGHT_PULL_M), HEIGHT_PULL_MAX_M);
         const pulled = pullOf(design, roof, dragged, reach);
         hold(pulled?.metres ?? dragged);

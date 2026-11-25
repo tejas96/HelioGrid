@@ -16,14 +16,14 @@ import { MagnetSwitch } from './StudioBarPills';
 import { StudioFaceRows } from './StudioFaceRows';
 import type { SheetFacts } from './StudioSheetRow';
 import { StudioSheetRows } from './StudioSheetRows';
-import { StudioDetailsRows, StudioSideRows } from './StudioSideSheet';
+import { StudioSideRows } from './StudioSideSheet';
 
 /**
  * A roof's sheet (`T-M05-002`, part e, board section 6): one row per value — what it is, what it
- * is made of, its shape, its height, its slope and the shape's own numbers, its parapet, its
- * setback and the parapet's details. A side tapped on the model shows its own sheet in the roof's
- * place, as does a face drawn by hand on an Any-shape roof, and Parapet details is its own short
- * sheet; Back returns to the roof's. It opens from the foot in the bar's place on every screen, at
+ * is made of, its shape, its height, its slope and the shape's own numbers, its setback, and its
+ * parapet with everything about its wall under the switch. A side tapped on the model shows its
+ * own sheet in the roof's place, as does a face drawn by hand on an Any-shape roof; Back returns to
+ * the roof's. It opens from the foot in the bar's place on every screen, at
  * most 40 % of the screen high, its rows scrolling inside; the camera frames above it. Delete sits at
  * the start of the foot, away from × and Done. A reader sees the values and no control.
  */
@@ -59,7 +59,7 @@ export function StudioRoofSheet({
     if (!covered) title.current?.focus();
   }, [sheet.roof, part, covered]);
   if (rows === null) return null;
-  const facts = { studio, units, words, phone };
+  const facts = { studio, units, words };
   const heading = headingOf(studio, rows, words, (metres) => format.roofHeight(metres, units));
   const back = backOf(studio);
   const waits = waitsOf(studio, rows);
@@ -110,7 +110,7 @@ export function StudioRoofSheet({
             </IconButton>
           </span>
         </div>
-        {/* A side's sheet, a face's, Parapet details or the roof's: each slides in when it takes the place. */}
+        {/* A side's sheet, a face's or the roof's: each slides in when it takes the place. */}
         <div key={partKeyOf(part)} className="hg-roof-sheet-rows" data-part={part.kind}>
           <PartRows facts={facts} rows={rows} sheet={sheet} />
           {waits ? (
@@ -150,7 +150,7 @@ function waitsOf(studio: StudioScreen, rows: RoofSheetRows): boolean {
   return part.kind === 'face' ? false : rows.waits;
 }
 
-/** The rows of the part shown: a side's, a face's, Parapet details or the roof's own. */
+/** The rows of the part shown: a side's, a face's or the roof's own. */
 function PartRows({
   facts,
   rows,
@@ -168,11 +168,10 @@ function PartRows({
   if (part.kind === 'face' && studio.faceRows !== null) {
     return <StudioFaceRows facts={facts} face={studio.faceRows} />;
   }
-  if (part.kind === 'details') return <StudioDetailsRows facts={facts} rows={rows} />;
   return <StudioSheetRows facts={facts} rows={rows} sheet={sheet} />;
 }
 
-/** The sheet's head: the roof's name and where it sits, a side's way, or Parapet details. */
+/** The sheet's head: the roof's name and where it sits, or a side's way. */
 function headingOf(
   studio: StudioScreen,
   rows: RoofSheetRows,
@@ -184,7 +183,6 @@ function headingOf(
   if (part.kind === 'side' && side !== null) {
     return { title: words.thisSide, line: words.sideOf(side.name, side.faces) };
   }
-  if (part.kind === 'details') return { title: words.rowDetails, line: name };
   // A face Undo took away leaves the roof's own sheet, as its rows do.
   if (part.kind === 'face' && studio.faceRows !== null) {
     return { title: words.faceDrawing(part.face + 1), line: name };
@@ -192,7 +190,7 @@ function headingOf(
   return { title: name, line: words.rowSits(rows.sits, heightOf) };
 }
 
-/** Back: a side's sheet and Parapet details to the roof's; a sheet opened from Roofs, to Roofs. */
+/** Back: a side's sheet or a face's to the roof's; a sheet opened from Roofs, to Roofs. */
 function backOf(studio: StudioScreen): (() => void) | null {
   if (studio.sheetPart.kind !== 'roof') return studio.moves.backToRoof;
   return studio.sheetFromRoofs ? studio.moves.backToRoofs : null;

@@ -1,20 +1,17 @@
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import type { RoofFacts } from './roof-levels';
-import { edgesOf, parapetNow } from './roof-open-edges';
+import { edgesOf, parapetInM, parapetNow } from './roof-open-edges';
 import type { SnapTargets } from './roof-snap';
 import { ringArea } from './wavefront-lines';
 
 /**
  * The inside faces of the roofs' parapets (`T-M05-002`, part e, E130): where each walled stretch
- * of a side stands its thickness in from the outline — when the lengths are to the outside of the
- * wall — so a roof dragged onto another pulls clear of the wall, as a stair room stands.
+ * of a side stands in from the outline by what is built there (`parapetInM`) — so a roof dragged onto another pulls clear of the wall, as a stair room stands.
  */
 export function parapetInsidesOf(document: StudioDocument, facts: RoofFacts): SnapTargets['edges'] {
   return document.roofs.flatMap((roof, index) => {
-    const parapet = parapetNow(document, roof, facts);
-    // Measured to the inside of the wall, the outline is the wall's inside already.
-    const inM = parapet.lengthsMeasured === 'outside' ? parapet.thicknessM : 0;
+    const inM = parapetInM(parapetNow(document, roof, facts));
     if (inM <= 0) return [];
     // Inward is to the left of an anticlockwise ring's sides.
     const turn = ringArea(roof.corners.map((c) => ({ x: c.east, y: c.north }))) >= 0 ? 1 : -1;

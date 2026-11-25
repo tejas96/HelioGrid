@@ -16,7 +16,10 @@ const roofOf = (corners: GroundPoint[], height: Roof['height'] = null): Roof => 
 });
 const LOW = roofOf([p(0, 0), p(8, 0), p(8, 6), p(0, 6)]);
 const TALL = roofOf([p(10, 0), p(16, 0), p(16, 6), p(10, 6)], { metres: 9, setBy: 'person' });
-const design: StudioDocument = { ...EMPTY_STUDIO_DOCUMENT, roofs: [LOW, TALL] };
+const BLOCK = roofOf([p(20, 0), p(26, 0), p(26, 6), p(20, 6)], { metres: 30, setBy: 'person' });
+const design: StudioDocument = { ...EMPTY_STUDIO_DOCUMENT, roofs: [LOW, TALL, BLOCK] };
+const FLOORS = { plinthHeightM: 0.45, storeyHeightM: 3 };
+const HOUSE = { min: 2, max: 20, step: 0.1 };
 
 describe('a roof sheet shows its area and height (T-M05-002)', () => {
   it.each([
@@ -25,14 +28,14 @@ describe('a roof sheet shows its area and height (T-M05-002)', () => {
     [1, null, 9, 'estimated'],
     [0, 4.5, 4.5, 'estimated'],
   ] as const)('roof %s, %s in hand: %s m, %s', (roof, inHand, metres, tier) => {
-    const sheet = roofSheetOf(design, roof, 3, inHand);
+    const sheet = roofSheetOf(design, roof, 3, inHand, FLOORS);
     expect(sheet?.height.metres).toBe(metres);
     expect(sheet?.height.tier).toBe(tier);
     expect(sheet?.systemMetres).toBe(3);
   });
 
   it('none for a roof that is gone', () => {
-    expect(roofSheetOf(design, 2, 3, null)).toBeNull();
+    expect(roofSheetOf(design, 3, 3, null, FLOORS)).toBeNull();
   });
 });
 
@@ -96,9 +99,23 @@ describe('a step of the height stays on the slider’s track (T-M05-002)', () =>
     [3, -1, 2.9],
     [2, -1, 2],
     [20, 1, 20],
-    [25, -1, 20],
+    // A typed height past the track moves from where it is, never back onto the track.
+    [25, -1, 24.9],
+    [25, 1, 25.1],
   ] as const)('%s m, %s: %s m', (from, by, to) => {
-    expect(roofHeightStepped(from, by)).toBeCloseTo(to, 6);
+    expect(roofHeightStepped(from, by, HOUSE)).toBeCloseTo(to, 6);
+  });
+});
+
+describe('a 30 m roof gets a slider that reaches it (T-M05-002)', () => {
+  it('its slider runs to the floor two above it, and its height is on the track', () => {
+    const sheet = roofSheetOf(design, 2, 3, null, FLOORS);
+    expect(sheet?.slide.max).toBe(36.5);
+    expect(sheet?.outside).toBe(false);
+  });
+
+  it('a height in hand does not move the ends while it is slid', () => {
+    expect(roofSheetOf(design, 0, 3, 19.9, FLOORS)?.slide.max).toBe(20);
   });
 });
 
@@ -110,6 +127,6 @@ describe('a height past the slider’s ends is typed, and the switch says so (T-
     [25, true],
     [1.5, true],
   ])('%s m: %s', (inHand, outside) => {
-    expect(roofSheetOf(design, 0, 3, inHand)?.outside).toBe(outside);
+    expect(roofSheetOf(design, 0, 3, inHand, FLOORS)?.outside).toBe(outside);
   });
 });

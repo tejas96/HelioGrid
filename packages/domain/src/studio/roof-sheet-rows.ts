@@ -22,12 +22,26 @@ export type HeightFrom =
   /** Height of low edge: a sloped roof's height is its lowest edge. */
   | { readonly kind: 'low_edge' };
 
+/** The roof's sides once a person set some apart from the parapet switch. */
+export interface ParapetApart {
+  /** Sides with a wall, of all its sides. */
+  readonly walled: number;
+  readonly of: number;
+  /** The one side set apart, by the way it looks; `null` where more than one is. */
+  readonly only: CompassWay | null;
+}
+
 /** A floor on the height slider: G is the ground floor's roof, plinth and one storey. */
 export interface FloorTick {
   readonly metres: number;
   /** 0 for G, 1 for G+1, … */
   readonly floor: number;
+  /** Its word shows under the track: every floor of a house, one in a few of a tall block's. */
+  readonly named: boolean;
 }
+
+/** The most floor words under the track before they crowd a phone's sheet. */
+const NAMED_FLOORS_MAX = 8;
 
 /** Which way a sloped roof runs down, in words: one way, or the ways its faces look. */
 /** A way a slope runs down, as a word and in whole degrees clockwise from north (E097). */
@@ -113,19 +127,26 @@ export interface RoofSheetRows {
   readonly extras: readonly RoofNumberShown[];
   /** How far a sloped roof runs past its walls. */
   readonly overhang: RoofNumberShown | null;
-  /** The roof's one parapet setting; `null` for a roof with no walls of its own. */
+  readonly setback: RoofNumberShown | null;
+  /**
+   * The roof's one parapet setting and everything about its wall, shown under its switch while a
+   * wall stands; `null` for a roof with no walls of its own.
+   */
   readonly parapet: {
+    /** The switch: a parapet all round. */
     readonly allRound: boolean;
     readonly byPerson: boolean;
+    /** A wall stands on some stretch of the roof's edge: its details show. */
+    readonly walls: boolean;
+    /** Sides a person set apart from the switch in 3D; `null` while none is. */
+    readonly apart: ParapetApart | null;
+    readonly build: ParapetBuild;
     readonly height: RoofNumberShown;
+    /** A wall's thickness; `null` for a railing, which stands its own few centimetres. */
+    readonly thickness: RoofNumberShown | null;
+    readonly measured: LengthsMeasured;
     /** Higher than a parapet usually stands: check it on site, whoever set it. */
     readonly waits: boolean;
-  } | null;
-  readonly setback: RoofNumberShown | null;
-  readonly details: {
-    readonly thickness: RoofNumberShown;
-    readonly build: ParapetBuild;
-    readonly measured: LengthsMeasured;
   } | null;
   /** What it crosses now: lit on the model with a tag, each marked to check. */
   readonly crossings: readonly RoofCrossing[];
@@ -193,14 +214,15 @@ export function floorTicks(
   storeyM: number,
   slide: { readonly min: number; readonly max: number },
 ): FloorTick[] {
-  const ticks: FloorTick[] = [];
-  if (!(storeyM > 0)) return ticks;
+  if (!(storeyM > 0)) return [];
+  const floors: { metres: number; floor: number }[] = [];
   for (let floor = 0; ; floor += 1) {
     const metres = Math.round((plinthM + storeyM * (floor + 1)) * 100) / 100;
     if (metres > slide.max) break;
-    if (metres >= slide.min) ticks.push({ metres, floor });
+    if (metres >= slide.min) floors.push({ metres, floor });
   }
-  return ticks;
+  const every = Math.ceil(floors.length / NAMED_FLOORS_MAX);
+  return floors.map((at) => ({ ...at, named: at.floor % every === 0 }));
 }
 
 /** A height this near a floor stands on it. */

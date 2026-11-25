@@ -3,6 +3,7 @@ import type {
   CompassWay,
   HeightFrom,
   LengthsMeasured,
+  ParapetApart,
   ParapetBuild,
   RoofCrossing,
   RoofKind,
@@ -34,18 +35,18 @@ const SHEET = {
   lowerSlope: /*i18n*/ { id: 'Lower slope' },
   parapet: /*i18n*/ { id: 'Parapet' },
   parapetAllRound: /*i18n*/ { id: 'Parapet all round' },
-  parapetRoundValue: /*i18n*/ { id: 'All round · {height}' },
+  parapetRound: /*i18n*/ { id: 'All round' },
+  parapetSides: /*i18n*/ { id: '{walled} of {sides} sides' },
+  apartOneOff: /*i18n*/ { id: 'The side facing {way} has none. Tap a side in 3D to change it.' },
+  apartOneOn: /*i18n*/ { id: 'Only the side facing {way} has one. Tap a side in 3D to change it.' },
+  apartMany: /*i18n*/ { id: 'Some sides are set on their own. Tap a side in 3D to change it.' },
   parapetNone: /*i18n*/ { id: 'None' },
   setback: /*i18n*/ { id: 'Setback' },
-  details: /*i18n*/ { id: 'Parapet details' },
-  detailsValue: /*i18n*/ { id: '{thickness} · {measured}' },
   thickness: /*i18n*/ { id: 'Thickness' },
   built: /*i18n*/ { id: 'Built as' },
   measuredTitle: /*i18n*/ { id: 'The lengths are measured' },
   measuredOutside: /*i18n*/ { id: 'Outside the parapet' },
   measuredInside: /*i18n*/ { id: 'Inside the parapet' },
-  measuredOutsideShort: /*i18n*/ { id: 'outside' },
-  measuredInsideShort: /*i18n*/ { id: 'inside' },
   checkOnSite: /*i18n*/ { id: 'Check it on site.' },
   floorG: /*i18n*/ { id: 'G' },
   floorUp: /*i18n*/ { id: 'G+{floor}' },
@@ -145,11 +146,6 @@ const BUILD: Record<ParapetBuild, { readonly id: string }> = {
   railing: /*i18n*/ { id: 'Railing' },
 };
 
-const SHORT_MEASURED: Record<LengthsMeasured, { readonly id: string }> = {
-  outside: SHEET.measuredOutsideShort,
-  inside: SHEET.measuredInsideShort,
-};
-
 /** A compass way in words: "north-east". */
 export const compassWord = (t: T, way: CompassWay): TranslatedText => t(WAY[way]);
 
@@ -187,13 +183,16 @@ export function studioSheetWords(t: T) {
       lower && key === 'slope' ? t(SHEET.lowerSlope) : t(NUMBER[key]),
     rowParapet: t(SHEET.parapet),
     parapetAllRound: t(SHEET.parapetAllRound),
-    /** The parapet row's value: "All round · 1.0 m", or None; the height already formatted. */
-    parapetValue: (allRound: boolean, height: string) =>
-      allRound ? t(SHEET.parapetRoundValue, { height }) : t(SHEET.parapetNone),
-    rowDetails: t(SHEET.details),
-    /** Parapet details' value: "0.23 m · outside"; the thickness already formatted. */
-    detailsValue: (thickness: string, measured: LengthsMeasured) =>
-      t(SHEET.detailsValue, { thickness, measured: t(SHORT_MEASURED[measured]) }),
+    /** The parapet row's value: All round, None, or "3 of 4 sides" once a side is set apart. */
+    parapetValue: (allRound: boolean, apart: ParapetApart | null) =>
+      apart !== null
+        ? t(SHEET.parapetSides, { walled: apart.walled, sides: apart.of })
+        : t(allRound ? SHEET.parapetRound : SHEET.parapetNone),
+    /** The line under the switch once a side is set apart: which one, where only one is. */
+    parapetApart: (allRound: boolean, apart: ParapetApart) =>
+      apart.only === null
+        ? t(SHEET.apartMany)
+        : t(allRound ? SHEET.apartOneOff : SHEET.apartOneOn, { way: t(WAY[apart.only]) }),
     builtTitle: t(SHEET.built),
     built: (build: ParapetBuild) => t(BUILD[build]),
     measuredTitle: t(SHEET.measuredTitle),

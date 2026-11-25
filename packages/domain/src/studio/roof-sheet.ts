@@ -1,11 +1,10 @@
 import type { StudioDocument } from './document';
 import type { GroundBox, GroundPoint } from './ground';
 import {
-  ROOF_HEIGHT_SLIDER_MAX_M,
-  ROOF_HEIGHT_SLIDER_MIN_M,
-  ROOF_HEIGHT_STEP_M,
   type RoofHeightShown,
+  type RoofHeightSlide,
   roofHeightOf,
+  roofHeightSlide,
 } from './roof-height';
 import { roofKindOf } from './roof-kind';
 import type { RoofKind } from './roof-parts';
@@ -25,8 +24,8 @@ export interface RoofSheetView {
   readonly height: RoofHeightShown;
   /** The system's height, which Reset brings back and the slider marks. */
   readonly systemMetres: number;
-  /** The slider's ends and step. */
-  readonly slide: { readonly min: number; readonly max: number; readonly step: number };
+  /** The slider's ends and step: a house's, or one that reaches a taller building's roof. */
+  readonly slide: RoofHeightSlide;
   /** The height is past the slider's ends: only the box can show it, and the switch rests on it. */
   readonly outside: boolean;
 }
@@ -37,23 +36,21 @@ export function roofSheetOf(
   index: number,
   startHeightM: number,
   inHand: number | null,
+  floors: { readonly plinthHeightM: number; readonly storeyHeightM: number },
 ): RoofSheetView | null {
   const roof = document.roofs[index];
   if (roof === undefined) return null;
   const stands = roofHeightOf(roof, startHeightM);
   const height: RoofHeightShown =
     inHand === null ? stands : { metres: inHand, setBy: 'person', tier: 'estimated' };
+  const slide = roofHeightSlide(stands.metres, floors);
   return {
     roof: index,
     area: roofArea(roof.corners),
     height,
     systemMetres: startHeightM,
-    slide: {
-      min: ROOF_HEIGHT_SLIDER_MIN_M,
-      max: ROOF_HEIGHT_SLIDER_MAX_M,
-      step: ROOF_HEIGHT_STEP_M,
-    },
-    outside: height.metres < ROOF_HEIGHT_SLIDER_MIN_M || height.metres > ROOF_HEIGHT_SLIDER_MAX_M,
+    slide,
+    outside: height.metres < slide.min || height.metres > slide.max,
   };
 }
 

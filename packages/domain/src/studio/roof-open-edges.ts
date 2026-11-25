@@ -31,6 +31,19 @@ export interface ParapetNow {
   readonly byPerson: boolean;
 }
 
+/** A railing's posts and rail are this thick, in metres: a railing never takes a wall's thickness. */
+export const RAIL_M = 0.05;
+
+/**
+ * How far the parapet stands in from the outline: the thickness of what is built there — a wall's
+ * own, a railing's few centimetres — where the lengths were measured outside it; none where they
+ * were measured inside it, which is the outline already.
+ */
+export function parapetInM(parapet: ParapetNow): number {
+  if (parapet.lengthsMeasured !== 'outside') return 0;
+  return parapet.build === 'railing' ? RAIL_M : parapet.thicknessM;
+}
+
 /** Whether a roof starts with a parapet all round: a flat roof of a material that has one, on its own walls. */
 function startsWithParapet(
   document: StudioDocument,

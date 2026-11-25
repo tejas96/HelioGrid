@@ -172,13 +172,6 @@
   border: 0;
 }
 
-.hg-sheet-number-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-2);
-}
-
 .hg-sheet-number-value {
   font-family: var(--font-mono);
   font-size: var(--fs-body-lg);
@@ -186,6 +179,22 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   color: var(--text-primary);
+}
+
+/* Everything about the parapet's wall, in one soft box under its switch, so it reads as one
+   thing; the box goes with the wall. Its last row needs no hairline: the box ends there. */
+.hg-sheet-parapet {
+  display: flex;
+  flex-direction: column;
+  margin-block: var(--sp-1) var(--sp-2);
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-lg);
+  background: var(--fill);
+  animation: hg-row-open var(--dur-standard) var(--ease-enter) 1 both;
+}
+
+.hg-sheet-parapet > .hg-sheet-row:last-child {
+  box-shadow: none;
 }
 
 /* A reset is a 44 px target, drawn as a link. */
@@ -207,8 +216,10 @@
   color: var(--danger-text);
 }
 
-/* On a desktop the magnet's pill stands in the free room left of the sheet, never under it. */
+/* On a desktop the magnet's pill stands in the free room left of the sheet, never under it, and
+   right of the left tool column, which stands at the foot too: never over the pencil. */
 .hg-studio-bar[data-beside-sheet="true"] {
+  grid-column: 2;
   justify-self: start;
 }
 
@@ -275,7 +286,8 @@
 
 /* Typing a number with the keyboard up: the sheet keeps its head, the row being typed and its foot,
    so the roof above stays in view (board A6). */
-.hg-studio[data-keyboard="true"] .hg-roof-sheet-rows > :not(:focus-within) {
+.hg-studio[data-keyboard="true"] .hg-roof-sheet-rows > :not(:focus-within),
+.hg-studio[data-keyboard="true"] .hg-sheet-parapet > :not(:focus-within) {
   display: none;
 }
 

@@ -1,5 +1,5 @@
 'use client';
-import type { RoofSheetRows, SideRole, SideSheetRows } from '@heliogrid/domain';
+import type { SideRole, SideSheetRows } from '@heliogrid/domain';
 import { Button, SegmentedControl, Switch } from '@heliogrid/ui';
 import { NumberRow, type SheetFacts, SheetRow } from './StudioSheetRow';
 
@@ -100,57 +100,5 @@ function SideRoleRow({ facts, role }: { facts: SheetFacts; role: SideRole }) {
         </span>
       ) : null}
     </div>
-  );
-}
-
-/** Parapet details, its own short sheet (board 6.4): wall or railing, its thickness, and where the lengths were measured to. */
-export function StudioDetailsRows({ facts, rows }: { facts: SheetFacts; rows: RoofSheetRows }) {
-  const { studio, words } = facts;
-  const { moves } = studio;
-  const details = rows.details;
-  if (details === null) return null;
-  const editable = studio.editing.kind === 'editor';
-  return (
-    <>
-      <div className="hg-sheet-row">
-        <div className="hg-sheet-row-head">
-          <span className="hg-sheet-row-label">{words.builtTitle}</span>
-          {editable ? null : (
-            <span className="hg-sheet-row-value">{words.built(details.build)}</span>
-          )}
-        </div>
-        {editable ? (
-          <SegmentedControl
-            ariaLabel={words.builtTitle}
-            value={details.build}
-            options={[
-              { value: 'wall', label: words.built('wall') },
-              { value: 'railing', label: words.built('railing') },
-            ]}
-            onChange={(build) => moves.setParapetBuilt(build === 'railing' ? 'railing' : 'wall')}
-          />
-        ) : null}
-      </div>
-      <NumberRow facts={facts} shown={details.thickness} label={words.rowNumber('thickness')} />
-      <div className="hg-sheet-row">
-        <div className="hg-sheet-row-head">
-          <span className="hg-sheet-row-label">{words.measuredTitle}</span>
-          {editable ? null : (
-            <span className="hg-sheet-row-value">{words.measured(details.measured)}</span>
-          )}
-        </div>
-        {editable ? (
-          <SegmentedControl
-            ariaLabel={words.measuredTitle}
-            value={details.measured}
-            options={[
-              { value: 'outside', label: words.measured('outside') },
-              { value: 'inside', label: words.measured('inside') },
-            ]}
-            onChange={(to) => moves.setLengthsMeasured(to === 'inside' ? 'inside' : 'outside')}
-          />
-        ) : null}
-      </div>
-    </>
   );
 }

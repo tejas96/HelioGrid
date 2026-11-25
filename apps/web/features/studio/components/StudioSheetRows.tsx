@@ -1,14 +1,13 @@
 'use client';
 import type { RoofSheetRows, RoofSheetView } from '@heliogrid/domain';
-import { Button, Pressable, Switch, useFormat } from '@heliogrid/ui';
-import { useState } from 'react';
+import { Button, Pressable, SegmentedControl, Switch, useFormat } from '@heliogrid/ui';
+import { useRef, useState } from 'react';
 import { StudioFacesRow } from './StudioFaceRows';
 import { StudioKindChips } from './StudioKindChips';
 import { StudioShapePicture } from './StudioShapePicture';
 import { HeightRow } from './StudioSheetHeight';
 import { NumberRow, type SheetFacts, SheetRow } from './StudioSheetRow';
 import { StudioStairsRow } from './StudioStairsRow';
-import { numberShownBy } from './sheet-number-shown';
 
 type ShapeRow = NonNullable<RoofSheetRows['shape']>;
 
@@ -79,45 +78,125 @@ type ParapetRow = NonNullable<RoofSheetRows['parapet']>;
 
 /**
  * The Parapet row: its switch on the row's own line, so a parapet all round is one tap once the
- * sheet is open (E115); while it is on, its height is the row under it. A reader sees the value.
+ * sheet is open (E115). While a wall stands, everything about it shows under the switch in one
+ * box — what it is built as first, as it decides the rows under it, then its height, a wall's
+ * thickness and where the lengths were measured; with no wall, nothing about one shows. Switched
+ * on, the box scrolls into view. A reader sees the same rows with their values.
  */
 function ParapetRows({ facts, parapet }: { facts: SheetFacts; parapet: ParapetRow }) {
-  const { studio, units, words } = facts;
-  const text = numberShownBy(useFormat(), units);
-  const value = words.parapetValue(parapet.allRound, text(parapet.height));
-  if (studio.editing.kind !== 'editor') {
-    return (
-      <SheetRow
-        facts={facts}
-        rowKey="parapet"
-        label={words.rowParapet}
-        value={value}
-        waits={parapet.waits}
-      />
-    );
-  }
+  const { studio, words } = facts;
+  const editable = studio.editing.kind === 'editor';
+  // The switch was just turned on: the box it opens scrolls into view once it stands.
+  const turnedOn = useRef(false);
+  // Switched on where no wall can stand (every side a seam): nothing opens, so nothing scrolls later.
+  if (!parapet.walls) turnedOn.current = false;
+  const value = words.parapetValue(parapet.allRound, parapet.apart);
   return (
     <>
-      <div className="hg-sheet-row">
-        <div className="hg-sheet-row-head">
-          <span className="hg-sheet-row-label">{words.rowParapet}</span>
-          <span className="hg-sheet-row-value">{value}</span>
-          <Switch
-            checked={parapet.allRound}
-            ariaLabel={words.parapetAllRound}
-            onChange={studio.moves.setParapetAllRound}
-          />
+      {editable ? (
+        <div className="hg-sheet-row">
+          <div className="hg-sheet-row-head">
+            <span className="hg-sheet-row-label">{words.rowParapet}</span>
+            <span className="hg-sheet-row-value">{value}</span>
+            <Switch
+              checked={parapet.allRound}
+              ariaLabel={words.parapetAllRound}
+              onChange={(on) => {
+                turnedOn.current = on;
+                studio.moves.setParapetAllRound(on);
+              }}
+            />
+          </div>
         </div>
-      </div>
-      {parapet.allRound ? (
-        <NumberRow
-          facts={facts}
-          shown={parapet.height}
-          label={words.rowNumber('parapet_height')}
-          waits={parapet.waits}
-        />
+      ) : (
+        <SheetRow facts={facts} rowKey="parapet" label={words.rowParapet} value={value} />
+      )}
+      {parapet.apart === null ? null : (
+        <p className="hg-sheet-line">{words.parapetApart(parapet.allRound, parapet.apart)}</p>
+      )}
+      {parapet.walls ? (
+        <div
+          className="hg-sheet-parapet"
+          ref={(box) => {
+            if (box === null || !turnedOn.current) return;
+            turnedOn.current = false;
+            box.scrollIntoView({ block: 'nearest' });
+          }}
+        >
+          <ParapetBuiltRow facts={facts} parapet={parapet} />
+          <NumberRow
+            facts={facts}
+            shown={parapet.height}
+            label={words.rowNumber('parapet_height')}
+            waits={parapet.waits}
+          />
+          {parapet.thickness === null ? null : (
+            <NumberRow
+              facts={facts}
+              shown={parapet.thickness}
+              label={words.rowNumber('thickness')}
+            />
+          )}
+          <MeasuredRow facts={facts} parapet={parapet} />
+        </div>
       ) : null}
     </>
+  );
+}
+
+/** Wall or railing: a railing has no thickness to set, so its row goes. */
+function ParapetBuiltRow({ facts, parapet }: { facts: SheetFacts; parapet: ParapetRow }) {
+  const { studio, words } = facts;
+  const editable = studio.editing.kind === 'editor';
+  return (
+    <div className="hg-sheet-row">
+      <div className="hg-sheet-row-head">
+        <span className="hg-sheet-row-label">{words.builtTitle}</span>
+        {editable ? null : <span className="hg-sheet-row-value">{words.built(parapet.build)}</span>}
+      </div>
+      {editable ? (
+        <SegmentedControl
+          ariaLabel={words.builtTitle}
+          fill
+          value={parapet.build}
+          options={[
+            { value: 'wall', label: words.built('wall') },
+            { value: 'railing', label: words.built('railing') },
+          ]}
+          onChange={(build) =>
+            studio.moves.setParapetBuilt(build === 'railing' ? 'railing' : 'wall')
+          }
+        />
+      ) : null}
+    </div>
+  );
+}
+
+/** Where the roof's lengths were taped: outside the parapet, or inside it. */
+function MeasuredRow({ facts, parapet }: { facts: SheetFacts; parapet: ParapetRow }) {
+  const { studio, words } = facts;
+  const editable = studio.editing.kind === 'editor';
+  return (
+    <div className="hg-sheet-row">
+      <div className="hg-sheet-row-head">
+        <span className="hg-sheet-row-label">{words.measuredTitle}</span>
+        {editable ? null : (
+          <span className="hg-sheet-row-value">{words.measured(parapet.measured)}</span>
+        )}
+      </div>
+      {editable ? (
+        <SegmentedControl
+          ariaLabel={words.measuredTitle}
+          fill
+          value={parapet.measured}
+          options={[
+            { value: 'outside', label: words.measured('outside') },
+            { value: 'inside', label: words.measured('inside') },
+          ]}
+          onChange={(to) => studio.moves.setLengthsMeasured(to === 'inside' ? 'inside' : 'outside')}
+        />
+      ) : null}
+    </div>
   );
 }
 
@@ -131,11 +210,9 @@ export function StudioSheetRows({
   rows: RoofSheetRows;
   sheet: RoofSheetView;
 }) {
-  const { studio, units, words } = facts;
-  const format = useFormat();
+  const { studio, words } = facts;
   const { moves } = studio;
-  const text = numberShownBy(format, units);
-  const { kind, material, shape, parapet, details } = rows;
+  const { kind, material, shape, parapet } = rows;
   return (
     <>
       {kind === null ? null : (
@@ -183,20 +260,11 @@ export function StudioSheetRows({
       {rows.overhang === null ? null : (
         <NumberRow facts={facts} shown={rows.overhang} label={words.rowNumber('overhang')} />
       )}
-      {parapet === null ? null : <ParapetRows facts={facts} parapet={parapet} />}
       {rows.setback === null ? null : (
         <NumberRow facts={facts} shown={rows.setback} label={words.rowNumber('setback')} />
       )}
+      {parapet === null ? null : <ParapetRows facts={facts} parapet={parapet} />}
       <StudioStairsRow facts={facts} room={rows.roof} row={rows.stairs} />
-      {details === null ? null : (
-        <SheetRow
-          facts={facts}
-          rowKey="details"
-          label={words.rowDetails}
-          value={words.detailsValue(text(details.thickness), details.measured)}
-          onOpen={moves.openDetails}
-        />
-      )}
     </>
   );
 }

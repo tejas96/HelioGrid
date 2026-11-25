@@ -133,11 +133,10 @@ describe('a side’s sheet', () => {
     expect(view.result.current.roofSheet).toBeNull();
   });
 
-  it('Parapet details: a railing, and lengths measured inside', async () => {
+  it('the parapet’s details, on the roof’s own sheet: a railing, and lengths measured inside', async () => {
     const view = await opened();
-    act(() => view.result.current.moves.openDetails());
-    expect(view.result.current.sheetPart).toEqual({ kind: 'details' });
     act(() => view.result.current.moves.setParapetBuilt('railing'));
+    expect(view.result.current.sheetPart).toEqual({ kind: 'roof' });
     await waitFor(() => expect(saved()?.parapet).toMatchObject({ build: 'railing' }));
     act(() => view.result.current.moves.setLengthsMeasured('inside'));
     await waitFor(() => expect(saved()?.parapet).toMatchObject({ lengthsMeasured: 'inside' }));

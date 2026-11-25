@@ -13,13 +13,11 @@ export interface SheetFacts {
   readonly studio: StudioScreen;
   readonly units: MeasurementSystem;
   readonly words: StudioCanvasWords;
-  /** A phone: one row opens at a time; a desktop shows every number's slider. */
-  readonly phone: boolean;
 }
 
 /**
- * One row: its name, its value and, where it waits for a person, its amber dot. A tap opens what
- * sets it — on a phone one row at a time; on a desktop a number's slider is always shown.
+ * One row: its name, its value and, where it waits for a person, its amber dot. A number's slider
+ * is always shown, on every screen; another row opens what sets it on a tap, one at a time.
  */
 export function SheetRow({
   facts,
@@ -37,7 +35,7 @@ export function SheetRow({
   label: TranslatedText;
   value: ReactNode;
   waits?: boolean;
-  /** Its controls show on a desktop without a tap: a number's slider. */
+  /** Its controls show without a tap: a number's slider. */
   always?: boolean;
   /** What the row's line holds where its controls always show: a number's value and its switch. */
   openValue?: ReactNode;
@@ -82,13 +80,13 @@ export function SheetRow({
 
 /** Whether a row may be set, shows its controls without a tap, is open, and opens on a tap. */
 function rowStateOf(
-  { studio, phone }: SheetFacts,
+  { studio }: SheetFacts,
   rowKey: SheetRowKey,
   always: boolean,
   { onOpen, children }: { onOpen: (() => void) | undefined; children: ReactNode },
 ) {
   const editable = studio.editing.kind === 'editor';
-  const shown = editable && always && !phone;
+  const shown = editable && always;
   const open = shown || studio.rowOpen === rowKey;
   const opens = editable && !shown && (onOpen !== undefined || children !== undefined);
   return { editable, shown, open, opens };
@@ -156,7 +154,6 @@ export function NumberRow({
       }
     >
       <StudioSheetNumber
-        withHead={facts.phone}
         shown={shown}
         name={label}
         studio={studio}

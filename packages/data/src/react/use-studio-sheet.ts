@@ -78,7 +78,7 @@ export function useStudioSheet(args: {
    * picks its roof, so its sides' dots show. `false` when a height is refused: the view stays.
    */
   viewing(next: StudioView): boolean;
-  /** The phone's back: a side's sheet or Parapet details back to the roof's, else Done. */
+  /** The phone's back: a side's sheet or a face's back to the roof's, else Done. */
   back(): void;
 } {
   const { latest, change, act, editable, facts, units, pin } = args;
