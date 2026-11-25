@@ -9,15 +9,17 @@ import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
 import { useFilePick } from './StudioFilePick';
 import { StudioLengthBox } from './StudioLengthBox';
 import { StudioPictureCards } from './StudioPictureCards';
-import { pictureCreditOf, StudioPictureChip, StudioPictureCredit } from './StudioPictureChip';
+import { pictureCreditOf, StudioPictureChip } from './StudioPictureChip';
 import { StudioPlanRow } from './StudioPlanRow';
 import { StudioSaveMark } from './StudioSaveMark';
 import { StudioSizeCard } from './StudioSizeCard';
+import { StudioStepLine } from './StudioStepLine';
 import { StudioStepSwitcher } from './StudioStepSwitcher';
 
 /**
- * The steps with the save mark, or the mark alone while a job keeps the steps aside. While another person edits, the place stays: their roof is drawn on it. A change still
- * on its way keeps the person here, or leaving would lose it.
+ * The head's middle: the steps, while no job keeps them aside. While another person edits, the place
+ * stays: their roof is drawn on it. A change still on its way keeps the person here, or leaving would
+ * lose it.
  */
 function HeadSteps({
   studio,
@@ -25,51 +27,74 @@ function HeadSteps({
   words,
   onBack,
   onSite,
+  phone,
 }: {
   studio: StudioScreen;
   parts: FocusParts;
   words: StudioCanvasWords;
   onBack: () => void;
   onSite: (() => void) | null;
+  phone: boolean;
 }) {
-  const { editing, saving, moves } = studio;
-  const saveMark = (
-    <StudioSaveMark
-      editing={editing}
-      saving={saving}
-      words={words}
-      onRetry={moves.retry}
-      onLeave={onBack}
-    />
-  );
+  const { editing, saving } = studio;
+  const shown = parts.stepSwitcher === 'shown';
   return (
-    <div
-      className="hg-studio-head-part hg-studio-head-steps"
-      data-hidden={parts.stepSwitcher === 'hidden'}
-      inert={parts.stepSwitcher === 'hidden'}
-    >
-      {parts.stepSwitcher === 'mark' ? (
-        <div className="hg-studio-steps">
-          <div className="hg-studio-glass hg-studio-steps-pill">{saveMark}</div>
-        </div>
-      ) : (
-        <StudioStepSwitcher
-          rail={studio.rail}
-          words={words}
-          onSite={editing.kind === 'editor' ? onSite : null}
-          siteWaits={saving.kind !== 'saved'}
-          saveMark={saveMark}
-          onLeave={onBack}
-        />
-      )}
+    <div className="hg-studio-head-part hg-studio-head-steps" data-hidden={!shown} inert={!shown}>
+      <StudioStepSwitcher
+        rail={studio.rail}
+        words={words}
+        onSite={editing.kind === 'editor' ? onSite : null}
+        siteWaits={saving.kind !== 'saved'}
+        onLeave={onBack}
+        numbered={!phone}
+      />
     </div>
   );
 }
 
 /**
- * The canvas's head: the step switcher with the save mark, the compass and the picture chip. Focus
- * mode sets the switcher aside — a save that failed keeps its mark — and steps the chip down to its
- * credit line, which never leaves the screen.
+ * The head's end: the place that grows. A new option of the whole design stands here, before the
+ * save mark and the compass, which keep the last two places. Room at the end, a ⋯ included: five on
+ * a laptop, four on a tablet or a phone held sideways, one on an upright phone; the options past it
+ * wait behind one ⋯ in their rank's order, and when they all fit there is no ⋯. A tool that changes
+ * the model belongs to the tool columns, a setting to View, a step's main act to the foot.
+ */
+function HeadEnd({
+  studio,
+  parts,
+  words,
+  onBack,
+  compass,
+}: {
+  studio: StudioScreen;
+  parts: FocusParts;
+  words: StudioCanvasWords;
+  onBack: () => void;
+  compass: Ref<StudioCompassHandle>;
+}) {
+  const { editing, saving, moves } = studio;
+  const marked = parts.stepSwitcher !== 'hidden';
+  return (
+    <div className="hg-studio-head-end">
+      <div className="hg-studio-head-part" data-hidden={!marked} inert={!marked}>
+        <StudioSaveMark
+          editing={editing}
+          saving={saving}
+          words={words}
+          onRetry={moves.retry}
+          onLeave={onBack}
+        />
+      </div>
+      <StudioCompass handle={compass} words={words} off={parts.compass === 'hidden'} />
+    </div>
+  );
+}
+
+/**
+ * The canvas's head, straight on the map with no box: the picture at the start, the steps in the
+ * middle, the save mark and the compass at the end, over a soft shade that keeps them readable on
+ * any roof; the line on the screen's top edge says how far the design has come. Focus mode sets the
+ * steps aside — a save that failed keeps its mark — and steps the picture down to its thumb.
  */
 export function StudioCanvasHead({
   headRef,
@@ -99,41 +124,50 @@ export function StudioCanvasHead({
 }) {
   const { roofStep } = studio;
   return (
-    <div ref={headRef} className="hg-studio-canvas-head">
-      <HeadSteps studio={studio} parts={parts} words={words} onBack={onBack} onSite={onSite} />
-      <StudioCompass handle={compass} words={words} off={parts.compass === 'hidden'} />
-      <HeadPicture studio={studio} parts={parts} words={words} phone={phone} foot={foot} />
-      <DrawHint studio={studio} words={words} />
-      {roofStep.kind === 'sizing' ? (
-        <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
-      ) : null}
-      <StudioPictureCards studio={studio} words={words} phone={phone} />
-      {studio.sizeCard !== null ? (
-        <StudioSizeCard
-          card={studio.sizeCard}
+    <>
+      <span className="hg-studio-head-shade" aria-hidden="true" />
+      <StudioStepLine rail={studio.rail} />
+      <div ref={headRef} className="hg-studio-canvas-head">
+        <HeadPicture studio={studio} parts={parts} words={words} foot={foot} />
+        <HeadSteps
           studio={studio}
-          units={studio.units}
+          parts={parts}
           words={words}
+          onBack={onBack}
+          onSite={onSite}
           phone={phone}
-          credit={phone ? pictureCreditOf(studio.picture, words) : null}
         />
-      ) : null}
-    </div>
+        <HeadEnd studio={studio} parts={parts} words={words} onBack={onBack} compass={compass} />
+        <DrawHint studio={studio} words={words} />
+        {roofStep.kind === 'sizing' ? (
+          <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
+        ) : null}
+        <StudioPictureCards studio={studio} words={words} phone={phone} />
+        {studio.sizeCard !== null ? (
+          <StudioSizeCard
+            card={studio.sizeCard}
+            studio={studio}
+            units={studio.units}
+            words={words}
+            phone={phone}
+            credit={phone ? pictureCreditOf(studio.picture, words) : null}
+          />
+        ) : null}
+      </div>
+    </>
   );
 }
 
-/** The picture chip, or its credit line alone while a job is in hand. */
+/** The picture button, or its thumb alone while a job is in hand. */
 function HeadPicture({
   studio,
   parts,
   words,
-  phone,
   foot,
 }: {
   studio: StudioScreen;
   parts: FocusParts;
   words: StudioCanvasWords;
-  phone: boolean;
   foot: HTMLElement | null;
 }) {
   const format = useFormat();
@@ -144,15 +178,9 @@ function HeadPicture({
   // The sky picture's row names it, shown or not.
   const { skyFacts } = studio;
   const drawnOn = document?.drawnOn?.takenOn ?? null;
-  if (parts.pictureChip === 'credit') {
-    // On a phone your picture's open card and the size card carry the credit as their last line
-    // (ruling 8): the card stands where the credit was.
-    return phone && (studio.own.cardOpen || studio.sizeCard !== null) ? null : (
-      <StudioPictureCredit picture={picture} words={words} />
-    );
-  }
   return (
     <StudioPictureChip
+      thumbOnly={parts.pictureChip === 'thumb'}
       picture={picture}
       shown={shown}
       // The first length stretches the picture: its sharpness is the picture as drawn.

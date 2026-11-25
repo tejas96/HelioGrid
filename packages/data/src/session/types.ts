@@ -5,7 +5,6 @@ import type {
   GoogleToken,
   InviteJoinOutcome,
   InviteJoinResult,
-  NumberEntry,
   OnboardingStep,
   OtpRequestOutcome,
   OtpVerifyResult,
@@ -115,13 +114,11 @@ export interface SessionStore {
    */
   setUnitPreference(next: MeasurementSystem): Promise<boolean>;
   /**
-   * The person turned a studio helper on or off, or picked the slider or the box (`T-M05-002`,
-   * part b): as `setUnitPreference`, the snapshot moves at once and `PATCH /users/me` persists it.
+   * The person turned a studio helper on or off (`T-M05-002`, part b): as `setUnitPreference`,
+   * the snapshot moves at once and `PATCH /users/me` persists it. Slider or box is the moment's
+   * pick, never the account's (`useNumberEntry`).
    */
-  setStudioPicks(next: {
-    readonly studioHelpersOff?: readonly StudioHelper[];
-    readonly numberEntry?: NumberEntry;
-  }): Promise<boolean>;
+  setStudioPicks(next: { readonly studioHelpersOff?: readonly StudioHelper[] }): Promise<boolean>;
 }
 
 /**

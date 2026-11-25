@@ -103,9 +103,8 @@ export function RoofSlopeTip() {
 
 /**
  * The marks on the roofs that are not lines (`T-M05-002`, part e): "+3 m" on a roof that stands on
- * another, the tag on one that sticks out past its roof, and — on the picked roof, for a person who
- * may change it — a dot on each side: a tap adds or removes that side's wall, so a tap meant to pick
- * never changes one.
+ * another and the tag on one that sticks out past its roof. A side's wall is added or taken off in
+ * 3D and in the roof's sheet, never here: sides meet too close at a corner to tell apart by a tap.
  */
 export function StudioRoofTopMarks({
   studio,
@@ -119,15 +118,10 @@ export function StudioRoofTopMarks({
   const format = useFormat();
   const picked = studio.handlesRoof;
   const step = studio.roofStep;
-  // The picked roof's side dots show for an editor who is looking, with nothing in hand; while the
-  // plan is picked its own handles take the taps.
-  const dots =
+  // Each roof is a keyboard stop for an editor looking at the top view, nothing in hand; while the
+  // plan is picked its own handles take the keys.
+  const keys =
     studio.editing.kind === 'editor' && step.kind === 'idle' && studio.own.plan?.picked !== true;
-  // Each roof is a keyboard stop for an editor looking at the top view, nothing in hand.
-  const keys = dots;
-  // The side a person just took the wall off says so beside its dot, until the next act.
-  const off =
-    step.kind === 'idle' && step.said?.kind === 'side_wall' && !step.said.wall ? step.said : null;
   return (
     <>
       {studio.topMarks.map((mark, index) => {
@@ -135,8 +129,8 @@ export function StudioRoofTopMarks({
         if (roof === undefined) return null;
         return (
           <Fragment key={roof.id}>
-            {/* A keyboard's way to each roof: Tab reaches it, Enter picks it, and its side dots
-                follow it. A tap on the map picks as it did: this stop takes no pointer. */}
+            {/* A keyboard's way to each roof: Tab reaches it and Enter picks it. A tap on the map
+                picks as it did: this stop takes no pointer. */}
             {keys ? (
               <span className="hg-roof-at" data-at={pointText(roof.middle)}>
                 <Pressable
@@ -171,33 +165,6 @@ export function StudioRoofTopMarks({
                 </span>
               </span>
             )}
-            {dots && picked === index
-              ? mark.dots.map((dot, side) => (
-                  <span
-                    // biome-ignore lint/suspicious/noArrayIndexKey: a side is its place in the roof
-                    key={side}
-                    className="hg-roof-at"
-                    data-at={pointText(dot.at)}
-                  >
-                    <Pressable
-                      className="hg-roof-hit"
-                      accessibilityLabel={words.sideDot(side + 1, dot.wall)}
-                      ripple="none"
-                      onPress={() => studio.moves.toggleSideWall(index, side)}
-                    >
-                      <span
-                        className="hg-roof-side-dot"
-                        data-hot={off !== null && off.roof === index && off.side === side}
-                      />
-                    </Pressable>
-                    {off !== null && off.roof === index && off.side === side ? (
-                      <span className="hg-roof-tag" role="status">
-                        {words.noWallOnSide}
-                      </span>
-                    ) : null}
-                  </span>
-                ))
-              : null}
           </Fragment>
         );
       })}

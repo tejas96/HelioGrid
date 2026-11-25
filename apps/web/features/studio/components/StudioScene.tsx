@@ -5,13 +5,14 @@ import {
   type StudioScreen,
   useSceneDetail,
 } from '@heliogrid/data/react';
-import type { GroundBox, RoofScene, SceneMotion, StudioView, SunPosition } from '@heliogrid/domain';
+import type { RoofScene, SceneMotion, StudioView, SunPosition } from '@heliogrid/domain';
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { type ReactNode, type RefObject, useRef, useState } from 'react';
 import { MathUtils } from 'three';
 import { deviceHintsNow } from '../hooks/use-device-hints';
+import type { SceneFit } from './camera-poses';
 import { type ClearGround, StudioCameraRig, type StudioDrive } from './StudioCameraRig';
 import { StudioOwnGround } from './StudioOwnGround';
 import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
@@ -162,7 +163,7 @@ export interface StudioSceneProps {
   /** `null` until the design is read: its stored stretch then lands, never grown into. */
   pictureScale: number | null;
   /** The roofs' ground, which the view frames; `null` before a roof. */
-  fit: GroundBox | null;
+  fit: SceneFit | null;
   /** A roof closed: the camera frames the roofs once for each new value. */
   frameOn: object | null;
   /** The height the roofs stand at now, shared with the page's marks. */

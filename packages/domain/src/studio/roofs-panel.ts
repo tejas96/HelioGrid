@@ -1,6 +1,5 @@
 import type { StudioDocument } from './document';
 import { roofMaterialNow } from './roof-levels';
-import type { RoofList } from './roof-list';
 import {
   type MaterialMarketFacts,
   materialFragile,
@@ -19,7 +18,9 @@ import { MATERIAL_NAME_MAX } from './roof-parts';
 
 /**
  * Roofs and the material picker (`T-M05-002`, part e): one of them open at a time. Roofs has its
- * own button beside the pencil, which only draws.
+ * own button beside the pencil, which only draws. The picker opens from a roof's sheet, never from
+ * a row of Roofs: a row's whole face opens the roof's sheet, so a tap on its name never lands on a
+ * type.
  */
 
 /** What a tap on the pencil does now: it draws, or — while a roof is drawn — it stops. */
@@ -36,13 +37,11 @@ export interface OtherDraft {
 
 export type RoofsPanel =
   | { readonly open: 'none' }
-  /** `lit`: the row lit as Roofs opens — the next roof that waits, after a pick. */
+  /** `lit`: the row lit as Roofs opens — the row gone back to from its sheet. */
   | { readonly open: 'roofs'; readonly lit: number | null }
   | {
       readonly open: 'picker';
       readonly roof: number;
-      /** Where it was opened from, and goes back to. */
-      readonly from: 'roofs' | 'sheet';
       readonly mode: PickerMode;
       readonly other: OtherDraft;
     };
@@ -52,22 +51,18 @@ export const ROOFS_PANEL_START: RoofsPanel = { open: 'none' };
 export type RoofsPanelEvent =
   /** The Roofs button, or R: Roofs opens, or — while it or its picker is open — everything closes. */
   | { readonly kind: 'roofs' }
-  /** ×, Esc, a tap outside, the phone's back: what is open closes, back to where it came from. */
+  /** ×, Esc, a tap outside, the phone's back: what is open closes, back to the sheet under it. */
   | { readonly kind: 'close' }
   /** Everything closes: an act that must show on the model, or a roof's sheet taking the place. */
   | { readonly kind: 'close_all' }
-  | { readonly kind: 'material'; readonly roof: number; readonly from: 'roofs' | 'sheet' }
+  /** What the roof is made of, tapped in its sheet: the picker opens over it. */
+  | { readonly kind: 'material'; readonly roof: number }
   | { readonly kind: 'mode'; readonly mode: PickerMode }
   | { readonly kind: 'other'; readonly draft: Partial<OtherDraft> }
-  /** A type picked or confirmed: back to Roofs with the next roof that waits lit, or to the sheet. */
-  | { readonly kind: 'picked'; readonly next: number | null };
+  /** A type picked or confirmed: the picker closes, back to the sheet. */
+  | { readonly kind: 'picked' };
 
 const OTHER_START: OtherDraft = { name: '', fixedLike: 'concrete' };
-
-function closed(state: RoofsPanel): RoofsPanel {
-  if (state.open === 'picker' && state.from === 'roofs') return { open: 'roofs', lit: state.roof };
-  return ROOFS_PANEL_START;
-}
 
 export function roofsPanelAfter(state: RoofsPanel, event: RoofsPanelEvent): RoofsPanel {
   switch (event.kind) {
@@ -76,14 +71,12 @@ export function roofsPanelAfter(state: RoofsPanel, event: RoofsPanelEvent): Roof
         ? ROOFS_PANEL_START
         : { open: 'roofs', lit: null };
     case 'close':
-      return closed(state);
     case 'close_all':
       return ROOFS_PANEL_START;
     case 'material':
       return {
         open: 'picker',
         roof: event.roof,
-        from: event.from,
         mode: 'first',
         other: OTHER_START,
       };
@@ -94,17 +87,8 @@ export function roofsPanelAfter(state: RoofsPanel, event: RoofsPanelEvent): Roof
         ? { ...state, other: { ...state.other, ...event.draft } }
         : state;
     case 'picked':
-      if (state.open !== 'picker') return state;
-      return state.from === 'roofs' ? { open: 'roofs', lit: event.next } : ROOFS_PANEL_START;
+      return state.open === 'picker' ? ROOFS_PANEL_START : state;
   }
-}
-
-/** The next roof whose material still waits, after `roof` in the list's order and round again. */
-export function nextWaiting(list: RoofList, roof: number): number | null {
-  const at = list.rows.findIndex((row) => row.roof === roof);
-  const round = [...list.rows.slice(at + 1), ...list.rows.slice(0, Math.max(at, 0))];
-  const next = round.find((row) => row.material !== null && !row.material.confirmed);
-  return next?.roof ?? null;
 }
 
 /** A type's tile: its picture's facts. */

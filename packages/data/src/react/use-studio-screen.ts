@@ -104,8 +104,6 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     startHeightM: groundRoofHeightM(formats),
     facts,
     typedStart: { length: formats.typedRoofLengthM, width: formats.typedRoofWidthM },
-    numberEntry: session.user?.numberEntry ?? 'slider',
-    setNumberEntry: (entry) => void session.setStudioPicks({ numberEntry: entry }),
     planOutlines: planOutlinesOf(own.view.plan),
     closingOf: closingOf(facts, opened?.subject.siteRoof, pin),
   });
@@ -129,6 +127,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     magnetOn: roof.magnetNow,
   });
   const { roofSheet, numberInHand } = sheet.state;
+  const numbers = roof.numbersNow(roofSheet, sheet.state.sheetPart);
   const { shown } = roof.view;
   const stairs = useStudioStairs({
     latest,
@@ -178,8 +177,6 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   });
   const panel = useRoofsPanel({
     document,
-    latest,
-    list: model.roofList,
     facts,
     drawing: roofStep.kind === 'drawing',
     sheet: roofSheet,
@@ -221,11 +218,13 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     ...stairs.view,
     stairsMoment,
     ...panel.view,
+    numberEntry: numbers.numberEntry,
     ...roofsWithSheet(
       roof.view.heights,
       framedWithCard(framedForFaces(fit, document, roofStep), document, roof.view.sizeCard),
       roofSheet,
       document,
+      model.scene.levels,
     ),
     offer3d: roofClosed && !seen3d,
     heldView: heldViewOf(fit, roofStep, panel.view.panel),
@@ -254,6 +253,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       ...place,
       ...panel.moves,
       ...stairs.moves,
+      chooseNumberEntry: numbers.chooseNumberEntry,
       pickPicture: (choice) => {
         const at = latest.current;
         if (at === null || at.present.picture === choice) return;

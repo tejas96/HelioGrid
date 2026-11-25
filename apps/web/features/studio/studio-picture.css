@@ -1,20 +1,41 @@
 /* The studio's picture chip, its three pictures, and the pin on the ground (`T-M05-002a`). */
-/* The picture chip and its three pictures. The chip stays narrow, so no panel ever covers its
-   credit line. */
+/* The picture button and its three pictures. */
 .hg-studio-picture {
   position: relative;
-  grid-area: chip;
+  grid-area: start;
   justify-self: start;
-  max-inline-size: min(100%, calc(var(--sp-24) * 4));
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 
+/* Bare on the map: the thumb, the name over its line, the arrow last. */
 .hg-studio-chip {
+  pointer-events: auto;
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-2);
-  border-radius: var(--r-lg);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  padding: var(--sp-1) var(--sp-2) var(--sp-1) var(--sp-1);
+  border-radius: var(--r-pill);
+  color: var(--scene-mark);
   text-align: start;
+  transition: background var(--dur-fast) var(--ease-standard);
+}
+
+.hg-studio-chip:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--scene-mark) 16%, transparent);
+}
+
+.hg-studio-chip[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--scene-mark) 20%, transparent);
+}
+
+.hg-studio-chip > .hg-shell-glyph {
+  flex: none;
+  filter: drop-shadow(
+    0 var(--hg-studio-line) var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 70%, transparent)
+  );
 }
 
 .hg-studio-chip-thumb {
@@ -24,9 +45,12 @@
   inline-size: var(--studio-thumb);
   block-size: var(--studio-thumb);
   overflow: hidden;
-  border-radius: var(--r-sm);
+  border-radius: var(--r-pill);
   background: var(--fill);
   color: var(--text-secondary);
+  box-shadow:
+    0 0 0 var(--hg-studio-line) var(--scene-mark),
+    var(--e1);
 }
 
 .hg-studio-chip-thumb img {
@@ -39,28 +63,25 @@
   display: flex;
   flex-direction: column;
   min-inline-size: 0;
+  text-shadow: 0 var(--hg-studio-line) var(--sp-0-5)
+    color-mix(in srgb, var(--scene-shade) 60%, transparent);
+}
+
+.hg-studio-chip-title,
+.hg-studio-chip-source {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .hg-studio-chip-title {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
 }
 
 .hg-studio-chip-source {
-  font-weight: var(--fw-regular);
-  color: var(--text-secondary);
-}
-
-.hg-studio-chip-credit {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   font-size: var(--fs-caption);
-  color: var(--text-secondary);
+  opacity: 0.86;
 }
 
 .hg-studio-picker {
@@ -156,21 +177,6 @@
   visibility: hidden;
 }
 
-/* Focus mode: the provider's credit line alone, small and quiet, never covered. */
-.hg-studio-credit-only {
-  grid-area: chip;
-  justify-self: start;
-  margin: 0;
-  padding: var(--sp-1) var(--sp-2);
-  border-radius: var(--r-pill);
-  font-size: var(--fs-overline);
-  color: var(--text-secondary);
-  max-inline-size: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 /* Your picture (`T-M05-002d`): the plan's row under the pictures — its name and page, its eye and
    its lock. */
 .hg-studio-plan-row {
@@ -227,6 +233,15 @@
   inline-size: 100%;
 }
 
+/* The picture panel's last line: the provider's credit, quiet. */
+.hg-studio-picker-credit {
+  margin: 0;
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
 .hg-studio-card-credit {
   padding-block-start: var(--sp-1);
   border-top: var(--hg-studio-line) solid var(--line-soft);
@@ -236,16 +251,6 @@
 }
 
 @media (width < 968px) {
-  /* A phone's chip is one slim line high: the source and its credit, each on one line. */
-  .hg-studio-chip {
-    gap: var(--sp-2);
-    padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-1);
-  }
-
-  .hg-studio-chip-credit {
-    -webkit-line-clamp: 1;
-  }
-
   .hg-studio-picture-card {
     justify-self: stretch;
     inline-size: auto;

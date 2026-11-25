@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { buttonBarHeight, useCoverButtonBar } from '../../../appearance';
+import { buttonBarHeight, useCoverButtonBar, useLightBarOverMap } from '../../../appearance';
 import { styles } from '../styles';
 import { StudioWebView } from './StudioWebView';
 
@@ -28,6 +28,8 @@ export function StudioPage({
   const [underBars, setUnderBars] = useState(false);
   // The app's band of page colour under the buttons steps aside: the map runs under them.
   useCoverButtonBar(underBars && buttons > 0);
+  // The clock's bar stands on the map and its shade: white marks while the map runs under it.
+  useLightBarOverMap(underBars);
   const inside = underBars ? null : { paddingTop: insets.top, paddingBottom: insets.bottom };
   return (
     <View style={[styles.studio, inside]}>

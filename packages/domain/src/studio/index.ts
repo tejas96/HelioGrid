@@ -164,7 +164,7 @@ export {
   roofsBox,
   roofsOverlap,
 } from './roof-shape';
-export { type RoofSheetView, roofHitAt, roofSheetOf, roofsWithSheet } from './roof-sheet';
+export { type RoofSheetView, roofSheetOf, roofsWithSheet } from './roof-sheet';
 export {
   type Guide,
   magnetOf,

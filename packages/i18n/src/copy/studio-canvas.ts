@@ -61,6 +61,7 @@ const CANVAS = {
   noPicture: /*i18n*/ { id: 'No picture' },
   pictureLabel: /*i18n*/ { id: 'Picture: {name}' },
   fromGoogle: /*i18n*/ { id: 'Google' },
+  pictureLine: /*i18n*/ { id: '{source} · {detail}' },
   skyLine: /*i18n*/ { id: 'Satellite · {sharpness} a pixel' },
   skyLineTaken: /*i18n*/ { id: 'Satellite · {sharpness} a pixel · taken {date}' },
   skyLoading: /*i18n*/ { id: 'Loading the sky picture' },
@@ -172,6 +173,8 @@ export function studioCanvasWords(t: T) {
     pictureLabel: (name: string) => t(CANVAS.pictureLabel, { name }),
     /** The provider's name on the chip; one a newer api learned shows as sent. */
     source: (source: string) => (source === 'google' ? t(CANVAS.fromGoogle) : shownAsSent(source)),
+    /** The line under the picture's name: who gave it and how sharp it is, as "Google · 30 cm". */
+    pictureLine: (source: string, detail: string) => t(CANVAS.pictureLine, { source, detail }),
     /** "Satellite · 14 cm a pixel · taken Oct 2025" — the sharpness and date already formatted. */
     skyLine: (sharpness: string, date: string | null) =>
       date === null

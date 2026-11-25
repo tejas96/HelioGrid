@@ -25,6 +25,17 @@ const TILT_MAX = TILT_MAX_DEGREES * RADIANS;
 
 export type { GroundBox };
 
+/** What the camera frames: a ground box, looked at `upM` above the ground (the open roof's top). */
+export interface SceneFit extends GroundBox {
+  readonly upM?: number;
+}
+
+/** Where the camera looks for a frame: the box's middle, `upM` above the ground; the pin with none. */
+export function fitMiddle(fit: SceneFit | null) {
+  if (fit === null) return { east: 0, north: 0, upM: 0 };
+  return { east: (fit.west + fit.east) / 2, north: (fit.south + fit.north) / 2, upM: fit.upM ?? 0 };
+}
+
 /** The room round the framed roofs, as a share of their size. */
 const FIT_ROOM = 2;
 

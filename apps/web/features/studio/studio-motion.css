@@ -129,16 +129,11 @@
   }
 }
 
-/* Many roofs (`T-M05-002`, part e). The line's chips rise in under it when a roof closes; a side's
-   dot pops in on the picked roof; a roof's height on it, the picked roof's glow, the magnet's
+/* Many roofs (`T-M05-002`, part e). The line's chips rise in under it when a roof closes; a roof's height on it, the picked roof's glow, the magnet's
    level line and the line down a sloped face draw in. Each plays once; under Reduce Motion the
    duration tokens leave the end state at once. */
 .hg-studio-kind-chips {
   animation: hg-rise var(--dur-standard) var(--ease-enter) backwards;
-}
-
-.hg-roof-side-dot {
-  animation: hg-pop-in var(--dur-spring-snappy) var(--ease-spring-snappy) backwards;
 }
 
 .hg-roof-at > .hg-roof-above,

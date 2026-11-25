@@ -5,8 +5,8 @@ import type { StudioView } from './views';
 /**
  * Focus mode (`T-M05-002`, part b): while a person does one job — draws, drags, sets a length or
  * has a roof's sheet open — every part of the studio that job does not use steps aside, and comes
- * back when the job ends. The picture's credit line never hides (the provider's terms). The screen
- * fades each part in and out; this file alone decides which.
+ * back when the job ends. The picture never hides: a job keeps its thumb. The screen fades each part
+ * in and out; this file alone decides which.
  */
 
 /** What the studio shows of each part. `hidden` steps aside; every other value is on screen. */
@@ -16,8 +16,8 @@ export interface FocusParts {
    * it, and any job keeps it for a save that failed.
    */
   readonly stepSwitcher: 'shown' | 'mark' | 'hidden';
-  /** The picture chip whole, or its credit line alone. */
-  readonly pictureChip: 'shown' | 'credit';
+  /** The picture button whole, or its thumb alone while a job is in hand. */
+  readonly pictureChip: 'shown' | 'thumb';
   /** The pencil: it draws; `filled` while it draws. */
   readonly pencil: 'shown' | 'filled' | 'hidden';
   /** The Roofs button with the roofs' count, once a roof stands; a reader may open it too. */
@@ -89,7 +89,7 @@ const IN_A_JOB: Record<
 > = {
   drawing: {
     stepSwitcher: 'hidden',
-    pictureChip: 'credit',
+    pictureChip: 'thumb',
     roofs: 'hidden',
     pencil: 'filled',
     magnet: 'shown',
@@ -104,7 +104,7 @@ const IN_A_JOB: Record<
   },
   dragging: {
     stepSwitcher: 'hidden',
-    pictureChip: 'credit',
+    pictureChip: 'thumb',
     roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
@@ -117,7 +117,7 @@ const IN_A_JOB: Record<
   },
   moving: {
     stepSwitcher: 'hidden',
-    pictureChip: 'credit',
+    pictureChip: 'thumb',
     roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
@@ -130,7 +130,7 @@ const IN_A_JOB: Record<
   },
   sizing: {
     stepSwitcher: 'hidden',
-    pictureChip: 'credit',
+    pictureChip: 'thumb',
     roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
@@ -146,7 +146,7 @@ const IN_A_JOB: Record<
   // with Place roof. Undo and Redo step aside: the rectangle is not in the history until placed.
   typing: {
     stepSwitcher: 'hidden',
-    pictureChip: 'credit',
+    pictureChip: 'thumb',
     roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
@@ -159,10 +159,10 @@ const IN_A_JOB: Record<
     bottomBar: 'drawing',
   },
   // Your picture's card (`T-M05-002d`, board 2.1, 4.1): the card is the job — its picture shows,
-  // the chip steps down to its credit, the foot is the slim pill; Undo and the pencil stay.
+  // the picture steps down to its thumb, the foot is the slim pill; Undo and the pencil stay.
   picture: {
     stepSwitcher: 'mark',
-    pictureChip: 'credit',
+    pictureChip: 'thumb',
     otherHandles: 'hidden',
     bottomBar: 'drawing',
   },
@@ -221,7 +221,7 @@ function partsOfJob(facts: FocusFacts): FocusParts {
   if (facts.view !== 'top') {
     const sheet: Partial<FocusParts> =
       job === 'sheet'
-        ? { stepSwitcher: 'mark', pictureChip: 'credit', layers: 'switch', bottomBar: 'hidden' }
+        ? { stepSwitcher: 'mark', pictureChip: 'thumb', layers: 'switch', bottomBar: 'hidden' }
         : {};
     return {
       ...LOOKING_TOP,

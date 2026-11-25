@@ -107,6 +107,37 @@
   color: var(--text-primary);
 }
 
+/* Roofs' metres or feet, at the end of its title: drawn small, so the title stays the head, and it
+   keeps its size while the title wraps. Each half still takes a 44px tap: its reach runs past its
+   face, up, down and outward, into the margin kept round the switch, never over the ×. */
+.hg-roofs-units {
+  flex-shrink: 0;
+  margin-inline: var(--sp-3);
+}
+
+.hg-roofs-units .hg-segmented-control-segment {
+  min-width: var(--sp-8);
+  height: var(--sp-6);
+  margin: 0;
+  padding-inline: var(--sp-2);
+  font-size: var(--fs-caption);
+}
+
+.hg-roofs-units .hg-segmented-control-segment::after {
+  content: "";
+  position: absolute;
+  inset-block: calc((var(--sp-6) - var(--touch-min)) / 2);
+  inset-inline: 0;
+}
+
+.hg-roofs-units .hg-segmented-control-segment:first-of-type::after {
+  inset-inline-start: calc(var(--sp-8) - var(--touch-min));
+}
+
+.hg-roofs-units .hg-segmented-control-segment:last-of-type::after {
+  inset-inline-end: calc(var(--sp-8) - var(--touch-min));
+}
+
 .hg-roofs-rows {
   display: flex;
   flex-direction: column;
@@ -185,22 +216,10 @@
   color: var(--text-secondary);
 }
 
-.hg-roofs-row-made {
-  position: relative;
-}
-
 /* It waits to be checked: amber and stronger; the dot on the row's picture says so too. */
 .hg-roofs-row-made[data-waits="true"] {
   color: var(--warning-text);
   font-weight: var(--fw-medium);
-}
-
-.hg-roofs-row-made-press {
-  position: absolute;
-  inset-block-start: calc((100% - var(--touch-min)) / 2);
-  inset-inline-start: 0;
-  inline-size: 100%;
-  pointer-events: auto;
 }
 
 /* Where it sits follows what it is made of, a dot between them. */

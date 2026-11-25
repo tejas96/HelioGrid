@@ -151,10 +151,9 @@ describe('Roofs', () => {
 });
 
 describe('what a roof is made of', () => {
-  it('Confirm on the terrace confirms it and the stair room on it in one save, and Roofs comes back with the shed lit', async () => {
+  it('Confirm on the terrace confirms it and the stair room on it in one save, and the picker closes', async () => {
     const view = await opened(HOUSE);
-    act(() => view.result.current.moves.tapRoofs());
-    act(() => view.result.current.moves.openMaterial(0, 'roofs'));
+    act(() => view.result.current.moves.openMaterial(0));
     expect(view.result.current.materialPicker).toMatchObject({
       roof: 0,
       now: 'rcc',
@@ -165,25 +164,25 @@ describe('what a roof is made of', () => {
       expect(saved().map((roof) => roof.material?.confirmed)).toEqual([true, true, false]),
     );
     expect(stored.saves).toHaveLength(1);
-    expect(view.result.current.panel).toEqual({ open: 'roofs', lit: 2 });
+    expect(view.result.current.panel).toEqual({ open: 'none' });
     expect(view.result.current.roofList.waiting).toBe(1);
   });
 
-  it('a tap on a picture is the person’s pick; the last roof that waited leaves none lit', async () => {
+  it('a tap on a picture is the person’s pick', async () => {
     const done = { type: 'rcc', setBy: 'person', confirmed: true } as const;
     const view = await opened([{ ...TERRACE, material: done }, SHED]);
-    act(() => view.result.current.moves.openMaterial(1, 'roofs'));
+    act(() => view.result.current.moves.openMaterial(1));
     act(() => view.result.current.moves.pickMaterial({ type: 'ac_sheet' }));
     await waitFor(() =>
       expect(saved()[1]?.material).toEqual({ type: 'ac_sheet', setBy: 'person', confirmed: true }),
     );
-    expect(view.result.current.panel).toEqual({ open: 'roofs', lit: null });
+    expect(view.result.current.panel).toEqual({ open: 'none' });
     expect(view.result.current.roofList.waiting).toBe(0);
   });
 
-  it('a type of one’s own is typed, and used once it has a name; from a sheet the picker only closes', async () => {
+  it('a type of one’s own is typed, and used once it has a name', async () => {
     const view = await opened([TERRACE]);
-    act(() => view.result.current.moves.openMaterial(0, 'sheet'));
+    act(() => view.result.current.moves.openMaterial(0));
     act(() => view.result.current.moves.pickerMode('other'));
     expect(view.result.current.materialPicker?.other.pick).toBeNull();
     act(() => view.result.current.moves.typeOther({ name: 'Kota stone' }));
@@ -195,18 +194,19 @@ describe('what a roof is made of', () => {
     expect(view.result.current.panel).toEqual({ open: 'none' });
   });
 
-  it('the phone’s back closes the picker to Roofs, then Roofs', async () => {
+  it('a row opens its roof’s sheet; the picker opens over it, and the phone’s back closes the picker to that sheet', async () => {
     const view = await opened(HOUSE);
     act(() => view.result.current.moves.tapRoofs());
-    act(() => view.result.current.moves.openMaterial(2, 'roofs'));
+    act(() => view.result.current.moves.pickRow(2));
+    expect(view.result.current.roofSheet?.roof).toBe(2);
+    act(() => view.result.current.moves.openMaterial(2));
     let handled = false;
     act(() => {
       handled = view.result.current.moves.back();
     });
     expect(handled).toBe(true);
-    expect(view.result.current.panel).toEqual({ open: 'roofs', lit: 2 });
-    act(() => void view.result.current.moves.back());
     expect(view.result.current.panel).toEqual({ open: 'none' });
+    expect(view.result.current.roofSheet?.roof).toBe(2);
     expect(stored.saves).toHaveLength(0);
   });
 });

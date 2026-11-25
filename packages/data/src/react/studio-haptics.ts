@@ -32,7 +32,10 @@ export function studioMomentsOf(studio: StudioScreen): StudioMoments {
     closed: said?.kind === 'closed' ? said : null,
     lengthSide:
       length === null ? null : Math.sign((length.typed ?? length.traced) - length.slide.mark),
-    heightSide: sheet === null ? null : Math.sign(sheet.height.metres - sheet.systemMetres),
+    heightSide:
+      sheet === null || !sheet.hasHeight
+        ? null
+        : Math.sign(sheet.height.metres - sheet.systemMetres),
   };
 }
 

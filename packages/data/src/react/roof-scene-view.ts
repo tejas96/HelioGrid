@@ -206,8 +206,10 @@ export function useRoofModel(
 ): RoofModelSeen {
   const memory = useRef<RoofMemory>({});
   const open = sheet?.roof ?? null;
-  const held = sheet?.height.metres;
-  const setBy = sheet?.height.setBy;
+  // A hole's sheet has no height of its own: nothing is in hand on the model.
+  const own = sheet?.hasHeight === true;
+  const held = own ? sheet.height.metres : undefined;
+  const setBy = own ? sheet.height.setBy : undefined;
   const min = sheet?.slide.min;
   const max = sheet?.slide.max;
   return useMemo(() => {

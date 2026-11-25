@@ -66,6 +66,8 @@ function OpenRoofMarks({
   if (studio.sheetPart.kind === 'side') {
     return <LitSide studio={studio} marks={roof} units={units} words={words} />;
   }
+  // A hole has no height of its own to drag: it is open down to the floor below.
+  if (studio.roofSheet?.hasHeight === false) return null;
   return (
     <HeightArrow
       studio={studio}

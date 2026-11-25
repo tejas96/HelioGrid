@@ -10,7 +10,6 @@ const priya: SessionUser = {
   interfaceLanguage: 'en',
   unitPreference: 'metric',
   studioHelpersOff: [],
-  numberEntry: 'slider',
   tenant: { id: TENANT_ID, roles: ['sales_executive'] },
 };
 const signedIn: SessionSnapshot = sessionAfter(CHECKING, {

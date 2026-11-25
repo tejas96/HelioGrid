@@ -6,10 +6,10 @@ import { handFacesKept } from './roof-hand-faces';
 import { roofKindOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofOwnHeightM, roofShapeNow } from './roof-levels';
 import { roofNameOf } from './roof-names';
-import { type EdgeStretch, parapetNow } from './roof-open-edges';
+import { parapetNow } from './roof-open-edges';
 import { lowSideOf } from './roof-slope-way';
 import { sticksOutFarthest } from './roof-sticks-out';
-import type { NoWallWhy, RoofTopMark, SideDot, SideStretchMark } from './roof-top-marks';
+import type { NoWallWhy, RoofTopMark, SideStretchMark } from './roof-top-marks';
 import type { RoofsWorked } from './roof-worked';
 
 /** The top view's marks for every roof, from what the kernel worked out for the design. */
@@ -23,28 +23,6 @@ const along = (from: GroundPoint, to: GroundPoint, share: number): GroundPoint =
   east: from.east + (to.east - from.east) * share,
   north: from.north + (to.north - from.north) * share,
 });
-
-const HALF = 0.5;
-const QUARTER = 0.25;
-/** A dot nearer the side's middle than this share of the side would sit on the side's +. */
-const PLUS_ROOM = 0.15;
-
-/** A side's dot: at the middle of its longest stretch with a wall, else of its longest stretch. */
-function dotOf(from: GroundPoint, to: GroundPoint, stretches: readonly EdgeStretch[]): SideDot {
-  const longest = (among: readonly EdgeStretch[]) =>
-    among.reduce<EdgeStretch | null>(
-      (best, each) => (best === null || each.to - each.from > best.to - best.from ? each : best),
-      null,
-    );
-  const walled = longest(stretches.filter((stretch) => stretch.wall));
-  const at = walled ?? longest(stretches) ?? { from: 0, to: 1 };
-  const middle = (at.from + at.to) / 2;
-  // The side's own middle holds its +, which adds a corner: a dot that would sit on it sits a
-  // quarter of the way along its stretch.
-  const clear = Math.abs(middle - HALF) >= PLUS_ROOM;
-  const share = clear ? middle : at.from + (at.to - at.from) * QUARTER;
-  return { at: along(from, to, share), wall: walled !== null };
-}
 
 /** A short line down a face through its middle, the way it slopes. */
 function slopeOf(face: BuiltFace): { from: GroundPoint; to: GroundPoint } {
@@ -130,7 +108,6 @@ function markOf(
     kind,
     name: roofNameOf(document, index) ?? { kind: 'roof', number: index + 1 },
     sides,
-    dots: edges.map((stretches, side) => dotOf(ends(side).from, ends(side).to, stretches)),
     aboveM: stands ? roofOwnHeightM(document, roof, facts) : null,
     sticksOutM: out.metres,
     sticksOutAt: out.at,

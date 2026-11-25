@@ -23,28 +23,6 @@ interface PictureOption {
   readonly off: TranslatedText | null;
 }
 
-/** The chip's title line: the picture, who gave it, and the date the roof was drawn on it. */
-function ChipTitle({
-  title,
-  source,
-  drawnOn,
-  canPick,
-}: {
-  title: TranslatedText;
-  source: string | null;
-  drawnOn: string | null;
-  canPick: boolean;
-}) {
-  return (
-    <span className="hg-studio-chip-title">
-      {title}
-      {source === null ? null : <span className="hg-studio-chip-source"> · {source}</span>}
-      {drawnOn === null ? null : <span className="hg-studio-chip-source"> · {drawnOn}</span>}
-      {canPick ? <ShellGlyph name="chevron" size="xs" /> : null}
-    </span>
-  );
-}
-
 /** What the chip shows of the picture: its title, who gave it, its credit and its thumbnail. */
 function chipFacts(
   picture: StudioPicture,
@@ -66,9 +44,95 @@ function chipFacts(
   };
 }
 
+/** The button itself: the thumb, the name over its line, and the arrow while it can be pressed. */
+function ChipButton({
+  title,
+  line,
+  thumb,
+  shown,
+  thumbOnly,
+  pickable,
+  open,
+  label,
+  onPress,
+}: {
+  title: TranslatedText;
+  line: string | null;
+  thumb: string | null;
+  shown: PictureChoice;
+  thumbOnly: boolean;
+  pickable: boolean;
+  open: boolean;
+  label: TranslatedText;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      className="hg-studio-chip"
+      data-thumb={thumbOnly}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ expanded: open }}
+      disabled={!pickable}
+      onPress={onPress}
+    >
+      <span className="hg-studio-chip-thumb" aria-hidden>
+        {thumb === null || shown === 'none' ? (
+          <ShellGlyph name="image-off" size="sm" />
+        ) : (
+          // The sky picture lives in memory alone, and your picture's piece behind a link that
+          // lives five minutes: neither is a file to hand an image loader. Asked as the scene asks,
+          // so the browser keeps one copy the ground can read too.
+          // biome-ignore lint/performance/noImgElement: the picture lives in memory or a short-lived link.
+          <img src={thumb} alt="" crossOrigin="anonymous" />
+        )}
+      </span>
+      {thumbOnly ? null : (
+        <span className="hg-studio-chip-words">
+          <span className="hg-studio-chip-title">{title}</span>
+          {line === null ? null : <span className="hg-studio-chip-source">{line}</span>}
+        </span>
+      )}
+      {pickable ? <ShellGlyph name="chevron" size="xs" tone="current" /> : null}
+    </Pressable>
+  );
+}
+
+/** The three pictures the panel offers. */
+function optionsOf(
+  sharpness: string | null,
+  takenOn: string | null,
+  words: StudioCanvasWords,
+): readonly PictureOption[] {
+  return [
+    {
+      choice: 'sky',
+      glyph: 'image',
+      title: words.skyPicture,
+      line: sharpness === null ? words.skyLoading : words.skyLine(sharpness, takenOn),
+      off: null,
+    },
+    { choice: 'own', glyph: 'camera', title: words.yourPicture, line: words.yourLine, off: null },
+    { choice: 'none', glyph: 'grid', title: words.noPicture, line: words.noLine, off: null },
+  ];
+}
+
+/** The line under the picture's name: who gave it, with how sharp it is or the day it was taken. */
+function lineOf(
+  source: string | null,
+  detail: string | null,
+  shown: PictureChoice,
+  words: StudioCanvasWords,
+): string | null {
+  if (shown === 'none') return words.noLine;
+  if (source === null || detail === null || shown === 'own') return source;
+  return words.pictureLine(source, detail);
+}
+
 /**
- * The picture chip, top left: which picture the ground shows, who gave it, how sharp it is and its
- * credit line — always in view, never under a panel. A tap opens the picture panel, under its title
+ * The picture button, at the head's start, straight on the map: its thumb, which picture the ground
+ * shows, who gave it and how sharp it is, and the arrow; its thumb alone while a job is in hand. A
+ * tap opens the picture panel, whose last line is the provider's credit, under its title
  * row with its × (at the foot on a phone): the three pictures — the sky
  * picture (picked by itself), your own — a tap opens the file picker, and a newer file replaces the
  * one laid (`T-M05-002d`) — or none; and the plan's row, when a plan is laid.
@@ -89,7 +153,10 @@ export function StudioPictureChip({
   ownLaid,
   planRow,
   foot,
+  thumbOnly,
 }: {
+  /** A job is in hand: the thumb alone, which cannot be pressed. */
+  thumbOnly: boolean;
   picture: StudioPicture;
   /** The picture the ground shows, by the person's pick or by itself. */
   shown: PictureChoice;
@@ -124,52 +191,24 @@ export function StudioPictureChip({
   const close = useCallback(() => setOpen(false), [setOpen]);
   useRadioPanel(menu, open, close, holder, '.hg-studio-chip');
   const { title, source, credit, thumb } = chipFacts(picture, shown, words, ownLine);
-  const options: readonly PictureOption[] = [
-    {
-      choice: 'sky',
-      glyph: 'image',
-      title: words.skyPicture,
-      line: sharpness === null ? words.skyLoading : words.skyLine(sharpness, takenOn),
-      off: null,
-    },
-    { choice: 'own', glyph: 'camera', title: words.yourPicture, line: words.yourLine, off: null },
-    { choice: 'none', glyph: 'grid', title: words.noPicture, line: words.noLine, off: null },
-  ];
+  const line = lineOf(source, shown === 'sky' ? (drawnOn ?? sharpness) : null, shown, words);
+  const pickable = canPick && !thumbOnly;
+  const options = optionsOf(sharpness, takenOn, words);
 
   return (
     <div ref={holder} className="hg-studio-picture">
-      <Pressable
-        className="hg-studio-glass hg-studio-chip"
-        accessibilityRole="button"
-        accessibilityLabel={words.pictureLabel(title)}
-        accessibilityState={{ expanded: open }}
-        disabled={!canPick}
+      <ChipButton
+        title={title}
+        line={line}
+        thumb={thumb}
+        shown={shown}
+        thumbOnly={thumbOnly}
+        pickable={pickable}
+        open={open}
+        label={words.pictureLabel(title)}
         onPress={() => setOpen(!open)}
-      >
-        <span className="hg-studio-chip-thumb" aria-hidden>
-          {thumb === null || shown === 'none' ? (
-            <ShellGlyph name="image-off" size="sm" />
-          ) : (
-            // The sky picture lives in memory alone, and your picture's piece behind a link that
-            // lives five minutes: neither is a file to hand an image loader. Asked as the scene asks,
-            // so the browser keeps one copy the ground can read too.
-            // biome-ignore lint/performance/noImgElement: the picture lives in memory or a short-lived link.
-            <img src={thumb} alt="" crossOrigin="anonymous" />
-          )}
-        </span>
-        <span className="hg-studio-chip-words">
-          <ChipTitle
-            title={title}
-            source={source}
-            drawnOn={shown === 'sky' ? drawnOn : null}
-            canPick={canPick}
-          />
-          {credit === null || shown === 'none' ? null : (
-            <span className="hg-studio-chip-credit">{credit}</span>
-          )}
-        </span>
-      </Pressable>
-      {open ? (
+      />
+      {open && !thumbOnly ? (
         <Foot at={foot}>
           <div
             ref={menu}
@@ -216,28 +255,12 @@ export function StudioPictureChip({
             </div>
             {planRow}
             <p className="hg-studio-picker-guide">{words.pictureGuide}</p>
+            {credit === null || shown === 'none' ? null : (
+              <p className="hg-studio-picker-credit">{credit}</p>
+            )}
           </div>
         </Foot>
       ) : null}
-    </div>
-  );
-}
-
-/**
- * Focus mode's picture chip: while a job is in hand the chip steps down to the provider's credit
- * line alone, which never leaves the screen (the provider's terms). With no sky picture, nothing.
- */
-export function StudioPictureCredit({
-  picture,
-  words,
-}: {
-  picture: StudioPicture;
-  words: StudioCanvasWords;
-}) {
-  const credit = pictureCreditOf(picture, words);
-  return credit === null ? null : (
-    <div className="hg-studio-picture">
-      <p className="hg-studio-glass hg-studio-credit-only">{credit}</p>
     </div>
   );
 }

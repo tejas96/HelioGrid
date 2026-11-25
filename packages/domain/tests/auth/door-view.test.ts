@@ -16,7 +16,6 @@ const aUser: SessionUser = {
   interfaceLanguage: 'en',
   unitPreference: 'metric',
   studioHelpersOff: [],
-  numberEntry: 'slider',
   tenant: null,
 };
 

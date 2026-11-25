@@ -30,6 +30,7 @@ import './studio-roof.css';
 import './studio-roof-sides.css';
 import './studio-roof-controls.css';
 import './studio-roofs.css';
+import './studio-roofs-tree.css';
 import './studio-material.css';
 import './studio-length.css';
 import './studio-height.css';

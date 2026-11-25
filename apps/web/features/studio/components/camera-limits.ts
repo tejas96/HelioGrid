@@ -72,18 +72,20 @@ function closestOver(
 
 /**
  * Where the camera may look at from this far up: the picture less what the window sees round the
- * middle, so no edge of the picture comes into view. Scene x runs east and z south.
+ * middle, so no edge of the picture comes into view. Scene x runs east, y up and z south: it looks
+ * within a metre of `upM` above the ground — the ground, or the top of the roof whose sheet is open.
  */
 export function lookRoom(
-  clear: ClearGround,
+  clear: ClearGround & { readonly upM: number },
   seen: ReturnType<typeof seenPerMetre>,
   distance: number,
 ): Box3 {
+  const { upM } = clear;
   const across = Math.min(seen.across * distance, (clear.east - clear.west) / 2);
   const along = Math.min(seen.along * distance, (clear.north - clear.south) / 2);
   return new Box3(
-    new Vector3(clear.west + across, -1, -(clear.north - along)),
-    new Vector3(clear.east - across, 1, -(clear.south + along)),
+    new Vector3(clear.west + across, upM - 1, -(clear.north - along)),
+    new Vector3(clear.east - across, upM + 1, -(clear.south + along)),
   );
 }
 

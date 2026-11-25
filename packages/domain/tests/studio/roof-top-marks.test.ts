@@ -9,7 +9,7 @@ import { saidOf } from './roof-step-support';
 
 /**
  * What the top view marks on each roof (`T-M05-002`, part e): a solid side where it has a wall and
- * a dashed one where it has none, split exactly; a dot on each side; "+3 m" on a roof that stands
+ * a dashed one where it has none, split exactly; "+3 m" on a roof that stands
  * on another; and an arrow down each sloped face.
  */
 const STAIR = stairOn(box(0, 0, 3, 3));
@@ -35,15 +35,7 @@ describe('the sides of a roof in the top view', () => {
 
   it('a sheet roof has no wall on any side: every side is dashed, and it has none to say why of', () => {
     expect(shed?.sides.flat().every((stretch) => !stretch.wall)).toBe(true);
-    expect(shed?.dots.every((dot) => !dot.wall)).toBe(true);
     expect(shed?.noWall).toBeNull();
-  });
-
-  it('a side’s dot sits at the middle of its longest stretch with a wall', () => {
-    expect(terrace?.dots[0]).toEqual({ at: p(6.5, 0), wall: true });
-    // A dot that would sit on the side's own middle, where its + adds a corner, sits a quarter
-    // of the way along instead. This side has no wall: a tap adds one.
-    expect(terrace?.dots[1]).toEqual({ at: p(10, 2), wall: false });
   });
 
   it('the stair room says its height above the terrace; a roof on the ground says none', () => {
