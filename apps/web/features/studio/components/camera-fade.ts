@@ -36,10 +36,21 @@ export function cameraEnd(rig: CameraControlsImpl): CameraEnd {
 }
 
 /**
- * The fade after a move the page made, only when the camera really moved: Back to the pin when
- * already there, a zoom at its limit or a move against the boundary changes nothing, so blinks not.
+ * The fade after a move the page made, only when the camera really moved: a zoom at its limit or
+ * a move against the boundary changes nothing, so blinks not.
  */
 export function fadeIfMovedFrom(canvas: HTMLElement, rig: CameraControlsImpl, before: CameraEnd) {
   const after = cameraEnd(rig);
   if (after.some((end, i) => end.distanceTo(before[i] as Vector3) > MOVED_M)) fadeInPlace(canvas);
+}
+
+/**
+ * The camera is still on its way to a pose the page asked for: where it is now is not where it
+ * lands. Read from the two ends, never the library's `active`, which stays on at rest.
+ */
+export function inFlight(rig: CameraControlsImpl): boolean {
+  const [goingTo, lookingAt] = cameraEnd(rig);
+  const now = rig.getPosition(new Vector3(), false);
+  const aim = rig.getTarget(new Vector3(), false);
+  return now.distanceTo(goingTo) > MOVED_M || aim.distanceTo(lookingAt) > MOVED_M;
 }

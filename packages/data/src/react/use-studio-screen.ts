@@ -179,8 +179,6 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     latest,
     list: model.roofList,
     facts,
-    editable,
-    view,
     drawing: roofStep.kind === 'drawing',
     sheet: roofSheet,
     bar: roof.view.bar,

@@ -220,6 +220,8 @@
   background: var(--glass-strong);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
+  /* Its own layer over the map, as the blur gave it: drawn above the scene, never under it. */
+  isolation: isolate;
   color: var(--text-primary);
   box-shadow:
     inset 0 0 0 var(--hg-studio-line) var(--line-soft),

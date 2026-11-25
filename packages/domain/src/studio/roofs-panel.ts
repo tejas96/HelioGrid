@@ -18,31 +18,12 @@ import { type RoofName, roofNameOf } from './roof-names';
 import { MATERIAL_NAME_MAX } from './roof-parts';
 
 /**
- * What the pencil opens (`T-M05-002`, part e): its two buttons, Roofs, and the material picker —
- * one of them at a time. The pencil is the one door to the roofs and does what the moment needs.
+ * Roofs and the material picker (`T-M05-002`, part e): one of them open at a time. Roofs has its
+ * own button beside the pencil, which only draws.
  */
 
-/** What a tap on the pencil does now. */
-export type PencilDoes =
-  /** No roof yet: it draws at once. */
-  | 'draw'
-  /** A roof is being drawn: it stops. */
-  | 'stop'
-  /** Roofs stand, in the top view, for a person who may change them: Roofs and Draw. */
-  | 'fan'
-  /** In 3D, or for a person who may only view: Roofs opens at once. */
-  | 'roofs';
-
-export function pencilDoes(facts: {
-  readonly roofs: number;
-  readonly drawing: boolean;
-  readonly editable: boolean;
-  readonly top: boolean;
-}): PencilDoes {
-  if (facts.drawing) return 'stop';
-  if (!facts.editable || (!facts.top && facts.roofs > 0)) return 'roofs';
-  return facts.roofs === 0 ? 'draw' : 'fan';
-}
+/** What a tap on the pencil does now: it draws, or — while a roof is drawn — it stops. */
+export type PencilDoes = 'draw' | 'stop';
 
 /** How the picker shows its types: the market's first five, every type in groups, or a type of one's own. */
 export type PickerMode = 'first' | 'all' | 'other';
@@ -55,7 +36,6 @@ export interface OtherDraft {
 
 export type RoofsPanel =
   | { readonly open: 'none' }
-  | { readonly open: 'fan' }
   /** `lit`: the row lit as Roofs opens — the next roof that waits, after a pick. */
   | { readonly open: 'roofs'; readonly lit: number | null }
   | {
@@ -70,8 +50,7 @@ export type RoofsPanel =
 export const ROOFS_PANEL_START: RoofsPanel = { open: 'none' };
 
 export type RoofsPanelEvent =
-  /** The pencil tapped where it opens something: its two buttons, or Roofs at once. */
-  | { readonly kind: 'pencil'; readonly does: 'fan' | 'roofs' }
+  /** The Roofs button, or R: Roofs opens, or — while it or its picker is open — everything closes. */
   | { readonly kind: 'roofs' }
   /** ×, Esc, a tap outside, the phone's back: what is open closes, back to where it came from. */
   | { readonly kind: 'close' }
@@ -92,12 +71,10 @@ function closed(state: RoofsPanel): RoofsPanel {
 
 export function roofsPanelAfter(state: RoofsPanel, event: RoofsPanelEvent): RoofsPanel {
   switch (event.kind) {
-    case 'pencil':
-      // A second tap on the pencil closes its buttons.
-      if (event.does === 'fan') return state.open === 'fan' ? ROOFS_PANEL_START : { open: 'fan' };
-      return { open: 'roofs', lit: null };
     case 'roofs':
-      return { open: 'roofs', lit: null };
+      return state.open === 'roofs' || state.open === 'picker'
+        ? ROOFS_PANEL_START
+        : { open: 'roofs', lit: null };
     case 'close':
       return closed(state);
     case 'close_all':

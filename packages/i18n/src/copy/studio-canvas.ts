@@ -90,11 +90,8 @@ const CANVAS = {
   undo: /*i18n*/ { id: 'Undo' },
   redo: /*i18n*/ { id: 'Redo' },
   pin: /*i18n*/ { id: 'Pin' },
-  backToPin: /*i18n*/ { id: 'Back to the pin' },
   north: /*i18n*/ { id: 'North' },
-  mapKeys: /*i18n*/ {
-    id: 'Map. Arrow keys move it, plus and minus zoom, and 0 goes back to the pin.',
-  },
+  mapKeys: /*i18n*/ { id: 'Map. Arrow keys move it, and plus and minus zoom.' },
 
   drawRoof: /*i18n*/ { id: 'Draw a roof' },
   noScene: /*i18n*/ { id: 'The 3D view cannot start on this device. Try another browser.' },
@@ -199,7 +196,6 @@ export function studioCanvasWords(t: T) {
     pin: t(CANVAS.pin),
     zoomIn: t(MAP_SURFACE.zoomIn),
     zoomOut: t(MAP_SURFACE.zoomOut),
-    backToPin: t(CANVAS.backToPin),
     north: t(CANVAS.north),
     /** The map's own name for a screen reader, with the keys that move it. */
     mapKeys: t(CANVAS.mapKeys),

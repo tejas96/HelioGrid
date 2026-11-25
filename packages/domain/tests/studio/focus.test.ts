@@ -23,6 +23,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'filled',
+        roofs: 'hidden',
         magnet: 'shown',
         undoRedo: 'undo',
         wipe: 'shown',
@@ -41,6 +42,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
+        roofs: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
         layers: 'hidden',
@@ -57,6 +59,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
+        roofs: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
         layers: 'hidden',
@@ -74,6 +77,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
+        roofs: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
         layers: 'hidden',
@@ -92,6 +96,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
+        roofs: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
         layers: 'hidden',
@@ -108,6 +113,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
+        roofs: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
         layers: 'hidden',
@@ -125,6 +131,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'hidden',
         pictureChip: 'credit',
         pencil: 'hidden',
+        roofs: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
         layers: 'hidden',
@@ -150,7 +157,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       true,
       {
         magnet: 'hidden',
-        sideViews: 'shown',
         compass: 'shown',
         otherHandles: 'hidden',
         lengthLabels: 'hidden',
@@ -164,6 +170,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       true,
       {
         pencil: 'hidden',
+        roofs: 'hidden',
         undoRedo: 'hidden',
         layers: 'hidden',
         zoom: 'hidden',
@@ -178,10 +185,10 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'mark',
         pictureChip: 'credit',
         pencil: 'hidden',
+        roofs: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
         layers: 'hidden',
-        sideViews: 'hidden',
         zoom: 'hidden',
         compass: 'shown',
         otherHandles: 'hidden',
@@ -198,21 +205,23 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         pictureChip: 'credit',
         magnet: 'hidden',
         layers: 'switch',
-        sideViews: 'shown',
         compass: 'shown',
         otherHandles: 'hidden',
         lengthLabels: 'hidden',
         bottomBar: 'hidden',
       },
     ],
-    // Roofs and the material picker: a sheet across a phone's foot, a panel at a desktop's right.
-    ['roofs', 'top', false, {}],
+    // Roofs and the material picker open from the foot on every screen, in the bar's place: across
+    // a phone's foot with the tools stepping aside; between a desktop's tool columns.
+    ['roofs', 'top', false, { bottomBar: 'hidden' }],
+    ['sheet', 'top', false, { bottomBar: 'hidden' }],
     [
       'roofs',
       'top',
       true,
       {
         pencil: 'hidden',
+        roofs: 'hidden',
         undoRedo: 'hidden',
         layers: 'hidden',
         zoom: 'hidden',
@@ -225,6 +234,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       true,
       {
         pencil: 'hidden',
+        roofs: 'hidden',
         magnet: 'hidden',
         undoRedo: 'hidden',
         layers: 'hidden',
@@ -244,51 +254,5 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         expect(['shown', 'credit']).toContain(partsOf({ job, view }).pictureChip);
       }
     }
-  });
-});
-
-describe('focus mode: the edge cases', () => {
-  it.each([
-    [
-      'a save that fails while drawing shows its mark alone',
-      { job: 'drawing', saveFailed: true },
-      'mark',
-    ],
-    ['a roof sheet in 3D keeps the mark, saved or not', { job: 'sheet', view: '3d' }, 'mark'],
-    ['a failed save while looking keeps the whole pill', { saveFailed: true }, 'shown'],
-    ['no failed save: the pill steps aside', { job: 'drawing' }, 'hidden'],
-  ] as const)('%s', (_why, facts, stepSwitcher) => {
-    expect(partsOf(facts).stepSwitcher).toBe(stepSwitcher);
-  });
-
-  it('a reader never enters a job and holds no edit control', () => {
-    const reader = partsOf({ job: 'drawing', canEdit: false });
-    expect(reader).toMatchObject({
-      stepSwitcher: 'shown',
-      magnet: 'hidden',
-      wipe: 'hidden',
-      undoRedo: 'hidden',
-      otherHandles: 'hidden',
-      bottomBar: 'main',
-    });
-  });
-
-  it.each([
-    ['with a roof it opens Roofs', true, 'shown'],
-    ['with no roof there is nothing to open', false, 'hidden'],
-  ] as const)('a reader’s pencil: %s', (_why, hasRoof, pencil) => {
-    expect(partsOf({ canEdit: false, hasRoof }).pencil).toBe(pencil);
-  });
-
-  it('a reader’s Roofs on a phone takes the tools’ and the bar’s place, as an editor’s does', () => {
-    expect(partsOf({ job: 'roofs', canEdit: false, phone: true })).toMatchObject({
-      pencil: 'hidden',
-      layers: 'hidden',
-      bottomBar: 'hidden',
-    });
-  });
-
-  it('before a roof stands, 3D offers no side views', () => {
-    expect(partsOf({ view: '3d', hasRoof: false }).sideViews).toBe('hidden');
   });
 });

@@ -25,16 +25,16 @@ function historyKey(
 const OWN_KEYS = '[role="dialog"], [role="menu"], [role="listbox"], [contenteditable="true"]';
 
 /**
- * The desktop's roof keys, with nothing in hand: R opens Roofs for anyone once a roof stands; for
- * an editor D draws another roof in one press, and Delete removes the roof picked in the top view,
- * with what stands on it.
+ * The desktop's roof keys, with nothing in hand: R opens or closes Roofs for anyone once a roof
+ * stands; for an editor D draws another roof in one press, and Delete removes the roof picked in
+ * the top view, with what stands on it.
  */
 function roofKey(event: KeyboardEvent, studio: StudioScreen): void {
   if (studio.roofStep.kind !== 'idle' || event.metaKey || event.ctrlKey || event.altKey) return;
   const key = event.key.toLowerCase();
   if (key === 'r' && studio.roofList.rows.length > 0) {
     event.preventDefault();
-    studio.moves.openRoofs();
+    studio.moves.tapRoofs();
   }
   if (studio.editing.kind !== 'editor') return;
   if (key === 'd') {

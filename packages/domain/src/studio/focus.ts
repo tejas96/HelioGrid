@@ -69,8 +69,10 @@ export interface FocusParts {
   readonly stepSwitcher: 'shown' | 'mark' | 'hidden';
   /** The picture chip whole, or its credit line alone. */
   readonly pictureChip: 'shown' | 'credit';
-  /** The pencil, the one door to the roofs: it draws or opens Roofs; `filled` while it draws. */
+  /** The pencil: it draws; `filled` while it draws. */
   readonly pencil: 'shown' | 'filled' | 'hidden';
+  /** The Roofs button with the roofs' count, once a roof stands; a reader may open it too. */
+  readonly roofs: 'shown' | 'hidden';
   /**
    * The magnet, in the left tool column: while a corner is drawn, and — `picked` — while a roof is picked,
    * for the drags to come. A drag in hand keeps it as it was set (Alt frees one move).
@@ -82,8 +84,7 @@ export interface FocusParts {
   readonly wipe: 'shown' | 'hidden';
   /** The layers and the 2D/3D switch, or the switch alone. */
   readonly layers: 'shown' | 'switch' | 'hidden';
-  readonly sideViews: 'shown' | 'hidden';
-  /** Zoom in, Zoom out and Back to the pin. */
+  /** Zoom in and Zoom out. */
   readonly zoom: 'shown' | 'hidden';
   /** The north arrow. */
   readonly compass: 'shown' | 'hidden';
@@ -112,11 +113,11 @@ const LOOKING_TOP: FocusParts = {
   stepSwitcher: 'shown',
   pictureChip: 'shown',
   pencil: 'shown',
+  roofs: 'shown',
   magnet: 'picked',
   undoRedo: 'shown',
   wipe: 'hidden',
   layers: 'shown',
-  sideViews: 'hidden',
   zoom: 'shown',
   compass: 'shown',
   otherHandles: 'picked',
@@ -129,6 +130,7 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial
   drawing: {
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
+    roofs: 'hidden',
     pencil: 'filled',
     magnet: 'shown',
     undoRedo: 'undo',
@@ -142,6 +144,7 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial
   dragging: {
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
+    roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
     undoRedo: 'hidden',
@@ -153,6 +156,7 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial
   moving: {
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
+    roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
     undoRedo: 'hidden',
@@ -164,6 +168,7 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial
   sizing: {
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
+    roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
     undoRedo: 'hidden',
@@ -178,6 +183,7 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial
   typing: {
     stepSwitcher: 'hidden',
     pictureChip: 'credit',
+    roofs: 'hidden',
     pencil: 'hidden',
     magnet: 'hidden',
     undoRedo: 'hidden',
@@ -197,10 +203,7 @@ const IN_A_JOB: Record<Exclude<FocusJob, 'looking' | 'sheet' | 'roofs'>, Partial
   },
 };
 
-/**
- * The 3D view holds no handle and no length label (`T-M05-002`, part a); its pencil opens Roofs
- * (part e).
- */
+/** The 3D view holds no handle and no length label (`T-M05-002`, part a). */
 const IN_3D: Partial<FocusParts> = {
   magnet: 'hidden',
   otherHandles: 'hidden',
@@ -208,20 +211,22 @@ const IN_3D: Partial<FocusParts> = {
 };
 
 /**
- * On a phone Roofs, the material picker and a roof's sheet are a sheet across the foot: the tools
- * and the bar step aside for it (board 6.1). On a desktop they open at the right, and everything
- * stays.
+ * Roofs, the material picker and a roof's sheet open from the foot on every screen, in the bar's
+ * place: the bar steps aside. On a phone the sheet spans the foot, and the tools step aside too
+ * (board 6.1); on a desktop it stands between the tool columns, and they stay.
  */
 const ROOFS_ON_PHONE: Partial<FocusParts> = {
   pencil: 'hidden',
+  roofs: 'hidden',
   undoRedo: 'hidden',
   layers: 'hidden',
-  sideViews: 'hidden',
   zoom: 'hidden',
   bottomBar: 'hidden',
 };
 
-/** The jobs that open across a phone's foot. */
+const ROOFS_ON_DESKTOP: Partial<FocusParts> = { bottomBar: 'hidden' };
+
+/** The jobs that open from the foot. */
 const AT_THE_FOOT: readonly FocusJob[] = ['roofs', 'sheet'];
 
 const EDIT_PARTS: Partial<FocusParts> = {
@@ -233,7 +238,8 @@ const EDIT_PARTS: Partial<FocusParts> = {
 
 function partsOfJob(facts: FocusFacts): FocusParts {
   const job = facts.canEdit || facts.job === 'roofs' ? facts.job : 'looking';
-  const roofs = facts.phone && AT_THE_FOOT.includes(job) ? ROOFS_ON_PHONE : {};
+  const atFoot = AT_THE_FOOT.includes(job);
+  const roofs = atFoot ? (facts.phone ? ROOFS_ON_PHONE : ROOFS_ON_DESKTOP) : {};
   if (facts.view !== 'top') {
     const sheet: Partial<FocusParts> =
       job === 'sheet'
@@ -242,7 +248,6 @@ function partsOfJob(facts: FocusFacts): FocusParts {
     return {
       ...LOOKING_TOP,
       ...IN_3D,
-      sideViews: facts.hasRoof ? 'shown' : 'hidden',
       ...sheet,
       ...roofs,
     };
@@ -259,12 +264,11 @@ function partsOfJob(facts: FocusFacts): FocusParts {
 /** Which parts the studio shows for the job in hand. */
 export function focusOf(facts: FocusFacts): FocusParts {
   const parts = partsOfJob(facts);
-  // A reader draws nothing: their pencil opens Roofs, once a roof stands.
-  const reader: Partial<FocusParts> = {
-    ...EDIT_PARTS,
-    pencil: facts.hasRoof ? parts.pencil : 'hidden',
-  };
-  const own = facts.canEdit ? parts : { ...parts, ...reader };
+  // Roofs has nothing to open until a roof stands. A reader draws nothing, and opens Roofs.
+  const roofs = facts.hasRoof ? parts.roofs : 'hidden';
+  const own = facts.canEdit
+    ? { ...parts, roofs }
+    : { ...parts, ...EDIT_PARTS, pencil: 'hidden' as const, roofs };
   const stepSwitcher =
     own.stepSwitcher === 'hidden' && facts.saveFailed ? 'mark' : own.stepSwitcher;
   return { ...own, stepSwitcher };

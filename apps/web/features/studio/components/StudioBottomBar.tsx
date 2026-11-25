@@ -33,7 +33,7 @@ export function StudioBottomBar({
   sheet,
   onAway,
 }: {
-  /** The foot the camera measures; `null` while a roof's sheet holds the foot. */
+  /** The foot the camera measures; `null` while a panel holds the foot (a roof's sheet, Roofs, the picker). */
   barRef: Ref<HTMLDivElement> | null;
   studio: StudioScreen;
   view: StudioView;
@@ -46,7 +46,7 @@ export function StudioBottomBar({
   crowded: boolean;
   /** A phone-width screen, where the keyboard covers the foot. */
   phone: boolean;
-  /** A roof's sheet holds the foot: only what must not wait is said, above it. */
+  /** A panel holds the foot (a roof's sheet, Roofs, the picker): only what must not wait is said, on its top edge. */
   sheet: boolean;
   /** Where focus goes once a message is closed: the map. */
   onAway: () => void;
@@ -56,7 +56,7 @@ export function StudioBottomBar({
   const pill = sheet ? null : pillOf(studio, words, part === 'hidden', phone);
   // The size card holds Place roof while the phone's keyboard covers the foot: nothing shows there.
   const typing = pill === null && bar?.kind === 'typing';
-  // A job holds the foot — its pill, the size card, a roof's sheet, or Roofs across a phone's foot.
+  // A job holds the foot — its pill, the size card, or a panel (a roof's sheet, Roofs, the picker).
   const job = sheet || part === 'hidden' || pill !== null || typing;
   const facts = { studio, view, units, words, format, crowded, part };
   // Every message is known to the hook, so one closed stays closed through a job; while a job
@@ -80,7 +80,7 @@ export function StudioBottomBar({
       holder?.querySelector<HTMLButtonElement>('button:not(:disabled)');
     next?.focus();
   }, [kind]);
-  // The camera measures the foot: empty, the pill, or nothing while the sheet holds it. A message
+  // The camera measures the foot: empty, the pill, or nothing while a panel holds it. A message
   // is never measured, so the roof does not move as one comes and goes; the tools lift above it.
   const foot = sheet ? null : pill !== null ? (
     <div ref={barRef} className="hg-studio-glass hg-studio-bar" data-kind="pill">

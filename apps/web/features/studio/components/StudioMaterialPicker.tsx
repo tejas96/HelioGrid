@@ -3,7 +3,7 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { MaterialPickerView, MaterialTile } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { Button, IconButton, Input, Pressable, SegmentedControl, ShellGlyph } from '@heliogrid/ui';
-import { useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 import { usePressAway } from '../hooks/use-press-away';
 import { StudioMaterialPicture } from './StudioMaterialPicture';
 
@@ -140,16 +140,24 @@ function OtherType({ picker, studio, words }: PickerFacts) {
 }
 
 /**
- * What a roof is made of (`T-M05-002`, part e): from the foot on a phone, at the right on a
- * desktop. The market's first five as pictures, then every type in its group, then a type of
+ * What a roof is made of (`T-M05-002`, part e): from the foot on every screen, in the place of the
+ * sheet it was opened from. The market's first five as pictures, then every type in its group, then a type of
  * one's own. A tap on a picture is the person's pick; Confirm keeps a guess that is right. It sets
  * how panels are fixed, and the first shape, slope and parapet.
  */
-export function StudioMaterialPicker({ picker, studio, words }: PickerFacts) {
+export function StudioMaterialPicker({
+  footRef,
+  picker,
+  studio,
+  words,
+}: PickerFacts & {
+  /** The picker holds the foot, over all else there: the camera frames above it. */
+  footRef: RefObject<HTMLDivElement | null>;
+}) {
   const panel = useRef<HTMLDivElement>(null);
   const { moves } = studio;
   const { mode } = picker;
-  usePressAway(panel, true, moves.closePanel, '.hg-studio-pencil');
+  usePressAway(panel, true, moves.closePanel, '.hg-studio-roofs-button');
   // Each list opened lands focus on its head: a keyboard and a screen reader start there.
   useEffect(() => {
     if (mode !== 'other') panel.current?.querySelector<HTMLElement>('.hg-roofs-title')?.focus();
@@ -157,7 +165,10 @@ export function StudioMaterialPicker({ picker, studio, words }: PickerFacts) {
   const title = mode === 'other' ? words.pickerOther : words.pickerTitle;
   return (
     <div
-      ref={panel}
+      ref={(node) => {
+        panel.current = node;
+        footRef.current = node;
+      }}
       className="hg-studio-glass hg-roofs-panel"
       data-kind="picker"
       role="dialog"

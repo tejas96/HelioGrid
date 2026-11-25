@@ -12,7 +12,7 @@ import { roofNameWord } from './studio-roof-kinds';
 type T = Translator['t'];
 
 /**
- * Roofs, the one sheet that holds every roof, the pencil that opens it, and what a roof is made of
+ * Roofs, the one sheet that holds every roof, the button that opens it, and what a roof is made of
  * (`T-M05-002`, part e). The list of materials lives in the code, so every country sees every
  * type: their names are the studio's words in each language.
  */
@@ -22,11 +22,9 @@ const LIST = {
   },
   close: /*i18n*/ { id: 'Close Roofs' },
   roofs: /*i18n*/ { id: 'Roofs' },
-  // The pencil, spoken, as the moment has it.
-  pencilFan: /*i18n*/ {
-    id: '{count, plural, one {Roofs and Draw, # roof} other {Roofs and Draw, # roofs}}',
-  },
+  // The Roofs button, spoken with its count, and with what waits to be checked.
   roofsCount: /*i18n*/ { id: 'Roofs, {count}' },
+  roofsWaiting: /*i18n*/ { id: 'Roofs, {count}, {waiting} to check' },
   waiting: /*i18n*/ { id: '{name}: to check' },
   sitsMain: /*i18n*/ { id: 'Main roof' },
   sitsGround: /*i18n*/ { id: 'On the ground' },
@@ -127,17 +125,16 @@ function sitsWord(t: T, sits: RoofRow['sits'], height: (metres: number) => strin
   }
 }
 
-/** The words of Roofs, its pencil and the material picker, part of the studio canvas's. */
+/** The words of Roofs, its button and the material picker, part of the studio canvas's. */
 export function studioRoofListWords(t: T) {
   return {
     /** "3 roofs · 81 m² of roof": the area already formatted. */
     roofsHead: (count: number, area: string) => t(LIST.head, { count, area }),
     roofsClose: t(LIST.close),
     roofsName: t(LIST.roofs),
-    /** The pencil with roofs, spoken: a tap opens Roofs and Draw. */
-    pencilFan: (count: number) => t(LIST.pencilFan, { count }),
-    /** Roofs with its count, spoken: the fan's first button, and the pencil in 3D. */
-    roofsCount: (count: number) => t(LIST.roofsCount, { count }),
+    /** The Roofs button, spoken: its count, and how many roofs wait to be checked. */
+    roofsCount: (count: number, waiting: number) =>
+      waiting > 0 ? t(LIST.roofsWaiting, { count, waiting }) : t(LIST.roofsCount, { count }),
     rowName: (name: RoofName) => roofNameWord(t, name),
     /** A row whose material or kind waits, spoken with its name. */
     rowWaiting: (name: RoofName) => t(LIST.waiting, { name: roofNameWord(t, name) }),

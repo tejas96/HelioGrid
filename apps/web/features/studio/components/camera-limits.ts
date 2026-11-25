@@ -42,11 +42,11 @@ export interface ClearGround {
  */
 export function seenPerMetre(
   size: { readonly width: number; readonly height: number },
-  free: { readonly top: number; readonly bottom: number; readonly right?: number },
+  free: { readonly top: number; readonly bottom: number },
 ) {
   const down = Math.tan((FOV_DEGREES / 2) * RADIANS);
   const room = Math.max(1, size.height - free.top - free.bottom) / size.height;
-  const wide = Math.max(1, size.width - (free.right ?? 0)) / size.height;
+  const wide = size.width / size.height;
   return { across: down * wide, along: down * room };
 }
 
@@ -92,7 +92,7 @@ export function reachOf(
   clear: ClearGround | null,
   metresPerPixel: number | null,
   size: { readonly width: number; readonly height: number },
-  free: { readonly top: number; readonly bottom: number; readonly right?: number },
+  free: { readonly top: number; readonly bottom: number },
 ): { readonly nearest: number; readonly farthest: number } {
   const farthest = clear === null ? DISTANCE_MAX : farthestOver(clear, seenPerMetre(size, free));
   return { nearest: Math.min(closestOver(metresPerPixel, size), farthest), farthest };

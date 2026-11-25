@@ -14,12 +14,12 @@ import {
   Vector2,
   Vector3,
 } from 'three';
+import { useGlidingMiddle } from '../hooks/use-gliding-middle';
 import { useStudioWheel } from '../hooks/use-studio-wheel';
 import type { StudioDrive } from './camera-drive';
-import { type CameraEnd, cameraEnd, fadeIfMovedFrom } from './camera-fade';
+import { type CameraEnd, cameraEnd, fadeIfMovedFrom, inFlight } from './camera-fade';
 import {
   type ClearGround,
-  fieldOfView,
   groundPerPixel,
   lookRoom,
   openingDistance,
@@ -57,6 +57,7 @@ export function StudioCameraRig({
   view,
   free,
   still,
+  keepView,
   clear,
   metresPerPixel,
   drive,
@@ -65,9 +66,11 @@ export function StudioCameraRig({
   frameOn,
 }: {
   view: StudioView;
-  free: { readonly top: number; readonly bottom: number; readonly right?: number };
+  free: { readonly top: number; readonly bottom: number };
   still: boolean;
-  /** The roofs' ground: the view frames them when it opens and on Back to the pin. */
+  /** A panel opened at the foot (Roofs, the picker): the view stays still while the roofs stay clear of it. */
+  keepView: boolean;
+  /** The roofs' ground: the view frames them when it opens. */
   fit: GroundBox | null;
   /**
    * A roof closed: each new value frames the roofs once, with the box from this same render, so the
@@ -93,8 +96,7 @@ export function StudioCameraRig({
   useStudioWheel(controls, map);
 
   // The picture holds the camera. Out: no farther than the picture fills the room between the bars,
-  // looking only where that room stays on the picture. In: no nearer than the picture stays sharp.
-  // A turned phone or a resize sets all three again.
+  // looking only where it stays on the picture. In: no nearer than it stays sharp. A resize resets.
   const { west, east, south, north } = clear ?? { west: 0, east: 0, south: 0, north: 0 };
   const held = clear !== null;
   const room = useRef<Box3 | null>(null);
@@ -113,8 +115,9 @@ export function StudioCameraRig({
     rig.maxDistance = reach.farthest;
     rig.minDistance = reach.nearest;
     if (!held) rig.setBoundary();
-    if (rig.distance > rig.maxDistance) void rig.dollyTo(rig.maxDistance, false);
-    if (rig.distance < rig.minDistance) void rig.dollyTo(rig.minDistance, false);
+    // A new limit eases the camera in or out to it, never a snap of the whole view.
+    if (rig.distance > rig.maxDistance) void rig.dollyTo(rig.maxDistance, !still);
+    if (rig.distance < rig.minDistance) void rig.dollyTo(rig.minDistance, !still);
     invalidate();
   }, [
     held,
@@ -125,6 +128,7 @@ export function StudioCameraRig({
     metresPerPixel,
     width,
     height,
+    still,
     barTop,
     barBottom,
     invalidate,
@@ -169,23 +173,22 @@ export function StudioCameraRig({
   });
 
   // The free room between the bars: the framed ground sits in its middle, whatever the camera does.
-  useEffect(() => {
-    camera.fov = fieldOfView();
-    camera.setViewOffset(
-      size.width,
-      size.height,
-      (free.right ?? 0) / 2,
-      (free.bottom - free.top) / 2,
-      size.width,
-      size.height,
-    );
-    camera.updateProjectionMatrix();
-    invalidate();
-  }, [free.top, free.bottom, free.right, size.width, size.height, camera, invalidate]);
+  useGlidingMiddle(
+    camera,
+    size,
+    free,
+    {
+      still,
+      keep: keepView,
+      fit,
+      view,
+      flying: () => controls.current !== null && inFlight(controls.current),
+    },
+    invalidate,
+  );
 
-  // A view is flown to when it is picked, and fitted once more when the bars are first measured; a
-  // resize keeps where the person turned the camera.
-  // …and once more when the picture arrives: the view settles at its sharpness before anyone moves it.
+  // A view is flown to when it is picked, and fitted once more when the bars are first measured and
+  // when the picture arrives; a resize keeps where the person turned the camera.
   const posed = useRef<{
     readonly view: StudioView;
     readonly measured: boolean;
@@ -205,8 +208,7 @@ export function StudioCameraRig({
     if (settled) return;
     posed.current = { view, measured, pictured };
     bindHands(rig, view === 'top');
-    // The camera flies to a picked view; the first view is set at once, and with Reduce Motion a
-    // new one fades in.
+    // A picked view is flown to (faded with Reduce Motion); the first view is set at once.
     poseFor(view, !still && was !== null && was.view !== view, was !== null && was.view !== view);
   });
 
@@ -224,7 +226,7 @@ export function StudioCameraRig({
     const rig = controls.current;
     if (rig === null) return;
     const screen = { width: size.width, height: size.height };
-    const bars = { top: free.top, bottom: free.bottom, right: free.right ?? 0 };
+    const bars = { top: free.top, bottom: free.bottom };
     const spread = fit === null ? null : fitSpread(fit);
     // The roofs framed with room round them; the camera's own limits keep the picture sharp.
     const distance =
@@ -265,7 +267,6 @@ export function StudioCameraRig({
       // Each press counts from where the last one is taking the camera: quick presses add up.
       zoomIn: () => zoomBy(1 / ZOOM_STEP),
       zoomOut: () => zoomBy(ZOOM_STEP),
-      home: () => poseFor(view, !still),
       nudge: (east, north) => {
         const rig = controls.current;
         if (rig === null) return;

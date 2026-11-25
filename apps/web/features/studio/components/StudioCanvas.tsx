@@ -3,13 +3,15 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { ShellGlyph, useDesktopShell, usePalette, useReducedMotion } from '@heliogrid/ui';
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { type RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { useChromeRoom } from '../hooks/use-chrome-room';
 import { useDrawPress } from '../hooks/use-draw-press';
 import { useFacesFrame } from '../hooks/use-faces-frame';
+import { useKeyboardRoom } from '../hooks/use-keyboard-room';
 import { useMapKeys } from '../hooks/use-map-keys';
 import { useNewestFrame } from '../hooks/use-newest-frame';
 import { useStudioHaptics } from '../hooks/use-studio-haptics';
+import { useUpright } from '../hooks/use-upright';
 import { StudioBottomBar } from './StudioBottomBar';
 import type { StudioDrive } from './StudioCameraRig';
 import { StudioCanvasHead } from './StudioCanvasHead';
@@ -35,6 +37,35 @@ const StudioScene = dynamic(() => import('./StudioScene').then((scene) => scene.
 });
 
 /**
+ * Which part holds the foot, where the camera's room ends: the material picker, else Roofs, else a
+ * roof's sheet, else the bar. The room is measured again when one takes another's place.
+ */
+function footHolderOf(studio: StudioScreen): 'picker' | 'roofs' | 'sheet' | 'bar' {
+  if (studio.materialPicker !== null) return 'picker';
+  if (studio.panel.open === 'roofs') return 'roofs';
+  return studio.roofSheet === null ? 'bar' : 'sheet';
+}
+
+/**
+ * A roof's sheet with its roof to frame asks the camera to fly to it. Roofs and the picker only
+ * move the view's middle up by their measured room: the person's own view is kept.
+ */
+function panelFrames(holder: ReturnType<typeof footHolderOf>, studio: StudioScreen): boolean {
+  return holder === 'sheet' && studio.sheetFrame !== null;
+}
+
+/** The foot's measure handed to the part that holds it, and `null` to the others. */
+function footRefsOf(
+  holder: ReturnType<typeof footHolderOf>,
+  foot: RefObject<HTMLDivElement | null>,
+) {
+  const of = (part: typeof holder) => (holder === part ? foot : null);
+  // Roofs and the picker leave the view where it is while the roofs stay clear of them.
+  const keepsView = holder === 'roofs' || holder === 'picker';
+  return { sheet: of('sheet'), roofs: of('roofs'), bar: of('bar'), keepsView };
+}
+
+/**
  * The studio's canvas (`T-M05-002a`, `T-M05-002b`): the scene on the whole screen and the thin
  * glass parts over it — the steps with the save mark, the compass, the picture chip, the two
  * tool columns and the one bottom bar, there only with a message — and the marks on the roofs. While a roof is drawn, a tap on
@@ -57,8 +88,12 @@ export function StudioCanvas({
   const palette = usePalette();
   const still = useReducedMotion();
   const desktop = useDesktopShell();
-  // The sheet takes the bar's place: the room is measured again when one swaps for the other.
-  const { frame, top, bottom, side, room } = useChromeRoom(studio.roofSheet !== null);
+  const footHolder = footHolderOf(studio);
+  const { frame, top, bottom, room } = useChromeRoom(footHolder);
+  useKeyboardRoom(frame);
+  // A phone held sideways lays its panels and tools out as a desktop does.
+  const upright = useUpright(frame);
+  const foot = footRefsOf(footHolder, bottom);
   const pin = useRef<HTMLSpanElement>(null);
   const drive = useRef<StudioDrive | null>(null);
   const compass = useRef<StudioCompassHandle>(null);
@@ -72,7 +107,7 @@ export function StudioCanvas({
   const editable = editing.kind === 'editor';
   const drawing = roofStep.kind === 'drawing';
   const roofs = studio.shown?.roofs ?? [];
-  const parts = studio.focus(desktop === false);
+  const parts = studio.focus(desktop === false && upright);
 
   // A tap on the map: in the top view it is the plan's, or it shows a length that gave way; in 3D
   // it opens the roof it lands on, met at each roof's own height.
@@ -94,12 +129,13 @@ export function StudioCanvas({
   // A roof that closes is framed in the room between the bars: the camera stays in the top view,
   // where its lengths are set next.
   const said = roofStep.kind === 'idle' ? roofStep.said : null;
-  // A roof's sheet frames its roof above the sheet: again once the sheet's room is measured, as
-  // the sheet is taller than the bar it replaces.
+  // A roof's sheet, Roofs or the picker frames the roofs above it: again once its room is measured,
+  // as it is taller than the bar it replaces.
+  const panelUp = panelFrames(footHolder, studio);
   // biome-ignore lint/correctness/useExhaustiveDependencies: the measured room is what asks for a new frame
   const sheetFraming = useMemo(
-    () => (studio.sheetFrame === null ? null : {}),
-    [studio.sheetFrame, room.bottom, room.right],
+    () => (panelUp ? {} : null),
+    [panelUp, studio.sheetFrame, room.bottom],
   );
   const closed = said?.kind === 'closed' ? said : null;
   // The size card opening frames its rectangle with the roofs, once: sliding then never moves the map.
@@ -123,7 +159,13 @@ export function StudioCanvas({
 
   return (
     <StudioFilePick studio={studio} words={words}>
-      <div ref={frame} className="hg-studio" data-view={view} data-drawing={drawing}>
+      <div
+        ref={frame}
+        className="hg-studio"
+        data-view={view}
+        data-drawing={drawing}
+        data-panel={footHolder !== 'bar'}
+      >
         <div
           ref={scene}
           className="hg-studio-scene"
@@ -141,6 +183,7 @@ export function StudioCanvas({
             palette={palette}
             free={room}
             still={still}
+            keepView={foot.keepsView}
             pinLabel={pin}
             fallback={<p className="hg-studio-no-scene">{words.noScene}</p>}
             drive={drive}
@@ -222,12 +265,11 @@ export function StudioCanvas({
           onRedo={moves.redo}
           onZoomIn={() => drive.current?.zoomIn()}
           onZoomOut={() => drive.current?.zoomOut()}
-          onHome={() => drive.current?.home()}
         />
         {studio.roofSheet === null ? null : (
           <StudioRoofSheet
-            footRef={bottom}
-            sideRef={side}
+            footRef={foot.sheet}
+            covered={footHolder === 'picker'}
             sheet={studio.roofSheet}
             studio={studio}
             units={studio.units}
@@ -237,7 +279,7 @@ export function StudioCanvas({
           />
         )}
         <StudioBottomBar
-          barRef={studio.roofSheet === null ? bottom : null}
+          barRef={foot.bar}
           studio={studio}
           view={view}
           units={studio.units}
@@ -246,14 +288,24 @@ export function StudioCanvas({
           part={parts.bottomBar}
           crowded={crowded}
           phone={desktop === false}
-          sheet={studio.roofSheet !== null}
+          sheet={footHolder !== 'bar'}
           onAway={() => scene.current?.focus()}
         />
         {studio.panel.open === 'roofs' ? (
-          <StudioRoofsList studio={studio} units={studio.units} words={words} />
+          <StudioRoofsList
+            footRef={foot.roofs}
+            studio={studio}
+            units={studio.units}
+            words={words}
+          />
         ) : null}
         {studio.materialPicker === null ? null : (
-          <StudioMaterialPicker picker={studio.materialPicker} studio={studio} words={words} />
+          <StudioMaterialPicker
+            footRef={bottom}
+            picker={studio.materialPicker}
+            studio={studio}
+            words={words}
+          />
         )}
       </div>
     </StudioFilePick>
