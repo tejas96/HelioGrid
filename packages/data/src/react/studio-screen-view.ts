@@ -92,6 +92,8 @@ export interface StudioScreen
   readonly sun: SunPosition | null;
   /** The ground the design's roofs cover, which the camera frames; `null` before a roof. */
   readonly fit: GroundBox | null;
+  /** How high above the ground the camera looks: the open roof's top, else the ground. */
+  readonly fitUpM: number;
   /** The view stays as the bars change (drawing, Roofs, the picker); `null`: it settles mid-room. */
   readonly heldView: HeldView | null;
   /** An arrow on the model is held: the sheet steps aside for the magnet's pill. */

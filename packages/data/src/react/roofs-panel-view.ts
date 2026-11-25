@@ -14,8 +14,8 @@ export interface RoofsPanelView {
   /** What is open: Roofs, the material picker, or nothing. */
   readonly panel: RoofsPanel;
   /**
-   * The row of Roofs that is lit while it is open: the next roof that waits after a pick, the row
-   * gone back to, else the roof picked on the model.
+   * The row of Roofs that is lit while it is open: the row gone back to from its sheet, else the
+   * roof picked on the model.
    */
   readonly litRow: number | null;
   /** The material picker, while it is open. */
@@ -31,12 +31,15 @@ export interface RoofsPanelMoves {
   tapRoofs(): void;
   /** ×, Esc or a tap outside: what is open closes, back to where it was opened from. */
   closePanel(): void;
-  /** A row of Roofs: its roof is picked, the camera flies to it, and its sheet takes the list's place. */
+  /**
+   * A row of Roofs, tapped anywhere on it: its roof is picked, the camera flies to it, and its sheet
+   * takes the list's place. What the roof is made of is changed in that sheet.
+   */
   pickRow(roof: number): void;
   /** Back, on a sheet opened from a row: the sheet closes and Roofs opens on that row. */
   backToRoofs(): void;
-  /** What a roof is made of, tapped on its row or in its sheet: the picker opens. */
-  openMaterial(roof: number, from: 'roofs' | 'sheet'): void;
+  /** What a roof is made of, tapped in its sheet: the picker opens over it. */
+  openMaterial(roof: number): void;
   pickerMode(mode: PickerMode): void;
   /** A type of one's own, as it is typed. */
   typeOther(draft: Partial<OtherDraft>): void;

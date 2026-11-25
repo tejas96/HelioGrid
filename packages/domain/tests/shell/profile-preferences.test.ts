@@ -9,7 +9,6 @@ const anjali: SessionUser = {
   interfaceLanguage: 'en',
   unitPreference: 'metric',
   studioHelpersOff: [],
-  numberEntry: 'slider',
   tenant: { id: '8f0c2d1e-0000-4000-8000-000000000001', roles: ['sales_executive'] },
 };
 

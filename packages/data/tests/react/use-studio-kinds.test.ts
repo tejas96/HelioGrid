@@ -191,25 +191,24 @@ describe('the model the screen draws, and the moves on it', () => {
     expect(roofsAreaM2).toBeCloseTo(80, 6);
   });
 
-  it('a side’s dot takes its wall off as one save, and the model follows', async () => {
+  it('a side’s parapet switched off is one save, and the model and the top view follow', async () => {
     const view = await opened([TERRACE]);
     const walls = () =>
       view.result.current.scene.prisms.filter((prism) => prism.part === 'parapet');
     expect(walls()).toHaveLength(4);
-    act(() => view.result.current.moves.toggleSideWall(0, 2));
+    act(() => view.result.current.moves.openRoof(0));
+    act(() => view.result.current.moves.openSide(2));
+    act(() => view.result.current.moves.setSideWall(false));
     await waitFor(() => expect(saved()[0]?.sides?.[2]).toEqual({ parapet: false }));
     expect(stored.saves).toHaveLength(1);
     expect(walls()).toHaveLength(3);
-    expect(view.result.current.topMarks[0]?.dots.map((dot) => dot.wall)).toEqual([
-      true,
-      true,
-      false,
-      true,
-    ]);
+    expect(
+      view.result.current.topMarks[0]?.sides.map((side) => side.some((stretch) => stretch.wall)),
+    ).toEqual([true, true, false, true]);
     const step = view.result.current.roofStep;
     expect(step.kind === 'idle' && step.said).toMatchObject({ kind: 'side_wall', walled: 3 });
-    // The same dot again puts the wall back, as the person's own choice.
-    act(() => view.result.current.moves.toggleSideWall(0, 2));
+    // The same switch again puts the wall back, as the person's own choice.
+    act(() => view.result.current.moves.setSideWall(true));
     await waitFor(() => expect(saved()[0]?.sides?.[2]).toEqual({ parapet: true }));
   });
 

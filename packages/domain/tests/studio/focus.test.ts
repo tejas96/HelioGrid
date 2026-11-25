@@ -23,7 +23,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       true,
       {
         stepSwitcher: 'hidden',
-        pictureChip: 'credit',
+        pictureChip: 'thumb',
         pencil: 'filled',
         roofs: 'hidden',
         magnet: 'shown',
@@ -43,7 +43,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       false,
       {
         stepSwitcher: 'hidden',
-        pictureChip: 'credit',
+        pictureChip: 'thumb',
         pencil: 'hidden',
         roofs: 'hidden',
         magnet: 'hidden',
@@ -61,7 +61,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       true,
       {
         stepSwitcher: 'hidden',
-        pictureChip: 'credit',
+        pictureChip: 'thumb',
         pencil: 'hidden',
         roofs: 'hidden',
         magnet: 'hidden',
@@ -80,7 +80,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       true,
       {
         stepSwitcher: 'hidden',
-        pictureChip: 'credit',
+        pictureChip: 'thumb',
         pencil: 'hidden',
         roofs: 'hidden',
         magnet: 'hidden',
@@ -100,7 +100,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       false,
       {
         stepSwitcher: 'hidden',
-        pictureChip: 'credit',
+        pictureChip: 'thumb',
         pencil: 'hidden',
         roofs: 'hidden',
         magnet: 'hidden',
@@ -118,7 +118,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       true,
       {
         stepSwitcher: 'hidden',
-        pictureChip: 'credit',
+        pictureChip: 'thumb',
         pencil: 'hidden',
         roofs: 'hidden',
         magnet: 'hidden',
@@ -137,7 +137,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       false,
       {
         stepSwitcher: 'hidden',
-        pictureChip: 'credit',
+        pictureChip: 'thumb',
         pencil: 'hidden',
         roofs: 'hidden',
         magnet: 'hidden',
@@ -155,7 +155,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       true,
       {
         stepSwitcher: 'mark',
-        pictureChip: 'credit',
+        pictureChip: 'thumb',
         otherHandles: 'hidden',
         bottomBar: 'drawing',
       },
@@ -194,7 +194,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       true,
       {
         stepSwitcher: 'mark',
-        pictureChip: 'credit',
+        pictureChip: 'thumb',
         pencil: 'hidden',
         roofs: 'hidden',
         magnet: 'hidden',
@@ -214,7 +214,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       false,
       {
         stepSwitcher: 'mark',
-        pictureChip: 'credit',
+        pictureChip: 'thumb',
         magnet: 'hidden',
         layers: 'switch',
         compass: 'shown',
@@ -263,10 +263,10 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
     expect(partsOf({ job, view, phone })).toEqual({ ...partsOf({}), ...differs });
   });
 
-  it('the credit line never hides, whatever the job', () => {
+  it('the picture never hides: whole, or its thumb in a job', () => {
     for (const job of FOCUS_JOBS) {
       for (const view of ['top', '3d'] as const) {
-        expect(['shown', 'credit']).toContain(partsOf({ job, view }).pictureChip);
+        expect(['shown', 'thumb']).toContain(partsOf({ job, view }).pictureChip);
       }
     }
   });

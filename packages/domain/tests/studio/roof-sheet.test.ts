@@ -3,7 +3,7 @@ import type { Roof, StudioDocument } from '../../src/studio/document';
 import { EMPTY_STUDIO_DOCUMENT } from '../../src/studio/document';
 import type { GroundPoint } from '../../src/studio/ground';
 import { roofHeightKept, roofHeightStepped } from '../../src/studio/roof-height';
-import { roofHitAt, roofSheetOf } from '../../src/studio/roof-sheet';
+import { roofSheetOf, roofsWithSheet } from '../../src/studio/roof-sheet';
 import { run } from './roof-step-run';
 
 const p = (east: number, north: number): GroundPoint => ({ east, north });
@@ -39,31 +39,50 @@ describe('a roof sheet shows its area and height (T-M05-002)', () => {
   });
 });
 
-describe('a 3D tap lands on the roof it meets, each at its own height (T-M05-002)', () => {
-  // A ray that meets level h at (h + 2, 3): low levels land left, high ones right.
-  const ray = (heightM: number) => p(heightM + 2, 3);
-  it('meets the tall roof at its own height before the low one', () => {
-    expect(roofHitAt(design, [3, 9], ray)).toBe(1);
-  });
-  it('the low roof when the tall one is missed; none off both', () => {
-    expect(roofHitAt(design, [3, 9], (h) => (h === 3 ? p(4, 3) : p(40, 40)))).toBe(0);
-    expect(roofHitAt(design, [3, 9], () => p(40, 40))).toBeNull();
-    expect(roofHitAt(design, [3, 9], () => null)).toBeNull();
-  });
-  it.each(['hole', 'dormer'])(
-    'a tap on a %s lands on the roof it is in: it has no height to set',
-    (is) => {
-      const part: Roof = {
-        ...roofOf([p(2, 2), p(4, 2), p(4, 4), p(2, 4)]),
-        id: 'part',
-        kind: { is, setBy: 'system' },
-        partOf: LOW.id,
-      };
-      const withPart: StudioDocument = { ...design, roofs: [LOW, TALL, part] };
-      // Its own level stands above the roof's, so only being left out keeps it from the tap.
-      expect(roofHitAt(withPart, [3, 9, 4], () => p(3, 3))).toBe(0);
-    },
+describe('a hole’s sheet has no height, and the camera looks at the top of what is open', () => {
+  const hole: Roof = {
+    ...roofOf([p(2, 2), p(4, 2), p(4, 4), p(2, 4)], { metres: 2, setBy: 'person' }),
+    id: 'duct',
+    kind: { is: 'hole', setBy: 'person' },
+    partOf: LOW.id,
+  };
+  const withHole: StudioDocument = { ...design, roofs: [LOW, TALL, hole] };
+  const tops = [{ topM: 3 }, { topM: 9 }, { topM: 3 }];
+  const heights = [3, 9, 0].map(
+    (metres) => ({ metres, setBy: 'system', tier: 'assumed' }) as const,
   );
+
+  it.each([
+    ['a roof has one', 0, true],
+    ['a hole has none, whatever is stored on it', 2, false],
+  ])('%s', (_why, roof, has) => {
+    expect(roofSheetOf(withHole, roof, 3, null, FLOORS)?.hasHeight).toBe(has);
+  });
+
+  it('the tall roof’s sheet: its height in hand stands, and the camera looks at its top', () => {
+    const sheet = roofSheetOf(withHole, 1, 3, 12, FLOORS);
+    const seen = roofsWithSheet(heights, null, sheet, withHole, tops);
+    expect(seen.heights[1]?.metres).toBe(12);
+    expect(seen.fit).toEqual({ west: 10, east: 16, south: 0, north: 6 });
+    expect(seen.fitUpM).toBe(9);
+  });
+
+  it('a hole’s sheet keeps its stored height off the model, and the camera looks at its opening', () => {
+    const seen = roofsWithSheet(
+      heights,
+      null,
+      roofSheetOf(withHole, 2, 3, null, FLOORS),
+      withHole,
+      tops,
+    );
+    expect(seen.heights).toEqual(heights);
+    expect(seen.fit).toEqual({ west: 2, east: 4, south: 2, north: 4 });
+    expect(seen.fitUpM).toBe(3);
+  });
+
+  it('with no sheet the camera looks at the ground', () => {
+    expect(roofsWithSheet(heights, null, null, withHole, tops).fitUpM).toBe(0);
+  });
 });
 
 describe('Edit outline in 2D picks the roof and says its height (T-M05-002)', () => {

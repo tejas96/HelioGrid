@@ -17,13 +17,14 @@ const hitOf = (
   design: StudioDocument,
   at: (h: number) => GroundPoint | null,
   open: number | null = null,
+  reachM = REACH_M,
 ) => {
   const worked = roofsWorked(design, FACTS, 18.5);
   const scene = roofSceneOf(design, FACTS, worked);
   // The same line of sight a finger's half-width east: the reach, wherever it meets the model.
   const beside = (h: number) => {
     const point = at(h);
-    return point === null ? null : { east: point.east + REACH_M, north: point.north };
+    return point === null ? null : { east: point.east + reachM, north: point.north };
   };
   return roofHitOf(design, scene, worked, FACTS, at, beside, open);
 };
@@ -118,18 +119,92 @@ describe('a tap on the 3D model', () => {
     expect(hitOf(designOf(TERRACE), down(5, 4), 0)).toEqual({ kind: 'roof', roof: 0 });
   });
 
-  it('a hole’s wall is the hole’s side, not the roof’s', () => {
+  it('a hole’s wall seen within reach of its rim is the hole’s side, not the roof’s', () => {
     const duct = kindOf('duct', 'hole', box(4, 3, 2, 2), { partOf: 'terrace' });
-    // Steep, down through the duct's open top onto its south wall, at north 3.
-    const hit = hitOf(designOf(TERRACE, duct), (h) => ({ east: 5, north: 2.9 + 0.2 * h }));
-    expect(hit).toMatchObject({ kind: 'side', roof: 1 });
+    // Steep, in at the rim of the duct's south side (north 3), onto its south wall.
+    const hit = hitOf(designOf(TERRACE, duct), (h) => ({ east: 5, north: 2.6 + 0.2 * h }));
+    expect(hit).toMatchObject({ kind: 'side', roof: 1, side: 0 });
   });
 
-  it('a hole across the roof’s edge: its wall is still the hole’s side', () => {
+  it('a hole across the roof’s edge: its wall within reach of its rim is the hole’s side', () => {
     const duct = kindOf('duct', 'hole', box(9, 3, 2, 2), { partOf: 'terrace' });
-    // Steep, down through the duct's open top onto its west wall, at east 9.
-    const hit = hitOf(designOf(TERRACE, duct), (h) => ({ east: 8.9 + 0.2 * h, north: 4 }));
+    // Steep, in at the rim of the duct's west side (east 9), onto its west wall.
+    const hit = hitOf(designOf(TERRACE, duct), (h) => ({ east: 8.6 + 0.2 * h, north: 4 }));
     expect(hit).toEqual({ kind: 'side', roof: 1, side: 3 });
+  });
+
+  /** A tall terrace: its duct is open down to a floor a storey under its top, at 6 m. */
+  const TALL = { ...TERRACE, height: { metres: 9, setBy: 'person' as const } };
+  const DUCT = kindOf('duct', 'hole', box(4, 3, 2, 2), { partOf: 'terrace' });
+  /** From the south, steep, in through the duct's opening at `north` on the terrace's top. */
+  const into = (north: number) => (h: number) => ({ east: 5, north: north + 0.5 * (9 - h) });
+
+  it.each([
+    [
+      'its middle, seen straight down onto its floor, is the hole',
+      down(5, 4),
+      { kind: 'roof', roof: 1 },
+    ],
+    [
+      'its middle, seen from the side onto its far wall, is the hole',
+      into(4),
+      { kind: 'roof', roof: 1 },
+    ],
+    [
+      'within reach of its north rim, onto that wall, is its north side',
+      into(4.8),
+      { kind: 'side', roof: 1, side: 2 },
+    ],
+    ['past the duct, the terrace’s own top is the terrace', down(2, 4), { kind: 'roof', roof: 0 }],
+  ])('a tap into a hole: %s', (_why, at, hit) => {
+    expect(hitOf(designOf(TALL, DUCT), at)).toEqual(hit);
+  });
+
+  // Seen from far, a finger covers 1.5 m: more than half the duct's 2 m across.
+  it.each([
+    ['the duct’s middle is still the duct', down(5, 4), { kind: 'roof', roof: 1 }],
+    [
+      'within a third of the way to its middle, its rim is its side',
+      down(5, 3.3),
+      { kind: 'side', roof: 1, side: 0 },
+    ],
+    [
+      'the big terrace keeps a whole finger for its edge',
+      down(1.2, 4),
+      { kind: 'side', roof: 0, side: 3 },
+    ],
+    ['and its middle is the terrace', down(2, 6), { kind: 'roof', roof: 0 }],
+  ])('from far, a small part keeps its middle: %s', (_why, at, hit) => {
+    expect(hitOf(designOf(TALL, DUCT), at, null, 1.5)).toEqual(hit);
+  });
+
+  it('from far, a gable keeps its face between its edge and its ridge', () => {
+    // A 12 × 8 gable, its ridge east to west at north 4; a finger covers 3 m from this far.
+    const gable = designOf(shaped('gable'));
+    expect(hitOf(gable, down(6, 6), null, 3)).toMatchObject({ kind: 'face', roof: 0 });
+    expect(hitOf(gable, down(6, 4.5), null, 3)).toEqual({ kind: 'ridge', roof: 0 });
+    expect(hitOf(gable, down(6, 7.5), null, 3)).toEqual({ kind: 'side', roof: 0, side: 2 });
+  });
+
+  it('a second tap into the hole whose sheet is open picks the roof it is cut in, as in the top view', () => {
+    expect(hitOf(designOf(TALL, DUCT), into(4), 1)).toEqual({ kind: 'roof', roof: 0 });
+  });
+
+  it('a hole across the roof’s edge is the hole inside the roof, and open air past it', () => {
+    const notch = kindOf('duct', 'hole', box(9, 3, 2, 2), { partOf: 'terrace' });
+    const design = designOf(TALL, notch);
+    expect(hitOf(design, down(9.5, 4))).toEqual({ kind: 'roof', roof: 1 });
+    expect(hitOf(design, down(10.5, 4))).toBeNull();
+  });
+
+  it('a hole in a sloped roof’s face is the hole, not the face', () => {
+    const sheet = { type: 'trapezoidal_sheet', setBy: 'system', confirmed: false } as const;
+    const main = roofOf('main', box(0, 0, 12, 8), { material: sheet });
+    const duct = kindOf('duct', 'hole', box(5, 1, 2, 2), { partOf: 'main' });
+    const design = designOf(main, duct);
+    expect(hitOf(design, down(6, 2))).toEqual({ kind: 'roof', roof: 1 });
+    // Past the duct, the face is still the face.
+    expect(hitOf(design, down(2, 2))).toMatchObject({ kind: 'face', roof: 0 });
   });
 
   it('nothing is met behind the camera', () => {

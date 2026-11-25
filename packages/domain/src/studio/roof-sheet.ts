@@ -1,5 +1,5 @@
 import type { StudioDocument } from './document';
-import type { GroundBox, GroundPoint } from './ground';
+import type { GroundBox } from './ground';
 import {
   type RoofHeightShown,
   type RoofHeightSlide,
@@ -7,8 +7,7 @@ import {
   roofHeightSlide,
 } from './roof-height';
 import { roofKindOf } from './roof-kind';
-import type { RoofKind } from './roof-parts';
-import { pointInside, roofArea, roofsBox } from './roof-shape';
+import { roofArea, roofsBox } from './roof-shape';
 
 /**
  * A roof's sheet in 3D (`T-M05-002`, part b): a tap on a roof opens it with the roof's area and
@@ -18,6 +17,11 @@ import { pointInside, roofArea, roofsBox } from './roof-shape';
 
 export interface RoofSheetView {
   readonly roof: number;
+  /**
+   * It has a height of its own to set. A hole has none: it is open down to the floor below, level
+   * with the top of the roof it is cut in, so its sheet shows no height and no arrow.
+   */
+  readonly hasHeight: boolean;
   /** The roof's area, square metres. */
   readonly area: number;
   /** The height as it stands now, the one in hand included. */
@@ -46,6 +50,7 @@ export function roofSheetOf(
   const slide = roofHeightSlide(stands.metres, floors);
   return {
     roof: index,
+    hasHeight: roofKindOf(roof) !== 'hole',
     area: roofArea(roof.corners),
     height,
     systemMetres: startHeightM,
@@ -54,42 +59,25 @@ export function roofSheetOf(
   };
 }
 
-/** The kinds whose sheet has nothing to set in 3D. */
-const NO_SHEET: readonly RoofKind[] = ['hole', 'dormer'];
-
 /**
- * The roof a 3D tap lands on: each roof is tried at the height it stands at now (`heights`, a
- * height in hand included), the tallest first, since it stands in front. `groundAt` answers where
- * the tap meets a level that high; `null` off every roof.
+ * The roof whose sheet is open stands at the height in hand, and the camera frames it alone,
+ * looking at its top (`fitUpM`, above the ground): a duct or a stair room on a tall building is
+ * framed where it is, not at the ground under it. With no sheet the camera looks at the ground.
  */
-export function roofHitAt(
-  document: StudioDocument,
-  heights: readonly number[],
-  groundAt: (heightM: number) => GroundPoint | null,
-): number | null {
-  // A hole and a dormer have no height of their own to set: a tap on one lands on its roof.
-  const byHeight = document.roofs
-    .map((roof, index) => ({ roof, index, metres: heights[index] ?? 0 }))
-    .filter(({ roof }) => !NO_SHEET.includes(roofKindOf(roof)))
-    .sort((a, b) => b.metres - a.metres);
-  for (const { roof, index, metres } of byHeight) {
-    const at = groundAt(metres);
-    if (at !== null && pointInside(at, roof.corners)) return index;
-  }
-  return null;
-}
-
-/** The roof whose sheet is open stands at the height in hand, and the camera frames it alone. */
 export function roofsWithSheet(
   heights: readonly RoofHeightShown[],
   fit: GroundBox | null,
   roofSheet: RoofSheetView | null,
   document: StudioDocument | null,
-): { heights: readonly RoofHeightShown[]; fit: GroundBox | null } {
+  /** Each roof's top above the ground, in the order of the design's roofs: the scene's levels. */
+  tops: readonly { readonly topM: number }[],
+): { heights: readonly RoofHeightShown[]; fit: GroundBox | null; fitUpM: number } {
   const open = roofSheet === null ? undefined : document?.roofs[roofSheet.roof];
-  if (roofSheet === null || open === undefined) return { heights, fit };
+  if (roofSheet === null || open === undefined) return { heights, fit, fitUpM: 0 };
+  const own = roofSheet.hasHeight;
   return {
-    heights: heights.map((height, i) => (i === roofSheet.roof ? roofSheet.height : height)),
+    heights: heights.map((height, i) => (own && i === roofSheet.roof ? roofSheet.height : height)),
     fit: roofsBox([open]),
+    fitUpM: tops[roofSheet.roof]?.topM ?? 0,
   };
 }

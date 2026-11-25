@@ -11,6 +11,7 @@ import {
   type MeasurementSystem,
   type NumberEntry,
   pairOf,
+  type RoofSheetView,
   type RoofStepEvent,
   type RoofStepState,
   roofArea,
@@ -28,7 +29,8 @@ import {
   typedResult,
   typedRoof,
 } from '@heliogrid/domain';
-import { type RefObject, useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useRef, useState } from 'react';
+import type { SheetPart } from './roof-sheet-rows-view';
 import type { RoofStepView, SizeCardView } from './roof-step-view';
 import type { StudioEditing, StudioPicture } from './studio-document-state';
 
@@ -196,4 +198,47 @@ export function framedWithCard(
   const preview = card?.preview;
   if (preview == null) return fit;
   return roofsBox([...(document?.roofs ?? []), { corners: preview.corners }]);
+}
+
+/** What holds a number in the roof step: the size card, or a length's box on its edge. */
+function stepHolderOf(state: RoofStepState): string | null {
+  if (state.kind === 'typing') return 'size';
+  if (state.kind === 'sizing') return `length:${state.roof}:${state.edge}`;
+  return null;
+}
+
+/** What holds a number on a roof's sheet: the sheet's roof and the part it shows. */
+function sheetHolderOf(sheet: RoofSheetView, part: SheetPart): string {
+  const at = part.kind === 'side' ? part.side : part.kind === 'face' ? part.face : '';
+  return `sheet:${sheet.roof}:${part.kind}:${at}`;
+}
+
+/**
+ * Slider or box, for the one thing open that holds a number (`T-M05-002`): every number opens on
+ * its slider; the box is picked on demand and holds only while what holds the number stays open —
+ * a roof's sheet, a side's or a face's, a length's box, the size card. Once something else holds
+ * the number, or nothing does, the pick is gone. It is never kept on the account.
+ */
+export function useNumberEntry(roofStep: RoofStepState) {
+  const [held, setHeld] = useState<{ readonly holder: string; readonly entry: NumberEntry } | null>(
+    null,
+  );
+  const entryFor = (holder: string | null): NumberEntry =>
+    holder !== null && held?.holder === holder ? held.entry : 'slider';
+  const choose = (holder: string | null) => (entry: NumberEntry) => {
+    if (holder !== null) setHeld({ holder, entry });
+  };
+  const step = stepHolderOf(roofStep);
+  return {
+    /** The roof step's own numbers: the size card's and a length's box. */
+    step: entryFor(step),
+    chooseStep: choose(step),
+    /** Once the sheet is known: what holds a number now, its slider or box, and its pick. */
+    numbersNow: (sheet: RoofSheetView | null, part: SheetPart) => {
+      const holder = sheet === null ? step : sheetHolderOf(sheet, part);
+      // A pick made for anything else is dropped before the paint.
+      if (held !== null && held.holder !== holder) setHeld(null);
+      return { numberEntry: entryFor(holder), chooseNumberEntry: choose(holder) };
+    },
+  };
 }

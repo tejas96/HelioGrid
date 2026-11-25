@@ -193,3 +193,43 @@ describe('a tap on the model in 3D', () => {
     await waitFor(() => expect(saved()?.sides?.[0]).toMatchObject({ parapetM: 1.5 }));
   });
 });
+
+describe('a number is set on its slider first, each time what holds it opens', () => {
+  const profileWrites = () => origin.writes.filter((write) => write.path === '/users/me');
+
+  it('the box picked on a sheet holds while that sheet is open; every sheet opens on the slider again', async () => {
+    const view = await opened();
+    expect(view.result.current.numberEntry).toBe('slider');
+    act(() => view.result.current.moves.chooseNumberEntry('box'));
+    expect(view.result.current.numberEntry).toBe('box');
+    // A side's sheet is another sheet: the slider.
+    act(() => view.result.current.moves.openSide(0));
+    expect(view.result.current.numberEntry).toBe('slider');
+    act(() => view.result.current.moves.chooseNumberEntry('box'));
+    act(() => view.result.current.moves.backToRoof());
+    expect(view.result.current.numberEntry).toBe('slider');
+    // Closed and opened again: the slider.
+    act(() => view.result.current.moves.chooseNumberEntry('box'));
+    act(() => view.result.current.moves.closeRoof());
+    act(() => view.result.current.moves.openRoof(0));
+    expect(view.result.current.numberEntry).toBe('slider');
+    // The pick is the moment's, never the account's.
+    expect(profileWrites()).toHaveLength(0);
+  });
+
+  it('a length’s box and the size card each open on the slider, whatever was picked before', async () => {
+    const view = await opened();
+    act(() => view.result.current.moves.closeRoof());
+    act(() => view.result.current.moves.see('top'));
+    act(() => view.result.current.moves.pickLength(0, 0));
+    act(() => view.result.current.moves.chooseNumberEntry('box'));
+    expect(view.result.current.numberEntry).toBe('box');
+    act(() => view.result.current.moves.pickLength(0, 1));
+    expect(view.result.current.numberEntry).toBe('slider');
+    act(() => view.result.current.moves.chooseNumberEntry('box'));
+    act(() => view.result.current.moves.tap({ east: 30, north: 30 }));
+    act(() => view.result.current.moves.typeSize());
+    expect(view.result.current.sizeCard?.boxes).toBe(false);
+    expect(profileWrites()).toHaveLength(0);
+  });
+});

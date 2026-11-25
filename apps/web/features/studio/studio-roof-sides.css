@@ -147,25 +147,6 @@
   pointer-events: none;
 }
 
-/* A dot on each side of the picked roof: a tap adds or removes that side's wall. */
-.hg-roof-side-dot {
-  display: block;
-  inline-size: var(--sp-3);
-  block-size: var(--sp-3);
-  border-radius: var(--r-pill);
-  background: var(--scene-mark);
-  box-shadow:
-    0 0 0 calc(var(--hg-studio-line) * 2.5) var(--hg-roof-ink),
-    var(--e1);
-}
-
-.hg-roof-side-dot[data-hot="true"] {
-  background: var(--hg-roof-ink);
-  box-shadow:
-    0 0 0 calc(var(--hg-studio-line) * 2.5) var(--scene-mark),
-    var(--e1);
-}
-
 /* A roof's keyboard stop: no pointer and nothing drawn, until a keyboard lands on it — then a ring
    round the roof's middle says which roof Enter picks. */
 .hg-roof-at > .hg-roof-key {

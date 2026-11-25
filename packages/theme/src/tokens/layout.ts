@@ -64,7 +64,7 @@ export const LAYOUT = {
 
 /**
  * The 3D studio's chrome over its canvas (`T-M05-002`): its round tools, the edge and gap round
- * them, the picture chip's thumb, the steps pill's inset and the height of a tag on the picture. A phone draws them smaller so the roof keeps the screen; the tap area stays
+ * them, the picture's thumb and the height of a tag on the picture. A phone draws them smaller so the roof keeps the screen; the tap area stays
  * `touch-min`. Every studio part reads these, never a size of its own.
  */
 export const STUDIO_CHROME = {
@@ -74,7 +74,6 @@ export const STUDIO_CHROME = {
     'studio-edge': 16,
     'studio-gap': 12,
     'studio-thumb': 32,
-    'studio-pill-pad': 4,
     'studio-tag-h': 22,
   },
   phone: {
@@ -83,7 +82,6 @@ export const STUDIO_CHROME = {
     'studio-edge': 8,
     'studio-gap': 6,
     'studio-thumb': 24,
-    'studio-pill-pad': 2,
     'studio-tag-h': 20,
   },
 } as const satisfies Record<'desk' | 'phone', Record<string, number>>;

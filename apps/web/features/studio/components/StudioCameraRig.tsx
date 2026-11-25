@@ -27,12 +27,11 @@ import {
   reachOf,
   seenPerMetre,
 } from './camera-limits';
-import { bindHands, fitDistance, fitSpread, type GroundBox, POSE } from './camera-poses';
+import { bindHands, fitDistance, fitMiddle, fitSpread, POSE, type SceneFit } from './camera-poses';
 import { SceneLens } from './scene-lens';
 
 export type { StudioDrive } from './camera-drive';
 export type { ClearGround } from './camera-limits';
-export type { GroundBox } from './camera-poses';
 
 /** How long the camera takes to fly to a new view, in seconds. */
 const FLY_SECONDS = 0.25;
@@ -72,7 +71,7 @@ export function StudioCameraRig({
   /** The view stays still as the bars change (drawing, Roofs, the picker) while `clear` is in sight. */
   heldView: StudioScreen['heldView'];
   /** The roofs' ground: the view frames them when it opens. */
-  fit: GroundBox | null;
+  fit: SceneFit | null;
   /**
    * A roof closed: each new value frames the roofs once, with the box from this same render, so the
    * new roof is in it. The camera stays in its view.
@@ -101,6 +100,8 @@ export function StudioCameraRig({
   const { west, east, south, north } = clear ?? { west: 0, east: 0, south: 0, north: 0 };
   const held = clear !== null;
   const room = useRef<Box3 | null>(null);
+  // The height the camera last framed at: closing a sheet keeps the view where it is.
+  const lookUp = useRef(0);
   const { width, height } = size;
   const { top: barTop, bottom: barBottom } = free;
   useEffect(() => {
@@ -167,7 +168,8 @@ export function StudioCameraRig({
     // The room is the one the camera is going to: while it flies in, the pin it flies to stays
     // inside, though the room it leaves was too small to hold it.
     const going = rig.getSpherical(heading, true).radius;
-    const next = lookRoom({ west, east, south, north }, seenPerMetre(size, free), going);
+    const upM = lookUp.current;
+    const next = lookRoom({ west, east, south, north, upM }, seenPerMetre(size, free), going);
     if (room.current?.equals(next)) return;
     room.current = next;
     rig.setBoundary(next);
@@ -234,20 +236,18 @@ export function StudioCameraRig({
         ? fitDistance(screen, bars, spread)
         : (openingDistance(metresPerPixel, size, window.devicePixelRatio) ??
           fitDistance(screen, bars));
-    const middle =
-      fit === null
-        ? { east: 0, north: 0 }
-        : { east: (fit.west + fit.east) / 2, north: (fit.south + fit.north) / 2 };
+    const { upM, ...middle } = fitMiddle(fit);
+    lookUp.current = upM;
     const pose = POSE[to];
     const going = Math.min(Math.max(distance, rig.minDistance), rig.maxDistance);
     // The room for where the camera is going comes first, or the pin it flies to is cut off.
     const before = cameraEnd(rig);
     if (held) {
-      room.current = lookRoom({ west, east, south, north }, seenPerMetre(size, free), going);
+      room.current = lookRoom({ west, east, south, north, upM }, seenPerMetre(size, free), going);
       rig.setBoundary(room.current);
     }
     void rig.dollyTo(going, move);
-    void rig.moveTo(middle.east, 0, -middle.north, move);
+    void rig.moveTo(middle.east, upM, -middle.north, move);
     void rig.rotateTo(pose.turn, pose.tilt, move);
     if (fade) fadeIfMoved(rig, before);
     invalidate();

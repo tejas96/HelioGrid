@@ -206,8 +206,8 @@ export type RoofStepEvent =
       readonly placing: RoofPlacing;
     }
   /**
-   * A side's dot tapped on the picked roof: its wall is added or taken off. `wall` is what the
-   * side has after the tap, and `walled` how many of the roof's sides then have one.
+   * A side's parapet switched in its sheet: its wall is added or taken off. `wall` is what the
+   * side has after the switch, and `walled` how many of the roof's sides then have one.
    */
   | {
       readonly kind: 'side_wall';

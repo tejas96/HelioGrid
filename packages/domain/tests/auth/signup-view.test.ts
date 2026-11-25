@@ -14,7 +14,6 @@ const withoutCompany: SessionUser = {
   interfaceLanguage: 'en',
   unitPreference: 'metric',
   studioHelpersOff: [],
-  numberEntry: 'slider',
   tenant: null,
 };
 const withCompany: SessionUser = {

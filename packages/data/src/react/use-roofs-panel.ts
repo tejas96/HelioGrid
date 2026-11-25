@@ -1,13 +1,10 @@
 'use client';
 import {
-  type History,
   type MaterialPick,
   materialPickerOf,
-  nextWaiting,
   ROOFS_PANEL_START,
   type RoofBar,
   type RoofFacts,
-  type RoofList,
   type RoofSheetView,
   type RoofStepEvent,
   type RoofsPanel,
@@ -15,8 +12,7 @@ import {
   roofsPanelAfter,
   type StudioDocument,
 } from '@heliogrid/domain';
-import { roofListOf, roofsWorked } from '@heliogrid/domain/studio-kernel';
-import { type RefObject, useState } from 'react';
+import { useState } from 'react';
 import type { RoofsPanelMoves, RoofsPanelView } from './roofs-panel-view';
 
 /**
@@ -26,8 +22,6 @@ import type { RoofsPanelMoves, RoofsPanelView } from './roofs-panel-view';
  */
 export function useRoofsPanel({
   document,
-  latest,
-  list,
   facts,
   drawing,
   sheet,
@@ -41,9 +35,6 @@ export function useRoofsPanel({
   deleteRoof,
 }: {
   document: StudioDocument | null;
-  latest: RefObject<History<StudioDocument> | null>;
-  /** The rows of Roofs for the design drawn. */
-  list: RoofList;
   facts: RoofFacts;
   drawing: boolean;
   /** The roof's sheet that is open; `null` with none. */
@@ -66,7 +57,7 @@ export function useRoofsPanel({
   const send = (event: RoofsPanelEvent) => setPanel((state) => roofsPanelAfter(state, event));
   const pencil = drawing ? 'stop' : 'draw';
 
-  /** A type picked or confirmed on the picker's roof: one change, then on to the next roof that waits. */
+  /** A type picked or confirmed on the picker's roof: one change, and the picker closes. */
   const setMaterial = (pick?: MaterialPick) => {
     if (panel.open !== 'picker') return;
     act(
@@ -74,11 +65,7 @@ export function useRoofsPanel({
         ? { kind: 'material', roof: panel.roof }
         : { kind: 'material', roof: panel.roof, pick },
     );
-    // The next roof that waits is read from the design as the pick left it: Confirm on a roof
-    // also confirms what sits on it.
-    const now = latest.current?.present;
-    const rows = now === undefined ? list : roofListOf(now, facts, roofsWorked(now, facts));
-    send({ kind: 'picked', next: nextWaiting(rows, panel.roof) });
+    send({ kind: 'picked' });
   };
 
   return {
@@ -111,7 +98,7 @@ export function useRoofsPanel({
         setFromRoofs(false);
         setPanel({ open: 'roofs', lit: roof });
       },
-      openMaterial: (roof, from) => send({ kind: 'material', roof, from }),
+      openMaterial: (roof) => send({ kind: 'material', roof }),
       pickerMode: (mode) => send({ kind: 'mode', mode }),
       typeOther: (draft) => send({ kind: 'other', draft }),
       pickMaterial: (pick) => setMaterial(pick),

@@ -16,7 +16,6 @@ const person = (tenant: SessionUser['tenant']): SessionUser => ({
   interfaceLanguage: 'en',
   unitPreference: 'metric',
   studioHelpersOff: [],
-  numberEntry: 'slider',
   tenant,
 });
 const withCompany = person({ id: 't1', roles: ['epc_owner'] });

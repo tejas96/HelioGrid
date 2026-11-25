@@ -19,7 +19,6 @@ import {
   labelLayoutOf,
   type MeasurementSystem,
   magnetOf,
-  type NumberEntry,
   pickedAngleOf,
   ROOF_STEP_START,
   type RoofFacts,
@@ -47,7 +46,7 @@ import { type RefObject, useMemo, useRef, useState } from 'react';
 import { aKey } from '../client/creation-key';
 import { pointerMoves } from './roof-step-pointer';
 import type { ClosingWith, RoofMoves, RoofStepView } from './roof-step-view';
-import { lengthBoxIn, sizeCardIn, useUnitsFollow } from './size-card';
+import { lengthBoxIn, sizeCardIn, useNumberEntry, useUnitsFollow } from './size-card';
 import { type StudioPicture, stampOf, tracedOnOf } from './studio-document-state';
 
 export type { RoofMoves, RoofStepView, SizeCardView } from './roof-step-view';
@@ -70,8 +69,6 @@ export function useRoofStep({
   startHeightM,
   facts,
   typedStart,
-  numberEntry,
-  setNumberEntry,
   planOutlines,
   closingOf,
 }: {
@@ -95,8 +92,6 @@ export function useRoofStep({
   facts: RoofFacts;
   /** The market's start size for a typed roof. */
   typedStart: { readonly length: number; readonly width: number };
-  numberEntry: NumberEntry;
-  setNumberEntry: (entry: NumberEntry) => void;
   /** The laid plan's closed outlines, in its own units: a roof made from one is sized with it. */
   planOutlines: readonly (readonly number[])[];
   /** What a close carries, asked of the kernel: a roof's place, or a face closed onto roof `faces`. */
@@ -139,6 +134,8 @@ export function useRoofStep({
     [roofStep, document, units],
   );
   const sizing = roofStep.kind === 'sizing' ? roofStep : null;
+  const numbers = useNumberEntry(roofStep);
+  const numberEntry = numbers.step;
   const view: RoofStepView = {
     roofStep,
     heights:
@@ -237,9 +234,7 @@ export function useRoofStep({
       if (now.kind === 'sizing')
         act({ kind: 'type', entry: entryOf(metres, units, now.entry.measured) });
     },
-    chooseNumberEntry: (entry) => {
-      if (entry !== numberEntry) setNumberEntry(entry);
-    },
+    chooseNumberEntry: numbers.chooseStep,
     stepLength: (by) => act({ kind: 'step', by, system: units }),
     setLength: () => act({ kind: 'set', system: units }),
     confirmLength: (use) => act({ kind: 'confirm', use, system: units }),
@@ -287,5 +282,6 @@ export function useRoofStep({
   };
   const startFaces = (roof: number) => act({ kind: 'draw_faces', roof, magnet: magnet() });
   // The magnet as it works now (resting while Alt is held); startFaces: draw roof `roof`'s faces.
-  return { view, moves, step, act, magnetNow: () => magnet(), startFaces };
+  const { numbersNow } = numbers;
+  return { view, moves, step, act, magnetNow: () => magnet(), startFaces, numbersNow };
 }

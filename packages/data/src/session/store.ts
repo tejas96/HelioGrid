@@ -290,10 +290,7 @@ export function createSessionStore(config: {
       if (user === null) return false;
       emit({ ...snapshot, user: { ...user, ...next } });
       const off = next.studioHelpersOff ?? user.studioHelpersOff.filter(isStudioHelper);
-      return savePreference('studio', {
-        studioHelpersOff: [...off],
-        numberEntry: next.numberEntry ?? user.numberEntry,
-      });
+      return savePreference('studio', { studioHelpersOff: [...off] });
     },
     chooseHome(preset) {
       if (snapshot.status === 'authenticated') emit({ ...snapshot, chosenHome: preset });

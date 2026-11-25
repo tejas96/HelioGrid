@@ -1,7 +1,6 @@
 import type { RolePreset } from '../authz/roles';
 import type { UiLanguage } from '../format/languages';
 import type { MeasurementSystem } from '../format/pack';
-import type { NumberEntry } from '../studio/vocabulary';
 import type { OnboardingStep } from '../tenancy/onboarding-steps';
 import type { OtpVerifyOutcome } from './login-state';
 
@@ -51,8 +50,6 @@ export interface SessionUser {
    * build does not know is kept, and turns nothing off.
    */
   studioHelpersOff: readonly string[];
-  /** How the person sets a number: the slider first, or a box (`T-M05-002`, *Values*). */
-  numberEntry: NumberEntry;
   /** Null until a company exists — the signup that resumes at the company step (`M01-10`). */
   tenant: { id: string; roles: readonly RolePreset[] } | null;
 }

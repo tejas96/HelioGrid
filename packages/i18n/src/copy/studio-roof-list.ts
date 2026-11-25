@@ -34,7 +34,6 @@ const LIST = {
   sitsPartOf: /*i18n*/ { id: 'Part of {roof}' },
   copyRoof: /*i18n*/ { id: 'Copy {name}' },
   deleteRoof: /*i18n*/ { id: 'Delete {name}' },
-  madeOf: /*i18n*/ { id: '{name} is made of {material}. Change it' },
   // The picker.
   pickerTitle: /*i18n*/ { id: 'What is it made of?' },
   pickerOther: /*i18n*/ { id: 'Other material' },
@@ -143,9 +142,6 @@ export function studioRoofListWords(t: T) {
     rowMaterial: (material: NonNullable<RoofRow['material']>) => materialWord(t, material),
     rowCopy: (name: RoofName) => t(LIST.copyRoof, { name: roofNameWord(t, name) }),
     rowDelete: (name: RoofName) => t(LIST.deleteRoof, { name: roofNameWord(t, name) }),
-    /** The material on a row, spoken: a tap opens the picker. */
-    rowMadeOf: (name: RoofName, material: NonNullable<RoofRow['material']>) =>
-      t(LIST.madeOf, { name: roofNameWord(t, name), material: materialWord(t, material) }),
     material: (type: RoofMaterial) => t(MATERIAL[type]),
     /** A fragile type, spoken: its picture carries the warning triangle. */
     materialFragile: (type: RoofMaterial) => t(LIST.fragile, { material: t(MATERIAL[type]) }),

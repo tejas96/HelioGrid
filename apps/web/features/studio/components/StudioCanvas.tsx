@@ -13,6 +13,7 @@ import { useMapKeys } from '../hooks/use-map-keys';
 import { useNewestFrame } from '../hooks/use-newest-frame';
 import { useStudioHaptics } from '../hooks/use-studio-haptics';
 import { useUpright } from '../hooks/use-upright';
+import type { SceneFit } from './camera-poses';
 import { StudioBottomBar } from './StudioBottomBar';
 import type { StudioDrive } from './StudioCameraRig';
 import { StudioCanvasHead } from './StudioCanvasHead';
@@ -28,6 +29,16 @@ import { StudioToolRail } from './StudioToolRail';
 
 /** A finger's half-width on the screen: a side or a ridge this near a tap is the one tapped. */
 const FINGER_PX = 22;
+
+/**
+ * What the camera frames: a landed picture's own box while its landing is the newest frame, else
+ * the roofs, looked at the open roof's top.
+ */
+function sceneFitOf(studio: StudioScreen, frameOn: object | null): SceneFit | null {
+  const { landed } = studio.own;
+  if (frameOn === landed && landed !== null) return landed.box;
+  return studio.fit === null ? null : { ...studio.fit, upM: studio.fitUpM };
+}
 
 /** The sun the scene is lit by before the site's own is known: high, so nothing waits on it. */
 const NOON_OVERHEAD = { azimuthDegrees: 180, elevationDegrees: 60 } as const;
@@ -194,9 +205,7 @@ export function StudioCanvas({
             roofScene={studio.scene}
             roofMotion={studio.motion}
             pictureScale={studio.shown?.pictureScale ?? null}
-            fit={
-              frameOn === studio.own.landed ? (studio.own.landed?.box ?? studio.fit) : studio.fit
-            }
+            fit={sceneFitOf(studio, frameOn)}
             frameOn={frameOn}
             rise={rise}
             roofMarks={roofMarks}

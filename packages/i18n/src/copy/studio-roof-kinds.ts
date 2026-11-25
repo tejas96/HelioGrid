@@ -65,9 +65,6 @@ const KIND = {
   levelSides: /*i18n*/ { id: 'Same as the other sides · {height}' },
   levelRidge: /*i18n*/ { id: 'Level with {roof}’s ridge · {height}' },
   wallsNone: /*i18n*/ { id: 'No parapet on this roof' },
-  noWallOnSide: /*i18n*/ { id: 'No parapet on this side' },
-  sideWallOff: /*i18n*/ { id: 'Side {number}: take its parapet off' },
-  sideWallOn: /*i18n*/ { id: 'Side {number}: add a parapet' },
   sharedNoWall: /*i18n*/ { id: 'Shared with {roof} · no parapet' },
   noWallUnderStair: /*i18n*/ { id: 'No parapet where the stair room stands' },
   noWallUnderFloor: /*i18n*/ { id: 'No parapet where the upper floor stands' },
@@ -220,14 +217,9 @@ function noWallWhyLine(t: T, why: NoWallWhy): TranslatedText {
   return t(KIND.noWallUnderWall, { roof: roofNameWord(t, why.name) });
 }
 
-/** The words of the marks on a roof in the top view: its sides' dots and its tags. */
+/** The words of the marks on a roof in the top view: its tags. */
 export function roofTopWords(t: T) {
   return {
-    /** A side's dot, spoken: what a tap on it does. */
-    sideDot: (number: number, wall: boolean) =>
-      t(wall ? KIND.sideWallOff : KIND.sideWallOn, { number }),
-    /** The tag by a side a person took the wall off. */
-    noWallOnSide: t(KIND.noWallOnSide),
     noWallWhy: (why: NoWallWhy) => noWallWhyLine(t, why),
     /** The tag on a roof past the edge of the roof it stands on: how far, already formatted. */
     sticksOutBy: (length: string) => t(KIND.sticksOutBy, { length }),

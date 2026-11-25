@@ -69,24 +69,113 @@
   background: var(--surface);
 }
 
-/* The head: the steps in the middle of the canvas, the compass in the right corner and the picture
-   chip under them at the left. */
+/* The head, straight on the map with no box: the picture at the start, the steps in the middle,
+   the save mark and the compass at the end. The middle holds its place in the canvas's centre; on a
+   phone the end takes only its own room, so the picture keeps the rest. */
 .hg-studio-canvas-head {
   position: relative;
+  z-index: 1;
   grid-row: 1;
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  grid-template-areas:
-    ". rail compass"
-    "chip chip chip";
-  align-items: start;
-  gap: var(--sp-2) var(--sp-3);
+  grid-template-areas: "start middle end";
+  align-items: center;
+  gap: var(--sp-2) var(--sp-1);
   min-inline-size: 0;
 }
 
-/* The save mark after the step in hand: a hairline sets it apart from the steps, and a quiet mark
-   holds the same square as the buttons beside it, so the pill never jumps as saving moves on. */
+/* A soft shade fading down from the screen's top edge, under the head: white words read on a white
+   roof, a grey sky and in sunlight. It takes no press. */
+.hg-studio-head-shade {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: calc(var(--sp-24) + var(--hg-phone-inset-top, 0px) + env(safe-area-inset-top, 0px));
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--scene-shade) 48%, transparent),
+    color-mix(in srgb, var(--scene-shade) 18%, transparent) 55%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* How far the design has come: one unbroken line on the screen's top edge, under the phone's own
+   bar, one piece a step with no gap between them. A step reached fills its piece forward. */
+.hg-studio-step-line {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: max(env(safe-area-inset-top), var(--hg-phone-inset-top, 0px));
+  inset-inline: 0;
+  display: flex;
+  block-size: calc(var(--sp-1) - var(--hg-studio-line));
+  background: color-mix(in srgb, var(--scene-mark) 30%, transparent);
+  pointer-events: none;
+}
+
+.hg-studio-step-piece {
+  flex: 1;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-standard) var(--ease-standard);
+}
+
+.hg-studio-step-piece:is([data-standing="done"], [data-standing="here"]) {
+  transform: scaleX(1);
+}
+
+.hg-studio-head-steps {
+  grid-area: middle;
+  min-inline-size: 0;
+}
+
+/* The steps: the step before, the step in hand and the step after, bare on the map. */
+.hg-studio-steps {
+  /* The studio lets presses through to the map except on a part; with no glass, the part says so. */
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-0-5);
+  font-size: var(--fs-body-sm);
+}
+
+/* The end, the one place that grows: options before the save mark, then the compass, last. */
+.hg-studio-head-end {
+  pointer-events: auto;
+  grid-area: end;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-0-5);
+}
+
+/* Every part on the map: white, with a small shade under it so its edge reads on any roof. Only the
+   row's own parts: the cards and panels the head also holds keep their own colours. */
+:is(.hg-studio-head-steps, .hg-studio-head-end) {
+  color: var(--scene-mark);
+}
+
+:is(.hg-studio-head-steps, .hg-studio-head-end) :is(.hg-icon-button, .hg-button) {
+  color: var(--scene-mark);
+  background: transparent;
+  text-shadow: 0 var(--hg-studio-line) var(--sp-0-5)
+    color-mix(in srgb, var(--scene-shade) 60%, transparent);
+}
+
+:is(.hg-studio-head-steps, .hg-studio-head-end) .hg-shell-glyph {
+  filter: drop-shadow(
+    0 var(--hg-studio-line) var(--sp-0-5) color-mix(in srgb, var(--scene-shade) 70%, transparent)
+  );
+}
+
+:is(.hg-studio-head-steps, .hg-studio-head-end)
+  :is(.hg-icon-button, .hg-button):hover:not(:disabled) {
+  background: color-mix(in srgb, var(--scene-mark) 16%, transparent);
+}
+
+/* The save mark: a quiet mark in white; a state that needs the person keeps its warning colour. */
 .hg-studio-save {
   position: relative;
   display: inline-grid;
@@ -94,88 +183,19 @@
   place-items: center;
   min-inline-size: var(--studio-tool);
   min-block-size: var(--studio-tool);
-  margin-inline-start: var(--sp-1);
 }
 
-.hg-studio-save::before {
-  content: "";
-  position: absolute;
-  inset-block: var(--sp-2);
-  inset-inline-start: calc(var(--sp-1) * -1);
-  inline-size: var(--hg-studio-line);
-  background: var(--line-soft);
+:is(.hg-studio-head-steps, .hg-studio-head-end)
+  :is(.hg-icon-button, .hg-button)
+  .hg-shell-glyph[data-tone="secondary"],
+.hg-studio-save .hg-shell-glyph:is([data-tone="success"], [data-tone="secondary"]) {
+  color: var(--scene-mark);
 }
 
-/* The mark alone, while a job keeps the steps aside, has nothing to be set apart from: no hairline
-   and no gap for one, so its pill is a circle. */
-.hg-studio-save:only-child {
-  margin-inline-start: 0;
-}
-
-.hg-studio-save:only-child::before {
-  content: none;
-}
-
-/* The steps hold the head's middle cell by name: the head has no part left of them to fill it. */
-.hg-studio-head-steps {
-  grid-area: rail;
-  justify-self: center;
-  min-inline-size: 0;
-}
-
-/* The steps' pill: the step before, the step in hand and the step after, on one glass pill whose
-   own border shows how far the design has come. */
-.hg-studio-steps-pill {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  padding: var(--studio-pill-pad);
-  border-radius: var(--r-pill);
-  font-size: var(--fs-body-sm);
-}
-
-/* The pieces are the pill's edge: the glass keeps its lift, not its own edge line under them. */
-.hg-studio-glass.hg-studio-steps-pill {
-  box-shadow: var(--e3);
-}
-
-/* Drawn over the pill's whole box, on its edge only, so it never covers a control and lets every
-   press through. */
-.hg-studio-steps-border {
-  position: absolute;
-  inset: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.hg-studio-steps-border rect {
-  fill: none;
-  /* The steps ahead: a track that reads on light and dark glass alike. */
-  stroke: color-mix(in srgb, var(--text-primary) 24%, transparent);
-  /* Three pixels, as the border is drawn for (`StudioStepSwitcher` LINE_PX). */
-  stroke-width: calc(var(--sp-1) - var(--hg-studio-line));
-  stroke-linecap: round;
-  transition: stroke var(--dur-standard) var(--ease-standard);
-}
-
-.hg-studio-steps-border rect[data-standing="done"] {
-  stroke: var(--success);
-}
-
-.hg-studio-steps-border rect[data-standing="here"] {
-  stroke: var(--accent);
-}
-
-/* The compass stands in the head's right corner, level with the steps; on a phone's one row it
-   takes the room left after the steps, so it still ends in the corner. */
+/* The compass ends the head. */
 .hg-studio-compass {
-  grid-area: compass;
-  justify-self: end;
-  align-self: center;
-  margin-inline-start: auto;
+  inline-size: var(--studio-tool);
+  block-size: var(--studio-tool);
 }
 
 /* Every round control in the studio takes the studio's own size: smaller on a phone, so the roof
@@ -208,10 +228,15 @@
   block-size: var(--studio-glyph);
 }
 
-/* A phone: the head keeps the desktop's grid, a little tighter. */
+/* A phone: the middle and the end take only their own room, and the picture keeps the rest. */
 @media (width < 968px) {
   .hg-studio-canvas-head {
-    gap: var(--sp-2);
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: var(--sp-2) 0;
+  }
+
+  .hg-studio-steps .hg-button {
+    padding-inline: var(--sp-1);
   }
 }
 

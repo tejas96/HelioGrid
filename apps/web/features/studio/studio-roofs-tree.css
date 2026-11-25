@@ -1,0 +1,43 @@
+/* Roofs' rows as a tree (`T-M05-002`): what stands on a roof sits under it, joined by a line. */
+/* What stands on a roof or is part of it sits one step in, under that roof, and a tree's line runs
+   from the roof's picture down to each of its rows: on through a middle row, ending with a soft
+   corner at the last. The row's fill starts where the step in starts, so the line stays outside it. */
+.hg-roofs-row:not([data-branch="none"]) {
+  padding-inline-start: calc(var(--sp-2) + var(--sp-8));
+}
+
+.hg-roofs-row:not([data-branch="none"]) > .hg-roofs-row-pick {
+  inset-inline-start: var(--sp-8);
+}
+
+/* The line starts under the roof's picture, the gap between the rows included. */
+.hg-roofs-row:not([data-branch="none"])::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset-block: calc(-1 * (var(--sp-0-5) + var(--sp-3))) 0;
+  inset-inline-start: calc(var(--sp-2) + var(--sp-4) - var(--hg-studio-line) / 2);
+  inline-size: var(--sp-4);
+  border-inline-start: var(--hg-studio-line) solid var(--line-strong);
+  pointer-events: none;
+}
+
+/* The branch to the row's own picture, at its middle. */
+.hg-roofs-row[data-branch="mid"]::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--sp-2) + var(--sp-4));
+  inline-size: var(--sp-3);
+  border-block-start: var(--hg-studio-line) solid var(--line-strong);
+  pointer-events: none;
+}
+
+/* The last row ends the line in a soft corner that turns into the branch. */
+.hg-roofs-row[data-branch="last"]::before {
+  inset-block-end: 50%;
+  inline-size: calc(var(--sp-3) + var(--hg-studio-line) / 2);
+  border-block-end: var(--hg-studio-line) solid var(--line-strong);
+  border-end-start-radius: var(--r-sm);
+}

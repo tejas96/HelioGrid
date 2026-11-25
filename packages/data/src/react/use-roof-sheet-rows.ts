@@ -238,7 +238,7 @@ export function useRoofSheetRows({
         if (roof === null || side === null) return;
         const design = latest.current?.present;
         if (design === undefined) return;
-        // The top view's dot and this switch are one control: the step says what changed.
+        // A side has a wall where any stretch of it has one; the step says what changed.
         const walls = edgesOf(design, roof, facts).map((each) => each.some((s) => s.wall));
         if (walls[side] === on) return;
         const walled = walls.filter((has, i) => (i === side ? on : has)).length;

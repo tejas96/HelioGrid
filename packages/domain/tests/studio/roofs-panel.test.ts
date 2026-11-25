@@ -1,16 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import type { Roof } from '../../src/studio/document';
-import { roofListOf } from '../../src/studio/roof-list-build';
-import { roofsWorked } from '../../src/studio/roof-worked';
 import {
   materialPickerOf,
-  nextWaiting,
   ROOFS_PANEL_START,
   type RoofsPanel,
   type RoofsPanelEvent,
   roofsPanelAfter,
 } from '../../src/studio/roofs-panel';
-import { box, designOf, FACTS, kindOf, SHED, stairOn, TERRACE } from './roof-meet-support';
+import { designOf, FACTS, SHED, TERRACE } from './roof-meet-support';
 
 /** Roofs and the material picker (`T-M05-002`, part e): one of them is open at a time. */
 const opened = (...events: RoofsPanelEvent[]) =>
@@ -22,53 +18,30 @@ describe('what is open', () => {
     expect(opened({ kind: 'roofs' }, { kind: 'roofs' })).toEqual({ open: 'none' });
   });
 
-  it('the Roofs button closes the picker too, wherever it was opened from', () => {
-    for (const from of ['roofs', 'sheet'] as const) {
-      expect(opened({ kind: 'material', roof: 1, from }, { kind: 'roofs' })).toEqual({
-        open: 'none',
-      });
-    }
+  it('the Roofs button closes the picker too', () => {
+    expect(opened({ kind: 'material', roof: 1 }, { kind: 'roofs' })).toEqual({ open: 'none' });
   });
 
   it('× or Esc closes Roofs', () => {
     expect(opened({ kind: 'roofs' }, { kind: 'close' })).toEqual({ open: 'none' });
   });
 
-  it('the picker opened from Roofs goes back to Roofs on ×, with its roof’s row lit', () => {
-    const picker = opened({ kind: 'roofs' }, { kind: 'material', roof: 1, from: 'roofs' });
+  it('the picker opens from a roof’s sheet; ×, a pick or Confirm closes it, back to the sheet', () => {
+    const picker = opened({ kind: 'material', roof: 1 });
     expect(picker).toMatchObject({ open: 'picker', roof: 1, mode: 'first' });
-    expect(roofsPanelAfter(picker, { kind: 'close' })).toEqual({ open: 'roofs', lit: 1 });
-  });
-
-  it('after a pick it goes back to Roofs with the next roof that waits lit; from a sheet it only closes', () => {
-    const fromRoofs = opened(
-      { kind: 'material', roof: 0, from: 'roofs' },
-      { kind: 'picked', next: 2 },
-    );
-    expect(fromRoofs).toEqual({ open: 'roofs', lit: 2 });
-    const fromSheet = opened(
-      { kind: 'material', roof: 0, from: 'sheet' },
-      { kind: 'picked', next: 2 },
-    );
-    expect(fromSheet).toEqual({ open: 'none' });
-    expect(opened({ kind: 'material', roof: 0, from: 'sheet' }, { kind: 'close' })).toEqual({
-      open: 'none',
-    });
+    expect(roofsPanelAfter(picker, { kind: 'close' })).toEqual({ open: 'none' });
+    expect(roofsPanelAfter(picker, { kind: 'picked' })).toEqual({ open: 'none' });
   });
 
   it('an act that must show on the model closes everything', () => {
-    expect(
-      opened(
-        { kind: 'roofs' },
-        { kind: 'material', roof: 0, from: 'roofs' },
-        { kind: 'close_all' },
-      ),
-    ).toEqual({ open: 'none' });
+    expect(opened({ kind: 'roofs' }, { kind: 'material', roof: 0 }, { kind: 'close_all' })).toEqual(
+      { open: 'none' },
+    );
   });
 
   it('All types, a type of one’s own and what is typed are the picker’s alone', () => {
     const typed = opened(
-      { kind: 'material', roof: 0, from: 'roofs' },
+      { kind: 'material', roof: 0 },
       { kind: 'mode', mode: 'other' },
       { kind: 'other', draft: { name: 'Kota stone' } },
       { kind: 'other', draft: { fixedLike: 'tile' } },
@@ -79,39 +52,14 @@ describe('what is open', () => {
     });
     expect(opened({ kind: 'mode', mode: 'all' })).toEqual({ open: 'none' });
     expect(opened({ kind: 'other', draft: { name: 'x' } })).toEqual({ open: 'none' });
-    expect(opened({ kind: 'picked', next: 1 })).toEqual({ open: 'none' });
-  });
-});
-
-describe('the next roof that waits', () => {
-  const guess = { type: 'rcc', setBy: 'system', confirmed: false } as const;
-  const done = { type: 'rcc', setBy: 'person', confirmed: true } as const;
-  const listOf = (...roofs: Roof[]) => {
-    const design = designOf(...roofs);
-    return roofListOf(design, FACTS, roofsWorked(design, FACTS));
-  };
-
-  it('is the next in the list’s order whose material is not confirmed, round to the start', () => {
-    // Rows: terrace (0), the stair room on it (2), the shed (1).
-    const list = listOf({ ...TERRACE, material: done }, SHED, {
-      ...stairOn(box(0, 0, 3, 3)),
-      material: guess,
-    });
-    expect(nextWaiting(list, 0)).toBe(2);
-    expect(nextWaiting(list, 2)).toBe(1);
-    expect(nextWaiting(list, 1)).toBe(2);
-  });
-
-  it('is none when every material is confirmed, and a hole never waits for one', () => {
-    const duct = kindOf('duct', 'hole', box(4, 3, 1, 1), { partOf: 'terrace' });
-    expect(nextWaiting(listOf({ ...TERRACE, material: done }, duct), 0)).toBeNull();
+    expect(opened({ kind: 'roofs' }, { kind: 'picked' })).toEqual({ open: 'roofs', lit: null });
   });
 });
 
 describe('the picker as it is drawn', () => {
   const design = designOf(TERRACE, SHED);
   const picker = (panel: RoofsPanel) => materialPickerOf(design, panel, FACTS);
-  const open = opened({ kind: 'material', roof: 1, from: 'roofs' });
+  const open = opened({ kind: 'material', roof: 1 });
 
   it('shows the market’s first five, the one the roof is made of lit, and its name', () => {
     const view = picker(open);
@@ -159,6 +107,6 @@ describe('the picker as it is drawn', () => {
 
   it('is not drawn while closed, nor for a roof that is gone', () => {
     expect(picker(ROOFS_PANEL_START)).toBeNull();
-    expect(picker(opened({ kind: 'material', roof: 9, from: 'roofs' }))).toBeNull();
+    expect(picker(opened({ kind: 'material', roof: 9 }))).toBeNull();
   });
 });

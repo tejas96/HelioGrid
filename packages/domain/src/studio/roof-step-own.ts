@@ -16,7 +16,7 @@ import {
 
 type Event<K extends RoofStepEvent['kind']> = Extract<RoofStepEvent, { kind: K }>;
 
-/** A side's dot tapped: the wall on that side is the person's from now on; the roof stays picked. */
+/** A side's parapet switched: the wall on that side is the person's from now on; the roof stays picked. */
 export function sideWalled(
   state: RoofStepState,
   event: Event<'side_wall'>,

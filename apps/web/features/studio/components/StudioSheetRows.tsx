@@ -243,7 +243,7 @@ export function StudioSheetRows({
           label={words.rowMadeOfTitle}
           value={words.rowMaterial(material)}
           waits={!material.confirmed}
-          onOpen={() => moves.openMaterial(rows.roof, 'sheet')}
+          onOpen={() => moves.openMaterial(rows.roof)}
         />
       )}
       {shape === null ? null : (
@@ -252,7 +252,8 @@ export function StudioSheetRows({
         </SheetRow>
       )}
       <StudioFacesRow facts={facts} rows={rows} />
-      <HeightRow facts={facts} rows={rows} sheet={sheet} />
+      {/* A hole has no height of its own: it is open down to the floor below. */}
+      {sheet.hasHeight ? <HeightRow facts={facts} rows={rows} sheet={sheet} /> : null}
       <SlopeRows facts={facts} rows={rows} />
       {rows.extras.map((shown) => (
         <NumberRow key={shown.key} facts={facts} shown={shown} label={words.rowNumber(shown.key)} />
