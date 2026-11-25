@@ -204,7 +204,7 @@ export function cornerUndone(state: RoofStepState): RoofStepOutcome {
   if (state.corners.length === 0 && state.wiped !== null) {
     return stay({ ...state, corners: state.wiped, wiped: null, refused: null });
   }
-  return stay({ ...state, corners: state.corners.slice(0, -1), refused: null });
+  return stay({ ...state, corners: state.corners.slice(0, -1), refused: null, undone: true });
 }
 
 /**

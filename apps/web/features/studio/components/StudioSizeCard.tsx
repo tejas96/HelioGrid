@@ -83,12 +83,18 @@ export function StudioSizeCard({
   units,
   words,
   phone,
+  credit,
 }: {
   card: SizeCardView;
   studio: StudioScreen;
   units: MeasurementSystem;
   words: StudioCanvasWords;
   phone: boolean;
+  /**
+   * On a phone the card stands where the picture's credit line was: the credit is its last line,
+   * as your picture's cards carry it (ruling 8), so it is never covered. `null` elsewhere.
+   */
+  credit: string | null;
 }) {
   const format = useFormat();
   const { moves } = studio;
@@ -208,6 +214,7 @@ export function StudioSizeCard({
           <span>{refusal}</span>
         </span>
       )}
+      {credit === null ? null : <p className="hg-studio-card-credit">{credit}</p>}
     </form>
   );
 }

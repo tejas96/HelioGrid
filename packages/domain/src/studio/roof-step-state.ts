@@ -60,6 +60,11 @@ export type RoofStepState =
       readonly magnet: boolean;
       /** The corners the trash wiped: Undo brings them back, until the next corner. */
       readonly wiped: readonly GroundPoint[] | null;
+      /**
+       * Undo has taken a corner off in this drawing: its place in the tools stays until the drawing
+       * ends, dim with nothing left to take, so the tool above never slides under the finger.
+       */
+      readonly undone?: true;
       /** On the bare grid each corner lands on a whole metre, unless the magnet is off (Alt). */
       readonly grid?: boolean;
       /**

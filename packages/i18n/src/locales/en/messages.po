@@ -3670,7 +3670,7 @@ msgid "3D preview coming soon"
 msgstr "3D preview coming soon"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:82
+#: src/copy/studio-canvas.ts:86
 msgid "3D view"
 msgstr "3D view"
 
@@ -7020,6 +7020,11 @@ msgid "Close filters"
 msgstr "Close filters"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-canvas.ts:84
+msgid "Close Picture"
+msgstr "Close Picture"
+
+#. js-lingui-explicit-id
 #: src/copy/studio-roof-list.ts:23
 msgid "Close Roofs"
 msgstr "Close Roofs"
@@ -7051,6 +7056,11 @@ msgstr "Close the shape, or tap Undo."
 #: src/copy/dedupe-sheet.ts:39
 msgid "Close this and nothing is created."
 msgstr "Close this and nothing is created."
+
+#. js-lingui-explicit-id
+#: src/copy/studio-canvas.ts:81
+msgid "Close View"
+msgstr "Close View"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-length.ts:16
@@ -8853,7 +8863,7 @@ msgid "Drag, or − + for {step}. The first length sizes the whole roof."
 msgstr "Drag, or − + for {step}. The first length sizes the whole roof."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:96
+#: src/copy/studio-canvas.ts:100
 msgid "Draw a roof"
 msgstr "Draw a roof"
 
@@ -9673,7 +9683,7 @@ msgstr "Family home"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:34
-#: src/copy/studio-canvas.ts:89
+#: src/copy/studio-canvas.ts:93
 #: src/copy/studio-length.ts:12
 msgid "Feet"
 msgstr "Feet"
@@ -10106,7 +10116,7 @@ msgid "From the company profile. Only {owner} can change it."
 msgstr "From the company profile. Only {owner} can change it."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:84
+#: src/copy/studio-canvas.ts:88
 msgid "From the east"
 msgstr "From the east"
 
@@ -10138,17 +10148,17 @@ msgid "From the link named {label}. Call to confirm, then mark the deal won."
 msgstr "From the link named {label}. Call to confirm, then mark the deal won."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:83
+#: src/copy/studio-canvas.ts:87
 msgid "From the north"
 msgstr "From the north"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:85
+#: src/copy/studio-canvas.ts:89
 msgid "From the south"
 msgstr "From the south"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:86
+#: src/copy/studio-canvas.ts:90
 msgid "From the west"
 msgstr "From the west"
 
@@ -12380,7 +12390,7 @@ msgid "Length × width"
 msgstr "Length × width"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:87
+#: src/copy/studio-canvas.ts:91
 msgid "Lengths"
 msgstr "Lengths"
 
@@ -13226,7 +13236,7 @@ msgid "Map columns"
 msgstr "Map columns"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:94
+#: src/copy/studio-canvas.ts:98
 msgid "Map. Arrow keys move it, and plus and minus zoom."
 msgstr "Map. Arrow keys move it, and plus and minus zoom."
 
@@ -13398,6 +13408,11 @@ msgid "Measured on site"
 msgstr "Measured on site"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-canvas.ts:82
+msgid "Measurement units"
+msgstr "Measurement units"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:32
 msgid "Measurements"
 msgstr "Measurements"
@@ -13512,7 +13527,7 @@ msgstr "Method"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:33
-#: src/copy/studio-canvas.ts:88
+#: src/copy/studio-canvas.ts:92
 msgid "Metres"
 msgstr "Metres"
 
@@ -15336,7 +15351,7 @@ msgid "north"
 msgstr "north"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:93
+#: src/copy/studio-canvas.ts:97
 #: src/copy/studio-picture.ts:32
 msgid "North"
 msgstr "North"
@@ -18072,6 +18087,11 @@ msgid "Pickers"
 msgstr "Pickers"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-canvas.ts:83
+msgid "Picture"
+msgstr "Picture"
+
+#. js-lingui-explicit-id
 #: src/copy/studio-canvas.ts:77
 msgid "Picture updated · check the outline"
 msgstr "Picture updated · check the outline"
@@ -18082,7 +18102,7 @@ msgid "Picture: {name}"
 msgstr "Picture: {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:92
+#: src/copy/studio-canvas.ts:96
 msgid "Pin"
 msgstr "Pin"
 
@@ -19347,7 +19367,7 @@ msgid "Red items stop Generate. Amber items only warn."
 msgstr "Red items stop Generate. Amber items only warn."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:91
+#: src/copy/studio-canvas.ts:95
 msgid "Redo"
 msgstr "Redo"
 
@@ -23069,7 +23089,7 @@ msgid "The {length} you set would change. Change that length first."
 msgstr "The {length} you set would change. Change that length first."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:97
+#: src/copy/studio-canvas.ts:101
 msgid "The 3D view cannot start on this device. Try another browser."
 msgstr "The 3D view cannot start on this device. Try another browser."
 
@@ -25149,7 +25169,7 @@ msgid "Too many visits right now. Please try again in a few minutes."
 msgstr "Too many visits right now. Please try again in a few minutes."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:81
+#: src/copy/studio-canvas.ts:85
 msgid "Top view"
 msgstr "Top view"
 
@@ -25526,7 +25546,7 @@ msgstr "Under your file’s own headers, so each row is easy to find and fix."
 #: src/copy/my-day.ts:54
 #: src/copy/project-toast.ts:17
 #: src/copy/remove-roles.ts:32
-#: src/copy/studio-canvas.ts:90
+#: src/copy/studio-canvas.ts:94
 msgid "Undo"
 msgstr "Undo"
 

@@ -49,6 +49,8 @@ export interface StudioMoves
   see(view: StudioView): void;
   /** The three pictures shown or put away. */
   showPictures(open: boolean): void;
+  /** The View panel (the views, metres or feet) shown or put away. */
+  showView(open: boolean): void;
   /** The phone's system back (`studioBack`): `false` with nothing open to close. */
   back(): boolean;
 }
@@ -83,6 +85,8 @@ export interface StudioScreen
   readonly views: readonly ViewPlace[];
   /** The three pictures are open to pick from. */
   readonly picturesOpen: boolean;
+  /** The View panel is open. */
+  readonly viewOpen: boolean;
   /** The sun the scene is lit by: the real sun for the site now, or its noon after dark. */
   readonly sun: SunPosition | null;
   /** The ground the design's roofs cover, which the camera frames; `null` before a roof. */

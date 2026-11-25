@@ -1,15 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import { EMPTY_STUDIO_DOCUMENT } from '../../src/studio/document';
-import { focusJobOf, studioJobOf } from '../../src/studio/focus';
+import { focusJobOf, studioJobOf } from '../../src/studio/focus-job';
 import type { RoofGrip, RoofStepState } from '../../src/studio/roof-step-state';
 
 describe('the studio’s job: what is open over the roof step comes first', () => {
-  const CLOSED = { roofs: false, sheet: false, picture: false };
+  const CLOSED = { roofs: false, sheet: false, picture: false, menu: false };
   it.each([
     ['nothing open: the roof step’s own job', CLOSED, 'drawing'],
     ['a card of your picture’s', { ...CLOSED, picture: true }, 'picture'],
     ['a roof’s sheet, over a card', { ...CLOSED, sheet: true, picture: true }, 'sheet'],
     ['the material picker over a roof’s sheet', { ...CLOSED, roofs: true, sheet: true }, 'roofs'],
+    [
+      'a menu over everything else',
+      { roofs: true, sheet: true, picture: true, menu: true },
+      'menu',
+    ],
   ] as const)('%s', (_why, open, job) => {
     expect(studioJobOf('drawing', open)).toBe(job);
   });

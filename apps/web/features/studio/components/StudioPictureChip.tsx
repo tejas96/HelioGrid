@@ -4,7 +4,15 @@ import type { StudioPicture } from '@heliogrid/data/react';
 import type { PictureChoice } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { Pressable, ShellGlyph } from '@heliogrid/ui';
-import { type ReactNode, useEffect, useId, useRef } from 'react';
+import { type ReactNode, useCallback, useId, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { useRadioPanel } from '../hooks/use-radio-panel';
+import { StudioPanelHead } from './StudioPanelHead';
+
+/** On a phone the panel opens at the canvas's foot, where the thumb is; elsewhere in place. */
+function Foot({ at, children }: { at: HTMLElement | null; children: ReactNode }) {
+  return at === null ? children : createPortal(children, at);
+}
 
 /** One picture to pick: its mark, its name, its line, and why it cannot be picked yet. */
 interface PictureOption {
@@ -60,7 +68,8 @@ function chipFacts(
 
 /**
  * The picture chip, top left: which picture the ground shows, who gave it, how sharp it is and its
- * credit line — always in view, never under a panel. A tap opens the three pictures: the sky
+ * credit line — always in view, never under a panel. A tap opens the picture panel, under its title
+ * row with its × (at the foot on a phone): the three pictures — the sky
  * picture (picked by itself), your own — a tap opens the file picker, and a newer file replaces the
  * one laid (`T-M05-002d`) — or none; and the plan's row, when a plan is laid.
  */
@@ -79,6 +88,7 @@ export function StudioPictureChip({
   onPickFile,
   ownLaid,
   planRow,
+  foot,
 }: {
   picture: StudioPicture;
   /** The picture the ground shows, by the person's pick or by itself. */
@@ -104,48 +114,15 @@ export function StudioPictureChip({
   ownLaid: boolean;
   /** The plan's row under the pictures: its name, its page, its eye and its lock. */
   planRow: ReactNode;
+  /** On a phone, the canvas's foot, where the pictures open; `null` under the chip. */
+  foot: HTMLElement | null;
 }) {
   const setOpen = onOpen;
   const holder = useRef<HTMLDivElement>(null);
-  const list = useId();
-  useEffect(() => {
-    if (!open) return;
-    const radios = () =>
-      Array.from(
-        holder.current?.querySelectorAll<HTMLElement>('[role="radio"]:not(:disabled)') ?? [],
-      );
-    // The menu opens on the picture shown, as a radio group does; the arrows move between pictures.
-    const checked = holder.current?.querySelector<HTMLElement>(
-      '[role="radio"][aria-checked="true"]',
-    );
-    (checked ?? radios()[0])?.focus();
-    const away = (event: PointerEvent) => {
-      if (!holder.current?.contains(event.target as Node)) setOpen(false);
-    };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        // The Esc is the menu's: the studio's own Esc leaves the job in hand alone.
-        event.preventDefault();
-        setOpen(false);
-        holder.current?.querySelector<HTMLElement>('.hg-studio-chip')?.focus();
-        return;
-      }
-      const by = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[event.key];
-      if (by === undefined) return;
-      const all = radios();
-      const at = all.indexOf(document.activeElement as HTMLElement);
-      if (at === -1) return;
-      event.preventDefault();
-      all[(at + by + all.length) % all.length]?.focus();
-    };
-    document.addEventListener('pointerdown', away);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('pointerdown', away);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [open, setOpen]);
-
+  const menu = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+  const close = useCallback(() => setOpen(false), [setOpen]);
+  useRadioPanel(menu, open, close, holder, '.hg-studio-chip');
   const { title, source, credit, thumb } = chipFacts(picture, shown, words, ownLine);
   const options: readonly PictureOption[] = [
     {
@@ -193,39 +170,54 @@ export function StudioPictureChip({
         </span>
       </Pressable>
       {open ? (
-        <div
-          id={list}
-          className="hg-studio-glass hg-studio-picker"
-          role="radiogroup"
-          aria-label={words.pictureLabel(title)}
-        >
-          {options.map((option) => (
-            <Pressable
-              key={option.choice}
-              className="hg-studio-picker-row"
-              accessibilityRole="radio"
-              accessibilityState={{
-                checked: option.choice === shown,
-                disabled: option.off !== null,
-              }}
-              disabled={option.off !== null}
-              onPress={() => {
-                setOpen(false);
-                // Your picture laid but put aside comes back as it was; shown, a tap picks another.
-                if (option.choice === 'own' && (!ownLaid || shown === 'own')) onPickFile();
-                else onPick(option.choice);
-              }}
+        <Foot at={foot}>
+          <div
+            ref={menu}
+            className="hg-studio-glass hg-studio-picker"
+            data-at={foot === null ? 'chip' : 'foot'}
+            role="dialog"
+            aria-labelledby={titleId}
+          >
+            <StudioPanelHead
+              id={titleId}
+              title={words.picture}
+              closeLabel={words.closePicture}
+              onClose={close}
+            />
+            <div
+              className="hg-studio-picker-group"
+              role="radiogroup"
+              aria-label={words.pictureLabel(title)}
             >
-              <ShellGlyph name={option.glyph} size="md" />
-              <span className="hg-studio-picker-words">
-                <span className="hg-studio-picker-title">{option.title}</span>
-                <span className="hg-studio-picker-line">{option.off ?? option.line}</span>
-              </span>
-            </Pressable>
-          ))}
-          {planRow}
-          <p className="hg-studio-picker-guide">{words.pictureGuide}</p>
-        </div>
+              {options.map((option) => (
+                <Pressable
+                  key={option.choice}
+                  className="hg-studio-picker-row"
+                  accessibilityRole="radio"
+                  accessibilityState={{
+                    checked: option.choice === shown,
+                    disabled: option.off !== null,
+                  }}
+                  disabled={option.off !== null}
+                  onPress={() => {
+                    setOpen(false);
+                    // Your picture laid but put aside comes back as it was; shown, a tap picks another.
+                    if (option.choice === 'own' && (!ownLaid || shown === 'own')) onPickFile();
+                    else onPick(option.choice);
+                  }}
+                >
+                  <ShellGlyph name={option.glyph} size="md" />
+                  <span className="hg-studio-picker-words">
+                    <span className="hg-studio-picker-title">{option.title}</span>
+                    <span className="hg-studio-picker-line">{option.off ?? option.line}</span>
+                  </span>
+                </Pressable>
+              ))}
+            </div>
+            {planRow}
+            <p className="hg-studio-picker-guide">{words.pictureGuide}</p>
+          </div>
+        </Foot>
       ) : null}
     </div>
   );

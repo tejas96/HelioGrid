@@ -84,7 +84,9 @@
   max-block-size: 100%;
 }
 
-.hg-roofs-head {
+/* A panel's title row, Roofs' and every other panel's: its name, then its × at the right. */
+.hg-roofs-head,
+.hg-studio-panel-head {
   display: flex;
   align-items: center;
   gap: var(--sp-1);
@@ -95,7 +97,8 @@
   padding-inline-start: var(--sp-1);
 }
 
-.hg-roofs-title {
+.hg-roofs-title,
+.hg-studio-panel-title {
   flex: 1;
   min-inline-size: 0;
   font-family: var(--font-display);
