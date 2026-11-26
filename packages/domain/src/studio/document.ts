@@ -1,6 +1,8 @@
 import type { GroundPoint } from './ground';
 import type { LaidPicture, LaidPlan } from './own-picture';
+import type { FlatRoofWear } from './roof-look-kinds';
 import type {
+  RoofColourSet,
   RoofHeight,
   RoofKindSet,
   RoofMaterialSet,
@@ -135,6 +137,8 @@ export interface Roof {
    */
   readonly partOf?: string;
   readonly material?: RoofMaterialSet;
+  /** The colour a person picked; absent, the system's (`roof-look.ts`). */
+  readonly colour?: RoofColourSet;
   readonly shape?: RoofShapeSet;
   /** The roof's one slope; a side or a face with its own carries it there. */
   readonly slope?: SetDegrees;
@@ -172,6 +176,8 @@ export interface StudioDocument {
   readonly plan?: LaidPlan | null;
   /** A person passed over "Where do the stairs reach the roof?": it is not asked again. */
   readonly stairsSkipped?: boolean;
+  /** What the flat roofs of a photo type wear in 3D; absent, the photo (`roof-look.ts`). */
+  readonly flatRoofs?: FlatRoofWear;
 }
 
 /** A design no one has changed yet. */

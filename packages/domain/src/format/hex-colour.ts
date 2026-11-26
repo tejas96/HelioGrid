@@ -15,6 +15,12 @@ export interface Rgb {
   readonly b: number;
 }
 
+/** One sRGB channel, 0–255, as light: the curve every colour measurement starts from. */
+export function linearChannel(channel: number): number {
+  const c = channel / 255;
+  return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+}
+
 /** `#RGB` or `#RRGGBB`, either case — the one shape the contract accepts. */
 export function isHexColour(value: string): boolean {
   return HEX_COLOUR.test(value);

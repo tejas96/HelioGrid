@@ -1,4 +1,5 @@
 import type { GroundPoint } from './ground';
+import type { RoofSkin } from './roof-look-kinds';
 
 /**
  * The model of a design's roofs as the 3D scene draws it (`T-M05-002`, part e): plain solids and
@@ -6,6 +7,9 @@ import type { GroundPoint } from './ground';
  * on that roof's top and nothing is stretched. The studio's kernel builds it (`roof-scene-build.ts`);
  * a screen only turns it into triangles.
  */
+
+/** What an edge of a roof face is: a `break` is where a mansard's slope changes. */
+export type FaceEdgeKind = 'eave' | 'wall' | 'ridge' | 'hip' | 'valley' | 'gable_end' | 'break';
 
 /** What a solid is, which says how it is drawn. */
 export type ScenePart =
@@ -50,11 +54,15 @@ export interface SceneFace {
   readonly corners: readonly ModelPoint[];
   /** What is cut out of it: a hole that lies in the face. Each lies in the face's own plane. */
   readonly holes: readonly (readonly ModelPoint[])[];
+  /** `edges[i]` runs from `corners[i]` to `corners[i + 1]`: a ridge or a hip takes a cap. */
+  readonly edges: readonly FaceEdgeKind[];
 }
 
 /** A wall that stands between a low edge and a high one: a gable end, a sawtooth's glass side. */
 export interface SceneWall {
   readonly roof: number;
+  /** A plaster end — under a gable, against a step — or a sawtooth's or a monitor's glass. */
+  readonly kind: 'end' | 'glass';
   readonly from: GroundPoint;
   readonly to: GroundPoint;
   /** The foot and the top at each end, above the ground. */
@@ -72,9 +80,11 @@ export interface RoofScene {
    * its top — its low edge where it slopes. A hole's are the top of the roof it is cut in.
    */
   readonly levels: readonly { readonly footM: number; readonly topM: number }[];
+  /** What each roof is made of, in the order of the design's roofs (`roof-look.ts`). */
+  readonly skins: readonly RoofSkin[];
 }
 
-export const NO_ROOF_SCENE: RoofScene = { prisms: [], faces: [], walls: [], levels: [] };
+export const NO_ROOF_SCENE: RoofScene = { prisms: [], faces: [], walls: [], levels: [], skins: [] };
 
 /**
  * What a tap on the 3D model lands on (`T-M05-002`, part e, board 5.2, 5.3, 6.3): the nearest

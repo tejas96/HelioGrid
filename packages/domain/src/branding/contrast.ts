@@ -4,17 +4,12 @@
  * product goes through here; `packages/theme` carries the same formula for its own build because
  * it imports nothing in the workspace, so a change here is a change there.
  */
-import { hexToRgb, type Rgb } from './hex-colour';
+import { hexToRgb, linearChannel as linear, type Rgb } from '../format/hex-colour';
 
 /** The floor for words: WCAG AA for body-size text, and this system's own rule. */
 export const TEXT_CONTRAST_FLOOR = 4.5;
 /** The floor for a meaning-bearing non-text mark — a rule, a bar, an icon. */
 export const MARK_CONTRAST_FLOOR = 3;
-
-function linear(channel: number): number {
-  const c = channel / 255;
-  return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-}
 
 function relativeLuminance({ r, g, b }: Rgb): number {
   return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);

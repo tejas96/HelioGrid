@@ -3,6 +3,16 @@
  * the WCAG maths and its two floors, and the contrast re-verification that makes a palette
  * measurable rather than refusable.
  */
+
+export type { Rgb } from '../format/hex-colour';
+export {
+  HEX_COLOUR,
+  hexToRgb,
+  isHexColour,
+  normaliseHexColour,
+  parseHexColour,
+  toHexColour,
+} from '../format/hex-colour';
 export type {
   BrandingDraft,
   BrandingDraftWrite,
@@ -27,12 +37,3 @@ export { BRANDING_PARTS } from './branding-page';
 export type { CompliantShades } from './compliant-shades';
 export { compliantShades } from './compliant-shades';
 export { contrastRatio, MARK_CONTRAST_FLOOR, TEXT_CONTRAST_FLOOR } from './contrast';
-export type { Rgb } from './hex-colour';
-export {
-  HEX_COLOUR,
-  hexToRgb,
-  isHexColour,
-  normaliseHexColour,
-  parseHexColour,
-  toHexColour,
-} from './hex-colour';

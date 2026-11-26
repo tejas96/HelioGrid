@@ -6,8 +6,9 @@
  * this one walk, so the field's suggestion, a document and a link page agree. Pure — a colour in,
  * colours out.
  */
+
+import { hexToRgb, type Rgb, toHexColour } from '../format/hex-colour';
 import { contrastRatio, TEXT_CONTRAST_FLOOR } from './contrast';
-import { hexToRgb, type Rgb, toHexColour } from './hex-colour';
 
 const WHITE = '#FFFFFF';
 /** How far the lightness drops per step, on a 0–1 scale: fine enough that the answer is the nearest passing shade. */

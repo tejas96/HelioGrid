@@ -1,11 +1,11 @@
 import type { BrandingSettings, Letterhead } from '../commerce/effective-settings';
+import { isHexColour, normaliseHexColour } from '../format/hex-colour';
 import {
   type SettingsLastSave,
   type SettingsStanding,
   sameContent,
   standingOf,
 } from '../tenancy/settings-page';
-import { isHexColour, normaliseHexColour } from './hex-colour';
 
 /**
  * The Branding page's one draft (`M01-50`, `SCR-M01-18`), which both screens render: the saved set

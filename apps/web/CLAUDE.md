@@ -14,6 +14,8 @@ features/<capability>/ <Name>Screen.tsx composes · components/ one per componen
                        <screen>.css token var() only · constants.ts · types.ts ·
                        shared/ when two SCREENS here share · index.ts the barrel
 lib/                   app infrastructure and the web-only platform pieces two features share
+public/<feature>/      static files a feature loads at run time (the studio's roof look maps), served
+                       from the site's root and fetched only when a screen needs them
 ```
 
 A feature is named for the CAPABILITY it owns. Two FEATURES sharing a part means it belongs in a

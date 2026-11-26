@@ -5,6 +5,7 @@ import { facesHeightAt, movedIn } from './roof-cuts';
 import type { BuiltFace } from './roof-faces';
 import { carvedOutOf, roofKindOf, roofSidesOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofFloorM, roofHasWalls, roofOwnHeightM, roofTopsM } from './roof-levels';
+import { roofSkinOf } from './roof-look';
 import type { EdgeStretch } from './roof-open-edges';
 import { type FlatShape, shapeOf, shared, without } from './roof-polygons';
 import type { RoofScene, ScenePrism, SceneWall } from './roof-scene';
@@ -154,7 +155,9 @@ function raisedEaveWalls(
     if (line === null) return [];
     const [from, to] = line;
     const up = (point: GroundPoint) => at.topM + (facesHeightAt(faces, point) ?? raised);
-    return [{ roof: at.index, from, to, footM: at.topM, fromTopM: up(from), toTopM: up(to) }];
+    return [
+      { roof: at.index, kind: 'end', from, to, footM: at.topM, fromTopM: up(from), toTopM: up(to) },
+    ];
   });
 }
 
@@ -207,7 +210,7 @@ function roofParts(
   const stretches = worked.edges[at.index] ?? [];
   const faces = top === null ? [] : (worked.built[at.index]?.faces ?? []);
   const parapets = parapetPrisms(document, at.index, facts, at.topM, stretches, faces);
-  const none = { faces: [], walls: [], levels: [] };
+  const none = { faces: [], walls: [], levels: [], skins: [] };
   if (kind === 'hole') return { ...none, prisms: parapets };
   const sloped = top !== null;
   const surfaces = { faces: top?.faces ?? [], walls: top?.walls ?? [] };
@@ -226,16 +229,27 @@ function roofParts(
             top: 'roof',
           },
         ];
-    return { ...surfaces, levels: [], prisms: [...sheet, ...stands, ...parapets] };
+    return { ...surfaces, levels: [], skins: [], prisms: [...sheet, ...stands, ...parapets] };
   }
   // A dormer's walls stand from its roof's low edge up to its own, lifted, low edge.
   const dormer = kind === 'dormer' && top !== null;
   const walled = dormer ? { ...at, topM: at.footM + top.liftM } : at;
   if (!sloped)
-    return { ...surfaces, levels: [], prisms: [...flatBody(document, facts, at), ...parapets] };
+    return {
+      ...surfaces,
+      levels: [],
+      skins: [],
+      prisms: [...flatBody(document, facts, at), ...parapets],
+    };
   const body = slopedWalls(walled, facts, stretches, faces);
   const walls = [...surfaces.walls, ...body.walls];
-  return { faces: surfaces.faces, walls, levels: [], prisms: [...body.prisms, ...parapets] };
+  return {
+    faces: surfaces.faces,
+    walls,
+    levels: [],
+    skins: [],
+    prisms: [...body.prisms, ...parapets],
+  };
 }
 
 /** Where each roof stands and where its top is, above the ground. */
@@ -266,5 +280,6 @@ export function roofSceneOf(
     faces: parts.flatMap((part) => part.faces),
     walls: parts.flatMap((part) => part.walls),
     levels,
+    skins: document.roofs.map((roof) => roofSkinOf(roof, document.flatRoofs)),
   };
 }
