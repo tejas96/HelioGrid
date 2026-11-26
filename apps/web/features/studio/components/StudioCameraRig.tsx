@@ -15,7 +15,7 @@ import {
   Vector2,
   Vector3,
 } from 'three';
-import { useGlidingMiddle } from '../hooks/use-gliding-middle';
+import { useGlidingMiddle, useLookHeight } from '../hooks/use-gliding-middle';
 import { useStudioWheel } from '../hooks/use-studio-wheel';
 import type { StudioDrive } from './camera-drive';
 import { type CameraEnd, cameraEnd, fadeIfMovedFrom, inFlight } from './camera-fade';
@@ -188,7 +188,6 @@ export function StudioCameraRig({
     },
     invalidate,
   );
-
   // A view is flown to when it is picked, and fitted once more when the bars are first measured and
   // when the picture arrives; a resize keeps where the person turned the camera.
   const posed = useRef<{
@@ -218,6 +217,7 @@ export function StudioCameraRig({
   useEffect(() => {
     if (frameOn !== null) poseFor(view, !still);
   }, [frameOn]);
+  useLookHeight(controls, posed, lookUp, fit?.upM ?? 0, still, invalidate);
 
   const fadeIfMoved = (rig: CameraControlsImpl, before: CameraEnd) => {
     if (still) fadeIfMovedFrom(map, rig, before);

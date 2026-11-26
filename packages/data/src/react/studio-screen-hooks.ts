@@ -15,6 +15,7 @@ export type {
   SizeCardView,
 } from './roof-step-view';
 export type { RoofsPanelMoves, RoofsPanelView } from './roofs-panel-view';
+export type { GroundSpan, HeightLayer } from './site-layer';
 export type { StudioEditing, StudioPicture } from './studio-document-state';
 export type { StudioMoments } from './studio-haptics';
 export { studioHapticOf, studioMomentsOf } from './studio-haptics';

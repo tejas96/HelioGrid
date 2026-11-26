@@ -312,12 +312,12 @@ module.exports = {
       name: 'roof-kernel-has-its-own-entry',
       severity: 'error',
       comment:
-        'T-M05-002e: the design studio’s roof geometry (the wavefront, the faces, the shape library it hides) is on @heliogrid/domain/studio-kernel alone. The index is what every device bundles, the phone included, and the phone opens the studio as a page of the web app: nothing the index exports may reach the kernel, and the phone app never imports its entry. The hook that asks the kernel is on @heliogrid/data/react/studio, so @heliogrid/data and @heliogrid/data/react, which the phone bundles, never reach it either.',
+        'T-M05-002e: the design studio’s roof geometry (the wavefront, the faces, the shape library it hides) and part g’s site maths (the height map, the fit, the skyline, the sunlight) are on @heliogrid/domain/studio-kernel alone. The index is what every device bundles, the phone included, and the phone opens the studio as a page of the web app: nothing the index exports may reach the kernel, and the phone app never imports its entry. The hook that asks the kernel is on @heliogrid/data/react/studio, so @heliogrid/data and @heliogrid/data/react, which the phone bundles, never reach it either.',
       from: {
         path: '^packages/domain/src/index\\.ts$|^packages/data/src/(index|react/index)\\.ts$|^apps/mobile/',
       },
       to: {
-        path: 'polygon-clipping|^@heliogrid/domain/studio-kernel|^packages/domain/(src|dist)/studio-kernel\\.|^packages/domain/src/studio/(wavefront-|roof-(faces|forms|profile|polygons|cuts|face-outline)\\.)',
+        path: 'polygon-clipping|^@heliogrid/domain/studio-kernel|^packages/domain/(src|dist)/studio-kernel\\.|^packages/domain/src/studio/(wavefront-|roof-(faces|forms|profile|polygons|cuts|face-outline)\\.|site-(grid|plane|roof-fit|roof-reads|ground|outline|eaves|shift|utm|skyline|sunlight|groups|read)\\.)',
         reachable: true,
       },
     },

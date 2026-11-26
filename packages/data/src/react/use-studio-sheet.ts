@@ -60,6 +60,8 @@ export function useStudioSheet(args: {
     metres: number,
     reachM: number,
   ) => HeightPull | null;
+  /** The height map's own height for a roof, which it starts at and Reset brings back. */
+  dataHeightOf?: (design: StudioDocument, index: number) => number | null;
   /** The magnet is on, and not held off for a moment. */
   magnetOn: () => boolean;
   /** What a tap on the model lands on, as the kernel reads the design drawn. */

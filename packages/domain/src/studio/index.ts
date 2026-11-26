@@ -51,7 +51,7 @@ export {
 } from './edit-turn';
 export { type FocusFacts, type FocusParts, focusOf } from './focus';
 export { FOCUS_JOBS, type FocusJob, focusJobOf, studioJobOf } from './focus-job';
-export { coordinateOf, type GroundBox, type GroundPoint, groundOf } from './ground';
+export { coordinateOf, type GroundBox, type GroundPoint, groundOf, meanOf } from './ground';
 export {
   type History,
   historyAfter,
@@ -75,6 +75,7 @@ export {
 } from './label-layout';
 export * from './many-roofs';
 export * from './map-systems';
+export { outlineCorners } from './outline-corners';
 export * from './own-picture';
 export * from './own-picture-acts';
 export * from './own-picture-lay';
@@ -169,6 +170,7 @@ export {
   type Guide,
   magnetOf,
   NO_SNAP_TARGETS,
+  ownerRoof,
   type RoofHold,
   type RoofSnap,
   SNAP_M,
@@ -177,6 +179,7 @@ export {
   type SnapTargets,
   snapReachM,
   snapTargetsOf,
+  withSiteTargets,
 } from './roof-snap';
 export { gripCorner, roofStepAfter } from './roof-step';
 export {
@@ -246,6 +249,7 @@ export {
   type StudioSite,
   siteStartBlock,
 } from './site';
+export * from './site-data';
 export {
   type FoundPlace,
   SITE_LOCATION_MODES,
@@ -258,7 +262,14 @@ export {
   sitePinMoved,
   siteSaveOf,
 } from './site-form';
+export * from './site-heights';
 export { type DrawingsAfterPinMove, drawingsAfterPinMove, PIN_FIX_REACH_M } from './site-moved';
+export * from './site-say';
+export { OUTLINE_TRUE_M, type SiteSnap, siteSnapTargets } from './site-snap';
+export * from './site-sun';
+export * from './site-sun-bar';
+export * from './site-sun-shown';
+export * from './site-view';
 export {
   STEP_LOCKS,
   STUDIO_STEPS,
@@ -283,17 +294,4 @@ export {
   type ViewPlace,
   viewsOffered,
 } from './views';
-export {
-  DESIGN_ACT_REFUSALS,
-  DESIGN_MOUNTS,
-  DESIGN_STATUSES,
-  type DesignActRefusal,
-  type DesignMount,
-  type DesignStatus,
-  isStudioHelper,
-  NUMBER_ENTRIES,
-  type NumberEntry,
-  SITE_NAME_MAX,
-  STUDIO_HELPERS,
-  type StudioHelper,
-} from './vocabulary';
+export * from './vocabulary';

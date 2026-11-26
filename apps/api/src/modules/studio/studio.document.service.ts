@@ -6,6 +6,7 @@ import {
   type EditTurnWire,
   type SaveDocument,
   type SavedDocument,
+  type SkyPictureQuery,
   type SkyPictureWire,
   studioDocumentSchema,
 } from '@heliogrid/contracts';
@@ -16,6 +17,7 @@ import type { Act } from '../../common/auth/session-context';
 import { refusalWithFacts } from '../../common/errors/contract-exception';
 import { type LeadReader, memberRefOf } from '../crm/crm.public';
 import { refusedAct } from './internal/design-wire';
+import { PerMinuteCap } from './internal/per-minute-cap';
 import {
   SKY_PICTURE_SOURCE,
   type SkyPictureSource,
@@ -27,6 +29,7 @@ import {
   StudioDocumentRepository,
 } from './studio.document.repository';
 import { StudioRepository } from './studio.repository';
+import { StudioSiteSources } from './studio.site-sources.service';
 
 const memberOf = (member: DocumentMember) => memberRefOf(member.userId, member.name);
 
@@ -42,7 +45,6 @@ const wirePiece = ({ bytes, mediaType, ...ground }: SourcePiece) => ({
  * did not load.
  */
 const PICTURES_PER_MINUTE = 12;
-const MINUTE_MS = 60_000;
 
 /** Whose turn it is, as the reader sees it; a turn that ran out is no one's. */
 function turnOf(editor: DocumentEditor | null, reader: LeadReader, now: number): EditTurnWire {
@@ -63,24 +65,13 @@ export class StudioDocumentService {
     @Inject(StudioDocumentRepository) private readonly documents: StudioDocumentRepository,
     @Inject(StudioRepository) private readonly designs: StudioRepository,
     @Inject(SKY_PICTURE_SOURCE) private readonly pictures: SkyPictureSource,
+    @Inject(StudioSiteSources) private readonly siteSources: StudioSiteSources,
     @Inject(PinoLogger) private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(StudioDocumentService.name);
   }
 
-  /** When each person last fetched pictures, inside the last minute. Held in memory only. */
-  private readonly fetched = new Map<string, number[]>();
-
-  /** Whether the person may fetch one more picture now; counts the fetch when they may. */
-  private mayFetch(userId: string, now: number): boolean {
-    const recent = (this.fetched.get(userId) ?? []).filter((at) => now - at < MINUTE_MS);
-    if (recent.length >= PICTURES_PER_MINUTE) {
-      this.fetched.set(userId, recent);
-      return false;
-    }
-    this.fetched.set(userId, [...recent, now]);
-    return true;
-  }
+  private readonly fetches = new PerMinuteCap(PICTURES_PER_MINUTE);
 
   async documentOf(reader: LeadReader, designId: string): Promise<DesignDocumentWire> {
     const row = await this.documents.documentOf(reader, designId);
@@ -158,13 +149,19 @@ export class StudioDocumentService {
    * The sky picture of the design's site, asked of the provider now. A provider that does not
    * answer is a state the studio draws — it opens on its grid and says why — never an error page.
    */
-  async skyPicture(reader: LeadReader, designId: string): Promise<SkyPictureWire> {
+  async skyPicture(
+    reader: LeadReader,
+    designId: string,
+    view?: SkyPictureQuery['view'],
+  ): Promise<SkyPictureWire> {
     const facts = await this.designs.factsOf(reader, designId);
     if (facts === null) throw new NotFoundException('No such design.');
     const pin = facts.site.pin;
     if (pin === null) return { kind: 'none', gap: 'not_covered' };
+    // Google's straight-down picture comes from the site's kept height data: no new call.
+    if (view === 'straight_down') return this.siteSources.straightDownAt(pin, Date.now());
     if (!this.pictures.setUp) return { kind: 'none', gap: 'not_set_up' };
-    if (!this.mayFetch(reader.actorId, Date.now())) {
+    if (!this.fetches.take(reader.actorId, Date.now())) {
       this.logger.warn({ designId }, 'the sky picture cap was reached for a person');
       return { kind: 'none', gap: 'not_answered' };
     }

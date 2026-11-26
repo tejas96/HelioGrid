@@ -14,6 +14,8 @@ import type {
   SaveDocument,
   SavedDocument,
   SaveSite,
+  SiteDataWire,
+  SkyPictureQuery,
   SkyPictureWire,
 } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
@@ -101,7 +103,16 @@ export interface StudioRepository {
   /** The turn to edit given back. */
   giveEditTurn(id: string): Promise<void>;
   /** The sky picture of the design's site, fetched now, or why there is none. */
-  skyPicture(id: string, signal?: AbortSignal): Promise<SkyPictureWire>;
+  skyPicture(
+    id: string,
+    signal?: AbortSignal,
+    view?: SkyPictureQuery['view'],
+  ): Promise<SkyPictureWire>;
+  /**
+   * What the height map, the building data, the far hills and the time zone say of the design's
+   * site (`T-M05-002`, part g), and what did not answer.
+   */
+  siteData(id: string, signal?: AbortSignal): Promise<SiteDataWire>;
   /**
    * A picture of the company's own read on the device, kept with the design (`T-M05-002d`); the
    * same send again carries the same retry key. A refusal leaves as an `ApiError` naming its code.
@@ -174,8 +185,18 @@ export function createStudioRepository(api: ApiClient): StudioRepository {
     giveEditTurn: async (id) => {
       await bodyAt(() => routes.giveEditTurn(at(id)), 204);
     },
-    skyPicture: (id, signal) =>
-      bodyAt(() => routes.skyPicture({ ...at(id), fetchOptions: { signal } }), 200),
+    skyPicture: (id, signal, view) =>
+      bodyAt(
+        () =>
+          routes.skyPicture({
+            ...at(id),
+            query: view === undefined ? {} : { view },
+            fetchOptions: { signal },
+          }),
+        200,
+      ),
+    siteData: (id, signal) =>
+      bodyAt(() => routes.siteData({ ...at(id), fetchOptions: { signal } }), 200),
     addPicture: async (id, body) => {
       const answer = await bodyOrRefusalAt(
         () =>

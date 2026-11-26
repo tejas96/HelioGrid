@@ -10,7 +10,7 @@ import {
   ROOF_CORNERS_MIN,
 } from './roof-shape';
 import { roofWithCorner, roofWithoutCorner } from './roof-sides';
-import { SNAP_M } from './roof-snap';
+import { SNAP_M, type SnapTargets } from './roof-snap';
 
 /**
  * Fixing a roof's shape once it stands (`T-M05-002`, part b): drag a corner with the magnet, add
@@ -33,6 +33,8 @@ export function cornerDragged(
   magnet: boolean,
   /** How near a spot must come to snap, in metres: the screen's reach at this zoom. */
   reach: number = SNAP_M,
+  /** The site's buildings and eaves (`T-M05-002`, part g). */
+  site?: SnapTargets,
 ): DragResult {
   const roof = roofAt(document, roofIndex);
   const { corners, edges } = roof;
@@ -45,9 +47,14 @@ export function cornerDragged(
   const placed =
     held === null
       ? magnet
-        ? cornerMagnet(corners, corner, to, document, roofIndex, reach)
+        ? cornerMagnet(corners, corner, to, document, roofIndex, reach, site)
         : { point: to, snap: null, guides: [] }
-      : heldPlaced(corners, held, held === corner, to, magnet, { document, roofIndex, reach });
+      : heldPlaced(corners, held, held === corner, to, magnet, {
+          document,
+          roofIndex,
+          reach,
+          site,
+        });
   const moved = corners.map((c, i) => (i === corner ? placed.point : c));
   return {
     document: withRoof(document, roofIndex, { ...roof, corners: moved }),

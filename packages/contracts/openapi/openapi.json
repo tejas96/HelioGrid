@@ -248133,6 +248133,94 @@
                         "stairsSkipped": {
                           "type": "boolean"
                         },
+                        "site": {
+                          "type": "object",
+                          "properties": {
+                            "dataStamp": {
+                              "type": "object",
+                              "properties": {
+                                "source": {
+                                  "type": "string",
+                                  "enum": [
+                                    "google_solar",
+                                    "openstreetmap",
+                                    "none"
+                                  ]
+                                },
+                                "quality": {
+                                  "type": "string",
+                                  "enum": [
+                                    "high",
+                                    "medium",
+                                    "base"
+                                  ],
+                                  "nullable": true
+                                },
+                                "dataOn": {
+                                  "type": "string",
+                                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                                  "nullable": true
+                                }
+                              },
+                              "required": [
+                                "source",
+                                "quality",
+                                "dataOn"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "changed": {
+                              "type": "object",
+                              "properties": {
+                                "dataOn": {
+                                  "type": "string",
+                                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                                  "nullable": true
+                                },
+                                "changed": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "dataOn",
+                                "changed"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "floors": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 60
+                            },
+                            "lineUp": {
+                              "type": "object",
+                              "properties": {
+                                "east": {
+                                  "type": "number",
+                                  "minimum": -5,
+                                  "maximum": 5
+                                },
+                                "north": {
+                                  "type": "number",
+                                  "minimum": -5,
+                                  "maximum": 5
+                                },
+                                "lift": {
+                                  "type": "number",
+                                  "minimum": -3,
+                                  "maximum": 3
+                                }
+                              },
+                              "required": [
+                                "east",
+                                "north",
+                                "lift"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "additionalProperties": false
+                        },
                         "flatRoofs": {
                           "type": "string",
                           "enum": [
@@ -249592,6 +249680,94 @@
                       },
                       "stairsSkipped": {
                         "type": "boolean"
+                      },
+                      "site": {
+                        "type": "object",
+                        "properties": {
+                          "dataStamp": {
+                            "type": "object",
+                            "properties": {
+                              "source": {
+                                "type": "string",
+                                "enum": [
+                                  "google_solar",
+                                  "openstreetmap",
+                                  "none"
+                                ]
+                              },
+                              "quality": {
+                                "type": "string",
+                                "enum": [
+                                  "high",
+                                  "medium",
+                                  "base"
+                                ],
+                                "nullable": true
+                              },
+                              "dataOn": {
+                                "type": "string",
+                                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                                "nullable": true
+                              }
+                            },
+                            "required": [
+                              "source",
+                              "quality",
+                              "dataOn"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "changed": {
+                            "type": "object",
+                            "properties": {
+                              "dataOn": {
+                                "type": "string",
+                                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                                "nullable": true
+                              },
+                              "changed": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "dataOn",
+                              "changed"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "floors": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 60
+                          },
+                          "lineUp": {
+                            "type": "object",
+                            "properties": {
+                              "east": {
+                                "type": "number",
+                                "minimum": -5,
+                                "maximum": 5
+                              },
+                              "north": {
+                                "type": "number",
+                                "minimum": -5,
+                                "maximum": 5
+                              },
+                              "lift": {
+                                "type": "number",
+                                "minimum": -3,
+                                "maximum": 3
+                              }
+                            },
+                            "required": [
+                              "east",
+                              "north",
+                              "lift"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "additionalProperties": false
                       },
                       "flatRoofs": {
                         "type": "string",
@@ -253976,7 +254152,7 @@
     },
     "/designs/{id}/sky-picture": {
       "get": {
-        "summary": "The sky picture of the design’s site, fetched now and never stored — or why there is none",
+        "summary": "The sky picture of the design’s site, fetched now and never stored — or why there is none; `view=straight_down` asks for Google’s straight-down picture from the site’s height data",
         "tags": [
           "studio"
         ],
@@ -253988,6 +254164,16 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "view",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "straight_down"
+              ]
             }
           }
         ],
@@ -254013,7 +254199,8 @@
                         "source": {
                           "type": "string",
                           "x-extensible-enum": [
-                            "google"
+                            "google",
+                            "google_solar"
                           ]
                         },
                         "credit": {
@@ -254123,6 +254310,853 @@
                         "gap"
                       ]
                     }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_FAILED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "FORBIDDEN"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "ENTITLEMENT_BLOCKED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "requestId": {
+                              "type": "string"
+                            },
+                            "blocked": {
+                              "discriminator": {
+                                "propertyName": "reason"
+                              },
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "billing_state"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "phase": {
+                                      "type": "string",
+                                      "enum": [
+                                        "trialing",
+                                        "active",
+                                        "past_due_full_function",
+                                        "past_due_metered_paused",
+                                        "halted",
+                                        "expired",
+                                        "cancelled_post_period"
+                                      ]
+                                    },
+                                    "haltsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "phase",
+                                    "haltsAt"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "cap"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "key": {
+                                      "type": "string",
+                                      "enum": [
+                                        "design_ceiling_kw",
+                                        "proposals_per_cycle",
+                                        "active_projects",
+                                        "voice_minutes",
+                                        "marketing_sends",
+                                        "tracked_field_seats",
+                                        "storage_gb",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "resetsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    },
+                                    "used": {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    },
+                                    "limit": {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "key",
+                                    "resetsAt"
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId",
+                            "blocked"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_FOUND"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INTERNAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/designs/{id}/site-data": {
+      "get": {
+        "summary": "What the height map, the building data, the far hills and the time zone say of the design’s site — and what did not answer",
+        "tags": [
+          "studio"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "source": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "google_solar",
+                        "openstreetmap",
+                        "none"
+                      ]
+                    },
+                    "quality": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "high",
+                        "medium",
+                        "base"
+                      ],
+                      "nullable": true
+                    },
+                    "dataOn": {
+                      "type": "string",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "nullable": true
+                    },
+                    "areas": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "grid": {
+                            "type": "object",
+                            "properties": {
+                              "west": {
+                                "type": "number"
+                              },
+                              "south": {
+                                "type": "number"
+                              },
+                              "stepM": {
+                                "type": "number",
+                                "minimum": 0,
+                                "exclusiveMinimum": 0
+                              },
+                              "cols": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": 0
+                              },
+                              "rows": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": 0
+                              },
+                              "centimetres": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "west",
+                              "south",
+                              "stepM",
+                              "cols",
+                              "rows",
+                              "centimetres"
+                            ]
+                          },
+                          "surround": {
+                            "type": "object",
+                            "properties": {
+                              "west": {
+                                "type": "number"
+                              },
+                              "south": {
+                                "type": "number"
+                              },
+                              "stepM": {
+                                "type": "number",
+                                "minimum": 0,
+                                "exclusiveMinimum": 0
+                              },
+                              "cols": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": 0
+                              },
+                              "rows": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": 0
+                              },
+                              "centimetres": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "west",
+                              "south",
+                              "stepM",
+                              "cols",
+                              "rows",
+                              "centimetres"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "grid",
+                          "surround"
+                        ]
+                      }
+                    },
+                    "buildings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "outline": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "east": {
+                                  "type": "number",
+                                  "minimum": -2000,
+                                  "maximum": 2000
+                                },
+                                "north": {
+                                  "type": "number",
+                                  "minimum": -2000,
+                                  "maximum": 2000
+                                }
+                              },
+                              "required": [
+                                "east",
+                                "north"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "minItems": 3
+                          },
+                          "groundM": {
+                            "type": "number"
+                          },
+                          "heightM": {
+                            "type": "number",
+                            "minimum": 0,
+                            "nullable": true
+                          },
+                          "floorsAbove": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "outline",
+                          "groundM",
+                          "heightM",
+                          "floorsAbove"
+                        ]
+                      }
+                    },
+                    "eaves": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "from": {
+                            "type": "object",
+                            "properties": {
+                              "east": {
+                                "type": "number",
+                                "minimum": -2000,
+                                "maximum": 2000
+                              },
+                              "north": {
+                                "type": "number",
+                                "minimum": -2000,
+                                "maximum": 2000
+                              }
+                            },
+                            "required": [
+                              "east",
+                              "north"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "to": {
+                            "type": "object",
+                            "properties": {
+                              "east": {
+                                "type": "number",
+                                "minimum": -2000,
+                                "maximum": 2000
+                              },
+                              "north": {
+                                "type": "number",
+                                "minimum": -2000,
+                                "maximum": 2000
+                              }
+                            },
+                            "required": [
+                              "east",
+                              "north"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "heightM": {
+                            "type": "number",
+                            "minimum": 0
+                          }
+                        },
+                        "required": [
+                          "from",
+                          "to",
+                          "heightM"
+                        ]
+                      }
+                    },
+                    "faces": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "middle": {
+                            "type": "object",
+                            "properties": {
+                              "east": {
+                                "type": "number",
+                                "minimum": -2000,
+                                "maximum": 2000
+                              },
+                              "north": {
+                                "type": "number",
+                                "minimum": -2000,
+                                "maximum": 2000
+                              }
+                            },
+                            "required": [
+                              "east",
+                              "north"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "slopeDeg": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 90
+                          },
+                          "facingDeg": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 360,
+                            "exclusiveMaximum": 360
+                          },
+                          "areaM2": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "heightM": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "middle",
+                          "slopeDeg",
+                          "facingDeg",
+                          "areaM2",
+                          "heightM"
+                        ]
+                      }
+                    },
+                    "straightDown": {
+                      "type": "object",
+                      "properties": {
+                        "west": {
+                          "type": "number"
+                        },
+                        "south": {
+                          "type": "number"
+                        },
+                        "stepM": {
+                          "type": "number",
+                          "minimum": 0,
+                          "exclusiveMinimum": 0
+                        },
+                        "cols": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": 0
+                        },
+                        "rows": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": 0
+                        },
+                        "grey": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "west",
+                        "south",
+                        "stepM",
+                        "cols",
+                        "rows",
+                        "grey"
+                      ],
+                      "nullable": true
+                    },
+                    "farHorizon": {
+                      "type": "object",
+                      "properties": {
+                        "stepDeg": {
+                          "type": "number",
+                          "minimum": 0,
+                          "exclusiveMinimum": 0
+                        },
+                        "elevationsDeg": {
+                          "type": "array",
+                          "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 90
+                          }
+                        }
+                      },
+                      "required": [
+                        "stepDeg",
+                        "elevationsDeg"
+                      ],
+                      "nullable": true
+                    },
+                    "timeZone": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64,
+                      "nullable": true
+                    },
+                    "credits": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "x-extensible-enum": [
+                          "google_solar",
+                          "openstreetmap",
+                          "pvgis"
+                        ]
+                      }
+                    },
+                    "gaps": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "x-extensible-enum": [
+                          "not_set_up",
+                          "heights_not_answered",
+                          "heights_not_covered",
+                          "outlines_not_answered",
+                          "horizon_not_answered",
+                          "capped"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "source",
+                    "quality",
+                    "dataOn",
+                    "areas",
+                    "buildings",
+                    "eaves",
+                    "faces",
+                    "straightDown",
+                    "farHorizon",
+                    "timeZone",
+                    "credits",
+                    "gaps"
                   ]
                 }
               }

@@ -5,6 +5,7 @@ import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { IconButton, ShellGlyph } from '@heliogrid/ui';
 import { useRef } from 'react';
 import { MagnetSwitch } from './StudioBarPills';
+import { StudioHeightGroup } from './StudioHeightGroup';
 import { StudioPencil } from './StudioPencil';
 import { StudioRoofsButton } from './StudioRoofsButton';
 import { Shown } from './StudioShown';
@@ -46,6 +47,7 @@ export function StudioToolRail({
   onWipe,
   onZoomIn,
   onZoomOut,
+  turnOf,
 }: {
   /** The studio, for the pencil and what it opens. */
   studio: StudioScreen;
@@ -72,6 +74,8 @@ export function StudioToolRail({
   onRedo: () => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
+  /** The view's turn from north up, in radians: the line-up's arrows move the map that way. */
+  turnOf: () => number;
 }) {
   const pencil = useRef<HTMLSpanElement>(null);
   const opener = useRef<HTMLSpanElement>(null);
@@ -107,6 +111,20 @@ export function StudioToolRail({
         </Shown>
       </div>
       <div className="hg-studio-tools" data-side="right">
+        {/* The sun lives in 3D, which waits for a roof: it comes with the 3D switch. */}
+        <Shown
+          when={
+            studio.roofList.count > 0 && (parts.layers === 'shown' || parts.layers === 'switch')
+          }
+        >
+          <IconButton
+            label={words.sun}
+            pressed={studio.sunBar.view !== null}
+            onClick={() => (studio.sunBar.view === null ? moves.openSun() : moves.closeSun())}
+          >
+            <ShellGlyph name="sun" size="md" />
+          </IconButton>
+        </Shown>
         <Shown when={parts.layers === 'shown' || parts.layers === 'menu'}>
           <span ref={opener} className="hg-studio-view-opener">
             <IconButton
@@ -127,6 +145,15 @@ export function StudioToolRail({
               onView={onView}
               onUnits={onUnits}
               onClose={() => moves.showView(false)}
+              top={
+                <StudioHeightGroup
+                  site={studio.site}
+                  words={words}
+                  units={units}
+                  editable={editable}
+                  turnOf={turnOf}
+                />
+              }
             />
           </span>
         </Shown>

@@ -83,6 +83,37 @@ function OpenRoofMarks({
 }
 
 /**
+ * While the height view is on, the open roof's tag says where the map sits (board G22): at the
+ * map's height on the roof's first corner, clear of the blue arrow in its middle.
+ */
+function FitTag({
+  studio,
+  words,
+  units,
+  index,
+}: {
+  studio: StudioScreen;
+  words: StudioCanvasWords;
+  units: MeasurementSystem;
+  index: number;
+}) {
+  const format = useFormat();
+  const corner = studio.roofMarks[index]?.corners[0];
+  const metres = studio.heights[index]?.metres;
+  const fit = metres === undefined ? null : studio.site.fitOf(index, metres);
+  if (corner === undefined || fit === null) return null;
+  if (fit.line !== 'above' && fit.line !== 'below') return null;
+  const top = (studio.scene.levels[index]?.topM ?? 0) + fit.byM;
+  return (
+    <span className="hg-roof-at" data-at={pointText(corner)} data-top={top} data-tag="true">
+      <span className="hg-roof-tag" role="status">
+        {words.siteFitTag(fit.line === 'above', format.roofHeight(Math.abs(fit.byM), units))}
+      </span>
+    </span>
+  );
+}
+
+/**
  * The marks on the roofs in 3D (`T-M05-002`, part b): none on a roof at rest — a tap on the roof
  * itself opens its sheet, and the Roofs list opens it from the keyboard; the open roof wears a
  * blue ring, a soft fill and the blue arrow with its height. No outline, no length, no corner, no
@@ -145,6 +176,7 @@ export function StudioRoofTops({
           </span>
         </span>
       )}
+      {open === null ? null : <FitTag studio={studio} words={words} units={units} index={open} />}
       {open === null || !editable ? null : (
         <OpenRoofMarks studio={studio} words={words} units={units} index={open} />
       )}

@@ -1,7 +1,8 @@
 'use client';
 import type { GroundBox } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
-import { useEffect, useRef } from 'react';
+import type CameraControlsImpl from 'camera-controls';
+import { type RefObject, useEffect, useRef } from 'react';
 import { type PerspectiveCamera, Vector3 } from 'three';
 import { fieldOfView } from '../components/camera-limits';
 import { eased } from '../components/StudioRoofMotion';
@@ -96,4 +97,31 @@ export function useGlidingMiddle(
     frame = requestAnimationFrame(step);
     return () => cancelAnimationFrame(frame);
   }, [free.top, free.bottom, width, height, camera, invalidate, still, holding, view]);
+}
+
+/**
+ * A roof's height arriving from the map after it closed raises where the camera looks, keeping
+ * the person's own turn and zoom: a tower's top comes into the frame, out from under the head.
+ * The web's half: the camera rig's controls, moved once for each whole metre the look point moves.
+ */
+export function useLookHeight(
+  controls: RefObject<CameraControlsImpl | null>,
+  /** The view the rig has posed, `null` before its first pose. */
+  posed: RefObject<object | null>,
+  /** How high the camera looks now, which the rig's room is kept round. */
+  lookUp: { current: number },
+  upM: number,
+  still: boolean,
+  invalidate: () => void,
+) {
+  const metres = Math.round(upM);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: each whole metre the look point moves asks once
+  useEffect(() => {
+    const rig = controls.current;
+    if (rig === null || posed.current === null || Math.round(lookUp.current) === metres) return;
+    lookUp.current = upM;
+    const target = rig.getTarget(new Vector3());
+    void rig.moveTo(target.x, upM, target.z, !still);
+    invalidate();
+  }, [metres]);
 }

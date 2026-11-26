@@ -63,6 +63,8 @@ const KIND = {
   levelParapet: /*i18n*/ { id: 'Level with {roof}’s parapet top · {height}' },
   levelFloor: /*i18n*/ { id: 'Floor {floor} · {height}' },
   levelSides: /*i18n*/ { id: 'Same as the other sides · {height}' },
+  levelEave: /*i18n*/ { id: 'Level with the eave · {height}' },
+  levelMap: /*i18n*/ { id: 'Level with the height map · {height}' },
   levelRidge: /*i18n*/ { id: 'Level with {roof}’s ridge · {height}' },
   wallsNone: /*i18n*/ { id: 'No parapet on this roof' },
   sharedNoWall: /*i18n*/ { id: 'Shared with {roof} · no parapet' },
@@ -84,6 +86,13 @@ const KIND_WORD: Record<RoofKind, (typeof KIND)[keyof typeof KIND]> = {
 };
 
 /** A kind's own word: "Stair room", "Open shed". */
+/** The levels said by their kind alone, with the height. */
+const PLAIN_LEVEL = {
+  other_sides: KIND.levelSides,
+  eave: KIND.levelEave,
+  height_map: KIND.levelMap,
+} as const;
+
 export function roofKindWord(t: T, kind: RoofKind): TranslatedText {
   return t(KIND_WORD[kind]);
 }
@@ -234,7 +243,9 @@ export function roofTopWords(t: T) {
         const floor = shownAsSent(to.floors === 0 ? 'G' : `G+${to.floors}`);
         return t(KIND.levelFloor, { floor, height });
       }
-      if (to.kind === 'other_sides') return t(KIND.levelSides, { height });
+      if (to.kind === 'other_sides' || to.kind === 'eave' || to.kind === 'height_map') {
+        return t(PLAIN_LEVEL[to.kind], { height });
+      }
       const roof = roofNameWord(t, to.name);
       if (to.kind === 'ridge') return t(KIND.levelRidge, { roof, height });
       return t(to.kind === 'roof_top' ? KIND.levelTop : KIND.levelParapet, { roof, height });

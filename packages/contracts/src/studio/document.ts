@@ -18,6 +18,7 @@ import { z } from 'zod';
 import { extensibleEnum, memberRefSchema, uuidSchema } from '../common';
 import { errorEnvelopeWithFacts } from '../error';
 import { cornersIn, groundPointSchema, roofLinkFaults, roofSchema } from './roof';
+import { siteDataKeptSchema } from './site-data';
 
 /**
  * The design document on the wire: one per design, saved whole on each change. Its shape is
@@ -70,6 +71,9 @@ export const studioDocumentSchema = z
     ownPicture: laidPictureSchema.nullable().optional(),
     plan: laidPlanSchema.nullable().optional(),
     stairsSkipped: z.boolean().optional(),
+    // Part g's: the data the design's heights were made from and a person's answers. Read from
+    // this release; written from the next (`CLAUDE.md` §8, expand then contract).
+    site: siteDataKeptSchema.optional(),
     // Roof looks: read one release before a studio writes it (`CLAUDE.md` §8).
     flatRoofs: z.enum(FLAT_ROOF_WEARS).optional(),
   })
@@ -154,6 +158,15 @@ export const skyPicturePieceSchema = z.object({
   north: z.number(),
 });
 export type SkyPicturePiece = z.infer<typeof skyPicturePieceSchema>;
+
+/**
+ * Which picture the sky picture route answers (`T-M05-002`, part g): the sky picture, or with
+ * `straight_down` Google's straight-down picture from the site's height data — a tall wall stands
+ * where it is. A wire fact alone: the screen asks for it by name.
+ */
+export const SKY_PICTURE_VIEWS = ['straight_down'] as const;
+export const skyPictureQuerySchema = z.object({ view: z.enum(SKY_PICTURE_VIEWS).optional() });
+export type SkyPictureQuery = z.infer<typeof skyPictureQuerySchema>;
 
 /** The sky picture of a design's site, or why there is none. */
 export const skyPictureSchema = z.discriminatedUnion('kind', [

@@ -1,7 +1,12 @@
 import type { Roof, StudioDocument } from './document';
 import type { GroundPoint } from './ground';
-import { ROOF_HEIGHT_MIN_M } from './roof-height';
-import { HEIGHT_PULL_M, type HeightLevel, type HeightPull } from './roof-height-pull';
+import { ROOF_HEIGHT_MIN_M, ROOF_HEIGHT_STEP_M } from './roof-height';
+import {
+  HEIGHT_PULL_M,
+  type HeightLevel,
+  type HeightPull,
+  type SiteLevels,
+} from './roof-height-pull';
 import { roofKindOf, roofWithItsParts } from './roof-kind';
 import { type RoofFacts, roofOwnHeightM, roofTopsM } from './roof-levels';
 import { roofNameOf } from './roof-names';
@@ -63,6 +68,32 @@ function roofLevels(document: StudioDocument, index: number, facts: RoofFacts): 
   });
 }
 
+/** A height kept to the slider's 10 cm step, to the centimetre. */
+const onStep = (metres: number) =>
+  Math.round(Math.round(metres / ROOF_HEIGHT_STEP_M) * ROOF_HEIGHT_STEP_M * CM_PER_M) / CM_PER_M;
+const CM_PER_M = 100;
+
+/**
+ * What the site data gives: the eaves of buildings beside the roof — measured, so before a floor —
+ * and the height map's own top inside it, which is the roof's own height: it stands on `footM`.
+ */
+function siteLevelsNear(roof: Roof, footM: number, site: SiteLevels | undefined): Level[] {
+  if (site === undefined) return [];
+  const at = roofMiddle(roof.corners);
+  const eaves = site.eaves
+    .filter((eave) => Math.min(between(eave.from, at), between(eave.to, at)) <= NEAR_M)
+    .map(
+      (eave): Level => ({
+        // Kept to the height slider's step from the roof's foot, as the map's own heights are.
+        levelM: footM + onStep(eave.heightM - footM),
+        to: { kind: 'eave' },
+        along: [eave.from, eave.to],
+      }),
+    );
+  if (site.mapM === null) return eaves;
+  return [...eaves, { levelM: footM + site.mapM, to: { kind: 'height_map' }, along: [] }];
+}
+
 /** The whole floors above the roof's foot: the ground's start height, then a storey each. */
 function floorLevels(footM: number, facts: RoofFacts, onGround: boolean): Level[] {
   const first = onGround ? facts.plinthHeightM + facts.storeyHeightM : facts.storeyHeightM;
@@ -93,6 +124,7 @@ export function heightPullOf(
   facts: RoofFacts,
   metres: number,
   reachM: number = HEIGHT_PULL_M,
+  site?: SiteLevels,
 ): HeightPull | null {
   const roof = document.roofs[index];
   if (roof === undefined) return null;
@@ -106,6 +138,7 @@ export function heightPullOf(
   const onGround = roof.on === undefined;
   const pulled =
     nearest(roofLevels(document, index, facts), levelM, reachM) ??
+    nearest(siteLevelsNear(roof, footM, site), levelM, reachM) ??
     nearest(floorLevels(footM, facts, onGround), levelM, reachM) ??
     nearest([round], levelM, reachM);
   if (pulled === null || pulled.levelM - footM < ROOF_HEIGHT_MIN_M) return null;

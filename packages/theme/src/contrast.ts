@@ -147,6 +147,13 @@ export const DECLARED_PAIRS: readonly DeclaredPair[] = [
   { fg: 'neutral-text', bg: 'fill', role: 'neutral chip words on the control fill', floor: 4.5 },
   { fg: 'text-inverse', bg: 'danger-text', role: 'a destructive button label', floor: 4.5 },
   { fg: 'scene-mark', bg: 'scene-shade', role: "a tag's words on the studio picture", floor: 7 },
+  {
+    fg: 'scene-mark',
+    bg: 'scene-sun-glass',
+    role: "the sun bar's words on its dark glass",
+    floor: 7,
+  },
+  { fg: 'scene-sun-ink', bg: 'scene-sun-gold', role: "the picked day chip's words", floor: 7 },
   ...(['success', 'scene-line'] as const).map((fg) => ({
     fg,
     bg: 'scene-shade' as const,

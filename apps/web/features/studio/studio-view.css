@@ -106,3 +106,72 @@
   backdrop-filter: none;
   box-shadow: none;
 }
+
+/* The height view's group (T-M05-002, part g, board G6, G23): the switch, Heights or Sunlight, how
+   see-through, the key and Line up the map. */
+.hg-studio-height-group {
+  gap: var(--sp-2);
+  padding-block: var(--sp-1);
+}
+
+/* In the bottom sheet it stays one column: its slider and key need the sheet's whole width. */
+.hg-studio-foot-slot .hg-studio-height-group {
+  display: flex;
+  flex-direction: column;
+}
+.hg-studio-lineup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.hg-studio-lineup-arrows {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* The key: the colours low to high and the two ends (board G7, G25). On the map, under the head. */
+.hg-studio-key {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.hg-studio-key[data-in="map"] {
+  position: absolute;
+  z-index: 3;
+  /* Under the head row, below the picture chip (board G7). */
+  inset-block-start: calc(100% + var(--sp-2));
+  inset-inline-start: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-lg);
+  inline-size: calc(var(--sp-24) * 1.75);
+  pointer-events: none;
+}
+.hg-studio-key-bar {
+  display: block;
+  block-size: var(--sp-2);
+  border-radius: var(--r-pill);
+  background: linear-gradient(
+    90deg,
+    var(--scene-height-1),
+    var(--scene-height-2),
+    var(--scene-height-3),
+    var(--scene-height-4),
+    var(--scene-height-5)
+  );
+}
+.hg-studio-key[data-sun="true"] .hg-studio-key-bar {
+  background: linear-gradient(
+    90deg,
+    var(--scene-sun-1),
+    var(--scene-sun-2),
+    var(--scene-sun-3),
+    var(--scene-sun-4)
+  );
+}
+.hg-studio-key-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}

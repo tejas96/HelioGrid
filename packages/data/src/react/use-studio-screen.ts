@@ -12,7 +12,6 @@ import {
   roofsWithSheet,
   type StudioDocument,
   type StudioView,
-  sceneSunAt,
   stepRail,
   studioJobOf,
   viewsOffered,
@@ -21,7 +20,7 @@ import { useMemo, useRef, useState } from 'react';
 import { planOutlinesOf } from './own-picture-view';
 import { readOf } from './read';
 import { closingOf, roofPlaceMoves } from './roof-place-moves';
-import { heightPullWith, type RoofModelSeen, useRoofModel } from './roof-scene-view';
+import { type RoofModelSeen, sheetHeightsWith, useRoofModel } from './roof-scene-view';
 import { arrivalOf, framedWithCard, useSizeCardOpens } from './size-card';
 import {
   editingOf,
@@ -40,8 +39,10 @@ import { useOwnPictureScreen } from './use-own-picture-screen';
 import { useRoofStep } from './use-roof-step';
 import { useRoofsPanel } from './use-roofs-panel';
 import { useSession } from './use-session';
+import { useSiteHeights } from './use-site-data';
 import { useStudioSheet } from './use-studio-sheet';
 import { useStudioStairs } from './use-studio-stairs';
+import { useSunBar } from './use-sun-bar';
 
 /**
  * The studio's canvas (`T-M05-002a`): the design, its document and the sky picture under it; each
@@ -55,10 +56,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const opened = ready ? read.value : null;
   const canEdit = opened?.canEdit === true;
 
-  const { documentQuery, skyQuery, history, latest, setHistory, saving, queue } = useStudioDocument(
-    designId,
-    ready,
-  );
+  const opening = useStudioDocument(designId, ready);
+  const { documentQuery, skyQuery, history, latest, setHistory, saving, queue } = opening;
   const [pictureSeen, setPictureSeen] = useState(false);
   const [view, setView] = useState<StudioView>(OPENING_VIEW);
   const units = session.user?.unitPreference ?? 'metric';
@@ -66,9 +65,6 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const [picturesOpen, setPicturesOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const pin = opened === null ? null : opened.site.pin;
-  // The sun is read once for the opening: the scene does not move with the clock.
-  const sun = useMemo(() => (pin === null ? null : sceneSunAt(pin, Date.now())), [pin]);
-
   const turn = useEditTurn(canEdit, designId, queue, documentQuery.refetch);
   useSaveRetries(queue, saving);
 
@@ -91,6 +87,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const fit = useMemo(() => roofsBox(document?.roofs ?? []), [document]);
 
   const facts = useMemo(() => roofFactsOf(formats), [formats]);
+  const site = useSiteHeights({ ...opening, designId, ready, facts, change, pin });
+  const sun = useSunBar({ pin, read: site.read, see: (n) => see(n), zone: formats.timeZone });
   const roof = useRoofStep({
     document,
     latest,
@@ -106,6 +104,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     typedStart: { length: formats.typedRoofLengthM, width: formats.typedRoofWidthM },
     planOutlines: planOutlinesOf(own.view.plan),
     closingOf: closingOf(facts, opened?.subject.siteRoof, pin),
+    siteTargets: site.targets,
   });
   const { step, act } = roof;
   const { roofStep } = roof.view;
@@ -122,7 +121,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     facts,
     units,
     pin,
-    pullOf: heightPullWith(facts, roof.magnetNow),
+    ...sheetHeightsWith(facts, roof.magnetNow, site),
     hitAt: (at, beside, open) => seen.current(at, beside, open),
     magnetOn: roof.magnetNow,
   });
@@ -191,6 +190,18 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   });
 
   const slots = useUndoSlots(editable, roofStep, history);
+  // A view that waits for a roof is not taken, whoever asks for it.
+  const see = (next: StudioView) => {
+    if (!views.some((place) => place.view === next && place.lock === null)) return;
+    // A new roof is drawn, or typed, in the top view only: leaving it drops the draft.
+    const held = step.current.kind;
+    if (next !== 'top' && (held === 'drawing' || held === 'typing')) act({ kind: 'cancel' });
+    if (next === '3d') setSeen3d(true);
+    // A roof's sheet stays open in either view: its height in hand is kept first. A height
+    // that is refused keeps the view, with its reason showing.
+    if (!sheet.viewing(next)) return;
+    setView(next);
+  };
   return {
     read,
     document,
@@ -205,6 +216,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         picture.kind === 'own' ? picture.takenOn : null,
       ),
     skyFacts: skyFactsOf(readOf(skyQuery)),
+    site,
     editing,
     saving,
     unsent: saving.kind === 'offline' || saving.kind === 'failed',
@@ -230,7 +242,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     heldView: heldViewOf(fit, roofStep, panel.view.panel),
     picturesOpen,
     viewOpen,
-    sun,
+    ...sun.view,
     ...undoRedoOf(editable, roofStep, history),
     focus: (phone) =>
       focusOf({
@@ -253,6 +265,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       ...place,
       ...panel.moves,
       ...stairs.moves,
+      ...sun.moves,
       chooseNumberEntry: numbers.chooseNumberEntry,
       pickPicture: (choice) => {
         const at = latest.current;
@@ -266,18 +279,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       openTheirs: () => void documentQuery.refetch(),
       retry: () => void queue.flush(),
       pictureChecked: () => setPictureSeen(true),
-      // A view that waits for a roof is not taken, whoever asks for it.
-      see: (next) => {
-        if (!views.some((place) => place.view === next && place.lock === null)) return;
-        // A new roof is drawn, or typed, in the top view only: leaving it drops the draft.
-        const held = step.current.kind;
-        if (next !== 'top' && (held === 'drawing' || held === 'typing')) act({ kind: 'cancel' });
-        if (next === '3d') setSeen3d(true);
-        // A roof's sheet stays open in either view: its height in hand is kept first. A height
-        // that is refused keeps the view, with its reason showing.
-        if (!sheet.viewing(next)) return;
-        setView(next);
-      },
+      see,
       draw,
       showPictures: setPicturesOpen,
       showView: setViewOpen,

@@ -17,6 +17,7 @@ import {
   editTurnSchema,
   saveDocumentSchema,
   savedDocumentSchema,
+  skyPictureQuerySchema,
   skyPictureSchema,
 } from './document';
 import {
@@ -34,6 +35,7 @@ import {
   placeSuggestionsSchema,
 } from './places';
 import { saveSiteSchema } from './site';
+import { siteDataSchema } from './site-data';
 
 const c = initContract();
 
@@ -184,9 +186,18 @@ export const studioContract = c.router({
     method: 'GET',
     path: '/designs/:id/sky-picture',
     pathParams: designParamsSchema,
+    query: skyPictureQuerySchema,
     summary:
-      'The sky picture of the design’s site, fetched now and never stored — or why there is none',
+      'The sky picture of the design’s site, fetched now and never stored — or why there is none; `view=straight_down` asks for Google’s straight-down picture from the site’s height data',
     responses: { 200: skyPictureSchema, 401: unauthenticatedEnvelope, 404: notFound },
+  },
+  siteData: {
+    method: 'GET',
+    path: '/designs/:id/site-data',
+    pathParams: designParamsSchema,
+    summary:
+      'What the height map, the building data, the far hills and the time zone say of the design’s site — and what did not answer',
+    responses: { 200: siteDataSchema, 401: unauthenticatedEnvelope, 404: notFound },
   },
 });
 

@@ -139,6 +139,12 @@ const apiEnvObject = z.object({
    */
   GOOGLE_MAPS_SIGNING_SECRET: z.string().min(1).optional(),
   /**
+   * The Overpass server OpenStreetMap's building outlines are asked of where Google has no height
+   * map (`T-M05-002`, part g). The public server is not for commercial use: production names a paid
+   * host, and unset it has none; development unset asks the public one.
+   */
+  OVERPASS_URL: z.string().url().optional(),
+  /**
    * The oldest phone build the api still serves, and where each store sells the new one
    * (`F4-36`). Unset: no minimum, nothing refused. Raising it is a config change and a restart,
    * never an app release. Its grammar is domain's (`parseClientVersion`), which this package may

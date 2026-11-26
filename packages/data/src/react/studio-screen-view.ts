@@ -1,12 +1,24 @@
+import type { SiteDataWire } from '@heliogrid/contracts';
 import type {
   FocusParts,
   GroundBox,
+  GroundPoint,
+  HeightView,
   MeasurementSystem,
   PictureChoice,
+  Read,
+  RoofSunlight,
+  SiteFit,
+  SiteFitLine,
+  SiteLineUp,
+  SiteReads,
+  SiteSay,
+  SnapTargets,
   StairsMoment,
   StepPlace,
   StudioDocument,
   StudioView,
+  SunChart,
   SunPosition,
   ViewPlace,
 } from '@heliogrid/domain';
@@ -14,6 +26,7 @@ import type { RoofModelShown } from './roof-model-shown';
 import type { RoofSheetRowMoves, RoofSheetRowsState } from './roof-sheet-rows-view';
 import type { RoofMoves, RoofPlaceMoves, RoofStepView } from './roof-step-view';
 import type { RoofsPanelMoves, RoofsPanelView } from './roofs-panel-view';
+import type { HeightLayer } from './site-layer';
 import type { SkyFacts, StudioEditing, StudioPicture } from './studio-document-state';
 import type { HeldView } from './studio-held-view';
 import type { StudioSaveState } from './studio-save-queue';
@@ -21,6 +34,7 @@ import type { DesignRead } from './use-design-screen';
 import type { OwnPictureMoves, OwnPictureView } from './use-own-picture-screen';
 import type { RoofSheetMoves, RoofSheetState } from './use-roof-sheet';
 import type { StairsMoves, StairsView } from './use-studio-stairs';
+import type { SunBarMoves, SunBarState } from './use-sun-bar';
 
 /** The studio screen's view model (`T-M05-002`): what its hook assembles for the web and the phone. */
 
@@ -30,7 +44,8 @@ export interface StudioMoves
     RoofSheetRowMoves,
     RoofPlaceMoves,
     RoofsPanelMoves,
-    StairsMoves {
+    StairsMoves,
+    SunBarMoves {
   pickPicture(choice: PictureChoice): void;
   /**
    * Draw an Any-shape roof's faces by hand, from its Faces row: in the top view, the next face; a
@@ -72,6 +87,48 @@ export interface StudioScreen
   readonly pictureUpdated: boolean;
   /** The sky picture's sharpness and date, shown or not; `null` while unread or where none. */
   readonly skyFacts: SkyFacts | null;
+  /**
+   * The site's height data and what did not answer (`T-M05-002`, part g), and the height map's
+   * read of each drawn roof — `null` until it is read, or with no map.
+   */
+  readonly site: {
+    readonly read: Read<SiteDataWire>;
+    readonly reads: SiteReads | null;
+    /** The site's buildings and eaves as the magnet reads them. */
+    readonly targets?: SnapTargets;
+    /** What the bar says of the data; `null` when it says nothing. */
+    readonly say: SiteSay | null;
+    readonly answerChanged: (changed: boolean) => void;
+    /** Asks the site data again, after a source did not answer. */
+    readonly retry: () => void;
+    readonly view: HeightView;
+    /** The height view's surface while it is on with heights; `null` while not. */
+    readonly layers: readonly HeightLayer[];
+    readonly sunlight: Readonly<Record<string, RoofSunlight>> | null;
+    readonly sunChartOf: (roof: number, topM: number) => SunChart | null;
+    readonly surface: {
+      readonly layers: readonly HeightLayer[];
+      readonly key: { readonly lowM: number; readonly highM: number };
+      readonly near: readonly GroundPoint[];
+      readonly lineUp: SiteLineUp;
+    } | null;
+    /** How far the person moved the map onto the picture: its shadows and surface follow it. */
+    readonly lineUp: SiteLineUp;
+    readonly setView: (next: Partial<HeightView>) => void;
+    readonly liftMap: (lift: number) => void;
+    readonly nudgeMap: (way: { east: number; north: number }) => void;
+    readonly mapBack: () => void;
+    /** Google's straight-down picture is shown in place of the sky picture, for this opening. */
+    readonly straightDown: boolean;
+    readonly showStraightDown: (on: boolean) => void;
+    readonly setFloors: (floorsAbove: number) => void;
+    readonly heightOf: (design: StudioDocument, index: number) => number | null;
+    /** The one line the open sheet says of the map (board G21, G22); `null` when it says none. */
+    readonly fitOf: (
+      roof: number,
+      metres: number,
+    ) => (SiteFit & { readonly line: SiteFitLine }) | null;
+  };
   readonly editing: StudioEditing;
   readonly saving: StudioSaveState;
   /** A change waits, not sent: no connection, or the api did not save it. Leaving loses it. */
@@ -90,6 +147,8 @@ export interface StudioScreen
   readonly viewOpen: boolean;
   /** The sun the scene is lit by: the real sun for the site now, or its noon after dark. */
   readonly sun: SunPosition | null;
+  /** The sun bar: the day and the moment picked, the day's path; closed with no view. */
+  readonly sunBar: SunBarState;
   /** The ground the design's roofs cover, which the camera frames; `null` before a roof. */
   readonly fit: GroundBox | null;
   /** How high above the ground the camera looks: the open roof's top, else the ground. */

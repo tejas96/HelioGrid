@@ -7,7 +7,11 @@
  * never reaches it (dependency-cruiser `roof-kernel-has-its-own-entry`), and the phone, which
  * opens the studio as a page of the web app, never bundles it.
  *
- * Belongs here: pure roof geometry. Never here: a reducer, a view model, anything a screen of the
+ * Part g's site maths lives here too: the height map read onto the site, the roof fit, the
+ * outlines and eaves, the line-up, the skyline and the sunlight — heavy, and run by the server and
+ * the studio's Web Worker alone.
+ *
+ * Belongs here: pure roof and site geometry. Never here: a reducer, a view model, anything a screen of the
  * phone app needs.
  */
 
@@ -133,3 +137,77 @@ export { roofNumberOf } from './studio/roof-values';
 export { roofNumberReset, roofNumberSet } from './studio/roof-values-set';
 export { type RoofsWorked, roofsWorked, type WorkedBefore } from './studio/roof-worked';
 export { sideSheetRowsOf } from './studio/side-sheet-build';
+export { eavesOf } from './studio/site-eaves';
+export {
+  cellMiddle,
+  cellsInside,
+  distanceToRing,
+  type GridCell,
+  gridCoarsened,
+  gridCut,
+  gridFromWire,
+  gridToWire,
+  type HeightGrid,
+  heightAt,
+  type MaskGrid,
+  median,
+  onBuilding,
+  percentile,
+} from './studio/site-grid';
+export { groundUnder } from './studio/site-ground';
+export { CALL_RADIUS_MAX_M, type RoofGroup, roofGroupsOf } from './studio/site-groups';
+export { buildingOutlinesOf, squaredRing } from './studio/site-outline';
+export {
+  type PlaneFit,
+  planeFacingDeg,
+  planeFit,
+  planeFitTwice,
+  planeHeightAt,
+  planeSlopeDeg,
+} from './studio/site-plane';
+export {
+  greyOf,
+  nearBoxOf,
+  rasterBox,
+  rasterOnGround,
+  type SiteRead,
+  siteReadOf,
+  type UtmRaster,
+} from './studio/site-read';
+export { FIT_CLEAR_RMSE_M, mapHeightInside, type RoofFit, roofFitOf } from './studio/site-roof-fit';
+export {
+  roofDataReadsOf,
+  roofsSunlightOf,
+  type SiteGrids,
+  siteGridsOf,
+} from './studio/site-roof-reads';
+export {
+  type PictureGrid,
+  type PictureShift,
+  pictureFromWire,
+  pictureShiftOf,
+  pictureToWire,
+  SHIFT_REACH_M,
+  SHIFT_STEP_M,
+} from './studio/site-shift';
+export {
+  type Eye,
+  SKYLINE_STEP_DEG,
+  type Skyline,
+  shadeStretches,
+  skylineAt,
+  skylineAtBearing,
+  skylineFromSouthBearings,
+  skylinesJoined,
+} from './studio/site-skyline';
+export { sunChartOf } from './studio/site-sun-chart';
+export {
+  roofSunlightOf,
+  type SunSample,
+  skyViewOf,
+  sunlightSpread,
+  sunShareOf,
+  sunSharesOf,
+  yearSunSamples,
+} from './studio/site-sunlight';
+export { type UtmPoint, type UtmZone, utmOf, utmZoneOfEpsg } from './studio/site-utm';

@@ -46,7 +46,15 @@ export function HeightRow({
     moves.typeHeight({ main: digit, inches: '', measured: false });
   });
   return (
-    <SheetRow facts={facts} rowKey="height" label={label} value={value} always openValue={head}>
+    <SheetRow
+      facts={facts}
+      rowKey="height"
+      label={label}
+      value={value}
+      waits={studio.site.fitOf(sheet.roof, metres)?.line === 'unclear'}
+      always
+      openValue={head}
+    >
       <fieldset className="hg-sheet-number" aria-label={label} onKeyDown={onKeyDown}>
         {typing && studio.heightEntry !== null ? (
           <StudioEntryBoxes

@@ -1,4 +1,5 @@
 'use client';
+import type { SiteDataWire } from '@heliogrid/contracts';
 import {
   type GroundPoint,
   NO_ROOF_LIST,
@@ -180,10 +181,37 @@ export function roofModelShown(
   };
 }
 
-/** The magnet for a dragged height: the kernel's pull while the magnet is on, none while it is off. */
-export function heightPullWith(facts: RoofFacts, magnetOn: () => boolean) {
-  return (design: StudioDocument, roof: number, metres: number, reachM: number) =>
-    magnetOn() ? heightPullOf(design, roof, facts, metres, reachM) : null;
+/**
+ * The magnet for a dragged height: the kernel's pull while the magnet is on, none while it is off;
+ * with the site data, the eaves beside the roof and the height map's reading inside it too.
+ */
+export function heightPullWith(
+  facts: RoofFacts,
+  magnetOn: () => boolean,
+  site?: {
+    /** The buildings' eaves, moved with the map by the person's line-up. */
+    readonly eaves: readonly SiteDataWire['eaves'][number][];
+    readonly heightOf: (design: StudioDocument, index: number) => number | null;
+  },
+) {
+  const eaves = site?.eaves ?? [];
+  return (design: StudioDocument, roof: number, metres: number, reachM: number) => {
+    if (!magnetOn()) return null;
+    const mapM = site?.heightOf(design, roof) ?? null;
+    return heightPullOf(design, roof, facts, metres, reachM, { eaves, mapM });
+  };
+}
+
+/** The sheet's heights from the site: the magnet's pull, and the map's height a roof starts at. */
+export function sheetHeightsWith(
+  facts: RoofFacts,
+  magnetOn: () => boolean,
+  site: NonNullable<Parameters<typeof heightPullWith>[2]>,
+) {
+  return {
+    pullOf: heightPullWith(facts, magnetOn, site),
+    dataHeightOf: site.heightOf,
+  };
 }
 
 /**

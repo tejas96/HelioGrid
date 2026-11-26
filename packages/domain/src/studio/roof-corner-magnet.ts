@@ -1,7 +1,15 @@
 import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { between, cornerAfter, cornerBefore, edgeLengths, ROOF_CORNERS_MIN } from './roof-shape';
-import { type Guide, guideOf, type RoofSnap, SNAP_SOFT_REACHES, snapTargetsOf } from './roof-snap';
+import {
+  type Guide,
+  guideOf,
+  type RoofSnap,
+  SNAP_SOFT_REACHES,
+  type SnapTargets,
+  snapTargetsOf,
+  withSiteTargets,
+} from './roof-snap';
 import {
   cornerLinesOf,
   heldOn,
@@ -9,6 +17,7 @@ import {
   lineCross,
   linesCross,
   linesNear,
+  onItsWall,
   ontoLine,
   type SnapLine,
   snapToPoints,
@@ -75,8 +84,9 @@ export function cornerMagnet(
   document: StudioDocument,
   roofIndex: number,
   reach: number,
+  site?: SnapTargets,
 ): Placed {
-  const targets = snapTargetsOf(document.roofs, roofIndex);
+  const targets = withSiteTargets(snapTargetsOf(document.roofs, roofIndex), site);
   const onPoint = snapToPoints(to, targets, reach);
   if (onPoint !== null) return onPoint;
   const before = cornerBefore(corners, corner);
@@ -168,15 +178,14 @@ function heldOnWall(
   placed: Placed,
   centre: GroundPoint,
   metres: number,
-  document: StudioDocument,
-  roofIndex: number,
-  reach: number,
+  on: { document: StudioDocument; roofIndex: number; reach: number; site?: SnapTargets },
 ): Placed {
+  const { document, roofIndex, reach } = on;
   const held = placed.snap;
   if (held === null || held.kind === 'cross') return placed;
   const { near } = linesNear(
     placed.point,
-    wallLinesOf(snapTargetsOf(document.roofs, roofIndex), {
+    wallLinesOf(withSiteTargets(snapTargetsOf(document.roofs, roofIndex), on.site), {
       points: [placed.point],
       within: reach,
     }),
@@ -192,7 +201,8 @@ function heldOnWall(
       { east: foot.east + way.east * half, north: foot.north + way.north * half },
       { east: foot.east - way.east * half, north: foot.north - way.north * half },
     ].sort((a, b) => between(a, placed.point) - between(b, placed.point))[0] as GroundPoint;
-    if (between(point, placed.point) <= reach) {
+    // A building's wall holds the corner on itself alone, never on its line past its ends.
+    if (between(point, placed.point) <= reach && onItsWall(point, wall)) {
       return {
         point,
         snap: { kind: 'cross', first: held, second: holdAt(wall, point) },
@@ -213,10 +223,10 @@ export function heldPlaced(
   after: boolean,
   to: GroundPoint,
   magnet: boolean,
-  on: { document: StudioDocument; roofIndex: number; reach: number },
+  on: { document: StudioDocument; roofIndex: number; reach: number; site?: SnapTargets },
 ): Placed {
   const anchor = after ? cornerAfter(corners, edge) : (corners[edge] as GroundPoint);
   const metres = edgeLengths(corners)[edge] ?? 0;
   const placed = onCircle(anchor, metres, to);
-  return magnet ? heldOnWall(placed, anchor, metres, on.document, on.roofIndex, on.reach) : placed;
+  return magnet ? heldOnWall(placed, anchor, metres, on) : placed;
 }

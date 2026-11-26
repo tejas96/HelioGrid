@@ -1,0 +1,296 @@
+/* The sun bar (`T-M05-002`, part g, board G8–G13): dark glass at the foot over the real sky, white
+   words, the same in light and dark as the sky is. It holds the foot as a sheet does. */
+.hg-sun-bar {
+  grid-row: 2 / 4;
+  grid-column: 1 / -1;
+  justify-self: center;
+  align-self: end;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  inline-size: min(100%, calc(var(--sp-24) * 6.75));
+  min-inline-size: 0;
+  box-sizing: border-box;
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  border-radius: var(--r-tile);
+  color: var(--scene-mark);
+  /* The studio's glass blurs nothing (`studio-canvas.css`), so the tint alone keeps the words read. */
+  background: color-mix(in srgb, var(--scene-sun-glass) 72%, transparent);
+  box-shadow:
+    inset 0 0 0 var(--hg-studio-line) color-mix(in srgb, var(--scene-mark) 18%, transparent),
+    var(--e3);
+  isolation: isolate;
+  /* The studio lets presses through to the map except on a part: this bar is one. */
+  pointer-events: auto;
+  animation: hg-sheet-up var(--dur-emphasised) var(--ease-enter) 1 both;
+}
+
+.hg-sun-top {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+}
+
+.hg-sun-chips {
+  display: flex;
+  gap: var(--sp-1);
+  min-inline-size: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.hg-sun-chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--sp-3);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  color: var(--scene-mark);
+  background: color-mix(in srgb, var(--scene-mark) 14%, transparent);
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+.hg-sun-chip[aria-checked="true"] {
+  color: var(--scene-sun-ink);
+  background: var(--scene-sun-gold);
+  font-weight: var(--fw-semibold);
+}
+
+.hg-sun-bar[data-phone="true"] .hg-sun-chip {
+  padding-inline: var(--sp-2);
+}
+
+.hg-sun-date {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-caption);
+  white-space: nowrap;
+}
+
+.hg-sun-tools {
+  display: flex;
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
+
+.hg-sun-tools .hg-icon-button,
+.hg-sun-tools button {
+  color: var(--scene-mark);
+}
+
+.hg-sun-track {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-sun-play {
+  flex-shrink: 0;
+}
+
+.hg-sun-rail {
+  position: relative;
+  flex: 1;
+  min-inline-size: 0;
+  padding-block-start: var(--sp-5);
+}
+
+/* The time rides over the sun on the line. */
+.hg-sun-now {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: var(--hg-at, 0%);
+  transform: translateX(-50%);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-sun-rail .hg-slider-rail {
+  background: color-mix(in srgb, var(--scene-mark) 28%, transparent);
+}
+
+.hg-sun-rail .hg-slider-fill {
+  background: linear-gradient(90deg, var(--scene-sun-dawn), var(--scene-sun-noon));
+}
+
+.hg-sun-rail .hg-slider-tick {
+  background: color-mix(in srgb, var(--scene-mark) 55%, transparent);
+}
+
+.hg-sun-rail .hg-slider-range::-webkit-slider-thumb {
+  background: var(--scene-sun-disc);
+  box-shadow:
+    0 0 0 var(--sp-1) color-mix(in srgb, var(--scene-sun-gold) 35%, transparent),
+    0 0 var(--sp-4) var(--scene-sun-noon);
+}
+
+.hg-sun-rail .hg-slider-range::-moz-range-thumb {
+  background: var(--scene-sun-disc);
+  box-shadow:
+    0 0 0 var(--sp-1) color-mix(in srgb, var(--scene-sun-gold) 35%, transparent),
+    0 0 var(--sp-4) var(--scene-sun-noon);
+}
+
+.hg-sun-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-sun-ends > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-sun-dot {
+  inline-size: var(--sp-2);
+  block-size: var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--scene-sun-gold);
+}
+
+.hg-sun-dot[data-at="set"] {
+  background: var(--scene-sun-dusk);
+}
+
+.hg-sun-down {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  min-block-size: var(--sp-12);
+  font-size: var(--fs-body-sm);
+}
+
+/* Where the sun stands, under the compass at the head's end. */
+.hg-sun-bearing {
+  position: absolute;
+  inset-block-start: calc(100% + var(--sp-2));
+  inset-inline-end: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--scene-mark);
+  background: color-mix(in srgb, var(--scene-sun-glass) 64%, transparent);
+  pointer-events: none;
+}
+
+.hg-sun-bearing > svg {
+  color: var(--scene-sun-gold);
+}
+
+/* On an upright phone the bar takes the foot and the tool columns step aside while it is open. */
+.hg-studio[data-sun="true"] .hg-studio-tools {
+  display: none;
+}
+
+/* An hour on the sun's path in the scene. */
+.hg-sun-hour-at {
+  pointer-events: none;
+}
+
+.hg-sun-hour {
+  display: inline-block;
+  transform: translateY(-120%);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--scene-sun-ink);
+  background: color-mix(in srgb, var(--scene-sun-noon) 85%, transparent);
+}
+
+/* The sun chart (board G10): a sheet in the bar's place, the chart across it, the days below. */
+.hg-sun-chart {
+  inline-size: min(100%, calc(var(--sp-24) * 6.75));
+  max-block-size: min(100%, 70dvh);
+  overflow-y: auto;
+}
+
+.hg-sun-chart-svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.hg-sun-chart-grid {
+  stroke: var(--line-soft);
+}
+
+.hg-sun-chart-axis {
+  font-size: var(--fs-caption);
+  fill: var(--text-secondary);
+}
+
+.hg-sun-chart-sky {
+  fill: color-mix(in srgb, var(--text-tertiary) 45%, transparent);
+}
+
+.hg-sun-chart-far {
+  fill: none;
+  stroke: var(--text-secondary);
+  stroke-dasharray: var(--sp-1) var(--sp-1);
+}
+
+.hg-sun-chart-day {
+  stroke-width: var(--sp-0-5);
+}
+
+.hg-sun-chart-now {
+  r: var(--sp-2);
+  fill: none;
+  stroke: var(--scene-sun-gold);
+  stroke-width: var(--sp-0-5);
+}
+
+.hg-sun-chart-days {
+  display: grid;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-body-sm);
+}
+
+.hg-sun-chart-days > li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-sun-chart-key {
+  inline-size: var(--sp-3);
+  block-size: var(--sp-1);
+  border-radius: var(--r-pill);
+}
+
+.hg-sun-chart-key[data-day="june"] {
+  background: var(--scene-day-june);
+}
+
+.hg-sun-chart-key[data-day="march"] {
+  background: var(--scene-day-march);
+}
+
+.hg-sun-chart-key[data-day="december"] {
+  background: var(--scene-day-december);
+}
+
+.hg-sun-chart-credit {
+  margin: 0;
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}

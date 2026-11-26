@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { base64Of, bytesOfBase64 } from '../../src/files/base64';
 import { checksumSha256Of } from '../../src/files/checksum';
+import { base64Of, bytesOfBase64 } from '../../src/format/base64';
 
 /**
  * The checksum a device declares a file with (`T-FPLAT-035`): the store holds the upload to it, so

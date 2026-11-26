@@ -9,6 +9,7 @@ import {
 import type { Translator } from '../runtime';
 import { studioFacesWords } from './studio-faces';
 import { roofNameWord } from './studio-roof-kinds';
+import { ownerWord } from './studio-roof-tags';
 
 type T = Translator['t'];
 
@@ -86,9 +87,12 @@ export function studioRoofDrawWords(t: T) {
     magnetNotSaved: t(DRAW.magnetNotSaved),
     closeShape: t(DRAW.closeShape),
     /** Follow, in the slim pill while drawing: the roof (or face) whose wall it closes along. */
-    follow: (owner: SnapOwner, roofName: (index: number) => RoofName): TranslatedText =>
-      owner.kind === 'face'
-        ? t(DRAW.followFace, { number: owner.face + 1 })
-        : t(DRAW.followRoof, { roof: roofNameWord(t, roofName(owner.roof)) }),
+    follow: (owner: SnapOwner, roofName: (index: number) => RoofName): TranslatedText => {
+      if (owner.kind === 'face') return t(DRAW.followFace, { number: owner.face + 1 });
+      if (owner.kind === 'roof') {
+        return t(DRAW.followRoof, { roof: roofNameWord(t, roofName(owner.roof)) });
+      }
+      return t(DRAW.followRoof, { roof: ownerWord(t, owner) });
+    },
   };
 }

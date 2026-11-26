@@ -7,14 +7,17 @@ import type { Ref } from 'react';
 import { DrawHint } from './StudioBarPills';
 import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
 import { useFilePick } from './StudioFilePick';
+import { StudioSiteKey } from './StudioHeightGroup';
 import { StudioLengthBox } from './StudioLengthBox';
 import { StudioPictureCards } from './StudioPictureCards';
 import { pictureCreditOf, StudioPictureChip } from './StudioPictureChip';
+import { pictureDataOf } from './StudioPictureData';
 import { StudioPlanRow } from './StudioPlanRow';
 import { StudioSaveMark } from './StudioSaveMark';
 import { StudioSizeCard } from './StudioSizeCard';
 import { StudioStepLine } from './StudioStepLine';
 import { StudioStepSwitcher } from './StudioStepSwitcher';
+import { StudioSunBearing } from './StudioSunBar';
 
 /**
  * The head's middle: the steps, while no job keeps them aside. While another person edits, the place
@@ -129,6 +132,10 @@ export function StudioCanvasHead({
       <StudioStepLine rail={studio.rail} />
       <div ref={headRef} className="hg-studio-canvas-head">
         <HeadPicture studio={studio} parts={parts} words={words} foot={foot} />
+        {/* The open View panel holds the key itself: one key on screen at a time (board G6). */}
+        {studio.viewOpen ? null : (
+          <StudioSiteKey site={studio.site} words={words} units={studio.units} inPanel={false} />
+        )}
         <HeadSteps
           studio={studio}
           parts={parts}
@@ -138,6 +145,7 @@ export function StudioCanvasHead({
           phone={phone}
         />
         <HeadEnd studio={studio} parts={parts} words={words} onBack={onBack} compass={compass} />
+        <StudioSunBearing studio={studio} words={words} />
         <DrawHint studio={studio} words={words} />
         {roofStep.kind === 'sizing' ? (
           <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
@@ -203,6 +211,7 @@ function HeadPicture({
       onPickFile={pickFile}
       ownLaid={studio.document?.ownPicture != null}
       planRow={<StudioPlanRow plan={studio.own.plan} studio={studio} words={words} />}
+      {...pictureDataOf(studio, words, format)}
       foot={foot}
     />
   );

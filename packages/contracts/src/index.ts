@@ -120,6 +120,7 @@ export * from './ports/identity-provider';
 export * from './ports/message-delivery';
 export * from './ports/object-store';
 export * from './ports/push';
+export * from './ports/roof-data';
 export * from './ports/session';
 // The price book: versioned non-catalog rates (`T-M01-031`).
 export * from './price-book';
@@ -150,6 +151,7 @@ export * from './studio/document';
 export * from './studio/picture';
 export * from './studio/places';
 export * from './studio/site';
+export * from './studio/site-data';
 export * from './studio/site-map-bridge';
 export * from './studio/studio';
 export * from './studio/vocabulary';

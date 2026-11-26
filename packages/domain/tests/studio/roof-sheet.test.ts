@@ -80,8 +80,11 @@ describe('a hole’s sheet has no height, and the camera looks at the top of wha
     expect(seen.fitUpM).toBe(3);
   });
 
-  it('with no sheet the camera looks at the ground', () => {
-    expect(roofsWithSheet(heights, null, null, withHole, tops).fitUpM).toBe(0);
+  it.each([
+    ['looks half way up the tallest roof, so a tower’s top stays in the frame', tops, 4.5],
+    ['with no roof, looks at the ground', [], 0],
+  ])('with no sheet the camera %s', (_, roofTops, upM) => {
+    expect(roofsWithSheet(heights, null, null, withHole, roofTops).fitUpM).toBe(upM);
   });
 });
 

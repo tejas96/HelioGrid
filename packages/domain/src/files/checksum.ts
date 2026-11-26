@@ -1,5 +1,5 @@
 import { sha256 } from '@noble/hashes/sha2';
-import { base64Of } from './base64';
+import { base64Of } from '../format/base64';
 
 /**
  * The SHA-256 of a file's bytes as a device declares it: the store holds the upload to this value,

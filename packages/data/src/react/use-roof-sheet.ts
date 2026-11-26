@@ -87,6 +87,7 @@ export function useRoofSheet({
   facts,
   units,
   pullOf,
+  dataHeightOf,
 }: {
   document: StudioDocument | null;
   latest: RefObject<History<StudioDocument> | null>;
@@ -105,6 +106,8 @@ export function useRoofSheet({
     metres: number,
     reachM: number,
   ) => HeightPull | null;
+  /** The height map's own height for a roof, which it starts at and Reset brings back. */
+  dataHeightOf?: (design: StudioDocument, index: number) => number | null;
 }): {
   state: RoofSheetState;
   moves: RoofSheetMoves;
@@ -131,7 +134,8 @@ export function useRoofSheet({
   /** The height the roof at `index` stands at where none is set: its kind's first height. */
   const startOf = (design: StudioDocument, index: number) => {
     const at = design.roofs[index];
-    return at === undefined ? 0 : roofStartHeightM(design, at, facts);
+    if (at === undefined) return 0;
+    return dataHeightOf?.(design, index) ?? roofStartHeightM(design, at, facts);
   };
   const roofSheet =
     roof === null || document === null
