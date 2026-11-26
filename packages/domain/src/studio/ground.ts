@@ -43,3 +43,11 @@ export function coordinateOf(origin: Coordinate, ground: GroundPoint): Coordinat
       ground.east / (EARTH_RADIUS_M * Math.cos(origin.latitude * RADIANS)) / RADIANS,
   };
 }
+
+/** The mean of a set of points. */
+export function meanOf(points: readonly GroundPoint[]): GroundPoint {
+  return {
+    east: points.reduce((sum, c) => sum + c.east, 0) / points.length,
+    north: points.reduce((sum, c) => sum + c.north, 0) / points.length,
+  };
+}

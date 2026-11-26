@@ -1,4 +1,4 @@
-import type { GroundBox, GroundPoint } from './ground';
+import { type GroundBox, type GroundPoint, meanOf } from './ground';
 
 /**
  * Two corners of a roof never stand nearer than this, so no edge is shorter (`T-M05-002`, part b):
@@ -62,12 +62,7 @@ export function roofArea(corners: readonly GroundPoint[]): number {
 /** The middle of the roof's area, where it turns about; the corners' mean for a roof with no area. */
 export function roofMiddle(corners: readonly GroundPoint[]): GroundPoint {
   const twice = twiceSignedArea(corners);
-  if (Math.abs(twice) < SAME_M * SAME_M) {
-    return {
-      east: corners.reduce((sum, c) => sum + c.east, 0) / corners.length,
-      north: corners.reduce((sum, c) => sum + c.north, 0) / corners.length,
-    };
-  }
+  if (Math.abs(twice) < SAME_M * SAME_M) return meanOf(corners);
   let east = 0;
   let north = 0;
   corners.forEach((corner, i) => {

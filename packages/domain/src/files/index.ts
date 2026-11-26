@@ -3,7 +3,7 @@
  * may own a file and who may store or read it.
  */
 
-export { base64Of, bytesOfBase64 } from './base64';
+export { base64Of, bytesOfBase64 } from '../format/base64';
 export { checksumSha256Of } from './checksum';
 export { FILE_SIGNATURE_BYTES, matchesFileSignature } from './file-signature';
 export type { FileDeclarationVerdict, FileSubjectKind, FileSubjectRule } from './rules';

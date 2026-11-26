@@ -6,6 +6,7 @@ import type {
   EditTurnWire,
   SavedDocument,
   SaveSite,
+  SiteDataWire,
   SkyPictureWire,
   StudioDocumentWire,
 } from '@heliogrid/contracts';
@@ -133,3 +134,6 @@ export const giveTurn = (caller: Caller, designId: string) =>
 
 export const skyPictureOf = (caller: Caller, designId: string) =>
   caller.call<SkyPictureWire>('GET', `/designs/${designId}/sky-picture`);
+
+export const siteDataOf = (caller: Caller, designId: string) =>
+  caller.call<SiteDataWire>('GET', `/designs/${designId}/site-data`);

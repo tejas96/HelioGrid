@@ -3,6 +3,7 @@ import { Module, type Provider } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { ENV } from '../../config/env';
 import { BillingModule } from '../billing/billing.public';
+import { FileCacheService } from './file.cache.service';
 import { FileController } from './file.controller';
 import { FileDocumentService } from './file.documents.service';
 import { FileRepository } from './file.repository';
@@ -22,6 +23,7 @@ const objectStoreProvider: Provider = {
   imports: [BillingModule],
   controllers: [FileController],
   providers: [
+    FileCacheService,
     FileService,
     FileDocumentService,
     FileRepository,
@@ -29,6 +31,6 @@ const objectStoreProvider: Provider = {
     objectStoreProvider,
   ],
   // A module that works on a stored file reaches it through the service, never the store.
-  exports: [FileService, FileDocumentService, FileSubjectRegistry],
+  exports: [FileCacheService, FileService, FileDocumentService, FileSubjectRegistry],
 })
 export class FileModule {}

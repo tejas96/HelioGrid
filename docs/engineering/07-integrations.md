@@ -112,25 +112,38 @@ step is filled by hand. The step never waits on a third party.
 
 ## 2. RoofDataPort — heights and roof faces
 
-**Status: not built; the roof step builds it** (`docs/tasks/M05-design-studio.md`).
+**Status: built (part g).** The port is `packages/contracts/src/ports/roof-data.ts`; its
+adapters are `apps/api/src/modules/studio/internal/roof-data.*.ts`, read by the studio module's
+site data route (`GET /designs/:id/site-data`).
 
 ```ts
 interface RoofDataPort {
-  roofFaces(pin: LatLng): Promise<PortResult<RoofFaces>>;                  // faces, slopes, facing, imagery date
-  heightMap(pin: LatLng, radiusM: number): Promise<PortResult<HeightMap>>; // surface heights, in metres
+  readonly setUp: boolean;
+  buildingAt(point: Coordinate, billed: Billed): Promise<BuildingAnswer | null>;   // faces, slopes, facing, date, the whole reply
+  heightMapAt(point: Coordinate, radiusM: number, sharpest: boolean, billed: Billed): Promise<HeightMapAnswer | null>; // GeoTIFFs
 }
 ```
 
-**v1: `GoogleSolarAdapter`, on the server key.** The Solar API's `buildingInsights` and its
-`dataLayers` height map and roof mask, at quality BASE — never `experiments=EXPANDED_COVERAGE`. The
-flux layers are never asked for (§1). Each open of a design fetches again and nothing is stored
-(owner ruling 2026-11-19). Every figure it gives is `derived`.
+Like the energy source it REJECTS when the service does not answer and answers `null` when it
+holds nothing for the place; the caller says which in the answer's gaps and never waits. `billed`
+is called for each call the service bills, so the cost line counts what the bill counts.
+
+**v1: `GoogleRoofData`, on the server key, called by `apps/api` inside the request that opens
+the design** (an answer the same request needs is not a durable job, §1). The Solar API's
+`buildingInsights` and its `dataLayers` height map, roof mask and straight-down picture
+(`view=IMAGERY_LAYERS`), at quality BASE; `experiments=EXPANDED_COVERAGE` only as one retry after a
+not-found. The flux layers are never asked for (§1): the studio's sunlight view is its own shade
+share. Google's answer is kept in the object store for up to 30 days, then deleted (owner ruling
+2026-11-26; Solar terms §21.2); the values made from it stay with the design. Every figure it gives
+is `derived`. The far horizon beyond the height map is PVGIS's `printhorizon` (the §1 service; its
+credit line shows with it).
 
 **Under test:** a memory binding; a suite reaches no third party.
 
-**Failure/degradation:** no data → OpenStreetMap building outlines with `estimated` heights, and
-the studio asks for one measured height; with neither, the roof is drawn or typed by hand. Never
-blocks.
+**Failure/degradation:** no data → OpenStreetMap building outlines (a paid Overpass host or
+Overture's files in production; the public server is not for commercial use) with `estimated`
+heights, and the studio asks how many floors (owner ruling 2026-11-26: no site visit); with
+neither, the roof is drawn or typed by hand. Never blocks.
 
 **Metering:** the cost line `solar_imagery`, never billable. The key goes live only after the
 owner's yes and a budget alert, because it bills us.
@@ -454,7 +467,8 @@ site's ground coordinates, so it keeps its place on every fetch (`M04-10`). A pi
 or the customer owns is stored with the design in the object store (`design_picture` in
 `data-model.md`). Interactive map picking uses Maps JS with the public key.
 
-**Later adapters:** Esri World Imagery, Mapbox, Apple — global expansion or cost lever.
+**Later adapters:** Esri World Imagery (needs an ArcGIS account: the keyless service is not for
+commercial products), Mapbox, Apple — global expansion or cost lever.
 
 **Failure/degradation:** no picture → the studio opens on a 1 m grid and says why; drawing and
 typing the size still work. No street photo → the road view offers the user's own photo. Never

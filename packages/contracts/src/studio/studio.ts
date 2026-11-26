@@ -34,6 +34,7 @@ import {
   placeSuggestionsSchema,
 } from './places';
 import { saveSiteSchema } from './site';
+import { siteDataSchema } from './site-data';
 
 const c = initContract();
 
@@ -187,6 +188,14 @@ export const studioContract = c.router({
     summary:
       'The sky picture of the design’s site, fetched now and never stored — or why there is none',
     responses: { 200: skyPictureSchema, 401: unauthenticatedEnvelope, 404: notFound },
+  },
+  siteData: {
+    method: 'GET',
+    path: '/designs/:id/site-data',
+    pathParams: designParamsSchema,
+    summary:
+      'What the height map, the building data, the far hills and the time zone say of the design’s site — and what did not answer',
+    responses: { 200: siteDataSchema, 401: unauthenticatedEnvelope, 404: notFound },
   },
 });
 

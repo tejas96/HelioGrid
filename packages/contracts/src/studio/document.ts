@@ -17,6 +17,7 @@ import { z } from 'zod';
 import { extensibleEnum, memberRefSchema, uuidSchema } from '../common';
 import { errorEnvelopeWithFacts } from '../error';
 import { cornersIn, groundPointSchema, roofLinkFaults, roofSchema } from './roof';
+import { siteDataKeptSchema } from './site-data';
 
 /**
  * The design document on the wire: one per design, saved whole on each change. Its shape is
@@ -69,6 +70,9 @@ export const studioDocumentSchema = z
     ownPicture: laidPictureSchema.nullable().optional(),
     plan: laidPlanSchema.nullable().optional(),
     stairsSkipped: z.boolean().optional(),
+    // Part g's: the data the design's heights were made from and a person's answers. Read from
+    // this release; written from the next (`CLAUDE.md` §8, expand then contract).
+    site: siteDataKeptSchema.optional(),
   })
   .strict()
   .refine((document) => cornersIn(document.roofs) <= CORNERS_READ_MAX, {

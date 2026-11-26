@@ -28,6 +28,8 @@
     "drizzle-orm": "0.44.7",
     "exceljs": "4.4.0",
     "express": "5.2.1",
+    "geo-tz": "8.1.11",
+    "geotiff": "3.0.5",
     "google-auth-library": "11.1.0",
     "jose": "6.2.12",
     "nestjs-pino": "4.6.1",

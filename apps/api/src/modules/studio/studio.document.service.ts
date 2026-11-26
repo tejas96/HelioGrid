@@ -16,6 +16,7 @@ import type { Act } from '../../common/auth/session-context';
 import { refusalWithFacts } from '../../common/errors/contract-exception';
 import { type LeadReader, memberRefOf } from '../crm/crm.public';
 import { refusedAct } from './internal/design-wire';
+import { PerMinuteCap } from './internal/per-minute-cap';
 import {
   SKY_PICTURE_SOURCE,
   type SkyPictureSource,
@@ -42,7 +43,6 @@ const wirePiece = ({ bytes, mediaType, ...ground }: SourcePiece) => ({
  * did not load.
  */
 const PICTURES_PER_MINUTE = 12;
-const MINUTE_MS = 60_000;
 
 /** Whose turn it is, as the reader sees it; a turn that ran out is no one's. */
 function turnOf(editor: DocumentEditor | null, reader: LeadReader, now: number): EditTurnWire {
@@ -68,19 +68,7 @@ export class StudioDocumentService {
     this.logger.setContext(StudioDocumentService.name);
   }
 
-  /** When each person last fetched pictures, inside the last minute. Held in memory only. */
-  private readonly fetched = new Map<string, number[]>();
-
-  /** Whether the person may fetch one more picture now; counts the fetch when they may. */
-  private mayFetch(userId: string, now: number): boolean {
-    const recent = (this.fetched.get(userId) ?? []).filter((at) => now - at < MINUTE_MS);
-    if (recent.length >= PICTURES_PER_MINUTE) {
-      this.fetched.set(userId, recent);
-      return false;
-    }
-    this.fetched.set(userId, [...recent, now]);
-    return true;
-  }
+  private readonly fetches = new PerMinuteCap(PICTURES_PER_MINUTE);
 
   async documentOf(reader: LeadReader, designId: string): Promise<DesignDocumentWire> {
     const row = await this.documents.documentOf(reader, designId);
@@ -164,7 +152,7 @@ export class StudioDocumentService {
     const pin = facts.site.pin;
     if (pin === null) return { kind: 'none', gap: 'not_covered' };
     if (!this.pictures.setUp) return { kind: 'none', gap: 'not_set_up' };
-    if (!this.mayFetch(reader.actorId, Date.now())) {
+    if (!this.fetches.take(reader.actorId, Date.now())) {
       this.logger.warn({ designId }, 'the sky picture cap was reached for a person');
       return { kind: 'none', gap: 'not_answered' };
     }

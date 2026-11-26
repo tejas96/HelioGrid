@@ -65,7 +65,10 @@ services:
 
   # Creates the files bucket once the store answers, then exits: a signed PUT with curl's own
   # SigV4, so no S3 client image is needed. 200 made it and 409 means it already exists — both
-  # done, so a second `infra:up` is a no-op; anything else is retried for thirty seconds.
+  # done, so a second `infra:up` is a no-op; anything else is retried for thirty seconds. Then it
+  # sets the bucket's one store rule: what a third party answered for a place (`kept-for-a-place/`,
+  # Google's height data, T-M05-002g) is deleted 30 days after it was kept (Solar terms §21.2).
+  # Setting it again sets the same rule.
   object-store-bucket:
     image: curlimages/curl:8.22.0@sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777
     depends_on: [object-store]
@@ -81,8 +84,15 @@ services:
         for attempt in $$(seq 1 30); do
         code=$$(curl -s -o /dev/null -w '%{http_code}' --aws-sigv4 'aws:amz:us-east-1:s3'
         --netrc-file /tmp/store.netrc -X PUT http://object-store:9000/heliogrid-files-local);
-        case $$code in 200|409) echo "bucket ready ($$code)"; exit 0;; esac; sleep 1;
-        done; echo "the object store never answered"; exit 1
+        case $$code in 200|409) break;; esac; sleep 1;
+        done;
+        case $$code in 200|409) ;; *) echo "the object store never answered"; exit 1;; esac;
+        rule=$$(curl -s -o /dev/null -w '%{http_code}' --aws-sigv4 'aws:amz:us-east-1:s3'
+        --netrc-file /tmp/store.netrc -X PUT -H 'Content-Type: application/xml'
+        --data '<LifecycleConfiguration><Rule><ID>kept-for-a-place-30-days</ID><Filter><Prefix>kept-for-a-place/</Prefix></Filter><Status>Enabled</Status><Expiration><Days>30</Days></Expiration></Rule></LifecycleConfiguration>'
+        'http://object-store:9000/heliogrid-files-local?lifecycle');
+        if [ "$$rule" != 200 ]; then echo "the 30-day rule was refused ($$rule)"; exit 1; fi;
+        echo "bucket ready ($$code), 30-day rule set"
 
 volumes:
   heliogrid-pgdata:

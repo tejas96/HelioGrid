@@ -11,6 +11,7 @@ import { StudioDocumentService } from './studio.document.service';
 import { StudioPictureService } from './studio.picture.service';
 import { StudioPlacesService } from './studio.places.service';
 import { StudioService } from './studio.service';
+import { StudioSiteDataService } from './studio.site-data.service';
 
 const DESIGN = { capability: 'studio.create_edit_designs' } as const;
 
@@ -27,6 +28,7 @@ export class StudioController {
     @Inject(StudioService) private readonly studio: StudioService,
     @Inject(StudioDocumentService) private readonly documents: StudioDocumentService,
     @Inject(StudioPictureService) private readonly pictures: StudioPictureService,
+    @Inject(StudioSiteDataService) private readonly siteData: StudioSiteDataService,
   ) {}
 
   // Topmost, so it is applied last: it serves each route from what the maps below declared.
@@ -53,6 +55,7 @@ export class StudioController {
     takeEditTurn: DESIGN,
     giveEditTurn: DESIGN,
     skyPicture: 'member',
+    siteData: 'member',
     addPicture: DESIGN,
     addCadPlan: DESIGN,
     picture: 'member',
@@ -101,6 +104,11 @@ export class StudioController {
         // Google's picture is never stored, nor put in a file — a cache on disk included.
         responseOf(req).setHeader('Cache-Control', 'no-store');
         return ok(await this.documents.skyPicture(reader, params.id));
+      },
+      siteData: async ({ params }) => {
+        // Made from Google's data, kept on the server for 30 days: no device keeps the answer.
+        responseOf(req).setHeader('Cache-Control', 'no-store');
+        return ok(await this.siteData.siteData(reader, params.id));
       },
     });
   }
