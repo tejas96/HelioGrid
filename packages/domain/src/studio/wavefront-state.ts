@@ -1,3 +1,4 @@
+import type { FaceEdgeKind } from './roof-scene';
 import {
   crossingAt,
   distance,
@@ -14,8 +15,8 @@ import {
  * behind — the points where it changed, and the edges of each side's face.
  */
 
-/** What an edge of a face is. */
-export type FrontEdgeKind = 'eave' | 'wall' | 'ridge' | 'hip' | 'valley' | 'gable_end' | 'break';
+/** What an edge of a face is (`roof-scene.ts`). */
+export type FrontEdgeKind = FaceEdgeKind;
 
 /** One side of an outline, as the front moves it. */
 export interface FrontSide {

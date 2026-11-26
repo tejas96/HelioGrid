@@ -9,20 +9,16 @@ import type { RoofScene, SceneMotion, StudioView, SunPosition } from '@heliogrid
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { type ReactNode, type RefObject, useRef, useState } from 'react';
+import { type ReactNode, type RefObject, useMemo, useRef, useState } from 'react';
 import { MathUtils } from 'three';
 import { deviceHintsNow } from '../hooks/use-device-hints';
 import type { SceneFit } from './camera-poses';
+import type { RoofTopPicture } from './photo-reader';
 import { type ClearGround, StudioCameraRig, type StudioDrive } from './StudioCameraRig';
 import { StudioOwnGround } from './StudioOwnGround';
 import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
 import { StudioPlanLines } from './StudioPlanLines';
-import {
-  type RoofMarksHandle,
-  type RoofRise,
-  type RoofTopPicture,
-  StudioRoofs,
-} from './StudioRoofs';
+import { type RoofMarksHandle, type RoofRise, StudioRoofs } from './StudioRoofs';
 import { StudioScaleTween } from './StudioScaleTween';
 import { type SceneScreen, screenOfFrame } from './scene-screen';
 
@@ -59,6 +55,13 @@ function roofTopIn(
   if (kind === 'sky') return sharp === null ? null : scaledTop(sharp, scale);
   return kind === 'own' ? own : null;
 }
+
+/** A picture is chosen and its texture not drawn yet: the roofs that will wear it wait, plain. */
+const pictureComing = (
+  kind: StudioPicture['kind'],
+  sharp: RoofTopPicture | null,
+  own: RoofTopPicture | null,
+) => (kind === 'sky' && sharp === null) || (kind === 'own' && own === null);
 
 /** The camera before its first view is set: the rig flies it from here. */
 const CAMERA_START = { near: 0.5, far: 3_000, position: [0, 60, 60] as [number, number, number] };
@@ -211,6 +214,11 @@ export function StudioScene({
   // biome-ignore lint/plugin: your picture's WebGL texture, handed on to the roofs' tops as the sky's is
   const [ownTop, setOwnTop] = useState<RoofTopPicture | null>(null);
   const pictureScale = readScale ?? 1;
+  // One picture for the roofs while nothing about it changes: a new one rebuilds every roof.
+  const roofTop = useMemo(
+    () => roofTopIn(picture.kind, sharp, ownTop, pictureScale),
+    [picture.kind, sharp, ownTop, pictureScale],
+  );
   // The share of its new size the model stands at while the first length grows it: 1 at rest.
   const sizing = useRef(1);
   // A weak device draws less detail and the same numbers (G034).
@@ -280,7 +288,8 @@ export function StudioScene({
           view={view}
           still={still}
           palette={palette}
-          top={roofTopIn(picture.kind, sharp, ownTop, pictureScale)}
+          top={roofTop}
+          pictureComing={pictureComing(picture.kind, sharp, ownTop)}
           rise={rise}
           sizing={sizing}
           marks={roofMarks}

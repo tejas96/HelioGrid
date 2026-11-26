@@ -1,33 +1,48 @@
-import type { GroundPoint, RoofScene, ScenePrism } from '@heliogrid/domain';
+import type { GroundPoint, ScenePrism } from '@heliogrid/domain';
 import { BufferGeometry, Float32BufferAttribute, ShapeUtils, Vector2, Vector3 } from 'three';
 
 /**
- * The roofs' triangles (`T-M05-002`, part e): the kernel's model of the whole design turned into
- * two meshes — every wall, parapet and post in one, every roof top and sloped face in the other —
- * so a design of 200 roofs is drawn in two calls. East is x, up is y, north is −z; a top's texture
- * place is its east and north, so the ground's picture lies on it where it lies on the ground.
+ * The roofs' triangles (`T-M05-002`, part e): the shapes the kernel's model is drawn in — a cap
+ * over an outline, a wall under an edge, a sloped face — each laid on its texture by a place
+ * function: the ground picture's east and north, or a material look's own pattern. Which part goes
+ * in which mesh is `roof-dressed-mesh.ts`. East is x, up is y, north is −z.
  */
 
-interface Triangles {
+/** Lengths this short, and products this small, are none: a line has no direction, a face no lean. */
+const NONE = 1e-6;
+const NONE_SQUARED = NONE * NONE;
+
+export interface Triangles {
   readonly positions: number[];
   readonly normals: number[];
   readonly uvs: number[];
 }
 
-const empty = (): Triangles => ({ positions: [], normals: [], uvs: [] });
+export const empty = (): Triangles => ({ positions: [], normals: [], uvs: [] });
 
-interface Vertex {
+export interface Vertex {
   readonly east: number;
   readonly north: number;
   readonly up: number;
 }
 
+/** Where a corner lies on its texture: the picture's east and north, or a look's own pattern. */
+export type Place = (at: Vertex) => readonly [number, number];
+export const ON_GROUND: Place = (at) => [at.east, at.north];
+
 /** One triangle, with one normal for its three corners: flat walls and flat faces. */
-function triangle(into: Triangles, a: Vertex, b: Vertex, c: Vertex, normal: readonly number[]) {
+export function triangle(
+  into: Triangles,
+  a: Vertex,
+  b: Vertex,
+  c: Vertex,
+  normal: readonly number[],
+  place: Place = ON_GROUND,
+) {
   for (const at of [a, b, c]) {
     into.positions.push(at.east, at.up, -at.north);
     into.normals.push(normal[0] ?? 0, normal[1] ?? 0, normal[2] ?? 0);
-    into.uvs.push(at.east, at.north);
+    into.uvs.push(...place(at));
   }
 }
 
@@ -39,20 +54,21 @@ function turn(ring: readonly GroundPoint[]): number {
   }, 0);
 }
 
-const anticlockwise = (ring: readonly GroundPoint[]) =>
+export const anticlockwise = (ring: readonly GroundPoint[]) =>
   turn(ring) >= 0 ? ring : [...ring].reverse();
-const clockwise = (ring: readonly GroundPoint[]) => (turn(ring) < 0 ? ring : [...ring].reverse());
+export const clockwise = (ring: readonly GroundPoint[]) =>
+  turn(ring) < 0 ? ring : [...ring].reverse();
 
 /** A ring of the model's points turned to run anticlockwise seen from above, or clockwise. */
-function upRing<P extends GroundPoint>(ring: readonly P[], left: boolean): readonly P[] {
+export function upRing<P extends GroundPoint>(ring: readonly P[], left: boolean): readonly P[] {
   return turn(ring) >= 0 === left ? ring : [...ring].reverse();
 }
 
 /** How far a solid's corner rises with the face it stands on; 0 for a solid that stands level. */
-type Rise = (corner: GroundPoint) => number;
-const LEVEL: Rise = () => 0;
+export type Rise = (corner: GroundPoint) => number;
+export const LEVEL: Rise = () => 0;
 
-function riseOf(prism: ScenePrism): Rise {
+export function riseOf(prism: ScenePrism): Rise {
   const { rise } = prism;
   if (rise === undefined) return LEVEL;
   const at = new Map(prism.outer.map((corner, i) => [corner, rise[i] ?? 0]));
@@ -70,13 +86,14 @@ function normalOf(a: Vertex, b: Vertex, c: Vertex): number[] {
 }
 
 /** A cap over an outline with holes, at one height and its corners' rise, facing up or down. */
-function cap(
+export function cap(
   into: Triangles,
   outer: readonly GroundPoint[],
   holes: readonly (readonly GroundPoint[])[],
   up: number,
   facing: 1 | -1,
   rise: Rise = LEVEL,
+  place: Place = ON_GROUND,
 ) {
   const points = [...outer, ...holes.flat()];
   const found = ShapeUtils.triangulateShape(
@@ -95,12 +112,12 @@ function cap(
       Vertex,
     ];
     const normal = rise === LEVEL ? [0, facing, 0] : normalOf(...corners);
-    triangle(into, ...corners, normal);
+    triangle(into, ...corners, normal, place);
   }
 }
 
 /** The upright wall under one edge of a ring, its outside to the right of the way the ring runs. */
-function wall(
+export function wall(
   into: Triangles,
   from: GroundPoint,
   to: GroundPoint,
@@ -121,7 +138,7 @@ function wall(
 }
 
 /** A solid's walls: outward round its outline, and into each hole. */
-function walls(into: Triangles, prism: ScenePrism, rise: Rise) {
+export function walls(into: Triangles, prism: ScenePrism, rise: Rise) {
   const rings = [anticlockwise(prism.outer), ...prism.holes.map(clockwise)];
   for (const ring of rings) {
     ring.forEach((from, i) => {
@@ -140,13 +157,49 @@ function walls(into: Triangles, prism: ScenePrism, rise: Rise) {
   }
 }
 
-const inScene = (at: Vertex) => new Vector3(at.east, at.up, -at.north);
+export const inScene = (at: Vertex) => new Vector3(at.east, at.up, -at.north);
+
+/** A face's upward normal, in the scene: from its first three corners that are not in a line. */
+export function faceNormal(corners: readonly Vertex[]): Vector3 {
+  for (let i = 2; i < corners.length; i += 1) {
+    const from = inScene(corners[0] as Vertex);
+    const n = inScene(corners[1] as Vertex)
+      .sub(from)
+      .cross(inScene(corners[i] as Vertex).sub(from));
+    if (n.lengthSq() > NONE_SQUARED) return n.y < 0 ? n.negate().normalize() : n.normalize();
+  }
+  return new Vector3(0, 1, 0);
+}
 
 /**
- * A sloped face, flat in itself, with what is cut out of it: split into triangles on the plan,
- * each corner at its own height, and each triangle facing up.
+ * A look's pattern on a face: `u` along its eave and `v` up its slope, in the look's repeats, so a
+ * rib runs down every face and a tile is a tile's size on a steep face as on a flat one.
  */
-function face(into: Triangles, corners: readonly Vertex[], holes: readonly (readonly Vertex[])[]) {
+export function patternOn(normal: Vector3, repeatM: readonly [number, number]): Place {
+  const [along, up] = repeatM;
+  // The way down the face on the plan: where its normal leans (east is x, north is −z).
+  const downEast = normal.x;
+  const downNorth = -normal.z;
+  const lean = Math.hypot(downEast, downNorth);
+  if (lean < NONE) return (at) => [at.east / along, at.north / up];
+  const [dE, dN] = [downEast / lean, downNorth / lean];
+  // Up the slope, a plan metre is 1/cos(slope) metres of face.
+  const stretch = normal.y > NONE ? 1 / normal.y : 1;
+  return (at) => [
+    (at.east * -dN + at.north * dE) / along,
+    (-(at.east * dE + at.north * dN) * stretch) / up,
+  ];
+}
+
+/** A face, flat in itself, with what is cut out of it: split on the plan, each corner at its height. */
+export function face(
+  into: Triangles,
+  corners: readonly Vertex[],
+  holes: readonly (readonly Vertex[])[],
+  place: Place,
+  /** Its underside too, facing down: the photo is laid only on the side the sky sees. */
+  under: Triangles | null,
+) {
   const points = [...corners, ...holes.flat()];
   const onPlan = (ring: readonly Vertex[]) => ring.map((at) => new Vector2(at.east, at.north));
   for (const [i, j, k] of ShapeUtils.triangulateShape(onPlan(corners), holes.map(onPlan))) {
@@ -155,9 +208,10 @@ function face(into: Triangles, corners: readonly Vertex[], holes: readonly (read
     const from = inScene(a);
     const normal = inScene(b).sub(from).cross(inScene(c).sub(from)).normalize();
     // A face faces up: a triangle found facing down is turned.
-    const up = normal.y >= 0;
-    if (!up) normal.negate();
-    triangle(into, a, up ? b : c, up ? c : b, normal.toArray());
+    const [second, third] = normal.y >= 0 ? [b, c] : [c, b];
+    if (normal.y < 0) normal.negate();
+    triangle(into, a, second, third, normal.toArray(), place);
+    if (under !== null) triangle(under, a, third, second, normal.negate().toArray());
   }
 }
 
@@ -165,53 +219,10 @@ function face(into: Triangles, corners: readonly Vertex[], holes: readonly (read
 const IN_SPACE = 3;
 const ON_PICTURE = 2;
 
-function geometryOf(from: Triangles): BufferGeometry {
+export function geometryOf(from: Triangles): BufferGeometry {
   const geometry = new BufferGeometry();
   geometry.setAttribute('position', new Float32BufferAttribute(from.positions, IN_SPACE));
   geometry.setAttribute('normal', new Float32BufferAttribute(from.normals, IN_SPACE));
   geometry.setAttribute('uv', new Float32BufferAttribute(from.uvs, ON_PICTURE));
   return geometry;
-}
-
-export interface RoofGeometries {
-  /** Every wall, parapet, post and rail: plaster. */
-  readonly walls: BufferGeometry;
-  /** Every roof top and sloped face: they wear the ground's picture. */
-  readonly tops: BufferGeometry;
-  /** The highest point of the model, in metres: below a hair of it risen, nothing is drawn. */
-  readonly topM: number;
-}
-
-/** The whole design's two meshes. The caller disposes them when the model changes. */
-export function roofGeometries(scene: RoofScene): RoofGeometries {
-  const plaster = empty();
-  const tops = empty();
-  let topM = 0;
-  for (const prism of scene.prisms) {
-    const rise = riseOf(prism);
-    topM = Math.max(topM, prism.topM + Math.max(0, ...(prism.rise ?? [])));
-    walls(plaster, prism, rise);
-    const holes = prism.holes.map(clockwise);
-    const outer = anticlockwise(prism.outer);
-    if (prism.top !== 'none')
-      cap(prism.top === 'roof' ? tops : plaster, outer, holes, prism.topM, 1, rise);
-    // A sheet on posts is seen from under it too.
-    if (prism.part === 'sheet') cap(plaster, outer, holes, prism.footM, -1);
-  }
-  for (const each of scene.faces) {
-    topM = Math.max(topM, ...each.corners.map((corner) => corner.up));
-    // The plan's split wants the outline one way round and each hole the other.
-    face(
-      tops,
-      upRing(each.corners, true),
-      each.holes.map((hole) => upRing(hole, false)),
-    );
-  }
-  for (const each of scene.walls) {
-    topM = Math.max(topM, each.fromTopM, each.toTopM);
-    wall(plaster, each.from, each.to, each.footM, each.fromTopM, each.toTopM);
-    // A gable's wall is seen from both sides of the roof's end: its other side too.
-    wall(plaster, each.to, each.from, each.footM, each.toTopM, each.fromTopM);
-  }
-  return { walls: geometryOf(plaster), tops: geometryOf(tops), topM };
 }

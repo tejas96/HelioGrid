@@ -2,7 +2,7 @@
 import type { StudioPicture } from '@heliogrid/data/react';
 import { useEffect, useState } from 'react';
 import { CanvasTexture, Matrix3, SRGBColorSpace } from 'three';
-import type { RoofTopPicture } from './StudioRoofs';
+import type { RoofTopPicture } from './photo-reader';
 
 /**
  * Your photo or drone map on the ground (`T-M05-002d`, board 2.1, 3.1, 5.2): its pieces drawn on one

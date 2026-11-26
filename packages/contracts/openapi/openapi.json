@@ -247416,6 +247416,27 @@
                                 ],
                                 "additionalProperties": false
                               },
+                              "colour": {
+                                "type": "object",
+                                "properties": {
+                                  "swatch": {
+                                    "type": "string",
+                                    "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                  },
+                                  "setBy": {
+                                    "type": "string",
+                                    "enum": [
+                                      "system",
+                                      "person"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "swatch",
+                                  "setBy"
+                                ],
+                                "additionalProperties": false
+                              },
                               "shape": {
                                 "type": "object",
                                 "properties": {
@@ -248199,6 +248220,13 @@
                             }
                           },
                           "additionalProperties": false
+                        },
+                        "flatRoofs": {
+                          "type": "string",
+                          "enum": [
+                            "photo",
+                            "material"
+                          ]
                         }
                       },
                       "required": [
@@ -248933,6 +248961,27 @@
                                 "type",
                                 "setBy",
                                 "confirmed"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "colour": {
+                              "type": "object",
+                              "properties": {
+                                "swatch": {
+                                  "type": "string",
+                                  "pattern": "^[a-z][a-z0-9_]{0,39}$"
+                                },
+                                "setBy": {
+                                  "type": "string",
+                                  "enum": [
+                                    "system",
+                                    "person"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "swatch",
+                                "setBy"
                               ],
                               "additionalProperties": false
                             },
@@ -249719,6 +249768,13 @@
                           }
                         },
                         "additionalProperties": false
+                      },
+                      "flatRoofs": {
+                        "type": "string",
+                        "enum": [
+                          "photo",
+                          "material"
+                        ]
                       }
                     },
                     "required": [

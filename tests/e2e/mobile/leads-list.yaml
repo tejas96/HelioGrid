@@ -41,15 +41,18 @@ appId: com.heliogrid.app
     timeout: 15000
 # The pill's destinations are tabs, drawn once (`navigation/routes/tabs.ts`). The pill's Leads on a
 # lead closes the lead onto the list already drawn — never a second list over it — and Back on a
-# tab goes home, also on a list a link opened while the app was closed.
+# tab goes home, also on a list a link opened while the app was closed. A tab shows where it was
+# left (`use-open-tab.ts`): the list comes back scrolled to the card just opened. The lead shows
+# that name too, so the lead is seen closed first.
 - runFlow:
     when:
       platform: Android
     commands:
       - tapOn: ${LEADS}
       - extendedWaitUntil:
-          visible: ${LEADS_OPEN}
+          notVisible: ${CALL}
           timeout: 15000
+      - assertVisible: ${LEAD_NAME}
       - back
       - scrollUntilVisible:
           element: ${FORECAST}

@@ -26,6 +26,10 @@ export type RoofMaterialGroup = (typeof ROOF_MATERIAL_GROUPS)[number];
 export const ROOF_FIXED_LIKE = ['concrete', 'metal', 'tile', 'cement', 'cover'] as const;
 export type RoofFixedLike = (typeof ROOF_FIXED_LIKE)[number];
 
+export function isRoofFixedLike(name: string): name is RoofFixedLike {
+  return (ROOF_FIXED_LIKE as readonly string[]).includes(name);
+}
+
 /** A roof's mounting family: one of the five, a raised frame alone, or no panels at all. */
 export type RoofMounting = RoofFixedLike | 'raised_frame' | 'none';
 

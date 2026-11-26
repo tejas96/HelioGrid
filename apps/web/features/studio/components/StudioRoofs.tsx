@@ -3,8 +3,9 @@ import type { GroundPoint, RoofScene, SceneMotion, StudioView } from '@heliogrid
 import { type ThemePalette, theme } from '@heliogrid/theme';
 import { useFrame, useThree } from '@react-three/fiber';
 import { type ReactNode, type RefObject, useEffect, useMemo, useRef, useState } from 'react';
-import { type CanvasTexture, DoubleSide, type Matrix3, type Texture } from 'three';
-import { roofGeometries } from './roof-mesh';
+import type { Texture } from 'three';
+import type { RoofTopPicture } from './photo-reader';
+import { StudioRoofLooks, useRoofMeshes } from './StudioRoofLooks';
 import { quietKind, RoofMove } from './StudioRoofMotion';
 import { type SceneScreen, screenOfFrame } from './scene-screen';
 
@@ -30,8 +31,6 @@ const SHADOW_GROUND_M = 160;
 /** Over your own picture (`StudioOwnGround`), so a roof's shadow falls on it too. */
 const SHADOW_LIFT_M = 0.04;
 const SHADOW_STRENGTH = 0.32;
-/** Walls, and a roof's top where there is no picture: matt plaster. */
-const PLASTER_ROUGHNESS = 0.92;
 
 /** Where a point of the model lands on the screen, in CSS pixels; `null` behind the camera. */
 export type ScreenOf = (point: GroundPoint, heightM: number) => { x: number; y: number } | null;
@@ -49,20 +48,6 @@ export interface RoofMarksHandle {
  */
 export interface RoofRise {
   current: number;
-}
-
-/** The sky picture as the ground lays it: one texture over a box of ground, in metres from the pin. */
-export interface RoofTopPicture {
-  readonly texture: CanvasTexture;
-  readonly west: number;
-  readonly east: number;
-  readonly south: number;
-  readonly north: number;
-  /**
-   * Your own picture, turned and sized where the document lays it: a cap's east and north mapped
-   * onto the texture by this matrix in place of the box (`T-M05-002d`, board 5.2).
-   */
-  readonly uv?: Matrix3;
 }
 
 /**
@@ -97,12 +82,15 @@ function standAt(
 }
 
 /**
- * Every roof of the design as two meshes (`T-M05-002`, part e): the walls, parapets and posts in
- * plaster, and the tops and sloped faces wearing the ground's picture. Each height is counted from
- * the ground, so one stretch of the group raises the whole model and nothing on a roof is stretched.
+ * Every roof of the design (`T-M05-002`, part e, roof looks): the walls, parapets and posts in
+ * plaster, the tops the photo shows true wearing it, and every other top and face its material's
+ * look. Each height is counted from the ground, so one stretch of the group raises the whole model
+ * and nothing on a roof is stretched.
  */
 function RoofModel({
   scene,
+  top,
+  pictureComing,
   map,
   palette,
   rise,
@@ -112,21 +100,16 @@ function RoofModel({
   scene: RoofScene;
   /** The whole model's highest point: while parts move on their own, the group still stands. */
   highest: number;
-  /** The picture the tops wear; `null` on the grid, where a top is plaster. */
+  top: RoofTopPicture | null;
+  pictureComing: boolean;
+  /** The picture the photo's tops wear; `null` while it comes. */
   map: Texture | null;
   palette: ThemePalette;
   rise: RoofRise;
   /** The parts moving into a change, drawn in the same risen group. */
   children?: ReactNode;
 }) {
-  const model = useMemo(() => roofGeometries(scene), [scene]);
-  useEffect(
-    () => () => {
-      model.walls.dispose();
-      model.tops.dispose();
-    },
-    [model],
-  );
+  const model = useRoofMeshes(scene, top, pictureComing, palette);
   return (
     <group
       ref={(group) => {
@@ -135,21 +118,7 @@ function RoofModel({
       name="roofs"
       userData={{ rises: true, metres: Math.max(model.topM, highest) }}
     >
-      <mesh geometry={model.walls} castShadow receiveShadow>
-        <meshStandardMaterial color={palette['scene-wall']} roughness={PLASTER_ROUGHNESS} />
-      </mesh>
-      <mesh geometry={model.tops} castShadow receiveShadow>
-        {/* A sloped face and an open shed's sheet are seen from under them too. */}
-        {map === null ? (
-          <meshStandardMaterial
-            color={palette['scene-wall']}
-            roughness={PLASTER_ROUGHNESS}
-            side={DoubleSide}
-          />
-        ) : (
-          <meshBasicMaterial map={map} toneMapped={false} side={DoubleSide} />
-        )}
-      </mesh>
+      <StudioRoofLooks model={model} palette={palette} photo={map} />
       {children}
     </group>
   );
@@ -213,14 +182,17 @@ export function StudioRoofs({
   marks,
   screen,
   motion,
+  pictureComing,
 }: {
   /** The 3D model of the design drawn: the kernel's solids and faces. */
   scene: RoofScene;
   view: StudioView;
   still: boolean;
   palette: ThemePalette;
-  /** The sky picture the roofs' tops wear; `null` on the grid. */
+  /** The picture the roofs' tops wear; `null` on the grid, or while it comes. */
   top: RoofTopPicture | null;
+  /** A picture is on its way: the roofs that will wear it stay plain until it comes. */
+  pictureComing: boolean;
   rise: RoofRise;
   /** The share of its new size the model stands at while the first length grows it. */
   sizing: RefObject<number>;
@@ -268,6 +240,8 @@ export function StudioRoofs({
       <RoofModel
         scene={playing.motion?.still ?? model}
         highest={highest}
+        top={top}
+        pictureComing={pictureComing}
         map={map}
         palette={palette}
         rise={rise}
@@ -280,8 +254,9 @@ export function StudioRoofs({
             started={playing.started}
             seconds={playing.seconds}
             palette={palette}
+            top={top}
+            pictureComing={pictureComing}
             map={map}
-            roughness={PLASTER_ROUGHNESS}
           />
         ))}
       </RoofModel>
