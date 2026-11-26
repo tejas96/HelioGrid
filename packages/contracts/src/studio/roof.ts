@@ -170,6 +170,11 @@ export const roofSchema = z
     on: uuidSchema.optional(),
     partOf: uuidSchema.optional(),
     material: roofMaterialSchema.optional(),
+    // Roof looks: the colour a person picked, read one release before a studio writes it.
+    colour: z
+      .object({ swatch: storedName, setBy: z.enum(VALUE_SETTERS) })
+      .strict()
+      .optional(),
     shape: roofShapeSchema.optional(),
     slope: setDegrees.optional(),
     overhang: overhangSchema.optional(),

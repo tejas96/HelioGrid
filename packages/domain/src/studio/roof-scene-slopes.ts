@@ -35,7 +35,15 @@ function wallsUnder(index: number, eaveM: number, faces: readonly BuiltFace[]): 
       if (!stands || from === undefined || to === undefined) return [];
       if (from.up < SAME_M && to.up < SAME_M) return [];
       return [
-        { roof: index, from, to, footM: eaveM, fromTopM: eaveM + from.up, toTopM: eaveM + to.up },
+        {
+          roof: index,
+          kind: 'end',
+          from,
+          to,
+          footM: eaveM,
+          fromTopM: eaveM + from.up,
+          toTopM: eaveM + to.up,
+        },
       ];
     }),
   );
@@ -165,9 +173,12 @@ export function slopedTops(
       ...corner,
       up: eaveM + corner.up,
     });
+    // Where a strip roof's profile steps up — a sawtooth's teeth, a monitor's raised middle — it
+    // stands in glass.
     const strips = built.walls.map(
       (wall): SceneWall => ({
         roof: index,
+        kind: 'glass',
         from: wall.from,
         to: wall.to,
         footM: eaveM + wall.lowM,
@@ -180,6 +191,7 @@ export function slopedTops(
         roof: index,
         corners: face.corners.map(lifted),
         holes: (face.holes ?? []).map((hole) => hole.map(lifted)),
+        edges: face.edges,
       })),
       walls: [...wallsUnder(index, eaveM, shown), ...strips],
       liftM,

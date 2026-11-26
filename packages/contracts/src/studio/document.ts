@@ -1,5 +1,6 @@
 import {
   CORNERS_READ_MAX,
+  FLAT_ROOF_WEARS,
   PICTURE_CHOICES,
   PICTURE_METRES_PER_UNIT_MAX,
   PICTURE_METRES_PER_UNIT_MIN,
@@ -69,6 +70,8 @@ export const studioDocumentSchema = z
     ownPicture: laidPictureSchema.nullable().optional(),
     plan: laidPlanSchema.nullable().optional(),
     stairsSkipped: z.boolean().optional(),
+    // Roof looks: read one release before a studio writes it (`CLAUDE.md` §8).
+    flatRoofs: z.enum(FLAT_ROOF_WEARS).optional(),
   })
   .strict()
   .refine((document) => cornersIn(document.roofs) <= CORNERS_READ_MAX, {

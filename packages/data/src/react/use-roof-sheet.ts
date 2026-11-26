@@ -111,7 +111,9 @@ export function useRoofSheet({
   /** The sheet lands on a roof — `null` closes it — keeping a height in hand first; `false` when refused. */
   landOn(index: number | null): boolean;
 } {
-  const [open, setOpen] = useState<{ roof: number } | null>(null);
+  // The open roof by its id: a roof deleted, added or put back by Undo moves the others' places in
+  // the list, and a place would hand the sheet to whichever roof came to stand in it.
+  const [open, setOpen] = useState<{ id: string } | null>(null);
   const [inHand, setInHand] = useState<number | null>(null);
   // The box keeps what was typed, a half-typed number included, until the sheet moves on.
   const [typed, setTyped] = useState<LengthEntry | null>(null);
@@ -121,7 +123,11 @@ export function useRoofSheet({
   hand.current = inHand;
   const grabbedAt = useRef(0);
 
-  const roof = open?.roof ?? null;
+  const at =
+    open === null || document === null
+      ? -1
+      : document.roofs.findIndex((each) => each.id === open.id);
+  const roof = at < 0 ? null : at;
   /** The height the roof at `index` stands at where none is set: its kind's first height. */
   const startOf = (design: StudioDocument, index: number) => {
     const at = design.roofs[index];
@@ -131,17 +137,33 @@ export function useRoofSheet({
     roof === null || document === null
       ? null
       : roofSheetOf(document, roof, startOf(document, roof), inHand, facts);
-  // Undo, or a save read again, took the open roof away: its sheet goes with it.
+  // A delete, Undo or a save read again took the open roof away: its sheet goes with it.
   const gone = open !== null && roofSheet === null && document !== null;
   useEffect(() => {
-    if (gone) setOpen(null);
+    if (!gone) return;
+    // A height in hand went with its roof: it never follows the sheet to another one.
+    hand.current = null;
+    setInHand(null);
+    setTyped(null);
+    setOpen(null);
   }, [gone]);
 
+  /**
+   * Where the open roof stands in a design, by its id; `null` when it is not there. A move reads
+   * the design held now, which an act of this same tap may have changed since the render: the
+   * place the render saw may hold another roof by then.
+   */
+  const here = (design: StudioDocument): number | null => {
+    if (open === null) return null;
+    const index = design.roofs.findIndex((each) => each.id === open.id);
+    return index < 0 ? null : index;
+  };
   const standing = () => {
     const design = latest.current?.present;
-    const at = design?.roofs[roof ?? -1];
-    if (design === undefined || at === undefined) return null;
-    return roofHeightOf(at, startOf(design, roof ?? -1)).metres;
+    const index = design === undefined ? null : here(design);
+    const at = index === null ? undefined : design?.roofs[index];
+    if (design === undefined || index === null || at === undefined) return null;
+    return roofHeightOf(at, startOf(design, index)).metres;
   };
   const hold = (metres: number | null, entry: LengthEntry | null = null) => {
     hand.current = metres;
@@ -153,8 +175,14 @@ export function useRoofSheet({
   /** The height in hand kept: `false` when it is refused and stays in the box with its reason. */
   const keep = (): boolean => {
     const at = latest.current;
-    if (!editable || roof === null || at === null) return true;
-    const kept = roofHeightKept(at.present, roof, hand.current, startOf(at.present, roof));
+    if (!editable || at === null) return true;
+    const index = here(at.present);
+    // The open roof is gone from the design: a height in hand went with it.
+    if (index === null) {
+      hold(null);
+      return true;
+    }
+    const kept = roofHeightKept(at.present, index, hand.current, startOf(at.present, index));
     if (kept?.kind === 'refused') {
       setRefusal(kept.refusal);
       return false;
@@ -164,9 +192,10 @@ export function useRoofSheet({
     return true;
   };
   const openRoof = (index: number) => {
-    if (!keep()) return;
+    const id = (latest.current?.present ?? document)?.roofs[index]?.id;
+    if (id === undefined || !keep()) return;
     hold(null);
-    setOpen({ roof: index });
+    setOpen({ id });
   };
   const close = () => {
     hold(null);
@@ -174,7 +203,8 @@ export function useRoofSheet({
   };
   return {
     landOn: (index) => {
-      if (index === roof) return true;
+      const lands = index === null ? null : (latest.current?.present.roofs[index]?.id ?? null);
+      if (lands === (open?.id ?? null)) return true;
       if (!keep()) return false;
       if (index === null) setOpen(null);
       else openRoof(index);
@@ -210,19 +240,21 @@ export function useRoofSheet({
       resetHeight: () => {
         const at = latest.current;
         hold(null);
-        if (!editable || roof === null || at === null) return;
-        if (at.present.roofs[roof]?.height == null) return;
-        change(historyAfter(at, roofHeightReset(at.present, roof)));
+        const index = at === null ? null : here(at.present);
+        if (!editable || at === null || index === null) return;
+        if (at.present.roofs[index]?.height == null) return;
+        change(historyAfter(at, roofHeightReset(at.present, index)));
       },
       grabHeight: () => {
         grabbedAt.current = hand.current ?? standing() ?? 0;
       },
       dragHeight: (risenM, reachM = HEIGHT_PULL_M) => {
         const design = latest.current?.present;
-        if (!editable || roof === null || design === undefined || roofSheet === null) return;
+        const index = design === undefined ? null : here(design);
+        if (!editable || index === null || design === undefined || roofSheet === null) return;
         const dragged = roofHeightDragged(grabbedAt.current, risenM, roofSheet.slide);
         const reach = Math.min(Math.max(reachM, HEIGHT_PULL_M), HEIGHT_PULL_MAX_M);
-        const pulled = pullOf(design, roof, dragged, reach);
+        const pulled = pullOf(design, index, dragged, reach);
         hold(pulled?.metres ?? dragged);
         setPull(pulled);
       },

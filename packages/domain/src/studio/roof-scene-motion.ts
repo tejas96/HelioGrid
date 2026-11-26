@@ -57,6 +57,7 @@ function partsOf(scene: RoofScene, roof: number, pick: Pick): RoofScene {
     faces: top ? scene.faces.filter((face) => face.roof === roof) : [],
     walls: top ? scene.walls.filter((wall) => wall.roof === roof) : [],
     levels: [],
+    skins: scene.skins,
   };
 }
 
