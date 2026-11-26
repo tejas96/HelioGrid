@@ -1,5 +1,6 @@
 import type { ProvenanceTier } from '../format/qualified';
 import type { GroundPoint } from './ground';
+import type { RoofSwatch } from './roof-look-kinds';
 import type { RoofFixedLike, RoofMaterial, RoofShape } from './roof-material';
 
 /**
@@ -96,6 +97,15 @@ export interface RoofMaterialSet {
   readonly fixedLike?: Stored<RoofFixedLike>;
   readonly setBy: ValueSetter;
   readonly confirmed: boolean;
+}
+
+/**
+ * The colour a person picked for a roof's material (`roof-look.ts`). Stored only when a person
+ * picks: the system's colour is read off the photo each time, so it follows a newer photo.
+ */
+export interface RoofColourSet {
+  readonly swatch: Stored<RoofSwatch>;
+  readonly setBy: ValueSetter;
 }
 
 /** A parapet is a wall, or a railing, which casts almost no shade. */

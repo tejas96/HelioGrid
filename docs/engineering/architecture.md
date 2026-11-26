@@ -412,7 +412,9 @@ Walk top-down; first match wins. The plan records the answer for each new file.
    `<Name>.types.ts` plus `<Name>.tsx` (web) and `<Name>.native.tsx` (RN), one change
    (Law 7).
 9. Is it screen composition/rendering for one platform? → that app's screens/features
-   tree, composing the layers above. Screens hold rendering, not policy.
+   tree, composing the layers above. Screens hold rendering, not policy. A static file a web
+   screen loads at run time (a 3D look's texture maps) → `apps/web/public/<feature>/`, which
+   Next serves from the site's root.
 10. Is it environment/config? → a schema in packages/env + .env.example. A raw process.env
     read anywhere else needs an entry in biome.json's `noProcessEnv` override (§2 env).
 11. Is it the agent's own instruction or a check — a rule, a lint plugin, an invariant, a CI

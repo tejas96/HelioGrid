@@ -5,7 +5,7 @@ import {
   normaliseHexColour,
   parseHexColour,
   toHexColour,
-} from '../../src/branding/hex-colour';
+} from '../../src/format/hex-colour';
 
 describe('isHexColour — #RGB or #RRGGBB, either case', () => {
   it.each([['#abc'], ['#ABCDEF'], ['#000000']])('accepts %s', (value) => {

@@ -2,9 +2,10 @@
 import type { SceneMove, SceneMoveKind } from '@heliogrid/domain';
 import { type ThemePalette, theme } from '@heliogrid/theme';
 import { useFrame } from '@react-three/fiber';
-import { type RefObject, useEffect, useMemo, useRef } from 'react';
-import { DoubleSide, type Group, type Material, type Texture } from 'three';
-import { roofGeometries } from './roof-mesh';
+import { type RefObject, useRef } from 'react';
+import type { Group, Material, Texture } from 'three';
+import type { RoofTopPicture } from './photo-reader';
+import { StudioRoofLooks, useRoofMeshes } from './StudioRoofLooks';
 
 /**
  * The 3D model moving into a change (`T-M05-002`, part e, plan step S18): each part that moves is
@@ -89,7 +90,8 @@ function placeAt(group: Group, move: SceneMove, s: number, materials: readonly M
     default:
       opacity = at;
   }
-  for (const material of materials) material.opacity = opacity;
+  // A see-through material — glass — keeps its own share of the light: the move scales it.
+  for (const material of materials) material.opacity = (material.userData.opacity ?? 1) * opacity;
 }
 
 /**
@@ -101,26 +103,21 @@ export function RoofMove({
   started,
   seconds,
   palette,
+  top,
+  pictureComing,
   map,
-  roughness,
 }: {
   move: SceneMove;
   started: RefObject<number | null>;
   seconds: number;
   palette: ThemePalette;
-  /** The picture the tops wear; `null` on the grid. */
+  top: RoofTopPicture | null;
+  pictureComing: boolean;
+  /** The picture the photo's tops wear; `null` while it comes. */
   map: Texture | null;
-  roughness: number;
 }) {
   const group = useRef<Group>(null);
-  const model = useMemo(() => roofGeometries(move.parts), [move.parts]);
-  useEffect(
-    () => () => {
-      model.walls.dispose();
-      model.tops.dispose();
-    },
-    [model],
-  );
+  const model = useRoofMeshes(move.parts, top, pictureComing, palette);
   const materials = useRef<Material[]>([]);
   const fades = move.kind === 'fade_in' || move.kind === 'fade_out';
   useFrame(({ clock, invalidate }) => {
@@ -133,38 +130,13 @@ export function RoofMove({
     if (s < 1) invalidate();
   });
   const keep = (material: Material | null) => {
-    if (material !== null && !materials.current.includes(material))
-      materials.current.push(material);
+    if (material === null || materials.current.includes(material)) return;
+    material.userData.opacity = material.opacity;
+    materials.current.push(material);
   };
   return (
     <group ref={group}>
-      <mesh geometry={model.walls} castShadow receiveShadow>
-        <meshStandardMaterial
-          ref={keep}
-          color={palette['scene-wall']}
-          roughness={roughness}
-          transparent={fades}
-        />
-      </mesh>
-      <mesh geometry={model.tops} castShadow receiveShadow>
-        {map === null ? (
-          <meshStandardMaterial
-            ref={keep}
-            color={palette['scene-wall']}
-            roughness={roughness}
-            side={DoubleSide}
-            transparent={fades}
-          />
-        ) : (
-          <meshBasicMaterial
-            ref={keep}
-            map={map}
-            toneMapped={false}
-            side={DoubleSide}
-            transparent={fades}
-          />
-        )}
-      </mesh>
+      <StudioRoofLooks model={model} palette={palette} photo={map} keep={keep} fades={fades} />
     </group>
   );
 }

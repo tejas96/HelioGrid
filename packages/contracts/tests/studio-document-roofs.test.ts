@@ -105,6 +105,8 @@ describe('what part e stores on a roof, on the wire', () => {
       { material: { type: 'bamboo_mat', ...SYSTEM, confirmed: false } },
     ],
     ['a shape a later studio adds', { shape: { is: 'barrel_vault', ...SYSTEM } }],
+    ['a colour a person picked', { colour: { swatch: 'blue', ...PERSON } }],
+    ['a colour a later studio adds', { colour: { swatch: 'teal', ...PERSON } }],
   ])('%s is kept as it came', (_why, later) => {
     const sent = withRoofs({ ...roofAt(1), ...later });
     expect(studioDocumentSchema.parse(sent)).toEqual(sent);
@@ -130,6 +132,12 @@ describe('what part e stores on a roof, on the wire', () => {
     ['a side with a field it does not know', { sides: [{ gutter: true }, {}, {}, {}] }],
     ['a roof standing on itself', { on: ID(1) }],
     ['a roof that is part of itself', { partOf: ID(1) }],
+    ['a colour with no setter', { colour: { swatch: 'blue' } }],
+    ['a colour that is not a plain word', { colour: { swatch: 'Sky Blue', ...PERSON } }],
+    [
+      'a colour with a field it does not know',
+      { colour: { swatch: 'blue', ...PERSON, hex: '#00f' } },
+    ],
   ])('refuses %s', (_why, bad) => {
     expect(reads(withRoofs({ ...roofAt(1), ...bad }))).toBe(false);
   });
@@ -262,5 +270,22 @@ describe('a roof of any shape: its faces drawn by hand, read one release before 
     ['more faces than a roof holds', Array.from({ length: 33 }, () => face(0))],
   ])('%s is refused', (_why, faces) => {
     expect(reads(withRoofs(anyShape(faces)))).toBe(false);
+  });
+});
+
+describe('what a design’s flat roofs wear, on the wire', () => {
+  it.each(['photo', 'material'])('“%s” reads back as sent', (flatRoofs) => {
+    const sent = { ...withRoofs(roofAt(1)), flatRoofs };
+    expect(studioDocumentSchema.parse(sent)).toEqual(sent);
+  });
+
+  it('a design saved before roof looks reads with none', () => {
+    expect(Object.keys(studioDocumentSchema.parse(withRoofs(roofAt(1))))).not.toContain(
+      'flatRoofs',
+    );
+  });
+
+  it('refuses a wear it does not know', () => {
+    expect(reads({ ...withRoofs(roofAt(1)), flatRoofs: 'satellite' })).toBe(false);
   });
 });

@@ -4,6 +4,7 @@
  * the 3D model's shape. The geometry behind them is the kernel's (`../studio-kernel.ts`).
  */
 export * from './compass';
+export * from './roof-dress';
 export * from './roof-height-pull';
 export * from './roof-kind';
 export { type KindLine, kindLineOf } from './roof-kind-line';
@@ -14,6 +15,9 @@ export {
   roofTopsM,
 } from './roof-levels';
 export * from './roof-list';
+export * from './roof-look';
+export * from './roof-look-colour';
+export * from './roof-look-kinds';
 export * from './roof-material';
 export type { MaterialPick } from './roof-material-set';
 export * from './roof-meeting';
