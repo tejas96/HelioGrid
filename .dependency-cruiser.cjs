@@ -317,7 +317,7 @@ module.exports = {
         path: '^packages/domain/src/index\\.ts$|^packages/data/src/(index|react/index)\\.ts$|^apps/mobile/',
       },
       to: {
-        path: 'polygon-clipping|^@heliogrid/domain/studio-kernel|^packages/domain/(src|dist)/studio-kernel\\.|^packages/domain/src/studio/(wavefront-|roof-(faces|forms|profile|polygons|cuts|face-outline)\\.|site-(grid|plane|roof-fit|ground|outline|eaves|shift|utm|skyline|sunlight|groups|read)\\.)',
+        path: 'polygon-clipping|^@heliogrid/domain/studio-kernel|^packages/domain/(src|dist)/studio-kernel\\.|^packages/domain/src/studio/(wavefront-|roof-(faces|forms|profile|polygons|cuts|face-outline)\\.|site-(grid|plane|roof-fit|roof-reads|ground|outline|eaves|shift|utm|skyline|sunlight|groups|read)\\.)',
         reachable: true,
       },
     },

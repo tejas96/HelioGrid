@@ -1,7 +1,7 @@
 'use client';
 import type { DesignDetail } from '@heliogrid/contracts';
 import { useLeaveAsk } from '@heliogrid/data/react';
-import { useStudioScreen } from '@heliogrid/data/react/studio';
+import { SiteReaderProvider, useStudioScreen } from '@heliogrid/data/react/studio';
 import { designPageWords, siteDetailsPageWords, studioCanvasWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import {
@@ -34,10 +34,12 @@ import './studio-roofs-tree.css';
 import './studio-material.css';
 import './studio-length.css';
 import './studio-height.css';
+import { workerSiteReaders } from './hooks/use-site-reader';
 import './studio-sheet.css';
 import './studio-motion.css';
 import './studio-tools.css';
 import './studio-view.css';
+import './studio-sun.css';
 import './studio-focus.css';
 
 /**
@@ -45,12 +47,24 @@ import './studio-focus.css';
  * top view on its picture, with the pin; a design whose site has no place yet asks for Site details first.
  * Inside the phone app's web view the way back hands the person back to the phone.
  */
-export function DesignScreen({
+export function DesignScreen(props: {
+  designId: string;
+  /** The Proposals page opened it: the way back returns there (`T-M05-001b`). */
+  fromProposals?: boolean;
+}) {
+  // Each drawn roof is read on the height map in a Web Worker (`T-M05-002`, part g).
+  return (
+    <SiteReaderProvider value={workerSiteReaders}>
+      <DesignStudio {...props} />
+    </SiteReaderProvider>
+  );
+}
+
+function DesignStudio({
   designId,
   fromProposals = false,
 }: {
   designId: string;
-  /** The Proposals page opened it: the way back returns there (`T-M05-001b`). */
   fromProposals?: boolean;
 }) {
   const t = useTranslate();

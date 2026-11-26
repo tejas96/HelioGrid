@@ -28,6 +28,7 @@ import { queryKeys } from '../cache/keys';
 import { DesignActRefusedError } from '../studio/studio-repository';
 import { useRepositories } from './context';
 import { StudioSaveQueue, type StudioSaveState } from './studio-save-queue';
+import { useSkyPicture } from './use-sky-picture';
 import { useTenantId } from './use-tenant-id';
 
 /** What the ground shows: the sky picture with its facts, nothing yet, or no picture and why. */
@@ -250,13 +251,7 @@ export function useStudioDocument(designId: string, ready: boolean) {
     staleTime: Number.POSITIVE_INFINITY,
     gcTime: 0,
   });
-  const skyQuery = useQuery({
-    queryKey: [...designKey, 'sky-picture'],
-    queryFn: ({ signal }) => repositories.studio.skyPicture(designId, signal),
-    enabled: tenantId !== '' && ready,
-    staleTime: Number.POSITIVE_INFINITY,
-    gcTime: 0,
-  });
+  const sky = useSkyPicture(designId, ready, designKey, tenantId);
 
   const [history, setHistory] = useState<History<StudioDocument> | null>(null);
   const latest = useRef(history);
@@ -288,7 +283,7 @@ export function useStudioDocument(designId: string, ready: boolean) {
     setHistory(historyOf(stored.document));
     queue.start(stored.version);
   }, [stored, queue]);
-  return { documentQuery, skyQuery, history, latest, setHistory, saving, queue };
+  return { documentQuery, ...sky, history, latest, setHistory, saving, queue };
 }
 
 /** A roof as the wire takes it: its lists plain arrays, as the studio holds them read-only. */

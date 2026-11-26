@@ -14,9 +14,12 @@ function Foot({ at, children }: { at: HTMLElement | null; children: ReactNode })
   return at === null ? children : createPortal(children, at);
 }
 
+/** A row of the panel: a picture the design keeps, or Google's straight-down picture (part g). */
+type PanelChoice = PictureChoice | 'straight_down';
+
 /** One picture to pick: its mark, its name, its line, and why it cannot be picked yet. */
 interface PictureOption {
-  readonly choice: PictureChoice;
+  readonly choice: PanelChoice;
   readonly glyph: 'image' | 'camera' | 'grid';
   readonly title: TranslatedText;
   readonly line: TranslatedText;
@@ -29,11 +32,13 @@ function chipFacts(
   shown: PictureChoice,
   words: StudioCanvasWords,
   ownLine: string | null,
+  straightOn: boolean,
 ) {
   const sky = picture.kind === 'sky' ? picture : null;
   const own = picture.kind === 'own' ? picture : null;
   const ownTitle = own === null ? words.yourPicture : words.ownTitle(own.pictureKind);
-  const title = shown === 'none' ? words.noPicture : shown === 'own' ? ownTitle : words.skyPicture;
+  const skyTitle = straightOn ? words.siteStraightDown : words.skyPicture;
+  const title = shown === 'none' ? words.noPicture : shown === 'own' ? ownTitle : skyTitle;
   const pieces = sky?.pieces ?? own?.pieces ?? [];
   const skySource = sky === null || shown !== 'sky' ? null : words.source(sky.source);
   return {
@@ -98,23 +103,44 @@ function ChipButton({
   );
 }
 
-/** The three pictures the panel offers. */
+/** The pictures the panel offers: the sky picture, Google's straight-down one where offered, yours, none. */
 function optionsOf(
   sharpness: string | null,
   takenOn: string | null,
   words: StudioCanvasWords,
+  straight: StraightDown | null,
 ): readonly PictureOption[] {
+  const skyLine =
+    sharpness === null
+      ? words.skyLoading
+      : takenOn === null
+        ? words.siteSkyUndated(words.source('google'), sharpness)
+        : words.skyLine(sharpness, takenOn);
   return [
-    {
-      choice: 'sky',
-      glyph: 'image',
-      title: words.skyPicture,
-      line: sharpness === null ? words.skyLoading : words.skyLine(sharpness, takenOn),
-      off: null,
-    },
+    { choice: 'sky', glyph: 'image', title: words.skyPicture, line: skyLine, off: null },
+    ...(straight === null
+      ? []
+      : [
+          {
+            choice: 'straight_down' as const,
+            glyph: 'image' as const,
+            title: words.siteStraightDown,
+            line: straight.line,
+            off: null,
+          },
+        ]),
     { choice: 'own', glyph: 'camera', title: words.yourPicture, line: words.yourLine, off: null },
     { choice: 'none', glyph: 'grid', title: words.noPicture, line: words.noLine, off: null },
   ];
+}
+
+/** Google's straight-down picture as the panel offers it (`T-M05-002`, part g). */
+export interface StraightDown {
+  /** Its line: who gave it, its sharpness and date, what it is for. */
+  readonly line: TranslatedText;
+  /** It shows in place of the sky picture now. */
+  readonly on: boolean;
+  readonly onPick: (on: boolean) => void;
 }
 
 /** The line under the picture's name: who gave it, with how sharp it is or the day it was taken. */
@@ -152,6 +178,9 @@ export function StudioPictureChip({
   onPickFile,
   ownLaid,
   planRow,
+  dataRows,
+  dataCredits,
+  straight,
   foot,
   thumbOnly,
 }: {
@@ -181,6 +210,12 @@ export function StudioPictureChip({
   ownLaid: boolean;
   /** The plan's row under the pictures: its name, its page, its eye and its lock. */
   planRow: ReactNode;
+  /** The heights' row (`T-M05-002`, part g). */
+  dataRows: ReactNode;
+  /** The site data's credits, beside the picture's at the foot, never covered. */
+  dataCredits: readonly TranslatedText[];
+  /** Google's straight-down picture, where its height data holds one; `null` where not. */
+  straight: StraightDown | null;
   /** On a phone, the canvas's foot, where the pictures open; `null` under the chip. */
   foot: HTMLElement | null;
 }) {
@@ -190,10 +225,19 @@ export function StudioPictureChip({
   const titleId = useId();
   const close = useCallback(() => setOpen(false), [setOpen]);
   useRadioPanel(menu, open, close, holder, '.hg-studio-chip');
-  const { title, source, credit, thumb } = chipFacts(picture, shown, words, ownLine);
+  const { title, source, credit, thumb } = chipFacts(
+    picture,
+    shown,
+    words,
+    ownLine,
+    straight?.on === true,
+  );
   const line = lineOf(source, shown === 'sky' ? (drawnOn ?? sharpness) : null, shown, words);
   const pickable = canPick && !thumbOnly;
-  const options = optionsOf(sharpness, takenOn, words);
+  const options = optionsOf(sharpness, takenOn, words, straight);
+  const creditLine = [...(credit === null || shown === 'none' ? [] : [credit]), ...dataCredits];
+  const checked = (choice: PanelChoice) =>
+    straight?.on === true && shown === 'sky' ? choice === 'straight_down' : choice === shown;
 
   return (
     <div ref={holder} className="hg-studio-picture">
@@ -234,12 +278,14 @@ export function StudioPictureChip({
                   className="hg-studio-picker-row"
                   accessibilityRole="radio"
                   accessibilityState={{
-                    checked: option.choice === shown,
+                    checked: checked(option.choice),
                     disabled: option.off !== null,
                   }}
                   disabled={option.off !== null}
                   onPress={() => {
                     setOpen(false);
+                    straight?.onPick(option.choice === 'straight_down');
+                    if (option.choice === 'straight_down') return;
                     // Your picture laid but put aside comes back as it was; shown, a tap picks another.
                     if (option.choice === 'own' && (!ownLaid || shown === 'own')) onPickFile();
                     else onPick(option.choice);
@@ -254,9 +300,10 @@ export function StudioPictureChip({
               ))}
             </div>
             {planRow}
+            {dataRows}
             <p className="hg-studio-picker-guide">{words.pictureGuide}</p>
-            {credit === null || shown === 'none' ? null : (
-              <p className="hg-studio-picker-credit">{credit}</p>
+            {creditLine.length === 0 ? null : (
+              <p className="hg-studio-picker-credit">{creditLine.join(' · ')}</p>
             )}
           </div>
         </Foot>

@@ -14,6 +14,7 @@ import {
 import { type KeyboardEvent, type Ref, useEffect, useRef } from 'react';
 import { MagnetSwitch } from './StudioBarPills';
 import { StudioFaceRows } from './StudioFaceRows';
+import { StudioSheetFit } from './StudioSheetFit';
 import type { SheetFacts } from './StudioSheetRow';
 import { StudioSheetRows } from './StudioSheetRows';
 import { StudioSideRows } from './StudioSideSheet';
@@ -118,6 +119,9 @@ export function StudioRoofSheet({
               <span className="hg-sheet-dot" aria-hidden="true" />
               {words.checkOnSite}
             </p>
+          ) : null}
+          {part.kind === 'roof' ? (
+            <StudioSheetFit studio={studio} sheet={sheet} units={units} words={words} />
           ) : null}
         </div>
         <SheetFoot

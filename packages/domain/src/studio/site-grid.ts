@@ -1,21 +1,9 @@
 import { base64Of, bytesOfBase64 } from '../format/base64';
 import type { GroundBox, GroundPoint } from './ground';
 import { pointInside } from './roof-shape';
-import type { HeightGridWire } from './site-data';
+import type { HeightGrid, HeightGridWire } from './site-data';
 
-/**
- * A grid of heights on the site's ground (`T-M05-002`, part g): square cells `stepM` a side, from
- * the south-west corner `west, south` (metres east and north of the pin), row 0 the southmost.
- * Each height is in metres above the site's datum; `NaN` where the data holds none.
- */
-export interface HeightGrid {
-  readonly west: number;
-  readonly south: number;
-  readonly stepM: number;
-  readonly cols: number;
-  readonly rows: number;
-  readonly heights: Float32Array;
-}
+export type { HeightGrid } from './site-data';
 
 /** Which cells of a grid lie on a building: the height map's own building mask, 1 or 0. */
 export interface MaskGrid {

@@ -176,6 +176,12 @@ export {
 } from './studio/site-read';
 export { FIT_CLEAR_RMSE_M, mapHeightInside, type RoofFit, roofFitOf } from './studio/site-roof-fit';
 export {
+  roofDataReadsOf,
+  roofsSunlightOf,
+  type SiteGrids,
+  siteGridsOf,
+} from './studio/site-roof-reads';
+export {
   type PictureGrid,
   type PictureShift,
   pictureFromWire,
@@ -194,9 +200,9 @@ export {
   skylineFromSouthBearings,
   skylinesJoined,
 } from './studio/site-skyline';
+export { sunChartOf } from './studio/site-sun-chart';
 export {
-  SUNLIGHT_KEY_FROM,
-  SUNLIGHT_KEY_TO,
+  roofSunlightOf,
   type SunSample,
   skyViewOf,
   sunlightSpread,

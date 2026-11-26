@@ -53,6 +53,13 @@ export const LINE_UP_STEP_M = 0.1;
  */
 export const HEIGHT_DATA_KEEP_DAYS = 30;
 
+/** How sharp each quality of Google's height map is: the ground one cell covers, in metres. */
+export const HEIGHT_DATA_SHARPNESS_M: Record<HeightDataQuality, number> = {
+  high: 0.1,
+  medium: 0.25,
+  base: 0.25,
+};
+
 /** Height data this many months old or more asks whether the building has changed. */
 export const HEIGHT_DATA_STALE_MONTHS = 12;
 
@@ -107,6 +114,20 @@ export interface SiteEave {
   readonly to: GroundPoint;
   /** The roof's height at the edge, above the building's ground. */
   readonly heightM: number;
+}
+
+/**
+ * A grid of heights on the site's ground (`T-M05-002`, part g): square cells `stepM` a side, from
+ * the south-west corner `west, south` (metres east and north of the pin), row 0 the southmost.
+ * Each height is in metres above the site's datum; `NaN` where the data holds none.
+ */
+export interface HeightGrid {
+  readonly west: number;
+  readonly south: number;
+  readonly stepM: number;
+  readonly cols: number;
+  readonly rows: number;
+  readonly heights: Float32Array;
 }
 
 /** A height grid as it travels: heights in whole centimetres, two bytes each, as base64. */

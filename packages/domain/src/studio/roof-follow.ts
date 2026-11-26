@@ -26,7 +26,15 @@ export interface FollowAlong {
 }
 
 function ownerKey(owner: SnapOwner): string {
-  return owner.kind === 'roof' ? `r${owner.roof}` : `f${owner.roof}.${owner.face}`;
+  switch (owner.kind) {
+    case 'roof':
+      return `r${owner.roof}`;
+    case 'face':
+      return `f${owner.roof}.${owner.face}`;
+    default:
+      // A building's eave is one of its walls: one outline to follow.
+      return `b${owner.building}`;
+  }
 }
 
 /** The outlines a drawing can follow, each its corners in order. */

@@ -119,7 +119,12 @@ export class StudioSiteDataService {
         const at = tight ? middle : snapped(middle);
         const radiusM = tight ? SHARPEST_RADIUS_M : snappedRadius(group.radiusM);
         const map = await this.sources.heightMapAt(at, radiusM, tight, call);
-        return map === null ? null : { group: i, map };
+        if (map === null) return null;
+        // The group about the pin notes its map, where the straight-down picture is read.
+        if (Math.hypot(group.middle.east, group.middle.north) <= group.radiusM) {
+          await this.sources.notePinMap(pin, keys.heightMap(at, radiusM, tight), call.now);
+        }
+        return { group: i, map };
       }),
     );
     const maps = read.filter((one): one is GroupMap => one !== null);

@@ -93,7 +93,7 @@ function heightOf(
     return { from: { kind: 'above', roof: nameOf(document, holder) }, ticks: [], floor: null };
   }
   const ticks = floorTicks(facts.plinthHeightM, facts.storeyHeightM, slide);
-  const floor = floorAt(ticks, roofOwnHeightM(document, roof, facts));
+  const floor = floorAt(ticks, roofOwnHeightM(document, roof, facts), facts.storeyHeightM);
   return { from: { kind: sloped ? 'low_edge' : 'ground' }, ticks, floor };
 }
 

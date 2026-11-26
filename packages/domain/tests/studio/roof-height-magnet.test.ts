@@ -77,3 +77,41 @@ describe('a roof’s height, dragged', () => {
     expect(heightPullOf(HOUSE, 9, FACTS, 3)).toBeNull();
   });
 });
+
+describe('a roof’s height, dragged, with the site data (`T-M05-002`, part g)', () => {
+  const ALONE = designOf(TERRACE);
+  /** A building's eave 2 m east of the terrace, measured 7.2 m up. */
+  const EAVE = { from: { east: 12, north: 0 }, to: { east: 12, north: 8 }, heightM: 7.2 };
+
+  it.each([
+    [
+      'level with a measured eave beside it, before a floor',
+      7.25,
+      { eaves: [EAVE], mapM: null },
+      7.2,
+      'eave',
+    ],
+    ['level with the height map inside it', 6.08, { eaves: [], mapM: 6.1 }, 6.1, 'height_map'],
+    [
+      'an eave far from the roof gives nothing: a round value',
+      7.45,
+      {
+        eaves: [{ ...EAVE, from: { east: 60, north: 0 }, to: { east: 60, north: 8 } }],
+        mapM: null,
+      },
+      7.5,
+      'round',
+    ],
+  ] as const)('%s', (_why, dragged, site, metres, kind) => {
+    const pull = heightPullOf(ALONE, 0, FACTS, dragged, undefined, site);
+    expect(pull?.metres).toBeCloseTo(metres, 9);
+    expect(pull?.to.kind).toBe(kind);
+  });
+
+  it('a stair room’s height map level counts from the roof it stands on', () => {
+    const stair = designOf(TERRACE, stairOn(box(0, 0, 3, 3)));
+    const pull = heightPullOf(stair, 1, FACTS, 2.38, undefined, { eaves: [], mapM: 2.4 });
+    expect(pull?.to.kind).toBe('height_map');
+    expect(pull?.metres).toBeCloseTo(2.4, 9);
+  });
+});

@@ -254152,7 +254152,7 @@
     },
     "/designs/{id}/sky-picture": {
       "get": {
-        "summary": "The sky picture of the design’s site, fetched now and never stored — or why there is none",
+        "summary": "The sky picture of the design’s site, fetched now and never stored — or why there is none; `view=straight_down` asks for Google’s straight-down picture from the site’s height data",
         "tags": [
           "studio"
         ],
@@ -254164,6 +254164,16 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "view",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "straight_down"
+              ]
             }
           }
         ],
@@ -254189,7 +254199,8 @@
                         "source": {
                           "type": "string",
                           "x-extensible-enum": [
-                            "google"
+                            "google",
+                            "google_solar"
                           ]
                         },
                         "credit": {

@@ -105,7 +105,7 @@ export interface RoofSheetRows {
   readonly height: {
     readonly from: HeightFrom;
     readonly ticks: readonly FloorTick[];
-    /** The floor its height stands on now; `null` between floors. */
+    /** The floor its height reads as now: the nearest, within half a storey. */
     readonly floor: FloorTick | null;
   };
   /** A sloped roof's slope, the way it runs and how high its ridge stands over its low edge. */
@@ -228,9 +228,21 @@ export function floorTicks(
 /** A height this near a floor stands on it. */
 const ON_FLOOR_M = 0.005;
 
-/** The floor a height stands on; `null` between floors. */
-export function floorAt(ticks: readonly FloorTick[], metres: number): FloorTick | null {
-  return ticks.find((tick) => Math.abs(tick.metres - metres) <= ON_FLOOR_M) ?? null;
+/**
+ * The floor a height reads as: the nearest, within half a storey (board G2: a map's 6.1 m is G+1);
+ * `null` past that, under G or over the top floor.
+ */
+export function floorAt(
+  ticks: readonly FloorTick[],
+  metres: number,
+  storeyM: number,
+): FloorTick | null {
+  const [first] = ticks;
+  if (first === undefined) return null;
+  const nearest = ticks.reduce((best, tick) =>
+    Math.abs(tick.metres - metres) < Math.abs(best.metres - metres) ? tick : best,
+  );
+  return Math.abs(nearest.metres - metres) <= storeyM / 2 + ON_FLOOR_M ? nearest : null;
 }
 
 /** − and + on the height: the next floor down or up; `null` past the last one. */

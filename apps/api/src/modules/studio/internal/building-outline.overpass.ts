@@ -9,6 +9,8 @@ const RING_MIN = 4;
 const RING_MAX = 400;
 /** Six decimals of a degree: a tenth of a metre. */
 const DEGREE_DIGITS = 6;
+/** The public server answers 406 to a client that names no one, as Node's own fetch does. */
+const CLIENT_NAME = 'HelioGrid-studio/1.0';
 
 const answerSchema = z.object({
   elements: z.array(
@@ -59,7 +61,7 @@ export class OverpassBuildingOutlines implements BuildingOutlineSource {
     // biome-ignore lint/style/noRestrictedGlobals: an outbound call to an Overpass server, not our wire; no typed client exists for it
     const answer = await fetch(this.address, {
       method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      headers: { 'content-type': 'application/x-www-form-urlencoded', 'user-agent': CLIENT_NAME },
       body: new URLSearchParams({ data: query }),
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });

@@ -1,7 +1,12 @@
-import type { SiteDataWire } from '@heliogrid/contracts';
+import type { SiteDataWire, SkyPictureWire } from '@heliogrid/contracts';
 import { type BuildingAnswer, ROOF_DATA_PORT, type RoofDataPort } from '@heliogrid/contracts';
 import type { Coordinate, SiteDataGap } from '@heliogrid/domain';
-import { SKYLINE_STEP_DEG, skylineFromSouthBearings } from '@heliogrid/domain/studio-kernel';
+import {
+  CALL_RADIUS_MAX_M,
+  roofGroupsOf,
+  SKYLINE_STEP_DEG,
+  skylineFromSouthBearings,
+} from '@heliogrid/domain/studio-kernel';
 import { Inject, Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { z } from 'zod';
@@ -18,9 +23,11 @@ import {
   keptHeightMapSchema,
   keptHorizonSchema,
   keptNoMapSchema,
+  keptPinMapSchema,
   keptVersion,
   keys,
   snapped,
+  snappedRadius,
 } from './internal/site-data-kept';
 import {
   BUILDING_OUTLINE_SOURCE,
@@ -28,6 +35,7 @@ import {
   FAR_HORIZON_SOURCE,
   type FarHorizonSource,
 } from './internal/site-surrounds';
+import { straightDownOf } from './internal/straight-down';
 
 /**
  * The openings one person may ask Google for in a minute. Each opening of a new place is billed,
@@ -39,6 +47,8 @@ const OPENINGS_PER_MINUTE = 12;
 /** OpenStreetMap's buildings are asked this far round the pin. */
 const OUTLINES_RADIUS_M = 100;
 const TENTHS = 10;
+/** The radii the pin's call is kept at: a house's, and a house with roofs drawn far round it. */
+const PIN_CALL_RADII = [snappedRadius(roofGroupsOf([])[0]?.radiusM ?? 0), CALL_RADIUS_MAX_M];
 
 /** One opening's facts every source call reads and adds to. */
 export interface CallFacts {
@@ -67,6 +77,33 @@ export class StudioSiteSources {
     @Inject(PinoLogger) private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(StudioSiteSources.name);
+  }
+
+  /**
+   * Google's straight-down picture round the pin, from the height map kept for the pin's call;
+   * none where no map with a picture is kept — it is never asked for on its own.
+   */
+  async straightDownAt(pin: Coordinate, now: number): Promise<SkyPictureWire> {
+    // The map the site data kept for the pin — the sharpest one, or one called where the roofs
+    // are — then the pin's own snapped calls.
+    const noted = await this.keptOf(keys.pinMap(pin), keptPinMapSchema);
+    const at = snapped(pin);
+    const tried = [
+      ...(noted !== null && fresh(noted, now) ? [noted.key] : []),
+      ...PIN_CALL_RADII.map((radiusM) => keys.heightMap(at, radiusM, false)),
+    ];
+    for (const key of tried) {
+      const kept = await this.keptOf(key, keptHeightMapSchema);
+      if (kept === null || !fresh(kept, now)) continue;
+      const picture = await straightDownOf(kept, pin);
+      if (picture !== null) return picture;
+    }
+    return { kind: 'none', gap: 'not_covered' };
+  }
+
+  /** Notes which kept map covers the pin, for its straight-down picture. */
+  async notePinMap(pin: Coordinate, key: string, now: number): Promise<void> {
+    await this.keep(keys.pinMap(pin), { v: keptVersion, keptAt: now, key });
   }
 
   get heightsSetUp(): boolean {

@@ -70,6 +70,8 @@ export const keys = {
     `solar/height-map/${placeOf(call)}_${Math.round(radiusM)}${sharpest ? '_sharpest' : ''}.json`,
   building: (point: Coordinate) => `solar/building/${pointOf(point)}.json`,
   horizon: (call: Coordinate) => `pvgis/horizon/${placeOf(call)}.json`,
+  /** Which kept height map covers a pin: its own call's, wherever its roofs put that call. */
+  pinMap: (pin: Coordinate) => `solar/pin-map/${pointOf(pin)}.json`,
 };
 
 /**
@@ -99,6 +101,9 @@ export const keptHeightMapSchema = z.object({
   files: z.object({ surface: z.string(), buildings: z.string(), picture: z.string().nullable() }),
 });
 export type KeptHeightMap = z.infer<typeof keptHeightMapSchema>;
+
+/** Where the height map covering a pin is kept: the straight-down picture is read from it. */
+export const keptPinMapSchema = z.object({ ...keptSchema, key: z.string().min(1) });
 
 /** A place Google holds no height map of — kept too, so it is not asked again for 30 days. */
 export const keptNoMapSchema = z.object({ ...keptSchema, none: z.literal(true) });

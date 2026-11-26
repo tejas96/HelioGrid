@@ -10,16 +10,20 @@ import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { type ReactNode, type RefObject, useMemo, useRef, useState } from 'react';
-import { MathUtils } from 'three';
+import { Color, MathUtils } from 'three';
 import { deviceHintsNow } from '../hooks/use-device-hints';
+import type { SunSkyShown } from '../hooks/use-sun-sky';
 import type { SceneFit } from './camera-poses';
 import type { RoofTopPicture } from './photo-reader';
 import { type ClearGround, StudioCameraRig, type StudioDrive } from './StudioCameraRig';
+import { type HeightViewShown, StudioHeightView } from './StudioHeightView';
 import { StudioOwnGround } from './StudioOwnGround';
 import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
 import { StudioPlanLines } from './StudioPlanLines';
 import { type RoofMarksHandle, type RoofRise, StudioRoofs } from './StudioRoofs';
 import { StudioScaleTween } from './StudioScaleTween';
+import { StudioSiteShade } from './StudioSiteShade';
+import { pathRoom, StudioSunSky } from './StudioSunSky';
 import { type SceneScreen, screenOfFrame } from './scene-screen';
 
 const RADIANS = MathUtils.DEG2RAD;
@@ -71,6 +75,8 @@ const GRID_LIFT_M = 0.02;
 /** The light: the sky's fill and the sun's strength. */
 const SKY_LIGHT = 1.1;
 const SUN_LIGHT = 2.4;
+/** Under this the sun's light warms toward sunrise's and sunset's colour. */
+const WARM_BELOW_DEG = 18;
 /**
  * The sun's light from where the sun stands, casting soft shadows over the site. Its shadow map
  * is as sharp as the view's detail allows; a new size is a new light, as three.js keeps a map once made.
@@ -87,6 +93,11 @@ function SunLight({
   const azimuth = sun.azimuthDegrees * RADIANS;
   const elevation = sun.elevationDegrees * RADIANS;
   const across = Math.cos(elevation) * SUN_DISTANCE_M;
+  const warmth = 1 - Math.min(1, Math.max(0, sun.elevationDegrees / WARM_BELOW_DEG));
+  const colour = new Color(palette['scene-mark']).lerp(
+    new Color(palette['scene-sun-dawn']),
+    warmth,
+  );
   return (
     <>
       <hemisphereLight args={[palette['scene-sky'], palette['scene-ground'], SKY_LIGHT]} />
@@ -97,6 +108,7 @@ function SunLight({
           -Math.cos(azimuth) * across,
         ]}
         intensity={SUN_LIGHT}
+        color={colour}
         castShadow
         shadow-mapSize={[shadowMapPx, shadowMapPx]}
         shadow-camera-left={-SHADOW_HALF_M}
@@ -179,6 +191,10 @@ export interface StudioSceneProps {
   planGlows: boolean;
   /** Where a scene point lands on the screen: every mark on the model is placed through it. */
   screen: SceneScreen;
+  /** The height view's surface (`T-M05-002`, part g); `null` while it is off. */
+  heights: HeightViewShown;
+  /** The sun bar's sky and the day's path (part g); `null` while the bar is closed. */
+  sunSky: SunSkyShown | null;
 }
 
 /**
@@ -208,6 +224,8 @@ export function StudioScene({
   plan,
   planGlows,
   screen,
+  heights,
+  sunSky,
 }: StudioSceneProps) {
   // biome-ignore lint/plugin: the web's WebGL picture of the ground, handed on to the roofs' tops
   const [sharp, setSharp] = useState<RoofTopPicture | null>(null);
@@ -238,6 +256,12 @@ export function StudioScene({
       {/* The far ground fades into the page; the camera rig sets how far, from its own distance. */}
       <fog attach="fog" args={[palette.canvas, CAMERA_START.far, CAMERA_START.far]} />
       <SunLight key={look.shadowMapPx} sun={sun} palette={palette} shadowMapPx={look.shadowMapPx} />
+      {sunSky === null ? null : (
+        <>
+          <StudioSunSky {...sunSky} {...pathRoom(fit)} palette={palette} />
+          <StudioSiteShade {...sunSky.shade} />
+        </>
+      )}
       <StudioScaleTween scale={readScale} still={still} factor={sizing}>
         {picture.kind === 'sky' ? (
           // The first true length stretches the picture about the pin with every roof on it.
@@ -282,6 +306,7 @@ export function StudioScene({
             infiniteGrid
           />
         ) : null}
+        <StudioHeightView {...heights} flat={view === 'top'} />
         <PinFollower label={pinLabel} screen={screen} />
         <StudioRoofs
           scene={roofScene}

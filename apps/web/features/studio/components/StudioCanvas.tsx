@@ -3,17 +3,20 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { ShellGlyph, useDesktopShell, usePalette, useReducedMotion } from '@heliogrid/ui';
 import dynamic from 'next/dynamic';
-import { type RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useChromeRoom } from '../hooks/use-chrome-room';
 import { useDrawPress } from '../hooks/use-draw-press';
 import { useFacesFrame } from '../hooks/use-faces-frame';
 import { useFootSlot } from '../hooks/use-foot-slot';
+import { useCanvasHeights } from '../hooks/use-height-surface';
 import { useKeyboardRoom } from '../hooks/use-keyboard-room';
 import { useMapKeys } from '../hooks/use-map-keys';
 import { useNewestFrame } from '../hooks/use-newest-frame';
 import { useStudioHaptics } from '../hooks/use-studio-haptics';
+import { useSunSky } from '../hooks/use-sun-sky';
 import { useUpright } from '../hooks/use-upright';
 import type { SceneFit } from './camera-poses';
+import { footHolderOf, footRefsOf, panelFrames } from './canvas-foot';
 import { StudioBottomBar } from './StudioBottomBar';
 import type { StudioDrive } from './StudioCameraRig';
 import { StudioCanvasHead } from './StudioCanvasHead';
@@ -25,6 +28,7 @@ import { StudioRoofMarks } from './StudioRoofMarks';
 import { StudioRoofSheet } from './StudioRoofSheet';
 import type { RoofMarksHandle } from './StudioRoofs';
 import { StudioRoofsList } from './StudioRoofsList';
+import { StudioSunFoot } from './StudioSunChart';
 import { StudioToolRail } from './StudioToolRail';
 
 /** A finger's half-width on the screen: a side or a ridge this near a tap is the one tapped. */
@@ -49,33 +53,6 @@ const StudioScene = dynamic(() => import('./StudioScene').then((scene) => scene.
 });
 
 /**
- * Which part holds the foot, where the camera's room ends: the material picker, else Roofs, else a
- * roof's sheet, else the bar. The room is measured again when one takes another's place.
- */
-function footHolderOf(studio: StudioScreen): 'picker' | 'roofs' | 'sheet' | 'bar' {
-  if (studio.materialPicker !== null) return 'picker';
-  if (studio.panel.open === 'roofs') return 'roofs';
-  return studio.roofSheet === null ? 'bar' : 'sheet';
-}
-
-/**
- * A roof's sheet with its roof to frame asks the camera to fly to it. Roofs and the picker only
- * move the view's middle up by their measured room: the person's own view is kept.
- */
-function panelFrames(holder: ReturnType<typeof footHolderOf>, studio: StudioScreen): boolean {
-  return holder === 'sheet' && studio.sheetFrame !== null;
-}
-
-/** The foot's measure handed to the part that holds it, and `null` to the others. */
-function footRefsOf(
-  holder: ReturnType<typeof footHolderOf>,
-  foot: RefObject<HTMLDivElement | null>,
-) {
-  const of = (part: typeof holder) => (holder === part ? foot : null);
-  return { sheet: of('sheet'), roofs: of('roofs'), bar: of('bar') };
-}
-
-/**
  * The studio's canvas (`T-M05-002a`, `T-M05-002b`): the scene on the whole screen and the thin
  * glass parts over it — the steps with the save mark, the compass, the picture chip, the two
  * tool columns and the one bottom bar, there only with a message — and the marks on the roofs. While a roof is drawn, a tap on
@@ -96,6 +73,7 @@ export function StudioCanvas({
   onSite: (() => void) | null;
 }) {
   const palette = usePalette();
+  const heights = useCanvasHeights(studio, palette);
   const still = useReducedMotion();
   const desktop = useDesktopShell();
   const footHolder = footHolderOf(studio);
@@ -120,6 +98,7 @@ export function StudioCanvas({
   // An upright phone opens its panels at the foot, in the tools' place.
   const phoneFoot = desktop === false && upright;
   const parts = studio.focus(phoneFoot);
+  const sunSky = useSunSky(studio, phoneFoot);
 
   // A tap on the map: in the top view it is the plan's, or it shows a length that gave way; in 3D
   // it opens the roof it lands on, met at each roof's own height.
@@ -179,6 +158,7 @@ export function StudioCanvas({
         data-view={view}
         data-drawing={drawing}
         data-panel={footHolder !== 'bar'}
+        data-sun={phoneFoot && footHolder === 'sun'}
       >
         <div
           ref={scene}
@@ -201,7 +181,7 @@ export function StudioCanvas({
             pinLabel={pin}
             fallback={<p className="hg-studio-no-scene">{words.noScene}</p>}
             drive={drive}
-            onTurn={(turn) => compass.current?.turn(turn)}
+            onTurn={heights.told((turn) => compass.current?.turn(turn))}
             roofScene={studio.scene}
             roofMotion={studio.motion}
             pictureScale={studio.shown?.pictureScale ?? null}
@@ -210,6 +190,8 @@ export function StudioCanvas({
             rise={rise}
             roofMarks={roofMarks}
             screen={studio.screenProjector}
+            heights={heights.surface}
+            sunSky={sunSky}
             plan={studio.own.plan}
             planGlows={
               studio.own.plan !== null && !studio.own.plan.picked && !studio.own.plan.laid.locked
@@ -260,6 +242,7 @@ export function StudioCanvas({
           foot={footSlot.node}
         />
         <StudioToolRail
+          turnOf={heights.turnOf}
           studio={studio}
           view={view}
           views={studio.views}
@@ -305,6 +288,9 @@ export function StudioCanvas({
           sheet={footHolder !== 'bar'}
           onAway={() => scene.current?.focus()}
         />
+        {footHolder === 'sun' ? (
+          <StudioSunFoot studio={studio} words={words} phone={phoneFoot} footRef={foot.sun} />
+        ) : null}
         {studio.panel.open === 'roofs' ? (
           <StudioRoofsList
             footRef={foot.roofs}

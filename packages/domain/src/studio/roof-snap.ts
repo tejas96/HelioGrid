@@ -48,13 +48,20 @@ export function magnetOf(off: readonly string[], free: boolean): boolean {
 }
 
 /**
- * Who owns a corner or an edge a spot can snap to: the design's other roofs, and while a roof's
- * faces are drawn by hand, the faces drawn before. The building and its neighbours from the height
- * map join here (part g).
+ * Who owns a corner or an edge a spot can snap to: the design's other roofs, while a roof's faces
+ * are drawn by hand the faces drawn before, and the buildings the height map traced — their walls,
+ * and among them their eaves, where the roof falls to the ground (part g).
  */
 export type SnapOwner =
   | { readonly kind: 'roof'; readonly roof: number }
-  | { readonly kind: 'face'; readonly roof: number; readonly face: number };
+  | { readonly kind: 'face'; readonly roof: number; readonly face: number }
+  | { readonly kind: 'building'; readonly building: number }
+  | { readonly kind: 'eave'; readonly building: number };
+
+/** The design roof an owner is, or holds a face of; `null` for a building of the site's. */
+export function ownerRoof(owner: SnapOwner): number | null {
+  return owner.kind === 'roof' || owner.kind === 'face' ? owner.roof : null;
+}
 
 /**
  * What a spot can snap to besides the roof in hand. Each corner keeps its outline's corners before
@@ -104,6 +111,15 @@ export function snapTargetsOf(roofs: readonly Roof[], except?: number): SnapTarg
         : [{ ring: roof.corners, owner: { kind: 'roof', roof: index } as const }],
     ),
   );
+}
+
+/** Two sets of snap targets as one: the design's roofs first, then the site's buildings. */
+export function withSiteTargets(targets: SnapTargets, site: SnapTargets | undefined): SnapTargets {
+  if (site === undefined) return targets;
+  return {
+    corners: [...targets.corners, ...site.corners],
+    edges: [...targets.edges, ...site.edges],
+  };
 }
 
 /** One line a spot is held on, as its small label names it. */

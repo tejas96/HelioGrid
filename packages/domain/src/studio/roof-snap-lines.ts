@@ -4,6 +4,7 @@ import {
   CROSS_MIN_DEGREES,
   type Guide,
   ON_WALL_M,
+  ownerRoof,
   type RoofHold,
   SNAP_DEGREES,
   SNAP_SOFT_REACHES,
@@ -107,8 +108,23 @@ export function holdAt(line: SnapLine, point: GroundPoint): RoofHold {
 /** The point where two lines cross, when they meet steeply enough to make a corner. */
 export function linesCross(a: SnapLine, b: SnapLine): GroundPoint | null {
   if (linesAngle(a.guide.way, b.guide.way) < CROSS_MIN_DEGREES) return null;
-  return lineCross(a.guide.through, a.guide.way, b.guide.through, b.guide.way);
+  const point = lineCross(a.guide.through, a.guide.way, b.guide.through, b.guide.way);
+  // A wall-only line crosses another only between its wall's ends.
+  if (point === null || !onItsWall(point, a) || !onItsWall(point, b)) return null;
+  return point;
 }
+
+/** Whether a point lies where a line holds: anywhere on it, or on a wall-only line's wall. */
+export function onItsWall(point: GroundPoint, line: SnapLine): boolean {
+  const wall = line.only ? line.walls?.[0] : undefined;
+  return (
+    wall === undefined ||
+    between(point, nearestOnSegment(point, wall.from, wall.to)) <= CROSS_ON_WALL_M
+  );
+}
+
+/** A crossing this near a wall-only line's wall lies on it. */
+const CROSS_ON_WALL_M = 0.01;
 
 /** Two lines a hundredth of a degree and a millimetre apart, or nearer, are one line. */
 const SAME_RADIANS = (0.01 * Math.PI) / 180;
@@ -159,6 +175,17 @@ export function wallLinesOf(targets: SnapTargets, near: Near): SnapLine[] {
     if ((run.east === 0 && run.north === 0) || !passesNear(edge.from, run, near)) continue;
     const way = unit(edge.from, edge.to);
     const wall: SnapWall = { from: edge.from, to: edge.to, owner: edge.owner };
+    // A building the height map traced holds a spot on its wall alone, never on its line past
+    // the ends: the site's many walls stretched across the map cross everywhere.
+    if (ownerRoof(edge.owner) === null) {
+      lines.push({
+        guide: { through: edge.from, way },
+        hold: { kind: 'edge_of', owner: edge.owner },
+        walls: [wall],
+        only: true,
+      });
+      continue;
+    }
     const line: SnapLine = {
       guide: { through: edge.from, way },
       hold: { kind: 'wall_line', owner: edge.owner },
@@ -190,8 +217,11 @@ export function cornerLinesOf(
   near: Near,
 ): SnapLine[] {
   const lines: SnapLine[] = [];
-  const known = new Set(walls.map(({ guide }) => lineKey(guide)));
+  // A building's wall holds only on itself: a roof's line along it past its ends is still new.
+  const known = new Set(walls.filter((wall) => !wall.only).map(({ guide }) => lineKey(guide)));
   for (const corner of targets.corners) {
+    // The site's buildings are lined up with only where a corner or a wall of theirs is touched.
+    if (ownerRoof(corner.owner) === null) continue;
     for (const way of [long, across(long)]) {
       if (!passesNear(corner.at, way, near)) continue;
       const ownWall = [corner.before, corner.after].some(

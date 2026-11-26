@@ -92,6 +92,7 @@ export { default as PanelLeftIcon } from 'lucide-react-native/icons/panel-left';
 export { default as PauseIcon } from 'lucide-react-native/icons/pause';
 export { default as PencilIcon } from 'lucide-react-native/icons/pencil';
 export { default as PhoneIcon } from 'lucide-react-native/icons/phone';
+export { default as PlayIcon } from 'lucide-react-native/icons/play';
 export { default as PlusIcon } from 'lucide-react-native/icons/plus';
 export { default as Redo2Icon } from 'lucide-react-native/icons/redo-2';
 export { default as RotateCwIcon } from 'lucide-react-native/icons/rotate-cw';

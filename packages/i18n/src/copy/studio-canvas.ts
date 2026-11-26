@@ -11,8 +11,10 @@ import { studioPictureWords } from './studio-picture';
 import { studioRoofWords } from './studio-roof';
 import { studioRoofListWords } from './studio-roof-list';
 import { studioSheetWords } from './studio-sheet';
+import { studioSiteWords } from './studio-site';
 import { studioSizeWords } from './studio-size';
 import { studioStairsWords } from './studio-stairs';
+import { studioSunWords } from './studio-sun';
 
 type T = Translator['t'];
 
@@ -172,7 +174,8 @@ export function studioCanvasWords(t: T) {
     noPicture: t(CANVAS.noPicture),
     pictureLabel: (name: string) => t(CANVAS.pictureLabel, { name }),
     /** The provider's name on the chip; one a newer api learned shows as sent. */
-    source: (source: string) => (source === 'google' ? t(CANVAS.fromGoogle) : shownAsSent(source)),
+    source: (source: string) =>
+      source === 'google' || source === 'google_solar' ? t(CANVAS.fromGoogle) : shownAsSent(source),
     /** The line under the picture's name: who gave it and how sharp it is, as "Google · 30 cm". */
     pictureLine: (source: string, detail: string) => t(CANVAS.pictureLine, { source, detail }),
     /** "Satellite · 14 cm a pixel · taken Oct 2025" — the sharpness and date already formatted. */
@@ -223,6 +226,8 @@ export function studioCanvasWords(t: T) {
     ...studioFacesWords(t),
     ...studioHeightWords(t),
     ...studioPictureWords(t),
+    ...studioSiteWords(t),
+    ...studioSunWords(t),
     noScene: t(CANVAS.noScene),
   };
 }

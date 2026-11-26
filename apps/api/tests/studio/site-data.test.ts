@@ -25,6 +25,7 @@ import {
   type StudioWorld,
   saveSite,
   siteDataOf,
+  skyPictureOf,
 } from './support';
 
 /**
@@ -162,6 +163,15 @@ describe.skipIf(skip)('A design’s site data, over HTTP against a migrated data
     expect(heightAt(grid, { east: -BESIDE_M, north: 0 })).toBeCloseTo(memorySite.deckM, 1);
     expect(heightAt(grid, { east: HOUSE_EAST_EDGE_M - BESIDE_M + 1, north: 0 })).toBeLessThan(1);
     expect(memory().asked - asked).toBe(1);
+  });
+
+  it('the straight-down picture of a sharp site comes from the map kept for its pin', async () => {
+    // A sharp map is kept at its group's own middle, never at the pin's snapped cell.
+    const designId = await aSitedDesign({ latitude: 48.16, longitude: sharpestLongitude });
+    await siteDataOf(owner(), designId);
+    const picture = await skyPictureOf(owner(), designId, 'straight_down');
+    expect(picture.status).toBe(HttpStatus.OK);
+    expect(picture.body.kind).toBe('picture');
   });
 
   it('a design with no place has no data, and says so', async () => {

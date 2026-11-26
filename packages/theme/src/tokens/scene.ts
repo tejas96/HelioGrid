@@ -1,7 +1,8 @@
 /**
  * The studio's daylight scene and the marks drawn on its picture (`T-M05-002`): the sky's light,
  * the ground's light and the walls' plaster; a corner's white, a tag's shade, a refusal's red and
- * the setback line's orange and the stairs' clear strip's green.
+ * the setback line's orange and the stairs' clear strip's green; the height view's and sunlight's
+ * keys (part g).
  * Daylight and a photograph are the same whatever the page's mode, so each holds one value in every
  * palette; only the roof's line (`scene-line`) steps brighter in dark, beside the dark glass.
  */
@@ -47,6 +48,32 @@ export const DAYLIGHT = {
   'scene-bad': '#C4432C',
   'scene-setback': '#FF8A2A',
   'scene-clear': '#2EB86E',
+  // The height view's key (`T-M05-002`, part g, board G7): low to high. Art over the picture, never
+  // words; each band is also named in metres on the key.
+  'scene-height-1': '#2B5FD9',
+  'scene-height-2': '#21A8A8',
+  'scene-height-3': '#E8C547',
+  'scene-height-4': '#E3572E',
+  'scene-height-5': '#BF2652',
+  // Sunlight's key (board G24): much shade to none, also named in per cent on the key.
+  'scene-sun-1': '#2E1A6B',
+  'scene-sun-2': '#C7387A',
+  'scene-sun-3': '#FA8C26',
+  'scene-sun-4': '#FFED73',
+  // The sun bar (board G8): dark glass over the real sky with white words, the same in every mode
+  // as the sky is; the picked day's gold with its dark ink; the day line's dawn-to-noon fill, the
+  // sun's disc, sunset's dot.
+  'scene-sun-glass': '#0C1016',
+  'scene-sun-gold': '#FFB02E',
+  'scene-sun-ink': '#1B1203',
+  'scene-sun-dawn': '#FF8A3D',
+  'scene-sun-noon': '#FFD36B',
+  'scene-sun-disc': '#FFF3C4',
+  'scene-sun-dusk': '#FF6A3D',
+  // The sun chart's three days (board G10): lines, never words; each is named beside its line.
+  'scene-day-june': '#F59E0B',
+  'scene-day-march': '#10B5A5',
+  'scene-day-december': '#6D7CFF',
 } as const;
 
 /** Every scene colour's name: daylight's, and the roof's line, which steps brighter in dark. */

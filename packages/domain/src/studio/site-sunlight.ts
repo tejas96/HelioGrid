@@ -1,5 +1,7 @@
 import type { Coordinate } from '../format/areas';
-import { type HeightGrid, percentile } from './site-grid';
+import type { GroundPoint } from './ground';
+import { pointInside } from './roof-shape';
+import { type HeightGrid, heightAt, percentile, ringBox } from './site-grid';
 import {
   type Eye,
   type Skyline,
@@ -7,6 +9,7 @@ import {
   skylineAtBearing,
   skylinesJoined,
 } from './site-skyline';
+import type { RoofSunlight } from './site-sun-shown';
 import { sunAt } from './sun';
 
 /**
@@ -31,9 +34,6 @@ const SAMPLE_DAY = 21;
 const HALF_HOUR_MS = 1_800_000;
 const DAY_MS = 86_400_000;
 const RADIANS = Math.PI / 180;
-/** The sunlight key runs from 60 % (much shade) to 100 % (none). */
-export const SUNLIGHT_KEY_FROM = 0.6;
-export const SUNLIGHT_KEY_TO = 1;
 
 /** The year's sun at a place: the 21st of each month, every half hour it is up. */
 export function yearSunSamples(place: Coordinate, year: number): SunSample[] {
@@ -102,5 +102,38 @@ export function sunlightSpread(shares: readonly number[]): {
     low: percentile(shares, 0.1),
     middle: percentile(shares, 0.5),
     high: percentile(shares, 0.9),
+  };
+}
+
+/** Sunlight is read on a roof every metre, each spot this far out at most (board G24). */
+const SUNLIGHT_CELL_M = 1;
+const SUNLIGHT_REACH_M = 60;
+/** A panel lies a little over the deck. */
+const SUNLIGHT_EYE_M = 0.3;
+
+/**
+ * The share of the year's sun each metre of a roof keeps, read on the height map at the map's own
+ * deck there, under the far hills. A metre the map does not cover is left out.
+ */
+export function roofSunlightOf(
+  grid: HeightGrid,
+  corners: readonly GroundPoint[],
+  samples: readonly SunSample[],
+  far: Skyline | null,
+): RoofSunlight {
+  const box = ringBox(corners);
+  const eyes: Eye[] = [];
+  for (let east = box.west + SUNLIGHT_CELL_M / 2; east < box.east; east += SUNLIGHT_CELL_M) {
+    for (let north = box.south + SUNLIGHT_CELL_M / 2; north < box.north; north += SUNLIGHT_CELL_M) {
+      const at = { east, north };
+      if (!pointInside(at, corners)) continue;
+      const deck = heightAt(grid, at);
+      if (Number.isFinite(deck)) eyes.push({ ...at, height: deck + SUNLIGHT_EYE_M });
+    }
+  }
+  const shares = sunSharesOf(grid, eyes, samples, far, SUNLIGHT_REACH_M);
+  return {
+    cellM: SUNLIGHT_CELL_M,
+    cells: eyes.map((eye, i) => ({ east: eye.east, north: eye.north, share: shares[i] ?? 1 })),
   };
 }

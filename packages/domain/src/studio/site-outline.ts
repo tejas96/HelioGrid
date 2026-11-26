@@ -1,4 +1,5 @@
 import type { GroundPoint } from './ground';
+import { outlineCorners } from './outline-corners';
 import type { MaskGrid } from './site-grid';
 
 /**
@@ -150,51 +151,6 @@ function outerEdge(mask: MaskGrid, cells: readonly number[]): Lattice[] {
   return best;
 }
 
-function offLine(p: Lattice, a: Lattice, b: Lattice): number {
-  const dx = b.x - a.x;
-  const dy = b.y - a.y;
-  const length = Math.hypot(dx, dy);
-  if (length === 0) return Math.hypot(p.x - a.x, p.y - a.y);
-  return Math.abs(dy * (p.x - a.x) - dx * (p.y - a.y)) / length;
-}
-
-/** The open line's corners that stray more than `tolerance` (Douglas–Peucker). */
-function simplifiedLine(points: readonly Lattice[], tolerance: number): Lattice[] {
-  if (points.length <= 2) return [...points];
-  const first = points[0] as Lattice;
-  const last = points[points.length - 1] as Lattice;
-  let farAt = 0;
-  let far = 0;
-  for (let i = 1; i < points.length - 1; i += 1) {
-    const off = offLine(points[i] as Lattice, first, last);
-    if (off > far) {
-      far = off;
-      farAt = i;
-    }
-  }
-  if (far <= tolerance) return [first, last];
-  const head = simplifiedLine(points.slice(0, farAt + 1), tolerance);
-  const tail = simplifiedLine(points.slice(farAt), tolerance);
-  return [...head.slice(0, -1), ...tail];
-}
-
-/** A closed ring cut to its corners: split at the point farthest from its first, each half cut. */
-function simplifiedRing(ring: readonly Lattice[], tolerance: number): Lattice[] {
-  const first = ring[0] as Lattice;
-  let farAt = 0;
-  let far = 0;
-  ring.forEach((p, i) => {
-    const d = Math.hypot(p.x - first.x, p.y - first.y);
-    if (d > far) {
-      far = d;
-      farAt = i;
-    }
-  });
-  const out = simplifiedLine(ring.slice(0, farAt + 1), tolerance);
-  const back = simplifiedLine([...ring.slice(farAt), first], tolerance);
-  return [...out.slice(0, -1), ...back.slice(0, -1)];
-}
-
 type Way = 'along' | 'across' | 'free';
 
 /**
@@ -280,12 +236,11 @@ export function buildingOutlinesOf(mask: MaskGrid): GroundPoint[][] {
     .sort((a, b) => b.length - a.length)
     .map((cells) => {
       const edge = outerEdge(mask, cells);
-      const corners = simplifiedRing(edge, SIMPLIFY_CELLS);
-      const ground = corners.map((p) => ({
+      const ground = edge.map((p) => ({
         east: mask.west + p.x * mask.stepM,
         north: mask.south + p.y * mask.stepM,
       }));
-      return squaredRing(ground);
+      return squaredRing(outlineCorners(ground, SIMPLIFY_CELLS * mask.stepM));
     })
     .filter((outline) => outline.length >= 3);
 }

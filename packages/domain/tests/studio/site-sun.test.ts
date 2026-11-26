@@ -16,6 +16,7 @@ import {
   zoneOffsetMinutes,
 } from '../../src/studio/site-sun';
 import {
+  roofSunlightOf,
   skyViewOf,
   sunlightSpread,
   sunShareOf,
@@ -237,5 +238,47 @@ describe('sunlight: the share of the year’s sun a spot keeps', () => {
     const shares = Array.from({ length: 11 }, (_, i) => 0.6 + i * 0.04);
     expect(sunlightSpread(shares)).toEqual({ low: 0.64, middle: 0.8, high: 0.96 });
     expect(sunlightSpread([])).toBeNull();
+  });
+});
+
+describe('a roof’s sunlight, a share for each metre (board G24)', () => {
+  const samples = yearSunSamples(PUNE, 2026);
+  const square = [
+    { east: -4, north: -4 },
+    { east: 4, north: -4 },
+    { east: 4, north: 4 },
+    { east: -4, north: 4 },
+  ];
+
+  it('an 8 m roof in the open: 64 metres, every one in full sun', () => {
+    const sunlight = roofSunlightOf(
+      gridOf(80, 0.5, () => 3),
+      square,
+      samples,
+      null,
+    );
+    expect(sunlight.cells).toHaveLength(64);
+    expect(sunlight.cells.every((cell) => cell.share > 0.99)).toBe(true);
+  });
+
+  it('a stair room on the south side shades the metres just north of it', () => {
+    const room = inBox(-1, -4, 1, -2);
+    const grid = gridOf(80, 0.5, (p) => (room(p) ? 6 : 3));
+    const cells = roofSunlightOf(grid, square, samples, null).cells;
+    const north = cells.find((cell) => cell.east === 0.5 && cell.north === -0.5);
+    const far = cells.find((cell) => cell.east === 3.5 && cell.north === 3.5);
+    expect(north?.share ?? 1).toBeLessThan(far?.share ?? 0);
+  });
+
+  it('a roof the map does not reach has no metres', () => {
+    const off = square.map((p) => ({ east: p.east + 200, north: p.north }));
+    expect(
+      roofSunlightOf(
+        gridOf(80, 0.5, () => 3),
+        off,
+        samples,
+        null,
+      ).cells,
+    ).toEqual([]);
   });
 });

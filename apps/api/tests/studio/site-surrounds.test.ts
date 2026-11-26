@@ -20,6 +20,7 @@ const SANGLI = sangli;
 
 const BAD_REQUEST = 400;
 const TOO_MANY = 429;
+const NOT_ACCEPTABLE = 406;
 const ZONE_43N_EPSG = 32_643;
 const WGS84_EPSG = 4_326;
 /** A test raster: two pixels a side, a quarter metre each, its corner in zone 43N. */
@@ -175,6 +176,23 @@ describe('OpenStreetMap’s buildings', () => {
     expect(found).toHaveLength(1);
     expect(found[0]?.ring).toHaveLength(OPEN_CORNERS);
     expect(found[0]?.floorsAbove).toBe(2);
+  });
+
+  it('names itself to the server, as the public one refuses a client with no name (406)', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (_: string | URL, init?: RequestInit) =>
+        new Headers(init?.headers).get('user-agent') === null
+          ? new Response('', { status: NOT_ACCEPTABLE })
+          : new Response(JSON.stringify({ elements: [] }), { status: OK }),
+      ),
+    );
+    await expect(
+      new OverpassBuildingOutlines('https://overpass.test/api/interpreter').outlinesNear(
+        SANGLI,
+        REACH_M,
+      ),
+    ).resolves.toEqual([]);
   });
 
   it('a busy server rejects', async () => {

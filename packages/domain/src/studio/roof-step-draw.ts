@@ -10,6 +10,7 @@ import {
   type Snapped,
   type SnapTargets,
   snapTargetsOf,
+  withSiteTargets,
 } from './roof-snap';
 import { draftSpot } from './roof-snap-spot';
 import {
@@ -36,11 +37,11 @@ export function roofHeld(state: RoofStepState): number | null {
 type Drawing = Extract<RoofStepState, { kind: 'drawing' }>;
 
 /**
- * What a corner drawn now pulls to: the design's roofs; while a face is drawn, its roof's outline
- * and the faces drawn on it before.
+ * What a corner drawn now pulls to: the design's roofs and the site's buildings and eaves; while a
+ * face is drawn, its roof's outline and the faces drawn on it before.
  */
 export function drawTargetsOf(state: Drawing, document: StudioDocument): SnapTargets {
-  if (state.faces === undefined) return snapTargetsOf(document.roofs);
+  if (state.faces === undefined) return withSiteTargets(snapTargetsOf(document.roofs), state.site);
   const roof = document.roofs[state.faces];
   return roof === undefined ? NO_SNAP_TARGETS : handFaceTargets(roof, state.faces);
 }

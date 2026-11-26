@@ -19,7 +19,23 @@ export type HeightLevel =
   /** A whole floor: 0 is the ground floor's roof, 1 the floor above it. */
   | { readonly kind: 'floor'; readonly floors: number }
   /** A round value: said by the number alone. */
-  | { readonly kind: 'round' };
+  | { readonly kind: 'round' }
+  /** The measured eave of a building beside the roof, from the height map (`T-M05-002`, part g). */
+  | { readonly kind: 'eave' }
+  /** The height map's own reading inside the roof: the fit check's level. */
+  | { readonly kind: 'height_map' };
+
+/** What the site data gives a dragged height to pull to: eaves near the roof, the map inside it. */
+export interface SiteLevels {
+  /** Each eave's line and its height above the ground. */
+  readonly eaves: readonly {
+    readonly from: GroundPoint;
+    readonly to: GroundPoint;
+    readonly heightM: number;
+  }[];
+  /** The height map's top inside the roof above the ground, where it reads one. */
+  readonly mapM: number | null;
+}
 
 export interface HeightPull {
   /** The roof's own height once pulled, in metres. */

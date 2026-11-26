@@ -139,6 +139,17 @@ describe('a drawn roof’s height, slope and facing from the height map', () => 
     if (fit?.kind === 'roof') expect(fit.slopeDeg).toBeCloseTo(20, 0);
   });
 
+  it('a tower and its annex drawn as one roof: flat at the tower’s deck, not a 40° slope', () => {
+    // 6 m of the house at 21.9 m, the north 4 m an annex at 8 m.
+    const grid = gridOf(60, 0.25, (p) => {
+      if (!inHouse(p)) return 0;
+      return p.north > 1 ? 8 : 21.9;
+    });
+    const fit = roofFitOf(grid, HOUSE, 0);
+    expect(fit).toMatchObject({ kind: 'roof', clear: false, slopeDeg: 0, facingDeg: null });
+    if (fit?.kind === 'roof') expect(fit.heightM).toBeCloseTo(21.9, 1);
+  });
+
   it.each([
     ['a roof too small for twelve cells', boxOf(0, 0, 0.7, 0.7)],
     ['a roof off the map', boxOf(100, 100, 110, 110)],

@@ -1,0 +1,34 @@
+import type { StudioScreen } from '@heliogrid/data/react';
+import type { RefObject } from 'react';
+
+/**
+ * Which part holds the foot, where the camera's room ends: the material picker, else Roofs, else a
+ * roof's sheet, else the sun bar, else the bar. The room is measured again when one takes another's place.
+ */
+export function footHolderOf(studio: StudioScreen): 'picker' | 'roofs' | 'sheet' | 'sun' | 'bar' {
+  if (studio.materialPicker !== null) return 'picker';
+  if (studio.panel.open === 'roofs') return 'roofs';
+  if (studio.roofSheet !== null) return 'sheet';
+  // The sun bar holds the foot as a panel does; a sheet opened over it takes the place.
+  return studio.sunBar.view === null ? 'bar' : 'sun';
+}
+
+/**
+ * A roof's sheet with its roof to frame asks the camera to fly to it. Roofs and the picker only
+ * move the view's middle up by their measured room: the person's own view is kept.
+ */
+export function panelFrames(
+  holder: ReturnType<typeof footHolderOf>,
+  studio: StudioScreen,
+): boolean {
+  return holder === 'sheet' && studio.sheetFrame !== null;
+}
+
+/** The foot's measure handed to the part that holds it, and `null` to the others. */
+export function footRefsOf(
+  holder: ReturnType<typeof footHolderOf>,
+  foot: RefObject<HTMLDivElement | null>,
+) {
+  const of = (part: typeof holder) => (holder === part ? foot : null);
+  return { sheet: of('sheet'), roofs: of('roofs'), sun: of('sun'), bar: of('bar') };
+}

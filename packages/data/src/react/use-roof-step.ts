@@ -33,6 +33,7 @@ import {
   roofStepAfter,
   roofStepShown,
   roofsOnPlan,
+  type SnapTargets,
   STUDIO_HELPERS,
   type StudioDocument,
   type StudioHelper,
@@ -71,6 +72,7 @@ export function useRoofStep({
   typedStart,
   planOutlines,
   closingOf,
+  siteTargets,
 }: {
   /** The design as it stands, as the screen last drew it. */
   document: StudioDocument | null;
@@ -96,6 +98,8 @@ export function useRoofStep({
   planOutlines: readonly (readonly number[])[];
   /** What a close carries, asked of the kernel: a roof's place, or a face closed onto roof `faces`. */
   closingOf: (document: StudioDocument, faces: number | undefined) => ClosingWith;
+  /** The site's buildings and eaves as the magnet reads them (`T-M05-002`, part g). */
+  siteTargets?: SnapTargets;
 }) {
   const [roofStep, setRoofStep] = useState<RoofStepState>(ROOF_STEP_START);
   const [free, setFree] = useState(false);
@@ -203,7 +207,13 @@ export function useRoofStep({
     // On the bare grid each corner lands on a whole metre.
     // While the sky picture is on its way, a roof would be stored as traced on none: it waits.
     draw: () => {
-      if (picture.kind !== 'waiting') act({ kind: 'draw', magnet: magnet(), grid });
+      if (picture.kind === 'waiting') return;
+      act({
+        kind: 'draw',
+        magnet: magnet(),
+        grid,
+        ...(siteTargets === undefined ? {} : { site: siteTargets }),
+      });
     },
     // A second tap before the redraw flips from the pick last asked for, never from a stale one.
     toggleMagnet: () => {
@@ -220,7 +230,13 @@ export function useRoofStep({
     },
     wipe: () => act({ kind: 'wipe' }),
     deleteRoof: () => act({ kind: 'delete_roof' }),
-    ...pointerMoves(act, step, () => closeWith(false), units),
+    ...pointerMoves(
+      act,
+      step,
+      () => closeWith(false),
+      units,
+      () => siteTargets,
+    ),
     close,
     closeAsDrawn: () => closeWith(false),
     cancel: () => act({ kind: 'cancel' }),
@@ -250,6 +266,7 @@ export function useRoofStep({
         system: units,
         magnet: magnet(),
         ...(insides === undefined ? {} : { insides }),
+        ...(siteTargets === undefined ? {} : { site: siteTargets }),
       });
     },
     release: () => act({ kind: 'release' }),

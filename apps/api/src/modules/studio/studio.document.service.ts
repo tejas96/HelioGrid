@@ -6,6 +6,7 @@ import {
   type EditTurnWire,
   type SaveDocument,
   type SavedDocument,
+  type SkyPictureQuery,
   type SkyPictureWire,
   studioDocumentSchema,
 } from '@heliogrid/contracts';
@@ -28,6 +29,7 @@ import {
   StudioDocumentRepository,
 } from './studio.document.repository';
 import { StudioRepository } from './studio.repository';
+import { StudioSiteSources } from './studio.site-sources.service';
 
 const memberOf = (member: DocumentMember) => memberRefOf(member.userId, member.name);
 
@@ -63,6 +65,7 @@ export class StudioDocumentService {
     @Inject(StudioDocumentRepository) private readonly documents: StudioDocumentRepository,
     @Inject(StudioRepository) private readonly designs: StudioRepository,
     @Inject(SKY_PICTURE_SOURCE) private readonly pictures: SkyPictureSource,
+    @Inject(StudioSiteSources) private readonly siteSources: StudioSiteSources,
     @Inject(PinoLogger) private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(StudioDocumentService.name);
@@ -146,11 +149,17 @@ export class StudioDocumentService {
    * The sky picture of the design's site, asked of the provider now. A provider that does not
    * answer is a state the studio draws — it opens on its grid and says why — never an error page.
    */
-  async skyPicture(reader: LeadReader, designId: string): Promise<SkyPictureWire> {
+  async skyPicture(
+    reader: LeadReader,
+    designId: string,
+    view?: SkyPictureQuery['view'],
+  ): Promise<SkyPictureWire> {
     const facts = await this.designs.factsOf(reader, designId);
     if (facts === null) throw new NotFoundException('No such design.');
     const pin = facts.site.pin;
     if (pin === null) return { kind: 'none', gap: 'not_covered' };
+    // Google's straight-down picture comes from the site's kept height data: no new call.
+    if (view === 'straight_down') return this.siteSources.straightDownAt(pin, Date.now());
     if (!this.pictures.setUp) return { kind: 'none', gap: 'not_set_up' };
     if (!this.fetches.take(reader.actorId, Date.now())) {
       this.logger.warn({ designId }, 'the sky picture cap was reached for a person');

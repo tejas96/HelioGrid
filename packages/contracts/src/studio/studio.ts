@@ -17,6 +17,7 @@ import {
   editTurnSchema,
   saveDocumentSchema,
   savedDocumentSchema,
+  skyPictureQuerySchema,
   skyPictureSchema,
 } from './document';
 import {
@@ -185,8 +186,9 @@ export const studioContract = c.router({
     method: 'GET',
     path: '/designs/:id/sky-picture',
     pathParams: designParamsSchema,
+    query: skyPictureQuerySchema,
     summary:
-      'The sky picture of the design’s site, fetched now and never stored — or why there is none',
+      'The sky picture of the design’s site, fetched now and never stored — or why there is none; `view=straight_down` asks for Google’s straight-down picture from the site’s height data',
     responses: { 200: skyPictureSchema, 401: unauthenticatedEnvelope, 404: notFound },
   },
   siteData: {

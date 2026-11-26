@@ -161,6 +161,7 @@ export const SHELL_GLYPHS = {
   pair: Lucide.UsersRoundIcon,
   palette: Lucide.PaletteIcon,
   pause: Lucide.PauseIcon,
+  play: Lucide.PlayIcon,
   pencil: Lucide.PencilIcon,
   people: Lucide.UsersIcon,
   phone: Lucide.PhoneIcon,

@@ -100,10 +100,10 @@ export class StudioController {
         responseOf(req).setHeader('Cache-Control', 'no-store');
         return ok(await this.pictures.picture(reader, params.id, params.pictureId, Date.now()));
       },
-      skyPicture: async ({ params }) => {
+      skyPicture: async ({ params, query }) => {
         // Google's picture is never stored, nor put in a file — a cache on disk included.
         responseOf(req).setHeader('Cache-Control', 'no-store');
-        return ok(await this.documents.skyPicture(reader, params.id));
+        return ok(await this.documents.skyPicture(reader, params.id, query.view));
       },
       siteData: async ({ params }) => {
         // Made from Google's data, kept on the server for 30 days: no device keeps the answer.

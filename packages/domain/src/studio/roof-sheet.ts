@@ -62,7 +62,7 @@ export function roofSheetOf(
 /**
  * The roof whose sheet is open stands at the height in hand, and the camera frames it alone,
  * looking at its top (`fitUpM`, above the ground): a duct or a stair room on a tall building is
- * framed where it is, not at the ground under it. With no sheet the camera looks at the ground.
+ * framed where it is, not at the ground under it. With no sheet it frames every roof.
  */
 export function roofsWithSheet(
   heights: readonly RoofHeightShown[],
@@ -73,7 +73,10 @@ export function roofsWithSheet(
   tops: readonly { readonly topM: number }[],
 ): { heights: readonly RoofHeightShown[]; fit: GroundBox | null; fitUpM: number } {
   const open = roofSheet === null ? undefined : document?.roofs[roofSheet.roof];
-  if (roofSheet === null || open === undefined) return { heights, fit, fitUpM: 0 };
+  // With no sheet open the camera frames every roof, looking half way up the tallest: a tower's
+  // top stays in the frame, never cut off under the head.
+  const tallestM = Math.max(0, ...tops.map((top) => top.topM));
+  if (roofSheet === null || open === undefined) return { heights, fit, fitUpM: tallestM / 2 };
   const own = roofSheet.hasHeight;
   return {
     heights: heights.map((height, i) => (own && i === roofSheet.roof ? roofSheet.height : height)),

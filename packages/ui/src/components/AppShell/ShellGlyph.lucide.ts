@@ -87,6 +87,7 @@ export {
   PauseIcon,
   PencilIcon,
   PhoneIcon,
+  PlayIcon,
   PlusIcon,
   Redo2Icon,
   RotateCwIcon,

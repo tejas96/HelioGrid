@@ -159,6 +159,15 @@ export const skyPicturePieceSchema = z.object({
 });
 export type SkyPicturePiece = z.infer<typeof skyPicturePieceSchema>;
 
+/**
+ * Which picture the sky picture route answers (`T-M05-002`, part g): the sky picture, or with
+ * `straight_down` Google's straight-down picture from the site's height data — a tall wall stands
+ * where it is. A wire fact alone: the screen asks for it by name.
+ */
+export const SKY_PICTURE_VIEWS = ['straight_down'] as const;
+export const skyPictureQuerySchema = z.object({ view: z.enum(SKY_PICTURE_VIEWS).optional() });
+export type SkyPictureQuery = z.infer<typeof skyPictureQuerySchema>;
+
 /** The sky picture of a design's site, or why there is none. */
 export const skyPictureSchema = z.discriminatedUnion('kind', [
   z.object({

@@ -60,9 +60,21 @@ describe('the height slider’s floors', () => {
   it.each([
     ['a height on a floor is that floor', 6.45, 1],
     ['a hair off is still on it', 6.454, 1],
-    ['between floors is none', 6.47, null],
+    // Board G2: a map’s 6.1 m reads as G+1, and a person’s 6.5 m too (G3).
+    ['between floors, the nearer: just under G+1', 6.1, 1],
+    ['between floors, the nearer: just over G+1', 6.5, 1],
+    ['the nearer floor above', 8, 2],
+    ['half a storey under G is still G', 1.95, 0],
+    ['past half a storey under G is none', 1.9, null],
+    ['past half a storey over the top floor is none', 20, null],
   ] as const)('%s', (_why, metres, floor) => {
-    expect(floorAt(ticks, metres)?.floor ?? null).toBe(floor);
+    expect(floorAt(ticks, metres, storey)?.floor ?? null).toBe(floor);
+  });
+
+  it('a short slider with one floor on it still reads half a storey round it', () => {
+    const one = floorTicks(plinth, storey, { min: 5, max: 8 });
+    expect(one.map((tick) => tick.floor)).toEqual([1]);
+    expect(floorAt(one, 6.1, storey)?.floor).toBe(1);
   });
 });
 
@@ -114,9 +126,10 @@ describe('a roof’s sheet: one row per value it has', () => {
     expect(sheetOf(design, 0).stairs).toBeNull();
   });
 
-  it('a height between floors stands on none; on a floor, on it', () => {
+  it('a height between floors reads as the nearer; on a floor, on it', () => {
+    // 5 m lies 1.45 m under G+1 (6.45 m) and 1.55 m over G (3.45 m).
     const between = { ...TERRACE, height: { metres: 5, setBy: 'person' as const } };
-    expect(sheetOf(designOf(between), 0).height.floor).toBeNull();
+    expect(sheetOf(designOf(between), 0).height.floor?.floor).toBe(1);
     const floors = sheetOf(designOf(TERRACE), 0).height.ticks;
     const up = { ...TERRACE, height: { metres: floors[1]?.metres ?? 0, setBy: 'person' as const } };
     expect(sheetOf(designOf(up), 0).height.floor?.floor).toBe(1);

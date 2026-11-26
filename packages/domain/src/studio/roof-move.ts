@@ -6,16 +6,19 @@ import { between, cornerAfter, roofMiddle } from './roof-shape';
 import {
   type Guide,
   guideOf,
+  ownerRoof,
   SNAP_M,
   SNAP_SOFT_REACHES,
   type SnapTargets,
   snapTargetsOf,
+  withSiteTargets,
 } from './roof-snap';
 import {
   heldOn,
   holdAt,
   lineCross,
   linesCross,
+  onItsWall,
   type SnapLine,
   wallLinesOf,
 } from './roof-snap-lines';
@@ -120,10 +123,12 @@ function slideOnto(
   const way = first.guide.way;
   let best: (Pull & { reach: number }) | null = null;
   for (const line of lines) {
-    if (line === first || line.only || linesCross(first, line) === null) continue;
+    // A parapet's inside holds a roof only where it is; a building's wall is met on itself alone.
+    const parapet = line.hold.kind === 'inside_parapet';
+    if (line === first || parapet || linesCross(first, line) === null) continue;
     for (const corner of corners) {
       const slid = lineCross(corner, way, line.guide.through, line.guide.way);
-      if (slid === null) continue;
+      if (slid === null || !onItsWall(slid, line)) continue;
       const off = between(slid, corner);
       if (off > reach || (best !== null && off >= best.reach)) continue;
       best = {
@@ -170,11 +175,13 @@ export function roofMoved(
   pullTo: SnapTargets['edges'] | null = null,
   /** How near a corner must come to pull, in metres: the screen's reach at this zoom. */
   reach: number = SNAP_M,
+  /** The site's buildings and eaves (`T-M05-002`, part g). */
+  site?: SnapTargets,
 ): DragResult {
   const roof = roofAt(document, roofIndex);
   const going = new Set(roofWithItsParts(document, roofIndex));
   const corners = roof.corners.map((c) => ({ east: c.east + by.east, north: c.north + by.north }));
-  const others = snapTargetsOf(document.roofs, roofIndex);
+  const others = withSiteTargets(snapTargetsOf(document.roofs, roofIndex), site);
   const lines: SnapLine[] =
     pullTo === null
       ? []
@@ -184,14 +191,14 @@ export function roofMoved(
           ...wallLinesOf(
             {
               corners: [],
-              edges: others.edges.filter((edge) => !going.has(edge.owner.roof)),
+              edges: others.edges.filter((edge) => !going.has(ownerRoof(edge.owner) ?? -1)),
             },
             // A pull and the slide after it move the roof up to a reach each: the lines that can
             // hold it, and the ones a little further that show faint.
             { points: corners, within: reach * (1 + SNAP_SOFT_REACHES) },
           ),
           ...pullTo
-            .filter((edge) => !going.has(edge.owner.roof))
+            .filter((edge) => !going.has(ownerRoof(edge.owner) ?? -1))
             .map((edge) => ({
               guide: guideOf(edge.from, {
                 east: edge.to.east - edge.from.east,

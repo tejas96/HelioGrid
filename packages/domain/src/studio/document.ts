@@ -12,6 +12,7 @@ import type {
   SetDegrees,
   SetMetres,
 } from './roof-parts';
+import type { SiteDataKept } from './site-data';
 
 /**
  * The design document: everything a person makes in the studio, stored whole, one per design. It
@@ -29,8 +30,8 @@ export const STUDIO_DOCUMENT_SCHEMA = 1 as const;
 export const PICTURE_CHOICES = ['sky', 'own', 'none'] as const;
 export type PictureChoice = (typeof PICTURE_CHOICES)[number];
 
-/** Who gives the sky picture. */
-export const SKY_PICTURE_SOURCES = ['google'] as const;
+/** Google's sky picture, or the straight-down picture from Google's height data (part g). */
+export const SKY_PICTURE_SOURCES = ['google', 'google_solar'] as const;
 export type SkyPictureSource = (typeof SKY_PICTURE_SOURCES)[number];
 
 /**
@@ -178,6 +179,11 @@ export interface StudioDocument {
   readonly stairsSkipped?: boolean;
   /** What the flat roofs of a photo type wear in 3D; absent, the photo (`roof-look.ts`). */
   readonly flatRoofs?: FlatRoofWear;
+  /**
+   * What the design keeps of its site's data (`T-M05-002`, part g): the data its system heights
+   * were made from and a person's answers. Absent on a design from before part g.
+   */
+  readonly site?: SiteDataKept;
 }
 
 /** A design no one has changed yet. */

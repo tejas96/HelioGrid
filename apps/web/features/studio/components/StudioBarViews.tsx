@@ -8,6 +8,7 @@ import type { ReactNode } from 'react';
 import { roofsMoment } from './roof-bar-status';
 import { roofWordsShown } from './roof-words-shown';
 import { StudioKindChips } from './StudioKindChips';
+import { siteBarMessage } from './site-bar-message';
 
 /** The message's one act, when it has its own: an act already on the screen is never repeated. */
 export interface BarAct {
@@ -231,7 +232,12 @@ export function barMessagesOf(editing: StudioEditing, facts: BarFacts): BarView[
       : bar?.kind === 'roofs'
         ? roofsMessage(bar, facts)
         : startMessage(facts);
-  const messages = [...noteMessages(facts), ...(moment === null ? [] : [moment])];
+  const site = siteBarMessage(studio, words, facts.format, editing.kind === 'editor');
+  const messages = [
+    ...noteMessages(facts),
+    ...(moment === null ? [] : [moment]),
+    ...(site === null ? [] : [message(site.tag, site)]),
+  ];
   if (editing.kind === 'editor' && facts.part !== 'status') return messages;
   return wordsOnly(messages);
 }
