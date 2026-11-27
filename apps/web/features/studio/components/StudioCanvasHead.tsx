@@ -8,14 +8,7 @@ import { DrawHint } from './StudioBarPills';
 import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
 import { useFilePick } from './StudioFilePick';
 import { StudioLengthBox } from './StudioLengthBox';
-import {
-  LidarHeadStart,
-  LidarHint,
-  LidarKeyCard,
-  LidarLooks,
-  LidarMoveButton,
-  lidarShown,
-} from './StudioLidar';
+import { LidarHeadStart, LidarHint, LidarKeyCard, LidarLooks, lidarShown } from './StudioLidar';
 import { StudioPictureCards } from './StudioPictureCards';
 import { pictureCreditOf, StudioPictureChip } from './StudioPictureChip';
 import { pictureDataOf } from './StudioPictureData';
@@ -86,7 +79,6 @@ function HeadEnd({
   const marked = parts.stepSwitcher !== 'hidden';
   return (
     <div className="hg-studio-head-end">
-      {lidarShown(studio) ? <LidarMoveButton studio={studio} words={words} /> : null}
       <div className="hg-studio-head-part" data-hidden={!marked} inert={!marked}>
         <StudioSaveMark
           editing={editing}
@@ -105,7 +97,7 @@ function HeadEnd({
  * The canvas's head, straight on the map with no box: the picture at the start, the steps in the
  * middle, the save mark and the compass at the end, over a soft shade that keeps them readable on
  * any roof; the line on the screen's top edge says how far the design has come. Focus mode sets the
- * steps aside — a save that failed keeps its mark — and steps the picture down to its thumb.
+ * steps aside — a save that needs the person keeps its mark — and steps the picture down to its thumb.
  */
 export function StudioCanvasHead({
   headRef,
@@ -155,10 +147,16 @@ export function StudioCanvasHead({
           phone={phone}
         />
         <HeadEnd studio={studio} parts={parts} words={words} onBack={onBack} compass={compass} />
-        <StudioSunBearing studio={studio} words={words} />
         <DrawHint studio={studio} words={words} />
-        <LidarHint studio={studio} words={words} phone={phone} />
-        <LidarKeyCard studio={studio} words={words} phone={phone} />
+        {/* Under the head, laid out together so none covers another: the hint in the middle, the
+            key and the sun's bearing stacked at the end — on a phone, under the hint. */}
+        <div className="hg-studio-under-head" data-phone={phone}>
+          <LidarHint studio={studio} words={words} phone={phone} />
+          <div className="hg-studio-under-end">
+            <LidarKeyCard studio={studio} words={words} phone={phone} />
+            <StudioSunBearing studio={studio} words={words} />
+          </div>
+        </div>
         {roofStep.kind === 'sizing' ? (
           <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
         ) : null}

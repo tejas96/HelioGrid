@@ -158,6 +158,16 @@ export interface StudioSceneProps {
   sunSky: SunSkyShown | null;
 }
 
+/** The camera's room: the sky picture's sharp ground, or the scan's while LiDAR hides the picture. */
+function cameraRoomOf(
+  lidar: LidarLayerShown,
+  picture: Parameters<typeof clearGroundOf>[0],
+  pictureScale: number,
+): ClearGround | null {
+  if (lidar.on && lidar.ground !== null) return lidar.ground;
+  return scaledBox(clearGroundOf(picture), pictureScale);
+}
+
 /**
  * The studio's one canvas (`T-M05-002a`): the site's ground with its picture, the pin, the real sun
  * for the place and the hour, and a camera that flies between the top view, the 3D view and the
@@ -214,7 +224,7 @@ export function StudioScene({
     [palette, lidar.on, waiting, view],
   );
   const sunPath = useSunPath(fit, sunSky);
-  const clear = scaledBox(clearGroundOf(picture), pictureScale);
+  const clear = cameraRoomOf(lidar, picture, pictureScale);
   const shadowRoom = useMemo(
     () => shadowRoomOf(roofScene, pictureScale),
     [roofScene, pictureScale],

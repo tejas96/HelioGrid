@@ -172,9 +172,6 @@
 
 /* Where the sun stands, under the compass at the head's end. */
 .hg-sun-bearing {
-  position: absolute;
-  inset-block-start: calc(100% + var(--sp-2));
-  inset-inline-end: 0;
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);

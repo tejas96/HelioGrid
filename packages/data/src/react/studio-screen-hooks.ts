@@ -44,6 +44,7 @@ export type { PassingMessage, PassingMessageView } from './use-passing-message';
 export { usePassingMessage } from './use-passing-message';
 export { useRepeatPress } from './use-press-timing';
 export type { RoofsOffSiteAsk } from './use-roofs-off-site';
+export { useSavedFlash } from './use-saved-flash';
 export type { SceneDetailView } from './use-scene-detail';
 export { useSceneDetail } from './use-scene-detail';
 export type {

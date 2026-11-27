@@ -103,8 +103,13 @@ export function LidarHint({ studio, words, phone }: LidarFacts & { readonly phon
   const format = useFormat();
   const { lidar } = studio;
   if (!lidarShown(studio) || lidar.hint === null) return null;
+  const { hint } = lidar;
   const distance =
-    lidar.hint.kind === 'moving' ? format.roofHeight(lidar.hint.metres, studio.units) : '';
+    hint.kind === 'moving'
+      ? format.roofHeight(hint.metres, studio.units)
+      : hint.kind === 'map_edge'
+        ? format.roofHeight(hint.reachM, studio.units)
+        : '';
   return (
     <p className="hg-studio-glass hg-studio-hint" role="status">
       {words.lidarHint(lidar.hint, phone, distance)}

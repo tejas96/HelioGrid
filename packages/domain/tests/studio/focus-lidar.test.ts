@@ -8,7 +8,6 @@ const FACTS: FocusFacts = {
   phone: true,
   canEdit: true,
   hasRoof: true,
-  saveFailed: false,
   slots: { undo: true, redo: true },
   lidar: false,
   saveAsks: false,
@@ -25,13 +24,15 @@ describe('LiDAR keeps only what it needs (T-M05-002g, board frames 5 and 16)', (
     wipe: 'hidden',
     undo: 'shown',
     redo: 'shown',
-    layers: 'switch',
+    // Neither the 2D switch nor the LiDAR button: its own × leaves LiDAR.
+    layers: 'hidden',
     zoom: 'hidden',
     compass: 'shown',
     otherHandles: 'hidden',
     lengthLabels: 'hidden',
     bottomBar: 'hidden',
-    lidar: 'shown',
+    lidar: 'hidden',
+    sun: 'shown',
   } as const;
 
   it.each([
@@ -56,9 +57,9 @@ describe('LiDAR keeps only what it needs (T-M05-002g, board frames 5 and 16)', (
     expect(partsOf({ ...facts, view: '3d', lidar: true })).toEqual(parts);
   });
 
-  it('a save mark that is fine stays away; off LiDAR, saveAsks alone changes nothing', () => {
+  it('a save mark that is fine stays away; one that needs the person shows off LiDAR too', () => {
     expect(partsOf({ view: '3d', lidar: true }).stepSwitcher).toBe('hidden');
-    expect(partsOf({ job: 'drawing', saveAsks: true }).stepSwitcher).toBe('hidden');
+    expect(partsOf({ job: 'drawing', saveAsks: true }).stepSwitcher).toBe('mark');
   });
 
   it('the LiDAR button waits for a roof, and steps aside in a job', () => {

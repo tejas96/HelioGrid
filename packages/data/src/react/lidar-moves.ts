@@ -2,6 +2,7 @@ import {
   type GroundPoint,
   type History,
   historyAfter,
+  LINE_UP_LIFT_MAX_M,
   LINE_UP_SHIFT_MAX_M,
   LINE_UP_STEP_M,
   type LidarEvent,
@@ -61,14 +62,22 @@ export interface LidarHands {
   readonly dragBase: { current: History<StudioDocument> | null };
   readonly setMovedM: (metres: number | null) => void;
   readonly setMapDrag: (lineUp: SiteLineUp | null) => void;
+  /** The height slider held at this many metres; `null` once let go. */
+  readonly setHeightHeld: (metres: number | null) => void;
+  /** The picked roof's height as it stands, which the slider shows; `null` with none picked. */
+  readonly heightNow: number | null;
   readonly site: {
     readonly lineUp: SiteLineUp;
     readonly dragMap: (to: GroundPoint) => void;
+    readonly liftMap: (lift: number) => void;
   };
   readonly undo: () => void;
   /** The roof a line of sight meets on the model. */
   readonly hitAt: (at: SightAt, beside: SightAt) => number | null;
 }
+
+/** Two heights within half a centimetre are one: a roof's height is kept to the centimetre. */
+const SAME_CM_M = 0.005;
 
 export function lidarMovesOf(hands: LidarHands): Omit<LidarMoves, 'retryScan' | 'fixInLidar'> {
   const { dispatch, latest, editable, buildings, picked, pickedBuildings, ids } = hands;
@@ -121,10 +130,23 @@ export function lidarMovesOf(hands: LidarHands): Omit<LidarMoves, 'retryScan' | 
     why: (shown) => dispatch({ kind: 'why', shown }),
     fix: () =>
       dispatch({ kind: 'fix', picked: ids(hands.offBuildings.flatMap((one) => one.members)) }),
-    heightRoof: hands.setHeightPick,
-    setHeight: (metres) => {
+    heightRoof: (choice) => {
+      hands.setHeightHeld(null);
+      hands.setHeightPick(choice);
+    },
+    setHeight: (metres, done) => {
       const index = hands.heightIndex;
       if (index === null) return;
+      // Held or let go at the height it stands at — a touch taken back, a blur after the release —
+      // nothing is held, and nothing is saved: no second Undo, no system height made the person's.
+      const now = hands.heightNow;
+      const same = now !== null && Math.abs(metres - now) < SAME_CM_M;
+      if (!done) {
+        hands.setHeightHeld(same ? null : metres);
+        return;
+      }
+      hands.setHeightHeld(null);
+      if (same) return;
       commit((now) => {
         const set = roofHeightSet(now, index, metres);
         return set.kind === 'done' ? set.document : now;
@@ -191,6 +213,19 @@ export function lidarMovesOf(hands: LidarHands): Omit<LidarMoves, 'retryScan' | 
         return;
       }
       hands.setMapDrag({ ...hands.site.lineUp, east: kept(to.east), north: kept(to.north) });
+    },
+    liftMap: (lift, done) => {
+      if (!editable) return;
+      const step = Math.round(lift / LINE_UP_STEP_M) * LINE_UP_STEP_M;
+      const kept = Math.max(-LINE_UP_LIFT_MAX_M, Math.min(LINE_UP_LIFT_MAX_M, step));
+      // At the lift it stands at, nothing is held and nothing saved, as for a roof's height.
+      const same = Math.abs(kept - hands.site.lineUp.lift) < LINE_UP_STEP_M / 2;
+      if (!done) {
+        hands.setMapDrag(same ? null : { ...hands.site.lineUp, lift: kept });
+        return;
+      }
+      hands.setMapDrag(null);
+      if (!same) hands.site.liftMap(lift);
     },
     undoMove: () => {
       hands.setMovedM(null);

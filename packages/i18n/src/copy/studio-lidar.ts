@@ -26,7 +26,7 @@ const LIDAR = {
   moveClose: /*i18n*/ { id: 'Close Move' },
   whatToMove: /*i18n*/ { id: 'What to move' },
   tabRoofs: /*i18n*/ { id: 'Roofs' },
-  tabMap: /*i18n*/ { id: 'Map' },
+  tabMap: /*i18n*/ { id: 'Scan' },
   buildings: /*i18n*/ { id: 'Buildings' },
   roofsNumbered: /*i18n*/ { id: 'Roofs {numbers}' },
   none: /*i18n*/ { id: 'None' },
@@ -56,6 +56,7 @@ const LIDAR = {
   hintOpen: /*i18n*/ { id: 'Tap a roof to check its height.' },
   hintReader: /*i18n*/ { id: 'Tap a roof to see its height.' },
   hintMap: /*i18n*/ { id: 'Drag the scan under your roofs.' },
+  hintMapEdge: /*i18n*/ { id: 'The scan moves {distance} at most. Move the roof onto it instead.' },
   hintPick: /*i18n*/ { id: 'Tap a building to move it.' },
   hintDrag: /*i18n*/ { id: 'Drag a picked roof to move it.' },
   hintHold: /*i18n*/ { id: 'Hold a picked roof, then drag.' },
@@ -91,6 +92,8 @@ function hintWord(t: T, hint: LidarHint, phone: boolean, distance: string): Tran
       return t(LIDAR.hintReader);
     case 'map':
       return t(LIDAR.hintMap);
+    case 'map_edge':
+      return t(LIDAR.hintMapEdge, { distance });
     case 'pick':
       return t(LIDAR.hintPick);
     case 'drag':

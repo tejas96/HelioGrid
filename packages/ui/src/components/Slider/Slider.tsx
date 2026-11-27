@@ -17,6 +17,7 @@ import {
   tickNudged,
   ticksOnTrack,
 } from './slider-math';
+import { useHeldValue } from './use-held-value';
 
 interface WebSliderProps extends SliderProps {
   className?: string;
@@ -78,12 +79,19 @@ export function Slider({
   useFocusRequest(range, focusRequest);
   const autoId = useId();
   const sid = id ?? autoId;
-  const percent = fillPercent(value, min, max);
+  const held = useHeldValue(value);
+  const percent = fillPercent(held.shown, min, max);
   const marked = markPercent(mark, min, max);
-  const shown = formatValue(value, unit, format);
+  const shown = formatValue(held.shown, unit, format);
 
-  const live = (next: number) => onInput?.(clampToRange(next, min, max, step));
-  const commit = (next: number) => onCommit?.(clampToRange(next, min, max, step));
+  const live = (next: number) => {
+    held.hold(next);
+    onInput?.(clampToRange(next, min, max, step));
+  };
+  const commit = (next: number) => {
+    held.let();
+    onCommit?.(clampToRange(next, min, max, step));
+  };
   const stepped = (direction: -1 | 1) =>
     ticks === undefined || ticks.length === 0
       ? nudged(value, direction, min, max, step)
@@ -156,11 +164,19 @@ export function Slider({
             min={min}
             max={max}
             step={step}
-            value={value}
+            value={held.shown}
             disabled={disabled}
             aria-valuetext={shown}
             onChange={(event) => live(Number(event.target.value))}
             onPointerUp={(event) => commit(Number(event.currentTarget.value))}
+            // A touch the browser took back (a scroll) saves nothing: the given value shows again,
+            // and a caller that showed a held value live is handed the given one back — only when
+            // it moved, so a caller that saves live is never sent the value it already has.
+            onPointerCancel={() => {
+              const was = held.shown;
+              held.let();
+              if (was !== value) onInput?.(value);
+            }}
             onKeyUp={(event) => commit(Number(event.currentTarget.value))}
             onBlur={(event) => commit(Number(event.currentTarget.value))}
           />

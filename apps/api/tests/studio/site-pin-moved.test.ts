@@ -58,6 +58,12 @@ const WITH_ROOF = {
     },
   ],
   pictureScale: PICTURE_SCALE,
+  // The old place's answers: the building changed, the map's line-up and the floors tapped.
+  site: {
+    changed: { dataOn: '2025-10-17', changed: true },
+    lineUp: { east: -2.1, north: 2, lift: 0 },
+    floors: 2,
+  },
 } as const;
 
 const skip = skipWithoutDatabase(
@@ -148,7 +154,7 @@ describe.skipIf(skip)('A moved pin, over HTTP against a migrated database', () =
     expect((await documentsOf(designs)).map((d) => d?.version)).toEqual([1, 1, 1]);
   });
 
-  it('another site, once agreed, clears every roof and what it set on the picture', async () => {
+  it('another site, once agreed, clears every roof, what it set on the picture and the old place’s answers', async () => {
     const { designs } = await aDrawnLead();
     const moved = pinAt(OTHER_SITE_M, 0);
     const reply = await saveSite(

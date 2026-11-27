@@ -19,6 +19,12 @@
   grid-column: 3;
 }
 
+/* LiDAR's tools (`StudioToolRail`): one column under its ×, at the head's start, from the top. */
+.hg-studio-tools[data-lidar="true"] {
+  grid-row: 2;
+  align-self: start;
+}
+
 .hg-studio-tools .hg-icon-button,
 .hg-studio-tools > * {
   pointer-events: auto;

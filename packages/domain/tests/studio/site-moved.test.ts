@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Coordinate } from '../../src/format/areas';
 import { EMPTY_STUDIO_DOCUMENT, type Roof, type StudioDocument } from '../../src/studio/document';
 import { coordinateOf, type GroundPoint } from '../../src/studio/ground';
+import type { LaidPicture, LaidPlan } from '../../src/studio/own-picture';
 import { drawingsAfterPinMove, PIN_FIX_REACH_M } from '../../src/studio/site-moved';
 
 const PIN: Coordinate = { latitude: 16.845_6, longitude: 74.601_2 };
@@ -134,5 +135,71 @@ describe('a drawing when the pin moves', () => {
       true,
       false,
     ]);
+  });
+});
+
+/** A drone photo and a plan laid on the old place, and the old place's answers. */
+const PHOTO: LaidPicture = {
+  pictureId: 'photo-1',
+  at: { east: 15, north: 15 },
+  turnDeg: 0,
+  metresPerUnit: 0.05,
+  scaleFrom: 'person',
+};
+const PLAN: LaidPlan = {
+  ...PHOTO,
+  pictureId: 'plan-1',
+  seeThrough: 60,
+  locked: false,
+  hidden: false,
+  page: 1,
+};
+const OLD_PLACE = {
+  ownPicture: PHOTO,
+  plan: PLAN,
+  stairsSkipped: true,
+  site: {
+    dataStamp: { source: 'google_solar' as const, quality: 'base' as const, dataOn: '2025-10-17' },
+    changed: { dataOn: '2025-10-17', changed: true },
+    floors: 2,
+    lineUp: { east: -2.1, north: 2, lift: 0 },
+  },
+};
+
+describe('what a pin move keeps of the old place', () => {
+  it('another site keeps nothing of the old one: its answers, line-up, photo and plan go too', () => {
+    const before: StudioDocument = { ...drawn(), ...OLD_PLACE, picture: 'own' };
+    const answer = drawingsAfterPinMove([before], PIN, pinAt(900, 0), true);
+    // Its own photo is the old place's: the studio picks the picture again.
+    expect(answer).toEqual({ kind: 'done', documents: [EMPTY_STUDIO_DOCUMENT] });
+  });
+
+  it('another site clears the old place from a design with no roof yet, with nothing to ask', () => {
+    const before: StudioDocument = { ...EMPTY_STUDIO_DOCUMENT, ...OLD_PLACE, picture: 'sky' };
+    const answer = drawingsAfterPinMove([before], PIN, pinAt(900, 0), false);
+    expect(answer).toEqual({
+      kind: 'done',
+      documents: [{ ...EMPTY_STUDIO_DOCUMENT, picture: 'sky' }],
+    });
+  });
+
+  it('a fix keeps the answers and moves a laid photo and plan with the roofs', () => {
+    const before: StudioDocument = { ...drawn(2), ...OLD_PLACE };
+    const answer = drawingsAfterPinMove([before], PIN, pinAt(4, 0), false);
+    const after = answer.kind === 'done' ? answer.documents[0] : null;
+    // The roof's corner at 10 m east went back by the pin's 4 m, stretched by 2: to 2 m.
+    expect(cornersOf(after)?.[0]).toEqual({ east: 2, north: 10 });
+    expect(Math.round(after?.ownPicture?.at.east ?? 0)).toBe(7);
+    expect(Math.round(after?.plan?.at.east ?? 0)).toBe(7);
+    expect(after?.site).toEqual(OLD_PLACE.site);
+    expect(after?.stairsSkipped).toBe(true);
+  });
+
+  it('a fix moves a laid photo even before a roof is drawn', () => {
+    const before: StudioDocument = { ...EMPTY_STUDIO_DOCUMENT, ownPicture: PHOTO };
+    const answer = drawingsAfterPinMove([before], PIN, pinAt(4, 0), false);
+    expect(
+      Math.round((answer.kind === 'done' && answer.documents[0]?.ownPicture?.at.east) || 0),
+    ).toBe(11);
   });
 });

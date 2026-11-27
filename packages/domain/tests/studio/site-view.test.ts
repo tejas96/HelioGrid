@@ -7,6 +7,7 @@ import {
   type LidarView,
   lidarViewAfter,
   linedUp,
+  lineUpAtEdge,
   lineUpCleared,
   lineUpDragged,
   lineUpLifted,
@@ -215,5 +216,18 @@ describe('LiDAR’s view (T-M05-002g, board frames 5–17)', () => {
     expect(lidarViewAfter(LIDAR_START, { kind: 'back' })).toBe(LIDAR_START);
     expect(lidarViewAfter(LIDAR_START, { kind: 'why', shown: false })).toBe(LIDAR_START);
     expect(lidarViewAfter(LIDAR_START, { kind: 'why', shown: true }).why).toBe(true);
+  });
+});
+
+describe('the scan moved as far as it goes', () => {
+  it.each([
+    ['at rest', { east: 0, north: 0 }, false],
+    ['a step short of the limit', { east: 4.9, north: 0 }, false],
+    ['at the limit, east', { east: 5, north: 0 }, true],
+    ['at the limit, west', { east: -5, north: 0 }, true],
+    ['at the limit, north', { east: 1, north: 5 }, true],
+    ['at the limit, south', { east: 0, north: -5 }, true],
+  ] as const)('%s', (_, lineUp, edge) => {
+    expect(lineUpAtEdge(lineUp)).toBe(edge);
   });
 });

@@ -14,6 +14,11 @@ export interface FramingInputs {
   readonly size: { readonly width: number; readonly height: number };
   readonly free: { readonly top: number; readonly bottom: number };
   readonly still: boolean;
+  /**
+   * LiDAR's dark stage: its edge may show, so the camera goes out until the whole ground fits and
+   * looks anywhere on it; else the ground fills the view and its edge never shows.
+   */
+  readonly whole: boolean;
 }
 
 /** Where a frame flies the camera to. */
@@ -58,9 +63,9 @@ export class CameraFraming {
 
   /** The camera's limits for this tilt: a new limit eases it in or out, never a snap of the view. */
   limitFor(rig: CameraControlsImpl, tilt: number): void {
-    const { clear, metresPerPixel, size, free, still } = this.inputs;
+    const { clear, metresPerPixel, size, free, still, whole } = this.inputs;
     this.limitedAt = tilt;
-    const reach = reachOf(clear, metresPerPixel, size, free, tilt);
+    const reach = reachOf(clear, metresPerPixel, size, free, tilt, whole);
     rig.maxDistance = Math.max(reach.farthest, this.framed);
     rig.minDistance = Math.min(reach.nearest, rig.maxDistance);
     const going = rig.getSpherical(this.heading, true).radius;
@@ -77,10 +82,10 @@ export class CameraFraming {
 
   /** The room the camera may look in from `going` off at `tilt`, round the point it was flown to. */
   private roomFor(going: number, tilt: number): Box3 | null {
-    const { clear, size, free } = this.inputs;
+    const { clear, size, free, whole } = this.inputs;
     if (clear === null) return null;
     const at = { ...clear, upM: this.lookUp.current };
-    const next = lookRoom(at, seenPerMetre(size, free), going, tilt);
+    const next = lookRoom(at, seenPerMetre(size, free), going, tilt, whole);
     return this.posedAt === null ? next : next.expandByPoint(this.posedAt);
   }
 

@@ -3,9 +3,9 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { FocusParts, MeasurementSystem, StudioView, ViewPlace } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { IconButton, ShellGlyph } from '@heliogrid/ui';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { MagnetSwitch } from './StudioBarPills';
-import { LidarButton } from './StudioLidar';
+import { LidarButton, LidarMoveButton } from './StudioLidar';
 import { StudioPencil } from './StudioPencil';
 import { StudioRoofsButton } from './StudioRoofsButton';
 import { Shown } from './StudioShown';
@@ -22,7 +22,7 @@ function magnetShown(part: FocusParts['magnet'], studio: StudioScreen): boolean 
  * what changes the model, the pencil always in the bottom place: the magnet while a corner is drawn
  * or a roof is picked, Roofs with their count once a roof stands (`StudioRoofsButton`), Redo, the
  * trash that clears every corner of the drawing, Undo, then the pencil (×, while drawing). Right,
- * how the model is seen: the sun, View (`StudioViewPanel`), LiDAR (`T-M05-002g`), the 2D and 3D
+ * how the model is seen: the sun (3D only), View (`StudioViewPanel`), LiDAR (`T-M05-002g`), the 2D and 3D
  * switch once a roof stands, and Zoom in over Zoom out in one pill. A tool comes only once it can act and takes no place before; a tool
  * coming moves only the ones above it. Undo and Redo keep the place they took (`undoSlotsOf`), dim
  * while they cannot act.
@@ -77,6 +77,61 @@ export function StudioToolRail({
   const pencil = useRef<HTMLSpanElement>(null);
   const opener = useRef<HTMLSpanElement>(null);
   const { viewOpen, moves } = studio;
+  // LiDAR has its own column under its × (the head's start): the tools that always stand there
+  // first — Move, Sun — then Undo and Redo, which come later and so move nothing above them.
+  const lidarOn = studio.lidar.view.on && view !== 'top';
+  // A tool that goes there hands the keyboard focus to LiDAR's first tool, as the pencil takes it
+  // elsewhere; and LiDAR turned on from its own button, which then goes, lands the focus there too.
+  const lidarTools = useRef<HTMLDivElement>(null);
+  const focusTo = lidarOn ? lidarTools : pencil;
+  useEffect(() => {
+    if (!lidarOn) return;
+    const lost = document.activeElement === null || document.activeElement === document.body;
+    if (!lost) return;
+    const frame = requestAnimationFrame(() =>
+      lidarTools.current?.querySelector<HTMLElement>('button')?.focus(),
+    );
+    return () => cancelAnimationFrame(frame);
+  }, [lidarOn]);
+  const redoTool = (
+    <Shown when={editable && parts.redo === 'shown'} off={!canRedo} focusTo={focusTo}>
+      <IconButton label={words.redo} disabled={!canRedo} onClick={onRedo}>
+        <ShellGlyph name="redo" size="md" />
+      </IconButton>
+    </Shown>
+  );
+  const undoTool = (
+    <Shown when={editable && parts.undo === 'shown'} off={!canUndo} focusTo={focusTo}>
+      <IconButton label={words.undo} disabled={!canUndo} onClick={onUndo}>
+        <ShellGlyph name="undo" size="md" />
+      </IconButton>
+    </Shown>
+  );
+  // The sun and its shade live in 3D only (`FocusParts.sun`): the top view never shows them.
+  const sunTool = (
+    <Shown
+      when={view !== 'top' && studio.roofList.count > 0 && parts.sun === 'shown'}
+      focusTo={focusTo}
+    >
+      <IconButton
+        label={words.sun}
+        pressed={studio.sunBar.view !== null}
+        onClick={() => (studio.sunBar.view === null ? moves.openSun() : moves.closeSun())}
+      >
+        <ShellGlyph name="sun" size="md" />
+      </IconButton>
+    </Shown>
+  );
+  if (lidarOn) {
+    return (
+      <div ref={lidarTools} className="hg-studio-tools" data-side="left" data-lidar="true">
+        <LidarMoveButton studio={studio} words={words} />
+        {sunTool}
+        {undoTool}
+        {redoTool}
+      </div>
+    );
+  }
   return (
     <>
       <div className="hg-studio-tools" data-side="left">
@@ -86,21 +141,13 @@ export function StudioToolRail({
         <Shown when={studio.roofList.count > 0 && parts.roofs === 'shown'} focusTo={pencil}>
           <StudioRoofsButton studio={studio} words={words} />
         </Shown>
-        <Shown when={editable && parts.redo === 'shown'} off={!canRedo} focusTo={pencil}>
-          <IconButton label={words.redo} disabled={!canRedo} onClick={onRedo}>
-            <ShellGlyph name="redo" size="md" />
-          </IconButton>
-        </Shown>
+        {redoTool}
         <Shown when={editable && parts.wipe === 'shown' && canWipe} focusTo={pencil}>
           <IconButton label={words.wipeCorners} onClick={onWipe}>
             <ShellGlyph name="trash" size="md" />
           </IconButton>
         </Shown>
-        <Shown when={editable && parts.undo === 'shown'} off={!canUndo} focusTo={pencil}>
-          <IconButton label={words.undo} disabled={!canUndo} onClick={onUndo}>
-            <ShellGlyph name="undo" size="md" />
-          </IconButton>
-        </Shown>
+        {undoTool}
         <Shown when={parts.pencil !== 'hidden'}>
           <span ref={pencil} className="hg-studio-pencil">
             <StudioPencil studio={studio} words={words} />
@@ -108,20 +155,7 @@ export function StudioToolRail({
         </Shown>
       </div>
       <div className="hg-studio-tools" data-side="right">
-        {/* The sun lives in 3D, which waits for a roof: it comes with the 3D switch. */}
-        <Shown
-          when={
-            studio.roofList.count > 0 && (parts.layers === 'shown' || parts.layers === 'switch')
-          }
-        >
-          <IconButton
-            label={words.sun}
-            pressed={studio.sunBar.view !== null}
-            onClick={() => (studio.sunBar.view === null ? moves.openSun() : moves.closeSun())}
-          >
-            <ShellGlyph name="sun" size="md" />
-          </IconButton>
-        </Shown>
+        {sunTool}
         <Shown when={parts.layers === 'shown' || parts.layers === 'menu'}>
           <span ref={opener} className="hg-studio-view-opener">
             <IconButton

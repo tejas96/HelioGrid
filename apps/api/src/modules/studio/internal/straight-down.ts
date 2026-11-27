@@ -13,23 +13,21 @@ import type { KeptHeightMap } from './site-data-kept';
 
 /**
  * The picture reaches as far round the pin as the height map it came with, so LiDAR's scan wears it
- * to where the scan fades into the stage (`T-M05-002g`) — at most this far: sharp, and small enough
- * for a phone.
+ * out to the scan's own edge.
  */
-const REACH_MAX_M = 60;
 const STEP_M = 0.25;
 const RGB = 3;
 const CREDIT = 'Imagery © Google';
 
-/** The map's own ground round the pin, within the reach. */
+/** The map's own ground round the pin. */
 function reachOf(kept: KeptHeightMap, pin: Coordinate) {
   const by = groundOf(pin, kept.middle);
   const { west, south, stepM, cols, rows } = kept.grid;
   return {
-    west: Math.max(-REACH_MAX_M, west + by.east),
-    east: Math.min(REACH_MAX_M, west + cols * stepM + by.east),
-    south: Math.max(-REACH_MAX_M, south + by.north),
-    north: Math.min(REACH_MAX_M, south + rows * stepM + by.north),
+    west: west + by.east,
+    east: west + cols * stepM + by.east,
+    south: south + by.north,
+    north: south + rows * stepM + by.north,
   };
 }
 

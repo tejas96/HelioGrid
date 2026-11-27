@@ -53,6 +53,9 @@
 /* White frosted glass over the picture, as the approved sample draws it: the theme's strong glass,
    which follows dark and field mode. */
 .hg-studio-glass {
+  /* A ground that holds controls: a slider's rail, a stepper, a chip take the fill, which reads on
+     the glass; the card colour they take on the page was the glass's own, and the rail vanished. */
+  --hg-control-fill: var(--fill);
   background: var(--glass-strong);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
@@ -192,6 +195,16 @@
   place-items: center;
   min-inline-size: var(--studio-tool);
   min-block-size: var(--studio-tool);
+}
+
+/* Saved shows a moment after a save lands, then fades; Saving stays while it lasts. */
+.hg-studio-save-quiet {
+  display: inline-grid;
+  transition: opacity var(--dur-standard) var(--ease-standard);
+}
+
+.hg-studio-save-quiet[data-shown="false"] {
+  opacity: 0;
 }
 
 :is(.hg-studio-head-steps, .hg-studio-head-end)

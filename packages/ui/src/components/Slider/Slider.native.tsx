@@ -22,6 +22,7 @@ import {
   tickNudged,
   ticksOnTrack,
 } from './slider-math';
+import { useHeldValue } from './use-held-value';
 
 interface NativeSliderProps extends SliderProps {
   style?: StyleProp<ViewStyle>;
@@ -88,14 +89,21 @@ export function Slider({
     if (focusRequest === undefined || focusRequest === 0) return;
     focusScreenReaderOn(() => track.current);
   }, [focusRequest]);
-  const percent = fillPercent(value, min, max);
-  const shown = formatValue(value, unit, format);
+  const held = useHeldValue(value);
+  const percent = fillPercent(held.shown, min, max);
+  const shown = formatValue(held.shown, unit, format);
   /* A props object or a bare tier — `Provenance`'s own resolver decides, at the
      12px type floor. `"unmarked"` comes back null and the slot collapses. */
   const provenanceNode = renderProvenance(provenance, { size: 12 });
 
-  const live = (next: number) => onInput?.(next);
-  const commit = (next: number) => onCommit?.(next);
+  const live = (next: number) => {
+    held.hold(next);
+    onInput?.(next);
+  };
+  const commit = (next: number) => {
+    held.let();
+    onCommit?.(next);
+  };
   const stepped = (direction: -1 | 1) =>
     ticks === undefined || ticks.length === 0
       ? nudged(value, direction, min, max, step)
@@ -140,6 +148,11 @@ export function Slider({
           min={min}
           onCommit={commit}
           onLive={live}
+          onLet={() => {
+            const was = held.shown;
+            held.let();
+            if (was !== value) onInput?.(value);
+          }}
           onNudge={nudge}
           percent={percent}
           mark={markPercent(mark, min, max)}

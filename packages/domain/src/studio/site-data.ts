@@ -60,9 +60,6 @@ export const HEIGHT_DATA_SHARPNESS_M: Record<HeightDataQuality, number> = {
   base: 0.25,
 };
 
-/** Height data this many months old or more asks whether the building has changed. */
-export const HEIGHT_DATA_STALE_MONTHS = 12;
-
 /** The data a design's system values were made from: its source, sharpness and date. */
 export interface SiteDataStamp {
   readonly source: SiteDataSource;
@@ -78,7 +75,11 @@ export interface SiteLineUp {
   readonly lift: number;
 }
 
-/** A person's answer to "Has the building changed?" for the data of one date. */
+/**
+ * A person's answer to "Has the building changed?" for the data of one date, which the studio no
+ * longer asks: kept so a design that holds one still reads, and never read — the data's heights
+ * stand, and a person changes any of them.
+ */
 export interface SiteChanged {
   readonly dataOn: string | null;
   readonly changed: boolean;
@@ -159,40 +160,6 @@ export interface SiteFace {
   readonly areaM2: number;
   /** The face's plane at its middle, metres above the site's datum. */
   readonly heightM: number;
-}
-
-const MONTHS_A_YEAR = 12;
-
-/**
- * Whether height data of `dataOn` is a year old or more on `today` (both `YYYY-MM-DD`). Data with no
- * date never asks.
- */
-export function heightDataStale(dataOn: string | null, today: string): boolean {
-  if (dataOn === null) return false;
-  const [fromYear, fromMonth, fromDay] = dataOn.split('-').map(Number) as [number, number, number];
-  const [toYear, toMonth, toDay] = today.split('-').map(Number) as [number, number, number];
-  const months =
-    (toYear - fromYear) * MONTHS_A_YEAR + (toMonth - fromMonth) - (toDay < fromDay ? 1 : 0);
-  return months >= HEIGHT_DATA_STALE_MONTHS;
-}
-
-/**
- * Whether the changed-roof question waits for an answer: the data is a year old or more, or a drawn
- * roof has no building under it, and no answer was given for this data's date.
- */
-export function changedQuestionOpen(
-  site: SiteDataKept | undefined,
-  dataOn: string | null,
-  today: string,
-  roofWithNoBuilding: boolean,
-): boolean {
-  if (site?.changed !== undefined && site.changed.dataOn === dataOn) return false;
-  return roofWithNoBuilding || heightDataStale(dataOn, today);
-}
-
-/** Whether the data's heights stand: not when a person said the building changed since this data. */
-export function dataHeightsApply(site: SiteDataKept | undefined, dataOn: string | null): boolean {
-  return !(site?.changed?.changed === true && site.changed.dataOn === dataOn);
 }
 
 /**

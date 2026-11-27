@@ -1,7 +1,6 @@
 'use client';
 import type { SiteDataWire } from '@heliogrid/contracts';
 import {
-  type GroundBox,
   type GroundPoint,
   type History,
   type LidarEvent,
@@ -9,12 +8,13 @@ import {
   lidarFootOf,
   lidarHintOf,
   lidarTopFixOf,
+  lineUpAtEdge,
   type Read,
   type RoofFacts,
   type RoofName,
   type RoofSunlight,
+  roofHeightSet,
   roofNameOf,
-  roofsBox,
   type SightAt,
   type SiteLineUp,
   type SiteReads,
@@ -35,12 +35,6 @@ import { useLidarScan } from './use-lidar-scan';
  * history. While picked roofs are dragged, `preview` is the design with them where the drag holds
  * them, for the model to show; the history takes the move once the drag ends.
  */
-
-/** A box's middle; the pin with no box. */
-const middleOf = (box: GroundBox | null) =>
-  box === null
-    ? { east: 0, north: 0 }
-    : { east: (box.west + box.east) / 2, north: (box.south + box.north) / 2 };
 
 /** A roof's sunlight as one share: the mean of its cells; `null` with none. */
 function shareOf(sunlight: RoofSunlight | undefined): number | null {
@@ -64,6 +58,7 @@ interface LidarInput {
     readonly sunlight: Readonly<Record<string, RoofSunlight>> | null;
     readonly layers: readonly HeightLayer[];
     readonly dragMap: (to: GroundPoint) => void;
+    readonly liftMap: (lift: number) => void;
     /** Google's straight-down picture shows in the top view. */
     readonly straightDown: boolean;
   };
@@ -110,6 +105,7 @@ export function useLidar(input: LidarInput): {
   const [onScan, setOnScan] = useState(false);
   const [movedM, setMovedM] = useState<number | null>(null);
   const [mapDrag, setMapDrag] = useState<SiteLineUp | null>(null);
+  const [heightHeld, setHeightHeld] = useState<number | null>(null);
   const dragBase = useRef<History<StudioDocument> | null>(null);
   // A new pick, or Move closed, ends the last move's message and the slider's choice.
   const pickKey = `${view.move === null}:${(view.move?.picked ?? []).join()}`;
@@ -117,6 +113,7 @@ export function useLidar(input: LidarInput): {
   useEffect(() => {
     setMovedM(null);
     setHeightPick(0);
+    setHeightHeld(null);
   }, [pickKey]);
 
   const roofs = document?.roofs ?? [];
@@ -138,6 +135,7 @@ export function useLidar(input: LidarInput): {
     onScan,
     movedM,
     offSpot: offBuildings.length > 0,
+    mapAtEdge: lineUpAtEdge(mapDrag ?? site.lineUp),
   };
 
   const reads = site.reads?.roofs ?? {};
@@ -164,9 +162,11 @@ export function useLidar(input: LidarInput): {
     dragBase,
     setMovedM,
     setMapDrag,
+    setHeightHeld,
+    heightNow: picks.heightRoof?.heightM ?? null,
   });
   return {
-    preview: drag === null || base === null ? null : roofsMoved(base.present, roots, drag).document,
+    preview: previewOf({ base, roots, drag, present: history?.present, heightIndex, heightHeld }),
     back: () => {
       if (!view.on || input.topView) return false;
       input.dispatch({ kind: 'back' });
@@ -176,7 +176,6 @@ export function useLidar(input: LidarInput): {
       view,
       scan,
       mesh,
-      middle: middleOf(roofsBox(roofs)),
       lineUp: mapDrag ?? site.lineUp,
       photo,
       canEdit: editable,
@@ -244,4 +243,23 @@ export function useLidar(input: LidarInput): {
       },
     },
   };
+}
+
+/**
+ * The design as LiDAR shows it while a hand holds something: the picked roofs where a drag holds
+ * them, or a roof at the height its slider holds; `null` when nothing is held.
+ */
+function previewOf(held: {
+  readonly base: History<StudioDocument> | null;
+  readonly roots: Parameters<typeof roofsMoved>[1];
+  readonly drag: GroundPoint | null;
+  readonly present: StudioDocument | undefined;
+  readonly heightIndex: number | null;
+  readonly heightHeld: number | null;
+}): StudioDocument | null {
+  const { base, drag, present, heightIndex, heightHeld } = held;
+  if (drag !== null && base !== null) return roofsMoved(base.present, held.roots, drag).document;
+  if (heightHeld === null || heightIndex === null || present === undefined) return null;
+  const set = roofHeightSet(present, heightIndex, heightHeld);
+  return set.kind === 'done' ? set.document : null;
 }

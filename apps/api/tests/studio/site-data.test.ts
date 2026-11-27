@@ -1,4 +1,4 @@
-import { ROOF_DATA_PORT } from '@heliogrid/contracts';
+import { ROOF_DATA_PORT, type SkyPictureWire } from '@heliogrid/contracts';
 import { coordinateOf, FOUNDER_ROLE } from '@heliogrid/domain';
 import { gridFromWire, heightAt } from '@heliogrid/domain/studio-kernel';
 import { HttpStatus } from '@nestjs/common';
@@ -165,9 +165,9 @@ describe.skipIf(skip)('A design’s site data, over HTTP against a migrated data
     expect(memory().asked - asked).toBe(1);
   });
 
-  /** The memory map reaches 40 m round its call, about 77 m across on the pin's ground. */
-  const MAP_ACROSS_M = 70;
-  const PHOTO_REACH_MAX_M = 60;
+  /** The scan's metre grid and the picture are read from one map: they meet within a metre. */
+  const SAME_EDGE_M = 1;
+  const pieceOf = (body: SkyPictureWire) => (body.kind === 'picture' ? body.pieces[0] : undefined);
 
   it('the straight-down picture of a sharp site comes from the map kept for its pin', async () => {
     // A sharp map is kept at its group's own middle, never at the pin's snapped cell.
@@ -176,13 +176,28 @@ describe.skipIf(skip)('A design’s site data, over HTTP against a migrated data
     const picture = await skyPictureOf(owner(), designId, 'straight_down');
     expect(picture.status).toBe(HttpStatus.OK);
     expect(picture.body.kind).toBe('picture');
-    // It reaches as far as the map it came with, as LiDAR's scan does (`T-M05-002g`), never past
-    // 60 m round the pin: the whole memory map, and no blank ground past it.
-    const piece = picture.body.kind === 'picture' ? picture.body.pieces[0] : undefined;
-    const across = (piece?.east ?? 0) - (piece?.west ?? 0);
-    expect(across).toBeGreaterThan(MAP_ACROSS_M);
-    expect(across).toBeLessThan(2 * PHOTO_REACH_MAX_M);
-    expect(piece?.east ?? Number.POSITIVE_INFINITY).toBeLessThanOrEqual(PHOTO_REACH_MAX_M);
+  });
+
+  it('the straight-down picture reaches as far as the scan it is worn on', async () => {
+    const designId = await aSitedDesign();
+    const data = await siteDataOf(owner(), designId);
+    const piece = pieceOf((await skyPictureOf(owner(), designId, 'straight_down')).body);
+    const surround = data.body.areas[0]?.surround;
+    expect(piece).toBeDefined();
+    expect(surround).toBeDefined();
+    const scan = surround === undefined ? null : gridFromWire(surround);
+    expect(scan).not.toBeNull();
+    if (scan === null || piece === undefined) return;
+    // LiDAR's scan wears it out to its own edge (`T-M05-002g`), never cut short of it.
+    const edges = [
+      [piece.west, scan.west],
+      [piece.south, scan.south],
+      [piece.east, scan.west + scan.cols * scan.stepM],
+      [piece.north, scan.south + scan.rows * scan.stepM],
+    ] as const;
+    for (const [photo, ground] of edges) {
+      expect(Math.abs(photo - ground)).toBeLessThan(SAME_EDGE_M);
+    }
   });
 
   it('a design with no place has no data, and says so', async () => {

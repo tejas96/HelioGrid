@@ -8,18 +8,13 @@ type T = Translator['t'];
 
 /**
  * The bar's words on the site's data (`T-M05-002`, part g, board group 6): where the heights came
- * from, the changed-roof question, the floors, a source that did not answer.
+ * from, a roof with no building under it, the floors, a source that did not answer.
  */
 const SITE = {
   fromData: /*i18n*/ { id: 'Heights from Google’s height map of {month}.' },
   fromDataUndated: /*i18n*/ { id: 'Heights from Google’s height map.' },
-  oldTitle: /*i18n*/ { id: 'Google’s heights are from {month}' },
-  changedLine: /*i18n*/ { id: 'Has the building changed since then?' },
-  changedViewer: /*i18n*/ { id: 'The editor can say if the building has changed.' },
-  changedYes: /*i18n*/ { id: 'Yes, it changed' },
-  changedNo: /*i18n*/ { id: 'No' },
-  setAsideTitle: /*i18n*/ { id: 'Old heights set aside' },
-  floorsNow: /*i18n*/ { id: 'How many floors is it now? Redraw the roof if its shape changed.' },
+  noBuilding: /*i18n*/ { id: 'No height data under a roof. Set its height in its sheet.' },
+  noBuildingViewer: /*i18n*/ { id: 'No height data under a roof.' },
   noHeightsTitle: /*i18n*/ { id: 'No Google heights here' },
   floorsAsk: /*i18n*/ { id: 'How many floors is it?' },
   notAnswered: /*i18n*/ { id: 'Google’s height data did not answer. Heights are estimates.' },
@@ -44,7 +39,6 @@ const SITE = {
   mapLeft: /*i18n*/ { id: 'Move the map left' },
   mapRight: /*i18n*/ { id: 'Move the map right' },
   mapBack: /*i18n*/ { id: 'Back to automatic' },
-  changedName: /*i18n*/ { id: 'Has the building changed?' },
   fitUnclear: /*i18n*/ { id: 'The height map is unclear here. Slide it if it looks wrong.' },
   fitAbove: /*i18n*/ { id: 'The height map reads {map} here: {by} above this roof.' },
   fitBelow: /*i18n*/ { id: 'The height map reads {map} here: {by} below this roof.' },
@@ -78,7 +72,7 @@ export function studioSiteWords(t: T) {
   return {
     /**
      * What the bar says of the data. `month` is the data's month and year, already formatted;
-     * `editor`: the reader may answer the changed-roof question.
+     * `editor`: the reader may set a roof's height.
      */
     siteSay: (say: SiteSay, month: string | null, editor: boolean): SiteSayWords => {
       switch (say.kind) {
@@ -87,24 +81,16 @@ export function studioSiteWords(t: T) {
             title: null,
             line: month === null ? t(SITE.fromDataUndated) : t(SITE.fromData, { month }),
           };
-        case 'changed_question':
-          return {
-            title: month === null ? null : t(SITE.oldTitle, { month }),
-            line: t(editor ? SITE.changedLine : SITE.changedViewer),
-          };
+        case 'no_building':
+          return { title: null, line: t(editor ? SITE.noBuilding : SITE.noBuildingViewer) };
         case 'floors':
-          return say.why === 'changed'
-            ? { title: t(SITE.setAsideTitle), line: t(SITE.floorsNow) }
-            : { title: t(SITE.noHeightsTitle), line: t(SITE.floorsAsk) };
+          return { title: t(SITE.noHeightsTitle), line: t(SITE.floorsAsk) };
         case 'not_answered':
           return { title: null, line: t(SITE.notAnswered) };
         default:
           return { title: null, line: t(SITE.updated) };
       }
     },
-    siteChangedYes: t(SITE.changedYes),
-    siteChangedNo: t(SITE.changedNo),
-    siteChangedName: t(SITE.changedName),
     siteFloorsName: t(SITE.floorsName),
     siteStraightDown: t(SITE.straightDown),
     /** The straight-down picture's line: who gave it, its sharpness and date, what it is for. */

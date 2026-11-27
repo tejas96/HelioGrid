@@ -43,7 +43,7 @@ import { useSession } from './use-session';
 import { useSiteHeights } from './use-site-data';
 import { useStudioSheet } from './use-studio-sheet';
 import { useStudioStairs } from './use-studio-stairs';
-import { sunBackOf, useSunBar } from './use-sun-bar';
+import { sunBackOf, useSunBar, viewSetterOf } from './use-sun-bar';
 
 /**
  * The studio's canvas (`T-M05-002a`): the design, its document and the sky picture under it; each
@@ -100,7 +100,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     picture,
     sunlightOn,
   });
-  const sun = useSunBar({ pin, read: site.read, see: (n) => see(n), zone: formats.timeZone });
+  const sun = useSunBar({ pin, read: site.read, zone: formats.timeZone });
+  const toView = viewSetterOf(setView, sun.moves.closeSun);
   const roof = useRoofStep({
     document,
     latest,
@@ -160,7 +161,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     // Outside: the sheet closes, and the next tap on an edge in the top view places the stairs.
     toTop: () => {
       const closed = sheet.moves.done();
-      if (closed) setView('top');
+      if (closed) toView('top');
       return closed;
     },
   });
@@ -178,7 +179,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   seen.current = hitAt;
   const stairsMoment = stairs.seen(model);
   const place = roofPlaceMoves({ latest, step, act, facts });
-  const draw = drawOf(sheet, setView, roof.moves.draw);
+  const draw = drawOf(sheet, toView, roof.moves.draw);
   const faces = studioFacesMoves({
     latest,
     change,
@@ -186,7 +187,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     step,
     act,
     closeSheet: sheet.moves.done,
-    toTop: () => setView('top'),
+    toTop: () => toView('top'),
     startFaces: roof.startFaces,
     pickShape: sheet.moves.pickShape,
     sheet: roofSheet,
@@ -209,7 +210,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const slots = useUndoSlots(editable, roofStep, history);
   const undoRedo = undoRedoMoves({ dropInHand: sheet.dropInHand, step, act, walk: faces.walk });
   // A view that waits for a roof is not taken, whoever asks for it.
-  const see = seeOf({ views, step, act, sheet, setView, setSeen3d, lidarAct });
+  const see = seeOf({ views, step, act, sheet, setView: toView, setSeen3d, lidarAct });
   return {
     read,
     document,

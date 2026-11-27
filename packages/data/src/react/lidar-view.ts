@@ -68,7 +68,8 @@ export interface LidarMoves {
   fix(): void;
   /** Which roof of the one picked building the height slider sets, by its place in `choices`. */
   heightRoof(choice: number): void;
-  setHeight(metres: number): void;
+  /** The height slider at `metres`: shown while held, saved once `done`. */
+  setHeight(metres: number, done: boolean): void;
   /** Match the scan: each picked building onto the scan's footprint, its flat roofs to its height. */
   match(): void;
   /** Back to as drawn: the picked roofs as the design opened. */
@@ -81,6 +82,8 @@ export interface LidarMoves {
   drag(by: GroundPoint, done: boolean): void;
   /** The map dragged on the 3D to `to`, metres east and north; kept once `done`. */
   dragMap(to: GroundPoint, done: boolean): void;
+  /** The map's height slider at `lift` metres: shown while held, kept once `done`. */
+  liftMap(lift: number, done: boolean): void;
   /** The foot's Undo. */
   undoMove(): void;
   /** The scan's maths broke: ask again. */
@@ -101,8 +104,6 @@ export interface LidarScreen {
   readonly scan: LidarScan;
   /** The scan's mesh, built off the page's thread once LiDAR is on; `null` until it is. */
   readonly mesh: LidarMesh | null;
-  /** The drawn roofs' middle: the scan fades into the stage round it. */
-  readonly middle: GroundPoint;
   /** Where the scan lies: the map's line-up, or where a drag on the 3D holds it now. */
   readonly lineUp: SiteLineUp;
   /** The straight-down photo the scan wears; `null` until it is in. */

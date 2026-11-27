@@ -20,7 +20,7 @@ import {
   Switch,
   useFormat,
 } from '@heliogrid/ui';
-import { type Ref, useId } from 'react';
+import { type Ref, useEffect, useId } from 'react';
 import { LidarFootMessage } from './StudioLidarFootMessage';
 import { StudioLidarKey } from './StudioLidarKey';
 import { StudioPanelHead } from './StudioPanelHead';
@@ -93,6 +93,13 @@ function HeightPart({ lidar, facts }: { lidar: Lidar; facts: MoveFacts }) {
   const format = useFormat();
   const { words, units } = facts;
   const roof = lidar.heightRoof;
+  // The height is what a person came to set: a picked building's slider is brought into the body's
+  // view, as on a phone the sheet holds 40 % of the screen and the slider stood below its edge.
+  const slider = useId();
+  const index = roof?.index ?? null;
+  useEffect(() => {
+    if (index !== null) document.getElementById(slider)?.scrollIntoView({ block: 'nearest' });
+  }, [index, slider]);
   if (roof === null) return null;
   const heightOf = (metres: number) => format.roofHeight(metres, units);
   const at = roof.choices.findIndex((choice) => choice.index === roof.index);
@@ -116,10 +123,12 @@ function HeightPart({ lidar, facts }: { lidar: Lidar; facts: MoveFacts }) {
           min={roof.slide.min}
           max={roof.slide.max}
           step={roof.slide.step}
+          id={slider}
           label={words.lidarHeight}
           format={heightOf}
           words={sliderWords(t)}
-          onCommit={lidar.moves.setHeight}
+          onInput={(metres) => lidar.moves.setHeight(metres, false)}
+          onCommit={(metres) => lidar.moves.setHeight(metres, true)}
         />
       ) : (
         <p className="hg-lidar-stack">
@@ -231,7 +240,8 @@ function MapTab({ lidar, facts }: { lidar: Lidar; facts: MoveFacts }) {
         label={words.siteLineUpLift}
         format={(metres) => format.fineLength(metres, units)}
         words={sliderWords(t)}
-        onCommit={site.liftMap}
+        onInput={(lift) => moves.liftMap(lift, false)}
+        onCommit={(lift) => moves.liftMap(lift, true)}
       />
       <NudgeCross
         name={words.lidarNudge}
@@ -253,7 +263,7 @@ function MapTab({ lidar, facts }: { lidar: Lidar; facts: MoveFacts }) {
 
 /**
  * Move (`T-M05-002g`, board frames 10–15): one sheet at the foot, between the tool columns, at most
- * 40 % of the screen high — Roofs | Map. Its head and tabs stay; only the body scrolls, and each
+ * 40 % of the screen high — Roofs | Scan. Its head and tabs stay; only the body scrolls, and each
  * tab opens at its top. A reader gets a roof's card instead: its height, the scan's, its sunlight.
  */
 export function StudioLidarMove(

@@ -51,12 +51,7 @@
 
 /* The key on a wide screen: under the head, at its end. */
 .hg-lidar-key-card {
-  position: absolute;
-  z-index: 3;
-  inset-block-start: calc(100% + var(--sp-2));
-  inset-inline-end: 0;
   inline-size: calc(var(--sp-24) * 2.75);
-  pointer-events: none;
 }
 
 /* The pins on the drawn roofs, their tips on the roofs. */
