@@ -14,6 +14,7 @@ import {
   type Texture,
   TextureLoader,
 } from 'three';
+import type { ClearGround } from './camera-limits';
 import {
   cutOf,
   scanDepthOnlyOf,
@@ -203,6 +204,11 @@ export interface LidarLayerShown {
   readonly pins: Omit<Parameters<typeof LidarPinFollower>[0], 'screen'>;
   /** The picked roofs' outlines at their tops: their roof lines stand thick. */
   readonly picked: readonly { readonly corners: readonly GroundPoint[]; readonly topM: number }[];
+  /**
+   * The ground the scan covers, where it lies now: the camera's room while LiDAR is on, as the sky
+   * picture is its room otherwise; `null` until the scan is built.
+   */
+  readonly ground: ClearGround | null;
 }
 
 /** A picked roof's line stands this far over its top, and this wide in CSS pixels. */

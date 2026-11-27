@@ -46,6 +46,10 @@ const HAZE_TO = 2.4;
  * at, so the edge is taken by the haze and the roofs are not.
  */
 const HAZE_TO_LEAST = 1.15;
+/** With the whole ground in view, the room round it, as a share of its size. */
+const WHOLE_ROOM = 1.2;
+/** A view tilted nearer level than this counts the ground behind the point looked at no farther. */
+const LOWEST_COS = 0.1;
 /** The ground plane round the picture, or the plain ground with none: a square this wide. */
 const GROUND_SIDE_M = 1_200;
 /** The ground plane's side, in metres, which the haze ends before. */
@@ -92,16 +96,22 @@ function shownPerMetre(seen: ReturnType<typeof seenPerMetre>, tilt: number) {
   return { across: round, along: round };
 }
 
-/** The farthest the camera stands with the picture still filling the room the view shows. */
+/**
+ * The farthest the camera stands with the picture still filling the room the view shows — or, with
+ * `whole`, with all of it in the room and a little round it.
+ */
 function farthestOver(
   clear: ClearGround,
   seen: ReturnType<typeof seenPerMetre>,
   tilt: number,
+  whole: boolean,
 ): number {
-  const shown = shownPerMetre(seen, tilt);
+  // The whole ground in view is counted straight down: tilted, the view only shows more round it.
+  const shown = whole ? seen : shownPerMetre(seen, tilt);
   const across = (clear.east - clear.west) / 2 / shown.across;
   const along = (clear.north - clear.south) / 2 / shown.along;
-  return Math.max(DISTANCE_MIN, Math.min(across, along));
+  const farthest = whole ? Math.max(across, along) * WHOLE_ROOM : Math.min(across, along);
+  return Math.max(DISTANCE_MIN, farthest);
 }
 
 /** The closest the camera comes: by the picture's sharpness, or on the grid by the ground shown. */
@@ -128,11 +138,14 @@ export function lookRoom(
   seen: ReturnType<typeof seenPerMetre>,
   distance: number,
   tilt: number,
+  whole: boolean,
 ): Box3 {
   const { upM } = clear;
   const shown = shownPerMetre(seen, tilt);
-  const across = Math.min(shown.across * distance, (clear.east - clear.west) / 2);
-  const along = Math.min(shown.along * distance, (clear.north - clear.south) / 2);
+  // With `whole` the edge may show: the camera looks anywhere on the ground.
+  const keep = whole ? 0 : 1;
+  const across = keep * Math.min(shown.across * distance, (clear.east - clear.west) / 2);
+  const along = keep * Math.min(shown.along * distance, (clear.north - clear.south) / 2);
   return new Box3(
     new Vector3(clear.west + across, upM - 1, -(clear.north - along)),
     new Vector3(clear.east - across, upM + 1, -(clear.south + along)),
@@ -149,9 +162,10 @@ export function reachOf(
   size: { readonly width: number; readonly height: number },
   free: { readonly top: number; readonly bottom: number },
   tilt: number,
+  whole: boolean,
 ): { readonly nearest: number; readonly farthest: number } {
   const farthest =
-    clear === null ? DISTANCE_MAX : farthestOver(clear, seenPerMetre(size, free), tilt);
+    clear === null ? DISTANCE_MAX : farthestOver(clear, seenPerMetre(size, free), tilt, whole);
   return { nearest: Math.min(closestOver(metresPerPixel, size), farthest), farthest };
 }
 
@@ -209,6 +223,10 @@ export function hazeOf(
           tilt,
           clear ?? NO_PICTURE_GROUND,
         );
-  const far = Math.max(distance * HAZE_TO_LEAST, edge ?? Number.POSITIVE_INFINITY);
-  return { near: distance * HAZE_FROM, far: Math.min(distance * HAZE_TO, far) };
+  // Measured from the ground in the middle of the view: the point looked at may stand up on the
+  // roofs, and the ground lies on past it along the view — measured from the point itself, a tall
+  // roof put the ground in the haze and the picture went dark.
+  const ground = distance + Math.max(0, looked.y) / Math.max(Math.cos(tilt), LOWEST_COS);
+  const far = Math.max(ground * HAZE_TO_LEAST, edge ?? Number.POSITIVE_INFINITY);
+  return { near: ground * HAZE_FROM, far: Math.min(ground * HAZE_TO, far) };
 }

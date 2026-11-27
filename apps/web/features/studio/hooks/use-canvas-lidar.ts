@@ -1,6 +1,7 @@
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { ThemePalette } from '@heliogrid/theme';
 import { useMemo, useRef } from 'react';
+import type { ClearGround } from '../components/StudioCameraRig';
 import type { LidarScanShown } from '../components/StudioLidarScan';
 import type { SunlightPatch } from '../components/StudioSunlight';
 
@@ -46,6 +47,7 @@ export function useCanvasLidar(studio: StudioScreen, palette: ThemePalette) {
           }),
     [sunlight, roofs, levels],
   );
+  const ground = useScanGround(mesh, lidar.lineUp);
   const turn = useRef(0);
   return {
     /** What the scene draws of LiDAR, but for its pins. */
@@ -59,6 +61,7 @@ export function useCanvasLidar(studio: StudioScreen, palette: ThemePalette) {
       scan,
       sunlight:
         view.on && view.sunlight && sunlight !== null ? { patches, colours, opacity: 1 } : null,
+      ground,
     },
     turnOf: () => turn.current,
     /** Hands each turn on to `then` once it is noted. */
@@ -67,4 +70,44 @@ export function useCanvasLidar(studio: StudioScreen, palette: ThemePalette) {
       then(now);
     },
   };
+}
+
+const XYZ = 3;
+
+/**
+ * The ground the scan's mesh covers, moved by the map's line-up: the mesh is in scene space, x east
+ * and z south, and lies where the line-up puts it.
+ */
+function useScanGround(
+  mesh: StudioScreen['lidar']['mesh'],
+  lineUp: { readonly east: number; readonly north: number },
+): ClearGround | null {
+  const box = useMemo(() => {
+    if (mesh === null || mesh.positions.length < XYZ) return null;
+    let west = Number.POSITIVE_INFINITY;
+    let east = Number.NEGATIVE_INFINITY;
+    let south = Number.POSITIVE_INFINITY;
+    let north = Number.NEGATIVE_INFINITY;
+    for (let i = 0; i < mesh.positions.length; i += XYZ) {
+      const x = mesh.positions[i] ?? 0;
+      const z = mesh.positions[i + 2] ?? 0;
+      west = Math.min(west, x);
+      east = Math.max(east, x);
+      south = Math.min(south, -z);
+      north = Math.max(north, -z);
+    }
+    return { west, east, south, north };
+  }, [mesh]);
+  return useMemo(
+    () =>
+      box === null
+        ? null
+        : {
+            west: box.west + lineUp.east,
+            east: box.east + lineUp.east,
+            south: box.south + lineUp.north,
+            north: box.north + lineUp.north,
+          },
+    [box, lineUp.east, lineUp.north],
+  );
 }

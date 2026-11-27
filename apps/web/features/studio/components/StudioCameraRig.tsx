@@ -100,7 +100,7 @@ export function StudioCameraRig({
   const { west, east, south, north } = clear ?? { west: 0, east: 0, south: 0, north: 0 };
   const held = clear !== null;
   const box = held ? { west, east, south, north } : null;
-  const inputs = { clear: box, metresPerPixel, size, free, still };
+  const inputs = { clear: box, metresPerPixel, size, free, still, whole: lidar };
   const framing = useRef(new CameraFraming(inputs)).current;
   framing.inputs = inputs;
   const { width, height } = size;
@@ -212,6 +212,8 @@ export function StudioCameraRig({
     const rig = controls.current;
     if (rig === null || posed.current === null) return;
     bindHands(rig, view === 'top');
+    // LiDAR's limits are the scan's whole ground, not the picture's: worked afresh either way.
+    framing.reset(rig);
     if (!lidar || view === 'top') return;
     rig.maxPolarAngle = Math.min(rig.maxPolarAngle, LIDAR_TILT_MAX);
     if (framing.tiltOf(rig) <= LIDAR_TILT_MAX) return;
