@@ -226,7 +226,11 @@ export function hazeOf(
   // Measured from the ground in the middle of the view: the point looked at may stand up on the
   // roofs, and the ground lies on past it along the view — measured from the point itself, a tall
   // roof put the ground in the haze and the picture went dark.
-  const ground = distance + Math.max(0, looked.y) / Math.max(Math.cos(tilt), LOWEST_COS);
+  // Never past the picture's edge, which the haze is there to hide (a side view over a tall roof).
+  const ground = Math.min(
+    distance + Math.max(0, looked.y) / Math.max(Math.cos(tilt), LOWEST_COS),
+    edge ?? Number.POSITIVE_INFINITY,
+  );
   const far = Math.max(ground * HAZE_TO_LEAST, edge ?? Number.POSITIVE_INFINITY);
   return { near: ground * HAZE_FROM, far: Math.min(ground * HAZE_TO, far) };
 }

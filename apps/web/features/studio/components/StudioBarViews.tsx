@@ -242,7 +242,10 @@ export function barMessagesOf(editing: StudioEditing, facts: BarFacts): BarView[
         : startMessage(facts, editing.kind === 'editor');
   // A question in hand (a new roof's kind, the stairs) keeps the bar: the site's own question
   // waits, and shows once it is answered.
-  const site = moment?.asks === true ? null : siteBarMessage(studio, words, facts.format);
+  const site =
+    moment?.asks === true
+      ? null
+      : siteBarMessage(studio, words, facts.format, editing.kind === 'editor');
   const lidar = studio.lidar;
   // On the straight-down picture, roofs drawn on the leaning sky picture sit off their spot
   // (`T-M05-002g`, board frame 20): LiDAR fixes them.

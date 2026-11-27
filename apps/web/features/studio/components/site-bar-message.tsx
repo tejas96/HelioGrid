@@ -13,6 +13,7 @@ export function siteBarMessage(
   studio: StudioScreen,
   words: StudioCanvasWords,
   format: ReturnType<typeof useFormat>,
+  editor: boolean,
 ) {
   const { site } = studio;
   const say = site.say;
@@ -20,7 +21,7 @@ export function siteBarMessage(
   const data = site.read.kind === 'ready' ? site.read.value : null;
   const dataOn = data?.dataOn ?? null;
   const month = dataOn === null ? null : format.monthYear(dataOn);
-  const { title, line } = words.siteSay(say, month);
+  const { title, line } = words.siteSay(say, month, editor);
   switch (say.kind) {
     case 'floors':
       return {

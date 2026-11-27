@@ -14,6 +14,7 @@ const SITE = {
   fromData: /*i18n*/ { id: 'Heights from Google’s height map of {month}.' },
   fromDataUndated: /*i18n*/ { id: 'Heights from Google’s height map.' },
   noBuilding: /*i18n*/ { id: 'No height data under a roof. Set its height in its sheet.' },
+  noBuildingViewer: /*i18n*/ { id: 'No height data under a roof.' },
   noHeightsTitle: /*i18n*/ { id: 'No Google heights here' },
   floorsAsk: /*i18n*/ { id: 'How many floors is it?' },
   notAnswered: /*i18n*/ { id: 'Google’s height data did not answer. Heights are estimates.' },
@@ -69,8 +70,11 @@ export interface SiteSayWords {
 /** The site data's words, part of the studio canvas's (`studioCanvasWords`). */
 export function studioSiteWords(t: T) {
   return {
-    /** What the bar says of the data. `month` is the data's month and year, already formatted. */
-    siteSay: (say: SiteSay, month: string | null): SiteSayWords => {
+    /**
+     * What the bar says of the data. `month` is the data's month and year, already formatted;
+     * `editor`: the reader may set a roof's height.
+     */
+    siteSay: (say: SiteSay, month: string | null, editor: boolean): SiteSayWords => {
       switch (say.kind) {
         case 'from_data':
           return {
@@ -78,7 +82,7 @@ export function studioSiteWords(t: T) {
             line: month === null ? t(SITE.fromDataUndated) : t(SITE.fromData, { month }),
           };
         case 'no_building':
-          return { title: null, line: t(SITE.noBuilding) };
+          return { title: null, line: t(editor ? SITE.noBuilding : SITE.noBuildingViewer) };
         case 'floors':
           return { title: t(SITE.noHeightsTitle), line: t(SITE.floorsAsk) };
         case 'not_answered':

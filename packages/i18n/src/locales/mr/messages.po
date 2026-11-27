@@ -3170,12 +3170,12 @@ msgid "{source} · {rate}% {tax}"
 msgstr "{source} · {rate}% {tax}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:23
+#: src/copy/studio-site.ts:24
 msgid "{source} · {sharpness} · {date} · tall walls stand where they are"
 msgstr "{source} · {sharpness} · {date} · उंच भिंती आपल्या जागी दिसतात"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:26
+#: src/copy/studio-site.ts:27
 msgid "{source} · about {sharpness} · date not given"
 msgstr "{source} · सुमारे {sharpness} · तारीख दिलेली नाही"
 
@@ -5709,7 +5709,7 @@ msgid "Back to assign roles"
 msgstr "भूमिका देण्याकडे परत"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:40
+#: src/copy/studio-site.ts:41
 msgid "Back to automatic"
 msgstr "पुन्हा आपोआप"
 
@@ -10052,7 +10052,7 @@ msgid "Floor {floor} · {height}"
 msgstr "मजला {floor} · {height}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:21
+#: src/copy/studio-site.ts:22
 msgid "Floors"
 msgstr "मजले"
 
@@ -10655,12 +10655,12 @@ msgid "Google has no 3D scan of this place. Your roofs keep their heights."
 msgstr "Google कडे या जागेचा 3D स्कॅन नाही. तुमच्या छतांची उंची तशीच राहील."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:27
+#: src/copy/studio-site.ts:28
 msgid "Google height map · {date} · {sharpness}"
 msgstr "Google उंची नकाशा · {date} · {sharpness}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:28
+#: src/copy/studio-site.ts:29
 msgid "Google height map · {sharpness}"
 msgstr "Google उंची नकाशा · {sharpness}"
 
@@ -10670,7 +10670,7 @@ msgid "Google sign-in did not finish"
 msgstr "Google ने साइन इन पूर्ण झाले नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:19
+#: src/copy/studio-site.ts:20
 msgid "Google’s height data did not answer. Heights are estimates."
 msgstr "Google चा उंचीचा डेटा मिळाला नाही. उंची अंदाजे आहे."
 
@@ -10909,7 +10909,7 @@ msgid "Height of low edge"
 msgstr "खालच्या कडेची उंची"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:33
+#: src/copy/studio-site.ts:34
 msgid "Height of the map"
 msgstr "नकाशाची उंची"
 
@@ -10929,7 +10929,7 @@ msgid "Heights from Google’s height map."
 msgstr "उंची Google च्या उंची नकाशावरून."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:20
+#: src/copy/studio-site.ts:21
 msgid "Heights updated from Google’s newer data. Your own values are kept."
 msgstr "Google च्या नवीन डेटावरून उंची अद्ययावत झाली. तुमची स्वतःची मूल्ये ठेवली आहेत."
 
@@ -11285,7 +11285,7 @@ msgid "How long"
 msgstr "किती वेळ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:18
+#: src/copy/studio-site.ts:19
 msgid "How many floors is it?"
 msgstr "किती मजले आहेत?"
 
@@ -12604,7 +12604,7 @@ msgid "Less for {label}"
 msgstr "{label} साठी कमी"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:31
+#: src/copy/studio-site.ts:32
 msgid "Less see-through"
 msgstr "कमी पारदर्शक"
 
@@ -13319,7 +13319,7 @@ msgid "Lower slope"
 msgstr "खालचा उतार"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:34
+#: src/copy/studio-site.ts:35
 msgid "Lower the map"
 msgstr "नकाशा खाली करा"
 
@@ -13486,12 +13486,12 @@ msgid "Mansard"
 msgstr "मॅनसार्ड"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:45
+#: src/copy/studio-site.ts:46
 msgid "Map {by} above"
 msgstr "नकाशा {by} वर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:46
+#: src/copy/studio-site.ts:47
 msgid "Map {by} below"
 msgstr "नकाशा {by} खाली"
 
@@ -13988,7 +13988,7 @@ msgid "More for Design {number}"
 msgstr "डिझाइन {number} साठी आणखी पर्याय"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:32
+#: src/copy/studio-site.ts:33
 msgid "More see-through"
 msgstr "जास्त पारदर्शक"
 
@@ -14085,22 +14085,22 @@ msgid "Move on a stage — move to {stage}"
 msgstr "एक टप्पा पुढे न्या — {stage} टप्प्यावर न्या"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:37
+#: src/copy/studio-site.ts:38
 msgid "Move the map down"
 msgstr "नकाशा खाली सरकवा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:38
+#: src/copy/studio-site.ts:39
 msgid "Move the map left"
 msgstr "नकाशा डावीकडे सरकवा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:39
+#: src/copy/studio-site.ts:40
 msgid "Move the map right"
 msgstr "नकाशा उजवीकडे सरकवा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:36
+#: src/copy/studio-site.ts:37
 msgid "Move the map up"
 msgstr "नकाशा वर सरकवा"
 
@@ -15194,7 +15194,7 @@ msgid "No follow-up yet"
 msgstr "अजून पाठपुरावा नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:17
+#: src/copy/studio-site.ts:18
 msgid "No Google heights here"
 msgstr "इथे Google ची उंची नाही"
 
@@ -15202,6 +15202,11 @@ msgstr "इथे Google ची उंची नाही"
 #: src/copy/studio-lidar.ts:76
 msgid "No height data here"
 msgstr "इथे उंचीचा डेटा नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-site.ts:17
+msgid "No height data under a roof."
+msgstr "छताखाली उंचीचा डेटा नाही."
 
 #. js-lingui-explicit-id
 #: src/copy/studio-site.ts:16
@@ -19409,7 +19414,7 @@ msgid "Railing"
 msgstr "रेलिंग"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:35
+#: src/copy/studio-site.ts:36
 msgid "Raise the map"
 msgstr "नकाशा वर उचला"
 
@@ -21264,7 +21269,7 @@ msgstr "तुमच्या टीमच्या लीड आणि फॉ�
 
 #. js-lingui-explicit-id
 #: src/copy/studio-picture.ts:36
-#: src/copy/studio-site.ts:30
+#: src/copy/studio-site.ts:31
 msgid "See-through"
 msgstr "पारदर्शकता"
 
@@ -22745,7 +22750,7 @@ msgid "Straight into today’s list to call back"
 msgstr "परत कॉल करण्यासाठी थेट आजच्या यादीत"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:22
+#: src/copy/studio-site.ts:23
 msgid "Straight-down picture"
 msgstr "थेट वरून घेतलेले चित्र"
 
@@ -22847,7 +22852,7 @@ msgid "Sun path and shade times"
 msgstr "सूर्याचा मार्ग आणि सावलीच्या वेळा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:29
+#: src/copy/studio-site.ts:30
 msgid "Sunlight"
 msgstr "ऊन"
 
@@ -24004,22 +24009,22 @@ msgid "the height change"
 msgstr "उंचीतील बदल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:41
+#: src/copy/studio-site.ts:42
 msgid "The height map is unclear here. Slide it if it looks wrong."
 msgstr "इथे उंचीचा नकाशा स्पष्ट नाही. चुकीचे वाटल्यास ते सरकवा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:42
+#: src/copy/studio-site.ts:43
 msgid "The height map reads {map} here: {by} above this roof."
 msgstr "इथे उंचीचा नकाशा {map} दाखवतो: या छतापेक्षा {by} वर."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:43
+#: src/copy/studio-site.ts:44
 msgid "The height map reads {map} here: {by} below this roof."
 msgstr "इथे उंचीचा नकाशा {map} दाखवतो: या छतापेक्षा {by} खाली."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-site.ts:44
+#: src/copy/studio-site.ts:45
 msgid "The height map reads {map} here: level with this roof."
 msgstr "इथे उंचीचा नकाशा {map} दाखवतो: या छताच्या बरोबरीने."
 

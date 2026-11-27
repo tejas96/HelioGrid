@@ -148,6 +148,7 @@ export function Slider({
           min={min}
           onCommit={commit}
           onLive={live}
+          onLet={held.let}
           onNudge={nudge}
           percent={percent}
           mark={markPercent(mark, min, max)}

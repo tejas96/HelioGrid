@@ -19,6 +19,8 @@ interface SliderTrackProps {
   onCommit: (value: number) => void;
   /** Live signal — fires on every frame of the drag. */
   onLive: (value: number) => void;
+  /** A touch another view took (a scroll): what was held is let go, and nothing is saved. */
+  onLet: () => void;
   /** One step either way, for the assistive increment/decrement actions. */
   onNudge: (direction: number) => void;
   percent: number;
@@ -48,6 +50,7 @@ export function SliderTrack({
   min,
   onCommit,
   onLive,
+  onLet,
   onNudge,
   percent,
   mark,
@@ -90,8 +93,7 @@ export function SliderTrack({
       onResponderGrant={touch}
       onResponderMove={touch}
       onResponderRelease={() => onCommit(lastRef.current)}
-      // Another view took the touch: what was held is released as it stands.
-      onResponderTerminate={() => onCommit(lastRef.current)}
+      onResponderTerminate={onLet}
     >
       <View style={[styles.rail, { backgroundColor: controlFill }]} />
       <View
