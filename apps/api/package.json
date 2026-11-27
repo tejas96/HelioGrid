@@ -32,6 +32,7 @@
     "geotiff": "3.0.5",
     "google-auth-library": "11.1.0",
     "jose": "6.2.12",
+    "jpeg-js": "0.4.4",
     "nestjs-pino": "4.6.1",
     "pdf-lib": "1.17.1",
     "pino": "9.14.0",
