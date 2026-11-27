@@ -155,10 +155,16 @@ export function StudioCanvasHead({
           phone={phone}
         />
         <HeadEnd studio={studio} parts={parts} words={words} onBack={onBack} compass={compass} />
-        <StudioSunBearing studio={studio} words={words} />
         <DrawHint studio={studio} words={words} />
-        <LidarHint studio={studio} words={words} phone={phone} />
-        <LidarKeyCard studio={studio} words={words} phone={phone} />
+        {/* Under the head, laid out together so none covers another: the hint in the middle, the
+            key and the sun's bearing stacked at the end — on a phone, under the hint. */}
+        <div className="hg-studio-under-head" data-phone={phone}>
+          <LidarHint studio={studio} words={words} phone={phone} />
+          <div className="hg-studio-under-end">
+            <LidarKeyCard studio={studio} words={words} phone={phone} />
+            <StudioSunBearing studio={studio} words={words} />
+          </div>
+        </div>
         {roofStep.kind === 'sizing' ? (
           <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
         ) : null}
