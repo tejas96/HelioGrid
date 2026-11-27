@@ -10,7 +10,9 @@ export function footHolderOf(
   studio: StudioScreen,
 ): 'move' | 'picker' | 'roofs' | 'sheet' | 'sun' | 'lidar' | 'bar' {
   const lidar = studio.lidar.view.on && studio.view !== 'top';
-  if (lidar && studio.lidar.view.move !== null) return 'move';
+  // Move works on the scan: while it is not in (failed, offline, coming) LiDAR's own foot says why
+  // and offers Try again, or a Move left open would hold the foot and draw nothing.
+  if (lidar && studio.lidar.view.move !== null && studio.lidar.scan === 'in') return 'move';
   if (studio.materialPicker !== null) return 'picker';
   if (studio.panel.open === 'roofs') return 'roofs';
   if (studio.roofSheet !== null) return 'sheet';
