@@ -5,7 +5,7 @@ import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { IconButton, ShellGlyph } from '@heliogrid/ui';
 import { useRef } from 'react';
 import { MagnetSwitch } from './StudioBarPills';
-import { StudioHeightGroup } from './StudioHeightGroup';
+import { LidarButton } from './StudioLidar';
 import { StudioPencil } from './StudioPencil';
 import { StudioRoofsButton } from './StudioRoofsButton';
 import { Shown } from './StudioShown';
@@ -22,8 +22,8 @@ function magnetShown(part: FocusParts['magnet'], studio: StudioScreen): boolean 
  * what changes the model, the pencil always in the bottom place: the magnet while a corner is drawn
  * or a roof is picked, Roofs with their count once a roof stands (`StudioRoofsButton`), Redo, the
  * trash that clears every corner of the drawing, Undo, then the pencil (×, while drawing). Right,
- * how the model is seen: View (`StudioViewPanel`), the 2D and 3D switch once a roof stands, and Zoom
- * in over Zoom out in one pill. A tool comes only once it can act and takes no place before; a tool
+ * how the model is seen: the sun, View (`StudioViewPanel`), LiDAR (`T-M05-002g`), the 2D and 3D
+ * switch once a roof stands, and Zoom in over Zoom out in one pill. A tool comes only once it can act and takes no place before; a tool
  * coming moves only the ones above it. Undo and Redo keep the place they took (`undoSlotsOf`), dim
  * while they cannot act.
  */
@@ -47,7 +47,6 @@ export function StudioToolRail({
   onWipe,
   onZoomIn,
   onZoomOut,
-  turnOf,
 }: {
   /** The studio, for the pencil and what it opens. */
   studio: StudioScreen;
@@ -74,8 +73,6 @@ export function StudioToolRail({
   onRedo: () => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
-  /** The view's turn from north up, in radians: the line-up's arrows move the map that way. */
-  turnOf: () => number;
 }) {
   const pencil = useRef<HTMLSpanElement>(null);
   const opener = useRef<HTMLSpanElement>(null);
@@ -145,17 +142,11 @@ export function StudioToolRail({
               onView={onView}
               onUnits={onUnits}
               onClose={() => moves.showView(false)}
-              top={
-                <StudioHeightGroup
-                  site={studio.site}
-                  words={words}
-                  units={units}
-                  editable={editable}
-                  turnOf={turnOf}
-                />
-              }
             />
           </span>
+        </Shown>
+        <Shown when={parts.lidar === 'shown'}>
+          <LidarButton studio={studio} words={words} />
         </Shown>
         <Shown when={parts.layers === 'shown' || parts.layers === 'switch'}>
           <span className="hg-studio-tool-new" data-new={newView}>

@@ -149,3 +149,65 @@ export function pictureFromWire(wire: PictureGridWire): PictureGrid | null {
   const { west, south, stepM, cols, rows } = wire;
   return { west, south, stepM, cols, rows, values };
 }
+
+/** A picture's pixels as the page decodes them, laid on the site's ground (its box, unstretched). */
+export interface PicturePixels {
+  /** Red, green, blue and alpha, one byte each, row 0 the northmost. */
+  readonly rgba: Uint8ClampedArray;
+  readonly width: number;
+  readonly height: number;
+  readonly west: number;
+  readonly south: number;
+  readonly east: number;
+  readonly north: number;
+}
+
+/**
+ * The picture a person drew on, grey, on the grid of the straight-down picture: each cell reads the
+ * pixel under it, where the picture lies stretched about the pin by `scale` (the first true
+ * length). A cell the picture does not reach is mid-grey: no edge.
+ */
+export function greyOnGrid(
+  pieces: readonly PicturePixels[],
+  grid: Omit<PictureGrid, 'values'>,
+  scale: number,
+): PictureGrid {
+  const values = new Float32Array(grid.cols * grid.rows).fill(MID_GREY);
+  for (let row = 0; row < grid.rows; row += 1) {
+    for (let col = 0; col < grid.cols; col += 1) {
+      const east = (grid.west + (col + 0.5) * grid.stepM) / scale;
+      const north = (grid.south + (row + 0.5) * grid.stepM) / scale;
+      const piece = pieces.find(
+        (one) => east >= one.west && east < one.east && north >= one.south && north < one.north,
+      );
+      if (piece === undefined) continue;
+      const x = Math.floor(((east - piece.west) / (piece.east - piece.west)) * piece.width);
+      const y = Math.floor(((piece.north - north) / (piece.north - piece.south)) * piece.height);
+      const at = (Math.min(piece.height - 1, y) * piece.width + Math.min(piece.width - 1, x)) * 4;
+      const r = piece.rgba[at] as number;
+      const g = piece.rgba[at + 1] as number;
+      const b = piece.rgba[at + 2] as number;
+      values[row * grid.cols + col] = (0.299 * r + 0.587 * g + 0.114 * b) / GREY_MAX;
+    }
+  }
+  return { ...grid, values };
+}
+
+const MID_GREY = 0.5;
+
+/**
+ * The studio's own line-up (`T-M05-002g`, step 1): the height map moved onto the picture the
+ * roofs were drawn on, by the shift that lines the straight-down picture's edges up with it. `null`
+ * where the edges never agree well: the map stays where the data laid it.
+ */
+export function automaticLineUpOf(
+  drawnOn: readonly PicturePixels[],
+  straightDown: PictureGridWire,
+  scale: number,
+): { readonly east: number; readonly north: number; readonly lift: number } | null {
+  const moving = pictureFromWire(straightDown);
+  if (moving === null || drawnOn.length === 0) return null;
+  const { values: _values, ...grid } = moving;
+  const shift = pictureShiftOf(greyOnGrid(drawnOn, grid, scale), moving);
+  return shift === null ? null : { east: shift.east, north: shift.north, lift: 0 };
+}

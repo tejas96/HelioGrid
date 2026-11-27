@@ -1,0 +1,145 @@
+/* LiDAR in the studio's 3D view (`T-M05-002g`, board v17): placement only, on the studio's own
+   parts and sizes. The dark stage is the scene's; every panel on it follows light and dark. */
+
+/* The head: × at the start, Heights | Photo in the middle, Move before the compass. The picture
+   and the steps, which share these places, step aside in 3D (`focus.ts`). */
+.hg-lidar-head-start {
+  grid-area: start;
+  justify-self: start;
+  display: flex;
+}
+
+.hg-lidar-looks {
+  grid-area: middle;
+  justify-self: center;
+  pointer-events: auto;
+}
+
+/* The save mark comes back under LiDAR only when saving needs the person: away, it takes no room,
+   so Move stands beside the compass. */
+.hg-studio[data-lidar="true"] .hg-studio-head-end > .hg-studio-head-part[data-hidden="true"] {
+  display: none;
+}
+
+/* × and Move are the studio's round glass tools, as in its columns, standing in the head. */
+.hg-studio-canvas-head .hg-lidar-round .hg-icon-button {
+  pointer-events: auto;
+  color: var(--text-primary);
+  text-shadow: none;
+}
+
+.hg-studio-canvas-head
+  .hg-lidar-round
+  .hg-icon-button
+  .hg-shell-glyph[data-tone]:not(.hg-menu-list *) {
+  color: var(--text-secondary);
+  filter: none;
+}
+
+/* Every segmented choice in the studio takes the studio's own size, as its round tools do: smaller
+   on a phone, a 44 px target kept round it. */
+.hg-studio .hg-segmented-control-segment {
+  height: var(--studio-tool);
+  min-width: var(--studio-tool);
+}
+
+.hg-studio .hg-segmented-control-segment::before {
+  content: "";
+  position: absolute;
+  inset: min(0px, calc((var(--studio-tool) - var(--touch-min)) / 2));
+}
+
+/* The key on a wide screen: under the head, at its end. */
+.hg-lidar-key-card {
+  position: absolute;
+  z-index: 3;
+  inset-block-start: calc(100% + var(--sp-2));
+  inset-inline-end: 0;
+  inline-size: calc(var(--sp-24) * 2.75);
+  pointer-events: none;
+}
+
+/* The pins on the drawn roofs, their tips on the roofs. */
+.hg-lidar-pins {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hg-lidar-pin {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  /* The studio's marks on the scene: its mark colour, its shade's ink, on any look. */
+  color: var(--scene-shade);
+  background: var(--scene-mark);
+  box-shadow: var(--e3);
+}
+
+.hg-lidar-pin[data-picked="true"] {
+  box-shadow:
+    0 0 0 var(--sp-0-5) var(--scene-line),
+    var(--e3);
+}
+
+.hg-lidar-pin[data-hidden="true"] {
+  visibility: hidden;
+}
+
+/* LiDAR's foot, between the tool columns: one message, the key on a phone, a waiting card. Its
+   boxes share one width, so their edges line up. */
+.hg-lidar-foot {
+  grid-row: 3;
+  grid-column: 1 / -1;
+  align-self: end;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--sp-2);
+  /* Between the tool columns, which share its row, whether or not a tool stands in them yet. */
+  inline-size: min(
+    calc(100% - 2 * (var(--studio-tool) + var(--studio-gap))),
+    calc(var(--sp-24) * 5)
+  );
+  min-inline-size: 0;
+  pointer-events: none;
+}
+
+.hg-lidar-foot > * {
+  pointer-events: auto;
+}
+
+/* The studio's bar takes the width of the foot or the sheet it stands over; its line the room. */
+.hg-lidar-bar {
+  max-inline-size: none;
+  justify-self: stretch;
+}
+
+.hg-lidar-bar .hg-studio-bar-words {
+  flex: 1;
+}
+
+.hg-lidar-wait {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-radius: var(--r-xl);
+}
+
+.hg-lidar-wait p {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-lidar-wait .hg-button {
+  align-self: flex-start;
+}

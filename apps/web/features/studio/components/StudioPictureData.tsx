@@ -10,7 +10,7 @@ import {
   type SiteDataSource,
 } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { ShellGlyph, type useFormat } from '@heliogrid/ui';
+import type { useFormat } from '@heliogrid/ui';
 import type { StraightDown } from './StudioPictureChip';
 
 const isQuality = (word: string | null): word is HeightDataQuality =>
@@ -20,7 +20,7 @@ const isCredit = (word: string): word is SiteDataCredit =>
 
 /**
  * What the picture panel shows of the site's data: the straight-down picture's row, where Google's
- * height data holds one, and the data rows.
+ * height data holds one — its line carries the height data's date — and the data's credits.
  */
 export function pictureDataOf(
   studio: StudioScreen,
@@ -28,12 +28,11 @@ export function pictureDataOf(
   format: ReturnType<typeof useFormat>,
 ): {
   straight: StraightDown | null;
-  dataRows: React.ReactNode;
   dataCredits: readonly TranslatedText[];
 } {
   const { site, units } = studio;
   const data = site.read.kind === 'ready' ? site.read.value : null;
-  if (data === null) return { straight: null, dataRows: null, dataCredits: [] };
+  if (data === null) return { straight: null, dataCredits: [] };
   const quality = isQuality(data.quality) ? data.quality : null;
   const sharpness =
     quality === null ? null : format.fineLength(HEIGHT_DATA_SHARPNESS_M[quality], units);
@@ -51,40 +50,10 @@ export function pictureDataOf(
       : null;
   return {
     straight,
-    dataRows: (
-      <StudioPictureData
-        title={words.siteHeights}
-        line={words.siteHeightsLine(source, date, sharpness)}
-      />
-    ),
     // The far horizon's credit stands on the sun chart, where its data shows.
     dataCredits: data.credits
       .filter(isCredit)
       .filter((credit) => credit !== 'pvgis')
       .map(words.siteCredit),
   };
-}
-
-/**
- * The picture panel's heights row (`T-M05-002`, part g, board G14): where the heights come from and
- * how old they are.
- */
-export function StudioPictureData({
-  title,
-  line,
-}: {
-  title: TranslatedText;
-  line: TranslatedText;
-}) {
-  return (
-    <div className="hg-studio-picker-group hg-studio-picker-data">
-      <span className="hg-studio-picker-row" data-still>
-        <ShellGlyph name="storeys" size="md" />
-        <span className="hg-studio-picker-words">
-          <span className="hg-studio-picker-title">{title}</span>
-          <span className="hg-studio-picker-line">{line}</span>
-        </span>
-      </span>
-    </div>
-  );
 }

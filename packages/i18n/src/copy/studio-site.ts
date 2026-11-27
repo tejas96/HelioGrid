@@ -1,11 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type {
-  FloorChoice,
-  SiteDataCredit,
-  SiteDataSource,
-  SiteFitLine,
-  SiteSay,
-} from '@heliogrid/domain';
+import type { FloorChoice, SiteDataCredit, SiteFitLine, SiteSay } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import { PERCENT } from './proposal-builder-facts';
@@ -36,22 +30,12 @@ const SITE = {
     id: '{source} · {sharpness} · {date} · tall walls stand where they are',
   },
   skyUndated: /*i18n*/ { id: '{source} · about {sharpness} · date not given' },
-  heights: /*i18n*/ { id: 'Heights' },
   heightsGoogle: /*i18n*/ { id: 'Google height map · {date} · {sharpness}' },
   heightsGoogleUndated: /*i18n*/ { id: 'Google height map · {sharpness}' },
-  heightsOsm: /*i18n*/ { id: 'OpenStreetMap outlines · floors' },
-  heightsNone: /*i18n*/ { id: 'No height data here' },
-  heightView: /*i18n*/ { id: 'Height view' },
-  heightViewNone: /*i18n*/ {
-    id: 'No height or sunlight data here. Your roofs stand at the floors you set.',
-  },
-  show: /*i18n*/ { id: 'Show' },
   sunlight: /*i18n*/ { id: 'Sunlight' },
   seeThrough: /*i18n*/ { id: 'See-through' },
   seeThroughLess: /*i18n*/ { id: 'Less see-through' },
   seeThroughMore: /*i18n*/ { id: 'More see-through' },
-  keyName: /*i18n*/ { id: 'What the colours mean' },
-  lineUp: /*i18n*/ { id: 'Line up the map' },
   lineUpLift: /*i18n*/ { id: 'Height of the map' },
   lineUpLower: /*i18n*/ { id: 'Lower the map' },
   lineUpRaise: /*i18n*/ { id: 'Raise the map' },
@@ -71,9 +55,6 @@ const SITE = {
 
 const FIT_LINE = {
   unclear: SITE.fitUnclear,
-  above: SITE.fitAbove,
-  below: SITE.fitBelow,
-  level: SITE.fitLevel,
 } as const satisfies Record<SiteFitLine, unknown>;
 
 /** Each source's credit as its owner words it. */
@@ -132,33 +113,15 @@ export function studioSiteWords(t: T) {
     /** The sky picture's line where its provider gives no date (Google's never does). */
     siteSkyUndated: (source: string, sharpness: string) =>
       t(SITE.skyUndated, { source, sharpness }),
-    siteHeights: t(SITE.heights),
-    /** The Heights row's line: whose heights, their date and their sharpness. */
-    siteHeightsLine: (
-      source: SiteDataSource,
-      date: string | null,
-      sharpness: string | null,
-    ): TranslatedText => {
-      if (source === 'openstreetmap') return t(SITE.heightsOsm);
-      if (source === 'none' || sharpness === null) return t(SITE.heightsNone);
-      return date === null
-        ? t(SITE.heightsGoogleUndated, { sharpness })
-        : t(SITE.heightsGoogle, { date, sharpness });
-    },
     /**
      * Each data source's credit, worded as its owner requires — never translated (Solar policies,
      * OpenStreetMap's attribution guidelines, PVGIS's conditions).
      */
     siteCredit: (credit: SiteDataCredit): TranslatedText => shownAsSent(SITE_CREDIT_TEXT[credit]),
-    siteHeightView: t(SITE.heightView),
-    siteHeightViewNone: t(SITE.heightViewNone),
-    siteShow: t(SITE.show),
     siteSunlight: t(SITE.sunlight),
     siteSeeThrough: t(SITE.seeThrough),
     siteSeeThroughLess: t(SITE.seeThroughLess),
     siteSeeThroughMore: t(SITE.seeThroughMore),
-    siteKeyName: t(SITE.keyName),
-    siteLineUp: t(SITE.lineUp),
     siteLineUpLift: t(SITE.lineUpLift),
     siteLineUpLower: t(SITE.lineUpLower),
     siteLineUpRaise: t(SITE.lineUpRaise),
@@ -167,17 +130,10 @@ export function studioSiteWords(t: T) {
     siteMapLeft: t(SITE.mapLeft),
     siteMapRight: t(SITE.mapRight),
     siteMapBack: t(SITE.mapBack),
-    /**
-     * The roof sheet's line on the map (board G21, G22): unclear, or how far the map sits from the
-     * roof; `map` and `by` formatted in the reader's units, `by` without a sign.
-     */
-    siteFit: (line: SiteFitLine, map: string, by: string): TranslatedText =>
-      t(FIT_LINE[line], { map, by }),
+    /** The roof sheet's line on the map (board G21): where its read is unclear. */
+    siteFit: (line: SiteFitLine): TranslatedText => t(FIT_LINE[line]),
     /** A share as a percent, the number formatted by the market: `62%`. */
     sitePercent: (value: string): TranslatedText => t(PERCENT, { value }),
-    /** The tag on the model beside the open roof, while the height view is on. */
-    siteFitTag: (above: boolean, by: string): TranslatedText =>
-      t(above ? SITE.fitTagAbove : SITE.fitTagBelow, { by }),
     /** A floors chip, as reps count floors: G, G+1, G+2, G+3+. */
     siteFloor: (floors: FloorChoice): TranslatedText =>
       shownAsSent(floors === 0 ? 'G' : floors === FLOORS_TOP ? `G+${floors}+` : `G+${floors}`),

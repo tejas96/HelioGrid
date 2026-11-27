@@ -73,6 +73,7 @@ export {
   type TagRoom,
   tagPlaceOf,
 } from './label-layout';
+export * from './lidar-say';
 export * from './many-roofs';
 export * from './map-systems';
 export { outlineCorners } from './outline-corners';
@@ -131,11 +132,13 @@ export {
   ROOF_HEIGHT_SLIDER_MIN_M,
   ROOF_HEIGHT_STEP_M,
   type RoofHeightShown,
+  type RoofHeightSlide,
   roofHeightDragged,
   roofHeightKept,
   roofHeightOf,
   roofHeightReset,
   roofHeightSet,
+  roofHeightSlide,
   roofHeightStepped,
 } from './roof-height';
 export * from './roof-length';

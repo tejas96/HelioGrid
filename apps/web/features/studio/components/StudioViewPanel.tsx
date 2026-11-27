@@ -3,7 +3,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { MeasurementSystem, StudioView, ViewPlace } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { Pressable, ShellGlyph } from '@heliogrid/ui';
-import { type ReactNode, type RefObject, useId, useRef } from 'react';
+import { type RefObject, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useRadioPanel } from '../hooks/use-radio-panel';
 import { StudioPanelHead } from './StudioPanelHead';
@@ -51,7 +51,6 @@ export function StudioViewPanel({
   onView,
   onUnits,
   onClose,
-  top,
 }: {
   open: boolean;
   view: StudioView;
@@ -65,8 +64,6 @@ export function StudioViewPanel({
   onView: (view: StudioView) => void;
   onUnits: (units: MeasurementSystem) => void;
   onClose: () => void;
-  /** The height view's group, first under the title (`T-M05-002`, part g). */
-  top: ReactNode;
 }) {
   const panel = useRef<HTMLDivElement>(null);
   const title = useId();
@@ -98,7 +95,6 @@ export function StudioViewPanel({
         closeLabel={words.closeView}
         onClose={onClose}
       />
-      {top}
       <div className="hg-studio-view-group" role="radiogroup" aria-labelledby={title}>
         {views
           .filter((place) => place.lock === null)

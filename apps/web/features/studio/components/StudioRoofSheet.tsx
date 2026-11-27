@@ -121,7 +121,7 @@ export function StudioRoofSheet({
             </p>
           ) : null}
           {part.kind === 'roof' ? (
-            <StudioSheetFit studio={studio} sheet={sheet} units={units} words={words} />
+            <StudioSheetFit studio={studio} sheet={sheet} words={words} />
           ) : null}
         </div>
         <SheetFoot

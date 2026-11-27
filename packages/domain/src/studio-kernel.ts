@@ -16,6 +16,20 @@
  */
 
 export { ridgePullOf, wallPullOf } from './studio/roof-arrow-magnet';
+export {
+  type BuildingScanFit,
+  buildingsOf,
+  type DrawnBuilding,
+  draggedOntoScan,
+  outlinesApart,
+  roofIsFlat,
+  roofMovedSinceOpening,
+  roofsAsDrawn,
+  roofsMoved,
+  SAME_BUILDING_M,
+  SCAN_PULL_M,
+  scanMatched,
+} from './studio/roof-buildings';
 export { roofBuilt, roofFormOf, roofSlopeDeg } from './studio/roof-built';
 export {
   roofLengthsMeasuredTo,
@@ -181,8 +195,19 @@ export {
   type SiteGrids,
   siteGridsOf,
 } from './studio/site-roof-reads';
+export { SCAN_REACH_M, scanFitsOf } from './studio/site-scan-fit';
 export {
+  SCAN_TRIANGLES_MAX,
+  type ScanLayer,
+  type ScanMesh,
+  scanMeshOf,
+  scanThinning,
+} from './studio/site-scan-mesh';
+export {
+  automaticLineUpOf,
+  greyOnGrid,
   type PictureGrid,
+  type PicturePixels,
   type PictureShift,
   pictureFromWire,
   pictureShiftOf,

@@ -178,14 +178,16 @@ export function StudioPictureChip({
   onPickFile,
   ownLaid,
   planRow,
-  dataRows,
   dataCredits,
   straight,
   foot,
   thumbOnly,
+  hidden,
 }: {
   /** A job is in hand: the thumb alone, which cannot be pressed. */
   thumbOnly: boolean;
+  /** The 3D view: the picture is the top view's, and steps aside (`T-M05-002g`). */
+  hidden: boolean;
   picture: StudioPicture;
   /** The picture the ground shows, by the person's pick or by itself. */
   shown: PictureChoice;
@@ -210,8 +212,6 @@ export function StudioPictureChip({
   ownLaid: boolean;
   /** The plan's row under the pictures: its name, its page, its eye and its lock. */
   planRow: ReactNode;
-  /** The heights' row (`T-M05-002`, part g). */
-  dataRows: ReactNode;
   /** The site data's credits, beside the picture's at the foot, never covered. */
   dataCredits: readonly TranslatedText[];
   /** Google's straight-down picture, where its height data holds one; `null` where not. */
@@ -240,7 +240,12 @@ export function StudioPictureChip({
     straight?.on === true && shown === 'sky' ? choice === 'straight_down' : choice === shown;
 
   return (
-    <div ref={holder} className="hg-studio-picture">
+    <div
+      ref={holder}
+      className="hg-studio-picture hg-studio-head-part"
+      data-hidden={hidden}
+      inert={hidden}
+    >
       <ChipButton
         title={title}
         line={line}
@@ -300,7 +305,6 @@ export function StudioPictureChip({
               ))}
             </div>
             {planRow}
-            {dataRows}
             <p className="hg-studio-picker-guide">{words.pictureGuide}</p>
             {creditLine.length === 0 ? null : (
               <p className="hg-studio-picker-credit">{creditLine.join(' · ')}</p>

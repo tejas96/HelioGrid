@@ -10,6 +10,8 @@ const FACTS: FocusFacts = {
   hasRoof: true,
   saveFailed: false,
   slots: { undo: true, redo: true },
+  lidar: false,
+  saveAsks: false,
 };
 const partsOf = (facts: Partial<FocusFacts>) => focusOf({ ...FACTS, ...facts });
 
@@ -35,6 +37,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         otherHandles: 'hidden',
         lengthLabels: 'draft',
         bottomBar: 'drawing',
+        lidar: 'hidden',
       },
     ],
     [
@@ -53,6 +56,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         zoom: 'hidden',
         otherHandles: 'hidden',
         bottomBar: 'status',
+        lidar: 'hidden',
       },
     ],
     [
@@ -72,6 +76,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         compass: 'hidden',
         otherHandles: 'hidden',
         bottomBar: 'status',
+        lidar: 'hidden',
       },
     ],
     [
@@ -90,6 +95,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         zoom: 'hidden',
         otherHandles: 'hidden',
         bottomBar: 'status',
+        lidar: 'hidden',
       },
     ],
     // Type the size: the card's job keeps the zoom and moves the foot to the slim pill; on a phone
@@ -110,6 +116,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         otherHandles: 'hidden',
         lengthLabels: 'draft',
         bottomBar: 'drawing',
+        lidar: 'hidden',
       },
     ],
     [
@@ -129,6 +136,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         compass: 'hidden',
         lengthLabels: 'draft',
         bottomBar: 'drawing',
+        lidar: 'hidden',
       },
     ],
     [
@@ -147,6 +155,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         zoom: 'hidden',
         otherHandles: 'hidden',
         bottomBar: 'status',
+        lidar: 'hidden',
       },
     ],
     [
@@ -158,6 +167,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         pictureChip: 'thumb',
         otherHandles: 'hidden',
         bottomBar: 'drawing',
+        lidar: 'hidden',
       },
     ],
     [
@@ -169,6 +179,8 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         compass: 'shown',
         otherHandles: 'hidden',
         lengthLabels: 'hidden',
+        stepSwitcher: 'mark',
+        pictureChip: 'hidden',
       },
     ],
     // A roof's sheet on a phone is a sheet across the foot, as Roofs is: the tools step aside
@@ -186,6 +198,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         layers: 'hidden',
         zoom: 'hidden',
         bottomBar: 'hidden',
+        lidar: 'hidden',
       },
     ],
     [
@@ -194,7 +207,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       true,
       {
         stepSwitcher: 'mark',
-        pictureChip: 'thumb',
+        pictureChip: 'hidden',
         pencil: 'hidden',
         roofs: 'hidden',
         magnet: 'hidden',
@@ -206,6 +219,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         otherHandles: 'hidden',
         lengthLabels: 'hidden',
         bottomBar: 'hidden',
+        lidar: 'hidden',
       },
     ],
     [
@@ -214,13 +228,14 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
       false,
       {
         stepSwitcher: 'mark',
-        pictureChip: 'thumb',
+        pictureChip: 'hidden',
         magnet: 'hidden',
         layers: 'switch',
         compass: 'shown',
         otherHandles: 'hidden',
         lengthLabels: 'hidden',
         bottomBar: 'hidden',
+        lidar: 'hidden',
       },
     ],
     // Roofs and the material picker open from the foot on every screen, in the bar's place: across
@@ -240,6 +255,7 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         layers: 'hidden',
         zoom: 'hidden',
         bottomBar: 'hidden',
+        lidar: 'hidden',
       },
     ],
     [
@@ -257,17 +273,18 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         otherHandles: 'hidden',
         lengthLabels: 'hidden',
         bottomBar: 'hidden',
+        stepSwitcher: 'mark',
+        pictureChip: 'hidden',
+        lidar: 'hidden',
       },
     ],
   ] as const)('%s in %s, phone %s', (job, view, phone, differs: Partial<FocusParts>) => {
     expect(partsOf({ job, view, phone })).toEqual({ ...partsOf({}), ...differs });
   });
 
-  it('the picture never hides: whole, or its thumb in a job', () => {
+  it('in the top view the picture never hides: whole, or its thumb in a job', () => {
     for (const job of FOCUS_JOBS) {
-      for (const view of ['top', '3d'] as const) {
-        expect(['shown', 'thumb']).toContain(partsOf({ job, view }).pictureChip);
-      }
+      expect(['shown', 'thumb']).toContain(partsOf({ job, view: 'top' }).pictureChip);
     }
   });
 });

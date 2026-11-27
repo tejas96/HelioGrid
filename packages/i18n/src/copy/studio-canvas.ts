@@ -7,6 +7,7 @@ import { designPageWords } from './site-details';
 import { studioFacesWords } from './studio-faces';
 import { studioHeightWords } from './studio-height';
 import { studioLengthWords } from './studio-length';
+import { studioLidarWords } from './studio-lidar';
 import { studioPictureWords } from './studio-picture';
 import { studioRoofWords } from './studio-roof';
 import { studioRoofListWords } from './studio-roof-list';
@@ -227,6 +228,7 @@ export function studioCanvasWords(t: T) {
     ...studioHeightWords(t),
     ...studioPictureWords(t),
     ...studioSiteWords(t),
+    ...studioLidarWords(t),
     ...studioSunWords(t),
     noScene: t(CANVAS.noScene),
   };

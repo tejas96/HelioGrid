@@ -2,8 +2,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 
 /**
- * The height view's key (`T-M05-002`, part g, board G7 and G25): the colours low to high, and the
- * two ends — heights in the reader's units, or the share of the year's sun.
+ * LiDAR's key (`T-M05-002g`, board frames 5 and 7): its name, the colours low to high, and the two
+ * ends — heights in the reader's units, or the share of the year's sun.
  */
 export function StudioHeightKey({
   name,
@@ -17,7 +17,7 @@ export function StudioHeightKey({
   sun: boolean;
   low: string;
   high: string;
-  /** Inside the View panel; else on the map while the view is on. */
+  /** Inside a panel, under the switch it belongs to; else on the map. */
   inPanel: boolean;
 }) {
   return (
@@ -28,6 +28,7 @@ export function StudioHeightKey({
       role="img"
       aria-label={`${name}: ${low} – ${high}`}
     >
+      {inPanel ? null : <span className="hg-studio-key-name">{name}</span>}
       <span className="hg-studio-key-bar" />
       <span className="hg-studio-key-ends">
         <span>{low}</span>

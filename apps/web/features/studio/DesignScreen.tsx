@@ -41,6 +41,8 @@ import './studio-tools.css';
 import './studio-view.css';
 import './studio-sun.css';
 import './studio-focus.css';
+import './studio-lidar.css';
+import './studio-lidar-move.css';
 
 /**
  * One design's own page (`SCR-M05-02`): the studio (`T-M05-002a`). It opens on the site in the flat

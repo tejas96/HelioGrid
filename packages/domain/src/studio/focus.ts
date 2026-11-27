@@ -5,8 +5,9 @@ import type { StudioView } from './views';
 /**
  * Focus mode (`T-M05-002`, part b): while a person does one job — draws, drags, sets a length or
  * has a roof's sheet open — every part of the studio that job does not use steps aside, and comes
- * back when the job ends. The picture never hides: a job keeps its thumb. The screen fades each part
- * in and out; this file alone decides which.
+ * back when the job ends. In the top view the picture never hides: a job keeps its thumb. The 3D
+ * view's head keeps only the save mark and the compass, and LiDAR (`T-M05-002g`) keeps only what
+ * it needs. The screen fades each part in and out; this file alone decides which.
  */
 
 /** What the studio shows of each part. `hidden` steps aside; every other value is on screen. */
@@ -16,8 +17,8 @@ export interface FocusParts {
    * it, and any job keeps it for a save that failed.
    */
   readonly stepSwitcher: 'shown' | 'mark' | 'hidden';
-  /** The picture button whole, or its thumb alone while a job is in hand. */
-  readonly pictureChip: 'shown' | 'thumb';
+  /** The picture button whole, its thumb alone while a job is in hand, or none in 3D. */
+  readonly pictureChip: 'shown' | 'thumb' | 'hidden';
   /** The pencil: it draws; `filled` while it draws. */
   readonly pencil: 'shown' | 'filled' | 'hidden';
   /** The Roofs button with the roofs' count, once a roof stands; a reader may open it too. */
@@ -48,6 +49,8 @@ export interface FocusParts {
   readonly lengthLabels: 'all' | 'draft' | 'hidden';
   /** The bottom bar: status and main button, the slim pill (drawing or typing), the status alone, or none. */
   readonly bottomBar: 'main' | 'drawing' | 'status' | 'hidden';
+  /** The LiDAR button in the right column, once a roof stands; pressed while LiDAR is on. */
+  readonly lidar: 'shown' | 'hidden';
 }
 
 export interface FocusFacts {
@@ -63,6 +66,10 @@ export interface FocusFacts {
   readonly saveFailed: boolean;
   /** Which of Undo and Redo have come (`undoSlotsOf`). */
   readonly slots: UndoSlots;
+  /** LiDAR is on: the 3D view shows the scan, with LiDAR's own head and foot. */
+  readonly lidar: boolean;
+  /** Saving needs the person — offline, failed, refused or saved first by another: its mark shows. */
+  readonly saveAsks: boolean;
 }
 
 const LOOKING_TOP: FocusParts = {
@@ -80,6 +87,7 @@ const LOOKING_TOP: FocusParts = {
   otherHandles: 'picked',
   lengthLabels: 'all',
   bottomBar: 'main',
+  lidar: 'shown',
 };
 
 /** What a job keeps in the top view; the rest of the parts are the looking ones. */
@@ -168,11 +176,36 @@ const IN_A_JOB: Record<
   },
 };
 
-/** The 3D view holds no handle and no length label (`T-M05-002`, part a). */
+/**
+ * The 3D view holds no handle and no length label (`T-M05-002`, part a); its head keeps the save
+ * mark and the compass alone — the steps and the picture are the top view's (`T-M05-002g`).
+ */
 const IN_3D: Partial<FocusParts> = {
+  stepSwitcher: 'mark',
+  pictureChip: 'hidden',
   magnet: 'hidden',
   otherHandles: 'hidden',
   lengthLabels: 'hidden',
+};
+
+/**
+ * LiDAR on (`T-M05-002g`, board frame 5): only what LiDAR needs — Undo and Redo once something
+ * changed; Sun, LiDAR and the top view; the compass. No save mark unless saving needs the person,
+ * no Roofs, no View, no zoom (a pinch or the wheel zooms); its own head and foot.
+ */
+const WITH_LIDAR: Partial<FocusParts> = {
+  stepSwitcher: 'hidden',
+  pictureChip: 'hidden',
+  pencil: 'hidden',
+  roofs: 'hidden',
+  magnet: 'hidden',
+  wipe: 'hidden',
+  layers: 'switch',
+  zoom: 'hidden',
+  otherHandles: 'hidden',
+  lengthLabels: 'hidden',
+  bottomBar: 'hidden',
+  lidar: 'shown',
 };
 
 /**
@@ -181,6 +214,7 @@ const IN_3D: Partial<FocusParts> = {
  * (board 6.1); on a desktop it stands between the tool columns, and they stay.
  */
 const ROOFS_ON_PHONE: Partial<FocusParts> = {
+  lidar: 'hidden',
   magnet: 'hidden',
   wipe: 'hidden',
   pencil: 'hidden',
@@ -216,13 +250,12 @@ function atTheFoot(job: FocusJob, phone: boolean): Partial<FocusParts> {
 }
 
 function partsOfJob(facts: FocusFacts): FocusParts {
+  if (facts.lidar && facts.view !== 'top') return { ...LOOKING_TOP, ...WITH_LIDAR };
   const job = facts.canEdit || OPEN_TO_READERS.includes(facts.job) ? facts.job : 'looking';
   const roofs = atTheFoot(job, facts.phone);
   if (facts.view !== 'top') {
     const sheet: Partial<FocusParts> =
-      job === 'sheet'
-        ? { stepSwitcher: 'mark', pictureChip: 'thumb', layers: 'switch', bottomBar: 'hidden' }
-        : {};
+      job === 'sheet' ? { layers: 'switch', lidar: 'hidden', bottomBar: 'hidden' } : {};
     return {
       ...LOOKING_TOP,
       ...IN_3D,
@@ -232,7 +265,7 @@ function partsOfJob(facts: FocusFacts): FocusParts {
   }
   if (job === 'roofs' || job === 'sheet' || job === 'menu') return { ...LOOKING_TOP, ...roofs };
   if (job === 'looking') return LOOKING_TOP;
-  const parts = { ...LOOKING_TOP, ...IN_A_JOB[job] };
+  const parts = { ...LOOKING_TOP, lidar: 'hidden' as const, ...IN_A_JOB[job] };
   // On a phone the slider, or the keyboard, takes the low screen: the compass steps aside.
   return (job === 'sizing' || job === 'typing') && facts.phone
     ? { ...parts, compass: 'hidden' }
@@ -246,15 +279,18 @@ export function focusOf(facts: FocusFacts): FocusParts {
   const roofs = facts.hasRoof ? parts.roofs : 'hidden';
   // 3D has nothing to show before a roof stands: the view menu stays, the switch waits.
   const layers = facts.hasRoof || parts.layers !== 'shown' ? parts.layers : 'menu';
+  // LiDAR opens on the 3D of the roofs: it waits for a roof too.
+  const lidar = facts.hasRoof ? parts.lidar : 'hidden';
   const slotted = {
     ...parts,
     roofs,
     layers,
+    lidar,
     undo: facts.slots.undo ? parts.undo : ('hidden' as const),
     redo: facts.slots.redo ? parts.redo : ('hidden' as const),
   };
   const own = facts.canEdit ? slotted : { ...slotted, ...EDIT_PARTS, pencil: 'hidden' as const };
-  const stepSwitcher =
-    own.stepSwitcher === 'hidden' && facts.saveFailed ? 'mark' : own.stepSwitcher;
+  const asks = facts.saveFailed || (facts.lidar && facts.saveAsks);
+  const stepSwitcher = own.stepSwitcher === 'hidden' && asks ? 'mark' : own.stepSwitcher;
   return { ...own, stepSwitcher };
 }

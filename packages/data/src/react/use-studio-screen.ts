@@ -1,22 +1,20 @@
 'use client';
 import {
   type FormatPack,
-  focusOf,
   groundRoofHeightM,
   type History,
-  historyAfter,
+  LIDAR_START,
+  lidarViewAfter,
   OPENING_VIEW,
-  pictureUpdatedOver,
   roofFactsOf,
   roofsBox,
   roofsWithSheet,
   type StudioDocument,
   type StudioView,
   stepRail,
-  studioJobOf,
   viewsOffered,
 } from '@heliogrid/domain';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useReducer, useRef, useState } from 'react';
 import { planOutlinesOf } from './own-picture-view';
 import { readOf } from './read';
 import { closingOf, roofPlaceMoves } from './roof-place-moves';
@@ -31,10 +29,13 @@ import {
 } from './studio-document-state';
 import { framedForFaces, studioFacesMoves } from './studio-faces-moves';
 import { heldViewOf } from './studio-held-view';
+import { studioFocusOf } from './studio-screen-focus';
 import type { StudioScreen } from './studio-screen-view';
 import { studioBack, undoRedoMoves, undoRedoOf, useUndoSlots } from './studio-undo-back';
+import { allClosed, drawOf, pickPictureOf, pictureUpdatedFor, seeOf } from './studio-views';
 import { useStudioPicture } from './use-design-picture';
 import { useDesignScreen } from './use-design-screen';
+import { useLidar } from './use-lidar';
 import { useOwnPictureScreen } from './use-own-picture-screen';
 import { useRoofStep } from './use-roof-step';
 import { useRoofsPanel } from './use-roofs-panel';
@@ -87,7 +88,18 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const fit = useMemo(() => roofsBox(document?.roofs ?? []), [document]);
 
   const facts = useMemo(() => roofFactsOf(formats), [formats]);
-  const site = useSiteHeights({ ...opening, designId, ready, facts, change, pin });
+  const [lidarView, lidarAct] = useReducer(lidarViewAfter, LIDAR_START); // this opening's
+  const sunlightOn = lidarView.on && lidarView.sunlight;
+  const site = useSiteHeights({
+    ...opening,
+    designId,
+    ready,
+    facts,
+    change,
+    pin,
+    picture,
+    sunlightOn,
+  });
   const sun = useSunBar({ pin, read: site.read, see: (n) => see(n), zone: formats.timeZone });
   const roof = useRoofStep({
     document,
@@ -127,7 +139,19 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   });
   const { roofSheet, numberInHand } = sheet.state;
   const numbers = roof.numbersNow(roofSheet, sheet.state.sheetPart);
-  const { shown } = roof.view;
+  const lidar = useLidar({
+    ...{ designId, history, latest, change, editable, facts, site },
+    view: lidarView,
+    dispatch: lidarAct,
+    heights: roof.view.heights,
+    undo: () => undoRedo.undo(),
+    see: (to) => see(to),
+    topView: view === 'top',
+    closeOpen: () => allClosed(panel, sheet),
+    hitAt: (at, beside) => seen.current(at, beside, null)?.roof ?? null,
+    magnet: roof.magnetNow,
+  });
+  const shown = lidar.preview ?? roof.view.shown;
   const stairs = useStudioStairs({
     latest,
     change,
@@ -154,14 +178,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   seen.current = hitAt;
   const stairsMoment = stairs.seen(model);
   const place = roofPlaceMoves({ latest, step, act, facts });
-  // Drawing happens in the top view only: the camera flies there first. A roof's sheet is the 3D
-  // view's: its height is kept and it closes, as when the top view is picked; a height that is
-  // refused keeps the sheet, and nothing is drawn.
-  const draw = () => {
-    if (!sheet.moves.done()) return;
-    setView('top');
-    roof.moves.draw();
-  };
+  const draw = drawOf(sheet, setView, roof.moves.draw);
   const faces = studioFacesMoves({
     latest,
     change,
@@ -190,33 +207,19 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   });
 
   const slots = useUndoSlots(editable, roofStep, history);
+  const undoRedo = undoRedoMoves({ dropInHand: sheet.dropInHand, step, act, walk: faces.walk });
   // A view that waits for a roof is not taken, whoever asks for it.
-  const see = (next: StudioView) => {
-    if (!views.some((place) => place.view === next && place.lock === null)) return;
-    // A new roof is drawn, or typed, in the top view only: leaving it drops the draft.
-    const held = step.current.kind;
-    if (next !== 'top' && (held === 'drawing' || held === 'typing')) act({ kind: 'cancel' });
-    if (next === '3d') setSeen3d(true);
-    // A roof's sheet stays open in either view: its height in hand is kept first. A height
-    // that is refused keeps the view, with its reason showing.
-    if (!sheet.viewing(next)) return;
-    setView(next);
-  };
+  const see = seeOf({ views, step, act, sheet, setView, setSeen3d, lidarAct });
   return {
     read,
     document,
     picture,
     own: own.view,
     ownMoves: own.moves,
-    pictureUpdated:
-      !pictureSeen &&
-      pictureUpdatedOver(
-        document?.drawnOn ?? null,
-        sky.kind === 'ready' ? sky.takenOn : null,
-        picture.kind === 'own' ? picture.takenOn : null,
-      ),
+    pictureUpdated: !pictureSeen && pictureUpdatedFor(document, sky, picture),
     skyFacts: skyFactsOf(readOf(skyQuery)),
     site,
+    lidar: lidar.screen,
     editing,
     saving,
     unsent: saving.kind === 'offline' || saving.kind === 'failed',
@@ -244,21 +247,21 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     viewOpen,
     ...sun.view,
     ...undoRedoOf(editable, roofStep, history),
-    focus: (phone) =>
-      focusOf({
-        job: studioJobOf(roof.view.job, {
-          roofs: panel.view.panel.open === 'roofs' || panel.view.panel.open === 'picker',
-          sheet: roofSheet !== null,
-          picture: own.view.cardOpen,
-          menu: phone && (picturesOpen || viewOpen), // beside its button nothing else moves
-        }),
-        view,
-        phone,
-        canEdit: editable,
-        hasRoof: roofClosed,
-        saveFailed: saving.kind === 'failed' || saving.kind === 'refused',
-        slots,
-      }),
+    focus: studioFocusOf({
+      job: roof.view.job,
+      open: {
+        roofs: panel.view.panel.open === 'roofs' || panel.view.panel.open === 'picker',
+        sheet: roofSheet !== null,
+        picture: own.view.cardOpen,
+        menu: picturesOpen || viewOpen,
+      },
+      view,
+      canEdit: editable,
+      hasRoof: roofClosed,
+      saving,
+      slots,
+      lidar: lidarView.on,
+    }),
     moves: {
       ...roof.moves,
       ...sheet.moves,
@@ -267,12 +270,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       ...stairs.moves,
       ...sun.moves,
       chooseNumberEntry: numbers.chooseNumberEntry,
-      pickPicture: (choice) => {
-        const at = latest.current;
-        if (at === null || at.present.picture === choice) return;
-        change(historyAfter(at, { ...at.present, picture: choice }));
-      },
-      ...undoRedoMoves({ dropInHand: sheet.dropInHand, step, act, walk: faces.walk }),
+      pickPicture: pickPictureOf(latest, change),
+      ...undoRedo,
       drawFaces: faces.drawFaces,
       pickShape: faces.pickShape,
       chooseUnits: (system) => void session.setUnitPreference(system),
@@ -284,7 +283,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
       showPictures: setPicturesOpen,
       showView: setViewOpen,
       back: () =>
-        // Esc while placing the stairs stops it first; the question stays.
+        // LiDAR takes Esc first (Move, then the scan); placing the stairs stops next.
+        lidar.back() ||
         stairs.moves.stopPlacingStairs() ||
         studioBack({
           panelOpen: panel.view.panel.open !== 'none',
