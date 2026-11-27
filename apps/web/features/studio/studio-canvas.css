@@ -194,6 +194,16 @@
   min-block-size: var(--studio-tool);
 }
 
+/* Saved shows a moment after a save lands, then fades; Saving stays while it lasts. */
+.hg-studio-save-quiet {
+  display: inline-grid;
+  transition: opacity var(--dur-standard) var(--ease-standard);
+}
+
+.hg-studio-save-quiet[data-shown="false"] {
+  opacity: 0;
+}
+
 :is(.hg-studio-head-steps, .hg-studio-head-end)
   :is(.hg-icon-button, .hg-button)
   .hg-shell-glyph[data-tone="secondary"]:not(.hg-menu-list *),

@@ -105,7 +105,7 @@ function HeadEnd({
  * The canvas's head, straight on the map with no box: the picture at the start, the steps in the
  * middle, the save mark and the compass at the end, over a soft shade that keeps them readable on
  * any roof; the line on the screen's top edge says how far the design has come. Focus mode sets the
- * steps aside — a save that failed keeps its mark — and steps the picture down to its thumb.
+ * steps aside — a save that needs the person keeps its mark — and steps the picture down to its thumb.
  */
 export function StudioCanvasHead({
   headRef,

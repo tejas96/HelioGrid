@@ -49,7 +49,7 @@ export {
   editTurnOpenTo,
   editTurnUntil,
 } from './edit-turn';
-export { type FocusFacts, type FocusParts, focusOf } from './focus';
+export { type FocusFacts, type FocusParts, focusOf, SAVED_MARK_MS } from './focus';
 export { FOCUS_JOBS, type FocusJob, focusJobOf, studioJobOf } from './focus-job';
 export { coordinateOf, type GroundBox, type GroundPoint, groundOf, meanOf } from './ground';
 export {

@@ -1,6 +1,6 @@
 'use client';
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { StudioEditing, StudioSaveState } from '@heliogrid/data/react';
+import { type StudioEditing, type StudioSaveState, useSavedFlash } from '@heliogrid/data/react';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { IconButton, Menu, type MenuItem, ShellGlyph } from '@heliogrid/ui';
 import { useRef } from 'react';
@@ -13,35 +13,48 @@ interface Mark {
   readonly tone: 'success' | 'secondary' | 'warning';
   /** A state a person must hear about: a tap opens its words. */
   readonly loud: boolean;
+  /** The mark shows; a quiet Saved steps away once its moment is over, its words still spoken. */
+  readonly shown: boolean;
 }
 
-/** Where saving stands, as a mark: Saved and Saving are quiet; every other state opens its words. */
+/**
+ * Where saving stands, as a mark: Saved and Saving are quiet, Saved only for a moment after a save
+ * lands; every other state opens its words and shows until it is put right.
+ */
 function markOf(
   editing: StudioEditing,
   saving: StudioSaveState,
+  flash: boolean,
   words: StudioCanvasWords,
 ): Mark | null {
   if (editing.kind === 'opening') return null;
   if (editing.kind === 'view-only') {
     const text = editing.editor === null ? words.viewOnly : words.editingNow(editing.editor.name);
-    return { glyph: 'eye', text, tone: 'secondary', loud: true };
+    return { glyph: 'eye', text, tone: 'secondary', loud: true, shown: true };
   }
   switch (saving.kind) {
     case 'saving':
-      return { glyph: 'clock', text: words.saving, tone: 'secondary', loud: false };
+      return { glyph: 'clock', text: words.saving, tone: 'secondary', loud: false, shown: true };
     case 'offline':
-      return { glyph: 'cloud-off', text: words.offline, tone: 'warning', loud: true };
+      return { glyph: 'cloud-off', text: words.offline, tone: 'warning', loud: true, shown: true };
     case 'failed':
     case 'saved-first':
-      return { glyph: 'alert-circle', text: words.failed, tone: 'warning', loud: true };
+      return {
+        glyph: 'alert-circle',
+        text: words.failed,
+        tone: 'warning',
+        loud: true,
+        shown: true,
+      };
     default:
-      return { glyph: 'check', text: words.saved, tone: 'success', loud: false };
+      return { glyph: 'check', text: words.saved, tone: 'success', loud: false, shown: flash };
   }
 }
 
 /**
- * The save mark in the steps' pill: whether each change is saved, waits for the connection, or is
- * view-only and whose turn it is. A mark names itself, so its words are spoken, never shown, and the
+ * The save mark at the head's end, before the compass: whether each change is saved, waits for the
+ * connection, or is view-only and whose turn it is. Its place stays while a quiet Saved is away, so
+ * the compass never moves. A mark names itself, so its words are spoken, never shown, and the
  * box is a live region that tells a screen reader each change. A state that needs the person opens
  * its words on a tap, with Try again for a save that failed, and the way out of the studio for a
  * save that cannot go now — the steps' way back waits for the save.
@@ -61,7 +74,8 @@ export function StudioSaveMark({
   onLeave: () => void;
 }) {
   const box = useRef<HTMLOutputElement>(null);
-  const mark = markOf(editing, saving, words);
+  const flash = useSavedFlash(saving.kind);
+  const mark = markOf(editing, saving, flash, words);
   if (mark === null) return null;
   const glyph = <ShellGlyph name={mark.glyph} size="md" tone={mark.tone} />;
   const items: MenuItem[] = [{ key: 'state', label: mark.text, icon: glyph, disabled: true }];
@@ -100,7 +114,9 @@ export function StudioSaveMark({
           }
         />
       ) : (
-        glyph
+        <span className="hg-studio-save-quiet" data-shown={mark.shown}>
+          {glyph}
+        </span>
       )}
     </output>
   );

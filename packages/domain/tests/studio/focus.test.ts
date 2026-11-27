@@ -8,7 +8,6 @@ const FACTS: FocusFacts = {
   phone: true,
   canEdit: true,
   hasRoof: true,
-  saveFailed: false,
   slots: { undo: true, redo: true },
   lidar: false,
   saveAsks: false,

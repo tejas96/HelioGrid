@@ -7,7 +7,6 @@ const FACTS: FocusFacts = {
   phone: true,
   canEdit: true,
   hasRoof: true,
-  saveFailed: false,
   slots: { undo: true, redo: true },
   lidar: false,
   saveAsks: false,
@@ -17,13 +16,17 @@ const partsOf = (facts: Partial<FocusFacts>) => focusOf({ ...FACTS, ...facts });
 describe('focus mode: the edge cases', () => {
   it.each([
     [
-      'a save that fails while drawing shows its mark alone',
-      { job: 'drawing', saveFailed: true },
+      'a save that needs the person while drawing shows its mark alone',
+      { job: 'drawing', saveAsks: true },
       'mark',
     ],
     ['a roof sheet in 3D keeps the mark, saved or not', { job: 'sheet', view: '3d' }, 'mark'],
-    ['a failed save while looking keeps the whole pill', { saveFailed: true }, 'shown'],
-    ['no failed save: the pill steps aside', { job: 'drawing' }, 'hidden'],
+    [
+      'a save that needs the person while looking keeps the whole pill',
+      { saveAsks: true },
+      'shown',
+    ],
+    ['saving is fine: the pill steps aside', { job: 'drawing' }, 'hidden'],
   ] as const)('%s', (_why, facts, stepSwitcher) => {
     expect(partsOf(facts).stepSwitcher).toBe(stepSwitcher);
   });

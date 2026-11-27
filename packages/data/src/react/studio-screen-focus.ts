@@ -37,7 +37,6 @@ export function studioFocusOf(input: {
       phone,
       canEdit: input.canEdit,
       hasRoof: input.hasRoof,
-      saveFailed: saving.kind === 'failed' || saving.kind === 'refused',
       slots: input.slots,
       lidar: input.lidar,
       saveAsks: saving.kind !== 'saved' && saving.kind !== 'saving',

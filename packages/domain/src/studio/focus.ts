@@ -62,15 +62,22 @@ export interface FocusFacts {
   readonly canEdit: boolean;
   /** At least one roof stands. */
   readonly hasRoof: boolean;
-  /** The last save failed: its mark shows whatever the job. */
-  readonly saveFailed: boolean;
   /** Which of Undo and Redo have come (`undoSlotsOf`). */
   readonly slots: UndoSlots;
   /** LiDAR is on: the 3D view shows the scan, with LiDAR's own head and foot. */
   readonly lidar: boolean;
-  /** Saving needs the person — offline, failed, refused or saved first by another: its mark shows. */
+  /**
+   * Saving needs the person — offline, failed, refused or saved first by another: its mark shows
+   * whatever the job, until it is put right.
+   */
   readonly saveAsks: boolean;
 }
+
+/**
+ * How long the save mark's Saved check shows after a save lands; then it steps away. A state that
+ * needs the person shows until it is put right.
+ */
+export const SAVED_MARK_MS = 1_500;
 
 const LOOKING_TOP: FocusParts = {
   stepSwitcher: 'shown',
@@ -290,7 +297,6 @@ export function focusOf(facts: FocusFacts): FocusParts {
     redo: facts.slots.redo ? parts.redo : ('hidden' as const),
   };
   const own = facts.canEdit ? slotted : { ...slotted, ...EDIT_PARTS, pencil: 'hidden' as const };
-  const asks = facts.saveFailed || (facts.lidar && facts.saveAsks);
-  const stepSwitcher = own.stepSwitcher === 'hidden' && asks ? 'mark' : own.stepSwitcher;
+  const stepSwitcher = own.stepSwitcher === 'hidden' && facts.saveAsks ? 'mark' : own.stepSwitcher;
   return { ...own, stepSwitcher };
 }
