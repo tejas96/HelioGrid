@@ -108,14 +108,8 @@ export function StudioToolRail({
         </Shown>
       </div>
       <div className="hg-studio-tools" data-side="right">
-        {/* The sun and its shade live in 3D only: the top view never shows them. */}
-        <Shown
-          when={
-            view !== 'top' &&
-            studio.roofList.count > 0 &&
-            (parts.layers === 'shown' || parts.layers === 'switch')
-          }
-        >
+        {/* The sun and its shade live in 3D only (`FocusParts.sun`): the top view never shows them. */}
+        <Shown when={view !== 'top' && studio.roofList.count > 0 && parts.sun === 'shown'}>
           <IconButton
             label={words.sun}
             pressed={studio.sunBar.view !== null}

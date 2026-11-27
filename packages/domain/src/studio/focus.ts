@@ -49,8 +49,10 @@ export interface FocusParts {
   readonly lengthLabels: 'all' | 'draft' | 'hidden';
   /** The bottom bar: status and main button, the slim pill (drawing or typing), the status alone, or none. */
   readonly bottomBar: 'main' | 'drawing' | 'status' | 'hidden';
-  /** The LiDAR button in the right column, once a roof stands; pressed while LiDAR is on. */
+  /** The LiDAR button in the right column, once a roof stands; LiDAR's own × leaves LiDAR. */
   readonly lidar: 'shown' | 'hidden';
+  /** The Sun button, in 3D once a roof stands: with the 2D/3D switch, and alone in LiDAR. */
+  readonly sun: 'shown' | 'hidden';
 }
 
 export interface FocusFacts {
@@ -79,7 +81,10 @@ export interface FocusFacts {
  */
 export const SAVED_MARK_MS = 1_500;
 
-const LOOKING_TOP: FocusParts = {
+/** A job's parts: the sun follows from them (`focusOf`), never set by a job. */
+type JobParts = Omit<FocusParts, 'sun'>;
+
+const LOOKING_TOP: JobParts = {
   stepSwitcher: 'shown',
   pictureChip: 'shown',
   pencil: 'shown',
@@ -197,8 +202,9 @@ const IN_3D: Partial<FocusParts> = {
 
 /**
  * LiDAR on (`T-M05-002g`, board frame 5): only what LiDAR needs — Undo and Redo once something
- * changed; Sun, LiDAR and the top view; the compass. No save mark unless saving needs the person,
- * no Roofs, no View, no zoom (a pinch or the wheel zooms); its own head and foot.
+ * changed; Sun; the compass. Neither the 2D switch nor the LiDAR button: LiDAR's own × leaves it.
+ * No save mark unless saving needs the person, no Roofs, no View, no zoom (a pinch or the wheel
+ * zooms); its own head and foot.
  */
 const WITH_LIDAR: Partial<FocusParts> = {
   stepSwitcher: 'hidden',
@@ -207,12 +213,12 @@ const WITH_LIDAR: Partial<FocusParts> = {
   roofs: 'hidden',
   magnet: 'hidden',
   wipe: 'hidden',
-  layers: 'switch',
+  layers: 'hidden',
   zoom: 'hidden',
   otherHandles: 'hidden',
   lengthLabels: 'hidden',
   bottomBar: 'hidden',
-  lidar: 'shown',
+  lidar: 'hidden',
 };
 
 /**
@@ -256,7 +262,7 @@ function atTheFoot(job: FocusJob, phone: boolean): Partial<FocusParts> {
   return job === 'menu' && phone ? ROOFS_ON_PHONE : {};
 }
 
-function partsOfJob(facts: FocusFacts): FocusParts {
+function partsOfJob(facts: FocusFacts): JobParts {
   if (facts.lidar && facts.view !== 'top') return { ...LOOKING_TOP, ...WITH_LIDAR };
   const job = facts.canEdit || OPEN_TO_READERS.includes(facts.job) ? facts.job : 'looking';
   const roofs = atTheFoot(job, facts.phone);
@@ -288,11 +294,16 @@ export function focusOf(facts: FocusFacts): FocusParts {
   const layers = facts.hasRoof || parts.layers !== 'shown' ? parts.layers : 'menu';
   // LiDAR opens on the 3D of the roofs: it waits for a roof too.
   const lidar = facts.hasRoof ? parts.lidar : 'hidden';
+  // The sun lives in 3D: it comes with the 2D/3D switch, and stays alone in LiDAR.
+  const withSwitch = layers === 'shown' || layers === 'switch';
+  const inLidar = facts.lidar && facts.view !== 'top';
+  const sun = facts.hasRoof && (withSwitch || inLidar) ? ('shown' as const) : ('hidden' as const);
   const slotted = {
     ...parts,
     roofs,
     layers,
     lidar,
+    sun,
     undo: facts.slots.undo ? parts.undo : ('hidden' as const),
     redo: facts.slots.redo ? parts.redo : ('hidden' as const),
   };

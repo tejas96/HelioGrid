@@ -24,13 +24,15 @@ describe('LiDAR keeps only what it needs (T-M05-002g, board frames 5 and 16)', (
     wipe: 'hidden',
     undo: 'shown',
     redo: 'shown',
-    layers: 'switch',
+    // Neither the 2D switch nor the LiDAR button: its own × leaves LiDAR.
+    layers: 'hidden',
     zoom: 'hidden',
     compass: 'shown',
     otherHandles: 'hidden',
     lengthLabels: 'hidden',
     bottomBar: 'hidden',
-    lidar: 'shown',
+    lidar: 'hidden',
+    sun: 'shown',
   } as const;
 
   it.each([
