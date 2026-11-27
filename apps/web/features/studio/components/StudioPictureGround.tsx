@@ -41,7 +41,7 @@ const LAYER_ORDER = { ground: -3, around: -2, sharp: -1 } as const;
 const SURROUND_M = 1_200;
 
 /** The picture laid on one canvas, in metres east and north of the pin, and the ground around it. */
-interface GroundPicture {
+export interface GroundPicture {
   readonly texture: CanvasTexture;
   readonly edge: Color;
   readonly west: number;

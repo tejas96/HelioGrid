@@ -4,7 +4,15 @@
  * bundles — the phone shows the studio in a web view. Its view model's types stay on `./react`.
  */
 
-export { SiteReaderProvider, type SiteReaders, type SiteRoofReader } from './site-readers';
+export {
+  type DrawnOnPiece,
+  type SiteFitReader,
+  type SiteLineUpReader,
+  SiteReaderProvider,
+  type SiteReaders,
+  type SiteRoofReader,
+  type SiteScanReader,
+} from './site-readers';
 export {
   type GroundOutline,
   type ShadeCut,

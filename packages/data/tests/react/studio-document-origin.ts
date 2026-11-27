@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import type { StudioDocumentWire } from '@heliogrid/contracts';
+import type { SiteDataWire, StudioDocumentWire } from '@heliogrid/contracts';
 import { afterEach } from 'vitest';
 import { refusal, send, writeBodyOf } from './origin-wire';
 import { PICTURE_ROUTES } from './studio-picture-origin';
@@ -19,10 +19,13 @@ const FRESH = (): {
   document: StudioDocumentWire;
   version: number;
   saves: StudioDocumentWire[];
+  /** The site's data; `null` answers that the design has none to read (404). */
+  siteData: SiteDataWire | null;
 } => ({
   document: { schemaVersion: 1, picture: null, drawnOn: null, roofs: [], pictureScale: 1 },
   version: 0,
   saves: [],
+  siteData: null,
 });
 
 /** The design's document as the origin holds it, and every document saved, in order. */
@@ -35,6 +38,7 @@ afterEach(() => {
 const DOCUMENT = /^\/designs\/([^/]+)\/document$/;
 const TURN = /^\/designs\/([^/]+)\/edit-turn$/;
 const SKY = /^\/designs\/([^/]+)\/sky-picture$/;
+const SITE_DATA = /^\/designs\/([^/]+)\/site-data$/;
 
 const read: Route = (req, res, path) => {
   if (!DOCUMENT.test(path) || req.method !== 'GET') return false;
@@ -76,5 +80,19 @@ const sky: Route = (req, res, path) => {
   return true;
 };
 
+const siteData: Route = (req, res, path) => {
+  if (!SITE_DATA.test(path) || req.method !== 'GET') return false;
+  if (stored.siteData === null) send(res, req, 404, refusal('NOT_FOUND'));
+  else send(res, req, 200, stored.siteData);
+  return true;
+};
+
 /** The document's routes, which the studio origin answers beside its own. */
-export const DOCUMENT_ROUTES: readonly Route[] = [read, save, turn, sky, ...PICTURE_ROUTES];
+export const DOCUMENT_ROUTES: readonly Route[] = [
+  read,
+  save,
+  turn,
+  sky,
+  siteData,
+  ...PICTURE_ROUTES,
+];

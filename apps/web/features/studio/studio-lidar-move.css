@@ -1,0 +1,174 @@
+/* LiDAR's Move sheet and a reader's card of one roof (`T-M05-002g`, board frames 10–17). */
+
+/* Move: one sheet at the foot, between the tool columns, at most 40 % of the screen high. Its head
+   and tabs stay; only its body scrolls. */
+.hg-lidar-sheet {
+  flex-direction: column;
+  gap: var(--sp-2);
+  grid-row: 2 / 4;
+  grid-column: 1 / -1;
+  align-self: end;
+  justify-self: center;
+  z-index: 2;
+  display: flex;
+  inline-size: min(
+    calc(100% - 2 * (var(--studio-tool) + var(--studio-gap))),
+    calc(var(--sp-24) * 5)
+  );
+  max-block-size: min(100%, 40dvh);
+  min-inline-size: 0;
+  min-block-size: 0;
+}
+
+.hg-lidar-move {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding: 0;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  animation: hg-sheet-up var(--dur-emphasised) var(--ease-enter) 1 both;
+}
+
+.hg-lidar-move-head {
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+  border-block-end: var(--hg-studio-line) solid var(--line-soft);
+}
+
+.hg-lidar-move-body {
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+}
+
+.hg-lidar-part {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-lidar-part > .hg-button[data-variant="ghost"] {
+  align-self: flex-start;
+}
+
+.hg-lidar-chips,
+.hg-lidar-cross {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+
+.hg-lidar-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+/* Where the picked roofs stand, and Match the scan beside it; on a phone, under it. */
+.hg-lidar-match {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.hg-lidar-status {
+  min-inline-size: 0;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-lidar-match .hg-button {
+  flex: none;
+}
+
+.hg-lidar-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+/* Nudge 10 cm: its name, and four arrows as one small cross — up over left, down, right. */
+.hg-lidar-nudge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-lidar-cross {
+  display: grid;
+  grid-template-columns: repeat(3, var(--studio-tool));
+  grid-template-rows: repeat(2, var(--studio-tool));
+  place-items: center;
+}
+
+.hg-lidar-cross > :nth-child(1) {
+  grid-area: 1 / 2;
+}
+
+.hg-lidar-cross > :nth-child(2) {
+  grid-area: 2 / 1;
+}
+
+.hg-lidar-cross > :nth-child(3) {
+  grid-area: 2 / 3;
+}
+
+.hg-lidar-cross > :nth-child(4) {
+  grid-area: 2 / 2;
+}
+
+/* A reader's card of one roof: its numbers in two columns. */
+.hg-lidar-card {
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+}
+
+.hg-lidar-facts {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--sp-1) var(--sp-3);
+  margin: 0;
+  font-size: var(--fs-body-sm);
+}
+
+.hg-lidar-facts dt {
+  color: var(--text-secondary);
+}
+
+.hg-lidar-facts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  color: var(--text-primary);
+}
+
+@media (width < 968px) {
+  /* One row that scrolls sideways, as the studio's chips do: Match stays in view. */
+  .hg-lidar-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .hg-lidar-chips > * {
+    flex: none;
+  }
+
+  .hg-lidar-match {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

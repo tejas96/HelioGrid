@@ -2,8 +2,6 @@ import type { SiteDataWire } from '@heliogrid/contracts';
 import type {
   FocusParts,
   GroundBox,
-  GroundPoint,
-  HeightView,
   MeasurementSystem,
   PictureChoice,
   Read,
@@ -22,6 +20,7 @@ import type {
   SunPosition,
   ViewPlace,
 } from '@heliogrid/domain';
+import type { LidarScreen } from './lidar-view';
 import type { RoofModelShown } from './roof-model-shown';
 import type { RoofSheetRowMoves, RoofSheetRowsState } from './roof-sheet-rows-view';
 import type { RoofMoves, RoofPlaceMoves, RoofStepView } from './roof-step-view';
@@ -101,22 +100,20 @@ export interface StudioScreen
     readonly answerChanged: (changed: boolean) => void;
     /** Asks the site data again, after a source did not answer. */
     readonly retry: () => void;
-    readonly view: HeightView;
-    /** The height view's surface while it is on with heights; `null` while not. */
+    /** Every area's grids: the scan and the height map's shadows are built from them. */
     readonly layers: readonly HeightLayer[];
+    /** The Heights key's two ends, in metres above the ground; `null` with no heights. */
+    readonly key: { readonly lowM: number; readonly highM: number } | null;
+    /** The studio's own line-up of the map; `null` where it found none. */
+    readonly automatic: SiteLineUp | null;
     readonly sunlight: Readonly<Record<string, RoofSunlight>> | null;
     readonly sunChartOf: (roof: number, topM: number) => SunChart | null;
-    readonly surface: {
-      readonly layers: readonly HeightLayer[];
-      readonly key: { readonly lowM: number; readonly highM: number };
-      readonly near: readonly GroundPoint[];
-      readonly lineUp: SiteLineUp;
-    } | null;
-    /** How far the person moved the map onto the picture: its shadows and surface follow it. */
+    /** How far the map is moved onto the picture: its shadows and the scan follow it. */
     readonly lineUp: SiteLineUp;
-    readonly setView: (next: Partial<HeightView>) => void;
     readonly liftMap: (lift: number) => void;
     readonly nudgeMap: (way: { east: number; north: number }) => void;
+    /** The map dragged on the 3D to `to`, metres east and north. */
+    readonly dragMap: (to: { east: number; north: number }) => void;
     readonly mapBack: () => void;
     /** Google's straight-down picture is shown in place of the sky picture, for this opening. */
     readonly straightDown: boolean;
@@ -129,6 +126,8 @@ export interface StudioScreen
       metres: number,
     ) => (SiteFit & { readonly line: SiteFitLine }) | null;
   };
+  /** LiDAR in the 3D view (`T-M05-002g`). */
+  readonly lidar: LidarScreen;
   readonly editing: StudioEditing;
   readonly saving: StudioSaveState;
   /** A change waits, not sent: no connection, or the api did not save it. Leaving loses it. */

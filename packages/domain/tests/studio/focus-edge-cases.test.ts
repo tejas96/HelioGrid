@@ -9,6 +9,8 @@ const FACTS: FocusFacts = {
   hasRoof: true,
   saveFailed: false,
   slots: { undo: true, redo: true },
+  lidar: false,
+  saveAsks: false,
 };
 const partsOf = (facts: Partial<FocusFacts>) => focusOf({ ...FACTS, ...facts });
 

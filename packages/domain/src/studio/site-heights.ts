@@ -177,18 +177,13 @@ export function historyWithSiteHeights(
   return same ? history : { ...history, past, present, future };
 }
 
-/** The one line the roof's sheet says of the map (board G21, G22); `level` within this. */
-const LEVEL_WITHIN_M = 0.05;
-export type SiteFitLine = 'unclear' | 'above' | 'below' | 'level';
+/** The one line the roof's sheet says of the map (board G21). */
+export type SiteFitLine = 'unclear';
 
 /**
- * An unclear read is said always; how far the map sits from the roof only while the height view
- * is on, where the two show together.
+ * An unclear read is said. How far the scan sits from a roof is LiDAR's to show, where the two
+ * stand together (`T-M05-002g`).
  */
-export function siteFitLineOf(fit: SiteFit | null, viewOn: boolean): SiteFitLine | null {
-  if (fit === null) return null;
-  if (!fit.clear) return 'unclear';
-  if (!viewOn) return null;
-  if (Math.abs(fit.byM) < LEVEL_WITHIN_M) return 'level';
-  return fit.byM > 0 ? 'above' : 'below';
+export function siteFitLineOf(fit: SiteFit | null): SiteFitLine | null {
+  return fit !== null && !fit.clear ? 'unclear' : null;
 }

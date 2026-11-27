@@ -156,16 +156,10 @@ describe('the map against the open roof (board G21, G22)', () => {
 
   const fitOf = (byM: number, clear = true): SiteFit => ({ mapM: 6, byM, clear });
   it.each([
-    ['no read', null, true, null],
-    ['an unclear read, view off', fitOf(0.9, false), false, 'unclear'],
-    ['an unclear read, view on', fitOf(0.9, false), true, 'unclear'],
-    ['a clear read, view off', fitOf(0.9), false, null],
-    ['the map above', fitOf(0.9), true, 'above'],
-    ['the map below', fitOf(-0.9), true, 'below'],
-    ['just under the edge: level', fitOf(0.04), true, 'level'],
-    ['at the edge: above', fitOf(0.05), true, 'above'],
-    ['just under the edge below: level', fitOf(-0.04), true, 'level'],
-  ] as const)('%s', (_, fit, viewOn, line) => {
-    expect(siteFitLineOf(fit, viewOn)).toBe(line);
+    ['no read', null, null],
+    ['an unclear read', fitOf(0.9, false), 'unclear'],
+    ['a clear read: LiDAR shows how far the scan sits', fitOf(0.9), null],
+  ] as const)('%s', (_, fit, line) => {
+    expect(siteFitLineOf(fit)).toBe(line);
   });
 });

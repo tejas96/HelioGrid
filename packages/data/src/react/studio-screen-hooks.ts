@@ -1,5 +1,13 @@
 /** The design studio's view models (block 9): one per screen pair, the web's and the phone's alike. */
 
+export type {
+  LidarBuildingShown,
+  LidarMesh,
+  LidarMoves,
+  LidarPin,
+  LidarScan,
+  LidarScreen,
+} from './lidar-view';
 export type { PlanShown, UnitCard } from './own-picture-view';
 export type {
   RoofSheetRowMoves,

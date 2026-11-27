@@ -4,12 +4,13 @@ import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { ShellGlyph, useDesktopShell, usePalette, useReducedMotion } from '@heliogrid/ui';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCanvasLidar } from '../hooks/use-canvas-lidar';
 import { useChromeRoom } from '../hooks/use-chrome-room';
 import { useDrawPress } from '../hooks/use-draw-press';
 import { useFacesFrame } from '../hooks/use-faces-frame';
 import { useFootSlot } from '../hooks/use-foot-slot';
-import { useCanvasHeights } from '../hooks/use-height-surface';
 import { useKeyboardRoom } from '../hooks/use-keyboard-room';
+import { useLidarPress, withLidarPress } from '../hooks/use-lidar-press';
 import { useMapKeys } from '../hooks/use-map-keys';
 import { useNewestFrame } from '../hooks/use-newest-frame';
 import { useStudioHaptics } from '../hooks/use-studio-haptics';
@@ -22,6 +23,8 @@ import type { StudioDrive } from './StudioCameraRig';
 import { StudioCanvasHead } from './StudioCanvasHead';
 import type { StudioCompassHandle } from './StudioCompass';
 import { StudioFilePick } from './StudioFilePick';
+import { lidarShown, StudioLidarParts } from './StudioLidar';
+import { pinAnchorsOf } from './StudioLidarPins';
 import { StudioLoupe } from './StudioLoupe';
 import { StudioMaterialPicker } from './StudioMaterialPicker';
 import { StudioRoofMarks } from './StudioRoofMarks';
@@ -73,7 +76,10 @@ export function StudioCanvas({
   onSite: (() => void) | null;
 }) {
   const palette = usePalette();
-  const heights = useCanvasHeights(studio, palette);
+  const drive = useRef<StudioDrive | null>(null);
+  const lidarPress = useLidarPress(studio, drive);
+  const lidar = useCanvasLidar(studio, palette);
+  const pins = useRef<HTMLDivElement>(null);
   const still = useReducedMotion();
   const desktop = useDesktopShell();
   const footHolder = footHolderOf(studio);
@@ -83,7 +89,6 @@ export function StudioCanvas({
   const upright = useUpright(frame);
   const foot = footRefsOf(footHolder, bottom);
   const pin = useRef<HTMLSpanElement>(null);
-  const drive = useRef<StudioDrive | null>(null);
   const compass = useRef<StudioCompassHandle>(null);
   const roofMarks = useRef<RoofMarksHandle>(null);
   const scene = useRef<HTMLDivElement>(null);
@@ -104,9 +109,12 @@ export function StudioCanvas({
   // it opens the roof it lands on, met at each roof's own height.
   useStudioHaptics(studio);
   const { aim, aimAt, handlers } = useDrawPress(studio, drive, (x, y) => {
+    studio.lidar.moves.why(false);
     if (view !== 'top') {
       const at = (heightM: number) => drive.current?.groundAt(x, y, heightM) ?? null;
-      moves.tapRoof(at, (h) => drive.current?.groundAt(x + FINGER_PX, y, h) ?? null);
+      const beside = (h: number) => drive.current?.groundAt(x + FINGER_PX, y, h) ?? null;
+      // With LiDAR on, a tap picks the roof's building for Move; else it opens the roof's sheet.
+      (lidarShown(studio) ? studio.lidar.moves.tapAt : moves.tapRoof)(at, beside);
       return;
     }
     const spot = drive.current?.groundAt(x, y, 0) ?? null;
@@ -159,6 +167,7 @@ export function StudioCanvas({
         data-drawing={drawing}
         data-panel={footHolder !== 'bar'}
         data-sun={phoneFoot && footHolder === 'sun'}
+        data-lidar={lidarShown(studio)}
       >
         <div
           ref={scene}
@@ -168,7 +177,7 @@ export function StudioCanvas({
           // biome-ignore lint/a11y/noNoninteractiveTabindex: the map takes the focus to answer its keys, as a map does
           tabIndex={0}
           onKeyDown={onKeyDown}
-          {...handlers}
+          {...withLidarPress(lidarPress, handlers)}
         >
           <StudioScene
             picture={picture}
@@ -181,7 +190,7 @@ export function StudioCanvas({
             pinLabel={pin}
             fallback={<p className="hg-studio-no-scene">{words.noScene}</p>}
             drive={drive}
-            onTurn={heights.told((turn) => compass.current?.turn(turn))}
+            onTurn={lidar.told((turn) => compass.current?.turn(turn))}
             roofScene={studio.scene}
             roofMotion={studio.motion}
             pictureScale={studio.shown?.pictureScale ?? null}
@@ -190,7 +199,7 @@ export function StudioCanvas({
             rise={rise}
             roofMarks={roofMarks}
             screen={studio.screenProjector}
-            heights={heights.surface}
+            lidar={{ ...lidar.layer, pins: { holder: pins, anchors: pinAnchorsOf(studio) } }}
             sunSky={sunSky}
             plan={studio.own.plan}
             planGlows={
@@ -242,7 +251,6 @@ export function StudioCanvas({
           foot={footSlot.node}
         />
         <StudioToolRail
-          turnOf={heights.turnOf}
           studio={studio}
           view={view}
           views={studio.views}
@@ -262,6 +270,15 @@ export function StudioCanvas({
           onRedo={moves.redo}
           onZoomIn={() => drive.current?.zoomIn()}
           onZoomOut={() => drive.current?.zoomOut()}
+        />
+        <StudioLidarParts
+          studio={studio}
+          words={words}
+          phone={desktop === false}
+          holder={footHolder}
+          foot={foot}
+          pins={pins}
+          turnOf={lidar.turnOf}
         />
         {studio.roofSheet === null ? null : (
           <StudioRoofSheet

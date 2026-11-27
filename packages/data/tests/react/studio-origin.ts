@@ -290,14 +290,14 @@ afterEach(() => {
   Object.assign(origin, START());
 });
 
-/** A hook mounted in the real provider over the origin. */
-export function mountedOver<P, T>(hook: (props: P) => T, initialProps?: P) {
+/** A hook mounted in the real provider over the origin, inside `inside`: a host's readers, say. */
+export function mountedOver<P, T>(hook: (props: P) => T, initialProps?: P, inside = same) {
   const layer = createDataLayer({ baseUrl: served.url(), language: () => 'en' });
   const wrapper = ({ children }: { children: ReactNode }) =>
-    createElement(DataProvider, { layer, children });
+    inside(createElement(DataProvider, { layer, children }));
   return renderHook(hook, { wrapper, initialProps });
 }
-
+const same = (children: ReactNode): ReactNode => children;
 /** How many times `path` was read. */
 export const readsOf = (path: string) => origin.sent.filter((one) => one === `GET ${path}`).length;
 

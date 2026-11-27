@@ -107,44 +107,21 @@
   box-shadow: none;
 }
 
-/* The height view's group (T-M05-002, part g, board G6, G23): the switch, Heights or Sunlight, how
-   see-through, the key and Line up the map. */
-.hg-studio-height-group {
-  gap: var(--sp-2);
-  padding-block: var(--sp-1);
-}
-
-/* In the bottom sheet it stays one column: its slider and key need the sheet's whole width. */
-.hg-studio-foot-slot .hg-studio-height-group {
-  display: flex;
-  flex-direction: column;
-}
-.hg-studio-lineup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-}
-.hg-studio-lineup-arrows {
-  display: flex;
-  justify-content: space-between;
-}
-
-/* The key: the colours low to high and the two ends (board G7, G25). On the map, under the head. */
+/* LiDAR's key (`T-M05-002g`): its name, the colours low to high and the two ends. On the 3D it is
+   its own glass card, placed by what holds it. */
 .hg-studio-key {
   display: flex;
   flex-direction: column;
   gap: var(--sp-1);
 }
 .hg-studio-key[data-in="map"] {
-  position: absolute;
-  z-index: 3;
-  /* Under the head row, below the picture chip (board G7). */
-  inset-block-start: calc(100% + var(--sp-2));
-  inset-inline-start: 0;
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-lg);
-  inline-size: calc(var(--sp-24) * 1.75);
   pointer-events: none;
+}
+.hg-studio-key-name {
+  font-size: var(--fs-body-sm);
+  color: var(--text-primary);
 }
 .hg-studio-key-bar {
   display: block;

@@ -233,10 +233,23 @@ export function barMessagesOf(editing: StudioEditing, facts: BarFacts): BarView[
         ? roofsMessage(bar, facts)
         : startMessage(facts);
   const site = siteBarMessage(studio, words, facts.format, editing.kind === 'editor');
+  const lidar = studio.lidar;
+  // On the straight-down picture, roofs drawn on the leaning sky picture sit off their spot
+  // (`T-M05-002g`, board frame 20): LiDAR fixes them.
+  const offSpot = lidar.topFix
+    ? message('lidar-off-spot', {
+        tone: 'info',
+        line: words.lidarFoot({ kind: 'off_spot' }, false, ''),
+        act: { label: words.lidarFixInLidar, onPress: lidar.moves.fixInLidar },
+        onClose: lidar.moves.shutFoot,
+        fades: false,
+      })
+    : null;
   const messages = [
     ...noteMessages(facts),
     ...(moment === null ? [] : [moment]),
     ...(site === null ? [] : [message(site.tag, site)]),
+    ...(offSpot === null ? [] : [offSpot]),
   ];
   if (editing.kind === 'editor' && facts.part !== 'status') return messages;
   return wordsOnly(messages);

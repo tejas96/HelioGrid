@@ -165,6 +165,10 @@ describe.skipIf(skip)('A design’s site data, over HTTP against a migrated data
     expect(memory().asked - asked).toBe(1);
   });
 
+  /** The memory map reaches 40 m round its call, about 77 m across on the pin's ground. */
+  const MAP_ACROSS_M = 70;
+  const PHOTO_REACH_MAX_M = 60;
+
   it('the straight-down picture of a sharp site comes from the map kept for its pin', async () => {
     // A sharp map is kept at its group's own middle, never at the pin's snapped cell.
     const designId = await aSitedDesign({ latitude: 48.16, longitude: sharpestLongitude });
@@ -172,6 +176,13 @@ describe.skipIf(skip)('A design’s site data, over HTTP against a migrated data
     const picture = await skyPictureOf(owner(), designId, 'straight_down');
     expect(picture.status).toBe(HttpStatus.OK);
     expect(picture.body.kind).toBe('picture');
+    // It reaches as far as the map it came with, as LiDAR's scan does (`T-M05-002g`), never past
+    // 60 m round the pin: the whole memory map, and no blank ground past it.
+    const piece = picture.body.kind === 'picture' ? picture.body.pieces[0] : undefined;
+    const across = (piece?.east ?? 0) - (piece?.west ?? 0);
+    expect(across).toBeGreaterThan(MAP_ACROSS_M);
+    expect(across).toBeLessThan(2 * PHOTO_REACH_MAX_M);
+    expect(piece?.east ?? Number.POSITIVE_INFINITY).toBeLessThanOrEqual(PHOTO_REACH_MAX_M);
   });
 
   it('a design with no place has no data, and says so', async () => {

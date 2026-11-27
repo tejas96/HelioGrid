@@ -7,7 +7,6 @@ import {
 } from '@heliogrid/data/react';
 import type { RoofScene, SceneMotion, StudioView, SunPosition } from '@heliogrid/domain';
 import type { ThemePalette } from '@heliogrid/theme';
-import { Grid } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { type ReactNode, type RefObject, useMemo, useRef, useState } from 'react';
 import { Color, MathUtils } from 'three';
@@ -16,19 +15,17 @@ import type { SunSkyShown } from '../hooks/use-sun-sky';
 import type { SceneFit } from './camera-poses';
 import type { RoofTopPicture } from './photo-reader';
 import { type ClearGround, StudioCameraRig, type StudioDrive } from './StudioCameraRig';
-import { type HeightViewShown, StudioHeightView } from './StudioHeightView';
-import { StudioOwnGround } from './StudioOwnGround';
-import { clearGroundOf, StudioPictureGround } from './StudioPictureGround';
+import { type LidarLayerShown, StudioLidarLayer } from './StudioLidarScan';
+import { clearGroundOf } from './StudioPictureGround';
 import { StudioPlanLines } from './StudioPlanLines';
 import { type RoofMarksHandle, type RoofRise, StudioRoofs } from './StudioRoofs';
 import { StudioScaleTween } from './StudioScaleTween';
+import { StudioGround } from './StudioSceneGround';
 import { StudioSiteShade } from './StudioSiteShade';
 import { pathRoom, StudioSunSky } from './StudioSunSky';
 import { type SceneScreen, screenOfFrame } from './scene-screen';
 
 const RADIANS = MathUtils.DEG2RAD;
-/** The plain ground where there is no picture, wide enough that its edge is never seen. */
-const GROUND_M = 1_200;
 /** How far the sun's light stands from the site, and the ground its shadows cover. */
 const SUN_DISTANCE_M = 120;
 const SHADOW_HALF_M = 60;
@@ -70,8 +67,6 @@ const pictureComing = (
 /** The camera before its first view is set: the rig flies it from here. */
 const CAMERA_START = { near: 0.5, far: 3_000, position: [0, 60, 60] as [number, number, number] };
 
-/** How high the grid lies over the ground, so the two never fight. */
-const GRID_LIFT_M = 0.02;
 /** The light: the sky's fill and the sun's strength. */
 const SKY_LIGHT = 1.1;
 const SUN_LIGHT = 2.4;
@@ -191,8 +186,11 @@ export interface StudioSceneProps {
   planGlows: boolean;
   /** Where a scene point lands on the screen: every mark on the model is placed through it. */
   screen: SceneScreen;
-  /** The height view's surface (`T-M05-002`, part g); `null` while it is off. */
-  heights: HeightViewShown;
+  /**
+   * LiDAR (`T-M05-002g`): on, its scan (`null` until built) and the roofs' sunlight; the stage
+   * goes dark and the flat picture steps aside for the scan.
+   */
+  lidar: LidarLayerShown;
   /** The sun bar's sky and the day's path (part g); `null` while the bar is closed. */
   sunSky: SunSkyShown | null;
 }
@@ -224,7 +222,7 @@ export function StudioScene({
   plan,
   planGlows,
   screen,
-  heights,
+  lidar,
   sunSky,
 }: StudioSceneProps) {
   // biome-ignore lint/plugin: the web's WebGL picture of the ground, handed on to the roofs' tops
@@ -242,6 +240,8 @@ export function StudioScene({
   // A weak device draws less detail and the same numbers (G034).
   const detail = useSceneDetail(deviceHintsNow());
   const { look } = detail;
+  // LiDAR's dark stage, in every mode (owner ruling 2026-11-26): the scan reads against it.
+  const stage = lidar.on ? palette['scene-shade'] : palette.canvas;
   return (
     <Canvas
       frameloop="demand"
@@ -252,36 +252,26 @@ export function StudioScene({
       data-scene-detail={detail.detail}
     >
       <FrameClock onFrame={detail.frameDrawn} />
-      <color attach="background" args={[palette.canvas]} />
+      <color attach="background" args={[stage]} />
       {/* The far ground fades into the page; the camera rig sets how far, from its own distance. */}
-      <fog attach="fog" args={[palette.canvas, CAMERA_START.far, CAMERA_START.far]} />
+      <fog attach="fog" args={[stage, CAMERA_START.far, CAMERA_START.far]} />
       <SunLight key={look.shadowMapPx} sun={sun} palette={palette} shadowMapPx={look.shadowMapPx} />
       {sunSky === null ? null : (
         <>
           <StudioSunSky {...sunSky} {...pathRoom(fit)} palette={palette} />
-          <StudioSiteShade {...sunSky.shade} />
+          {/* LiDAR's scan casts its own shadows: the height map's are not cast twice. */}
+          {lidar.on ? null : <StudioSiteShade {...sunSky.shade} />}
         </>
       )}
       <StudioScaleTween scale={readScale} still={still} factor={sizing}>
-        {picture.kind === 'sky' ? (
-          // The first true length stretches the picture about the pin with every roof on it.
-          <group scale={[pictureScale, 1, pictureScale]}>
-            <StudioPictureGround
-              pieces={picture.pieces}
-              around={picture.around}
-              page={palette.canvas}
-              onSharp={setSharp}
-            />
-          </group>
-        ) : (
-          <mesh rotation-x={-Math.PI / 2}>
-            <planeGeometry args={[GROUND_M, GROUND_M]} />
-            <meshBasicMaterial color={palette['canvas-sunken']} toneMapped={false} />
-          </mesh>
-        )}
-        {picture.kind === 'own' ? (
-          <StudioOwnGround picture={picture} plaster={palette['scene-wall']} onTop={setOwnTop} />
-        ) : null}
+        <StudioGround
+          picture={picture}
+          pictureScale={pictureScale}
+          palette={palette}
+          hidden={lidar.on}
+          onSharp={setSharp}
+          onOwnTop={setOwnTop}
+        />
         {plan !== null && view === 'top' ? (
           <StudioPlanLines
             plan={plan}
@@ -291,22 +281,6 @@ export function StudioScene({
             glowing={planGlows}
           />
         ) : null}
-        {/* No picture: the grid is the ground. Your own picture lies on it, and it shows round it. */}
-        {picture.kind === 'none' || picture.kind === 'own' ? (
-          <Grid
-            position={[0, GRID_LIFT_M, 0]}
-            cellSize={1}
-            sectionSize={5}
-            cellThickness={0.6}
-            sectionThickness={1}
-            cellColor={palette['line-soft']}
-            sectionColor={palette['line-strong']}
-            fadeDistance={160}
-            fadeStrength={1.5}
-            infiniteGrid
-          />
-        ) : null}
-        <StudioHeightView {...heights} flat={view === 'top'} />
         <PinFollower label={pinLabel} screen={screen} />
         <StudioRoofs
           scene={roofScene}
@@ -322,6 +296,7 @@ export function StudioScene({
           motion={roofMotion}
         />
       </StudioScaleTween>
+      <StudioLidarLayer {...lidar} screen={screen} palette={palette} />
       <StudioCameraRig
         view={view}
         free={free}

@@ -7,8 +7,15 @@ import type { Ref } from 'react';
 import { DrawHint } from './StudioBarPills';
 import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
 import { useFilePick } from './StudioFilePick';
-import { StudioSiteKey } from './StudioHeightGroup';
 import { StudioLengthBox } from './StudioLengthBox';
+import {
+  LidarHeadStart,
+  LidarHint,
+  LidarKeyCard,
+  LidarLooks,
+  LidarMoveButton,
+  lidarShown,
+} from './StudioLidar';
 import { StudioPictureCards } from './StudioPictureCards';
 import { pictureCreditOf, StudioPictureChip } from './StudioPictureChip';
 import { pictureDataOf } from './StudioPictureData';
@@ -79,6 +86,7 @@ function HeadEnd({
   const marked = parts.stepSwitcher !== 'hidden';
   return (
     <div className="hg-studio-head-end">
+      {lidarShown(studio) ? <LidarMoveButton studio={studio} words={words} /> : null}
       <div className="hg-studio-head-part" data-hidden={!marked} inert={!marked}>
         <StudioSaveMark
           editing={editing}
@@ -131,11 +139,13 @@ export function StudioCanvasHead({
       <span className="hg-studio-head-shade" aria-hidden="true" />
       <StudioStepLine rail={studio.rail} />
       <div ref={headRef} className="hg-studio-canvas-head">
+        {lidarShown(studio) ? (
+          <div className="hg-lidar-head-start">
+            <LidarHeadStart studio={studio} words={words} />
+          </div>
+        ) : null}
         <HeadPicture studio={studio} parts={parts} words={words} foot={foot} />
-        {/* The open View panel holds the key itself: one key on screen at a time (board G6). */}
-        {studio.viewOpen ? null : (
-          <StudioSiteKey site={studio.site} words={words} units={studio.units} inPanel={false} />
-        )}
+        {lidarShown(studio) ? <LidarLooks studio={studio} words={words} phone={phone} /> : null}
         <HeadSteps
           studio={studio}
           parts={parts}
@@ -147,6 +157,8 @@ export function StudioCanvasHead({
         <HeadEnd studio={studio} parts={parts} words={words} onBack={onBack} compass={compass} />
         <StudioSunBearing studio={studio} words={words} />
         <DrawHint studio={studio} words={words} />
+        <LidarHint studio={studio} words={words} phone={phone} />
+        <LidarKeyCard studio={studio} words={words} phone={phone} />
         {roofStep.kind === 'sizing' ? (
           <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
         ) : null}
@@ -189,6 +201,7 @@ function HeadPicture({
   return (
     <StudioPictureChip
       thumbOnly={parts.pictureChip === 'thumb'}
+      hidden={parts.pictureChip === 'hidden'}
       picture={picture}
       shown={shown}
       // The first length stretches the picture: its sharpness is the picture as drawn.

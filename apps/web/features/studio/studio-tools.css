@@ -24,7 +24,9 @@
   pointer-events: auto;
 }
 
-.hg-studio-tools .hg-icon-button {
+/* LiDAR's × and Move stand in the head as the same round tools (`T-M05-002g`). */
+.hg-studio-tools .hg-icon-button,
+.hg-studio-canvas-head .hg-lidar-round .hg-icon-button {
   background: var(--glass-strong);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);

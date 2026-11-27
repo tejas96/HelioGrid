@@ -5,6 +5,7 @@ import { pointInside, roofMiddle } from './roof-shape';
 import type { HeightGridWire, SiteBuilding, SiteLineUp } from './site-data';
 import {
   cellsInBox,
+  cellsInside,
   distanceToRing,
   gridFromWire,
   type HeightGrid,
@@ -96,6 +97,33 @@ function groundAt(
   );
   return Number.isNaN(low) ? 0 : low;
 }
+
+/**
+ * The scan's low and high inside a roof (`T-M05-002g`, board frame 14): the 10th and 90th of its
+ * cells above the ground it stands on, for a sloped roof, whose height is a slope; `null` where the
+ * map does not reach it.
+ */
+export function roofScanRangeOf(
+  corners: readonly GroundPoint[],
+  site: SiteGrids,
+  lineUp: SiteLineUp,
+): { readonly lowM: number; readonly highM: number } | null {
+  const under = corners.map((c) => ({ east: c.east - lineUp.east, north: c.north - lineUp.north }));
+  const middle = roofMiddle(under);
+  const grid = gridAt(site, middle);
+  if (grid === null) return null;
+  const ground = groundAt(site, grid, under, middle) - lineUp.lift;
+  const heights = cellsInside(grid, under).map((cell) => cell.height - ground);
+  if (heights.length < RANGE_CELLS_MIN) return null;
+  return {
+    lowM: Math.round(percentile(heights, RANGE_LOW) * 10) / 10,
+    highM: Math.round(percentile(heights, RANGE_HIGH) * 10) / 10,
+  };
+}
+
+const RANGE_CELLS_MIN = 8;
+const RANGE_LOW = 0.1;
+const RANGE_HIGH = 0.9;
 
 /** Each roof's read, by roof id; a roof the map does not reach reads nothing. */
 export function roofDataReadsOf(

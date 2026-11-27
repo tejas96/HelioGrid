@@ -3,15 +3,14 @@ import type { SiteDataWire } from '@heliogrid/contracts';
 import {
   type Coordinate,
   floorsSet,
-  HEIGHT_VIEW_START,
   type HeightDataQuality,
-  type HeightView,
   type History,
   heightKeyOf,
   historyAfter,
   historyWithSiteHeights,
   linedUp,
   lineUpCleared,
+  lineUpDragged,
   lineUpLifted,
   lineUpNudged,
   lineUpOf,
@@ -22,7 +21,6 @@ import {
   SITE_DATA_GAPS,
   SITE_DATA_SOURCES,
   type SiteDataGap,
-  type SiteDataKept,
   type SiteDataSource,
   type SiteLineUp,
   type SiteReads,
@@ -43,7 +41,9 @@ import { useRepositories } from './context';
 import { readOf } from './read';
 import { SiteReaderContext, type SiteRoofReader } from './site-readers';
 import { heightLayersOf, sunChartFor } from './site-surface';
+import type { StudioPicture } from './studio-document-state';
 import type { StudioSaveState } from './studio-save-queue';
+import { useAutomaticLineUp } from './use-automatic-line-up';
 import { useSiteSunlight } from './use-site-sunlight';
 import { useTenantId } from './use-tenant-id';
 
@@ -72,7 +72,8 @@ export function useSiteData(input: {
   readonly designId: string;
   readonly ready: boolean;
   readonly roofs: readonly Roof[] | null;
-  readonly site: SiteDataKept | undefined;
+  /** The line-up in force: the person's, else the studio's own. */
+  readonly lineUp: SiteLineUp | null;
   /** No change waits to be saved: the api reads the roofs as stored. */
   readonly saved: boolean;
   readonly reader: SiteRoofReader;
@@ -99,7 +100,7 @@ export function useSiteData(input: {
   // The roofs' shapes, the same object while no corner moves: a height laid in changes nothing here.
   const shapeKey = JSON.stringify((roofs ?? []).map(({ id, corners }) => ({ id, corners })));
   const shape = useMemo(() => JSON.parse(shapeKey) as RoofShape[], [shapeKey]);
-  const lineUp = input.site?.lineUp;
+  const lineUp = input.lineUp ?? undefined;
   const lineUpKey = JSON.stringify(lineUp ?? null);
   const { reader } = input;
   // biome-ignore lint/correctness/useExhaustiveDependencies: the reads follow the roofs' shapes and the line-up, by value
@@ -145,20 +146,31 @@ export function useSiteHeights(input: {
   readonly setStraightDown: (on: boolean) => void;
   /** The site's pin: the sun chart's place. */
   readonly pin: Coordinate | null;
+  /** The picture on show: the studio lines the map up with the sky picture the roofs were drawn on. */
+  readonly picture: StudioPicture;
+  /** LiDAR shows the year's sunlight on the roofs. */
+  readonly sunlightOn: boolean;
 }) {
   const { history, latest, setHistory, facts } = input;
   const readers = useContext(SiteReaderContext);
-  // The height view is the person's for this opening.
-  const [view, setView] = useState<HeightView>(HEIGHT_VIEW_START);
   const document = history?.present ?? null;
+  const [straightDownGrid, setStraightDownGrid] = useState<SiteDataWire['straightDown']>(null);
+  const automatic = useAutomaticLineUp({
+    document,
+    picture: input.picture,
+    straightDown: straightDownGrid,
+    reader: readers.lineUp,
+  });
   const site = useSiteData({
     designId: input.designId,
     ready: input.ready,
     roofs: document?.roofs ?? null,
-    site: document?.site,
+    lineUp: document === null ? null : lineUpOf(document, automatic),
     saved: input.saving.kind === 'saved',
     reader: readers.roofs,
   });
+  const straight = site.read.kind === 'ready' ? site.read.value.straightDown : null;
+  useEffect(() => setStraightDownGrid(straight), [straight]);
   useEffect(() => {
     if (history === null) return;
     const next = historyWithSiteHeights(history, site.reads, facts);
@@ -168,8 +180,8 @@ export function useSiteHeights(input: {
   }, [history, site.reads, facts, latest, setHistory]);
   // The site's buildings and their eaves: what a drawn or dragged corner pulls to besides roofs.
   const data = site.read.kind === 'ready' ? site.read.value : null;
-  // Moved with the map by the person's line-up, as the roofs' reads are.
-  const lineUp = document === null ? null : lineUpOf(document);
+  // Moved with the map by the line-up in force, as the roofs' reads are.
+  const lineUp = document === null ? null : lineUpOf(document, automatic);
   const eaves = useMemo(() => {
     const by = lineUp ?? NO_SHIFT;
     return (data?.eaves ?? []).map((eave) => ({
@@ -203,24 +215,14 @@ export function useSiteHeights(input: {
           }),
     [document, data, site.reads, stampBefore],
   );
-  // Every area's grids, read back once: the sun's shadows read them, and the height view's surface
-  // — with the key's ends from the sharp ones, the roofs' corners and the line-up — while it is on.
-  const heightsOn = view.on && view.mode === 'heights';
+  // Every area's grids, read back once: the sun's shadows and LiDAR's scan read them, and the
+  // Heights key reads the sharp ones.
   const areas = data?.areas ?? null;
   const layers = useMemo(() => (areas === null ? [] : heightLayersOf(areas)), [areas]);
-  // The key reads the grids alone; the surface fades by the roofs' corners, by value.
   const key = useMemo(() => {
     const sharp = layers.filter((layer) => layer.skip === null);
     return heightKeyOf(sharp.flatMap((layer) => Array.from(layer.grid.heights)));
   }, [layers]);
-  const near = useMemo(() => site.shape.flatMap((roof) => roof.corners), [site.shape]);
-  const surface = useMemo(
-    () =>
-      !heightsOn || layers.length === 0 || key === null || lineUp === null
-        ? null
-        : { layers, key, near, lineUp },
-    [heightsOn, layers, key, near, lineUp],
-  );
   // Each roof's chart is worked out once for the data and the design it was asked of.
   // biome-ignore lint/correctness/useExhaustiveDependencies: a new map each time the grids or the design change
   const charts = useMemo(() => new Map<string, SunChart | null>(), [layers, document]);
@@ -232,7 +234,7 @@ export function useSiteHeights(input: {
     return charts.get(key) ?? null;
   };
   const sunlight = useSiteSunlight({
-    on: view.on && view.mode === 'sunlight',
+    on: input.sunlightOn,
     data,
     roofs: site.shape,
     pin: input.pin,
@@ -240,7 +242,10 @@ export function useSiteHeights(input: {
   });
   const edit = (made: (now: StudioDocument) => StudioDocument) => {
     const now = latest.current;
-    if (now !== null) input.change(historyAfter(now, made(now.present)));
+    if (now === null) return;
+    // An edit that changes nothing (a tap on the map, a drag back where it began) is no change.
+    const next = made(now.present);
+    if (next !== now.present) input.change(historyAfter(now, next));
   };
   return {
     ...site,
@@ -259,24 +264,27 @@ export function useSiteHeights(input: {
     /** What the open sheet says of the map, for roof `roof` standing at `metres`. */
     fitOf: (roof: number, metres: number) => {
       const fit = document === null ? null : siteFitOf(document, roof, metres, site.reads, facts);
-      const line = siteFitLineOf(fit, heightsOn);
+      const line = siteFitLineOf(fit);
       return fit === null || line === null ? null : { ...fit, line };
     },
-    /** The height view: on or off, heights or sunlight, how see-through. */
-    view,
-    surface,
-    /** How far the person moved the map onto the picture: what the map draws or casts follows it. */
+    /** How far the map is moved onto the picture: what the map draws or casts follows it. */
     lineUp: lineUp ?? NO_SHIFT,
+    /** The studio's own line-up; `null` where it found none, or has not yet. */
+    automatic,
     /** Every area's grids: the height map's shadows are cast from the sharp ones. */
     layers,
-    /** Each roof's sunlight while the view shows it; `null` until it comes. */
+    /** The Heights key's two ends, in metres above the ground; `null` with no heights. */
+    key,
+    /** Each roof's sunlight while LiDAR shows it; `null` until it comes. */
     sunlight,
     /** The sun chart seen from roof `roof`'s middle at its top, `topM` (board G10). */
     sunChartOf: chartOf,
-    setView: (next: Partial<HeightView>) => setView((now) => ({ ...now, ...next })),
-    /** The person lines the map up: lifted, moved by an arrow's way on the ground, or back. */
-    liftMap: (lift: number) => edit((now) => lineUpLifted(now, lift)),
-    nudgeMap: (way: { east: number; north: number }) => edit((now) => lineUpNudged(now, way)),
+    /** The person lines the map up: lifted, moved by an arrow's way or a drag, or back. */
+    liftMap: (lift: number) => edit((now) => lineUpLifted(now, lift, automatic)),
+    nudgeMap: (way: { east: number; north: number }) =>
+      edit((now) => lineUpNudged(now, way, automatic)),
+    dragMap: (to: { east: number; north: number }) =>
+      edit((now) => lineUpDragged(now, to, automatic)),
     mapBack: () => edit(lineUpCleared),
     /** Google's straight-down picture shows, for this opening; it is a sky picture of Google's. */
     straightDown: input.straightDown,
