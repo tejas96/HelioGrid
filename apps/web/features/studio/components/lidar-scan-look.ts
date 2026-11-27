@@ -16,7 +16,8 @@ import {
 /**
  * LiDAR's look on the scan (`T-M05-002g`, board frames 5–8): one lit standard material whose
  * colour is worked in the shader — the straight-down photo on the tops, the studio's plaster on the
- * walls, Heights as the key's colours, Sunlight dimming the scan under the roofs' own colours — all
+ * walls, Heights as the key's colours on what stands up from the ground, the ground itself the
+ * photo darkened, so the buildings read first, Sunlight dimming the scan under the roofs' own colours — all
  * of it out to the data's edge, on the dark stage. Where a roof is drawn the scan is pressed flat to the
  * model's ground, a pad the studio's own model stands on: no scanned wall shows through the
  * model's walls, and the pressed scan casts no second shadow. Every colour is a theme token.
@@ -108,7 +109,12 @@ vec3 top = mix(uWall * 0.55, photo, onPhoto);
 vec3 base = mix(wall, top, up);
 if (uLook == 1) {
   vec3 hc = texture2D(uRamp, vec2(clamp((vLocal.y - uKey.x) / max(0.1, uKey.y - uKey.x), 0.0, 1.0), 0.5)).rgb;
-  base = mix(hc * 0.8, mix(hc, top, 0.18 * onPhoto), up);
+  // The ground keeps the photo, darkened (the dark stage where the photo ends); what stands up
+  // from it — over 1.5 m, fully by 3 m — wears the key's colours, its tops over the photo.
+  float rise = smoothstep(1.5, 3.0, vLocal.y - uKey.x);
+  vec3 ground = mix(uWall * 0.16, photo * 0.5, onPhoto);
+  vec3 built = mix(hc * 0.8, mix(ground, hc, 0.8), up);
+  base = mix(ground, built, rise);
 }
 if (uSunOn > 0.5) base *= 0.55;
 diffuseColor.rgb = base;`;
