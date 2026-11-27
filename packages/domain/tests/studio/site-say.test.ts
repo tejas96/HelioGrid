@@ -1,15 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { roofHeightSet } from '../../src/studio/roof-height';
-import { floorsSet, siteChangedAnswered, siteSayOf } from '../../src/studio/site-say';
+import { floorsSet, siteSayOf } from '../../src/studio/site-say';
 import { box, designOf, FACTS, roofOf, stairOn, TERRACE } from './roof-meet-support';
 
 /**
- * What the bar says of the site's data (`T-M05-002`, part g): the data's date once; the
- * changed-roof question where the data is old or a roof has no building under it; the floors where
- * there is no data or the building changed; nothing before a roof.
+ * What the bar says of the site's data (`T-M05-002`, part g): the data's date once, however old;
+ * that a roof has no building under it, to set by hand; the floors where there is no data; nothing
+ * before a roof. Nothing is asked: the data's heights stand, and a person changes any of them.
  */
 
-const TODAY = '2026-11-26';
 const STAMP = { source: 'google_solar', quality: 'base', dataOn: '2025-10-17' } as const;
 const google = (
   document = designOf(TERRACE),
@@ -26,7 +25,6 @@ const google = (
       roofs: noBuilding ? { terrace: { kind: 'no_building' } } : {},
       shape: [],
     },
-    today: TODAY,
   });
 
 describe('what the bar says of the site’s data', () => {
@@ -36,30 +34,22 @@ describe('what the bar says of the site’s data', () => {
 
   it.each([
     ['new data: the date it came from, said once', '2025-12-01', false, 'from_data'],
-    ['data a year old: has the building changed?', '2025-10-17', false, 'changed_question'],
-    [
-      'new data, a roof with no building under it: asked at once',
-      '2025-12-01',
-      true,
-      'changed_question',
-    ],
+    ['data a year old: only its date, nothing asked', '2025-10-17', false, 'from_data'],
+    ['a roof with no building under it: said, nothing asked', '2025-12-01', true, 'no_building'],
   ])('%s', (_, dataOn, noBuilding, kind) => {
     expect(google(designOf(TERRACE), dataOn, noBuilding)?.kind).toBe(kind);
   });
 
-  it('"No" for this data: never asked again, the date said', () => {
-    const answered = siteChangedAnswered(designOf(TERRACE), '2025-10-17', false);
-    expect(google(answered)?.kind).toBe('from_data');
-  });
-
-  it('"Yes, it changed": the floors are asked, until they are set', () => {
-    const answered = siteChangedAnswered(designOf(TERRACE), '2025-10-17', true);
-    expect(google(answered)).toEqual({ kind: 'floors', why: 'changed' });
-    expect(google(floorsSet(answered, 1, FACTS))).toBeNull();
+  it('an old answer that the building changed no longer sets the data aside', () => {
+    const answered = {
+      ...designOf(TERRACE),
+      site: { changed: { dataOn: '2025-10-17', changed: true } },
+    };
+    expect(google(answered)).toEqual({ kind: 'from_data', dataOn: '2025-10-17' });
   });
 
   it.each([
-    ['no data here: the floors are asked', [], { kind: 'floors', why: 'no_data' }],
+    ['no data here: the floors are asked', [], { kind: 'floors' }],
     [
       'the height service did not answer: said, with Try again',
       ['heights_not_answered'],
@@ -73,7 +63,6 @@ describe('what the bar says of the site’s data', () => {
       dataOn: null,
       gaps,
       reads: null,
-      today: TODAY,
     });
     expect(read).toEqual(say);
   });
@@ -88,7 +77,6 @@ describe('what the bar says of the site’s data', () => {
       dataOn,
       gaps: [],
       reads: null,
-      today: TODAY,
       stampBefore: { ...STAMP, dataOn: before },
     });
     expect(say?.kind).toBe(kind);
@@ -104,7 +92,6 @@ describe('what the bar says of the site’s data', () => {
         dataOn: null,
         gaps: [],
         reads: null,
-        today: TODAY,
       }),
     ).toBeNull();
   });

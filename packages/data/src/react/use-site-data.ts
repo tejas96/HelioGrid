@@ -26,7 +26,6 @@ import {
   type SiteReads,
   type StudioDocument,
   type SunChart,
-  siteChangedAnswered,
   siteFitLineOf,
   siteFitOf,
   siteHeightOf,
@@ -211,7 +210,6 @@ export function useSiteHeights(input: {
             dataOn: data.dataOn,
             gaps: data.gaps.filter(isGap),
             reads: site.reads,
-            today: new Date().toISOString().slice(0, DAY_CHARS),
             ...(stampBefore === undefined ? {} : { stampBefore }),
           }),
     [document, data, site.reads, stampBefore],
@@ -255,8 +253,6 @@ export function useSiteHeights(input: {
     eaves,
     say,
     /** "Has the building changed?": the person's yes or no for the data of this date. */
-    answerChanged: (changed: boolean) =>
-      edit((now) => siteChangedAnswered(now, data?.dataOn ?? null, changed)),
     /** A floors chip: G, G+1, G+2 or G+3 on every roof on the ground. */
     setFloors: (floorsAbove: number) => edit((now) => floorsSet(now, floorsAbove, facts)),
     /** The data's own height for a roof, which Reset brings back; `null` with none. */
@@ -299,8 +295,6 @@ export function useSiteHeights(input: {
 
 /** The map as it came: not moved onto the picture. */
 const NO_SHIFT: SiteLineUp = { east: 0, north: 0, lift: 0 };
-/** `YYYY-MM-DD`: the first ten characters of an ISO instant. */
-const DAY_CHARS = 10;
 const isSource = (name: string): name is SiteDataSource =>
   (SITE_DATA_SOURCES as readonly string[]).includes(name);
 const isGap = (name: string): name is SiteDataGap =>

@@ -5,7 +5,7 @@ import { roofKindOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofFloorM } from './roof-levels';
 import type { RoofHeight } from './roof-parts';
 import { sameCorners } from './roof-scene-motion';
-import { dataHeightsApply, type SiteDataStamp } from './site-data';
+import type { SiteDataStamp } from './site-data';
 
 /**
  * A drawn roof stands at its real height (`T-M05-002`, part g): what the height map read inside
@@ -65,7 +65,7 @@ export function withSiteHeights(
   reads: SiteReads | null,
   facts: RoofFacts,
 ): StudioDocument {
-  if (reads === null || !dataHeightsApply(document.site, reads.stamp.dataOn)) return document;
+  if (reads === null) return document;
   let working = document;
   let changed = false;
   // Roofs a roof stands on first, so a stair room counts from its roof's new height.
@@ -134,7 +134,7 @@ export function siteHeightOf(
   reads: SiteReads | null,
   facts: RoofFacts,
 ): number | null {
-  if (reads === null || !dataHeightsApply(document.site, reads.stamp.dataOn)) return null;
+  if (reads === null) return null;
   return readHeightOf(document, index, reads, facts);
 }
 

@@ -17,7 +17,7 @@ import { box, designOf, FACTS, roofOf, stairOn, TERRACE } from './roof-meet-supp
 /**
  * A drawn roof stands at its real height (`T-M05-002`, part g, *Values*): the data sets the
  * system's value, `derived`; a person's is never replaced; a reset hands it back to the data; a
- * stair room counts from its roof; a "Yes, it changed" sets the data aside.
+ * stair room counts from its roof; an old "Yes, it changed" no longer sets the data aside.
  */
 
 const STAMP: SiteDataStamp = { source: 'google_solar', quality: 'base', dataOn: '2025-10-17' };
@@ -102,9 +102,9 @@ describe('the data’s heights on the design’s roofs', () => {
   });
 
   it.each([
-    ['"Yes, it changed" for this data: set aside', '2025-10-17', true, null],
-    ['"Yes" for older data: the newer data stands', '2024-01-01', true, 9.1],
-    ['"No" for this data: it stands', '2025-10-17', false, 9.1],
+    ['an old "Yes, it changed" for this data: the data still stands', '2025-10-17', true, 9.1],
+    ['an old "Yes" for older data: the data stands', '2024-01-01', true, 9.1],
+    ['an old "No": the data stands', '2025-10-17', false, 9.1],
   ])('%s', (_, dataOn, changed, height) => {
     const design = { ...designOf(TERRACE), site: { changed: { dataOn, changed } } };
     const read = withSiteHeights(design, readsOf({ terrace: flat(9.1) }), FACTS);
@@ -167,15 +167,16 @@ describe('the map against the open roof (board G21, G22)', () => {
     expect(siteHeightOf(set.document, 0, readsOf({ terrace: flat(6.1) }), FACTS)).toBe(6.1);
   });
 
-  it.each([
-    ['no data', null, null],
-    ['the building changed since the data', readsOf({ terrace: flat(6.1) }), null],
-  ])('%s: no height from the map', (_, reads, height) => {
-    const design =
-      reads === null
-        ? designOf(TERRACE)
-        : { ...designOf(TERRACE), site: { changed: { dataOn: '2025-10-17', changed: true } } };
-    expect(siteHeightOf(design, 0, reads, FACTS)).toBe(height);
+  it('no data: no height from the map', () => {
+    expect(siteHeightOf(designOf(TERRACE), 0, null, FACTS)).toBeNull();
+  });
+
+  it('an old answer that the building changed: the map’s height still stands', () => {
+    const design = {
+      ...designOf(TERRACE),
+      site: { changed: { dataOn: '2025-10-17', changed: true } },
+    };
+    expect(siteHeightOf(design, 0, readsOf({ terrace: flat(6.1) }), FACTS)).toBe(6.1);
   });
 
   it('a stair room’s map height is its own, above its roof as it stands', () => {

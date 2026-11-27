@@ -97,7 +97,6 @@ export interface StudioScreen
     readonly targets?: SnapTargets;
     /** What the bar says of the data; `null` when it says nothing. */
     readonly say: SiteSay | null;
-    readonly answerChanged: (changed: boolean) => void;
     /** Asks the site data again, after a source did not answer. */
     readonly retry: () => void;
     /** Every area's grids: the scan and the height map's shadows are built from them. */

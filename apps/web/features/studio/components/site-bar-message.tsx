@@ -13,7 +13,6 @@ export function siteBarMessage(
   studio: StudioScreen,
   words: StudioCanvasWords,
   format: ReturnType<typeof useFormat>,
-  editor: boolean,
 ) {
   const { site } = studio;
   const say = site.say;
@@ -21,28 +20,11 @@ export function siteBarMessage(
   const data = site.read.kind === 'ready' ? site.read.value : null;
   const dataOn = data?.dataOn ?? null;
   const month = dataOn === null ? null : format.monthYear(dataOn);
-  const { title, line } = words.siteSay(say, month, editor);
+  const { title, line } = words.siteSay(say, month);
   switch (say.kind) {
-    case 'changed_question':
-      return {
-        tag: `site-changed-${dataOn ?? ''}`,
-        tone: 'warning' as const,
-        title,
-        line,
-        chips: (
-          <StudioSiteChips
-            name={words.siteChangedName}
-            chips={[
-              { key: 'yes', label: words.siteChangedYes, onPress: () => site.answerChanged(true) },
-              { key: 'no', label: words.siteChangedNo, onPress: () => site.answerChanged(false) },
-            ]}
-          />
-        ),
-        fades: false,
-      };
     case 'floors':
       return {
-        tag: `site-floors-${say.why}`,
+        tag: 'site-floors',
         tone: 'info' as const,
         title,
         line,
