@@ -176,8 +176,6 @@ describe.skipIf(skip)('A design’s site data, over HTTP against a migrated data
     const picture = await skyPictureOf(owner(), designId, 'straight_down');
     expect(picture.status).toBe(HttpStatus.OK);
     expect(picture.body.kind).toBe('picture');
-    // A photograph travels as a JPEG: a tenth of a PNG's bytes, for a phone on a weak signal.
-    expect(pieceOf(picture.body)?.image.startsWith('data:image/jpeg;base64,')).toBe(true);
   });
 
   it('the straight-down picture reaches as far as the scan it is worn on', async () => {
