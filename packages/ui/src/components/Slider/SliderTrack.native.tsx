@@ -90,6 +90,8 @@ export function SliderTrack({
       onResponderGrant={touch}
       onResponderMove={touch}
       onResponderRelease={() => onCommit(lastRef.current)}
+      // Another view took the touch: what was held is released as it stands.
+      onResponderTerminate={() => onCommit(lastRef.current)}
     >
       <View style={[styles.rail, { backgroundColor: controlFill }]} />
       <View
