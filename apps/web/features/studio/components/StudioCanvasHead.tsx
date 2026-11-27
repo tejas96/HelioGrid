@@ -8,14 +8,7 @@ import { DrawHint } from './StudioBarPills';
 import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
 import { useFilePick } from './StudioFilePick';
 import { StudioLengthBox } from './StudioLengthBox';
-import {
-  LidarHeadStart,
-  LidarHint,
-  LidarKeyCard,
-  LidarLooks,
-  LidarMoveButton,
-  lidarShown,
-} from './StudioLidar';
+import { LidarHeadStart, LidarHint, LidarKeyCard, LidarLooks, lidarShown } from './StudioLidar';
 import { StudioPictureCards } from './StudioPictureCards';
 import { pictureCreditOf, StudioPictureChip } from './StudioPictureChip';
 import { pictureDataOf } from './StudioPictureData';
@@ -86,7 +79,6 @@ function HeadEnd({
   const marked = parts.stepSwitcher !== 'hidden';
   return (
     <div className="hg-studio-head-end">
-      {lidarShown(studio) ? <LidarMoveButton studio={studio} words={words} /> : null}
       <div className="hg-studio-head-part" data-hidden={!marked} inert={!marked}>
         <StudioSaveMark
           editing={editing}

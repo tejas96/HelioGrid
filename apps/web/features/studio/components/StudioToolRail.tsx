@@ -5,7 +5,7 @@ import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { IconButton, ShellGlyph } from '@heliogrid/ui';
 import { useRef } from 'react';
 import { MagnetSwitch } from './StudioBarPills';
-import { LidarButton } from './StudioLidar';
+import { LidarButton, LidarMoveButton } from './StudioLidar';
 import { StudioPencil } from './StudioPencil';
 import { StudioRoofsButton } from './StudioRoofsButton';
 import { Shown } from './StudioShown';
@@ -77,6 +77,45 @@ export function StudioToolRail({
   const pencil = useRef<HTMLSpanElement>(null);
   const opener = useRef<HTMLSpanElement>(null);
   const { viewOpen, moves } = studio;
+  // LiDAR has its own column under its × (the head's start): the tools that always stand there
+  // first — Move, Sun — then Undo and Redo, which come later and so move nothing above them.
+  const lidarOn = studio.lidar.view.on && view !== 'top';
+  const redoTool = (
+    <Shown when={editable && parts.redo === 'shown'} off={!canRedo} focusTo={pencil}>
+      <IconButton label={words.redo} disabled={!canRedo} onClick={onRedo}>
+        <ShellGlyph name="redo" size="md" />
+      </IconButton>
+    </Shown>
+  );
+  const undoTool = (
+    <Shown when={editable && parts.undo === 'shown'} off={!canUndo} focusTo={pencil}>
+      <IconButton label={words.undo} disabled={!canUndo} onClick={onUndo}>
+        <ShellGlyph name="undo" size="md" />
+      </IconButton>
+    </Shown>
+  );
+  // The sun and its shade live in 3D only (`FocusParts.sun`): the top view never shows them.
+  const sunTool = (
+    <Shown when={view !== 'top' && studio.roofList.count > 0 && parts.sun === 'shown'}>
+      <IconButton
+        label={words.sun}
+        pressed={studio.sunBar.view !== null}
+        onClick={() => (studio.sunBar.view === null ? moves.openSun() : moves.closeSun())}
+      >
+        <ShellGlyph name="sun" size="md" />
+      </IconButton>
+    </Shown>
+  );
+  if (lidarOn) {
+    return (
+      <div className="hg-studio-tools" data-side="left" data-lidar="true">
+        <LidarMoveButton studio={studio} words={words} />
+        {sunTool}
+        {undoTool}
+        {redoTool}
+      </div>
+    );
+  }
   return (
     <>
       <div className="hg-studio-tools" data-side="left">
@@ -86,21 +125,13 @@ export function StudioToolRail({
         <Shown when={studio.roofList.count > 0 && parts.roofs === 'shown'} focusTo={pencil}>
           <StudioRoofsButton studio={studio} words={words} />
         </Shown>
-        <Shown when={editable && parts.redo === 'shown'} off={!canRedo} focusTo={pencil}>
-          <IconButton label={words.redo} disabled={!canRedo} onClick={onRedo}>
-            <ShellGlyph name="redo" size="md" />
-          </IconButton>
-        </Shown>
+        {redoTool}
         <Shown when={editable && parts.wipe === 'shown' && canWipe} focusTo={pencil}>
           <IconButton label={words.wipeCorners} onClick={onWipe}>
             <ShellGlyph name="trash" size="md" />
           </IconButton>
         </Shown>
-        <Shown when={editable && parts.undo === 'shown'} off={!canUndo} focusTo={pencil}>
-          <IconButton label={words.undo} disabled={!canUndo} onClick={onUndo}>
-            <ShellGlyph name="undo" size="md" />
-          </IconButton>
-        </Shown>
+        {undoTool}
         <Shown when={parts.pencil !== 'hidden'}>
           <span ref={pencil} className="hg-studio-pencil">
             <StudioPencil studio={studio} words={words} />
@@ -108,16 +139,7 @@ export function StudioToolRail({
         </Shown>
       </div>
       <div className="hg-studio-tools" data-side="right">
-        {/* The sun and its shade live in 3D only (`FocusParts.sun`): the top view never shows them. */}
-        <Shown when={view !== 'top' && studio.roofList.count > 0 && parts.sun === 'shown'}>
-          <IconButton
-            label={words.sun}
-            pressed={studio.sunBar.view !== null}
-            onClick={() => (studio.sunBar.view === null ? moves.openSun() : moves.closeSun())}
-          >
-            <ShellGlyph name="sun" size="md" />
-          </IconButton>
-        </Shown>
+        {sunTool}
         <Shown when={parts.layers === 'shown' || parts.layers === 'menu'}>
           <span ref={opener} className="hg-studio-view-opener">
             <IconButton
