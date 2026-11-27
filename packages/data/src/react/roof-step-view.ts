@@ -9,6 +9,7 @@ import type {
   LengthEntry,
   LengthSlide,
   labelLayoutOf,
+  levelClearOf,
   MeetChoice,
   NumberEntry,
   RoofBar,
@@ -200,6 +201,8 @@ export interface RoofStepView {
   readonly layoutLabels: typeof labelLayoutOf;
   /** Where a tag beside a spot sits: on the side that keeps its words whole on the screen. */
   readonly placeTag: typeof tagPlaceOf;
+  /** A level length stepped out off a mark it would sit on: the first corner while drawing. */
+  readonly clearLevel: typeof levelClearOf;
   /**
    * Where the scene's points land on the screen for a camera as it stands now: every mark the page
    * keeps on the model is placed through it, in the frame being drawn (`T-M05-002`, part e).

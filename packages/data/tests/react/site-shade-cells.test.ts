@@ -1,6 +1,6 @@
 import type { HeightGrid } from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
-import { shadeCasterOf, sunlightPiecesOf } from '../../src/react/site-shade-cells';
+import { shadeCasterOf, shadeCatcherOf, sunlightPiecesOf } from '../../src/react/site-shade-cells';
 
 /**
  * The site's shade and sunlight as the scene draws them (`T-M05-002`, part g): the drawn roofs
@@ -74,6 +74,53 @@ describe('the height map’s shadow caster', () => {
     const xs = Array.from({ length: cast.length / 3 }, (_, i) => cast[i * 3] as number);
     expect(Math.min(...xs)).toBeGreaterThanOrEqual(1.5);
     expect(Math.max(...Array.from(cast).filter((_, i) => i % 3 === 1))).toBe(7);
+  });
+});
+
+/** The heights a catcher's corners stand at, inside a box on the ground. */
+function heightsWithin(
+  positions: Float32Array,
+  west: number,
+  south: number,
+  east: number,
+  north: number,
+) {
+  const ys: number[] = [];
+  for (let i = 0; i < positions.length; i += 3) {
+    const x = positions[i] as number;
+    const n = -(positions[i + 2] as number);
+    if (x > west && x < east && n > south && n < north) ys.push(positions[i + 1] as number);
+  }
+  return ys;
+}
+const cornersOf = (positions: Float32Array) =>
+  Array.from({ length: positions.length / 3 }, (_, i) =>
+    Array.from(positions.subarray(i * 3, i * 3 + 3)).join(','),
+  );
+
+describe('the height map’s shadow catcher', () => {
+  const house = gridOf((e, n) => (within(e, n, 0, 0, 4, 4) ? 6 : 0));
+
+  it('catches shade at the height the map reads: a neighbour’s top catches it up there, not under itself', () => {
+    const catcher = shadeCatcherOf(house, NONE);
+    expect(heightsWithin(catcher, 0.5, 0.5, 3.5, 3.5).every((y) => y === 6)).toBe(true);
+    expect(heightsWithin(catcher, 8, 8, 12, 12).every((y) => y === 0)).toBe(true);
+  });
+
+  it('covers the whole map, the bare ground and the drawn roofs’ ground alike', () => {
+    expect(cellsCast(shadeCatcherOf(house, NONE))).toBe((SIDE - 1) * (SIDE - 1));
+  });
+
+  it('stands on the caster’s own corners, so a top shades nothing of itself', () => {
+    const catcher = new Set(cornersOf(shadeCatcherOf(house, NONE)));
+    expect(cornersOf(shadeCasterOf(house, [], NONE)).every((corner) => catcher.has(corner))).toBe(
+      true,
+    );
+  });
+
+  it('lined up, the catcher stands where the map was moved and lifted', () => {
+    const catcher = shadeCatcherOf(house, { east: 2, north: 0, lift: 1 });
+    expect(heightsWithin(catcher, 2.5, 0.5, 5.5, 3.5).every((y) => y === 7)).toBe(true);
   });
 });
 

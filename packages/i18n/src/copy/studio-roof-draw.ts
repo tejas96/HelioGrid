@@ -16,6 +16,7 @@ type T = Translator['t'];
 /** The roof step's words while a roof is drawn (`T-M05-002`, parts b and e): the tools, the pill, why a corner is refused. */
 const DRAW = {
   drawHint: /*i18n*/ { id: 'Tap each corner of the roof' },
+  startHint: /*i18n*/ { id: 'Tap the pencil, then each corner of the roof.' },
   stopDrawing: /*i18n*/ { id: 'Stop drawing' },
   wipeCorners: /*i18n*/ { id: 'Clear every corner' },
   magnet: /*i18n*/ { id: 'Magnet' },
@@ -73,6 +74,8 @@ export function studioRoofDrawWords(t: T) {
   return {
     /** The one line before the first corner: what to do. It goes with the first tap. */
     drawHint: t(DRAW.drawHint),
+    /** An empty design with a picture, for an editor: how a first roof is drawn. It goes once drawing starts. */
+    startHint: t(DRAW.startHint),
     /** Why a corner or a close is refused: what the tag by the line says, and what is read out. */
     drawRefusal: (
       refusal: DraftRefusal,

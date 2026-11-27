@@ -9,7 +9,7 @@ import { pointerScaleAt } from '../snap-reach';
 const TAP_PX = 6;
 
 export interface PressActs {
-  /** Told where on the ground the drag took hold. */
+  /** Told where on the ground the drag took hold: where the pointer went down, however fast it left. */
   onDragStart?: (at: GroundPoint | null) => void;
   /** `scale`: what the pointer sees of the ground there, for the magnet's reach (`pointerScaleAt`). */
   onDrag?: (at: GroundPoint, scale?: PointerScale) => void;
@@ -35,8 +35,8 @@ export function useRoofPress(
 ) {
   const press = useRef<{ x: number; y: number; dragging: boolean } | null>(null);
   const handled = useRef(false);
-  const groundOf = (event: PointerEvent<HTMLElement>) =>
-    drive.current?.groundAt(event.clientX, event.clientY, 0) ?? null;
+  const groundAt = (x: number, y: number) => drive.current?.groundAt(x, y, 0) ?? null;
+  const groundOf = (event: PointerEvent<HTMLElement>) => groundAt(event.clientX, event.clientY);
   const dragged = (event: PointerEvent<HTMLElement>, acts: PressActs) => {
     const at = groundOf(event);
     const touch = event.pointerType !== 'mouse';
@@ -59,7 +59,8 @@ export function useRoofPress(
       if (held === null) return;
       if (!held.dragging && Math.hypot(event.clientX - held.x, event.clientY - held.y) > TAP_PX) {
         held.dragging = true;
-        acts.onDragStart?.(groundOf(event));
+        // Where the press went down, not where a fast drag has got to: that picks the corner.
+        acts.onDragStart?.(groundAt(held.x, held.y));
       }
       if (held.dragging) dragged(event, acts);
     },

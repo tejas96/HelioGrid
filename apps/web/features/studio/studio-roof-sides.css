@@ -59,7 +59,7 @@
 }
 
 .hg-roof-lines .hg-roof-fill[data-picked="true"] {
-  fill: color-mix(in srgb, var(--hg-roof-ink) 20%, transparent);
+  fill: color-mix(in srgb, var(--hg-roof-ink) 11%, transparent);
 }
 
 /* A face drawn by hand on an Any-shape roof (board 5.10): its edges in the roof's ink and its
@@ -197,10 +197,50 @@
   cursor: grab;
 }
 
+/* On a stair room small on the screen the mark draws small, so the room's corners, lengths and
+   height stay seen round it: its round is drawn smaller under the glyph, while the press keeps its
+   whole touch target (`Pressable`). */
+.hg-roof-at[data-small="true"] > .hg-stairs-mark {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+  box-shadow: none;
+}
+
+.hg-roof-at[data-small="true"] > .hg-stairs-mark::before {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: -1;
+  inline-size: var(--sp-5);
+  block-size: var(--sp-5);
+  transform: translate(-50%, -50%);
+  border-radius: var(--r-pill);
+  background: var(--scene-mark);
+  box-shadow:
+    0 0 0 calc(var(--hg-studio-line) * 1.5) var(--scene-clear),
+    var(--e1);
+}
+
+.hg-roof-at[data-small="true"] > .hg-stairs-mark[data-hot="true"]::before {
+  box-shadow:
+    0 0 0 calc(var(--hg-studio-line) * 2) var(--scene-clear),
+    0 0 0 var(--sp-1) color-mix(in srgb, var(--scene-clear) 30%, transparent),
+    var(--e1);
+}
+
 .hg-stairs-mark[data-hot="true"] {
   cursor: grabbing;
   box-shadow:
     0 0 0 calc(var(--hg-studio-line) * 2.5) var(--scene-clear),
     0 0 0 var(--sp-2) color-mix(in srgb, var(--scene-clear) 30%, transparent),
     var(--e1);
+}
+
+/* On a phone the roof is small on the screen: the picked roof's glow is thinner, so the picture
+   under it stays seen. */
+@media (width < 968px) {
+  .hg-roof-under[data-picked="true"] {
+    stroke-width: 9;
+  }
 }

@@ -12,7 +12,7 @@ import { createElement, type ReactNode } from 'react';
 import { afterEach } from 'vitest';
 import { createDataLayer } from '../../src/data-layer';
 import { DataProvider } from '../../src/react/provider';
-import { listeningOrigin, refusal, send, writeBodyOf } from './origin-wire';
+import { answerQueued, listeningOrigin, refusal, send, writeBodyOf } from './origin-wire';
 import { DOCUMENT_ROUTES } from './studio-document-origin';
 import { placesAnswer } from './studio-places-origin';
 import { DESIGNS_ROLE, mayDesign } from './studio-roles';
@@ -73,7 +73,7 @@ interface Origin {
   placesUp: boolean;
   /** The design each retry key made. */
   madeWith: Map<string, DesignWire>;
-  /** The next answers to a write, in order, keyed `create`, `recommend` or `site`. */
+  /** The next answers, in order, keyed `create`, `recommend`, `site` or `list` (a read). */
   answers: Map<string, Answer[]>;
   /** While set, every write waits for it — the act is out until the test lets it go. */
   gate: Promise<void> | null;
@@ -208,13 +208,12 @@ type Route = (req: IncomingMessage, res: ServerResponse, path: string) => boolea
 /** A lead's designs: the list, and the next one made. */
 const leadDesigns: Route = (req, res, path) => {
   if (path !== `/leads/${LEAD_ID}/designs`) return false;
-  if (req.method === 'GET') send(res, req, 200, listed());
-  else {
+  if (req.method !== 'GET') {
     void answerWrite(req, res, 'create', (body, retryKey) => ({
       status: 201,
       body: detailOf(made(body as { copyOf: string | null }, retryKey)),
     }));
-  }
+  } else answerQueued(req, res, origin.answers.get('list')?.shift(), listed());
   return true;
 };
 

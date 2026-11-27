@@ -60,13 +60,18 @@
   margin-inline-start: auto;
 }
 
-/* The rows scroll, the head and the foot stay. */
+/* The rows scroll, the head and the foot stay; each row keeps its size, so they scroll instead of
+   being cut under the foot. */
 .hg-roof-sheet-rows {
   display: flex;
   flex-direction: column;
   min-block-size: 0;
   overflow: auto;
   overscroll-behavior: contain;
+}
+
+.hg-roof-sheet-rows > * {
+  flex-shrink: 0;
 }
 
 /* A row: its name, its value and its dot; a hairline under it. */

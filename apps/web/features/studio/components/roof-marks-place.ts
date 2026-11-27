@@ -2,6 +2,7 @@ import type {
   GroundPoint,
   KeepOff,
   LabelPlace,
+  LevelAsk,
   RoofHandles,
   RoofLabelAsk,
   ScreenPoint,
@@ -9,6 +10,7 @@ import type {
   TagRoom,
 } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
+import { placeDraftLength } from './draft-length-place';
 import type { ScreenOf } from './StudioRoofs';
 
 /**
@@ -21,8 +23,10 @@ import type { ScreenOf } from './StudioRoofs';
 const PLUS_MIN_PX = 110;
 /** Two corner dots nearer than this on the screen shrink, so both stay seen. */
 const NEAR_PX = 18;
-/** How far apart the move and the turn handle sit, in CSS pixels. */
+/** A handle's room on the screen, in CSS pixels: the turn handle stands two away (`roofHandles`). */
 const HANDLE_GAP_PX = 44;
+/** A corner dot's touch target: the length being drawn keeps off the first corner's. */
+const FIRST_CORNER_PX = 44;
 /** How far the × and a picked corner's angle stand out from the corner, in CSS pixels. */
 const PICKED_OUT_PX = 30;
 /** The room a label keeps from a tool column, in CSS pixels. */
@@ -32,6 +36,12 @@ const PHONE_BELOW = theme.layout['bp-desktop'];
 /** How far a tag stands from its spot: across, and up or down. */
 const TAG_GAP_PX = theme.spacing['sp-4'];
 const TAG_CLEAR_PX = theme.spacing['sp-3'];
+
+/** A room under two handle gaps across on the screen is small: the marks on it draw small. */
+export const smallOnScreen = (span: number) => span < 2 * HANDLE_GAP_PX;
+
+/** A level length stepped off what it must keep off, from the studio's hook. */
+export type ClearLevel = (ask: LevelAsk, keepOff: readonly KeepOff[]) => ScreenPoint;
 
 /** The tag layout, from the studio's hook: where a tag sits beside its spot. */
 export type PlaceTag = (ask: TagAsk) => ScreenPoint;
@@ -109,6 +119,7 @@ function placeEdge(
   screenOf: ScreenOf,
   room: ToolRoom | null,
   layout: LayoutLabels,
+  clear: (ask: LevelAsk) => ScreenPoint,
 ): void {
   const [a, b, inside] = (node.dataset.edge ?? '').split('|').map((text) => readPoint(text));
   const sa = a == null ? null : screenOf(a, onTop(node));
@@ -121,39 +132,25 @@ function placeEdge(
     node.style.transform = `translate(${(sa.x + sb.x) / 2}px, ${(sa.y + sb.y) / 2}px)`;
     return;
   }
-  // A length on the roof being drawn: level, always shown, on the side away from the inside point,
-  // laid by the one label layout.
-  const label = node.querySelector<HTMLElement>('.hg-roof-len');
-  const width = label?.offsetWidth ?? 0;
-  const [placed] =
-    layout([
-      {
-        corners: sm === null ? [sa, sb] : [sa, sb, sm],
-        labels: [
-          {
-            from: sa,
-            to: sb,
-            trust: 'traced',
-            width,
-            height: label?.offsetHeight ?? 0,
-            pinned: true,
-            level: true,
-          },
-        ],
-      },
-    ])[0] ?? [];
-  if (placed === undefined) return;
-  let { x } = placed.at;
-  const half = width / 2;
-  if (room !== null) x = Math.min(Math.max(x, room.left + half), room.right - half);
-  node.style.transform = `translate(${x}px, ${placed.at.y}px)`;
+  placeDraftLength(node, [sa, sb, sm], room, layout, clear);
 }
 
-/** A move or turn handle: placed by the roof's own rule, its gap a screen size in ground metres. */
+/** The first corner of the roof being drawn, where it was laid this frame: none, or its target. */
+function firstCornerOf(layer: HTMLElement): KeepOff[] {
+  const holder = layer.querySelector<HTMLElement>('[data-start][data-at]');
+  const at = holder === null || holder.hidden ? undefined : laid.get(holder);
+  return at === undefined ? [] : [{ at, width: FIRST_CORNER_PX, height: FIRST_CORNER_PX }];
+}
+
+/**
+ * A move or turn handle: placed by the roof's own rule, its gap a screen size in ground metres,
+ * and kept between the tool columns so it never lands under one.
+ */
 function placeHandle(
   node: HTMLElement,
   screenOf: ScreenOf,
   handlesOf: (roof: number, gap: number) => RoofHandles | null,
+  room: ToolRoom,
 ): void {
   const middle = readPoint(node.dataset.middle);
   const here = middle === null ? null : screenOf(middle, onTop(node));
@@ -167,9 +164,12 @@ function placeHandle(
           HANDLE_GAP_PX / (Math.hypot(metreOn.x - here.x, metreOn.y - here.y) || 1),
         );
   const at = handles === null ? null : node.dataset.handle === 'turn' ? handles.turn : handles.move;
-  const seen = at === null ? null : screenOf(at, onTop(node));
-  node.hidden = seen === null;
-  if (seen === null) return;
+  const onScreen = at === null ? null : screenOf(at, onTop(node));
+  node.hidden = onScreen === null;
+  if (onScreen === null) return;
+  const half = HANDLE_GAP_PX / 2;
+  const x = Math.min(Math.max(onScreen.x, room.left + half), room.right - half);
+  const seen = { x, y: onScreen.y };
   laid.set(node, seen);
   node.style.transform = `translate(${seen.x}px, ${seen.y}px)`;
 }
@@ -285,6 +285,7 @@ export function placeRoofMarks(
   handlesOf: (roof: number, gap: number) => RoofHandles | null,
   layout: LayoutLabels,
   placeTag: PlaceTag,
+  clearLevel: ClearLevel,
 ): boolean {
   for (const node of layer.querySelectorAll<HTMLElement>('[data-at]')) placePoint(node, screenOf);
   for (const node of layer.querySelectorAll<HTMLElement>('[data-arrow]')) {
@@ -292,11 +293,13 @@ export function placeRoofMarks(
   }
   const columns = columnsRoomOf(layer);
   const room = layer.clientWidth < PHONE_BELOW ? columns : null;
+  const first = firstCornerOf(layer);
+  const clear = (ask: LevelAsk) => clearLevel(ask, first);
   for (const node of layer.querySelectorAll<HTMLElement>('[data-edge]')) {
-    placeEdge(node, screenOf, room, layout);
+    placeEdge(node, screenOf, room, layout, clear);
   }
   for (const node of layer.querySelectorAll<HTMLElement>('[data-handle]')) {
-    placeHandle(node, screenOf, handlesOf);
+    placeHandle(node, screenOf, handlesOf, columns);
   }
   for (const path of layer.querySelectorAll<SVGPathElement>('path[data-pts]')) {
     placePath(path, screenOf);

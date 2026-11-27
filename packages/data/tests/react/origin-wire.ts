@@ -55,6 +55,18 @@ function refusedByContract(method: string, path: string, body: unknown): boolean
 }
 
 /** The write's body, or `null` once the origin has answered the api's 400 for a refused one. */
+/** A read answered as a case queued it — a status and body, or no answer at all — else `body`. */
+export function answerQueued(
+  req: IncomingMessage,
+  res: ServerResponse,
+  queued: { readonly status: number; readonly body?: unknown } | 'drop' | undefined,
+  body: unknown,
+) {
+  const answer = queued ?? { status: 200, body };
+  if (answer === 'drop') req.socket.destroy();
+  else send(res, req, answer.status, answer.body);
+}
+
 export async function writeBodyOf(
   req: IncomingMessage,
   res: ServerResponse,

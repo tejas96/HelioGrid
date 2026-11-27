@@ -1,5 +1,5 @@
 import { theme } from '@heliogrid/theme';
-import { useRef, useState } from 'react';
+import { type Ref, useRef, useState } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
@@ -9,6 +9,8 @@ import { clampToRange } from './slider-math';
 const THUMB = 22;
 
 interface SliderTrackProps {
+  /** The track itself, where a focus asked of the slider lands. */
+  trackRef: Ref<View>;
   disabled: boolean;
   label?: string;
   max: number;
@@ -39,6 +41,7 @@ interface SliderTrackProps {
  * no edge here.
  */
 export function SliderTrack({
+  trackRef,
   disabled,
   label,
   max,
@@ -70,6 +73,7 @@ export function SliderTrack({
 
   return (
     <View
+      ref={trackRef}
       style={styles.track}
       accessible
       accessibilityRole="adjustable"

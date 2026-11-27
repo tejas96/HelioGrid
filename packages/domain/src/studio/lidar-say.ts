@@ -27,10 +27,12 @@ export type LidarFoot =
 
 /**
  * Where the picked roofs stand against the scan: on it, or off it — the one building's shift to
- * where the scan sees it, and the scan's height for its roof where that differs.
+ * where the scan sees it, and the scan's height for its roof where that differs — or the scan sees
+ * a picked building farther off than Match reaches, `reachM`, so it is moved by hand.
  */
 export type LidarStatus =
   | { readonly kind: 'matches' }
+  | { readonly kind: 'beyond_reach'; readonly reachM: number }
   | {
       readonly kind: 'off';
       readonly shift: GroundPoint | null;
@@ -101,10 +103,13 @@ export function lidarStatusOf(input: {
   readonly away: boolean;
   /** A picked flat roof stands at another height than the scan's. */
   readonly heightOff: boolean;
+  /** The scan sees a picked building past the reach of Match, this many metres. */
+  readonly beyondM: number | null;
   readonly shift: GroundPoint | null;
   readonly scanHeightM: number | null;
 }): LidarStatus | null {
   if (input.picked === 0 || !input.fitsIn) return null;
+  if (input.beyondM !== null) return { kind: 'beyond_reach', reachM: input.beyondM };
   if (!input.away && !input.heightOff) return { kind: 'matches' };
   return {
     kind: 'off',

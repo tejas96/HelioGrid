@@ -81,3 +81,117 @@ export function fitDistance(
   const reach = radius / Math.tan((fieldOfView() / 2) * RADIANS);
   return Math.max(reach / (freeHeight / size.height), reach / (freeWidth / size.height));
 }
+
+/**
+ * LiDAR's steepest tilt from straight down: lower, the scan's walls stand across the view and the
+ * dark stage fills the rest of it.
+ */
+const LIDAR_TILT_MAX_DEGREES = 60;
+export const LIDAR_TILT_MAX = LIDAR_TILT_MAX_DEGREES * RADIANS;
+
+/**
+ * The tilt a pose flies to: the view's own when it turns to it, else the person's; under LiDAR
+ * never past the tilt its scan reads at.
+ */
+export function poseTilt(to: StudioView, lidar: boolean, turn: boolean, now: number): number {
+  const capped = lidar && to !== 'top';
+  if (turn) return capped ? Math.min(POSE[to].tilt, LIDAR_TILT_MAX) : POSE[to].tilt;
+  return capped ? Math.min(now, LIDAR_TILT_MAX) : now;
+}
+
+/** Where the day's path stands, which the sun's view frames. */
+export interface SunFrame {
+  readonly east: number;
+  readonly north: number;
+  readonly radiusM: number;
+  /** The ground the roofs' own frame spreads over (`fitSpread`), which the view always holds. */
+  readonly roofsSpreadM: number;
+  /** The noon sun's compass bearing and height, in degrees. */
+  readonly noonAzimuthDegrees: number;
+  readonly noonElevationDegrees: number;
+}
+
+/**
+ * The sun's view (`T-M05-002`, part g): low enough that the day's path arches over the roofs with
+ * the horizon in sight, from the side away from the noon sun, looking a share of the path's noon
+ * height up, the path framed whole with room round it.
+ */
+const SUN_TILT_DEGREES = 76;
+/**
+ * The steepest the sun's view tilts down to, a degree at a time, so the ground at the foot of the
+ * room it shows stays on the picture when the roofs' frame stands it far out (a phone).
+ */
+const SUN_TILT_LEAST_DEGREES = 50;
+const SUN_LOOK_UP_SHARE = 0.25;
+const SUN_FRAME_ROOM = 1.1;
+
+/** The share of the way to the picture's edge the ground at the view's foot may reach. */
+const SUN_FOOT_ON_PICTURE = 0.85;
+
+/** How far a point may go from `from` along `step` before it leaves `low`..`high`. */
+const leave = (from: number, step: number, low: number, high: number) =>
+  step === 0 ? Number.POSITIVE_INFINITY : ((step > 0 ? high : low) - from) / step;
+
+/**
+ * How far back from the point looked at the ground at the foot of the room between the bars lies,
+ * from `distance` off at `tilt`, looking `upM` over the ground.
+ */
+function footBackOf(
+  tilt: number,
+  distance: number,
+  upM: number,
+  size: { readonly height: number },
+  free: { readonly top: number; readonly bottom: number },
+) {
+  const room = Math.max(1, size.height - free.top - free.bottom) / size.height;
+  const foot = tilt - Math.atan(Math.tan((fieldOfView() / 2) * RADIANS) * room);
+  return distance * (Math.sin(tilt) - Math.cos(tilt) * Math.tan(foot)) - upM * Math.tan(foot);
+}
+
+/**
+ * The sun's view (`T-M05-002`, part g): its pose — how far off, the point it looks at, its tilt
+ * and its turn — and the day's path's radius drawn for it. The roofs are framed whole first, with
+ * the room the 3D view gives them. The path is framed whole too, unless the camera would then
+ * stand past the picture's edge: then it stands no farther than the roofs' frame or the picture
+ * allows, whichever is farther, and the path is drawn to fit what it sees. Where the roofs' frame
+ * still stands it past the edge, it tilts down until the ground at the foot of the room it shows
+ * is on the picture; the haze takes the far edge.
+ */
+export function sunViewOf(
+  frame: SunFrame,
+  size: { readonly width: number; readonly height: number },
+  free: { readonly top: number; readonly bottom: number },
+  clear: GroundBox | null,
+) {
+  const noon = frame.noonAzimuthDegrees * RADIANS;
+  // The camera stands on the side away from the noon sun, looking toward it.
+  const turn = Math.atan2(-Math.sin(noon), Math.cos(noon));
+  const upM = frame.radiusM * Math.sin(frame.noonElevationDegrees * RADIANS) * SUN_LOOK_UP_SHARE;
+  const whole = fitDistance(size, free, frame.radiusM * SUN_FRAME_ROOM);
+  const edge =
+    clear === null
+      ? Number.POSITIVE_INFINITY
+      : Math.min(
+          leave(frame.east, Math.sin(turn), clear.west, clear.east),
+          leave(frame.north, -Math.cos(turn), clear.south, clear.north),
+        );
+  const reach = edge * SUN_FOOT_ON_PICTURE;
+  const steep = SUN_TILT_DEGREES * RADIANS;
+  // The foot's distance back grows with the camera's: the farthest that keeps it on the picture.
+  const back = footBackOf(steep, whole, upM, size, free);
+  const onPicture = back > 0 ? (reach * whole) / back : whole;
+  const roofs = fitDistance(size, free, frame.roofsSpreadM);
+  const distance = Math.max(roofs, Math.min(whole, Math.max(0, onPicture)));
+  const share = Math.min(1, distance / whole);
+  const lookUpM = upM * share;
+  let tilt = steep;
+  const least = SUN_TILT_LEAST_DEGREES * RADIANS;
+  while (tilt > least && footBackOf(tilt, distance, lookUpM, size, free) > reach) tilt -= RADIANS;
+  return {
+    distance,
+    at: { east: frame.east, north: frame.north, upM: lookUpM },
+    tilt,
+    turn,
+    radiusM: frame.radiusM * share,
+  };
+}

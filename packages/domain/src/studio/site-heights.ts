@@ -4,6 +4,7 @@ import { ROOF_HEIGHT_STEP_M } from './roof-height';
 import { roofKindOf, standsOn } from './roof-kind';
 import { type RoofFacts, roofFloorM } from './roof-levels';
 import type { RoofHeight } from './roof-parts';
+import { sameCorners } from './roof-scene-motion';
 import { dataHeightsApply, type SiteDataStamp } from './site-data';
 
 /**
@@ -26,10 +27,22 @@ export type RoofDataRead =
     }
   | { readonly kind: 'no_building' };
 
-/** The height map's reads of a design's roofs, by roof id, and the data they came from. */
+/**
+ * The height map's reads of a design's roofs, by roof id, the corners each was read at, and the
+ * data they came from. A read stands only for a roof at those corners: a roof since moved, or one
+ * an Undo put back, is not where it was read.
+ */
 export interface SiteReads {
   readonly stamp: SiteDataStamp;
   readonly roofs: Readonly<Record<string, RoofDataRead>>;
+  /** The roofs as they stood when read. */
+  readonly shape: readonly Pick<Roof, 'id' | 'corners'>[];
+}
+
+/** The read of a roof as it stands; `undefined` with none, or one made at other corners. */
+function readOf(roof: Roof, reads: SiteReads): RoofDataRead | undefined {
+  const at = reads.shape.find((one) => one.id === roof.id);
+  return at !== undefined && sameCorners(at, roof) ? reads.roofs[roof.id] : undefined;
 }
 
 /** A roof's own height under this is a stair room the map read at its deck: it keeps its own. */
@@ -61,7 +74,7 @@ export function withSiteHeights(
   );
   for (const index of order) {
     const height = dataHeightOf(working, index, reads, facts);
-    if (height === null) continue;
+    if (height === 'keep') continue;
     const roofs = [...working.roofs];
     roofs[index] = { ...(working.roofs[index] as Roof), height };
     working = { ...working, roofs };
@@ -71,18 +84,25 @@ export function withSiteHeights(
   return { ...working, site: { ...working.site, dataStamp: reads.stamp } };
 }
 
-/** The data's height for one roof, or `null` where it keeps the one it has. */
+/**
+ * The data's height for one roof — `null` where the map reads no building under it, so a height
+ * the data set there before stands down — or `'keep'` where it keeps the one it has.
+ */
 function dataHeightOf(
   document: StudioDocument,
   index: number,
   reads: SiteReads,
   facts: RoofFacts,
-): RoofHeight | null {
+): RoofHeight | null | 'keep' {
   const roof = document.roofs[index];
-  if (roof === undefined || roof.height?.setBy === 'person') return null;
+  if (roof === undefined || roof.height?.setBy === 'person') return 'keep';
+  if (readOf(roof, reads)?.kind === 'no_building') {
+    const fromData = roof.height?.setBy === 'system' && roof.height.tier === 'derived';
+    return fromData ? null : 'keep';
+  }
   const own = readHeightOf(document, index, reads, facts);
-  if (own === null) return null;
-  if (roof.height?.metres === own && roof.height.tier === 'derived') return null;
+  if (own === null) return 'keep';
+  if (roof.height?.metres === own && roof.height.tier === 'derived') return 'keep';
   return { metres: own, setBy: 'system', tier: 'derived' };
 }
 
@@ -94,7 +114,7 @@ function readHeightOf(
   facts: RoofFacts,
 ): number | null {
   const roof = document.roofs[index];
-  const read = roof === undefined ? undefined : reads.roofs[roof.id];
+  const read = roof === undefined ? undefined : readOf(roof, reads);
   if (roof === undefined || read === undefined || read.kind !== 'roof') return null;
   const kind = roofKindOf(roof);
   if (kind === 'hole' || kind === 'dormer') return null;
@@ -137,7 +157,8 @@ export function siteFitOf(
   facts: RoofFacts,
 ): SiteFit | null {
   const mapM = siteHeightOf(document, index, reads, facts);
-  const read = reads?.roofs[document.roofs[index]?.id ?? ''];
+  const roof = document.roofs[index];
+  const read = roof === undefined || reads === null ? undefined : readOf(roof, reads);
   if (mapM === null || read?.kind !== 'roof') return null;
   return { mapM, byM: toCm(mapM - metres), clear: read.clear };
 }
@@ -159,8 +180,9 @@ function depthOf(document: StudioDocument, index: number): number {
 
 /**
  * Every state of the history with the data's heights: Undo and Redo move between a person's
- * changes, never back to before the data arrived. The history is handed back as it was when no
- * state changes, so nothing is saved for a read alone.
+ * changes, never back to before the data arrived. Each roof takes only a read made at its own
+ * corners, so a state with the roof elsewhere keeps the height it had there. The history is handed
+ * back as it was when no state changes, so nothing is saved for a read alone.
  */
 export function historyWithSiteHeights(
   history: History<StudioDocument>,

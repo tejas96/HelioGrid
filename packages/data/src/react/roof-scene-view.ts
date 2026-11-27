@@ -2,6 +2,7 @@
 import type { SiteDataWire } from '@heliogrid/contracts';
 import {
   type GroundPoint,
+  type MeasurementSystem,
   NO_ROOF_LIST,
   NO_ROOF_SCENE,
   type NumberAt,
@@ -10,6 +11,7 @@ import {
   type RoofHit,
   type RoofSheetView,
   type RoofsEdges,
+  roofsHeadM2,
   type SceneDrawn,
   type SightAt,
   type StairsDrop,
@@ -200,6 +202,14 @@ export function heightPullWith(
     const mapM = site?.heightOf(design, roof) ?? null;
     return heightPullOf(design, roof, facts, metres, reachM, { eaves, mapM });
   };
+}
+
+/** The model as the reader's units show it: the Roofs head is the sum of its rows as shown, where they add up. */
+export function roofModelIn<Model extends Pick<RoofModelSeen, 'roofList'>>(
+  model: Model,
+  units: MeasurementSystem,
+): Model {
+  return { ...model, roofList: { ...model.roofList, areaM2: roofsHeadM2(model.roofList, units) } };
 }
 
 /** The sheet's heights from the site: the magnet's pull, and the map's height a roof starts at. */

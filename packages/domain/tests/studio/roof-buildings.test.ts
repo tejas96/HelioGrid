@@ -127,6 +127,46 @@ describe('where the scan sees each building', () => {
     expect(fitsFor(designOf(roofOf('away', boxOf(-20, -20, -12, -12))), scan)[0]?.shift).toBeNull();
   });
 
+  it.each([
+    ['4.8 m east: found there', 4.8, 4.8, false],
+    ['5 m east: found there', 5, 5, false],
+    ['7 m east: past the reach, not moved', 7, null, true],
+    ['12 m east: past the reach, not moved', 12, null, true],
+  ])('the scan’s building %s', (_, east, found, beyond) => {
+    const [fit] = fitsFor(
+      designOf(TERRACE),
+      scanOf([{ ring: boxOf(east, 0, east + 10, 8), heightM: 9 }]),
+    );
+    expect(fit?.beyondReach).toBe(beyond);
+    if (found === null) expect(fit?.shift).toBeNull();
+    else expect(fit?.shift?.east).toBeCloseTo(found, 0);
+  });
+
+  it('a building past the reach: Match moves nothing and keeps its height', () => {
+    const far = scanOf([{ ring: boxOf(7, 0, 17, 8), heightM: 9 }]);
+    const design = designOf({
+      ...TERRACE,
+      height: { metres: 4, setBy: 'system', tier: 'derived' },
+    });
+    const [building] = buildingsOf(design);
+    const [fit] = fitsFor(design, far);
+    if (building === undefined || fit === undefined) throw new Error('no fit');
+    expect(scanMatched(design, [{ building, fit }], FACTS)).toBe(design);
+  });
+
+  it('a second Match after matching does nothing', () => {
+    const design = designOf(TERRACE);
+    const [building] = buildingsOf(design);
+    const [fit] = fitsFor(design, scan);
+    if (building === undefined || fit === undefined) throw new Error('no fit');
+    const matched = scanMatched(design, [{ building, fit }], FACTS);
+    const [again] = fitsFor(matched, scan);
+    expect(again?.shift).toBeNull();
+    expect(again?.beyondReach).toBe(false);
+    if (again === undefined) throw new Error('no fit');
+    expect(scanMatched(matched, [{ building, fit: again }], FACTS)).toEqual(matched);
+  });
+
   it('with no scan building at all, nothing moves', () => {
     expect(fitsFor(designOf(TERRACE), scanOf([]))[0]?.shift).toBeNull();
   });
@@ -184,7 +224,7 @@ describe('Match the scan', () => {
   it('a roof the scan reads nothing in keeps its height', () => {
     const design = designOf({ ...roofOf('lone', boxOf(40, 40, 44, 44)), height: person });
     const [building] = buildingsOf(design);
-    const fit = { shift: null, reads: {}, ranges: {} };
+    const fit = { shift: null, beyondReach: false, reads: {}, ranges: {} };
     if (building === undefined) throw new Error('no building');
     expect(scanMatched(design, [{ building, fit }], FACTS)).toEqual(design);
   });

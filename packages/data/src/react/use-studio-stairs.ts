@@ -8,6 +8,7 @@ import {
   type StairsPlace,
   type StairsShown,
   type StudioDocument,
+  stairsGuessKeyOf,
   stairsMomentOf,
   stairsPassed,
   stairsPlaced,
@@ -88,6 +89,8 @@ export function useStudioStairs(args: {
   const stood = useRef<StairsPlace | null>(null);
   const dropAt = (at: GroundPoint, reachM: number, magnet: boolean) =>
     drawn.current?.stairsDropAt(at, reachM, magnet) ?? null;
+  // The guess the design opened with: said when it was made, never again on a reopen.
+  const opening = useRef<string | null>(null);
   const [placing, setPlacing] = useState(false);
   const [held, setHeldShown] = useState(false);
   // A grab and its first move can come in one event, before a render: the hand is kept in refs.
@@ -170,7 +173,13 @@ export function useStudioStairs(args: {
     seen: (model) => {
       drawn.current = model;
       if (!held) stood.current = model.stairs;
-      const facts = { placing, held, ask: model.stairsAsk, stairs: model.stairs, editable };
+      // Until the first change of this opening, the guess shown is the one the design opened with.
+      const guess = stairsGuessKeyOf(model.stairs);
+      if ((latest.current?.past.length ?? 0) === 0) opening.current = guess;
+      const facts = {
+        ...{ placing, held, ask: model.stairsAsk, stairs: model.stairs, editable },
+        guessNew: guess !== opening.current,
+      };
       return stairsMomentOf(facts);
     },
   };

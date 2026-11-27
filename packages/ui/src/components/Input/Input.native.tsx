@@ -33,6 +33,7 @@ const KEYBOARD: Record<InputType, KeyboardTypeOptions> = {
   url: 'url',
   // Digits and a point, as the web half's decimal pad: a number here is never negative.
   number: 'decimal-pad',
+  decimal: 'decimal-pad',
   handle: 'email-address',
 };
 

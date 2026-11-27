@@ -133,6 +133,20 @@ describe('one plane for each side', () => {
     expectCovers(roof, 60);
   });
 
+  it.each([
+    ['its eave sides 1 m apart in their lean', [p(0, 0), p(10, 0), p(10, 7), p(0, 6)]],
+    ['drawn the other way round', [p(0, 6), p(10, 7), p(10, 0), p(0, 0)]],
+    ['a long trapezoid', [p(0, 0), p(12, 0), p(10, 5), p(2, 4)]],
+  ])('a gable on four sides, %s: two faces facing exactly opposite, covering it', (_, corners) => {
+    const roof = roofFormed(corners, { shape: 'gable', slopeDeg: SLOPE });
+    expect(roof.built).toBe('gable');
+    expect(roof.faces).toHaveLength(2);
+    const [one, two] = roof.faces.map((face) => face.downDeg);
+    expect(((two ?? 0) - (one ?? 0) + 360) % 360).toBeCloseTo(180, 6);
+    expectCovers(roof, ringAreaM2(corners));
+    expectOneHeight(roof);
+  });
+
   it('a turned gable carries its ridge the other way: its ends and eaves swap', () => {
     const roof = roofFormed(RECT, { shape: 'gable', slopeDeg: SLOPE, turned: true });
     expect(roof.faces.map((face) => face.side).sort()).toEqual([1, 3]);

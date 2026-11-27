@@ -296,3 +296,28 @@ export function tagPlaceOf({ spot, width, height, room, gap, clear }: TagAsk): S
   const top = above >= room.top ? above : spot.y + clear;
   return { x: start - spot.x, y: top - spot.y };
 }
+
+/** A level label where it was laid, and the edge middle it stands out from. */
+export interface LevelAsk {
+  readonly at: ScreenPoint;
+  readonly from: ScreenPoint;
+  readonly width: number;
+  readonly height: number;
+}
+
+/**
+ * A level label that sits on a mark it must keep off — the first corner of the roof being drawn —
+ * steps on out from its edge until it is clear; where no step within reach is clear, it stays.
+ */
+export function levelClearOf(ask: LevelAsk, keepOff: readonly KeepOff[]): ScreenPoint {
+  const { at, from, width, height } = ask;
+  const reach = Math.hypot(at.x - from.x, at.y - from.y) || 1;
+  const out = { x: (at.x - from.x) / reach, y: (at.y - from.y) / reach };
+  const boxes = keepOff.map((box) => boxOf(box.at, 0, box.width, box.height));
+  for (let more = 0; more <= CLEAR_MOST_PX; more += CLEAR_STEP_PX) {
+    const step = { x: at.x + out.x * more, y: at.y + out.y * more };
+    const box = boxOf(step, 0, width, height);
+    if (!boxes.some((other) => boxesTouch(box, other))) return step;
+  }
+  return at;
+}

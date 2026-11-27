@@ -224,6 +224,8 @@ export function StudioRoofMarks({
   layout.current = studio.layoutLabels;
   const placeTag = useRef(studio.placeTag);
   placeTag.current = studio.placeTag;
+  const clearLevel = useRef(studio.clearLevel);
+  clearLevel.current = studio.clearLevel;
   const place = (screenOf: ScreenOf) => {
     lastPlace.current = screenOf;
     if (layer.current !== null) {
@@ -234,12 +236,13 @@ export function StudioRoofMarks({
         (roof, gap) => handlesOf.current(roof, gap),
         layout.current,
         placeTag.current,
+        clearLevel.current,
       );
       if (crowded !== wasCrowded.current) {
         wasCrowded.current = crowded;
         crowdedTold.current(crowded);
       }
-      placeLabels(layer.current, screenOf, layout.current);
+      placeLabels(layer.current, screenOf, layout.current, clearLevel.current);
     }
   };
   // biome-ignore lint/plugin: which given-way length a tap brought back is the page's own passing state

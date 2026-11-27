@@ -42,7 +42,7 @@ export type { OwnPictureJob, PictureFile } from './use-own-picture';
 export type { OwnPictureMoves, OwnPictureView } from './use-own-picture-screen';
 export type { PassingMessage, PassingMessageView } from './use-passing-message';
 export { usePassingMessage } from './use-passing-message';
-export { useAimHold, useRepeatPress } from './use-press-timing';
+export { useRepeatPress } from './use-press-timing';
 export type { RoofsOffSiteAsk } from './use-roofs-off-site';
 export type { SceneDetailView } from './use-scene-detail';
 export { useSceneDetail } from './use-scene-detail';
@@ -55,3 +55,4 @@ export type {
   SiteSaveFailure,
 } from './use-site-details-screen';
 export { useSiteDetailsScreen } from './use-site-details-screen';
+export { sunChartAxisOf } from './use-sun-bar';

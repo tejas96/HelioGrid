@@ -1,3 +1,5 @@
+import { areaShownM2 } from '../format/measurement';
+import type { MeasurementSystem } from '../format/pack';
 import type { RoofMaterial } from './roof-material';
 import type { RoofName } from './roof-names';
 import type { RoofKind } from './roof-parts';
@@ -52,8 +54,30 @@ export interface RoofList {
   readonly count: number;
   /** The area of every roof together, every spot once as seen from above. */
   readonly areaM2: number;
+  /**
+   * Every roof's row is flat and no two lie over each other from above: the rows' areas, holes
+   * aside, add up to `areaM2`, so the head says the sum of the rows as they are shown.
+   */
+  readonly rowsAddUp: boolean;
   /** How many rows wait for a person to check: the pencil's badge is amber while any does. */
   readonly waiting: number;
 }
 
-export const NO_ROOF_LIST: RoofList = { rows: [], count: 0, areaM2: 0, waiting: 0 };
+export const NO_ROOF_LIST: RoofList = {
+  rows: [],
+  count: 0,
+  areaM2: 0,
+  rowsAddUp: false,
+  waiting: 0,
+};
+
+/**
+ * The head's area, in square metres: where the rows add up, the sum of each row's area as it is
+ * shown, so the head never reads a square metre more than its rows; else every roof together.
+ */
+export function roofsHeadM2(list: RoofList, system: MeasurementSystem): number {
+  if (!list.rowsAddUp) return list.areaM2;
+  return list.rows
+    .filter((row) => row.kind !== 'hole')
+    .reduce((sum, row) => sum + areaShownM2(row.areaM2, system), 0);
+}

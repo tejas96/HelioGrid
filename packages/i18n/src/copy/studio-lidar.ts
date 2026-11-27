@@ -32,6 +32,7 @@ const LIDAR = {
   none: /*i18n*/ { id: 'None' },
   matches: /*i18n*/ { id: 'Matches the scan' },
   offScan: /*i18n*/ { id: 'Off the scan' },
+  beyondReach: /*i18n*/ { id: 'Scan: more than {distance} away. Drag the roof onto it.' },
   scanAway: /*i18n*/ { id: 'Scan: {distance} {way}' },
   scanAwayHigh: /*i18n*/ { id: 'Scan: {distance} {way}, {height} high' },
   scanHigh: /*i18n*/ { id: 'Scan: {height} high' },
@@ -135,6 +136,9 @@ export function studioLidarWords(t: T) {
       height: (metres: number) => string,
     ): TranslatedText => {
       if (status.kind === 'matches') return t(LIDAR.matches);
+      if (status.kind === 'beyond_reach') {
+        return t(LIDAR.beyondReach, { distance: distance(status.reachM) });
+      }
       const { shift, scanHeightM } = status;
       if (shift === null) {
         return scanHeightM === null

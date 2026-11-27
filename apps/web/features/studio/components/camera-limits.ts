@@ -1,4 +1,6 @@
 'use client';
+// biome-ignore lint/plugin: the web's three.js camera alone works out its reach; the phone opens the studio in its web view
+import { edgeDepthAhead, groundReachPerMetre } from '@heliogrid/domain';
 import { Box3, MathUtils, Vector3 } from 'three';
 
 const RADIANS = MathUtils.DEG2RAD;
@@ -26,7 +28,36 @@ const DISTANCE_MIN = 4;
 const SCREEN_PX_PER_PICTURE_PX = 4;
 /** The least ground the window's shorter side shows on the grid, with no picture to blur. */
 const GRID_SHORT_SIDE_M = 5;
-
+/** Under this tilt the camera looks straight down: the map's own frame, side by side. */
+const FLAT_TILT = 0.001;
+/**
+ * How deep the ground in view is counted once the camera tilts, in camera distances: the haze
+ * starts at the point looked at and has taken most of the ground by here, and the haze's end is
+ * kept before the picture's edge (`hazeOf`). A side view, which looks over the horizon, keeps the
+ * house framed whole at this depth.
+ */
+const CLEAR_DEPTH = 1.3;
+/** The haze, as shares of the camera's distance: it starts at the point looked at. */
+const HAZE_FROM = 1;
+const HAZE_TO = 2.4;
+/**
+ * The nearest the haze ends, in camera distances, when the picture's edge lies nearer than the
+ * limits keep it (a frame that shows the roofs whole from farther off): just past the point looked
+ * at, so the edge is taken by the haze and the roofs are not.
+ */
+const HAZE_TO_LEAST = 1.15;
+/** The ground plane round the picture, or the plain ground with none: a square this wide. */
+const GROUND_SIDE_M = 1_200;
+/** The ground plane's side, in metres, which the haze ends before. */
+export function groundSide(): number {
+  return GROUND_SIDE_M;
+}
+const NO_PICTURE_GROUND = {
+  west: -GROUND_SIDE_M / 2,
+  east: GROUND_SIDE_M / 2,
+  south: -GROUND_SIDE_M / 2,
+  north: GROUND_SIDE_M / 2,
+};
 /** The picture's sharp ground, in metres east and north of the pin. */
 export interface ClearGround {
   readonly west: number;
@@ -50,10 +81,26 @@ export function seenPerMetre(
   return { across: down * wide, along: down * room };
 }
 
-/** The farthest the camera stands with the picture still filling the room between the bars. */
-function farthestOver(clear: ClearGround, seen: ReturnType<typeof seenPerMetre>): number {
-  const across = (clear.east - clear.west) / 2 / seen.across;
-  const along = (clear.north - clear.south) / 2 / seen.along;
+/**
+ * How far round the point looked at the view shows ground, per metre the camera stands off: the
+ * map's own frame each way straight down; tilted, the farthest corner on the ground, whichever way
+ * the view turns.
+ */
+function shownPerMetre(seen: ReturnType<typeof seenPerMetre>, tilt: number) {
+  if (tilt < FLAT_TILT) return seen;
+  const round = groundReachPerMetre(tilt, seen, CLEAR_DEPTH);
+  return { across: round, along: round };
+}
+
+/** The farthest the camera stands with the picture still filling the room the view shows. */
+function farthestOver(
+  clear: ClearGround,
+  seen: ReturnType<typeof seenPerMetre>,
+  tilt: number,
+): number {
+  const shown = shownPerMetre(seen, tilt);
+  const across = (clear.east - clear.west) / 2 / shown.across;
+  const along = (clear.north - clear.south) / 2 / shown.along;
   return Math.max(DISTANCE_MIN, Math.min(across, along));
 }
 
@@ -71,32 +118,40 @@ function closestOver(
 }
 
 /**
- * Where the camera may look at from this far up: the picture less what the window sees round the
- * middle, so no edge of the picture comes into view. Scene x runs east, y up and z south: it looks
- * within a metre of `upM` above the ground — the ground, or the top of the roof whose sheet is open.
+ * Where the camera may look at from this far off, at this tilt: the picture less what the view
+ * shows round the point it looks at, so no edge of the picture comes into view. Scene x runs east,
+ * y up and z south: it looks within a metre of `upM` above the ground — the ground, or the top of
+ * the roof whose sheet is open.
  */
 export function lookRoom(
   clear: ClearGround & { readonly upM: number },
   seen: ReturnType<typeof seenPerMetre>,
   distance: number,
+  tilt: number,
 ): Box3 {
   const { upM } = clear;
-  const across = Math.min(seen.across * distance, (clear.east - clear.west) / 2);
-  const along = Math.min(seen.along * distance, (clear.north - clear.south) / 2);
+  const shown = shownPerMetre(seen, tilt);
+  const across = Math.min(shown.across * distance, (clear.east - clear.west) / 2);
+  const along = Math.min(shown.along * distance, (clear.north - clear.south) / 2);
   return new Box3(
     new Vector3(clear.west + across, upM - 1, -(clear.north - along)),
     new Vector3(clear.east - across, upM + 1, -(clear.south + along)),
   );
 }
 
-/** How near and how far the camera may stand now, for the picture it shows and the window it fills. */
+/**
+ * How near and how far the camera may stand now, for the picture it shows, the window it fills and
+ * its tilt from straight down: tilted, it sees farther, so it stands nearer.
+ */
 export function reachOf(
   clear: ClearGround | null,
   metresPerPixel: number | null,
   size: { readonly width: number; readonly height: number },
   free: { readonly top: number; readonly bottom: number },
+  tilt: number,
 ): { readonly nearest: number; readonly farthest: number } {
-  const farthest = clear === null ? DISTANCE_MAX : farthestOver(clear, seenPerMetre(size, free));
+  const farthest =
+    clear === null ? DISTANCE_MAX : farthestOver(clear, seenPerMetre(size, free), tilt);
   return { nearest: Math.min(closestOver(metresPerPixel, size), farthest), farthest };
 }
 
@@ -127,4 +182,33 @@ export function openingDistance(
     Math.min(metresPerPixel * screenPixelsPerCss, OPENING_SHORT_SIDE_M / shortSide),
   );
   return (perCss * size.height) / (2 * Math.tan((FOV_DEGREES / 2) * RADIANS));
+}
+
+/**
+ * The haze for where the camera stands: from the point it looks at, ending where the picture's
+ * edge lies straight ahead, so that edge is never seen — never nearer than just past the point
+ * looked at, nor farther than its own share of the distance. Inside the limits the picture's edge
+ * lies past the ground they keep on it. Straight down it is the distance's shares alone. Scene x
+ * runs east, y up and z south.
+ */
+export function hazeOf(
+  camera: Vector3,
+  looked: Vector3,
+  tilt: number,
+  distance: number,
+  clear: ClearGround | null,
+): { readonly near: number; readonly far: number } {
+  const ahead = { east: looked.x - camera.x, north: camera.z - looked.z };
+  const across = Math.hypot(ahead.east, ahead.north);
+  const edge =
+    across === 0
+      ? null
+      : edgeDepthAhead(
+          { east: camera.x, north: -camera.z, up: camera.y },
+          { east: ahead.east / across, north: ahead.north / across },
+          tilt,
+          clear ?? NO_PICTURE_GROUND,
+        );
+  const far = Math.max(distance * HAZE_TO_LEAST, edge ?? Number.POSITIVE_INFINITY);
+  return { near: distance * HAZE_FROM, far: Math.min(distance * HAZE_TO, far) };
 }

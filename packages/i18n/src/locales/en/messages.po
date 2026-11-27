@@ -3706,7 +3706,7 @@ msgid "3D"
 msgstr "3D"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:49
+#: src/copy/lead-designs.ts:50
 msgid "3D preview coming soon"
 msgstr "3D preview coming soon"
 
@@ -3831,7 +3831,7 @@ msgid "A customer sends a friend. Add the friend and pick who sent them."
 msgstr "A customer sends a friend. Add the friend and pick who sent them."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:31
+#: src/copy/studio-roof-draw.ts:32
 #: src/copy/studio-size.ts:24
 msgid "A design holds at most {max} roofs"
 msgstr "A design holds at most {max} roofs"
@@ -4108,7 +4108,7 @@ msgid "A role of your own"
 msgstr "A role of your own"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:29
+#: src/copy/studio-roof-draw.ts:30
 msgid "A roof has at most {max} corners"
 msgstr "A roof has at most {max} corners"
 
@@ -4128,7 +4128,7 @@ msgid "A roof keeps at least 3 corners."
 msgstr "A roof keeps at least 3 corners."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:30
+#: src/copy/studio-roof-draw.ts:31
 msgid "A roof needs at least 3 corners"
 msgstr "A roof needs at least 3 corners"
 
@@ -5699,7 +5699,7 @@ msgid "Back to {value}, as the roof"
 msgstr "Back to {value}, as the roof"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:51
+#: src/copy/studio-lidar.ts:52
 msgid "Back to as drawn"
 msgstr "Back to as drawn"
 
@@ -6756,7 +6756,7 @@ msgid "Check it on site."
 msgstr "Check it on site."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:39
+#: src/copy/lead-designs.ts:40
 #: src/copy/projects.ts:28
 #: src/copy/proposal-after-links.ts:37
 #: src/copy/proposal-after-list.ts:56
@@ -6977,7 +6977,7 @@ msgid "Clear all"
 msgstr "Clear all"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:20
+#: src/copy/studio-roof-draw.ts:21
 msgid "Clear every corner"
 msgstr "Clear every corner"
 
@@ -7097,7 +7097,7 @@ msgid "Close Roofs"
 msgstr "Close Roofs"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:33
+#: src/copy/studio-roof-draw.ts:34
 msgid "Close shape"
 msgstr "Close shape"
 
@@ -7115,7 +7115,7 @@ msgid "Close the map"
 msgstr "Close the map"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:32
+#: src/copy/studio-roof-draw.ts:33
 msgid "Close the shape, or tap Undo."
 msgstr "Close the shape, or tap Undo."
 
@@ -8564,7 +8564,7 @@ msgid "Design {number}"
 msgstr "Design {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:54
+#: src/copy/lead-designs.ts:55
 msgid "Design draft"
 msgstr "Design draft"
 
@@ -8905,7 +8905,7 @@ msgid "Draft"
 msgstr "Draft"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:59
+#: src/copy/studio-lidar.ts:60
 msgid "Drag a picked roof to move it."
 msgstr "Drag a picked roof to move it."
 
@@ -8930,7 +8930,7 @@ msgid "Drag the map until the pin is on the right place."
 msgstr "Drag the map until the pin is on the right place."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:57
+#: src/copy/studio-lidar.ts:58
 msgid "Drag the scan under your roofs."
 msgstr "Drag the scan under your roofs."
 
@@ -10012,7 +10012,7 @@ msgid "First: the most days late on your list"
 msgstr "First: the most days late on your list"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:67
+#: src/copy/studio-lidar.ts:68
 msgid "Fix"
 msgstr "Fix"
 
@@ -10022,7 +10022,7 @@ msgid "Fix in {step}"
 msgstr "Fix in {step}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:68
+#: src/copy/studio-lidar.ts:69
 msgid "Fix in LiDAR"
 msgstr "Fix in LiDAR"
 
@@ -10057,12 +10057,12 @@ msgid "Floors"
 msgstr "Floors"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:34
+#: src/copy/studio-roof-draw.ts:35
 msgid "Follow {roof}"
 msgstr "Follow {roof}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:35
+#: src/copy/studio-roof-draw.ts:36
 msgid "Follow Face {number}"
 msgstr "Follow Face {number}"
 
@@ -10650,7 +10650,7 @@ msgid "Google"
 msgstr "Google"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:75
+#: src/copy/studio-lidar.ts:76
 msgid "Google has no 3D scan of this place. Your roofs keep their heights."
 msgstr "Google has no 3D scan of this place. Your roofs keep their heights."
 
@@ -10903,7 +10903,7 @@ msgid "Height above {roof}"
 msgstr "Height above {roof}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:53
+#: src/copy/studio-lidar.ts:54
 msgid "Height above the street"
 msgstr "Height above the street"
 
@@ -10913,8 +10913,8 @@ msgid "Height from ground"
 msgstr "Height from ground"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:40
-#: src/copy/studio-lidar.ts:78
+#: src/copy/studio-lidar.ts:41
+#: src/copy/studio-lidar.ts:79
 msgid "Height from the ground"
 msgstr "Height from the ground"
 
@@ -11140,7 +11140,7 @@ msgstr "Hidden from pickers"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:44
-#: src/copy/studio-lidar.ts:69
+#: src/copy/studio-lidar.ts:70
 msgid "Hide"
 msgstr "Hide"
 
@@ -11187,7 +11187,7 @@ msgid "HJT"
 msgstr "HJT"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:60
+#: src/copy/studio-lidar.ts:61
 msgid "Hold a picked roof, then drag."
 msgstr "Hold a picked roof, then drag."
 
@@ -12674,7 +12674,7 @@ msgid "LiDAR"
 msgstr "LiDAR"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:72
+#: src/copy/studio-lidar.ts:73
 msgid "LiDAR needs the internet to open. Your design is safe."
 msgstr "LiDAR needs the internet to open. Your design is safe."
 
@@ -12945,7 +12945,7 @@ msgid "Loading the {kind} specification"
 msgstr "Loading the {kind} specification"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:70
+#: src/copy/studio-lidar.ts:71
 msgid "Loading the 3D scan…"
 msgstr "Loading the 3D scan…"
 
@@ -13344,7 +13344,7 @@ msgid "Lower the map"
 msgstr "Lower the map"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:41
+#: src/copy/studio-lidar.ts:42
 msgid "Lower the roof"
 msgstr "Lower the roof"
 
@@ -13379,7 +13379,7 @@ msgid "made your own"
 msgstr "made your own"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:21
+#: src/copy/studio-roof-draw.ts:22
 msgid "Magnet"
 msgstr "Magnet"
 
@@ -13643,7 +13643,7 @@ msgid "Marketing sends"
 msgstr "Marketing sends"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:38
+#: src/copy/studio-lidar.ts:39
 msgid "Match the scan"
 msgstr "Match the scan"
 
@@ -14145,22 +14145,22 @@ msgid "Move the roof"
 msgstr "Move the roof"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:48
+#: src/copy/studio-lidar.ts:49
 msgid "Move the roofs down"
 msgstr "Move the roofs down"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:49
+#: src/copy/studio-lidar.ts:50
 msgid "Move the roofs left"
 msgstr "Move the roofs left"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:50
+#: src/copy/studio-lidar.ts:51
 msgid "Move the roofs right"
 msgstr "Move the roofs right"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:47
+#: src/copy/studio-lidar.ts:48
 msgid "Move the roofs up"
 msgstr "Move the roofs up"
 
@@ -14217,7 +14217,7 @@ msgid "Moved"
 msgstr "Moved"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:64
+#: src/copy/studio-lidar.ts:65
 msgid "Moved {distance}"
 msgstr "Moved {distance}"
 
@@ -14293,7 +14293,7 @@ msgid "Moves the stage"
 msgstr "Moves the stage"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:62
+#: src/copy/studio-lidar.ts:63
 msgid "Moving {distance}"
 msgstr "Moving {distance}"
 
@@ -15225,7 +15225,7 @@ msgid "No Google heights here"
 msgstr "No Google heights here"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:74
+#: src/copy/studio-lidar.ts:75
 msgid "No height data here"
 msgstr "No height data here"
 
@@ -15590,7 +15590,7 @@ msgid "No role"
 msgstr "No role"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:80
+#: src/copy/studio-lidar.ts:81
 msgid "No roof here"
 msgstr "No roof here"
 
@@ -15610,7 +15610,7 @@ msgid "No row would make a lead or log an enquiry."
 msgstr "No row would make a lead or log an enquiry."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:45
+#: src/copy/studio-lidar.ts:46
 msgid "No scan roof here"
 msgstr "No scan roof here"
 
@@ -16674,12 +16674,12 @@ msgid "Now"
 msgstr "Now"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:61
+#: src/copy/studio-lidar.ts:62
 msgid "Now drag."
 msgstr "Now drag."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:46
+#: src/copy/studio-lidar.ts:47
 msgid "Nudge 10 cm"
 msgstr "Nudge 10 cm"
 
@@ -16876,7 +16876,7 @@ msgid "On the proposal"
 msgstr "On the proposal"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:63
+#: src/copy/studio-lidar.ts:64
 msgid "On the scan"
 msgstr "On the scan"
 
@@ -17317,6 +17317,11 @@ msgstr "Opening Google sign-in"
 #: src/copy/boot.ts:6
 msgid "Opening HelioGrid"
 msgstr "Opening HelioGrid"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-designs.ts:38
+msgid "Opening the design"
+msgstr "Opening the design"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-won.ts:18
@@ -17824,7 +17829,7 @@ msgid "Past {ceiling}, new uploads pause · files you have stay."
 msgstr "Past {ceiling}, new uploads pause · files you have stay."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:28
+#: src/copy/studio-roof-draw.ts:29
 msgid "Past {reach} from the pin · this is another site"
 msgstr "Past {reach} from the pin · this is another site"
 
@@ -19435,7 +19440,7 @@ msgid "Raise the map"
 msgstr "Raise the map"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:42
+#: src/copy/studio-lidar.ts:43
 msgid "Raise the roof"
 msgstr "Raise the roof"
 
@@ -21017,7 +21022,7 @@ msgid "Say why."
 msgstr "Say why."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:44
+#: src/copy/studio-lidar.ts:45
 msgid "Scan {low} to {high}"
 msgstr "Scan {low} to {high}"
 
@@ -21032,19 +21037,24 @@ msgid "Scan with any UPI app · the amount is filled in"
 msgstr "Scan with any UPI app · the amount is filled in"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:35
+#: src/copy/studio-lidar.ts:36
 msgid "Scan: {distance} {way}"
 msgstr "Scan: {distance} {way}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:36
+#: src/copy/studio-lidar.ts:37
 msgid "Scan: {distance} {way}, {height} high"
 msgstr "Scan: {distance} {way}, {height} high"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:37
+#: src/copy/studio-lidar.ts:38
 msgid "Scan: {height} high"
 msgstr "Scan: {height} high"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-lidar.ts:35
+msgid "Scan: more than {distance} away. Drag the roof onto it."
+msgstr "Scan: more than {distance} away. Drag the roof onto it."
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:122
@@ -22132,7 +22142,7 @@ msgid "Slope"
 msgstr "Slope"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:43
+#: src/copy/studio-lidar.ts:44
 msgid "Sloped roof: its height stays as drawn."
 msgstr "Sloped roof: its height stays as drawn."
 
@@ -22237,12 +22247,12 @@ msgid "Some of what you typed is not saved yet. It is lost if you leave."
 msgstr "Some of what you typed is not saved yet. It is lost if you leave."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:65
+#: src/copy/studio-lidar.ts:66
 msgid "Some roofs sit off their true spot."
 msgstr "Some roofs sit off their true spot."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:66
+#: src/copy/studio-lidar.ts:67
 msgid "Some roofs sit off."
 msgstr "Some roofs sit off."
 
@@ -22719,7 +22729,7 @@ msgid "Stone-coated metal tile"
 msgstr "Stone-coated metal tile"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:19
+#: src/copy/studio-roof-draw.ts:20
 msgid "Stop drawing"
 msgstr "Stop drawing"
 
@@ -22838,12 +22848,12 @@ msgid "Sun"
 msgstr "Sun"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:54
+#: src/copy/studio-lidar.ts:55
 msgid "Sun each roof keeps"
 msgstr "Sun each roof keeps"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:81
+#: src/copy/studio-lidar.ts:82
 msgid "Sun kept"
 msgstr "Sun kept"
 
@@ -23085,7 +23095,7 @@ msgid "Tap + on any screen. A number is enough."
 msgstr "Tap + on any screen. A number is enough."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:58
+#: src/copy/studio-lidar.ts:59
 msgid "Tap a building to move it."
 msgstr "Tap a building to move it."
 
@@ -23095,7 +23105,7 @@ msgid "Tap a date to add a holiday"
 msgstr "Tap a date to add a holiday"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:27
+#: src/copy/studio-roof-draw.ts:28
 msgid "Tap a little farther from it."
 msgstr "Tap a little farther from it."
 
@@ -23120,17 +23130,17 @@ msgid "Tap a part to pick or change it. Up to {max} brands each — {name} reads
 msgstr "Tap a part to pick or change it. Up to {max} brands each — {name} reads them as choices."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:55
+#: src/copy/studio-lidar.ts:56
 msgid "Tap a roof to check its height."
 msgstr "Tap a roof to check its height."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:56
+#: src/copy/studio-lidar.ts:57
 msgid "Tap a roof to see its height."
 msgstr "Tap a roof to see its height."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:24
+#: src/copy/studio-roof-draw.ts:25
 msgid "Tap a spot where the edges do not cross."
 msgstr "Tap a spot where the edges do not cross."
 
@@ -23158,6 +23168,11 @@ msgstr "Tap each corner of the roof"
 #: src/copy/studio-stairs.ts:16
 msgid "Tap the edge where the stairs reach the roof"
 msgstr "Tap the edge where the stairs reach the roof"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-draw.ts:19
+msgid "Tap the pencil, then each corner of the roof."
+msgstr "Tap the pencil, then each corner of the roof."
 
 #. js-lingui-explicit-id
 #: src/copy/dropzone.ts:35
@@ -23483,7 +23498,7 @@ msgid "That did not go through. Try again."
 msgstr "That did not go through. Try again."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:41
+#: src/copy/lead-designs.ts:42
 #: src/copy/site-details.ts:71
 msgid "That did not save. Check the connection and try again."
 msgstr "That did not save. Check the connection and try again."
@@ -23660,7 +23675,7 @@ msgid "The {length} you set would change. Change that length first."
 msgstr "The {length} you set would change. Change that length first."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:73
+#: src/copy/studio-lidar.ts:74
 msgid "The 3D scan did not open."
 msgstr "The 3D scan did not open."
 
@@ -23877,7 +23892,7 @@ msgid "The design opens again at this place."
 msgstr "The design opens again at this place."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:38
+#: src/copy/lead-designs.ts:39
 msgid "The designs did not load"
 msgstr "The designs did not load"
 
@@ -24653,7 +24668,7 @@ msgid "the savings"
 msgstr "the savings"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:79
+#: src/copy/studio-lidar.ts:80
 msgid "The scan"
 msgstr "The scan"
 
@@ -24728,7 +24743,7 @@ msgid "The subsidy needs {scheme} panels. A panel without the mark stops Generat
 msgstr "The subsidy needs {scheme} panels. A panel without the mark stops Generate."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:52
+#: src/copy/studio-lidar.ts:53
 msgid "The sun each roof keeps in a year"
 msgstr "The sun each roof keeps in a year"
 
@@ -25055,7 +25070,7 @@ msgid "This design is not here"
 msgstr "This design is not here"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:23
+#: src/copy/studio-roof-draw.ts:24
 msgid "This edge would cross another"
 msgstr "This edge would cross another"
 
@@ -25195,7 +25210,7 @@ msgid "This lead is closed. Changes are not saved."
 msgstr "This lead is closed. Changes are not saved."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:42
+#: src/copy/lead-designs.ts:43
 #: src/copy/site-details.ts:72
 msgid "This lead is closed. Reopen it to change its designs."
 msgstr "This lead is closed. Reopen it to change its designs."
@@ -25751,7 +25766,7 @@ msgid "Tomorrow, {from}–{to}"
 msgstr "Tomorrow, {from}–{to}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:26
+#: src/copy/studio-roof-draw.ts:27
 msgid "Too close to another corner"
 msgstr "Too close to another corner"
 
@@ -25761,7 +25776,7 @@ msgid "Too expensive"
 msgstr "Too expensive"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:25
+#: src/copy/studio-roof-draw.ts:26
 msgid "Too far for this site"
 msgstr "Too far for this site"
 
@@ -25923,7 +25938,7 @@ msgstr "Try a part of the invoice number."
 #: src/copy/catalog-settings.ts:93
 #: src/copy/customer-page-phases.ts:25
 #: src/copy/customer-page-proposal.ts:56
-#: src/copy/lead-designs.ts:40
+#: src/copy/lead-designs.ts:41
 #: src/copy/lead-import.ts:57
 #: src/copy/leads-list.ts:32
 #: src/copy/payment-terms.ts:38
@@ -27815,7 +27830,7 @@ msgid "Which record stays?"
 msgstr "Which record stays?"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:39
+#: src/copy/studio-lidar.ts:40
 msgid "Which roof"
 msgstr "Which roof"
 
@@ -28518,7 +28533,7 @@ msgid "You’re clear for today"
 msgstr "You’re clear for today"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:71
+#: src/copy/studio-lidar.ts:72
 msgid "You’re offline"
 msgstr "You’re offline"
 
@@ -29104,7 +29119,7 @@ msgid "Your photo, language and theme"
 msgstr "Your photo, language and theme"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:22
+#: src/copy/studio-roof-draw.ts:23
 msgid "Your pick was not saved."
 msgstr "Your pick was not saved."
 

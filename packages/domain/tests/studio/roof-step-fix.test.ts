@@ -69,6 +69,27 @@ describe('the roof step: fixing the shape', () => {
     expect(document.roofs[0]?.corners[2]).toEqual(p(10, 3));
   });
 
+  it.each([
+    ['dragged out, the bar says the corner moved', [p(10, 3)], 'corner_moved'],
+    ['let go with no drag, the bar says drag it into place', [], 'corner_added'],
+  ])('+ %s', (_, to, said) => {
+    const { state } = run(
+      [
+        {
+          kind: 'grab',
+          grip: { kind: 'plus', roof: 0, edge: 1 },
+          at: p(8, 3),
+          system: 'metric',
+          magnet: true,
+        },
+        ...to.map((at) => ({ kind: 'drag' as const, at })),
+        { kind: 'release' },
+      ],
+      drawn,
+    );
+    expect(state).toMatchObject({ said: { kind: said } });
+  });
+
   it('a corner picked, then × removes it; a triangle keeps its three', () => {
     const removed = run(
       [{ kind: 'pick_corner', corner: { roof: 0, corner: 3 } }, { kind: 'remove_corner' }],

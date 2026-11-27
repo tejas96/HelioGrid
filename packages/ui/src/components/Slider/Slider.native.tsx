@@ -1,10 +1,12 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
+import { useEffect, useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -75,10 +77,17 @@ export function Slider({
   format,
   steppers = true,
   disabled = false,
+  focusRequest,
   provenance,
   density = 'expressive',
   style,
 }: NativeSliderProps) {
+  // A focus asked lands the screen reader on the track, never the keyboard's: a slider has none.
+  const track = useRef<View>(null);
+  useEffect(() => {
+    if (focusRequest === undefined || focusRequest === 0) return;
+    focusScreenReaderOn(() => track.current);
+  }, [focusRequest]);
   const percent = fillPercent(value, min, max);
   const shown = formatValue(value, unit, format);
   /* A props object or a bare tier — `Provenance`'s own resolver decides, at the
@@ -124,6 +133,7 @@ export function Slider({
           />
         ) : null}
         <SliderTrack
+          trackRef={track}
           disabled={disabled}
           label={label}
           max={max}

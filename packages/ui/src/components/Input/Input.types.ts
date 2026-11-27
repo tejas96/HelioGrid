@@ -78,7 +78,10 @@ export interface InputProps {
 
 /**
  * The keyboard/entry kinds both platforms can honour. `handle` is an address typed exactly as it
- * is — a UPI ID (`name@bank`): the `@` keyboard, never capitalised, never corrected.
+ * is — a UPI ID (`name@bank`): the `@` keyboard, never capitalised, never corrected. `decimal` is a
+ * number kept as typed — the decimal pad, but the field's words reach the caller whole, so a
+ * caller's own reader refuses what is not a number with its reason, where `number` hands it
+ * nothing for a value the browser cannot read.
  */
 export type InputType =
   | 'text'
@@ -88,6 +91,7 @@ export type InputType =
   | 'tel'
   | 'url'
   | 'number'
+  | 'decimal'
   | 'handle';
 
 /** The kinds a device must take exactly as typed: no capital first letter, no autocorrect. */

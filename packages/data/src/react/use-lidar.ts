@@ -13,13 +13,13 @@ import {
   type RoofFacts,
   type RoofName,
   type RoofSunlight,
-  roofMiddle,
   roofNameOf,
   roofsBox,
   type SightAt,
   type SiteLineUp,
   type SiteReads,
   type StudioDocument,
+  topTagSpotsOf,
 } from '@heliogrid/domain';
 import { buildingsOf, roofMovedSinceOpening, roofsMoved } from '@heliogrid/domain/studio-kernel';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -202,14 +202,16 @@ export function useLidar(input: LidarInput): {
         footShut: view.footShut,
       }),
       foot: lidarFootOf(moment),
-      pins: buildings.flatMap((b) =>
-        b.members.map((index) => ({
+      // Each pin on its roof's own open top: a stair room standing on a roof carries its own.
+      pins: buildings.flatMap((b) => {
+        const spots = topTagSpotsOf(b.members.map((index) => roofs[index]?.corners ?? []));
+        return b.members.map((index, at) => ({
           index,
-          middle: roofMiddle(roofs[index]?.corners ?? []),
+          spot: spots[at] ?? { east: 0, north: 0 },
           share: sunOf(index),
           picked: picked.includes(index),
-        })),
-      ),
+        }));
+      }),
       card:
         cardIndex === null
           ? null

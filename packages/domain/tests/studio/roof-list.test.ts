@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Roof } from '../../src/studio/document';
+import { roofsHeadM2 } from '../../src/studio/roof-list';
 import { roofListOf } from '../../src/studio/roof-list-build';
 import { roofsWorked } from '../../src/studio/roof-worked';
 import { box, designOf, FACTS, kindOf, roofOf, SHED, stairOn, TERRACE } from './roof-meet-support';
@@ -135,5 +136,33 @@ describe('what waits for a person to check', () => {
       name: 'Kota stone',
       confirmed: true,
     });
+  });
+});
+
+describe('the head’s area against its rows', () => {
+  // 80.4 m² and 12.462 m², side by side: the rows read 80 and 12, together 92.862 m².
+  const terrace = roofOf('terrace', box(0, 0, 10, 8.04));
+  const side = roofOf('side', box(10, 0, 1.55, 8.04));
+  it.each([
+    ['rows side by side: the head is the rows as shown, 80 + 12', [terrace, side], 92],
+    [
+      'an open shed over the terrace: every spot once, the rows overlapping',
+      [terrace, kindOf('tin', 'open_shed', box(5, 4, 4, 4), { on: 'terrace' })],
+      80.4,
+    ],
+    ['one roof alone: its row', [terrace], 80],
+  ])('%s', (_, roofs, head) => {
+    expect(roofsHeadM2(listOf(...roofs), 'metric')).toBeCloseTo(head, 6);
+  });
+
+  it('a sloped row shows its surface: the head stays every roof from above', () => {
+    const list = listOf(TERRACE, SHED);
+    expect(roofsHeadM2(list, 'metric')).toBeCloseTo(80 + 32, 6);
+  });
+
+  it('in square feet the head is the rows’ square feet as shown', () => {
+    const list = listOf(terrace, side);
+    const feet = (m2: number) => Math.round(m2 / 0.3048 ** 2);
+    expect(Math.round(roofsHeadM2(list, 'imperial') / 0.3048 ** 2)).toBe(feet(80.4) + feet(12.462));
   });
 });

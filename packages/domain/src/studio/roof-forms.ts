@@ -113,14 +113,7 @@ function flatRoof(corners: readonly GroundPoint[]): FormedRoof {
 export function gableEnds(corners: readonly GroundPoint[], turned: boolean): number[] {
   const cleaned = outlineForFaces(corners);
   const sideOf = (i: number) => (cleaned.sides[i] as readonly number[])[0] as number;
-  if (cleaned.points.length === FOUR) {
-    const span = (i: number) =>
-      distance(cleaned.points[i] as PlanPoint, cleaned.points[(i + 1) % FOUR] as PlanPoint);
-    const evenLonger = span(0) + span(2) >= span(1) + span(3);
-    // The ridge runs along the longer pair: the shorter pair are its ends.
-    const ends = evenLonger !== turned ? [1, 3] : [0, 2];
-    return ends.map(sideOf);
-  }
+  if (cleaned.points.length === FOUR) return fourSidedEnds(cleaned.points, turned).map(sideOf);
   const hip = facesFromSides({
     corners,
     sides: corners.map(() => ({ gable: false, slopeDeg: 30, eaveM: 0 })),
@@ -128,6 +121,55 @@ export function gableEnds(corners: readonly GroundPoint[], turned: boolean): num
   if (hip === null) return [];
   const ends = hip.faces.filter((face) => face.corners.length === 3).map((face) => face.side);
   return ends.length < cleaned.points.length ? ends : [];
+}
+
+const spanOf = (points: readonly PlanPoint[], i: number) =>
+  distance(points[i] as PlanPoint, points[(i + 1) % points.length] as PlanPoint);
+
+/** A four-sided outline's gable ends, by its own side numbers: the ridge runs along the longer pair. */
+function fourSidedEnds(points: readonly PlanPoint[], turned: boolean): [number, number] {
+  const evenLonger = spanOf(points, 0) + spanOf(points, 2) >= spanOf(points, 1) + spanOf(points, 3);
+  return evenLonger !== turned ? [1, 3] : [0, 2];
+}
+
+/** Two sides this far off parallel, as the sine of the angle between them, are parallel. */
+const PARALLEL_SINE = 1e-6;
+
+/**
+ * A gable on four sides whose two eave sides are not parallel: two faces square to one ridge
+ * halfway across, measured in from the longer eave side, so they face exactly opposite ways — a
+ * face per wall would lean each its own way. `null` where the plain gable is built: eave sides
+ * parallel, a side a person set, or a hole in it.
+ */
+function oneRidgeGable(
+  corners: readonly GroundPoint[],
+  form: RoofForm,
+  holes: readonly ShapedRing[],
+): FormedRoof | null {
+  const ownSides = (form.sides ?? []).some((own) => Object.keys(own).length > 0);
+  if (form.shape !== 'gable' || ownSides || holes.length > 0) return null;
+  const cleaned = outlineForFaces(corners);
+  const { points } = cleaned;
+  if (points.length !== FOUR) return null;
+  const [end] = fourSidedEnds(points, form.turned === true);
+  const eaves = [(end + 1) % FOUR, (end + 3) % FOUR] as const;
+  const way = (i: number) => {
+    const from = points[i] as PlanPoint;
+    const to = points[(i + 1) % FOUR] as PlanPoint;
+    const length = spanOf(points, i) || 1;
+    return { x: (to.x - from.x) / length, y: (to.y - from.y) / length };
+  };
+  const [a, b] = [way(eaves[0]), way(eaves[1])];
+  if (Math.abs(a.x * b.y - a.y * b.x) < PARALLEL_SINE) return null;
+  const longer = spanOf(points, eaves[0]) >= spanOf(points, eaves[1]) ? eaves[0] : eaves[1];
+  const side = (cleaned.sides[longer] as readonly number[])[0] as number;
+  const rise = riseOf(form.slopeDeg);
+  const roof = profileRoof(corners, side, (across) => [
+    { from: 0, to: across / 2, fromUp: 0, toUp: (rise * across) / 2 },
+    { from: across / 2, to: across, fromUp: (rise * across) / 2, toUp: 0 },
+  ]);
+  if (roof === null || roof.faces.length === 0) return null;
+  return { faces: roof.faces, topM: roof.topM, walls: roof.walls, built: 'gable' };
 }
 
 /** How each side shapes a gable, a hip, a mansard or a gambrel roof. */
@@ -237,7 +279,7 @@ export function roofFormed(
 ): FormedRoof {
   if (form.shape === 'flat') return flatRoof(corners);
   if (STRIP_SHAPES.includes(form.shape)) return stripRoof(corners, form) ?? flatRoof(corners);
-  const asked = sidedRoof(corners, form, holes);
+  const asked = oneRidgeGable(corners, form, holes) ?? sidedRoof(corners, form, holes);
   if (asked !== null) return asked;
   const hipped = sidedRoof(corners, { ...form, shape: 'hip', sides: undefined }, holes);
   return hipped ?? flatRoof(corners);

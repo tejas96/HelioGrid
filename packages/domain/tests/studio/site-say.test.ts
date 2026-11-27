@@ -21,7 +21,11 @@ const google = (
     source: 'google_solar',
     dataOn,
     gaps: [],
-    reads: { stamp: STAMP, roofs: noBuilding ? { terrace: { kind: 'no_building' } } : {} },
+    reads: {
+      stamp: STAMP,
+      roofs: noBuilding ? { terrace: { kind: 'no_building' } } : {},
+      shape: [],
+    },
     today: TODAY,
   });
 

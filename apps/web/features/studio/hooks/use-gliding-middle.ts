@@ -103,6 +103,7 @@ export function useGlidingMiddle(
  * A roof's height arriving from the map after it closed raises where the camera looks, keeping
  * the person's own turn and zoom: a tower's top comes into the frame, out from under the head.
  * The web's half: the camera rig's controls, moved once for each whole metre the look point moves.
+ * While a height arrow is held the camera holds still under the finger; let go, it moves once.
  */
 export function useLookHeight(
   controls: RefObject<CameraControlsImpl | null>,
@@ -112,16 +113,19 @@ export function useLookHeight(
   lookUp: { current: number },
   upM: number,
   still: boolean,
+  /** An arrow on the model is held: the look point waits for it to be let go. */
+  arrowHeld: boolean,
   invalidate: () => void,
 ) {
   const metres = Math.round(upM);
-  // biome-ignore lint/correctness/useExhaustiveDependencies: each whole metre the look point moves asks once
+  // biome-ignore lint/correctness/useExhaustiveDependencies: each whole metre the look point moves asks once, and once more as the arrow is let go
   useEffect(() => {
     const rig = controls.current;
-    if (rig === null || posed.current === null || Math.round(lookUp.current) === metres) return;
+    if (rig === null || posed.current === null || arrowHeld) return;
+    if (Math.round(lookUp.current) === metres) return;
     lookUp.current = upM;
     const target = rig.getTarget(new Vector3());
     void rig.moveTo(target.x, upM, target.z, !still);
     invalidate();
-  }, [metres]);
+  }, [metres, arrowHeld]);
 }

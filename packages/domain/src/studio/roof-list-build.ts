@@ -9,6 +9,9 @@ import type { RoofsWorked } from './roof-worked';
 
 /** The Roofs sheet's rows, from the design and what the kernel worked out of it. */
 
+/** Two areas this close are one, in square metres: the shape library's own error is far less. */
+const SAME_AREA_M2 = 0.01;
+
 /** The roof a roof's row sits under: the one it stands on, else the one it is part of. */
 function holderOf(document: StudioDocument, roof: Roof): number | null {
   return standsOn(document, roof) ?? belongsTo(document, roof);
@@ -103,10 +106,16 @@ export function roofListOf(
   const rows = inOrder(document).map(({ roof, child }) =>
     rowOf(document, facts, worked, roof, child),
   );
+  const areaM2 = roofsAreaM2(document);
+  const roofRows = rows.filter((row) => row.kind !== 'hole');
+  // Flat rows show their area from above: their sum is the whole only where none lies over another.
+  const flat = roofRows.every((row) => worked.built[row.roof] == null);
+  const sum = roofRows.reduce((total, row) => total + row.areaM2, 0);
   return {
     rows,
-    count: rows.filter((row) => row.kind !== 'hole').length,
-    areaM2: roofsAreaM2(document),
+    count: roofRows.length,
+    areaM2,
+    rowsAddUp: roofRows.length > 0 && flat && Math.abs(sum - areaM2) < SAME_AREA_M2,
     waiting: rows.filter((row) => row.waits).length,
   };
 }

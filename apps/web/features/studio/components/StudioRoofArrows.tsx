@@ -9,6 +9,12 @@ import { pointText } from './roof-marks-place';
 
 /** A dragged height within this many pixels of a level pulls to it. */
 const PULL_PX = 8;
+/**
+ * The least a drag moves for a metre, in pixels: a 3 m storey takes 30 px at the least. Far out,
+ * a metre up is a few pixels on the screen, and a finger's small slip would throw a roof floors
+ * high; the arrow then counts slower than the finger, never faster.
+ */
+const LEAST_PX_PER_METRE = 10;
 
 /** One arrow key on an arrow: up or down a step. */
 const ARROW_STEP: Readonly<Record<string, 1 | -1>> = { ArrowUp: 1, ArrowDown: -1 };
@@ -48,7 +54,8 @@ export function DragArrow({
     if (event.button !== 0) return;
     event.stopPropagation();
     event.currentTarget.setPointerCapture(event.pointerId);
-    const perMetre = Number(holder.current?.dataset.perMetre ?? 0);
+    const seen = Number(holder.current?.dataset.perMetre ?? 0);
+    const perMetre = seen > 0 ? Math.max(seen, LEAST_PX_PER_METRE) : 0;
     held.current = { y: event.clientY, perMetre };
     onGrab();
   };

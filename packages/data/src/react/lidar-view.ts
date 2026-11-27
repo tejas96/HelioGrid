@@ -32,8 +32,8 @@ export interface LidarBuildingShown {
 /** A pin on a drawn roof — the screen reads its top from the model — and its share of the sun. */
 export interface LidarPin {
   readonly index: number;
-  /** Its roof's middle on the ground. */
-  readonly middle: GroundPoint;
+  /** Where it stands on its roof's top: off a smaller roof standing on it, which has its own. */
+  readonly spot: GroundPoint;
   readonly share: number | null;
   readonly picked: boolean;
 }

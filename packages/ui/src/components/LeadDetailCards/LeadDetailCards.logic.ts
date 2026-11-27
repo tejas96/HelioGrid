@@ -137,6 +137,7 @@ export interface LeadDesignsSectionState<Failure> {
   readonly canDesign: boolean;
   readonly closed: boolean;
   create(): void;
+  design(): void;
   copy(designId: string): void;
   open(designId: string): void;
   recommend(designId: string, recommended: boolean): void;
@@ -144,6 +145,7 @@ export interface LeadDesignsSectionState<Failure> {
   readonly failure: Failure | null;
   readonly creating: boolean;
   readonly createFailure: Failure | null;
+  readonly opening: boolean;
 }
 
 /**
@@ -161,6 +163,7 @@ export function leadDesignsPanelOf<Failure>(
     closed: section.closed,
     words,
     onCreate: section.create,
+    onDesign: section.design,
     onOpen: section.open,
     onCopy: section.copy,
     onRecommend: section.recommend,
@@ -168,5 +171,6 @@ export function leadDesignsPanelOf<Failure>(
     failure: section.failure === null ? null : failureWords(section.failure),
     creating: section.creating,
     createFailure: section.createFailure === null ? null : failureWords(section.createFailure),
+    opening: section.opening,
   };
 }

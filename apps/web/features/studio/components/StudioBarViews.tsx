@@ -142,8 +142,11 @@ function roofsMessage(bar: Extract<RoofBar, { kind: 'roofs' }>, facts: BarFacts)
   });
 }
 
-/** Before a roof: nothing to say, unless there is no picture or the last roof was just deleted. */
-function startMessage(facts: BarFacts): BarView | null {
+/**
+ * Before a roof: how to draw one, for an editor with a picture; with no picture, why, and the way
+ * in by typing the size; and what was said when the last roof was just deleted.
+ */
+function startMessage(facts: BarFacts, editor: boolean): BarView | null {
   const { words, studio, format, units } = facts;
   const { picture, bar } = studio;
   const said = bar?.kind === 'start' ? bar.said : null;
@@ -155,7 +158,12 @@ function startMessage(facts: BarFacts): BarView | null {
     );
     if (deleted !== null) return message(`start-${saidId(said)}`, { tone: 'info', line: deleted });
   }
-  if (picture.kind !== 'none') return null;
+  if (picture.kind !== 'none') {
+    // An empty design: the pencil alone does not say what to do. Its own act is on the screen, so
+    // the line has none; it stays until drawing starts.
+    if (!editor || bar?.kind !== 'start') return null;
+    return message('start-hint', { tone: 'info', line: words.startHint, fades: false });
+  }
   // The pencil is the one door to drawing (E042); with no picture, typing the size is the way in.
   return message('no-picture', {
     tone: picture.reason === 'picked' ? 'info' : 'warning',
@@ -231,8 +239,13 @@ export function barMessagesOf(editing: StudioEditing, facts: BarFacts): BarView[
       ? message('own', { tone: 'info', line: own, fades: false })
       : bar?.kind === 'roofs'
         ? roofsMessage(bar, facts)
-        : startMessage(facts);
-  const site = siteBarMessage(studio, words, facts.format, editing.kind === 'editor');
+        : startMessage(facts, editing.kind === 'editor');
+  // A question in hand (a new roof's kind, the stairs) keeps the bar: the site's own question
+  // waits, and shows once it is answered.
+  const site =
+    moment?.asks === true
+      ? null
+      : siteBarMessage(studio, words, facts.format, editing.kind === 'editor');
   const lidar = studio.lidar;
   // On the straight-down picture, roofs drawn on the leaning sky picture sit off their spot
   // (`T-M05-002g`, board frame 20): LiDAR fixes them.

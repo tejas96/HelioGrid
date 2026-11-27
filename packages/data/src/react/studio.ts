@@ -18,6 +18,7 @@ export {
   type ShadeCut,
   type SunlightPiece,
   shadeCasterOf,
+  shadeCatcherOf,
   sunlightPiecesOf,
 } from './site-shade-cells';
 export { useRoofDresses } from './use-roof-dresses';

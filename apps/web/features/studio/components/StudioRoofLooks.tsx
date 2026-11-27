@@ -134,7 +134,10 @@ function LookMesh({
   const clear = look.seeThrough;
   return (
     <mesh geometry={look.geometry} castShadow={!clear} receiveShadow>
+      {/* three.js builds a material's shader once, for the maps it has then: the maps arriving
+          later are a new material, or the look stays its plain colour. */}
       <meshStandardMaterial
+        key={maps === undefined || roughness !== undefined ? 'plain' : 'mapped'}
         ref={keep}
         color={palette[`scene-roof-${look.swatch}`]}
         map={roughness === undefined ? (maps?.albedo ?? null) : null}

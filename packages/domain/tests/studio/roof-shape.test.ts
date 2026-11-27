@@ -70,7 +70,7 @@ describe('a roof’s shape', () => {
   it('the handles: move in the middle, turn beside it, both inside a big roof', () => {
     const handles = roofHandles(RECT, 1.5);
     expect(handles.move).toEqual(p(4, 3));
-    expect(handles.turnOutside).toBe(false);
+    expect(handles.outside).toBe('none');
     expect(pointInside(handles.turn, RECT)).toBe(true);
   });
 
@@ -79,12 +79,35 @@ describe('a roof’s shape', () => {
     expect(pointInside(roofHandles(corners, 0.3).move, corners)).toBe(true);
   });
 
-  it('a small roof: the move handle stays inside, the turn handle steps outside past a corner', () => {
+  it('the turn handle stands two gaps from the move handle: a short drag turns it less', () => {
+    expect(roofHandles(RECT, 1.5).turn).toEqual(p(7, 3));
+  });
+
+  it('a narrow roof: the move handle stays inside, the turn handle steps outside past a corner', () => {
+    const narrow = [p(0, 0), p(4, 0), p(4, 3), p(0, 3)];
+    const handles = roofHandles(narrow, 1.5);
+    expect(handles.move).toEqual(p(2, 1.5));
+    expect(handles.outside).toBe('turn');
+    expect(pointInside(handles.turn, narrow)).toBe(false);
+  });
+
+  it.each([
+    ['under two gaps across: both step outside', 2.9, 'both'],
+    ['two gaps across: the move handle stays inside', 3, 'turn'],
+    ['over two gaps across: the move handle stays inside', 3.1, 'turn'],
+  ] as const)('a small roof %s', (_name, side, outside) => {
+    const small = [p(0, 0), p(side, 0), p(side, side), p(0, side)];
+    const handles = roofHandles(small, 1.5);
+    expect(handles.outside).toBe(outside);
+    expect(pointInside(handles.turn, small)).toBe(false);
+    expect(pointInside(handles.move, small)).toBe(outside !== 'both');
+  });
+
+  it('a small roof: both handles stand south of it, past its lengths, two gaps apart, never on it', () => {
     const small = [p(0, 0), p(2, 0), p(2, 2), p(0, 2)];
     const handles = roofHandles(small, 1.5);
-    expect(handles.move).toEqual(p(1, 1));
-    expect(handles.turnOutside).toBe(true);
-    expect(pointInside(handles.turn, small)).toBe(false);
+    expect(handles.move).toEqual(p(1, -3));
+    expect(handles.turn).toEqual(p(4, -3));
   });
 });
 

@@ -3,7 +3,15 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { MeasurementSystem, RoofStepState } from '@heliogrid/domain';
 import { type StudioCanvasWords, sliderWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, IconButton, ShellGlyph, Slider, Switch, useFormat } from '@heliogrid/ui';
+import {
+  Button,
+  IconButton,
+  ShellGlyph,
+  Slider,
+  Switch,
+  useDesktopShell,
+  useFormat,
+} from '@heliogrid/ui';
 import type { KeyboardEvent } from 'react';
 import { StudioEntryBoxes } from './StudioEntryBoxes';
 import { digitOnSlider } from './slider-digit';
@@ -34,6 +42,7 @@ export function StudioLengthBox({
 }) {
   const t = useTranslate();
   const format = useFormat();
+  const desktop = useDesktopShell() === true;
   const { moves, lengthBox, numberEntry } = studio;
   const { entry } = sizing;
   if (lengthBox === null) return null;
@@ -44,6 +53,10 @@ export function StudioLengthBox({
   const outside = metres < slide.min || metres > slide.max;
   const typing = numberEntry === 'box' || outside;
   const refused = studio.bar?.kind === 'roofs' && studio.bar.live !== null;
+  // Each edge opened lands focus in the card, so a digit typed goes to the length: the box takes
+  // it, or on a desktop the slider (its keys and a digit answer there). A phone's slider is not
+  // focused: the card opens over the map and nothing moves.
+  const focusRequest = sizing.roof * FOCUS_PER_ROOF + sizing.edge + 1;
   const onKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
@@ -88,7 +101,7 @@ export function StudioLengthBox({
           entry={entry}
           units={units}
           label={words.lengthLabel}
-          focusRequest={sizing.roof * FOCUS_PER_ROOF + sizing.edge + 1}
+          focusRequest={focusRequest}
           onEntry={moves.typeLength}
           words={words}
         />
@@ -101,6 +114,7 @@ export function StudioLengthBox({
           mark={slide.mark}
           label={words.lengthTitle}
           labelSpokenOnly
+          focusRequest={desktop ? focusRequest : undefined}
           format={(value) => format.roofLength(value, units, false)}
           words={sliderWords(t)}
           // Input alone: a commit on a thumb touched and let go would round the picture's exact

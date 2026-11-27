@@ -18,7 +18,7 @@ import { useMemo, useReducer, useRef, useState } from 'react';
 import { planOutlinesOf } from './own-picture-view';
 import { readOf } from './read';
 import { closingOf, roofPlaceMoves } from './roof-place-moves';
-import { type RoofModelSeen, sheetHeightsWith, useRoofModel } from './roof-scene-view';
+import { type RoofModelSeen, roofModelIn, sheetHeightsWith, useRoofModel } from './roof-scene-view';
 import { arrivalOf, framedWithCard, useSizeCardOpens } from './size-card';
 import {
   editingOf,
@@ -31,7 +31,7 @@ import { framedForFaces, studioFacesMoves } from './studio-faces-moves';
 import { heldViewOf } from './studio-held-view';
 import { studioFocusOf } from './studio-screen-focus';
 import type { StudioScreen } from './studio-screen-view';
-import { studioBack, undoRedoMoves, undoRedoOf, useUndoSlots } from './studio-undo-back';
+import { menusBack, studioBack, undoRedoMoves, undoRedoOf, useUndoSlots } from './studio-undo-back';
 import { allClosed, drawOf, pickPictureOf, pictureUpdatedFor, seeOf } from './studio-views';
 import { useStudioPicture } from './use-design-picture';
 import { useDesignScreen } from './use-design-screen';
@@ -43,7 +43,7 @@ import { useSession } from './use-session';
 import { useSiteHeights } from './use-site-data';
 import { useStudioSheet } from './use-studio-sheet';
 import { useStudioStairs } from './use-studio-stairs';
-import { useSunBar } from './use-sun-bar';
+import { sunBackOf, useSunBar } from './use-sun-bar';
 
 /**
  * The studio's canvas (`T-M05-002a`): the design, its document and the sky picture under it; each
@@ -229,7 +229,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     views,
     ...roof.view,
     ...sheet.state,
-    ...model,
+    ...roofModelIn(model, units),
     ...stairs.view,
     stairsMoment,
     ...panel.view,
@@ -289,10 +289,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
         studioBack({
           panelOpen: panel.view.panel.open !== 'none',
           closePanel: panel.moves.closePanel,
-          picturesOpen,
-          closePictures: () => setPicturesOpen(false),
-          viewOpen,
-          closeView: () => setViewOpen(false),
+          ...menusBack(picturesOpen, setPicturesOpen, viewOpen, setViewOpen),
+          ...sunBackOf(sun.view.sunBar, sun.moves),
           sheetOpen: roofSheet !== null,
           // A side's sheet and a face's go back to the roof's; the roof's sheet closes.
           closeSheet: sheet.back,

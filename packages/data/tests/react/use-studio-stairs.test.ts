@@ -105,8 +105,23 @@ describe('the stairs', () => {
     );
     act(() => view.result.current.moves.dropStairs());
     expect(view.result.current.stairs).toMatchObject({ roof: 1, side: 1, byPerson: false });
-    expect(view.result.current.stairsMoment).toBe('guessed');
     expect(stored.saves.length).toBe(saves);
+  });
+
+  it('a guess the design opened with is not said again on a reopen', async () => {
+    const view = await opened([TERRACE, STAIR]);
+    expect(view.result.current.stairs).toMatchObject({ byPerson: false });
+    expect(view.result.current.stairsMoment).toBeNull();
+  });
+
+  it('a stair room drawn now: its guess is said', async () => {
+    const view = await opened([TERRACE]);
+    act(() => view.result.current.moves.draw());
+    for (const at of square(4, 2, 2, 2)) act(() => view.result.current.moves.tap(at));
+    act(() => view.result.current.moves.closeAsDrawn());
+    await waitFor(() => expect(saved()?.roofs).toHaveLength(2));
+    expect(view.result.current.stairs).toMatchObject({ byPerson: false });
+    expect(view.result.current.stairsMoment).toBe('guessed');
   });
 
   it('with no stair room the bar asks; Place, then a tap on an edge places them', async () => {

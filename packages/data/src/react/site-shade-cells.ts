@@ -74,29 +74,65 @@ function cutOf({ outline, topM }: ShadeCut, mapTopM: number) {
     (pointInside(at, outline) || (highM <= ownTopM && distanceToRing(at, outline) <= CUT_MARGIN_M));
 }
 
+/** The map read a cell a side of `CELL_M`, where the person lined it up. */
+function coarseOf(grid: HeightGrid, lineUp: SiteLineUp) {
+  const every = Math.max(1, Math.round(CELL_M / grid.stepM));
+  const step = grid.stepM * every;
+  return {
+    cols: Math.floor(grid.cols / every),
+    rows: Math.floor(grid.rows / every),
+    step,
+    east0: grid.west + lineUp.east,
+    north0: grid.south + lineUp.north,
+    heightAt: (c: number, r: number) =>
+      grid.heights[r * every * grid.cols + c * every] ?? Number.NaN,
+  };
+}
+
 /**
- * The height map as one shadow caster (*the shadows are the whole site's*): the triangles' corners,
- * x east, y up, z south, standing where the person lined the map up, as the height view does. The
- * drawn roofs are left out — the model casts its own — and so is the bare ground.
+ * The map's cells as triangles' corners, x east, y up, z south, standing where the person lined the
+ * map up, as the height view does: each cell with data that `keep` keeps, from its corners' heights
+ * and its middle where the line-up puts it.
+ */
+function cellTriangles(
+  grid: HeightGrid,
+  lineUp: SiteLineUp,
+  keep: (heights: readonly number[], placed: { east: number; north: number }) => boolean,
+): Float32Array {
+  const { cols, rows, step, east0, north0, heightAt } = coarseOf(grid, lineUp);
+  const positions = new Float32Array(cols * rows * QUAD.length * XYZ);
+  let at = 0;
+  for (let r = 0; r < rows - 1; r += 1) {
+    for (let c = 0; c < cols - 1; c += 1) {
+      const hs = QUAD.map(([dc, dr]) => heightAt(c + dc, r + dr));
+      if (hs.some(Number.isNaN)) continue;
+      if (!keep(hs, { east: east0 + (c + 1) * step, north: north0 + (r + 1) * step })) continue;
+      QUAD.forEach(([dc, dr], k) => {
+        const x = east0 + (c + dc + MIDDLE) * step;
+        const z = -(north0 + (r + dr + MIDDLE) * step);
+        positions.set([x, (hs[k] as number) + lineUp.lift, z], at * XYZ);
+        at += 1;
+      });
+    }
+  }
+  return positions.subarray(0, at * XYZ);
+}
+
+/**
+ * The height map as one shadow caster (*the shadows are the whole site's*). The drawn roofs are
+ * left out — the model casts its own — and so is the bare ground.
  */
 export function shadeCasterOf(
   grid: HeightGrid,
   cuts: readonly ShadeCut[],
   lineUp: SiteLineUp,
 ): Float32Array {
-  const every = Math.max(1, Math.round(CELL_M / grid.stepM));
-  const cols = Math.floor(grid.cols / every);
-  const rows = Math.floor(grid.rows / every);
-  const step = grid.stepM * every;
-  const heightAt = (c: number, r: number) =>
-    grid.heights[r * every * grid.cols + c * every] ?? Number.NaN;
+  const { cols, rows, step, east0, north0, heightAt } = coarseOf(grid, lineUp);
   /** The highest the map reads inside an outline, where the line-up puts the map's points. */
   const mapTopOf = (outline: GroundOutline) => {
     const box = boxOf(outline, 0);
     const from = (metres: number, origin: number) => Math.floor((metres - origin) / step);
     let top = Number.NEGATIVE_INFINITY;
-    const east0 = grid.west + lineUp.east;
-    const north0 = grid.south + lineUp.north;
     for (
       let r = Math.max(0, from(box.south, north0));
       r <= Math.min(rows - 1, from(box.north, north0) + 1);
@@ -117,27 +153,21 @@ export function shadeCasterOf(
   const cutters = cuts
     .filter((cut) => cut.outline.length >= OUTLINE_MIN)
     .map((cut) => cutOf(cut, mapTopOf(cut.outline)));
-  const positions = new Float32Array(cols * rows * QUAD.length * XYZ);
-  let at = 0;
-  for (let r = 0; r < rows - 1; r += 1) {
-    for (let c = 0; c < cols - 1; c += 1) {
-      const hs = QUAD.map(([dc, dr]) => heightAt(c + dc, r + dr));
-      if (hs.some(Number.isNaN) || Math.max(...hs) < GROUND_M) continue;
-      // The roofs are drawn on the picture: the cell is judged where the line-up puts it.
-      const placed = {
-        east: grid.west + (c + 1) * step + lineUp.east,
-        north: grid.south + (r + 1) * step + lineUp.north,
-      };
-      if (cutters.some((cut) => cut(placed, Math.max(...hs) + lineUp.lift))) continue;
-      QUAD.forEach(([dc, dr], k) => {
-        const x = grid.west + (c + dc + MIDDLE) * step + lineUp.east;
-        const z = -(grid.south + (r + dr + MIDDLE) * step + lineUp.north);
-        positions.set([x, (hs[k] as number) + lineUp.lift, z], at * XYZ);
-        at += 1;
-      });
-    }
-  }
-  return positions.subarray(0, at * XYZ);
+  return cellTriangles(grid, lineUp, (hs, placed) => {
+    const highM = Math.max(...hs);
+    // The roofs are drawn on the picture: the cell is judged where the line-up puts it.
+    return highM >= GROUND_M && !cutters.some((cut) => cut(placed, highM + lineUp.lift));
+  });
+}
+
+/**
+ * The height map as the shadows' catcher: every cell of it at the height the map reads, on the
+ * caster's own corners. The picture is a view straight down, so a neighbour's top on it catches
+ * shade where that top stands — never the shade its own building throws on the ground under it.
+ * The scene samples the shadows up there and draws them flat on the picture.
+ */
+export function shadeCatcherOf(grid: HeightGrid, lineUp: SiteLineUp): Float32Array {
+  return cellTriangles(grid, lineUp, () => true);
 }
 
 /** A square of sunlight on a roof: its middle, half its side, and the share of sun it keeps. */

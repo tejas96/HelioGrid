@@ -10,6 +10,7 @@ import {
   SRGBColorSpace,
   SrcAlphaFactor,
 } from 'three';
+import { groundSide } from './camera-limits';
 import type { ClearGround } from './StudioCameraRig';
 
 /** The texture side the GPU takes on every device we serve. */
@@ -17,15 +18,19 @@ const TEXTURE_MAX_PX = 4_096;
 /** A pixel's red, green, blue and alpha. */
 const PIXEL_BYTES = 4;
 /**
- * The share of each side over which the picture fades into the ground around it: about 7 m of a
- * 183 m picture, so the fade never reaches a roof the sharp picture was fetched for.
+ * The share of each side over which the picture fades into the ground around it: about 15 m of a
+ * 183 m picture, so a 3D view far out finds no edge, and the fade never reaches a roof the sharp
+ * picture was fetched for.
  */
-const FADE_EDGE = 0.04;
+const FADE_EDGE = 0.08;
 /** The edge colour is the mean of the outer ring of the picture shrunk to this many pixels a side. */
 const EDGE_SAMPLE_PX = 8;
 const CHANNEL_MAX = 255;
-/** How far the ground beyond the picture leans from the picture's edge colour to the page's. */
-const SURROUND_TO_PAGE = 0.5;
+/**
+ * How far the ground beyond the picture leans from the picture's own ground colour to the page's:
+ * a little, so it still reads as ground, never as an empty page round a card.
+ */
+const SURROUND_TO_PAGE = 0.12;
 /** Tiles laid edge to edge cover their box to within rounding: below this share, one is missing. */
 const WHOLE_SHARE = 0.999;
 /** How sharp the picture stays when seen at a slant. */
@@ -37,8 +42,6 @@ const ANISOTROPY = 8;
  * graphics chip let the plain ground flash through the picture while the camera moved.
  */
 const LAYER_ORDER = { ground: -3, around: -2, sharp: -1 } as const;
-/** The ground beyond the picture, wide enough that its edge is lost in the haze. */
-const SURROUND_M = 1_200;
 
 /** The picture laid on one canvas, in metres east and north of the pin, and the ground around it. */
 export interface GroundPicture {
@@ -124,12 +127,15 @@ function fadeEdges(
  * The pieces drawn onto one canvas at the provider's own pixels — never stretched or sharpened,
  * which would also darken the provider's marks in the photograph — as one texture: one draw call
  * however many pieces the provider sent. `over`: the picture lies over a softer one, so its holes
- * and its outer part are see-through; else they take the ground's colour.
+ * and its outer part are see-through; else they take the ground's colour. `strip`: the share of
+ * each image's foot that carries the provider's credit, left off; the pieces' boxes are the ground
+ * without it (`StudioPicture`'s `laid`).
  */
 async function groundPictureOf(
   pieces: readonly SkyPicturePiece[],
   page: string,
   over: boolean,
+  strip: number,
 ): Promise<GroundPicture | null> {
   // A piece that does not decode is left out: the rest of the picture still lies on the ground.
   const decoded = await Promise.allSettled(pieces.map((piece) => imageOf(piece.image)));
@@ -153,8 +159,10 @@ async function groundPictureOf(
     firstImage.naturalWidth,
     Math.floor(TEXTURE_MAX_PX / Math.max(columns, rows)),
   );
+  // Each piece's own pixels above its credit strip, at the size it is drawn.
+  const tileHighPx = Math.round(tilePx * (1 - Math.max(0, strip)));
   const width = columns * tilePx;
-  const height = rows * tilePx;
+  const height = rows * tileHighPx;
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -164,7 +172,9 @@ async function groundPictureOf(
   for (const { piece, image } of kept) {
     const column = Math.round((piece.west - west) / tileMetres.across);
     const row = Math.round((north - piece.north) / tileMetres.along);
-    context.drawImage(image, column * tilePx, row * tilePx, tilePx, tilePx);
+    const keptPx = Math.round(image.naturalHeight * (1 - Math.max(0, strip)));
+    const at = [column * tilePx, row * tileHighPx] as const;
+    context.drawImage(image, 0, 0, image.naturalWidth, keptPx, at[0], at[1], tilePx, tileHighPx);
   }
   const surround = surroundOf(canvas, page);
   if (surround === null) return null;
@@ -206,7 +216,8 @@ function whole(pieces: readonly SkyPicturePiece[]): boolean {
  */
 export function clearGroundOf(picture: StudioPicture): ClearGround | null {
   if (picture.kind !== 'sky') return null;
-  const outer = whole(picture.around) ? picture.around : picture.pieces;
+  const { laid } = picture;
+  const outer = whole(laid.around) ? laid.around : laid.pieces;
   const west = Math.min(...outer.map((piece) => piece.west));
   const east = Math.max(...outer.map((piece) => piece.east));
   const south = Math.min(...outer.map((piece) => piece.south));
@@ -221,6 +232,7 @@ function useGroundPicture(
   pieces: readonly SkyPicturePiece[],
   page: string,
   over: boolean,
+  strip: number,
 ): GroundPicture | null {
   // biome-ignore lint/plugin: the web's WebGL texture, built from the pictures in the browser, is the platform's own object
   const [ground, setGround] = useState<GroundPicture | null>(null);
@@ -231,7 +243,7 @@ function useGroundPicture(
     }
     let live = true;
     let made: GroundPicture | null = null;
-    void groundPictureOf(pieces, page, over).then((built) => {
+    void groundPictureOf(pieces, page, over, strip).then((built) => {
       made = built;
       if (live) setGround(built);
       else built?.texture.dispose();
@@ -240,7 +252,7 @@ function useGroundPicture(
       live = false;
       made?.texture.dispose();
     };
-  }, [pieces, page, over]);
+  }, [pieces, page, over, strip]);
   return ground;
 }
 
@@ -276,20 +288,23 @@ function GroundLayer({ ground, order }: { ground: GroundPicture; order: number }
 export function StudioPictureGround({
   pieces,
   around,
+  strip,
   page,
   onSharp,
 }: {
   pieces: readonly SkyPicturePiece[];
   /** The softer picture round the sharp one; empty where there is none. */
   around: readonly SkyPicturePiece[];
+  /** The share of each image's foot that carries the provider's credit, cut off. */
+  strip: number;
   /** The page's colour, which the ground beyond the picture leans to. */
   page: string;
   /** Told the sharp picture once it is laid, so a roof's top can wear the ground under it. */
   onSharp: (picture: GroundPicture | null) => void;
 }) {
   const ringed = around.length > 0;
-  const outer = useGroundPicture(around, page, false);
-  const sharp = useGroundPicture(pieces, page, ringed);
+  const outer = useGroundPicture(around, page, false, strip);
+  const sharp = useGroundPicture(pieces, page, ringed, strip);
   useEffect(() => {
     onSharp(sharp);
     return () => onSharp(null);
@@ -300,7 +315,7 @@ export function StudioPictureGround({
     <>
       {under === null ? null : (
         <mesh rotation-x={-Math.PI / 2} renderOrder={LAYER_ORDER.ground}>
-          <planeGeometry args={[SURROUND_M, SURROUND_M]} />
+          <planeGeometry args={[groundSide(), groundSide()]} />
           <meshBasicMaterial
             color={under.edge}
             toneMapped={false}

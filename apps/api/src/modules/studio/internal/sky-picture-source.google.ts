@@ -100,8 +100,8 @@ export class GoogleSkyPictureSource implements SkyPictureSource {
       });
       return {
         source: 'google',
-        // Static Maps names its imagery owners only inside the picture's corner, which the camera
-        // never shows (it stops before the edge), so the chip carries Google's credit instead.
+        // Static Maps burns its logo and imagery owners into the picture's foot, which the studio
+        // cuts off as it lays the picture (domain's `creditStripOf`): the chip carries the credit.
         credit: 'Imagery © Google',
         metresPerPixel:
           (EQUATOR_METRES_PER_PIXEL_AT_ZOOM_0 * Math.cos(pin.latitude * RADIANS)) /

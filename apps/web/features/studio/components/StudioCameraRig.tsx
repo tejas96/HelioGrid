@@ -5,53 +5,42 @@ import { CameraControls } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import type CameraControlsImpl from 'camera-controls';
 import { type RefObject, useEffect, useRef } from 'react';
-import {
-  type Box3,
-  Fog,
-  type PerspectiveCamera,
-  Plane,
-  Raycaster,
-  Spherical,
-  Vector2,
-  Vector3,
-} from 'three';
+import { Fog, type PerspectiveCamera, Vector3 } from 'three';
+import { useArrowPressHold } from '../hooks/use-arrow-press-hold';
 import { useGlidingMiddle, useLookHeight } from '../hooks/use-gliding-middle';
 import { useStudioWheel } from '../hooks/use-studio-wheel';
-import type { StudioDrive } from './camera-drive';
+import { driveOf, type StudioDrive } from './camera-drive';
 import { type CameraEnd, cameraEnd, fadeIfMovedFrom, inFlight } from './camera-fade';
+import { CameraFraming, type FrameTo } from './camera-framing';
+import { type ClearGround, hazeOf, openingDistance } from './camera-limits';
 import {
-  type ClearGround,
-  groundPerPixel,
-  lookRoom,
-  openingDistance,
-  reachOf,
-  seenPerMetre,
-} from './camera-limits';
-import { bindHands, fitDistance, fitMiddle, fitSpread, POSE, type SceneFit } from './camera-poses';
+  bindHands,
+  fitDistance,
+  fitMiddle,
+  fitSpread,
+  LIDAR_TILT_MAX,
+  POSE,
+  poseTilt,
+  type SceneFit,
+  type SunFrame,
+  sunViewOf,
+} from './camera-poses';
 import { SceneLens } from './scene-lens';
 
 export type { StudioDrive } from './camera-drive';
 export type { ClearGround } from './camera-limits';
+export type { SunFrame } from './camera-poses';
 
 /** How long the camera takes to fly to a new view, in seconds. */
 const FLY_SECONDS = 0.25;
-/**
- * The haze, as a share of the camera's distance: the ground in view stays clear, and the far
- * ground fades into the page whatever the zoom.
- */
-const HAZE_FROM = 1;
-const HAZE_TO = 2.4;
 /**
  * The camera's near plane, as a share of its distance: depth stays fine enough at every zoom that
  * the ground's layers, a centimetre apart, never show through each other.
  */
 const NEAR_SHARE = 0.02;
 
-/** Each press of Zoom in or Zoom out moves the camera this many times nearer or farther. */
-const ZOOM_STEP = 1.6;
-/** Each arrow key moves the map this share of the window. */
-const ARROW_SHARE = 0.15;
-
+/** The view held still under a held arrow, whatever is in sight. */
+const ARROW_HOLD = { clear: null } as const;
 /** Where the camera looks from for a view, framing the ground around the pin in the room left free. */
 export function StudioCameraRig({
   view,
@@ -64,6 +53,9 @@ export function StudioCameraRig({
   onTurn,
   fit,
   frameOn,
+  arrowHeld,
+  lidar,
+  sun,
 }: {
   view: StudioView;
   free: { readonly top: number; readonly bottom: number };
@@ -85,6 +77,15 @@ export function StudioCameraRig({
   drive: RefObject<StudioDrive | null>;
   /** Told the view's turn from north up, in radians, each time it changes. */
   onTurn: (turn: number) => void;
+  /**
+   * An arrow on the model is held: the camera holds still under the finger, and the frames the
+   * sheet's room or the roof's height would ask wait for it to be let go.
+   */
+  arrowHeld: boolean;
+  /** LiDAR is on: the view keeps to a tilt its scan reads at. */
+  lidar: boolean;
+  /** The sun's bar is open: its view frames the day's path over the roofs; `null` while closed. */
+  sun: SunFrame | null;
 }) {
   const controls = useRef<CameraControlsImpl>(null);
   const camera = useThree((three) => three.camera) as PerspectiveCamera;
@@ -95,65 +96,46 @@ export function StudioCameraRig({
   const map = gl.domElement;
   useStudioWheel(controls, map);
 
-  // The picture holds the camera. Out: no farther than the picture fills the room between the bars,
-  // looking only where it stays on the picture. In: no nearer than it stays sharp. A resize resets.
+  // The picture holds the camera (`camera-framing.ts`); a resize resets its limits.
   const { west, east, south, north } = clear ?? { west: 0, east: 0, south: 0, north: 0 };
   const held = clear !== null;
-  const room = useRef<Box3 | null>(null);
-  // The height the camera last framed at: closing a sheet keeps the view where it is.
-  const lookUp = useRef(0);
+  const box = held ? { west, east, south, north } : null;
+  const inputs = { clear: box, metresPerPixel, size, free, still };
+  const framing = useRef(new CameraFraming(inputs)).current;
+  framing.inputs = inputs;
   const { width, height } = size;
   const { top: barTop, bottom: barBottom } = free;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: these are what the limits are worked from
   useEffect(() => {
     const rig = controls.current;
     if (rig === null) return;
-    room.current = null;
-    const reach = reachOf(
-      held ? { west, east, south, north } : null,
-      metresPerPixel,
-      { width, height },
-      { top: barTop, bottom: barBottom },
-    );
-    rig.maxDistance = reach.farthest;
-    rig.minDistance = reach.nearest;
-    if (!held) rig.setBoundary();
-    // A new limit eases the camera in or out to it, never a snap of the whole view.
-    if (rig.distance > rig.maxDistance) void rig.dollyTo(rig.maxDistance, !still);
-    if (rig.distance < rig.minDistance) void rig.dollyTo(rig.minDistance, !still);
+    framing.reset(rig);
     invalidate();
-  }, [
-    held,
-    west,
-    east,
-    south,
-    north,
-    metresPerPixel,
-    width,
-    height,
-    still,
-    barTop,
-    barBottom,
-    invalidate,
-  ]);
+  }, [held, west, east, south, north, metresPerPixel, width, height, still, barTop, barBottom]);
 
   // The loupe's own small picture on the graphics chip, kept between its draws.
   const lens = useRef(new SceneLens()).current;
   useEffect(() => () => lens.dispose(), [lens]);
 
-  const caster = useRef(new Raycaster()).current;
-  const pointer = useRef(new Vector2()).current;
-  const level = useRef(new Plane(new Vector3(0, 1, 0), 0)).current;
-  const landed = useRef(new Vector3()).current;
   const told = useRef<number | null>(null);
-  const heading = useRef(new Spherical()).current;
-  // Each drawn frame sets the haze from where the camera stands now, and the room it may look in.
+  const looked = useRef(new Vector3()).current;
+  // Each drawn frame sets the haze from where the camera stands now, the limits for the tilt it is
+  // going to, and the room it may look in.
   useFrame(() => {
     const rig = controls.current;
     if (rig === null) return;
     const { fog } = scene;
+    // The far ground fades into the sky, or the page straight down, before the picture's edge.
     if (fog instanceof Fog) {
-      fog.near = rig.distance * HAZE_FROM;
-      fog.far = rig.distance * HAZE_TO;
+      const haze = hazeOf(
+        camera.position,
+        rig.getTarget(looked),
+        rig.polarAngle,
+        rig.distance,
+        box,
+      );
+      fog.near = haze.near;
+      fog.far = haze.far;
     }
     const near = rig.distance * NEAR_SHARE;
     if (camera.near !== near) {
@@ -164,15 +146,7 @@ export function StudioCameraRig({
       told.current = rig.azimuthAngle;
       onTurn(rig.azimuthAngle);
     }
-    if (!held) return;
-    // The room is the one the camera is going to: while it flies in, the pin it flies to stays
-    // inside, though the room it leaves was too small to hold it.
-    const going = rig.getSpherical(heading, true).radius;
-    const upM = lookUp.current;
-    const next = lookRoom({ west, east, south, north, upM }, seenPerMetre(size, free), going);
-    if (room.current?.equals(next)) return;
-    room.current = next;
-    rig.setBoundary(next);
+    framing.keepIn(rig);
   });
 
   // The free room between the bars: the framed ground sits in its middle, whatever the camera does.
@@ -182,7 +156,8 @@ export function StudioCameraRig({
     free,
     {
       still,
-      held: heldView,
+      // A held arrow holds the view still, whatever the bars do, until it is let go.
+      held: arrowHeld ? ARROW_HOLD : heldView,
       view,
       flying: () => controls.current !== null && inFlight(controls.current),
     },
@@ -209,22 +184,65 @@ export function StudioCameraRig({
     if (settled) return;
     posed.current = { view, measured, pictured };
     bindHands(rig, view === 'top');
+    if (lidar) rig.maxPolarAngle = Math.min(rig.maxPolarAngle, LIDAR_TILT_MAX);
     // A picked view is flown to (faded with Reduce Motion); the first view is set at once.
     poseFor(view, !still && was !== null && was.view !== view, was !== null && was.view !== view);
   });
 
+  // A frame the page asks for keeps the person's own turn and tilt: only a new view poses them.
   // biome-ignore lint/correctness/useExhaustiveDependencies: a new close is what asks for the frame
   useEffect(() => {
-    if (frameOn !== null) poseFor(view, !still);
+    if (frameOn !== null) poseFor(view, !still, true, false);
   }, [frameOn]);
-  useLookHeight(controls, posed, lookUp, fit?.upM ?? 0, still, invalidate);
+  useLookHeight(controls, posed, framing.lookUp, fit?.upM ?? 0, still, arrowHeld, invalidate);
+  // The camera holds still while a finger aims a corner, and while an arrow on the model is held.
+  const holds = useRef({ aim: false, arrow: false }).current;
+  const holdFor = (part: 'aim' | 'arrow', holding: boolean) => {
+    holds[part] = holding;
+    const rig = controls.current;
+    if (rig !== null) rig.enabled = !(holds.aim || holds.arrow);
+  };
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the arrow's hold is what moves it
+  useEffect(() => holdFor('arrow', arrowHeld), [arrowHeld]);
+  useArrowPressHold(map, arrowHeld, holds, holdFor);
+
+  // LiDAR keeps the view to a tilt its scan reads at: opened from a low camera, it rises to it.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: LiDAR turning on or off is what moves it
+  useEffect(() => {
+    const rig = controls.current;
+    if (rig === null || posed.current === null) return;
+    bindHands(rig, view === 'top');
+    if (!lidar || view === 'top') return;
+    rig.maxPolarAngle = Math.min(rig.maxPolarAngle, LIDAR_TILT_MAX);
+    if (framing.tiltOf(rig) <= LIDAR_TILT_MAX) return;
+    const before = cameraEnd(rig);
+    void rig.rotateTo(rig.azimuthAngle, POSE['3d'].tilt, !still);
+    fadeIfMoved(rig, before);
+    invalidate();
+  }, [lidar]);
+
+  // The sun's bar opened out of the top view frames the day's path; closed, the view frames the
+  // roofs again.
+  const sunShown = sun !== null && view !== 'top';
+  const sunWas = useRef(false);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the sun's view opening or closing is what moves it
+  useEffect(() => {
+    const was = sunWas.current;
+    sunWas.current = sunShown;
+    if (posed.current === null || was === sunShown) return;
+    if (sun !== null && sunShown) poseSun(sun, !still);
+    else poseFor(view, !still);
+  }, [sunShown]);
 
   const fadeIfMoved = (rig: CameraControlsImpl, before: CameraEnd) => {
     if (still) fadeIfMovedFrom(map, rig, before);
   };
 
-  /** The view framed round the roofs, or round the pin before a roof, flown to or set at once. */
-  const poseFor = (to: StudioView, move: boolean, fade = true) => {
+  /**
+   * The view framed round the roofs, or round the pin before a roof, flown to or set at once;
+   * `turn`: turned and tilted to the view's own pose, else kept as the person left it.
+   */
+  const poseFor = (to: StudioView, move: boolean, fade = true, turn = true) => {
     const rig = controls.current;
     if (rig === null) return;
     const screen = { width: size.width, height: size.height };
@@ -237,70 +255,53 @@ export function StudioCameraRig({
         : (openingDistance(metresPerPixel, size, window.devicePixelRatio) ??
           fitDistance(screen, bars));
     const { upM, ...middle } = fitMiddle(fit);
-    lookUp.current = upM;
-    const pose = POSE[to];
-    const going = Math.min(Math.max(distance, rig.minDistance), rig.maxDistance);
-    // The room for where the camera is going comes first, or the pin it flies to is cut off.
+    flyTo(rig, {
+      distance: spread === null ? 0 : distance,
+      going: distance,
+      at: new Vector3(middle.east, upM, -middle.north),
+      tilt: poseTilt(to, lidar, turn, framing.tiltOf(rig)),
+      turn: turn ? POSE[to].turn : null,
+      move,
+      fade,
+    });
+  };
+
+  /** Flies the camera to a frame (`camera-framing.ts`), faded with Reduce Motion. */
+  const flyTo = (rig: CameraControlsImpl, to: FrameTo & { readonly fade: boolean }) => {
     const before = cameraEnd(rig);
-    if (held) {
-      room.current = lookRoom({ west, east, south, north, upM }, seenPerMetre(size, free), going);
-      rig.setBoundary(room.current);
-    }
-    void rig.dollyTo(going, move);
-    void rig.moveTo(middle.east, upM, -middle.north, move);
-    void rig.rotateTo(pose.turn, pose.tilt, move);
-    if (fade) fadeIfMoved(rig, before);
+    framing.flyTo(rig, to);
+    if (to.fade) fadeIfMoved(rig, before);
     invalidate();
   };
 
-  const zoomBy = (factor: number) => {
+  /** The sun's view: the day's path framed whole, arching over the roofs against the sky. */
+  const poseSun = (frame: SunFrame, move: boolean) => {
     const rig = controls.current;
     if (rig === null) return;
-    const before = cameraEnd(rig);
-    void rig.dollyTo(rig.getSpherical(heading, true).radius * factor, !still);
-    fadeIfMoved(rig, before);
+    const pose = sunViewOf(frame, size, free, box);
+    flyTo(rig, {
+      distance: pose.distance,
+      going: pose.distance,
+      at: new Vector3(pose.at.east, pose.at.upM, -pose.at.north),
+      tilt: pose.tilt,
+      turn: pose.turn,
+      move,
+      fade: true,
+    });
   };
 
   // The page's own controls: each moves the camera as a gesture would, inside the same limits.
   useEffect(() => {
-    drive.current = {
-      // Each press counts from where the last one is taking the camera: quick presses add up.
-      zoomIn: () => zoomBy(1 / ZOOM_STEP),
-      zoomOut: () => zoomBy(ZOOM_STEP),
-      nudge: (east, north) => {
-        const rig = controls.current;
-        if (rig === null) return;
-        const across = groundPerPixel(rig.distance, size.height) * size.width * ARROW_SHARE;
-        // The library's `truck` takes y as screen-down: north is its negative.
-        const before = cameraEnd(rig);
-        void rig.truck(east * across, -north * across, !still);
-        fadeIfMoved(rig, before);
-      },
-      groundAt: (clientX, clientY, height) => {
-        const box = map.getBoundingClientRect();
-        pointer.set(
-          ((clientX - box.left) / box.width) * 2 - 1,
-          -((clientY - box.top) / box.height) * 2 + 1,
-        );
-        caster.setFromCamera(pointer, camera);
-        level.constant = -height;
-        const hit = caster.ray.intersectPlane(level, landed);
-        return hit === null ? null : { east: hit.x, north: -hit.z };
-      },
-      hold: (holding) => {
-        const rig = controls.current;
-        if (rig !== null) rig.enabled = !holding;
-      },
-      drawRound: (clientX, clientY, span, into) => {
-        const box = map.getBoundingClientRect();
-        const square = {
-          left: clientX - box.left - span / 2,
-          top: clientY - box.top - span / 2,
-          side: span,
-        };
-        lens.draw(gl, scene, camera, size, square, into);
-      },
-    };
+    drive.current = driveOf({
+      rig: () => controls.current,
+      camera,
+      map,
+      size,
+      still,
+      fadeIfMoved,
+      hold: (holding) => holdFor('aim', holding),
+      drawRound: (square, into) => lens.draw(gl, scene, camera, size, square, into),
+    });
   });
 
   return (

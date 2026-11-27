@@ -2,10 +2,12 @@
 import type { SiteDataWire } from '@heliogrid/contracts';
 import {
   type Coordinate,
+  chartAzimuth,
   type Read,
   type StudioView,
   SUN_STEP_MS,
   type SunBarView,
+  type SunChart,
   type SunDay,
   type SunPick,
   type SunPosition,
@@ -13,6 +15,8 @@ import {
   siteTimeZoneOf,
   sunBarAt,
   sunBarDayOf,
+  sunChartPoints,
+  sunChartStartOf,
   sunNextHour,
   sunPickDay,
   sunPickOpened,
@@ -190,4 +194,26 @@ function useSunPlay(
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
   }, [on, still, setPick]);
+}
+
+/** The sun bar as the way back reads it: its chart first, then the bar (`studioBack`). */
+export function sunBackOf(bar: SunBarState, moves: Pick<SunBarMoves, 'showSunChart' | 'closeSun'>) {
+  return {
+    sun:
+      bar.view === null ? ('closed' as const) : bar.chart ? ('chart' as const) : ('bar' as const),
+    closeSunChart: () => moves.showSunChart(false),
+    closeSun: moves.closeSun,
+  };
+}
+
+/**
+ * The sun chart's compass (board G10): its points round from the start no day's sun passes, and
+ * where an azimuth lies round from it, so every day draws as one arc.
+ */
+export function sunChartAxisOf(chart: SunChart | null) {
+  const start = sunChartStartOf(chart?.days.map((day) => day.curve) ?? []);
+  return {
+    points: sunChartPoints(start),
+    round: (azimuth: number) => chartAzimuth(azimuth, start),
+  };
 }

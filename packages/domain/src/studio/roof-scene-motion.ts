@@ -76,7 +76,11 @@ function without(scene: RoofScene, moving: readonly { roof: number; pick: Pick }
   };
 }
 
-const sameCorners = (a: Roof, b: Roof) =>
+/** Two roofs' outlines are the same corners, in the same order. */
+export const sameCorners = (
+  a: { readonly corners: Roof['corners'] },
+  b: { readonly corners: Roof['corners'] },
+): boolean =>
   a.corners.length === b.corners.length &&
   a.corners.every((corner, i) => {
     const other = b.corners[i];
