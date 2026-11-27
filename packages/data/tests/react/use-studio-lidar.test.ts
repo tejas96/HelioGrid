@@ -133,6 +133,37 @@ describe('LiDAR in the 3D view', () => {
     expect(view.result.current.document?.roofs[0]?.corners).toEqual(TRACED.corners);
   });
 
+  it('the map’s height shows while its slider is held, and saves once when let go', async () => {
+    const view = await opened();
+    act(() => view.result.current.lidar.moves.toggle());
+    await waitFor(() => expect(view.result.current.lidar.scan).toBe('in'));
+    const saves = stored.saves.length;
+    act(() => view.result.current.lidar.moves.liftMap(1.2, false));
+    expect(view.result.current.lidar.lineUp.lift).toBeCloseTo(1.2, 5);
+    expect(stored.saves).toHaveLength(saves);
+    act(() => view.result.current.lidar.moves.liftMap(1.5, true));
+    await waitFor(() => expect(stored.saves).toHaveLength(saves + 1));
+    expect(view.result.current.lidar.lineUp.lift).toBeCloseTo(1.5, 5);
+  });
+
+  it('a roof’s height shows while its slider is held, and saves once when let go', async () => {
+    const view = await opened();
+    act(() => view.result.current.lidar.moves.toggle());
+    await waitFor(() => expect(view.result.current.lidar.scan).toBe('in'));
+    act(() => view.result.current.lidar.moves.tapRoof(0));
+    await waitFor(() => expect(view.result.current.lidar.heightRoof).not.toBeNull());
+    const saves = stored.saves.length;
+    // The model is drawn from LiDAR's preview: the roof's top rises with the held height.
+    const topOf = () => view.result.current.scene.levels[0]?.topM ?? 0;
+    const was = topOf();
+    act(() => view.result.current.lidar.moves.setHeight(6.5, false));
+    expect(topOf() - was).toBeCloseTo(2.5, 5);
+    expect(stored.saves).toHaveLength(saves);
+    act(() => view.result.current.lidar.moves.setHeight(7, true));
+    await waitFor(() => expect(stored.saves).toHaveLength(saves + 1));
+    expect(stored.saves.at(-1)?.roofs[0]?.height?.metres).toBeCloseTo(7, 5);
+  });
+
   it('Esc closes Move first, then turns LiDAR off; the top view turns it off too', async () => {
     const view = await opened();
     act(() => view.result.current.lidar.moves.toggle());

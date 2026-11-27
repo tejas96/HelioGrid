@@ -2,6 +2,7 @@ import {
   type GroundPoint,
   type History,
   historyAfter,
+  LINE_UP_LIFT_MAX_M,
   LINE_UP_SHIFT_MAX_M,
   LINE_UP_STEP_M,
   type LidarEvent,
@@ -61,9 +62,12 @@ export interface LidarHands {
   readonly dragBase: { current: History<StudioDocument> | null };
   readonly setMovedM: (metres: number | null) => void;
   readonly setMapDrag: (lineUp: SiteLineUp | null) => void;
+  /** The height slider held at this many metres; `null` once let go. */
+  readonly setHeightHeld: (metres: number | null) => void;
   readonly site: {
     readonly lineUp: SiteLineUp;
     readonly dragMap: (to: GroundPoint) => void;
+    readonly liftMap: (lift: number) => void;
   };
   readonly undo: () => void;
   /** The roof a line of sight meets on the model. */
@@ -122,9 +126,14 @@ export function lidarMovesOf(hands: LidarHands): Omit<LidarMoves, 'retryScan' | 
     fix: () =>
       dispatch({ kind: 'fix', picked: ids(hands.offBuildings.flatMap((one) => one.members)) }),
     heightRoof: hands.setHeightPick,
-    setHeight: (metres) => {
+    setHeight: (metres, done) => {
       const index = hands.heightIndex;
       if (index === null) return;
+      if (!done) {
+        hands.setHeightHeld(metres);
+        return;
+      }
+      hands.setHeightHeld(null);
       commit((now) => {
         const set = roofHeightSet(now, index, metres);
         return set.kind === 'done' ? set.document : now;
@@ -191,6 +200,17 @@ export function lidarMovesOf(hands: LidarHands): Omit<LidarMoves, 'retryScan' | 
         return;
       }
       hands.setMapDrag({ ...hands.site.lineUp, east: kept(to.east), north: kept(to.north) });
+    },
+    liftMap: (lift, done) => {
+      if (!editable) return;
+      if (done) {
+        hands.setMapDrag(null);
+        hands.site.liftMap(lift);
+        return;
+      }
+      const step = Math.round(lift / LINE_UP_STEP_M) * LINE_UP_STEP_M;
+      const kept = Math.max(-LINE_UP_LIFT_MAX_M, Math.min(LINE_UP_LIFT_MAX_M, step));
+      hands.setMapDrag({ ...hands.site.lineUp, lift: kept });
     },
     undoMove: () => {
       hands.setMovedM(null);

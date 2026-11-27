@@ -13,6 +13,7 @@ import {
   type RoofFacts,
   type RoofName,
   type RoofSunlight,
+  roofHeightSet,
   roofNameOf,
   type SightAt,
   type SiteLineUp,
@@ -57,6 +58,7 @@ interface LidarInput {
     readonly sunlight: Readonly<Record<string, RoofSunlight>> | null;
     readonly layers: readonly HeightLayer[];
     readonly dragMap: (to: GroundPoint) => void;
+    readonly liftMap: (lift: number) => void;
     /** Google's straight-down picture shows in the top view. */
     readonly straightDown: boolean;
   };
@@ -103,6 +105,7 @@ export function useLidar(input: LidarInput): {
   const [onScan, setOnScan] = useState(false);
   const [movedM, setMovedM] = useState<number | null>(null);
   const [mapDrag, setMapDrag] = useState<SiteLineUp | null>(null);
+  const [heightHeld, setHeightHeld] = useState<number | null>(null);
   const dragBase = useRef<History<StudioDocument> | null>(null);
   // A new pick, or Move closed, ends the last move's message and the slider's choice.
   const pickKey = `${view.move === null}:${(view.move?.picked ?? []).join()}`;
@@ -110,6 +113,7 @@ export function useLidar(input: LidarInput): {
   useEffect(() => {
     setMovedM(null);
     setHeightPick(0);
+    setHeightHeld(null);
   }, [pickKey]);
 
   const roofs = document?.roofs ?? [];
@@ -158,9 +162,10 @@ export function useLidar(input: LidarInput): {
     dragBase,
     setMovedM,
     setMapDrag,
+    setHeightHeld,
   });
   return {
-    preview: drag === null || base === null ? null : roofsMoved(base.present, roots, drag).document,
+    preview: previewOf({ base, roots, drag, present: history?.present, heightIndex, heightHeld }),
     back: () => {
       if (!view.on || input.topView) return false;
       input.dispatch({ kind: 'back' });
@@ -237,4 +242,23 @@ export function useLidar(input: LidarInput): {
       },
     },
   };
+}
+
+/**
+ * The design as LiDAR shows it while a hand holds something: the picked roofs where a drag holds
+ * them, or a roof at the height its slider holds; `null` when nothing is held.
+ */
+function previewOf(held: {
+  readonly base: History<StudioDocument> | null;
+  readonly roots: Parameters<typeof roofsMoved>[1];
+  readonly drag: GroundPoint | null;
+  readonly present: StudioDocument | undefined;
+  readonly heightIndex: number | null;
+  readonly heightHeld: number | null;
+}): StudioDocument | null {
+  const { base, drag, present, heightIndex, heightHeld } = held;
+  if (drag !== null && base !== null) return roofsMoved(base.present, held.roots, drag).document;
+  if (heightHeld === null || heightIndex === null || present === undefined) return null;
+  const set = roofHeightSet(present, heightIndex, heightHeld);
+  return set.kind === 'done' ? set.document : null;
 }

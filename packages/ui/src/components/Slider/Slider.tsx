@@ -169,8 +169,12 @@ export function Slider({
             aria-valuetext={shown}
             onChange={(event) => live(Number(event.target.value))}
             onPointerUp={(event) => commit(Number(event.currentTarget.value))}
-            // A touch the browser took back (a scroll) saves nothing: the given value shows again.
-            onPointerCancel={held.let}
+            // A touch the browser took back (a scroll) saves nothing: the given value shows again,
+            // and a caller showing the held value live is handed the given one back.
+            onPointerCancel={() => {
+              held.let();
+              onInput?.(value);
+            }}
             onKeyUp={(event) => commit(Number(event.currentTarget.value))}
             onBlur={(event) => commit(Number(event.currentTarget.value))}
           />

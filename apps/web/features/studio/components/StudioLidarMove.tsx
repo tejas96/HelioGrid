@@ -127,7 +127,8 @@ function HeightPart({ lidar, facts }: { lidar: Lidar; facts: MoveFacts }) {
           label={words.lidarHeight}
           format={heightOf}
           words={sliderWords(t)}
-          onCommit={lidar.moves.setHeight}
+          onInput={(metres) => lidar.moves.setHeight(metres, false)}
+          onCommit={(metres) => lidar.moves.setHeight(metres, true)}
         />
       ) : (
         <p className="hg-lidar-stack">
@@ -239,7 +240,8 @@ function MapTab({ lidar, facts }: { lidar: Lidar; facts: MoveFacts }) {
         label={words.siteLineUpLift}
         format={(metres) => format.fineLength(metres, units)}
         words={sliderWords(t)}
-        onCommit={site.liftMap}
+        onInput={(lift) => moves.liftMap(lift, false)}
+        onCommit={(lift) => moves.liftMap(lift, true)}
       />
       <NudgeCross
         name={words.lidarNudge}
