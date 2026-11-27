@@ -4,7 +4,6 @@ import {
   type Coordinate,
   chartAzimuth,
   type Read,
-  type StudioView,
   SUN_STEP_MS,
   type SunBarView,
   type SunChart,
@@ -27,7 +26,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 /** The sun bar's moves (`T-M05-002`, part g, board G8–G13). */
 export interface SunBarMoves {
-  /** The sun opens on today, now; from the top view the camera flies to 3D first. */
+  /** The sun opens on today, now, in the 3D view where it lives. */
   openSun(): void;
   /** × : the bar closes and the scene goes back to now; the view stays 3D. */
   closeSun(): void;
@@ -61,13 +60,10 @@ const LIGHT_MIN_ELEVATION_DEG = 2;
 export function useSunBar({
   pin,
   read,
-  see,
   zone,
 }: {
   pin: Coordinate | null;
   read: Read<SiteDataWire>;
-  /** Takes the view: the sun lives in 3D. */
-  see: (view: StudioView) => void;
   /** The company's time zone: the site's clock until the site data names the site's own. */
   zone: string;
 }): {
@@ -110,7 +106,6 @@ export function useSunBar({
     moves: {
       openSun: () =>
         ready((place, clock) => {
-          see('3d');
           now.current = Date.now();
           setPick(sunPickOpened(place, clock, now.current));
         }),

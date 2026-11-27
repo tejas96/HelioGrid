@@ -28,6 +28,8 @@ export function seeOf(input: {
   readonly setView: (next: StudioView) => void;
   readonly setSeen3d: (seen: boolean) => void;
   readonly lidarAct: (event: LidarEvent) => void;
+  /** The sun and its shade live in 3D: the top view closes the sun bar. */
+  readonly closeSun: () => void;
 }): (next: StudioView) => void {
   return (next) => {
     if (!input.views.some((place) => place.view === next && place.lock === null)) return;
@@ -36,6 +38,7 @@ export function seeOf(input: {
     if (next !== 'top' && (held === 'drawing' || held === 'typing')) input.act({ kind: 'cancel' });
     if (next === '3d') input.setSeen3d(true);
     if (!input.sheet.viewing(next)) return;
+    if (next === 'top') input.closeSun();
     input.setView(next);
   };
 }

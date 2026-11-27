@@ -100,7 +100,7 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     picture,
     sunlightOn,
   });
-  const sun = useSunBar({ pin, read: site.read, see: (n) => see(n), zone: formats.timeZone });
+  const sun = useSunBar({ pin, read: site.read, zone: formats.timeZone });
   const roof = useRoofStep({
     document,
     latest,
@@ -209,7 +209,8 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
   const slots = useUndoSlots(editable, roofStep, history);
   const undoRedo = undoRedoMoves({ dropInHand: sheet.dropInHand, step, act, walk: faces.walk });
   // A view that waits for a roof is not taken, whoever asks for it.
-  const see = seeOf({ views, step, act, sheet, setView, setSeen3d, lidarAct });
+  const { closeSun } = sun.moves;
+  const see = seeOf({ views, step, act, sheet, setView, setSeen3d, lidarAct, closeSun });
   return {
     read,
     document,

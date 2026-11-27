@@ -22,7 +22,7 @@ function magnetShown(part: FocusParts['magnet'], studio: StudioScreen): boolean 
  * what changes the model, the pencil always in the bottom place: the magnet while a corner is drawn
  * or a roof is picked, Roofs with their count once a roof stands (`StudioRoofsButton`), Redo, the
  * trash that clears every corner of the drawing, Undo, then the pencil (×, while drawing). Right,
- * how the model is seen: the sun, View (`StudioViewPanel`), LiDAR (`T-M05-002g`), the 2D and 3D
+ * how the model is seen: the sun (3D only), View (`StudioViewPanel`), LiDAR (`T-M05-002g`), the 2D and 3D
  * switch once a roof stands, and Zoom in over Zoom out in one pill. A tool comes only once it can act and takes no place before; a tool
  * coming moves only the ones above it. Undo and Redo keep the place they took (`undoSlotsOf`), dim
  * while they cannot act.
@@ -108,10 +108,12 @@ export function StudioToolRail({
         </Shown>
       </div>
       <div className="hg-studio-tools" data-side="right">
-        {/* The sun lives in 3D, which waits for a roof: it comes with the 3D switch. */}
+        {/* The sun and its shade live in 3D only: the top view never shows them. */}
         <Shown
           when={
-            studio.roofList.count > 0 && (parts.layers === 'shown' || parts.layers === 'switch')
+            view !== 'top' &&
+            studio.roofList.count > 0 &&
+            (parts.layers === 'shown' || parts.layers === 'switch')
           }
         >
           <IconButton
