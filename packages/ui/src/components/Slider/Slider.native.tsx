@@ -149,8 +149,9 @@ export function Slider({
           onCommit={commit}
           onLive={live}
           onLet={() => {
+            const was = held.shown;
             held.let();
-            onInput?.(value);
+            if (was !== value) onInput?.(value);
           }}
           onNudge={nudge}
           percent={percent}

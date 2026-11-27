@@ -3,7 +3,7 @@ import type { StudioScreen } from '@heliogrid/data/react';
 import type { FocusParts, MeasurementSystem, StudioView, ViewPlace } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { IconButton, ShellGlyph } from '@heliogrid/ui';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { MagnetSwitch } from './StudioBarPills';
 import { LidarButton, LidarMoveButton } from './StudioLidar';
 import { StudioPencil } from './StudioPencil';
@@ -80,15 +80,28 @@ export function StudioToolRail({
   // LiDAR has its own column under its × (the head's start): the tools that always stand there
   // first — Move, Sun — then Undo and Redo, which come later and so move nothing above them.
   const lidarOn = studio.lidar.view.on && view !== 'top';
+  // A tool that goes there hands the keyboard focus to LiDAR's first tool, as the pencil takes it
+  // elsewhere; and LiDAR turned on from its own button, which then goes, lands the focus there too.
+  const lidarTools = useRef<HTMLDivElement>(null);
+  const focusTo = lidarOn ? lidarTools : pencil;
+  useEffect(() => {
+    if (!lidarOn) return;
+    const lost = document.activeElement === null || document.activeElement === document.body;
+    if (!lost) return;
+    const frame = requestAnimationFrame(() =>
+      lidarTools.current?.querySelector<HTMLElement>('button')?.focus(),
+    );
+    return () => cancelAnimationFrame(frame);
+  }, [lidarOn]);
   const redoTool = (
-    <Shown when={editable && parts.redo === 'shown'} off={!canRedo} focusTo={pencil}>
+    <Shown when={editable && parts.redo === 'shown'} off={!canRedo} focusTo={focusTo}>
       <IconButton label={words.redo} disabled={!canRedo} onClick={onRedo}>
         <ShellGlyph name="redo" size="md" />
       </IconButton>
     </Shown>
   );
   const undoTool = (
-    <Shown when={editable && parts.undo === 'shown'} off={!canUndo} focusTo={pencil}>
+    <Shown when={editable && parts.undo === 'shown'} off={!canUndo} focusTo={focusTo}>
       <IconButton label={words.undo} disabled={!canUndo} onClick={onUndo}>
         <ShellGlyph name="undo" size="md" />
       </IconButton>
@@ -96,7 +109,10 @@ export function StudioToolRail({
   );
   // The sun and its shade live in 3D only (`FocusParts.sun`): the top view never shows them.
   const sunTool = (
-    <Shown when={view !== 'top' && studio.roofList.count > 0 && parts.sun === 'shown'}>
+    <Shown
+      when={view !== 'top' && studio.roofList.count > 0 && parts.sun === 'shown'}
+      focusTo={focusTo}
+    >
       <IconButton
         label={words.sun}
         pressed={studio.sunBar.view !== null}
@@ -108,7 +124,7 @@ export function StudioToolRail({
   );
   if (lidarOn) {
     return (
-      <div className="hg-studio-tools" data-side="left" data-lidar="true">
+      <div ref={lidarTools} className="hg-studio-tools" data-side="left" data-lidar="true">
         <LidarMoveButton studio={studio} words={words} />
         {sunTool}
         {undoTool}

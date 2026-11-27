@@ -163,6 +163,7 @@ export function useLidar(input: LidarInput): {
     setMovedM,
     setMapDrag,
     setHeightHeld,
+    heightNow: picks.heightRoof?.heightM ?? null,
   });
   return {
     preview: previewOf({ base, roots, drag, present: history?.present, heightIndex, heightHeld }),

@@ -170,10 +170,12 @@ export function Slider({
             onChange={(event) => live(Number(event.target.value))}
             onPointerUp={(event) => commit(Number(event.currentTarget.value))}
             // A touch the browser took back (a scroll) saves nothing: the given value shows again,
-            // and a caller showing the held value live is handed the given one back.
+            // and a caller that showed a held value live is handed the given one back — only when
+            // it moved, so a caller that saves live is never sent the value it already has.
             onPointerCancel={() => {
+              const was = held.shown;
               held.let();
-              onInput?.(value);
+              if (was !== value) onInput?.(value);
             }}
             onKeyUp={(event) => commit(Number(event.currentTarget.value))}
             onBlur={(event) => commit(Number(event.currentTarget.value))}
