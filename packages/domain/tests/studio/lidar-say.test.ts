@@ -26,6 +26,7 @@ const MOMENT: LidarMoment = {
   onScan: false,
   movedM: null,
   offSpot: false,
+  mapAtEdge: false,
 };
 const at = (more: Partial<LidarMoment>) => ({ ...MOMENT, ...more });
 
@@ -47,6 +48,11 @@ describe('the instruction under the head', () => {
     ],
     ['dragging', { view: ROOFS, picked: 1, draggedM: 1.4049 }, { kind: 'moving', metres: 1.4 }],
     ['the Map tab', { view: { ...ON, move: { tab: 'map', picked: [] } } }, { kind: 'map' }],
+    [
+      'the Map tab, the scan as far as it moves: move a roof instead',
+      { view: { ...ON, move: { tab: 'map', picked: [] } }, mapAtEdge: true },
+      { kind: 'map_edge', reachM: 5 },
+    ],
     [
       'the magnet holds the drag on the scan',
       { view: ROOFS, picked: 1, draggedM: 4.3, onScan: true },

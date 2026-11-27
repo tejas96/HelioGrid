@@ -8905,7 +8905,7 @@ msgid "Draft"
 msgstr "Draft"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:60
+#: src/copy/studio-lidar.ts:61
 msgid "Drag a picked roof to move it."
 msgstr "Drag a picked roof to move it."
 
@@ -10012,7 +10012,7 @@ msgid "First: the most days late on your list"
 msgstr "First: the most days late on your list"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:68
+#: src/copy/studio-lidar.ts:69
 msgid "Fix"
 msgstr "Fix"
 
@@ -10022,7 +10022,7 @@ msgid "Fix in {step}"
 msgstr "Fix in {step}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:69
+#: src/copy/studio-lidar.ts:70
 msgid "Fix in LiDAR"
 msgstr "Fix in LiDAR"
 
@@ -10650,7 +10650,7 @@ msgid "Google"
 msgstr "Google"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:76
+#: src/copy/studio-lidar.ts:77
 msgid "Google has no 3D scan of this place. Your roofs keep their heights."
 msgstr "Google has no 3D scan of this place. Your roofs keep their heights."
 
@@ -10914,7 +10914,7 @@ msgstr "Height from ground"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-lidar.ts:41
-#: src/copy/studio-lidar.ts:79
+#: src/copy/studio-lidar.ts:80
 msgid "Height from the ground"
 msgstr "Height from the ground"
 
@@ -11140,7 +11140,7 @@ msgstr "Hidden from pickers"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:44
-#: src/copy/studio-lidar.ts:70
+#: src/copy/studio-lidar.ts:71
 msgid "Hide"
 msgstr "Hide"
 
@@ -11187,7 +11187,7 @@ msgid "HJT"
 msgstr "HJT"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:61
+#: src/copy/studio-lidar.ts:62
 msgid "Hold a picked roof, then drag."
 msgstr "Hold a picked roof, then drag."
 
@@ -12674,7 +12674,7 @@ msgid "LiDAR"
 msgstr "LiDAR"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:73
+#: src/copy/studio-lidar.ts:74
 msgid "LiDAR needs the internet to open. Your design is safe."
 msgstr "LiDAR needs the internet to open. Your design is safe."
 
@@ -12945,7 +12945,7 @@ msgid "Loading the {kind} specification"
 msgstr "Loading the {kind} specification"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:71
+#: src/copy/studio-lidar.ts:72
 msgid "Loading the 3D scan…"
 msgstr "Loading the 3D scan…"
 
@@ -13504,11 +13504,6 @@ msgstr "Mangalore tile"
 #: src/copy/studio-sheet.ts:129
 msgid "Mansard"
 msgstr "Mansard"
-
-#. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:29
-msgid "Map"
-msgstr "Map"
 
 #. js-lingui-explicit-id
 #: src/copy/studio-site.ts:52
@@ -14217,7 +14212,7 @@ msgid "Moved"
 msgstr "Moved"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:65
+#: src/copy/studio-lidar.ts:66
 msgid "Moved {distance}"
 msgstr "Moved {distance}"
 
@@ -14293,7 +14288,7 @@ msgid "Moves the stage"
 msgstr "Moves the stage"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:63
+#: src/copy/studio-lidar.ts:64
 msgid "Moving {distance}"
 msgstr "Moving {distance}"
 
@@ -15225,7 +15220,7 @@ msgid "No Google heights here"
 msgstr "No Google heights here"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:75
+#: src/copy/studio-lidar.ts:76
 msgid "No height data here"
 msgstr "No height data here"
 
@@ -15590,7 +15585,7 @@ msgid "No role"
 msgstr "No role"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:81
+#: src/copy/studio-lidar.ts:82
 msgid "No roof here"
 msgstr "No roof here"
 
@@ -16674,7 +16669,7 @@ msgid "Now"
 msgstr "Now"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:62
+#: src/copy/studio-lidar.ts:63
 msgid "Now drag."
 msgstr "Now drag."
 
@@ -16876,7 +16871,7 @@ msgid "On the proposal"
 msgstr "On the proposal"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:64
+#: src/copy/studio-lidar.ts:65
 msgid "On the scan"
 msgstr "On the scan"
 
@@ -21022,6 +21017,11 @@ msgid "Say why."
 msgstr "Say why."
 
 #. js-lingui-explicit-id
+#: src/copy/studio-lidar.ts:29
+msgid "Scan"
+msgstr "Scan"
+
+#. js-lingui-explicit-id
 #: src/copy/studio-lidar.ts:45
 msgid "Scan {low} to {high}"
 msgstr "Scan {low} to {high}"
@@ -22247,12 +22247,12 @@ msgid "Some of what you typed is not saved yet. It is lost if you leave."
 msgstr "Some of what you typed is not saved yet. It is lost if you leave."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:66
+#: src/copy/studio-lidar.ts:67
 msgid "Some roofs sit off their true spot."
 msgstr "Some roofs sit off their true spot."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:67
+#: src/copy/studio-lidar.ts:68
 msgid "Some roofs sit off."
 msgstr "Some roofs sit off."
 
@@ -22853,7 +22853,7 @@ msgid "Sun each roof keeps"
 msgstr "Sun each roof keeps"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:82
+#: src/copy/studio-lidar.ts:83
 msgid "Sun kept"
 msgstr "Sun kept"
 
@@ -23095,7 +23095,7 @@ msgid "Tap + on any screen. A number is enough."
 msgstr "Tap + on any screen. A number is enough."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:59
+#: src/copy/studio-lidar.ts:60
 msgid "Tap a building to move it."
 msgstr "Tap a building to move it."
 
@@ -23675,7 +23675,7 @@ msgid "The {length} you set would change. Change that length first."
 msgstr "The {length} you set would change. Change that length first."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:74
+#: src/copy/studio-lidar.ts:75
 msgid "The 3D scan did not open."
 msgstr "The 3D scan did not open."
 
@@ -24668,9 +24668,14 @@ msgid "the savings"
 msgstr "the savings"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:80
+#: src/copy/studio-lidar.ts:81
 msgid "The scan"
 msgstr "The scan"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-lidar.ts:59
+msgid "The scan moves {distance} at most. Move the roof onto it instead."
+msgstr "The scan moves {distance} at most. Move the roof onto it instead."
 
 #. js-lingui-explicit-id
 #: src/copy/studio-history.ts:18
@@ -28533,7 +28538,7 @@ msgid "You’re clear for today"
 msgstr "You’re clear for today"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:72
+#: src/copy/studio-lidar.ts:73
 msgid "You’re offline"
 msgstr "You’re offline"
 

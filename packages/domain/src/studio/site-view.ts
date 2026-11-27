@@ -173,6 +173,12 @@ const NO_LINE_UP: SiteLineUp = { east: 0, north: 0, lift: 0 };
 const toStep = (metres: number) => Math.round(metres / LINE_UP_STEP_M) * LINE_UP_STEP_M;
 const clamp = (metres: number, max: number) => Math.max(-max, Math.min(max, toStep(metres)));
 
+/** The scan is moved as far as it goes, any way: half a step short of the limit counts. */
+export function lineUpAtEdge(lineUp: { readonly east: number; readonly north: number }): boolean {
+  const edge = LINE_UP_SHIFT_MAX_M - LINE_UP_STEP_M / 2;
+  return Math.abs(lineUp.east) >= edge || Math.abs(lineUp.north) >= edge;
+}
+
 /**
  * The line-up in force: the person's, else the studio's own (`automatic`, from the straight-down
  * picture's edges), else none — the map where the data laid it.

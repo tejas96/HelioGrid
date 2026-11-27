@@ -1,5 +1,6 @@
 import { type CompassWay, compassOf } from './compass';
 import type { GroundPoint } from './ground';
+import { LINE_UP_SHIFT_MAX_M } from './site-data';
 import type { LidarView } from './site-view';
 
 /**
@@ -13,6 +14,8 @@ export type LidarHint =
   | { readonly kind: 'open' }
   | { readonly kind: 'reader' }
   | { readonly kind: 'map' }
+  /** The scan is moved as far as it goes: a leaning roof is moved onto the scan instead. */
+  | { readonly kind: 'map_edge'; readonly reachM: number }
   | { readonly kind: 'pick' }
   | { readonly kind: 'drag' }
   | { readonly kind: 'now_drag' }
@@ -55,6 +58,8 @@ export interface LidarMoment {
   readonly movedM: number | null;
   /** Roofs drawn on the leaning sky picture sit off where the scan sees their buildings. */
   readonly offSpot: boolean;
+  /** The scan is moved as far as it goes, east or west, north or south. */
+  readonly mapAtEdge: boolean;
 }
 
 /** A move is said to the 10 cm, as its arrows step. */
@@ -75,7 +80,9 @@ export function lidarHintOf(moment: LidarMoment): LidarHint | null {
   const { view } = moment;
   if (!view.on || !moment.scanIn) return null;
   if (!moment.canEdit) return view.move === null ? { kind: 'reader' } : null;
-  if (view.move?.tab === 'map') return { kind: 'map' };
+  if (view.move?.tab === 'map') {
+    return moment.mapAtEdge ? { kind: 'map_edge', reachM: LINE_UP_SHIFT_MAX_M } : { kind: 'map' };
+  }
   if (view.move !== null) return moveHintOf(moment);
   // One message at a time: the foot's Fix says it when roofs sit off.
   return view.tipGone || moment.offSpot ? null : { kind: 'open' };

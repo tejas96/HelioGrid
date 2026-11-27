@@ -8,6 +8,7 @@ import {
   lidarFootOf,
   lidarHintOf,
   lidarTopFixOf,
+  lineUpAtEdge,
   type Read,
   type RoofFacts,
   type RoofName,
@@ -130,6 +131,7 @@ export function useLidar(input: LidarInput): {
     onScan,
     movedM,
     offSpot: offBuildings.length > 0,
+    mapAtEdge: lineUpAtEdge(mapDrag ?? site.lineUp),
   };
 
   const reads = site.reads?.roofs ?? {};
