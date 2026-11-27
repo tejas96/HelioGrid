@@ -108,7 +108,8 @@ function designStandingOf(design: LeadDesignsPanel | null): LeadDockStateStandin
   if (design.createFailure !== null) {
     return { kind: 'returned', act: 'design', reason: design.createFailure };
   }
-  return design.creating ? { kind: 'waiting', act: 'design', line: design.words.creating } : null;
+  if (design.creating) return { kind: 'waiting', act: 'design', line: design.words.creating };
+  return design.opening ? { kind: 'waiting', act: 'design', line: design.words.opening } : null;
 }
 
 /**
@@ -133,7 +134,7 @@ export function leadWorkDockOf({
     message: () => acts.open({ kind: 'message', template: 'follow_up_nudge' }),
     log: () => acts.open({ kind: 'log' }),
     visit: () => acts.open({ kind: 'visit' }),
-    design: dockDesign?.onCreate ?? null,
+    design: dockDesign?.onDesign ?? null,
     stateAct: (act) => {
       if (act === 'wake' || act === 'reopen') acts.quick(act);
       else acts.open({ kind: act });

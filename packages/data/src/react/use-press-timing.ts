@@ -1,8 +1,6 @@
 'use client';
 import { useEffect, useRef } from 'react';
 
-/** A finger held still this long while drawing aims a corner with the loupe. */
-const AIM_AFTER_MS = 300;
 /** Hold − or + on a length and it repeats: first after this long, then this often. */
 const REPEAT_AFTER_MS = 400;
 const REPEAT_EVERY_MS = 80;
@@ -25,24 +23,9 @@ function usePressTimer() {
 }
 
 /**
- * The studio's press timing (`T-M05-002`, part b): a finger held still aims a corner, and a held
- * − or + steps again and again. The screen says when a press starts and ends; the timing is here.
+ * The studio's press timing (`T-M05-002`, part b): a held − or + steps again and again. The screen
+ * says when a press starts and ends; the timing is here.
  */
-export function useAimHold(): { start(onAim: () => void): void; stop(): void } {
-  const { timer, stop } = usePressTimer();
-  return {
-    start: (onAim) => {
-      stop();
-      timer.current = setTimeout(() => {
-        timer.current = null;
-        onAim();
-      }, AIM_AFTER_MS);
-    },
-    stop,
-  };
-}
-
-/** A held − or +: one step at once, then again and again until let go. */
 export function useRepeatPress(): { start(step: () => void): void; stop(): void } {
   const { timer, stop } = usePressTimer();
   return {

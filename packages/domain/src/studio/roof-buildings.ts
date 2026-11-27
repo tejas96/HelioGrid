@@ -93,8 +93,13 @@ export function roofIsFlat(roof: Roof, facts: RoofFacts): boolean {
 
 /** Where the scan sees one building: the shift that puts it there, and its roofs' reads there. */
 export interface BuildingScanFit {
-  /** `null`: no shift does better than where it stands. */
+  /** `null`: no shift does better than where it stands, or the scan sees it past the reach. */
   readonly shift: GroundPoint | null;
+  /**
+   * The scan sees the building farther off than the reach (`SCAN_REACH_M`): Match leaves it be,
+   * since its reads where it stands are not of its building.
+   */
+  readonly beyondReach: boolean;
   /** What the scan reads in each of its roofs at that place (or where it stands), by roof id. */
   readonly reads: Readonly<Record<string, RoofDataRead>>;
   /** The scan's low and high in each of its roofs there, above its ground, by roof id. */
@@ -112,7 +117,8 @@ export function scanMatched(
   facts: RoofFacts,
 ): StudioDocument {
   let working = document;
-  for (const { building, fit } of matches) {
+  // A building past the reach stays as it is: its reads where it stands are not of it.
+  for (const { building, fit } of matches.filter((match) => !match.fit.beyondReach)) {
     if (fit.shift !== null) {
       const moved = roofsMoved(working, building.roofs, fit.shift);
       if (moved.fault === null) working = moved.document;

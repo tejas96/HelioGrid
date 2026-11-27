@@ -26,11 +26,6 @@ const RISE_PER_SECOND =
   (TIME_CONSTANTS_TO_RISEN * MS_PER_SECOND) / theme.motion.durations.emphasised;
 /** A rise this near its end has arrived: a thousandth of the way. */
 const SETTLED_M = 1e-3;
-/** The ground that takes the roofs' soft shadow, in metres across. */
-const SHADOW_GROUND_M = 160;
-/** Over your own picture (`StudioOwnGround`), so a roof's shadow falls on it too. */
-const SHADOW_LIFT_M = 0.04;
-const SHADOW_STRENGTH = 0.32;
 
 /** Where a point of the model lands on the screen, in CSS pixels; `null` behind the camera. */
 export type ScreenOf = (point: GroundPoint, heightM: number) => { x: number; y: number } | null;
@@ -167,9 +162,9 @@ function usePlayed(
 
 /**
  * The design's roofs in the scene (`T-M05-002`, part b): in the top view they lie flat, so the
- * picture shows and the page's marks draw them; in 3D they rise to their heights, with walls,
- * the picture on their tops and a soft shadow. Each drawn frame tells the marks where the model
- * lands. Nothing draws unless something changes.
+ * picture shows and the page's marks draw them; in 3D they rise to their heights, with walls and
+ * the picture on their tops — their shadow on the ground is the sun view's (`StudioSiteShade`).
+ * Each drawn frame tells the marks where the model lands. Nothing draws unless something changes.
  */
 export function StudioRoofs({
   scene: model,
@@ -236,36 +231,28 @@ export function StudioRoofs({
   const playing = usePlayed(motion, model, view, still, invalidate);
   const highest = Math.max(0, ...model.levels.map((level) => level.topM));
   return (
-    <>
-      <RoofModel
-        scene={playing.motion?.still ?? model}
-        highest={highest}
-        top={top}
-        pictureComing={pictureComing}
-        map={map}
-        palette={palette}
-        rise={rise}
-      >
-        {playing.motion?.moves.map((move, index) => (
-          <RoofMove
-            // biome-ignore lint/suspicious/noArrayIndexKey: a motion's moves are fixed while it plays
-            key={`${playing.motion?.id}-${index}`}
-            move={still ? { ...move, kind: quietKind(move.kind) } : move}
-            started={playing.started}
-            seconds={playing.seconds}
-            palette={palette}
-            top={top}
-            pictureComing={pictureComing}
-            map={map}
-          />
-        ))}
-      </RoofModel>
-      {model.levels.length > 0 ? (
-        <mesh rotation-x={-Math.PI / 2} position-y={SHADOW_LIFT_M} receiveShadow>
-          <planeGeometry args={[SHADOW_GROUND_M, SHADOW_GROUND_M]} />
-          <shadowMaterial opacity={SHADOW_STRENGTH} />
-        </mesh>
-      ) : null}
-    </>
+    <RoofModel
+      scene={playing.motion?.still ?? model}
+      highest={highest}
+      top={top}
+      pictureComing={pictureComing}
+      map={map}
+      palette={palette}
+      rise={rise}
+    >
+      {playing.motion?.moves.map((move, index) => (
+        <RoofMove
+          // biome-ignore lint/suspicious/noArrayIndexKey: a motion's moves are fixed while it plays
+          key={`${playing.motion?.id}-${index}`}
+          move={still ? { ...move, kind: quietKind(move.kind) } : move}
+          started={playing.started}
+          seconds={playing.seconds}
+          palette={palette}
+          top={top}
+          pictureComing={pictureComing}
+          map={map}
+        />
+      ))}
+    </RoofModel>
   );
 }

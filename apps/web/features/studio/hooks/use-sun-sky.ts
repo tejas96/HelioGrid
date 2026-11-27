@@ -6,7 +6,7 @@ import type { StudioSunSky } from '../components/StudioSunSky';
 
 export type SunSkyShown = Omit<
   Parameters<typeof StudioSunSky>[0],
-  'palette' | 'centre' | 'radiusM'
+  'palette' | 'centre' | 'radiusM' | 'frame' | 'free' | 'clear'
 > & {
   readonly shade: Parameters<typeof StudioSiteShade>[0];
 };

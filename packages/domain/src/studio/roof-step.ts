@@ -94,9 +94,16 @@ function dragged(state: Dragging, at: GroundPoint): RoofStepState {
   return { ...state, drag: turn, degrees: turn.degrees };
 }
 
+const cornerMoved = (state: Dragging): RoofSaid => ({
+  kind: 'corner_moved',
+  snap: state.drag.snap,
+});
+
 const SAID_AFTER: Record<RoofGrip['kind'], (state: Dragging) => RoofSaid> = {
-  plus: () => ({ kind: 'corner_added' }),
-  corner: (state) => ({ kind: 'corner_moved', snap: state.drag.snap }),
+  // A + dragged out is a corner already in place: it says the move, never "drag it into place".
+  plus: (state) =>
+    state.drag.document === state.base ? { kind: 'corner_added' } : cornerMoved(state),
+  corner: cornerMoved,
   move: () => ({ kind: 'roof_moved' }),
   turn: (state) => ({ kind: 'roof_turned', degrees: Math.round(state.degrees) }),
 };

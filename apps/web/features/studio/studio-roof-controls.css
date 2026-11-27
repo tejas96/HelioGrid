@@ -35,6 +35,22 @@
     var(--e2);
 }
 
+/* A pointer over a corner lights it: the held ring, softer, so a press is seen to land there. */
+@media (hover: hover) {
+  .hg-roof-hit:hover
+    .hg-roof-dot:not(
+      [data-hot="true"],
+      [data-picked="true"],
+      [data-first="true"],
+      [data-ghost="true"]
+    ) {
+    box-shadow:
+      0 0 0 calc(var(--sp-0-5) + var(--hg-studio-line)) var(--hg-roof-ink),
+      0 0 0 var(--sp-2) color-mix(in srgb, var(--hg-roof-ink) 18%, transparent),
+      var(--e2);
+  }
+}
+
 .hg-roof-dot[data-first="true"] {
   box-shadow:
     0 0 0 calc(var(--sp-0-5) + var(--hg-studio-line)) var(--hg-roof-ink),

@@ -59,6 +59,12 @@ export interface SliderProps {
   /** 44px minus/plus buttons either side. On by default (MS12-26). */
   steppers?: boolean;
   disabled?: boolean;
+  /**
+   * Each new number moves focus onto the slider, so its keys answer at once — a card opened for a
+   * new value. On the web the range takes the keyboard's focus; on the phone the screen reader's,
+   * which opens no keyboard. Leave it unset and the slider never takes focus on its own.
+   */
+  focusRequest?: number;
   density?: SliderDensity;
   id?: string;
   /**

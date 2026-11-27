@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 
 /**
  * The frame the camera answers now: the newest ask of the ones given — a roof closed, a sheet
@@ -15,4 +15,25 @@ export function useNewestFrame(asks: readonly (object | null)[]): object | null 
   }
   before.current = asks;
   return current.current;
+}
+
+/**
+ * A roof's sheet, Roofs or the picker frames the roofs above it: again once its room is measured,
+ * as it is taller than the bar it replaces. While an arrow on the model is held the sheet steps
+ * aside and the roof changes under the finger: the frame waits, and comes once as it is let go.
+ */
+export function useSheetFraming(
+  panelUp: boolean,
+  sheetFrame: object | null,
+  roomBottom: number,
+  arrowHeld: boolean,
+): object | null {
+  const held = useRef<object | null>(null);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the measured room and the arrow let go are what ask for a new frame
+  const framing = useMemo(
+    () => (arrowHeld ? held.current : panelUp ? {} : null),
+    [panelUp, sheetFrame, roomBottom, arrowHeld],
+  );
+  held.current = framing;
+  return framing;
 }

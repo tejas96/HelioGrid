@@ -27,6 +27,10 @@ export interface StudioBackFacts {
   /** The View panel is open. */
   readonly viewOpen: boolean;
   closeView(): void;
+  /** The sun bar, or its chart in the bar's place; `closed` with neither. */
+  readonly sun: 'closed' | 'bar' | 'chart';
+  closeSunChart(): void;
+  closeSun(): void;
   readonly sheetOpen: boolean;
   closeSheet(): void;
   readonly step: RoofStepState;
@@ -35,8 +39,8 @@ export interface StudioBackFacts {
 
 /**
  * The phone's system back, as Esc is the desktop's: the top thing open closes — what the pencil
- * opened (the material picker, Roofs), the pictures, the View panel, a roof's sheet, the job in
- * hand, a picked corner. `false` with nothing open:
+ * opened (the material picker, Roofs), the pictures, the View panel, the sun chart, then the sun
+ * bar, a roof's sheet, the job in hand, a picked corner. `false` with nothing open:
  * the way back leaves the studio.
  */
 export function studioBack(facts: StudioBackFacts): boolean {
@@ -45,12 +49,30 @@ export function studioBack(facts: StudioBackFacts): boolean {
   if (facts.panelOpen) facts.closePanel();
   else if (facts.picturesOpen) facts.closePictures();
   else if (facts.viewOpen) facts.closeView();
+  // The chart stands in the bar's place: it goes back to the bar, and the bar closes next.
+  else if (facts.sun === 'chart') facts.closeSunChart();
+  else if (facts.sun === 'bar') facts.closeSun();
   // A height the sheet refuses keeps it open, as Done does.
   else if (facts.sheetOpen) facts.closeSheet();
   else if (step.kind !== 'idle') act({ kind: 'cancel' });
   else if (step.picked !== null) act({ kind: 'pick_corner', corner: null });
   else return false;
   return true;
+}
+
+/** The pictures and the View panel as the way back reads them, and the acts that close them. */
+export function menusBack(
+  picturesOpen: boolean,
+  showPictures: (open: boolean) => void,
+  viewOpen: boolean,
+  showView: (open: boolean) => void,
+): Pick<StudioBackFacts, 'picturesOpen' | 'closePictures' | 'viewOpen' | 'closeView'> {
+  return {
+    picturesOpen,
+    closePictures: () => showPictures(false),
+    viewOpen,
+    closeView: () => showView(false),
+  };
 }
 
 /**

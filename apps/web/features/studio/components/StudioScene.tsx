@@ -9,7 +9,6 @@ import type { RoofScene, SceneMotion, StudioView, SunPosition } from '@heliogrid
 import type { ThemePalette } from '@heliogrid/theme';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { type ReactNode, type RefObject, useMemo, useRef, useState } from 'react';
-import { Color, MathUtils } from 'three';
 import { deviceHintsNow } from '../hooks/use-device-hints';
 import type { SunSkyShown } from '../hooks/use-sun-sky';
 import type { SceneFit } from './camera-poses';
@@ -22,13 +21,15 @@ import { type RoofMarksHandle, type RoofRise, StudioRoofs } from './StudioRoofs'
 import { StudioScaleTween } from './StudioScaleTween';
 import { StudioGround } from './StudioSceneGround';
 import { StudioSiteShade } from './StudioSiteShade';
-import { pathRoom, StudioSunSky } from './StudioSunSky';
+import {
+  calmSkyOf,
+  StudioCalmSky,
+  StudioSunLight,
+  StudioSunSky,
+  shadowRoomOf,
+  useSunPath,
+} from './StudioSunSky';
 import { type SceneScreen, screenOfFrame } from './scene-screen';
-
-const RADIANS = MathUtils.DEG2RAD;
-/** How far the sun's light stands from the site, and the ground its shadows cover. */
-const SUN_DISTANCE_M = 120;
-const SHADOW_HALF_M = 60;
 
 /** A box of ground stretched about the pin, as the picture is by the first true length. */
 function scaledBox<B extends ClearGround>(box: B | null, scale: number): B | null {
@@ -64,57 +65,17 @@ const pictureComing = (
   own: RoofTopPicture | null,
 ) => (kind === 'sky' && sharp === null) || (kind === 'own' && own === null);
 
+/**
+ * The colour behind the scene and the haze's: dark while LiDAR is on or the picture comes, the
+ * page straight down, the calm sky's horizon in every other view.
+ */
+function stageOf(palette: ThemePalette, dark: boolean, top: boolean): string {
+  if (dark) return palette['scene-shade'];
+  return top ? palette.canvas : `#${calmSkyOf(palette).horizon.getHexString()}`;
+}
+
 /** The camera before its first view is set: the rig flies it from here. */
 const CAMERA_START = { near: 0.5, far: 3_000, position: [0, 60, 60] as [number, number, number] };
-
-/** The light: the sky's fill and the sun's strength. */
-const SKY_LIGHT = 1.1;
-const SUN_LIGHT = 2.4;
-/** Under this the sun's light warms toward sunrise's and sunset's colour. */
-const WARM_BELOW_DEG = 18;
-/**
- * The sun's light from where the sun stands, casting soft shadows over the site. Its shadow map
- * is as sharp as the view's detail allows; a new size is a new light, as three.js keeps a map once made.
- */
-function SunLight({
-  sun,
-  palette,
-  shadowMapPx,
-}: {
-  sun: SunPosition;
-  palette: ThemePalette;
-  shadowMapPx: number;
-}) {
-  const azimuth = sun.azimuthDegrees * RADIANS;
-  const elevation = sun.elevationDegrees * RADIANS;
-  const across = Math.cos(elevation) * SUN_DISTANCE_M;
-  const warmth = 1 - Math.min(1, Math.max(0, sun.elevationDegrees / WARM_BELOW_DEG));
-  const colour = new Color(palette['scene-mark']).lerp(
-    new Color(palette['scene-sun-dawn']),
-    warmth,
-  );
-  return (
-    <>
-      <hemisphereLight args={[palette['scene-sky'], palette['scene-ground'], SKY_LIGHT]} />
-      <directionalLight
-        position={[
-          Math.sin(azimuth) * across,
-          Math.sin(elevation) * SUN_DISTANCE_M,
-          -Math.cos(azimuth) * across,
-        ]}
-        intensity={SUN_LIGHT}
-        color={colour}
-        castShadow
-        shadow-mapSize={[shadowMapPx, shadowMapPx]}
-        shadow-camera-left={-SHADOW_HALF_M}
-        shadow-camera-right={SHADOW_HALF_M}
-        shadow-camera-top={SHADOW_HALF_M}
-        shadow-camera-bottom={-SHADOW_HALF_M}
-        shadow-bias={-0.0004}
-      />
-    </>
-  );
-}
 
 /**
  * Keeps the page's pin marker on the pin: each drawn frame puts its tip where the pin lands on the
@@ -176,6 +137,8 @@ export interface StudioSceneProps {
   fit: SceneFit | null;
   /** A roof closed: the camera frames the roofs once for each new value. */
   frameOn: object | null;
+  /** An arrow on the model is held: the camera holds still until it is let go. */
+  arrowHeld: boolean;
   /** The height the roofs stand at now, shared with the page's marks. */
   rise: RoofRise;
   /** The page's marks on the roofs, told each frame where the model lands. */
@@ -217,6 +180,7 @@ export function StudioScene({
   pictureScale: readScale,
   fit,
   frameOn,
+  arrowHeld,
   rise,
   roofMarks,
   plan,
@@ -240,8 +204,21 @@ export function StudioScene({
   // A weak device draws less detail and the same numbers (G034).
   const detail = useSceneDetail(deviceHintsNow());
   const { look } = detail;
-  // LiDAR's dark stage, in every mode (owner ruling 2026-11-26): the scan reads against it.
-  const stage = lidar.on ? palette['scene-shade'] : palette.canvas;
+  // LiDAR's dark stage, in every mode (owner ruling 2026-11-26): the scan reads against it. While
+  // the picture comes the stage is dark too, so the head's white marks read over it; out of the top
+  // view the calm sky stands over the ground, and the far ground fades into its horizon.
+  const waiting = pictureComing(picture.kind, sharp, ownTop) || picture.kind === 'waiting';
+  const skyShown = view !== 'top' && !lidar.on;
+  const stage = useMemo(
+    () => stageOf(palette, lidar.on || waiting, view === 'top'),
+    [palette, lidar.on, waiting, view],
+  );
+  const sunPath = useSunPath(fit, sunSky);
+  const clear = scaledBox(clearGroundOf(picture), pictureScale);
+  const shadowRoom = useMemo(
+    () => shadowRoomOf(roofScene, pictureScale),
+    [roofScene, pictureScale],
+  );
   return (
     <Canvas
       frameloop="demand"
@@ -255,10 +232,26 @@ export function StudioScene({
       <color attach="background" args={[stage]} />
       {/* The far ground fades into the page; the camera rig sets how far, from its own distance. */}
       <fog attach="fog" args={[stage, CAMERA_START.far, CAMERA_START.far]} />
-      <SunLight key={look.shadowMapPx} sun={sun} palette={palette} shadowMapPx={look.shadowMapPx} />
+      <StudioSunLight
+        key={look.shadowMapPx}
+        sun={sun}
+        palette={palette}
+        shadowMapPx={look.shadowMapPx}
+        room={shadowRoom}
+        sunOpen={sunSky !== null}
+        lidar={lidar.on}
+      />
+      {skyShown ? <StudioCalmSky palette={palette} /> : null}
       {sunSky === null ? null : (
         <>
-          <StudioSunSky {...sunSky} {...pathRoom(fit)} palette={palette} />
+          <StudioSunSky
+            {...sunSky}
+            {...sunPath.room}
+            frame={sunPath.frame}
+            free={free}
+            clear={clear}
+            palette={palette}
+          />
           {/* LiDAR's scan casts its own shadows: the height map's are not cast twice. */}
           {lidar.on ? null : <StudioSiteShade {...sunSky.shade} />}
         </>
@@ -302,12 +295,15 @@ export function StudioScene({
         free={free}
         still={still}
         heldView={heldView}
-        clear={scaledBox(clearGroundOf(picture), pictureScale)}
+        clear={clear}
         metresPerPixel={picture.kind === 'sky' ? picture.metresPerPixel * pictureScale : null}
         drive={drive}
         onTurn={onTurn}
         fit={fit}
         frameOn={frameOn}
+        arrowHeld={arrowHeld}
+        lidar={lidar.on}
+        sun={sunPath.frame}
       />
     </Canvas>
   );

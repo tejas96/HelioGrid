@@ -142,6 +142,25 @@ describe('typed coordinates', () => {
     expect(stepped(none, { kind: 'coordinates-read' })).toBe(none);
   });
 
+  it.each([
+    ['in Latitude', { latitude: '16.8367, 74.5966' }],
+    ['in Longitude', { longitude: '16.8367,74.5966' }],
+  ])('a pair typed whole %s is split into both fields when it is read', (_, typed) => {
+    const form = stepped(
+      empty(),
+      { kind: 'mode-picked', mode: 'coordinates' },
+      { kind: 'coordinates-typed', ...typed },
+      { kind: 'coordinates-read' },
+    );
+    expect(form).toMatchObject({ pin: SANGLI, placed: SANGLI, fault: null });
+    expect([form.latitude, form.longitude]).toEqual(['16.83670', '74.59660']);
+  });
+
+  it('a pair being typed is not split per keystroke: only its read splits it', () => {
+    const form = stepped(empty(), { kind: 'coordinates-typed', latitude: '16.8367, 74.5966' });
+    expect(form).toMatchObject({ latitude: '16.8367, 74.5966', longitude: '', pin: null });
+  });
+
   it('a pasted pair is used at once, in either mode', () => {
     const form = stepped(empty(), { kind: 'coordinates-pasted', point: SANGLI });
     expect(form).toMatchObject({

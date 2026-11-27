@@ -39,7 +39,15 @@
   border-block-end: var(--hg-studio-line) solid var(--line-soft);
 }
 
+/* The body takes the room the head leaves and scrolls in it: its last row, Nudge 10 cm, is never cut
+   off at the sheet's foot. */
+.hg-lidar-move-head {
+  flex: none;
+}
+
 .hg-lidar-move-body {
+  flex: 1 1 auto;
+  min-block-size: 0;
   overflow: auto;
   overscroll-behavior: contain;
   padding: var(--sp-2) var(--sp-3) var(--sp-3);

@@ -1,7 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
-import { useId } from 'react';
+import { useId, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { useFocusRequest } from '../../primitives/use-focus-request';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { renderProvenance } from '../Provenance';
@@ -66,12 +67,15 @@ export function Slider({
   format,
   steppers = true,
   disabled = false,
+  focusRequest,
   provenance,
   density = 'expressive',
   id,
   className,
   style,
 }: WebSliderProps) {
+  const range = useRef<HTMLInputElement>(null);
+  useFocusRequest(range, focusRequest);
   const autoId = useId();
   const sid = id ?? autoId;
   const percent = fillPercent(value, min, max);
@@ -145,6 +149,7 @@ export function Slider({
             />
           ))}
           <input
+            ref={range}
             className="hg-slider-range"
             id={sid}
             type="range"

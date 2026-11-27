@@ -74,6 +74,8 @@ export function StudioDraftMarks({
             key={`d${i}`}
             className="hg-roof-at"
             data-at={pointText(corner)}
+            // The first corner: the lengths being drawn keep off its glow.
+            data-start={i === 0 || undefined}
             onPointerEnter={i === 0 && draft.canClose ? () => onOverFirst(corner) : undefined}
           >
             {i === 0 && draft.canClose ? (

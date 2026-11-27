@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { historyAfter, historyOf } from '../../src/studio/history';
+import type { Roof } from '../../src/studio/document';
+import { historyAfter, historyOf, historyUndone } from '../../src/studio/history';
 import { roofHeightReset, roofHeightSet } from '../../src/studio/roof-height';
 import type { SiteDataStamp } from '../../src/studio/site-data';
 import {
@@ -27,8 +28,20 @@ const flat = (heightM: number): RoofDataRead => ({
   facingDeg: null,
   clear: true,
 });
-const readsOf = (roofs: Record<string, RoofDataRead>) => ({ stamp: STAMP, roofs });
 const STAIR = stairOn(box(2, 2, 3, 3));
+const HOLE = roofOf('hole', box(1, 1, 1, 1), {
+  kind: { is: 'hole', setBy: 'system' },
+  partOf: 'terrace',
+});
+/** Reads made at the corners the roofs stand at, unless `at` names others. */
+const readsOf = (
+  roofs: Record<string, RoofDataRead>,
+  at: readonly Roof[] = [TERRACE, STAIR, HOLE],
+) => ({
+  stamp: STAMP,
+  roofs,
+  shape: at.map(({ id, corners }) => ({ id, corners })),
+});
 
 describe('the data’s heights on the design’s roofs', () => {
   it('a roof with no height stands at the data’s, derived, and the design names the data', () => {
@@ -84,11 +97,7 @@ describe('the data’s heights on the design’s roofs', () => {
   });
 
   it('a hole and a dormer take no height from the map', () => {
-    const hole = roofOf('hole', box(1, 1, 1, 1), {
-      kind: { is: 'hole', setBy: 'system' },
-      partOf: 'terrace',
-    });
-    const read = withSiteHeights(designOf(TERRACE, hole), readsOf({ hole: flat(3) }), FACTS);
+    const read = withSiteHeights(designOf(TERRACE, HOLE), readsOf({ hole: flat(3) }), FACTS);
     expect(read.roofs[1]?.height).toBeNull();
   });
 
@@ -122,6 +131,32 @@ describe('the data’s heights on the design’s roofs', () => {
     expect(read.present.roofs[0]?.height?.metres).toBe(9.1);
     expect(read.past[0]?.site?.dataStamp).toEqual(STAMP);
     expect(historyWithSiteHeights(read, readsOf({ terrace: flat(9.1) }), FACTS)).toBe(read);
+  });
+
+  const MOVED = { ...TERRACE, corners: box(6, 0, 10, 8).map((p) => p) };
+  it('a read made at the moved roof’s corners leaves the state before the move as it was: Undo brings back its height', () => {
+    const before = withSiteHeights(designOf(TERRACE), readsOf({ terrace: flat(9.1) }), FACTS);
+    const history = historyAfter(historyOf(before), designOf({ ...MOVED, height: null }));
+    const read = historyWithSiteHeights(history, readsOf({ terrace: flat(4.2) }, [MOVED]), FACTS);
+    expect(read.present.roofs[0]?.height?.metres).toBe(4.2);
+    expect(read.past[0]?.roofs[0]?.height?.metres).toBe(9.1);
+    expect(historyUndone(read).present.roofs[0]?.height?.metres).toBe(9.1);
+  });
+
+  it('a read made before the roof moved sets nothing on the moved roof', () => {
+    const moved = designOf({ ...MOVED, height: null });
+    expect(
+      withSiteHeights(moved, readsOf({ terrace: flat(9.1) }), FACTS).roofs[0]?.height,
+    ).toBeNull();
+  });
+
+  it.each([
+    ['a height the data set stands down', { metres: 9.1, setBy: 'system', tier: 'derived' }, null],
+    ['a person’s height stays', { metres: 7.5, setBy: 'person' }, { metres: 7.5, setBy: 'person' }],
+  ] as const)('no building under the roof where it now stands: %s', (_, height, after) => {
+    const design = designOf({ ...TERRACE, height });
+    const read = withSiteHeights(design, readsOf({ terrace: { kind: 'no_building' } }), FACTS);
+    expect(read.roofs[0]?.height).toEqual(after);
   });
 });
 

@@ -25,6 +25,8 @@ import {
  */
 
 const DESIGNS_PATH = `/leads/${LEAD_ID}/designs`;
+/** Long enough for a read's two retries and their back-off (1 s, then 2 s). */
+const READ_RETRIES_MS = 6_000;
 
 function mounted(shown = true, lead: LeadDetail | null = null) {
   const moved: string[] = [];
@@ -173,6 +175,76 @@ describe('Lead designs — Create design', () => {
     act(() => world.view.result.current.copy(designId(1)));
     await waitFor(() => expect(world.moved).toEqual([`site ${designId(2)}`]));
     expect(createsSent()[0]?.body).toMatchObject({ copyOf: designId(1) });
+  });
+});
+
+describe('Lead designs — the dock’s Design', () => {
+  const leadWith = (designs: number) =>
+    ({ lead: { state: 'open' }, sections: { designs } }) as unknown as LeadDetail;
+
+  it.each([
+    ['with two designs, the section out of view: the newest opens, none is made', 2, false],
+    ['with two designs, the section in view: the newest opens, none is made', 2, true],
+    ['with one design: it opens', 1, false],
+  ])('%s', async (_, count, shown) => {
+    origin.designs = Array.from({ length: count }, (__, i) => aDesign(i + 1));
+    const world = mounted(shown, leadWith(count));
+    await settle();
+    if (shown) await waitFor(() => expect(world.view.result.current.read.kind).toBe('ready'));
+    act(() => world.view.result.current.design());
+    await waitFor(() => expect(world.moved).toEqual([`design ${designId(count)}`]));
+    expect(createsSent()).toHaveLength(0);
+  });
+
+  it('with none, the lead’s first design is made and its Site details open, the list not read', async () => {
+    const world = mounted(false, leadWith(0));
+    await settle();
+    act(() => world.view.result.current.design());
+    await waitFor(() => expect(world.moved).toEqual([`site ${designId(1)}`]));
+    expect(readsOf(DESIGNS_PATH)).toBe(0);
+    expect(createsSent()).toHaveLength(1);
+  });
+
+  it('while the list is read the dock says it is opening; a list that cannot be read says so there, and the press again opens it', async () => {
+    origin.designs = [aDesign(1)];
+    // A read is retried twice on a dropped answer before it fails: all three are dropped.
+    answerNext('list', 'drop', 'drop', 'drop');
+    const world = mounted(false, leadWith(1));
+    await settle();
+    act(() => world.view.result.current.design());
+    await waitFor(() => expect(world.view.result.current.opening).toBe(true));
+    await waitFor(() => expect(world.view.result.current.createFailure).toBe('other'), {
+      timeout: READ_RETRIES_MS,
+    });
+    expect(world.view.result.current.opening).toBe(false);
+    expect(world.moved).toEqual([]);
+    expect(createsSent()).toHaveLength(0);
+    act(() => world.view.result.current.design());
+    await waitFor(() => expect(world.moved).toEqual([`design ${designId(1)}`]));
+    expect(world.view.result.current.createFailure).toBeNull();
+  });
+
+  it('a list read earlier that no longer matches the lead’s count is read again: the newest opens, none is made', async () => {
+    const world = mounted(true, leadWith(1));
+    await waitFor(() => expect(world.view.result.current.read.kind).toBe('empty'));
+    origin.designs = [aDesign(1)];
+    act(() => world.view.result.current.design());
+    await waitFor(() => expect(world.moved).toEqual([`design ${designId(1)}`]));
+    expect(createsSent()).toHaveLength(0);
+  });
+
+  it('a second press while the list is read opens it once', async () => {
+    origin.designs = [aDesign(1)];
+    const world = mounted(false, leadWith(1));
+    await settle();
+    act(() => {
+      world.view.result.current.design();
+      world.view.result.current.design();
+    });
+    await waitFor(() => expect(world.moved).toEqual([`design ${designId(1)}`]));
+    await settle();
+    expect(world.moved).toHaveLength(1);
+    expect(readsOf(DESIGNS_PATH)).toBe(1);
   });
 });
 

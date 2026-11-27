@@ -27,6 +27,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { DesignActRefusedError } from '../studio/studio-repository';
 import { useRepositories } from './context';
+import type { SkyLaid } from './sky-picture-laid';
+import { skyLaidOf } from './sky-picture-laid';
 import { StudioSaveQueue, type StudioSaveState } from './studio-save-queue';
 import { useSkyPicture } from './use-sky-picture';
 import { useTenantId } from './use-tenant-id';
@@ -43,6 +45,11 @@ export type StudioPicture =
       readonly pieces: readonly SkyPicturePiece[];
       /** The softer picture round the sharp one; empty where the api gave none. */
       readonly around: readonly SkyPicturePiece[];
+      /**
+       * The picture as the ground lays it: the share of each piece's foot that carries the
+       * provider's credit, cut off, and the pieces' boxes without it. `pieces` stay as sent.
+       */
+      readonly laid: SkyLaid;
     }
   /**
    * The company's own photo or drone map (`T-M05-002d`): its pieces in the picture's own units,
@@ -120,11 +127,12 @@ export function pictureOf(
   shown: ShownPicture,
   sky: Read<SkyPictureWire>,
   own: { readonly read: Read<DesignPictureWire>; readonly laid: LaidPicture | null },
+  skyLaid: SkyLaid | null,
 ): StudioPicture {
   if (shown.kind === 'none') return shown;
   if (shown.kind === 'sky' && sky.kind === 'ready' && sky.value.kind === 'picture') {
-    const { kind: _picture, around, ...facts } = sky.value;
-    return { kind: 'sky', ...facts, around: around ?? [] };
+    const { kind: _picture, around = [], ...facts } = sky.value;
+    return { kind: 'sky', ...facts, around, laid: skyLaid ?? skyLaidOf(sky.value) };
   }
   if (shown.kind === 'own' && own.read.kind === 'ready' && own.laid !== null) {
     const picture = own.read.value;

@@ -32,6 +32,14 @@
   touch-action: none;
 }
 
+/* The 3D library's place while it loads: the scene's dark stage, so the head's white marks read on
+   it from the first frame; the roofs and the picture come over it as they arrive. */
+.hg-studio-scene-wait {
+  position: absolute;
+  inset: 0;
+  background: var(--scene-shade);
+}
+
 .hg-studio-no-scene {
   position: absolute;
   inset: 0;

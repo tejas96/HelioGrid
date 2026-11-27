@@ -27,7 +27,9 @@ export function RoofSideLines({
   const mark = studio.topMarks[index];
   if (roof === undefined) return null;
   const pts = roof.corners.map(pointText).join(';');
-  const picked = studio.handlesRoof === index;
+  // The roof in hand glows, and so does one whose sheet is open from the Roofs list: it is the
+  // roof being looked at, though it holds no handles.
+  const picked = studio.handlesRoof === index || studio.roofSheet?.roof === index;
   if (mark === undefined || bad) {
     return <path className="hg-roof-line" data-pts={pts} data-closed="true" data-bad={bad} />;
   }
@@ -145,7 +147,7 @@ export function StudioRoofTopMarks({
               </span>
             ) : null}
             {mark.aboveM === null ? null : (
-              <span className="hg-roof-at" data-at={pointText(roof.middle)}>
+              <span className="hg-roof-at" data-at={pointText(roof.middle)} data-above="true">
                 <span className="hg-roof-above">
                   {words.above(format.roofHeight(mark.aboveM, units))}
                 </span>

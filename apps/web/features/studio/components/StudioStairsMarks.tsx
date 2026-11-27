@@ -81,6 +81,8 @@ export function StudioStairsMarks({
         ref={holder}
         className="hg-roof-at"
         data-stairs="true"
+        // The stair room's corners: the marks' layer shrinks the mark on a room small on the screen.
+        data-room={studio.roofMarks[stairs.roof]?.corners.map(pointText).join(';')}
         {...(editable
           ? press({
               // A tap that barely moves is no drag: the guess stays a guess.

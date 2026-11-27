@@ -6,6 +6,7 @@ import {
   LABEL_GAP_PX,
   type LabelAsk,
   labelLayoutOf,
+  levelClearOf,
   type RoofLabelAsk,
   type ScreenPoint,
   tagPlaceOf,
@@ -232,6 +233,28 @@ describe('labels keep off every handle (T-M05-002)', () => {
     )[0]?.[0];
     expect(set?.shown).toBe(true);
     expect(labelLayoutOf([roofOf(SQUARE)])[0]?.[0]?.shown).toBe(true);
+  });
+});
+
+describe('a level label steps out off a mark it would sit on (the first corner while drawing)', () => {
+  // A 60 × 20 label whose middle is 32 px under its edge's middle, at (50, 32): it steps on down.
+  const ask = { at: xy(50, 32), from: xy(50, 0), width: 60, height: HEIGHT };
+  const mark = (x: number, y: number) => ({
+    at: xy(x, y),
+    width: CORNER_TOUCH_PX,
+    height: CORNER_TOUCH_PX,
+  });
+  it.each([
+    ['nothing to keep off: it stays', [], xy(50, 32)],
+    ['a mark just clear of it: it stays', [mark(102, 32)], xy(50, 32)],
+    ['a mark it touches: it steps out until clear', [mark(90, 32)], xy(50, 64)],
+    [
+      'a mark too far out to clear within reach: it stays',
+      [mark(50, 40), mark(50, 90)],
+      xy(50, 32),
+    ],
+  ])('%s', (_name, keepOff, at) => {
+    expect(levelClearOf(ask, keepOff)).toEqual(at);
   });
 });
 

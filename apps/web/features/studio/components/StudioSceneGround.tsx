@@ -2,12 +2,11 @@
 import type { StudioPicture } from '@heliogrid/data/react';
 import type { ThemePalette } from '@heliogrid/theme';
 import { Grid } from '@react-three/drei';
+import { groundSide } from './camera-limits';
 import type { RoofTopPicture } from './photo-reader';
 import { StudioOwnGround } from './StudioOwnGround';
 import { type GroundPicture, StudioPictureGround } from './StudioPictureGround';
 
-/** The plain ground where there is no picture, wide enough that its edge is never seen. */
-const GROUND_M = 1_200;
 /** How high the grid lies over the ground, so the two never fight. */
 const GRID_LIFT_M = 0.02;
 
@@ -38,15 +37,16 @@ export function StudioGround({
         // The first true length stretches the picture about the pin with every roof on it.
         <group scale={[pictureScale, 1, pictureScale]}>
           <StudioPictureGround
-            pieces={picture.pieces}
-            around={picture.around}
+            pieces={picture.laid.pieces}
+            around={picture.laid.around}
+            strip={picture.laid.creditStrip}
             page={palette.canvas}
             onSharp={onSharp}
           />
         </group>
       ) : (
         <mesh rotation-x={-Math.PI / 2}>
-          <planeGeometry args={[GROUND_M, GROUND_M]} />
+          <planeGeometry args={[groundSide(), groundSide()]} />
           <meshBasicMaterial color={palette['canvas-sunken']} toneMapped={false} />
         </mesh>
       )}

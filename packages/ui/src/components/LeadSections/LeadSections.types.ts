@@ -214,6 +214,8 @@ export interface LeadDesignsWords {
   readonly loading: TranslatedText;
   /** *Create design* is out, said where it was pressed — "Creating the design". */
   readonly creating: TranslatedText;
+  /** The dock's *Design* is finding the newest design to open — "Opening the design". */
+  readonly opening: TranslatedText;
   readonly failedTitle: TranslatedText;
   readonly failedLine: TranslatedText;
   readonly retry: TranslatedText;
@@ -233,6 +235,8 @@ export interface LeadDesignsPanel {
   readonly closed: boolean;
   readonly words: LeadDesignsWords;
   readonly onCreate: () => void;
+  /** The dock's *Design*: the lead's newest design opens, or with none its first is made. */
+  readonly onDesign: () => void;
   readonly onOpen: (designId: string) => void;
   readonly onCopy: (designId: string) => void;
   readonly onRecommend: (designId: string, recommended: boolean) => void;
@@ -242,8 +246,10 @@ export interface LeadDesignsPanel {
   readonly failure: TranslatedText | null;
   /** *Create design* itself is out — never a copy or a recommend: the dock says so where it is pressed. */
   readonly creating: boolean;
-  /** *Create design* itself came back undone, with the sentence saying why. */
+  /** *Create design* itself, or the dock's *Design* reading the list, came back undone, with why. */
   readonly createFailure: TranslatedText | null;
+  /** The dock's *Design* is reading the list to open the newest: the dock says so where it is pressed. */
+  readonly opening: boolean;
 }
 
 /**

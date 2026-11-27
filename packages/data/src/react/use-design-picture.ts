@@ -18,6 +18,7 @@ import { queryKeys } from '../cache/keys';
 import { DataError } from '../errors/errors';
 import { useRepositories } from './context';
 import { readOf } from './read';
+import { skyLaidOf } from './sky-picture-laid';
 import { pictureOf, piecesOf, type StudioPicture, skyReadOf } from './studio-document-state';
 import { useTenantId } from './use-tenant-id';
 
@@ -88,6 +89,11 @@ export function useStudioPicture(
   // turn, a drag or a slider.
   const value = read.kind === 'ready' ? read.value : null;
   const pieces = useMemo(() => (value === null ? [] : piecesOf(value)), [value]);
-  const picture = pictureOf(shown, skyRead, { read, laid });
+  const skyValue = skyRead.kind === 'ready' ? skyRead.value : null;
+  const skyLaid = useMemo(
+    () => (skyValue?.kind === 'picture' ? skyLaidOf(skyValue) : null),
+    [skyValue],
+  );
+  const picture = pictureOf(shown, skyRead, { read, laid }, skyLaid);
   return { sky, picture: picture.kind === 'own' ? { ...picture, pieces } : picture };
 }

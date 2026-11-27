@@ -6,7 +6,13 @@ import {
   type RoofEdgeTrust,
   type ScreenPoint,
 } from '@heliogrid/domain';
-import { type LayoutLabels, laidAt, readPoint } from './roof-marks-place';
+import {
+  type ClearLevel,
+  type LayoutLabels,
+  laidAt,
+  readPoint,
+  smallOnScreen,
+} from './roof-marks-place';
 import type { ScreenOf } from './StudioRoofs';
 
 /**
@@ -21,8 +27,8 @@ function trustOf(written: string | undefined): RoofEdgeTrust {
 }
 
 /**
- * The move and turn handles where they were laid this frame: the labels keep off them. The + dots
- * need no room: the label gap already clears them.
+ * The move and turn handles and the stairs mark where they were laid this frame: the labels keep
+ * off them. The + dots need no room: the label gap already clears them.
  */
 function handleBoxes(layer: HTMLElement): KeepOff[] {
   const boxes: KeepOff[] = [];
@@ -30,6 +36,27 @@ function handleBoxes(layer: HTMLElement): KeepOff[] {
     const at = laidAt(node);
     const size = handleSize(node);
     if (at !== undefined && size !== null) boxes.push({ at, ...size });
+  }
+  // The stairs mark draws small on a small room, so its size is read each frame, never kept.
+  for (const node of layer.querySelectorAll<HTMLElement>('[data-stairs]:not([hidden])')) {
+    const at = laidAt(node);
+    const mark = node.querySelector<HTMLElement>('.hg-stairs-mark');
+    if (at !== undefined && mark !== null && mark.offsetWidth > 0) {
+      boxes.push({ at, width: mark.offsetWidth, height: mark.offsetHeight });
+    }
+  }
+  return boxes;
+}
+
+/** The corner dots where they stand: a roof's height tag keeps off them as off a handle. */
+function dotBoxes(layer: HTMLElement): KeepOff[] {
+  const boxes: KeepOff[] = [];
+  for (const node of layer.querySelectorAll<HTMLElement>('[data-dot-roof]:not([hidden])')) {
+    const at = laidAt(node);
+    const dot = node.querySelector<HTMLElement>('.hg-roof-dot');
+    if (at !== undefined && dot !== null && dot.offsetWidth > 0) {
+      boxes.push({ at, width: dot.offsetWidth, height: dot.offsetHeight });
+    }
   }
   return boxes;
 }
@@ -44,6 +71,53 @@ function handleSize(node: HTMLElement): { width: number; height: number } | null
   const size = { width: mark.offsetWidth, height: mark.offsetHeight };
   sizes.set(node, size);
   return size;
+}
+
+/** Whether two boxes, each by its middle and size, overlap. */
+const overlaps = (a: KeepOff, b: KeepOff) =>
+  Math.abs(a.at.x - b.at.x) * 2 < a.width + b.width &&
+  Math.abs(a.at.y - b.at.y) * 2 < a.height + b.height;
+
+/**
+ * A roof's height on it ("+3.0 m") steps off a handle or the stairs mark it would sit under, away
+ * from that mark, so it stays read on a small room.
+ */
+function keepHeightsOff(
+  layer: HTMLElement,
+  marks: readonly KeepOff[],
+  clearLevel: ClearLevel,
+): void {
+  for (const node of layer.querySelectorAll<HTMLElement>('[data-above]:not([hidden])')) {
+    const at = laidAt(node);
+    const tag = node.querySelector<HTMLElement>('.hg-roof-above');
+    if (at === undefined || tag === null) continue;
+    const box = { at, width: tag.offsetWidth, height: tag.offsetHeight };
+    const under = marks.find((mark) => overlaps(box, mark));
+    if (under === undefined) continue;
+    // Straight below a mark on its middle: away from it is down.
+    const from = under.at.x === at.x && under.at.y === at.y ? { x: at.x, y: at.y - 1 } : under.at;
+    const clear = clearLevel({ at, from, width: box.width, height: box.height }, marks);
+    node.style.transform = `translate(${clear.x}px, ${clear.y}px)`;
+  }
+}
+
+/**
+ * The stairs mark on a stair room under two handle gaps across on the screen draws small, so the
+ * room's corners, lengths and height stay seen round it; it is sized before the labels measure it.
+ */
+function sizeStairs(layer: HTMLElement, screenOf: ScreenOf): void {
+  for (const node of layer.querySelectorAll<HTMLElement>('[data-stairs][data-room]')) {
+    const seen = (node.dataset.room ?? '').split(';').map((text) => {
+      const point = readPoint(text);
+      return point === null ? null : screenOf(point, 0);
+    });
+    if (seen.length === 0 || seen.some((point) => point === null)) continue;
+    const xs = (seen as ScreenPoint[]).map((point) => point.x);
+    const ys = (seen as ScreenPoint[]).map((point) => point.y);
+    const span = Math.min(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys));
+    const small = String(smallOnScreen(span));
+    if (node.dataset.small !== small) node.dataset.small = small;
+  }
 }
 
 /** A roof's corners on the screen, from its shape mark; `null` when one is behind the camera. */
@@ -79,7 +153,13 @@ function setLabel(node: HTMLElement, place: LabelPlace | undefined, across: Acro
  * Every length label, laid by the label layout (`T-M05-002`, part b): each roof's labels are asked
  * at their edges' screen points and their own measured size, and set where the layout puts them.
  */
-export function placeLabels(layer: HTMLElement, screenOf: ScreenOf, layout: LayoutLabels): void {
+export function placeLabels(
+  layer: HTMLElement,
+  screenOf: ScreenOf,
+  layout: LayoutLabels,
+  clearLevel: ClearLevel,
+): void {
+  sizeStairs(layer, screenOf);
   const shapes = shapesOn(layer, screenOf);
   const asked = new Map<string, { nodes: HTMLElement[]; labels: LabelAsk[] }>();
   for (const node of layer.querySelectorAll<HTMLElement>('[data-label]')) {
@@ -108,9 +188,11 @@ export function placeLabels(layer: HTMLElement, screenOf: ScreenOf, layout: Layo
     asked.set(roof, group);
   }
   const roofs = [...asked.entries()];
+  const marks = handleBoxes(layer);
+  keepHeightsOff(layer, [...marks, ...dotBoxes(layer)], clearLevel);
   const placed = layout(
     roofs.map(([roof, group]) => ({ corners: shapes.get(roof) ?? [], labels: group.labels })),
-    handleBoxes(layer),
+    marks,
   );
   const wide = layer.clientWidth;
   roofs.forEach(([, group], r) => {

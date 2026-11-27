@@ -57,6 +57,9 @@
   transform: translate(calc(-1 * var(--sp-0-5)), -100%);
   cursor: ns-resize;
   touch-action: none;
+  /* The stem is thin; a finger's target round it is wide, the arrow drawn where it was. */
+  padding-inline: var(--sp-4);
+  margin-inline: calc(-1 * var(--sp-4));
 }
 
 .hg-roof-arrow-stem {

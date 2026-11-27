@@ -101,10 +101,10 @@ export function Input({
           className="hg-input-control"
           data-mono={mono ? 'true' : undefined}
           id={fieldId}
-          type={type === 'handle' ? 'text' : type}
+          type={type === 'handle' || type === 'decimal' ? 'text' : type}
           // A number takes the decimal pad on a phone's browser, as the phone's own field does:
           // digits and a point, never the symbols keyboard that `type="number"` alone brings.
-          inputMode={type === 'number' ? 'decimal' : undefined}
+          inputMode={type === 'number' || type === 'decimal' ? 'decimal' : undefined}
           autoCapitalize={EXACT_INPUT.has(type) ? 'off' : undefined}
           spellCheck={EXACT_INPUT.has(type) ? false : undefined}
           placeholder={placeholder}

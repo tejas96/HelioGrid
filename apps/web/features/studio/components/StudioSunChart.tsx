@@ -1,5 +1,5 @@
 'use client';
-import type { StudioScreen } from '@heliogrid/data/react';
+import { type StudioScreen, sunChartAxisOf } from '@heliogrid/data/react';
 import type { SkylineAngles, SunChart, SunChartDay } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
 import { IconButton, ShellGlyph, useFormat } from '@heliogrid/ui';
@@ -16,45 +16,58 @@ const TOP = 10;
 const FOOT = 24;
 const TURN = 360;
 const UP = 90;
-/** The chart's angle lines, every 15° up to the zenith; its compass all round from north. */
+/**
+ * The chart's angle lines, every 15° up to the zenith; its compass all round from the point no
+ * day's sun passes (`sunChartAxisOf`), so every day is one arc.
+ */
 const ANGLE_STEP = 15;
 const ANGLES = Array.from({ length: UP / ANGLE_STEP - 1 }, (_, i) => (i + 1) * ANGLE_STEP);
-const POINT_NAMES = ['n', 'e', 's', 'w', 'n'] as const;
-const QUARTER = TURN / (POINT_NAMES.length - 1);
-const POINTS = (['n', 'e', 's', 'w', 'n'] as const).map(
-  (point, i) => [point, i * QUARTER] as const,
-);
-/** A jump this wide between two points of a day's line is its wrap past north: the line breaks. */
+/** The compass's four points round the chart, and the start again at its end. */
+const POINTS_ROUND = 4;
+const QUARTER = TURN / POINTS_ROUND;
+/** A jump this wide between two points of a day's line is its wrap past the start: the line breaks. */
 const WRAP_DEG = 15;
 const LABEL_GAP = 6;
 const LABEL_DROP = 4;
 const HOUR_DOT = 2.6;
 
-const x = (azimuth: number) => LEFT + (azimuth / TURN) * (WIDE - LEFT - RIGHT);
+/** Across the chart: degrees round from its start, 0 to 360. */
+const xRound = (round: number) => LEFT + (round / TURN) * (WIDE - LEFT - RIGHT);
 const y = (elevation: number) => HIGH - FOOT - (Math.max(0, elevation) / UP) * (HIGH - TOP - FOOT);
-const at = (azimuth: number, elevation: number) =>
-  `${x(azimuth).toFixed(1)},${y(elevation).toFixed(1)}`;
+const atRound = (round: number, elevation: number) =>
+  `${xRound(round).toFixed(1)},${y(elevation).toFixed(1)}`;
 
-/** A skyline as the outline of what it hides, closed to the horizon. */
-function skyPath(skyline: SkylineAngles): string {
-  const points = skyline.elevationsDeg.map((angle, i) => `L${at(i * skyline.stepDeg, angle)}`);
-  const last = skyline.elevationsDeg[0] ?? 0;
-  return `M${at(0, 0)} ${points.join(' ')} L${at(TURN, last)} L${at(TURN, 0)} Z`;
+/** Where an azimuth lies round the chart from its start, in degrees. */
+type Round = (azimuth: number) => number;
+
+/** The skyline's angles round the chart from its start, the start's angle again at its end. */
+function skylineRound(skyline: SkylineAngles, round: Round) {
+  const points = skyline.elevationsDeg
+    .map((angle, i) => ({ round: round(i * skyline.stepDeg), angle }))
+    .sort((a, b) => a.round - b.round);
+  const first = points[0]?.angle ?? 0;
+  return [...points, { round: TURN, angle: first }];
 }
 
-const farPath = (skyline: SkylineAngles) =>
-  [...skyline.elevationsDeg, skyline.elevationsDeg[0] ?? 0]
-    .map((angle, i) => `${i === 0 ? 'M' : 'L'}${at(i * skyline.stepDeg, angle)}`)
+/** A skyline as the outline of what it hides, closed to the horizon. */
+function skyPath(skyline: SkylineAngles, round: Round): string {
+  const points = skylineRound(skyline, round).map((p) => `L${atRound(p.round, p.angle)}`);
+  return `M${atRound(0, 0)} ${points.join(' ')} L${atRound(TURN, 0)} Z`;
+}
+
+const farPath = (skyline: SkylineAngles, round: Round) =>
+  skylineRound(skyline, round)
+    .map((p, i) => `${i === 0 ? 'M' : 'L'}${atRound(p.round, p.angle)}`)
     .join(' ');
 
-/** A day's sun as one line, broken where it wraps past north. */
-function dayPath(curve: SunChart['days'][number]['curve']): string {
+/** A day's sun as one line, broken only where it would wrap past the chart's start. */
+function dayPath(curve: SunChart['days'][number]['curve'], round: Round): string {
   return curve
     .map((point, i) => {
       const before = curve[i - 1];
-      const jump =
-        before === undefined || Math.abs(point.azimuthDegrees - before.azimuthDegrees) > WRAP_DEG;
-      return `${jump ? 'M' : 'L'}${at(point.azimuthDegrees, point.elevationDegrees)}`;
+      const here = round(point.azimuthDegrees);
+      const jump = before === undefined || Math.abs(here - round(before.azimuthDegrees)) > WRAP_DEG;
+      return `${jump ? 'M' : 'L'}${atRound(here, point.elevationDegrees)}`;
     })
     .join(' ');
 }
@@ -84,6 +97,9 @@ export function StudioSunChart({
   const name = studio.topMarks[roof]?.name;
   const sun = studio.sunBar.view?.sun ?? null;
   const shown = (day: SunChartDay) => `var(--scene-day-${day})`;
+  const axis = sunChartAxisOf(chart);
+  const x = (azimuth: number) => xRound(axis.round(azimuth));
+  const ticks = axis.points.map((point, i) => ({ point, round: i * QUARTER }));
   return (
     <section
       ref={footRef}
@@ -135,10 +151,10 @@ export function StudioSunChart({
                 </text>
               </g>
             ))}
-            {POINTS.map(([point, azimuth]) => (
+            {ticks.map(({ point, round }) => (
               <text
-                key={azimuth}
-                x={x(azimuth)}
+                key={round}
+                x={xRound(round)}
                 y={HIGH - LABEL_GAP}
                 className="hg-sun-chart-axis"
                 textAnchor="middle"
@@ -146,13 +162,13 @@ export function StudioSunChart({
                 {words.sunPoint(point)}
               </text>
             ))}
-            <path d={skyPath(chart.skyline)} className="hg-sun-chart-sky" />
+            <path d={skyPath(chart.skyline, axis.round)} className="hg-sun-chart-sky" />
             {chart.far === null ? null : (
-              <path d={farPath(chart.far)} className="hg-sun-chart-far" />
+              <path d={farPath(chart.far, axis.round)} className="hg-sun-chart-far" />
             )}
             {chart.days.map((day) => (
               <g key={day.key} stroke={shown(day.key)} fill={shown(day.key)}>
-                <path d={dayPath(day.curve)} fill="none" className="hg-sun-chart-day" />
+                <path d={dayPath(day.curve, axis.round)} fill="none" className="hg-sun-chart-day" />
                 {day.curve
                   .filter((point) => point.onHour)
                   .map((point) => (

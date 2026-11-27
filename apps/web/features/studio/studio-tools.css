@@ -256,20 +256,13 @@
 }
 
 /* An upright phone, a card at the foot: it takes the whole width, as Roofs does, so its words and
-   chips are never squeezed between the tool columns. The tools stand just above it; a card with a
-   row of chips (a new roof's kind, just after Close shape) takes their place instead, and they come
-   back to the same places when it goes. A card standing above a job keeps the columns as they are. */
+   chips are never squeezed between the tool columns. The tools stand just above it — a card with a
+   row of chips too (a new roof's kind, the site's question), so Undo, 3D and Roofs stay in reach.
+   A card standing above a job keeps the columns as they are. */
 @media (width < 968px) {
   .hg-studio[data-upright="true"]:has(.hg-studio-bar[data-kind="card"]:not([data-above-job="true"]))
     .hg-studio-tools {
     grid-row: 2;
-  }
-
-  .hg-studio[data-upright="true"]:has(
-      .hg-studio-bar[data-kind="card"]:not([data-above-job="true"]) .hg-studio-kind-chips
-    )
-    .hg-studio-tools {
-    display: none;
   }
 
   .hg-studio[data-upright="true"] .hg-studio-bar[data-kind="card"]:not([data-above-job="true"]) {

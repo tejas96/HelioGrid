@@ -2,7 +2,7 @@
 import type { DesignWire, LeadDetail } from '@heliogrid/contracts';
 import { can, isClosedState, type Read } from '@heliogrid/domain';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { useAction } from './action';
 import { useRepositories } from './context';
@@ -32,6 +32,11 @@ export interface LeadDesignsSection {
   readonly closed: boolean;
   /** *Create design*: the lead's next design is made and its Site details open. */
   create(): void;
+  /**
+   * The dock's *Design*: the lead's newest design opens where it has one, read first when the list
+   * is not in yet; a lead with none makes its first.
+   */
+  design(): void;
   /** *Copy as a variant*: a new draft with the source's roof or ground, and its Site details open. */
   copy(designId: string): void;
   open(designId: string): void;
@@ -41,8 +46,10 @@ export interface LeadDesignsSection {
   readonly failure: LeadDesignActFailure | null;
   /** *Create design* itself is out — not a copy, not a recommend: the dock, where it is pressed, says so. */
   readonly creating: boolean;
-  /** *Create design* itself came back undone. */
+  /** *Create design* itself, or the dock's *Design* reading the list, came back undone. */
   readonly createFailure: LeadDesignActFailure | null;
+  /** The dock's *Design* is reading the list to open the newest: the dock says so where it is pressed. */
+  readonly opening: boolean;
 }
 
 type Mark = { readonly designId: string; readonly recommended: boolean };
@@ -66,12 +73,9 @@ export function useLeadDesignsSection(
   const key = queryKeys.studio.leadDesigns(tenantId, leadId);
   const latestMoves = useRef(moves);
   latestMoves.current = moves;
-  const query = useQuery({
-    queryKey: key,
-    queryFn: ({ signal }) =>
-      repositories.studio.designsOf(leadId, signal).then((set) => set.designs),
-    enabled: tenantId !== '' && shown,
-  });
+  const designsOf = ({ signal }: { signal: AbortSignal }) =>
+    repositories.studio.designsOf(leadId, signal).then((set) => set.designs);
+  const query = useQuery({ queryKey: key, queryFn: designsOf, enabled: tenantId !== '' && shown });
 
   const make = useCreateDesign((designId) => latestMoves.current.toSiteDetails(designId));
   const mark = useAction(
@@ -83,6 +87,9 @@ export function useLeadDesignsSection(
     },
   );
 
+  /** The dock's *Design* reading the list, and that read come back undone. */
+  const [opening, setOpening] = useState(false);
+  const [lookFailed, setLookFailed] = useState(false);
   /** The act last sent was *Create design* itself, which the dock also offers. */
   const plain = useRef(false);
   const busy = make.pending || mark.pending;
@@ -91,17 +98,55 @@ export function useLeadDesignsSection(
   const clear = () => {
     make.clear();
     mark.clear();
+    setLookFailed(false);
+  };
+  const create = () => {
+    if (!free()) return;
+    clear();
+    plain.current = true;
+    void make.run({ leadId, copyOf: null });
+  };
+  /** A dock press waits on the list: a second press meanwhile reads it no second time. */
+  const looking = useRef(false);
+  /**
+   * The list to open from: the one read when it still holds as many designs as the lead counts,
+   * else read again, so a list read before another device made a design never sends the press to
+   * make a second one.
+   */
+  const listFor = (count: number | null) => {
+    const held = queryClient.getQueryData<readonly DesignWire[]>(key);
+    return held !== undefined && (count === null || held.length === count)
+      ? Promise.resolve(held)
+      : queryClient.fetchQuery({ queryKey: key, queryFn: designsOf, staleTime: 0 });
   };
   return {
     read: readOf(query, (designs) => designs.length === 0),
     canDesign,
     readerId: user?.id ?? null,
     closed: lead !== null && isClosedState(lead.lead.state),
-    create: () => {
-      if (!free()) return;
+    create,
+    design: () => {
+      if (!free() || looking.current) return;
+      if (lead?.sections.designs === 0) {
+        create();
+        return;
+      }
+      looking.current = true;
+      setOpening(true);
       clear();
-      plain.current = true;
-      void make.run({ leadId, copyOf: null });
+      void listFor(lead?.sections.designs ?? null)
+        .then((designs) => {
+          const [newest] = designs;
+          if (newest === undefined) create();
+          else latestMoves.current.toDesign(newest.id);
+        })
+        // A list that could not be read opens nothing and makes nothing: the dock says so, and
+        // the press is free again.
+        .catch(() => setLookFailed(true))
+        .finally(() => {
+          looking.current = false;
+          setOpening(false);
+        });
     },
     copy: (designId) => {
       if (!free()) return;
@@ -119,6 +164,8 @@ export function useLeadDesignsSection(
     busy,
     failure: designActFailureOf(make.failure) ?? designActFailureOf(mark.failure),
     creating: plain.current && make.pending,
-    createFailure: plain.current ? designActFailureOf(make.failure) : null,
+    createFailure:
+      (plain.current ? designActFailureOf(make.failure) : null) ?? (lookFailed ? 'other' : null),
+    opening,
   };
 }

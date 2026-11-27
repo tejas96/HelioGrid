@@ -3706,7 +3706,7 @@ msgid "3D"
 msgstr "3D"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:49
+#: src/copy/lead-designs.ts:50
 msgid "3D preview coming soon"
 msgstr "3D प्रीव्ह्यू लवकरच येत आहे"
 
@@ -3831,7 +3831,7 @@ msgid "A customer sends a friend. Add the friend and pick who sent them."
 msgstr "एखादा ग्राहक मित्राला पाठवतो. मित्राची नोंद करा आणि कोणी पाठवले ते निवडा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:31
+#: src/copy/studio-roof-draw.ts:32
 #: src/copy/studio-size.ts:24
 msgid "A design holds at most {max} roofs"
 msgstr "एका डिझाइनमध्ये जास्तीत जास्त {max} छते"
@@ -4108,7 +4108,7 @@ msgid "A role of your own"
 msgstr "तुमची स्वतःची भूमिका"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:29
+#: src/copy/studio-roof-draw.ts:30
 msgid "A roof has at most {max} corners"
 msgstr "एका छताला जास्तीत जास्त {max} कोपरे"
 
@@ -4128,7 +4128,7 @@ msgid "A roof keeps at least 3 corners."
 msgstr "छताला किमान 3 कोपरे राहतात."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:30
+#: src/copy/studio-roof-draw.ts:31
 msgid "A roof needs at least 3 corners"
 msgstr "छतासाठी किमान 3 कोपरे हवेत"
 
@@ -5699,7 +5699,7 @@ msgid "Back to {value}, as the roof"
 msgstr "परत {value} वर, छतासारखे"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:51
+#: src/copy/studio-lidar.ts:52
 msgid "Back to as drawn"
 msgstr "काढल्याप्रमाणे परत"
 
@@ -6756,7 +6756,7 @@ msgid "Check it on site."
 msgstr "साइटवर तपासा."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:39
+#: src/copy/lead-designs.ts:40
 #: src/copy/projects.ts:28
 #: src/copy/proposal-after-links.ts:37
 #: src/copy/proposal-after-list.ts:56
@@ -6977,7 +6977,7 @@ msgid "Clear all"
 msgstr "सर्व काढा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:20
+#: src/copy/studio-roof-draw.ts:21
 msgid "Clear every corner"
 msgstr "सर्व कोपरे काढा"
 
@@ -7097,7 +7097,7 @@ msgid "Close Roofs"
 msgstr "छते बंद करा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:33
+#: src/copy/studio-roof-draw.ts:34
 msgid "Close shape"
 msgstr "आकार बंद करा"
 
@@ -7115,7 +7115,7 @@ msgid "Close the map"
 msgstr "नकाशा बंद करा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:32
+#: src/copy/studio-roof-draw.ts:33
 msgid "Close the shape, or tap Undo."
 msgstr "आकार बंद करा, किंवा पूर्ववत करा वर टॅप करा."
 
@@ -8564,7 +8564,7 @@ msgid "Design {number}"
 msgstr "डिझाइन {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:54
+#: src/copy/lead-designs.ts:55
 msgid "Design draft"
 msgstr "डिझाइनचा ड्राफ्ट"
 
@@ -8905,7 +8905,7 @@ msgid "Draft"
 msgstr "ड्राफ्ट"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:59
+#: src/copy/studio-lidar.ts:60
 msgid "Drag a picked roof to move it."
 msgstr "निवडलेले छत ओढून हलवा."
 
@@ -8930,7 +8930,7 @@ msgid "Drag the map until the pin is on the right place."
 msgstr "पिन योग्य जागी येईपर्यंत नकाशा ओढा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:57
+#: src/copy/studio-lidar.ts:58
 msgid "Drag the scan under your roofs."
 msgstr "स्कॅन तुमच्या छतांखाली ओढा."
 
@@ -10012,7 +10012,7 @@ msgid "First: the most days late on your list"
 msgstr "आधी: तुमच्या यादीत सर्वात जास्त दिवस उशीर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:67
+#: src/copy/studio-lidar.ts:68
 msgid "Fix"
 msgstr "दुरुस्त करा"
 
@@ -10022,7 +10022,7 @@ msgid "Fix in {step}"
 msgstr "{step} मध्ये दुरुस्त करा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:68
+#: src/copy/studio-lidar.ts:69
 msgid "Fix in LiDAR"
 msgstr "LiDAR मध्ये दुरुस्त करा"
 
@@ -10057,12 +10057,12 @@ msgid "Floors"
 msgstr "मजले"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:34
+#: src/copy/studio-roof-draw.ts:35
 msgid "Follow {roof}"
 msgstr "{roof} सोबत बंद करा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:35
+#: src/copy/studio-roof-draw.ts:36
 msgid "Follow Face {number}"
 msgstr "भाग {number} सोबत बंद करा"
 
@@ -10650,7 +10650,7 @@ msgid "Google"
 msgstr "Google"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:75
+#: src/copy/studio-lidar.ts:76
 msgid "Google has no 3D scan of this place. Your roofs keep their heights."
 msgstr "Google कडे या जागेचा 3D स्कॅन नाही. तुमच्या छतांची उंची तशीच राहील."
 
@@ -10903,7 +10903,7 @@ msgid "Height above {roof}"
 msgstr "{roof} पासून उंची"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:53
+#: src/copy/studio-lidar.ts:54
 msgid "Height above the street"
 msgstr "रस्त्यापासून उंची"
 
@@ -10913,8 +10913,8 @@ msgid "Height from ground"
 msgstr "जमिनीपासून उंची"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:40
-#: src/copy/studio-lidar.ts:78
+#: src/copy/studio-lidar.ts:41
+#: src/copy/studio-lidar.ts:79
 msgid "Height from the ground"
 msgstr "जमिनीपासून उंची"
 
@@ -11140,7 +11140,7 @@ msgstr "निवड यादींतून लपवलेले"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:44
-#: src/copy/studio-lidar.ts:69
+#: src/copy/studio-lidar.ts:70
 msgid "Hide"
 msgstr "लपवा"
 
@@ -11187,7 +11187,7 @@ msgid "HJT"
 msgstr "HJT"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:60
+#: src/copy/studio-lidar.ts:61
 msgid "Hold a picked roof, then drag."
 msgstr "निवडलेले छत दाबून ठेवा, मग ओढा."
 
@@ -12674,7 +12674,7 @@ msgid "LiDAR"
 msgstr "LiDAR"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:72
+#: src/copy/studio-lidar.ts:73
 msgid "LiDAR needs the internet to open. Your design is safe."
 msgstr "LiDAR उघडण्यासाठी इंटरनेट लागते. तुमचे डिझाइन सुरक्षित आहे."
 
@@ -12945,7 +12945,7 @@ msgid "Loading the {kind} specification"
 msgstr "{kind} चे तपशील लोड होत आहेत"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:70
+#: src/copy/studio-lidar.ts:71
 msgid "Loading the 3D scan…"
 msgstr "3D स्कॅन लोड होत आहे…"
 
@@ -13344,7 +13344,7 @@ msgid "Lower the map"
 msgstr "नकाशा खाली करा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:41
+#: src/copy/studio-lidar.ts:42
 msgid "Lower the roof"
 msgstr "छत खाली करा"
 
@@ -13379,7 +13379,7 @@ msgid "made your own"
 msgstr "तुमचे स्वतःचे केलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:21
+#: src/copy/studio-roof-draw.ts:22
 msgid "Magnet"
 msgstr "मॅग्नेट"
 
@@ -13643,7 +13643,7 @@ msgid "Marketing sends"
 msgstr "मार्केटिंग संदेश"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:38
+#: src/copy/studio-lidar.ts:39
 msgid "Match the scan"
 msgstr "स्कॅनशी जुळवा"
 
@@ -14145,22 +14145,22 @@ msgid "Move the roof"
 msgstr "छत हलवा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:48
+#: src/copy/studio-lidar.ts:49
 msgid "Move the roofs down"
 msgstr "छते खाली सरकवा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:49
+#: src/copy/studio-lidar.ts:50
 msgid "Move the roofs left"
 msgstr "छते डावीकडे सरकवा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:50
+#: src/copy/studio-lidar.ts:51
 msgid "Move the roofs right"
 msgstr "छते उजवीकडे सरकवा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:47
+#: src/copy/studio-lidar.ts:48
 msgid "Move the roofs up"
 msgstr "छते वर सरकवा"
 
@@ -14217,7 +14217,7 @@ msgid "Moved"
 msgstr "हलवले"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:64
+#: src/copy/studio-lidar.ts:65
 msgid "Moved {distance}"
 msgstr "{distance} हलवले"
 
@@ -14293,7 +14293,7 @@ msgid "Moves the stage"
 msgstr "टप्पा पुढे नेते"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:62
+#: src/copy/studio-lidar.ts:63
 msgid "Moving {distance}"
 msgstr "{distance} हलत आहे"
 
@@ -15225,7 +15225,7 @@ msgid "No Google heights here"
 msgstr "इथे Google ची उंची नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:74
+#: src/copy/studio-lidar.ts:75
 msgid "No height data here"
 msgstr "इथे उंचीचा डेटा नाही"
 
@@ -15590,7 +15590,7 @@ msgid "No role"
 msgstr "भूमिका नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:80
+#: src/copy/studio-lidar.ts:81
 msgid "No roof here"
 msgstr "इथे छत नाही"
 
@@ -15610,7 +15610,7 @@ msgid "No row would make a lead or log an enquiry."
 msgstr "एकही ओळ ना लीड बनवेल, ना चौकशी नोंदवेल."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:45
+#: src/copy/studio-lidar.ts:46
 msgid "No scan roof here"
 msgstr "इथे स्कॅनमध्ये छत नाही"
 
@@ -16674,12 +16674,12 @@ msgid "Now"
 msgstr "आत्ता"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:61
+#: src/copy/studio-lidar.ts:62
 msgid "Now drag."
 msgstr "आता ओढा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:46
+#: src/copy/studio-lidar.ts:47
 msgid "Nudge 10 cm"
 msgstr "10 cm सरकवा"
 
@@ -16876,7 +16876,7 @@ msgid "On the proposal"
 msgstr "प्रस्तावावर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:63
+#: src/copy/studio-lidar.ts:64
 msgid "On the scan"
 msgstr "स्कॅनवर"
 
@@ -17317,6 +17317,11 @@ msgstr "Google साइन इन उघडत आहोत"
 #: src/copy/boot.ts:6
 msgid "Opening HelioGrid"
 msgstr "HelioGrid उघडत आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-designs.ts:38
+msgid "Opening the design"
+msgstr "डिझाइन उघडत आहे"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-after-won.ts:18
@@ -17824,7 +17829,7 @@ msgid "Past {ceiling}, new uploads pause · files you have stay."
 msgstr "{ceiling} नंतर नवीन अपलोड थांबतात · तुमच्या फाइल राहतात."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:28
+#: src/copy/studio-roof-draw.ts:29
 msgid "Past {reach} from the pin · this is another site"
 msgstr "पिनपासून {reach} च्या पुढे · ही दुसरी साइट आहे"
 
@@ -19435,7 +19440,7 @@ msgid "Raise the map"
 msgstr "नकाशा वर उचला"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:42
+#: src/copy/studio-lidar.ts:43
 msgid "Raise the roof"
 msgstr "छत वर करा"
 
@@ -21017,7 +21022,7 @@ msgid "Say why."
 msgstr "कारण सांगा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:44
+#: src/copy/studio-lidar.ts:45
 msgid "Scan {low} to {high}"
 msgstr "स्कॅन {low} ते {high}"
 
@@ -21032,19 +21037,24 @@ msgid "Scan with any UPI app · the amount is filled in"
 msgstr "कोणत्याही UPI ॲपने स्कॅन करा · रक्कम भरलेली आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:35
+#: src/copy/studio-lidar.ts:36
 msgid "Scan: {distance} {way}"
 msgstr "स्कॅन: {distance} {way}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:36
+#: src/copy/studio-lidar.ts:37
 msgid "Scan: {distance} {way}, {height} high"
 msgstr "स्कॅन: {distance} {way}, {height} उंच"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:37
+#: src/copy/studio-lidar.ts:38
 msgid "Scan: {height} high"
 msgstr "स्कॅन: {height} उंच"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-lidar.ts:35
+msgid "Scan: more than {distance} away. Drag the roof onto it."
+msgstr "स्कॅन: {distance} पेक्षा जास्त दूर. छत ओढून त्यावर ठेवा."
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:122
@@ -22132,7 +22142,7 @@ msgid "Slope"
 msgstr "उतार"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:43
+#: src/copy/studio-lidar.ts:44
 msgid "Sloped roof: its height stays as drawn."
 msgstr "उताराचे छत: त्याची उंची तशीच राहील."
 
@@ -22237,12 +22247,12 @@ msgid "Some of what you typed is not saved yet. It is lost if you leave."
 msgstr "तुम्ही लिहिलेल्यापैकी काही अजून जतन झालेले नाही. इथून गेल्यास ते जाईल."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:65
+#: src/copy/studio-lidar.ts:66
 msgid "Some roofs sit off their true spot."
 msgstr "काही छते त्यांच्या खऱ्या जागेपासून सरकली आहेत."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:66
+#: src/copy/studio-lidar.ts:67
 msgid "Some roofs sit off."
 msgstr "काही छते सरकली आहेत."
 
@@ -22719,7 +22729,7 @@ msgid "Stone-coated metal tile"
 msgstr "दगडी लेप असलेले धातूचे कौल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:19
+#: src/copy/studio-roof-draw.ts:20
 msgid "Stop drawing"
 msgstr "काढणे थांबवा"
 
@@ -22838,12 +22848,12 @@ msgid "Sun"
 msgstr "सूर्य"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:54
+#: src/copy/studio-lidar.ts:55
 msgid "Sun each roof keeps"
 msgstr "प्रत्येक छताला मिळणारे ऊन"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:81
+#: src/copy/studio-lidar.ts:82
 msgid "Sun kept"
 msgstr "मिळणारे ऊन"
 
@@ -23085,7 +23095,7 @@ msgid "Tap + on any screen. A number is enough."
 msgstr "कोणत्याही स्क्रीनवर + दाबा. एक नंबर पुरेसा आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:58
+#: src/copy/studio-lidar.ts:59
 msgid "Tap a building to move it."
 msgstr "हलवण्यासाठी इमारतीवर टॅप करा."
 
@@ -23095,7 +23105,7 @@ msgid "Tap a date to add a holiday"
 msgstr "सुट्टी जोडण्यासाठी एखादी तारीख टॅप करा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:27
+#: src/copy/studio-roof-draw.ts:28
 msgid "Tap a little farther from it."
 msgstr "त्यापासून थोडे दूर टॅप करा."
 
@@ -23120,17 +23130,17 @@ msgid "Tap a part to pick or change it. Up to {max} brands each — {name} reads
 msgstr "पार्ट निवडण्यासाठी किंवा बदलण्यासाठी त्यावर टॅप करा. प्रत्येकासाठी {max} ब्रँडपर्यंत — {name} यांना ते पर्याय म्हणून दिसतील."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:55
+#: src/copy/studio-lidar.ts:56
 msgid "Tap a roof to check its height."
 msgstr "उंची पाहण्यासाठी छतावर टॅप करा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:56
+#: src/copy/studio-lidar.ts:57
 msgid "Tap a roof to see its height."
 msgstr "उंची पाहण्यासाठी छतावर टॅप करा."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:24
+#: src/copy/studio-roof-draw.ts:25
 msgid "Tap a spot where the edges do not cross."
 msgstr "जिथे कडा एकमेकांना छेदत नाहीत तिथे टॅप करा."
 
@@ -23158,6 +23168,11 @@ msgstr "छताच्या प्रत्येक कोपऱ्याव�
 #: src/copy/studio-stairs.ts:16
 msgid "Tap the edge where the stairs reach the roof"
 msgstr "जिथे जिना छतावर पोहोचतो ती कडा टॅप करा"
+
+#. js-lingui-explicit-id
+#: src/copy/studio-roof-draw.ts:19
+msgid "Tap the pencil, then each corner of the roof."
+msgstr "पेन्सिलवर टॅप करा, मग छताच्या प्रत्येक कोपऱ्यावर."
 
 #. js-lingui-explicit-id
 #: src/copy/dropzone.ts:35
@@ -23483,7 +23498,7 @@ msgid "That did not go through. Try again."
 msgstr "हे झाले नाही. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:41
+#: src/copy/lead-designs.ts:42
 #: src/copy/site-details.ts:71
 msgid "That did not save. Check the connection and try again."
 msgstr "हे सेव्ह झाले नाही. कनेक्शन तपासा आणि पुन्हा प्रयत्न करा."
@@ -23660,7 +23675,7 @@ msgid "The {length} you set would change. Change that length first."
 msgstr "तुम्ही ठरवलेली {length} लांबी बदलेल. आधी ती लांबी बदला."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:73
+#: src/copy/studio-lidar.ts:74
 msgid "The 3D scan did not open."
 msgstr "3D स्कॅन उघडला नाही."
 
@@ -23877,7 +23892,7 @@ msgid "The design opens again at this place."
 msgstr "डिझाइन याच जागी पुन्हा उघडेल."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:38
+#: src/copy/lead-designs.ts:39
 msgid "The designs did not load"
 msgstr "डिझाइन लोड झाले नाहीत"
 
@@ -24653,7 +24668,7 @@ msgid "the savings"
 msgstr "बचत"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:79
+#: src/copy/studio-lidar.ts:80
 msgid "The scan"
 msgstr "स्कॅन"
 
@@ -24728,7 +24743,7 @@ msgid "The subsidy needs {scheme} panels. A panel without the mark stops Generat
 msgstr "अनुदानासाठी {scheme} पॅनेल आवश्यक आहेत. ही खूण नसलेले पॅनेल प्रस्ताव तयार होऊ देत नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:52
+#: src/copy/studio-lidar.ts:53
 msgid "The sun each roof keeps in a year"
 msgstr "प्रत्येक छताला वर्षभर मिळणारे ऊन"
 
@@ -25055,7 +25070,7 @@ msgid "This design is not here"
 msgstr "हे डिझाइन इथे नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:23
+#: src/copy/studio-roof-draw.ts:24
 msgid "This edge would cross another"
 msgstr "ही कडा दुसरीला छेदेल"
 
@@ -25195,7 +25210,7 @@ msgid "This lead is closed. Changes are not saved."
 msgstr "ही लीड बंद आहे. बदल सेव्ह होत नाहीत."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-designs.ts:42
+#: src/copy/lead-designs.ts:43
 #: src/copy/site-details.ts:72
 msgid "This lead is closed. Reopen it to change its designs."
 msgstr "ही लीड बंद आहे. तिची डिझाइन बदलण्यासाठी ती पुन्हा उघडा."
@@ -25751,7 +25766,7 @@ msgid "Tomorrow, {from}–{to}"
 msgstr "उद्या, {from}–{to}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:26
+#: src/copy/studio-roof-draw.ts:27
 msgid "Too close to another corner"
 msgstr "दुसऱ्या कोपऱ्याच्या खूप जवळ"
 
@@ -25761,7 +25776,7 @@ msgid "Too expensive"
 msgstr "खूप महाग"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:25
+#: src/copy/studio-roof-draw.ts:26
 msgid "Too far for this site"
 msgstr "या साइटसाठी खूप दूर"
 
@@ -25923,7 +25938,7 @@ msgstr "इनव्हॉइस नंबरचा एखादा भाग �
 #: src/copy/catalog-settings.ts:93
 #: src/copy/customer-page-phases.ts:25
 #: src/copy/customer-page-proposal.ts:56
-#: src/copy/lead-designs.ts:40
+#: src/copy/lead-designs.ts:41
 #: src/copy/lead-import.ts:57
 #: src/copy/leads-list.ts:32
 #: src/copy/payment-terms.ts:38
@@ -27815,7 +27830,7 @@ msgid "Which record stays?"
 msgstr "कोणती नोंद राहील?"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:39
+#: src/copy/studio-lidar.ts:40
 msgid "Which roof"
 msgstr "कोणते छत"
 
@@ -28518,7 +28533,7 @@ msgid "You’re clear for today"
 msgstr "आजचे सगळे झाले"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-lidar.ts:71
+#: src/copy/studio-lidar.ts:72
 msgid "You’re offline"
 msgstr "तुम्ही ऑफलाइन आहात"
 
@@ -29104,7 +29119,7 @@ msgid "Your photo, language and theme"
 msgstr "तुमचा फोटो, भाषा आणि थीम"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:22
+#: src/copy/studio-roof-draw.ts:23
 msgid "Your pick was not saved."
 msgstr "तुमची निवड सेव्ह झाली नाही."
 

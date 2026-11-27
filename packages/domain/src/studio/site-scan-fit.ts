@@ -9,8 +9,10 @@ import { roofDataReadsOf, roofScanRangeOf, type SiteGrids } from './site-roof-re
 /**
  * Where the scan sees each drawn building (`T-M05-002g`): the one shift, within 5 m of where it
  * stands, that puts the most of its roofs on the scan's building outlines, with the map where the
- * line-up laid it — so a roof traced on the leaning sky picture finds its true spot. Worked in the
- * studio's Web Worker: a campus asks it of every building at once.
+ * line-up laid it — so a roof traced on the leaning sky picture finds its true spot. A building the
+ * scan sees past 5 m is said to stand beyond the reach and is not moved: a move to the edge would
+ * walk it 5 m a press. Worked in the studio's Web Worker: a campus asks it of every building at
+ * once.
  */
 
 /** A building is looked for this far round where it stands, first in half metres, then in 10 cm. */
@@ -106,11 +108,25 @@ function bestOf(tried: readonly Tried[], coverOf: (shift: GroundPoint) => number
   return tied.reduce((a, b) => (away(b) < away(a) ? b : a));
 }
 
-/** The best shift for one building's sample points; `null` where none beats where it stands. */
+/**
+ * Whether the best shift stands at the edge of the reach and covers more a step past it: the
+ * scan's building stands farther off, and a move to the edge would only walk the roofs part way.
+ */
+function pastReach(best: Tried, coverOf: (shift: GroundPoint) => number): boolean {
+  const far = Math.hypot(best.east, best.north);
+  if (best.cover === 0 || far < SCAN_REACH_M - COARSE_STEP_M) return false;
+  const out = (far + COARSE_STEP_M) / far;
+  return coverOf({ east: best.east * out, north: best.north * out }) > best.cover;
+}
+
+/**
+ * The best shift for one building's sample points: `null` where none beats where it stands, or
+ * where the scan's building stands past the reach.
+ */
 function scanShiftOf(
   points: readonly GroundPoint[],
   outlines: readonly Outline[],
-): GroundPoint | null {
+): Pick<BuildingScanFit, 'shift' | 'beyondReach'> {
   const coverOf = (shift: GroundPoint) => coverAt(points, outlines, shift);
   const here = coverOf({ east: 0, north: 0 });
   const tryAll = (shifts: readonly GroundPoint[]) =>
@@ -120,10 +136,15 @@ function scanShiftOf(
     coverOf,
   );
   const best = bestOf(tryAll(shiftsRound(coarse, COARSE_STEP_M, FINE_STEP_M)), coverOf);
+  if (pastReach(best, coverOf)) return { shift: null, beyondReach: true };
   const far = Math.hypot(best.east, best.north);
-  if (best.cover <= here * BETTER_BY || best.cover === 0 || far < MOVE_MIN_M) return null;
-  return { east: toCm(best.east), north: toCm(best.north) };
+  if (best.cover <= here * BETTER_BY || best.cover === 0 || far < MOVE_MIN_M) {
+    return { shift: null, beyondReach: false };
+  }
+  return { shift: { east: toCm(best.east), north: toCm(best.north) }, beyondReach: false };
 }
+
+const NO_FIT = { shift: null, beyondReach: false } as const;
 
 /**
  * Each building's fit: its shift onto the scan, and what the height map reads in each of its roofs
@@ -148,7 +169,8 @@ export function scanFitsOf(input: {
     return { ring, ...ringBox(ring) };
   });
   return input.buildings.map((building) => {
-    const shift = outlines.length === 0 ? null : scanShiftOf(samplesOf(building.ground), outlines);
+    const { shift, beyondReach } =
+      outlines.length === 0 ? NO_FIT : scanShiftOf(samplesOf(building.ground), outlines);
     const by = shift ?? { east: 0, north: 0 };
     const placed = building.members.map((roof) => ({
       id: roof.id,
@@ -160,6 +182,6 @@ export function scanFitsOf(input: {
         return range === null ? [] : [[roof.id, range]];
       }),
     );
-    return { shift, reads: roofDataReadsOf(placed, input.grids, lineUp), ranges };
+    return { shift, beyondReach, reads: roofDataReadsOf(placed, input.grids, lineUp), ranges };
   });
 }

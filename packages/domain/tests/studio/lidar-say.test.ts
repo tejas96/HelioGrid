@@ -86,6 +86,7 @@ describe('where the picked roofs stand', () => {
     fitsIn: true,
     away: false,
     heightOff: false,
+    beyondM: null,
     shift: null,
     scanHeightM: 9,
   };
@@ -99,6 +100,11 @@ describe('where the picked roofs stand', () => {
       { kind: 'off', shift: { east: 3, north: 3 }, scanHeightM: null },
     ],
     ['at another height', { heightOff: true }, { kind: 'off', shift: null, scanHeightM: 9 }],
+    [
+      'the scan’s building past Match’s reach, at another height too',
+      { beyondM: 5, heightOff: true },
+      { kind: 'beyond_reach', reachM: 5 },
+    ],
   ] as const)('%s', (_, more, status) => {
     expect(lidarStatusOf({ ...base, ...more })).toEqual(status);
   });

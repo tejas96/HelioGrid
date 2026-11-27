@@ -6,7 +6,7 @@ import { useFrame } from '@react-three/fiber';
 import type { RefObject } from 'react';
 import { type SceneScreen, screenOfFrame } from './scene-screen';
 
-/** One pin's place in the scene: the roof's middle at its top. */
+/** One pin's place in the scene: its spot on the roof's own top, at the top's height. */
 export interface PinAnchor {
   readonly index: number;
   readonly east: number;
@@ -68,12 +68,12 @@ export function StudioLidarPins({
   );
 }
 
-/** The pins' anchors: each pinned roof's middle at its top. */
+/** The pins' anchors: each pinned roof's spot at its top. */
 export function pinAnchorsOf(studio: StudioScreen): PinAnchor[] {
   const levels = studio.scene.levels;
   return studio.lidar.pins.flatMap((pin) => {
     const topM = levels[pin.index]?.topM;
-    return topM === undefined ? [] : [{ index: pin.index, ...pin.middle, topM }];
+    return topM === undefined ? [] : [{ index: pin.index, ...pin.spot, topM }];
   });
 }
 

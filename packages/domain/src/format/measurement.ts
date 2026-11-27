@@ -83,9 +83,10 @@ export function metresOfFeetAndInches(feet: number, inches: number): number {
 }
 
 /**
- * A roof edge's length (`T-M05-002`): read off the picture, `~7.8 m` — about, to a decimetre; set
- * by a person, `8.20 m` — to the centimetre. In feet, `26 ft 11 in` either way: a tape in feet
- * reads whole inches.
+ * A roof edge's length (`T-M05-002`): to the centimetre, every length on the roof step alike — set
+ * by a person, `8.20 m`, as the box holds it; read off the picture, `~7.84 m`, its "~" alone saying
+ * it is about. One digit count, so a label, the length card and the typed preview never disagree
+ * (`~29.0` beside `28.98`). In feet, `26 ft 11 in` either way: a tape in feet reads whole inches.
  */
 export function formatRoofLength(
   pack: FormatPack,
@@ -98,11 +99,7 @@ export function formatRoofLength(
     const { feet, inches } = feetAndInches(metres);
     return `${about}${formatNumber(pack, feet)}${NBSP}ft ${formatNumber(pack, inches)}${NBSP}in`;
   }
-  const digits = traced ? 1 : 2;
-  const value = formatNumber(pack, metres, {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits,
-  });
+  const value = formatNumber(pack, metres, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return `${about}${value}${NBSP}m`;
 }
 
@@ -138,6 +135,14 @@ export function formatRoofSlope(
   if (system !== 'imperial') return angle;
   const rise = PITCH_RUN_IN * Math.tan(degrees * RADIANS);
   return `${formatNumber(pack, rise, { maximumFractionDigits: 1 })}/${PITCH_RUN_IN} · ${angle}`;
+}
+
+/** An area as `formatArea` shows it — whole square feet or whole square metres — in square metres. */
+export function areaShownM2(squareMetres: number, system: MeasurementSystem): number {
+  if (system === 'imperial') {
+    return Math.round(squareMetres * SQUARE_FEET_PER_SQUARE_METRE) / SQUARE_FEET_PER_SQUARE_METRE;
+  }
+  return Math.round(squareMetres);
 }
 
 /** An area held in square metres, whole, in the reader's system: `66 m²`, `706 sq ft`. */

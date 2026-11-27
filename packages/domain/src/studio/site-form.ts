@@ -1,7 +1,13 @@
 import type { AreaRef, Coordinate } from '../format/areas';
 import { SUPPLY_PHASES, type SupplyPhase } from '../format/supply-phase';
 import type { UtilityDirectory } from '../format/utility';
-import { type CoordinateFault, pinPartText, readCoordinates, roundPin } from './coordinates';
+import {
+  type CoordinateFault,
+  pinPartText,
+  readCoordinatePair,
+  readCoordinates,
+  roundPin,
+} from './coordinates';
 import { operatorAfterArea, type StudioSite } from './site';
 import { type DesignMount, SITE_NAME_MAX } from './vocabulary';
 
@@ -157,6 +163,9 @@ function withCoordinatesRead(form: SiteForm): SiteForm {
     const shown = pinTexts(form.pin);
     if (form.latitude === shown.latitude && form.longitude === shown.longitude) return form;
   }
+  // A pair typed whole into one field ("18.5074, 73.8077") is both halves, as a paste is.
+  const pair = readCoordinatePair(form.latitude) ?? readCoordinatePair(form.longitude);
+  if (pair !== null) return { ...form, ...pinTexts(pair), placed: pair, pin: pair, fault: null };
   const read = readCoordinates(form.latitude, form.longitude);
   if (read.kind === 'empty') return form;
   if (read.kind === 'fault') return { ...form, ...noPlace, fault: read.fault };

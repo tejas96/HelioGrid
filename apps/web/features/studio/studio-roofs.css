@@ -251,6 +251,19 @@
   gap: var(--sp-2);
 }
 
+/* The picture's credit as the last line of Roofs and of a roof's sheet (on a phone, where they
+   cover the map's foot); a desktop shows it on the map. */
+.hg-roof-sheet > .hg-studio-card-credit,
+.hg-roofs-credit {
+  margin: 0;
+}
+
+@media (width >= 968px) {
+  .hg-roofs-credit {
+    display: none;
+  }
+}
+
 /* A phone: a sheet across the foot, in the bar's place. */
 /* An upright phone: the width of the screen. Held sideways, its own width, as on a desktop. */
 @media (width < 968px) {

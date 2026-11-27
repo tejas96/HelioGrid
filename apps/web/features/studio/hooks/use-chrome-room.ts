@@ -1,5 +1,5 @@
 'use client';
-import { type RefObject, useEffect, useRef, useState } from 'react';
+import { type RefObject, useEffect, useMemo, useRef, useState } from 'react';
 
 /** The room the bars take at the top and the foot of the canvas, in CSS pixels. */
 export interface ChromeRoom {
@@ -26,10 +26,25 @@ export function useChromeRoom(
 } {
   const frame = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLDivElement>(null);
-  const bottom = useRef<HTMLDivElement>(null);
+  // The part at the foot is a new node each time it comes back (a sheet that stepped aside for a
+  // held arrow): each one is watched, or the room stays measured for the node that left.
+  // biome-ignore lint/plugin: the web's own node at the foot, watched as it comes and goes
+  const [lowerNode, setLowerNode] = useState<HTMLDivElement | null>(null);
+  const bottom = useMemo<RefObject<HTMLDivElement | null>>(() => {
+    let node: HTMLDivElement | null = null;
+    return {
+      get current() {
+        return node;
+      },
+      set current(next) {
+        node = next;
+        setLowerNode(next);
+      },
+    };
+  }, []);
   // biome-ignore lint/plugin: the web's own measure of laid-out boxes; the phone shows this page
   const [room, setRoom] = useState<ChromeRoom>(NONE);
-  // biome-ignore lint/correctness/useExhaustiveDependencies: a new holder of the foot is a new node to watch
+  // biome-ignore lint/correctness/useExhaustiveDependencies: a new holder of the foot, or a new node of it, is a new node to watch
   useEffect(() => {
     // Each part's resting place in the frame's layout, never its box on the screen: a panel still
     // sliding up as it opens would read short.
@@ -54,6 +69,6 @@ export function useChromeRoom(
     }
     measure();
     return () => observer.disconnect();
-  }, [holder]);
+  }, [holder, lowerNode]);
   return { frame, top, bottom, room };
 }

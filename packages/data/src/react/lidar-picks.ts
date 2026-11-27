@@ -12,6 +12,7 @@ import {
   type BuildingScanFit,
   type DrawnBuilding,
   roofIsFlat,
+  SCAN_REACH_M,
 } from '@heliogrid/domain/studio-kernel';
 import type { LidarScreen } from './lidar-view';
 
@@ -77,7 +78,8 @@ function heightRoofOf(
   facts: RoofFacts,
 ): LidarScreen['heightRoof'] {
   if (index === null || one === undefined) return null;
-  const range = fit?.ranges[roofs[index]?.id ?? ''] ?? null;
+  // A building past the scan's reach was read where it stands, not on its own roof: no range.
+  const range = fit?.beyondReach === true ? null : (fit?.ranges[roofs[index]?.id ?? ''] ?? null);
   const choices = one.roofs.map((at) => ({ index: at, name: nameOf(at) }));
   const heightM = heightOf(index);
   // The studio's own slider: its ends set by the height stored, never the one in hand.
@@ -115,13 +117,17 @@ export function lidarPicksOf(input: {
   const last = (one?.roofs.length ?? 1) - 1;
   const heightIndex = one?.roofs[Math.min(input.heightPick, last)] ?? null;
   const away = pickedBuildings.some((building) => fitOf(building)?.shift != null);
-  const heightOff = heightOffOf(pickedBuildings, fitOf, flat, roofs, input.heightOf);
+  // A building the scan sees past Match's reach: its reads where it stands are not of it.
+  const beyond = pickedBuildings.some((building) => fitOf(building)?.beyondReach === true);
+  const inReach = pickedBuildings.filter((building) => fitOf(building)?.beyondReach !== true);
+  const heightOff = heightOffOf(inReach, fitOf, flat, roofs, input.heightOf);
   const flatPick = heightIndex !== null && flat(heightIndex);
   const status = lidarStatusOf({
     picked: picked.length,
     fitsIn: fits !== null,
     away,
     heightOff,
+    beyondM: beyond ? SCAN_REACH_M : null,
     shift: oneFit?.shift ?? null,
     scanHeightM: flatPick ? scanTopOf(oneFit, roofs[heightIndex]?.id) : null,
   });

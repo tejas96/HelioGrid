@@ -107,12 +107,16 @@ describe('where the stairs reach the roof', () => {
 
 describe('what the bar says about the stairs', () => {
   const guessed = shown(CORNER);
-  const base = { placing: false, held: false, ask: false, stairs: guessed, editable: true };
+  const base = {
+    ...{ placing: false, held: false, ask: false, stairs: guessed },
+    ...{ guessNew: true, editable: true },
+  };
   it.each([
     ['placing first', { placing: true, held: true, ask: true }, 'placing'],
     ['held next', { held: true, ask: true }, 'moving'],
     ['no stairs: it asks', { ask: true, stairs: null }, 'ask'],
-    ['a guess says a drag moves it', {}, 'guessed'],
+    ['a guess made in this opening says a drag moves it', {}, 'guessed'],
+    ['the guess the design opened with: nothing, on every reopen', { guessNew: false }, null],
     [
       'a person’s stairs: nothing',
       { stairs: shown(stairsPlaced(CORNER, { roof: 1, side: 2, atM: 1 })) },

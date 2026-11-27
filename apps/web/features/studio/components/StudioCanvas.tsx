@@ -12,7 +12,7 @@ import { useFootSlot } from '../hooks/use-foot-slot';
 import { useKeyboardRoom } from '../hooks/use-keyboard-room';
 import { useLidarPress, withLidarPress } from '../hooks/use-lidar-press';
 import { useMapKeys } from '../hooks/use-map-keys';
-import { useNewestFrame } from '../hooks/use-newest-frame';
+import { useNewestFrame, useSheetFraming } from '../hooks/use-newest-frame';
 import { useStudioHaptics } from '../hooks/use-studio-haptics';
 import { useSunSky } from '../hooks/use-sun-sky';
 import { useUpright } from '../hooks/use-upright';
@@ -51,8 +51,10 @@ function sceneFitOf(studio: StudioScreen, frameOn: object | null): SceneFit | nu
 const NOON_OVERHEAD = { azimuthDegrees: 180, elevationDegrees: 60 } as const;
 
 // The 3D library loads after the bars: the studio's own parts show first, the scene a beat later.
+// Until it comes, a dark stage holds its place, so the head's white marks read from the first frame.
 const StudioScene = dynamic(() => import('./StudioScene').then((scene) => scene.StudioScene), {
   ssr: false,
+  loading: () => <div className="hg-studio-scene-wait" aria-hidden="true" />,
 });
 
 /**
@@ -128,14 +130,10 @@ export function StudioCanvas({
   // A roof that closes is framed in the room between the bars: the camera stays in the top view,
   // where its lengths are set next.
   const said = roofStep.kind === 'idle' ? roofStep.said : null;
-  // A roof's sheet, Roofs or the picker frames the roofs above it: again once its room is measured,
-  // as it is taller than the bar it replaces.
+  // A roof's sheet, Roofs or the picker frames the roofs above it; a held arrow's frame waits.
+  const { arrowHeld } = studio;
   const panelUp = panelFrames(footHolder, studio);
-  // biome-ignore lint/correctness/useExhaustiveDependencies: the measured room is what asks for a new frame
-  const sheetFraming = useMemo(
-    () => (panelUp ? {} : null),
-    [panelUp, studio.sheetFrame, room.bottom],
-  );
+  const sheetFraming = useSheetFraming(panelUp, studio.sheetFrame, room.bottom, arrowHeld);
   const closed = said?.kind === 'closed' ? said : null;
   // The size card opening frames its rectangle with the roofs, once: sliding then never moves the map.
   const typing = roofStep.kind === 'typing';
@@ -196,6 +194,7 @@ export function StudioCanvas({
             pictureScale={studio.shown?.pictureScale ?? null}
             fit={sceneFitOf(studio, frameOn)}
             frameOn={frameOn}
+            arrowHeld={arrowHeld}
             rise={rise}
             roofMarks={roofMarks}
             screen={studio.screenProjector}

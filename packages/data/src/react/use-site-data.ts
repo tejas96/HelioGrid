@@ -116,7 +116,8 @@ export function useSiteData(input: {
     void reader({ areas: data.areas, buildings: data.buildings, roofs: shape, lineUp }).then(
       (read) => {
         if (!live) return;
-        setReads({ stamp: { source: 'google_solar', quality, dataOn: data.dataOn }, roofs: read });
+        const stamp = { source: 'google_solar', quality, dataOn: data.dataOn } as const;
+        setReads({ stamp, roofs: read, shape });
       },
     );
     return () => {

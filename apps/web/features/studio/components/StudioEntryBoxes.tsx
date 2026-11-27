@@ -6,7 +6,8 @@ import { Input } from '@heliogrid/ui';
 
 /**
  * The boxes a length or a height is typed in (`T-M05-002`, *Values*): metres, or feet and inches,
- * as the board draws them. One part for the length field and the roof's sheet.
+ * as the board draws them. One part for the length field and the roof's sheet. A box keeps what is
+ * typed, so a number the reader refuses ("10.001e3400") reaches it and is refused with its reason.
  */
 export function StudioEntryBoxes({
   entry,
@@ -32,7 +33,7 @@ export function StudioEntryBoxes({
         <Input
           label={feet ? words.lengthFeet : label}
           labelSpokenOnly
-          type="number"
+          type="decimal"
           mono
           density="functional"
           value={entry.main}
@@ -46,7 +47,7 @@ export function StudioEntryBoxes({
           <Input
             label={words.lengthInches}
             labelSpokenOnly
-            type="number"
+            type="decimal"
             mono
             density="functional"
             value={entry.inches}

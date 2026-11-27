@@ -84,6 +84,7 @@ export function LeadProposalsAsDrawn({
           closed: false,
           words: leadDesignsWords(t, { ago: () => '', readerId: null }),
           onCreate: () => undefined,
+          onDesign: () => undefined,
           onOpen: () => undefined,
           onCopy: () => undefined,
           onRecommend: () => undefined,
@@ -91,6 +92,7 @@ export function LeadProposalsAsDrawn({
           failure: null,
           creating: false,
           createFailure: null,
+          opening: false,
         }}
         proposals={{
           section,

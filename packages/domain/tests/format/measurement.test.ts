@@ -51,8 +51,12 @@ describe('formatLength — metres in, the reader’s system out', () => {
 describe('a roof’s lengths and area (T-M05-002)', () => {
   it.each([
     // metres, system, traced → shown
-    [7.84, 'metric', true, `~7.8${NBSP}m`],
+    // One digit count for every length on the roof step: the "~" alone says it is from the picture.
+    [7.84, 'metric', true, `~7.84${NBSP}m`],
+    [8, 'metric', true, `~8.00${NBSP}m`],
+    [28.98, 'metric', true, `~28.98${NBSP}m`],
     [8.2, 'metric', false, `8.20${NBSP}m`],
+    [400, 'metric', false, `400.00${NBSP}m`],
     [8.204, 'imperial', false, `26${NBSP}ft 11${NBSP}in`],
     [8.0, 'imperial', true, `~26${NBSP}ft 3${NBSP}in`],
     // 11.6 in rounds up into the next foot, never "12 in".

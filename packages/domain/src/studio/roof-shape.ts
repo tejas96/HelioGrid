@@ -268,27 +268,34 @@ export function innerPoint(corners: readonly GroundPoint[]): GroundPoint {
   return middle;
 }
 
-/** The two handles inside a roof: one moves it, one turns it about its middle. */
+/** The two handles of a roof: one moves it, one turns it about its middle. */
 export interface RoofHandles {
   readonly move: GroundPoint;
   readonly turn: GroundPoint;
-  /** The roof is too small to hold both: the turn handle steps outside, past a corner. */
-  readonly turnOutside: boolean;
+  /** Which handles step outside a roof too small to hold them. */
+  readonly outside: 'none' | 'turn' | 'both';
 }
 
 /**
- * Where the move and the turn handle sit, `gap` metres apart (the handles' size on screen, in
- * ground metres). The move handle is inside the roof; the turn handle sits east of it while both
- * fit, and on a small roof steps outside past its north-east corner, so the two never overlap.
+ * Where the move and the turn handle sit, `gap` a handle's room on screen in ground metres. The
+ * move handle is inside while the roof holds a gap round it; the turn handle two gaps east — a short
+ * drag turns the roof a little — or on a narrow roof past its north-east corner. A roof under two
+ * gaps across holds neither: both stand south of it past its lengths, and its marks stay seen.
  */
 export function roofHandles(corners: readonly GroundPoint[], gap: number): RoofHandles {
-  const move = innerPoint(corners);
-  const beside = { east: move.east + gap, north: move.north };
-  const room = Math.min(
-    ...corners.map((corner, i) => distanceToSegment(beside, corner, cornerAfter(corners, i))),
-  );
-  if (pointInside(beside, corners) && room >= gap / 2) {
-    return { move, turn: beside, turnOutside: false };
+  const inner = innerPoint(corners);
+  const edgeTo = (point: GroundPoint, i: number) =>
+    distanceToSegment(point, corners[i] as GroundPoint, cornerAfter(corners, i));
+  const roomAt = (point: GroundPoint) => Math.min(...corners.map((_, i) => edgeTo(point, i)));
+  if (roomAt(inner) < gap) {
+    const south = Math.min(...corners.map((c) => c.north)) - 2 * gap;
+    const move = { east: inner.east, north: south };
+    return { move, turn: { east: move.east + 2 * gap, north: south }, outside: 'both' };
+  }
+  const move = inner;
+  const beside = { east: move.east + 2 * gap, north: move.north };
+  if (pointInside(beside, corners) && roomAt(beside) >= gap / 2) {
+    return { move, turn: beside, outside: 'none' };
   }
   const corner = corners.reduce((best, c) =>
     c.east + c.north > best.east + best.north ? c : best,
@@ -300,7 +307,7 @@ export function roofHandles(corners: readonly GroundPoint[], gap: number): RoofH
       east: corner.east + ((corner.east - move.east) / reach) * gap,
       north: corner.north + ((corner.north - move.north) / reach) * gap,
     },
-    turnOutside: true,
+    outside: 'turn',
   };
 }
 

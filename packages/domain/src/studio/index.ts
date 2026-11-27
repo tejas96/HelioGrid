@@ -59,20 +59,7 @@ export {
   historyRedone,
   historyUndone,
 } from './history';
-export {
-  type KeepOff,
-  LABEL_END_ROOM_PX,
-  LABEL_GAP_PX,
-  LABEL_OUT_PX,
-  type LabelAsk,
-  type LabelPlace,
-  labelLayoutOf,
-  type RoofLabelAsk,
-  type ScreenPoint,
-  type TagAsk,
-  type TagRoom,
-  tagPlaceOf,
-} from './label-layout';
+export * from './label-layout';
 export * from './lidar-say';
 export * from './many-roofs';
 export * from './map-systems';
@@ -273,6 +260,7 @@ export * from './site-sun';
 export * from './site-sun-bar';
 export * from './site-sun-shown';
 export * from './site-view';
+export { boxWithoutStrip, creditStripOf } from './sky-picture-credit';
 export {
   STEP_LOCKS,
   STUDIO_STEPS,
@@ -284,12 +272,20 @@ export {
 export { STUDIO_CHANGES, type StudioChange, studioChangeOf } from './studio-change';
 export { type SunPosition, sceneSunAt, sunAt } from './sun';
 export {
+  chartAzimuth,
+  type SunChartStart,
+  sunChartPoints,
+  sunChartStartOf,
+} from './sun-chart-axis';
+export { topTagSpot, topTagSpotsOf } from './top-tag-spot';
+export {
   type HistorySeen,
   historySeenAfter,
   NOTHING_SEEN,
   type UndoSlots,
   undoSlotsOf,
 } from './undo-slots';
+export { edgeDepthAhead, groundReachPerMetre, type ViewSpread } from './view-reach';
 export {
   OPENING_VIEW,
   STUDIO_VIEWS,
