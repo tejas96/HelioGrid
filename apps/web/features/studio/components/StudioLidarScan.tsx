@@ -41,15 +41,10 @@ export interface LidarScanShown {
   readonly cutOn: boolean;
   /** The Heights key's low and high, metres above the ground. */
   readonly key: { readonly lowM: number; readonly highM: number };
-  /** The roofs' middle and how far round it the scan stands before it fades into the stage. */
-  readonly middle: GroundPoint;
-  readonly reachM: number;
 }
 
 const XYZ = 3;
 const ONE = 1;
-/** The scan fades into the stage over its last part. */
-const FADE_SHARE = 0.25;
 /** A see-through scan keeps this much of itself at the most. */
 const SEE_THROUGH_KEEPS = 0.1;
 
@@ -159,7 +154,7 @@ export function StudioLidarScan({
     palette,
   ]);
 
-  const { look, sunlight, seeThrough, key, middle, reachM, cutOn } = shown;
+  const { look, sunlight, seeThrough, key, cutOn } = shown;
   const { lift } = lineUp;
   const piece = shown.photo;
   useEffect(() => {
@@ -169,8 +164,6 @@ export function StudioLidarScan({
     // The pad lies at the model's ground, wherever the person lifted the map.
     uniforms.uFloor.value = -lift;
     uniforms.uKey.value.set(key.lowM, key.highM);
-    uniforms.uMiddle.value.set(middle.east, middle.north);
-    uniforms.uFade.value.set(reachM * (1 - FADE_SHARE), reachM);
     uniforms.uPhoto.value = photo;
     uniforms.uPhotoOn.value = photo === null ? 0 : 1;
     if (piece !== null)
@@ -181,21 +174,7 @@ export function StudioLidarScan({
     material.depthWrite = !see;
     material.needsUpdate = true;
     invalidate();
-  }, [
-    uniforms,
-    material,
-    look,
-    sunlight,
-    cutOn,
-    key,
-    middle,
-    reachM,
-    photo,
-    piece,
-    seeThrough,
-    lift,
-    invalidate,
-  ]);
+  }, [uniforms, material, look, sunlight, cutOn, key, photo, piece, seeThrough, lift, invalidate]);
 
   return (
     <group position={[lineUp.east, lineUp.lift, -lineUp.north]}>

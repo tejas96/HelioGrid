@@ -12,9 +12,8 @@ import type { KeptHeightMap } from './site-data-kept';
  */
 
 /**
- * The picture reaches as far round the pin as the height map it came with, so LiDAR's scan wears it
- * to where the scan fades into the stage (`T-M05-002g`) — at most this far: sharp, and small enough
- * for a phone.
+ * The picture reaches as far round the pin as the height map it came with — at most this far: sharp,
+ * and small enough for a phone. LiDAR's scan wears it there; past it the scan shows bare.
  */
 const REACH_MAX_M = 60;
 const STEP_M = 0.25;

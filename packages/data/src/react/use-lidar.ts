@@ -1,7 +1,6 @@
 'use client';
 import type { SiteDataWire } from '@heliogrid/contracts';
 import {
-  type GroundBox,
   type GroundPoint,
   type History,
   type LidarEvent,
@@ -14,7 +13,6 @@ import {
   type RoofName,
   type RoofSunlight,
   roofNameOf,
-  roofsBox,
   type SightAt,
   type SiteLineUp,
   type SiteReads,
@@ -35,12 +33,6 @@ import { useLidarScan } from './use-lidar-scan';
  * history. While picked roofs are dragged, `preview` is the design with them where the drag holds
  * them, for the model to show; the history takes the move once the drag ends.
  */
-
-/** A box's middle; the pin with no box. */
-const middleOf = (box: GroundBox | null) =>
-  box === null
-    ? { east: 0, north: 0 }
-    : { east: (box.west + box.east) / 2, north: (box.south + box.north) / 2 };
 
 /** A roof's sunlight as one share: the mean of its cells; `null` with none. */
 function shareOf(sunlight: RoofSunlight | undefined): number | null {
@@ -176,7 +168,6 @@ export function useLidar(input: LidarInput): {
       view,
       scan,
       mesh,
-      middle: middleOf(roofsBox(roofs)),
       lineUp: mapDrag ?? site.lineUp,
       photo,
       canEdit: editable,

@@ -5,8 +5,6 @@ import type { LidarScanShown } from '../components/StudioLidarScan';
 import type { SunlightPatch } from '../components/StudioSunlight';
 
 const SUN_KEY = ['scene-sun-1', 'scene-sun-2', 'scene-sun-3', 'scene-sun-4'] as const;
-/** The scan stands this far round the roofs' middle before it fades into the stage. */
-const REACH_PAST_ROOFS_M = 70;
 
 /**
  * The canvas's part in LiDAR (`T-M05-002g`): the scan as the scene shows it — `null` until its mesh
@@ -33,8 +31,6 @@ export function useCanvasLidar(studio: StudioScreen, palette: ThemePalette) {
           // Lining the map up brings the whole scan back, to set against the roofs.
           cutOn: view.move?.tab !== 'map',
           key: site.key ?? { lowM: 0, highM: 1 },
-          middle: lidar.middle,
-          reachM: REACH_PAST_ROOFS_M,
         };
   const colours = useMemo(() => SUN_KEY.map((name) => palette[name]), [palette]);
   const { sunlight } = site;

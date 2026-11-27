@@ -101,8 +101,6 @@ export interface LidarScreen {
   readonly scan: LidarScan;
   /** The scan's mesh, built off the page's thread once LiDAR is on; `null` until it is. */
   readonly mesh: LidarMesh | null;
-  /** The drawn roofs' middle: the scan fades into the stage round it. */
-  readonly middle: GroundPoint;
   /** Where the scan lies: the map's line-up, or where a drag on the 3D holds it now. */
   readonly lineUp: SiteLineUp;
   /** The straight-down photo the scan wears; `null` until it is in. */

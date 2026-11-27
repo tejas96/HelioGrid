@@ -16,8 +16,8 @@ import {
 /**
  * LiDAR's look on the scan (`T-M05-002g`, board frames 5–8): one lit standard material whose
  * colour is worked in the shader — the straight-down photo on the tops, the studio's plaster on the
- * walls, Heights as the key's colours, Sunlight dimming the scan under the roofs' own colours — the
- * far scan fading into the dark stage. Where a roof is drawn the scan is pressed flat to the
+ * walls, Heights as the key's colours, Sunlight dimming the scan under the roofs' own colours — all
+ * of it out to the data's edge, on the dark stage. Where a roof is drawn the scan is pressed flat to the
  * model's ground, a pad the studio's own model stands on: no scanned wall shows through the
  * model's walls, and the pressed scan casts no second shadow. Every colour is a theme token.
  */
@@ -63,10 +63,6 @@ export interface ScanUniforms {
   /** The Heights key's low and high, in metres above the site's datum. */
   readonly uKey: { value: Vector2 };
   readonly uWall: { value: Color };
-  readonly uStage: { value: Color };
-  /** Where the scan fades into the stage: from, to, in metres from the roofs' middle. */
-  readonly uFade: { value: Vector2 };
-  readonly uMiddle: { value: Vector2 };
   readonly uCut: { value: Texture | null };
   readonly uCutOn: { value: number };
   /** The cut's box on the ground: west, south, east, north. */
@@ -85,10 +81,6 @@ export function scanUniformsOf(palette: ThemePalette): ScanUniforms {
     uRamp: { value: rampOf(HEIGHT_KEY.map((name) => palette[name])) },
     uKey: { value: new Vector2(0, 1) },
     uWall: { value: new Color(palette['scene-wall']) },
-    uStage: { value: new Color(palette['scene-shade']) },
-    // Set from the roofs' place each frame it changes (`StudioLidarScan`).
-    uFade: { value: new Vector2() },
-    uMiddle: { value: new Vector2() },
     uCut: { value: null },
     uCutOn: { value: 0 },
     uCutBox: { value: new Vector4(-1, -1, 1, 1) },
@@ -153,16 +145,9 @@ export function scanMaterialOf(uniforms: ScanUniforms): MeshStandardMaterial {
         `#include <common>
 varying vec3 vWorld; varying vec3 vLocal; varying vec3 vNormalW;
 uniform int uLook; uniform float uSunOn; uniform sampler2D uPhoto; uniform float uPhotoOn;
-uniform vec4 uPhotoBox; uniform sampler2D uRamp; uniform vec2 uKey; uniform vec3 uWall;
-uniform vec3 uStage; uniform vec2 uFade; uniform vec2 uMiddle;`,
+uniform vec4 uPhotoBox; uniform sampler2D uRamp; uniform vec2 uKey; uniform vec3 uWall;`,
       )
-      .replace('#include <map_fragment>', LOOK)
-      .replace(
-        '#include <fog_fragment>',
-        `float far = distance(vec2(vWorld.x, -vWorld.z), uMiddle);
-gl_FragColor.rgb = mix(gl_FragColor.rgb, uStage, smoothstep(uFade.x, uFade.y, far));
-#include <fog_fragment>`,
-      );
+      .replace('#include <map_fragment>', LOOK);
   };
   material.customProgramCacheKey = () => 'lidar-scan';
   material.fog = false;
