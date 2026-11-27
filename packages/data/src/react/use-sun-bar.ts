@@ -4,6 +4,7 @@ import {
   type Coordinate,
   chartAzimuth,
   type Read,
+  type StudioView,
   SUN_STEP_MS,
   type SunBarView,
   type SunChart,
@@ -137,6 +138,20 @@ export function useSunBar({
       pauseSun: () => setPlaying(null),
       showSunChart: setChart,
     },
+  };
+}
+
+/**
+ * The view's one setter: every way to the top view — picked, the pencil, the faces, the stairs —
+ * closes the sun bar on the way, as the sun and its shade live in 3D.
+ */
+export function viewSetterOf(
+  setView: (next: StudioView) => void,
+  closeSun: () => void,
+): (next: StudioView) => void {
+  return (next) => {
+    if (next === 'top') closeSun();
+    setView(next);
   };
 }
 
