@@ -110,6 +110,7 @@ export {
   stepRefused,
   tracedLength,
 } from './roof-entry';
+export { type GuideSpan, guideSpansOf } from './roof-guide-spans';
 export * from './roof-hand-faces';
 export {
   groundRoofHeightM,
@@ -137,6 +138,7 @@ export {
   roofTurned,
   TURN_SNAP_DEGREES,
 } from './roof-move';
+export { penCrossOf, penCrossSpansOf } from './roof-pen-cross';
 export {
   between,
   CORNER_GAP_M,
@@ -160,7 +162,6 @@ export {
   type Guide,
   magnetOf,
   NO_SNAP_TARGETS,
-  ownerRoof,
   type RoofHold,
   type RoofSnap,
   SNAP_M,
@@ -169,7 +170,6 @@ export {
   type SnapTargets,
   snapReachM,
   snapTargetsOf,
-  withSiteTargets,
 } from './roof-snap';
 export { gripCorner, roofStepAfter } from './roof-step';
 export {
@@ -191,7 +191,7 @@ export {
   dragBeforeOf,
   dragTagAt,
   type EdgeView,
-  guidesOf,
+  ghostOf,
   type HeldCircle,
   handlesRoofOf,
   heldCircleOf,
@@ -255,7 +255,6 @@ export {
 export * from './site-heights';
 export { type DrawingsAfterPinMove, drawingsAfterPinMove, PIN_FIX_REACH_M } from './site-moved';
 export * from './site-say';
-export { OUTLINE_TRUE_M, type SiteSnap, siteSnapTargets } from './site-snap';
 export * from './site-sun';
 export * from './site-sun-bar';
 export * from './site-sun-shown';

@@ -38,6 +38,8 @@ export interface DragResult {
   readonly fault: EditRefusal | null;
   /** The lines the dragged corner is held on, drawn dashed across the map. */
   readonly guides: readonly Guide[];
+  /** Where two lines cross near the dragged corner, not taken: let go on it to take it. */
+  readonly ghost?: GroundPoint;
 }
 
 export interface TurnResult extends DragResult {

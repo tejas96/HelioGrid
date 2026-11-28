@@ -3,16 +3,8 @@ import type { GroundPoint } from './ground';
 import { type DragResult, type EditRefusal, faultOf, roofAt, type TurnResult } from './roof-check';
 import { roofWithItsParts } from './roof-kind';
 import { between, cornerAfter, roofMiddle } from './roof-shape';
-import {
-  type Guide,
-  guideOf,
-  ownerRoof,
-  SNAP_M,
-  SNAP_SOFT_REACHES,
-  type SnapTargets,
-  snapTargetsOf,
-  withSiteTargets,
-} from './roof-snap';
+import { type Guide, guideOf, SNAP_M, SNAP_SOFT_REACHES, type SnapTargets } from './roof-snap';
+import { IN_HAND_M, inHandTargets, roofsInHand } from './roof-snap-in-hand';
 import {
   heldOn,
   holdAt,
@@ -123,7 +115,7 @@ function slideOnto(
   const way = first.guide.way;
   let best: (Pull & { reach: number }) | null = null;
   for (const line of lines) {
-    // A parapet's inside holds a roof only where it is; a building's wall is met on itself alone.
+    // A parapet's inside holds a roof only where it is, never on its line past its ends.
     const parapet = line.hold.kind === 'inside_parapet';
     if (line === first || parapet || linesCross(first, line) === null) continue;
     for (const corner of corners) {
@@ -175,13 +167,22 @@ export function roofMoved(
   pullTo: SnapTargets['edges'] | null = null,
   /** How near a corner must come to pull, in metres: the screen's reach at this zoom. */
   reach: number = SNAP_M,
-  /** The site's buildings and eaves (`T-M05-002`, part g). */
-  site?: SnapTargets,
 ): DragResult {
   const roof = roofAt(document, roofIndex);
   const going = new Set(roofWithItsParts(document, roofIndex));
   const corners = roof.corners.map((c) => ({ east: c.east + by.east, north: c.north + by.north }));
-  const others = withSiteTargets(snapTargetsOf(document.roofs, roofIndex), site);
+  // The house in hand: the roofs the roof touches where it is now, so a roof moved onto its
+  // house pulls there and never to a roof of another building.
+  const inHand = roofsInHand(
+    document,
+    { ring: corners, within: reach * (1 + SNAP_SOFT_REACHES) },
+    roofIndex,
+  );
+  const others = inHandTargets(
+    document,
+    { ring: corners, within: reach * (1 + SNAP_SOFT_REACHES) },
+    roofIndex,
+  );
   const lines: SnapLine[] =
     pullTo === null
       ? []
@@ -191,14 +192,14 @@ export function roofMoved(
           ...wallLinesOf(
             {
               corners: [],
-              edges: others.edges.filter((edge) => !going.has(ownerRoof(edge.owner) ?? -1)),
+              edges: others.edges.filter((edge) => !going.has(edge.owner.roof)),
             },
             // A pull and the slide after it move the roof up to a reach each: the lines that can
             // hold it, and the ones a little further that show faint.
             { points: corners, within: reach * (1 + SNAP_SOFT_REACHES) },
           ),
           ...pullTo
-            .filter((edge) => !going.has(ownerRoof(edge.owner) ?? -1))
+            .filter((edge) => !going.has(edge.owner.roof) && inHand.has(edge.owner.roof))
             .map((edge) => ({
               guide: guideOf(edge.from, {
                 east: edge.to.east - edge.from.east,
@@ -265,7 +266,9 @@ export function roofTurned(
   magnet: boolean,
 ): TurnResult {
   const roof = roofAt(document, roofIndex);
-  const edges = magnet ? snapTargetsOf(document.roofs, roofIndex).edges : [];
+  const edges = magnet
+    ? inHandTargets(document, { ring: roof.corners, within: IN_HAND_M }, roofIndex).edges
+    : [];
   const targets = edges.map((e) => directionOf(e.from, e.to));
   let applied = degrees;
   let lined: number | null = null;

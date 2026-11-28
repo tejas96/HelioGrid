@@ -4,14 +4,8 @@ import { type DraftTap, draftClosesAt, draftTap } from './roof-draw';
 import { cornerOffRoof, handFaceTargets } from './roof-hand-faces';
 import { roofWithItsParts } from './roof-kind';
 import { roofPickedAt } from './roof-pick';
-import {
-  NO_SNAP_TARGETS,
-  SNAP_M,
-  type Snapped,
-  type SnapTargets,
-  snapTargetsOf,
-  withSiteTargets,
-} from './roof-snap';
+import { NO_SNAP_TARGETS, SNAP_M, type Snapped, type SnapTargets } from './roof-snap';
+import { IN_HAND_M, inHandTargets } from './roof-snap-in-hand';
 import { draftSpot } from './roof-snap-spot';
 import {
   type DraftLeft,
@@ -37,11 +31,26 @@ export function roofHeld(state: RoofStepState): number | null {
 type Drawing = Extract<RoofStepState, { kind: 'drawing' }>;
 
 /**
- * What a corner drawn now pulls to: the design's roofs and the site's buildings and eaves; while a
- * face is drawn, its roof's outline and the faces drawn on it before.
+ * What a corner drawn now pulls to: the roofs of the house in hand — the one its corners are on,
+ * or before the first the one under the pen (`pen`, the pointer by default); while a face is
+ * drawn, its roof's outline and the faces drawn on it before. A roof of another building, and the
+ * site's traced buildings, never pull: the map is placed on them by True position and LiDAR.
  */
-export function drawTargetsOf(state: Drawing, document: StudioDocument): SnapTargets {
-  if (state.faces === undefined) return withSiteTargets(snapTargetsOf(document.roofs), state.site);
+export function drawTargetsOf(
+  state: Drawing,
+  document: StudioDocument,
+  pen: GroundPoint | null = state.pointer,
+): SnapTargets {
+  if (state.faces === undefined) {
+    // A corner the magnet held on a roof's line past its end stands up to a reach off that roof,
+    // so the corners find the house within a reach too, never less than on its wall.
+    const placed = state.corners.length > 0;
+    const reach = state.reach ?? SNAP_M;
+    return inHandTargets(document, {
+      spots: placed ? state.corners : pen === null ? [] : [pen],
+      within: placed ? Math.max(IN_HAND_M, reach) : reach,
+    });
+  }
   const roof = document.roofs[state.faces];
   return roof === undefined ? NO_SNAP_TARGETS : handFaceTargets(roof, state.faces);
 }
@@ -64,7 +73,7 @@ export function tapped(
   // A tap inside a roof picks it — the top one first, then the one under it; on open ground, none.
   if (state.kind === 'idle') return stay(idle(null, roofPickedAt(document, at, state.roof)));
   if (state.kind !== 'drawing') return stay(state);
-  const targets = drawTargetsOf(state, document);
+  const targets = drawTargetsOf(state, document, at);
   // On the grid the magnet's holds go first and the whole metre last: the corner is held level or
   // square, then lands on the grid; nothing snaps it again after.
   const grid = state.grid === true && state.magnet;

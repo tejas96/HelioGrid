@@ -18,6 +18,7 @@ import { placeRoofMarks, pointText } from './roof-marks-place';
 import { roofWordsShown } from './roof-words-shown';
 import type { StudioDrive } from './StudioCameraRig';
 import { StudioDraftMarks } from './StudioDraftMarks';
+import { StudioGuideLine } from './StudioGuideLine';
 import { StudioPlanHandles } from './StudioPlanHandles';
 import { StudioRoofEdit } from './StudioRoofEdit';
 import { edgeAt, type Revealed, StudioRoofLengths } from './StudioRoofLengths';
@@ -74,8 +75,8 @@ function tagOf(
   return tag === null ? null : { ...tag, at: pointText(studio.dragTagAt) };
 }
 
-/** The magnet's mark on the spot it holds: a ring where two lines cross, a diamond on a middle. */
-function SnapMark({ mark }: { mark: StudioScreen['snapMark'] }) {
+/** The magnet's mark: a ring where two lines cross, a diamond on a middle, a crossing's ghost. */
+function SnapMark({ mark }: { mark: StudioScreen['snapMark'] | StudioScreen['ghost'] }) {
   if (mark === null) return null;
   const at = pointText(mark.at);
   return (
@@ -97,13 +98,11 @@ function circlePoints({ centre, metres }: HeldCircle): string {
   }).join(';');
 }
 
-/** How far each way a guide runs from its point, in metres: past every edge of the map. */
-const GUIDE_REACH_M = 400;
-
 /**
  * Each roof's sides, red and dashed for a drag that would be refused; the roof as it stood under a
  * move, a turn or a refused drag; the circle a held length keeps a dragged corner on; and the
- * magnet's guides, dashed right across the map, so they show past a finger.
+ * magnet's guides, dashed right across the map, so they show past a finger; and the pen's cross
+ * while drawing.
  */
 function RoofLines({ studio, drawing }: { studio: StudioScreen; drawing: boolean }) {
   const step = studio.roofStep;
@@ -123,24 +122,10 @@ function RoofLines({ studio, drawing }: { studio: StudioScreen; drawing: boolean
           data-closed="true"
         />
       )}
-      {studio.guides.map(({ through, way, soft }) => {
-        const from = pointText({
-          east: through.east - way.east * GUIDE_REACH_M,
-          north: through.north - way.north * GUIDE_REACH_M,
-        });
-        const to = pointText({
-          east: through.east + way.east * GUIDE_REACH_M,
-          north: through.north + way.north * GUIDE_REACH_M,
-        });
-        return (
-          <path
-            key={`${from};${to}`}
-            className="hg-roof-guide"
-            data-soft={soft === true ? 'true' : undefined}
-            data-pts={`${from};${to}`}
-          />
-        );
-      })}
+      {studio.penCross.map((span) => StudioGuideLine({ span, kind: 'cross' }))}
+      {studio.guideSpans.map((span) =>
+        StudioGuideLine({ span, kind: span.soft === true ? 'soft' : 'held' }),
+      )}
       {studio.heldCircle === null ? null : (
         <path
           className="hg-roof-held"
@@ -323,6 +308,7 @@ export function StudioRoofMarks({
         />
       )}
       <SnapMark mark={studio.snapMark} />
+      <SnapMark mark={studio.ghost} />
       {tag === null ? null : (
         <span className="hg-roof-at" data-at={tag.at} data-tag="true">
           <span className="hg-roof-tag" data-tone={tag.bad ? 'bad' : undefined} role="status">

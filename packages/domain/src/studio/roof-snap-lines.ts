@@ -2,9 +2,9 @@ import type { GroundPoint } from './ground';
 import { between, nearestOnSegment } from './roof-shape';
 import {
   CROSS_MIN_DEGREES,
+  GHOST_CATCH_REACHES,
   type Guide,
   ON_WALL_M,
-  ownerRoof,
   type RoofHold,
   SNAP_DEGREES,
   SNAP_SOFT_REACHES,
@@ -175,17 +175,6 @@ export function wallLinesOf(targets: SnapTargets, near: Near): SnapLine[] {
     if ((run.east === 0 && run.north === 0) || !passesNear(edge.from, run, near)) continue;
     const way = unit(edge.from, edge.to);
     const wall: SnapWall = { from: edge.from, to: edge.to, owner: edge.owner };
-    // A building the height map traced holds a spot on its wall alone, never on its line past
-    // the ends: the site's many walls stretched across the map cross everywhere.
-    if (ownerRoof(edge.owner) === null) {
-      lines.push({
-        guide: { through: edge.from, way },
-        hold: { kind: 'edge_of', owner: edge.owner },
-        walls: [wall],
-        only: true,
-      });
-      continue;
-    }
     const line: SnapLine = {
       guide: { through: edge.from, way },
       hold: { kind: 'wall_line', owner: edge.owner },
@@ -217,11 +206,9 @@ export function cornerLinesOf(
   near: Near,
 ): SnapLine[] {
   const lines: SnapLine[] = [];
-  // A building's wall holds only on itself: a roof's line along it past its ends is still new.
+  // A wall held only between its ends (a parapet's inside): a line along it past its ends is new.
   const known = new Set(walls.filter((wall) => !wall.only).map(({ guide }) => lineKey(guide)));
   for (const corner of targets.corners) {
-    // The site's buildings are lined up with only where a corner or a wall of theirs is touched.
-    if (ownerRoof(corner.owner) === null) continue;
     for (const way of [long, across(long)]) {
       if (!passesNear(corner.at, way, near)) continue;
       const ownWall = [corner.before, corner.after].some(
@@ -281,13 +268,16 @@ export function linesNear(
     near: scored.filter(({ off }) => off <= reach).map(({ line }) => line),
     soft: scored
       .filter(({ off }) => off > reach && off <= reach * SNAP_SOFT_REACHES)
+      // The nearest alone: more faint lines than one crowd the spot.
+      .slice(0, 1)
       .map(({ line }) => ({ ...line.guide, soft: true }) as const),
   };
 }
 
 /**
- * The spot held on `first`, and where a second line within reach crosses it, the corner there.
- * `first` may be a hold of the magnet's own (square, a line-up), which is named first.
+ * The spot held on `first`; where a second line within reach crosses it, the corner there is a
+ * ghost — taken only when the spot is on it, within `GHOST_CATCH_REACHES` of the reach. `first`
+ * may be a hold of the magnet's own (square, a line-up), which is named first.
  */
 export function crossedOrOn(
   at: GroundPoint,
@@ -298,13 +288,16 @@ export function crossedOrOn(
   for (const other of others) {
     if (other === first.line) continue;
     const corner = linesCross(first.line, other);
-    if (corner !== null && between(corner, at) <= reach) {
+    if (corner === null || between(corner, at) > reach) continue;
+    const guides = [first.line.guide, other.guide];
+    if (between(corner, at) <= reach * GHOST_CATCH_REACHES) {
       return {
         point: corner,
         snap: { kind: 'cross', first: first.snap, second: holdAt(other, corner) },
-        guides: [first.line.guide, other.guide],
+        guides,
       };
     }
+    return { point: first.point, snap: first.snap, guides, ghost: corner };
   }
   return { point: first.point, snap: first.snap, guides: [first.line.guide] };
 }

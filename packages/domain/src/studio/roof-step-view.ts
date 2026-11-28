@@ -7,7 +7,7 @@ import { sizingResult } from './roof-entry';
 import { type FollowAlong, followAlong } from './roof-follow';
 import { handFacesKept } from './roof-hand-faces';
 import { angleAt, between, cornerAngle, edgeLengths, roofMiddle } from './roof-shape';
-import { type Guide, SNAP_M, type SnapOwner, type Snapped } from './roof-snap';
+import { SNAP_M, type SnapOwner, type Snapped } from './roof-snap';
 import { gripCorner } from './roof-step';
 import { drawTargetsOf, keptOnFaceRoof, pickedRoofOf } from './roof-step-draw';
 import type { CornerRef, RoofSaid, RoofStepState } from './roof-step-state';
@@ -64,6 +64,22 @@ export function snapMarkOf(
   if (held === null || held.snap === null || held.at === null) return null;
   if (held.snap.kind === 'cross') return { at: held.at, mark: 'cross' };
   return held.snap.kind === 'middle_of' ? { at: held.at, mark: 'middle' } : null;
+}
+
+/**
+ * Where two lines cross near the spot and the magnet has not taken it (`T-M05-002`, part e): a
+ * hollow ghost the person taps, or lets a dragged corner go on, to take. `null` when there is none.
+ */
+export function ghostOf(
+  state: RoofStepState,
+): { readonly at: GroundPoint; readonly mark: 'ghost' } | null {
+  const at =
+    state.kind === 'drawing'
+      ? state.spot?.ghost
+      : state.kind === 'dragging' && gripCorner(state.grip) !== null
+        ? state.drag.ghost
+        : undefined;
+  return at === undefined ? null : { at, mark: 'ghost' };
 }
 
 /**
@@ -137,12 +153,6 @@ export interface DraftView {
   readonly closing: boolean;
   /** The corners Follow would add along the outline the drawing's ends stand on, drawn as a ghost. */
   readonly follow: FollowAlong | null;
-}
-
-/** The guide lines the corner in hand is held on: the spot while drawing, the corner dragged. */
-export function guidesOf(state: RoofStepState): readonly Guide[] {
-  if (state.kind === 'drawing') return state.spot?.guides ?? [];
-  return state.kind === 'dragging' ? state.drag.guides : [];
 }
 
 function edgeOf(from: GroundPoint, to: GroundPoint): DraftEdge {

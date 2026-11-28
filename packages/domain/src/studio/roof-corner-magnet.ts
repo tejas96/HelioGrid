@@ -2,14 +2,13 @@ import type { StudioDocument } from './document';
 import type { GroundPoint } from './ground';
 import { between, cornerAfter, cornerBefore, edgeLengths, ROOF_CORNERS_MIN } from './roof-shape';
 import {
+  GHOST_CATCH_REACHES,
   type Guide,
   guideOf,
   type RoofSnap,
   SNAP_SOFT_REACHES,
-  type SnapTargets,
-  snapTargetsOf,
-  withSiteTargets,
 } from './roof-snap';
+import { inHandTargets } from './roof-snap-in-hand';
 import {
   cornerLinesOf,
   heldOn,
@@ -46,9 +45,17 @@ export interface Placed {
   readonly point: GroundPoint;
   readonly snap: RoofSnap | null;
   readonly guides: readonly Guide[];
+  /** Where two lines cross near the corner, not taken: let go on it to take it. */
+  readonly ghost?: GroundPoint;
 }
 
-type Candidate = { point: GroundPoint | null; snap: RoofSnap; guides: readonly Guide[] };
+/** `crossing`: where two lines cross — taken only by a spot on it, else shown as a ghost. */
+type Candidate = {
+  point: GroundPoint | null;
+  snap: RoofSnap;
+  guides: readonly Guide[];
+  crossing?: true;
+};
 
 /** Where each square line crosses each wall line near: a corner square and on the wall line. */
 function wallCrosses(squares: readonly SnapLine[], near: readonly SnapLine[]): Candidate[] {
@@ -57,7 +64,7 @@ function wallCrosses(squares: readonly SnapLine[], near: readonly SnapLine[]): C
       const point = linesCross(square, wall);
       if (point === null) return [];
       const snap: RoofSnap = { kind: 'cross', first: square.hold, second: holdAt(wall, point) };
-      return [{ point, snap, guides: [square.guide, wall.guide] }];
+      return [{ point, snap, guides: [square.guide, wall.guide], crossing: true as const }];
     }),
   );
 }
@@ -84,9 +91,13 @@ export function cornerMagnet(
   document: StudioDocument,
   roofIndex: number,
   reach: number,
-  site?: SnapTargets,
 ): Placed {
-  const targets = withSiteTargets(snapTargetsOf(document.roofs, roofIndex), site);
+  // The house in hand: the roofs this roof touches, and the roofs they touch.
+  const targets = inHandTargets(
+    document,
+    { ring: corners, within: reach * (1 + SNAP_SOFT_REACHES) },
+    roofIndex,
+  );
   const onPoint = snapToPoints(to, targets, reach);
   if (onPoint !== null) return onPoint;
   const before = cornerBefore(corners, corner);
@@ -114,6 +125,7 @@ export function cornerMagnet(
       point: lineCross(before, wayAtBefore, after, wayAtAfter),
       snap: { kind: 'square_corner' },
       guides: [guideOf(before, wayAtBefore), guideOf(after, wayAtAfter)],
+      crossing: true,
     });
   }
   // Square at itself: on the circle whose diameter joins its two neighbours.
@@ -148,14 +160,38 @@ export function cornerMagnet(
   }
   // On another roof's wall line, past the wall's ends.
   candidates.push(...onWalls(to, near, false));
-  const found = candidates.find(
-    (c): c is { point: GroundPoint; snap: RoofSnap; guides: readonly Guide[] } =>
-      c.point !== null && between(c.point, to) <= reach,
+  // A crossing pulls only from on it; within reach but beside it, it is a ghost.
+  const caught = (c: Candidate): c is Candidate & { point: GroundPoint } =>
+    c.point !== null &&
+    between(c.point, to) <= (c.crossing === true ? reach * GHOST_CATCH_REACHES : reach);
+  const found = candidates.find(caught);
+  const ghost = candidates.find(
+    (c) => c.crossing === true && c.point !== null && c !== found && between(c.point, to) <= reach,
   );
   // A line a little out of reach shows faint before it pulls, as while drawing.
-  const placed = found ?? { point: to, snap: null, guides: [] };
-  return { ...placed, guides: [...placed.guides, ...soft] };
+  const placed: Placed =
+    found === undefined
+      ? { point: to, snap: null, guides: [] }
+      : { point: found.point, snap: found.snap, guides: found.guides };
+  // The ghost and its lines show only while the corner is not on a crossing itself; a line it is
+  // already held on is drawn once.
+  const shown =
+    ghost === undefined || ghost.point === null || found?.crossing === true ? null : ghost;
+  const extra = (shown?.guides ?? []).filter(
+    (guide) => !placed.guides.some((held) => sameGuide(held, guide)),
+  );
+  return {
+    ...placed,
+    guides: [...placed.guides, ...extra, ...soft],
+    ...(shown === null || shown.point === null ? {} : { ghost: shown.point }),
+  };
 }
+
+/** Two guides that are one line drawn twice: through the same point, the same way. */
+const sameGuide = (a: Guide, b: Guide) =>
+  a.through.east === b.through.east &&
+  a.through.north === b.through.north &&
+  Math.abs(a.way.east * b.way.north - a.way.north * b.way.east) < 1e-9;
 
 /** A corner kept `metres` from `centre`, on the way to `to`: a typed length held. */
 function onCircle(centre: GroundPoint, metres: number, to: GroundPoint): Placed {
@@ -178,17 +214,29 @@ function heldOnWall(
   placed: Placed,
   centre: GroundPoint,
   metres: number,
-  on: { document: StudioDocument; roofIndex: number; reach: number; site?: SnapTargets },
+  on: {
+    document: StudioDocument;
+    roofIndex: number;
+    reach: number;
+    corners: readonly GroundPoint[];
+  },
 ): Placed {
   const { document, roofIndex, reach } = on;
   const held = placed.snap;
   if (held === null || held.kind === 'cross') return placed;
   const { near } = linesNear(
     placed.point,
-    wallLinesOf(withSiteTargets(snapTargetsOf(document.roofs, roofIndex), on.site), {
-      points: [placed.point],
-      within: reach,
-    }),
+    wallLinesOf(
+      inHandTargets(
+        document,
+        { ring: on.corners, within: reach * (1 + SNAP_SOFT_REACHES) },
+        roofIndex,
+      ),
+      {
+        points: [placed.point],
+        within: reach,
+      },
+    ),
     reach,
   );
   for (const wall of near) {
@@ -201,7 +249,7 @@ function heldOnWall(
       { east: foot.east + way.east * half, north: foot.north + way.north * half },
       { east: foot.east - way.east * half, north: foot.north - way.north * half },
     ].sort((a, b) => between(a, placed.point) - between(b, placed.point))[0] as GroundPoint;
-    // A building's wall holds the corner on itself alone, never on its line past its ends.
+    // A wall met only between its ends (a parapet's inside) holds the corner there alone.
     if (between(point, placed.point) <= reach && onItsWall(point, wall)) {
       return {
         point,
@@ -223,10 +271,10 @@ export function heldPlaced(
   after: boolean,
   to: GroundPoint,
   magnet: boolean,
-  on: { document: StudioDocument; roofIndex: number; reach: number; site?: SnapTargets },
+  on: { document: StudioDocument; roofIndex: number; reach: number },
 ): Placed {
   const anchor = after ? cornerAfter(corners, edge) : (corners[edge] as GroundPoint);
   const metres = edgeLengths(corners)[edge] ?? 0;
   const placed = onCircle(anchor, metres, to);
-  return magnet ? heldOnWall(placed, anchor, metres, on) : placed;
+  return magnet ? heldOnWall(placed, anchor, metres, { ...on, corners }) : placed;
 }

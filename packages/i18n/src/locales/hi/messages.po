@@ -1434,7 +1434,7 @@ msgid "{file} is too narrow."
 msgstr "{file} बहुत कम चौड़ी है।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:47
+#: src/copy/studio-roof-tags.ts:43
 msgid "{first} · {second}"
 msgstr "{first} · {second}"
 
@@ -1765,7 +1765,7 @@ msgid "{left} of this cycle’s {total} days remain on {date}."
 msgstr "{date} को इस चक्र के {total} में से {left} दिन बाकी हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:36
+#: src/copy/studio-roof-tags.ts:32
 msgid "{length} held"
 msgstr "{length} वैसी ही रही"
 
@@ -2974,17 +2974,17 @@ msgid "{roof} corner"
 msgstr "{roof} का कोना"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:31
+#: src/copy/studio-roof-tags.ts:27
 msgid "{roof} edge"
 msgstr "{roof} का किनारा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:39
+#: src/copy/studio-roof-tags.ts:35
 msgid "{roof} edge middle"
 msgstr "{roof} के किनारे का बीच"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:37
+#: src/copy/studio-roof-tags.ts:33
 msgid "{roof} wall line"
 msgstr "{roof} की दीवार की रेखा"
 
@@ -3831,7 +3831,7 @@ msgid "A customer sends a friend. Add the friend and pick who sent them."
 msgstr "कोई ग्राहक किसी दोस्त को भेजता है। दोस्त को जोड़ें और चुनें कि किसने भेजा।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:32
+#: src/copy/studio-roof-draw.ts:31
 #: src/copy/studio-size.ts:24
 msgid "A design holds at most {max} roofs"
 msgstr "एक डिज़ाइन में ज़्यादा से ज़्यादा {max} छतें"
@@ -4108,7 +4108,7 @@ msgid "A role of your own"
 msgstr "आपकी अपनी भूमिका"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:30
+#: src/copy/studio-roof-draw.ts:29
 msgid "A roof has at most {max} corners"
 msgstr "एक छत में ज़्यादा से ज़्यादा {max} कोने"
 
@@ -4128,7 +4128,7 @@ msgid "A roof keeps at least 3 corners."
 msgstr "छत में कम से कम 3 कोने रहते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:31
+#: src/copy/studio-roof-draw.ts:30
 msgid "A roof needs at least 3 corners"
 msgstr "छत के लिए कम से कम 3 कोने चाहिए"
 
@@ -6182,7 +6182,6 @@ msgstr "लगभग एक मिनट में प्रस्ताव ब�
 
 #. js-lingui-explicit-id
 #: src/copy/studio-roof-kinds.ts:24
-#: src/copy/studio-roof-tags.ts:28
 msgid "Building"
 msgstr "इमारत"
 
@@ -6977,7 +6976,7 @@ msgid "Clear all"
 msgstr "सब हटाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:21
+#: src/copy/studio-roof-draw.ts:20
 msgid "Clear every corner"
 msgstr "सभी कोने हटाएँ"
 
@@ -7097,7 +7096,7 @@ msgid "Close Roofs"
 msgstr "छतें बंद करें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:34
+#: src/copy/studio-roof-draw.ts:33
 msgid "Close shape"
 msgstr "आकार बंद करें"
 
@@ -7115,7 +7114,7 @@ msgid "Close the map"
 msgstr "नक्शा बंद करें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:33
+#: src/copy/studio-roof-draw.ts:32
 msgid "Close the shape, or tap Undo."
 msgstr "आकार बंद करें, या पहले जैसा करें पर टैप करें।"
 
@@ -9158,11 +9157,6 @@ msgid "east"
 msgstr "पूर्व"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:30
-msgid "Eave"
-msgstr "छत का किनारा"
-
-#. js-lingui-explicit-id
 #: src/copy/studio-sheet.ts:106
 msgid "Eave raised by"
 msgstr "ओलती कितनी ऊपर"
@@ -9715,22 +9709,22 @@ msgid "Face {number}"
 msgstr "हिस्सा {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:32
+#: src/copy/studio-roof-tags.ts:28
 msgid "Face {number} corner"
 msgstr "हिस्सा {number} का कोना"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:33
+#: src/copy/studio-roof-tags.ts:29
 msgid "Face {number} edge"
 msgstr "हिस्सा {number} का किनारा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:40
+#: src/copy/studio-roof-tags.ts:36
 msgid "Face {number} edge middle"
 msgstr "हिस्सा {number} के किनारे का बीच"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:38
+#: src/copy/studio-roof-tags.ts:34
 msgid "Face {number} line"
 msgstr "हिस्सा {number} की रेखा"
 
@@ -10057,12 +10051,12 @@ msgid "Floors"
 msgstr "मंज़िलें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:35
+#: src/copy/studio-roof-draw.ts:34
 msgid "Follow {roof}"
 msgstr "{roof} के साथ बंद करें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:36
+#: src/copy/studio-roof-draw.ts:35
 msgid "Follow Face {number}"
 msgstr "हिस्सा {number} के साथ बंद करें"
 
@@ -11637,7 +11631,7 @@ msgid "Industrial drawing sheets"
 msgstr "औद्योगिक ड्रॉइंग शीट"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:34
+#: src/copy/studio-roof-tags.ts:30
 msgid "Inside {roof}’s parapet"
 msgstr "{roof} की मुंडेर के अंदर"
 
@@ -12705,17 +12699,17 @@ msgid "Lines under your address"
 msgstr "आपके पते के नीचे की पंक्तियाँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:45
+#: src/copy/studio-roof-tags.ts:41
 msgid "Lines up with {roof} corner"
 msgstr "{roof} के कोने की सीध में"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:35
+#: src/copy/studio-roof-tags.ts:31
 msgid "Lines up with corner {number}"
 msgstr "कोना {number} की सीध में"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:46
+#: src/copy/studio-roof-tags.ts:42
 msgid "Lines up with Face {number} corner"
 msgstr "हिस्सा {number} के कोने की सीध में"
 
@@ -13359,7 +13353,7 @@ msgid "made your own"
 msgstr "आपके अपने बनाए"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:22
+#: src/copy/studio-roof-draw.ts:21
 msgid "Magnet"
 msgstr "मैग्नेट"
 
@@ -14612,7 +14606,7 @@ msgid "New company on HelioGrid?"
 msgstr "HelioGrid पर नई कंपनी?"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:49
+#: src/copy/studio-roof-tags.ts:45
 msgid "New corner · drag it"
 msgstr "नया कोना · इसे खींचें"
 
@@ -17703,12 +17697,12 @@ msgid "Parallel · in line"
 msgstr "समानांतर · सीध में"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:43
+#: src/copy/studio-roof-tags.ts:39
 msgid "Parallel to {roof}"
 msgstr "{roof} के समानांतर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:44
+#: src/copy/studio-roof-tags.ts:40
 msgid "Parallel to Face {number}"
 msgstr "हिस्सा {number} के समानांतर"
 
@@ -17808,7 +17802,7 @@ msgid "Past {ceiling}, new uploads pause · files you have stay."
 msgstr "{ceiling} के बाद नए अपलोड रुक जाते हैं · आपकी फ़ाइलें रहती हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:29
+#: src/copy/studio-roof-draw.ts:28
 msgid "Past {reach} from the pin · this is another site"
 msgstr "पिन से {reach} से आगे · यह दूसरी साइट है"
 
@@ -22404,12 +22398,12 @@ msgid "Square corner"
 msgstr "समकोण कोना"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:41
+#: src/copy/studio-roof-tags.ts:37
 msgid "Square to {roof}"
 msgstr "{roof} से समकोण"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:42
+#: src/copy/studio-roof-tags.ts:38
 msgid "Square to Face {number}"
 msgstr "हिस्सा {number} से समकोण"
 
@@ -22713,7 +22707,7 @@ msgid "Stone-coated metal tile"
 msgstr "पत्थर-लेपित धातु टाइल"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:20
+#: src/copy/studio-roof-draw.ts:19
 msgid "Stop drawing"
 msgstr "बनाना रोकें"
 
@@ -23089,7 +23083,7 @@ msgid "Tap a date to add a holiday"
 msgstr "छुट्टी जोड़ने के लिए कोई तारीख़ टैप करें"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:28
+#: src/copy/studio-roof-draw.ts:27
 msgid "Tap a little farther from it."
 msgstr "उससे थोड़ा दूर टैप करें।"
 
@@ -23124,7 +23118,7 @@ msgid "Tap a roof to see its height."
 msgstr "ऊँचाई देखने के लिए छत पर टैप करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:25
+#: src/copy/studio-roof-draw.ts:24
 msgid "Tap a spot where the edges do not cross."
 msgstr "ऐसी जगह टैप करें जहाँ किनारे न कटें।"
 
@@ -23144,7 +23138,7 @@ msgid "Tap an outline, or draw on the plan with the pencil."
 msgstr "आउटलाइन पर टैप करें, या पेंसिल से नक्शे पर बनाएँ।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:18
+#: src/copy/studio-roof-draw.ts:17
 msgid "Tap each corner of the roof"
 msgstr "छत के हर कोने पर टैप करें"
 
@@ -23154,7 +23148,7 @@ msgid "Tap the edge where the stairs reach the roof"
 msgstr "वह किनारा टैप करें जहाँ सीढ़ियाँ छत पर पहुँचती हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:19
+#: src/copy/studio-roof-draw.ts:18
 msgid "Tap the pencil, then each corner of the roof."
 msgstr "पेंसिल पर टैप करें, फिर छत के हर कोने पर।"
 
@@ -25054,7 +25048,7 @@ msgid "This design is not here"
 msgstr "यह डिज़ाइन यहाँ नहीं है"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:24
+#: src/copy/studio-roof-draw.ts:23
 msgid "This edge would cross another"
 msgstr "यह किनारा दूसरे को काटेगा"
 
@@ -25750,7 +25744,7 @@ msgid "Tomorrow, {from}–{to}"
 msgstr "कल, {from}–{to}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:27
+#: src/copy/studio-roof-draw.ts:26
 msgid "Too close to another corner"
 msgstr "दूसरे कोने के बहुत पास"
 
@@ -25760,7 +25754,7 @@ msgid "Too expensive"
 msgstr "बहुत महँगा"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:26
+#: src/copy/studio-roof-draw.ts:25
 msgid "Too far for this site"
 msgstr "इस साइट के लिए बहुत दूर"
 
@@ -26058,7 +26052,7 @@ msgid "Turn the roof"
 msgstr "छत घुमाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:50
+#: src/copy/studio-roof-tags.ts:46
 msgid "Turned {degrees}°"
 msgstr "{degrees}° घूमी"
 
@@ -28153,7 +28147,7 @@ msgid "worse"
 msgstr "खराब"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-tags.ts:48
+#: src/copy/studio-roof-tags.ts:44
 msgid "Would cross"
 msgstr "कटेगा"
 
@@ -29098,7 +29092,7 @@ msgid "Your photo, language and theme"
 msgstr "आपकी फ़ोटो, भाषा और थीम"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-roof-draw.ts:23
+#: src/copy/studio-roof-draw.ts:22
 msgid "Your pick was not saved."
 msgstr "आपकी पसंद सेव नहीं हुई।"
 

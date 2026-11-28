@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { roofMoved } from '../../src/studio/roof-move';
 import { parapetInsidesOf } from '../../src/studio/roof-parapet-inside';
-import { ownerRoof } from '../../src/studio/roof-snap';
 import { box, designOf, FACTS, p, stairOn, TERRACE } from './roof-meet-support';
 
 /**
@@ -17,8 +16,7 @@ const westOf = (design: typeof HOUSE) =>
 describe('a roof moved on another, the magnet on', () => {
   it('the terrace’s parapet stands its thickness in from each side', () => {
     const west = insides.find(
-      (edge) =>
-        ownerRoof(edge.owner) === 0 && edge.from.east === edge.to.east && edge.from.east < 1,
+      (edge) => edge.owner.roof === 0 && edge.from.east === edge.to.east && edge.from.east < 1,
     );
     expect(west?.from.east).toBeCloseTo(FACTS.wallThicknessM, 6);
   });
@@ -29,8 +27,7 @@ describe('a roof moved on another, the magnet on', () => {
       parapet: { allRound: true, metres: 1, setBy: 'person' as const, build: 'railing' as const },
     };
     const west = parapetInsidesOf(designOf(rail), FACTS).find(
-      (edge) =>
-        ownerRoof(edge.owner) === 0 && edge.from.east === edge.to.east && edge.from.east < 1,
+      (edge) => edge.owner.roof === 0 && edge.from.east === edge.to.east && edge.from.east < 1,
     );
     expect(west?.from.east).toBeCloseTo(0.05, 6);
   });

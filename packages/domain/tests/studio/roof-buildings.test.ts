@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 import {
   buildingsOf,
   draggedOntoScan,
-  outlinesApart,
   roofsAsDrawn,
   roofsMoved,
   scanMatched,
 } from '../../src/studio/roof-buildings';
+import { outlinesApart } from '../../src/studio/roof-touch';
 import type { SiteBuilding } from '../../src/studio/site-data';
 import { scanFitsOf } from '../../src/studio/site-scan-fit';
 import { box, designOf, FACTS, roofOf, SHED, stairOn, TERRACE } from './roof-meet-support';

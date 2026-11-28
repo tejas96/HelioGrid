@@ -33,7 +33,14 @@ describe('the magnet: one switch, gentle, measured against the long side (T-M05-
     ['on, 2.01° off square: as tapped', true, tilt(2.01), [p(0, 0), p(8, 0)], null],
     ['on, 3° off (a wall truly 87°): as tapped', true, tilt(3), [p(0, 0), p(8, 0)], null],
     ['off, 1° off square: as tapped', false, tilt(1), [p(0, 0), p(8, 0)], null],
-    ['on: parallel to the long side, level with corner 1', true, p(0.3, 6.1), L_SHAPE, 'lines_up'],
+    [
+      'on: parallel to the long side, on the crossing level with corner 1',
+      true,
+      p(0.1, 6.05),
+      L_SHAPE,
+      'lines_up',
+    ],
+    ['on: parallel, beside the crossing: parallel alone', true, p(0.3, 6.1), L_SHAPE, 'parallel'],
     ['off: the L’s last corner as tapped', false, p(0.3, 6.1), L_SHAPE, null],
   ] as const)('%s', (_why, magnet, at, corners, snap) => {
     const spot = draftSpot(corners, at, NO_SNAP_TARGETS, magnet);
@@ -105,9 +112,9 @@ describe('drawing a roof: where a tap lands', () => {
   });
 
   it('a corner parallel to the long side and level with an earlier corner lines up with it', () => {
-    // An L: the fifth corner is tapped 0.3 m off level with corner 1.
+    // An L: the fifth corner is tapped on the crossing, 0.1 m off level with corner 1.
     const corners = [p(0, 0), p(8, 0), p(8, 3), p(4, 3), p(4, 6)];
-    const spot = draftSpot(corners, p(0.3, 6.1), NO_SNAP_TARGETS, true);
+    const spot = draftSpot(corners, p(0.1, 6.05), NO_SNAP_TARGETS, true);
     near(spot.point, p(0, 6));
     expect(spot.snap).toEqual({ kind: 'lines_up', corner: 0, along: 'parallel' });
     expect(spot.guides).toHaveLength(2);

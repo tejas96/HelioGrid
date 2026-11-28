@@ -72,8 +72,6 @@ export type RoofStepState =
        * and pull to its outline and the faces drawn before; it closes into a face of the roof.
        */
       readonly faces?: number;
-      /** The site's buildings and eaves, from the height map (`T-M05-002`, part g). */
-      readonly site?: SnapTargets;
       /** How near a spot must come to snap, in metres: the screen's reach as last told. */
       readonly reach?: number;
     }
@@ -97,8 +95,6 @@ export type RoofStepState =
       readonly magnet: boolean;
       /** The inside faces of the roofs' parapets: a roof moved onto another pulls to them. */
       readonly insides?: SnapTargets['edges'];
-      /** The site's buildings and eaves, from the height map: what a corner pulls to besides roofs. */
-      readonly site?: SnapTargets;
       /** How near a corner must come to pull, in metres: the screen's reach as last told. */
       readonly reach?: number;
     };
@@ -124,8 +120,6 @@ export type RoofStepEvent =
       readonly kind: 'draw';
       readonly magnet: boolean;
       readonly grid?: boolean;
-      /** The site's buildings and eaves (`T-M05-002`, part g). */
-      readonly site?: SnapTargets;
     }
   /** Draw the faces of an Any-shape roof by hand: the next face of roof `roof` starts. */
   | { readonly kind: 'draw_faces'; readonly roof: number; readonly magnet: boolean }
@@ -164,8 +158,6 @@ export type RoofStepEvent =
       readonly kind: 'hover';
       readonly at: GroundPoint | null;
       readonly reach?: number;
-      /** The site's buildings and eaves, when they arrived after the drawing began. */
-      readonly site?: SnapTargets;
     }
   /** A tap on the ground; `system` keeps a length still in the box, which a tap outside sets. */
   | {
@@ -258,8 +250,6 @@ export type RoofStepEvent =
       readonly magnet: boolean;
       /** The inside faces of the roofs' parapets, from the kernel: what a moved roof pulls to. */
       readonly insides?: SnapTargets['edges'];
-      /** The site's buildings and eaves (`T-M05-002`, part g). */
-      readonly site?: SnapTargets;
     }
   | { readonly kind: 'drag'; readonly at: GroundPoint; readonly reach?: number }
   | { readonly kind: 'release' }
