@@ -3,7 +3,7 @@
    most 40 % of the screen high, so the roof stays in view above it. Its rows scroll inside it; its
    head and foot stay. */
 .hg-roof-sheet {
-  grid-row: 2 / 4;
+  grid-row: 2 / -1;
   grid-column: 1 / -1;
   justify-self: center;
   align-self: end;

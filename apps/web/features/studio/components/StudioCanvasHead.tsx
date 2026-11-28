@@ -2,7 +2,7 @@
 import type { StudioScreen } from '@heliogrid/data/react';
 import type { FocusParts, PictureChoice } from '@heliogrid/domain';
 import type { StudioCanvasWords } from '@heliogrid/i18n';
-import { useFormat } from '@heliogrid/ui';
+import { IconButton, ShellGlyph, useFormat } from '@heliogrid/ui';
 import type { Ref } from 'react';
 import { DrawHint } from './StudioBarPills';
 import { StudioCompass, type StudioCompassHandle } from './StudioCompass';
@@ -10,7 +10,7 @@ import { useFilePick } from './StudioFilePick';
 import { StudioLengthBox } from './StudioLengthBox';
 import { LidarHeadStart, LidarHint, LidarKeyCard, LidarLooks, lidarShown } from './StudioLidar';
 import { StudioPictureCards } from './StudioPictureCards';
-import { pictureCreditOf, StudioPictureChip } from './StudioPictureChip';
+import { StudioPictureChip } from './StudioPictureChip';
 import { pictureDataOf } from './StudioPictureData';
 import { StudioPlanRow } from './StudioPlanRow';
 import { StudioSaveMark } from './StudioSaveMark';
@@ -136,6 +136,16 @@ export function StudioCanvasHead({
             <LidarHeadStart studio={studio} words={words} />
           </div>
         ) : null}
+        {parts.closeThreeD === 'shown' ? (
+          // The 3D view's ×, as LiDAR's: back to the top view, where the pencil draws.
+          <div className="hg-lidar-head-start">
+            <span className="hg-lidar-round">
+              <IconButton label={words.closeThreeD} onClick={() => studio.moves.see('top')}>
+                <ShellGlyph name="close" size="md" />
+              </IconButton>
+            </span>
+          </div>
+        ) : null}
         <HeadPicture studio={studio} parts={parts} words={words} foot={foot} />
         {lidarShown(studio) ? <LidarLooks studio={studio} words={words} phone={phone} /> : null}
         <HeadSteps
@@ -160,7 +170,7 @@ export function StudioCanvasHead({
         {roofStep.kind === 'sizing' ? (
           <StudioLengthBox sizing={roofStep} studio={studio} units={studio.units} words={words} />
         ) : null}
-        <StudioPictureCards studio={studio} words={words} phone={phone} />
+        <StudioPictureCards studio={studio} words={words} />
         {studio.sizeCard !== null ? (
           <StudioSizeCard
             card={studio.sizeCard}
@@ -168,7 +178,6 @@ export function StudioCanvasHead({
             units={studio.units}
             words={words}
             phone={phone}
-            credit={phone ? pictureCreditOf(studio.picture, words) : null}
           />
         ) : null}
       </div>

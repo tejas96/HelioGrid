@@ -1,7 +1,7 @@
 /* The sun bar (`T-M05-002`, part g, board G8–G13): dark glass at the foot over the real sky, white
    words, the same in light and dark as the sky is. It holds the foot as a sheet does. */
 .hg-sun-bar {
-  grid-row: 2 / 4;
+  grid-row: 2 / -1;
   grid-column: 1 / -1;
   justify-self: center;
   align-self: end;

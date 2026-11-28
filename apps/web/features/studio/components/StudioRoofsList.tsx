@@ -14,7 +14,6 @@ import { type RefObject, useEffect, useId, useRef } from 'react';
 import { usePressAway } from '../hooks/use-press-away';
 import { ROOF_KIND_GLYPH } from './roof-kind-glyph';
 import { StudioPanelHead } from './StudioPanelHead';
-import { pictureCreditOf } from './StudioPictureChip';
 
 /** A row's picture: what the roof is; a building that is not the main roof is drawn as one more. */
 function glyphOf(row: RoofRow): ShellGlyphName {
@@ -123,7 +122,6 @@ export function StudioRoofsList({
   const panel = useRef<HTMLDivElement>(null);
   const title = useId();
   const { roofList, litRow, moves } = studio;
-  const credit = pictureCreditOf(studio.picture, words);
   usePressAway(panel, true, moves.closePanel, '.hg-studio-roofs-button');
   // Roofs opened lands focus on its lit row, else on its head: a keyboard starts there.
   useEffect(() => {
@@ -173,9 +171,6 @@ export function StudioRoofsList({
           />
         ))}
       </ul>
-      {/* On a phone the list covers the map's foot, and the picture's credit with it: it rides
-          here as the last line (ruling 8). The desktop's credit stays on the map. */}
-      {credit === null ? null : <p className="hg-studio-card-credit hg-roofs-credit">{credit}</p>}
     </div>
   );
 }

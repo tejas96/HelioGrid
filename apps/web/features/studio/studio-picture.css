@@ -215,8 +215,7 @@
   gap: var(--sp-1);
 }
 
-/* Your picture's card in the head, in the length box's place; its credit under it on a phone
-   (ruling 8). */
+/* Your picture's card in the head, in the length box's place. */
 .hg-studio-picture-card {
   grid-row: 2;
   grid-column: 1 / -1;
@@ -237,14 +236,6 @@
 .hg-studio-picker-credit {
   margin: 0;
   padding: var(--sp-1) var(--sp-2);
-  font-size: var(--fs-caption);
-  color: var(--text-secondary);
-  overflow-wrap: anywhere;
-}
-
-.hg-studio-card-credit {
-  padding-block-start: var(--sp-1);
-  border-top: var(--hg-studio-line) solid var(--line-soft);
   font-size: var(--fs-caption);
   color: var(--text-secondary);
   overflow-wrap: anywhere;

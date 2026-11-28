@@ -39,6 +39,8 @@ export interface FocusParts {
    * when 3D has nothing to show.
    */
   readonly layers: 'shown' | 'switch' | 'menu' | 'hidden';
+  /** The × at the head's start that closes the 3D view, standing in the 2D switch's stead there. */
+  readonly closeThreeD: 'shown' | 'hidden';
   /** Zoom in and Zoom out. */
   readonly zoom: 'shown' | 'hidden';
   /** The north arrow. */
@@ -81,8 +83,8 @@ export interface FocusFacts {
  */
 export const SAVED_MARK_MS = 1_500;
 
-/** A job's parts: the sun follows from them (`focusOf`), never set by a job. */
-type JobParts = Omit<FocusParts, 'sun'>;
+/** A job's parts: the sun and the 3D view's × follow from them (`focusOf`), never set by a job. */
+type JobParts = Omit<FocusParts, 'sun' | 'closeThreeD'>;
 
 const LOOKING_TOP: JobParts = {
   stepSwitcher: 'shown',
@@ -285,6 +287,25 @@ function partsOfJob(facts: FocusFacts): JobParts {
     : parts;
 }
 
+/**
+ * The 3D view draws nothing: no pencil. Its × at the head's start takes the 2D switch's place, so
+ * the View menu alone stays; LiDAR has its own ×, which closes LiDAR first.
+ */
+function threeDPartsOf(
+  facts: FocusFacts,
+  pencil: FocusParts['pencil'],
+  layers: FocusParts['layers'],
+  inLidar: boolean,
+): Pick<FocusParts, 'pencil' | 'layers' | 'closeThreeD'> {
+  if (facts.view === 'top') return { pencil, layers, closeThreeD: 'hidden' };
+  const withSwitch = layers === 'shown' || layers === 'switch';
+  return {
+    pencil: 'hidden',
+    layers: layers === 'shown' ? 'menu' : layers === 'switch' ? 'hidden' : layers,
+    closeThreeD: withSwitch && !inLidar ? 'shown' : 'hidden',
+  };
+}
+
 /** Which parts the studio shows for the job in hand. */
 export function focusOf(facts: FocusFacts): FocusParts {
   const parts = partsOfJob(facts);
@@ -301,7 +322,7 @@ export function focusOf(facts: FocusFacts): FocusParts {
   const slotted = {
     ...parts,
     roofs,
-    layers,
+    ...threeDPartsOf(facts, parts.pencil, layers, inLidar),
     lidar,
     sun,
     undo: facts.slots.undo ? parts.undo : ('hidden' as const),

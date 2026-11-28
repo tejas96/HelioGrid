@@ -7071,6 +7071,11 @@ msgid "Close"
 msgstr "बंद करें"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-canvas.ts:91
+msgid "Close 3D view"
+msgstr "3D व्यू बंद करें"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-builder-frame.ts:48
 msgid "Close and keep the draft"
 msgstr "बंद करें, ड्राफ़्ट सहेजा रहेगा"
@@ -8954,7 +8959,7 @@ msgid "Drag, or − + for {step}. The first length sizes the whole roof."
 msgstr "खींचें, या {step} के लिए − + दबाएँ। पहली लंबाई पूरी छत का माप तय करती है।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:104
+#: src/copy/studio-canvas.ts:105
 msgid "Draw a roof"
 msgstr "छत बनाएँ"
 
@@ -9794,7 +9799,7 @@ msgstr "परिवार का घर"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:34
-#: src/copy/studio-canvas.ts:97
+#: src/copy/studio-canvas.ts:98
 #: src/copy/studio-length.ts:12
 msgid "Feet"
 msgstr "फ़ुट"
@@ -10252,7 +10257,7 @@ msgid "From the company profile. Only {owner} can change it."
 msgstr "कंपनी प्रोफ़ाइल से। इसे सिर्फ़ {owner} बदल सकते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:92
+#: src/copy/studio-canvas.ts:93
 msgid "From the east"
 msgstr "पूर्व से"
 
@@ -10284,17 +10289,17 @@ msgid "From the link named {label}. Call to confirm, then mark the deal won."
 msgstr "‘{label}’ नाम के लिंक से। पुष्टि के लिए कॉल करें, फिर डील जीती चिह्नित करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:91
+#: src/copy/studio-canvas.ts:92
 msgid "From the north"
 msgstr "उत्तर से"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:93
+#: src/copy/studio-canvas.ts:94
 msgid "From the south"
 msgstr "दक्षिण से"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:94
+#: src/copy/studio-canvas.ts:95
 msgid "From the west"
 msgstr "पश्चिम से"
 
@@ -12588,7 +12593,7 @@ msgid "Length × width"
 msgstr "लंबाई × चौड़ाई"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:95
+#: src/copy/studio-canvas.ts:96
 msgid "Lengths"
 msgstr "लंबाई"
 
@@ -13495,7 +13500,7 @@ msgid "Map columns"
 msgstr "कॉलम मिलाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:102
+#: src/copy/studio-canvas.ts:103
 msgid "Map. Arrow keys move it, and plus and minus zoom."
 msgstr "नक्शा। तीर वाली कुंजियाँ इसे खिसकाती हैं, और प्लस और माइनस ज़ूम करते हैं।"
 
@@ -13796,7 +13801,7 @@ msgstr "तरीका"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:33
-#: src/copy/studio-canvas.ts:96
+#: src/copy/studio-canvas.ts:97
 msgid "Metres"
 msgstr "मीटर"
 
@@ -15717,7 +15722,7 @@ msgid "north"
 msgstr "उत्तर"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:101
+#: src/copy/studio-canvas.ts:102
 #: src/copy/studio-picture.ts:32
 msgid "North"
 msgstr "उत्तर"
@@ -18509,7 +18514,7 @@ msgid "Picture: {name}"
 msgstr "तस्वीर: {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:100
+#: src/copy/studio-canvas.ts:101
 msgid "Pin"
 msgstr "पिन"
 
@@ -19789,7 +19794,7 @@ msgid "Red items stop Generate. Amber items only warn."
 msgstr "लाल बातें प्रस्ताव बनने से रोकती हैं। पीली बातें सिर्फ़ चेतावनी देती हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:99
+#: src/copy/studio-canvas.ts:100
 msgid "Redo"
 msgstr "फिर करें"
 
@@ -23658,7 +23663,7 @@ msgid "The 3D scan did not open."
 msgstr "3D स्कैन नहीं खुला।"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:105
+#: src/copy/studio-canvas.ts:106
 msgid "The 3D view cannot start on this device. Try another browser."
 msgstr "इस डिवाइस पर 3D व्यू शुरू नहीं हो सकता। दूसरा ब्राउज़र आज़माएँ।"
 
@@ -26176,7 +26181,7 @@ msgstr "आपकी फ़ाइल के अपने हेडर के न
 #: src/copy/my-day.ts:54
 #: src/copy/project-toast.ts:17
 #: src/copy/remove-roles.ts:32
-#: src/copy/studio-canvas.ts:98
+#: src/copy/studio-canvas.ts:99
 msgid "Undo"
 msgstr "पहले जैसा करें"
 

@@ -10,7 +10,6 @@ import {
 import { type StudioCanvasWords, sliderWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { IconButton, SegmentedControl, ShellGlyph, Slider, useFormat } from '@heliogrid/ui';
-import { pictureCreditOf } from './StudioPictureChip';
 
 /**
  * Your picture's top cards (`T-M05-002d`, board 2.1, 4.1, 4.5): one row per number — its word, then
@@ -78,22 +77,15 @@ function NumberRow({
   );
 }
 
-/** The picture's credit as a card's last line, on a phone (ruling 8). */
-function CardCredit({ credit }: { credit: string | null }) {
-  return credit === null ? null : <p className="hg-studio-card-credit">{credit}</p>;
-}
-
 /** The North card: a photo or a placeless map turned so north is up, in 5° steps. */
 export function StudioNorthCard({
   turnDeg,
   studio,
   words,
-  credit,
 }: {
   turnDeg: number;
   studio: StudioScreen;
   words: StudioCanvasWords;
-  credit: string | null;
 }) {
   const format = useFormat();
   const { ownMoves } = studio;
@@ -109,7 +101,6 @@ export function StudioNorthCard({
         shown={(deg) => `${format.number(deg)}°`}
         onInput={ownMoves.turnPicture}
       />
-      <CardCredit credit={credit} />
     </section>
   );
 }
@@ -119,12 +110,10 @@ export function StudioPlanCard({
   plan,
   studio,
   words,
-  credit,
 }: {
   plan: PlanShown;
   studio: StudioScreen;
   words: StudioCanvasWords;
-  credit: string | null;
 }) {
   const format = useFormat();
   const { ownMoves } = studio;
@@ -149,7 +138,6 @@ export function StudioPlanCard({
         shown={(percent) => `${format.number(percent)}%`}
         onInput={ownMoves.seePlanThrough}
       />
-      <CardCredit credit={credit} />
     </section>
   );
 }
@@ -159,12 +147,10 @@ export function StudioUnitCard({
   card,
   studio,
   words,
-  credit,
 }: {
   card: UnitCard;
   studio: StudioScreen;
   words: StudioCanvasWords;
-  credit: string | null;
 }) {
   const format = useFormat();
   const { ownMoves } = studio;
@@ -188,47 +174,32 @@ export function StudioUnitCard({
           format.roofLength(card.shortSideM, studio.units, false),
         )}
       </p>
-      <CardCredit credit={credit} />
     </section>
   );
 }
 
 /** The one of Your picture's cards open now: the unit card first, then the plan's, then North. */
-function OpenCard({
-  studio,
-  words,
-  credit,
-}: {
-  studio: StudioScreen;
-  words: StudioCanvasWords;
-  credit: string | null;
-}) {
+function OpenCard({ studio, words }: { studio: StudioScreen; words: StudioCanvasWords }) {
   const { north, plan, unitCard } = studio.own;
-  const shared = { studio, words, credit };
+  const shared = { studio, words };
   if (unitCard !== null) return <StudioUnitCard card={unitCard} {...shared} />;
   if (plan?.picked) return <StudioPlanCard plan={plan} {...shared} />;
   if (north !== null) return <StudioNorthCard turnDeg={north.turnDeg} {...shared} />;
   return null;
 }
 
-/**
- * Your picture's card. On a phone it takes the credit pill's place, so the credit is its last line
- * (ruling 8): the credit line never hides.
- */
+/** Your picture's card: the one open now, in the head. */
 export function StudioPictureCards({
   studio,
   words,
-  phone,
 }: {
   studio: StudioScreen;
   words: StudioCanvasWords;
-  phone: boolean;
 }) {
   if (!studio.own.cardOpen) return null;
-  const credit = phone ? pictureCreditOf(studio.picture, words) : null;
   return (
     <div className="hg-studio-picture-card">
-      <OpenCard studio={studio} words={words} credit={credit} />
+      <OpenCard studio={studio} words={words} />
     </div>
   );
 }

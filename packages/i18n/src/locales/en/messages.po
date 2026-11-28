@@ -7071,6 +7071,11 @@ msgid "Close"
 msgstr "Close"
 
 #. js-lingui-explicit-id
+#: src/copy/studio-canvas.ts:91
+msgid "Close 3D view"
+msgstr "Close 3D view"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-builder-frame.ts:48
 msgid "Close and keep the draft"
 msgstr "Close and keep the draft"
@@ -8954,7 +8959,7 @@ msgid "Drag, or − + for {step}. The first length sizes the whole roof."
 msgstr "Drag, or − + for {step}. The first length sizes the whole roof."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:104
+#: src/copy/studio-canvas.ts:105
 msgid "Draw a roof"
 msgstr "Draw a roof"
 
@@ -9794,7 +9799,7 @@ msgstr "Family home"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:34
-#: src/copy/studio-canvas.ts:97
+#: src/copy/studio-canvas.ts:98
 #: src/copy/studio-length.ts:12
 msgid "Feet"
 msgstr "Feet"
@@ -10252,7 +10257,7 @@ msgid "From the company profile. Only {owner} can change it."
 msgstr "From the company profile. Only {owner} can change it."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:92
+#: src/copy/studio-canvas.ts:93
 msgid "From the east"
 msgstr "From the east"
 
@@ -10284,17 +10289,17 @@ msgid "From the link named {label}. Call to confirm, then mark the deal won."
 msgstr "From the link named {label}. Call to confirm, then mark the deal won."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:91
+#: src/copy/studio-canvas.ts:92
 msgid "From the north"
 msgstr "From the north"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:93
+#: src/copy/studio-canvas.ts:94
 msgid "From the south"
 msgstr "From the south"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:94
+#: src/copy/studio-canvas.ts:95
 msgid "From the west"
 msgstr "From the west"
 
@@ -12588,7 +12593,7 @@ msgid "Length × width"
 msgstr "Length × width"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:95
+#: src/copy/studio-canvas.ts:96
 msgid "Lengths"
 msgstr "Lengths"
 
@@ -13495,7 +13500,7 @@ msgid "Map columns"
 msgstr "Map columns"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:102
+#: src/copy/studio-canvas.ts:103
 msgid "Map. Arrow keys move it, and plus and minus zoom."
 msgstr "Map. Arrow keys move it, and plus and minus zoom."
 
@@ -13796,7 +13801,7 @@ msgstr "Method"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:33
-#: src/copy/studio-canvas.ts:96
+#: src/copy/studio-canvas.ts:97
 msgid "Metres"
 msgstr "Metres"
 
@@ -15717,7 +15722,7 @@ msgid "north"
 msgstr "north"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:101
+#: src/copy/studio-canvas.ts:102
 #: src/copy/studio-picture.ts:32
 msgid "North"
 msgstr "North"
@@ -18509,7 +18514,7 @@ msgid "Picture: {name}"
 msgstr "Picture: {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:100
+#: src/copy/studio-canvas.ts:101
 msgid "Pin"
 msgstr "Pin"
 
@@ -19789,7 +19794,7 @@ msgid "Red items stop Generate. Amber items only warn."
 msgstr "Red items stop Generate. Amber items only warn."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:99
+#: src/copy/studio-canvas.ts:100
 msgid "Redo"
 msgstr "Redo"
 
@@ -23658,7 +23663,7 @@ msgid "The 3D scan did not open."
 msgstr "The 3D scan did not open."
 
 #. js-lingui-explicit-id
-#: src/copy/studio-canvas.ts:105
+#: src/copy/studio-canvas.ts:106
 msgid "The 3D view cannot start on this device. Try another browser."
 msgstr "The 3D view cannot start on this device. Try another browser."
 
@@ -26176,7 +26181,7 @@ msgstr "Under your file’s own headers, so each row is easy to find and fix."
 #: src/copy/my-day.ts:54
 #: src/copy/project-toast.ts:17
 #: src/copy/remove-roles.ts:32
-#: src/copy/studio-canvas.ts:98
+#: src/copy/studio-canvas.ts:99
 msgid "Undo"
 msgstr "Undo"
 

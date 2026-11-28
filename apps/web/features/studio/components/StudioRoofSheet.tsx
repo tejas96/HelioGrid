@@ -14,7 +14,6 @@ import {
 import { type KeyboardEvent, type Ref, useEffect, useRef } from 'react';
 import { MagnetSwitch } from './StudioBarPills';
 import { StudioFaceRows } from './StudioFaceRows';
-import { pictureCreditOf } from './StudioPictureChip';
 import { StudioSheetFit } from './StudioSheetFit';
 import type { SheetFacts } from './StudioSheetRow';
 import { StudioSheetRows } from './StudioSheetRows';
@@ -77,8 +76,6 @@ export function StudioRoofSheet({
     else close();
   };
   const pill = <MagnetPill studio={studio} words={words} phone={phone} />;
-  // On a phone the sheet covers the map's foot, and the picture's credit with it (ruling 8).
-  const credit = phone ? pictureCreditOf(studio.picture, words) : null;
   if (phone && studio.arrowHeld) return pill;
   return (
     <>
@@ -139,7 +136,6 @@ export function StudioRoofSheet({
             landFocusOn(map);
           }}
         />
-        {credit === null ? null : <p className="hg-studio-card-credit">{credit}</p>}
       </div>
     </>
   );

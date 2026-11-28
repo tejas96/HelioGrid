@@ -28,6 +28,12 @@
   max-block-size: calc(100dvh - var(--studio-tool) * 4);
 }
 
+/* From the row at the foot, the panel opens upward from its button, along the row. */
+.hg-studio-tools[data-side="row"] .hg-studio-view-panel[data-at="beside"] {
+  inset-block-end: calc(100% + var(--sp-2));
+  inset-inline: 0 auto;
+}
+
 .hg-studio-view-group {
   display: flex;
   flex-direction: column;
@@ -73,7 +79,7 @@
 /* A phone's foot: the View and picture panels open here, where the thumb is, in the tools' and the
    bar's place (`focus.ts`, the menu job), as Roofs opens. Empty, it is nothing. */
 .hg-studio-foot-slot {
-  grid-row: 2 / 4;
+  grid-row: 2 / -1;
   grid-column: 1 / -1;
   align-self: end;
   z-index: 3;

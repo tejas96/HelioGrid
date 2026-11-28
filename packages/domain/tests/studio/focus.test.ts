@@ -176,19 +176,6 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         lidar: 'hidden',
       },
     ],
-    [
-      'looking',
-      '3d',
-      true,
-      {
-        magnet: 'hidden',
-        compass: 'shown',
-        otherHandles: 'hidden',
-        lengthLabels: 'hidden',
-        stepSwitcher: 'mark',
-        pictureChip: 'hidden',
-      },
-    ],
     // A roof's sheet on a phone is a sheet across the foot, as Roofs is: the tools step aside
     // (board 6.1); the north arrow stays. It stays open in either view.
     [
@@ -238,7 +225,9 @@ describe('focus mode: each job keeps only the parts it uses (T-M05-002, part b)'
         stepSwitcher: 'mark',
         pictureChip: 'hidden',
         magnet: 'hidden',
-        layers: 'switch',
+        pencil: 'hidden',
+        layers: 'hidden',
+        closeThreeD: 'shown',
         compass: 'shown',
         otherHandles: 'hidden',
         lengthLabels: 'hidden',

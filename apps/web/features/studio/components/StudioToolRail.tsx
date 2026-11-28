@@ -18,14 +18,15 @@ function magnetShown(part: FocusParts['magnet'], studio: StudioScreen): boolean 
 }
 
 /**
- * The two columns of round tools, standing on the foot (the studio tools board, round 4). Left,
- * what changes the model, the pencil always in the bottom place: the magnet while a corner is drawn
- * or a roof is picked, Roofs with their count once a roof stands (`StudioRoofsButton`), Redo, the
- * trash that clears every corner of the drawing, Undo, then the pencil (×, while drawing). Right,
- * how the model is seen: the sun (3D only), View (`StudioViewPanel`), LiDAR (`T-M05-002g`), the 2D and 3D
- * switch once a roof stands, and Zoom in over Zoom out in one pill. A tool comes only once it can act and takes no place before; a tool
- * coming moves only the ones above it. Undo and Redo keep the place they took (`undoSlotsOf`), dim
- * while they cannot act.
+ * The round tools at the foot (the owner's layout, after the studio tools board, round 4). The left
+ * column holds Roofs with their count once a roof stands (`StudioRoofsButton`) over the pencil (×,
+ * while drawing), which keeps the bottom place. The right column holds Zoom in over Zoom out in one
+ * pill. Every other tool stands in one row along the foot from the pencil's side: Undo, Redo, the
+ * trash that clears every corner of the drawing, the magnet while a corner is drawn or a roof is
+ * picked — what changes the model — then the sun (3D only), View (`StudioViewPanel`), LiDAR
+ * (`T-M05-002g`) and the 2D and 3D switch once a roof stands — how it is seen. A tool comes only once
+ * it can act and takes no place before; a tool coming moves only the ones after it. Undo and Redo
+ * keep the place they took (`undoSlotsOf`), dim while they cannot act.
  */
 export function StudioToolRail({
   studio,
@@ -135,26 +136,26 @@ export function StudioToolRail({
   return (
     <>
       <div className="hg-studio-tools" data-side="left">
-        <Shown when={editable && magnetShown(parts.magnet, studio)} focusTo={pencil}>
-          <MagnetSwitch studio={studio} words={words} />
-        </Shown>
         <Shown when={studio.roofList.count > 0 && parts.roofs === 'shown'} focusTo={pencil}>
           <StudioRoofsButton studio={studio} words={words} />
         </Shown>
-        {redoTool}
-        <Shown when={editable && parts.wipe === 'shown' && canWipe} focusTo={pencil}>
-          <IconButton label={words.wipeCorners} onClick={onWipe}>
-            <ShellGlyph name="trash" size="md" />
-          </IconButton>
-        </Shown>
-        {undoTool}
         <Shown when={parts.pencil !== 'hidden'}>
           <span ref={pencil} className="hg-studio-pencil">
             <StudioPencil studio={studio} words={words} />
           </span>
         </Shown>
       </div>
-      <div className="hg-studio-tools" data-side="right">
+      <div className="hg-studio-tools" data-side="row">
+        {undoTool}
+        {redoTool}
+        <Shown when={editable && parts.wipe === 'shown' && canWipe} focusTo={pencil}>
+          <IconButton label={words.wipeCorners} onClick={onWipe}>
+            <ShellGlyph name="trash" size="md" />
+          </IconButton>
+        </Shown>
+        <Shown when={editable && magnetShown(parts.magnet, studio)} focusTo={pencil}>
+          <MagnetSwitch studio={studio} words={words} />
+        </Shown>
         {sunTool}
         <Shown when={parts.layers === 'shown' || parts.layers === 'menu'}>
           <span ref={opener} className="hg-studio-view-opener">
@@ -192,6 +193,8 @@ export function StudioToolRail({
             </IconButton>
           </span>
         </Shown>
+      </div>
+      <div className="hg-studio-tools" data-side="right">
         <Shown when={parts.zoom === 'shown'}>
           <span className="hg-studio-glass hg-studio-zoom-pill">
             <IconButton label={words.zoomIn} variant="ghost" onClick={onZoomIn}>

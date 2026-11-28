@@ -1,10 +1,10 @@
 /* The studio's two tool columns and its one bottom bar (`T-M05-002a`). */
-/* The two columns of round tools: left changes the model, right shows it. Both stand on the foot on
-   every screen, so a thumb or a mouse finds each tool in the same place on a phone and a laptop,
-   and the pencil, in the left column's bottom place, never moves. They stand over the middle and
-   the foot together, so a bar or a panel coming and going at the foot never moves them. */
+/* The round tools stand on the foot on every screen, so a thumb or a mouse finds each in the same
+   place on a phone and a laptop: Roofs over the pencil in the left column, Zoom in the right, and
+   every other tool in one row along the foot beside the pencil. The pencil and Zoom never move. The
+   bar stands above the row, so a bar coming and going never moves a tool. */
 .hg-studio-tools {
-  grid-row: 2 / 4;
+  grid-row: 2 / -1;
   align-self: end;
   display: flex;
   flex-direction: column;
@@ -17,6 +17,17 @@
 
 .hg-studio-tools[data-side="right"] {
   grid-column: 3;
+}
+
+/* The row: from the pencil's side, its foot in line with the pencil's. Where it does not fit (a
+   phone) it wraps, the second row above the first, so no tool is ever out of sight. */
+.hg-studio-tools[data-side="row"] {
+  grid-row: -2;
+  grid-column: 2;
+  justify-self: start;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
+  min-inline-size: 0;
 }
 
 /* LiDAR's tools (`StudioToolRail`): one column under its ×, at the head's start, from the top. */
@@ -211,7 +222,7 @@
 /* A panel at the foot reaches up into the middle row: the message stands over the panel's top edge,
    above it, so it is never hidden under it. */
 .hg-studio[data-panel="true"] .hg-studio-bar[data-above-job="true"] {
-  grid-row: 2 / 4;
+  grid-row: 2 / -1;
   grid-column: 1 / -1;
   align-self: end;
   z-index: 4;
@@ -262,9 +273,9 @@
 }
 
 /* An upright phone, a card at the foot: it takes the whole width, as Roofs does, so its words and
-   chips are never squeezed between the tool columns. The tools stand just above it — a card with a
+   chips are never squeezed between the tool columns. Every tool stands just above it — a card with a
    row of chips too (a new roof's kind, the site's question), so Undo, 3D and Roofs stay in reach.
-   A card standing above a job keeps the columns as they are. */
+   A card standing above a job keeps the tools as they are. */
 @media (width < 968px) {
   .hg-studio[data-upright="true"]:has(.hg-studio-bar[data-kind="card"]:not([data-above-job="true"]))
     .hg-studio-tools {

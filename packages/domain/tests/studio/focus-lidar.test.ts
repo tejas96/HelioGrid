@@ -33,6 +33,7 @@ describe('LiDAR keeps only what it needs (T-M05-002g, board frames 5 and 16)', (
     bottomBar: 'hidden',
     lidar: 'hidden',
     sun: 'shown',
+    closeThreeD: 'hidden',
   } as const;
 
   it.each([

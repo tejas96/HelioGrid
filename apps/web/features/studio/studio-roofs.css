@@ -59,7 +59,7 @@
 /* Roofs and the picker: from the foot on every screen, in the bar's place, as a roof's sheet is;
    Roofs at most 40 % of the screen high, its rows scrolling inside. */
 .hg-roofs-panel {
-  grid-row: 2 / 4;
+  grid-row: 2 / -1;
   grid-column: 1 / -1;
   justify-self: center;
   align-self: end;
@@ -249,19 +249,6 @@
   display: flex;
   justify-content: flex-end;
   gap: var(--sp-2);
-}
-
-/* The picture's credit as the last line of Roofs and of a roof's sheet (on a phone, where they
-   cover the map's foot); a desktop shows it on the map. */
-.hg-roof-sheet > .hg-studio-card-credit,
-.hg-roofs-credit {
-  margin: 0;
-}
-
-@media (width >= 968px) {
-  .hg-roofs-credit {
-    display: none;
-  }
 }
 
 /* A phone: a sheet across the foot, in the bar's place. */

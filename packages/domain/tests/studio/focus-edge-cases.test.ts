@@ -56,7 +56,35 @@ describe('focus mode: the edge cases', () => {
     ['once a roof stands, Roofs comes beside the pencil', true, 'shown'],
   ] as const)('an editor: %s', (_why, hasRoof, roofs) => {
     expect(partsOf({ hasRoof })).toMatchObject({ roofs, pencil: 'shown' });
-    expect(partsOf({ hasRoof, view: '3d' })).toMatchObject({ roofs, pencil: 'shown' });
+    expect(partsOf({ hasRoof, view: '3d' })).toMatchObject({ roofs, pencil: 'hidden' });
+  });
+
+  it('looking in 3D on a phone keeps only what the 3D view uses', () => {
+    expect(partsOf({ view: '3d' })).toEqual({
+      ...partsOf({}),
+      magnet: 'hidden',
+      compass: 'shown',
+      otherHandles: 'hidden',
+      lengthLabels: 'hidden',
+      stepSwitcher: 'mark',
+      pictureChip: 'hidden',
+      pencil: 'hidden',
+      layers: 'menu',
+      closeThreeD: 'shown',
+    });
+  });
+
+  it('3D: no pencil and no 2D switch — a × at the head closes it; the View menu stays', () => {
+    expect(partsOf({ view: '3d' })).toMatchObject({
+      pencil: 'hidden',
+      layers: 'menu',
+      closeThreeD: 'shown',
+      sun: 'shown',
+    });
+    expect(partsOf({ view: 'top' })).toMatchObject({ layers: 'shown', closeThreeD: 'hidden' });
+    // LiDAR's own × closes LiDAR; a job holding the screen keeps the × away.
+    expect(partsOf({ view: '3d', lidar: true }).closeThreeD).toBe('hidden');
+    expect(partsOf({ view: '3d', job: 'sheet' }).closeThreeD).toBe('hidden');
   });
 
   it('a reader’s Roofs on a phone takes the tools’ and the bar’s place, as an editor’s does', () => {

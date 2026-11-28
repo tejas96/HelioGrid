@@ -1,5 +1,6 @@
 /* The studio's canvas (`T-M05-002a`): the scene on the whole screen, and thin glass parts over it
-   on a grid — the head across the top, the two tool columns at the sides, the one bar at the foot.
+   on a grid — the head across the top, the two tool columns at the sides, the one bar at the foot
+   and the tool row under it.
    The grid lets every click through to the scene except on a part. */
 .hg-studio {
   --hg-studio-line: calc(var(--sp-0-5) / 2);
@@ -10,7 +11,8 @@
   inset: 0;
   display: grid;
   grid-template-columns: auto 1fr auto;
-  grid-template-rows: auto 1fr auto;
+  /* The head; the middle; the foot, where the bar stands; the tool row under it. */
+  grid-template-rows: auto 1fr auto auto;
   gap: var(--studio-gap);
   /* The browser's safe areas, or — inside the phone app, where the map runs under the phone's own
      bars — how far those bars reach (`use-phone-insets.ts`). */
