@@ -3,7 +3,6 @@ import {
   type MeasurementSystem,
   type RoofStepEvent,
   type RoofStepState,
-  type SnapTargets,
   snapReachM,
 } from '@heliogrid/domain';
 import type { RefObject } from 'react';
@@ -23,19 +22,9 @@ export function pointerMoves(
   step: RefObject<RoofStepState>,
   closeAsDrawn: () => void,
   units: MeasurementSystem,
-  /** The site's buildings and eaves as the magnet reads them, once the site data is in. */
-  site: () => SnapTargets | undefined = () => undefined,
 ): Pick<RoofMoves, 'hover' | 'tap' | 'follow' | 'drag'> {
   return {
-    hover: (at, scale) => {
-      const targets = site();
-      act({
-        kind: 'hover',
-        at,
-        ...reachOf(scale),
-        ...(targets === undefined ? {} : { site: targets }),
-      });
-    },
+    hover: (at, scale) => act({ kind: 'hover', at, ...reachOf(scale) }),
     // A tap on the first corner closes the shape, whether it lands on the dot or beside it.
     tap: (at, scale) => {
       const { reach } = reachOf(scale);

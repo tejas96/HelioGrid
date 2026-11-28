@@ -42,8 +42,8 @@ describe('the magnet knows every roof: wall lines past their ends (T-M05-002, pa
   it.each([
     // the spot → where it lands, what holds it
     [
-      'square and 0.3 m off the wall line: the corner where the two cross',
-      p(15.05, 0.3),
+      'square and 0.15 m off the wall line, on the crossing: the corner there',
+      p(15.05, 0.15),
       p(15, 0),
       { kind: 'cross', first: { kind: 'square' }, second: WALL_LINE },
     ],
@@ -77,10 +77,10 @@ describe('the magnet knows every roof: wall lines past their ends (T-M05-002, pa
   });
 
   it.each([
-    ['reach 0.5 m: 0.7 m off is too far', 0.5, p(15, 0.7)],
-    ['reach 1 m: 0.7 m off is held', 1, p(15, 0)],
+    ['reach 0.5 m: 0.45 m off is beside the crossing, square alone', 0.5, p(15, 0.45)],
+    ['reach 1 m: 0.45 m off is on the crossing', 1, p(15, 0)],
   ] as const)('%s', (_why, reach, point) => {
-    near(draftSpot(LOWER, p(15.05, 0.7), ON_UPPER, true, reach).point, point);
+    near(draftSpot(LOWER, p(15.05, 0.45), ON_UPPER, true, reach).point, point);
   });
 
   it('magnet off: as tapped, no line', () => {
@@ -118,7 +118,12 @@ describe('two holds together never move a corner further than the reach', () => 
   it.each([
     // square (0.35 m sideways) and level with corner 1 (0.4 m along): 0.53 m in all
     ['both would move it 0.53 m: square alone', p(20.35, 10.6), p(20, 10.6), 'square'],
-    ['both move it 0.36 m: square and level', p(20.2, 10.7), p(20, 11), 'lines_up'],
+    [
+      'both move it 0.18 m, on the crossing: square and level',
+      p(20.1, 10.85),
+      p(20, 11),
+      'lines_up',
+    ],
   ] as const)('%s', (_why, at, point, kind) => {
     const spot = draftSpot([p(0, 11), p(0, 0), p(20, 0)], at, NO_SNAP_TARGETS, true);
     near(spot.point, point);
@@ -201,7 +206,7 @@ describe('two roofs whose walls share a line', () => {
 describe('a corner dragged and a roof moved get the same lines', () => {
   it('a corner dragged near the wall line takes the cross with its square side', () => {
     const lower = roof('lower', [p(8, 4), p(15, 4), p(15.05, 1), p(10, 0)]);
-    const drag = cornerDragged(doc([UPPER, lower]), 1, 2, p(15.05, 0.3), true);
+    const drag = cornerDragged(doc([UPPER, lower]), 1, 2, p(15.05, 0.15), true);
     near(drag.document.roofs[1]?.corners[2], p(15, 0));
     expect(drag.snap?.kind).toBe('cross');
   });
@@ -243,20 +248,18 @@ describe('a corner dragged and a roof moved get the same lines', () => {
 
   it('a roof moved a little out of reach of a wall line shows it faint', () => {
     const shed = roof('shed', [p(9, 6), p(12, 6), p(12, 8), p(9, 8)]);
-    const moved = roofMoved(doc([UPPER, shed]), 1, p(5, 0.7), []);
+    // Moved to 0.6 m east of the upper roof: past the reach, within the faint reach.
+    const moved = roofMoved(doc([UPPER, shed]), 1, p(-0.4, -2), []);
     expect(moved.guides.some((guide) => guide.soft === true)).toBe(true);
   });
 
   it('a moved roof is held by a wall line on each side at once', () => {
-    const lower = roof('lower', [p(12, 0), p(15, 0), p(15, 4), p(12, 4)]);
-    const shed = roof('shed', [p(9, 6), p(12, 6), p(12, 8), p(9, 8)]);
+    // The lower roof touches the upper one: one house, with a notch over its north-east corner.
+    const lower = roof('lower', [p(8, 0), p(12, 0), p(12, 4), p(8, 4)]);
+    const shed = roof('shed', [p(8, 4), p(11, 4), p(11, 6), p(8, 6)]);
     const moved = roofMoved(doc([UPPER, lower, shed]), 2, p(0.3, 0.3), []);
-    near(moved.document.roofs[2]?.corners[0], p(9, 6));
-    expect(moved.snap).toEqual({
-      kind: 'cross',
-      first: WALL_LINE,
-      second: { kind: 'wall_line', owner: { kind: 'roof', roof: 1 } },
-    });
+    near(moved.document.roofs[2]?.corners[0], p(8, 4));
+    expect(moved.snap?.kind).toBe('cross');
     expect(moved.guides).toHaveLength(2);
   });
 });
@@ -274,12 +277,12 @@ describe('the roof step carries the reach and Follow', () => {
   });
 
   it.each([
-    ['no reach told: the half metre, 0.7 m off is too far', undefined, p(15, 0.7)],
-    ['a reach of 1 m told on the pointer: held on the wall line', 1, p(15, 0)],
+    ['no reach told: the half metre, 0.45 m off is beside the crossing', undefined, p(15, 0.45)],
+    ['a reach of 1 m told on the pointer: on the crossing', 1, p(15, 0)],
   ] as const)('%s', (_why, reach, point) => {
     const { state } = roofStepAfter(
       drawn([p(8, 4), p(15, 4)]),
-      { kind: 'hover', at: p(15.05, 0.7), ...(reach === undefined ? {} : { reach }) },
+      { kind: 'hover', at: p(15.05, 0.45), ...(reach === undefined ? {} : { reach }) },
       design,
     );
     near(state.kind === 'drawing' ? state.spot?.point : undefined, point);

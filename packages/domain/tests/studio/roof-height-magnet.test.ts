@@ -114,4 +114,14 @@ describe('a roof’s height, dragged, with the site data (`T-M05-002`, part g)',
     expect(pull?.to.kind).toBe('height_map');
     expect(pull?.metres).toBeCloseTo(2.4, 9);
   });
+
+  it('a height pulled to a measured eave lands on the slider’s 10 cm step', () => {
+    const eave = { from: { east: 12, north: 0 }, to: { east: 12, north: 8 }, heightM: 7.23 };
+    const pull = heightPullOf(designOf(TERRACE), 0, FACTS, 7.25, undefined, {
+      eaves: [eave],
+      mapM: null,
+    });
+    expect(pull?.to.kind).toBe('eave');
+    expect(pull?.metres).toBeCloseTo(7.2, 9);
+  });
 });

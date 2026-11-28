@@ -117,7 +117,6 @@ export function useStudioScreen(designId: string, formats: FormatPack): StudioSc
     typedStart: { length: formats.typedRoofLengthM, width: formats.typedRoofWidthM },
     planOutlines: planOutlinesOf(own.view.plan),
     closingOf: closingOf(facts, opened?.subject.siteRoof, pin),
-    siteTargets: site.targets,
   });
   const { step, act } = roof;
   const { roofStep } = roof.view;

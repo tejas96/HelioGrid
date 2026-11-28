@@ -1,6 +1,7 @@
 import type { GroundPoint } from './ground';
 import { between, nearestOnSegment } from './roof-shape';
 import {
+  GHOST_CATCH_REACHES,
   type RoofHold,
   SNAP_DEGREES,
   SNAP_M,
@@ -89,14 +90,26 @@ function levelWith(
   return found;
 }
 
+/**
+ * The magnet's own holds on a spot: where it lands and the lines it is held on. Held on two lines,
+ * `single` is where the first alone holds it: the corner stays there unless the spot is on the
+ * crossing, which shows as a ghost.
+ */
+interface OwnHeld {
+  readonly point: GroundPoint;
+  readonly lines: { line: SnapLine; snap: RoofHold }[];
+  readonly single?: { readonly point: GroundPoint; readonly snap: RoofHold };
+}
+
 /** A free spot still lines up with an earlier corner, along the long side's frame. */
 function linedUp(
   earlier: readonly GroundPoint[],
   long: GroundPoint,
   at: GroundPoint,
   reach: number,
-): { point: GroundPoint; lines: { line: SnapLine; snap: RoofHold }[] } {
+): OwnHeld {
   let point = at;
+  let single: OwnHeld['single'];
   const lines: { line: SnapLine; snap: RoofHold }[] = [];
   for (const axis of [long, across(long)]) {
     let best: { corner: number; off: number } | null = null;
@@ -109,13 +122,15 @@ function linedUp(
     const found = best as { corner: number; off: number } | null;
     // A second line-up never takes the corner further than the reach from where it was tapped.
     if (found !== null && between(along(point, axis, found.off), at) <= reach) {
+      const first = lines[0];
+      if (first !== undefined) single = { point, snap: first.snap };
       point = along(point, axis, found.off);
       const snap: RoofHold = { kind: 'lines_up', corner: found.corner, along: null };
       const guide = { through: earlier[found.corner] as GroundPoint, way: across(axis) };
       lines.push({ line: { guide, hold: snap }, snap });
     }
   }
-  return { point, lines };
+  return single === undefined ? { point, lines } : { point, lines, single };
 }
 
 /** The wall of another roof nearest a corner: what a roof's first side squares to. */
@@ -142,7 +157,7 @@ function ownHolds(
   at: GroundPoint,
   targets: SnapTargets,
   reach: number,
-): { point: GroundPoint; lines: { line: SnapLine; snap: RoofHold }[] } {
+): OwnHeld {
   const last = corners.at(-1);
   if (last === undefined || between(last, at) === 0) return { point: at, lines: [] };
   const long = longSideOf(corners);
@@ -181,13 +196,14 @@ function ownHolds(
       { line: heldLine, snap },
       { line: levelLine, snap },
     ],
+    single: { point: along(last, held.way, held.reach), snap: heldSnap },
   };
 }
 
 /**
  * Where a tap lands while drawing, with the magnet on: onto another roof's corner or the middle of
  * its wall; else held by the magnet's own holds and by the lines of other roofs' walls — and where
- * two of those cross within reach, on the corner there. Each hold comes with the guide it is held
+ * two of those cross within reach, a ghost there, taken by a spot on it. Each hold comes with the guide it is held
  * on, and a line a little out of reach shows faint. With the magnet off, exactly where tapped.
  * `reach`: how near a spot must come, in metres (the screen's reach at this zoom).
  */
@@ -212,12 +228,12 @@ export function draftSpot(
     soft.length === 0 ? snapped : { ...snapped, guides: [...snapped.guides, ...soft] };
   const [ownFirst, ownSecond] = own.lines;
   if (ownSecond !== undefined) {
-    // Held on two of its own lines already: a corner, named by the last line-up made.
-    return withSoft({
-      point: own.point,
-      snap: ownSecond.snap,
-      guides: own.lines.map(({ line }) => line.guide),
-    });
+    // Held on two of its own lines: their crossing is a corner, named by the last line-up made,
+    // taken only by a spot on it; beside it, the first line alone holds and the crossing is a ghost.
+    const guides = own.lines.map(({ line }) => line.guide);
+    if (own.single === undefined || between(own.point, at) <= reach * GHOST_CATCH_REACHES)
+      return withSoft({ point: own.point, snap: ownSecond.snap, guides });
+    return withSoft({ point: own.single.point, snap: own.single.snap, guides, ghost: own.point });
   }
   if (ownFirst !== undefined) {
     return withSoft(crossedOrOn(at, { ...ownFirst, point: own.point }, near, reach));

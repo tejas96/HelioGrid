@@ -3,7 +3,8 @@ import type {
   DraftView,
   FocusJob,
   GroundPoint,
-  Guide,
+  GuideSpan,
+  ghostOf,
   HeldCircle,
   KindLine,
   LengthEntry,
@@ -210,12 +211,16 @@ export interface RoofStepView {
   readonly screenProjector: typeof screenProjector;
   /** The picked corner's angle, in whole degrees. */
   readonly pickedAngle: number | null;
-  /** The guide lines a corner in hand is held on, drawn dashed across the map. */
-  readonly guides: readonly Guide[];
+  /** The guides the corner in hand is held on, drawn dashed across the map. */
+  readonly guideSpans: readonly GuideSpan[];
+  /** The pen's cross while drawing: faint arms through it, to line a corner up by eye. */
+  readonly penCross: readonly GuideSpan[];
   /** Where a drag's tag sits. */
   readonly dragTagAt: GroundPoint | null;
   /** The magnet's mark on the spot it holds: a ring where two lines cross, a diamond on a middle. */
   readonly snapMark: ReturnType<typeof snapMarkOf>;
+  /** Where two lines cross near the spot, not taken: a hollow ghost a tap on it takes. */
+  readonly ghost: ReturnType<typeof ghostOf>;
   /** The roof as it stood before the drag in hand: a turn's or a move's start, or where a refused
    * drag goes back to. */
   readonly dragBefore: readonly GroundPoint[] | null;

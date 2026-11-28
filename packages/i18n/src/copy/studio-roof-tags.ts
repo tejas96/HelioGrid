@@ -24,10 +24,6 @@ const TAG = {
   snapParallelInLine: /*i18n*/ { id: 'Parallel · in line' },
   snapSquareCorner: /*i18n*/ { id: 'Square corner' },
   snapRoofCorner: /*i18n*/ { id: '{roof} corner' },
-  /** A building the height map traced, named in a snap's tag as a roof is (`T-M05-002`, part g). */
-  ownerBuilding: /*i18n*/ { id: 'Building' },
-  /** A building's wall where its roof falls to the ground. */
-  ownerEave: /*i18n*/ { id: 'Eave' },
   snapRoofEdge: /*i18n*/ { id: '{roof} edge' },
   snapFaceCorner: /*i18n*/ { id: 'Face {number} corner' },
   snapFaceEdge: /*i18n*/ { id: 'Face {number} edge' },
@@ -96,14 +92,8 @@ const numberOf = (t: T, owner: SnapOwner, shown: LengthShown) => {
       return { number: owner.face + 1 };
     case 'roof':
       return { roof: roofNameWord(t, shown.roofName(owner.roof)) };
-    default:
-      return { roof: ownerWord(t, owner) };
   }
 };
-
-/** A site building's word in a snap's tag: the building, or its eave. */
-export const ownerWord = (t: T, owner: Extract<SnapOwner, { building: number }>) =>
-  t(owner.kind === 'eave' ? TAG.ownerEave : TAG.ownerBuilding);
 
 /** What a snap caught, as its small label names it; two lines that cross name both. */
 export function snapName(t: T, snap: RoofSnap, shown: LengthShown): TranslatedText {

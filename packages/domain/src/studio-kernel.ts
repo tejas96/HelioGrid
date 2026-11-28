@@ -21,12 +21,10 @@ export {
   buildingsOf,
   type DrawnBuilding,
   draggedOntoScan,
-  outlinesApart,
   roofIsFlat,
   roofMovedSinceOpening,
   roofsAsDrawn,
   roofsMoved,
-  SAME_BUILDING_M,
   SCAN_PULL_M,
   scanMatched,
 } from './studio/roof-buildings';
@@ -147,6 +145,7 @@ export {
   sideBearing,
 } from './studio/roof-slope-way';
 export { roofTopMarksOf } from './studio/roof-top-marks-build';
+export { outlinesApart, SAME_BUILDING_M } from './studio/roof-touch';
 export { roofNumberOf } from './studio/roof-values';
 export { roofNumberReset, roofNumberSet } from './studio/roof-values-set';
 export { type RoofsWorked, roofsWorked, type WorkedBefore } from './studio/roof-worked';

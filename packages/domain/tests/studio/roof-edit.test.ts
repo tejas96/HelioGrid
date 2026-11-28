@@ -150,11 +150,17 @@ describe('dragging a corner', () => {
   const design = designOf(roofOf(RECT));
 
   it('a square corner shows both of its sides as guides', () => {
-    expect(cornerDragged(design, 0, 2, p(8.3, 6.25), true).guides).toHaveLength(2);
+    expect(cornerDragged(design, 0, 2, p(8.15, 6.1), true).guides).toHaveLength(2);
   });
 
   it.each([
-    ['0.4 m off square: the magnet takes it', p(8.3, 6.25), true, 'square_corner', p(8, 6)],
+    [
+      '0.2 m off square, on the crossing: the magnet takes it',
+      p(8.15, 6.1),
+      true,
+      'square_corner',
+      p(8, 6),
+    ],
     ['0.7 m off: it is let go', p(8.7, 6.7), true, null, p(8.7, 6.7)],
     ['the magnet off: exactly where dragged', p(8.3, 6.25), false, null, p(8.3, 6.25)],
   ] as const)('%s', (_name, to, magnet, snap, at) => {
@@ -163,14 +169,6 @@ describe('dragging a corner', () => {
     expect(drag.snap?.kind ?? null).toBe(snap);
     near([drag.document.roofs[0]?.corners[2] as GroundPoint], [at]);
     expect(drag.fault).toBeNull();
-  });
-
-  it('snaps to another roof’s corner', () => {
-    const shed = roofOf([p(9, 7), p(12, 7), p(12, 10), p(9, 10)]);
-    const drag = cornerDragged(designOf(roofOf(RECT), shed), 0, 2, p(8.8, 6.8), true);
-    expect(drag.snap).toEqual({ kind: 'corner_of', owner: { kind: 'roof', roof: 1 } });
-    expect(cornerDragged(designOf(roofOf(RECT), shed), 0, 2, p(8.8, 6.8), false).snap).toBeNull();
-    near([drag.document.roofs[0]?.corners[2] as GroundPoint], [p(9, 7)]);
   });
 
   it('a typed neighbour edge keeps its length: the corner slides round its other end', () => {
@@ -251,12 +249,12 @@ describe('moving and turning a roof', () => {
   });
 
   it.each([
-    ['2.9° from another roof’s edge: lines up with it', 2.9, true, true, 0],
-    ['3.1°: stays as turned', 3.1, true, false, 3.1],
-    ['2.9° with the magnet off: stays as turned', 2.9, false, false, 2.9],
-  ] as const)('%s', (_name, degrees, magnet, snapped, applied) => {
-    const far = roofOf([p(30, 0), p(34, 0), p(34, 4), p(30, 4)]);
-    const turn = roofTurned(designOf(roofOf(RECT), far), 0, degrees, magnet);
+    ['2.9° from the edge of a roof of its house: lines up with it', 2.9, true, true, 0, 8],
+    ['3.1°: stays as turned', 3.1, true, false, 3.1, 8],
+    ['2.9° with the magnet off: stays as turned', 2.9, false, false, 2.9, 8],
+  ] as const)('%s', (_name, degrees, magnet, snapped, applied, west) => {
+    const other = roofOf([p(west, 0), p(west + 4, 0), p(west + 4, 4), p(west, 4)]);
+    const turn = roofTurned(designOf(roofOf(RECT), other), 0, degrees, magnet);
     expect(turn.snapped).toBe(snapped);
     expect(turn.degrees).toBeCloseTo(applied);
     // A turn that lines up flashes the edge it lines up with: one guide along that edge.

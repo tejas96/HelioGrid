@@ -85,9 +85,17 @@
 }
 
 /* A line near the spot that does not pull it yet: faint, so a pull is never a surprise. */
-.hg-roof-guide[data-soft="true"] {
+.hg-roof-guide[data-kind="soft"] {
   opacity: 0.5;
   stroke-dasharray: 2 7;
+}
+
+/* The pen's cross while drawing: two thin faint lines through the pen, to line a corner up by eye.
+   Thinner than any magnet line, so it never reads as a pull. */
+.hg-roof-guide[data-kind="cross"] {
+  stroke-width: calc(var(--hg-studio-line) * 1.5);
+  stroke-dasharray: 4 4;
+  opacity: 0.85;
 }
 
 /* A mark's holder: a point on the screen. Its child centres on it. */
@@ -191,6 +199,14 @@
   block-size: var(--sp-3);
   border-radius: 0;
   rotate: 45deg;
+}
+
+/* Where two lines cross, not taken: a hollow dashed ghost, a step smaller than the held mark,
+   with its dark ring so it reads over any picture. */
+.hg-roof-at > .hg-roof-snap[data-mark="ghost"] {
+  inline-size: var(--sp-4);
+  block-size: var(--sp-4);
+  border-style: dashed;
 }
 
 @keyframes hg-roof-snap {

@@ -6,7 +6,7 @@ import { roofHeightReset } from './roof-height';
 import { belongsTo, roofWithItsParts, standsOn } from './roof-kind';
 import type { RoofFacts } from './roof-levels';
 import { roofPlaced, roofToCentimetre } from './roof-move';
-import { distanceToSegment, roofsOverlap } from './roof-shape';
+import { EDGE_SLACK_M, outlinesApart, SAME_BUILDING_M } from './roof-touch';
 import type { RoofDataRead } from './site-heights';
 
 /**
@@ -16,35 +16,11 @@ import type { RoofDataRead } from './site-heights';
  * with that roof.
  */
 
-/** Roofs on the ground this close are one building. */
-export const SAME_BUILDING_M = 0.3;
-/** What a centimetre-kept corner may be off by: 30 cm apart on paper is 30 cm. */
-const EDGE_SLACK_M = 1e-6;
-
 export interface DrawnBuilding {
   /** Its roofs on the ground, by index, in the order they were drawn: the chip names them. */
   readonly roofs: readonly number[];
   /** Every roof that moves with it — those, and what stands on them or is part of them. */
   readonly members: readonly number[];
-}
-
-/** How far apart two outlines are at their nearest; 0 where they touch or overlap. */
-export function outlinesApart(one: readonly GroundPoint[], other: readonly GroundPoint[]): number {
-  if (roofsOverlap(one, other)) return 0;
-  let nearest = Number.POSITIVE_INFINITY;
-  for (const [points, ring] of [
-    [one, other],
-    [other, one],
-  ] as const) {
-    for (const point of points) {
-      for (let i = 0; i < ring.length; i += 1) {
-        const a = ring[i] as GroundPoint;
-        const b = ring[(i + 1) % ring.length] as GroundPoint;
-        nearest = Math.min(nearest, distanceToSegment(point, a, b));
-      }
-    }
-  }
-  return nearest;
 }
 
 const onTheGround = (document: StudioDocument, roof: Roof) =>

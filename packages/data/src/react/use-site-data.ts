@@ -30,7 +30,6 @@ import {
   siteFitOf,
   siteHeightOf,
   siteSayOf,
-  siteSnapTargets,
 } from '@heliogrid/domain';
 import { roofGroupsOf } from '@heliogrid/domain/studio-kernel';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
@@ -178,7 +177,7 @@ export function useSiteHeights(input: {
     latest.current = next;
     setHistory(next);
   }, [history, site.reads, facts, latest, setHistory]);
-  // The site's buildings and their eaves: what a drawn or dragged corner pulls to besides roofs.
+  // The site's eaves: the heights a roof's height slider pulls to.
   const data = site.read.kind === 'ready' ? site.read.value : null;
   // Moved with the map by the line-up in force, as the roofs' reads are.
   const lineUp = document === null ? null : lineUpOf(document, automatic);
@@ -190,14 +189,6 @@ export function useSiteHeights(input: {
       heightM: eave.heightM + by.lift,
     }));
   }, [data, lineUp]);
-  const targets = useMemo(() => {
-    if (data === null || data.buildings.length === 0) return undefined;
-    const by = lineUp ?? NO_SHIFT;
-    return siteSnapTargets({
-      outlines: data.buildings.map((building) => building.outline.map((p) => linedUp(p, by))),
-      eaves: eaves.map((eave) => ({ ...eave, building: -1 })),
-    });
-  }, [data, lineUp, eaves]);
   // The data the heights were made from, as saved before this opening: newer data says so once.
   const stampBefore = input.documentQuery.data?.document.site?.dataStamp;
   const say = useMemo(
@@ -248,7 +239,6 @@ export function useSiteHeights(input: {
   };
   return {
     ...site,
-    targets,
     /** The buildings' eaves, moved with the map by the person's line-up. */
     eaves,
     say,
